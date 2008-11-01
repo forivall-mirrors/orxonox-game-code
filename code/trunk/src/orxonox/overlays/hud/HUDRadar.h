@@ -44,7 +44,7 @@ namespace orxonox
     class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public RadarListener
     {
     public:
-        HUDRadar();
+        HUDRadar(BaseObject* creator);
         ~HUDRadar();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);

@@ -1,7 +1,9 @@
 SET( NETWORK_SRC_FILES
+  ChatListener.cc
   Client.cc
   ClientConnection.cc
   ClientInformation.cc
+  ClientConnectionListener.cc
   ConnectionManager.cc
   GamestateManager.cc
   GamestateClient.cc

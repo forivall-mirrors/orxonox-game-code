@@ -79,22 +79,53 @@ namespace orxonox
     class Radar;
     class RadarListener;
 
-    // objects
-    class Ambient;
-    class Backlight;
-    class Camera;
-    class Model;
-    class NPC;
-    class ParticleSpawner;
-    class Skybox;
-    class SpaceShip;
-    class SpaceShipAI;
-    class WorldEntity;
+    class CameraManager;
+    class LevelManager;
 
-    class Projectile;
-    class BillboardProjectile;
-    class RotatingProjectile;
-    class ParticleProjectile;
+    // objects
+    class Scene;
+
+    class WorldEntity;
+    class PositionableEntity;
+    class MovableEntity;
+    class ControllableEntity;
+    class Sublevel;
+
+    class Model;
+    class Billboard;
+    class BlinkingBillboard;
+    class Light;
+    class Backlight;
+    class ParticleEmitter;
+    class ParticleSpawner;
+
+    class Camera;
+    class CameraPosition;
+    class SpawnPoint;
+
+    class Spectator;
+    class Pawn;
+    class SpaceShip;
+
+    class Trigger;
+    class DistanceTrigger;
+    class EventTrigger;
+
+    class EventListener;
+    class EventDispatcher;
+    class EventTarget;
+
+    class Controller;
+    class HumanController;
+
+    class Info;
+    class Level;
+    class PlayerInfo;
+    class HumanPlayer;
+
+    class Gametype;
+
+    class Scores;
 
     // tools
     class BillboardSet;

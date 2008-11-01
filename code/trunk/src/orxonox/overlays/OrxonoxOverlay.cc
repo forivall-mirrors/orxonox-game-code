@@ -43,7 +43,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -54,11 +53,41 @@ namespace orxonox
     SetConsoleCommand(OrxonoxOverlay, scrollOverlay, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OrxonoxOverlay, rotateOverlay, false).accessLevel(AccessLevel::User);
 
-    OrxonoxOverlay::OrxonoxOverlay()
-        : overlay_(0)
-        , background_(0)
+    OrxonoxOverlay::OrxonoxOverlay(BaseObject* creator)
+        : BaseObject(creator)
     {
         RegisterObject(OrxonoxOverlay);
+
+        // add this overlay to the static map of OrxonoxOverlays
+        if (overlays_s.find(this->getName()) != overlays_s.end())
+        {
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
+        }
+        overlays_s[this->getName()] = this;
+
+        // create the Ogre::Overlay
+        overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
+            + convertToString(hudOverlayCounter_s++));
+
+        // create background panel (can be used to show any picture)
+        this->background_ = static_cast<Ogre::PanelOverlayElement*>(
+            Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
+            "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
+        this->overlay_->add2D(this->background_);
+
+        // We'll have to set the aspect ratio to a default value first.
+        // GSGraphics gets informed about our construction here and can update us in the next tick.
+        this->windowAspectRatio_ = 1.0;
+        this->sizeCorrectionChanged();
+
+        this->changedVisibility();
+
+        setSize(Vector2(1.0f, 1.0f));
+        setPickPoint(Vector2(0.0f, 0.0f));
+        setPosition(Vector2(0.0f, 0.0f));
+        setRotation(Degree(0.0));
+        setAspectCorrection(true);
+        setBackgroundMaterial("");
     }
 
     /**
@@ -69,15 +98,16 @@ namespace orxonox
     */
     OrxonoxOverlay::~OrxonoxOverlay()
     {
-        // erase ourself from the map with all overlays
-        std::map<std::string, OrxonoxOverlay*>::iterator it = overlays_s.find(this->getName());
-        if (it != overlays_s.end())
-            overlays_s.erase(it);
+        if (this->isInitialized())
+        {
+            // erase ourself from the map with all overlays
+            std::map<std::string, OrxonoxOverlay*>::iterator it = overlays_s.find(this->getName());
+            if (it != overlays_s.end())
+                overlays_s.erase(it);
 
-        if (this->background_)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->background_);
-        if (this->overlay_)
             Ogre::OverlayManager::getSingleton().destroy(this->overlay_);
+        }
     }
 
     /**
@@ -93,45 +123,22 @@ namespace orxonox
     {
         SUPER(OrxonoxOverlay, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            // add this overlay to the static map of OrxonoxOverlays
-            if (overlays_s.find(this->getName()) != overlays_s.end())
-            {
-                COUT(1) << "Overlay names should be unique or you cannnot access them via console." << std::endl;
-            }
-            overlays_s[this->getName()] = this;
+        XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
+    }
 
-            // create the Ogre::Overlay
-            overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
-                + convertToString(hudOverlayCounter_s++));
+    void OrxonoxOverlay::changedName()
+    {
+        OrxonoxOverlay::overlays_s.erase(this->getOldName());
 
-            // create background panel (can be used to show any picture)
-            this->background_ = static_cast<Ogre::PanelOverlayElement*>(
-                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
-                "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
-            this->overlay_->add2D(this->background_);
+        if (OrxonoxOverlay::overlays_s.find(this->getName()) != OrxonoxOverlay::overlays_s.end())
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
 
-            // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
-            // called automatically by the GraphicsEngine.
-            this->windowResized(GraphicsEngine::getInstance().getWindowWidth(),
-                GraphicsEngine::getInstance().getWindowHeight());
-
-            this->changedVisibility();
-        }
-
-        XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode)
-            .defaultValues(Vector2(1.0f, 1.0f));
-        XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode)
-            .defaultValues(Vector2(0.0f, 0.0f));
-        XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlElement, mode)
-            .defaultValues(Vector2(0.0f, 0.0f));
-        XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlElement, mode)
-            .defaultValues(0.0f);
-        XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode)
-            .defaultValues(true);
-        XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode)
-            .defaultValues("");
+        OrxonoxOverlay::overlays_s[this->getName()] = this;
     }
 
     //! Only sets the background material name if not ""
@@ -147,7 +154,7 @@ namespace orxonox
         if (this->background_)
             return this->background_->getMaterialName();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     //! Called by BaseObject when visibility has changed.

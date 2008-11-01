@@ -36,7 +36,7 @@
 
 #include "util/OrxonoxPlatform.h"
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH)
+#if defined(ORXONOX_ENABLE_PCH)
 
 // including std headers here is useless since they're already precompiled
 
@@ -46,15 +46,17 @@
 #endif
 #include <Ogre.h>
 #include <CEGUI.h>
+#include "ois/OIS.h"
 #include <boost/thread/recursive_mutex.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/thread.hpp>
-
+//#include <boost/thread/mutex.hpp>
+//#include <boost/thread/condition.hpp>
+//#include <boost/thread/thread.hpp>
+#include <boost/static_assert.hpp>
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
+#include "tolua/tolua++.h"
 
-//Get around Windows hackery (windows.h is included by Ogre)
+//Get around Windows hackery (windows.h is included by Ogre.h)
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
 #  ifdef max
 #    undef max
@@ -66,15 +68,14 @@
 
 //----------- Our files ----------
 //--------------------------------
-// only include when not debugging so that we may find issues with missing headers quicker
-#if defined(NDEBUG)
+//// only include when not debugging so that we may find issues with missing headers quicker
+//#if defined(NDEBUG)
 
 #include "util/Convert.h"
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "util/Math.h"
 #include "util/Multitype.h"
-#include "util/OutputBuffer.h"
-#include "util/OutputHandler.h"
 #include "util/Sleep.h"
 #include "util/String.h"
 #include "util/SubString.h"
@@ -84,19 +85,20 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CommandExecutor.h"
+#include "core/Core.h"
 #include "core/Executor.h"
+#include "core/ObjectList.h"
+#include "core/Super.h"
 #include "core/XMLIncludes.h"
 #include "core/XMLPort.h"
+#include "core/input/SimpleInputState.h"
+#include "core/input/InputManager.h"
 
 #include "network/Synchronisable.h"
 
-//#include "tools/Mesh.h"
-//#include "tools/Timer.h"
-//#include "objects/Model.h"
-//#include "objects/Tickable.h"
-//#include "objects/WorldEntity.h"
+#include "Settings.h"
 
-#endif /* ifdef NDEBUG */
+//#endif /* ifdef NDEBUG */
 
 #endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
 

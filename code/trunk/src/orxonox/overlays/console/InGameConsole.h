@@ -48,7 +48,7 @@ namespace orxonox
         InGameConsole();
         ~InGameConsole();
 
-        void initialise();
+        void initialise(int windowWidth, int windowHeight);
         void destroy();
         void setConfigValues();
 
@@ -59,6 +59,8 @@ namespace orxonox
 
         static void openConsole();
         static void closeConsole();
+
+        static Ogre::UTFString convert2UTF(const std::string& text);
 
     private: // functions
         InGameConsole(const InGameConsole& other);
@@ -82,8 +84,6 @@ namespace orxonox
 
         // config value related
         void bHidesAllInputChanged();
-
-        static Ogre::UTFString convert2UTF(std::string s);
 
     private: // variables
         bool bActive_;

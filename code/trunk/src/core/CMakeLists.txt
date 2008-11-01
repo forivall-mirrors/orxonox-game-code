@@ -3,12 +3,13 @@ SET(CORE_SRC_FILES
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
+  Event.cc
   GameState.cc
   Language.cc
+  LuaBind.cc
   ObjectListBase.cc
   OrxonoxClass.cc
   RootGameState.cc
-  Script.cc
 
   # command
   ArgumentCompletionFunctions.cc
@@ -30,7 +31,9 @@ SET(CORE_SRC_FILES
   Loader.cc
   Namespace.cc
   NamespaceNode.cc
+  Template.cc
   XMLPort.cc
+  XMLNameListener.cc
 
   # shell
   IRC.cc
@@ -61,7 +64,7 @@ ADD_CUSTOM_COMMAND(
   DEPENDS
     tolua_orxonox
     tolua/tolua.pkg
-    Script.h
+    LuaBind.h
     CommandExecutor.h
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )

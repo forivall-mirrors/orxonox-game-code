@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(DebugRTRText);
 
-    DebugRTRText::DebugRTRText()
+    DebugRTRText::DebugRTRText(BaseObject* creator) : OverlayText(creator)
     {
         RegisterObject(DebugRTRText);
     }
@@ -49,6 +49,6 @@ namespace orxonox
     void DebugRTRText::tick(float dt)
     {
         float rtr = GraphicsEngine::getInstance().getAverageTickTime();
-        this->text_->setCaption(this->getCaption() + convertToString(rtr));
+        this->setCaption(convertToString(rtr));
     }
 }

@@ -39,8 +39,8 @@
 
 #include "util/OrxonoxPlatform.h"
 #include "util/Debug.h"
+#include "util/SignalHandler.h"
 #include "core/ConfigFileManager.h"
-#include "SignalHandler.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"

@@ -43,14 +43,15 @@ namespace network {
 *       - is the interface to be used when communicating with the network
 *	@author Oliver Scheuss
 */
-class Host{
+class _NetworkExport Host{
   private:
     //TODO add theese functions or adequate
     //virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
     //virtual bool sendChat(packet::Chat *chat)=0;
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
-    virtual bool chat(std::string message)=0;
-    virtual bool processChat(std::string message, unsigned int playerID)=0;
+    virtual bool chat(const std::string& message)=0;
+    virtual bool broadcast(const std::string& message)=0;
+    virtual bool processChat(const std::string& message, unsigned int playerID)=0;
     virtual bool isServer_()=0;
 
 
@@ -71,9 +72,10 @@ class Host{
     static unsigned int getShipID(){return instance_->shipID_;}
     static void setClientID(unsigned int id){ instance_->clientID_ = id; }
     static void setShipID(unsigned int id){ instance_->shipID_ = id; }
-    static bool isServer(){ return instance_->isServer_(); }		
-    static bool Chat(std::string message);
-    static bool incomingChat(std::string message, unsigned int playerID);
+    static bool isServer(){ return instance_->isServer_(); }
+    static bool Chat(const std::string& message);
+    static bool Broadcast(const std::string& message);
+    static bool incomingChat(const std::string& message, unsigned int playerID);
   private:
 };
 

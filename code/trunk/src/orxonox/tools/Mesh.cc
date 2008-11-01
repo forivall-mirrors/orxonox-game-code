@@ -31,29 +31,77 @@
 
 #include <sstream>
 #include <OgreSceneManager.h>
-#include "GraphicsEngine.h"
-#include "Settings.h"
+#include <cassert>
+
+#include "core/Core.h"
+#include "util/Convert.h"
+#include "util/String.h"
 
 namespace orxonox
 {
     unsigned int Mesh::meshCounter_s = 0;
 
-    Mesh::Mesh() :
-      entity_(0)
+    Mesh::Mesh()
     {
-    }
-
-    void Mesh::setMesh(const std::string& file)
-    {
-        std::ostringstream name;
-        name << (Mesh::meshCounter_s++);
-        if (Settings::showsGraphics())
-            this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + name.str(), file);
+        this->entity_ = 0;
+        this->bCastShadows_ = true;
     }
 
     Mesh::~Mesh()
     {
-        if (this->entity_ && Settings::showsGraphics())
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
+        if (this->entity_ && this->scenemanager_)
+            this->scenemanager_->destroyEntity(this->entity_);
+    }
+
+    void Mesh::setMeshSource(Ogre::SceneManager* scenemanager, const std::string& meshsource)
+    {
+        assert(scenemanager);
+
+        this->scenemanager_ = scenemanager;
+
+        if (this->entity_)
+            this->scenemanager_->destroyEntity(this->entity_);
+
+        if (Core::showsGraphics())
+        {
+            try
+            {
+                this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+                this->entity_->setCastShadows(this->bCastShadows_);
+            }
+            catch (...)
+            {
+                COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
+            }
+        }
+    }
+
+    void Mesh::setCastShadows(bool bCastShadows)
+    {
+        this->bCastShadows_ = bCastShadows;
+        if (this->entity_)
+            this->entity_->setCastShadows(this->bCastShadows_);
+    }
+
+    const std::string& Mesh::getName() const
+    {
+        if (this->entity_)
+            return this->entity_->getName();
+        else
+            return BLANKSTRING;
+    }
+
+    void Mesh::setVisible(bool bVisible)
+    {
+        if (this->entity_)
+            this->entity_->setVisible(bVisible);
+    }
+
+    bool Mesh::isVisible() const
+    {
+        if (this->entity_)
+            return this->entity_->getVisible();
+        else
+            return false;
     }
 }

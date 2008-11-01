@@ -45,6 +45,7 @@
 #include "Identifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
+#include "Functor.h"
 #include "util/Debug.h"
 
 
@@ -97,20 +98,27 @@
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName)
+    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName, true)
+
+/**
+    @brief Creates the entry in the Factory for classes which should not be loaded through XML.
+    @param ClassName The name of the class
+*/
+#define CreateUnloadableFactory(ClassName) \
+    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName, false)
 
 /**
     @brief Returns the Identifier of the given class.
     @param ClassName The name of the class
 */
 #define Class(ClassName) \
-    ClassIdentifier<ClassName>::getIdentifier()
+    orxonox::ClassIdentifier<ClassName>::getIdentifier()
 
 /**
     @brief Returns the Identifier with a given name through the factory.
     @param String The name of the class
 */
-#define ClassByName(String) \
+#define ClassByString(String) \
     orxonox::Factory::getIdentifier(String)
 
 /**
@@ -119,5 +127,13 @@
 */
 #define ClassByID(networkID) \
     orxonox::Factory::getIdentifier(networkID)
+
+/**
+    @brief Registers a member function as callback when an object of 'type' is created.
+    @param
+*/
+#define RegisterConstructionCallback(ThisClassName, TargetClassName, FunctionName) \
+    orxonox::ClassIdentifier<TargetClassName>::getIdentifier()->addConstructionCallback( \
+        createFunctor(&ThisClassName::FunctionName)->setObject(this))
 
 #endif /* _CoreIncludes_H__ */

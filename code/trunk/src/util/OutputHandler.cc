@@ -32,6 +32,7 @@
 */
 
 #include "OutputHandler.h"
+#include <time.h>
 
 namespace orxonox
 {
@@ -45,7 +46,13 @@ namespace orxonox
         this->softDebugLevel_[0] = this->softDebugLevel_[1] = this->softDebugLevel_[2] = this->softDebugLevel_[3] = 2;
         this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
-        this->logfile_ << "Started log at yyyy/mm/dd hh:mm:ss" << std::endl; // Todo: Get date and time
+
+        time_t rawtime;
+        struct tm* timeinfo;
+        time(&rawtime);
+        timeinfo = localtime(&rawtime);
+
+        this->logfile_ << "Started log at " << asctime(timeinfo) << std::endl;
         this->logfile_.flush();
     }
 

@@ -1,8 +1,9 @@
 SET( ORXONOX_SRC_FILES
+  CameraManager.cc
   GraphicsEngine.cc
+  LevelManager.cc
   Main.cc
   Settings.cc
-  SignalHandler.cc
 
   gamestates/GSClient.cc
   gamestates/GSDedicated.cc
@@ -32,35 +33,58 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDNavigation.cc
   overlays/hud/HUDRadar.cc
   overlays/hud/HUDSpeedBar.cc
+  overlays/hud/ChatOverlay.cc
 
   tools/BillboardSet.cc
-  tools/Light.cc
   tools/Mesh.cc
   tools/ParticleInterface.cc
   tools/TextureGenerator.cc
   tools/Timer.cc
   tools/WindowEventListener.cc
 
-  objects/Ambient.cc
-  objects/Backlight.cc
-  objects/Camera.cc
-  objects/CameraHandler.cc
-  objects/Model.cc
-  objects/NPC.cc
-  objects/ParticleSpawner.cc
+  objects/EventListener.cc
+  objects/EventDispatcher.cc
+  objects/EventTarget.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc
-  objects/Skybox.cc
-  objects/SpaceShip.cc
-  objects/SpaceShipAI.cc
   objects/Tickable.cc
-  objects/WorldEntity.cc
+  objects/Test.cc
+  objects/Script.cc
 
-  objects/Projectile.cc
-  objects/BillboardProjectile.cc
-  objects/RotatingProjectile.cc
-  objects/ParticleProjectile.cc
+  objects/Scene.cc
+  objects/worldentities/WorldEntity.cc
+  objects/worldentities/PositionableEntity.cc
+  objects/worldentities/MovableEntity.cc
+  objects/worldentities/ControllableEntity.cc
+  objects/worldentities/Model.cc
+  objects/worldentities/Billboard.cc
+  objects/worldentities/BlinkingBillboard.cc
+  objects/worldentities/Light.cc
+  objects/worldentities/Camera.cc
+  objects/worldentities/CameraPosition.cc
+  objects/worldentities/SpawnPoint.cc
+  objects/worldentities/ParticleEmitter.cc
+  objects/worldentities/ParticleSpawner.cc
+#  objects/worldentities/Backlight.cc
+
+  objects/worldentities/triggers/Trigger.cc
+  objects/worldentities/triggers/DistanceTrigger.cc
+  objects/worldentities/triggers/EventTrigger.cc
+
+  objects/worldentities/pawns/Spectator.cc
+  objects/worldentities/pawns/Pawn.cc
+  objects/worldentities/pawns/SpaceShip.cc
+
+  objects/controllers/Controller.cc
+  objects/controllers/HumanController.cc
+
+  objects/infos/Info.cc
+  objects/infos/Level.cc
+  objects/infos/PlayerInfo.cc
+  objects/infos/HumanPlayer.cc
+
+  objects/gametypes/Gametype.cc
 
   tolua/tolua_bind.cc
 )
@@ -75,23 +99,16 @@ ADD_CUSTOM_COMMAND(
     gui/GUIManager.h
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
-	
+
+
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 
 IF(NETWORKTRAFFIC_TESTING_ENABLED)
 
   SET( ORXONOXS_SRC_FILES
     GraphicsEngine.cc
-    objects/Ambient.cc
     objects/Camera.cc
-    objects/CameraHandler.cc
-    objects/Explosion.cc
-    objects/Model.cc
-    objects/NPC.cc
-    objects/Projectile.cc
-    objects/Skybox.cc
-    objects/SpaceShip.cc
-    objects/WorldEntity.cc
+    CameraManager.cc
   )
 
   ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})

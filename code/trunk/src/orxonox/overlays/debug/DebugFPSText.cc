@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(DebugFPSText);
 
-    DebugFPSText::DebugFPSText()
+    DebugFPSText::DebugFPSText(BaseObject* creator) : OverlayText(creator)
     {
         RegisterObject(DebugFPSText);
     }
@@ -49,6 +49,6 @@ namespace orxonox
     void DebugFPSText::tick(float dt)
     {
         float fps = GraphicsEngine::getInstance().getAverageFramesPerSecond();
-        this->text_->setCaption(this->getCaption() + convertToString(fps));
+        this->setCaption(convertToString(fps));
     }
 }

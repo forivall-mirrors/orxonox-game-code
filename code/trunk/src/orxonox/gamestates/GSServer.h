@@ -32,15 +32,15 @@
 #include "OrxonoxPrereqs.h"
 #include "network/NetworkPrereqs.h"
 #include "GSLevel.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSServer : public GSLevel
+    class _OrxonoxExport GSServer : public GameState<GSGraphics>, public GSLevel
     {
     public:
         GSServer();
         ~GSServer();
-
 
     private:
         void enter();

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include <OgreEntity.h>
 
 namespace orxonox
@@ -42,22 +41,26 @@ namespace orxonox
         public:
             Mesh();
             ~Mesh();
-            void setMesh(const std::string& file);
+
+            void setMeshSource(Ogre::SceneManager* scenemanager, const std::string& file);
 
             inline Ogre::Entity* getEntity()
                 { return this->entity_; }
 
-            inline const std::string& getName() const
-                { return this->entity_->getName(); }
+            const std::string& getName() const;
 
-            inline void setVisible(bool visible)
-                { if (this->entity_) this->entity_->setVisible(visible); }
-            inline bool getVisible() const
-                { if (this->entity_) return this->entity_->getVisible(); else return false; }
+            void setVisible(bool bVisible);
+            bool isVisible() const;
+
+            void setCastShadows(bool bCastShadows);
+            inline bool getCastShadows() const
+                { return this->bCastShadows_; }
 
         private:
             static unsigned int meshCounter_s;
             Ogre::Entity* entity_;
+            bool bCastShadows_;
+            Ogre::SceneManager* scenemanager_;
     };
 }
 

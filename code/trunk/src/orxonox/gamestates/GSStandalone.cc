@@ -29,13 +29,12 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSStandalone.h"
 
-#include "core/input/InputManager.h"
-#include "core/ConsoleCommand.h"
+#include "core/Core.h"
 
 namespace orxonox
 {
     GSStandalone::GSStandalone()
-        : GSLevel("standalone")
+        : GameState<GSGraphics>("standalone")
     {
     }
 
@@ -45,28 +44,16 @@ namespace orxonox
 
     void GSStandalone::enter()
     {
-        GSLevel::enter();
+        Core::setIsStandalone(true);
 
-        this->loadLevel();
-
-        // add console commands
-        FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::setTimeFactor);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "setTimeFactor")).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
-
-        // level is loaded: we can start capturing the input
-        InputManager::getInstance().requestEnterState("game");
+        GSLevel::enter(this->getParent()->getViewport());
     }
 
     void GSStandalone::leave()
     {
-        InputManager::getInstance().requestLeaveState("game");
-
-        // TODO: Remove and destroy console command
-
-        this->unloadLevel();
-
         GSLevel::leave();
+
+        Core::setIsStandalone(false);
     }
 
     void GSStandalone::ticked(const Clock& time)

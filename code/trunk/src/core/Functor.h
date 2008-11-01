@@ -105,7 +105,7 @@ namespace orxonox
             inline FunctionType getType() const { return this->type_; }
             inline const MultiType& getReturnvalue() const { return this->returnedValue_; }
 
-            const std::string& getTypenameParam(unsigned int param) const { return (param < 5) ? this->typeParam_[param] : blankString; }
+            const std::string& getTypenameParam(unsigned int param) const { return (param < 5) ? this->typeParam_[param] : BLANKSTRING; }
             const std::string& getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
             virtual void evaluateParam(unsigned int index, MultiType& param) const = 0;
@@ -166,16 +166,18 @@ namespace orxonox
                 }
             }
 
-            void setObject(T* object)
+            FunctorMember* setObject(T* object)
             {
                 this->bConstObject_ = false;
                 this->object_ = object;
+                return this;
             }
 
-            void setObject(const T* object)
+            FunctorMember* setObject(const T* object)
             {
                 this->bConstObject_ = true;
                 this->constObject_ = object;
+                return this;
             }
 
         private:

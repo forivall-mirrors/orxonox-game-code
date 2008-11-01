@@ -28,6 +28,8 @@
 #ifndef NETWORKCLASSID_H
 #define NETWORKCLASSID_H
 
+#include "../NetworkPrereqs.h"
+
 #include <string>
 
 #include "Packet.h"
@@ -36,18 +38,18 @@ namespace network {
 namespace packet {
 
 /**
-	@author 
+	@author
 */
-class ClassID : public Packet
+class _NetworkExport ClassID : public Packet
 {
 public:
   ClassID( unsigned int classID, std::string className );
   ClassID( uint8_t* data, unsigned int clientID );
   ~ClassID();
-  
+
   inline unsigned int getSize() const;
   bool process();
-  
+
   unsigned int getClassID();
   unsigned int getClassNameLength(){ return classNameLength_; }
   unsigned char *getClassName();

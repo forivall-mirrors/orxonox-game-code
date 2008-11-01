@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(state, "gui").setShortcut("s");
+    SetCommandLineArgument(state, "gui").shortcut("s");
 
     RootGameState::RootGameState(const std::string& name)
         : GameState<GameStateBase>(name)
@@ -146,9 +146,7 @@ namespace orxonox
             this->activate();
 
             // get initial state from command line
-            std::string initialState;
-            CommandLine::getValue<std::string>("state", &initialState);
-            gotoState(initialState);
+            gotoState(CommandLine::getValue("state"));
 
             while (this->activeChild_)
             {

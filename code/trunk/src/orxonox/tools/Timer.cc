@@ -91,6 +91,7 @@ namespace orxonox
         this->interval_ = 0;
         this->bLoop_ = false;
         this->bActive_ = false;
+        this->bKillAfterCall_ = false;
 
         this->time_ = 0;
 
@@ -110,7 +111,12 @@ namespace orxonox
     */
     void TimerBase::run() const
     {
+        bool temp = this->bKillAfterCall_; // to avoid errors with bKillAfterCall_=false and an exutors which destroy the timer
+
         (*this->executor_)();
+
+        if (temp)
+            delete this;
     }
 
     /**
@@ -135,7 +141,7 @@ namespace orxonox
             if (this->time_ <= 0)
             {
                 // It's time to call the function
-                if (this->bLoop_)
+                if (this->bLoop_ && !this->bKillAfterCall_)
                 {
                     this->time_ += this->interval_; // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
                     while (this->time_ <= 0)

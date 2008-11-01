@@ -34,32 +34,31 @@
 #include <vector>
 
 #include "ClassTreeMask.h"
-#include "Level.h"
 
 namespace orxonox
 {
     class _CoreExport Loader
     {
         public:
-            static bool open(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
+            static bool open(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
             static void close();
-            static void close(const Level* level);
+            static void close(const XMLFile* file);
 
-            static void add(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
-            static void remove(const Level* level);
+            static void add(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            static void remove(const XMLFile* file);
 
             static bool load(const ClassTreeMask& mask = ClassTreeMask());
             static void unload(const ClassTreeMask& mask = ClassTreeMask());
             static bool reload(const ClassTreeMask& mask = ClassTreeMask());
 
-            static bool load(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
-            static void unload(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
-            static bool reload(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
+            static bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            static void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
 
             static ClassTreeMask currentMask_s;
 
         private:
-            static std::vector<std::pair<const Level*, ClassTreeMask> > levels_s;
+            static std::vector<std::pair<const XMLFile*, ClassTreeMask> > files_s;
     };
 }
 

@@ -57,6 +57,10 @@
     a.setValue<float>("3.14"); // a has now the type float and "3.14" gets converted to 3.14
     a.convert<bool>();         // converts 3.14 to bool, which is true
     a = false;                 // assigns false, this is equivalent to a.setValue(false)
+
+    @note
+    Whenever a value gets converted, there is a boolean return value telling you whether it was
+    successful or not. If it wasn't a zero value is assigned with the help of zeroise<T>().
 */
 
 #ifndef _MultiType_H__
@@ -127,40 +131,67 @@ class _UtilExport MultiType
     */
     struct _UtilExport MT_ValueBase
     {
-        MT_ValueBase(MT_Type type) : type_(type) {}
+        MT_ValueBase(MT_Type type) : type_(type), bHasDefaultValue_(false) {}
         virtual ~MT_ValueBase() {}
 
         virtual MT_ValueBase* clone() const = 0;
 
         virtual void reset() = 0;
-        virtual void assimilate(const MultiType& other) = 0;
+        virtual bool assimilate(const MultiType& other) = 0;
 
         /** @brief Returns the type of the current value. */
         const MT_Type& getType() const { return this->type_; }
 
-        virtual void setValue(const char& value)                 = 0;
-        virtual void setValue(const unsigned char& value)        = 0;
-        virtual void setValue(const short& value)                = 0;
-        virtual void setValue(const unsigned short& value)       = 0;
-        virtual void setValue(const int& value)                  = 0;
-        virtual void setValue(const unsigned int& value)         = 0;
-        virtual void setValue(const long& value)                 = 0;
-        virtual void setValue(const unsigned long& value)        = 0;
-        virtual void setValue(const long long& value)            = 0;
-        virtual void setValue(const unsigned long long& value)   = 0;
-        virtual void setValue(const float& value)                = 0;
-        virtual void setValue(const double& value)               = 0;
-        virtual void setValue(const long double& value)          = 0;
-        virtual void setValue(const bool& value)                 = 0;
-        virtual void setValue(      void* const& value)          = 0;
-        virtual void setValue(const std::string& value)          = 0;
-        virtual void setValue(const orxonox::Vector2& value)     = 0;
-        virtual void setValue(const orxonox::Vector3& value)     = 0;
-        virtual void setValue(const orxonox::Vector4& value)     = 0;
-        virtual void setValue(const orxonox::ColourValue& value) = 0;
-        virtual void setValue(const orxonox::Quaternion& value)  = 0;
-        virtual void setValue(const orxonox::Radian& value)      = 0;
-        virtual void setValue(const orxonox::Degree& value)      = 0;
+        /** @brief Checks whether the value is a default one. */
+        bool hasDefaultValue()   const { return this->bHasDefaultValue_; }
+
+        virtual bool setValue(const char& value)                 = 0;
+        virtual bool setValue(const unsigned char& value)        = 0;
+        virtual bool setValue(const short& value)                = 0;
+        virtual bool setValue(const unsigned short& value)       = 0;
+        virtual bool setValue(const int& value)                  = 0;
+        virtual bool setValue(const unsigned int& value)         = 0;
+        virtual bool setValue(const long& value)                 = 0;
+        virtual bool setValue(const unsigned long& value)        = 0;
+        virtual bool setValue(const long long& value)            = 0;
+        virtual bool setValue(const unsigned long long& value)   = 0;
+        virtual bool setValue(const float& value)                = 0;
+        virtual bool setValue(const double& value)               = 0;
+        virtual bool setValue(const long double& value)          = 0;
+        virtual bool setValue(const bool& value)                 = 0;
+        virtual bool setValue(      void* const& value)          = 0;
+        virtual bool setValue(const std::string& value)          = 0;
+        virtual bool setValue(const orxonox::Vector2& value)     = 0;
+        virtual bool setValue(const orxonox::Vector3& value)     = 0;
+        virtual bool setValue(const orxonox::Vector4& value)     = 0;
+        virtual bool setValue(const orxonox::ColourValue& value) = 0;
+        virtual bool setValue(const orxonox::Quaternion& value)  = 0;
+        virtual bool setValue(const orxonox::Radian& value)      = 0;
+        virtual bool setValue(const orxonox::Degree& value)      = 0;
+
+        virtual bool getValue(char*                 value) const = 0;
+        virtual bool getValue(unsigned char*        value) const = 0;
+        virtual bool getValue(short*                value) const = 0;
+        virtual bool getValue(unsigned short*       value) const = 0;
+        virtual bool getValue(int*                  value) const = 0;
+        virtual bool getValue(unsigned int*         value) const = 0;
+        virtual bool getValue(long*                 value) const = 0;
+        virtual bool getValue(unsigned long*        value) const = 0;
+        virtual bool getValue(long long*            value) const = 0;
+        virtual bool getValue(unsigned long long*   value) const = 0;
+        virtual bool getValue(float*                value) const = 0;
+        virtual bool getValue(double*               value) const = 0;
+        virtual bool getValue(long double*          value) const = 0;
+        virtual bool getValue(bool*                 value) const = 0;
+        virtual bool getValue(void**                value) const = 0;
+        virtual bool getValue(std::string*          value) const = 0;
+        virtual bool getValue(orxonox::Vector2*     value) const = 0;
+        virtual bool getValue(orxonox::Vector3*     value) const = 0;
+        virtual bool getValue(orxonox::Vector4*     value) const = 0;
+        virtual bool getValue(orxonox::ColourValue* value) const = 0;
+        virtual bool getValue(orxonox::Quaternion*  value) const = 0;
+        virtual bool getValue(orxonox::Radian*      value) const = 0;
+        virtual bool getValue(orxonox::Degree*      value) const = 0;
 
         virtual operator char()                 const = 0;
         virtual operator unsigned char()        const = 0;
@@ -188,7 +219,8 @@ class _UtilExport MultiType
 
         virtual void toString(std::ostream& outstream) const = 0;
 
-        MT_Type type_; //!< The type of the current value
+        MT_Type type_;          //!< The type of the current value
+        bool bHasDefaultValue_; //!< True if the last conversion wasn't successful
     };
 
     public:
@@ -228,47 +260,47 @@ class _UtilExport MultiType
         inline                       const MultiType& operator=(const MultiType& other) { this->setValue(other); return (*this); } /** @brief Assigns the value of the other MultiType and converts it to the current type of the MultiType. */
         inline                       const MultiType& operator=(MT_Type type)           { this->setType(type);   return (*this); } /** @brief Resets the value and changes the type. */
 
-        inline void                                   setValue(const char& value);
-        inline void                                   setValue(const unsigned char& value);
-        inline void                                   setValue(const short& value);
-        inline void                                   setValue(const unsigned short& value);
-        inline void                                   setValue(const int& value);
-        inline void                                   setValue(const unsigned int& value);
-        inline void                                   setValue(const long& value);
-        inline void                                   setValue(const unsigned long& value);
-        inline void                                   setValue(const long long& value);
-        inline void                                   setValue(const unsigned long long& value);
-        inline void                                   setValue(const float& value);
-        inline void                                   setValue(const double& value);
-        inline void                                   setValue(const long double& value);
-        inline void                                   setValue(const bool& value);
-        inline void                                   setValue(      void* const& value);
-        inline void                                   setValue(const std::string& value);
-        inline void                                   setValue(const orxonox::Vector2& value);
-        inline void                                   setValue(const orxonox::Vector3& value);
-        inline void                                   setValue(const orxonox::Vector4& value);
-        inline void                                   setValue(const orxonox::ColourValue& value);
-        inline void                                   setValue(const orxonox::Quaternion& value);
-        inline void                                   setValue(const orxonox::Radian& value);
-        inline void                                   setValue(const orxonox::Degree& value);
-        inline void                                   setValue(const char* value);
+        inline bool                                   setValue(const char& value);
+        inline bool                                   setValue(const unsigned char& value);
+        inline bool                                   setValue(const short& value);
+        inline bool                                   setValue(const unsigned short& value);
+        inline bool                                   setValue(const int& value);
+        inline bool                                   setValue(const unsigned int& value);
+        inline bool                                   setValue(const long& value);
+        inline bool                                   setValue(const unsigned long& value);
+        inline bool                                   setValue(const long long& value);
+        inline bool                                   setValue(const unsigned long long& value);
+        inline bool                                   setValue(const float& value);
+        inline bool                                   setValue(const double& value);
+        inline bool                                   setValue(const long double& value);
+        inline bool                                   setValue(const bool& value);
+        inline bool                                   setValue(      void* const& value);
+        inline bool                                   setValue(const std::string& value);
+        inline bool                                   setValue(const orxonox::Vector2& value);
+        inline bool                                   setValue(const orxonox::Vector3& value);
+        inline bool                                   setValue(const orxonox::Vector4& value);
+        inline bool                                   setValue(const orxonox::ColourValue& value);
+        inline bool                                   setValue(const orxonox::Quaternion& value);
+        inline bool                                   setValue(const orxonox::Radian& value);
+        inline bool                                   setValue(const orxonox::Degree& value);
+        inline bool                                   setValue(const char* value);
         /** @brief Assigns a pointer. */
-        template <typename V> inline void             setValue(V* value)               { if (this->value_) { this->value_->setValue((void*)value); } else { this->assignValue((void*)value); } }
+        template <typename V> inline bool             setValue(V* value)               { if (this->value_) { return this->value_->setValue((void*)value); } else { return this->assignValue((void*)value); } }
         /** @brief Assigns the value of the other MultiType and converts it to the current type. */
-        void                                          setValue(const MultiType& other) { if (this->value_) { this->value_->assimilate(other); } else { if (other.value_) { this->value_ = other.value_->clone(); } } }
+        bool                                          setValue(const MultiType& other) { if (this->value_) { return this->value_->assimilate(other); } else { if (other.value_) { this->value_ = other.value_->clone(); } return true; } }
         /** @brief Changes the type to T and assigns the new value (which might be of another type than T - it gets converted). */
-        template <typename T, typename V> inline void setValue(const V& value)         { this->setType<T>(); this->setValue(value); }
+        template <typename T, typename V> inline bool setValue(const V& value) { this->setType<T>(); return this->setValue(value); }
 
 
         /** @brief Copies the other MultiType by assigning value and type. */
         inline void                       copy(const MultiType& other)    { if (this == &other) { return; } if (this->value_) { delete this->value_; } this->value_ = (other.value_) ? other.value_->clone() : 0; }
 
-        template <typename T> inline void convert()                       { this->setValue<T>((T)(*this));  } /** @brief Converts the current value to type T. */
-        inline void                       convert(const MultiType& other) { this->convert(other.getType()); } /** @brief Converts the current value to the type of the other MultiType. */
-        void                              convert(MT_Type type);
+        template <typename T> inline bool convert()                       { return this->setValue<T>((T)(*this));  } /** @brief Converts the current value to type T. */
+        inline bool                       convert(const MultiType& other) { return this->convert(other.getType()); } /** @brief Converts the current value to the type of the other MultiType. */
+        bool                              convert(MT_Type type);
 
-        /** @brief Resets the value to the defaultvalue of the current type. */
-        inline void                       reset()                         { if (this->value_) { delete this->value_; this->value_ = 0; } }
+        /** @brief Current content gets deleted. New type is MT_null */
+        inline void                       reset()                         { if (this->value_) this->value_->reset(); }
 
         template <typename T> inline void setType()                       { this->assignValue(T());                            } /** @brief Resets the value and changes the internal type to T. */
         inline void                       setType(const MultiType& other) { this->setType(other.getType());                    } /** @brief Resets the value and changes the internal type to the type of the other MultiType. */
@@ -281,6 +313,9 @@ class _UtilExport MultiType
         /** @brief Returns true if the current type is T. */
         template <typename T> inline bool isType()                  const { return false; } // Only works for specialized values - see below
         std::string                       getTypename()             const;
+
+        /** @brief Checks whether the value is a default one. */
+        bool                              hasDefaultValue()         const { return this->value_->hasDefaultValue(); }
 
         operator char()                  const;
         operator unsigned char()         const;
@@ -308,29 +343,29 @@ class _UtilExport MultiType
         /** @brief Returns the current value, converted to a T* pointer. */
         template <class T> operator T*() const { return ((T*)this->operator void*()); }
 
-        inline void getValue(char*                 value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(unsigned char*        value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(short*                value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(unsigned short*       value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(int*                  value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(unsigned int*         value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(long*                 value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(unsigned long*        value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(long long*            value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(unsigned long long*   value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(float*                value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(double*               value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(long double*          value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(bool*                 value) const { if (this->value_) { (*value) = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(void*                 value) const { if (this->value_) {   value  = (*this->value_); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(std::string*          value) const { if (this->value_) { (*value) = this->value_->operator std::string();          } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::Vector2*     value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Vector2();     } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::Vector3*     value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Vector3();     } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::Vector4*     value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Vector4();     } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::ColourValue* value) const { if (this->value_) { (*value) = this->value_->operator orxonox::ColourValue(); } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::Quaternion*  value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Quaternion();  } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::Radian*      value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Radian();      } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
-        inline void getValue(orxonox::Degree*      value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Degree();      } } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(char*                 value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(unsigned char*        value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(short*                value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(unsigned short*       value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(int*                  value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(unsigned int*         value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(long*                 value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(unsigned long*        value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(long long*            value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(unsigned long long*   value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(float*                value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(double*               value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(long double*          value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(bool*                 value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(void**                value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(std::string*          value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::Vector2*     value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::Vector3*     value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::Vector4*     value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::ColourValue* value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::Quaternion*  value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::Radian*      value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
+        inline bool getValue(orxonox::Degree*      value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
 
         inline char                     getChar()             const { return this->operator char();                 } /** @brief Returns the current value, converted to the requested type. */
         inline unsigned char            getUnsignedChar()     const { return this->operator unsigned char();        } /** @brief Returns the current value, converted to the requested type. */
@@ -358,34 +393,34 @@ class _UtilExport MultiType
         template <typename T> inline T* getPointer()          const { return ((T*)this->getVoid());                 } /** @brief Returns the current value, converted to a T* pointer. */
 
     private:
-        inline void assignValue(const char& value)                 { if (this->value_ && this->value_->type_ == MT_char)        { this->value_->setValue(value); } else { this->changeValueContainer<char>(value);                 } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const unsigned char& value)        { if (this->value_ && this->value_->type_ == MT_uchar)       { this->value_->setValue(value); } else { this->changeValueContainer<unsigned char>(value);        } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const short& value)                { if (this->value_ && this->value_->type_ == MT_short)       { this->value_->setValue(value); } else { this->changeValueContainer<short>(value);                } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const unsigned short& value)       { if (this->value_ && this->value_->type_ == MT_ushort)      { this->value_->setValue(value); } else { this->changeValueContainer<unsigned short>(value);       } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const int& value)                  { if (this->value_ && this->value_->type_ == MT_int)         { this->value_->setValue(value); } else { this->changeValueContainer<int>(value);                  } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const unsigned int& value)         { if (this->value_ && this->value_->type_ == MT_uint)        { this->value_->setValue(value); } else { this->changeValueContainer<unsigned int>(value);         } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const long& value)                 { if (this->value_ && this->value_->type_ == MT_long)        { this->value_->setValue(value); } else { this->changeValueContainer<long>(value);                 } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const unsigned long& value)        { if (this->value_ && this->value_->type_ == MT_ulong)       { this->value_->setValue(value); } else { this->changeValueContainer<unsigned long>(value);        } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const long long& value)            { if (this->value_ && this->value_->type_ == MT_longlong)    { this->value_->setValue(value); } else { this->changeValueContainer<long long>(value);            } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const unsigned long long& value)   { if (this->value_ && this->value_->type_ == MT_ulonglong)   { this->value_->setValue(value); } else { this->changeValueContainer<unsigned long long>(value);   } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const float& value)                { if (this->value_ && this->value_->type_ == MT_float)       { this->value_->setValue(value); } else { this->changeValueContainer<float>(value);                } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const double& value)               { if (this->value_ && this->value_->type_ == MT_double)      { this->value_->setValue(value); } else { this->changeValueContainer<double>(value);               } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const long double& value)          { if (this->value_ && this->value_->type_ == MT_longdouble)  { this->value_->setValue(value); } else { this->changeValueContainer<long double>(value);          } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const bool& value)                 { if (this->value_ && this->value_->type_ == MT_bool)        { this->value_->setValue(value); } else { this->changeValueContainer<bool>(value);                 } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(      void* const& value)          { if (this->value_ && this->value_->type_ == MT_void)        { this->value_->setValue(value); } else { this->changeValueContainer<void*>(value);                } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const std::string& value)          { if (this->value_ && this->value_->type_ == MT_string)      { this->value_->setValue(value); } else { this->changeValueContainer<std::string>(value);          } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::Vector2& value)     { if (this->value_ && this->value_->type_ == MT_vector2)     { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector2>(value);     } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::Vector3& value)     { if (this->value_ && this->value_->type_ == MT_vector3)     { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector3>(value);     } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::Vector4& value)     { if (this->value_ && this->value_->type_ == MT_vector4)     { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector4>(value);     } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::ColourValue& value) { if (this->value_ && this->value_->type_ == MT_colourvalue) { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::ColourValue>(value); } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::Quaternion& value)  { if (this->value_ && this->value_->type_ == MT_quaternion)  { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Quaternion>(value);  } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::Radian& value)      { if (this->value_ && this->value_->type_ == MT_radian)      { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Radian>(value);      } } /** @brief Assigns a new value by changing type and creating a new container. */
-        inline void assignValue(const orxonox::Degree& value)      { if (this->value_ && this->value_->type_ == MT_degree)      { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Degree>(value);      } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const char& value)                 { if (this->value_ && this->value_->type_ == MT_char)        { return this->value_->setValue(value); } else { this->changeValueContainer<char>(value);                 return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const unsigned char& value)        { if (this->value_ && this->value_->type_ == MT_uchar)       { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned char>(value);        return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const short& value)                { if (this->value_ && this->value_->type_ == MT_short)       { return this->value_->setValue(value); } else { this->changeValueContainer<short>(value);                return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const unsigned short& value)       { if (this->value_ && this->value_->type_ == MT_ushort)      { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned short>(value);       return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const int& value)                  { if (this->value_ && this->value_->type_ == MT_int)         { return this->value_->setValue(value); } else { this->changeValueContainer<int>(value);                  return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const unsigned int& value)         { if (this->value_ && this->value_->type_ == MT_uint)        { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned int>(value);         return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const long& value)                 { if (this->value_ && this->value_->type_ == MT_long)        { return this->value_->setValue(value); } else { this->changeValueContainer<long>(value);                 return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const unsigned long& value)        { if (this->value_ && this->value_->type_ == MT_ulong)       { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned long>(value);        return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const long long& value)            { if (this->value_ && this->value_->type_ == MT_longlong)    { return this->value_->setValue(value); } else { this->changeValueContainer<long long>(value);            return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const unsigned long long& value)   { if (this->value_ && this->value_->type_ == MT_ulonglong)   { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned long long>(value);   return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const float& value)                { if (this->value_ && this->value_->type_ == MT_float)       { return this->value_->setValue(value); } else { this->changeValueContainer<float>(value);                return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const double& value)               { if (this->value_ && this->value_->type_ == MT_double)      { return this->value_->setValue(value); } else { this->changeValueContainer<double>(value);               return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const long double& value)          { if (this->value_ && this->value_->type_ == MT_longdouble)  { return this->value_->setValue(value); } else { this->changeValueContainer<long double>(value);          return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const bool& value)                 { if (this->value_ && this->value_->type_ == MT_bool)        { return this->value_->setValue(value); } else { this->changeValueContainer<bool>(value);                 return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(      void* const& value)          { if (this->value_ && this->value_->type_ == MT_void)        { return this->value_->setValue(value); } else { this->changeValueContainer<void*>(value);                return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const std::string& value)          { if (this->value_ && this->value_->type_ == MT_string)      { return this->value_->setValue(value); } else { this->changeValueContainer<std::string>(value);          return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::Vector2& value)     { if (this->value_ && this->value_->type_ == MT_vector2)     { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector2>(value);     return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::Vector3& value)     { if (this->value_ && this->value_->type_ == MT_vector3)     { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector3>(value);     return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::Vector4& value)     { if (this->value_ && this->value_->type_ == MT_vector4)     { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector4>(value);     return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::ColourValue& value) { if (this->value_ && this->value_->type_ == MT_colourvalue) { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::ColourValue>(value); return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::Quaternion& value)  { if (this->value_ && this->value_->type_ == MT_quaternion)  { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Quaternion>(value);  return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::Radian& value)      { if (this->value_ && this->value_->type_ == MT_radian)      { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Radian>(value);      return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
+        inline bool assignValue(const orxonox::Degree& value)      { if (this->value_ && this->value_->type_ == MT_degree)      { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Degree>(value);      return true; } } /** @brief Assigns a new value by changing type and creating a new container. */
 
         /** @brief Changes the value container. */
         template <typename T> inline void changeValueContainer(const T& value) { if (this->value_) { delete this->value_; } this->createNewValueContainer<T>(value); }
         /** @brief Creates a new value container (works only with specialized types). */
-        template <typename T>        void createNewValueContainer(const T& value) { BOOST_STATIC_ASSERT(sizeof(T) == 0); }
+        template <typename T>        void createNewValueContainer(const T& value) { BOOST_STATIC_ASSERT(sizeof(T) == 0); return false; }
 
         MT_ValueBase* value_; //!< A pointer to the value container
 };
@@ -418,24 +453,24 @@ template <> inline bool MultiType::isType<orxonox::Radian>()      const { return
 template <> inline bool MultiType::isType<orxonox::Degree>()      const { return (this->value_ && this->value_->type_ == MT_degree);      } /** @brief Returns true if the current type equals the given type. */
 
 // Specialization to avoid ambiguities with the conversion operator
-template <> inline void MultiType::convert<std::string>()          { this->setValue<std::string>         (this->operator std::string());          } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::Vector2>()     { this->setValue<orxonox::Vector2>    (this->operator orxonox::Vector2());     } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::Vector3>()     { this->setValue<orxonox::Vector3>    (this->operator orxonox::Vector3());     } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::Vector4>()     { this->setValue<orxonox::Vector4>    (this->operator orxonox::Vector4());     } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::ColourValue>() { this->setValue<orxonox::ColourValue>(this->operator orxonox::ColourValue()); } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::Quaternion>()  { this->setValue<orxonox::Quaternion> (this->operator orxonox::Quaternion());  } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::Radian>()      { this->setValue<orxonox::Radian>     (this->operator orxonox::Radian());      } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<orxonox::Degree>()      { this->setValue<orxonox::Degree>     (this->operator orxonox::Degree());      } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<std::string>()          { return this->setValue<std::string>         (this->operator std::string());          } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::Vector2>()     { return this->setValue<orxonox::Vector2>    (this->operator orxonox::Vector2());     } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::Vector3>()     { return this->setValue<orxonox::Vector3>    (this->operator orxonox::Vector3());     } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::Vector4>()     { return this->setValue<orxonox::Vector4>    (this->operator orxonox::Vector4());     } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::ColourValue>() { return this->setValue<orxonox::ColourValue>(this->operator orxonox::ColourValue()); } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::Quaternion>()  { return this->setValue<orxonox::Quaternion> (this->operator orxonox::Quaternion());  } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::Radian>()      { return this->setValue<orxonox::Radian>     (this->operator orxonox::Radian());      } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<orxonox::Degree>()      { return this->setValue<orxonox::Degree>     (this->operator orxonox::Degree());      } /** @brief Converts the current value to the given type. */
 
 // Specialization to avoid ambiguities with the conversion operator
-template <> inline void MultiType::convert<const std::string&>()          { this->convert<std::string>();          } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::Vector2&>()     { this->convert<orxonox::Vector2>();     } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::Vector3&>()     { this->convert<orxonox::Vector3>();     } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::Vector4&>()     { this->convert<orxonox::Vector4>();     } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::ColourValue&>() { this->convert<orxonox::ColourValue>(); } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::Quaternion&>()  { this->convert<orxonox::Quaternion>();  } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::Radian&>()      { this->convert<orxonox::Radian>();      } /** @brief Converts the current value to the given type. */
-template <> inline void MultiType::convert<const orxonox::Degree&>()      { this->convert<orxonox::Degree>();      } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const std::string&>()          { return this->convert<std::string>();          } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::Vector2&>()     { return this->convert<orxonox::Vector2>();     } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::Vector3&>()     { return this->convert<orxonox::Vector3>();     } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::Vector4&>()     { return this->convert<orxonox::Vector4>();     } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::ColourValue&>() { return this->convert<orxonox::ColourValue>(); } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::Quaternion&>()  { return this->convert<orxonox::Quaternion>();  } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::Radian&>()      { return this->convert<orxonox::Radian>();      } /** @brief Converts the current value to the given type. */
+template <> inline bool MultiType::convert<const orxonox::Degree&>()      { return this->convert<orxonox::Degree>();      } /** @brief Converts the current value to the given type. */
 
 template <> void MultiType::createNewValueContainer(const char& value);
 template <> void MultiType::createNewValueContainer(const unsigned char& value);
@@ -461,30 +496,30 @@ template <> void MultiType::createNewValueContainer(const orxonox::Quaternion& v
 template <> void MultiType::createNewValueContainer(const orxonox::Radian& value);
 template <> void MultiType::createNewValueContainer(const orxonox::Degree& value);
 
-inline void MultiType::setValue(const char& value)                  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const unsigned char& value)         { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const short& value)                 { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const unsigned short& value)        { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const int& value)                   { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const unsigned int& value)          { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const long& value)                  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const unsigned long& value)         { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const long long& value)             { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const unsigned long long& value)    { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const float& value)                 { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const double& value)                { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const long double& value)           { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const bool& value)                  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(      void* const& value)           { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const std::string& value)           { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::Vector2& value)      { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::Vector3& value)      { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::Vector4& value)      { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::ColourValue& value)  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::Quaternion& value)   { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::Radian& value)       { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
-inline void MultiType::setValue(const orxonox::Degree& value)       { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const char& value)                  { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const unsigned char& value)         { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const short& value)                 { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const unsigned short& value)        { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const int& value)                   { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const unsigned int& value)          { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const long& value)                  { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const unsigned long& value)         { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const long long& value)             { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const unsigned long long& value)    { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const float& value)                 { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const double& value)                { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const long double& value)           { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const bool& value)                  { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(      void* const& value)           { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const std::string& value)           { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::Vector2& value)      { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::Vector3& value)      { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::Vector4& value)      { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::ColourValue& value)  { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::Quaternion& value)   { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::Radian& value)       { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const orxonox::Degree& value)       { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
 
-inline void MultiType::setValue(const char* value)                  { if (this->value_) { this->value_->setValue(std::string(value)); } else { this->assignValue(std::string(value)); } }  /** @brief Assigns the given value and converts it to the current type. */
+inline bool MultiType::setValue(const char* value)                  { if (this->value_) { return this->value_->setValue(std::string(value)); } else { return this->assignValue(std::string(value)); } }  /** @brief Assigns the given value and converts it to the current type. */
 
 #endif /* _MultiType_H__ */

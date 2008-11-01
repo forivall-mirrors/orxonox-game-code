@@ -59,7 +59,17 @@ namespace orxonox
             static const std::string& getLanguage();
             static void resetLanguage();
 
-            //static void tick(float dt);
+            // fast access global variables.
+            static bool showsGraphics() { return bShowsGraphics_s; }
+            static bool hasServer()     { return bHasServer_s; }
+            static bool isClient()      { return bIsClient_s; }
+            static bool isStandalone()  { return bIsStandalone_s; }
+            static bool isMaster()      { return bIsMaster_s; }
+            static void setShowsGraphics(bool val) { bShowsGraphics_s = val; updateIsMaster(); }
+            static void setHasServer    (bool val) { bHasServer_s     = val; updateIsMaster(); }
+            static void setIsClient     (bool val) { bIsClient_s      = val; updateIsMaster(); }
+            static void setIsStandalone (bool val) { bIsStandalone_s  = val; updateIsMaster(); }
+            static void updateIsMaster  ()         { bIsMaster_s      = (bHasServer_s || bIsStandalone_s); }
 
         private:
             void resetLanguageIntern();
@@ -73,6 +83,12 @@ namespace orxonox
             int softDebugLevelLogfile_;                     //!< The debug level for the logfile
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             std::string language_;                          //!< The language
+
+            static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
+            static bool bHasServer_s;                       //!< global variable that tells whether this is a server
+            static bool bIsClient_s;
+            static bool bIsStandalone_s;
+            static bool bIsMaster_s;
     };
 }
 

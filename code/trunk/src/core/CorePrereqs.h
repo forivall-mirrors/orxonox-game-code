@@ -102,8 +102,6 @@ namespace orxonox
   class CommandEvaluation;
   class CommandExecutor;
   class CommandLine;
-  class BaseCommandLineArgument;
-  template <class T>
   class CommandLineArgument;
   class ConfigFile;
   class ConfigFileEntry;
@@ -114,6 +112,8 @@ namespace orxonox
   class ConfigValueContainer;
   class ConsoleCommand;
   class Core;
+  struct Event;
+  class EventContainer;
   class Executor;
   template <class T>
   class ExecutorMember;
@@ -130,7 +130,6 @@ namespace orxonox
   class IteratorBase;
   class Language;
   class LanguageEntry;
-  class Level;
   class Loader;
   class MetaObjectList;
   class MetaObjectListElement;
@@ -152,7 +151,10 @@ namespace orxonox
   class TclBind;
   struct TclInterpreterBundle;
   class TclThreadManager;
+  class Template;
   class Tickable;
+  class XMLFile;
+  class XMLNameListener;
   template <class T, class O>
   class XMLPortClassObjectContainer;
   template <class T>

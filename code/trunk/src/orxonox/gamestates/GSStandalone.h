@@ -31,10 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 #include "GSLevel.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSStandalone : public GSLevel
+    class _OrxonoxExport GSStandalone : public GameState<GSGraphics>, public GSLevel
     {
     public:
         GSStandalone();

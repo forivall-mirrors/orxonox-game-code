@@ -40,67 +40,62 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Radar.h"
-#include "objects/SpaceShip.h"
-#include "objects/Projectile.h"
-#include "objects/CameraHandler.h"
 
 namespace orxonox
 {
     CreateFactory(HUDNavigation);
 
-    HUDNavigation::HUDNavigation()
-        : navMarker_(0)
-        , aimMarker_(0)
-        , navText_(0)
+    HUDNavigation::HUDNavigation(BaseObject* creator)
+        : OrxonoxOverlay(creator)
     {
         RegisterObject(HUDNavigation);
+
+        // create nav text
+        navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+
+        // create nav marker
+        navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
+        navMarker_->setMaterialName("Orxonox/NavArrows");
+
+        // create aim marker
+        aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
+        aimMarker_->setMaterialName("Orxonox/NavCrosshair");
+        this->wasOutOfView_ = true; // Ensure the material is changed right the first time..
+
+        setFont("Monofur");
+        setTextSize(0.05f);
+        setNavMarkerSize(0.05f);
+        setAimMarkerSize(0.04f);
+
+        background_->addChild(navMarker_);
+        background_->addChild(aimMarker_);
+        background_->addChild(navText_);
+
+        // hide at first
+        this->setVisible(false);
     }
 
     HUDNavigation::~HUDNavigation()
     {
-        if (this->navMarker_)
+        if (this->isInitialized())
+        {
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
-        if (this->navText_)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
-        if (this->aimMarker_)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+        }
     }
 
     void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(HUDNavigation, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            // create nav text
-            navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberStr()));
-
-            // create nav marker
-            navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberStr()));
-            navMarker_->setMaterialName("Orxonox/NavArrows");
-            wasOutOfView_ = true; // just to ensure the material is changed right the first time..
-
-            // create aim marker
-            aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberStr()));
-            aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-
-            background_->addChild(navMarker_);
-            background_->addChild(aimMarker_);
-            background_->addChild(navText_);
-
-            // hide at first
-            this->setVisible(false);
-        }
-
-        XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
-        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode).defaultValues(0.05f);
-        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode)
-            .defaultValues(0.05f);
-        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode)
-            .defaultValues(0.04f);
+        XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode);
+        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
     }
 
     void HUDNavigation::setFont(const std::string& font)
@@ -114,7 +109,7 @@ namespace orxonox
         if (this->navText_)
             return this->navText_->getFontName();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     void HUDNavigation::setTextSize(float size)
@@ -148,10 +143,12 @@ namespace orxonox
         navText_->setCaption(convertToString(dist));
         float textLength = convertToString(dist).size() * navText_->getCharHeight() * 0.3;
 
+/*
         Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;
         Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
+*/
         // transform to screen coordinates
-        Vector3 pos = transformationMatrix * Radar::getInstance().getFocus()->getWorldPosition();
+        Vector3 pos = /*transformationMatrix * */Radar::getInstance().getFocus()->getWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)
@@ -223,10 +220,10 @@ namespace orxonox
         else
         {
             // object is in view
-
+/*
             Vector3 aimpos = transformationMatrix * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
                     Projectile::getSpeed(), Radar::getInstance().getFocus()->getWorldPosition(), Radar::getInstance().getFocus()->getOrientedVelocity());
-
+*/
             if (wasOutOfView_)
             {
                 navMarker_->setMaterialName("Orxonox/NavTDC");
@@ -239,9 +236,10 @@ namespace orxonox
             navMarker_->setTop((-pos.y + 1.0 - navMarker_->getHeight()) * 0.5);
 
             aimMarker_->show();
+/*
             aimMarker_->setLeft((aimpos.x + 1.0 - aimMarker_->getWidth()) * 0.5);
             aimMarker_->setTop((-aimpos.y + 1.0 - aimMarker_->getHeight()) * 0.5);
-
+*/
             navText_->setLeft((pos.x + 1.0 + navMarker_->getWidth()) * 0.5);
             navText_->setTop((-pos.y + 1.0 + navMarker_->getHeight()) * 0.5);
         }
@@ -249,9 +247,11 @@ namespace orxonox
 
     float HUDNavigation::getDist2Focus() const
     {
+/*
         if (Radar::getInstance().getFocus())
             return (Radar::getInstance().getFocus()->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         else
+*/
             return 0;
     }
 

@@ -35,8 +35,6 @@
 #include "Radar.h"
 #include <cfloat>
 #include <cassert>
-#include "objects/WorldEntity.h"
-#include "objects/SpaceShip.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/Iterator.h"
@@ -113,8 +111,10 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
             {
+/*
                 if ((*itElement) != SpaceShip::getLocalShip() && (*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
                     (*itListener)->displayObject(*itElement, *itElement == this->focus_);
+*/
             }
         }
     }
@@ -129,7 +129,7 @@ namespace orxonox
         }
         else
         {
-            Vector3 localPosition = SpaceShip::getLocalShip()->getPosition();
+            Vector3 localPosition;// = SpaceShip::getLocalShip()->getPosition();
             Vector3 targetPosition = localPosition;
             if (*(this->itFocus_))
                 targetPosition = this->itFocus_->getWorldPosition();
@@ -142,9 +142,10 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it)
             {
+/*
                 if (*it == SpaceShip::getLocalShip())
                     continue;
-
+*/
                 float targetDistance = localPosition.squaredDistance((*it)->getWorldPosition());
                 if (targetDistance > currentDistance && targetDistance < nextDistance)
                 {

@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
     {
     public:
-        HUDSpeedBar();
+        HUDSpeedBar(BaseObject* creator);
         ~HUDSpeedBar();
 
         virtual void tick(float dt);

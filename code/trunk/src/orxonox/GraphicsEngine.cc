@@ -67,10 +67,9 @@ namespace orxonox
         Non-initialising constructor.
     */
     GraphicsEngine::GraphicsEngine()
-        : root_(0)
-        , renderWindow_(0)
-        , levelSceneManager_(0)
-        , viewport_(0)
+//        : root_(0)
+//        , renderWindow_(0)
+//        , viewport_(0)
     {
         RegisterObject(GraphicsEngine);
 
@@ -101,47 +100,5 @@ namespace orxonox
     GraphicsEngine::~GraphicsEngine()
     {
         singletonRef_s = 0;
-    }
-
-    /**
-    @brief
-        Get the width of the render window
-    @return
-        The width of the render window
-    */
-    int GraphicsEngine::getWindowWidth() const
-    {
-        if (this->renderWindow_)
-            return this->renderWindow_->getWidth();
-        else
-            return 0;
-    }
-
-    /**
-    @brief
-        Get the height of the render window
-    @return
-        The height of the render window
-    */
-    int GraphicsEngine::getWindowHeight() const
-    {
-        if (this->renderWindow_)
-            return this->renderWindow_->getHeight();
-        else
-            return 0;
-    }
-
-    /**
-    @brief
-        Returns the window aspect ratio height/width.
-    @return
-        The window aspect ratio
-    */
-    float GraphicsEngine::getWindowAspectRatio() const
-    {
-        if (this->renderWindow_)
-            return (float)this->renderWindow_->getHeight() / (float)this->renderWindow_->getWidth();
-        else
-            return 1.0f;
     }
 }

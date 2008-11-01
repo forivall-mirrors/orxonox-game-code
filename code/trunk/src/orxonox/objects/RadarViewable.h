@@ -43,6 +43,8 @@ namespace orxonox
     */
     class _OrxonoxExport RadarViewable : virtual public OrxonoxClass
     {
+    class WorldEntity;
+
     public:
         enum Shape
         {

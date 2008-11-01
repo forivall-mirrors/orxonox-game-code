@@ -41,7 +41,7 @@ namespace orxonox
     class Namespace : public BaseObject
     {
         public:
-            Namespace();
+            Namespace(BaseObject* creator);
             virtual ~Namespace();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

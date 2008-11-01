@@ -34,11 +34,52 @@ namespace orxonox
 {
     /**
     @brief
+        Parses a value string for a command line argument.
+        It simply uses convertValue(Output, Input) to do that.
+        Bools are treated specially. That is necessary
+        so that you can have simple command line switches.
+    */
+    void CommandLineArgument::parse(const std::string& value)
+    {
+        if (value_.getType() == MT_bool)
+        {
+            // simulate command line switch
+            bool temp;
+            if (convertValue(&temp, value))
+            {
+                this->bHasDefaultValue_ = false;
+                this->value_ = temp;
+            }
+            else if (value == "")
+            {
+                this->bHasDefaultValue_ = false;
+                this->value_ = true;
+            }
+            else
+            {
+                ThrowException(Argument, "Could not read command line argument '" + getName() + "'.");
+            }
+        }
+        else
+        {
+            if (!value_.setValue(value))
+            {
+                value_.setValue(defaultValue_);
+                ThrowException(Argument, "Could not read command line argument '" + getName() + "'.");
+            }
+            else
+                this->bHasDefaultValue_ = false;
+        }
+    }
+
+
+    /**
+    @brief
         Destructor destroys all CommandLineArguments with it.
     */
     CommandLine::~CommandLine()
     {
-        for (std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
             it != cmdLineArgs_.end(); ++it)
         {
             delete it->second;
@@ -72,7 +113,7 @@ namespace orxonox
         if (bFirstTimeParse_)
         {
             // first shove all the shortcuts in a map
-            for (std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
+            for (std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
                 it != cmdLineArgs_.end(); ++it)
             {
                 OrxAssert(cmdLineArgsShortcut_.find(it->second->getShortcut()) == cmdLineArgsShortcut_.end(),
@@ -177,7 +218,7 @@ namespace orxonox
     */
     void CommandLine::checkFullArgument(const std::string& name, const std::string& value)
     {
-        std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgs_.find(name);
+        std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.find(name);
         if (it == cmdLineArgs_.end())
             ThrowException(Argument, "Command line argument '" + name + "' does not exist.");
 
@@ -194,7 +235,7 @@ namespace orxonox
     */
     void CommandLine::checkShortcut(const std::string& shortcut, const std::string& value)
     {
-        std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgsShortcut_.find(shortcut);
+        std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgsShortcut_.find(shortcut);
         if (it == cmdLineArgsShortcut_.end())
             ThrowException(Argument, "Command line shortcut '" + shortcut + "' does not exist.");
 
@@ -205,7 +246,7 @@ namespace orxonox
     {
         CommandLine* inst = &_getInstance();
         std::string infoStr;
-        for (std::map<std::string, BaseCommandLineArgument*>::const_iterator it = inst->cmdLineArgs_.begin();
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst->cmdLineArgs_.begin();
             it != inst->cmdLineArgs_.end(); ++it)
         {
             infoStr += "[--" + it->second->getName() + " " + it->second->getInformation() + "] ";
@@ -213,4 +254,23 @@ namespace orxonox
         return infoStr;
     }
 
+    /**
+    @brief
+        Retrieves a CommandLineArgument.
+        The method throws an exception if 'name' was not found or the value could not be converted.
+    @note
+        You shold of course not call this method before the command line has been parsed.
+    */
+    const CommandLineArgument* CommandLine::getArgument(const std::string& name)
+    {
+        std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
+        if (it == _getInstance().cmdLineArgs_.end())
+        {
+            ThrowException(Argument, "Could find command line argument '" + name + "'.");
+        }
+        else
+        {
+            return it->second;
+        }
+    }
 }

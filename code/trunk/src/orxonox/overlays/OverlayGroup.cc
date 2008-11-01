@@ -49,9 +49,19 @@ namespace orxonox
     SetConsoleCommand(OverlayGroup, scaleGroup, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OverlayGroup, scrollGroup, false).accessLevel(AccessLevel::User);
 
-    OverlayGroup::OverlayGroup()
+    OverlayGroup::OverlayGroup(BaseObject* creator)
+        : BaseObject(creator)
     {
         RegisterObject(OverlayGroup);
+
+        setScale(Vector2(1.0, 1.0));
+        setScroll(Vector2(0.0, 0.0));
+    }
+
+    OverlayGroup::~OverlayGroup()
+    {
+        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            delete it->second;
     }
 
     /**
@@ -64,8 +74,8 @@ namespace orxonox
     {
         SUPER(OverlayGroup, XMLPort, xmlElement, mode);
 
-        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode).defaultValues(Vector2(1.0, 1.0));
-        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode).defaultValues(Vector2(0.0, 0.0));
+        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode);
+        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode);
         // loads all the child elements
         XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode);
     }
@@ -99,7 +109,10 @@ namespace orxonox
             COUT(1) << "Ambiguous names encountered while load the HUD overlays" << std::endl;
         }
         else
+        {
             hudElements_[element->getName()] = element;
+            element->setVisible(this->isVisible());
+        }
     }
 
     //! Returns a different element as long as index < hudElements_.size().

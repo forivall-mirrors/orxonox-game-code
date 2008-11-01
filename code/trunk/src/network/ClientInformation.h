@@ -45,18 +45,18 @@
 #include <enet/enet.h>
 #include <boost/thread/recursive_mutex.hpp>
 
-#define GAMESTATEID_INITIAL -1
-#define CLIENTID_UNKNOWN -2
-
 // WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
 
 namespace network
 {
+  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
+  static const unsigned int CLIENTID_UNKNOWN = (unsigned int)-2;
+
   /**
   * This class implements a list for client informations
   * @author Oliver Scheuss
   */
-  class ClientInformation{
+  class _NetworkExport ClientInformation{
   public:
     ClientInformation();
     //   ClientInformation(ClientInformation *prev, ClientInformation *next);
@@ -65,30 +65,30 @@ namespace network
     ClientInformation *next();
     ClientInformation *prev();
     static ClientInformation *insertBack(ClientInformation *ins);
-    
+
     // set functions
     void setID(int clientID);
     bool setPeer(ENetPeer *peer);
     bool setGamestateID(int id);
     bool setPartialGamestateID(int id);
     inline void setShipID(unsigned int id){ShipID_=id;}
-    
+
     // get functions
     inline unsigned int getShipID(){return ShipID_;}
-    int getID();
-    int getGamestateID();
-    int getPartialGamestateID();
+    unsigned int getID();
+    unsigned int getGamestateID();
+    unsigned int getPartialGamestateID();
     ENetPeer *getPeer();
-    
+
     int getFailures();
     void addFailure();
     void resetFailures();
     enet_uint32 getRTT();
-    enet_uint32 getPacketLoss();
-    
-    static bool removeClient(int clientID);
+    double getPacketLoss();
+
+    static bool removeClient(unsigned int clientID);
     static bool removeClient(ENetPeer *peer);
-    static ClientInformation *findClient(int clientID, bool look_backwards=false);
+    static ClientInformation *findClient(unsigned int clientID, bool look_backwards=false);
     static ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
     static ClientInformation *getBegin(){return head_;}
 
@@ -98,23 +98,23 @@ namespace network
 
   private:
     static ClientInformation *head_;
-    
+
     bool setNext(ClientInformation *next);
     bool setPrev(ClientInformation *prev);
     ClientInformation *insertAfter(ClientInformation *ins);
     ClientInformation *insertBefore(ClientInformation *ins);
-    
+
     ClientInformation *preve;
     ClientInformation *nexte;
     //actual information:
     ENetPeer *peer_;
-    int clientID_;
-    int gamestateID_;
-    int partialGamestateID_;
+    unsigned int clientID_;
+    unsigned int gamestateID_;
+    unsigned int partialGamestateID_;
     unsigned int ShipID_;   // this is the unique objectID
     bool synched_;
     unsigned short failures_;
-    
+
   };
 
 }

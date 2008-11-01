@@ -31,13 +31,14 @@
 #include "Host.h"
 #include "core/ConsoleCommand.h"
 #include "packet/Packet.h"
+#include "ChatListener.h"
 
 namespace network {
 
 SetConsoleCommandShortcut(Host, Chat);
 
 Host *Host::instance_=0;
-  
+
 /**
  * @brief Constructor: assures that only one reference will be created and sets the pointer
  */
@@ -89,19 +90,28 @@ bool Host::addPacket(ENetPacket *packet, int clientID){
  * This function returns the ID of the player
  * @return playerID
  */
-unsigned int Host::getPlayerID(){ 
+unsigned int Host::getPlayerID(){
   if(!instance_)
     return 0;
   return instance_->clientID_;
 }
 
-bool Host::Chat(std::string message){
+bool Host::Chat(const std::string& message){
   if(!instance_)
     return false;
   return instance_->chat(message);
 }
 
-bool Host::incomingChat(std::string message, unsigned int playerID){
+bool Host::Broadcast(const std::string& message){
+  if(!instance_)
+    return false;
+  return instance_->broadcast(message);
+}
+
+bool Host::incomingChat(const std::string& message, unsigned int playerID){
+  for (orxonox::ObjectList<ChatListener>::iterator it = orxonox::ObjectList<ChatListener>::begin(); it != orxonox::ObjectList<ChatListener>::end(); ++it)
+    it->incomingChat(message, playerID);
+
   return instance_->processChat(message, playerID);
 }
 

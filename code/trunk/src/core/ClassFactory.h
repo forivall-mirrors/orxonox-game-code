@@ -54,26 +54,29 @@ namespace orxonox
     class ClassFactory : public BaseFactory
     {
         public:
-            static bool create(const std::string& name);
-            BaseObject* fabricate();
+            static bool create(const std::string& name, bool bLoadable = true);
+            BaseObject* fabricate(BaseObject* creator);
 
         private:
             ClassFactory() {}                               // Don't create
             ClassFactory(const ClassFactory& factory) {}    // Don't copy
             virtual ~ClassFactory() {}                      // Don't delete
 
-            static T* createNewObject();
+            static T* createNewObject(BaseObject* creator);
     };
 
     /**
         @brief Adds the ClassFactory to the Identifier of the same type and the Identifier to the Factory.
+        @param name The name of the class
+        @param bLoadable True if the class can be loaded through XML
         @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
-    bool ClassFactory<T>::create(const std::string& name)
+    bool ClassFactory<T>::create(const std::string& name, bool bLoadable)
     {
         COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
         ClassIdentifier<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
+        ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
         Factory::add(name, ClassIdentifier<T>::getIdentifier());
 
         return true;
@@ -84,9 +87,9 @@ namespace orxonox
         @return The new object
     */
     template <class T>
-    BaseObject* ClassFactory<T>::fabricate()
+    BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
     {
-        return ClassFactory<T>::createNewObject();
+        return ClassFactory<T>::createNewObject(creator);
     }
 
     /**
@@ -94,9 +97,9 @@ namespace orxonox
         @return The new object
     */
     template <class T>
-    T* ClassFactory<T>::createNewObject()
+    T* ClassFactory<T>::createNewObject(BaseObject* creator)
     {
-        return new T;
+        return new T(creator);
     }
 }
 

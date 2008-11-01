@@ -69,7 +69,9 @@
     write an existing value to an XML file).
 */
 #define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode)
 /**
     @brief This is the same as XMLPortParam, but you can set the template arguments needed to store the loadfunction.
 
@@ -82,7 +84,9 @@
     You don't have to use this, if there exist only one function with the given name.
 */
 #define XMLPortParamTemplate(classname, paramname, loadfunction, savefunction, xmlelement, mode, ...) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode)
 
 // --------------------
 // XMLPortParamLoadOnly
@@ -99,12 +103,14 @@
     When saving the object, only one of both options has to be saved; this is, where this macro helps.
 */
 #define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), 0, xmlelement, mode)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##0##loadexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, xmlcontainer##loadfunction##0##loadexecutor, 0, xmlelement, mode)
 /**
     @brief This is the same as XMLPortParamTemplate, but for load-only attributes (see XMLPortParamLoadOnly).
 */
 #define XMLPortParamLoadOnlyTemplate(classname, paramname, loadfunction, xmlelement, mode, ...) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), 0, xmlelement, mode)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##0##loadexecutor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, xmlcontainer##loadfunction##0##loadexecutor, 0, xmlelement, mode)
 
 // ------------------
 // XMLPortParamExtern
@@ -129,12 +135,16 @@
     > XMLPortParamExtern(SpaceShip, Pilot, myPilot_, "pilotname", setName, getName, xmlelement, mode);
 */
 #define XMLPortParamExtern(classname, externclass, object, paramname, loadfunction, savefunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, orxonox::createExecutor(orxonox::createFunctor(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction), xmlelement, mode);
+    static ExecutorMember<externclass>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction); \
+    static ExecutorMember<externclass>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction); \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode);
 /**
     @brief This is the same as XMLPortParamTemplate, but for extern attributes (see XMLPortParamExtern).
 */
 #define XMLPortParamExternTemplate(classname, externclass, object, paramname, loadfunction, savefunction, xmlelement, mode, ...) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, orxonox::createExecutor(orxonox::createFunctor<externclass, __VA_ARGS__ >(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction), xmlelement, mode);
+    static ExecutorMember<externclass>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor<externclass, __VA_ARGS__ >(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction); \
+    static ExecutorMember<externclass>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction); \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode);
 
 // -------------------
 // XMLPortParamGeneric
@@ -213,12 +223,16 @@
     empty string). The you can add sub-objects directly into the mainclass.
 */
 #define XMLPortObjectExtended(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode, bApplyLoaderMask, bLoadBefore)
 /**
     @brief This is the same as XMLPortObjectExtended, but you can specify the loadfunction by adding the param types. See XMLPortParamTemplate for more details about the types.
 */
 #define XMLPortObjectExtendedTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore, ...) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode, bApplyLoaderMask, bLoadBefore)
 
 // -------------
 // XMLPortObject
@@ -227,12 +241,16 @@
     @brief This is the same as XMLPortObjectExtended, but bApplyLoaderMask is false and bLoadBefore is true by default.
 */
 #define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, false, true)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode, false, true)
 /**
     @brief This is the same as XMLPortObject, but you can specify the loadfunction by adding the param types. See XMLPortParamTemplate for more details about the types.
 */
 #define XMLPortObjectTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, ...) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, false, true)
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, xmlcontainer##loadfunction##savefunction##loadexecutor, xmlcontainer##loadfunction##savefunction##saveexecutor, xmlelement, mode, false, true)
 
 // --------------------
 // XMLPortObjectGeneric
@@ -335,7 +353,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getFilename() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
@@ -467,37 +485,46 @@ namespace orxonox
                         {
                             for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
-                                Identifier* identifier = ClassByName(child->Value());
+                                Identifier* identifier = ClassByString(child->Value());
                                 if (identifier)
                                 {
                                     if (identifier->isA(Class(O)))
                                     {
-                                        if (this->identifierIsIncludedInLoaderMask(identifier))
+                                        if (identifier->isLoadable())
                                         {
-                                            COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
-
-                                            BaseObject* newObject = identifier->fabricate();
-                                            newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
-                                            newObject->setLevel(((BaseObject*)object)->getLevel());
-                                            newObject->setNamespace(((BaseObject*)object)->getNamespace());
-
-                                            if (this->bLoadBefore_)
+                                            if (this->identifierIsIncludedInLoaderMask(identifier))
                                             {
-                                                newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
+
+                                                BaseObject* newObject = identifier->fabricate((BaseObject*)object);
+                                                assert(newObject);
+                                                newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
+
+                                                O* castedObject = dynamic_cast<O*>(newObject);
+                                                assert(castedObject);
+
+                                                if (this->bLoadBefore_)
+                                                {
+                                                    newObject->XMLPort(*child, XMLPort::LoadObject);
+                                                    COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                }
+                                                else
+                                                {
+                                                    COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                }
+
+                                                COUT(5) << ((BaseObject*)object)->getLoaderIndentation();
+                                                (*this->loadexecutor_)(object, castedObject);
+
+                                                if (!this->bLoadBefore_)
+                                                    newObject->XMLPort(*child, XMLPort::LoadObject);
+
+                                                COUT(5) << ((BaseObject*)object)->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                             }
-                                            else
-                                            {
-                                                COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
-                                            }
-
-                                            COUT(5) << ((BaseObject*)object)->getLoaderIndentation();
-                                            (*this->loadexecutor_)(object, newObject);
-
-                                            if (!this->bLoadBefore_)
-                                                newObject->XMLPort(*child, XMLPort::LoadObject);
-
-                                            COUT(5) << ((BaseObject*)object)->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
+                                        }
+                                        else
+                                        {
+                                            COUT(2) << ((BaseObject*)object)->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not loadable." << std::endl;
                                         }
                                     }
                                     else
@@ -507,7 +534,14 @@ namespace orxonox
                                 }
                                 else
                                 {
-                                    COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
+                                    if (this->sectionname_ != "")
+                                    {
+                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
+                                    }
+                                    else
+                                    {
+                                        // It's probably just another subsection
+                                    }
                                 }
                             }
                         }
@@ -515,7 +549,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getFilename() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }

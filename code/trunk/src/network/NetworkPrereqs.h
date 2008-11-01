@@ -62,6 +62,7 @@ namespace network
 {
   class Client;
   class ClientConnection;
+  class ClientConnectionListener;
   class ClientFrameListener;
   class ClientInformation;
   class ConnectionManager;

@@ -48,18 +48,19 @@
 namespace network{
 
 namespace packet{
-  
+
 #define PACKET_FLAG_DEFAULT ENET_PACKET_FLAG_NO_ALLOCATE
 #define _PACKETID           0
-  
+
 std::map<ENetPacket *, Packet *> Packet::packetMap_;
-  
+
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = ENUM::Outgoing;
   clientID_=0;
   data_=0;
   enetPacket_=0;
+  bDataENetAllocated_ = false;
 }
 
 void blub(ENetPacket *packet){
@@ -72,6 +73,7 @@ Packet::Packet(uint8_t *data, unsigned int clientID){
   clientID_=clientID;
   data_=data;
   enetPacket_=0;
+  bDataENetAllocated_ = false;
 }
 
 
@@ -85,15 +87,34 @@ Packet::Packet(const Packet &p){
     memcpy(data_, p.data_, p.getSize());
   }else
     data_=0;
+  bDataENetAllocated_ = p.bDataENetAllocated_;
 }
 
+/**
+@brief
+    Destroys a packet completely.
+    
+    That also means destroying the ENetPacket if one exists. There 
+*/
 Packet::~Packet(){
-  if(enetPacket_){
-    assert(enetPacket_->freeCallback==0);
+  // Deallocate data_ memory if necessary.
+  if (this->bDataENetAllocated_){
+    // In this case ENet allocated data_ and will destroy it.
+  }
+  else if (this->data_) {
+    // This destructor was probably called as a consequence to ENet executing our callback.
+    // It simply serves us to be able to deallocate the packet content (data_) ourselves since
+    // we have created it in the first place.
+    delete[] this->data_;
+  }
+
+  // Destroy the ENetPacket if necessary.
+  // Note: For the case ENet used the callback to destroy the packet, we have already set
+  // enetPacket_ to NULL to avoid destroying it again.
+  if (this->enetPacket_){
+    // enetPacket_->data gets destroyed too by ENet if it was allocated by it.
     enet_packet_destroy(enetPacket_);
   }
-  if(data_)
-    delete[] data_;
 }
 
 bool Packet::send(){
@@ -106,12 +127,15 @@ bool Packet::send(){
       assert(0);
       return false;
     }
+    // We deliver ENet the data address so that it doesn't memcpy everything again.
+    // --> We have to delete data_ ourselves!
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
     enetPacket_->freeCallback = &Packet::deletePacket;
-//     enetPacket_->freeCallback = &blub;
+    // Add the packet to a global list so we can access it again once enet calls our
+    // deletePacket method. We can of course only give a one argument function to the ENet C library.
     packetMap_[enetPacket_] = this;
   }
-#ifndef NDEBUG 
+#ifndef NDEBUG
   switch( *(ENUM::Type *)(data_ + _PACKETID) )
   {
     case ENUM::Acknowledgement:
@@ -126,14 +150,15 @@ bool Packet::send(){
       break;
   }
 #endif
-  ENetPacket *temp = enetPacket_;
-  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
-  network::Host::addPacket( temp, clientID_);
+//  ENetPacket *temp = enetPacket_;
+//  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
+  network::Host::addPacket( enetPacket_, clientID_);
   return true;
 }
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   uint8_t *data = packet->data;
+  assert(ClientInformation::findClient(&peer->address)->getID() != (unsigned int)-2 || !Host::isServer());
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
   COUT(5) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
@@ -168,13 +193,27 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
       assert(0); //TODO: repair this
       break;
   }
+
+  // Data was created by ENet
+  p->bDataENetAllocated_ = true;
+
   return p;
 }
 
-void Packet::deletePacket(ENetPacket *packet){
-  assert(packetMap_[packet]);
-  assert(packetMap_[packet]->enetPacket_==0);
-  delete packetMap_[packet];
+/**
+@brief
+    ENet calls this method whenever it wants to destroy a packet that contains
+    data we allocated ourselves.
+*/
+void Packet::deletePacket(ENetPacket *enetPacket){
+  // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
+  std::map<ENetPacket*, Packet*>::iterator it = packetMap_.find(enetPacket);
+  assert(it != packetMap_.end());
+  // Make sure we don't delete it again in the destructor
+  it->second->enetPacket_ = 0;
+  delete it->second;
+  //packetMap_.erase(it);
+  COUT(4) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet

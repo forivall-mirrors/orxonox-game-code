@@ -48,7 +48,6 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "core/Iterator.h"
-#include "objects/SpaceShip.h"
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"
@@ -88,7 +87,7 @@ namespace network
     bindAddress.port = port;
   }
 
-  ConnectionManager::ConnectionManager(int port, std::string address) :receiverThread_(0) {
+  ConnectionManager::ConnectionManager(int port, const std::string& address) :receiverThread_(0) {
     assert(instance_==0);
     instance_=this;
     quit=false;
@@ -227,7 +226,7 @@ namespace network
           //break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
-          usleep(1000);
+          msleep(1);
           break;
       }
 //       usleep(100);
@@ -330,26 +329,12 @@ namespace network
   }
 
 
-
-  bool ConnectionManager::removeShip(ClientInformation *client){
-    unsigned int id=client->getShipID();
-    orxonox::ObjectList<orxonox::SpaceShip>::iterator it;
-    for(it = orxonox::ObjectList<orxonox::SpaceShip>::begin(); it; ++it){
-      if(it->getObjectID()!=id)
-        continue;
-      delete *it;
-    }
-    return true;
-  }
-
-
   void ConnectionManager::disconnectClient(ClientInformation *client){
     {
       boost::recursive_mutex::scoped_lock lock(enet_mutex);
       enet_peer_disconnect(client->getPeer(), 0);
       lock.unlock();
     }
-    removeShip(client);
   }
 
 
