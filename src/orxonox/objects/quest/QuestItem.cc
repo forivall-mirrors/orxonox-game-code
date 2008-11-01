@@ -93,7 +93,7 @@ namespace orxonox {
     @brief
         Checks whether an input id is of the required form.
     @param id
-	The id to be checked.
+        The id to be checked.
     @return
         Returns true if the string is likely to be of the required form.
     @todo

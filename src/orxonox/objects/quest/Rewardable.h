@@ -44,11 +44,11 @@ namespace orxonox {
     class Rewardable : public BaseObject
     {
 
-	public:
-	    Rewardable(BaseObject* creator);
-	    virtual ~Rewardable();
+        public:
+            Rewardable(BaseObject* creator);
+            virtual ~Rewardable();
 
-	    virtual bool reward(Player* player) = 0; //!<Method to transcribe a rewardable object to the player.
+            virtual bool reward(Player* player) = 0; //!<Method to transcribe a rewardable object to the player.
 
     };
 

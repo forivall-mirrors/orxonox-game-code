@@ -66,10 +66,10 @@ namespace orxonox {
         bool check = true;
 
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
-	{
-	    check = check && (*effect)->invoke(player);
-	}
-	return check;
+        {
+            check = check && (*effect)->invoke(player);
+        }
+        return check;
     }
 
 }

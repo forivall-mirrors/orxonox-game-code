@@ -48,19 +48,19 @@ namespace orxonox {
     class QuestManager : public BaseObject
     {
 
-	public:
-	    QuestManager(BaseObject* creator);
-	    virtual ~QuestManager();
+        public:
+            QuestManager(BaseObject* creator);
+            virtual ~QuestManager();
 
-	    static bool registerQuest(Quest* quest); //!< Registers a quest in the QuestManager.
-	    static bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
+            static bool registerQuest(Quest* quest); //!< Registers a quest in the QuestManager.
+            static bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
 
-	    static Quest* findQuest(const std::string & questId); //!< Returns the quest with the input id.
-	    static QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
+            static Quest* findQuest(const std::string & questId); //!< Returns the quest with the input id.
+            static QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
-	private:
-	    static std::map<std::string, Quest*> questMap_; //!< All quests registered by their id's.
-	    static std::map<std::string, QuestHint*> hintMap_; //!< All hints registered by their id's.
+        private:
+            static std::map<std::string, Quest*> questMap_; //!< All quests registered by their id's.
+            static std::map<std::string, QuestHint*> hintMap_; //!< All hints registered by their id's.
 
     };
 

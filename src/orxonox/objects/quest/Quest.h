@@ -65,25 +65,25 @@ namespace orxonox {
     */
     class Quest : public QuestItem
     {
-	public:
+        public:
             Quest(BaseObject* creator);
-	    virtual ~Quest();
+            virtual ~Quest();
 
-	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline Quest* getParentQuest(void) const //!< Returns the parent quest of the quest.
                 { return this->parentQuest_; }
-	    inline const std::list<Quest*> & getSubQuestList(void) const //!< Returns the list of sub quests.
+            inline const std::list<Quest*> & getSubQuestList(void) const //!< Returns the list of sub quests.
                 { return this->subQuests_; }
 
-	    bool isInactive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
-	    bool isActive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'active'.
-	    bool isFailed(const Player* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
-	    bool isCompleted(const Player* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
+            bool isInactive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
+            bool isActive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'active'.
+            bool isFailed(const Player* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
+            bool isCompleted(const Player* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
 
-	    bool start(Player* player); //!< Sets a quest to active.
-	    bool fail(Player* player); //!< Fails the quest.
-	    bool complete(Player* player); //!< Completes the quest.
+            bool start(Player* player); //!< Sets a quest to active.
+            bool fail(Player* player); //!< Fails the quest.
+            bool complete(Player* player); //!< Completes the quest.
 
         protected:
             void initialize(void); //!< Initialized the object.
@@ -93,16 +93,16 @@ namespace orxonox {
             virtual bool isCompletable(const Player* player) const = 0; //!< Checks whether the quest can be completed.
 
             bool setParentQuest(Quest* quest); //!< Sets the parent quest of the quest.
-	    bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
-	    bool addHint(QuestHint* hint); //!< Add a hint to the list of hints.
-	    bool addFailEffect(QuestEffect* effect);
-	    bool addCompleteEffect(QuestEffect* effect);
+            bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
+            bool addHint(QuestHint* hint); //!< Add a hint to the list of hints.
+            bool addFailEffect(QuestEffect* effect);
+            bool addCompleteEffect(QuestEffect* effect);
 
-	    const Quest* getParentQuest(void);
-	    const Quest* getSubQuests(unsigned int index) const;
-	    const QuestHint* getHints(unsigned int index) const;
-	    const QuestEffect* getFailEffects(unsigned int index) const;
-	    const QuestEffect* getCompleteEffects(unsigned int index) const;
+            const Quest* getParentQuest(void);
+            const Quest* getSubQuests(unsigned int index) const;
+            const QuestHint* getHints(unsigned int index) const;
+            const QuestEffect* getFailEffects(unsigned int index) const;
+            const QuestEffect* getCompleteEffects(unsigned int index) const;
 
             virtual questStatus::Enum getStatus(const Player* player) const = 0; //!< Returns the status of the quest for a specific player.
             virtual bool setStatus(Player* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.

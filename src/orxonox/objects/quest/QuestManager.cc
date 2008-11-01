@@ -61,7 +61,7 @@ namespace orxonox {
         {
             COUT(2) << "Registration of Quest in QuestManager failed, because inserted Quest-pointer was NULL." << std::endl;
             return false;
-	}
+        }
 
         std::pair<std::map<std::string, Quest*>::iterator,bool> ret;
         ret = questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) );
@@ -70,12 +70,12 @@ namespace orxonox {
         {
             COUT(3) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
             return true;
-	}
-	else
-	{
-	   COUT(2) << "Quest with the same id was already present." << std::endl;
-	   return false;
-	}
+        }
+        else
+        {
+           COUT(2) << "Quest with the same id was already present." << std::endl;
+           return false;
+        }
     }
 
     /**
@@ -101,12 +101,12 @@ namespace orxonox {
         {
             COUT(3) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
             return true;
-	}
-	else
-	{
-	   COUT(2) << "QuestHint with the same id was already present." << std::endl;
-	   return false;
-	}
+        }
+        else
+        {
+           COUT(2) << "QuestHint with the same id was already present." << std::endl;
+           return false;
+        }
     }
 
     /**
@@ -123,23 +123,23 @@ namespace orxonox {
     Quest* QuestManager::findQuest(const std::string & questId)
     {
         if(!QuestItem::isId(questId))
-	{
+        {
             ThrowException(Argument, "Invalid questId.");
-	}
+        }
 
         Quest* quest;
         std::map<std::string, Quest*>::iterator it = questMap_.find(questId);
-	if (it != questMap_.end())
-	{
-	    quest = it->second;
-	}
-	else
-	{
-	   quest = NULL;
-	   COUT(2) << "The quest with id {" << questId << "} is nowhere to be found." << std::endl;
-	}
+        if (it != questMap_.end())
+        {
+            quest = it->second;
+        }
+        else
+        {
+           quest = NULL;
+           COUT(2) << "The quest with id {" << questId << "} is nowhere to be found." << std::endl;
+        }
 
-	return quest;
+        return quest;
 
     }
 
@@ -157,23 +157,23 @@ namespace orxonox {
     QuestHint* QuestManager::findHint(const std::string & hintId)
     {
         if(!QuestItem::isId(hintId))
-	{
+        {
             ThrowException(Argument, "Invalid hintId.");
-	}
+        }
 
         QuestHint* hint;
         std::map<std::string, QuestHint*>::iterator it = hintMap_.find(hintId);
-	if (it != hintMap_.end())
-	{
-	    hint = it->second;
-	}
-	else
-	{
-	   hint = NULL;
-	   COUT(2) << "The hint with id {" << hintId << "} is nowhere to be found." << std::endl;
-	}
+        if (it != hintMap_.end())
+        {
+            hint = it->second;
+        }
+        else
+        {
+           hint = NULL;
+           COUT(2) << "The hint with id {" << hintId << "} is nowhere to be found." << std::endl;
+        }
 
-	return hint;
+        return hint;
 
     }
 

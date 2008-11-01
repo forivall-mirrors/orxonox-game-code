@@ -131,20 +131,20 @@ namespace orxonox {
         //TDO: Does this really work???
         std::set<Player*>::const_iterator it = this->players_.find((Player*)(void*)player);
         if (it != this->players_.end())
-	{
-	    return this->status_;
-	}
-	else
-	{
-	   return questStatus::inactive;
-	}
+        {
+            return this->status_;
+        }
+        else
+        {
+           return questStatus::inactive;
+        }
 
     }
 
     /**
     @brief
         Sets the status for a specific player.
-	But be careful wit this one, the status will just be set without checking for its validity. You have to know what you're doing.
+        But be careful wit this one, the status will just be set without checking for its validity. You have to know what you're doing.
     @param player
         The player.
     @param status
@@ -157,15 +157,15 @@ namespace orxonox {
         if(player == NULL)
         {
             return false;
-	}
+        }
 
         std::set<Player*>::const_iterator it = this->players_.find(player);
         if (it == this->players_.end()) //!< Player is not yet in the list.
-	{
-	    this->players_.insert(player);
-	}
-	this->status_ = status;
-	return true;
+        {
+            this->players_.insert(player);
+        }
+        this->status_ = status;
+        return true;
     }
 
 

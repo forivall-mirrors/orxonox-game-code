@@ -134,11 +134,11 @@ namespace orxonox {
             return false;
         }
 
-	this->hints_.push_back(hint);
-	hint->setQuest(this);
+        this->hints_.push_back(hint);
+        hint->setQuest(this);
 
-	COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
-	return true;
+        COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        return true;
     }
 
     /**
@@ -194,13 +194,13 @@ namespace orxonox {
     {
         int i = index;
         for (std::list<Quest*>::const_iterator subQuest = this->subQuests_.begin(); subQuest != this->subQuests_.end(); ++subQuest)
-	{
-	    if(i == 0)
-	    {
-	       return *subQuest;
-	    }
-	    i--;
-	}
+        {
+            if(i == 0)
+            {
+               return *subQuest;
+            }
+            i--;
+        }
         return NULL;
     }
 
@@ -212,13 +212,13 @@ namespace orxonox {
     {
         int i = index;
         for (std::list<QuestHint*>::const_iterator hint = this->hints_.begin(); hint != this->hints_.end(); ++hint)
-	{
-	    if(i == 0)
-	    {
-	       return *hint;
-	    }
-	    i--;
-	}
+        {
+            if(i == 0)
+            {
+               return *hint;
+            }
+            i--;
+        }
         return NULL;
     }
 
@@ -230,13 +230,13 @@ namespace orxonox {
     {
         int i = index;
         for (std::list<QuestEffect*>::const_iterator effect = this->failEffects_.begin(); effect != this->failEffects_.end(); ++effect)
-	{
-	    if(i == 0)
-	    {
-	       return *effect;
-	    }
-	    i--;
-	}
+        {
+            if(i == 0)
+            {
+               return *effect;
+            }
+            i--;
+        }
         return NULL;
     }
 
@@ -248,13 +248,13 @@ namespace orxonox {
     {
         int i = index;
         for (std::list<QuestEffect*>::const_iterator effect = this->completeEffects_.begin(); effect != this->completeEffects_.end(); ++effect)
-	{
-	    if(i == 0)
-	    {
-	       return *effect;
-	    }
-	    i--;
-	}
+        {
+            if(i == 0)
+            {
+               return *effect;
+            }
+            i--;
+        }
         return NULL;
     }
 
