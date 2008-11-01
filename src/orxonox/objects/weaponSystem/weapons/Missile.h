@@ -31,12 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "objects/weaponSystem/Weapon.h"
 
 
 namespace orxonox
 {
-    class _OrxonoxExport Missile : public BaseObject : public Weapon
+    class _OrxonoxExport Missile : public Weapon
     {
         public:
             Missile(BaseObject* creator);

@@ -49,7 +49,7 @@ namespace orxonox
 
             void WeaponSet::attachWeaponSlot(WeaponSlot *wSlot);
             void WeaponSet::fire();
-            WeaponSlot * getWeaponSlotPointer(int n);
+            WeaponSlot * getWeaponSlotPointer(unsigned int n);
 
             inline void WeaponSet::setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }

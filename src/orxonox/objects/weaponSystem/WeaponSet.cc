@@ -41,6 +41,8 @@ namespace orxonox
     {
         RegisterObject(WeaponSet);
 
+        this->parentWeaponSystem_ = 0;
+
         for (int i=0;i<k;i++)
         {
             attachWeaponSlot(new WeaponSlot(this));
@@ -67,9 +69,12 @@ namespace orxonox
         }
     }
 
-    WeaponSlot * WeaponSet::getWeaponSlotPointer(int n)
+    WeaponSlot * WeaponSet::getWeaponSlotPointer(unsigned int n)
     {
-        return this->weaponSlots_[n];
+        if (n < this->weaponSlots_.size())
+            return this->weaponSlots_[n];
+        else
+            return 0;
     }
 
 

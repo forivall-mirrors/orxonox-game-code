@@ -47,9 +47,10 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void attachWeaponSet(WeaponSet *wSet);
-            void fire(int n);
-            void setActiveWeaponSet(int n);
-            WeaponSet * getWeaponSetPointer(int n);
+            void fire();
+            void fire(unsigned int n);
+            void setActiveWeaponSet(unsigned int n);
+            WeaponSet * getWeaponSetPointer(unsigned int n);
 
             inline void WeaponSystem::setParentSpaceShip(SpaceShip *parentSpaceShip)
                 { parentSpaceShip_=parentSpaceShip; }

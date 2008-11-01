@@ -48,7 +48,7 @@ namespace orxonox
             virtual void fire();
 
         private:
-            int loadingTime;
+            int loadingTime_;
             Munition *munition_;
 
 

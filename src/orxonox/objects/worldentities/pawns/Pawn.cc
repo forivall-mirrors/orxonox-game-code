@@ -34,6 +34,7 @@
 #include "util/Math.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
+#include "objects/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -50,6 +51,15 @@ namespace orxonox
         this->initialHealth_ = 0;
 
         this->lastHitOriginator_ = 0;
+        this->weaponSystem_ = 0;
+
+        /*
+        //WeaponSystem
+        weaponSystem_ = new WeaponSystem();
+        WeaponSet * weaponSet1 = new WeaponSet(1);
+        this->weaponSystem_->attachWeaponSet(weaponSet1);
+        this->weaponSystem_->getWeaponSetPointer(0)->getWeaponSlotPointer(0)->setAmmoType(true);
+        */
 
         this->registerVariables();
     }
@@ -124,6 +134,12 @@ namespace orxonox
         delete this;
 
         // play death effect
+    }
+
+    void Pawn::fire()
+    {
+        if (this->weaponSystem_)
+            this->weaponSystem_->fire();
     }
 
     void Pawn::postSpawn()
