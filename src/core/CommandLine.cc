@@ -29,9 +29,12 @@
 #include "CommandLine.h"
 
 #include "util/String.h"
+#include "util/SubString.h"
 
 namespace orxonox
 {
+    SetCommandLineArgument(optionsFile, "start.ini").shortcut("o");
+
     /**
     @brief
         Parses a value string for a command line argument.
@@ -271,6 +274,59 @@ namespace orxonox
         else
         {
             return it->second;
+        }
+    }
+
+    /**
+    @brief
+        Parses both command line and start.ini for CommandLineArguments.
+    */
+    void CommandLine::_parseAll(int argc, char** argv)
+    {
+        // parse command line first
+        std::vector<std::string> args;
+        for (int i = 1; i < argc; ++i)
+            args.push_back(argv[i]);
+        this->_parse(args);
+
+        // look for additional arguments in given file or start.ini as default
+        // They will not overwrite the arguments given directly
+        std::ifstream file;
+        std::string filename = CommandLine::getValue("optionsFile").getString();
+        file.open(filename.c_str());
+        args.clear();
+        if (file)
+        {
+            while (!file.eof())
+            {
+                std::string line;
+                std::getline(file, line);
+                line = removeTrailingWhitespaces(line);
+                //if (!(line[0] == '#' || line[0] == '%'))
+                //{
+                SubString tokens(line, " ", " ", false, 92, false, 34, false, 40, 41, false, '#');
+                for (unsigned i = 0; i < tokens.size(); ++i)
+                    if (tokens[i][0] != '#')
+                        args.push_back(tokens[i]);
+                //args.insert(args.end(), tokens.getAllStrings().begin(), tokens.getAllStrings().end());
+                //}
+            }
+            file.close();
+        }
+        else
+        {
+            COUT(2) << "Warning: Could not find " << filename
+                    << " to get additional command line arguments." << std::endl;
+        }
+
+        try
+        {
+            _parse(args);
+        }
+        catch (orxonox::ArgumentException& ex)
+        {
+            COUT(1) << "An Exception occured while parsing " << filename << std::endl;
+            throw(ex);
         }
     }
 }

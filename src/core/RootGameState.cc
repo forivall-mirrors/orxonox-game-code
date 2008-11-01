@@ -28,8 +28,6 @@
 
 #include "RootGameState.h"
 
-#include "util/String.h"
-#include "util/SubString.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "Core.h"
@@ -129,7 +127,7 @@ namespace orxonox
     @param name
         State to start with (usually main menu or specified by command line)
     */
-    void RootGameState::start(int argc, char** argv)
+    void RootGameState::start()
     {
 #ifdef NDEBUG
         try
@@ -140,8 +138,6 @@ namespace orxonox
 
             // create the Core settings to configure the output level
             Core::getInstance();
-
-            parseArguments(argc, argv);
 
             this->activate();
 
@@ -167,70 +163,12 @@ namespace orxonox
         {
             COUT(1) << ex.what() << std::endl;
             COUT(1) << "Program aborted." << std::endl;
-            abort();
         }
         // anything that doesn't inherit from std::exception
         catch (...)
         {
             COUT(1) << "An unidentifiable exception has occured. Program aborted." << std::endl;
-            abort();
         }
 #endif
-    }
-
-    /**
-    @brief
-        Parses both command line and start.ini for CommandLineArguments.
-    */
-    void RootGameState::parseArguments(int argc, char** argv)
-    {
-        // parse command line first
-        std::vector<std::string> args;
-        for (int i = 1; i < argc; ++i)
-            args.push_back(argv[i]);
-
-        try
-        {
-            orxonox::CommandLine::parse(args);
-        }
-        catch (orxonox::ArgumentException& ex)
-        {
-            COUT(1) << ex.what() << std::endl;
-            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-        }
-
-        // look for additional arguments in start.ini
-        std::ifstream file;
-        file.open("start.ini");
-        args.clear();
-        if (file)
-        {
-            while (!file.eof())
-            {
-                std::string line;
-                std::getline(file, line);
-                line = removeTrailingWhitespaces(line);
-                //if (!(line[0] == '#' || line[0] == '%'))
-                //{
-                SubString tokens(line, " ", " ", false, 92, false, 34, false, 40, 41, false, '#');
-                for (unsigned i = 0; i < tokens.size(); ++i)
-                    if (tokens[i][0] != '#')
-                        args.push_back(tokens[i]);
-                //args.insert(args.end(), tokens.getAllStrings().begin(), tokens.getAllStrings().end());
-                //}
-            }
-            file.close();
-        }
-
-        try
-        {
-            orxonox::CommandLine::parse(args);
-        }
-        catch (orxonox::ArgumentException& ex)
-        {
-            COUT(1) << "An Exception occured while parsing start.ini" << std::endl;
-            COUT(1) << ex.what() << std::endl;
-            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-        }
     }
 }

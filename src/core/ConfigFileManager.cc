@@ -27,24 +27,25 @@
  */
 
 #include "ConfigFileManager.h"
-#include "ConfigValueContainer.h"
-#include "ConsoleCommand.h"
-#include "Identifier.h"
+
+#include <cassert>
 #include "util/Convert.h"
 #include "util/String.h"
-
+#include "ConsoleCommand.h"
+#include "ConfigValueContainer.h"
 
 namespace orxonox
 {
     const int CONFIG_FILE_MAX_LINELENGHT  = 1024;
     const char* const DEFAULT_CONFIG_FILE = "default.ini";
 
+    ConfigFileManager* ConfigFileManager::singletonRef_s = 0;
+
     SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);
     SetConsoleCommandShortcutExtern(cleanConfig);
     SetConsoleCommandShortcutExtern(loadSettings).argumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(loadKeybindings).argumentCompleter(0, autocompletion::files());
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {
@@ -82,14 +83,8 @@ namespace orxonox
 
     void loadSettings(const std::string& filename)
     {
-        ConfigFileManager::getInstance().setFile(CFT_Settings, filename, false);
+        ConfigFileManager::getInstance().setFilename(ConfigFileType::Settings, filename);
     }
-
-    void loadKeybindings(const std::string& filename)
-    {
-        ConfigFileManager::getInstance().setFile(CFT_Keybindings, filename);
-    }
-
 
     //////////////////////////
     // ConfigFileEntryValue //
@@ -120,9 +115,9 @@ namespace orxonox
     }
 
 
-    ///////////////////////////////
+    ////////////////////////////////
     // ConfigFileEntryVectorValue //
-    ///////////////////////////////
+    ////////////////////////////////
     std::string ConfigFileEntryVectorValue::getFileEntry() const
     {
         if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
@@ -216,19 +211,18 @@ namespace orxonox
     ////////////////
     ConfigFile::~ConfigFile()
     {
-        for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); )
-            delete (*(it++));
+        this->clear();
     }
 
     void ConfigFile::load(bool bCreateIfNotExisting)
     {
-        if (bCreateIfNotExisting)
-        {
-            // This creates the default config file if it's not existing
-            std::ofstream createFile;
-            createFile.open(this->filename_.c_str(), std::fstream::app);
-            createFile.close();
-        }
+        // Be sure we start from new
+        this->clear();
+
+        // This creates the config file if it's not existing
+        std::ofstream createFile;
+        createFile.open(this->filename_.c_str(), std::fstream::app);
+        createFile.close();
 
         // Open the file
         std::ifstream file;
@@ -328,10 +322,13 @@ namespace orxonox
 
         file.close();
 
-        COUT(0) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
+        COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
 
         // Save the file in case something changed (like stripped whitespaces)
         this->save();
+
+        // Update all ConfigValueContainers
+        this->updateConfigValues();
     }
 
     void ConfigFile::save() const
@@ -365,7 +362,7 @@ namespace orxonox
         COUT(4) << "Saved config file \"" << this->filename_ << "\"." << std::endl;
     }
 
-    void ConfigFile::save(const std::string& filename)
+    void ConfigFile::saveAs(const std::string& filename)
     {
         std::string temp = this->filename_;
         this->filename_ = filename;
@@ -414,6 +411,13 @@ namespace orxonox
         this->save();
     }
 
+    void ConfigFile::clear()
+    {
+        for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); )
+            delete (*(it++));
+        this->sections_.clear();
+    }
+
     ConfigFileSection* ConfigFile::getSection(const std::string& section)
     {
         for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
@@ -445,62 +449,77 @@ namespace orxonox
         }
     }
 
+    void ConfigFile::updateConfigValues()
+    {
+        if (this->type_ == ConfigFileType::Settings)
+        {
+            for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getIdentifierMapBegin(); it != Identifier::getIdentifierMapEnd(); ++it)
+            {
+                if (it->second->hasConfigValues())
+                {
+                    for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = (*it).second->getConfigValueMapBegin(); it2 != (*it).second->getConfigValueMapEnd(); ++it2)
+                        it2->second->update();
+
+                    it->second->updateConfigValues();
+                }
+            }
+        }
+    }
+
 
     ///////////////////////
     // ConfigFileManager //
     ///////////////////////
+
     ConfigFileManager::ConfigFileManager()
+         : mininmalFreeType_(ConfigFileType::numberOfReservedTypes)
     {
-        this->setFile(CFT_Settings, DEFAULT_CONFIG_FILE);
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
     }
 
     ConfigFileManager::~ConfigFileManager()
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); )
-            delete (*(it++)).second;
+            delete (it++)->second;
+
+        assert(singletonRef_s != 0);
+        singletonRef_s = 0;
     }
 
-    ConfigFileManager& ConfigFileManager::getInstance()
-    {
-        static ConfigFileManager instance;
-        return instance;
-    }
-
-    void ConfigFileManager::setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting)
+    void ConfigFileManager::setFilename(ConfigFileType type, const std::string& filename)
     {
         std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
         if (it != this->configFiles_.end())
-            if ((*it).second != 0)
-                delete (*it).second;
-
-        this->configFiles_[type] = new ConfigFile(this->getFilePath(filename));
-        this->load(type, bCreateIfNotExisting);
+        {
+            assert(it->second);
+            delete it->second;
+        }
+        this->configFiles_[type] = new ConfigFile(filename, type);
+        this->load(type);
     }
 
-    void ConfigFileManager::load(bool bCreateIfNotExisting)
+    void ConfigFileManager::load()
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            (*it).second->load(bCreateIfNotExisting);
-
-        this->updateConfigValues();
+            it->second->load();
     }
 
     void ConfigFileManager::save()
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            (*it).second->save();
+            it->second->save();
     }
 
     void ConfigFileManager::clean(bool bCleanComments)
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            this->clean((*it).first, bCleanComments);
+            this->clean(it->first, bCleanComments);
     }
 
-    void ConfigFileManager::load(ConfigFileType type, bool bCreateIfNotExisting)
+    void ConfigFileManager::load(ConfigFileType type)
     {
-        this->getFile(type)->load(bCreateIfNotExisting);
-        this->updateConfigValues(type);
+        this->getFile(type)->load();
     }
 
     void ConfigFileManager::save(ConfigFileType type)
@@ -508,9 +527,9 @@ namespace orxonox
         this->getFile(type)->save();
     }
 
-    void ConfigFileManager::save(ConfigFileType type, const std::string& filename)
+    void ConfigFileManager::saveAs(ConfigFileType type, const std::string& saveFilename)
     {
-        this->getFile(type)->save(filename);
+        this->getFile(type)->saveAs(saveFilename);
     }
 
     void ConfigFileManager::clean(ConfigFileType type, bool bCleanComments)
@@ -518,47 +537,37 @@ namespace orxonox
         this->getFile(type)->clean(bCleanComments);
     }
 
-    void ConfigFileManager::updateConfigValues() const
+    void ConfigFileManager::updateConfigValues()
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            this->updateConfigValues((*it).first);
+            it->second->updateConfigValues();
     }
 
-    void ConfigFileManager::updateConfigValues(ConfigFileType type) const
+    void ConfigFileManager::updateConfigValues(ConfigFileType type)
     {
-        if (type == CFT_Settings)
-        {
-            for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getIdentifierMapBegin(); it != Identifier::getIdentifierMapEnd(); ++it)
-            {
-                if ((*it).second->hasConfigValues() /* && (*it).second != ClassIdentifier<KeyBinder>::getIdentifier()*/)
-                {
-                    for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = (*it).second->getConfigValueMapBegin(); it2 != (*it).second->getConfigValueMapEnd(); ++it2)
-                        (*it2).second->update();
+        this->getFile(type)->updateConfigValues();
+    }
 
-                    (*it).second->updateConfigValues();
-                }
-            }
-        }
-        else if (type == CFT_Keybindings)
-        {
-            // todo
-        }
+    const std::string& ConfigFileManager::getFilename(ConfigFileType type)
+    {
+        std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
+        if (it != this->configFiles_.end())
+            return it->second->getFilename();
+        else
+            return BLANKSTRING;
     }
 
     ConfigFile* ConfigFileManager::getFile(ConfigFileType type)
     {
-        std::map<ConfigFileType, ConfigFile*>::iterator it = this->configFiles_.find(type);
+        std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
         if (it != this->configFiles_.end())
-            return (*it).second;
-
-        if (type == CFT_Settings)
-            return this->configFiles_[type] = new ConfigFile(DEFAULT_CONFIG_FILE);
+            return it->second;
         else
-            return this->configFiles_[type] = new ConfigFile("");
-    }
-
-    std::string ConfigFileManager::getFilePath(const std::string& name) const
-    {
-        return name;
+        {
+            COUT(1) << "ConfigFileManager: Can't find a config file for type with ID " << (int)type << std::endl;
+            COUT(1) << "Using " << DEFAULT_CONFIG_FILE << " file." << std::endl;
+            this->setFilename(type, DEFAULT_CONFIG_FILE);
+            return getFile(type);
+        }
     }
 }

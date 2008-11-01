@@ -37,18 +37,18 @@
 namespace orxonox
 {
     Exception::Exception(const std::string& description, int lineNumber,
-                         const char* fileName, const char* functionName)
+                         const char* filename, const char* functionName)
         : description_(description)
         , lineNumber_(lineNumber)
         , functionName_(functionName)
-        , fileName_(fileName)
+        , filename_(filename)
     { }
 
     Exception::Exception(const std::string& description)
         : description_(description)
         , lineNumber_(0)
         , functionName_("")
-        , fileName_("")
+        , filename_("")
     { }
 
     const std::string& Exception::getFullDescription() const
@@ -59,9 +59,9 @@ namespace orxonox
 
             fullDesc << this->getTypeName() << "_EXCEPTION";
 
-            if (this->fileName_ != "")
+            if (this->filename_ != "")
             {
-                fullDesc << " in " << this->fileName_;
+                fullDesc << " in " << this->filename_;
                 if (this->lineNumber_)
                     fullDesc << "(" << this->lineNumber_ << ")";
             }

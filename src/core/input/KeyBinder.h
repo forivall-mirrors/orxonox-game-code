@@ -43,6 +43,7 @@
 #include "HalfAxis.h"
 #include "InputCommands.h"
 #include "JoyStickDeviceNumberListener.h"
+#include "core/ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -58,7 +59,7 @@ namespace orxonox
         KeyBinder ();
         virtual ~KeyBinder();
 
-        void loadBindings(const std::string& filename);
+        void loadBindings(const std::string& filename, const std::string& defaultFilename);
         void clearBindings();
         bool setBinding(const std::string& binding, const std::string& name, bool bTemporary = false);
         void setConfigValues();
@@ -141,13 +142,11 @@ namespace orxonox
         int mouseRelative_[2];
         float deriveTime_;
 
-        //! Config file used. "" in case of KeyDetector. Also indicates whether we've already loaded.
-        std::string configFile_;
+        //! Config file used. ConfigFileType::NoType in case of KeyDetector. Also indicates whether we've already loaded.
+        ConfigFileType configFile_;
 
     private:
         //##### ConfigValues #####
-        //! Filename of default keybindings.
-        std::string defaultKeybindings_;
         //! Whether to filter small value analog input
         bool bFilterAnalogNoise_;
         //! Threshold for analog triggers until which the state is 0.

@@ -51,13 +51,12 @@
     orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, identifier##varname->getName(), #varname, defvalue, varname); \
+        container##varname = new orxonox::ConfigValueContainer(ConfigFileType::Settings, identifier##varname, identifier##varname->getName(), #varname, defvalue, varname); \
         identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname, this)
 
-#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(CFT_Settings, varname, defvalue)
-#define SetKeybindingValue(varname, defvalue) SetConfigValueGeneric(CFT_Keybindings, varname, defvalue)
+#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(ConfigFileType::Settings, varname, defvalue)
 
 
 /**
@@ -70,13 +69,12 @@
     orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, identifier##varname->getName(), #varname, defvalue); \
+        container##varname = new orxonox::ConfigValueContainer(ConfigFileType::Settings, identifier##varname, identifier##varname->getName(), #varname, defvalue); \
         identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname, this)
 
-#define SetConfigValueVector(varname, defvalue) SetConfigValueVectorGeneric(CFT_Settings, varname, defvalue)
-#define SetKeybindingValueVector(varname, defvalue) SetConfigValueVectorGeneric(CFT_Keybindings, varname, defvalue)
+#define SetConfigValueVector(varname, defvalue) SetConfigValueVectorGeneric(ConfigFileType::Settings, varname, defvalue)
 
 
 /**

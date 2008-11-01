@@ -66,7 +66,7 @@ namespace orxonox
         };
 
         Exception(const std::string& description, int lineNumber,
-                  const char* fileName, const char* functionName);
+                  const char* filename, const char* functionName);
         Exception(const std::string& description);
 
         /// Needed for  compatibility with std::exception (from Ogre::Exception)
@@ -86,7 +86,7 @@ namespace orxonox
         std::string description_;
         int lineNumber_;
         std::string functionName_;
-        std::string fileName_;
+        std::string filename_;
         // mutable because "what()" is a const method
         mutable std::string fullDescription_;
     };
@@ -97,8 +97,8 @@ namespace orxonox
     {
     public:
         SpecificException(const std::string& description, int lineNumber,
-                  const char* fileName, const char* functionName)
-                  : Exception(description, lineNumber, fileName, functionName)
+                  const char* filename, const char* functionName)
+                  : Exception(description, lineNumber, filename, functionName)
         {
             // let the catcher decide whether to display the message below level 4
             COUT(4) << this->getFullDescription() << std::endl;

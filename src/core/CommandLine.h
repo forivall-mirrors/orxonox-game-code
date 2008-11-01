@@ -37,10 +37,10 @@
 #include "util/MultiType.h"
 
 #define SetCommandLineArgument(name, defaultValue) \
-    CommandLineArgument& CmdArgumentDummyBoolVar##name \
+    orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
     = orxonox::CommandLine::addArgument(#name, defaultValue)
 #define SetCommandLineSwitch(name) \
-    CommandLineArgument& CmdArgumentDummyBoolVar##name \
+    orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
     = orxonox::CommandLine::addArgument(#name, false)
 
 
@@ -134,7 +134,7 @@ namespace orxonox
     public:
 
         //! Parse redirection to internal member method.
-        static void parse(const std::vector<std::string>& arguments) { _getInstance()._parse(arguments); }
+        static void parseAll(int argc, char** argv) { _getInstance()._parseAll(argc, argv); }
 
         static std::string getUsageInformation();
 
@@ -164,6 +164,7 @@ namespace orxonox
 
         static CommandLine& _getInstance();
 
+        void _parseAll(int argc, char** argv);
         void _parse(const std::vector<std::string>& arguments);
         void checkFullArgument(const std::string& name, const std::string& value);
         void checkShortcut(const std::string& shortcut, const std::string& value);

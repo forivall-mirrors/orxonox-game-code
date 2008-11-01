@@ -484,7 +484,7 @@ namespace orxonox
     /**
         You can only assign an Identifier that belongs to a class T (or derived) to a SubclassIdentifier<T>.
         If you assign something else, the program aborts.
-        Because we know the minimal type, a dynamic_cast is done, which makes it easier to create a new object.
+        Because we know the minimum type, a dynamic_cast is done, which makes it easier to create a new object.
     */
     template <class T>
     class SubclassIdentifier

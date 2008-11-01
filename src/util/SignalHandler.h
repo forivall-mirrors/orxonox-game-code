@@ -70,7 +70,7 @@ class SignalHandler
 
     void registerCallback( SignalCallback cb, void * someData );
 
-    void doCatch( const std::string & appName, const std::string & fileName );
+    void doCatch( const std::string & appName, const std::string & filename );
     void dontCatch();
 
   private:
@@ -84,7 +84,7 @@ class SignalHandler
     static SignalHandler * singletonRef;
 
     std::string appName;
-    std::string fileName;
+    std::string filename;
 
     // used to turn on KeyAutoRepeat if OIS crashes
     static bool bXAutoKeyRepeatOn_;
@@ -96,7 +96,7 @@ class _UtilExport SignalHandler
 {
   public:
     inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
-    void doCatch( const std::string & appName, const std::string & fileName ) {};
+    void doCatch( const std::string & appName, const std::string & filename ) {};
     void dontCatch() {};
     void registerCallback( SignalCallback cb, void * someData ) {};
 
