@@ -38,11 +38,14 @@
 //
 //
 
+#include <cassert>
+
 #include "Client.h"
 #include "Host.h"
 #include "Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include "packet/Packet.h"
+
 // #include "packet/Acknowledgement.h"
 
 namespace network
@@ -66,7 +69,7 @@ namespace network
   * @param address the server address
   * @param port port of the application on the server
   */
-  Client::Client(std::string address, int port) : client_connection(port, address){
+  Client::Client(const std::string& address, int port) : client_connection(port, address){
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
@@ -113,17 +116,17 @@ namespace network
     return client_connection.addPacket(packet);
   }
 
-  bool Client::processChat(std::string message, unsigned int playerID){
-    COUT(1) << "Player " << playerID << ": " << message << std::endl;
+  bool Client::processChat(const std::string& message, unsigned int playerID){
+//    COUT(1) << "Player " << playerID << ": " << message << std::endl;
     return true;
   }
-  
+
   /**
    * This function implements the method of sending a chat message to the server
-   * @param message message to be sent 
+   * @param message message to be sent
    * @return result(true/false)
    */
-  bool Client::chat(std::string message){
+  bool Client::chat(const std::string& message){
     packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
     return m->send();
   }
@@ -131,7 +134,7 @@ namespace network
 
   /**
    * Processes incoming packets, sends a gamestate to the server and does the cleanup
-   * @param time 
+   * @param time
    */
   void Client::tick(float time){
 //     COUT(3) << ".";
@@ -151,6 +154,7 @@ namespace network
       event = client_connection.getEvent();
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
       packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
+      // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
       bool b = packet->process();
       assert(b);
     }

@@ -38,6 +38,7 @@
 #include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/LuaBind.h"
 
 namespace orxonox
 {
@@ -48,9 +49,6 @@ namespace orxonox
         Constructor: Registers the object and sets the config-values.
     */
     Settings::Settings()
-        : bShowsGraphics_(false)
-        , bHasServer_(false)
-        , bIsClient_(false)
     {
         RegisterRootObject(Settings);
         assert(singletonRef_s == 0);
@@ -64,7 +62,7 @@ namespace orxonox
     */
     void Settings::setConfigValues()
     {
-        SetConfigValue(dataPath_, "../../Media/").description("Relative path to the game data.").callback(this, &Settings::dataPathChanged);
+        SetConfigValue(dataPath_, "../../media/").description("Relative path to the game data.").callback(this, &Settings::dataPathChanged);
     }
 
     /**
@@ -83,6 +81,8 @@ namespace orxonox
             ModifyConfigValue(dataPath_, set, "/");
             COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
         }
+
+        LuaBind::getInstance()->setIncludePath(this->dataPath_);
     }
 
     /**

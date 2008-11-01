@@ -60,16 +60,6 @@ namespace orxonox
         void setConfigValues();
         void detailLevelParticleChanged();
 
-        void setLevelSceneManager(Ogre::SceneManager* sceneMgr) { this->levelSceneManager_ = sceneMgr; }
-        Ogre::SceneManager* getLevelSceneManager() { return levelSceneManager_; }
-
-        Ogre::Viewport* getViewport() { return this->viewport_; }
-        Ogre::Root*     getOgreRoot() { return this->root_; }
-
-        // several window properties
-        int getWindowWidth() const;
-        int getWindowHeight() const;
-        float getWindowAspectRatio() const;
         float getAverageFramesPerSecond() const   { return this->avgFramesPerSecond_; }
         float getAverageTickTime() const          { return this->avgTickTime_; }
         void setAverageTickTime(float tickTime)   { this->avgTickTime_ = tickTime; }
@@ -84,11 +74,6 @@ namespace orxonox
     private:
         // don't mess with singletons
         GraphicsEngine(GraphicsEngine&);
-
-        Ogre::Root*         root_;                  //!< Ogre's root
-        Ogre::RenderWindow* renderWindow_;          //!< the current render window
-        Ogre::SceneManager* levelSceneManager_;     //!< scene manager of the game
-        Ogre::Viewport*     viewport_;              //!< default full size viewport
 
         // stats
         float               avgTickTime_;           //!< time in ms to tick() one frame

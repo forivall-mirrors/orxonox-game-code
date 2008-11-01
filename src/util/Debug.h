@@ -76,6 +76,10 @@ static inline int getSoftDebugLevel()
     return orxonox::OutputHandler::getSoftDebugLevel();
 }
 
+namespace orxonox
+{
+    using std::endl;
+}
 
 // DEFINE ERROR MODES
 #define ORX_NONE            0

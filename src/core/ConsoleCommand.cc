@@ -40,8 +40,7 @@ namespace orxonox
         this->argumentCompleter_[4] = 0;
 
         this->keybindMode_ = KeybindMode::OnPress;
-        this->axisParamIndex_ = -1;
-        this->bAxisRelative_ = false;
+        this->inputConfiguredParam_ = -1;
     }
 
     ConsoleCommand& ConsoleCommand::argumentCompleter(unsigned int param, ArgumentCompleter* completer)

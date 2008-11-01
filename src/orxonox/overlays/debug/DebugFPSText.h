@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport DebugFPSText : public OverlayText, public Tickable
     {
     public:
-        DebugFPSText();
+        DebugFPSText(BaseObject* creator);
         ~DebugFPSText();
 
         virtual void tick(float dt);

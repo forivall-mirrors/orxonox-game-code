@@ -65,20 +65,20 @@ namespace network
     const int NETWORK_WAIT_TIMEOUT = 1;
     const int NETWORK_DEFAULT_CHANNEL = 0;
 
-  struct ClientList{
+  struct _NetworkExport ClientList{
     ENetEvent *event;
     int ID;
     ClientList *next;
   };
 
-  class ConnectionManager{
+  class _NetworkExport ConnectionManager{
     public:
     static boost::recursive_mutex enet_mutex;
     ConnectionManager();
     //ConnectionManager(ClientInformation *head);
     ConnectionManager(int port);
     ConnectionManager(int port, const char *address);
-    ConnectionManager(int port, std::string address);
+    ConnectionManager(int port, const std::string& address);
     ~ConnectionManager();
     //ENetPacket *getPacket(ENetAddress &address); // thread1
     //ENetPacket *getPacket(int &clientID);
@@ -106,8 +106,6 @@ namespace network
     int getClientID(ENetPeer peer);
     int getClientID(ENetAddress address);
     ENetPeer *getClientPeer(int clientID);
-    //bool createShip(ClientInformation *client);
-    bool removeShip(ClientInformation *client);
     PacketBuffer buffer;
 
     ENetHost *server;

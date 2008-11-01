@@ -77,7 +77,7 @@ namespace orxonox
 
         if (this->bEvaluatedParams_ && this->function_)
         {
-            COUT(5) << "CE_execute (evaluation): " << this->function_->getName() << " " << this->param_[0] << " " << this->param_[1] << " " << this->param_[2] << " " << this->param_[3] << " " << this->param_[4] << std::endl;
+            COUT(6) << "CE_execute (evaluation): " << this->function_->getName() << " " << this->param_[0] << " " << this->param_[1] << " " << this->param_[2] << " " << this->param_[3] << " " << this->param_[4] << std::endl;
             (*this->function_)(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
             return true;
         }

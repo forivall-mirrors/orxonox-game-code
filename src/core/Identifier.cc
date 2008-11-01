@@ -58,9 +58,11 @@ namespace orxonox
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
         this->factory_ = 0;
+        this->bLoadable_ = true;
 
         this->bHasConfigValues_ = false;
         this->bHasConsoleCommands_ = false;
+        this->bHasConstructionCallback_ = false;
 
         this->children_ = new std::set<const Identifier*>();
         this->directChildren_ = new std::set<const Identifier*>();
@@ -212,11 +214,11 @@ namespace orxonox
         @brief Creates an object of the type the Identifier belongs to.
         @return The new object
     */
-    BaseObject* Identifier::fabricate()
+    BaseObject* Identifier::fabricate(BaseObject* creator)
     {
         if (this->factory_)
         {
-            return this->factory_->fabricate(); // We have to return a BaseObject, because we don't know the exact type.
+            return this->factory_->fabricate(creator); // We have to return a BaseObject, because we don't know the exact type.
         }
         else
         {
@@ -419,8 +421,8 @@ namespace orxonox
     */
     XMLPortParamContainer* Identifier::getXMLPortParamContainer(const std::string& paramname)
     {
-        std::map<std::string, XMLPortParamContainer*>::const_iterator it = xmlportParamContainers_.find(paramname);
-        if (it != xmlportParamContainers_.end())
+        std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
+        if (it != this->xmlportParamContainers_.end())
             return ((*it).second);
         else
             return 0;
@@ -433,6 +435,13 @@ namespace orxonox
     */
     void Identifier::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
+        std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
+        if (it != this->xmlportParamContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting XMLPortParamContainer in class " << this->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
         this->xmlportParamContainers_[paramname] = container;
     }
 
@@ -443,8 +452,8 @@ namespace orxonox
     */
     XMLPortObjectContainer* Identifier::getXMLPortObjectContainer(const std::string& sectionname)
     {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = xmlportObjectContainers_.find(sectionname);
-        if (it != xmlportObjectContainers_.end())
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
+        if (it != this->xmlportObjectContainers_.end())
             return ((*it).second);
         else
             return 0;
@@ -457,7 +466,77 @@ namespace orxonox
     */
     void Identifier::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
     {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
+        if (it != this->xmlportObjectContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting XMLPortObjectContainer in class " << this->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
         this->xmlportObjectContainers_[sectionname] = container;
+    }
+
+    /**
+        @brief Returns a XMLPortEventContainer that attaches an event to this class.
+        @param sectionname The name of the section that contains the event
+        @return The container
+    */
+    XMLPortObjectContainer* Identifier::getXMLPortEventContainer(const std::string& eventname)
+    {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
+        if (it != this->xmlportEventContainers_.end())
+            return ((*it).second);
+        else
+            return 0;
+    }
+
+    /**
+        @brief Adds a new XMLPortEventContainer that attaches an event to this class.
+        @param sectionname The name of the section that contains the event
+        @param container The container
+    */
+    void Identifier::addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container)
+    {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
+        if (it != this->xmlportEventContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting XMLPortEventContainer in class " << this->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
+        this->xmlportEventContainers_[eventname] = container;
+    }
+
+    /**
+        @brief Adds a construction callback functor that gets called every time an object is created.
+        @param functor Functor pointer to any function with no argument.
+    */
+    void Identifier::addConstructionCallback(Functor* functor)
+    {
+        for (unsigned int i = 0; i < this->constructionCallbacks_.size(); ++i)
+        {
+            if (this->constructionCallbacks_[i] == functor)
+                return;
+        }
+        this->constructionCallbacks_.push_back(functor);
+        this->bHasConstructionCallback_ = true;
+    }
+
+    /**
+        @brief Removes a construction callback functor that gets called every time an object is created.
+        @param functor Functor pointer to any function with no argument.
+    */
+    void Identifier::removeConstructionCallback(Functor* functor)
+    {
+        for (unsigned int i = 0; i < this->constructionCallbacks_.size(); ++i)
+        {
+            if (this->constructionCallbacks_[i] == functor)
+            {
+                this->constructionCallbacks_.erase(this->constructionCallbacks_.begin() + i);
+            }
+        }
+        if (constructionCallbacks_.empty())
+            this->bHasConstructionCallback_ = false;
     }
 
     /**

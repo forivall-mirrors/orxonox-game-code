@@ -34,11 +34,10 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
+#include "util/String.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/SpaceShip.h"
-#include "objects/WorldEntity.h"
 #include "objects/Radar.h"
 #include "tools/TextureGenerator.h"
 
@@ -46,20 +45,36 @@ namespace orxonox
 {
     CreateFactory(HUDRadar);
 
-    HUDRadar::HUDRadar()
-        : marker_(0)
+    HUDRadar::HUDRadar(BaseObject* creator)
+        : OrxonoxOverlay(creator)
     {
         RegisterObject(HUDRadar);
+
+        marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberString()));
+        marker_->setMaterialName("Orxonox/RadarMarker");
+        overlay_->add2D(marker_);
+        marker_->hide();
+
+        setRadarSensitivity(1.0f);
+        setHalfDotSizeDistance(3000.0f);
+        setMaximumDotSize(0.1f);
+
+        shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
+        shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
+        shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
     }
 
     HUDRadar::~HUDRadar()
     {
-        if (this->marker_)
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
-        for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
-            it != this->radarDots_.end(); ++it)
+        if (this->isInitialized())
         {
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(*it);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
+            for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
+                it != this->radarDots_.end(); ++it)
+            {
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(*it);
+            }
         }
     }
 
@@ -67,29 +82,14 @@ namespace orxonox
     {
         SUPER(HUDRadar, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberStr()));
-            marker_->setMaterialName("Orxonox/RadarMarker");
-            overlay_->add2D(marker_);
-            marker_->hide();
-        }
-
-        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode)
-            .defaultValues(1.0f);
-        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance,
-            xmlElement, mode).defaultValues(3000.0f);
-        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode)
-            .defaultValues(0.1f);
-
-        shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
-        shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
-        shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
+        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode);
+        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlElement, mode);
+        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode);
     }
 
     void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)
     {
+/*
         const WorldEntity* wePointer = object->getWorldEntity();
 
         // Just to be sure that we actually have a WorldEntity.
@@ -99,7 +99,7 @@ namespace orxonox
             CCOUT(4) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
             return;
         }
-
+*/
         // try to find a panel already created
         Ogre::PanelOverlayElement* panel;
         //std::map<RadarViewable*, Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.find(object);
@@ -107,7 +107,7 @@ namespace orxonox
         {
             // we have to create a new entry
             panel = static_cast<Ogre::PanelOverlayElement*>(
-                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberStr()));
+                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberString()));
             radarDots_.push_back(panel);
             // get right material
             panel->setMaterialName(TextureGenerator::getMaterialName(
@@ -125,7 +125,7 @@ namespace orxonox
                 panel->setMaterialName(materialName);
         }
         panel->show();
-
+/*
         // set size to fit distance...
         float distance = (wePointer->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
@@ -143,6 +143,7 @@ namespace orxonox
             this->marker_->setDimensions(size * 1.5, size * 1.5);
             this->marker_->setPosition((1.0 + coord.x - size * 1.5) * 0.5, (1.0 - coord.y - size * 1.5) * 0.5);
         }
+*/
     }
 
     void HUDRadar::radarTick(float dt)

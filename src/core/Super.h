@@ -72,6 +72,7 @@
 
 #include "util/Debug.h"
 #include "XMLIncludes.h"
+#include "Event.h"
 
 ///////////////////////
 // Macro definitions //
@@ -228,6 +229,9 @@
 
     #define SUPER_changedVisibility(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
+
+    #define SUPER_processEvent(classname, functionname, ...) \
+        SUPER_ARGS(classname, functionname, __VA_ARGS__)
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
@@ -432,6 +436,10 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(3, changedVisibility, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(4, processEvent, true, Event& event)
+            (event)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 }
@@ -478,6 +486,7 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(tick);
     SUPER_INTRUSIVE_DECLARATION(changedActivity);
     SUPER_INTRUSIVE_DECLARATION(changedVisibility);
+    SUPER_INTRUSIVE_DECLARATION(processEvent);
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 

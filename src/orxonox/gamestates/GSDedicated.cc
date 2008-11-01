@@ -29,24 +29,15 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSDedicated.h"
 
-#include <OgreRoot.h>
-#include <OgreSceneManager.h>
-#include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
-#include "core/Loader.h"
+#include "core/Core.h"
 #include "network/Server.h"
-#include "objects/Tickable.h"
-#include "GraphicsEngine.h"
-#include "Settings.h"
 
 namespace orxonox
 {
     GSDedicated::GSDedicated()
         : GameState<GSRoot>("dedicated")
-        , timeFactor_(0)
         , server_(0)
-        , sceneManager_(0)
-        , startLevel_(0)
     {
     }
 
@@ -56,65 +47,30 @@ namespace orxonox
 
     void GSDedicated::enter()
     {
-        Settings::_getInstance().bHasServer_ = true;
+        Core::setHasServer(true);
 
-        // create Ogre SceneManager for the level
-        this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
-        COUT(4) << "Created SceneManager: " << sceneManager_->getName() << std::endl;
+        this->server_ = new network::Server(CommandLine::getValue("port"));
+        COUT(0) << "Loading scene in server mode" << std::endl;
 
-        // temporary hack
-        GraphicsEngine::getInstance().setLevelSceneManager(this->sceneManager_);
-
-        // reset game speed to normal
-        timeFactor_ = 1.0f;
-
-        int serverPort = CommandLine::getArgument<int>("port")->getValue();
-        this->server_ = new network::Server(serverPort);
-
-        // call the loader
-        COUT(0) << "Loading level..." << std::endl;
-        startLevel_ = new Level(Settings::getDataPath() + "levels/sample.oxw");
-        Loader::open(startLevel_);
+        GSLevel::enter(0);
 
         server_->open();
-
-        // add console commands
-        FunctorMember01<GSDedicated, float>* functor = createFunctor(&GSDedicated::setTimeFactor);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "setTimeFactor")).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
     }
 
     void GSDedicated::leave()
     {
-        // TODO: Remove and destroy console command
-
-        Loader::unload(startLevel_);
-        delete this->startLevel_;
+        GSLevel::leave();
 
         this->server_->close();
         delete this->server_;
 
-        Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
-
-        Settings::_getInstance().bHasServer_ = false;
+        Core::setHasServer(false);
     }
 
     void GSDedicated::ticked(const Clock& time)
     {
-        // Call the scene objects
-        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(time.getDeltaTime() * this->timeFactor_);
-
+        GSLevel::ticked(time);
         server_->tick(time.getDeltaTime());
         this->tickChild(time);
-    }
-
-    /**
-    @brief
-        Changes the speed of Orxonox
-    */
-    void GSDedicated::setTimeFactor(float factor)
-    {
-        this->timeFactor_ = factor;
     }
 }

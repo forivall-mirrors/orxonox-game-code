@@ -33,6 +33,7 @@
 
 #include <string>
 #include <OgrePrerequisites.h>
+#include <OgreTextAreaOverlayElement.h>
 #include "OrxonoxOverlay.h"
 
 namespace orxonox
@@ -40,27 +41,33 @@ namespace orxonox
     class _OrxonoxExport OverlayText : public OrxonoxOverlay
     {
     public:
-        OverlayText();
+        OverlayText(BaseObject* creator);
         virtual ~OverlayText();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
+        void setCaption(const std::string& caption) { this->text_->setCaption(caption); }
+        std::string getCaption() const              { return this->text_->getCaption(); }
+
+        void setFont(const std::string& font);
+        const std::string& getFont() const { return this->text_->getFontName(); }
+
+        void setColour(const ColourValue& colour) { this->text_->setColour(colour); }
+        const ColourValue& getColour() const      { return this->text_->getColour(); }
+
+        void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment) { this->text_->setAlignment(alignment); }
+        Ogre::TextAreaOverlayElement::Alignment getAlignment() const         { return this->text_->getAlignment(); }
+
     protected:
         virtual void sizeChanged();
 
-        void setCaption(const std::string& caption) { this->caption_ = caption; }
-        const std::string& getCaption() const       { return this->caption_; }
-
-        void setFont(const std::string& font);
-        const std::string& getFont() const;
+        void setAlignmentString(const std::string& alignment);
+        std::string getAlignmentString() const;
 
         void setTextSize(float size) { this->setSize(Vector2(size, size)); }
         float getTextSize() const    { return this->getSize().y; }
 
         Ogre::TextAreaOverlayElement* text_;
-
-    private:
-        std::string caption_;
     };
 }
 #endif /* _OverlayText_H__ */

@@ -1183,6 +1183,7 @@ namespace ticpp
 
 		T* m_tiXmlPointer;		/**< Internal pointer to the TiXml Class which is being wrapped */
 
+    public:
 		/**
 		@internal
 		Gets the internal TinyXML pointer.
@@ -1194,6 +1195,7 @@ namespace ticpp
 			ValidatePointer();
 			return m_tiXmlPointer;
 		}
+    protected:
 
 		/**
 		@internal

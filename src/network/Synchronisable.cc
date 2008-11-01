@@ -41,6 +41,7 @@
 #include "Synchronisable.h"
 
 #include <cstring>
+#include <string>
 #include <iostream>
 #include <assert.h>
 
@@ -50,7 +51,7 @@
 
 namespace network
 {
-  
+
 
   std::map<unsigned int, Synchronisable *> Synchronisable::objectMap_;
   std::queue<unsigned int> Synchronisable::deletedObjects_;
@@ -61,17 +62,35 @@ namespace network
   * Constructor:
   * Initializes all Variables and sets the right objectID
   */
-  Synchronisable::Synchronisable(){
+  Synchronisable::Synchronisable(orxonox::BaseObject* creator){
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
     objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
     objectID=idCounter++;
+    classID = (unsigned int)-1;
     syncList = new std::list<synchronisableVariable *>;
+
+    this->creatorID = OBJECTID_UNKNOWN;
+
+    searchcreatorID:
+    if (creator)
+    {
+        Synchronisable* synchronisable_creator = dynamic_cast<Synchronisable*>(creator);
+        if (synchronisable_creator && synchronisable_creator->objectMode_)
+        {
+            this->creatorID = synchronisable_creator->getObjectID();
+        }
+        else if (creator != creator->getCreator())
+        {
+            creator = creator->getCreator();
+            goto searchcreatorID;
+        }
+    }
   }
 
   /**
-   * Destructor: 
+   * Destructor:
    * Delete all callback objects and remove objectID from the objectMap_
    */
   Synchronisable::~Synchronisable(){
@@ -79,7 +98,8 @@ namespace network
     if(!orxonox::Identifier::isCreatingHierarchy()){
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
-      deletedObjects_.push(objectID);
+      if (this->objectMode_ != 0x0)
+        deletedObjects_.push(objectID);
 //       COUT(3) << "destruct synchronisable +++" << objectID << " | " << classID << std::endl;
 //       COUT(3) << " bump ---" << objectID << " | " << &objectMap_ << std::endl;
 //       assert(objectMap_[objectID]->objectID==objectID);
@@ -95,7 +115,7 @@ namespace network
   bool Synchronisable::create(){
     this->classID = this->getIdentifier()->getNetworkID();
 //     COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
-    
+
 //     COUT(3) << "construct synchronisable +++" << objectID << " | " << classID << std::endl;
 //     objectMap_[objectID]=this;
 //     assert(objectMap_[objectID]==this);
@@ -126,25 +146,48 @@ namespace network
   {
     synchronisableHeader *header = (synchronisableHeader *)mem;
 
-    COUT(3) << "fabricating object with id: " << header->objectID << std::endl;
+    if(!header->dataAvailable)
+    {
+      mem += header->size;
+      return 0;
+    }
+    
+    COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
     orxonox::Identifier* id = ClassByID(header->classID);
     assert(id);
-    orxonox::BaseObject *bo = id->fabricate();
+    orxonox::BaseObject* creator = 0;
+    if (header->creatorID != OBJECTID_UNKNOWN)
+    {
+      Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header->creatorID);
+      if (!synchronisable_creator)
+      {
+        mem += header->size; //.TODO: this suckz.... remove size from header
+        return 0;
+      }
+      else
+        creator = dynamic_cast<orxonox::BaseObject*>(synchronisable_creator);
+    }
+    orxonox::BaseObject *bo = id->fabricate(creator);
+    assert(bo);
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
     no->objectID=header->objectID;
+    no->creatorID=header->creatorID; //TODO: remove this
     no->classID=header->classID;
-    COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
+    COUT(4) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
-    bool b = no->updateData(mem, mode);
+    bool b = no->updateData(mem, mode, true);
     assert(b);
-    b = no->create();
-    assert(b);
+    if (b)
+    {
+        b = no->create();
+        assert(b);
+    }
     return no;
   }
 
-  
+
   /**
    * Finds and deletes the Synchronisable with the appropriate objectID
    * @param objectID objectID of the Synchronisable
@@ -163,7 +206,7 @@ namespace network
       return false;
     return true;
   }
-  
+
   /**
    * This function looks up the objectID in the objectMap_ and returns a pointer to the right Synchronisable
    * @param objectID objectID of the Synchronisable
@@ -184,7 +227,7 @@ namespace network
 //     return (*i).second;
   }
 
-  
+
   /**
   * This function is used to register a variable to be synchronized
   * also counts the total datasize needed to save the variables
@@ -195,6 +238,7 @@ namespace network
   * @param cb callback object that should get called, if the value of the variable changes
   */
   void Synchronisable::registerVar(void *var, int size, variableType t, int mode, NetworkCallbackBase *cb){
+    assert( mode==direction::toclient || mode==direction::toserver || mode==direction::serverMaster || mode==direction::clientMaster);
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
@@ -202,6 +246,12 @@ namespace network
     temp->mode = mode;
     temp->type = t;
     temp->callback = cb;
+    if( ( mode & direction::bidirectional ) )
+    {
+      temp->varBuffer = new uint8_t[size];
+      memcpy(temp->varBuffer, temp->var, size); //now fill the buffer for the first time
+      temp->varReference = 0;
+    }
     COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl;
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
@@ -227,11 +277,11 @@ namespace network
    *             0x1: server->client
    *             0x2: client->server (not recommended)
    *             0x3: bidirectional
-   * @return true: if !isMyTick or if everything was successfully saved
+   * @return true: if !doSync or if everything was successfully saved
    */
   bool Synchronisable::getData(uint8_t*& mem, unsigned int id, int mode){
     //if this tick is we dont synchronise, then abort now
-    if(!isMyTick(id))
+    if(!doSync(id))
       return true;
     //std::cout << "inside getData" << std::endl;
     unsigned int tempsize = 0;
@@ -239,6 +289,10 @@ namespace network
       mode=state_;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
+
+    if (this->classID == (unsigned int)-1)
+        this->classID = this->getIdentifier()->getNetworkID();
+
     assert(this->classID==this->getIdentifier()->getNetworkID());
 //     this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<synchronisableVariable *>::iterator i;
@@ -249,6 +303,7 @@ namespace network
     synchronisableHeader *header = (synchronisableHeader *)mem;
     header->size = size;
     header->objectID = this->objectID;
+    header->creatorID = this->creatorID;
     header->classID = this->classID;
     header->dataAvailable = true;
     tempsize+=sizeof(synchronisableHeader);
@@ -263,6 +318,13 @@ namespace network
         COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
       }
+      // if the variable gets synchronised bidirectional, then add the reference to the bytestream
+      if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
+      {
+        *(uint8_t*)mem = (*i)->varReference;
+        mem += sizeof( (*i)->varReference );
+        tempsize += sizeof( (*i)->varReference );
+      }
       switch((*i)->type){
         case DATA:
           memcpy( (void *)(mem), (void*)((*i)->var), (*i)->size);
@@ -270,13 +332,13 @@ namespace network
           tempsize+=(*i)->size;
           break;
         case STRING:
-          memcpy( (void *)(mem), (void *)&((*i)->size), sizeof(int) );
-          mem+=sizeof(int);
+          memcpy( (void *)(mem), (void *)&((*i)->size), sizeof(size_t) );
+          mem+=sizeof(size_t);
           const char *data = ( ( *(std::string *) (*i)->var).c_str());
           memcpy( mem, (void*)data, (*i)->size);
           COUT(5) << "synchronisable: char: " << (const char *)(mem) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
           mem+=(*i)->size;
-          tempsize+=(*i)->size + 4;
+          tempsize+=(*i)->size + sizeof(size_t);
           break;
       }
     }
@@ -291,7 +353,7 @@ namespace network
    * @param mode same as in getData
    * @return true/false
    */
-  bool Synchronisable::updateData(uint8_t*& mem, int mode){
+  bool Synchronisable::updateData(uint8_t*& mem, int mode, bool forceCallback){
     if(mode==0x0)
       mode=state_;
     std::list<synchronisableVariable *>::iterator i;
@@ -304,6 +366,7 @@ namespace network
     // start extract header
     synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
     assert(syncHeader->objectID==this->objectID);
+//    assert(syncHeader->creatorID==this->creatorID);
     if(syncHeader->dataAvailable==false){
       mem+=syncHeader->size;
       return true;
@@ -313,7 +376,7 @@ namespace network
     // stop extract header
     assert(this->objectID==syncHeader->objectID);
 //    assert(this->classID==syncHeader->classID); //TODO: fix this!!! maybe a problem with the identifier ?
-    
+
     COUT(5) << "Synchronisable: objectID " << syncHeader->objectID << ", classID " << syncHeader->classID << " size: " << syncHeader->size << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end() && mem <= data+syncHeader->size; i++){
       if( ((*i)->mode ^ mode) == 0 ){
@@ -324,6 +387,24 @@ namespace network
       bool callback=false;
       switch((*i)->type){
         case DATA:
+          if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
+          {
+            if( ( mode == 0x1 && (*i)->mode == direction::serverMaster ) || \
+                  ( mode == 0x2 && (*i)->mode == direction::clientMaster ) )    // if true we are master on this variable
+            {
+              uint8_t refNr = *(uint8_t *)mem;
+              if( refNr != (*i)->varReference )
+              {
+                mem += sizeof((*i)->varReference) + (*i)->size; // the reference for this variable is not recent, discard data
+                break;
+              }
+            }
+            else //we are slave for this variable
+            {
+              (*i)->varReference = *(uint8_t *)mem; //copy the reference value for this variable
+            }
+            mem += sizeof((*i)->varReference);
+          }
           if((*i)->callback) // check whether this variable changed (but only if callback was set)
             if(strncmp((char *)(*i)->var, (char *)mem, (*i)->size)!=0)
               callback=true;
@@ -331,9 +412,27 @@ namespace network
           mem+=(*i)->size;
           break;
         case STRING:
-          (*i)->size = *(uint32_t *)mem;
+          if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
+          {
+            if( ( mode == 0x1 && (*i)->mode == direction::serverMaster ) || \
+                  ( mode == 0x2 && (*i)->mode == direction::clientMaster ) )    // if true we are master for this variable
+            {
+              uint8_t refNr = *(uint8_t *)mem;
+              mem += sizeof( (*i)->varReference );
+              if( refNr != (*i)->varReference ){
+                mem += sizeof(size_t) + *(size_t *)mem; // the reference for this variable is not recent, discard data
+                break;
+              }
+            }
+            else //we are slave for this variable
+            {
+              (*i)->varReference = *(uint8_t *)mem; //copy the reference value for this variable
+            }
+            mem += sizeof( (*i)->varReference );
+          }
+          (*i)->size = *(size_t *)mem;
           COUT(5) << "string size: " << (*i)->size << std::endl;
-          mem+=sizeof(int);
+          mem += sizeof(size_t);
           if((*i)->callback) // check whether this string changed
             if( *(std::string *)((*i)->var) != std::string((char *)mem) )
               callback=true;
@@ -343,7 +442,7 @@ namespace network
           break;
       }
       // call the callback function, if defined
-      if(callback && (*i)->callback)
+      if((callback || forceCallback) && (*i)->callback)
         (*i)->callback->call();
     }
     return true;
@@ -356,7 +455,7 @@ namespace network
   * @return amount of bytes
   */
   uint32_t Synchronisable::getSize(unsigned int id, int mode){
-    if(!isMyTick(id))
+    if(!doSync(id))
       return 0;
     int tsize=sizeof(synchronisableHeader);
     if(mode==0x0)
@@ -376,6 +475,10 @@ namespace network
         tsize+=(*i)->size;
         break;
       }
+      if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
+      {
+        tsize+=sizeof( (*i)->varReference );
+      }
     }
     return tsize;
   }
@@ -385,8 +488,8 @@ namespace network
    * @param id gamestate id
    * @return true/false
    */
-  bool Synchronisable::isMyTick(unsigned int id){
-    return ( (objectMode_&state_)!=0 );
+  bool Synchronisable::doSync(unsigned int id){
+    return ( (objectMode_&state_)!=0 && (!syncList->empty() ) );
   }
 
   bool Synchronisable::doSelection(unsigned int id){
@@ -412,7 +515,7 @@ namespace network
    * @param mode same as in registerVar
    */
   void Synchronisable::setObjectMode(int mode){
-    assert(mode==0x1 || mode==0x2 || mode==0x3);
+    assert(mode==0x0 || mode==0x1 || mode==0x2 || mode==0x3);
     objectMode_=mode;
   }
 

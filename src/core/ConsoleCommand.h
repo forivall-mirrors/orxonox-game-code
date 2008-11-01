@@ -121,20 +121,23 @@ namespace orxonox
             ArgumentCompletionList::const_iterator getArgumentCompletionListEnd() const
                 { return this->argumentList_.end(); }
 
+            inline ConsoleCommand& setAsInputCommand()
+            {
+                this->keybindMode(KeybindMode::OnHold);
+                this->defaultValue(0, Vector2(0.0f, 0.0f));
+                this->inputConfiguredParam(0);
+                return *this;
+            }
+
             inline ConsoleCommand& keybindMode(KeybindMode::Enum mode)
                 { this->keybindMode_ = mode; return *this; }
             inline KeybindMode::Enum getKeybindMode() const
                 { return this->keybindMode_; }
 
-            inline ConsoleCommand& axisParamIndex(int index)
-                { this->axisParamIndex_ = index; return *this; }
-            inline int getAxisParamIndex() const
-                { return this->axisParamIndex_; }
-
-            inline ConsoleCommand& isAxisRelative(bool val)
-                { this->bAxisRelative_ = val; return *this; }
-            inline int getIsAxisRelative() const
-                { return this->bAxisRelative_; }
+            inline ConsoleCommand& inputConfiguredParam(int index)
+                { this->inputConfiguredParam_ = index; return *this; }
+            inline int getInputConfiguredParam_() const
+                { return this->inputConfiguredParam_; }
 
         private:
             AccessLevel::Level accessLevel_;
@@ -142,8 +145,7 @@ namespace orxonox
             ArgumentCompletionList argumentList_;
 
             KeybindMode::Enum keybindMode_;
-            int axisParamIndex_;
-            bool bAxisRelative_;
+            int inputConfiguredParam_;
     };
 
     inline ConsoleCommand* createConsoleCommand(Functor* functor, const std::string& name = "")

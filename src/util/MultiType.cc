@@ -38,58 +38,58 @@
     @brief Converts the current value of the MultiType to a new type.
     @param type The type
 */
-void MultiType::convert(MT_Type type)
+bool MultiType::convert(MT_Type type)
 {
     switch (type)
     {
         case MT_char:
-            this->convert<char>(); break;
+            return this->convert<char>(); break;
         case MT_uchar:
-            this->convert<unsigned char>(); break;
+            return this->convert<unsigned char>(); break;
         case MT_short:
-            this->convert<short>(); break;
+            return this->convert<short>(); break;
         case MT_ushort:
-            this->convert<unsigned short>(); break;
+            return this->convert<unsigned short>(); break;
         case MT_int:
-            this->convert<int>(); break;
+            return this->convert<int>(); break;
         case MT_uint:
-            this->convert<unsigned int>(); break;
+            return this->convert<unsigned int>(); break;
         case MT_long:
-            this->convert<long>(); break;
+            return this->convert<long>(); break;
         case MT_ulong:
-            this->convert<unsigned long>(); break;
+            return this->convert<unsigned long>(); break;
         case MT_longlong:
-            this->convert<long long>(); break;
+            return this->convert<long long>(); break;
         case MT_ulonglong:
-            this->convert<unsigned long long>(); break;
+            return this->convert<unsigned long long>(); break;
         case MT_float:
-            this->convert<float>(); break;
+            return this->convert<float>(); break;
         case MT_double:
-            this->convert<double>(); break;
+            return this->convert<double>(); break;
         case MT_longdouble:
-            this->convert<long double>(); break;
+            return this->convert<long double>(); break;
         case MT_bool:
-            this->convert<bool>(); break;
+            return this->convert<bool>(); break;
         case MT_void:
-            this->convert<void*>(); break;
+            return this->convert<void*>(); break;
         case MT_string:
-            this->convert<std::string>(); break;
+            return this->convert<std::string>(); break;
         case MT_vector2:
-            this->convert<orxonox::Vector2>(); break;
+            return this->convert<orxonox::Vector2>(); break;
         case MT_vector3:
-            this->convert<orxonox::Vector3>(); break;
+            return this->convert<orxonox::Vector3>(); break;
         case MT_vector4:
-            this->convert<orxonox::Vector4>(); break;
+            return this->convert<orxonox::Vector4>(); break;
         case MT_colourvalue:
-            this->convert<orxonox::ColourValue>(); break;
+            return this->convert<orxonox::ColourValue>(); break;
         case MT_quaternion:
-            this->convert<orxonox::Quaternion>(); break;
+            return this->convert<orxonox::Quaternion>(); break;
         case MT_radian:
-            this->convert<orxonox::Radian>(); break;
+            return this->convert<orxonox::Radian>(); break;
         case MT_degree:
-            this->convert<orxonox::Degree>(); break;
+            return this->convert<orxonox::Degree>(); break;
         default:
-            this->reset(); break;
+            this->reset(); return false; break;
     };
 }
 
@@ -167,16 +167,16 @@ MultiType::operator unsigned long long()   const { return (this->value_) ? ((thi
 MultiType::operator float()                const { return (this->value_) ? ((this->value_->type_ == MT_float      ) ? ((MT_Value<float>               *)this->value_)->value_ : (*this->value_)) : 0;                      } /** @brief Returns the current value, converted to the requested type. */
 MultiType::operator double()               const { return (this->value_) ? ((this->value_->type_ == MT_double     ) ? ((MT_Value<double>              *)this->value_)->value_ : (*this->value_)) : 0;                      } /** @brief Returns the current value, converted to the requested type. */
 MultiType::operator long double()          const { return (this->value_) ? ((this->value_->type_ == MT_longdouble ) ? ((MT_Value<long double>         *)this->value_)->value_ : (*this->value_)) : 0;                      } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator bool()                 const { return (this->value_) ? ((this->value_->type_ == MT_bool       ) ? ((MT_Value<bool>                *)this->value_)->value_ : (*this->value_)) : false;                  } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator void*()                const { return (this->value_) ? ((this->value_->type_ == MT_void       ) ? ((MT_Value<void*>               *)this->value_)->value_ : (*this->value_)) : (void*)0;               } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator std::string()          const { return (this->value_) ? ((this->value_->type_ == MT_string     ) ? ((MT_Value<std::string>         *)this->value_)->value_ : (*this->value_)) : std::string();          } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::Vector2()     const { return (this->value_) ? ((this->value_->type_ == MT_vector2    ) ? ((MT_Value<orxonox::Vector2>    *)this->value_)->value_ : (*this->value_)) : orxonox::Vector2();     } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::Vector3()     const { return (this->value_) ? ((this->value_->type_ == MT_vector3    ) ? ((MT_Value<orxonox::Vector3>    *)this->value_)->value_ : (*this->value_)) : orxonox::Vector3();     } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::Vector4()     const { return (this->value_) ? ((this->value_->type_ == MT_vector4    ) ? ((MT_Value<orxonox::Vector4>    *)this->value_)->value_ : (*this->value_)) : orxonox::Vector4();     } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::ColourValue() const { return (this->value_) ? ((this->value_->type_ == MT_colourvalue) ? ((MT_Value<orxonox::ColourValue>*)this->value_)->value_ : (*this->value_)) : orxonox::ColourValue(); } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::Quaternion()  const { return (this->value_) ? ((this->value_->type_ == MT_quaternion ) ? ((MT_Value<orxonox::Quaternion> *)this->value_)->value_ : (*this->value_)) : orxonox::Quaternion();  } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::Radian()      const { return (this->value_) ? ((this->value_->type_ == MT_radian     ) ? ((MT_Value<orxonox::Radian>     *)this->value_)->value_ : (*this->value_)) : orxonox::Radian();      } /** @brief Returns the current value, converted to the requested type. */
-MultiType::operator orxonox::Degree()      const { return (this->value_) ? ((this->value_->type_ == MT_degree     ) ? ((MT_Value<orxonox::Degree>     *)this->value_)->value_ : (*this->value_)) : orxonox::Degree();      } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator bool()                 const { return (this->value_) ? ((this->value_->type_ == MT_bool       ) ? ((MT_Value<bool>                *)this->value_)->value_ : (*this->value_)) : 0;                      } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator void*()                const { return (this->value_) ? ((this->value_->type_ == MT_void       ) ? ((MT_Value<void*>               *)this->value_)->value_ : (*this->value_)) : 0;                      } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator std::string()          const { return (this->value_) ? ((this->value_->type_ == MT_string     ) ? ((MT_Value<std::string>         *)this->value_)->value_ : (*this->value_)) : zeroise<std::string>();          } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::Vector2()     const { return (this->value_) ? ((this->value_->type_ == MT_vector2    ) ? ((MT_Value<orxonox::Vector2>    *)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::Vector2>();     } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::Vector3()     const { return (this->value_) ? ((this->value_->type_ == MT_vector3    ) ? ((MT_Value<orxonox::Vector3>    *)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::Vector3>();     } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::Vector4()     const { return (this->value_) ? ((this->value_->type_ == MT_vector4    ) ? ((MT_Value<orxonox::Vector4>    *)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::Vector4>();     } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::ColourValue() const { return (this->value_) ? ((this->value_->type_ == MT_colourvalue) ? ((MT_Value<orxonox::ColourValue>*)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::ColourValue>(); } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::Quaternion()  const { return (this->value_) ? ((this->value_->type_ == MT_quaternion ) ? ((MT_Value<orxonox::Quaternion> *)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::Quaternion>();  } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::Radian()      const { return (this->value_) ? ((this->value_->type_ == MT_radian     ) ? ((MT_Value<orxonox::Radian>     *)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::Radian>();      } /** @brief Returns the current value, converted to the requested type. */
+MultiType::operator orxonox::Degree()      const { return (this->value_) ? ((this->value_->type_ == MT_degree     ) ? ((MT_Value<orxonox::Degree>     *)this->value_)->value_ : (*this->value_)) : zeroise<orxonox::Degree>();      } /** @brief Returns the current value, converted to the requested type. */
 
 template <> void MultiType::createNewValueContainer(const char& value)                 { this->value_ = new MT_Value<char>                (value, MT_char       ); } /** @brief Creates a new value container for the given type. */
 template <> void MultiType::createNewValueContainer(const unsigned char& value)        { this->value_ = new MT_Value<unsigned char>       (value, MT_uchar      ); } /** @brief Creates a new value container for the given type. */

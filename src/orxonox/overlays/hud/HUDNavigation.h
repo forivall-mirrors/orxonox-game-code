@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport HUDNavigation : public OrxonoxOverlay, public Tickable
     {
     public:
-        HUDNavigation();
+        HUDNavigation(BaseObject* creator);
         ~HUDNavigation();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);

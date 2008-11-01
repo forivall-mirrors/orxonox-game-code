@@ -45,7 +45,11 @@ namespace orxonox
     */
     Identifier* Factory::getIdentifier(const std::string& name)
     {
-        return getFactoryPointer()->identifierStringMap_[name];
+        std::map<std::string, Identifier*>::const_iterator it = getFactoryPointer()->identifierStringMap_.find(name);
+        if (it != getFactoryPointer()->identifierStringMap_.end())
+            return it->second;
+        else
+            return 0;
     }
 
     /**
@@ -55,7 +59,11 @@ namespace orxonox
     */
     Identifier* Factory::getIdentifier(const unsigned int id)
     {
-        return getFactoryPointer()->identifierNetworkIDMap_[id];
+        std::map<unsigned int, Identifier*>::const_iterator it = getFactoryPointer()->identifierNetworkIDMap_.find(id);
+        if (it != getFactoryPointer()->identifierNetworkIDMap_.end())
+            return it->second;
+        else
+            return 0;
     }
 
     /**
@@ -67,6 +75,7 @@ namespace orxonox
     {
         getFactoryPointer()->identifierStringMap_[name] = identifier;
         getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
+//std::cout << identifier->getName() << ": " << identifier->getNetworkID() << std::endl;
     }
 
     /**
@@ -79,6 +88,7 @@ namespace orxonox
     {
         getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
         getFactoryPointer()->identifierNetworkIDMap_[newID] = identifier;
+//std::cout << identifier->getName() << ": " << oldID << " -> " << newID << std::endl;
     }
 
     /**
@@ -93,7 +103,7 @@ namespace orxonox
         for (it = getFactoryPointer()->identifierStringMap_.begin(); it != getFactoryPointer()->identifierStringMap_.end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
-            BaseObject* temp = (*it).second->fabricate();
+            BaseObject* temp = (*it).second->fabricate(0);
             delete temp;
         }
         (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();

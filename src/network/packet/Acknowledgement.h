@@ -28,24 +28,25 @@
 #ifndef NETWORKACKNOLEDGEMENT_H
 #define NETWORKACKNOLEDGEMENT_H
 
+#include "../NetworkPrereqs.h"
 #include "Packet.h"
 
 
 namespace network {
 namespace packet {
 /**
-	@author 
+	@author
 */
-class Acknowledgement : public Packet
+class _NetworkExport Acknowledgement : public Packet
 {
 public:
   Acknowledgement( unsigned int id, unsigned int clientID );
   Acknowledgement( uint8_t* data, unsigned int clientID );
   ~Acknowledgement();
-  
+
   inline unsigned int getSize() const;
   bool process();
-  
+
   unsigned int getAckID();
 private:
 };

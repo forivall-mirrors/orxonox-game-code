@@ -43,25 +43,32 @@ namespace orxonox
         public:
             BillboardSet();
             ~BillboardSet();
-            void setBillboardSet(const std::string& file, int count = 1);
-            void setBillboardSet(const std::string& file, const ColourValue& colour, int count = 1);
-            void setBillboardSet(const std::string& file, const Vector3& position, int count = 1);
-            void setBillboardSet(const std::string& file, const ColourValue& colour, const Vector3& position, int count = 1);
+
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const Vector3& position, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, const Vector3& position, int count = 1);
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
 
-            inline const std::string& getName() const
-                { return this->billboardSet_->getName(); }
+            const std::string& getName() const;
 
-            inline void setVisible(bool visible)
-                { this->billboardSet_->setVisible(visible); }
-            inline bool getVisible() const
-                { return this->billboardSet_->getVisible(); }
+            void setVisible(bool visible);
+            bool getVisible() const;
+
+            void setColour(const ColourValue& colour);
+            const ColourValue& getColour() const;
+
+            void setMaterial(const std::string& material);
+            const std::string& getMaterial() const;
 
         private:
+            void destroyBillboardSet();
+
             static unsigned int billboardSetCounter_s;
             Ogre::BillboardSet* billboardSet_;
+            Ogre::SceneManager* scenemanager_;
     };
 }
 

@@ -31,15 +31,15 @@
 
 #include "core/input/InputManager.h"
 #include "core/CommandLine.h"
+#include "core/Core.h"
 #include "network/Client.h"
-#include "Settings.h"
 
 namespace orxonox
 {
-    SetCommandLineArgument(ip, "127.0.0.1").setInformation("#.#.#.#");
+    SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
     GSClient::GSClient()
-        : GSLevel("client")
+        : GameState<GSGraphics>("client")
         , client_(0)
     {
     }
@@ -50,37 +50,28 @@ namespace orxonox
 
     void GSClient::enter()
     {
-        Settings::_getInstance().bIsClient_ = true;
+        Core::setIsClient(true);
 
-        GSLevel::enter();
-
-        int serverPort = CommandLine::getArgument<int>("port")->getValue();
-        std::string serverIP = CommandLine::getArgument<std::string>("ip")->getValue();
-        this->client_ = new network::Client(serverIP, serverPort);
+        this->client_ = new network::Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
 
-        client_->tick(0);
+        GSLevel::enter(this->getParent()->getViewport());
 
-        // level is loaded: we can start capturing the input
-        InputManager::getInstance().requestEnterState("game");
+        client_->tick(0);
     }
 
     void GSClient::leave()
     {
-        InputManager::getInstance().requestLeaveState("game");
-
-        // TODO: How do we unload the level in client mode?
+        GSLevel::leave();
 
         client_->closeConnection();
 
         // destroy client
         delete this->client_;
 
-        GSLevel::leave();
-
-        Settings::_getInstance().bIsClient_ = false;
+        Core::setIsClient(false);
     }
 
     void GSClient::ticked(const Clock& time)

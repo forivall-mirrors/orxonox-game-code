@@ -53,7 +53,7 @@ namespace network
 
   boost::recursive_mutex ClientConnection::enet_mutex_;
 
-  ClientConnection::ClientConnection(int port, std::string address) {
+  ClientConnection::ClientConnection(int port, const std::string& address) {
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address.c_str());
@@ -71,7 +71,7 @@ namespace network
 
   bool ClientConnection::waitEstablished(int milisec) {
     for(int i=0; i<=milisec && !established; i++)
-      usleep(1000);
+      msleep(1);
 
     return established;
   }
@@ -183,7 +183,7 @@ namespace network
         break;
       case ENET_EVENT_TYPE_NONE:
         //receiverThread_->yield();
-        usleep(1000);
+        msleep(1);
         break;
       }
     }

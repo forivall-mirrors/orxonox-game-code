@@ -174,19 +174,18 @@ namespace orxonox
                 }
 
                 // check for param command
-                int paramIndex = eval.getConsoleCommand()->getAxisParamIndex();
+                int paramIndex = eval.getConsoleCommand()->getInputConfiguredParam_();
                 if (paramIndex >= 0)
                 {
                     // parameter supported command
                     ParamCommand* cmd = new ParamCommand();
-                    cmd->paramModifier_ = paramModifier;
-                    cmd->bRelative_ = eval.getConsoleCommand()->getIsAxisRelative();
+                    cmd->scale_ = paramModifier;
 
                     // add command to the buffer if not yet existing
                     for (unsigned int iParamCmd = 0; iParamCmd < paramCommandBuffer_->size(); iParamCmd++)
                     {
-                        if (getLowercase((*paramCommandBuffer_)[iParamCmd]->evaluation_.getOriginalCommand())
-                            == getLowercase(commandStr))
+                        if ((*paramCommandBuffer_)[iParamCmd]->evaluation_.getConsoleCommand()
+                            == eval.getConsoleCommand())
                         {
                             // already in list
                             cmd->paramCommand_ = (*paramCommandBuffer_)[iParamCmd];

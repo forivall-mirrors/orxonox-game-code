@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			InheritedPropertySheets=".\debug.vsprops;.\network.vsprops"
 			CharacterSet="1"
 			>
@@ -49,10 +49,13 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -64,12 +67,18 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			InheritedPropertySheets=".\release.vsprops;.\network.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
@@ -102,10 +111,13 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -115,6 +127,12 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -130,11 +148,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\network\ChatListener.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\network\Client.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\network\ClientConnection.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\ClientConnectionListener.cc"
 				>
 			</File>
 			<File
@@ -212,11 +238,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\network\ChatListener.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\network\Client.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\network\ClientConnection.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\ClientConnectionListener.h"
 				>
 			</File>
 			<File

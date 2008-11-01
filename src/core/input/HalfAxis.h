@@ -49,7 +49,7 @@ namespace orxonox
             , absVal_(0.0f)
             , paramCommands_(0)
             , nParamCommands_(0)
-            , wasDown_(false)
+            , pressed_(false)
             , hasChanged_(false)
         { }
         using Button::execute;
@@ -64,7 +64,7 @@ namespace orxonox
         unsigned int nParamCommands_;
 
         // button related
-        bool wasDown_;
+        bool pressed_;
         bool hasChanged_;
     };
 

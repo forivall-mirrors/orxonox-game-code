@@ -1,5 +1,5 @@
 #!/bin/bash
 dir=${pwd}
-cd ../Media
+cd ../media
 svn up
 cd $dir

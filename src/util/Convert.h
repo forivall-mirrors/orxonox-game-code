@@ -20,6 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
+ *      Reto Grieder
  *      Fabian 'x3n' Landau
  *      Benjamin Grauer
  *   Co-authors:
@@ -27,274 +28,180 @@
  */
 
 /*!
-    @file Convert.h
+    @file
     @brief Definition and Implementation of the Convert class.
 */
 
-#ifndef _Convert_H__
-#define _Convert_H__
+#ifndef _Converter_H__
+#define _Converter_H__
 
 #include "UtilPrereqs.h"
 
 #include <string>
 #include <sstream>
+#include <istream>
+#include <ostream>
 #include <typeinfo>
 
-#include "Math.h"
 #include "Debug.h"
-#include "SubString.h"
 #include "String.h"
 
-// disable annoying warning about forcing value to boolean
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-#pragma warning(push)
-#pragma warning(disable:4100 4800)
+// GCC generates warnings when implicitely casting from float to int for instance.
+// This is however exactly what convertValue does, so we need to suppress these warnings.
+// They only occur when using the ImplicitConversion template.
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_GNUC
+#  pragma GCC system_header
 #endif
 
 
-//////////
-// MAIN //
-//////////
+///////////////////////////////////////////////
+// Static detection for conversion functions //
+///////////////////////////////////////////////
 
-// Enum to declare the wanted conversion preference in case of equal type-levels
-enum ConversionPreference
-{
-    CP_PreferToType,
-    CP_PreferFromType,
-};
+/* The idea to use the sizeof() operator on return functions to determine function existance
+   is described in 'Modern C++ design' by Alexandrescu (2001). */
 
-// Helper classes to determine the preferred partial template specialization
-class _ToType_   {};
-class _FromType_ {};
-class _Explicit_ {};
+// disable warnings about possible loss of data
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#  pragma warning(push)
+#  pragma warning(disable:4244)
+#endif
 
-
-// The default convert functions
-template <class FromType, class ToType, class Type>
-struct ConverterSpecialized
-{
-    enum { specialized = false };
-    static bool convert(ToType* output, const FromType& input)
-    {
-        COUT(2) << "Warning: Couldn't convert a value: From \"" << typeid(FromType).name() << "\" to \"" << typeid(ToType).name() << "\"" << std::endl;
-        return false;
-    }
-};
-
-
-// The default convert function if both types are the same
-template <class BothTypes>
-struct ConverterSpecialized<BothTypes, BothTypes, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(BothTypes* output, const BothTypes& input)
-    { (*output) = input; return true; }
-};
-
-
-// The possible levels
-#define __low__  0 // Everything that is or behaves like a primitive type (an can be converted with a typecast to every other low-level type)
-#define __mid__  1 // Everything that has overloaded << and >> operators to operate on a std::stream
-#define __high__ 2 // Everything that doesn't fullfill the lowerlevel-requirements and therefore needs specialized conversions
-
-// Defines the levels of all types: Default is __high__ so you don't have to define every high-level type
-template <class T> struct ConverterLevel              { enum { level = __high__ }; };
-template <> struct ConverterLevel<std::string>        { enum { level = __mid__ }; };
-template <> struct ConverterLevel<orxonox::Radian>    { enum { level = __mid__ }; };
-template <> struct ConverterLevel<orxonox::Degree>    { enum { level = __mid__ }; };
-template <> struct ConverterLevel<int>                { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned int>       { enum { level = __low__ }; };
-template <> struct ConverterLevel<char>               { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned char>      { enum { level = __low__ }; };
-template <> struct ConverterLevel<short>              { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned short>     { enum { level = __low__ }; };
-template <> struct ConverterLevel<long>               { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned long>      { enum { level = __low__ }; };
-template <> struct ConverterLevel<long long>          { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned long long> { enum { level = __low__ }; };
-template <> struct ConverterLevel<float>              { enum { level = __low__ }; };
-template <> struct ConverterLevel<double>             { enum { level = __low__ }; };
-template <> struct ConverterLevel<long double>        { enum { level = __low__ }; };
-template <> struct ConverterLevel<bool>               { enum { level = __low__ }; };
-
-
-// Calculates the preference based on the levels of FromType and ToType
-template <int from, int to>
-struct ConverterPreference
-{
-    enum
-    {
-        // The maximum of both levels: element of {0, 1, 2}
-        // max 0: Both types are primitives or have a similar behaviour
-        // max 1: At least one type is not a primitive, but both can be put on a std::stream
-        // max 2: There is at least one generic type that needs specialized conversions
-        max = (from > to) ? from : to,
-
-        // The difference between both levels limited to +-1: element of {-1, 0, 1}
-        // diff -1: The FromType has higher level than the ToType
-        // diff  0: Both types have the same level
-        // diff  1: The ToType has higher level than the FromType
-        diff = ((to - from) > 1) ? 1 : (((to - from) < -1) ? -1 : to - from)
-    };
-};
-
-
-// The default conversion: This usually does nothing
-template <int max, class FromType, class ToType>
-struct ConverterDefault
-{
-    static bool convert(ToType* output, const FromType& input)
-    {
-        COUT(2) << "Warning: Couldn't convert a value: From \"" << typeid(FromType).name() << "\" to \"" << typeid(ToType).name() << "\"" << std::endl;
-        return false;
-    }
-};
-// The default conversion for primitives: A typecast (defined over two partial specialized templates to exclude all non-primitive types and classes)    template <int max, class FromType, class ToType>
 template <class FromType, class ToType>
-struct ConverterDefault<0, FromType, ToType>
+class ImplicitConversion
 {
-    static bool convert(ToType* output, const FromType& input)
-    {
-        (*output) = (ToType)input;
-        return true;
-    }
+private:
+    ImplicitConversion(); ImplicitConversion(const ImplicitConversion&); ~ImplicitConversion();
+    // Gets chosen only if there is an implicit conversion from FromType to ToType.
+    static char test(ToType);
+    // Accepts any argument. Why do we not use a template? The reason is that with templates,
+    // the function above is only taken iff it is an exact type match. But since we want to
+    // check for implicit conversion, we have to use the ellipsis.
+    static long long test(...);
+    static FromType object; // helper object to handle private c'tor and d'tor
+public:
+    // test(object) only has 'long long' return type iff the compiler doesn't choose test(...)
+    enum { exists = (sizeof(test(object)) == sizeof(char)) };
 };
 
-
-// Converter: Converts input of FromType into output of ToType
-template <int diff, int max, class FromType, class ToType, ConversionPreference pref>
-struct Converter
-{
-    static bool convert(ToType* output, const FromType& input)
-    {
-        return false;
-    }
-};
-// Converter: level{FromType} > level{ToType}
-template <int max, class FromType, class ToType, ConversionPreference pref>
-struct Converter<-1, max, FromType, ToType, pref>
-{   static bool convert(ToType* output, const FromType& input)
-    { return (ConverterSpecialized<FromType, ToType, _Explicit_>::specialized) ? (ConverterSpecialized<FromType, ToType, _Explicit_>::convert(output, input)) : (ConverterSpecialized<FromType, ToType, _FromType_>::specialized) ? (ConverterSpecialized<FromType, ToType, _FromType_>::convert(output, input)) : (ConverterDefault<max, FromType, ToType>::convert(output, input)); } };
-// Converter: level{FromType} < level{ToType}
-template <int max, class FromType, class ToType, ConversionPreference pref>
-struct Converter<1, max, FromType, ToType, pref>
-{   static bool convert(ToType* output, const FromType& input)
-    { return (ConverterSpecialized<FromType, ToType, _Explicit_>::specialized) ? (ConverterSpecialized<FromType, ToType, _Explicit_>::convert(output, input)) : (ConverterSpecialized<FromType, ToType, _ToType_>::specialized) ? (ConverterSpecialized<FromType, ToType, _ToType_>::convert(output, input)) : (ConverterDefault<max, FromType, ToType>::convert(output, input)); } };
-// Converter: level{FromType} = level{ToType}
-// CP_PreferToType
-template <int max, class FromType, class ToType>
-struct Converter<0, max, FromType, ToType, CP_PreferToType>
-{   static bool convert(ToType* output, const FromType& input)
-    { return (ConverterSpecialized<FromType, ToType, _Explicit_>::specialized) ? (ConverterSpecialized<FromType, ToType, _Explicit_>::convert(output, input)) : (ConverterSpecialized<FromType, ToType, _ToType_>::specialized) ? (ConverterSpecialized<FromType, ToType, _ToType_>::convert(output, input)) : (ConverterSpecialized<FromType, ToType, _FromType_>::specialized) ? (ConverterSpecialized<FromType, ToType, _FromType_>::convert(output, input)) : (ConverterDefault<max, FromType, ToType>::convert(output, input)); } };
-// CP_PreferFromType
-template <int max, class FromType, class ToType>
-struct Converter<0, max, FromType, ToType, CP_PreferFromType>
-{   static bool convert(ToType* output, const FromType& input)
-    { return (ConverterSpecialized<FromType, ToType, _Explicit_>::specialized) ? (ConverterSpecialized<FromType, ToType, _Explicit_>::convert(output, input)) : (ConverterSpecialized<FromType, ToType, _FromType_>::specialized) ? (ConverterSpecialized<FromType, ToType, _FromType_>::convert(output, input)) : (ConverterSpecialized<FromType, ToType, _ToType_>::specialized) ? (ConverterSpecialized<FromType, ToType, _ToType_>::convert(output, input)) : (ConverterDefault<max, FromType, ToType>::convert(output, input)); } };
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#  pragma warning(pop)
+#endif
 
 
-// Calls the Converter::convertValue function with the correct template type parameters calculated by ConverterPreference
-template <class FromType, class ToType>
-static bool convertValue(ToType* output, const FromType& input, ConversionPreference preference = CP_PreferToType)
-{
-    return (preference == CP_PreferToType) ?
-           Converter<ConverterPreference<ConverterLevel<FromType>::level, ConverterLevel<ToType>::level>::diff,
-                     ConverterPreference<ConverterLevel<FromType>::level, ConverterLevel<ToType>::level>::max,
-                     FromType,
-                     ToType,
-                     CP_PreferToType>::convert(output, input)
-         : Converter<ConverterPreference<ConverterLevel<FromType>::level, ConverterLevel<ToType>::level>::diff,
-                     ConverterPreference<ConverterLevel<FromType>::level, ConverterLevel<ToType>::level>::max,
-                     FromType,
-                     ToType,
-                     CP_PreferFromType>::convert(output, input);
-}
-
-
-//////////////////////
-// HELPER FUNCTIONS //
-//////////////////////
-
-// Helper function: Calls convertValue with and without default value and returns true if the conversion was successful
-template<class FromType, class ToType>
-static bool ConvertValue(ToType* output, const FromType& input, ConversionPreference preference = CP_PreferToType)
-{
-    return convertValue(output, input, preference);
-}
-template<class FromType, class ToType>
-static bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback, ConversionPreference preference = CP_PreferToType)
-{
-    if (convertValue(output, input, preference))
-        return true;
-
-    (*output) = fallback;
-    return false;
-}
-
-// Helper function: Calls convertValue with and without default value and returns the converted value
-template<class FromType, class ToType>
-static ToType getConvertedValue(const FromType& input, ConversionPreference preference = CP_PreferToType)
-{
-    ToType output = ToType();
-    ConvertValue(&output, input, preference);
-    return output;
-}
-template<class FromType, class ToType>
-static ToType getConvertedValue(const FromType& input, const ToType& fallback, ConversionPreference preference = CP_PreferToType)
-{
-    ToType output = fallback;
-    ConvertValue(&output, input, fallback, preference);
-    return output;
-}
-
-
-/////////////////////
-// SPECIALIZATIONS //
-/////////////////////
-
-/////////////
-// SAMPLES //
-/////////////
+////////////////////////////////////
+//// ACTUAL CONVERSION SEQUENCE ////
+////////////////////////////////////
 /*
-// convert everything to xyz
-template <class FromType>
-struct ConverterSpecialized<FromType, xyz, _ToType_>
-{
-    enum { specialized = true };
-    static bool convert(xyz* output, const FromType& input)
-    { return ...; }
-};
+    There is a distinct priority when choosing the right conversion function:
+    Overwrite:
+    1. (Partial) template specialisation of ConverterExplicit::convert()
+    Fallbacks:
+    2. Any possible implicit conversion. This includes 'FooBar' --> 'int' if FooBar defines operator float().
+    3. Global or member operators for stringstream when converting from or to std::string (or FROM const char*)
+    4. (Partial) template specialisation of ConverterFallback::convert()
+    5. Function that simply displays "Could not convert value" with type information obtained from typeid().
 
-// convert xyz to everything
-template <class ToType>
-struct ConverterSpecialized<xyz, ToType, _FromType_>
-{
-    enum { specialized = true };
-    static bool convert(ToType* output, const xyz& input)
-    { return ...; }
-};
+    Notes:
+    There has to be an exact type match when using template specialisations.
+    Template specialisations can be defined after including this file. Any implicit cast function or iostream
+    operator has to be declared BEFORE this file gets parsed.
 
-// convert abc to xyz
-template <>
-struct ConverterSpecialized<abc, xyz, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(xyz* output, const abc& input)
-    { return ...; }
-};
+    Defining your own functions:
+    There are obviously 4 ways to specifiy a user defined conversion. What should I use?
+
+    Usually, ConverterFallback fits quite well. You won't have to deal with the conversion from
+    'MyClass' to 'MyClass' by using another explicit template specialisation to avoid ambiguities.
+
+    However if you want to overwrite an implicit conversion or an iostream operator, you really need to
+    make use of ConverterExplicit.
 */
 
-////////////
-// STRING //
-////////////
-
-// convert to string
-template <class FromType>
-struct ConverterSpecialized<FromType, std::string, _ToType_>
+namespace
 {
-    enum { specialized = true };
+    //! Little template that maps integers to entire types (Alexandrescu 2001)
+    template <int I>
+    struct Int2Type { };
+}
+
+
+///////////////////
+// No Conversion //
+///////////////////
+
+// Default template. No conversion available at all.
+template <class FromType, class ToType>
+struct ConverterFallback
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        COUT(2) << "Could not convert value of type " << typeid(FromType).name()
+                << " to type " << typeid(ToType).name() << std::endl;
+        return false;
+    }
+};
+
+// If all else fails, try a dynamic_cast for pointer types.
+template <class FromType, class ToType>
+struct ConverterFallback<FromType*, ToType*>
+{
+    static bool convert(ToType** output, FromType* const input)
+    {
+        ToType* temp = dynamic_cast<ToType*>(input);
+        if (temp)
+        {
+            *output = temp;
+            return true;
+        }
+        else
+            return false;
+    }
+};
+
+
+///////////////////////
+// ConverterFallback //
+///////////////////////
+
+// Default template for stringstream
+template <class FromType, class ToType>
+struct ConverterStringStream
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        return ConverterFallback<FromType, ToType>::convert(output, input);
+    }
+};
+
+
+/////////////
+// OStream //
+/////////////
+
+namespace fallbackTemplates
+{
+    template <class FromType>
+    inline bool operator <<(std::ostream& outstream,  const FromType& input)
+    {
+        std::string temp;
+        if (ConverterFallback<FromType, std::string>::convert(&temp, input))
+        {
+            std::operator <<(outstream, temp);
+            return true;
+        }
+        else
+            return false;
+    }
+}
+
+// template that evaluates whether we can convert to std::string via ostringstream
+template <class FromType>
+struct ConverterStringStream<FromType, std::string>
+{
     static bool convert(std::string* output, const FromType& input)
     {
+        using namespace fallbackTemplates;
+        // this operator call only chooses fallbackTemplates::operator<< if there's no other fitting function
         std::ostringstream oss;
         if (oss << input)
         {
@@ -306,77 +213,238 @@ struct ConverterSpecialized<FromType, std::string, _ToType_>
     }
 };
 
-// convert to string Shortcut
-template <class FromType>
-std::string convertToString(FromType value)
+
+/////////////
+// IStream //
+/////////////
+
+namespace fallbackTemplates
 {
-  return getConvertedValue<FromType, std::string>(value);
+    template <class ToType>
+    inline bool operator >>(std::istream& instream, ToType& output)
+    {
+        return ConverterFallback<std::string, ToType>
+            ::convert(&output, static_cast<std::istringstream&>(instream).str());
+    }
 }
 
-// convert from string
+// template that evaluates whether we can convert from std::string via ostringstream
 template <class ToType>
-struct ConverterSpecialized<std::string, ToType, _FromType_>
+struct ConverterStringStream<std::string, ToType>
 {
-    enum { specialized = true };
     static bool convert(ToType* output, const std::string& input)
     {
+        using namespace fallbackTemplates;
         std::istringstream iss(input);
+        // this operator call only chooses fallbackTemplates::operator>> if there's no other fitting function
         if (iss >> (*output))
+        {
             return true;
+        }
         else
             return false;
     }
 };
 
+
+///////////////////
+// Implicit Cast //
+///////////////////
+
+// implicit cast not possible, try stringstream conversion next
+template <class FromType, class ToType>
+inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<false>)
+{
+    return ConverterStringStream<FromType, ToType>::convert(output, input);
+}
+
+// We can cast implicitely
+template <class FromType, class ToType>
+inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<true>)
+{
+    (*output) = static_cast<ToType>(input);
+    return true;
+}
+
+
+////////////////////////////////
+// ConverterExplicit Fallback //
+////////////////////////////////
+
+// Default template if no specialisation is available
+template <class FromType, class ToType>
+struct ConverterExplicit
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        // Try implict cast and probe first. If a simple cast is not possible, it will not compile
+        // We therefore have to out source it into another template function
+        const bool probe = ImplicitConversion<FromType, ToType>::exists;
+        return convertImplicitely(output, input, ::Int2Type<probe>());
+    }
+};
+
+
+//////////////////////
+// Public Functions //
+//////////////////////
+
+/**
+@brief
+    Converts any value to any other as long as there exists a conversion.
+    Otherwise, the conversion will generate a runtime warning and return false.
+    For information about the different conversion methods (user defined too), see the section
+    'Actual conversion sequence' in this file above.
+*/
+template <class FromType, class ToType>
+inline bool convertValue(ToType* output, const FromType& input)
+{
+    return ConverterExplicit<FromType, ToType>::convert(output, input);
+}
+
+// For compatibility reasons. The same, but with capital ConvertValue
+template<class FromType, class ToType>
+inline bool ConvertValue(ToType* output, const FromType& input)
+{
+    return convertValue(output, input);
+}
+
+// Calls convertValue and returns true if the conversion was successful.
+// Otherwise the fallback is used.
+/**
+@brief
+    Converts any value to any other as long as there exists a conversion.
+    Otherwise, the conversion will generate a runtime warning and return false.
+    For information about the different conversion methods (user defined too), see the section
+    'Actual conversion sequence' in this file above.
+    If the conversion doesn't succeed, 'fallback' is written to '*output'.
+@param fallback
+    A default value that gets written to '*output' if there is no conversion.
+*/
+template<class FromType, class ToType>
+inline bool convertValue(ToType* output, const FromType& input, const ToType& fallback)
+{
+    if (convertValue(output, input))
+        return true;
+    else
+    {
+        (*output) = fallback;
+        return false;
+    }
+}
+
+// for compatibility reason. (capital 'c' in ConvertValue)
+template<class FromType, class ToType>
+inline bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
+{
+    return convertValue(output, input, fallback);
+}
+
+// Directly returns the converted value, even if the conversion was not successful.
+template<class FromType, class ToType>
+inline ToType getConvertedValue(const FromType& input)
+{
+    ToType output;
+    convertValue(&output, input);
+    return output;
+}
+
+// Directly returns the converted value, but uses the fallback on failure.
+template<class FromType, class ToType>
+inline ToType getConvertedValue(const FromType& input, const ToType& fallback)
+{
+    ToType output;
+    convertValue(&output, input, fallback);
+    return output;
+}
+
+// Like getConvertedValue, but the template argument order is in reverse.
+// That means you can call it exactly like static_cast<ToType>(fromTypeValue).
+template<class ToType, class FromType>
+inline ToType omni_cast(const FromType& input)
+{
+    ToType output;
+    convertValue(&output, input);
+    return output;
+}
+
+// convert to string Shortcut
+template <class FromType>
+inline std::string convertToString(FromType value)
+{
+  return getConvertedValue<FromType, std::string>(value);
+}
+
 // convert from string Shortcut
 template <class ToType>
-ToType convertFromString(std::string str)
+inline ToType convertFromString(std::string str)
 {
   return getConvertedValue<std::string, ToType>(str);
 }
 
+////////////////////////////////
+// Special string conversions //
+////////////////////////////////
 
-//////////
-// MATH //
-//////////
-// convert everything to Degree
-template <class FromType>
-struct ConverterSpecialized<FromType, Ogre::Degree, _ToType_>
+// Delegate conversion from const char* to std::string
+template <class ToType>
+struct ConverterExplicit<const char*, ToType>
 {
-    enum { specialized = true };
-    static bool convert(Ogre::Degree* output, const FromType& input)
+    static bool convert(ToType* output, const char* input)
     {
-        float angle = 0;
-        bool success = ConvertValue<FromType, float>(&angle, input);
-        (*output) = angle;
-        return success;
+        return convertValue<std::string, ToType>(output, input);
     }
 };
 
-// convert everything to Radian
-template <class FromType>
-struct ConverterSpecialized<FromType, Ogre::Radian, _ToType_>
+// These conversions would exhibit ambiguous << or >> operators when using stringstream
+template <>
+struct ConverterExplicit<char, std::string>
 {
-    enum { specialized = true };
-    static bool convert(Ogre::Radian* output, const FromType& input)
+    static bool convert(std::string* output, const char input)
     {
-        float angle = 0;
-        bool success = ConvertValue<FromType, float>(&angle, input);
-        (*output) = angle;
-        return success;
+        *output = std::string(1, input);
+        return true;
+    }
+};
+template <>
+struct ConverterExplicit<unsigned char, std::string>
+{
+    static bool convert(std::string* output, const unsigned char input)
+    {
+        *output = std::string(1, input);
+        return true;
+    }
+};
+template <>
+struct ConverterExplicit<std::string, char>
+{
+    static bool convert(char* output, const std::string input)
+    {
+        if (input != "")
+            *output = input[0];
+        else
+            *output = '\0';
+        return true;
+    }
+};
+template <>
+struct ConverterExplicit<std::string, unsigned char>
+{
+    static bool convert(unsigned char* output, const std::string input)
+    {
+        if (input != "")
+            *output = input[0];
+        else
+            *output = '\0';
+        return true;
     }
 };
 
-
-////////////////////
-// MATH TO STRING //
-////////////////////
 
 // bool to std::string
 template <>
-struct ConverterSpecialized<bool, std::string, _Explicit_>
+struct ConverterExplicit<bool, std::string>
 {
-    enum { specialized = true };
     static bool convert(std::string* output, const bool& input)
     {
         if (input)
@@ -387,101 +455,10 @@ struct ConverterSpecialized<bool, std::string, _Explicit_>
     }
 };
 
-// Vector2 to std::string
-template <>
-struct ConverterSpecialized<orxonox::Vector2, std::string, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(std::string* output, const orxonox::Vector2& input)
-    {
-        std::ostringstream ostream;
-        if (ostream << input.x << "," << input.y)
-        {
-            (*output) = ostream.str();
-            return true;
-        }
-        return false;
-    }
-};
-
-// Vector3 to std::string
-template <>
-struct ConverterSpecialized<orxonox::Vector3, std::string, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(std::string* output, const orxonox::Vector3& input)
-    {
-        std::ostringstream ostream;
-        if (ostream << input.x << "," << input.y << "," << input.z)
-        {
-            (*output) = ostream.str();
-            return true;
-        }
-        return false;
-    }
-};
-
-// Vector4 to std::string
-template <>
-struct ConverterSpecialized<orxonox::Vector4, std::string, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(std::string* output, const orxonox::Vector4& input)
-    {
-        std::ostringstream ostream;
-        if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
-        {
-            (*output) = ostream.str();
-            return true;
-        }
-        return false;
-    }
-};
-
-// Quaternion to std::string
-template <>
-struct ConverterSpecialized<orxonox::Quaternion, std::string, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(std::string* output, const orxonox::Quaternion& input)
-    {
-        std::ostringstream ostream;
-        if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
-        {
-            (*output) = ostream.str();
-            return true;
-        }
-        return false;
-    }
-};
-
-// ColourValue to std::string
-template <>
-struct ConverterSpecialized<orxonox::ColourValue, std::string, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(std::string* output, const orxonox::ColourValue& input)
-    {
-        std::ostringstream ostream;
-        if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
-        {
-            (*output) = ostream.str();
-            return true;
-        }
-        return false;
-    }
-};
-
-
-////////////////////
-// STRING TO MATH //
-////////////////////
-
 // std::string to bool
 template <>
-struct ConverterSpecialized<std::string, bool, _Explicit_>
+struct ConverterExplicit<std::string, bool>
 {
-    enum { specialized = true };
     static bool convert(bool* output, const std::string& input)
     {
         std::string stripped = getLowercase(removeTrailingWhitespaces(input));
@@ -503,171 +480,5 @@ struct ConverterSpecialized<std::string, bool, _Explicit_>
             return false;
     }
 };
-
-// std::string to Vector2
-template <>
-struct ConverterSpecialized<std::string, orxonox::Vector2, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(orxonox::Vector2* output, const std::string& input)
-    {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
-
-        SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 2)
-        {
-            if (!ConvertValue(&(output->x), tokens[0]))
-                return false;
-            if (!ConvertValue(&(output->y), tokens[1]))
-                return false;
-
-            return true;
-        }
-        return false;
-    }
-};
-
-// std::string to Vector3
-template <>
-struct ConverterSpecialized<std::string, orxonox::Vector3, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(orxonox::Vector3* output, const std::string& input)
-    {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
-
-        SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 3)
-        {
-            if (!ConvertValue(&(output->x), tokens[0]))
-                return false;
-            if (!ConvertValue(&(output->y), tokens[1]))
-                return false;
-            if (!ConvertValue(&(output->z), tokens[2]))
-                return false;
-
-            return true;
-        }
-        return false;
-    }
-};
-
-// std::string to Vector4
-template <>
-struct ConverterSpecialized<std::string, orxonox::Vector4, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(orxonox::Vector4* output, const std::string& input)
-    {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
-
-        SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 4)
-        {
-            if (!ConvertValue(&(output->x), tokens[0]))
-                return false;
-            if (!ConvertValue(&(output->y), tokens[1]))
-                return false;
-            if (!ConvertValue(&(output->z), tokens[2]))
-                return false;
-            if (!ConvertValue(&(output->w), tokens[3]))
-                return false;
-
-            return true;
-        }
-        return false;
-    }
-};
-
-// std::string to Quaternion
-template <>
-struct ConverterSpecialized<std::string, orxonox::Quaternion, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(orxonox::Quaternion* output, const std::string& input)
-    {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
-
-        SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 4)
-        {
-            if (!ConvertValue(&(output->w), tokens[0]))
-                return false;
-            if (!ConvertValue(&(output->x), tokens[1]))
-                return false;
-            if (!ConvertValue(&(output->y), tokens[2]))
-                return false;
-            if (!ConvertValue(&(output->z), tokens[3]))
-                return false;
-
-            return true;
-        }
-        return false;
-    }
-};
-
-// std::string to ColourValue
-template <>
-struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
-{
-    enum { specialized = true };
-    static bool convert(orxonox::ColourValue* output, const std::string& input)
-    {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
-
-        SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 3)
-        {
-            if (!ConvertValue(&(output->r), tokens[0]))
-                return false;
-            if (!ConvertValue(&(output->g), tokens[1]))
-                return false;
-            if (!ConvertValue(&(output->b), tokens[2]))
-                return false;
-            if (tokens.size() >= 4)
-            {
-                if (!ConvertValue(&(output->a), tokens[3]))
-                    return false;
-            }
-            else
-                output->a = 1.0;
-
-            return true;
-        }
-        return false;
-    }
-};
-
-
-///////////////////////////
-// Static type detection //
-///////////////////////////
-
-/**
-    Template class that determines whether type T converts implicitly to type U.
-@note
-    This allows to detect type conversion at compile time.
-    From 'Modern C++ Design' (Alexandrescu 2001).
-*/
-template <class T, class U>
-class StaticConversion
-{
-    class Small { char dummy[1]; };
-    class Big   { char dummy[1024]; };
-    static Small Test(U);
-    static Big   Test(...);
-    static T MakeT();
-public:
-    enum { exists = sizeof(Test(MakeT())) == sizeof(Small) };
-};
-
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-#pragma warning(pop)
-#endif
 
 #endif /* _Convert_H__ */

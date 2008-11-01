@@ -28,25 +28,27 @@
 #ifndef NETWORKWELCOME_H
 #define NETWORKWELCOME_H
 
+#include "../NetworkPrereqs.h"
+
 #include "Packet.h"
 
 namespace network {
 namespace packet {
 
 /**
-	@author 
+	@author
 */
-class Welcome : public Packet
+class _NetworkExport Welcome : public Packet
 {
 public:
   Welcome( unsigned int clientID, unsigned int shipID );
   Welcome( uint8_t* data, unsigned int clientID );
   virtual ~Welcome();
-  
+
   uint8_t *getData();
   inline unsigned int getSize() const;
   bool process();
-  
+
 private:
 };
 

@@ -59,9 +59,9 @@ namespace network
     const int NETWORK_CLIENT_CHANNELS = 2;
 
 
-  class ClientConnection{
+  class _NetworkExport ClientConnection{
   public:
-    ClientConnection(int port, std::string address);
+    ClientConnection(int port, const std::string& address);
     ClientConnection(int port, const char* address);
     ~ClientConnection();
     ENetEvent *getEvent();
@@ -95,7 +95,7 @@ namespace network
     // clientlist
     ENetPeer *server;
     boost::thread *receiverThread_;
-    
+
     static boost::recursive_mutex enet_mutex_;
   };
 

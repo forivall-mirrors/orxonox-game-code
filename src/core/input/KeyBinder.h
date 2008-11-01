@@ -70,7 +70,7 @@ namespace orxonox
         void tickMouse(float dt);
         void tickJoyStick(float dt, unsigned int joyStick);
         // internal
-        void tickDevices(HalfAxis* begin, HalfAxis* end);
+        void tickHalfAxis(HalfAxis& halfAxis);
 
         void buttonThresholdChanged();
         // from JoyStickDeviceNumberListener interface
@@ -148,6 +148,8 @@ namespace orxonox
         //##### ConfigValues #####
         //! Filename of default keybindings.
         std::string defaultKeybindings_;
+        //! Whether to filter small value analog input
+        bool bFilterAnalogNoise_;
         //! Threshold for analog triggers until which the state is 0.
         float analogThreshold_;
         //! Threshold for analog triggers until which the button is not pressed.
@@ -161,7 +163,7 @@ namespace orxonox
         //! mouse sensitivity if mouse input is derived
         float mouseSensitivityDerived_;
         //! Equals one step of the mousewheel
-        float mouseWheelStepSize_;
+        int mouseWheelStepSize_;
 
         //##### Constant config variables #####
         // Use some value at about 1000. This can be configured with mouseSensitivity_ anyway.
@@ -197,16 +199,14 @@ namespace orxonox
     inline void KeyBinder::joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
     { joyStickButtons_[joyStickID][id].execute(KeybindMode::OnHold); }
 
-    inline void KeyBinder::tickJoyStick(float dt, unsigned int joyStick)
-    {
-        tickDevices(&joyStickAxes_[joyStick][0], &joyStickAxes_[joyStick][JoyStickAxisCode::numberOfAxes * 2]);
-    }
-
     inline void KeyBinder::tickInput(float dt)
     {
         // execute all buffered bindings (additional parameter)
         for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
+        {
+            paramCommandBuffer_[i]->rel_ *= dt;
             paramCommandBuffer_[i]->execute();
+        }
 
         // always reset the relative movement of the mouse
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)

@@ -65,32 +65,28 @@ namespace network
   class _NetworkExport Client : public Host{
   public:
     Client();
-    Client(std::string address, int port);
+    Client(const std::string& address, int port);
     Client(const char *address, int port);
     ~Client();
-    
+
     bool establishConnection();
     bool closeConnection();
     bool queuePacket(ENetPacket *packet, int clientID);
-    bool processChat(std::string message, unsigned int playerID);
-    virtual bool chat(std::string message);
+    bool processChat(const std::string& message, unsigned int playerID);
+    virtual bool chat(const std::string& message);
+    virtual bool broadcast(const std::string& message) { return false; }
     //bool sendChat(packet::Chat *chat);
-    
-//    static void Chat( std::string message );
-    
-    //static void setShipID( unsigned int shipID){ dynamic_cast<Client *>(instance_)->shipID_=shipID; }
-    static void setClientID( unsigned int clientID){ dynamic_cast<Client *>(instance_)->clientID_=clientID; }
-    
+
     void tick(float time);
 
   private:
     virtual bool isServer_(){return false;}
-    
+
     ClientConnection client_connection;
     GamestateClient gamestate;
     bool isConnected;
     bool isSynched_;
-    
+
     bool gameStateFailure_;
   };
 

@@ -76,9 +76,12 @@ namespace orxonox
         void windowFocusChange (Ogre::RenderWindow* rw);
         void windowClosed      (Ogre::RenderWindow* rw);
 
+        void requestWindowEventListenerUpdate() { this->bWindowEventListenerUpdateRequired_ = true; }
+
     private: // variables
         Ogre::RenderWindow*   renderWindow_;          //!< the current render window
         Ogre::Viewport*       viewport_;              //!< default full size viewport
+        bool bWindowEventListenerUpdateRequired_;     //!< True if a new WindowEventListener was created but not yet updated.
 
         // managed singletons
         InputManager*         inputManager_;
@@ -96,6 +99,7 @@ namespace orxonox
         unsigned long long    statisticsStartTime_;
         unsigned long         statisticsStartCount_;
         unsigned int          tickTime_;
+        XMLFile*              debugOverlay_;
 
         // config values
         std::string           resourceFile_;          //!< resources file name

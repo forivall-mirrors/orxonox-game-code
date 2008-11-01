@@ -164,11 +164,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Event.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\GameState.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\Language.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\LuaBind.cc"
 				>
 			</File>
 			<File
@@ -180,7 +188,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Script.cc"
+				RelativePath="..\..\src\core\Template.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\XMLNameListener.cc"
 				>
 			</File>
 			<Filter
@@ -396,11 +408,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\EventIncludes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\GameState.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\Language.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\LuaBind.h"
 				>
 			</File>
 			<File
@@ -412,15 +436,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Script.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Super.h"
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Template.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\XMLIncludes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\XMLNameListener.h"
 				>
 			</File>
 			<Filter
@@ -595,10 +623,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\Level.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\Loader.h"
 					>
 				</File>
@@ -608,6 +632,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\NamespaceNode.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLFile.h"
 					>
 				</File>
 				<File

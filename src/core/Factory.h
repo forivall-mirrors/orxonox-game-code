@@ -92,7 +92,7 @@ namespace orxonox
     class _CoreExport BaseFactory
     {
         public:
-            virtual BaseObject* fabricate() = 0;
+            virtual BaseObject* fabricate(BaseObject* creator) = 0;
             virtual ~BaseFactory() {};
     };
 }

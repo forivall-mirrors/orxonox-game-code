@@ -51,7 +51,7 @@
 namespace network
 {
   const int CLIENTID_SERVER = 0;
-  
+
   /**
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
@@ -60,15 +60,17 @@ namespace network
   public:
     Server();
     Server(int port);
-    Server(int port, std::string bindAddress);
+    Server(int port, const std::string& bindAddress);
     Server(int port, const char *bindAddress);
     ~Server();
-    
+
     void open();
     void close();
-    bool processChat(std::string message, unsigned int playerID);
+    bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void tick(float time);
+    unsigned int getPing(unsigned int clientID);
+    double getPacketLoss(unsigned int clientID);
   protected:
     void processQueue();
     void updateGamestate();
@@ -76,23 +78,24 @@ namespace network
     virtual bool isServer_(){return true;}
     unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
-    
+
     bool addClient(ENetEvent *event);
     bool createClient(int clientID);
-    bool createShip(ClientInformation *client);
     bool disconnectClient(ENetEvent *event);
     void disconnectClient(int clientID);
     void disconnectClient( ClientInformation *client);
     bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
     bool sendObjectDeletes();
-    virtual bool chat(std::string message);
-    
+    virtual bool chat(const std::string& message);
+    virtual bool broadcast(const std::string& message);
+    bool sendChat(const std::string& message, unsigned int clientID);
+
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;
     GamestateManager *gamestates_;
 
-    
+
     float timeSinceLastUpdate_;
   };
 

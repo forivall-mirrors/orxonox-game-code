@@ -1,7 +1,11 @@
 todo: 
-	!!! check that enet does not cause a packet traffic jam when a reliable packet gets missed !!!
-	[implemented] new gamestate concept
 
+	bidirectional
+
+	minimize synchronisableHeader
+
+
+	!!! check that enet does not cause a packet traffic jam when a reliable packet gets missed !!!
 	!!! ensure that objects get synched, when newly created, even if not their tick
 
 	setvariable mode
@@ -11,4 +15,4 @@ todo:
 	static (sync once) & triggerSync
 
 REMARKS:
-	try to allocate sort the bytestream before copy (putt all 0's in one place)
+	try to sort the bytestream before copy (putt all 0's in one place)

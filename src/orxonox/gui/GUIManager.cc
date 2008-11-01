@@ -46,7 +46,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "tolua/tolua_bind.h"
-#include "GraphicsEngine.h"
 #include "OgreCEGUIRenderer.h"
 
 #include "lua/lua.hpp"

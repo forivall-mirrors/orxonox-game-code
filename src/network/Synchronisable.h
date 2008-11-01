@@ -40,52 +40,54 @@
 #include "NetworkCallback.h"
 #include "util/Integers.h"
 
-#define REGISTERDATA(varname) registerVar(&varname, sizeof(varname), network::DATA)
-#define REGISTERDATA_WITHDIR(varname, mode) registerVar(&varname, sizeof(varname), network::DATA, mode)
-#define REGISTERSTRING(stringname) registerVar(&stringname, stringname.length()+1, network::STRING)
-#define REGISTERSTRING_WITHDIR(stringname, mode) registerVar(&stringname, stringname.length()+1, network::STRING, mode)
-
-//TODO: this is only a very ugly hack ...
-namespace orxonox{
-class SpaceShip;
-}
+#define REGISTERDATA(varname, ...) \
+    registerVar((void*)&varname, sizeof(varname), network::DATA, __VA_ARGS__)
+#define REGISTERSTRING(stringname, ...) \
+    registerVar(&stringname, stringname.length()+1, network::STRING, __VA_ARGS__)
 
 namespace network
 {
+  static const unsigned int OBJECTID_UNKNOWN = (unsigned int)-1;
+
   namespace direction{
     enum syncdirection{
       toclient=0x1,
       toserver=0x2,
-      bidirectional=0x3
+      bidirectional=0x3,
+      serverMaster=0x3,
+      clientMaster=0x7
     };
   }
-  
+
   namespace syncmode{
     enum mode{
       one=0,
       always=1
     };
   }
-  
+
   enum variableType{
     DATA,
     STRING,
   };
 
-  struct synchronisableHeader{
+  struct _NetworkExport synchronisableHeader{
     uint32_t size:31;
     bool dataAvailable:1;
     uint32_t objectID;
+    uint32_t creatorID;
     uint32_t classID;
   };
 
-  typedef struct synchronisableVariable{
+  struct _NetworkExport synchronisableVariable{
     unsigned int size;
     int mode; // this determines in which direction the variable gets synchronised
     void *var;
     variableType type;
     NetworkCallbackBase *callback;
-  }SYNCVAR;
+    void *varBuffer;
+    uint8_t varReference;
+  };
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
@@ -97,40 +99,39 @@ namespace network
     friend class packet::Gamestate;
     friend class GamestateClient;
     friend class Server;
-    friend class orxonox::SpaceShip;
     virtual ~Synchronisable();
 
-    
+
     virtual bool create();
     static void setClient(bool b);
-    
+
     static Synchronisable *fabricate(uint8_t*& mem, int mode=0x0);
     static bool deleteObject(unsigned int objectID);
     static Synchronisable *getSynchronisable(unsigned int objectID);
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
     static unsigned int popDeletedObject(){ unsigned int i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
-    
+
     inline unsigned int getObjectID(){return objectID;}
     inline unsigned int getClassID(){return classID;}
   protected:
-    Synchronisable();
+    Synchronisable(orxonox::BaseObject* creator);
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     void setObjectMode(int mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
-    virtual void registerAllVariables()=0;
-    
-    
+
+
   private:
     bool getData(uint8_t*& men, unsigned int id, int mode=0x0);
     uint32_t getSize(unsigned int id, int mode=0x0);
-    bool updateData(uint8_t*& mem, int mode=0x0);
+    bool updateData(uint8_t*& mem, int mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
     bool doSelection(unsigned int id);
-    bool isMyTick(unsigned int id);
-    
+    bool doSync(unsigned int id);
+
     unsigned int objectID;
+    unsigned int creatorID;
     unsigned int classID;
-    
+
     std::list<synchronisableVariable *> *syncList;
     static int state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)

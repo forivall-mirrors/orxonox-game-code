@@ -33,6 +33,7 @@
 */
 
 #include "InputCommands.h"
+#include "util/Math.h"
 #include "core/CommandExecutor.h"
 
 namespace orxonox
@@ -50,14 +51,13 @@ namespace orxonox
     */
     bool BufferedParamCommand::execute()
     {
-        if (nValuesAdded_)
+        if (this->abs_ != 0.0f || this->rel_ != 0.0f)
         {
-            BufferedParamCommand& cmd = *this;
-            cmd.evaluation_.setEvaluatedParameter(cmd.paramIndex_, cmd.value_);
+            evaluation_.setEvaluatedParameter(paramIndex_, Vector2(abs_, rel_));
             // reset
-            cmd.nValuesAdded_ = 0;
-            cmd.value_ = 0;
-            return cmd.evaluation_.execute();
+            rel_ = 0.0;
+            abs_ = 0.0;
+            return evaluation_.execute();
         }
         else
             return true;
@@ -78,41 +78,20 @@ namespace orxonox
     {
         BufferedParamCommand& cmd = *paramCommand_;
         // command has an additional parameter
-        if (bRelative_)
+        if (rel != 0.0f)
         {
-            if (rel != 0.0f)
-            {
-                // we have to calculate a relative movement.
-                // paramModifier_ says how much one keystroke is
-                cmd.value_ += paramModifier_ * rel;
-            }
+            // calculate relative movement.
+            // scale_ says how much one keystroke is
+            cmd.rel_ += scale_ * rel;
         }
-        else if (abs != 0.0f)
+
+        if (abs != 0.0f)
         {
-            // Usually, joy sticks create 'noise' (they return values if they're in 0 position)
-            // and normally this is caught in tickInput(), but that threshold cannot be to high
-            // in order to preserve accuracy. Instead, we have to catch the problem here. An example:
-            // Someone only uses buttons with an active joystick. The joy stick value could then
-            // be 0.05 for instance and the the key value 1. Without handling the problem, the final
-            // value would be computed to (1+0.05)/2=0.5025 which is not what the user expects.
-            float absQ = abs * abs;
-            float valueQ = cmd.value_ * cmd.value_;
-            if (absQ > 50.0f * valueQ) // ease up comparison by using quadratics
-            {
-                cmd.value_ = abs * paramModifier_;
-                cmd.nValuesAdded_ = 1;
-            }
-            else if (absQ * 50.0f < valueQ)
-            {
-                // abs is too small, we just don't do anything
-            }
-            else
-            {
-                // we have to calculate the absolute position of the axis.
-                // Since there might be another axis that is affected, we have to wait and
-                // store the result in a temporary place
-                cmd.value_ = (cmd.value_ * cmd.nValuesAdded_ + paramModifier_ * abs) / ++cmd.nValuesAdded_;
-            }
+            cmd.abs_ += scale_ * abs;
+            if (cmd.abs_ > 1.0)
+                cmd.abs_ = 1.0;
+            if (cmd.abs_ < -1.0)
+                cmd.abs_ = -1.0;
         }
         return true;
     }

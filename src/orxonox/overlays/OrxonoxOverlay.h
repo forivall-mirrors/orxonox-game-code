@@ -83,10 +83,12 @@ namespace orxonox
         };
 
     public:
-        OrxonoxOverlay();
+        OrxonoxOverlay(BaseObject* creator);
         virtual ~OrxonoxOverlay();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+
+        virtual void changedName();
 
         //! Shows the overlay with an detour to BaseObject::visibility_
         void show() { this->setVisible(true); }

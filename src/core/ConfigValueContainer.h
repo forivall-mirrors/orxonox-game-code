@@ -51,6 +51,7 @@
 #include "util/Math.h"
 #include "util/MultiType.h"
 #include "ConfigFileManager.h"
+#include "Identifier.h"
 
 namespace orxonox
 {
@@ -68,7 +69,7 @@ namespace orxonox
             inline ConfigValueCallback(void (T::*function) (void)) : function_(function) {}
             inline virtual ~ConfigValueCallback() {}
             inline virtual void call(void* object)
-                { (((T*)object)->*this->function_)(); }
+                { if (!Identifier::isCreatingHierarchy()) { (((T*)object)->*this->function_)(); } }
 
         private:
             void (T::*function_) (void);

@@ -48,18 +48,18 @@
 
 namespace network
 {
-  struct PacketEnvelope{
+  struct _NetworkExport PacketEnvelope{
     int length;
     int data;
   };
 
-  struct QueueItem{
+  struct _NetworkExport QueueItem{
     ENetEvent *event;
     //ENetAddress address;
     QueueItem *next;
   };
 
-  class PacketBuffer{
+  class _NetworkExport PacketBuffer{
   public:
     PacketBuffer();
     bool isEmpty();

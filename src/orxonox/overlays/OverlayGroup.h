@@ -53,15 +53,18 @@ namespace orxonox
     class _OrxonoxExport OverlayGroup : public BaseObject
     {
     public:
-        OverlayGroup();
+        OverlayGroup(BaseObject* creator);
         //! Empty destructor.
-        ~OverlayGroup() { }
+        ~OverlayGroup();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         static void toggleVisibility(const std::string& name);
         static void scaleGroup(const std::string& name, float scale);
         static void scrollGroup(const std::string& name, const Vector2& scroll);
+
+        inline const std::map<std::string, OrxonoxOverlay*>& getOverlays() const
+            { return this->hudElements_; }
 
         void changedVisibility();
 

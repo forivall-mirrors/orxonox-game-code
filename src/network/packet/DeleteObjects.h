@@ -28,26 +28,28 @@
 #ifndef NETWORKPACKETDELETEOBJECTS_H
 #define NETWORKPACKETDELETEOBJECTS_H
 
+#include "../NetworkPrereqs.h"
+
 #include "Packet.h"
 
 
 namespace network {
 namespace packet {
 /**
-	@author 
+	@author
 */
-class DeleteObjects : public Packet
+class _NetworkExport DeleteObjects : public Packet
 {
 public:
   DeleteObjects( );
   DeleteObjects( uint8_t* data, unsigned int clientID );
   ~DeleteObjects();
-  
+
   bool fetchIDs();
-  
+
   inline unsigned int getSize() const;
   bool process();
-  
+
 private:
 };
 

@@ -56,14 +56,17 @@
 
 #include <set>
 #include <map>
+#include <vector>
 #include <string>
 #include <utility>
 #include <typeinfo>
 #include <stdlib.h>
+#include <cassert>
 
 #include "MetaObjectList.h"
 #include "Iterator.h"
 #include "Super.h"
+#include "Functor.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
@@ -98,13 +101,18 @@ namespace orxonox
             /** @brief Sets the Factory. @param factory The factory to assign */
             inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
 
-            BaseObject* fabricate();
+            BaseObject* fabricate(BaseObject* creator);
             bool isA(const Identifier* identifier) const;
             bool isExactlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
             bool isDirectChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
+
+            /** @brief Returns true if the class can be loaded through XML. */
+            inline bool isLoadable() const { return this->bLoadable_; }
+            /** @brief Set the class to be loadable through XML or not. */
+            inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
             /** @brief Returns the list of all existing objects of this class. @return The list */
             inline ObjectListBase* getObjects() const
@@ -203,10 +211,19 @@ namespace orxonox
             /** @brief Returns a const_iterator to the end of the map that stores all XMLPort objects. @return The const_iterator */
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapEnd() const { return this->xmlportObjectContainers_.end(); }
 
+            /** @brief Returns the map that stores all XMLPort events. @return The const_iterator */
+            inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortEventMap() const { return this->xmlportEventContainers_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort events. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapBegin() const { return this->xmlportEventContainers_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort events. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapEnd() const { return this->xmlportEventContainers_.end(); }
+
             /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
             inline bool hasConfigValues() const { return this->bHasConfigValues_; }
             /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
             inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
+            /** @brief Returns true if this class has at least one construction callback Functor registered. */
+            inline bool hasConstructionCallback() const { return this->bHasConstructionCallback_; }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
@@ -227,9 +244,15 @@ namespace orxonox
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
+            void addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container);
+            XMLPortObjectContainer* getXMLPortEventContainer(const std::string& eventname);
+
             ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
             ConsoleCommand* getConsoleCommand(const std::string& name) const;
             ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
+
+            void addConstructionCallback(Functor* functor);
+            void removeConstructionCallback(Functor* functor);
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
 
@@ -250,6 +273,9 @@ namespace orxonox
             inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
+
+            bool bHasConstructionCallback_;                                //!< True if at least one Functor is registered to get informed when an object of type T is created.
+            std::vector<Functor*> constructionCallbacks_;                  //!< All construction callback Functors of this class.
 
             ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
@@ -284,6 +310,7 @@ namespace orxonox
 
             bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             bool bSetName_;                                                //!< True if the name is set
+            bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
@@ -299,6 +326,7 @@ namespace orxonox
 
             std::map<std::string, XMLPortParamContainer*> xmlportParamContainers_;     //!< All loadable parameters
             std::map<std::string, XMLPortObjectContainer*> xmlportObjectContainers_;   //!< All attachable objects
+            std::map<std::string, XMLPortObjectContainer*> xmlportEventContainers_;    //!< All events
     };
 
     _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);
@@ -422,6 +450,13 @@ namespace orxonox
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+        if (this->bHasConstructionCallback_)
+        {
+            // Call all registered callbacks that a new object of type T has been created.
+            // Do NOT deliver a T* pointer here because it's way too risky (object not yet fully created).
+            for (unsigned int i = 0; i < this->constructionCallbacks_.size(); ++i)
+                (*constructionCallbacks_[i])();
+        }
     }
 
     /**
@@ -479,22 +514,30 @@ namespace orxonox
             */
             SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
-                if (!identifier->isA(ClassIdentifier<T>::getIdentifier()))
+                if (!identifier || !identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
                     COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
-                    COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
-                    COUT(1) << "Aborting..." << std::endl;
-                    abort();
+                    if (identifier)
+                    {
+                        COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
+                        COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
+                    }
+                    else
+                    {
+                        COUT(1) << "Error: Can't assign NULL identifier" << std::endl;
+                    }
                 }
-                this->identifier_ = identifier;
+                else
+                {
+                    this->identifier_ = identifier;
+                }
                 return *this;
             }
 
             /**
                 @brief Overloading of the * operator: returns the assigned identifier.
             */
-            inline Identifier* operator*()
+            inline Identifier* operator*() const
             {
                 return this->identifier_;
             }
@@ -519,9 +562,9 @@ namespace orxonox
                 @brief Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
                 @return The new object
             */
-            T* fabricate()
+            T* fabricate(BaseObject* creator) const
             {
-                BaseObject* newObject = this->identifier_->fabricate();
+                BaseObject* newObject = this->identifier_->fabricate(creator);
 
                 // Check if the creation was successful
                 if (newObject)
@@ -545,7 +588,8 @@ namespace orxonox
                         COUT(1) << "Aborting..." << std::endl;
                     }
 
-                    abort();
+                    assert(false);
+                    return 0;
                 }
             }
 

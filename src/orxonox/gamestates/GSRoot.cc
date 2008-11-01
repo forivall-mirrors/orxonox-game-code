@@ -40,7 +40,6 @@
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
 #include "tools/Timer.h"
-#include "GraphicsEngine.h"
 #include "Settings.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
@@ -60,8 +59,8 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(dataPath, "").setInformation("PATH");
-    SetCommandLineArgument(limitToCPU, 1).setInformation("0: off | #cpu");
+    SetCommandLineArgument(dataPath, "").information("PATH");
+    SetCommandLineArgument(limitToCPU, 1).information("0: off | #cpu");
 
     GSRoot::GSRoot()
         : RootGameState("root")
@@ -90,8 +89,7 @@ namespace orxonox
         // instantiate Settings class
         this->settings_ = new Settings();
 
-        std::string dataPath;
-        CommandLine::getValue("dataPath", &dataPath);
+        std::string dataPath = CommandLine::getValue("dataPath");
         if (dataPath != "")
         {
             if (*dataPath.end() != '/' && *dataPath.end() != '\\')
@@ -110,8 +108,7 @@ namespace orxonox
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
         // the timer though).
-        int limitToCPU;
-        CommandLine::getValue("limitToCPU", &limitToCPU);
+        int limitToCPU = CommandLine::getValue("limitToCPU");
         if (limitToCPU > 0)
             setThreadAffinity((unsigned int)(limitToCPU - 1));
 
@@ -156,7 +153,7 @@ namespace orxonox
 
         Copyright (c) 2000-2008 Torus Knot Software Ltd
         
-        OGRE is licensed under the LGPL. For more info, see ogre license info.
+        OGRE is licensed under the LGPL. For more info, see OGRE license.
     */
     void GSRoot::setThreadAffinity(unsigned int limitToCPU)
     {

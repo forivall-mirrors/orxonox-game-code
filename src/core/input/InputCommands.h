@@ -43,11 +43,11 @@ namespace orxonox
     class _CoreExport BufferedParamCommand
     {
     public:
-        BufferedParamCommand() : value_(0.0f), nValuesAdded_(0), paramIndex_(-1) { }
+        BufferedParamCommand() : abs_(0.0f), rel_(0.0), paramIndex_(-1) { }
         bool execute();
 
-        float value_;
-        unsigned int nValuesAdded_;
+        float abs_;
+        float rel_;
         int paramIndex_;
         CommandEvaluation evaluation_;
     };
@@ -81,11 +81,10 @@ namespace orxonox
     class _CoreExport ParamCommand : public BaseCommand
     {
     public:
-        ParamCommand() : bRelative_(false), paramModifier_(1.0f), paramCommand_(0) { }
+        ParamCommand() : scale_(1.0f), paramCommand_(0) { }
         bool execute(float abs = 1.0f, float rel = 1.0f);
 
-        bool bRelative_;
-        float paramModifier_;
+        float scale_;
         BufferedParamCommand* paramCommand_;
     };
 }
