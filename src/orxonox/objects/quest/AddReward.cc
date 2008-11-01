@@ -26,9 +26,11 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "AddReward.h"
+
 #include "core/CoreIncludes.h"
 
-#include "AddReward.h"
 #include "Rewardable.h"
 
 namespace orxonox {

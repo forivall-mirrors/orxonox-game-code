@@ -26,11 +26,13 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "QuestHint.h"
+
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
 #include "Quest.h"
-#include "QuestHint.h"
 
 namespace orxonox {
 

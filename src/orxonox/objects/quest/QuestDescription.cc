@@ -26,9 +26,10 @@
  *
  */
 
-#include "core/CoreIncludes.h"
-
+#include "OrxonoxStableHeaders.h"
 #include "QuestDescription.h"
+
+#include "core/CoreIncludes.h"
 
 namespace orxonox {
 

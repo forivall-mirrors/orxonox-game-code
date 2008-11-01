@@ -313,11 +313,6 @@ namespace orxonox
             }
             file.close();
         }
-        else
-        {
-            COUT(2) << "Warning: Could not find " << filename
-                    << " to get additional command line arguments." << std::endl;
-        }
 
         try
         {

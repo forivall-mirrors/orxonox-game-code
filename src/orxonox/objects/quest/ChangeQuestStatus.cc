@@ -26,10 +26,12 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "ChangeQuestStatus.h"
+
 #include "core/CoreIncludes.h"
 
 #include "QuestItem.h"
-#include "ChangeQuestStatus.h"
 
 namespace orxonox {
 

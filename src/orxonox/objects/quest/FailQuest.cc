@@ -26,12 +26,14 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "FailQuest.h"
+
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
 #include "QuestManager.h"
 #include "Quest.h"
-#include "FailQuest.h"
 
 namespace orxonox {
 
