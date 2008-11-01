@@ -40,13 +40,28 @@
 
 namespace orxonox
 {
-    enum _CoreExport ConfigFileType
+    // Use unsigned int as config file type to have an arbitrary number of files
+    class ConfigFileType
     {
-        CFT_Settings,
-        CFT_Keybindings,
-        CFT_JoyStickCalibration
-    };
+    public:
+        ConfigFileType() { }
+        ConfigFileType(unsigned int type)              { type_ = type; }
+        ConfigFileType(const ConfigFileType& instance) { type_ = instance.type_; }
 
+        operator unsigned int() { return type_; }
+        ConfigFileType& operator =(unsigned int type) { type_ = type; return *this; }
+        bool operator <(const ConfigFileType& right) const   { return (type_ < right.type_); }
+
+        /* *** Put the different config file types here *** */
+        static const unsigned int NoType              = 0;
+        static const unsigned int Settings            = 1;
+        static const unsigned int JoyStickCalibration = 2;
+
+        static const unsigned int numberOfReservedTypes = 1024;
+
+    private:
+        unsigned int type_;
+    };
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value);
     bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
@@ -54,7 +69,6 @@ namespace orxonox
     void saveConfig();
     void cleanConfig();
     void loadSettings(const std::string& filename);
-    void loadKeybindings(const std::string& filename);
 
 
     /////////////////////
@@ -217,13 +231,20 @@ namespace orxonox
     class _CoreExport ConfigFile
     {
         public:
-            inline ConfigFile(const std::string& filename) : filename_(filename), bUpdated_(false) {}
+            inline ConfigFile(const std::string& filename, ConfigFileType type)
+                : filename_(filename)
+                , type_(type)
+                , bUpdated_(false)
+            { }
             ~ConfigFile();
 
             void load(bool bCreateIfNotExisting = true);
             void save() const;
-            void save(const std::string& filename);
+            void saveAs(const std::string& filename);
             void clean(bool bCleanComments = false);
+            void clear();
+
+            const std::string& getFilename() { return this->filename_; }
 
             inline void setValue(const std::string& section, const std::string& name, const std::string& value, bool bString)
                 { this->getSection(section)->setValue(name, value, bString); this->save(); }
@@ -240,11 +261,14 @@ namespace orxonox
             inline unsigned int getVectorSize(const std::string& section, const std::string& name)
                 { return this->getSection(section)->getVectorSize(name); }
 
+            void updateConfigValues();
+
         private:
             ConfigFileSection* getSection(const std::string& section);
             void saveIfUpdated();
 
             std::string filename_;
+            ConfigFileType type_;
             std::list<ConfigFileSection*> sections_;
             bool bUpdated_;
     };
@@ -256,17 +280,21 @@ namespace orxonox
     class _CoreExport ConfigFileManager
     {
         public:
-            static ConfigFileManager& getInstance();
+            ConfigFileManager();
+            ~ConfigFileManager();
 
-            void setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting = true);
-
-            void load(bool bCreateIfNotExisting = true);
+            void load();
             void save();
             void clean(bool bCleanComments = false);
 
-            void load(ConfigFileType type, bool bCreateIfNotExisting = true);
+            void setFilename(ConfigFileType type, const std::string& filename);
+            const std::string& getFilename(ConfigFileType type);
+
+            ConfigFileType getNewConfigFileType() { return mininmalFreeType_++; }
+
+            void load(ConfigFileType type);
             void save(ConfigFileType type);
-            void save(ConfigFileType type, const std::string& filename);
+            void saveAs(ConfigFileType type, const std::string& saveFilename);
             void clean(ConfigFileType type, bool bCleanComments = false);
 
             inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& value, bool bString)
@@ -284,19 +312,20 @@ namespace orxonox
             inline unsigned int getVectorSize(ConfigFileType type, const std::string& section, const std::string& name)
                 { return this->getFile(type)->getVectorSize(section, name); }
 
-            void updateConfigValues() const;
-            void updateConfigValues(ConfigFileType type) const;
+            void updateConfigValues();
+            void updateConfigValues(ConfigFileType type);
+
+            static ConfigFileManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
         private:
-            ConfigFileManager();
-            ConfigFileManager(const ConfigFileManager& other);
-            ~ConfigFileManager();
+            ConfigFileManager(const ConfigFileManager&);
 
             ConfigFile* getFile(ConfigFileType type);
 
-            std::string getFilePath(const std::string& name) const;
-
             std::map<ConfigFileType, ConfigFile*> configFiles_;
+            unsigned int mininmalFreeType_;
+
+            static ConfigFileManager* singletonRef_s;
     };
 }
 

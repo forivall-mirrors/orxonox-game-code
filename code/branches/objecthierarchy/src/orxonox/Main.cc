@@ -41,6 +41,7 @@
 #include "util/Debug.h"
 #include "util/SignalHandler.h"
 #include "core/ConfigFileManager.h"
+#include "core/CommandLine.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -50,8 +51,6 @@
 #include "gamestates/GSDedicated.h"
 #include "gamestates/GSGUI.h"
 #include "gamestates/GSIOConsole.h"
-
-using namespace orxonox;
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
@@ -85,14 +84,30 @@ using namespace orxonox;
 //extern "C" {
 //#endif
 
+SetCommandLineArgument(settingsFile, "orxonox.ini");
+
 int main(int argc, char** argv)
 {
+    using namespace orxonox;
+
     // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
 
-    // Specifiy config file before creating the GameStates in order to have
+    // Parse command line arguments
+    try
+    {
+        CommandLine::parseAll(argc, argv);
+    }
+    catch (ArgumentException& ex)
+    {
+        COUT(1) << ex.what() << std::endl;
+        COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
+    }
+
+    // Create the ConfigFileManager before creating the GameStates in order to have
     // setConfigValues() in the constructor (required).
-    ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox.ini");
+    ConfigFileManager* configFileManager = new ConfigFileManager();
+    configFileManager->setFilename(ConfigFileType::Settings, CommandLine::getValue("settingsFile").getString());
 
     // create the gamestates
     GSRoot root;
@@ -114,7 +129,10 @@ int main(int argc, char** argv)
     root.addChild(&dedicated);
 
     // Here happens the game
-    root.start(argc, argv);
+    root.start();
+
+    // Destroy ConfigFileManager again.
+    delete configFileManager;
 
     return 0;
 }

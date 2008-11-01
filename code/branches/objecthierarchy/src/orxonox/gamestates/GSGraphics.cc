@@ -92,16 +92,24 @@ namespace orxonox
 
     void GSGraphics::setConfigValues()
     {
-        SetConfigValue(resourceFile_, "resources.cfg").description("Location of the resources file in the data path.");
-        SetConfigValue(ogreConfigFile_,  "ogre.cfg").description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsFile_, "plugins.cfg").description("Location of the Ogre plugins file");
-        SetConfigValue(ogreLogFile_,     "ogre.log").description("Logfile for messages from Ogre. \
-                                                                 Use \"\" to suppress log file creation.");
-        SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
-        SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
-        SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(statisticsRefreshCycle_, 200000).description("Sets the time in microseconds interval at \
-                                                                    which average fps, etc. get updated.");
+        SetConfigValue(resourceFile_,    "resources.cfg")
+            .description("Location of the resources file in the data path.");
+        SetConfigValue(ogreConfigFile_,  "ogre.cfg")
+            .description("Location of the Ogre config file");
+        SetConfigValue(ogrePluginsFile_, "plugins.cfg")
+            .description("Location of the Ogre plugins file");
+        SetConfigValue(ogreLogFile_,     "ogre.log")
+            .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
+        SetConfigValue(ogreLogLevelTrivial_ , 5)
+            .description("Corresponding orxonox debug level for ogre Trivial");
+        SetConfigValue(ogreLogLevelNormal_  , 4)
+            .description("Corresponding orxonox debug level for ogre Normal");
+        SetConfigValue(ogreLogLevelCritical_, 2)
+            .description("Corresponding orxonox debug level for ogre Critical");
+        SetConfigValue(statisticsRefreshCycle_, 200000)
+            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+        SetConfigValue(defaultMasterKeybindings_, "def_masterKeybindings.ini")
+            .description("Filename of default master keybindings.");
     }
 
     void GSGraphics::enter()
@@ -135,9 +143,9 @@ namespace orxonox
         this->renderWindow_->getCustomAttribute("WINDOW", &windowHnd);
         inputManager_->initialise(windowHnd, renderWindow_->getWidth(), renderWindow_->getHeight(), true);
         // Configure master input state with a KeyBinder
-        //masterKeyBinder_ = new KeyBinder();
-        //masterKeyBinder_->loadBindings("master_keybindings.ini");
-        //inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
+        masterKeyBinder_ = new KeyBinder();
+        masterKeyBinder_->loadBindings("masterKeybindings.ini", defaultMasterKeybindings_);
+        inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
 
         // Load the InGameConsole
         console_ = new InGameConsole();
@@ -171,7 +179,7 @@ namespace orxonox
         delete this->console_;
 
         //inputManager_->getMasterInputState()->removeKeyHandler(this->masterKeyBinder_);
-        //delete this->masterKeyBinder_;
+        delete this->masterKeyBinder_;
         delete this->inputManager_;
 
         Loader::unload(this->debugOverlay_);

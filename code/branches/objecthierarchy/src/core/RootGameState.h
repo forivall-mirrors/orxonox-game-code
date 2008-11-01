@@ -41,13 +41,11 @@ namespace orxonox
         ~RootGameState();
 
         void requestState(const std::string& name);
-        void start(int argc, char** argv);
+        void start();
 
     private:
         void makeTransition(GameStateBase* source, GameStateBase* destination);
         void gotoState(const std::string& name);
-
-        void parseArguments(int argc, char** argv);
 
         std::string           stateRequest_;
     };

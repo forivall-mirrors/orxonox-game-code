@@ -127,7 +127,7 @@ namespace orxonox
             void readDefaultLanguageFile();
             void readTranslatedLanguageFile();
             void writeDefaultLanguageFile() const;
-            static const std::string getFileName(const std::string& language);
+            static const std::string getFilename(const std::string& language);
             LanguageEntry* createEntry(const LanguageEntryLabel& label, const std::string& entry);
 
             std::string defaultLanguage_;                           //!< The default language

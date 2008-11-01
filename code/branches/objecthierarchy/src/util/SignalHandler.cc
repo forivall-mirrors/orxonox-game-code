@@ -57,12 +57,12 @@ SignalHandler::SignalHandler()
 /**
  * register signal handlers for SIGSEGV and SIGABRT
  * @param appName path to executable eg argv[0]
- * @param fileName filename to append backtrace to
+ * @param filename filename to append backtrace to
  */
-void SignalHandler::doCatch( const std::string & appName, const std::string & fileName )
+void SignalHandler::doCatch( const std::string & appName, const std::string & filename )
 {
   this->appName = appName;
-  this->fileName = fileName;
+  this->filename = filename;
 
   // prepare for restoring XAutoKeyRepeat
   Display* display;
@@ -325,17 +325,17 @@ void SignalHandler::sigHandler( int sig )
          "=======================================================\n";
   bt.insert(0, timeString);
 
-  FILE * f = fopen( getInstance()->fileName.c_str(), "a" );
+  FILE * f = fopen( getInstance()->filename.c_str(), "a" );
 
   if ( !f )
   {
-    perror( ( std::string( "could not append to " ) + getInstance()->fileName ).c_str() );
+    perror( ( std::string( "could not append to " ) + getInstance()->filename ).c_str() );
     exit(EXIT_FAILURE);
   }
 
   if ( fwrite( bt.c_str(), 1, bt.length(), f ) != bt.length() )
   {
-    COUT(0) << "could not write " << bt.length() << " byte to " << getInstance()->fileName << std::endl;
+    COUT(0) << "could not write " << bt.length() << " byte to " << getInstance()->filename << std::endl;
     exit(EXIT_FAILURE);
   }
 
