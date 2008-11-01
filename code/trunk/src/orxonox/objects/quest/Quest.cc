@@ -26,9 +26,11 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "Quest.h"
+
 #include "core/CoreIncludes.h"
 
-#include "Quest.h"
 #include "QuestManager.h"
 #include "QuestDescription.h"
 #include "QuestHint.h"

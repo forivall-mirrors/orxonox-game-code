@@ -26,10 +26,12 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "AddQuestHint.h"
+
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
-#include "AddQuestHint.h"
 #include "QuestManager.h"
 #include "QuestItem.h"
 #include "QuestHint.h"
