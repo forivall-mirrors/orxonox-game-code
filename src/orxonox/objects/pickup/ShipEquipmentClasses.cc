@@ -13,7 +13,7 @@ bool CheckifSpace(){
 /* Checks if the Ship can pick an Item up. Permanents will give a "false" back unless the Ship doesnt carry a Item for that Slot (2 Weaponslots) yet.Others will be picked up unless there is no Space in the Trunk.*/
 
 bool CheckifValid(Shipitem* toBeChecked){
-	
+
 switch(toBeChecked.CheckType())
 {
 case Powerups:
@@ -57,7 +57,7 @@ case Useable:
 }
 return true;
 }
-/*Adds the Item to the Ship*/	
+/*Adds the Item to the Ship*/
 void AddItem(Shipitem* toAddItem){
 	if(CheckifValid(toAddItem)==true){
 		switch(toAddItem.CheckType()){
@@ -71,12 +71,12 @@ void AddItem(Shipitem* toAddItem){
 				Trunk.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,*toAddItem) );
 				break;
 		}
-		
+
 	}
 	else if(toAddItem.CheckType()==Permanent){
 		if(CheckifSpace()==true)
 			Trunk.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,*toAddItem) );
-	
+
 	}
-		
+
 }
