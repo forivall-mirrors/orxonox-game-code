@@ -1,9 +1,14 @@
 #include "Shipitem.h"
 
+namespace orxonox
+{
+    itemtype ShipItem::CheckType()
+    {
+        return this.type;
+    }
 
-itemtype CheckType(){
-	return This.type};
-	
-subItemTypePermanent CheckSubType(){
-	return This.subtype_permanent};
-	
+    subItemTypePermanent CheckSubType()
+    {
+        return this.subtype_permanent;
+    }
+}

@@ -10,7 +10,7 @@ multimap<std::string, Item*> equipment_;
 equipment_.insert(pair<std::string, Item*>("Weapon", new Item()));*/
 
 
-namespaces orxonox{
+namespace orxonox{
 
 	class _OrxonoxExport ShipEquipment{
 	public:
@@ -20,6 +20,8 @@ namespaces orxonox{
 		int
 	private:
 		std::multimap<std::string, Item*> Equipment;
+	};
+}
 
 
 
