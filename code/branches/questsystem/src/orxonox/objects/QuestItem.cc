@@ -70,6 +70,16 @@ namespace orxonox {
         this->id_ = "";
     }
     
+    void QuestItem::setId(const std::string & id)
+    {
+        if(!isId(id))
+        {
+            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
+            return;
+        }
+        this->id_ = id;
+    }
+    
     //const QuestDescription* QuestItem::getDescription(unsigned int index) const //!< Returns the description of the QuestItem.
     //{
     //    if(index != 0)

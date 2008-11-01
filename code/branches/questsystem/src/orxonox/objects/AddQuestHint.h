@@ -58,8 +58,7 @@ namespace orxonox {
             
             inline const std::string & getHintId(void) const
                 { return this->hintId_; }
-	    inline void setHintId(const std::string & id)
-                { this->hintId_ = id; }
+	    void setHintId(const std::string & id);
     
     };
 

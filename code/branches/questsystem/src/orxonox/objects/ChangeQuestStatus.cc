@@ -28,6 +28,7 @@
 
 #include "core/CoreIncludes.h"
 
+#include "QuestItem.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox {
@@ -43,6 +44,16 @@ namespace orxonox {
     */
     ChangeQuestStatus::~ChangeQuestStatus()
     {
+    }
+    
+    void ChangeQuestStatus::setQuestId(const std::string & id)
+    {
+        if(!QuestItem::isId(id))
+        {
+            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
+            return;
+        }
+        this->questId_ = id;
     }
     
     void ChangeQuestStatus::XMLPort(Element& xmlelement, XMLPort::Mode mode)

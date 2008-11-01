@@ -57,7 +57,7 @@ namespace orxonox {
     {
         SUPER(GlobalQuest, XMLPort, xmlelement, mode);
 
-        COUT(1) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
+        COUT(3) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
     }
     
     void GlobalQuest::initialize(void)

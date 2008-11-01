@@ -63,7 +63,7 @@ namespace orxonox {
     {
 	SUPER(QuestHint, XMLPort, xmlelement, mode);
 	
-	COUT(1) << "New QuestHint {" << this->getId() << "} created." << std::endl;
+	COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 
     

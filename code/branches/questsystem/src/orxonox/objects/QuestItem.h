@@ -63,8 +63,7 @@ namespace orxonox {
 	    static bool isId(const std::string & id); //!< Checks whether a given id is valid.
 	    
 	protected:
-            inline void setId(const std::string & id)
-                { id_ = id; }
+	    void setId(const std::string & id);
 	    inline void setDescription(QuestDescription* description)
                 { this->description_ = description; }
 	    

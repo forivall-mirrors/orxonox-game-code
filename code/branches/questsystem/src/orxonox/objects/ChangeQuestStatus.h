@@ -61,8 +61,7 @@ namespace orxonox {
             std::string questId_; //!< The id of the quest the status should be changed of.
             
 	private:
-            inline void setQuestId(const std::string & id)
-                { this->questId_ = id; }
+	    void setQuestId(const std::string & id);
 
     };
 

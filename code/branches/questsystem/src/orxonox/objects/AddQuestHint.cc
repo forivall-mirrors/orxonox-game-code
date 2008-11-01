@@ -30,6 +30,7 @@
 #include "util/Exception.h"
 
 #include "QuestManager.h"
+#include "QuestItem.h"
 #include "AddQuestHint.h"
 
 namespace orxonox {
@@ -55,6 +56,16 @@ namespace orxonox {
         
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
         
+    }
+
+    inline void AddQuestHint::setHintId(const std::string & id)
+    {
+        if(!QuestItem::isId(id))
+        {
+            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
+            return;
+        }
+        this->hintId_ = id;
     }
 
     /**

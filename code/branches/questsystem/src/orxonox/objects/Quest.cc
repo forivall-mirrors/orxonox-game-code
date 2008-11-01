@@ -87,6 +87,8 @@ namespace orxonox {
         }
         
         this->parentQuest_ = quest;
+        
+        COUT(3) << "Parent Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
     
@@ -108,6 +110,8 @@ namespace orxonox {
         
         quest->setParentQuest(this);
         this->subQuests_.push_back(quest);
+        
+        COUT(3) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
     
@@ -130,6 +134,8 @@ namespace orxonox {
         
 	this->hints_.push_back(hint);
 	hint->setQuest(this);
+	
+	COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
 	return true;
     }
     
@@ -146,6 +152,8 @@ namespace orxonox {
         }
         
         this->failEffects_.push_back(effect);
+        
+        COUT(3) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
     
@@ -162,6 +170,8 @@ namespace orxonox {
         }
         
         this->completeEffects_.push_back(effect);
+        
+        COUT(3) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
     
