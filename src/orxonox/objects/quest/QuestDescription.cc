@@ -33,27 +33,29 @@
 namespace orxonox {
 
     CreateFactory(QuestDescription);
-    
-    QuestDescription::QuestDescription() : BaseObject()
+
+    QuestDescription::QuestDescription(BaseObject* creator) : BaseObject(creator)
     {
+        RegisterObject(QuestDescription);
+
         this->initialize();
     }
-    
+
     QuestDescription::~QuestDescription()
     {
-        
+
     }
-    
+
     void QuestDescription::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(QuestDescription, XMLPort, xmlelement, mode);
-    
+
         XMLPortParam(QuestDescription, "title", setTitle, getTitle, xmlelement, mode);
         XMLPortParam(QuestDescription, "description", setDescription, getDescription, xmlelement, mode);
-        
+
         COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
     }
-    
+
     /**
     @brief
         Initializes the object. Has to be called first in every constructor of this class.

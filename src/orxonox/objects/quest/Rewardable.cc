@@ -32,13 +32,13 @@
 
 namespace orxonox {
 
-    
-    Rewardable::Rewardable() : BaseObject()
+
+    Rewardable::Rewardable(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Rewardable);
     }
-    
-    
+
+
     Rewardable::~Rewardable()
     {
     }

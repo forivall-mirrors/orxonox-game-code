@@ -37,20 +37,20 @@ namespace orxonox {
         Constructor. Creates a new QuestEffect.
         Is not meant to be invoked directly, since this is only an interface.
     */
-    QuestEffect::QuestEffect() : BaseObject()
+    QuestEffect::QuestEffect(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestEffect);
     }
-    
+
     /**
     @brief
         Destructor.
     */
     QuestEffect::~QuestEffect()
     {
-        
+
     }
-    
+
     /**
     @brief
         Static method. Invoke all effects of an effect list.
@@ -64,7 +64,7 @@ namespace orxonox {
     bool QuestEffect::invokeEffects(Player* player, std::list<QuestEffect*> & effects)
     {
         bool check = true;
-        
+
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
 	{
 	    check = check && (*effect)->invoke(player);

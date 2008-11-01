@@ -46,13 +46,13 @@ namespace orxonox {
     class QuestEffect : public BaseObject
     {
 	public:
-            QuestEffect();
+            QuestEffect(BaseObject* creator);
 	    virtual ~QuestEffect();
-	    
+
 	    virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
 	    static bool invokeEffects(Player* player, std::list<QuestEffect*> & effects); //!< Invokes all effects in the list.
-	    
-	
+
+
     };
 
 }

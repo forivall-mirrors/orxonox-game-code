@@ -46,20 +46,20 @@ namespace orxonox {
     class AddQuestHint : public QuestEffect
     {
 	public:
-            AddQuestHint();
-	    ~AddQuestHint();
-	    
+            AddQuestHint(BaseObject* creator);
+	    virtual ~AddQuestHint();
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
-	    
+
 	private:
             std::string hintId_;
-            
+
             inline const std::string & getHintId(void) const
                 { return this->hintId_; }
 	    void setHintId(const std::string & id);
-    
+
     };
 
 }

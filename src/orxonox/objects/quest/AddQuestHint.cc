@@ -37,11 +37,11 @@ namespace orxonox {
 
     CreateFactory(AddQuestHint);
 
-    AddQuestHint::AddQuestHint() : QuestEffect()
+    AddQuestHint::AddQuestHint(BaseObject* creator) : QuestEffect(creator)
     {
-        
+        RegisterObject(AddQuestHint);
     }
-    
+
     /**
     @brief
         Destructor.
@@ -49,13 +49,13 @@ namespace orxonox {
     AddQuestHint::~AddQuestHint()
     {
     }
-    
+
     void AddQuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuestHint, XMLPort, xmlelement, mode);
-        
+
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
-        
+
     }
 
     inline void AddQuestHint::setHintId(const std::string & id)
@@ -97,8 +97,8 @@ namespace orxonox {
 	   COUT(2) << e.getFullDescription() << std::endl;
 	   return false;
 	}
-	
+
 	return true;
-	
+
     }
 }

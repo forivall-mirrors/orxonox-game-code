@@ -47,13 +47,13 @@ namespace orxonox {
     class FailQuest : public ChangeQuestStatus
     {
 	public:
-            FailQuest();
-	    ~FailQuest();
-	    
+            FailQuest(BaseObject* creator);
+	    virtual ~FailQuest();
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
-    
+
     };
 
 }

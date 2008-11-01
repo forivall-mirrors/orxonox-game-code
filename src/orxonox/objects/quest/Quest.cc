@@ -33,32 +33,34 @@
 
 namespace orxonox {
 
-    Quest::Quest() : QuestItem()
+    Quest::Quest(BaseObject* creator) : QuestItem(creator)
     {
+        RegisterObject(Quest);
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     Quest::~Quest()
     {
-        
+
     }
-    
+
     void Quest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Quest, XMLPort, xmlelement, mode);
-        
+
         XMLPortObject(Quest, Quest, "", addSubQuest, getSubQuests, xmlelement, mode);
         XMLPortObject(Quest, QuestHint, "", addHint, getHints, xmlelement, mode);
         XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffects, xmlelement, mode);
         XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffects, xmlelement, mode);
-        
+
         QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
     }
-    
+
     /**
     @brief
         Initializes the object. Needs to be called first in every constructor of this class.
@@ -66,7 +68,7 @@ namespace orxonox {
     void Quest::initialize(void)
     {
         RegisterObject(Quest);
-        
+
         this->parentQuest_ = NULL;
     }
 
@@ -85,13 +87,13 @@ namespace orxonox {
             COUT(2) << "The parentquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
             return false;
         }
-        
+
         this->parentQuest_ = quest;
-        
+
         COUT(3) << "Parent Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
         Adds a sub quest to the quest.
@@ -107,18 +109,18 @@ namespace orxonox {
             COUT(2) << "The subquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
             return false;
         }
-        
+
         quest->setParentQuest(this);
         this->subQuests_.push_back(quest);
-        
+
         COUT(3) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
-    
-    
+
+
     /**
     @brief
-        Adds a Hint to the list of hints 
+        Adds a Hint to the list of hints
     @param hint
         The hint that should be added to the list of hints.
     @return
@@ -131,17 +133,17 @@ namespace orxonox {
             COUT(2) << "A NULL-QuestHint was trying to be added." << std::endl;
             return false;
         }
-        
+
 	this->hints_.push_back(hint);
 	hint->setQuest(this);
-	
+
 	COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
 	return true;
     }
-    
+
     /**
     @brief
-        
+
     */
     bool Quest::addFailEffect(QuestEffect* effect)
     {
@@ -150,16 +152,16 @@ namespace orxonox {
             COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
             return false;
         }
-        
+
         this->failEffects_.push_back(effect);
-        
+
         COUT(3) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
-        
+
     */
     bool Quest::addCompleteEffect(QuestEffect* effect)
     {
@@ -168,25 +170,25 @@ namespace orxonox {
             COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
             return false;
         }
-        
+
         this->completeEffects_.push_back(effect);
-        
+
         COUT(3) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
-        
+
     */
     const Quest* Quest::getParentQuest(void)
     {
         return this->parentQuest_;
     }
-    
+
     /**
     @brief
-        
+
     */
     const Quest* Quest::getSubQuests(unsigned int index) const
     {
@@ -201,10 +203,10 @@ namespace orxonox {
 	}
         return NULL;
     }
-    
+
     /**
     @brief
-        
+
     */
     const QuestHint* Quest::getHints(unsigned int index) const
     {
@@ -219,10 +221,10 @@ namespace orxonox {
 	}
         return NULL;
     }
-    
+
     /**
     @brief
-        
+
     */
     const QuestEffect* Quest::getFailEffects(unsigned int index) const
     {
@@ -237,10 +239,10 @@ namespace orxonox {
 	}
         return NULL;
     }
-    
+
     /**
     @brief
-        
+
     */
     const QuestEffect* Quest::getCompleteEffects(unsigned int index) const
     {
@@ -255,7 +257,7 @@ namespace orxonox {
 	}
         return NULL;
     }
-    
+
     /**
     @brief
         Returns true if the quest status for the specific player is 'inactive'.
@@ -270,7 +272,7 @@ namespace orxonox {
     {
         return this->getStatus(player) == questStatus::inactive;
     }
-    
+
     /**
     @brief
         Returns true if the quest status for the specific player is 'active'.
@@ -286,7 +288,7 @@ namespace orxonox {
 
         return this->getStatus(player) == questStatus::active;
     }
-    
+
     /**
     @brief
         Returns true if the quest status for the specific player is 'failed'.
@@ -301,7 +303,7 @@ namespace orxonox {
     {
         return this->getStatus(player) == questStatus::failed;
     }
-    
+
     /**
     @brief
         Returns true if the quest status for the specific player is 'completed'.
@@ -316,7 +318,7 @@ namespace orxonox {
     {
         return this->getStatus(player) == questStatus::completed;
     }
-    
+
     /**
     @brief
         Starts the quest.
@@ -335,7 +337,7 @@ namespace orxonox {
         COUT(2) << "A non-startable quest was trying to be started." << std::endl;
         return false;
     }
-    
+
     /**
     @brief
         Fails the quest.
@@ -355,7 +357,7 @@ namespace orxonox {
         COUT(2) << "A non-failable quest was trying to be failed." << std::endl;
         return false;
     }
-    
+
     /**
     @brief
         Completes the quest.

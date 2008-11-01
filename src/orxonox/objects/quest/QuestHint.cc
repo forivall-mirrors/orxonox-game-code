@@ -40,33 +40,35 @@ namespace orxonox {
     @brief
         Constructor.
     */
-    QuestHint::QuestHint() : QuestItem()
+    QuestHint::QuestHint(BaseObject* creator) : QuestItem(creator)
     {
+        RegisterObject(QuestHint);
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     QuestHint::~QuestHint()
     {
-        
+
     }
-    
+
     void QuestHint::initialize(void)
     {
         RegisterObject(QuestHint);
     }
-    
+
     void QuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 	SUPER(QuestHint, XMLPort, xmlelement, mode);
-	
+
 	COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 
-    
+
     /**
     @brief
         Checks whether the hint is active for a specific player.
@@ -84,7 +86,7 @@ namespace orxonox {
             ThrowException(Argument, "The input Player* is NULL.");
             return false;
         }
-        
+
         std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
 	if (it != this->playerStatus_.end())
 	{
@@ -92,7 +94,7 @@ namespace orxonox {
 	}
 	return questStatus::inactive;
     }
-    
+
     /**
     @brief
         Activates a QuestHint for a given player.
@@ -133,7 +135,7 @@ namespace orxonox {
             COUT(2) << "The input Quest* is NULL." << std::endl;
             return false;
         }
-        
+
         this->quest_ = quest;
         return true;
     }

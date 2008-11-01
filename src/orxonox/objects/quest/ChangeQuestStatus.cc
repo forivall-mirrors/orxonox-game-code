@@ -33,7 +33,7 @@
 
 namespace orxonox {
 
-    ChangeQuestStatus::ChangeQuestStatus() : QuestEffect()
+    ChangeQuestStatus::ChangeQuestStatus(BaseObject* creator) : QuestEffect(creator)
     {
         RegisterObject(ChangeQuestStatus);
     }
@@ -45,7 +45,7 @@ namespace orxonox {
     ChangeQuestStatus::~ChangeQuestStatus()
     {
     }
-    
+
     void ChangeQuestStatus::setQuestId(const std::string & id)
     {
         if(!QuestItem::isId(id))
@@ -55,11 +55,11 @@ namespace orxonox {
         }
         this->questId_ = id;
     }
-    
+
     void ChangeQuestStatus::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ChangeQuestStatus, XMLPort, xmlelement, mode);
-        
+
         XMLPortParam(ChangeQuestStatus, "questId", setQuestId, getQuestId, xmlelement, mode);
     }
 

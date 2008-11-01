@@ -48,22 +48,22 @@ namespace orxonox {
     class AddReward : public QuestEffect
     {
 	public:
-            AddReward();
-	    ~AddReward();
-	    
+            AddReward(BaseObject* creator);
+	    virtual ~AddReward();
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
-	    
+
 	private:
             std::list<Rewardable*> rewards_;
-	
+
             void initialize(void); //!< Initializes the object.
-	
+
             inline void addRewardable(Rewardable* reward)
                 { this->rewards_.push_back(reward); }
 	    const Rewardable* getRewardables(unsigned int index) const;
-    
+
     };
 
 }
