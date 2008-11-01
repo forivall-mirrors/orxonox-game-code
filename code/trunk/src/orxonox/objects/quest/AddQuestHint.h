@@ -29,6 +29,8 @@
 #ifndef _AddQuestHint_H__
 #define _AddQuestHint_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include "QuestEffect.h"
@@ -43,7 +45,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class AddQuestHint : public QuestEffect
+    class _OrxonoxExport AddQuestHint : public QuestEffect
     {
         public:
             AddQuestHint(BaseObject* creator);

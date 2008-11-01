@@ -29,11 +29,12 @@
 #ifndef _QuestHint_H__
 #define _QuestHint_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <map>
 #include <string>
 
 #include "core/XMLPort.h"
-#include "QuestDescription.h"
 #include "QuestItem.h"
 
 namespace questHintStatus
@@ -51,7 +52,6 @@ namespace orxonox
 {
 
     class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-    class Quest; //To avoid circual includes.
 
     /**
     @brief
@@ -61,7 +61,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class QuestHint : public QuestItem
+    class _OrxonoxExport QuestHint : public QuestItem
     {
 
         public:

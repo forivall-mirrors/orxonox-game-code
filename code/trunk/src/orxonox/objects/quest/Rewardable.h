@@ -29,6 +29,8 @@
 #ifndef _Rewardable_H__
 #define _Rewardable_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include "core/BaseObject.h"
 
 namespace orxonox {
@@ -41,7 +43,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class Rewardable : public BaseObject
+    class _OrxonoxExport Rewardable : public BaseObject
     {
 
         public:

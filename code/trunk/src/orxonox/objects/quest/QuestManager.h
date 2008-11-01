@@ -29,12 +29,12 @@
 #ifndef _QuestManager_H__
 #define _QuestManager_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <map>
 #include <string>
 
 #include "core/BaseObject.h"
-#include "Quest.h"
-#include "QuestHint.h"
 
 namespace orxonox {
 
@@ -45,7 +45,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class QuestManager : public BaseObject
+    class _OrxonoxExport QuestManager : public BaseObject
     {
 
         public:

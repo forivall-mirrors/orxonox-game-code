@@ -29,6 +29,8 @@
 #ifndef _QuestDescription_H__
 #define _QuestDescription_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include "core/BaseObject.h"
@@ -43,7 +45,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class QuestDescription : public BaseObject {
+    class _OrxonoxExport QuestDescription : public BaseObject {
 
         public:
             QuestDescription(BaseObject* creator);

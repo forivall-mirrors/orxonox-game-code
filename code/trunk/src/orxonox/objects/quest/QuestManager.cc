@@ -30,6 +30,8 @@
 #include "util/Exception.h"
 
 #include "QuestManager.h"
+#include "Quest.h"
+#include "QuestHint.h"
 
 namespace orxonox {
 

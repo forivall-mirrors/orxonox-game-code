@@ -29,10 +29,11 @@
 #ifndef _AddReward_H__
 #define _AddReward_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <list>
 
 #include "core/XMLPort.h"
-#include "Rewardable.h"
 #include "QuestEffect.h"
 
 namespace orxonox {
@@ -45,7 +46,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class AddReward : public QuestEffect
+    class _OrxonoxExport AddReward : public QuestEffect
     {
         public:
             AddReward(BaseObject* creator);

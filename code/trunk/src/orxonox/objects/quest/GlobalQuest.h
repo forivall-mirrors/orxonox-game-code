@@ -29,6 +29,8 @@
 #ifndef _GlobalQuest_H__
 #define _GlobalQuest_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <set>
 
 #include "core/XMLPort.h"
@@ -45,7 +47,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class GlobalQuest : public Quest
+    class _OrxonoxExport GlobalQuest : public Quest
     {
         public:
             GlobalQuest(BaseObject* creator);
