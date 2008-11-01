@@ -52,7 +52,7 @@ namespace orxonox
             void setActiveWeaponSet(unsigned int n);
             WeaponSet * getWeaponSetPointer(unsigned int n);
 
-            inline void WeaponSystem::setParentSpaceShip(SpaceShip *parentSpaceShip)
+            inline void setParentSpaceShip(SpaceShip *parentSpaceShip)
                 { parentSpaceShip_=parentSpaceShip; }
             inline SpaceShip * getParentSpaceShip()
                 { return parentSpaceShip_; }

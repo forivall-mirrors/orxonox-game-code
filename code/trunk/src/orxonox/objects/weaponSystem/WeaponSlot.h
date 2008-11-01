@@ -51,7 +51,7 @@ namespace orxonox
             void setAmmoType(bool isUnlimited);
             void fire();
 
-            inline void WeaponSlot::setParentWeaponSet(WeaponSet *parentWeaponSet)
+            inline void setParentWeaponSet(WeaponSet *parentWeaponSet)
                 { parentWeaponSet_=parentWeaponSet; }
             inline WeaponSet * getParentWeaponSet()
                 { return parentWeaponSet_; }

@@ -45,13 +45,13 @@ namespace orxonox
             WeaponSet(BaseObject* creator, int k = 0);
             virtual ~WeaponSet();
 
-            virtual void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void WeaponSet::attachWeaponSlot(WeaponSlot *wSlot);
-            void WeaponSet::fire();
+            void attachWeaponSlot(WeaponSlot *wSlot);
+            void fire();
             WeaponSlot * getWeaponSlotPointer(unsigned int n);
 
-            inline void WeaponSet::setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
+            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }
             inline WeaponSystem * getParentWeaponSystem()
                 { return parentWeaponSystem_; }
