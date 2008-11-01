@@ -46,33 +46,18 @@ namespace orxonox
     class _CoreExport EventContainer
     {
         public:
-            EventContainer(const std::string& eventname, Executor* eventfunction, Identifier* subclass) : eventname_(eventname), eventfunction_(eventfunction), subclass_(subclass), activeEvents_(0) {}
+            EventContainer(const std::string& eventname, Executor* eventfunction, Identifier* subclass) : bActive_(false), eventname_(eventname), eventfunction_(eventfunction), subclass_(subclass), activeEvents_(0) {}
             virtual ~EventContainer();
 
-            virtual void process(void* object, const Event& event);
+            void process(BaseObject* object, const Event& event);
 
         private:
+            bool bActive_;
             std::string eventname_;
             Executor* eventfunction_;
             Identifier* subclass_;
 
             int activeEvents_;
-    };
-
-    template <class T>
-    class ClassEventContainer : public EventContainer
-    {
-        public:
-            ClassEventContainer(const std::string& eventname, ExecutorMember<T>* eventfunction, Identifier* subclass) : EventContainer(eventname, (Executor*)eventfunction, subclass), eventfunction_(eventfunction) {}
-
-            void process(void* object, const Event& event)
-            {
-                this->eventfunction_->setObject((T*)object);
-                EventContainer::process(object, event);
-            }
-
-        private:
-            ExecutorMember<T>* eventfunction_;
     };
 }
 

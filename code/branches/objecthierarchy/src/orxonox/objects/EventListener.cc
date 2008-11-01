@@ -40,6 +40,8 @@ namespace orxonox
     EventListener::EventListener(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(EventListener);
+
+        this->bActive_ = false;
     }
 
     EventListener::~EventListener()
@@ -55,7 +57,17 @@ namespace orxonox
 
     void EventListener::processEvent(Event& event)
     {
+        if (this->bActive_)
+        {
+            COUT(2) << "Warning: Detected Event loop in EventListener \"" << this->getName() << "\"" << std::endl;
+            return;
+        }
+
+        this->bActive_ = true;
+
         this->fireEvent(event.activate_, event.originator_);
+
+        this->bActive_ = false;
     }
 
     void EventListener::setEventName(const std::string& eventname)

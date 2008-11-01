@@ -33,22 +33,36 @@
 #include "Executor.h"
 
 #define SetEvent(classname, eventname, functionname, event) \
-    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, orxonox::createExecutor(orxonox::createFunctor(&classname::functionname), std::string( #classname ) + "::" + #functionname), event, BaseObject)
+    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject)
 
 #define SetEventTemplate(classname, eventname, functionname, event, ...) \
-    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::functionname), std::string( #classname ) + "::" + #functionname), event, BaseObject)
+    SetEventGenericTemplate(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject, __VA_ARGS__)
 
 #define SetSubclassEvent(classname, eventname, functionname, event, subclassname) \
-    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, orxonox::createExecutor(orxonox::createFunctor(&classname::functionname), std::string( #classname ) + "::" + #functionname), event, subclassname)
+    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname)
 
 #define SetSubclassEventTemplate(classname, eventname, functionname, event, subclassname, ...) \
-    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::functionname), std::string( #classname ) + "::" + #functionname), event, subclassname)
+    SetEventGenericTemplate(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname, __VA_ARGS__)
 
-#define SetEventGeneric(containername, classname, eventname, executor, event, subclassname) \
+#define SetEventGeneric(containername, classname, eventname, functionname, event, subclassname) \
     orxonox::EventContainer* containername = this->getEventContainer(eventname); \
     if (!containername) \
     { \
-        containername = new orxonox::ClassEventContainer<classname>(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
+        ExecutorMember<classname>* executor = orxonox::createExecutor(orxonox::createFunctor(&classname::functionname), std::string( #classname ) + "::" + #functionname); \
+        executor->setObject(this); \
+        containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
+        this->addEventContainer(eventname, containername); \
+    } \
+    event.castedOriginator_ = dynamic_cast<subclassname*>(event.originator_); \
+    containername->process(this, event)
+
+#define SetEventGenericTemplate(containername, classname, eventname, functionname, event, subclassname, ...) \
+    orxonox::EventContainer* containername = this->getEventContainer(eventname); \
+    if (!containername) \
+    { \
+        ExecutorMember<classname>* executor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::functionname), std::string( #classname ) + "::" + #functionname); \
+        executor->setObject(this); \
+        containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
         this->addEventContainer(eventname, containername); \
     } \
     event.castedOriginator_ = dynamic_cast<subclassname*>(event.originator_); \

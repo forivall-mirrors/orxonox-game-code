@@ -54,6 +54,7 @@ namespace orxonox
             void registerAsListener(BaseObject* object);
 
             std::string eventName_;
+            bool bActive_;
     };
 }
 

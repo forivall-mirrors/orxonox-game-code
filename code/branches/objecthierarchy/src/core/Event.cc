@@ -37,8 +37,16 @@ namespace orxonox
         delete this->eventfunction_;
     }
 
-    void EventContainer::process(void* object, const Event& event)
+    void EventContainer::process(BaseObject* object, const Event& event)
     {
+        if (this->bActive_)
+        {
+            COUT(2) << "Warning: Detected Event loop in section \"" << this->eventname_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << "\"" << std::endl;
+            return;
+        }
+
+        this->bActive_ = true;
+
         if (this->eventname_ == event.sectionname_)
         {
             if (event.originator_->isA(this->subclass_))
@@ -64,5 +72,7 @@ namespace orxonox
                 }
             }
         }
+
+        this->bActive_ = false;
     }
 }

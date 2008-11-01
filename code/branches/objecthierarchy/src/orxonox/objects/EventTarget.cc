@@ -63,6 +63,7 @@ namespace orxonox
 
     void EventTarget::addAsEvent(BaseObject* object)
     {
-        object->addEvent(this, "");
+        if (object != (BaseObject*)this)
+            object->addEvent(this, "");
     }
 }
