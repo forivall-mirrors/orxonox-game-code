@@ -127,6 +127,12 @@ namespace orxonox
     class DistanceTrigger;
     class EventTrigger;
 
+    class WeaponSystem;
+    class WeaponSet;
+    class WeaponSlot;
+    class Weapon;
+    class Munition;
+
     class EventListener;
     class EventDispatcher;
     class EventTarget;
