@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport Weapon : public BaseObject
     {
         public:
-            Weapon();
+            Weapon(BaseObject* creator);
             virtual ~Weapon();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    Missile::Missile()
+    Missile::Missile(BaseObject* creator) : Weapon(creator)
     {
         RegisterObject(Missile);
     }

@@ -38,10 +38,10 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGun : public BaseObject : public Weapon
+    class _OrxonoxExport LaserGun : public Weapon
     {
         public:
-            LaserGun();
+            LaserGun(BaseObject* creator);
             virtual ~LaserGun();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

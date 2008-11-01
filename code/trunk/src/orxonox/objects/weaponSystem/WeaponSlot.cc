@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    WeaponSlot::WeaponSlot()
+    WeaponSlot::WeaponSlot(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponSlot);
     }

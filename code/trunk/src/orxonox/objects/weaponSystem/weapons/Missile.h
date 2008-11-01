@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport Missile : public BaseObject : public Weapon
     {
         public:
-            Missile();
+            Missile(BaseObject* creator);
             virtual ~Missile();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
