@@ -41,6 +41,11 @@ namespace orxonox
     WeaponSlot::WeaponSlot(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponSlot);
+
+        this->unlimitedAmmo_ = false;
+
+        this->attachedWeapon_ = 0;
+        this->parentWeaponSet_ = 0;
     }
 
     WeaponSlot::~WeaponSlot()

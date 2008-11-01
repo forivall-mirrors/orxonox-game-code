@@ -34,7 +34,8 @@
 #include "core/BaseObject.h"
 
 #include "LaserGunMunition.h"
-#include "../tools/BillboardSet.h"
+#include "tools/BillboardSet.h"
+#include "util/Math.h"
 
 namespace orxonox
 {

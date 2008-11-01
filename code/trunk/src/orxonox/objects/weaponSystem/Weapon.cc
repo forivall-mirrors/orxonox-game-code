@@ -39,6 +39,10 @@ namespace orxonox
     Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Weapon);
+
+        this->loadingTime_ = 0;
+        this->munition_ = 0;
+
     }
 
     Weapon::~Weapon()

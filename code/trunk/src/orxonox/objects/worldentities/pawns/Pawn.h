@@ -73,6 +73,8 @@ namespace orxonox
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void kill();
 
+            virtual void fire();
+
             virtual void postSpawn();
 
         protected:
@@ -86,6 +88,8 @@ namespace orxonox
             float initialHealth_;
 
             Pawn* lastHitOriginator_;
+
+            WeaponSystem* weaponSystem_;
     };
 }
 

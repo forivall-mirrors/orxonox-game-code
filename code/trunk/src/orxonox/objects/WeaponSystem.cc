@@ -47,6 +47,9 @@ namespace orxonox
     WeaponSystem::WeaponSystem(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponSystem);
+
+        this->activeWeaponSet_ = 0;
+        this->parentSpaceShip_ = 0;
     }
 
     WeaponSystem::~WeaponSystem()
@@ -61,24 +64,32 @@ namespace orxonox
     }
 
     //the first weaponSet is at n=0
-    void WeaponSystem::setActiveWeaponSet(int n)
+    void WeaponSystem::setActiveWeaponSet(unsigned int n)
     {
-        if ( (int) weaponSets_.size() <= n )
-            n=0;
-        this->activeWeaponSet_ = this->weaponSets_[n];
+        if (n < this->weaponSets_.size())
+            this->activeWeaponSet_ = this->weaponSets_[n];
     }
 
     //n is the n'th weaponSet, starting with zero
     //Spaceship.cc only needs to have the keybinding to a specific Set-number n
-    void WeaponSystem::fire(int n)
+    void WeaponSystem::fire(unsigned int n)
     {
-        if (n>=0)
+        if (n < this->weaponSets_.size())
             this->weaponSets_[n]->fire();
     }
 
-    WeaponSet * WeaponSystem::getWeaponSetPointer(int n)
+    void WeaponSystem::fire()
     {
-        return this->weaponSets_[n];
+        if (this->activeWeaponSet_)
+            this->activeWeaponSet_->fire();
+    }
+
+    WeaponSet * WeaponSystem::getWeaponSetPointer(unsigned int n)
+    {
+        if (n < this->weaponSets_.size())
+            return this->weaponSets_[n];
+        else
+            return 0;
     }
 
     void WeaponSystem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
