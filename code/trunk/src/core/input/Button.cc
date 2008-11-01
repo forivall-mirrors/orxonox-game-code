@@ -81,12 +81,12 @@ namespace orxonox
         }
     }
 
-    void Button::readConfigValue()
+    void Button::readConfigValue(ConfigFileType configFile)
     {
         // create/get ConfigValueContainer
         if (!configContainer_)
         {
-            configContainer_ = new ConfigValueContainer(CFT_Keybindings, 0, groupName_, name_, "", name_);
+            configContainer_ = new ConfigValueContainer(configFile, 0, groupName_, name_, "", name_);
             configContainer_->callback(this, &Button::parse);
         }
         configContainer_->getValue(&bindingString_, this);

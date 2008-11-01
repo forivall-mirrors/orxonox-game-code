@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include "InputCommands.h"
+#include "core/ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -51,7 +52,7 @@ namespace orxonox
         virtual void clear();
         virtual bool addParamCommand(ParamCommand* command) { return false; }
         void parse();
-        void readConfigValue();
+        void readConfigValue(ConfigFileType configFile);
         bool execute(KeybindMode::Enum mode, float abs = 1.0f, float rel = 1.0f);
 
         //! Container to allow for better configValue support

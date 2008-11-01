@@ -70,8 +70,10 @@ namespace orxonox
         CameraManager*        cameraManager_;
         LevelManager*         levelManager_;
 
-        // config values
+        //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;
+        //! Filename of default keybindings.
+        std::string           defaultKeybindings_;
 
     private:
         void setConfigValues();

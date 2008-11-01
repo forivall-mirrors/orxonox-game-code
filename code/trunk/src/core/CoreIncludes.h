@@ -134,6 +134,6 @@
 */
 #define RegisterConstructionCallback(ThisClassName, TargetClassName, FunctionName) \
     orxonox::ClassIdentifier<TargetClassName>::getIdentifier()->addConstructionCallback( \
-        createFunctor(&ThisClassName::FunctionName)->setObject(this))
+        orxonox::createFunctor(&ThisClassName::FunctionName)->setObject(this))
 
 #endif /* _CoreIncludes_H__ */

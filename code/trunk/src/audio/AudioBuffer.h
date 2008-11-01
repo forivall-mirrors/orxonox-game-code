@@ -39,7 +39,7 @@ namespace audio
     class _AudioExport AudioBuffer
     {
     public:
-        AudioBuffer(std::string fileName);
+        AudioBuffer(std::string filename);
         ~AudioBuffer();
 
     private:

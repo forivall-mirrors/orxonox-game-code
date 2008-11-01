@@ -136,7 +136,7 @@ namespace orxonox
             return newEntry;
         }
 
-        COUT(2) << "Warning: Language entry " << label << " is duplicate in " << getFileName(this->defaultLanguage_) << "!" << std::endl;
+        COUT(2) << "Warning: Language entry " << label << " is duplicate in " << getFilename(this->defaultLanguage_) << "!" << std::endl;
         return it->second;
     }
 
@@ -193,7 +193,7 @@ namespace orxonox
         @param language The name of the language
         @return The filename
     */
-    const std::string Language::getFileName(const std::string& language)
+    const std::string Language::getFilename(const std::string& language)
     {
         return std::string("translation_" + language + ".lang");
     }
@@ -207,17 +207,17 @@ namespace orxonox
 
         // This creates the file if it's not existing
         std::ofstream createFile;
-        createFile.open(getFileName(this->defaultLanguage_).c_str(), std::fstream::app);
+        createFile.open(getFilename(this->defaultLanguage_).c_str(), std::fstream::app);
         createFile.close();
 
         // Open the file
         std::ifstream file;
-        file.open(getFileName(this->defaultLanguage_).c_str(), std::fstream::in);
+        file.open(getFilename(this->defaultLanguage_).c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFileName(this->defaultLanguage_) << " to read the default language entries!" << std::endl;
+            COUT(1) << "Error: Couldn't open file " << getFilename(this->defaultLanguage_) << " to read the default language entries!" << std::endl;
             return;
         }
 
@@ -239,7 +239,7 @@ namespace orxonox
                     this->createEntry(lineString.substr(0, pos), lineString.substr(pos + 1));
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(this->defaultLanguage_) << std::endl;
+                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(this->defaultLanguage_) << std::endl;
                 }
             }
         }
@@ -256,12 +256,12 @@ namespace orxonox
 
         // Open the file
         std::ifstream file;
-        file.open(getFileName(Core::getLanguage()).c_str(), std::fstream::in);
+        file.open(getFilename(Core::getLanguage()).c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFileName(Core::getLanguage()) << " to read the translated language entries!" << std::endl;
+            COUT(1) << "Error: Couldn't open file " << getFilename(Core::getLanguage()) << " to read the translated language entries!" << std::endl;
             Core::resetLanguage();
             COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
             return;
@@ -293,7 +293,7 @@ namespace orxonox
                 }
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(Core::getLanguage()) << std::endl;
+                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getLanguage()) << std::endl;
                 }
             }
         }
@@ -310,12 +310,12 @@ namespace orxonox
 
         // Open the file
         std::ofstream file;
-        file.open(getFileName(this->defaultLanguage_).c_str(), std::fstream::out);
+        file.open(getFilename(this->defaultLanguage_).c_str(), std::fstream::out);
 
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFileName(this->defaultLanguage_) << " to write the default language entries!" << std::endl;
+            COUT(1) << "Error: Couldn't open file " << getFilename(this->defaultLanguage_) << " to write the default language entries!" << std::endl;
             return;
         }
 

@@ -404,7 +404,7 @@ namespace orxonox
             ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), getIdentifier()->getName(), "CoeffPos", coeffPos);
+                cont = new ConfigValueContainer(ConfigFileType::Settings, getIdentifier(), getIdentifier()->getName(), "CoeffPos", coeffPos);
                 getIdentifier()->addConfigValueContainer("CoeffPos", cont);
             }
             cont->getValue(&coeffPos, this);
@@ -412,7 +412,7 @@ namespace orxonox
             cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), getIdentifier()->getName(), "CoeffNeg", coeffNeg);
+                cont = new ConfigValueContainer(ConfigFileType::Settings, getIdentifier(), getIdentifier()->getName(), "CoeffNeg", coeffNeg);
                 getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
             }
             cont->getValue(&coeffNeg, this);
@@ -420,7 +420,7 @@ namespace orxonox
             cont = getIdentifier()->getConfigValueContainer("Zero");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), getIdentifier()->getName(), "Zero", zero);
+                cont = new ConfigValueContainer(ConfigFileType::Settings, getIdentifier(), getIdentifier()->getName(), "Zero", zero);
                 getIdentifier()->addConfigValueContainer("Zero", cont);
             }
             cont->getValue(&zero, this);

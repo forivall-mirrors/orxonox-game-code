@@ -105,6 +105,9 @@ namespace orxonox
             mouseAxes_[i].groupName_ = "MouseAxes";
         }
 
+        // Get a new ConfigFileType from the ConfigFileManager
+        this->configFile_ = ConfigFileManager::getInstance().getNewConfigFileType();
+
         // initialise joy sticks separatly to allow for reloading
         numberOfJoySticks_ = InputManager::getInstance().numberOfJoySticks();
         initialiseJoyStickBindings();
@@ -132,8 +135,6 @@ namespace orxonox
     */
     void KeyBinder::setConfigValues()
     {
-        SetConfigValue(defaultKeybindings_, "def_keybindings.ini")
-            .description("Filename of default keybindings.");
         SetConfigValue(analogThreshold_, 0.05f)
             .description("Threshold for analog axes until which the state is 0.");
         SetConfigValue(bFilterAnalogNoise_, false)
@@ -172,14 +173,14 @@ namespace orxonox
         compilePointerLists();
 
         // load the bindings if required
-        if (!configFile_.empty())
+        if (configFile_ != ConfigFileType::NoType)
         {
             for (unsigned int iDev = oldValue; iDev < numberOfJoySticks_; ++iDev)
             {
                 for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; ++i)
-                    joyStickButtons_[iDev][i].readConfigValue();
+                    joyStickButtons_[iDev][i].readConfigValue(this->configFile_);
                 for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; ++i)
-                    joyStickAxes_[iDev][i].readConfigValue();
+                    joyStickAxes_[iDev][i].readConfigValue(this->configFile_);
             }
         }
 
@@ -249,30 +250,29 @@ namespace orxonox
     @return
         True if loading succeeded.
     */
-    void KeyBinder::loadBindings(const std::string& filename)
+    void KeyBinder::loadBindings(const std::string& filename, const std::string& defaultFilename)
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-        configFile_ = filename;
-        if (configFile_.empty())
+        if (filename.empty())
             return;
 
         // get bindings from default file if filename doesn't exist.
         std::ifstream infile;
-        infile.open(configFile_.c_str());
+        infile.open(filename.c_str());
         if (!infile)
         {
-            ConfigFileManager::getInstance().setFile(CFT_Keybindings, defaultKeybindings_);
-            ConfigFileManager::getInstance().save(CFT_Keybindings, configFile_);
+            ConfigFileManager::getInstance().setFilename(this->configFile_, defaultFilename);
+            ConfigFileManager::getInstance().saveAs(this->configFile_, filename);
         }
         else
             infile.close();
-        ConfigFileManager::getInstance().setFile(CFT_Keybindings, configFile_);
+        ConfigFileManager::getInstance().setFilename(this->configFile_, filename);
 
         // Parse bindings and create the ConfigValueContainers if necessary
         clearBindings();
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
-            it->second->readConfigValue();
+            it->second->readConfigValue(this->configFile_);
 
         COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
     }
