@@ -84,6 +84,12 @@ SET( ORXONOX_SRC_FILES
   objects/quest/QuestManager.cc
   objects/quest/Rewardable.cc
 
+  objects/WeaponSystem.cc
+  objects/weaponSystem/WeaponSet.cc
+  objects/weaponSystem/WeaponSlot.cc
+  objects/weaponSystem/Weapon.cc
+  objects/weaponSystem/Munition.cc
+
   objects/worldentities/triggers/Trigger.cc
   objects/worldentities/triggers/DistanceTrigger.cc
   objects/worldentities/triggers/EventTrigger.cc

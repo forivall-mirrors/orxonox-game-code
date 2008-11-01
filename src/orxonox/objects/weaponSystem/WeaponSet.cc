@@ -37,14 +37,13 @@
 
 namespace orxonox
 {
-    WeaponSet::WeaponSet(int k)
+    WeaponSet::WeaponSet(BaseObject* creator, int k) : BaseObject(creator)
     {
         RegisterObject(WeaponSet);
 
         for (int i=0;i<k;i++)
         {
-            this->wSlotNew = new WeaponSlot();
-            attachWeaponSlot(wSlotNew);
+            attachWeaponSlot(new WeaponSlot(this));
         }
     }
 
@@ -68,7 +67,7 @@ namespace orxonox
         }
     }
 
-    WeaponSlot * getWeaponSlotPointer(int n)
+    WeaponSlot * WeaponSet::getWeaponSlotPointer(int n)
     {
         return this->weaponSlots_[n];
     }

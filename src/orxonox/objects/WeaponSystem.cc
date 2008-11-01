@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    WeaponSystem::WeaponSystem()
+    WeaponSystem::WeaponSystem(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponSystem);
     }
@@ -76,7 +76,7 @@ namespace orxonox
             this->weaponSets_[n]->fire();
     }
 
-    WeaponSet * getWeaponSetPointer(int n)
+    WeaponSet * WeaponSystem::getWeaponSetPointer(int n)
     {
         return this->weaponSets_[n];
     }

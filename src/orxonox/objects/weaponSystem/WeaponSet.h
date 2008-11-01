@@ -42,7 +42,7 @@ namespace orxonox
     class _OrxonoxExport WeaponSet : public BaseObject
     {
         public:
-            WeaponSet(int k);
+            WeaponSet(BaseObject* creator, int k = 0);
             virtual ~WeaponSet();
 
             virtual void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode);

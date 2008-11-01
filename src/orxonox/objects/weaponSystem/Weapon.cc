@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    Weapon::Weapon()
+    Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Weapon);
     }
@@ -51,6 +51,11 @@ namespace orxonox
     }
 
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+
+    }
+
+    void Weapon::fire()
     {
 
     }
