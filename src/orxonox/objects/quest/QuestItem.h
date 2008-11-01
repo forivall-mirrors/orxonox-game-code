@@ -29,11 +29,12 @@
 #ifndef _QuestItem_H__
 #define _QuestItem_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
-#include "QuestDescription.h"
 
 namespace orxonox {
 
@@ -45,7 +46,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class QuestItem : public BaseObject
+    class _OrxonoxExport QuestItem : public BaseObject
     {
 
         public:

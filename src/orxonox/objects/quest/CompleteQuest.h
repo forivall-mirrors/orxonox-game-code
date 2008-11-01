@@ -29,6 +29,8 @@
 #ifndef _CompleteQuest_H__
 #define _CompleteQuest_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include "core/XMLPort.h"
@@ -44,7 +46,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class CompleteQuest : public ChangeQuestStatus
+    class _OrxonoxExport CompleteQuest : public ChangeQuestStatus
     {
         public:
             CompleteQuest(BaseObject* creator);

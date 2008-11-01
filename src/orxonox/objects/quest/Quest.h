@@ -29,14 +29,13 @@
 #ifndef _Quest_H__
 #define _Quest_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <list>
 #include <string>
 
 #include "core/XMLPort.h"
-#include "QuestDescription.h"
 #include "QuestItem.h"
-#include "QuestHint.h"
-#include "QuestEffect.h"
 
 namespace questStatus
 {
@@ -63,7 +62,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class Quest : public QuestItem
+    class _OrxonoxExport Quest : public QuestItem
     {
         public:
             Quest(BaseObject* creator);

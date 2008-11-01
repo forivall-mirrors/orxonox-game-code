@@ -85,6 +85,22 @@ namespace orxonox
     // objects
     class Scene;
 
+    class AddQuest;
+    class AddQuestHint;
+    class AddReward;
+    class ChangeQuestStatus;
+    class CompleteQuest;
+    class FailQuest;
+    class GlobalQuest;
+    class LocalQuest;
+    class Quest;
+    class QuestDescription;
+    class QuestEffect;
+    class QuestHint;
+    class QuestItem;
+    class QuestManager;
+    class Rewardable;
+
     class WorldEntity;
     class PositionableEntity;
     class MovableEntity;

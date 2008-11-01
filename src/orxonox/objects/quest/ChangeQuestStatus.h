@@ -29,6 +29,8 @@
 #ifndef _ChangeQuestStatus_H__
 #define _ChangeQuestStatus_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include "core/XMLPort.h"
@@ -44,7 +46,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class ChangeQuestStatus : public QuestEffect
+    class _OrxonoxExport ChangeQuestStatus : public QuestEffect
     {
         public:
             ChangeQuestStatus(BaseObject* creator);

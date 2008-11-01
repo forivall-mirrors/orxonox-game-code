@@ -29,6 +29,8 @@
 #ifndef _QuestEffect_H__
 #define _QuestEffect_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <list>
 
 #include "core/BaseObject.h"
@@ -43,7 +45,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class QuestEffect : public BaseObject
+    class _OrxonoxExport QuestEffect : public BaseObject
     {
         public:
             QuestEffect(BaseObject* creator);

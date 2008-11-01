@@ -29,6 +29,8 @@
 #ifndef _FailQuest_H__
 #define _FailQuest_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include "core/XMLPort.h"
@@ -44,7 +46,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class FailQuest : public ChangeQuestStatus
+    class _OrxonoxExport FailQuest : public ChangeQuestStatus
     {
         public:
             FailQuest(BaseObject* creator);

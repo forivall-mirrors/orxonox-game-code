@@ -29,9 +29,10 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "AddQuestHint.h"
 #include "QuestManager.h"
 #include "QuestItem.h"
-#include "AddQuestHint.h"
+#include "QuestHint.h"
 
 namespace orxonox {
 
