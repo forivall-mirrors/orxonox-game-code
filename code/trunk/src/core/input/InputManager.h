@@ -85,8 +85,6 @@ namespace orxonox
     {
         // --> setConfigValues is private
         friend class ClassIdentifier<InputManager>;
-        // let Core class use tick(.)
-        friend class Core;
 
     public:
         enum InputManagerState
