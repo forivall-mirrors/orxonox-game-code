@@ -45,6 +45,8 @@ SET( ORXONOX_SRC_FILES
   objects/EventListener.cc
   objects/EventDispatcher.cc
   objects/EventTarget.cc
+#  objects/PhysicsTest.cc
+  objects/HelloBullet.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc
@@ -143,6 +145,12 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
+  LibLinearMath
+  LibBulletCollision
+  LibBulletDynamics
+  LibBulletSoftBody
+  ogrebullet_collisions_orxonox
+  ogrebullet_dynamics_orxonox
   util
   core
   audio

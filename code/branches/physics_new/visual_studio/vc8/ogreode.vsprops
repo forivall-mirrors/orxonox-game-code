@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="ogreode"
+	InheritedPropertySheets=".\directories.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalOptions="/MP2 /Zm200"
+		PreprocessorDefinitions="OGREODE_EXPORTS;_PRECOMP"
+		UsePrecompiledHeader="2"
+		PrecompiledHeaderThrough="OgreOdePrecompiledHeaders.h"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="OgreMain$(CS).lib ode_single$(CS).lib"
+	/>
+</VisualStudioPropertySheet>
