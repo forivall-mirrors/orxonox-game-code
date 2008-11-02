@@ -28,7 +28,7 @@
 
 #include "AudioBuffer.h"
 
-namespace audio
+namespace orxonox
 {
     AudioBuffer::AudioBuffer(std::string filename)
     {

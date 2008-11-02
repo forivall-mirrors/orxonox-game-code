@@ -29,7 +29,7 @@
 #include "AudioStream.h"
 #include "util/Debug.h"
 
-namespace audio
+namespace orxonox
 {
     AudioStream::AudioStream(std::string path)
     {

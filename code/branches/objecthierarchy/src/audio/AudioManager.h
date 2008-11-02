@@ -34,7 +34,7 @@
 #include <vector>
 #include <string>
 
-namespace audio
+namespace orxonox
 {
     class _AudioExport AudioManager
     {
