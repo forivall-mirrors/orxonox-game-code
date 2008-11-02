@@ -34,7 +34,7 @@
 
 #include "core/BaseObject.h"
 
-#include "weaponSystem/WeaponSet.h"
+#include "WeaponSet.h"
 
 namespace orxonox
 {
