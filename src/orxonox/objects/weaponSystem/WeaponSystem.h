@@ -26,44 +26,44 @@
  *
  */
 
-#ifndef _WeaponSlot_H__
-#define _WeaponSlot_H__
+
+#ifndef _WeaponSystem_H__
+#define _WeaponSystem_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
 
-
-#include "Weapon.h"
-
+#include "weaponSystem/WeaponSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WeaponSlot : public BaseObject
+    class _OrxonoxExport WeaponSystem : public BaseObject
     {
         public:
-            WeaponSlot(BaseObject* creator);
-            virtual ~WeaponSlot();
+            WeaponSystem(BaseObject* creator);
+            virtual ~WeaponSystem();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeapon(Weapon *weaponName);
-            void setAmmoType(bool isUnlimited);
+            void attachWeaponSet(WeaponSet *wSet);
             void fire();
+            void fire(unsigned int n);
+            void setActiveWeaponSet(unsigned int n);
+            WeaponSet * getWeaponSetPointer(unsigned int n);
 
-            inline void setParentWeaponSet(WeaponSet *parentWeaponSet)
-                { parentWeaponSet_=parentWeaponSet; }
-            inline WeaponSet * getParentWeaponSet()
-                { return parentWeaponSet_; }
-
+            inline void setParentSpaceShip(SpaceShip *parentSpaceShip)
+                { parentSpaceShip_=parentSpaceShip; }
+            inline SpaceShip * getParentSpaceShip()
+                { return parentSpaceShip_; }
 
 
         private:
-            Weapon *attachedWeapon_;
-            bool unlimitedAmmo_;
+            std::vector<WeaponSet *> weaponSets_;
+            WeaponSet *activeWeaponSet_;
 
-            WeaponSet *parentWeaponSet_;
+            SpaceShip *parentSpaceShip_;
     };
 }
 
-#endif /* _WeaponSlot_H__ */
+#endif /* _WeaponSystem_H__ */

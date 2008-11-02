@@ -67,7 +67,7 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/ParticleEmitter.cc
   objects/worldentities/ParticleSpawner.cc
 #  objects/worldentities/Backlight.cc
-  
+
   objects/quest/AddQuest.cc
   objects/quest/AddQuestHint.cc
   objects/quest/AddReward.cc
@@ -84,7 +84,7 @@ SET( ORXONOX_SRC_FILES
   objects/quest/QuestManager.cc
   objects/quest/Rewardable.cc
 
-  objects/WeaponSystem.cc
+  objects/weaponSystem/WeaponSystem.cc
   objects/weaponSystem/WeaponSet.cc
   objects/weaponSystem/WeaponSlot.cc
   objects/weaponSystem/Weapon.cc

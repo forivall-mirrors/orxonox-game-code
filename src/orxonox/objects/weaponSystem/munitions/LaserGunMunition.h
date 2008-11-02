@@ -55,4 +55,4 @@ namespace orxonox
     };
 }
 
-#endif /* _WeaponSystem_H__ */
+#endif /* _LaserGunMunition_H__ */

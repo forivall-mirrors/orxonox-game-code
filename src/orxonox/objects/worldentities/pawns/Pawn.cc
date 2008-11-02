@@ -34,7 +34,7 @@
 #include "util/Math.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
-#include "objects/WeaponSystem.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {

@@ -56,4 +56,4 @@ namespace orxonox
     };
 }
 
-#endif /* _WeaponSystem_H__ */
+#endif /* _Weapon_H__ */
