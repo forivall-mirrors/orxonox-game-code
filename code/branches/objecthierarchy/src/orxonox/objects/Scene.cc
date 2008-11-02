@@ -42,7 +42,7 @@ namespace orxonox
 {
     CreateFactory(Scene);
 
-    Scene::Scene(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
+    Scene::Scene(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Scene);
 
@@ -113,8 +113,8 @@ namespace orxonox
 
     void Scene::registerVariables()
     {
-        REGISTERSTRING(this->skybox_,     network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
-        REGISTERDATA(this->ambientLight_, network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+        REGISTERSTRING(this->skybox_,     direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
+        REGISTERDATA(this->ambientLight_, direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
     }
 
     void Scene::setSkybox(const std::string& skybox)

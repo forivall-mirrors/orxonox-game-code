@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Scene : public BaseObject, public network::Synchronisable
+    class _OrxonoxExport Scene : public BaseObject, public Synchronisable
     {
         public:
             Scene(BaseObject* creator);

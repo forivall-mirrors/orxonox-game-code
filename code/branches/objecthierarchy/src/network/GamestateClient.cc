@@ -38,7 +38,7 @@
 #include "packet/Acknowledgement.h"
 
 
-namespace network
+namespace orxonox
 {
   struct _NetworkExport GameStateItem{
     packet::Gamestate *state;
@@ -93,8 +93,8 @@ namespace network
   * @param it iterator of the list pointing to the object
   * @return iterator pointing to the next object in the list
   */
-  void GamestateClient::removeObject(orxonox::ObjectList<Synchronisable>::iterator &it) {
-    orxonox::ObjectList<Synchronisable>::iterator temp=it;
+  void GamestateClient::removeObject(ObjectList<Synchronisable>::iterator &it) {
+    ObjectList<Synchronisable>::iterator temp=it;
     ++it;
     delete  *temp;
   }

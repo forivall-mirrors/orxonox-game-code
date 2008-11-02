@@ -91,7 +91,7 @@ namespace orxonox
 
         std::string message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
-        network::Host::Broadcast(message);
+        Host::Broadcast(message);
     }
 
     void Gametype::playerLeft(PlayerInfo* player)
@@ -103,7 +103,7 @@ namespace orxonox
 
             std::string message = player->getName() + " left the game";
             COUT(0) << message << std::endl;
-            network::Host::Broadcast(message);
+            Host::Broadcast(message);
         }
     }
 
@@ -123,7 +123,7 @@ namespace orxonox
             {
                 std::string message = player->getOldName() + " changed name to " + player->getName();
                 COUT(0) << message << std::endl;
-                network::Host::Broadcast(message);
+                Host::Broadcast(message);
             }
         }
     }

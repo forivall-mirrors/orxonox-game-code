@@ -32,7 +32,7 @@
 #include "Packet.h"
 
 
-namespace network {
+namespace orxonox {
 namespace packet {
 /**
 	@author
@@ -52,6 +52,6 @@ private:
 };
 
 } //namespace packet
-} //namespace network
+} //namespace orxonox
 
 #endif

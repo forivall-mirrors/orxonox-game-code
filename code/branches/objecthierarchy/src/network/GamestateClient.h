@@ -49,7 +49,7 @@
 
 const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
 
-namespace network
+namespace orxonox
 {
   class _NetworkExport GamestateClient: public GamestateHandler
   {
@@ -65,7 +65,7 @@ namespace network
     void cleanup();
   private:
     packet::Gamestate *processGamestate(packet::Gamestate *gs);
-    void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
+    void removeObject(ObjectListIterator<Synchronisable> &it);
     void printGamestateMap();
     bool sendAck(unsigned int gamestateID);
 

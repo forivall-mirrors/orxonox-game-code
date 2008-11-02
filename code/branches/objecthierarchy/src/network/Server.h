@@ -48,7 +48,7 @@
 #include "Host.h"
 #include "GamestateManager.h"
 
-namespace network
+namespace orxonox
 {
   const int CLIENTID_SERVER = 0;
 

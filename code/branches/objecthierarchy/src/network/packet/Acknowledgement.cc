@@ -32,12 +32,12 @@
 #include "network/GamestateHandler.h"
 #include "core/CoreIncludes.h"
 
-namespace network {
+namespace orxonox {
 namespace packet {
 
 #define PACKET_FLAGS_ACK    0
 #define _PACKETID           0
-#define _ACKID              _PACKETID + sizeof(network::packet::ENUM::Type)
+#define _ACKID              _PACKETID + sizeof(packet::ENUM::Type)
   
 Acknowledgement::Acknowledgement( unsigned int id, unsigned int clientID )
  : Packet()
@@ -73,4 +73,4 @@ unsigned int Acknowledgement::getAckID(){
 }
 
 } //namespace packet
-} //namespace network
+} //namespace orxonox

@@ -47,7 +47,7 @@
 
 // WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
 
-namespace network
+namespace orxonox
 {
   static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
   static const unsigned int CLIENTID_UNKNOWN = (unsigned int)-2;

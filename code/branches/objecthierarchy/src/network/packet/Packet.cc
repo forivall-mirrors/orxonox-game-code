@@ -45,7 +45,7 @@
 #include "network/Host.h"
 #include "core/CoreIncludes.h"
 
-namespace network{
+namespace orxonox{
 
 namespace packet{
 
@@ -152,7 +152,7 @@ bool Packet::send(){
 #endif
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
-  network::Host::addPacket( enetPacket_, clientID_);
+  Host::addPacket( enetPacket_, clientID_);
   return true;
 }
 
@@ -218,5 +218,5 @@ void Packet::deletePacket(ENetPacket *enetPacket){
 
 } // namespace packet
 
-} // namespace network
+} // namespace orxonox
 

@@ -59,7 +59,7 @@
 #include <util/Convert.h>
 #include "ChatListener.h"
 
-namespace network
+namespace orxonox
 {
   const unsigned int MAX_FAILURES = 20;
   const unsigned int NETWORK_FREQUENCY = 25;
@@ -316,7 +316,7 @@ namespace network
     temp->setPeer(event->peer);
 
     // inform all the listeners
-    orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
+    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
     while(listener){
       listener->clientConnected(newid);
       listener++;
@@ -365,7 +365,7 @@ namespace network
     gamestates_->removeClient(client);
 
 // inform all the listeners
-    orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
+    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
     while(listener){
       listener->clientDisconnected(client->getID());
       listener++;
@@ -403,7 +403,7 @@ namespace network
       temp = temp->next();
     }
 //    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
-    for (orxonox::ObjectList<ChatListener>::iterator it = orxonox::ObjectList<ChatListener>::begin(); it != orxonox::ObjectList<ChatListener>::end(); ++it)
+    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
       it->incomingChat(message, clientID);
 
     return true;

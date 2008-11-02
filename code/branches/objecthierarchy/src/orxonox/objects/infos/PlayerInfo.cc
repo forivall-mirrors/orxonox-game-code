@@ -41,13 +41,13 @@ namespace orxonox
     {
         RegisterObject(PlayerInfo);
 
-        this->clientID_ = network::CLIENTID_UNKNOWN;
+        this->clientID_ = CLIENTID_UNKNOWN;
         this->bHumanPlayer_ = false;
         this->bLocalPlayer_ = false;
         this->bReadyToSpawn_ = false;
         this->controller_ = 0;
         this->controllableEntity_ = 0;
-        this->controllableEntityID_ = network::CLIENTID_UNKNOWN;
+        this->controllableEntityID_ = CLIENTID_UNKNOWN;
 
         this->registerVariables();
     }
@@ -68,9 +68,9 @@ namespace orxonox
 
     void PlayerInfo::registerVariables()
     {
-        REGISTERSTRING(this->name_,                 network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
-        REGISTERDATA  (this->controllableEntityID_, network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
-        REGISTERDATA  (this->bReadyToSpawn_,        network::direction::toserver);
+        REGISTERSTRING(this->name_,                 direction::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
+        REGISTERDATA  (this->controllableEntityID_, direction::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
+        REGISTERDATA  (this->bReadyToSpawn_,        direction::toserver);
     }
 
     void PlayerInfo::changedName()
@@ -125,7 +125,7 @@ namespace orxonox
         }
         else
         {
-            this->controllableEntityID_ = network::OBJECTID_UNKNOWN;
+            this->controllableEntityID_ = OBJECTID_UNKNOWN;
         }
 
         if (this->controller_)
@@ -137,7 +137,7 @@ namespace orxonox
         if (entity && this->controllableEntity_ == entity)
         {
             this->controllableEntity_ = 0;
-            this->controllableEntityID_ = network::OBJECTID_UNKNOWN;
+            this->controllableEntityID_ = OBJECTID_UNKNOWN;
 
             if (this->controller_)
                 this->controller_->setControllableEntity(0);
@@ -149,7 +149,7 @@ namespace orxonox
 
     void PlayerInfo::networkcallback_changedcontrollableentityID()
     {
-        if (this->controllableEntityID_ != network::OBJECTID_UNKNOWN)
+        if (this->controllableEntityID_ != OBJECTID_UNKNOWN)
         {
             Synchronisable* temp = Synchronisable::getSynchronisable(this->controllableEntityID_);
             ControllableEntity* entity = dynamic_cast<ControllableEntity*>(temp);

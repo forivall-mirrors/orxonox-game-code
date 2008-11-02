@@ -83,9 +83,9 @@ namespace orxonox
 
     void Spectator::registerVariables()
     {
-        REGISTERDATA(this->bGreetingFlareVisible_, network::direction::toclient, new network::NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
-        REGISTERDATA(this->bGreeting_,             network::direction::toserver, new network::NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
-        REGISTERDATA(this->hudmode_,               network::direction::toclient);
+        REGISTERDATA(this->bGreetingFlareVisible_, direction::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
+        REGISTERDATA(this->bGreeting_,             direction::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
+        REGISTERDATA(this->hudmode_,               direction::toclient);
     }
 
     void Spectator::changedGreeting()
@@ -128,7 +128,7 @@ namespace orxonox
     {
         ControllableEntity::setPlayer(player);
 
-//        this->setObjectMode(network::direction::toclient);
+//        this->setObjectMode(direction::toclient);
     }
 
     void Spectator::startLocalControl()

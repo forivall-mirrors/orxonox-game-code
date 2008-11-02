@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport Test: public BaseObject, public network::Synchronisable
+  class _OrxonoxExport Test: public BaseObject, public Synchronisable
   {
     public:
       Test(BaseObject* creator);

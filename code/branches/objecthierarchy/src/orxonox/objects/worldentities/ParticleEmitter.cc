@@ -73,8 +73,8 @@ namespace orxonox
 
     void ParticleEmitter::registerVariables()
     {
-        REGISTERSTRING(this->source_, network::direction::toclient, new network::NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
-        REGISTERDATA  (this->LOD_,    network::direction::toclient, new network::NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
+        REGISTERSTRING(this->source_, direction::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
+        REGISTERDATA  (this->LOD_,    direction::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
     }
 
     void ParticleEmitter::changedVisibility()

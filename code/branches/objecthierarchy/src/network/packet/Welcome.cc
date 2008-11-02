@@ -35,7 +35,7 @@
 #include "core/CoreIncludes.h"
 #include <assert.h>
 
-namespace network {
+namespace orxonox {
 namespace packet {
 
 #define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
@@ -69,7 +69,7 @@ uint8_t *Welcome::getData(){
 }
 
 unsigned int Welcome::getSize() const{
-  return sizeof(network::packet::ENUM::Type) + 2*sizeof(uint32_t);
+  return sizeof(packet::ENUM::Type) + 2*sizeof(uint32_t);
 }
 
 bool Welcome::process(){
@@ -86,4 +86,4 @@ bool Welcome::process(){
 
 
 } //namespace packet
-}//namespace network
+}//namespace orxonox

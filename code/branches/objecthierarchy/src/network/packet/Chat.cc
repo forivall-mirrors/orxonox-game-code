@@ -30,7 +30,7 @@
 #include <assert.h>
 #include "network/Host.h"
 
-namespace network {
+namespace orxonox {
 namespace packet {
   
 #define   PACKET_FLAGS_CHAT ENET_PACKET_FLAG_RELIABLE
@@ -76,4 +76,4 @@ unsigned char *Chat::getMessage(){
 }
 
 } //namespace packet
-} //namespace network
+} //namespace orxonox

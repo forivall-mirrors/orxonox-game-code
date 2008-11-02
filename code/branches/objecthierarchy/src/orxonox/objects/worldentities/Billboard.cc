@@ -63,8 +63,8 @@ namespace orxonox
 
     void Billboard::registerVariables()
     {
-        REGISTERSTRING(this->material_, network::direction::toclient, new network::NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
-        REGISTERDATA  (this->colour_,   network::direction::toclient, new network::NetworkCallback<Billboard>(this, &Billboard::changedColour));
+        REGISTERSTRING(this->material_, direction::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
+        REGISTERDATA  (this->colour_,   direction::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
     }
 
     void Billboard::changedMaterial()

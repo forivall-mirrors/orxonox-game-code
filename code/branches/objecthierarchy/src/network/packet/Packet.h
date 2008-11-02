@@ -35,7 +35,7 @@
 
 #include "util/Integers.h"
 
-namespace network {
+namespace orxonox {
 
 namespace packet{
 
@@ -97,6 +97,6 @@ class _NetworkExport Packet{
 
 } //namespace packet
 
-} //namespace network
+} //namespace orxonox
 
 #endif

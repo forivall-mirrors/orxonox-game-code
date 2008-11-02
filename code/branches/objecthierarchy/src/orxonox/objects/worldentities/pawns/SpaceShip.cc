@@ -81,12 +81,12 @@ namespace orxonox
 
     void SpaceShip::registerVariables()
     {
-        REGISTERDATA(this->maxSpeed_,                network::direction::toclient);
-        REGISTERDATA(this->maxSecondarySpeed_,       network::direction::toclient);
-        REGISTERDATA(this->maxRotation_,             network::direction::toclient);
-        REGISTERDATA(this->translationAcceleration_, network::direction::toclient);
-        REGISTERDATA(this->rotationAcceleration_,    network::direction::toclient);
-        REGISTERDATA(this->translationDamping_,      network::direction::toclient);
+        REGISTERDATA(this->maxSpeed_,                direction::toclient);
+        REGISTERDATA(this->maxSecondarySpeed_,       direction::toclient);
+        REGISTERDATA(this->maxRotation_,             direction::toclient);
+        REGISTERDATA(this->translationAcceleration_, direction::toclient);
+        REGISTERDATA(this->rotationAcceleration_,    direction::toclient);
+        REGISTERDATA(this->translationDamping_,      direction::toclient);
     }
 
     void SpaceShip::setConfigValues()

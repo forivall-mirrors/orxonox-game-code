@@ -52,7 +52,7 @@ namespace orxonox
     {
         Core::setIsClient(true);
 
-        this->client_ = new network::Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+        this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");

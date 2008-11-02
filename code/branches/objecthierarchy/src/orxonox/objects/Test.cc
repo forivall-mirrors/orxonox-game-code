@@ -35,7 +35,7 @@ namespace orxonox
 {
 	CreateFactory ( Test );
 
-	Test::Test(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
+	Test::Test(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
 	{
 		RegisterObject ( Test );
                 setConfigValues();
@@ -58,9 +58,9 @@ namespace orxonox
 
 	void Test::registerVariables()
 	{
-		REGISTERDATA ( v1,network::direction::toclient, new network::NetworkCallback<Test> ( this, &Test::checkV1 ) );
-                REGISTERDATA ( v2,network::direction::toserver, new network::NetworkCallback<Test> ( this, &Test::checkV2 ) );
-		REGISTERDATA ( v3,network::direction::bidirectional, new network::NetworkCallback<Test> ( this, &Test::checkV3 ) );
+		REGISTERDATA ( v1,direction::toclient, new NetworkCallback<Test> ( this, &Test::checkV1 ) );
+                REGISTERDATA ( v2,direction::toserver, new NetworkCallback<Test> ( this, &Test::checkV2 ) );
+		REGISTERDATA ( v3,direction::bidirectional, new NetworkCallback<Test> ( this, &Test::checkV3 ) );
 	}
 
         void Test::checkV1(){

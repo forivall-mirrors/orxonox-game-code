@@ -47,7 +47,7 @@ namespace orxonox
     const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
     const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
 
-    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
+    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(WorldEntity);
 
@@ -94,14 +94,14 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
-        REGISTERDATA(this->bActive_,  network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
-        REGISTERDATA(this->bVisible_, network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
+        REGISTERDATA(this->bActive_,  direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
+        REGISTERDATA(this->bVisible_, direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
 
-        REGISTERDATA(this->getScale3D().x, network::direction::toclient);
-        REGISTERDATA(this->getScale3D().y, network::direction::toclient);
-        REGISTERDATA(this->getScale3D().z, network::direction::toclient);
+        REGISTERDATA(this->getScale3D().x, direction::toclient);
+        REGISTERDATA(this->getScale3D().y, direction::toclient);
+        REGISTERDATA(this->getScale3D().z, direction::toclient);
 
-        REGISTERDATA(this->parentID_, network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
+        REGISTERDATA(this->parentID_, direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
     }
 
     void WorldEntity::updateParent()

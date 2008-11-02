@@ -49,7 +49,7 @@
 #include "core/BaseObject.h"
 // #include "core/Identifier.h"
 
-namespace network
+namespace orxonox
 {
 
 
@@ -62,7 +62,7 @@ namespace network
   * Constructor:
   * Initializes all Variables and sets the right objectID
   */
-  Synchronisable::Synchronisable(orxonox::BaseObject* creator){
+  Synchronisable::Synchronisable(BaseObject* creator){
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
     objectFrequency_=1;
@@ -95,7 +95,7 @@ namespace network
    */
   Synchronisable::~Synchronisable(){
     // delete callback function objects
-    if(!orxonox::Identifier::isCreatingHierarchy()){
+    if(!Identifier::isCreatingHierarchy()){
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
       if (this->objectMode_ != 0x0)
@@ -154,9 +154,9 @@ namespace network
     
     COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
-    orxonox::Identifier* id = ClassByID(header->classID);
+    Identifier* id = ClassByID(header->classID);
     assert(id);
-    orxonox::BaseObject* creator = 0;
+    BaseObject* creator = 0;
     if (header->creatorID != OBJECTID_UNKNOWN)
     {
       Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header->creatorID);
@@ -166,9 +166,9 @@ namespace network
         return 0;
       }
       else
-        creator = dynamic_cast<orxonox::BaseObject*>(synchronisable_creator);
+        creator = dynamic_cast<BaseObject*>(synchronisable_creator);
     }
-    orxonox::BaseObject *bo = id->fabricate(creator);
+    BaseObject *bo = id->fabricate(creator);
     assert(bo);
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
@@ -213,8 +213,8 @@ namespace network
    * @return pointer to the Synchronisable with the objectID
    */
   Synchronisable* Synchronisable::getSynchronisable(unsigned int objectID){
-    orxonox::ObjectList<Synchronisable>::iterator it;
-    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
+    ObjectList<Synchronisable>::iterator it;
+    for(it = ObjectList<Synchronisable>::begin(); it; ++it){
       if( it->getObjectID()==objectID )
            return *it;
     }
@@ -233,7 +233,7 @@ namespace network
   * also counts the total datasize needed to save the variables
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
-  * @param t the type of the variable (network::DATA or network::STRING
+  * @param t the type of the variable (DATA or STRING
   * @param mode same as in getData
   * @param cb callback object that should get called, if the value of the variable changes
   */

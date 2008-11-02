@@ -47,7 +47,7 @@
 #include "util/Sleep.h"
 #include "util/Debug.h"
 
-namespace network
+namespace orxonox
 {
   //static boost::thread_group network_threads;
 
@@ -71,7 +71,7 @@ namespace network
 
   bool ClientConnection::waitEstablished(int milisec) {
     for(int i=0; i<=milisec && !established; i++)
-      orxonox::msleep(1);
+      msleep(1);
 
     return established;
   }
@@ -183,7 +183,7 @@ namespace network
         break;
       case ENET_EVENT_TYPE_NONE:
         //receiverThread_->yield();
-        orxonox::msleep(1);
+        msleep(1);
         break;
       }
     }

@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LevelManager : public network::ClientConnectionListener
+    class _OrxonoxExport LevelManager : public ClientConnectionListener
     {
         public:
             LevelManager();

@@ -33,7 +33,7 @@
 #include "NetworkPrereqs.h"
 #include "packet/Chat.h"
 
-namespace network {
+namespace orxonox {
 
 /**
 	@author Oliver Scheuss

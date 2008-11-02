@@ -39,7 +39,7 @@
 #include "util/CRC32.h"
 #endif
 
-namespace network {
+namespace orxonox {
 
 namespace packet {
 
@@ -90,7 +90,7 @@ class _NetworkExport Gamestate: public Packet{
     bool operator ==(packet::Gamestate gs);
   private:
     unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
-    void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
+    void removeObject(ObjectListIterator<Synchronisable> &it);
     std::map<unsigned int, Synchronisable*> dataMap_;
 };
 

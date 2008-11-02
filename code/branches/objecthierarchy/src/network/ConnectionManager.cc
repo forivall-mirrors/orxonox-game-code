@@ -64,7 +64,7 @@ namespace std
   }
 }
 
-namespace network
+namespace orxonox
 {
   //boost::thread_group network_threads;
 
@@ -226,7 +226,7 @@ namespace network
           //break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
-          orxonox::msleep(1);
+          msleep(1);
           break;
       }
 //       usleep(100);
@@ -305,9 +305,9 @@ namespace network
   void ConnectionManager::syncClassid(unsigned int clientID) {
     unsigned int network_id=0, failures=0;
     std::string classname;
-    orxonox::Identifier *id;
-    std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryMapBegin();
-    while(it != orxonox::Factory::getFactoryMapEnd()){
+    Identifier *id;
+    std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
+    while(it != Factory::getFactoryMapEnd()){
       id = (*it).second;
       if(id == NULL)
         continue;

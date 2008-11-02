@@ -41,11 +41,11 @@
 #include "util/Integers.h"
 
 #define REGISTERDATA(varname, ...) \
-    registerVar((void*)&varname, sizeof(varname), network::DATA, __VA_ARGS__)
+    registerVar((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)
 #define REGISTERSTRING(stringname, ...) \
-    registerVar(&stringname, stringname.length()+1, network::STRING, __VA_ARGS__)
+    registerVar(&stringname, stringname.length()+1, STRING, __VA_ARGS__)
 
-namespace network
+namespace orxonox
 {
   static const unsigned int OBJECTID_UNKNOWN = (unsigned int)-1;
 
@@ -94,7 +94,7 @@ namespace network
    * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
   * @author Oliver Scheuss
   */
-  class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
+  class _NetworkExport Synchronisable : virtual public OrxonoxClass{
   public:
     friend class packet::Gamestate;
     friend class GamestateClient;
@@ -114,7 +114,7 @@ namespace network
     inline unsigned int getObjectID(){return objectID;}
     inline unsigned int getClassID(){return classID;}
   protected:
-    Synchronisable(orxonox::BaseObject* creator);
+    Synchronisable(BaseObject* creator);
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     void setObjectMode(int mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
