@@ -232,10 +232,6 @@
 					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
 					>
 				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\WeaponSystem.cc"
-					>
-				</File>
 				<Filter
 					Name="worldentities"
 					>
@@ -401,6 +397,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weaponSystem\WeaponSlot.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\weaponSystem\WeaponSystem.cc"
 						>
 					</File>
 					<Filter
@@ -872,10 +872,6 @@
 					RelativePath="..\..\src\orxonox\objects\Tickable.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\WeaponSystem.h"
-					>
-				</File>
 				<Filter
 					Name="worldentities"
 					>
@@ -1085,6 +1081,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weaponSystem\WeaponSlot.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\weaponSystem\WeaponSystem.h"
 						>
 					</File>
 					<Filter
