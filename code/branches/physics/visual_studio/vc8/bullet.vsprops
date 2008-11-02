@@ -7,7 +7,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="$(RootDir)src\bullet;$(RootDir)src\bullet\BulletCollision;$(RootDir)src\bullet\BulletDynamics;$(RootDir)src\bullet\BulletSoftBody;$(RootDir)src\bullet\LinearMath"
+		AdditionalIncludeDirectories=""
 		TreatWChar_tAsBuiltInType="false"
 	/>
 </VisualStudioPropertySheet>

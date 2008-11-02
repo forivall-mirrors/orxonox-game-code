@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport HelloBullet : public BaseObject, public Tickable
     {
     public:
-        HelloBullet();
+        HelloBullet(BaseObject* creator);
         virtual ~HelloBullet();
         void setConfigValues();
 

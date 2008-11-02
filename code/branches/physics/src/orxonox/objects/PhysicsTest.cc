@@ -39,13 +39,15 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
 #include "GraphicsEngine.h"
+#include "Scene.h"
 
 namespace orxonox
 {
     CreateFactory(PhysicsTest);
 
-    PhysicsTest::PhysicsTest()
-        : odeWorld_(0)
+    PhysicsTest::PhysicsTest(BaseObject* creator)
+        : BaseObject(creator)
+        , odeWorld_(0)
         , odeSpace_(0)
         , odeStepper_(0)
         , odeGround_(0)   
@@ -83,7 +85,7 @@ namespace orxonox
     {
         SUPER(PhysicsTest, XMLPort, xmlelement, mode);
 
-        Ogre::SceneManager* sceneMgr = GraphicsEngine::getInstance().getLevelSceneManager();
+        Ogre::SceneManager* sceneMgr = this->getScene()->getSceneManager();
 
         // set up OgreOde
 
@@ -102,18 +104,17 @@ namespace orxonox
         const Ogre::Real _time_step = 0.5;http://isg.ee.ethz.ch/
         const Ogre::Real time_scale = Ogre::Real(1.7);
         const Ogre::Real max_frame_time = Ogre::Real(1.0 / 4);
-        odeStepper_ = new OgreOde::StepHandler(odeWorld_, OgreOde::StepHandler::QuickStep,_time_step,
+        odeStepper_ = new OgreOde::StepHandler(odeWorld_, OgreOde::StepHandler::QuickStep, _time_step,
             max_frame_time, time_scale);
 
 
-        // Create a hanging crate
+        // create a plane in x-z dimensions.
 
         odeGround_ = new OgreOde::InfinitePlaneGeometry(Ogre::Plane(Ogre::Vector3(0,1,0),0),
             odeWorld_, odeWorld_->getDefaultSpace());
 
-	CollidingObject* collidingObject = new CollidingObject();
-       
-	odeGround_->setUserObject(static_cast<CollisionTestedObject*>(collidingObject));
+        CollidingObject* collidingObject = new CollidingObject();
+        odeGround_->setUserObject(static_cast<CollisionTestedObject*>(collidingObject));
 
         // Use a load of meshes to represent the floor
         int i = 0;
@@ -138,7 +139,7 @@ namespace orxonox
         floor->build();
 
 
-        // create a plane in x-z dimensions.
+        // create a hanging crate
 
         entity_ = sceneMgr->createEntity("crate","crate.mesh");
         entity_->setQueryFlags (1<<2);
@@ -146,7 +147,6 @@ namespace orxonox
         sceneNode_->attachObject(entity_);
         entity_->setNormaliseNormals(true);
         entity_->setCastShadows(true);
-
 
         odeBody_ = new OgreOde::Body(odeWorld_);
         sceneNode_->attachObject(odeBody_);
@@ -177,50 +177,50 @@ namespace orxonox
             odeWorld_->synchronise();
     }
 
-    bool PhysicsTest::collision(OgreOde::Contact *Contact)
+    bool PhysicsTest::collision(OgreOde::Contact* contact)
     {
-    	// Check for collisions between things that are connected and ignore them
-       	OgreOde::Geometry * const g1 = Contact->getFirstGeometry();
-       	OgreOde::Geometry * const g2 = Contact->getSecondGeometry();
+        // Check for collisions between things that are connected and ignore them
+        OgreOde::Geometry * const g1 = contact->getFirstGeometry();
+        OgreOde::Geometry * const g2 = contact->getSecondGeometry();
 
-       	if (g1 && g2)
-       	{
-       		const OgreOde::Body * const b1 = g2->getBody();
-       		const OgreOde::Body * const  b2 = g1->getBody();
-       		if (b1 && b2 && OgreOde::Joint::areConnected(b1, b2)) 
-                  return false; 
-       	}
-       
-       	//set contact parameters:
-       	Contact->setBouncyness(1.0);
-       	Contact->setCoulombFriction(OgreOde::Utility::Infinity);
-       	Contact->setForceDependentSlip(1.0);
-       	Contact->setAdditionalFDS(1.0);
-       
-       	/*we have 2 collidable objects from our object system, if one of the Collide function returns false, e return false in this method, too, else we return true, so ode computes a normal collision.
-        true means ode will treat this like a normal collison => rigid body behavior
-        false means ode will not treat this collision at all => objects ignore each other*/
-        	
-        bool Return = true;
-        	
+        if (g1 && g2)
+        {
+            const OgreOde::Body * const b1 = g2->getBody();
+            const OgreOde::Body * const b2 = g1->getBody();
+            if (b1 && b2 && OgreOde::Joint::areConnected(b1, b2)) 
+                return false; 
+        }
+
+        //set contact parameters:
+        contact->setBouncyness(1.0);
+        contact->setCoulombFriction(OgreOde::Utility::Infinity);
+        contact->setForceDependentSlip(1.0);
+        contact->setAdditionalFDS(1.0);
+
+        // we have 2 collidable objects from our object system, if one of the Collide function returns false, e return false in this method, too, else we return true, so ode computes a normal collision.
+        // true means ode will treat this like a normal collison => rigid body behavior
+        // false means ode will not treat this collision at all => objects ignore each other
+
+        bool res = true;
+
         if (g1->getUserObject())
-        	if (!static_cast<CollisionTestedObject*>(g1->getUserObject())->Collide(true, Contact))
-        		Return = false;
-        
+            if (!static_cast<CollisionTestedObject*>(g1->getUserObject())->collide(true, contact))
+                res = false;
+
         if (g2->getUserObject())
-        	if (!static_cast<CollisionTestedObject*>(g2->getUserObject())->Collide(false, Contact))
-        		Return = false;
-        
-        return Return;
+            if (!static_cast<CollisionTestedObject*>(g2->getUserObject())->collide(false, contact))
+                res = false;
+
+        return res;
     }
 
-        bool CollidingObject::Collide(bool MineIsFirst, OgreOde::Contact *Contact)
-        {
-        	Contact->setForceDependentSlip(Contact->getForceDependentSlip() * ForceDependentSlip);
-        	Contact->setAdditionalFDS(Contact->getForceDependentSlip2() * ForceDependentSlip);
-        	Contact->setCoulombFriction(Contact->getCoulombFrictionMu() * Friction);
-        	Contact->setBouncyness(Contact->getBouncyness() * Bouncyness, Contact->getBouncynessVelocity() * BounceVelocity);
-        	return true;
-        }
+    bool CollidingObject::Collide(bool MineIsFirst, OgreOde::Contact* contact)
+    {
+        contact->setForceDependentSlip(contact->getForceDependentSlip() * ForceDependentSlip);
+        contact->setAdditionalFDS(contact->getForceDependentSlip2() * ForceDependentSlip);
+        contact->setCoulombFriction(contact->getCoulombFrictionMu() * Friction);
+        contact->setBouncyness(contact->getBouncyness() * Bouncyness, contact->getBouncynessVelocity() * BounceVelocity);
+        return true;
+    }
 
 }

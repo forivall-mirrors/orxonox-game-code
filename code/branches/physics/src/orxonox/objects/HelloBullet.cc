@@ -39,7 +39,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
-#include "GraphicsEngine.h"
+#include "objects/Scene.h"
 
 #include "util/Sleep.h"
 
@@ -48,7 +48,8 @@ namespace orxonox
 {
     CreateFactory(HelloBullet);
     
-    HelloBullet::HelloBullet()
+    HelloBullet::HelloBullet(BaseObject* creator)
+        : BaseObject(creator)
     {
  	   RegisterObject(HelloBullet);
   	   COUT(0) << "HelloBullet loaded" << std::endl ;
@@ -93,7 +94,7 @@ namespace orxonox
  
 
 //load floor mash
-        Ogre::SceneManager* sceneMgr = GraphicsEngine::getInstance().getLevelSceneManager();
+        Ogre::SceneManager* sceneMgr = creator->getScene()->getSceneManager();
 
         int i = 0;
         Ogre::StaticGeometry* floor;

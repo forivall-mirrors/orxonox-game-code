@@ -8,7 +8,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/Zm200"
-		AdditionalIncludeDirectories="$(RootDir)src\bullet;$(RootDir)src\ogrebullet\Collisions"
+		AdditionalIncludeDirectories=""
 		PreprocessorDefinitions="_PRECOMP"
 		UsePrecompiledHeader="2"
 		PrecompiledHeaderThrough="OgreBulletCollisions.h"

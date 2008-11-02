@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport PhysicsTest : public BaseObject, public Tickable
     {
     public:
-        PhysicsTest();
+        PhysicsTest(BaseObject* creator);
         virtual ~PhysicsTest();
         void setConfigValues();
 
@@ -65,46 +65,47 @@ namespace orxonox
     };
 
 
-   class _OrxonoxExport CollisionTestedObject
-   {
-        public:
-        	CollisionTestedObject(void);
-        	virtual ~CollisionTestedObject(void);
-        	virtual bool Collide(bool MineIsFirst, OgreOde::Contact *Contact) = 0;
-   };
+    class _OrxonoxExport CollisionTestedObject
+    {
+    public:
+        CollisionTestedObject(void);
+        virtual ~CollisionTestedObject(void);
+        virtual bool Collide(bool bMineFirst, OgreOde::Contact* contact) = 0;
+    };
 
-   class _OrxonoxExport CollidingObject : public virtual CollisionTestedObject
-   {
-        protected:
-               float Friction;
-        	float Bouncyness;
-        	float BounceVelocity;
-        	float ForceDependentSlip;
-        
-        public:
-        	CollidingObject(void);
-        	virtual ~CollidingObject(void);
-        
-        //	bool virtual WriteToIni(IniFile& Ini)	const;
-        //	bool virtual LoadFromIni(const std::basic_string<wchar_t>& ObjectID, IniFile& Ini);
-        
-        	float GetFriction(void)			const	{return Friction;}
-        	float GetBouncyness(void)		const	{return Bouncyness;}
-        	float GetBounceVelocity(void)		const	{return BounceVelocity;}
-        	float GetFDS(void)			const	{return ForceDependentSlip;}
-        
-        	virtual bool Collide(bool MineIsFirst, OgreOde::Contact *Contact);
-        
-        private:
-        	static const wchar_t* KEY_FRICTION;
-        	static const float DEF_FRICTION;
-        	static const wchar_t* KEY_BOUNCYNESS;
-        	static const float DEF_BOUNCYNESS;
-        	static const wchar_t* KEY_FDS;
-        	static const float DEF_FDS;
-        	static const wchar_t* KEY_BOUNCE_VELO;
-        	static const float DEF_BOUNCE_VELO;
-   };
+    class _OrxonoxExport CollidingObject : virtual public CollisionTestedObject
+    {
+    protected:
+        float friction_;
+        float bouncyness_;
+        float bounceVelocity_;
+        float forceDependentSlip_;
+
+    public:
+        CollidingObject(void);
+        virtual ~CollidingObject(void);
+
+        //virtual bool writeToIni(IniFile& ini)	const;
+        //virtual bool loadFromIni(const std::basic_string<wchar_t>& objectID, IniFile& ini);
+
+        float getFriction(void)       const {return friction_;}
+        float getBouncyness(void)     const {return bouncyness_;}
+        float getBounceVelocity(void) const {return bounceVelocity_;}
+        float getFDS(void)            const {return forceDependentSlip_;}
+
+        virtual bool collide(bool bMineFirst, OgreOde::Contact *contact);
+
+    private:
+        //static const wchar_t* KEY_FRICTION;
+        //static const float DEF_FRICTION;
+        //static const wchar_t* KEY_BOUNCYNESS;
+        //static const float DEF_BOUNCYNESS;
+        //static const wchar_t* KEY_FDS;
+        //static const float DEF_FDS;
+        //static const wchar_t* KEY_BOUNCE_VELO;
+        //static const float DEF_BOUNCE_VELO;
+
+    };
 
 }
 
