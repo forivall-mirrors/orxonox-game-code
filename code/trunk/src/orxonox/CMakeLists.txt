@@ -5,16 +5,6 @@ SET( ORXONOX_SRC_FILES
   Main.cc
   Settings.cc
 
-  gamestates/GSClient.cc
-  gamestates/GSDedicated.cc
-  gamestates/GSGraphics.cc
-  gamestates/GSGUI.cc
-  gamestates/GSIOConsole.cc
-  gamestates/GSLevel.cc
-  gamestates/GSRoot.cc
-  gamestates/GSServer.cc
-  gamestates/GSStandalone.cc
-
   gui/GUIManager.cc
   gui/OgreCEGUIRenderer.cpp
   gui/OgreCEGUIResourceProvider.cpp
@@ -110,6 +100,8 @@ SET( ORXONOX_SRC_FILES
 
   tolua/tolua_bind.cc
 )
+
+ADD_SOURCE_FILES(gamestates ORXONOX_GAMESTATES_SRC_FILES ORXONOX_SRC_FILES)
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(
