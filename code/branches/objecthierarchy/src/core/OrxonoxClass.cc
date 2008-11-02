@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OrxonoxClass.cc
+    @file
     @brief Implementation of the OrxonoxClass Class.
 */
 

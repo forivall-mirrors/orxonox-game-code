@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Core.h
+    @file
     @brief Declaration of the Core class.
 
     The Core class is a singleton, only used to configure some variables

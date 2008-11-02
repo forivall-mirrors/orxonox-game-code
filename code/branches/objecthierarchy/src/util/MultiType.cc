@@ -27,7 +27,7 @@
  */
 
 /**
-    @file MultiType.cc
+    @file
     @brief Implementation of the MultiType.
 */
 

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Factory.cc
+    @file
     @brief Implementation of the Factory class.
 */
 

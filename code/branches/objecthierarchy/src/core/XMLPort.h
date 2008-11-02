@@ -27,7 +27,7 @@
  */
 
 /**
-    @file XMLPort.h
+    @file
     @brief Declaration of the XMLPort helper classes and macros.
 
     XMLPort is a virtual function of every BaseObject. Every object can change this function.

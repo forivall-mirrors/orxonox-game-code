@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ConfigValueIncludes.h
+    @file
     @brief Definition of macros for config-values.
 */
 

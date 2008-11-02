@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OutputBuffer.h
+    @file
     @brief Declaration of the OutputBuffer class.
 
     The OutputBuffer acts almost like std::ostream. You can put text and other values to the

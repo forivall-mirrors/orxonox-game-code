@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OutputHandler.h
+    @file
     @brief Definition of the OutputHandler class.
 
     The OutputHandler acts like std::cout, but output isn't only shown in the console,

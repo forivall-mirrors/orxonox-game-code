@@ -27,7 +27,7 @@
  */
 
 /**
-    @file MultiType.h
+    @file
     @brief Declaration of the MultiType and some helper constructs.
 
     The MultiType can hold a value of one of the following types:

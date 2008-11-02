@@ -27,7 +27,7 @@
  */
 
 /**
-* @file ParticleInterface.cc
+* @file
 * @brief class to control praticle effects
 */
 

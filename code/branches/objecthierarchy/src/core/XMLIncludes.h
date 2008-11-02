@@ -27,7 +27,7 @@
  */
 
 /**
-    @file XMLIncludes.h
+    @file
     @brief Forward declarations of some XML classes.
 */
 

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file String.cc
+    @file
     @brief Implementation of several string manipulation functions.
 */
 

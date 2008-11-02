@@ -29,7 +29,7 @@
  */
 
 /**
-    @file Clipboard.cc
+    @file
     @brief OS-specific implementations of the clipboard functions.
 */
 

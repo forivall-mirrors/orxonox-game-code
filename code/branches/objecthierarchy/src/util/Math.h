@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Math.h
+    @file
     @brief Declaration and implementation of several math-functions, typedefs of some Ogre::Math classes to the orxonox namespace.
 */
 

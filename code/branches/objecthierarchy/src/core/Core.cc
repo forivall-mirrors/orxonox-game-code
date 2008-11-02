@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Core.cc
+    @file
     @brief Implementation of the Core class.
 */
 

@@ -37,7 +37,7 @@
  */
 
  /*!
- * @file substring.h
+ * @file
  * @brief a small class to get the parts of a string separated by commas
  *
  * This class is also identified as a Tokenizer. It splits up one long

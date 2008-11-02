@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Clipboard.h
+    @file
     @brief Some functions to exchange text between the OS clipboard and Orxonox.
 
     Use fromClipboard() to get text from the clipboard (if there is any text) and

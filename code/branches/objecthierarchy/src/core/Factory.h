@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Factory.h
+    @file
     @brief Definition of the Factory and the BaseFactory class.
 
     The Factory is a singleton, containing two maps to map either the name or the network ID

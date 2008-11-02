@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Debug.h
+    @file
     @brief Handles different output-levels of errors, warnings, infos and debug informations.
 
     The COUT(level) macro acts like std::cout, but the output is only performed if the given

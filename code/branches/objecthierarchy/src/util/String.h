@@ -27,7 +27,7 @@
  */
 
 /**
-    @file String.h
+    @file
     @brief Declaration of several string manipulation functions, used in many parts of the game.
 */
 

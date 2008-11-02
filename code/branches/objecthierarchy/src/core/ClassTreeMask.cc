@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ClassTreeMask.cc
+    @file
     @brief Implementation of the ClassTreeMask, ClassTreeMaskNode and ClassTreeMaskIterator classes.
 */
 
