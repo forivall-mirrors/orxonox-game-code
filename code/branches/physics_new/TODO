@@ -1,0 +1,18 @@
+todo: 
+
+	bidirectional
+
+	minimize synchronisableHeader
+
+
+	!!! check that enet does not cause a packet traffic jam when a reliable packet gets missed !!!
+	!!! ensure that objects get synched, when newly created, even if not their tick
+
+	setvariable mode
+	objectmode
+	priorities (put into gamestatehandler)
+		manage delete object handling (only send deletes of acked objects)
+	static (sync once) & triggerSync
+
+REMARKS:
+	try to sort the bytestream before copy (putt all 0's in one place)
