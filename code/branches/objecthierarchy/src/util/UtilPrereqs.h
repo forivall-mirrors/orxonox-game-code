@@ -59,17 +59,18 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-class ArgReader;
-class Convert;
-class ExprParser;
-class MultiType;
-class SubString;
 namespace orxonox
 {
+    class Exception;
+    class ExprParser;
+    class IntVector2;
+    class IntVector3;
+    class MultiType;
     class OutputBuffer;
     class OutputBufferListener;
-    class Error;
     class OutputHandler;
+    class SignalHandler;
+    class SubString;
 }
 
 #endif /* _UtilPrereqs_H__ */

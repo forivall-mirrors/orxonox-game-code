@@ -40,28 +40,42 @@
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
 #include <winbase.h>
 
-inline void usleep(DWORD dwMicroseconds)
+namespace orxonox
 {
-  Sleep(dwMicroseconds / 1000);
-}
+    inline void usleep(DWORD dwMicroseconds)
+    {
+        Sleep(dwMicroseconds / 1000);
+    }
 
-inline void msleep(DWORD dwMilliseconds)
-{
-  Sleep(dwMilliseconds);
-}
+    inline void msleep(DWORD dwMilliseconds)
+    {
+        Sleep(dwMilliseconds);
+    }
 
-inline void sleep(DWORD dwSeconds)
-{
-  Sleep(dwSeconds * 1000);
+    inline void sleep(DWORD dwSeconds)
+    {
+        Sleep(dwSeconds * 1000);
+    }
 }
 
 #else /* Linux/Apple */
 
 #include <unistd.h>
 
-inline void msleep(unsigned long msec)
+namespace orxonox
 {
-  usleep(msec * 1000);
+    inline void usleep(unsigned long usec)
+    {
+        usleep(usec);
+    }
+    inline void msleep(unsigned long msec)
+    {
+        usleep(msec * 1000);
+    }
+    inline void sleep(unsigned long sec)
+    {
+        usleep(sec * 1000000);
+    }
 }
 
 #endif

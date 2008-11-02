@@ -226,7 +226,7 @@ namespace network
           //break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
-          msleep(1);
+          orxonox::msleep(1);
           break;
       }
 //       usleep(100);

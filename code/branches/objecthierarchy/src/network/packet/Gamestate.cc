@@ -243,7 +243,7 @@ bool Gamestate::compressData()
 
   //copy and modify header
 #ifndef NDEBUG
-  HEADER->crc32 = calcCRC(data_+sizeof(GamestateHeader), HEADER->datasize);
+  HEADER->crc32 = orxonox::calcCRC(data_+sizeof(GamestateHeader), HEADER->datasize);
 #endif
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old data
@@ -280,7 +280,7 @@ bool Gamestate::decompressData()
     case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
   }
 #ifndef NDEBUG
-  assert(HEADER->crc32==calcCRC(ndata+sizeof(GamestateHeader), HEADER->datasize));
+  assert(HEADER->crc32==orxonox::calcCRC(ndata+sizeof(GamestateHeader), HEADER->datasize));
 #endif
 
   //copy over the header

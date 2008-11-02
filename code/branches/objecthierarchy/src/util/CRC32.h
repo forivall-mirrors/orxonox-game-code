@@ -33,11 +33,13 @@
 #include <iostream>
 #include "Integers.h"
 
-const unsigned int UTIL_CRC32POLY = 0x04C11DB7; /* CRC-32 Polynom */
+namespace orxonox
+{
+    const unsigned int UTIL_CRC32POLY = 0x04C11DB7; /* CRC-32 Polynom */
 
-_UtilExport void calcCRCBit(uint32_t &crc32, int bit);
+    _UtilExport void calcCRCBit(uint32_t &crc32, int bit);
 
-_UtilExport uint32_t calcCRC(unsigned char *data, unsigned int dataLength);
-
+    _UtilExport uint32_t calcCRC(unsigned char *data, unsigned int dataLength);
+}
 
 #endif /* _Util_CRC_H__ */

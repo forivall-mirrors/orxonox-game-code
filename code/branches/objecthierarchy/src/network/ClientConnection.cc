@@ -71,7 +71,7 @@ namespace network
 
   bool ClientConnection::waitEstablished(int milisec) {
     for(int i=0; i<=milisec && !established; i++)
-      msleep(1);
+      orxonox::msleep(1);
 
     return established;
   }
@@ -183,7 +183,7 @@ namespace network
         break;
       case ENET_EVENT_TYPE_NONE:
         //receiverThread_->yield();
-        msleep(1);
+        orxonox::msleep(1);
         break;
       }
     }

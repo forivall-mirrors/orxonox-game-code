@@ -45,10 +45,11 @@
 
 #include <string>
 
-
-_UtilExport bool toClipboard(const std::string& text);
-_UtilExport std::string fromClipboard();
-
+namespace orxonox
+{
+    _UtilExport bool toClipboard(const std::string& text);
+    _UtilExport std::string fromClipboard();
+}
 
 #endif /* _Clipboard_H__ */
 

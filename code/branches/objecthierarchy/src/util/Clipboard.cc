@@ -36,11 +36,16 @@
 #include "Clipboard.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-    /////////////
-    // Windows //
-    /////////////
-    #include <windows.h>
-    #include "Debug.h"
+
+/////////////
+// Windows //
+/////////////
+
+#include <windows.h>
+#include "Debug.h"
+
+namespace orxonox
+{
 
     /**
         @brief Puts text into the windows-clipboard
@@ -96,11 +101,16 @@
         }
         return "";
     }
-#else
-    /////////////
-    // Default //
-    /////////////
+}
 
+#else /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
+
+/////////////
+// Default //
+/////////////
+
+namespace orxonox
+{
     std::string clipboard = ""; //!< Keeps the text of our internal clipboard
 
     /**
@@ -122,4 +132,6 @@
     {
         return clipboard;
     }
-#endif
+}
+
+#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */

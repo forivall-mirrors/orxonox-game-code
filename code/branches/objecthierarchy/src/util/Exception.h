@@ -140,6 +140,7 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
     CREATE_ORXONOX_EXCEPTION(GameState);
+}
 
 #define ThrowException(type, description) \
     throw SpecificException<Exception::type>(description, __LINE__, __FILE__, __FUNCTIONNAME__)
@@ -152,7 +153,5 @@ namespace orxonox
 #else
 #define OrxAssert(condition, errorMessage)  ((void)0)
 #endif
-
-}
 
 #endif /* _Exception_H__ */
