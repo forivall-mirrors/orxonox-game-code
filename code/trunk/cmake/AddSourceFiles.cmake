@@ -1,13 +1,22 @@
-MACRO(ADD_SOURCE_FILES _directory _source_list _target_list)
+MACRO(ADD_SOURCE_DIRECTORY _target_list _directory)
 
-  # Set the variable (_source_list) first
-  INCLUDE(${_directory}/CMakeLists.txt)
-#MESSAGE(STATUS ${_directory})
-#MESSAGE(STATUS "${_source_list}")
-#MESSAGE(STATUS "${${_source_list}}")
+  # Subfolder puts source files into CMake Cache variable _CACHED_SOURCE_FILES
+  ADD_SUBDIRECTORY(${_directory})
 
-  FOREACH(_source_file ${${_source_list}})
-	LIST(APPEND ${_target_list} "${_directory}/${_source_file}")
-#MESSAGE(STATUS ${${_target_list}})
+  # Put the directory name in front of each source file from the subfolder
+  # and add it to the source list in the current directory
+  FOREACH(_source_file ${_CACHED_SOURCE_FILES})
+    LIST(APPEND ${_target_list} "${_directory}/${_source_file}")
   ENDFOREACH(_source_file)
+
+ENDMACRO(ADD_SOURCE_DIRECTORY)
+
+
+MACRO(ADD_SOURCE_FILES _source_list)
+  
+  # Put the source file into a variable that still exists in this_folder/../
+  # Use FORCE to always overwrite the cache variable
+  SET(_CACHED_SOURCE_FILES ${${_source_list}} CACHE STRING "" FORCE)
+  MARK_AS_ADVANCED(_CACHED_SOURCE_FILES FORCE)
+
 ENDMACRO(ADD_SOURCE_FILES)

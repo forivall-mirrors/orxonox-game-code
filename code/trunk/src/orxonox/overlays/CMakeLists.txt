@@ -1,4 +1,4 @@
-SET( ORXONOX_OVERLAYS_SRC_FILES
+SET( SRC_FILES
   OrxonoxOverlay.cc
   OverlayGroup.cc
   OverlayText.cc
@@ -14,4 +14,6 @@ SET( ORXONOX_OVERLAYS_SRC_FILES
   hud/HUDSpeedBar.cc
   hud/ChatOverlay.cc
 )
+
+ADD_SOURCE_FILES(SRC_FILES)
 

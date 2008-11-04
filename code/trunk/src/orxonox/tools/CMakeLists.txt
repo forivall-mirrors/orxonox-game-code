@@ -1,4 +1,4 @@
-SET( ORXONOX_TOOLS_SRC_FILES
+SET( SRC_FILES
   BillboardSet.cc
   Mesh.cc
   ParticleInterface.cc
@@ -6,4 +6,6 @@ SET( ORXONOX_TOOLS_SRC_FILES
   Timer.cc
   WindowEventListener.cc
 )
+
+ADD_SOURCE_FILES(SRC_FILES)
 
