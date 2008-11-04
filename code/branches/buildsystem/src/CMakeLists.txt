@@ -24,7 +24,6 @@ LINK_DIRECTORIES(
 
 INCLUDE_DIRECTORIES(
   .
-  ..
   ois
   orxonox
   tolua
