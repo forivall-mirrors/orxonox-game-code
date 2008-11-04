@@ -26,6 +26,8 @@ ELSE (WIN32)
     ENDIF (${CEGUI_VERSION} LESS 0.6.0)
 ENDIF (WIN32)
 
+# Include macro to easily add source files in subdirectories
+INCLUDE(AddSourceFiles)
 
 # Our own libraries
 ADD_SUBDIRECTORY(util)
