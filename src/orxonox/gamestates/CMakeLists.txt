@@ -1,4 +1,4 @@
-SET( ORXONOX_GAMESTATES_SRC_FILES
+SET( SRC_FILES
   GSDedicated.cc
   GSClient.cc
   GSGraphics.cc
@@ -9,4 +9,6 @@ SET( ORXONOX_GAMESTATES_SRC_FILES
   GSServer.cc
   GSStandalone.cc
 )
+
+ADD_SOURCE_FILES(SRC_FILES)
 
