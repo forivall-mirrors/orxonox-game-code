@@ -1,5 +1,3 @@
-#define TIXML_USE_TICPP
-
 /*
 http://code.google.com/p/ticpp/
 Copyright (c) 2006 Ryan Pusztai, Ryan Mulder
@@ -29,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author		Ryan Mulder
 @date		04/11/2006
 
-@version  0.04b by nico@orxonox.net: gcc-4.3 compilation hotfixes
 @version	0.04a by edam@waxworlds.org: based Exception based on std::exception; added stream
 					<< and >> support; added Document::Parse(); bug fix; improved THROW() macro.
 @version	0.04 Added NodeImp class. Also made all the classes inherit from NodeImp.
@@ -93,6 +90,7 @@ namespace ticpp
 		std::string file( __FILE__ );										\
 		file = file.substr( file.find_last_of( "\\/" ) + 1 );				\
 		full_message << message << " <" << file << "@" << __LINE__ << ">";	\
+		full_message << BuildDetailedErrorString();							\
 		throw Exception( full_message.str() );								\
 	}
 
@@ -220,17 +218,56 @@ namespace ticpp
 		}
 
 		/**
+		Compare internal TiXml pointers to determine is both are wrappers around the same node
+		*/
+		bool operator == ( const Base& rhs ) const
+		{
+			return ( GetBasePointer() == rhs.GetBasePointer() );
+		}
+		
+		/**
+		Compare internal TiXml pointers to determine is both are wrappers around the same node
+		*/
+		bool operator != ( const Base& rhs ) const
+		{
+			return ( GetBasePointer() != rhs.GetBasePointer() );
+		}
+		
+		/**
+		Builds detailed error string using TiXmlDocument::Error() and others
+		*/
+		std::string BuildDetailedErrorString() const
+		{
+			std::ostringstream full_message;
+			#ifndef TICPP_NO_RTTI
+			TiXmlNode* node = dynamic_cast< TiXmlNode* >( GetBasePointer() );
+			if ( node != 0 )
+			{
+				TiXmlDocument* doc = node->GetDocument();
+				if ( doc != 0 )
+				{
+					if ( doc->Error() )
+					{
+						full_message 	<< "\nDescription: " << doc->ErrorDesc()
+										<< "\nFile: " << (strlen( doc->Value() ) > 0 ? doc->Value() : "<unnamed-file>") 
+										<< "\nLine: " << doc->ErrorRow() 
+										<< "\nColumn: " << doc->ErrorCol();
+					}
+				}
+			}
+			#endif
+			return full_message.str();
+		}
+
+		/**
 		Destructor
 		*/
 		virtual ~Base()
 		{
-			DeleteSpawnedWrappers();
 		}
 
 	protected:
 		mutable TiCppRCImp* m_impRC;	/**< Holds status of internal TiXmlPointer - use this to determine if object has been deleted already */
-
-		mutable std::vector< Base* > m_spawnedWrappers; /**< Remember all wrappers that we've created with 'new' - ( e.g. NodeFactory, FirstChildElement, etc. )*/
 
 		/**
 		@internal
@@ -249,21 +286,7 @@ namespace ticpp
 			{
 				TICPPTHROW( "Internal TiXml Pointer is NULL" );
 			}
-		}
-
-		/**
-		@internal
-		Delete all container objects we've spawned with 'new'.
-		*/
-		void DeleteSpawnedWrappers()
-		{
-			std::vector< Base* >::reverse_iterator wrapper;
-			for ( wrapper = m_spawnedWrappers.rbegin(); wrapper != m_spawnedWrappers.rend(); ++wrapper )
-			{
-				delete *wrapper;
-			}
-			m_spawnedWrappers.clear();
-		}
+		}		
 
 		/**
 		@internal
@@ -874,6 +897,7 @@ namespace ticpp
 		*/
 		bool NoChildren() const;
 
+		#ifndef TICPP_NO_RTTI
 		/**
 		Pointer conversion ( NOT OBJECT CONVERSION ) - replaces TiXmlNode::ToElement, TiXmlNode::ToDocument, TiXmlNode::ToComment, etc.
 
@@ -894,6 +918,7 @@ namespace ticpp
 			}
 			return pointer;
 		}
+		#endif
 
 		/**
 		Pointer conversion - replaces TiXmlNode::ToDocument.
@@ -1084,8 +1109,8 @@ namespace ticpp
 		}
 
 		/// Constructor
-		Iterator( const Iterator& it, const std::string& value  = "" )
-			: m_p( it.m_p ), m_value( value )
+		Iterator( const Iterator& it )
+			: m_p( it.m_p ), m_value( it.m_value )
 		{
 		}
 
@@ -1102,6 +1127,7 @@ namespace ticpp
 		Iterator& operator=( const Iterator& it )
 		{
 			m_p = it.m_p;
+			m_value = it.m_value;
 			return *this;
 		}
 
@@ -1120,9 +1146,11 @@ namespace ticpp
 		}
 
 		/** Sets internal pointer to the Next Sibling, or Iterator::END, if there are no more siblings */
-		Iterator& operator++(int)
+		Iterator operator++(int)
 		{
-			return this->operator ++();
+			Iterator tmp(*this);
+			++(*this);
+			return tmp;
 		}
 
 		/** Sets internal pointer to the Previous Sibling, or Iterator::END, if there are no prior siblings */
@@ -1133,33 +1161,51 @@ namespace ticpp
 		}
 
 		/** Sets internal pointer to the Previous Sibling, or Iterator::END, if there are no prior siblings */
-		Iterator& operator--(int)
-		{
-			return this->operator --();
+		Iterator operator--(int)
+		{			
+			Iterator tmp(*this);
+			--(*this);
+			return tmp;
 		}
 
 		/** Compares internal pointer */
-		bool operator!=( T* p ) const
+		bool operator!=( const T* p ) const
 		{
-			return m_p != p;
+			if ( m_p == p )
+			{
+				return false;
+			}
+			if ( 0 == m_p || 0 == p )
+			{
+				return true;
+			}
+			return *m_p != *p;
 		}
 
 		/** Compares internal pointer */
 		bool operator!=( const Iterator& it ) const
 		{
-			return m_p != it.m_p;
+			return operator!=( it.m_p );
 		}
 
 		/** Compares internal pointer* */
 		bool operator==( T* p ) const
 		{
-			return m_p == p;
+			if ( m_p == p )
+			{
+				return true;
+			}
+			if ( 0 == m_p || 0 == p )
+			{
+				return false;
+			}
+			return *m_p == *p;
 		}
 
 		/** Compares internal pointer */
 		bool operator==( const Iterator& it ) const
 		{
-			return m_p == it.m_p;
+			return operator==( it.m_p );
 		}
 
 		/** So Iterator behaves like a STL iterator */
@@ -1217,7 +1263,11 @@ namespace ticpp
 			// Check for NULL pointers
 			if ( 0 == tiXmlPointer )
 			{
-				TICPPTHROW( "Can not create a " << typeid( T ).name() );
+				#ifdef TICPP_NO_RTTI
+					TICPPTHROW( "Can not create TinyXML objext" );
+				#else
+					TICPPTHROW( "Can not create a " << typeid( T ).name() );
+				#endif
 			}
 			SetTiXmlPointer( tiXmlPointer );
 			m_impRC->IncRef();
@@ -1230,8 +1280,6 @@ namespace ticpp
 		*/
 		virtual void operator=( const NodeImp<T>& copy )
 		{
-			DeleteSpawnedWrappers();
-
 			// Dropping the reference to the old object
 			this->m_impRC->DecRef();
 
@@ -1264,8 +1312,6 @@ namespace ticpp
 		*/
 		virtual ~NodeImp()
 		{
-			// The spawnedWrappers need to be deleted before m_tiXmlPointer
-			DeleteSpawnedWrappers();
 			m_impRC->DecRef();
 		}
 	};
@@ -1682,6 +1728,37 @@ namespace ticpp
 		std::string GetAttributeOrDefault( const std::string& name, const std::string& defaultValue ) const;
 
 		/**
+		Returns an attribute of @a name from an element.
+		Uses FromString to convert the string to the type of choice.
+
+		@param name				The name of the attribute you are querying.
+		@param throwIfNotFound	[DEF]	If true, will throw an exception if the attribute doesn't exist
+		@throws Exception When the attribute doesn't exist and throwIfNotFound is true
+		@see GetAttributeOrDefault
+		*/
+		template < class T >
+			T GetAttribute( const std::string& name, bool throwIfNotFound = true ) const
+		{
+			// Get the attribute's value as a std::string
+			std::string temp;
+			T value;
+			if ( !GetAttributeImp( name, &temp ) )
+			{
+				if ( throwIfNotFound )
+				{
+					TICPPTHROW( "Attribute does not exist" );
+				}
+			}
+			else
+			{
+				// Stream the value from the string to T
+				FromString( temp, &value );
+			}
+
+			return value;
+		}
+
+		/**
 		Gets an attribute of @a name from an element.
 		Uses FromString to convert the string to the type of choice.
 
@@ -1723,6 +1800,21 @@ namespace ticpp
 		@see GetAttributeOrDefault
 		*/
 		std::string GetAttribute( const std::string& name ) const;
+
+		/**
+		Returns true, if attribute exists
+
+		@param name The name of the attribute you are checking.
+		@return Existence of attribute
+		*/
+		bool HasAttribute( const std::string& name ) const;
+
+		/**
+		Removes attribute from element.
+
+		@param name The name of the attribute to remove.
+		*/
+		void RemoveAttribute( const std::string& name );
 
 	private:
 
