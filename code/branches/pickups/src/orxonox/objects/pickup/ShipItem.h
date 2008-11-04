@@ -19,7 +19,7 @@ class _OrxonoxExport ShipItem{
 
 	public:
 		itemType CheckType();
-		virtual
+		//virtual ChecksubType();
 
 	private:
 		itemType type;

@@ -62,21 +62,43 @@ void AddItem(Shipitem* toAddItem){
 	if(CheckifValid(toAddItem)==true){
 		switch(toAddItem.CheckType()){
 			case Permanent:
-				Equipment.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,*toAddItem) );
+				Equipment.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,toAddItem) );
 				break;
 			case Usable:
-				Usable.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,*toAddItem) );
+				Usable.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,toAddItem) );
 				break;
 			case Trunk:
-				Trunk.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,*toAddItem) );
+				Trunk.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,toAddItem) );
 				break;
 		}
 		
 	}
 	else if(toAddItem.CheckType()==Permanent){
 		if(CheckifSpace()==true)
-			Trunk.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,*toAddItem) );
+			Trunk.insert ( pair<std::string, ShipItem*>(toAddItem.itemname,toAddItem) );
 	
 	}
 		
+}
+
+void SwitchItem(Permanent* toSwitchItem){
+	multimap<string, ShipItem*>::iterator it;
+	string equippedname;
+	equippedname=GetNameofPermanent(toSwitchItem.CheckSubType());
+	it=Equipment.find(equippedname);
+	Trunk.insert (find(equippedname));
+	Equipment.erase (it);
+	Equipment.insert(pair<std::string, ShipItem*>(toSwitchItem.itemname,toSwitchItem) 
+			
+}
+
+string GetNameofPermanent (subItemTypePermanent NametoGet){
+		multimap<string, ShipItem*>::iterator it;
+		for ( it=Equipment.begin() ; it != Equipment.end(); it++ ){
+			if((*it).second->CheckSubType()==NametoGet){
+			return (*it).first.itemname;
+			}
+		
+		}
+		return 0;
 }
