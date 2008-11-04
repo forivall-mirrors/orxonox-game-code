@@ -41,21 +41,10 @@ SET(CORE_SRC_FILES
   TclBind.cc
   TclThreadManager.cc
 
-  # input
-  input/Button.cc
-  input/CalibratorCallback.cc
-  input/ExtendedInputState.cc
-  input/HalfAxis.cc
-  input/InputBuffer.cc
-  input/InputCommands.cc
-  input/InputManager.cc
-  input/JoyStickDeviceNumberListener.cc
-  input/KeyBinder.cc
-  input/KeyDetector.cc
-  input/SimpleInputState.cc
-
   tolua/tolua_bind.cc
 )
+
+ADD_SOURCE_DIRECTORY(CORE_SRC_FILES input)
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(

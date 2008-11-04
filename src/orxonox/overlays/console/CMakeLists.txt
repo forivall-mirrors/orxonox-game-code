@@ -1,6 +1,5 @@
 SET( SRC_FILES
-  Controller.cc
-  HumanController.cc
+  InGameConsole.cc
 )
 
 ADD_SOURCE_FILES(SRC_FILES)
