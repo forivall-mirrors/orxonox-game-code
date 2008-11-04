@@ -249,12 +249,12 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         REGISTERSTRING(this->cameraPositionTemplate_, direction::toclient);
 
+        REGISTERDATA(this->server_overwrite_,   direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
+        REGISTERDATA(this->client_overwrite_,   direction::toserver);
+        
         REGISTERDATA(this->server_position_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
         REGISTERDATA(this->server_velocity_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
         REGISTERDATA(this->server_orientation_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
-
-        REGISTERDATA(this->server_overwrite_,   direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
-        REGISTERDATA(this->client_overwrite_,   direction::toserver);
 
         REGISTERDATA(this->client_position_,    direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
         REGISTERDATA(this->client_velocity_,    direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientVelocity));

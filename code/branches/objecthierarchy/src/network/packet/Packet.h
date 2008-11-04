@@ -91,7 +91,7 @@ class _NetworkExport Packet{
         data_ might no correlate with enetPacket_->data. */
     bool bDataENetAllocated_;
   private:
-    static std::map<ENetPacket *, Packet *> packetMap_;
+    static std::map<size_t, Packet *> packetMap_;
     ENetPacket *enetPacket_;
 };
 

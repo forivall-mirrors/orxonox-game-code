@@ -47,15 +47,25 @@ namespace orxonox
       void setV1(unsigned int value){ v1 = value; }
       void setV2(unsigned int value){ v2 = value; }
       void setV3(unsigned int value){ v3 = value; }
+      void setV4(unsigned int value){ v4 = value; }
 
       void checkV1();
       void checkV2();
       void checkV3();
+      void checkV4();
+      
+      void printV1(){ instance_->checkV1(); }
+      void printV2(){ instance_->checkV2(); }
+      void printV3(){ instance_->checkV3(); }
+      void printV4(){ instance_->checkV4(); }
 
     private:
       unsigned int v1;
       unsigned int v2;
       unsigned int v3;
+      unsigned int v4;
+      
+      static Test* instance_;
   };
 }
 

@@ -61,7 +61,7 @@ namespace orxonox
 
   namespace syncmode{
     enum mode{
-      one=0,
+      once=0,
       always=1
     };
   }
@@ -80,8 +80,8 @@ namespace orxonox
   };
 
   struct _NetworkExport synchronisableVariable{
-    unsigned int size;
-    int mode; // this determines in which direction the variable gets synchronised
+    size_t size;
+    uint8_t mode; // this determines in which direction the variable gets synchronised
     void *var;
     variableType type;
     NetworkCallbackBase *callback;
@@ -97,15 +97,14 @@ namespace orxonox
   class _NetworkExport Synchronisable : virtual public OrxonoxClass{
   public:
     friend class packet::Gamestate;
-    friend class GamestateClient;
-    friend class Server;
+//     friend class Server;
     virtual ~Synchronisable();
 
 
     virtual bool create();
     static void setClient(bool b);
 
-    static Synchronisable *fabricate(uint8_t*& mem, int mode=0x0);
+    static Synchronisable *fabricate(uint8_t*& mem, uint8_t mode=0x0);
     static bool deleteObject(unsigned int objectID);
     static Synchronisable *getSynchronisable(unsigned int objectID);
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
@@ -115,25 +114,25 @@ namespace orxonox
     inline unsigned int getClassID(){return classID;}
   protected:
     Synchronisable(BaseObject* creator);
-    void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
-    void setObjectMode(int mode);
+    void registerVar(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
+    void setObjectMode(uint8_t mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
 
 
   private:
-    bool getData(uint8_t*& men, unsigned int id, int mode=0x0);
-    uint32_t getSize(unsigned int id, int mode=0x0);
-    bool updateData(uint8_t*& mem, int mode=0x0, bool forceCallback=false);
+    bool getData(uint8_t*& men, unsigned int id, uint8_t mode=0x0);
+    uint32_t getSize(unsigned int id, uint8_t mode=0x0);
+    bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
     bool doSelection(unsigned int id);
-    bool doSync(unsigned int id);
+    bool doSync(unsigned int id, uint8_t mode=0x0);
 
     unsigned int objectID;
     unsigned int creatorID;
     unsigned int classID;
 
     std::list<synchronisableVariable *> *syncList;
-    static int state_; // detemines wheter we are server (default) or client
+    static uint8_t state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
     unsigned int objectFrequency_;
     int objectMode_;

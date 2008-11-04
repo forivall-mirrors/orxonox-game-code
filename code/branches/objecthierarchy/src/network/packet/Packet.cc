@@ -52,7 +52,7 @@ namespace packet{
 #define PACKET_FLAG_DEFAULT ENET_PACKET_FLAG_NO_ALLOCATE
 #define _PACKETID           0
 
-std::map<ENetPacket *, Packet *> Packet::packetMap_;
+std::map<size_t, Packet *> Packet::packetMap_;
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
@@ -133,7 +133,7 @@ bool Packet::send(){
     enetPacket_->freeCallback = &Packet::deletePacket;
     // Add the packet to a global list so we can access it again once enet calls our
     // deletePacket method. We can of course only give a one argument function to the ENet C library.
-    packetMap_[enetPacket_] = this;
+    packetMap_[(size_t)(void*)enetPacket_] = this;
   }
 #ifndef NDEBUG
   switch( *(ENUM::Type *)(data_ + _PACKETID) )
@@ -207,7 +207,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
   // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
-  std::map<ENetPacket*, Packet*>::iterator it = packetMap_.find(enetPacket);
+  std::map<size_t, Packet*>::iterator it = packetMap_.find((size_t)enetPacket);
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;

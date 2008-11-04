@@ -68,8 +68,8 @@ class _NetworkExport Gamestate: public Packet{
 
     ~Gamestate();
 
-    bool collectData(int id, int mode=0x0);
-    bool spreadData(int mode=0x0);
+    bool collectData(int id, uint8_t mode=0x0);
+    bool spreadData( uint8_t mode=0x0);
     int getID();
     bool isDiffed();
     bool isCompressed();
@@ -89,7 +89,7 @@ class _NetworkExport Gamestate: public Packet{
 
     bool operator ==(packet::Gamestate gs);
   private:
-    unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
+    unsigned int calcGamestateSize(unsigned int id, uint8_t mode=0x0);
     void removeObject(ObjectListIterator<Synchronisable> &it);
     std::map<unsigned int, Synchronisable*> dataMap_;
 };
