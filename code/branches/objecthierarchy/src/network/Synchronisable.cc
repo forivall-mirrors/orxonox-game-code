@@ -68,9 +68,20 @@ namespace orxonox
     static uint32_t idCounter=0;
     objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
-    objectID=idCounter++;
+    if(Host::running() && Host::isServer())
+      objectID=idCounter++; //this is only needed when running a server
+    else
+      objectID=OBJECTID_UNKNOWN;
     classID = (unsigned int)-1;
     syncList = new std::list<synchronisableVariable *>;
+    
+#ifndef NDEBUG
+    ObjectList<Synchronisable>::iterator it;
+    for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){
+      if( it->getObjectID()==this->objectID )
+        assert(*it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0));
+    }
+#endif
 
     this->creatorID = OBJECTID_UNKNOWN;
 
@@ -169,6 +180,7 @@ namespace orxonox
       else
         creator = dynamic_cast<BaseObject*>(synchronisable_creator);
     }
+    assert(getSynchronisable(header->objectID)==0);   //make sure no object with this id exists
     BaseObject *bo = id->fabricate(creator);
     assert(bo);
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
