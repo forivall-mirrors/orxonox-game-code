@@ -12,14 +12,9 @@ SET( NETWORK_SRC_FILES
   Server.cc
   Synchronisable.cc
   Host.cc
-  packet/Packet.cc
-  packet/Chat.cc
-  packet/ClassID.cc
-  packet/Acknowledgement.cc
-  packet/Gamestate.cc
-  packet/Welcome.cc
-  packet/DeleteObjects.cc
 )
+
+ADD_SOURCE_DIRECTORY(NETWORK_SRC_FILES packet)
 
 IF(WIN32)
   ADD_LIBRARY( network ${NETWORK_SRC_FILES} )

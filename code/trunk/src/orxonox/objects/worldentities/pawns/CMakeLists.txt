@@ -1,6 +1,7 @@
 SET( SRC_FILES
-  Controller.cc
-  HumanController.cc
+  Spectator.cc
+  Pawn.cc
+  SpaceShip.cc
 )
 
 ADD_SOURCE_FILES(SRC_FILES)

@@ -1,6 +1,6 @@
 SET( SRC_FILES
-  Controller.cc
-  HumanController.cc
+  DebugFPSText.cc
+  DebugRTRText.cc
 )
 
 ADD_SOURCE_FILES(SRC_FILES)
