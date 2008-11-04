@@ -34,23 +34,15 @@
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
 #include <OgreOverlayContainer.h>
-#include <OgreFontManager.h>
-#include <OgreFont.h>
 
-#include "util/Math.h"
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "core/input/InputBuffer.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
-    //CreateFactory(Stats);
+    CreateFactory(Stats);
 
     /**
         @brief Constructor: Creates and initializes the Stats panel.
