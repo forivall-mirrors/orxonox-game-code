@@ -296,7 +296,9 @@ namespace orxonox
       else
         it++;
     }
-    assert(0); //if we reach this point something went wrong
+    bool unregistered_nonexistent_variable = false;
+    assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
+    // the variable has not been registered before
   }
   
 

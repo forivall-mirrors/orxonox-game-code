@@ -71,7 +71,13 @@ namespace orxonox
             virtual void changedName() {}
 
             /** @brief Sets the state of the objects activity. @param bActive True = active */
-            inline void setActive(bool bActive) { this->bActive_ = bActive; this->changedActivity(); }
+            inline void setActive(bool bActive)
+            { 
+                bool bTemp = this->bActive_;
+                this->bActive_ = bActive;
+                if ( bTemp != bActive )
+                    this->changedActivity();
+            }
             /** @brief Returns the state of the objects activity. @return The state of the activity */
             inline bool isActive() const { return this->bActive_; }
             /** @brief This function gets called if the activity of the object changes. */
