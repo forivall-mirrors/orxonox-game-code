@@ -1,4 +1,4 @@
-ADD_LIBRARY(LibBulletCollision SHARED
+ADD_LIBRARY(LibBulletCollision
 				BroadphaseCollision/btAxisSweep3.cpp
 				BroadphaseCollision/btAxisSweep3.h
 				BroadphaseCollision/btBroadphaseProxy.cpp

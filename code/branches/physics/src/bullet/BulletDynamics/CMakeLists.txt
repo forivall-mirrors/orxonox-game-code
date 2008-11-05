@@ -1,4 +1,4 @@
-ADD_LIBRARY(LibBulletDynamics SHARED
+ADD_LIBRARY(LibBulletDynamics
 
 	ConstraintSolver/btContactConstraint.cpp
 	ConstraintSolver/btContactConstraint.h

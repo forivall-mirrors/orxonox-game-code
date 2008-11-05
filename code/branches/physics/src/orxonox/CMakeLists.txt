@@ -145,12 +145,12 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
-  LibLinearMath
-  LibBulletCollision
+#LibBulletSoftBody
   LibBulletDynamics
-  LibBulletSoftBody
-  ogrebullet_collisions_orxonox
-  ogrebullet_dynamics_orxonox
+  LibBulletCollision
+  LibLinearMath
+#ogrebullet_collisions_orxonox
+#ogrebullet_dynamics_orxonox
   util
   core
   audio
