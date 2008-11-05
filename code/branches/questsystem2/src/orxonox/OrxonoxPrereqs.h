@@ -96,6 +96,7 @@ namespace orxonox
     class Quest;
     class QuestDescription;
     class QuestEffect;
+    class QuestEffectBeacon;
     class QuestHint;
     class QuestItem;
     class QuestManager;

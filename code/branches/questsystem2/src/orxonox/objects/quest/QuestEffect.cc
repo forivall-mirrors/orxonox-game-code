@@ -31,6 +31,8 @@
 
 #include "core/CoreIncludes.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
+
 namespace orxonox {
 
     /**
@@ -62,7 +64,7 @@ namespace orxonox {
     @return
         Returns false if there was an error, view console of log for further detail.
     */
-    bool QuestEffect::invokeEffects(Player* player, std::list<QuestEffect*> & effects)
+    bool QuestEffect::invokeEffects(ControllableEntity* player, std::list<QuestEffect*> & effects)
     {
         bool check = true;
 

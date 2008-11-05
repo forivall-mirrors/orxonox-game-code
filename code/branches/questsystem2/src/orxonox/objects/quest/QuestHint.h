@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestHint.h
+    @brief
+	Definition of the QuestHint class.
+*/
 
 #ifndef _QuestHint_H__
 #define _QuestHint_H__
@@ -40,6 +46,7 @@
 namespace questHintStatus
 {
 
+    //! The status of the hint.
     enum Enum
     {
         inactive,
@@ -51,13 +58,17 @@ namespace questHintStatus
 namespace orxonox
 {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
         Represents a hint in the game towards completing a Quest.
         Consists of title and description in textual form and must belong to a quest.
-        A QuestHit has a defined status (inactive or active, where inactive is default) for each player, which means each QuestHint exists only once for all players, it doesn't belong to a player, it just has different stati for each of them.
+        A QuestHit has a defined status (inactive or active, where inactive is default) for each player, which means each QuestHint exists only once for all players, it doesn't belong to a player, it just has different states for each of them.
+        
+        Creating a QuestHint through XML goes as follows:
+        
+        <QuestHint id="hintId">  //Where hintId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
+            <QuestDesctription title="" description="" />
+        </QuestHint>
     @author
         Damian 'Mozork' Frick
     */
@@ -68,23 +79,21 @@ namespace orxonox
             QuestHint(BaseObject* creator);
             virtual ~QuestHint();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestHint object through XML.
 
-            bool isActive(Player* player); //!< Returns true if the hint is active for the input player.
+            bool isActive(ControllableEntity* player); //!< Returns true if the hint is active for the input player.
 
-            bool activate(Player* player); //!< Activates the hint for the input player.
-
+            bool setActive(ControllableEntity* player); //!< Activates the hint for the input player.
             bool setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
 
-            inline Quest* getQuest(void)
+            inline Quest* getQuest(void) //!< Returns the quest the hint is attached to.
                { return this->quest_; }
 
         private:
-
-            void initialize(void);
-
             Quest* quest_; //!< The quest the hint belongs to.
-            std::map<Player*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
+            std::map<ControllableEntity*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
+
+            void initialize(void); //!< Initializes the object.
 
     };
 

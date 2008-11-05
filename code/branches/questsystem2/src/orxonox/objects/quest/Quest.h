@@ -25,7 +25,15 @@
  *      ...
  *
  */
-
+ 
+/**
+    @file Quest.h
+    @brief
+	Definition of the Quest class.
+	
+	The Quest is the parent class of LocalQuest and GlobalQuest.
+*/
+ 
 #ifndef _Quest_H__
 #define _Quest_H__
 
@@ -37,9 +45,11 @@
 #include "core/XMLPort.h"
 #include "QuestItem.h"
 
+
 namespace questStatus
 {
 
+    //!Different states of a quest.
     enum Enum
     {
         inactive,
@@ -52,13 +62,15 @@ namespace questStatus
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
         Represents a quest in the game.
         A quest has a list of subquests and a parentquest (if it is not a rootquest).
         Each quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
+        A quest has several hints (QuestHint) that can be unlocked through QuestEffects and then display aid in solving the quest.
+        A quest has a list of QuestEffects that are invoked when the quest is failed and also a list of effects that are invoked, when the quest is completed.
+        
+        Quest itself should not be instantiated, if you want to create a quest either go for LocalQuest or GlobalQuest, whichever suits you needs better.
     @author
         Damian 'Mozork' Frick
     */
@@ -68,43 +80,43 @@ namespace orxonox {
             Quest(BaseObject* creator);
             virtual ~Quest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Quest object through XML.
 
             inline Quest* getParentQuest(void) const //!< Returns the parent quest of the quest.
                 { return this->parentQuest_; }
             inline const std::list<Quest*> & getSubQuestList(void) const //!< Returns the list of sub quests.
                 { return this->subQuests_; }
 
-            bool isInactive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
-            bool isActive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'active'.
-            bool isFailed(const Player* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
-            bool isCompleted(const Player* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
+            bool isInactive(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
+            bool isActive(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'active'.
+            bool isFailed(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
+            bool isCompleted(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
 
-            bool start(Player* player); //!< Sets a quest to active.
-            bool fail(Player* player); //!< Fails the quest.
-            bool complete(Player* player); //!< Completes the quest.
+            bool start(ControllableEntity* player); //!< Sets a quest to active.
+	    virtual bool fail(ControllableEntity* player) = 0; //!< Fails the quest.
+            virtual bool complete(ControllableEntity* player) = 0; //!< Completes the quest.
 
         protected:
-            void initialize(void); //!< Initialized the object.
+            void initialize(void); //!< Initializes the object.
 
-            virtual bool isStartable(const Player* player) const = 0; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const Player* player) const = 0; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const Player* player) const = 0; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const ControllableEntity* player) const = 0; //!< Checks whether the quest can be started.
+            virtual bool isFailable(const ControllableEntity* player) const = 0; //!< Checks whether the quest can be failed.
+            virtual bool isCompletable(const ControllableEntity* player) const = 0; //!< Checks whether the quest can be completed.
 
             bool setParentQuest(Quest* quest); //!< Sets the parent quest of the quest.
             bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
             bool addHint(QuestHint* hint); //!< Add a hint to the list of hints.
-            bool addFailEffect(QuestEffect* effect);
-            bool addCompleteEffect(QuestEffect* effect);
+            bool addFailEffect(QuestEffect* effect); //!< Adds an effect to the list of failEffects.
+            bool addCompleteEffect(QuestEffect* effect); //!< Adds an effect to the list of completeEffects.
 
-            const Quest* getParentQuest(void);
-            const Quest* getSubQuests(unsigned int index) const;
-            const QuestHint* getHints(unsigned int index) const;
-            const QuestEffect* getFailEffects(unsigned int index) const;
-            const QuestEffect* getCompleteEffects(unsigned int index) const;
+            const Quest* getParentQuest(void); //!< Returns the parent quest of the quest.
+            const Quest* getSubQuests(unsigned int index) const; //!<Returns the sub quest of the given index.
+            const QuestHint* getHints(unsigned int index) const; //!< Returns the hint of the given index.
+            const QuestEffect* getFailEffects(unsigned int index) const; //!< Returns the failEffect of the given index.
+            const QuestEffect* getCompleteEffects(unsigned int index) const; //!Returns the completeEffect of the given index.
 
-            virtual questStatus::Enum getStatus(const Player* player) const = 0; //!< Returns the status of the quest for a specific player.
-            virtual bool setStatus(Player* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
+            virtual questStatus::Enum getStatus(const ControllableEntity* player) const = 0; //!< Returns the status of the quest for a specific player.
+            virtual bool setStatus(ControllableEntity* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
 
             Quest* parentQuest_; //!< Pointer to the parent quest.
             std::list<Quest*> subQuests_; //!< List of all the sub quests.

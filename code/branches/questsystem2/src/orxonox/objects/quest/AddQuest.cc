@@ -30,9 +30,11 @@
 #include "AddQuest.h"
 
 #include <string>
+
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
 #include "QuestManager.h"
 #include "Quest.h"
 
@@ -68,7 +70,7 @@ namespace orxonox {
     @return
         Returns true if the effect was successfully invoked.
     */
-    bool AddQuest::invoke(Player* player)
+    bool AddQuest::invoke(ControllableEntity* player)
     {
         if(player == NULL)
         {

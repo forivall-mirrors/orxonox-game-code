@@ -37,8 +37,6 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
         Adds a QuestHint, resp. Activates the QuestHint.
@@ -53,7 +51,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual bool invoke(Player* player); //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
 
         private:
             std::string hintId_;

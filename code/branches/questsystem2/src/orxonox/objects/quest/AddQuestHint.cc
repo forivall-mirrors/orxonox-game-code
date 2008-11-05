@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
 #include "QuestManager.h"
 #include "QuestItem.h"
 #include "QuestHint.h"
@@ -79,7 +80,7 @@ namespace orxonox {
     @return
         Returns true if the effect was successfully invoked.
     */
-    bool AddQuestHint::invoke(Player* player)
+    bool AddQuestHint::invoke(ControllableEntity* player)
     {
         if(player == NULL)
         {
@@ -90,7 +91,7 @@ namespace orxonox {
         try
         {
             QuestHint* hint = QuestManager::findHint(this->hintId_);
-            if(!hint->activate(player))
+            if(!hint->setActive(player))
             {
                 return false;
             }

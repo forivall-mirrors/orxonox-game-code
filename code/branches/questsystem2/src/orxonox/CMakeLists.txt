@@ -79,6 +79,7 @@ SET( ORXONOX_SRC_FILES
   objects/quest/Quest.cc
   objects/quest/QuestDescription.cc
   objects/quest/QuestEffect.cc
+  objects/quest/QuestEffectBeacon.cc
   objects/quest/QuestHint.cc
   objects/quest/QuestItem.cc
   objects/quest/QuestManager.cc

@@ -35,8 +35,6 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated in objecthirarchy.
-
     /**
     @brief
         Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects.
@@ -50,7 +48,7 @@ namespace orxonox {
             Rewardable(BaseObject* creator);
             virtual ~Rewardable();
 
-            virtual bool reward(Player* player) = 0; //!<Method to transcribe a rewardable object to the player.
+            virtual bool reward(ControllableEntity* player) = 0; //!<Method to transcribe a rewardable object to the player.
 
     };
 

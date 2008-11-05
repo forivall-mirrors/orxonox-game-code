@@ -25,12 +25,21 @@
  *      ...
  *
  */
+ 
+/**
+    @file GlobalQuest.cc
+    @brief
+	Implementation of the GlobalQuest class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "GlobalQuest.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
+
+#include "QuestEffect.h"
 
 namespace orxonox {
 
@@ -38,13 +47,20 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor.
+        Constructor. Initializes the object.
     */
     GlobalQuest::GlobalQuest(BaseObject* creator) : Quest(creator)
     {
-        RegisterObject(GlobalQuest);
-
         this->initialize();
+    }
+    
+    /**
+    @brief
+        Initializes the object.
+    */
+    void GlobalQuest::initialize(void)
+    {
+        RegisterObject(GlobalQuest);
     }
 
     /**
@@ -55,17 +71,76 @@ namespace orxonox {
     {
 
     }
-
+    
+    /**
+    @brief
+        Method for creating a GlobalQuest object through XML.
+    */
     void GlobalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(GlobalQuest, XMLPort, xmlelement, mode);
+        
+        XMLPortObject(GlobalQuest, QuestEffect, "reward-effects", addRewardEffect, getRewardEffects, xmlelement, mode);
 
         COUT(3) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
     }
-
-    void GlobalQuest::initialize(void)
+    
+    /**
+    @brief
+        Fails the quest for all players.
+        Invokes the failEffects on all the players possessing this quest.
+    @param player
+        The player failing it.
+    @return
+        Returns true if the quest could be failed, false if not.
+    */
+    bool GlobalQuest::fail(ControllableEntity* player)
     {
-        RegisterObject(GlobalQuest);
+        if(this->isFailable(player)) //!< Check whether the quest can be failed.
+        {
+            this->setStatus(player, questStatus::failed);
+            
+            //! Iterate through all players possessing this quest.
+            for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+            {
+                QuestEffect::invokeEffects(*it, this->failEffects_);
+            }
+
+            return true;
+        }
+        
+        COUT(2) << "A non-completable quest was trying to be failed." << std::endl;
+        return false;
+    }
+
+    /**
+    @brief
+        Completes the quest for all players.
+        Invokes the completeEffects on all the players possessing this quest.
+        Invokes the reward effects on the player completing the quest.
+    @param player
+        The player completing it.
+    @return
+        Returns true if the quest could be completed, false if not.
+    */
+    bool GlobalQuest::complete(ControllableEntity* player)
+    {
+        if(this->isCompletable(player)) //!< Check whether the quest can be completed.
+        {
+            this->setStatus(player, questStatus::completed);
+            
+            //! Iterate through all players possessing the quest.
+            for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+            {
+                QuestEffect::invokeEffects(*it, this->completeEffects_);
+            }
+            
+            QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward effects on the player completing the quest.
+            return true;
+        }
+        
+        COUT(2) << "A non-completable quest was trying to be completed." << std::endl;
+        return false;
     }
 
     /**
@@ -78,7 +153,7 @@ namespace orxonox {
     @throws
         Throws an exception if either isInactive() of isActive() throws one.
     */
-    bool GlobalQuest::isStartable(const Player* player) const
+    bool GlobalQuest::isStartable(const ControllableEntity* player) const
     {
         return this->isInactive(player) ||  this->isActive(player);
     }
@@ -93,7 +168,7 @@ namespace orxonox {
     @throws
         Throws an Exception if isActive() throws one.
     */
-    bool GlobalQuest::isFailable(const Player* player) const
+    bool GlobalQuest::isFailable(const ControllableEntity* player) const
     {
         return this->isActive(player);
 
@@ -109,7 +184,7 @@ namespace orxonox {
     @throws
         Throws an Exception if isActive() throws one.
     */
-    bool GlobalQuest::isCompletable(const Player* player) const
+    bool GlobalQuest::isCompletable(const ControllableEntity* player) const
     {
         return this->isActive(player);
     }
@@ -122,24 +197,21 @@ namespace orxonox {
     @throws
         Throws an Exception if player is NULL.
     */
-    questStatus::Enum GlobalQuest::getStatus(const Player* player) const
+    questStatus::Enum GlobalQuest::getStatus(const ControllableEntity* player) const
     {
-        if(player == NULL)
+        if(player == NULL) //!< We don't want NULL-Pointers!
         {
-            ThrowException(Argument, "The input Player* is NULL.");
+            ThrowException(Argument, "The input ControllableEntity* is NULL.");
         }
 
-        //TDO: Does this really work???
-        std::set<Player*>::const_iterator it = this->players_.find((Player*)(void*)player);
-        if (it != this->players_.end())
+        //! Find the player.
+        std::set<ControllableEntity*>::const_iterator it = this->players_.find((ControllableEntity*)(void*)player);
+        if (it != this->players_.end()) //!< If the player was found.
         {
             return this->status_;
         }
-        else
-        {
-           return questStatus::inactive;
-        }
 
+	return questStatus::inactive;
     }
 
     /**
@@ -153,20 +225,66 @@ namespace orxonox {
     @return
         Returns false if player is NULL.
     */
-    bool GlobalQuest::setStatus(Player* player, const questStatus::Enum & status)
+    bool GlobalQuest::setStatus(ControllableEntity* player, const questStatus::Enum & status)
     {
-        if(player == NULL)
+        if(player == NULL) //!< We don't want NULL-Pointers!
         {
             return false;
         }
 
-        std::set<Player*>::const_iterator it = this->players_.find(player);
+        //! Find the player.
+        std::set<ControllableEntity*>::const_iterator it = this->players_.find(player);
         if (it == this->players_.end()) //!< Player is not yet in the list.
         {
-            this->players_.insert(player);
+            this->players_.insert(player); //!< Add the player to the set.
         }
-        this->status_ = status;
+        
+        this->status_ = status; //!< Set the status, which is global, remember...?
         return true;
+    }
+    
+    /**
+    @brief
+        Adds a reward effect to the list of reward effects.
+    @param effect
+        The effect to be added.
+    @return
+        Returns true if successful.
+    */
+    bool GlobalQuest::addRewardEffect(QuestEffect* effect)
+    {
+        if(effect == NULL) //!< We don't want NULL-Pointers!
+        {
+            COUT(2) << "The reward effect to be added to quest {" << this->getId() << "} was NULL." << std::endl;
+            return false;
+        }
+
+        this->rewards_.push_back(effect); //!< Add the effect to the list.
+
+        COUT(3) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
+        return true;
+    }
+    
+    /**
+    @brief
+        Returns the reward effect at the given index.
+    @param index
+        The index.
+    @return
+        Returns the QuestEffect at the given index.
+    */
+    const QuestEffect* GlobalQuest::getRewardEffects(unsigned int index) const
+    {
+        int i = index;
+        for (std::list<QuestEffect*>::const_iterator effect = this->rewards_.begin(); effect != this->rewards_.end(); ++effect)
+        {
+            if(i == 0)
+            {
+               return *effect;
+            }
+            i--;
+        }
+        return NULL;
     }
 
 

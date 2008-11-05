@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestHint.cc
+    @brief
+	Implementation of the QuestHint class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "QuestHint.h"
@@ -32,6 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
 #include "Quest.h"
 
 namespace orxonox {
@@ -40,13 +47,20 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor.
+        Constructor. Initializes the object.
     */
     QuestHint::QuestHint(BaseObject* creator) : QuestItem(creator)
     {
-        RegisterObject(QuestHint);
-
         this->initialize();
+    }
+    
+    /**
+    @brief
+        Initialize the object.
+    */
+    void QuestHint::initialize(void)
+    {
+        RegisterObject(QuestHint);
     }
 
     /**
@@ -58,11 +72,10 @@ namespace orxonox {
 
     }
 
-    void QuestHint::initialize(void)
-    {
-        RegisterObject(QuestHint);
-    }
-
+    /**
+    @brief
+        Method for creating a QuestHint object through XML.
+    */
     void QuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(QuestHint, XMLPort, xmlelement, mode);
@@ -81,19 +94,21 @@ namespace orxonox {
     @return
         Returns true if the hint is active for the specified player.
     */
-    bool QuestHint::isActive(Player* player)
+    bool QuestHint::isActive(ControllableEntity* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< NULL-Pointers are ugly!
         {
-            ThrowException(Argument, "The input Player* is NULL.");
+            ThrowException(Argument, "The input ControllableEntity* is NULL.");
             return false;
         }
 
-        std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
-        if (it != this->playerStatus_.end())
+        //! Find the player.
+        std::map<ControllableEntity*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
+        if (it != this->playerStatus_.end()) //!< If the player is in the map.
         {
             return it->second;
         }
+        
         return questStatus::inactive;
     }
 
@@ -105,11 +120,11 @@ namespace orxonox {
     @return
         Returns true if the activation was successful, false if there were problems.
     */
-    bool QuestHint::activate(Player* player)
+    bool QuestHint::setActive(ControllableEntity* player)
     {
-        if(this->quest_->isActive(player))
+        if(this->quest_->isActive(player)) //!< For a hint to get activated the quest must be active.
         {
-            if(!(this->isActive(player)))
+            if(!(this->isActive(player)))  //!< If the hint is already active, activation is pointless.
             {
                 this->playerStatus_[player] = questHintStatus::active;
                 return true;
@@ -120,6 +135,7 @@ namespace orxonox {
                 return false;
             }
         }
+        
         COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
         return false;
     }
@@ -128,11 +144,13 @@ namespace orxonox {
     @brief
         Sets the quest the QuestHitn belongs to.
     @param quest
+        The quest to be set as quest the hint is attached to.
     @return
+        Returns true if successful.
     */
     bool QuestHint::setQuest(Quest* quest)
     {
-        if(quest == NULL)
+        if(quest == NULL) //!< NULL-Pointer. Again..?
         {
             COUT(2) << "The input Quest* is NULL." << std::endl;
             return false;

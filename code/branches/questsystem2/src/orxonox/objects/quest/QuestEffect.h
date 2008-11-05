@@ -37,8 +37,6 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
         Handles effects for quests.
@@ -51,8 +49,8 @@ namespace orxonox {
             QuestEffect(BaseObject* creator);
             virtual ~QuestEffect();
 
-            virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
-            static bool invokeEffects(Player* player, std::list<QuestEffect*> & effects); //!< Invokes all effects in the list.
+            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the effect.
+            static bool invokeEffects(ControllableEntity* player, std::list<QuestEffect*> & effects); //!< Invokes all effects in the list.
 
 
     };

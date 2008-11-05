@@ -38,8 +38,6 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
         An effect which changes a quests status.
@@ -54,7 +52,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the effect.
 
         protected:
             inline const std::string & getQuestId(void) const //!< Returns the quest id.

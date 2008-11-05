@@ -25,6 +25,15 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestItem.h
+    @brief
+	Definition of the QuestItem class.
+	
+	The QuestItem is the parent class of Quest and QuestHint.
+*/
+
 
 #ifndef _QuestItem_H__
 #define _QuestItem_H__
@@ -53,19 +62,18 @@ namespace orxonox {
             QuestItem(BaseObject* creator);
             virtual ~QuestItem();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestItem object through XML.
 
             inline const std::string & getId(void) const //!< Returns the id of this quest.
                 { return this->id_; }
             inline const QuestDescription* getDescription(void) const //!< Returns the description of the QuestItem.
                 { return this->description_; }
-            //const QuestDescription* getDescription(unsigned int index) const; //!< Returns the description of the QuestItem.
 
             static bool isId(const std::string & id); //!< Checks whether a given id is valid.
 
         protected:
-            void setId(const std::string & id);
-            inline void setDescription(QuestDescription* description)
+            void setId(const std::string & id); //!< Sets the id of the QuestItem.
+            inline void setDescription(QuestDescription* description) //!< Sets the description of the QuestItem.
                 { this->description_ = description; }
 
         private:
