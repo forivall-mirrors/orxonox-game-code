@@ -250,7 +250,7 @@ namespace orxonox
   * @param mode same as in getData
   * @param cb callback object that should get called, if the value of the variable changes
   */
-  void Synchronisable::registerVar(void *var, int size, variableType t, uint8_t mode, NetworkCallbackBase *cb){
+  void Synchronisable::registerVariable(void *var, int size, variableType t, uint8_t mode, NetworkCallbackBase *cb){
     assert( mode==direction::toclient || mode==direction::toserver || mode==direction::serverMaster || mode==direction::clientMaster);
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
@@ -284,6 +284,21 @@ namespace orxonox
     }
 #endif
   }
+  
+  void Synchronisable::unregisterVariable(void *var){
+    std::list<synchronisableVariable *>::iterator it = syncList->begin();
+    while(it!=syncList->end()){
+      if( (*it)->var == var ){
+        delete *it;
+        syncList->erase(it);
+        return;
+      }
+      else
+        it++;
+    }
+    assert(0); //if we reach this point something went wrong
+  }
+  
 
   /**
    * This function takes all SynchronisableVariables out of the Synchronisable and saves them together with the size, objectID and classID to the given memory

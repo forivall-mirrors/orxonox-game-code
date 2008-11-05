@@ -41,9 +41,9 @@
 #include "util/Integers.h"
 
 #define REGISTERDATA(varname, ...) \
-    registerVar((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)
+    registerVariable((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)
 #define REGISTERSTRING(stringname, ...) \
-    registerVar(&stringname, stringname.length()+1, STRING, __VA_ARGS__)
+    registerVariable(&stringname, stringname.length()+1, STRING, __VA_ARGS__)
 
 namespace orxonox
 {
@@ -114,7 +114,8 @@ namespace orxonox
     inline unsigned int getClassID(){return classID;}
   protected:
     Synchronisable(BaseObject* creator);
-    void registerVar(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
+    void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
+    void unregisterVariable(void *var);
     void setObjectMode(uint8_t mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
 
