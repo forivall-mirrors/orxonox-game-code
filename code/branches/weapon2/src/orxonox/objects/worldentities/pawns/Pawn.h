@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -73,7 +74,7 @@ namespace orxonox
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void kill();
 
-            virtual void fire();
+            virtual void fire(WeaponMode::Enum fireMode);
 
             virtual void postSpawn();
 

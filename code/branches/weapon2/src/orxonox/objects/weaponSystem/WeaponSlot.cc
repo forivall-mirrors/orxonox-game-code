@@ -35,27 +35,27 @@
 #include "WeaponSlot.h"
 
 
-
 namespace orxonox
 {
-    WeaponSlot::WeaponSlot(BaseObject* creator) : BaseObject(creator)
+    WeaponSlot::WeaponSlot(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(WeaponSlot);
 
         this->unlimitedAmmo_ = false;
-
         this->attachedWeapon_ = 0;
         this->parentWeaponSet_ = 0;
+        this->setObjectMode(0x0);
     }
 
     WeaponSlot::~WeaponSlot()
     {
     }
 
-    void WeaponSlot::attachWeapon(Weapon *weaponName)
+    void WeaponSlot::attachWeapon(Weapon *weaponPointer)
     {
-
+        this->attachedWeapon_ = weaponPointer;
     }
+
 
     /*sets the munition type
      *unlimited: true
@@ -68,7 +68,7 @@ namespace orxonox
 
     void WeaponSlot::fire()
     {
-
+        this->attachedWeapon_->fire();
     }
 
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)

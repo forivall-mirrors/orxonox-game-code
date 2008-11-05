@@ -35,11 +35,11 @@
 
 
 #include "Weapon.h"
-
+#include "../worldentities/PositionableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WeaponSlot : public BaseObject
+    class _OrxonoxExport WeaponSlot : public PositionableEntity
     {
         public:
             WeaponSlot(BaseObject* creator);
@@ -47,7 +47,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeapon(Weapon *weaponName);
+            void attachWeapon(Weapon *weaponPointer);
             void setAmmoType(bool isUnlimited);
             void fire();
 
@@ -55,7 +55,6 @@ namespace orxonox
                 { parentWeaponSet_=parentWeaponSet; }
             inline WeaponSet * getParentWeaponSet()
                 { return parentWeaponSet_; }
-
 
 
         private:

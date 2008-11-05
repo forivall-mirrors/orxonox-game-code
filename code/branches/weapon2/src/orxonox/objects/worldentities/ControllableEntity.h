@@ -33,6 +33,7 @@
 
 #include "WorldEntity.h"
 #include "objects/Tickable.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -64,8 +65,8 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value) {}
             virtual void rotateRoll(const Vector2& value) {}
 
-            virtual void fire() {}
-            virtual void altFire() {}
+            virtual void fire(WeaponMode::Enum fireMode) {}
+            virtual void altFire(WeaponMode::Enum fireMode) {}
 
             virtual void greet() {}
             virtual void use() {}

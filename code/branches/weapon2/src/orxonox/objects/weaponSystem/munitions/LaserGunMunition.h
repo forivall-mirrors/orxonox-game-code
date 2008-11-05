@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGunMunition : public BaseObject
+    class _OrxonoxExport LaserGunMunition : public Munition
     {
         public:
             LaserGunMunition(BaseObject* creator);

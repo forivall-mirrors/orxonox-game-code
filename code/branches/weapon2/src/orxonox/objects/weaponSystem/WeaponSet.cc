@@ -53,9 +53,6 @@ namespace orxonox
     {
     }
 
-    //Vorwärtsdeklaration
-    WeaponSystem * parentWeaponSystem_;
-
     void WeaponSet::attachWeaponSlot(WeaponSlot *wSlot)
     {
         this->weaponSlots_.push_back(wSlot);

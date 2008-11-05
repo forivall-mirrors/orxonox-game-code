@@ -34,14 +34,14 @@
 
 #include "Weapon.h"
 
+
 namespace orxonox
 {
     Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Weapon);
-
-        this->loadingTime_ = 0;
-        this->munition_ = 0;
+        this->weaponReadyToShoot_ = true;
+        //this->setParentWeaponSystem();
 
     }
 
@@ -49,10 +49,6 @@ namespace orxonox
     {
     }
 
-    void Weapon::addMunition()
-    {
-
-    }
 
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -63,4 +59,21 @@ namespace orxonox
     {
 
     }
+
+    void Weapon::reloaded()
+    {
+        this->weaponReadyToShoot_ = true;
+    }
+
+    void Weapon::attachNeededMunition(Munition *PointerToMunition)
+    {
+
+    }
+/*
+    void Weapon::setParentWeaponSystem()
+    {
+        this->parentWeaponSystem_ = this->parentWeaponSlot_->parentWeaponSet_->parentWeaponSystem_;
+    }
+*/
+
 }

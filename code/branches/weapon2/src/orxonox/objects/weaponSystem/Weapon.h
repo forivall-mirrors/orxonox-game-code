@@ -32,7 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
-
+#include "tools/BillboardSet.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -44,13 +45,24 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void addMunition();
             virtual void fire();
+            void reloaded();
+            virtual void attachNeededMunition(Munition *PointerToMunition);
+
+            inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
+                { parentWeaponSlot_=parentWeaponSlot; };
+            inline WeaponSlot * getParentWeaponSlot()
+                { return parentWeaponSlot_; };
+
+            //void setParentWeaponSystem();
 
         private:
-            int loadingTime_;
-            Munition *munition_;
-
+            bool weaponReadyToShoot_;
+            float loadingTime_;
+            Munition *pointerToMunition_;
+            WeaponSlot *parentWeaponSlot_;
+            //WeaponSystem *parentWeaponSystem_;
+            Timer<Weapon> reloadTimer_;
 
 
     };

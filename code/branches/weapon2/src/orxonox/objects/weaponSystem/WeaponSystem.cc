@@ -44,45 +44,45 @@
 
 namespace orxonox
 {
+
     WeaponSystem::WeaponSystem(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponSystem);
 
         this->activeWeaponSet_ = 0;
         this->parentSpaceShip_ = 0;
+        //this->attachedMunition_ =0;
     }
 
     WeaponSystem::~WeaponSystem()
     {
     }
 
-    //creates empty weaponSet
     void WeaponSystem::attachWeaponSet(WeaponSet *wSet)
     {
         this->weaponSets_.push_back(wSet);
         wSet->setParentWeaponSystem(this);
     }
 
+/*
     //the first weaponSet is at n=0
     void WeaponSystem::setActiveWeaponSet(unsigned int n)
     {
         if (n < this->weaponSets_.size())
             this->activeWeaponSet_ = this->weaponSets_[n];
+        else
+            this->activeWeaponSet_ = this->weaponSets_[0];
     }
+*/
 
     //n is the n'th weaponSet, starting with zero
-    //Spaceship.cc only needs to have the keybinding to a specific Set-number n
-    void WeaponSystem::fire(unsigned int n)
+    //SpaceShip.cc only needs to have the keybinding to a specific Set-number n
+    void WeaponSystem::fire(WeaponMode::Enum n)
     {
         if (n < this->weaponSets_.size())
             this->weaponSets_[n]->fire();
     }
 
-    void WeaponSystem::fire()
-    {
-        if (this->activeWeaponSet_)
-            this->activeWeaponSet_->fire();
-    }
 
     WeaponSet * WeaponSystem::getWeaponSetPointer(unsigned int n)
     {
@@ -96,5 +96,18 @@ namespace orxonox
     {
 
     }
+
+    /*
+    void WeaponSystem::addMunitionType(Munition *munitionPointer)
+    {
+
+
+        if (munitionPointer != NULL)  //gewährleiste, dass munitionPointer auf etwas sinnvolles zeigt
+            this->attachedMunition_ = munitionPointer;
+        else
+            this->unlimitedAmmo_ = true;
+
+    }
+    */
 
 }

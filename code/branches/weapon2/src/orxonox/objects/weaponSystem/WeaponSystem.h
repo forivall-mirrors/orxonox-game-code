@@ -38,6 +38,21 @@
 
 namespace orxonox
 {
+    //put here all existing munitionTypes
+    namespace MunitionType
+    {
+        enum Enum
+        { LaserGunMunition };
+    }
+
+    //put here all weapon fire modes.
+    //they have to be added to Pawn and HumanController, too.
+    namespace WeaponMode
+    {
+        enum Enum
+        { fire, altFire, altFire2 };
+    }
+
     class _OrxonoxExport WeaponSystem : public BaseObject
     {
         public:
@@ -47,9 +62,10 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void attachWeaponSet(WeaponSet *wSet);
+            void addMunitionType(Munition *munitionPointer);
             void fire();
-            void fire(unsigned int n);
-            void setActiveWeaponSet(unsigned int n);
+            void fire(WeaponMode::Enum fireMode);
+            //void setActiveWeaponSet(unsigned int n);
             WeaponSet * getWeaponSetPointer(unsigned int n);
 
             inline void setParentSpaceShip(SpaceShip *parentSpaceShip)
@@ -60,8 +76,8 @@ namespace orxonox
 
         private:
             std::vector<WeaponSet *> weaponSets_;
+            std::map<MunitionType::Enum,Munition *> munitionSet_;
             WeaponSet *activeWeaponSet_;
-
             SpaceShip *parentSpaceShip_;
     };
 }

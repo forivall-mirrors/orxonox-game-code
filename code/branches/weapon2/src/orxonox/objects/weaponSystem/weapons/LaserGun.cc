@@ -40,7 +40,11 @@ namespace orxonox
     {
         RegisterObject(LaserGun);
 
-        projectileColor_ = ColourValue(1.0, 1.0, 0.5)
+        this->attachNeededMunition();
+
+        //set weapon properties here
+        this->projectileColor_ = ColourValue(1.0, 1.0, 0.5)
+        this->loadingTime_ = 0.5;
     }
 
     LaserGun::~LaserGun()
@@ -49,20 +53,21 @@ namespace orxonox
 
     LaserGun::fire()
     {
+        if { this->weaponReadyToShoot_ }
+        {
+            this->weaponReadyToShoot_ = false;
+            //take munition
+            //this->pointerToMunition_->
+
+            this->reloadTimer_.setTimer( loadingTime_ , false , this , &this->reloaded );
+
             BillboardProjectile* projectile = new ParticleProjectile(this);
-            projectile->setColour(this->projectileColor_);
-            projectile->create();
-            if (projectile->getClassID() == 0)
-            {
-              COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
-            }
-
-            projectile->setObjectMode(0x3);
-    }
-
-    LaserGun::addMunition()
-    {
-        //this->munition_ = ;
+            projectile->setColour(this->getProjectileColour());
+        }
+        else
+        {
+            //actions, when weapon is not reloaded
+        }
     }
 
     void LaserGun::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -73,5 +78,17 @@ namespace orxonox
     ColorValue LaserGun::getProjectileColor()
     {
         return projectileColor_;
+    }
+
+    void attachNeededMunition(Munition *pointerToMunition)
+    {
+        //if munition type already exist attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
+        if ( this->parentWeaponSystem_->munitionSet_[laserGunMunition] )
+            this->pointerToMunition_ = pointerToMunition;
+        else
+        {
+            this->pointerToMunition_ = new LaserGunMunition;
+
+        }
     }
 }
