@@ -35,6 +35,9 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDSpeedBar.cc
   overlays/hud/ChatOverlay.cc
 
+  overlays/stats/Stats.cc
+  overlays/stats/StatsTest.cc
+
   tools/BillboardSet.cc
   tools/Mesh.cc
   tools/ParticleInterface.cc

@@ -58,7 +58,7 @@ namespace orxonox
     }
 
     /**
-        @brief Sets the config values, describing the size of the stats panel.
+        @brief Sets the config values, describing the size of the Stats panel.
     */
     void Stats::setConfigValues()
     {
@@ -78,7 +78,7 @@ namespace orxonox
         // create BorderPanel
         this->statsOverlayBorder_ = static_cast<Ogre::BorderPanelOverlayElement*>(ovMan->createOverlayElement("BorderPanel", "StatsBorderPanel"));
         this->statsOverlayBorder_->setMaterialName("StatsCenter");
-        this->statsOverlayBorder_->setBorderSize(0.05, 0.05, 0.05, 0.05);
+        this->statsOverlayBorder_->setBorderSize(0.02, 0.02, 0.02, 0.02);
         this->statsOverlayBorder_->setBorderMaterialName("StatsBorder");
         this->statsOverlayBorder_->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
         this->statsOverlayBorder_->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
@@ -93,7 +93,7 @@ namespace orxonox
 
         // create noise
         this->statsOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "StatsNoise"));
-        this->statsOverlayNoise_->setPosition(0.02,0);
+        this->statsOverlayNoise_->setPosition(0,0);
         this->statsOverlayNoise_->setMaterialName("StatsNoiseSmall");
         // comment following line to disable noise
         background_->addChild(this->statsOverlayNoise_);
