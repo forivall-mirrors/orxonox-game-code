@@ -96,7 +96,7 @@ FIND_PACKAGE(ZLIB)
 #FIND_PACKAGE(Lua)
 FIND_PACKAGE(TCL)
 FIND_PACKAGE(DirectX)
-FIND_PACKAGE(ODE)
+#FIND_PACKAGE(ODE)
 
 # Set the search paths for the linking
 LINK_DIRECTORIES(
@@ -108,7 +108,7 @@ LINK_DIRECTORIES(
   ${Boost_LIBRARY_DIRS}
   ${Zlib_LIBRARY_DIR}
   ${TCL_LIBRARY}
-  ${ODE_LIB_DIR}
+#  ${ODE_LIB_DIR}
 )
 
 # Set the search paths for include files
@@ -126,7 +126,7 @@ INCLUDE_DIRECTORIES(
   ${TCL_INCLUDE_PATH}
   ${DirectX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
-  ${ODE_INCLUDE_DIR}
+#  ${ODE_INCLUDE_DIR}
 )
 
 # Add main source dir
