@@ -30,13 +30,13 @@
 #define _Billboard_H__
 
 #include "OrxonoxPrereqs.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Billboard : public PositionableEntity
+    class _OrxonoxExport Billboard : public StaticEntity
     {
         public:
             Billboard(BaseObject* creator);

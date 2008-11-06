@@ -300,6 +300,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\DynamicEntity.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\KinematicEntity.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Light.cc"
 						>
 					</File>
@@ -320,11 +328,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
+						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
+						RelativePath="..\..\src\orxonox\objects\worldentities\StaticEntity.cc"
 						>
 					</File>
 					<File
@@ -932,6 +940,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\DynamicEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\KinematicEntity.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Light.h"
 						>
 					</File>
@@ -952,11 +968,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
+						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.h"
+						RelativePath="..\..\src\orxonox\objects\worldentities\StaticEntity.h"
 						>
 					</File>
 					<File

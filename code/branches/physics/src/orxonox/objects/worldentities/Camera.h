@@ -32,12 +32,12 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
-#include "objects/worldentities/PositionableEntity.h"
+#include "objects/worldentities/StaticEntity.h"
 #include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public PositionableEntity, public Tickable
+    class _OrxonoxExport Camera : public StaticEntity, public Tickable
     {
         friend class CameraManager;
 

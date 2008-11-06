@@ -27,25 +27,25 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 #include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    CreateFactory(PositionableEntity);
+    CreateFactory(StaticEntity);
 
-    PositionableEntity::PositionableEntity(BaseObject* creator) : WorldEntity(creator)
+    StaticEntity::StaticEntity(BaseObject* creator) : WorldEntity(creator)
     {
-        RegisterObject(PositionableEntity);
+        RegisterObject(StaticEntity);
 
         this->registerVariables();
     }
 
-    PositionableEntity::~PositionableEntity()
+    StaticEntity::~StaticEntity()
     {
     }
 
-    void PositionableEntity::registerVariables()
+    void StaticEntity::registerVariables()
     {
         REGISTERDATA(this->getPosition().x, network::direction::toclient);
         REGISTERDATA(this->getPosition().y, network::direction::toclient);

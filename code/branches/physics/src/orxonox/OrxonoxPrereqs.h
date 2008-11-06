@@ -102,7 +102,7 @@ namespace orxonox
     class Rewardable;
 
     class WorldEntity;
-    class PositionableEntity;
+    class StaticEntity;
     class MovableEntity;
     class ControllableEntity;
     class Sublevel;

@@ -33,12 +33,12 @@
 
 #include "core/Identifier.h"
 #include "core/Template.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 #include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport SpawnPoint : public PositionableEntity
+    class _OrxonoxExport SpawnPoint : public StaticEntity
     {
         public:
             SpawnPoint(BaseObject* creator);

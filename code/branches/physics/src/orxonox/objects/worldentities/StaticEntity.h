@@ -26,19 +26,19 @@
  *
  */
 
-#ifndef _PositionableEntity_H__
-#define _PositionableEntity_H__
+#ifndef _StaticEntity_H__
+#define _StaticEntity_H__
 
 #include "OrxonoxPrereqs.h"
 #include "WorldEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PositionableEntity : public WorldEntity
+    class _OrxonoxExport StaticEntity : public WorldEntity
     {
         public:
-            PositionableEntity(BaseObject* creator);
-            virtual ~PositionableEntity();
+            StaticEntity(BaseObject* creator);
+            virtual ~StaticEntity();
 
             void registerVariables();
 
@@ -73,4 +73,4 @@ namespace orxonox
     };
 }
 
-#endif /* _PositionableEntity_H__ */
+#endif /* _StaticEntity_H__ */
