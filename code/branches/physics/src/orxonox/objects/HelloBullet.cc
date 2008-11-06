@@ -56,18 +56,19 @@ namespace orxonox
            int maxProxies = 1024;
 
 
-        btVector3 worldAabbMin(-10000,-10000,-10000);
-        btVector3 worldAabbMax(10000,10000,10000);
-        btAxisSweep3* broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax,maxProxies);
+  //      btVector3 worldAabbMin(-10000,-10000,-10000);
+  //      btVector3 worldAabbMax(10000,10000,10000);
+  //      btAxisSweep3* broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax,maxProxies);
 
-        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+  //      btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+  //      btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
 
-        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+  //      btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 
-        dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+  //      dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
 
-        dynamicsWorld->setGravity(btVector3(0,-10,0));
+	dynamicsWorld =  creator->getScene()->getPhysicalWorld();
+        dynamicsWorld-> setGravity(btVector3(0,-10,0));
 
 
         btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),10);
@@ -179,10 +180,10 @@ namespace orxonox
 
     void HelloBullet::tick(float dt)
     {
-                dynamicsWorld->stepSimulation(1/60.f,10);
+                dynamicsWorld->stepSimulation(dt,10);
                 btTransform trans;
                 fallRigidBody->getMotionState()->getWorldTransform(trans);
-	        COUT(0) << "sphere height: " << trans.getOrigin().getY() << std::endl;
+	       // COUT(0) << "sphere height: " << trans.getOrigin().getY() << std::endl;
 		sceneNode_ -> setPosition(Vector3(0,trans.getOrigin().getY(),0));
 	//	msleep(20);
 		
