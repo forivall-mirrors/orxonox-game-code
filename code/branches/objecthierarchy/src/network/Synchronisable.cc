@@ -69,11 +69,16 @@ namespace orxonox
     objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
     if(Host::running() && Host::isServer())
-      objectID=idCounter++; //this is only needed when running a server
+    {
+      this->objectID = idCounter++; //this is only needed when running a server
+    //add synchronisable to the objectMap
+      objectMap_[this->objectID] = this;
+    }
     else
       objectID=OBJECTID_UNKNOWN;
     classID = (unsigned int)-1;
     syncList = new std::list<synchronisableVariable *>;
+    
     
 #ifndef NDEBUG
     ObjectList<Synchronisable>::iterator it;
@@ -117,6 +122,10 @@ namespace orxonox
 //       assert(objectMap_[objectID]->objectID==objectID);
 //       objectMap_.erase(objectID);
     }
+    std::map<unsigned int, Synchronisable*>::iterator it;
+    it = objectMap_.find(objectID);
+    if (it != objectMap_.end())
+      objectMap_.erase(it);
   }
 
   /**
@@ -226,18 +235,19 @@ namespace orxonox
    * @return pointer to the Synchronisable with the objectID
    */
   Synchronisable* Synchronisable::getSynchronisable(unsigned int objectID){
+    std::map<unsigned int, Synchronisable*>::iterator it1;
+    it1 = objectMap_.find(objectID);
+    if (it1 != objectMap_.end())
+      return it1->second;
+    
     ObjectList<Synchronisable>::iterator it;
     for(it = ObjectList<Synchronisable>::begin(); it; ++it){
-      if( it->getObjectID()==objectID )
-           return *it;
+      if( it->getObjectID()==objectID ){
+        objectMap_[objectID] = *it;
+        return *it;
+      }
     }
     return NULL;
-
-//     std::map<unsigned int, Synchronisable *>::iterator i = objectMap_.find(objectID);
-//     if(i==objectMap_.end())
-//       return NULL;
-//     assert(i->second->objectID==objectID);
-//     return (*i).second;
   }
 
 
