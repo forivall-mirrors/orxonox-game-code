@@ -357,17 +357,11 @@ Gamestate* Gamestate::doSelection(unsigned int clientID){
     *newobjectheader = *oldobjectheader;
     objectOffset=sizeof(synchronisableHeader); //skip the size and the availableData variables in the objectheader
     if(it->second->doSelection(HEADER->id)){
-      newobjectheader->dataAvailable=true; //TODO: probably not neccessary
-      while(objectOffset<objectsize){
-        *(newdata + objectOffset)=*(origdata + objectOffset);    // copy the data
-        objectOffset++;
-      }
+      assert(newobjectheader->dataAvailable==true);
+      memcpy(newdata+objectOffset, origdata+objectOffset, objectsize-objectOffset);
     }else{
       newobjectheader->dataAvailable=false;
-      while(objectOffset<objectsize){
-        *(newdata+objectOffset)=0;    // set to 0
-        objectOffset++;
-      }
+      memset(newdata+objectOffset, 0, objectsize-objectOffset);
       assert(objectOffset==objectsize);
     }
     newdata += objectsize;
