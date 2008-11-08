@@ -202,7 +202,7 @@ namespace orxonox
                 else if (!this->getGametype()->hasEnded())
                 {
                     if (this->getGametype()->isStartCountdownRunning())
-                        this->hudmode_ = 2 + 10*ceil(this->getGametype()->getStartCountdown());
+                        this->hudmode_ = 2 + 10*(int)ceil(this->getGametype()->getStartCountdown());
                     else
                         this->hudmode_ = 3;
                 }

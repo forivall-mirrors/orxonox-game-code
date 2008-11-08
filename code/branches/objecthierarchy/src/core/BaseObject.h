@@ -44,6 +44,7 @@
 #include "OrxonoxClass.h"
 #include "XMLIncludes.h"
 #include "Event.h"
+#include "util/mbool.h"
 
 namespace orxonox
 {
@@ -72,21 +73,29 @@ namespace orxonox
 
             /** @brief Sets the state of the objects activity. @param bActive True = active */
             inline void setActive(bool bActive)
-            { 
-                bool bTemp = this->bActive_;
-                this->bActive_ = bActive;
-                if ( bTemp != bActive )
+            {
+                if (this->bActive_ != bActive)
+                {
+                    this->bActive_ = bActive;
                     this->changedActivity();
+                }
             }
             /** @brief Returns the state of the objects activity. @return The state of the activity */
-            inline bool isActive() const { return this->bActive_; }
+            inline const mbool& isActive() const { return this->bActive_; }
             /** @brief This function gets called if the activity of the object changes. */
             virtual void changedActivity() {}
 
             /** @brief Sets the state of the objects visibility. @param bVisible True = visible */
-            inline void setVisible(bool bVisible) { this->bVisible_ = bVisible; this->changedVisibility(); }
+            inline void setVisible(bool bVisible)
+            {
+                if (this->bVisible_ != bVisible)
+                {
+                    this->bVisible_ = bVisible;
+                    this->changedVisibility();
+                }
+            }
             /** @brief Returns the state of the objects visibility. @return The state of the visibility */
-            inline bool isVisible() const { return this->bVisible_; }
+            inline const mbool& isVisible() const { return this->bVisible_; }
             /** @brief This function gets called if the visibility of the object changes. */
             virtual void changedVisibility() {}
 
@@ -143,8 +152,8 @@ namespace orxonox
         protected:
             std::string name_;                          //!< The name of the object
             std::string oldName_;                       //!< The old name of the object
-            bool bActive_;                              //!< True = the object is active
-            bool bVisible_;                             //!< True = the object is visible
+            mbool bActive_;                             //!< True = the object is active
+            mbool bVisible_;                            //!< True = the object is visible
 
         private:
             void setXMLName(const std::string& name);

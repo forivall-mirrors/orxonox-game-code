@@ -38,6 +38,7 @@
 
 #include <ostream>
 #include <string>
+#include <cmath>
 #include <boost/static_assert.hpp>
 
 #include <OgreMath.h>
@@ -144,25 +145,6 @@ namespace orxonox
     inline T cube(T x)
     {
         return x*x*x;
-    }
-
-    /**
-        @brief Rounds the value down.
-    */
-    template <typename T>
-    inline int floor(T x)
-    {
-        return (int)(x);
-    }
-
-    /**
-        @brief Rounds the value up.
-    */
-    template <typename T>
-    inline int ceil(T x)
-    {
-        int temp = floor(x);
-        return (temp != x) ? (temp + 1) : temp;
     }
 
     /**
