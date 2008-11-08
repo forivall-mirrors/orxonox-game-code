@@ -163,4 +163,13 @@ namespace orxonox
         }
         return 0;
     }
+
+    void Scene::tick(float dt)
+    {
+        if (!Core::showsGraphics())
+        {
+            // We need to update the scene nodes if we don't render
+            this->rootSceneNode_->_update(true, false);
+        }
+    }
 }
