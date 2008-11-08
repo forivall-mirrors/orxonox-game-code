@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddReward.h
+    @brief
+	Definition of the AddReward class.
+*/
+
 #ifndef _AddReward_H__
 #define _AddReward_H__
 
@@ -50,18 +56,16 @@ namespace orxonox {
             AddReward(BaseObject* creator);
             virtual ~AddReward();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddReward object through XML.
 
             virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
 
         private:
-            std::list<Rewardable*> rewards_;
+            std::list<Rewardable*> rewards_; //!< A list of rewards to be added to the player invoking the effect.
 
-            void initialize(void); //!< Initializes the object.
-
-            inline void addRewardable(Rewardable* reward)
+            inline void addRewardable(Rewardable* reward) //!< Add a rewardable object to the list of objects to be awarded to the player invoking the effect.
                 { this->rewards_.push_back(reward); }
-            const Rewardable* getRewardables(unsigned int index) const;
+            const Rewardable* getRewardables(unsigned int index) const; //!< Returns the rewardable object at the given index.
 
     };
 

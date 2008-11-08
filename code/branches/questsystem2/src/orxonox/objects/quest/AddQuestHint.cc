@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddQuestHint.cc
+    @brief
+	Implementation of the AddQuestHint class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "AddQuestHint.h"
 
@@ -41,6 +47,10 @@ namespace orxonox {
 
     CreateFactory(AddQuestHint);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     AddQuestHint::AddQuestHint(BaseObject* creator) : QuestEffect(creator)
     {
         RegisterObject(AddQuestHint);
@@ -54,6 +64,10 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a AddQuestHint object through XML.
+    */
     void AddQuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuestHint, XMLPort, xmlelement, mode);
@@ -62,14 +76,24 @@ namespace orxonox {
 
     }
 
+    /**
+    @brief
+        Sets the id of the quest hint to be added to the player the effect is invoked on.
+    @param id
+        The QuestHint id.
+    @param
+        Returns true if successful.
+    */
     inline void AddQuestHint::setHintId(const std::string & id)
     {
         if(!QuestItem::isId(id))
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
-            return;
+            return false;
         }
+        
         this->hintId_ = id;
+        return true;
     }
 
     /**
@@ -82,7 +106,7 @@ namespace orxonox {
     */
     bool AddQuestHint::invoke(ControllableEntity* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< NULL-pointers are evil!
         {
             COUT(2) << "The input player is NULL." << std::endl;
             return false;

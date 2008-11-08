@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file Rewardable.cc
+    @brief
+	Implementation of the Rewardable class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "Rewardable.h"
 
@@ -33,13 +39,19 @@
 
 namespace orxonox {
 
-
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     Rewardable::Rewardable(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Rewardable);
     }
 
-
+    /**
+    @brief
+        Destructor,
+    */
     Rewardable::~Rewardable()
     {
     }

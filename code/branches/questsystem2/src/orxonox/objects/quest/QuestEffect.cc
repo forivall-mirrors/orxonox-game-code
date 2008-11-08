@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file QuestEffect.cc
+    @brief
+	Implementation of the QuestEffect class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "QuestEffect.h"
 
@@ -56,7 +62,7 @@ namespace orxonox {
 
     /**
     @brief
-        Static method. Invoke all effects of an effect list.
+        Static method. Invoke all effects in an effect list on a given player.
     @param player
         The player the effects are invoked on.
     @param effects

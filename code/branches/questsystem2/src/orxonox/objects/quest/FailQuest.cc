@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file FailQuest.cc
+    @brief
+	Implementation of the FailQuest class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "FailQuest.h"
@@ -40,6 +46,10 @@ namespace orxonox {
 
     CreateFactory(FailQuest);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     FailQuest::FailQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(FailQuest);
@@ -53,6 +63,10 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a FailQuest object through XML.
+    */
     void FailQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(FailQuest, XMLPort, xmlelement, mode);
@@ -68,7 +82,7 @@ namespace orxonox {
     */
     bool FailQuest::invoke(ControllableEntity* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< We don't know what to do with no player.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;

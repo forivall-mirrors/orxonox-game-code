@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddReward.cc
+    @brief
+	Implementation of the AddReward class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "AddReward.h"
 
@@ -38,11 +44,13 @@ namespace orxonox {
 
     CreateFactory(AddReward);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     AddReward::AddReward(BaseObject* creator) : QuestEffect(creator)
     {
         RegisterObject(AddReward);
-
-        this->initialize();
     }
 
     /**
@@ -53,6 +61,9 @@ namespace orxonox {
     {
     }
 
+    /**
+        Method for creating a AddReward object through XML.
+    */
     void AddReward::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddReward, XMLPort, xmlelement, mode);
@@ -63,13 +74,12 @@ namespace orxonox {
 
     /**
     @brief
-        Initializes the object. Needs to be called first by every constructor of this class.
+        Returns the rewardbale object at the given index.
+    @param index
+        The index.
+    @return
+        Returns a pointer to the rewardable object at the given index.
     */
-    void AddReward::initialize(void)
-    {
-        RegisterObject(AddReward);
-    }
-
     const Rewardable* AddReward::getRewardables(unsigned int index) const
     {
         int i = index;

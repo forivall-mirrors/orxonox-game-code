@@ -47,18 +47,9 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor. Initializes the object.
+        Constructor. Registers the object.
     */
     QuestHint::QuestHint(BaseObject* creator) : QuestItem(creator)
-    {
-        this->initialize();
-    }
-    
-    /**
-    @brief
-        Initialize the object.
-    */
-    void QuestHint::initialize(void)
     {
         RegisterObject(QuestHint);
     }

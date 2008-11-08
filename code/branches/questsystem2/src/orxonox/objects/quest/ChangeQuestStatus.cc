@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file ChangeQuestStatus.cc
+    @brief
+	Implementation of the ChangeQuestStatus class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "ChangeQuestStatus.h"
 
@@ -35,6 +41,10 @@
 
 namespace orxonox {
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     ChangeQuestStatus::ChangeQuestStatus(BaseObject* creator) : QuestEffect(creator)
     {
         RegisterObject(ChangeQuestStatus);
@@ -48,16 +58,30 @@ namespace orxonox {
     {
     }
 
-    void ChangeQuestStatus::setQuestId(const std::string & id)
+    /**
+    @brief
+        Sets the id of the quest the effect chagnes the status of.
+    @param id
+        The id of the quest.
+    @return
+        Returns true if successful.
+    */
+    bool ChangeQuestStatus::setQuestId(const std::string & id)
     {
         if(!QuestItem::isId(id))
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
-            return;
+            return false;
         }
+        
         this->questId_ = id;
+        return true;
     }
 
+    /**
+    @brief
+        Method for creating a ChangeQuestStatus object through XML.
+    */
     void ChangeQuestStatus::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ChangeQuestStatus, XMLPort, xmlelement, mode);

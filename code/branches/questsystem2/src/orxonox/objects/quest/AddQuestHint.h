@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddQuestHint.h
+    @brief
+	Definition of the AddQuestHint class.
+*/
+
 #ifndef _AddQuestHint_H__
 #define _AddQuestHint_H__
 
@@ -39,7 +45,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a QuestHint, resp. Activates the QuestHint.
+        Adds a QuestHint, resp. activates the QuestHint of the given id for the player the effect is invoked on.
     @author
         Damian 'Mozork' Frick
     */
@@ -49,16 +55,16 @@ namespace orxonox {
             AddQuestHint(BaseObject* creator);
             virtual ~AddQuestHint();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuestHint object through XML.
 
             virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
 
         private:
-            std::string hintId_;
+            std::string hintId_; //!< The id of the QuestHint.
 
-            inline const std::string & getHintId(void) const
+            inline const std::string & getHintId(void) const //!< Returns the if of the hint.
                 { return this->hintId_; }
-            void setHintId(const std::string & id);
+            void setHintId(const std::string & id); //!< Sets the id of the hint.
 
     };
 

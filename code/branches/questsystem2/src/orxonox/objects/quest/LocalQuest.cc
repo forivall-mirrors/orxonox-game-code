@@ -47,18 +47,9 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor. Initializes the object.
+        Constructor. Registers and initializes the object.
     */
     LocalQuest::LocalQuest(BaseObject* creator) : Quest(creator)
-    {
-        this->initialize();
-    }
-    
-    /**
-    @brief
-        Initializes the object.
-    */
-    void LocalQuest::initialize(void)
     {
         RegisterObject(LocalQuest);
     }
@@ -97,7 +88,7 @@ namespace orxonox {
         if(this->isFailable(player)) //!< Checks whether the quest can be failed.
         {
             this->setStatus(player, questStatus::failed);
-            QuestEffect::invokeEffects(player, this->failEffects_); //!< Invoke the failEffects.
+            QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
             return true;
         }
         
@@ -119,7 +110,7 @@ namespace orxonox {
         if(this->isCompletable(player)) //!< Checks whether the quest can be completed.
         {
             this->setStatus(player, questStatus::completed);
-            QuestEffect::invokeEffects(player, this->completeEffects_); //!< Invoke the completeEffects.
+            QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the completeEffects.
             return true;
         }
         

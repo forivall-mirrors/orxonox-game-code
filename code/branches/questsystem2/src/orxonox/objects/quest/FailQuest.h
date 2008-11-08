@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file FailQuest.h
+    @brief
+	Definition of the FailQuest class.
+*/
+
 #ifndef _FailQuest_H__
 #define _FailQuest_H__
 
@@ -50,7 +56,7 @@ namespace orxonox {
             FailQuest(BaseObject* creator);
             virtual ~FailQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a FailQuest object through XML.
 
             virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
 

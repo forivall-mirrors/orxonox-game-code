@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file CompleteQuest.cc
+    @brief
+	Implementation of the CompleteQuest class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "CompleteQuest.h"
@@ -40,6 +46,10 @@ namespace orxonox {
 
     CreateFactory(CompleteQuest);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     CompleteQuest::CompleteQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(CompleteQuest);
@@ -53,6 +63,10 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a CompleteQuest object through XML.
+    */
     void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(CompleteQuest, XMLPort, xmlelement, mode);
@@ -68,7 +82,7 @@ namespace orxonox {
     */
     bool CompleteQuest::invoke(ControllableEntity* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< You know, what we think of NULL-pointers...
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;

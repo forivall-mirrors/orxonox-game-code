@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddQuest.h
+    @brief
+	Definition of the AddQuest class.
+*/
+
 #ifndef _AddQuest_H__
 #define _AddQuest_H__
 
@@ -40,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a quest, resp. changes the quests status to active.
+        Adds a quest, resp. changes the quests status to active for the player invoking the quest.
     @author
         Damian 'Mozork' Frick
     */
@@ -50,7 +56,7 @@ namespace orxonox {
             AddQuest(BaseObject* creator);
             virtual ~AddQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.
 
             virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
 

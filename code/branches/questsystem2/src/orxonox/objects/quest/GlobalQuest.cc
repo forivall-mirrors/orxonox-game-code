@@ -47,18 +47,9 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor. Initializes the object.
+        Constructor. Registers the object.
     */
     GlobalQuest::GlobalQuest(BaseObject* creator) : Quest(creator)
-    {
-        this->initialize();
-    }
-    
-    /**
-    @brief
-        Initializes the object.
-    */
-    void GlobalQuest::initialize(void)
     {
         RegisterObject(GlobalQuest);
     }
@@ -103,7 +94,7 @@ namespace orxonox {
             //! Iterate through all players possessing this quest.
             for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
             {
-                QuestEffect::invokeEffects(*it, this->failEffects_);
+                QuestEffect::invokeEffects(*it, this->getFailEffectList());
             }
 
             return true;
@@ -132,7 +123,7 @@ namespace orxonox {
             //! Iterate through all players possessing the quest.
             for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
             {
-                QuestEffect::invokeEffects(*it, this->completeEffects_);
+                QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
             }
             
             QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward effects on the player completing the quest.

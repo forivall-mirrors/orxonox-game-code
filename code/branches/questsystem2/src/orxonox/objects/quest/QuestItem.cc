@@ -49,18 +49,6 @@ namespace orxonox {
     {
         RegisterObject(QuestItem);
 
-        this->initialize();
-    }
-    
-    /**
-    @brief
-        Initializes the object.
-        Should be called first in every constructor of this class.
-    */
-    void QuestItem::initialize(void)
-    {
-        RegisterObject(QuestItem);
-
         this->id_ = "";
     }
 

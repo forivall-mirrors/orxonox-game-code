@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddQuest.cc
+    @brief
+	Implementation of the AddQuest class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "AddQuest.h"
 
@@ -42,7 +48,10 @@ namespace orxonox {
 
     CreateFactory(AddQuest);
 
-
+    /**
+    @brief
+        Constructor. Registers the quest.
+    */
     AddQuest::AddQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(AddQuest);
@@ -56,6 +65,10 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a AddQuest object through XML.
+    */
     void AddQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuest, XMLPort, xmlelement, mode);
@@ -72,7 +85,7 @@ namespace orxonox {
     */
     bool AddQuest::invoke(ControllableEntity* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< Null-pointers are badass.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;

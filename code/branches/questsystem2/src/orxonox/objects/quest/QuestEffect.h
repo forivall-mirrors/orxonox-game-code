@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestEffect.h
+    @brief
+	Definition of the QuestEffect class.
+*/
 
 #ifndef _QuestEffect_H__
 #define _QuestEffect_H__
@@ -40,6 +46,7 @@ namespace orxonox {
     /**
     @brief
         Handles effects for quests.
+        QuestEffects are the only way for quests to have any sideeffects in the game world. They are also the only way to gain, complete or fail quests.
     @author
         Damian 'Mozork' Frick
     */

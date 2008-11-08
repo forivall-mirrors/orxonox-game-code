@@ -80,8 +80,6 @@ namespace orxonox {
             std::string id_; //!< Identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
             QuestDescription* description_; //!< The description of the QuestItem.
 
-            void initialize(void); //!< Initializes the object.
-
     };
 
 }

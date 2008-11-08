@@ -100,8 +100,6 @@ namespace orxonox {
         private:
             std::map<ControllableEntity*, questStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
 
-            void initialize(void); //!< Initializes the object.
-
     };
 
 }

@@ -47,19 +47,9 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor. Initializes object.
+        Constructor. Registers and initializes object.
     */
     Quest::Quest(BaseObject* creator) : QuestItem(creator)
-    {
-        this->initialize();
-    }
-    
-    /**
-    @brief
-        Initializes the object. Needs to be called first in every constructor of this class.
-        Sets defaults.
-    */
-    void Quest::initialize(void)
     {
         RegisterObject(Quest);
 
@@ -83,10 +73,10 @@ namespace orxonox {
     {
         SUPER(Quest, XMLPort, xmlelement, mode);
 
-        XMLPortObject(Quest, Quest, "subquests", addSubQuest, getSubQuests, xmlelement, mode);
-        XMLPortObject(Quest, QuestHint, "hints", addHint, getHints, xmlelement, mode);
-        XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffects, xmlelement, mode);
-        XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffects, xmlelement, mode);
+        XMLPortObject(Quest, Quest, "subquests", addSubQuest, getSubQuest, xmlelement, mode);
+        XMLPortObject(Quest, QuestHint, "hints", addHint, getHint, xmlelement, mode);
+        XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffect, xmlelement, mode);
+        XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffect, xmlelement, mode);
 
         QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
     }
@@ -223,7 +213,7 @@ namespace orxonox {
     @return
         Returns the subquest of the given index. NULL if there is no element on the given index.
     */
-    const Quest* Quest::getSubQuests(unsigned int index) const
+    const Quest* Quest::getSubQuest(unsigned int index) const
     {
         int i = index;
         
@@ -248,7 +238,7 @@ namespace orxonox {
     @return
         Returns the hint of the given index. NULL if there is no element on the given index.
     */
-    const QuestHint* Quest::getHints(unsigned int index) const
+    const QuestHint* Quest::getHint(unsigned int index) const
     {
         int i = index;
         
@@ -272,7 +262,7 @@ namespace orxonox {
     @return
         Returns the failEffect of the given index. NULL if there is no element on the given index.
     */
-    const QuestEffect* Quest::getFailEffects(unsigned int index) const
+    const QuestEffect* Quest::getFailEffect(unsigned int index) const
     {
         int i = index;
         
@@ -296,7 +286,7 @@ namespace orxonox {
     @return
         Returns the completeEffect of the given index. NULL if there is no element on the given index.
     */
-    const QuestEffect* Quest::getCompleteEffects(unsigned int index) const
+    const QuestEffect* Quest::getCompleteEffect(unsigned int index) const
     {
         int i = index;
         

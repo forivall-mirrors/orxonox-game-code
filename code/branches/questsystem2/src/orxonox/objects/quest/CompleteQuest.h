@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file CompleteQuest.h
+    @brief
+	Definition of the CompleteQuest class.
+*/
+
 #ifndef _CompleteQuest_H__
 #define _CompleteQuest_H__
 
@@ -40,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        Completes a quest.
+        Completes a quest (with a specified id) for the player invoking the effect.
     @author
         Damian 'Mozork' Frick
     */
@@ -50,7 +56,7 @@ namespace orxonox {
             CompleteQuest(BaseObject* creator);
             virtual ~CompleteQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CompleteQuest object through XML.
 
             virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
 

@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file ChangeQuestStatus.h
+    @brief
+	Definition of the ChangeQuestStatus class.
+*/
+
 #ifndef _ChangeQuestStatus_H__
 #define _ChangeQuestStatus_H__
 
@@ -40,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        An effect which changes a quests status.
+        An effect which changes a quests status of a specified quest for the player invoking the effect.
     @author
         Damian 'Mozork' Frick
     */
@@ -50,7 +56,7 @@ namespace orxonox {
             ChangeQuestStatus(BaseObject* creator);
             virtual ~ChangeQuestStatus();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a ChangeQuestStatus object through XML.
 
             virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the effect.
 
@@ -58,10 +64,10 @@ namespace orxonox {
             inline const std::string & getQuestId(void) const //!< Returns the quest id.
                 { return this->questId_; }
 
-            std::string questId_; //!< The id of the quest the status should be changed of.
-
         private:
-            void setQuestId(const std::string & id);
+            std::string questId_; //!< The id of the quest the status should be changed of.
+            
+            void setQuestId(const std::string & id); //!< Sets the quest id.
 
     };
 

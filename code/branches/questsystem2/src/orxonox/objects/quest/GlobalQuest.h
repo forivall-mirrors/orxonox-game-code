@@ -110,8 +110,6 @@ namespace orxonox {
             bool addRewardEffect(QuestEffect* effect); //!< Adds a reward effect to the list of reward effects.
             const QuestEffect* getRewardEffects(unsigned int index) const; //!< Returns the reward effect at the given index.
 
-            void initialize(void); //!< Initializes the object.
-
     };
 
 }
