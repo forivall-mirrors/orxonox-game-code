@@ -234,6 +234,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\mbool.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\MultiType.h"
 				>
 			</File>

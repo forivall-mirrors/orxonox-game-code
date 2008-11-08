@@ -37,6 +37,9 @@
 #include "MathConvert.h"
 #include "SubString.h"
 
+// Do not remove this include to avoid linker errors.
+#include "mbool.h"
+
 namespace orxonox
 {
     /**
