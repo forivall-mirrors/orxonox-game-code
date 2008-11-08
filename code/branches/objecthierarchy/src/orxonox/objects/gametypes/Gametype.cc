@@ -66,9 +66,10 @@ namespace orxonox
 
         if (!this->bStarted_)
             this->checkStart();
+        else
+            this->spawnDeadPlayersIfRequested();
 
         this->assignDefaultPawnsIfNeeded();
-        this->spawnDeadPlayersIfRequested();
     }
 
     void Gametype::start()
@@ -87,7 +88,7 @@ namespace orxonox
 
     void Gametype::playerEntered(PlayerInfo* player)
     {
-        this->players_.insert(player);
+        this->players_[player] = PlayerState::Joined;
 
         std::string message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
@@ -96,7 +97,7 @@ namespace orxonox
 
     void Gametype::playerLeft(PlayerInfo* player)
     {
-        std::set<PlayerInfo*>::iterator it = this->players_.find(player);
+        std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
             this->players_.erase(it);
@@ -164,19 +165,20 @@ namespace orxonox
         return 0;
     }
 
-    void Gametype::assignDefaultPawnsIfNeeded() const
+    void Gametype::assignDefaultPawnsIfNeeded()
     {
-        for (std::set<PlayerInfo*>::const_iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
-            if (!(*it)->getControllableEntity() && (!(*it)->isReadyToSpawn() || !this->bStarted_))
+            if (!it->first->getControllableEntity() && (!it->first->isReadyToSpawn() || !this->bStarted_))
             {
-                SpawnPoint* spawn = this->getBestSpawnPoint(*it);
+                SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
                 if (spawn)
                 {
                     // force spawn at spawnpoint with default pawn
                     ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
                     spawn->spawn(entity);
-                    (*it)->startControl(entity);
+                    it->first->startControl(entity);
+                    it->second = PlayerState::Dead;
                 }
                 else
                 {
@@ -209,9 +211,9 @@ namespace orxonox
                 else
                 {
                     bool allplayersready = true;
-                    for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+                    for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
                     {
-                        if (!(*it)->isReadyToSpawn())
+                        if (!it->first->isReadyToSpawn())
                             allplayersready = false;
                     }
                     if (allplayersready)
@@ -226,17 +228,17 @@ namespace orxonox
 
     void Gametype::spawnPlayersIfRequested()
     {
-        for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-            if ((*it)->isReadyToSpawn() || this->bForceSpawn_)
-                this->spawnPlayer(*it);
+        for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->first->isReadyToSpawn() || this->bForceSpawn_)
+                this->spawnPlayer(it->first);
     }
 
     void Gametype::spawnDeadPlayersIfRequested()
     {
-        for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-            if (!(*it)->getControllableEntity())
-                if ((*it)->isReadyToSpawn() || this->bForceSpawn_)
-                    this->spawnPlayer(*it);
+        for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->second == PlayerState::Dead)
+                if (it->first->isReadyToSpawn() || this->bForceSpawn_)
+                    this->spawnPlayer(it->first);
     }
 
     void Gametype::spawnPlayer(PlayerInfo* player)
@@ -245,6 +247,7 @@ namespace orxonox
         if (spawnpoint)
         {
             player->startControl(spawnpoint->spawn());
+            this->players_[player] = PlayerState::Alive;
         }
         else
         {

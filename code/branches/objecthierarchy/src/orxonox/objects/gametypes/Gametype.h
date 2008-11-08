@@ -40,6 +40,17 @@
 
 namespace orxonox
 {
+    namespace PlayerState
+    {
+        enum Enum
+        {
+            Uninitialized,
+            Joined,
+            Alive,
+            Dead
+        };
+    }
+
     class _OrxonoxExport Gametype : public BaseObject, public Tickable
     {
         friend class PlayerInfo;
@@ -69,7 +80,7 @@ namespace orxonox
             virtual void pawnPreSpawn(Pawn* pawn);
             virtual void pawnPostSpawn(Pawn* pawn);
 
-            inline const std::set<PlayerInfo*>& getPlayers() const
+            inline const std::map<PlayerInfo*, PlayerState::Enum>& getPlayers() const
                 { return this->players_; }
 
             inline void registerSpawnPoint(SpawnPoint* spawnpoint)
@@ -86,7 +97,7 @@ namespace orxonox
             void addPlayer(PlayerInfo* player);
             void removePlayer(PlayerInfo* player);
 
-            void assignDefaultPawnsIfNeeded() const;
+            void assignDefaultPawnsIfNeeded();
             void checkStart();
             void spawnPlayer(PlayerInfo* player);
             void spawnPlayersIfRequested();
@@ -101,7 +112,7 @@ namespace orxonox
             float startCountdown_;
             bool bStartCountdownRunning_;
 
-            std::set<PlayerInfo*> players_;
+            std::map<PlayerInfo*, PlayerState::Enum> players_;
             std::set<SpawnPoint*> spawnpoints_;
             SubclassIdentifier<ControllableEntity> defaultControllableEntity_;
     };

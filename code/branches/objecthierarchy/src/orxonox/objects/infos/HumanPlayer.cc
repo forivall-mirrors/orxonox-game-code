@@ -45,8 +45,8 @@ namespace orxonox
     {
         RegisterObject(HumanPlayer);
 
-        this->server_ready_ = Core::isMaster();
-        this->client_ready_ = false;
+        this->server_initialized_ = Core::isMaster();
+        this->client_initialized_ = false;
 
         this->bHumanPlayer_ = true;
         this->defaultController_ = Class(HumanController);
@@ -69,8 +69,8 @@ namespace orxonox
         REGISTERSTRING(this->synchronize_nick_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
 
         REGISTERDATA(this->clientID_,     direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
-        REGISTERDATA(this->server_ready_, direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_ready));
-        REGISTERDATA(this->client_ready_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_ready));
+        REGISTERDATA(this->server_initialized_, direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_initialized));
+        REGISTERDATA(this->client_initialized_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_initialized));
     }
 
     void HumanPlayer::configvaluecallback_changednick()
@@ -95,7 +95,7 @@ namespace orxonox
         {
             this->bLocalPlayer_ = true;
             this->synchronize_nick_ = this->nick_;
-            this->client_ready_ = true;
+            this->client_initialized_ = true;
 
             if (!Core::isMaster())
                 this->setObjectMode(direction::bidirectional);
@@ -106,20 +106,20 @@ namespace orxonox
         }
     }
 
-    void HumanPlayer::networkcallback_server_ready()
+    void HumanPlayer::networkcallback_server_initialized()
     {
-        this->client_ready_ = true;
+        this->client_initialized_ = true;
     }
 
-    void HumanPlayer::networkcallback_client_ready()
+    void HumanPlayer::networkcallback_client_initialized()
     {
         if (this->getGametype())
             this->getGametype()->playerEntered(this);
     }
 
-    bool HumanPlayer::isReady() const
+    bool HumanPlayer::isInitialized() const
     {
-        return (this->server_ready_ && this->client_ready_);
+        return (this->server_initialized_ && this->client_initialized_);
     }
 
     float HumanPlayer::getPing() const

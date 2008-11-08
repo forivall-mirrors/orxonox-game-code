@@ -54,7 +54,7 @@ namespace orxonox
 
     PlayerInfo::~PlayerInfo()
     {
-        if (this->isInitialized())
+        if (this->BaseObject::isInitialized())
         {
             this->stopControl(this->controllableEntity_);
 
@@ -75,13 +75,13 @@ namespace orxonox
 
     void PlayerInfo::changedName()
     {
-        if (this->isReady() && this->getGametype())
+        if (this->isInitialized() && this->getGametype())
             this->getGametype()->playerChangedName(this);
     }
 
     void PlayerInfo::changedGametype()
     {
-        if (this->isReady())
+        if (this->isInitialized())
         {
             if (this->getOldGametype())
             {
