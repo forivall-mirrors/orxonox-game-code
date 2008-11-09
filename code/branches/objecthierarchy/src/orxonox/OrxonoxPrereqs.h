@@ -84,6 +84,7 @@ namespace orxonox
     class PlayerManager;
 
     // objects
+    class Level;
     class Scene;
 
     class WorldEntity;
@@ -120,7 +121,6 @@ namespace orxonox
     class HumanController;
 
     class Info;
-    class Level;
     class PlayerInfo;
     class HumanPlayer;
 

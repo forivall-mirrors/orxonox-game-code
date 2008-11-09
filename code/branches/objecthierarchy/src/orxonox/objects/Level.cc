@@ -37,7 +37,7 @@
 
 #include "Settings.h"
 #include "LevelManager.h"
-#include "PlayerInfo.h"
+#include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
@@ -47,7 +47,7 @@ namespace orxonox
 {
     CreateFactory(Level);
 
-    Level::Level(BaseObject* creator) : Info(creator)
+    Level::Level(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Level);
 

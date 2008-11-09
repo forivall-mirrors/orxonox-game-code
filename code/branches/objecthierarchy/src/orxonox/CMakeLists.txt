@@ -53,6 +53,7 @@ SET( ORXONOX_SRC_FILES
   objects/Test.cc
   objects/Script.cc
 
+  objects/Level.cc
   objects/Scene.cc
   objects/worldentities/WorldEntity.cc
   objects/worldentities/PositionableEntity.cc
@@ -81,7 +82,6 @@ SET( ORXONOX_SRC_FILES
   objects/controllers/HumanController.cc
 
   objects/infos/Info.cc
-  objects/infos/Level.cc
   objects/infos/PlayerInfo.cc
   objects/infos/HumanPlayer.cc
 

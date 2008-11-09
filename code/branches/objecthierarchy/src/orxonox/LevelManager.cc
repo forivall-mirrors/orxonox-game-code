@@ -30,7 +30,7 @@
 #include "LevelManager.h"
 
 #include "PlayerManager.h"
-#include "objects/infos/Level.h"
+#include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
 
 namespace orxonox
