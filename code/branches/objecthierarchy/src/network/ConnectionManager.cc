@@ -137,7 +137,7 @@ namespace orxonox
 
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
-    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex);
+    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
     if(enet_peer_send(peer, NETWORK_DEFAULT_CHANNEL, packet)!=0)
       return false;
     return true;
@@ -155,7 +155,7 @@ namespace orxonox
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
     if(!instance_)
       return false;
-    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex);
+    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
     for(ClientInformation *i=ClientInformation::getBegin()->next(); i!=0; i=i->next()){
       COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
       if(enet_peer_send(i->getPeer(), 0, packet)!=0)
@@ -168,7 +168,7 @@ namespace orxonox
   bool ConnectionManager::sendPackets() {
     if(server==NULL || !instance_)
       return false;
-    boost::recursive_mutex::scoped_lock lock(enet_mutex);
+    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
     enet_host_flush(server);
     lock.unlock();
     return true;
@@ -179,7 +179,7 @@ namespace orxonox
     ENetEvent *event;
     atexit(enet_deinitialize);
     { //scope of the mutex
-      boost::recursive_mutex::scoped_lock lock(enet_mutex);
+      boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
       enet_initialize();
       server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
       lock.unlock();
@@ -193,7 +193,7 @@ namespace orxonox
     event = new ENetEvent;
     while(!quit){
       { //mutex scope
-        boost::recursive_mutex::scoped_lock lock(enet_mutex);
+        boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
           // we should never reach this point
           quit=true;
@@ -235,7 +235,7 @@ namespace orxonox
     disconnectClients();
     // if we're finishied, destroy server
     {
-      boost::recursive_mutex::scoped_lock lock(enet_mutex);
+      boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
       enet_host_destroy(server);
       lock.unlock();
     }
@@ -249,7 +249,7 @@ namespace orxonox
     ClientInformation *temp = ClientInformation::getBegin()->next();
     while(temp!=0){
       {
-        boost::recursive_mutex::scoped_lock lock(enet_mutex);
+        boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
         enet_peer_disconnect(temp->getPeer(), 0);
         lock.unlock();
       }
@@ -257,7 +257,7 @@ namespace orxonox
     }
     //bugfix: might be the reason why server crashes when clients disconnects
     temp = ClientInformation::getBegin()->next();
-    boost::recursive_mutex::scoped_lock lock(enet_mutex);
+    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
     while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) >= 0){
       switch (event.type)
       {
@@ -331,7 +331,7 @@ namespace orxonox
 
   void ConnectionManager::disconnectClient(ClientInformation *client){
     {
-      boost::recursive_mutex::scoped_lock lock(enet_mutex);
+      boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
       enet_peer_disconnect(client->getPeer(), 0);
       lock.unlock();
     }

@@ -53,6 +53,7 @@ namespace packet{
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
+boost::recursive_mutex Packet::packetMap_mutex;
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
@@ -127,6 +128,9 @@ bool Packet::send(){
       assert(0);
       return false;
     }
+    // Assures we don't create a packet and destroy it right after in another thread
+    // without having a reference in the packetMap_
+    boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
     // We deliver ENet the data address so that it doesn't memcpy everything again.
     // --> We have to delete data_ ourselves!
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
@@ -206,13 +210,14 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     data we allocated ourselves.
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
+  boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
   // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
   std::map<size_t, Packet*>::iterator it = packetMap_.find((size_t)enetPacket);
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;
   delete it->second;
-  //packetMap_.erase(it);
+  packetMap_.erase(it);
   COUT(4) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 

@@ -28,10 +28,11 @@
 #ifndef NETWORKPACKET_H
 #define NETWORKPACKET_H
 
-#include "../NetworkPrereqs.h"
+#include "network/NetworkPrereqs.h"
 
 #include <map>
 #include <enet/enet.h>
+#include <boost/thread/recursive_mutex.hpp>
 
 #include "util/Integers.h"
 
@@ -92,6 +93,8 @@ class _NetworkExport Packet{
     bool bDataENetAllocated_;
   private:
     static std::map<size_t, Packet *> packetMap_;
+    //! Static mutex for any packetMap_ access
+    static boost::recursive_mutex packetMap_mutex;
     ENetPacket *enetPacket_;
 };
 
