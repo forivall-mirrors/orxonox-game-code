@@ -39,6 +39,7 @@
 #include "LevelManager.h"
 #include "PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
+#include "overlays/OverlayGroup.h"
 
 #include "util/Math.h"
 
@@ -61,7 +62,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            LevelManager::getInstance().releaseActivity(this);
+            if (LevelManager::getInstancePtr())
+                LevelManager::getInstance().releaseActivity(this);
 
             if (this->xmlfile_)
                 Loader::unload(this->xmlfile_);
@@ -92,6 +94,7 @@ namespace orxonox
         ClassTreeMask mask;
         mask.exclude(Class(BaseObject));
         mask.include(Class(Template));
+        mask.include(Class(OverlayGroup)); // HACK to include the ChatOverlay
 
         this->xmlfile_ = new XMLFile(Settings::getDataPath() + this->xmlfilename_, mask);
 
@@ -111,7 +114,8 @@ namespace orxonox
             for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
                 (*it)->setGametype(rootgametype);
 
-            LevelManager::getInstance().requestActivity(this);
+            if (LevelManager::getInstancePtr())
+                LevelManager::getInstance().requestActivity(this);
         }
     }
 

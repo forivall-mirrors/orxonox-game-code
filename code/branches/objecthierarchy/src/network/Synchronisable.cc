@@ -78,8 +78,8 @@ namespace orxonox
       objectID=OBJECTID_UNKNOWN;
     classID = (unsigned int)-1;
     syncList = new std::list<synchronisableVariable *>;
-    
-    
+
+
 #ifndef NDEBUG
     ObjectList<Synchronisable>::iterator it;
     for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){
@@ -172,7 +172,7 @@ namespace orxonox
       mem += header->size;
       return 0;
     }
-    
+
     COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
     Identifier* id = ClassByID(header->classID);
@@ -239,7 +239,7 @@ namespace orxonox
     it1 = objectMap_.find(objectID);
     if (it1 != objectMap_.end())
       return it1->second;
-    
+
     ObjectList<Synchronisable>::iterator it;
     for(it = ObjectList<Synchronisable>::begin(); it; ++it){
       if( it->getObjectID()==objectID ){
@@ -294,7 +294,7 @@ namespace orxonox
     }
 #endif
   }
-  
+
   void Synchronisable::unregisterVariable(void *var){
     std::list<synchronisableVariable *>::iterator it = syncList->begin();
     while(it!=syncList->end()){
@@ -310,7 +310,7 @@ namespace orxonox
     assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
     // the variable has not been registered before
   }
-  
+
 
   /**
    * This function takes all SynchronisableVariables out of the Synchronisable and saves them together with the size, objectID and classID to the given memory
@@ -365,7 +365,7 @@ namespace orxonox
         COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
       }
-      
+
       // =========== start bidirectional stuff =============
       // if the variable gets synchronised bidirectional, then add the reference to the bytestream
       if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
@@ -396,7 +396,7 @@ namespace orxonox
         tempsize += sizeof( (*i)->varReference );
       }
       // ================== end bidirectional stuff
-       
+
       switch((*i)->type){
         case DATA:
           memcpy( (void *)(mem), (void*)((*i)->var), (*i)->size);
@@ -460,7 +460,7 @@ namespace orxonox
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       bool callback=false;
       bool master=false;
-      
+
       if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
       {
         uint8_t refNr = *(uint8_t *)mem;
@@ -504,7 +504,7 @@ namespace orxonox
         }
         mem += sizeof((*i)->varReference);
       }
-      
+
       switch((*i)->type){
         case DATA:
           if((*i)->callback) // check whether this variable changed (but only if callback was set)
@@ -524,7 +524,7 @@ namespace orxonox
         case STRING:
           (*i)->size = *(size_t *)mem;
           mem += sizeof(size_t);
-          
+
           if( (*i)->callback) // check whether this string changed
             if( *static_cast<std::string*>((*i)->var) != std::string((char *)mem) )
               callback=true;
@@ -534,7 +534,7 @@ namespace orxonox
               //string changed. set the buffer to the new one
               *static_cast<std::string*>((*i)->varBuffer)=*static_cast<std::string*>( (void*)(mem+sizeof(size_t)) );
           }
-          
+
           *((std::string *)((*i)->var)) = std::string((const char*)mem);
           COUT(5) << "synchronisable: char: " << (const char*)mem << " string: " << std::string((const char*)mem) << std::endl;
           mem += (*i)->size;

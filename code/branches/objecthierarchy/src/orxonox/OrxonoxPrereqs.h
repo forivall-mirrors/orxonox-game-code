@@ -81,6 +81,7 @@ namespace orxonox
 
     class CameraManager;
     class LevelManager;
+    class PlayerManager;
 
     // objects
     class Scene;

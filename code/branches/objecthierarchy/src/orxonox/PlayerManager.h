@@ -26,38 +26,34 @@
  *
  */
 
-#ifndef _LevelManager_H__
-#define _LevelManager_H__
+#ifndef _PlayerManager_H__
+#define _PlayerManager_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <list>
 #include <map>
-#include <cassert>
+#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LevelManager
+    class _OrxonoxExport PlayerManager : public ClientConnectionListener
     {
         public:
-            LevelManager();
-            virtual ~LevelManager();
+            PlayerManager();
+            virtual ~PlayerManager();
 
-            void requestActivity(Level* level);
-            void releaseActivity(Level* level);
-            Level* getActiveLevel();
+            static PlayerManager& getInstance();
 
-            static LevelManager* getInstancePtr() { return singletonRef_s; }
-            static LevelManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+            PlayerInfo* getClient(unsigned int clientID) const;
+            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
+                { return this->clients_; }
 
         private:
-            LevelManager(const LevelManager&);
+            void clientConnected(unsigned int clientID);
+            void clientDisconnected(unsigned int clientID);
 
-            void activateNextLevel();
-
-            std::list<Level*> levels_s;
-            static LevelManager* singletonRef_s;
+            std::map<unsigned int, PlayerInfo*> clients_;
     };
 }
 
-#endif /* _LevelManager_H__ */
+#endif /* _PlayerManager_H__ */
