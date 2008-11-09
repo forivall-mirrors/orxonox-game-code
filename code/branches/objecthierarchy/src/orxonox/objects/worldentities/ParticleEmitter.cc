@@ -36,6 +36,7 @@
 #include "ParticleEmitter.h"
 
 #include "tools/ParticleInterface.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
@@ -48,8 +49,8 @@ namespace orxonox
     {
         RegisterObject(ParticleEmitter);
 
-        assert(this->getScene());
-        assert(this->getScene()->getSceneManager());
+        if (!this->getScene() || !this->getScene()->getSceneManager())
+            throw AbortLoadingException("Can't create Camera, no scene or no scene manager given.");
 
         this->particles_ = 0;
         this->LOD_ = LODParticle::normal;

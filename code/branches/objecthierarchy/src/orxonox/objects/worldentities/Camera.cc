@@ -37,6 +37,7 @@
 #include <OgreSceneNode.h>
 #include <OgreViewport.h>
 
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
@@ -50,8 +51,8 @@ namespace orxonox
     {
         RegisterObject(Camera);
 
-        assert(this->getScene());
-        assert(this->getScene()->getSceneManager());
+        if (!this->getScene() || !this->getScene()->getSceneManager())
+            throw AbortLoadingException("Can't create Camera, no scene or no scene manager given.");
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
         this->getNode()->attachObject(this->camera_);

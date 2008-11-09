@@ -36,6 +36,7 @@
 #include "LuaBind.h"
 #include "Namespace.h"
 #include "util/Debug.h"
+#include "util/Exception.h"
 
 #include "tinyxml/ticpp.h"
 
@@ -156,11 +157,34 @@ namespace orxonox
 
             return true;
         }
-        catch(ticpp::Exception& ex)
+        catch (ticpp::Exception& ex)
+        {
+            COUT(1) << std::endl;
+            COUT(1) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << ex.what() << std::endl;
+            COUT(1) << "Loading aborted." << std::endl;
+            return false;
+        }
+        catch (Exception& ex)
+        {
+            COUT(1) << std::endl;
+            COUT(1) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << ex.what() << std::endl;
+            COUT(1) << "Loading aborted." << std::endl;
+            return false;
+        }
+        catch (std::exception& ex)
         {
             COUT(1) << std::endl;
             COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
             COUT(1) << ex.what() << std::endl;
+            COUT(1) << "Loading aborted." << std::endl;
+            return false;
+        }
+        catch (...)
+        {
+            COUT(1) << std::endl;
+            COUT(1) << "An unknown error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
             COUT(1) << "Loading aborted." << std::endl;
             return false;
         }

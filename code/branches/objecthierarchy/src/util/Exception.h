@@ -62,7 +62,9 @@ namespace orxonox
             PluginsNotFound,
             InitialisationFailed,
             NotImplemented,
-            GameState
+            GameState,
+            NoGraphics,
+            AbortLoading
         };
 
         Exception(const std::string& description, int lineNumber,
@@ -126,6 +128,8 @@ namespace orxonox
             RETURN_EXCEPTION_CODE(InitialisationFailed);
             RETURN_EXCEPTION_CODE(NotImplemented);
             RETURN_EXCEPTION_CODE(GameState);
+            RETURN_EXCEPTION_CODE(NoGraphics);
+            RETURN_EXCEPTION_CODE(AbortLoading);
             default:
                 return "";
             }
@@ -140,6 +144,8 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
     CREATE_ORXONOX_EXCEPTION(GameState);
+    CREATE_ORXONOX_EXCEPTION(NoGraphics);
+    CREATE_ORXONOX_EXCEPTION(AbortLoading);
 }
 
 #define ThrowException(type, description) \

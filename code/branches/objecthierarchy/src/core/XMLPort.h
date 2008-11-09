@@ -43,6 +43,7 @@
 #include "CorePrereqs.h"
 
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "util/MultiType.h"
 #include "tinyxml/ticpp.h"
 #include "XMLIncludes.h"
@@ -494,32 +495,49 @@ namespace orxonox
                                         {
                                             if (this->identifierIsIncludedInLoaderMask(identifier))
                                             {
-                                                COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
-
-                                                BaseObject* newObject = identifier->fabricate((BaseObject*)object);
-                                                assert(newObject);
-                                                newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
-
-                                                O* castedObject = dynamic_cast<O*>(newObject);
-                                                assert(castedObject);
-
-                                                if (this->bLoadBefore_)
+                                                try
                                                 {
-                                                    newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                    COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                    COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
+
+                                                    BaseObject* newObject = identifier->fabricate((BaseObject*)object);
+                                                    assert(newObject);
+                                                    newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
+
+                                                    O* castedObject = dynamic_cast<O*>(newObject);
+                                                    assert(castedObject);
+
+                                                    if (this->bLoadBefore_)
+                                                    {
+                                                        newObject->XMLPort(*child, XMLPort::LoadObject);
+                                                        COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                    }
+                                                    else
+                                                    {
+                                                        COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                    }
+
+                                                    COUT(5) << ((BaseObject*)object)->getLoaderIndentation();
+                                                    (*this->loadexecutor_)(object, castedObject);
+
+                                                    if (!this->bLoadBefore_)
+                                                        newObject->XMLPort(*child, XMLPort::LoadObject);
+
+                                                    COUT(5) << ((BaseObject*)object)->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                                 }
-                                                else
+                                                catch (AbortLoadingException& ex)
                                                 {
-                                                    COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                    COUT(1) << "An error occurred while loading object, abort loading..." << std::endl;
+                                                    throw ex;
                                                 }
-
-                                                COUT(5) << ((BaseObject*)object)->getLoaderIndentation();
-                                                (*this->loadexecutor_)(object, castedObject);
-
-                                                if (!this->bLoadBefore_)
-                                                    newObject->XMLPort(*child, XMLPort::LoadObject);
-
-                                                COUT(5) << ((BaseObject*)object)->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
+                                                catch (std::exception& ex)
+                                                {
+                                                    COUT(1) << "An error occurred while loading object:" << std::endl;
+                                                    COUT(1) << ex.what() << std::endl;
+                                                }
+                                                catch (...)
+                                                {
+                                                    COUT(1) << "An unknown error occurred while loading object." << std::endl;
+                                                }
                                             }
                                         }
                                         else

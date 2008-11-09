@@ -35,6 +35,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"
+#include "util/Exception.h"
 
 #include "objects/Scene.h"
 
@@ -51,8 +52,8 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
-        assert(this->getScene());
-        assert(this->getScene()->getRootSceneNode());
+        if (!this->getScene() || !this->getScene()->getRootSceneNode())
+            throw AbortLoadingException("Can't create WorldEntity, no scene or no root-scenenode given.");
 
         this->node_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
 

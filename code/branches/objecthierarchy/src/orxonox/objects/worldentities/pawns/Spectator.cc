@@ -61,7 +61,8 @@ namespace orxonox
 
         this->greetingFlare_ = new BillboardSet();
         this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
-        this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
+        if (this->greetingFlare_->getBillboardSet())
+            this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
         this->greetingFlare_->setVisible(false);
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
@@ -75,7 +76,8 @@ namespace orxonox
         {
             if (this->greetingFlare_)
             {
-                this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
+                if (this->greetingFlare_->getBillboardSet())
+                    this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
                 delete this->greetingFlare_;
             }
         }

@@ -40,6 +40,7 @@
 #include <cassert>
 
 #include "GraphicsEngine.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 
@@ -56,23 +57,38 @@ namespace orxonox
 
         this->scenemanager_ = scenemanager;
         this->sceneNode_ = 0;
+        this->particleSystem_ = 0;
 
         this->bEnabled_ = true;
         this->bVisible_ = true;
         this->bAllowedByLOD_ = true;
 
-        this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
-        this->particleSystem_->setSpeedFactor(1.0f);
-        //this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor());
+        if (Core::showsGraphics())
+        {
+            try
+            {
+                this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+                this->particleSystem_->setSpeedFactor(1.0f);
+//                this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor());
+            }
+            catch (...)
+            {
+                COUT(1) << "Error: Couln't load particle system \"" << templateName << "\"" << std::endl;
+                this->particleSystem_ = 0;
+            }
+        }
 
         this->setDetailLevel((unsigned int)detaillevel);
     }
 
     ParticleInterface::~ParticleInterface()
     {
-        this->particleSystem_->removeAllEmitters();
-        this->detachFromSceneNode();
-        this->scenemanager_->destroyParticleSystem(particleSystem_);
+        if (this->particleSystem_)
+        {
+            this->particleSystem_->removeAllEmitters();
+            this->detachFromSceneNode();
+            this->scenemanager_->destroyParticleSystem(this->particleSystem_);
+        }
     }
 
     void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)
@@ -80,22 +96,26 @@ namespace orxonox
         if (this->sceneNode_)
             this->detachFromSceneNode();
 
-        this->sceneNode_ = sceneNode;
-        this->sceneNode_->attachObject(this->particleSystem_);
+        if (this->particleSystem_)
+        {
+            this->sceneNode_ = sceneNode;
+            this->sceneNode_->attachObject(this->particleSystem_);
+        }
     }
 
     void ParticleInterface::detachFromSceneNode()
     {
         if (this->sceneNode_)
         {
-            this->sceneNode_->detachObject(this->particleSystem_);
+            if (this->particleSystem_)
+                this->sceneNode_->detachObject(this->particleSystem_);
             this->sceneNode_ = 0;
         }
     }
 
     Ogre::ParticleEmitter* ParticleInterface::createNewEmitter()
     {
-        if (this->particleSystem_->getNumEmitters() > 0)
+        if (this->particleSystem_ && this->particleSystem_->getNumEmitters() > 0)
         {
             Ogre::ParticleEmitter* newemitter = this->particleSystem_->addEmitter(this->particleSystem_->getEmitter(0)->getType());
             this->particleSystem_->getEmitter(0)->copyParametersTo(newemitter);
@@ -106,69 +126,83 @@ namespace orxonox
     }
     Ogre::ParticleEmitter* ParticleInterface::getEmitter(unsigned int emitterNr) const
     {
-        if (emitterNr < this->particleSystem_->getNumEmitters())
+        if (this->particleSystem_ && (emitterNr < this->particleSystem_->getNumEmitters()))
             return this->particleSystem_->getEmitter(emitterNr);
         else
             return 0;
     }
     void ParticleInterface::removeEmitter(unsigned int emitterNr)
     {
-        if (emitterNr < this->particleSystem_->getNumEmitters())
+        if (this->particleSystem_ && (emitterNr < this->particleSystem_->getNumEmitters()))
             this->particleSystem_->removeEmitter(emitterNr);
     }
     void ParticleInterface::removeAllEmitters()
     {
-        this->particleSystem_->removeAllEmitters();
+        if (this->particleSystem_)
+            this->particleSystem_->removeAllEmitters();
     }
     unsigned int ParticleInterface::getNumEmitters() const
     {
-        return this->particleSystem_->getNumEmitters();
+        if (this->particleSystem_)
+            return this->particleSystem_->getNumEmitters();
+        else
+            return 0;
     }
 
     Ogre::ParticleAffector* ParticleInterface::addAffector(const std::string& name)
     {
-        return this->particleSystem_->addAffector(name);
+        if (this->particleSystem_)
+            return this->particleSystem_->addAffector(name);
+        else
+            return 0;
     }
     Ogre::ParticleAffector* ParticleInterface::getAffector(unsigned int affectorNr) const
     {
-        if (affectorNr < this->particleSystem_->getNumAffectors())
+        if (this->particleSystem_ && (affectorNr < this->particleSystem_->getNumAffectors()))
             return this->particleSystem_->getAffector(affectorNr);
         else
             return 0;
     }
     void ParticleInterface::removeAffector(unsigned int affectorNr)
     {
-        if (affectorNr < this->particleSystem_->getNumAffectors())
+        if (this->particleSystem_ && (affectorNr < this->particleSystem_->getNumAffectors()))
             this->particleSystem_->removeAffector(affectorNr);
     }
     void ParticleInterface::removeAllAffectors()
     {
-        this->particleSystem_->removeAllAffectors();
+        if (this->particleSystem_)
+            this->particleSystem_->removeAllAffectors();
     }
     unsigned int ParticleInterface::getNumAffectors() const
     {
-        return this->particleSystem_->getNumAffectors();
+        if (this->particleSystem_)
+            return this->particleSystem_->getNumAffectors();
+        else
+            return 0;
     }
 
     void ParticleInterface::setEnabled(bool enable)
     {
         this->bEnabled_ = enable;
 
-        for (unsigned int i = 0; i < this->particleSystem_->getNumEmitters(); i++)
-            this->particleSystem_->getEmitter(i)->setEnabled(this->bEnabled_ && this->bAllowedByLOD_);
+        if (this->particleSystem_)
+            for (unsigned int i = 0; i < this->particleSystem_->getNumEmitters(); i++)
+                this->particleSystem_->getEmitter(i)->setEnabled(this->bEnabled_ && this->bAllowedByLOD_);
     }
 
     void ParticleInterface::setVisible(bool visible)
     {
         this->bVisible_ = visible;
 
-        this->particleSystem_->setVisible(this->bVisible_ && this->bAllowedByLOD_);
+        if (this->particleSystem_)
+            this->particleSystem_->setVisible(this->bVisible_ && this->bAllowedByLOD_);
     }
 
     void ParticleInterface::setDetailLevel(unsigned int level)
     {
         this->detaillevel_ = level;
-        this->detailLevelChanged(GraphicsEngine::getInstance().getDetailLevelParticle());
+        if (GraphicsEngine::getInstancePtr())
+            this->detailLevelChanged(GraphicsEngine::getInstance().getDetailLevelParticle());
     }
 
     void ParticleInterface::detailLevelChanged(unsigned int newlevel)
@@ -189,21 +223,33 @@ namespace orxonox
 
     void ParticleInterface::setSpeedFactor(float factor)
     {
-        //this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor() * factor);
-        this->particleSystem_->setSpeedFactor(1.0f * factor);
+        if (this->particleSystem_)
+        {
+//            this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor() * factor);
+            this->particleSystem_->setSpeedFactor(1.0f * factor);
+        }
     }
     float ParticleInterface::getSpeedFactor() const
     {
-        //return (this->particleSystem_->getSpeedFactor() / Orxonox::getInstance().getTimeFactor());
-        return (this->particleSystem_->getSpeedFactor() / 1.0f);
+        if (this->particleSystem_)
+        {
+//            return (this->particleSystem_->getSpeedFactor() / Orxonox::getInstance().getTimeFactor());
+            return (this->particleSystem_->getSpeedFactor() / 1.0f);
+        }
+        else
+            return 1.0f;
     }
 
     bool ParticleInterface::getKeepParticlesInLocalSpace() const
     {
-        return this->particleSystem_->getKeepParticlesInLocalSpace();
+        if (this->particleSystem_)
+            return this->particleSystem_->getKeepParticlesInLocalSpace();
+        else
+            return false;
     }
     void ParticleInterface::setKeepParticlesInLocalSpace(bool keep)
     {
-        this->particleSystem_->setKeepParticlesInLocalSpace(keep);
+        if (this->particleSystem_)
+            this->particleSystem_->setKeepParticlesInLocalSpace(keep);
     }
 }
