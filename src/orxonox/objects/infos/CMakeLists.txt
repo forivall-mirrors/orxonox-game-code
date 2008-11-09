@@ -1,6 +1,5 @@
 SET( SRC_FILES
   Info.cc
-  Level.cc
   PlayerInfo.cc
   HumanPlayer.cc
 )

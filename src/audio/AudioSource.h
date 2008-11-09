@@ -31,7 +31,7 @@
 
 #include "AudioPrereqs.h"
 
-namespace audio
+namespace orxonox
 {
     class _AudioExport AudioSource
     {

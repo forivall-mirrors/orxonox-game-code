@@ -33,7 +33,7 @@
 #include <cstring>
 #include <assert.h>
 
-namespace network {
+namespace orxonox {
 namespace packet {
 
 #define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
@@ -67,12 +67,12 @@ ClassID::~ClassID()
 }
 
 unsigned int ClassID::getSize() const{
-  return sizeof(network::packet::ENUM::Type) + 2*sizeof(uint32_t) + classNameLength_;
+  return sizeof(packet::ENUM::Type) + 2*sizeof(uint32_t) + classNameLength_;
 }
 
 bool ClassID::process(){
   COUT(3) << "processing classid: " << getClassID() << " name: " << (const char*)(data_+_CLASSNAME) << std::endl;
-  orxonox::Identifier *id=ClassByID( std::string((const char*)(data_+_CLASSNAME) ));
+  Identifier *id=ClassByID( std::string((const char*)(data_+_CLASSNAME) ));
   if(id==NULL)
     return false;
   id->setNetworkID( getClassID() );
@@ -85,4 +85,4 @@ unsigned int ClassID::getClassID(){
 }
 
 } //namespace packet
-}//namespace network
+}//namespace orxonox

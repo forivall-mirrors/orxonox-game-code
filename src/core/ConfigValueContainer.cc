@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ConfigValueContainer.cc
+    @file
     @brief Implementation of the ConfigValueContainer class.
 */
 

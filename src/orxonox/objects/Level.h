@@ -31,11 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "Info.h"
+#include "network/Synchronisable.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Level : public Info
+    class _OrxonoxExport Level : public BaseObject, public Synchronisable
     {
         public:
             Level(BaseObject* creator);

@@ -42,28 +42,11 @@
 #include <cassert>
 #include "Debug.h"
 
-// Define some ugly macros to make things more clear
-#define CREATE_ORXONOX_EXCEPTION(name) typedef SpecificException<Exception::name> name##Exception;
-#define RETURN_EXCEPTION_CODE(name) \
-    case Exception::name:           \
-        return #name;
-
-
 namespace orxonox
 {
     class _UtilExport Exception : public std::exception
     {
     public:
-        enum ExceptionType
-        {
-            General,
-            FileNotFound,
-            Argument,
-            PluginsNotFound,
-            InitialisationFailed,
-            NotImplemented,
-            GameState
-        };
 
         Exception(const std::string& description, int lineNumber,
                   const char* filename, const char* functionName);
@@ -73,7 +56,6 @@ namespace orxonox
         virtual ~Exception() throw() { }
 
         virtual const std::string& getFullDescription() const;
-        virtual ExceptionType      getType()            const = 0;
         virtual std::string        getTypeName()        const = 0;
         virtual const std::string& getDescription()     const { return this->description_; }
         virtual const int          getLineNumber()      const { return this->lineNumber_; }
@@ -92,47 +74,31 @@ namespace orxonox
     };
 
 
-    template <Exception::ExceptionType Type>
-    class SpecificException : public Exception
-    {
-    public:
-        SpecificException(const std::string& description, int lineNumber,
-                  const char* filename, const char* functionName)
-                  : Exception(description, lineNumber, filename, functionName)
-        {
-            // let the catcher decide whether to display the message below level 4
-            COUT(4) << this->getFullDescription() << std::endl;
-        }
-
-        SpecificException(const std::string& description)
-            : Exception(description)
-        {
-            // let the catcher decide whether to display the message below level 4
-            COUT(4) << this->getFullDescription() << std::endl;
-        }
-
-        ~SpecificException() throw() { }
-
-        ExceptionType getType() const { return Type; }
-        std::string getTypeName() const
-        {
-            // note: break is not necessary due to the return in the macros.
-            switch (Type)
-            {
-            RETURN_EXCEPTION_CODE(General)
-            RETURN_EXCEPTION_CODE(FileNotFound);
-            RETURN_EXCEPTION_CODE(Argument);
-            RETURN_EXCEPTION_CODE(PluginsNotFound);
-            RETURN_EXCEPTION_CODE(InitialisationFailed);
-            RETURN_EXCEPTION_CODE(NotImplemented);
-            RETURN_EXCEPTION_CODE(GameState);
-            default:
-                return "";
-            }
-        }
+#define CREATE_ORXONOX_EXCEPTION(ExceptionName)                                     \
+    class ExceptionName##Exception : public Exception                               \
+    {                                                                               \
+    public:                                                                         \
+        ExceptionName##Exception(const std::string& description, int lineNumber,    \
+                  const char* filename, const char* functionName)                   \
+                  : Exception(description, lineNumber, filename, functionName)      \
+        {                                                                           \
+            /* Let the catcher decide whether to display the message below level 4  \
+               Note: Don't place this code in Exception c'tor because getTypeName() \
+               is still pure virtual at that time. */                               \
+            COUT(4) << this->getFullDescription() << std::endl;                     \
+        }                                                                           \
+                                                                                    \
+        ExceptionName##Exception(const std::string& description)                    \
+                  : Exception(description)                                          \
+        { COUT(4) << this->getFullDescription() << std::endl; }                     \
+                                                                                    \
+        ~ExceptionName##Exception() throw() { }                                     \
+                                                                                    \
+        std::string getTypeName() const { return #ExceptionName; }                  \
     };
 
-    // define the template spcialisations
+    // Creates all possible exception types.
+    // If you want to add a new type, simply copy and adjust a new line here.
     CREATE_ORXONOX_EXCEPTION(General);
     CREATE_ORXONOX_EXCEPTION(FileNotFound);
     CREATE_ORXONOX_EXCEPTION(Argument);
@@ -140,19 +106,20 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
     CREATE_ORXONOX_EXCEPTION(GameState);
+    CREATE_ORXONOX_EXCEPTION(NoGraphics);
+    CREATE_ORXONOX_EXCEPTION(AbortLoading);
+}
 
-#define ThrowException(type, description) \
-    throw SpecificException<Exception::type>(description, __LINE__, __FILE__, __FUNCTIONNAME__)
+#define ThrowException(Type, Description) \
+    throw Type##Exception(Description, __LINE__, __FILE__, __FUNCTIONNAME__)
 
     // define an assert macro that can display a message
 #ifndef NDEBUG
-#define OrxAssert(assertion, errorMessage) \
-    assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << errorMessage << std::endl); \
-    assert(assertion)
+#define OrxAssert(Assertion, ErrorMessage) \
+    Assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << ErrorMessage << std::endl); \
+    assert(Assertion)
 #else
 #define OrxAssert(condition, errorMessage)  ((void)0)
 #endif
-
-}
 
 #endif /* _Exception_H__ */

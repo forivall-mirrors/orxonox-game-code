@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Identifier.h
+    @file
     @brief Definition of the Identifier, ClassIdentifier and SubclassIdentifier classes, implementation of the ClassIdentifier and SubclassIdentifier classes.
 
     The Identifier contains all needed informations about the class it belongs to:

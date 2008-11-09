@@ -58,7 +58,7 @@ namespace std
   bool operator<(ENetAddress a, ENetAddress b);
 }
 
-namespace network
+namespace orxonox
 {
     const int NETWORK_PORT = 55556;
     const int NETWORK_MAX_CONNECTIONS = 50;

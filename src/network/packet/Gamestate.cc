@@ -37,7 +37,7 @@
 
 
 
-namespace network {
+namespace orxonox {
 
 namespace packet {
 
@@ -70,11 +70,11 @@ Gamestate::~Gamestate()
 {
 }
 
-bool Gamestate::collectData(int id, int mode)
+bool Gamestate::collectData(int id, uint8_t mode)
 {
-  int tempsize=0, currentsize=0;
+  unsigned int tempsize=0, currentsize=0;
   assert(data_==0);
-  int size = calcGamestateSize(id, mode);
+  unsigned int size = calcGamestateSize(id, mode);
 
   COUT(4) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
   if(size==0)
@@ -85,21 +85,18 @@ bool Gamestate::collectData(int id, int mode)
     return false;
   }
 
-#ifndef NDEBUG
-  std::list<Synchronisable*> slist;
-  std::list<Synchronisable*>::iterator iit;
-#endif
   //start collect data synchronisable by synchronisable
   uint8_t *mem=data_;
   mem+=sizeof(GamestateHeader);
-  orxonox::ObjectList<Synchronisable>::iterator it;
-  for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
+  ObjectList<Synchronisable>::iterator it;
+  for(it = ObjectList<Synchronisable>::begin(); it; ++it){
     tempsize=it->getSize(id, mode);
 
     if(currentsize+tempsize > size){
+      assert(0); // if we don't use multithreading this part shouldn't be neccessary
       // start allocate additional memory
       COUT(3) << "G.St.Man: need additional memory" << std::endl;
-      orxonox::ObjectList<Synchronisable>::iterator temp = it;
+      ObjectList<Synchronisable>::iterator temp = it;
       int addsize=tempsize;
       while(++temp)
         addsize+=temp->getSize(id, mode);
@@ -109,11 +106,6 @@ bool Gamestate::collectData(int id, int mode)
       size = currentsize+addsize;
     }// stop allocate additional memory
 
-#ifndef NDEBUG
-    for(iit=slist.begin(); iit!=slist.end(); iit++)
-      assert((*iit)!=*it);
-    slist.push_back(*it);
-#endif
 
     //if(it->doSelection(id))
     dataMap_[mem-data_]=(*it);  // save the mem location of the synchronisable data
@@ -126,7 +118,6 @@ bool Gamestate::collectData(int id, int mode)
 
   //start write gamestate header
   HEADER->packetType = ENUM::Gamestate;
-  assert( *(ENUM::Type *)(data_) == ENUM::Gamestate);
   HEADER->datasize = currentsize;
   HEADER->id = id;
   HEADER->diffed = false;
@@ -139,14 +130,14 @@ bool Gamestate::collectData(int id, int mode)
   return true;
 }
 
-bool Gamestate::spreadData(int mode)
+bool Gamestate::spreadData(uint8_t mode)
 {
   assert(data_);
   assert(!HEADER->compressed);
   assert(!HEADER->diffed);
   uint8_t *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
-  //orxonox::ObjectList<Synchronisable>::iterator it=orxonox::ObjectList<Synchronisable>::begin();
+  //ObjectList<Synchronisable>::iterator it=ObjectList<Synchronisable>::begin();
   Synchronisable *s;
 
   // update the data of the objects we received
@@ -162,8 +153,6 @@ bool Gamestate::spreadData(int mode)
     {
       bool b = s->updateData(mem, mode);
       assert(b);
-      //if(!s->updateData(mem, mode))
-        //return false;
     }
   }
 
@@ -366,19 +355,13 @@ Gamestate* Gamestate::doSelection(unsigned int clientID){
     unsigned int objectsize = oldobjectheader->size;
     assert(it->second->objectID==oldobjectheader->objectID);
     *newobjectheader = *oldobjectheader;
-    objectOffset=sizeof(uint8_t)+sizeof(bool); //skip the size and the availableData variables in the objectheader
+    objectOffset=sizeof(synchronisableHeader); //skip the size and the availableData variables in the objectheader
     if(it->second->doSelection(HEADER->id)){
-      newobjectheader->dataAvailable=true; //TODO: probably not neccessary
-      while(objectOffset<objectsize){
-        *(newdata + objectOffset)=*(origdata + objectOffset);    // copy the data
-        objectOffset++;
-      }
+      assert(newobjectheader->dataAvailable==true);
+      memcpy(newdata+objectOffset, origdata+objectOffset, objectsize-objectOffset);
     }else{
       newobjectheader->dataAvailable=false;
-      while(objectOffset<objectsize){
-        *(newdata+objectOffset)=0;    // set to 0
-        objectOffset++;
-      }
+      memset(newdata+objectOffset, 0, objectsize-objectOffset);
       assert(objectOffset==objectsize);
     }
     newdata += objectsize;
@@ -564,13 +547,13 @@ Gamestate *Gamestate::undiff(Gamestate *base)
 }
 
 
-unsigned int Gamestate::calcGamestateSize(unsigned int id, int mode)
+unsigned int Gamestate::calcGamestateSize(unsigned int id, uint8_t mode)
 {
-  int size=0;
+  unsigned int size=0;
     // get the start of the Synchronisable list
-  orxonox::ObjectList<Synchronisable>::iterator it;
+  ObjectList<Synchronisable>::iterator it;
     // get total size of gamestate
-  for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it)
+  for(it = ObjectList<Synchronisable>::begin(); it; ++it)
     size+=it->getSize(id, mode); // size of the actual data of the synchronisable
 //  size+=sizeof(GamestateHeader);
   return size;
@@ -581,8 +564,8 @@ unsigned int Gamestate::calcGamestateSize(unsigned int id, int mode)
  * @param it iterator of the list pointing to the object
  * @return iterator pointing to the next object in the list
  */
-  void Gamestate::removeObject(orxonox::ObjectList<Synchronisable>::iterator &it) {
-    orxonox::ObjectList<Synchronisable>::iterator temp=it;
+  void Gamestate::removeObject(ObjectList<Synchronisable>::iterator &it) {
+    ObjectList<Synchronisable>::iterator temp=it;
     ++it;
     delete  *temp;
   }

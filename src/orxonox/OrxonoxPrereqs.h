@@ -81,8 +81,10 @@ namespace orxonox
 
     class CameraManager;
     class LevelManager;
+    class PlayerManager;
 
     // objects
+    class Level;
     class Scene;
 
     class AddQuest;
@@ -141,7 +143,6 @@ namespace orxonox
     class HumanController;
 
     class Info;
-    class Level;
     class PlayerInfo;
     class HumanPlayer;
 

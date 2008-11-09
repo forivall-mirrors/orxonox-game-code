@@ -63,8 +63,8 @@ namespace orxonox
 
     void Billboard::registerVariables()
     {
-        REGISTERSTRING(this->material_, network::direction::toclient, new network::NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
-        REGISTERDATA  (this->colour_,   network::direction::toclient, new network::NetworkCallback<Billboard>(this, &Billboard::changedColour));
+        REGISTERSTRING(this->material_, direction::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
+        REGISTERDATA  (this->colour_,   direction::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
     }
 
     void Billboard::changedMaterial()
@@ -74,7 +74,8 @@ namespace orxonox
             if (this->getScene() && this->getScene()->getSceneManager())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
-                this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                if (this->billboard_.getBillboardSet())
+                    this->getNode()->attachObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }
@@ -89,7 +90,8 @@ namespace orxonox
             if (this->getScene() && this->getScene()->getSceneManager())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
-                this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                if (this->billboard_.getBillboardSet())
+                    this->getNode()->attachObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }

@@ -61,7 +61,8 @@ namespace orxonox
 
         this->greetingFlare_ = new BillboardSet();
         this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
-        this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
+        if (this->greetingFlare_->getBillboardSet())
+            this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
         this->greetingFlare_->setVisible(false);
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
@@ -75,7 +76,8 @@ namespace orxonox
         {
             if (this->greetingFlare_)
             {
-                this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
+                if (this->greetingFlare_->getBillboardSet())
+                    this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
                 delete this->greetingFlare_;
             }
         }
@@ -83,9 +85,9 @@ namespace orxonox
 
     void Spectator::registerVariables()
     {
-        REGISTERDATA(this->bGreetingFlareVisible_, network::direction::toclient, new network::NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
-        REGISTERDATA(this->bGreeting_,             network::direction::toserver, new network::NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
-        REGISTERDATA(this->hudmode_,               network::direction::toclient);
+        REGISTERDATA(this->bGreetingFlareVisible_, direction::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
+        REGISTERDATA(this->bGreeting_,             direction::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
+        REGISTERDATA(this->hudmode_,               direction::toclient);
     }
 
     void Spectator::changedGreeting()
@@ -128,7 +130,7 @@ namespace orxonox
     {
         ControllableEntity::setPlayer(player);
 
-//        this->setObjectMode(network::direction::toclient);
+//        this->setObjectMode(direction::toclient);
     }
 
     void Spectator::startLocalControl()
@@ -202,7 +204,7 @@ namespace orxonox
                 else if (!this->getGametype()->hasEnded())
                 {
                     if (this->getGametype()->isStartCountdownRunning())
-                        this->hudmode_ = 2 + 10*ceil(this->getGametype()->getStartCountdown());
+                        this->hudmode_ = 2 + 10*(int)ceil(this->getGametype()->getStartCountdown());
                     else
                         this->hudmode_ = 3;
                 }

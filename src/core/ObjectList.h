@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ObjectList.h
+    @file
     @brief Definition and implementation of the ObjectList class.
 
     The ObjectList is a wrapper of an ObjectListBase of a given class.

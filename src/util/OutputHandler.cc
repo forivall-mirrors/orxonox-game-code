@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OutputHandler.cc
+    @file
     @brief Implementation of the OutputHandler class.
 */
 

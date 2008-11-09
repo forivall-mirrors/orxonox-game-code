@@ -37,8 +37,9 @@
 
 #include "Settings.h"
 #include "LevelManager.h"
-#include "PlayerInfo.h"
+#include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
+#include "overlays/OverlayGroup.h"
 
 #include "util/Math.h"
 
@@ -46,7 +47,7 @@ namespace orxonox
 {
     CreateFactory(Level);
 
-    Level::Level(BaseObject* creator) : Info(creator)
+    Level::Level(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Level);
 
@@ -61,7 +62,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            LevelManager::getInstance().releaseActivity(this);
+            if (LevelManager::getInstancePtr())
+                LevelManager::getInstance().releaseActivity(this);
 
             if (this->xmlfile_)
                 Loader::unload(this->xmlfile_);
@@ -80,9 +82,9 @@ namespace orxonox
 
     void Level::registerVariables()
     {
-        REGISTERSTRING(this->xmlfilename_, network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
-        REGISTERSTRING(this->name_,        network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::changedName));
-        REGISTERSTRING(this->description_, network::direction::toclient);
+        REGISTERSTRING(this->xmlfilename_, direction::toclient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        REGISTERSTRING(this->name_,        direction::toclient, new NetworkCallback<Level>(this, &Level::changedName));
+        REGISTERSTRING(this->description_, direction::toclient);
     }
 
     void Level::networkcallback_applyXMLFile()
@@ -92,6 +94,7 @@ namespace orxonox
         ClassTreeMask mask;
         mask.exclude(Class(BaseObject));
         mask.include(Class(Template));
+        mask.include(Class(OverlayGroup)); // HACK to include the ChatOverlay
 
         this->xmlfile_ = new XMLFile(Settings::getDataPath() + this->xmlfilename_, mask);
 
@@ -111,7 +114,8 @@ namespace orxonox
             for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
                 (*it)->setGametype(rootgametype);
 
-            LevelManager::getInstance().requestActivity(this);
+            if (LevelManager::getInstancePtr())
+                LevelManager::getInstance().requestActivity(this);
         }
     }
 

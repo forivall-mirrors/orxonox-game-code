@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Super.h
+    @file
     @brief Definition of all super-function related macros.
 
     This file defines all macros needed to add a new "super-function".

@@ -28,29 +28,32 @@
 
 #include "CRC32.h"
 
+namespace orxonox
+{
+    void calcCRCBit(uint32_t &crc32, int bit)
+    {
+        int hbit = (crc32 & 0x80000000) ? 1 : 0;
+        if (hbit != bit)
+            crc32 = (crc32 << 1) ^ UTIL_CRC32POLY;
+        else
+            crc32 = crc32 << 1;
+      }
 
-void calcCRCBit(uint32_t &crc32, int bit){
-    int hbit;
-
-    hbit=(crc32 & 0x80000000) ? 1 : 0;
-    if (hbit != bit)
-      crc32=(crc32<<1) ^ UTIL_CRC32POLY;
-    else
-      crc32=crc32<<1;
-  }
-
-  uint32_t calcCRC(unsigned char *data, unsigned int dataLength){
-    uint32_t crc32=0;
-    for(unsigned int i=0; i<dataLength; i++){
-      calcCRCBit(crc32, (data[i]&0x1)>>0); // 1st bit
-      calcCRCBit(crc32, (data[i]&0x2)>>1); // 2nd bit
-      calcCRCBit(crc32, (data[i]&0x3)>>2); // 3rd bit
-      calcCRCBit(crc32, (data[i]&0x4)>>3); // 4th bit
-      calcCRCBit(crc32, (data[i]&0x5)>>4); // 5th bit
-      calcCRCBit(crc32, (data[i]&0x6)>>5); // 6th bit
-      calcCRCBit(crc32, (data[i]&0x7)>>6); // 7th bit
-      calcCRCBit(crc32, (data[i]&0x8)>>7); // 8th bit
+    uint32_t calcCRC(unsigned char *data, unsigned int dataLength)
+    {
+        uint32_t crc32 = 0;
+        for(unsigned int i = 0; i < dataLength; i++)
+        {
+            calcCRCBit(crc32, (data[i] & 0x1) >> 0); // 1st bit
+            calcCRCBit(crc32, (data[i] & 0x2) >> 1); // 2nd bit
+            calcCRCBit(crc32, (data[i] & 0x3) >> 2); // 3rd bit
+            calcCRCBit(crc32, (data[i] & 0x4) >> 3); // 4th bit
+            calcCRCBit(crc32, (data[i] & 0x5) >> 4); // 5th bit
+            calcCRCBit(crc32, (data[i] & 0x6) >> 5); // 6th bit
+            calcCRCBit(crc32, (data[i] & 0x7) >> 6); // 7th bit
+            calcCRCBit(crc32, (data[i] & 0x8) >> 7); // 8th bit
+        }
+        return crc32;
     }
-    return crc32;
-  }
+}
 

@@ -20,39 +20,40 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#include "AudioBuffer.h"
+#ifndef _PlayerManager_H__
+#define _PlayerManager_H__
+
+#include "OrxonoxPrereqs.h"
+
+#include <map>
+#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    AudioBuffer::AudioBuffer(std::string filename)
+    class _OrxonoxExport PlayerManager : public ClientConnectionListener
     {
-        // Load wav data into buffers.
-        alGenBuffers(1, &buffer);
+        public:
+            PlayerManager();
+            virtual ~PlayerManager();
 
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
+            static PlayerManager& getInstance();
 
-        //FIXME deprecated; seems unneeded
-//        alutLoadWAVFile((ALbyte*)filename.c_str(), &format, &data, &size, &freq, &loop);
-        alBufferData(buffer, format, data, size, freq);
-        //FIXME deprecated; seems unneeded
-//        alutUnloadWAV(format, data, size, freq);
+            PlayerInfo* getClient(unsigned int clientID) const;
+            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
+                { return this->clients_; }
 
-        // Do another error check and return.
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
-        else
-              loaded=AL_TRUE;
-    }
+        private:
+            void clientConnected(unsigned int clientID);
+            void clientDisconnected(unsigned int clientID);
 
-    AudioBuffer::~AudioBuffer()
-    {
-
-    }
+            std::map<unsigned int, PlayerInfo*> clients_;
+    };
 }
+
+#endif /* _PlayerManager_H__ */

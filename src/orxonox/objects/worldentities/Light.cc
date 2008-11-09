@@ -78,10 +78,10 @@ namespace orxonox
 
     void Light::registerVariables()
     {
-        REGISTERDATA(this->type_, network::direction::toclient, new network::NetworkCallback<Light>(this, &Light::changedType));
-        REGISTERDATA(this->light_->getDiffuseColour(), network::direction::toclient);
-        REGISTERDATA(this->light_->getSpecularColour(), network::direction::toclient);
-        REGISTERDATA(this->light_->getDirection(), network::direction::toclient);
+        REGISTERDATA(this->type_, direction::toclient, new NetworkCallback<Light>(this, &Light::changedType));
+        REGISTERDATA(this->light_->getDiffuseColour(), direction::toclient);
+        REGISTERDATA(this->light_->getSpecularColour(), direction::toclient);
+        REGISTERDATA(this->light_->getDirection(), direction::toclient);
     }
 
     const std::string& Light::getName() const

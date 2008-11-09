@@ -33,7 +33,7 @@
 #include "packet/Packet.h"
 #include "ChatListener.h"
 
-namespace network {
+namespace orxonox {
 
 SetConsoleCommandShortcut(Host, Chat);
 
@@ -79,7 +79,7 @@ bool Host::addPacket(ENetPacket *packet, int clientID){
 //   return instance_->sendChat(c);
 // }
 
-// bool Host::receiveChat(network::packet::Chat *message, unsigned int clientID){
+// bool Host::receiveChat(packet::Chat *message, unsigned int clientID){
 //   if(instance_)
 //     return instance_->processChat(message, clientID);
 //   else
@@ -109,10 +109,10 @@ bool Host::Broadcast(const std::string& message){
 }
 
 bool Host::incomingChat(const std::string& message, unsigned int playerID){
-  for (orxonox::ObjectList<ChatListener>::iterator it = orxonox::ObjectList<ChatListener>::begin(); it != orxonox::ObjectList<ChatListener>::end(); ++it)
+  for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
     it->incomingChat(message, playerID);
 
   return instance_->processChat(message, playerID);
 }
 
-}//namespace network
+}//namespace orxonox

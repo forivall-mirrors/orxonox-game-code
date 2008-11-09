@@ -36,7 +36,7 @@
 #include "AudioSource.h"
 #include "AudioStream.h"
 
-namespace audio
+namespace orxonox
 {
     AudioManager::AudioManager()
     {

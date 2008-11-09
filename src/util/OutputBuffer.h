@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OutputBuffer.h
+    @file
     @brief Declaration of the OutputBuffer class.
 
     The OutputBuffer acts almost like std::ostream. You can put text and other values to the
@@ -57,7 +57,7 @@ namespace orxonox
         The function get's called, if an instance of the inheriting class registers as a listener at
         an OutputBuffer and this buffer changes.
     */
-    class _UtilExport OutputBufferListener
+    class OutputBufferListener
     {
         friend class OutputBuffer;
 

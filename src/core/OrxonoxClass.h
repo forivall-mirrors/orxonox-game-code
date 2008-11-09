@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OrxonoxClass.h
+    @file
     @brief Declaration of the OrxonoxClass Class.
 
     All objects and interfaces of the game-logic (not the engine) are derived from OrxonoxClass.

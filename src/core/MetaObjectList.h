@@ -27,7 +27,7 @@
  */
 
 /**
-    @file MetaObjectList.h
+    @file
     @brief Definition of the MetaObjectList class.
 
     The MetaObjectList is a single-linked list, containing all list-elements and their

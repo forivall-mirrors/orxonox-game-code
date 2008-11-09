@@ -46,7 +46,7 @@
 
 #include "packet/Gamestate.h"
 
-namespace network
+namespace orxonox
 {
 
     const int KEEP_GAMESTATES = 10;

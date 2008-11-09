@@ -68,9 +68,11 @@ namespace orxonox
     {
       this->debugBillboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
       this->debugBillboard_.setVisible(false);
+
+      if (this->debugBillboard_.getBillboardSet())
+        this->getNode()->attachObject(this->debugBillboard_.getBillboardSet());
     }
 
-    this->getNode()->attachObject(this->debugBillboard_.getBillboardSet());
     this->setObjectMode(0x0);
   }
 
@@ -309,7 +311,7 @@ namespace orxonox
 
   void Trigger::setBillboardColour(const ColourValue& colour)
   {
-    this->debugBillboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
+    this->debugBillboard_.setColour(colour);
   }
 
   void Trigger::changedVisibility()

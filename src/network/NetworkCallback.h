@@ -3,7 +3,7 @@
 
 #include "NetworkPrereqs.h"
 
-namespace network{
+namespace orxonox{
   class _NetworkExport NetworkCallbackBase
   {
     public:

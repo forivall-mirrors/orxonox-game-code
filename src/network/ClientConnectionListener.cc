@@ -2,7 +2,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 
-namespace network{
+namespace orxonox{
 
   ClientConnectionListener::ClientConnectionListener()
   { 
@@ -10,7 +10,7 @@ namespace network{
   }
 
   void ClientConnectionListener::getConnectedClients(){
-    if(orxonox::Core::showsGraphics())
+    if(Core::showsGraphics())
       this->clientConnected(0); //server client id
     ClientInformation *client = ClientInformation::getBegin();
     while(client){

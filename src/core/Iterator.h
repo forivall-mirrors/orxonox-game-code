@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Iterator.h
+    @file
     @brief Definition and implementation of the Iterator class.
 
     The Iterator of a given class allows to iterate through an ObjectList. Objects in

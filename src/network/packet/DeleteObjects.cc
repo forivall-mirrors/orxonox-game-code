@@ -33,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include <assert.h>
 
-namespace network {
+namespace orxonox {
 namespace packet {
 
 #define PACKET_FLAG_DELETE  ENET_PACKET_FLAG_RELIABLE
@@ -94,4 +94,4 @@ bool DeleteObjects::process(){
 
 
 } //namespace packet
-} //namespace network
+} //namespace orxonox

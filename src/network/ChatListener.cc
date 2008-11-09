@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 
-namespace network
+namespace orxonox
 {
     ChatListener::ChatListener()
     {

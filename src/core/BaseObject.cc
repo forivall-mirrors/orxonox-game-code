@@ -40,6 +40,7 @@
 #include "XMLNameListener.h"
 #include "Template.h"
 #include "util/String.h"
+#include "util/mbool.h"
 
 namespace orxonox
 {

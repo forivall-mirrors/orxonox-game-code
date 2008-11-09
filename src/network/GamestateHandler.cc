@@ -3,7 +3,7 @@
 #include "GamestateHandler.h"
 #include "packet/Packet.h"
 
-namespace network {
+namespace orxonox {
 
 GamestateHandler *GamestateHandler::instance_=0;
   
@@ -21,4 +21,4 @@ GamestateHandler::~GamestateHandler()
 
 
 
-}//namespace network
+}//namespace orxonox

@@ -53,10 +53,10 @@
 
 
 
-namespace network
+namespace orxonox
 {
   /**
-  network::Client *client;
+  Client *client;
   * The network/Client class
   * This class implements all necessary function for the network communication
   * It is the root class of the network module

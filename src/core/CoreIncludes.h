@@ -27,7 +27,7 @@
  */
 
 /**
-    @file CoreIncludes.h
+    @file
     @brief Definition of macros for Identifier and Factory.
 
     Every class needs the RegisterObject(class) macro in its constructor. If the class is an interface

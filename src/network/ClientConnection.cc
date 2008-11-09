@@ -47,7 +47,7 @@
 #include "util/Sleep.h"
 #include "util/Debug.h"
 
-namespace network
+namespace orxonox
 {
   //static boost::thread_group network_threads;
 

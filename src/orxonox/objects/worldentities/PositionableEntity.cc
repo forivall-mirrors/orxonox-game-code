@@ -47,13 +47,13 @@ namespace orxonox
 
     void PositionableEntity::registerVariables()
     {
-        REGISTERDATA(this->getPosition().x, network::direction::toclient);
-        REGISTERDATA(this->getPosition().y, network::direction::toclient);
-        REGISTERDATA(this->getPosition().z, network::direction::toclient);
+        REGISTERDATA(this->getPosition().x, direction::toclient);
+        REGISTERDATA(this->getPosition().y, direction::toclient);
+        REGISTERDATA(this->getPosition().z, direction::toclient);
 
-        REGISTERDATA(this->getOrientation().w, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().x, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().y, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().z, network::direction::toclient);
+        REGISTERDATA(this->getOrientation().w, direction::toclient);
+        REGISTERDATA(this->getOrientation().x, direction::toclient);
+        REGISTERDATA(this->getOrientation().y, direction::toclient);
+        REGISTERDATA(this->getOrientation().z, direction::toclient);
     }
 }

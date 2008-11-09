@@ -34,7 +34,7 @@
 #include <string>
 #include <AL/al.h>
 
-namespace audio
+namespace orxonox
 {
     class _AudioExport AudioBuffer
     {

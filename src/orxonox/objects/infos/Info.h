@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Info : public BaseObject, public network::Synchronisable
+    class _OrxonoxExport Info : public BaseObject, public Synchronisable
     {
         public:
             Info(BaseObject* creator);

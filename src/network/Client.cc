@@ -48,7 +48,7 @@
 
 // #include "packet/Acknowledgement.h"
 
-namespace network
+namespace orxonox
 {
 //   SetConsoleCommandShortcut(Client, chat);
 

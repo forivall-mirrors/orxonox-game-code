@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Identifier.cc
+    @file
     @brief Implementation of the Identifier class.
 */
 

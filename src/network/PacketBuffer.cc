@@ -38,7 +38,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
 
-namespace network
+namespace orxonox
 {
    boost::recursive_mutex PacketBuffer::mutex_;
 
@@ -146,4 +146,4 @@ namespace network
     return;
   }
 
-} // namespace network
+} // namespace orxonox

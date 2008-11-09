@@ -39,70 +39,79 @@
 #include <list>
 #include <string>
 
-typedef int (*SignalCallback)( void * someData );
+namespace orxonox
+{
+    typedef int (*SignalCallback)( void * someData );
+}
 
 #if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
 #include <signal.h>
 
-struct SignalRec
+namespace orxonox
 {
-  int signal;
-  sig_t handler;
-};
+    struct SignalRec
+    {
+        int signal;
+        sig_t handler;
+    };
 
-struct SignalCallbackRec
-{
-  SignalCallback cb;
-  void * someData;
-};
+    struct SignalCallbackRec
+    {
+        SignalCallback cb;
+        void * someData;
+    };
 
 
-typedef std::list<SignalRec> SignalRecList;
-typedef std::list<SignalCallbackRec> SignalCallbackList;
+    typedef std::list<SignalRec> SignalRecList;
+    typedef std::list<SignalCallbackRec> SignalCallbackList;
 
-class SignalHandler
-{
-  private:
-    SignalHandler();
-  public:
-    inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; }
-    ~SignalHandler(){ SignalHandler::singletonRef = NULL; }
+    class SignalHandler
+    {
+    private:
+        SignalHandler();
+    public:
+        inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; }
+        ~SignalHandler(){ SignalHandler::singletonRef = NULL; }
 
-    void registerCallback( SignalCallback cb, void * someData );
+        void registerCallback( SignalCallback cb, void * someData );
 
-    void doCatch( const std::string & appName, const std::string & filename );
-    void dontCatch();
+        void doCatch( const std::string & appName, const std::string & filename );
+        void dontCatch();
 
-  private:
-    static void sigHandler( int sig );
+    private:
+        static void sigHandler( int sig );
 
-    void catchSignal( int sig );
-    SignalRecList sigRecList;
+        void catchSignal( int sig );
+        SignalRecList sigRecList;
 
-    SignalCallbackList callbackList;
+        SignalCallbackList callbackList;
 
-    static SignalHandler * singletonRef;
+        static SignalHandler * singletonRef;
 
-    std::string appName;
-    std::string filename;
+        std::string appName;
+        std::string filename;
 
-    // used to turn on KeyAutoRepeat if OIS crashes
-    static bool bXAutoKeyRepeatOn_;
-};
+        // used to turn on KeyAutoRepeat if OIS crashes
+        static bool bXAutoKeyRepeatOn_;
+    };
+}
 
 #else /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
 
-class _UtilExport SignalHandler
+namespace orxonox
 {
-  public:
-    inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
-    void doCatch( const std::string & appName, const std::string & filename ) {};
-    void dontCatch() {};
-    void registerCallback( SignalCallback cb, void * someData ) {};
+    class _UtilExport SignalHandler
+    {
+    public:
+        inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
+        void doCatch( const std::string & appName, const std::string & filename ) {};
+        void dontCatch() {};
+        void registerCallback( SignalCallback cb, void * someData ) {};
 
-  private:
-    static SignalHandler * singletonRef;
-};
+    private:
+        static SignalHandler * singletonRef;
+    };
+}
 
 #endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
 

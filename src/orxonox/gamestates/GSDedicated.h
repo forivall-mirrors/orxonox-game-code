@@ -47,7 +47,7 @@ namespace orxonox
         void leave();
         void ticked(const Clock& time);
 
-        network::Server*      server_;
+        Server*      server_;
     };
 }
 

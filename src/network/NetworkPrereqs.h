@@ -58,7 +58,7 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-namespace network
+namespace orxonox
 {
   class Client;
   class ClientConnection;

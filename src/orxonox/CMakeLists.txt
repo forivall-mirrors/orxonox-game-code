@@ -3,6 +3,7 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
+  PlayerManager.cc
   Settings.cc
   
   tolua/tolua_bind.cc

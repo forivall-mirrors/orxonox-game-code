@@ -38,7 +38,7 @@
 #include <vorbis/codec.h>
 
 
-namespace audio
+namespace orxonox
 {
     const int BUFFER_SIZE = 4096 * 4;
 

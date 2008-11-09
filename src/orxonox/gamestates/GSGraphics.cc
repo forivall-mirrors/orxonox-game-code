@@ -55,7 +55,6 @@
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "tools/WindowEventListener.h"
-#include "objects/Tickable.h"
 #include "Settings.h"
 
 // for compatibility
@@ -240,12 +239,6 @@ namespace orxonox
         // tick console
         this->console_->tick(dt);
         this->tickChild(time);
-
-        /*** HACK *** HACK ***/
-        // Call the Tickable objects
-        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(time.getDeltaTime());
-        /*** HACK *** HACK ***/
 
         if (this->bWindowEventListenerUpdateRequired_)
         {

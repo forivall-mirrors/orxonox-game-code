@@ -28,7 +28,7 @@
 
 #include "AudioSource.h"
 
-namespace audio
+namespace orxonox
 {
     AudioSource::AudioSource()
     {

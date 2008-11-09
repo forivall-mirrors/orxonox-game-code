@@ -51,7 +51,7 @@ namespace orxonox
     {
         Core::setHasServer(true);
 
-        this->server_ = new network::Server(CommandLine::getValue("port"));
+        this->server_ = new Server(CommandLine::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
 
         GSLevel::enter(this->getParent()->getViewport());

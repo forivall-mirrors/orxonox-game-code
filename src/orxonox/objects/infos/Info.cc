@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    Info::Info(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
+    Info::Info(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Info);
     }

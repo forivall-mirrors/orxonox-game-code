@@ -5,9 +5,9 @@
 #include "ClientInformation.h"
 #include "core/OrxonoxClass.h"
 
-namespace network{
+namespace orxonox{
 
-  class _NetworkExport ClientConnectionListener : virtual public orxonox::OrxonoxClass
+  class _NetworkExport ClientConnectionListener : virtual public OrxonoxClass
   {
     friend class Server;
 
