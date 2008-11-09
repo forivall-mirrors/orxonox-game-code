@@ -166,6 +166,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PlayerManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\PrecompiledHeaderFiles.cc"
 				>
 				<FileConfiguration
@@ -202,6 +206,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\EventTarget.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Level.cc"
 					>
 				</File>
 				<File
@@ -357,10 +365,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Info.cc"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\infos\Level.cc"
 						>
 					</File>
 					<File
@@ -606,6 +610,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PlayerManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\Settings.h"
 				>
 			</File>
@@ -622,6 +630,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\EventTarget.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Level.h"
 					>
 				</File>
 				<File
@@ -757,10 +769,6 @@
 					>
 					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Info.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\infos\Level.h"
 						>
 					</File>
 					<File
