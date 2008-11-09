@@ -51,7 +51,7 @@ namespace orxonox
         this->server_overwrite_ = 0;
         this->client_overwrite_ = 0;
         this->player_ = 0;
-        this->playerID_ = network::OBJECTID_UNKNOWN;
+        this->playerID_ = OBJECTID_UNKNOWN;
         this->hud_ = 0;
         this->camera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
@@ -164,7 +164,7 @@ namespace orxonox
             {
                 this->client_overwrite_ = this->server_overwrite_;
 COUT(0) << "CE: bidirectional synchronization" << std::endl;
-                this->setObjectMode(network::direction::bidirectional);
+                this->setObjectMode(direction::bidirectional);
             }
         }
     }
@@ -175,9 +175,9 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->stopLocalControl();
 
         this->player_ = 0;
-        this->playerID_ = network::OBJECTID_UNKNOWN;
+        this->playerID_ = OBJECTID_UNKNOWN;
         this->bControlled_ = false;
-        this->setObjectMode(network::direction::toclient);
+        this->setObjectMode(direction::toclient);
 
         if (this->bDestroyWhenPlayerLeft_)
             delete this;
@@ -186,9 +186,9 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     void ControllableEntity::networkcallback_changedplayerID()
     {
         // just do this in case the entity wasn't yet synchronized when the corresponding PlayerInfo got our objectID
-        if (this->playerID_ != network::OBJECTID_UNKNOWN)
+        if (this->playerID_ != OBJECTID_UNKNOWN)
         {
-            this->player_ = dynamic_cast<PlayerInfo*>(network::Synchronisable::getSynchronisable(this->playerID_));
+            this->player_ = dynamic_cast<PlayerInfo*>(Synchronisable::getSynchronisable(this->playerID_));
             if (this->player_ && (this->player_->getControllableEntity() != this))
                 this->player_->startControl(this);
         }
@@ -247,21 +247,21 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::registerVariables()
     {
-        REGISTERSTRING(this->cameraPositionTemplate_, network::direction::toclient);
+        REGISTERSTRING(this->cameraPositionTemplate_, direction::toclient);
 
-        REGISTERDATA(this->server_position_,    network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
-        REGISTERDATA(this->server_velocity_,    network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
-        REGISTERDATA(this->server_orientation_, network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
+        REGISTERDATA(this->client_overwrite_,   direction::toserver);
+        
+        REGISTERDATA(this->server_position_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
+        REGISTERDATA(this->server_velocity_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
+        REGISTERDATA(this->server_orientation_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
+        REGISTERDATA(this->server_overwrite_,   direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
 
-        REGISTERDATA(this->server_overwrite_,   network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
-        REGISTERDATA(this->client_overwrite_,   network::direction::toserver);
-
-        REGISTERDATA(this->client_position_,    network::direction::toserver, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
-        REGISTERDATA(this->client_velocity_,    network::direction::toserver, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientVelocity));
-        REGISTERDATA(this->client_orientation_, network::direction::toserver, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
+        REGISTERDATA(this->client_position_,    direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
+        REGISTERDATA(this->client_velocity_,    direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientVelocity));
+        REGISTERDATA(this->client_orientation_, direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
 
 
-        REGISTERDATA(this->playerID_, network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
+        REGISTERDATA(this->playerID_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
     }
 
     void ControllableEntity::processServerPosition()

@@ -27,7 +27,7 @@
  */
 
 /*!
-    @file Timer.h
+    @file
     @brief Definition and Implementation of the Timer class.
 
     The Timer is a callback-object, calling a given function after a given time-interval.

@@ -27,7 +27,7 @@
  */
 
 /**
-* @file ParticleInterface.cc
+* @file
 * @brief class to control praticle effects
 */
 
@@ -36,6 +36,7 @@
 #include "ParticleEmitter.h"
 
 #include "tools/ParticleInterface.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
@@ -48,8 +49,8 @@ namespace orxonox
     {
         RegisterObject(ParticleEmitter);
 
-        assert(this->getScene());
-        assert(this->getScene()->getSceneManager());
+        if (!this->getScene() || !this->getScene()->getSceneManager())
+            ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
 
         this->particles_ = 0;
         this->LOD_ = LODParticle::normal;
@@ -73,8 +74,8 @@ namespace orxonox
 
     void ParticleEmitter::registerVariables()
     {
-        REGISTERSTRING(this->source_, network::direction::toclient, new network::NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
-        REGISTERDATA  (this->LOD_,    network::direction::toclient, new network::NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
+        REGISTERSTRING(this->source_, direction::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
+        REGISTERDATA  (this->LOD_,    direction::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
     }
 
     void ParticleEmitter::changedVisibility()

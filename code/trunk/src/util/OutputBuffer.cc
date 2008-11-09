@@ -27,7 +27,7 @@
  */
 
 /**
-    @file OutputBuffer.cc
+    @file
     @brief Implementation of the OutputBuffer.
 */
 

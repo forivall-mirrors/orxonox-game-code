@@ -80,6 +80,4 @@ namespace orxonox
 
         return fullDescription_;
     }
-
-
 }

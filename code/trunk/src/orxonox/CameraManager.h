@@ -27,7 +27,7 @@
  */
 
  /**
- @file  CameraManager.h
+ @file
  @brief Handles the instances of Camera class
  @author Benjamin Knecht <beni_at_orxonox.net>
   */

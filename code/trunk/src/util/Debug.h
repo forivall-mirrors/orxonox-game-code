@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Debug.h
+    @file
     @brief Handles different output-levels of errors, warnings, infos and debug informations.
 
     The COUT(level) macro acts like std::cout, but the output is only performed if the given
@@ -66,18 +66,17 @@
 
 #include "OutputHandler.h"
 
-
-/**
-    @brief Returns the soft debug level, stored in the only existing instance of the OutputHandler class, configured in the config-file.
-    @return The soft debug level
-*/
-static inline int getSoftDebugLevel()
-{
-    return orxonox::OutputHandler::getSoftDebugLevel();
-}
-
 namespace orxonox
 {
+    /**
+        @brief Returns the soft debug level, stored in the only existing instance of the OutputHandler class, configured in the config-file.
+        @return The soft debug level
+    */
+    static inline int getSoftDebugLevel()
+    {
+        return OutputHandler::getSoftDebugLevel();
+    }
+
     using std::endl;
 }
 
@@ -114,7 +113,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
    #define COUT0 \
-    (getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : COUT_EXEC(0)
+   (orxonox::getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : COUT_EXEC(0)
   #else
    #define COUT0 \
     false ? COUT_EXEC(0) : COUT_EXEC(0)
@@ -122,7 +121,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define COUT1 \
-    (getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : COUT_EXEC(1)
+    (orxonox::getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : COUT_EXEC(1)
   #else
    #define COUT1 \
     false ? COUT_EXEC(1) : COUT_EXEC(1)
@@ -130,7 +129,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define COUT2 \
-    (getSoftDebugLevel() < ORX_WARNING) ? COUT_EXEC(2) : COUT_EXEC(2)
+    (orxonox::getSoftDebugLevel() < ORX_WARNING) ? COUT_EXEC(2) : COUT_EXEC(2)
   #else
    #define COUT2 \
     false ? COUT_EXEC(2) : COUT_EXEC(2)
@@ -138,7 +137,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define COUT3 \
-    (getSoftDebugLevel() < ORX_INFO) ? COUT_EXEC(3) : COUT_EXEC(3)
+    (orxonox::getSoftDebugLevel() < ORX_INFO) ? COUT_EXEC(3) : COUT_EXEC(3)
   #else
    #define COUT3 \
     false ? COUT_EXEC(3) : COUT_EXEC(3)
@@ -146,7 +145,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define COUT4 \
-    (getSoftDebugLevel() < ORX_DEBUG) ? COUT_EXEC(4) : COUT_EXEC(4)
+    (orxonox::getSoftDebugLevel() < ORX_DEBUG) ? COUT_EXEC(4) : COUT_EXEC(4)
   #else
    #define COUT4 \
     false ? COUT_EXEC(4) : COUT_EXEC(4)
@@ -154,7 +153,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_VERBOSE
    #define COUT5 \
-    (getSoftDebugLevel() < ORX_VERBOSE) ? COUT_EXEC(5) : COUT_EXEC(5)
+    (orxonox::getSoftDebugLevel() < ORX_VERBOSE) ? COUT_EXEC(5) : COUT_EXEC(5)
   #else
    #define COUT5 \
     false ? COUT_EXEC(5) : COUT_EXEC(5)
@@ -162,7 +161,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ULTRA
    #define COUT6 \
-    (getSoftDebugLevel() < ORX_ULTRA) ? COUT_EXEC(6) : COUT_EXEC(6)
+    (orxonox::getSoftDebugLevel() < ORX_ULTRA) ? COUT_EXEC(6) : COUT_EXEC(6)
   #else
    #define COUT6 \
     false ? COUT_EXEC(6) : COUT_EXEC(6)
@@ -198,7 +197,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
    #define CCOUT0 \
-    (getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : CCOUT_EXEC(0)
+    (orxonox::getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : CCOUT_EXEC(0)
   #else
    #define CCOUT0 \
     false ? COUT_EXEC(0) : CCOUT_EXEC(0)
@@ -206,7 +205,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define CCOUT1 \
-    (getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : CCOUT_EXEC(1)
+    (orxonox::getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : CCOUT_EXEC(1)
   #else
    #define CCOUT1 \
     false ? COUT_EXEC(1) : CCOUT_EXEC(1)
@@ -214,7 +213,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define CCOUT2 \
-    (getSoftDebugLevel() < ORX_WARNING) ? COUT_EXEC(2) : CCOUT_EXEC(2)
+    (orxonox::getSoftDebugLevel() < ORX_WARNING) ? COUT_EXEC(2) : CCOUT_EXEC(2)
   #else
    #define CCOUT2 \
     false ? COUT_EXEC(2) : CCOUT_EXEC(2)
@@ -222,7 +221,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define CCOUT3 \
-    (getSoftDebugLevel() < ORX_INFO) ? COUT_EXEC(3) : CCOUT_EXEC(3)
+    (orxonox::getSoftDebugLevel() < ORX_INFO) ? COUT_EXEC(3) : CCOUT_EXEC(3)
   #else
    #define CCOUT3 \
     false ? COUT_EXEC(3) : CCOUT_EXEC(3)
@@ -230,7 +229,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define CCOUT4 \
-    (getSoftDebugLevel() < ORX_DEBUG) ? COUT_EXEC(4) : CCOUT_EXEC(4)
+    (orxonox::getSoftDebugLevel() < ORX_DEBUG) ? COUT_EXEC(4) : CCOUT_EXEC(4)
   #else
    #define CCOUT4 \
     false ? COUT_EXEC(4) : CCOUT_EXEC(4)
@@ -238,7 +237,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_VERBOSE
    #define CCOUT5 \
-    (getSoftDebugLevel() < ORX_VERBOSE) ? COUT_EXEC(5) : CCOUT_EXEC(5)
+    (orxonox::getSoftDebugLevel() < ORX_VERBOSE) ? COUT_EXEC(5) : CCOUT_EXEC(5)
   #else
    #define CCOUT5 \
     false ? COUT_EXEC(5) : CCOUT_EXEC(5)
@@ -246,7 +245,7 @@ namespace orxonox
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ULTRA
    #define CCOUT6 \
-    (getSoftDebugLevel() < ORX_ULTRA) ? COUT_EXEC(6) : CCOUT_EXEC(6)
+    (orxonox::getSoftDebugLevel() < ORX_ULTRA) ? COUT_EXEC(6) : CCOUT_EXEC(6)
   #else
    #define CCOUT6 \
     false ? COUT_EXEC(6) : CCOUT_EXEC(6)

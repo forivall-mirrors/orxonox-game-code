@@ -42,7 +42,7 @@
 
 #include <iostream> //debug
 
-namespace network
+namespace orxonox
 {
 
   ClientInformation *ClientInformation::head_=0;

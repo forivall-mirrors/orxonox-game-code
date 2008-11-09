@@ -39,7 +39,9 @@
 #include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
 #include "util/Convert.h"
+#include "util/Exception.h"
 #include "util/String.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
@@ -57,6 +59,9 @@ namespace orxonox
         : BaseObject(creator)
     {
         RegisterObject(OrxonoxOverlay);
+
+        if (!Core::showsGraphics())
+            ThrowException(NoGraphics, "Can't create OrxonoxOverlay, graphics engine not initialized");
 
         // add this overlay to the static map of OrxonoxOverlays
         if (overlays_s.find(this->getName()) != overlays_s.end())

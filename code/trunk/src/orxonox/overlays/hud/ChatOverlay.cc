@@ -37,7 +37,7 @@
 
 #include "network/ClientInformation.h"
 
-#include "LevelManager.h"
+#include "PlayerManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "overlays/console/InGameConsole.h"
 #include "tools/Timer.h"
@@ -71,11 +71,11 @@ namespace orxonox
     {
         std::string text;
 
-        if (senderID != network::CLIENTID_UNKNOWN)
+        if (senderID != CLIENTID_UNKNOWN)
         {
             std::string name = "unknown";
 
-            PlayerInfo* player = LevelManager::getInstance().getClient(senderID);
+            PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
             if (player)
                 name = player->getName();
 

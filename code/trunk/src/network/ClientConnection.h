@@ -49,7 +49,7 @@
 
 namespace boost { class thread; }
 
-namespace network
+namespace orxonox
 {
 
     const int NETWORK_PORT = 55556;

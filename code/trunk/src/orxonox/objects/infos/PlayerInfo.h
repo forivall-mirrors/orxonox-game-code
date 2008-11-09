@@ -54,15 +54,15 @@ namespace orxonox
                 { return this->bLocalPlayer_; }
             inline unsigned int getClientID() const
                 { return this->clientID_; }
-            inline bool isReadyToSpawn() const
-                { return this->bReadyToSpawn_; }
 
-            virtual bool isReady() const = 0;
+            virtual bool isInitialized() const = 0;
             virtual float getPing() const = 0;
             virtual float getPacketLossRatio() const = 0;
 
             inline void setReadyToSpawn(bool bReady)
                 { this->bReadyToSpawn_ = bReady; }
+            inline bool isReadyToSpawn() const
+                { return this->bReadyToSpawn_; }
 
             void startControl(ControllableEntity* entity);
             void stopControl(ControllableEntity* entity, bool callback = true);

@@ -29,51 +29,67 @@
 #include "OrxonoxStableHeaders.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/ConsoleCommand.h"
 #include "Test.h"
 
 namespace orxonox
 {
 	CreateFactory ( Test );
+  
+  SetConsoleCommand(Test, printV1, true).accessLevel(AccessLevel::User);
+  SetConsoleCommand(Test, printV2, true).accessLevel(AccessLevel::User);
+  SetConsoleCommand(Test, printV3, true).accessLevel(AccessLevel::User);
+  SetConsoleCommand(Test, printV4, true).accessLevel(AccessLevel::User);
+  
+  Test* Test::instance_ = 0;
 
-	Test::Test(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
+	Test::Test(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
 	{
+    assert(instance_==0);
+    instance_=this;
 		RegisterObject ( Test );
-                setConfigValues();
-                registerVariables();
+    setConfigValues();
+    registerVariables();
 		setObjectMode(0x3);
 	}
 
 	Test::~Test()
 	{
-
+    instance_=0;
 	}
 
 	void Test::setConfigValues()
 	{
-		SetConfigValue ( v1, 1 ).callback ( this, &Test::checkV1 );
-                SetConfigValue ( v2, 2 ).callback ( this, &Test::checkV2 );
-                SetConfigValue ( v3, 3 ).callback ( this, &Test::checkV3 );
+		SetConfigValue ( v1, 1 )/*.callback ( this, &Test::checkV1 )*/;
+    SetConfigValue ( v2, 2 )/*.callback ( this, &Test::checkV2 )*/;
+    SetConfigValue ( v3, 3 )/*.callback ( this, &Test::checkV3 )*/;
+    SetConfigValue ( v4, 4 )/*.callback ( this, &Test::checkV4 )*/;
 	}
 
 
 	void Test::registerVariables()
 	{
-		REGISTERDATA ( v1,network::direction::toclient, new network::NetworkCallback<Test> ( this, &Test::checkV1 ) );
-                REGISTERDATA ( v2,network::direction::toserver, new network::NetworkCallback<Test> ( this, &Test::checkV2 ) );
-		REGISTERDATA ( v3,network::direction::bidirectional, new network::NetworkCallback<Test> ( this, &Test::checkV3 ) );
+		REGISTERDATA ( v1,direction::toclient, new NetworkCallback<Test> ( this, &Test::checkV1 ) );
+    REGISTERDATA ( v2,direction::toserver, new NetworkCallback<Test> ( this, &Test::checkV2 ) );
+		REGISTERDATA ( v3,direction::serverMaster, new NetworkCallback<Test> ( this, &Test::checkV3 ) );
+    REGISTERDATA ( v4,direction::clientMaster, new NetworkCallback<Test> ( this, &Test::checkV4 ) );
 	}
 
-        void Test::checkV1(){
-                COUT(1) << "V1 changed: " << v1 << std::endl;
-        }
+  void Test::checkV1(){
+    COUT(1) << "V1 changed: " << v1 << std::endl;
+  }
 
-        void Test::checkV2(){
-                COUT(1) << "V2 changed: " << v2 << std::endl;
-        }
+  void Test::checkV2(){
+    COUT(1) << "V2 changed: " << v2 << std::endl;
+  }
 
-        void Test::checkV3(){
-                COUT(1) << "V3 changed: " << v3 << std::endl;
-        }
+  void Test::checkV3(){
+    COUT(1) << "V3 changed: " << v3 << std::endl;
+  }
+  
+  void Test::checkV4(){
+    COUT(1) << "V4 changed: " << v4 << std::endl;
+  }
 
 
 }

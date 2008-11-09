@@ -46,7 +46,7 @@
 #include <enet/enet.h>
 #include <boost/thread/recursive_mutex.hpp>
 
-namespace network
+namespace orxonox
 {
   struct _NetworkExport PacketEnvelope{
     int length;

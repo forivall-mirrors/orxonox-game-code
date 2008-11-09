@@ -45,8 +45,8 @@ namespace orxonox
     {
         RegisterObject(HumanPlayer);
 
-        this->server_ready_ = Core::isMaster();
-        this->client_ready_ = false;
+        this->server_initialized_ = Core::isMaster();
+        this->client_initialized_ = false;
 
         this->bHumanPlayer_ = true;
         this->defaultController_ = Class(HumanController);
@@ -66,11 +66,11 @@ namespace orxonox
 
     void HumanPlayer::registerVariables()
     {
-        REGISTERSTRING(this->synchronize_nick_, network::direction::toserver, new network::NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
+        REGISTERSTRING(this->synchronize_nick_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
 
-        REGISTERDATA(this->clientID_,     network::direction::toclient, new network::NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
-        REGISTERDATA(this->server_ready_, network::direction::toclient, new network::NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_ready));
-        REGISTERDATA(this->client_ready_, network::direction::toserver, new network::NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_ready));
+        REGISTERDATA(this->clientID_,     direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
+        REGISTERDATA(this->server_initialized_, direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_initialized));
+        REGISTERDATA(this->client_initialized_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_initialized));
     }
 
     void HumanPlayer::configvaluecallback_changednick()
@@ -91,14 +91,14 @@ namespace orxonox
 
     void HumanPlayer::networkcallback_clientIDchanged()
     {
-        if (this->clientID_ == network::Host::getPlayerID())
+        if (this->clientID_ == Host::getPlayerID())
         {
             this->bLocalPlayer_ = true;
             this->synchronize_nick_ = this->nick_;
-            this->client_ready_ = true;
+            this->client_initialized_ = true;
 
             if (!Core::isMaster())
-                this->setObjectMode(network::direction::bidirectional);
+                this->setObjectMode(direction::bidirectional);
             else
                 this->setName(this->nick_);
 
@@ -106,30 +106,30 @@ namespace orxonox
         }
     }
 
-    void HumanPlayer::networkcallback_server_ready()
+    void HumanPlayer::networkcallback_server_initialized()
     {
-        this->client_ready_ = true;
+        this->client_initialized_ = true;
     }
 
-    void HumanPlayer::networkcallback_client_ready()
+    void HumanPlayer::networkcallback_client_initialized()
     {
         if (this->getGametype())
             this->getGametype()->playerEntered(this);
     }
 
-    bool HumanPlayer::isReady() const
+    bool HumanPlayer::isInitialized() const
     {
-        return (this->server_ready_ && this->client_ready_);
+        return (this->server_initialized_ && this->client_initialized_);
     }
 
     float HumanPlayer::getPing() const
     {
-        return network::ClientInformation::findClient(this->getClientID())->getRTT();
+        return ClientInformation::findClient(this->getClientID())->getRTT();
     }
 
     float HumanPlayer::getPacketLossRatio() const
     {
-        return network::ClientInformation::findClient(this->getClientID())->getPacketLoss();
+        return ClientInformation::findClient(this->getClientID())->getPacketLoss();
     }
 
     void HumanPlayer::setClientID(unsigned int clientID)

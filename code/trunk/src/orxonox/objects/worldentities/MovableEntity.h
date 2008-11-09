@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable, public network::ClientConnectionListener
+    class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable, public ClientConnectionListener
     {
         public:
             MovableEntity(BaseObject* creator);

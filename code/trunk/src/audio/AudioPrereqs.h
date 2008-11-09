@@ -59,7 +59,7 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-namespace audio
+namespace orxonox
 {
   class AudioBuffer;
   class AudioManager;

@@ -45,14 +45,15 @@
 #include "network/Host.h"
 #include "core/CoreIncludes.h"
 
-namespace network{
+namespace orxonox{
 
 namespace packet{
 
 #define PACKET_FLAG_DEFAULT ENET_PACKET_FLAG_NO_ALLOCATE
 #define _PACKETID           0
 
-std::map<ENetPacket *, Packet *> Packet::packetMap_;
+std::map<size_t, Packet *> Packet::packetMap_;
+boost::recursive_mutex Packet::packetMap_mutex;
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
@@ -127,13 +128,16 @@ bool Packet::send(){
       assert(0);
       return false;
     }
+    // Assures we don't create a packet and destroy it right after in another thread
+    // without having a reference in the packetMap_
+    boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
     // We deliver ENet the data address so that it doesn't memcpy everything again.
     // --> We have to delete data_ ourselves!
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
     enetPacket_->freeCallback = &Packet::deletePacket;
     // Add the packet to a global list so we can access it again once enet calls our
     // deletePacket method. We can of course only give a one argument function to the ENet C library.
-    packetMap_[enetPacket_] = this;
+    packetMap_[(size_t)(void*)enetPacket_] = this;
   }
 #ifndef NDEBUG
   switch( *(ENUM::Type *)(data_ + _PACKETID) )
@@ -152,7 +156,7 @@ bool Packet::send(){
 #endif
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
-  network::Host::addPacket( enetPacket_, clientID_);
+  Host::addPacket( enetPacket_, clientID_);
   return true;
 }
 
@@ -206,17 +210,18 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     data we allocated ourselves.
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
+  boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
   // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
-  std::map<ENetPacket*, Packet*>::iterator it = packetMap_.find(enetPacket);
+  std::map<size_t, Packet*>::iterator it = packetMap_.find((size_t)enetPacket);
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;
   delete it->second;
-  //packetMap_.erase(it);
+  packetMap_.erase(it);
   COUT(4) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet
 
-} // namespace network
+} // namespace orxonox
 

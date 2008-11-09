@@ -27,7 +27,7 @@
  */
 
 /*!
-    @file Tickable.h
+    @file
     @brief Declaration of the Tickable interface.
 
     The Tickable interface provides a tick(dt) function, that gets called every frame.

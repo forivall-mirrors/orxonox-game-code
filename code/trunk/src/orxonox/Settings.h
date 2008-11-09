@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Core.h
+    @file
     @brief Declaration of the Settings class.
 
     The static Settings class is only used to configure some variables

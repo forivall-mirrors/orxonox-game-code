@@ -35,6 +35,7 @@
 #include <OgreSceneManager.h>
 #include <OgreBillboard.h>
 
+#include "core/Core.h"
 #include "util/Convert.h"
 #include "util/String.h"
 
@@ -69,13 +70,17 @@ namespace orxonox
 
         try
         {
-            this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
-            this->billboardSet_->createBillboard(position);
-            this->billboardSet_->setMaterialName(file);
+            if (Core::showsGraphics())
+            {
+                this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
+                this->billboardSet_->createBillboard(position);
+                this->billboardSet_->setMaterialName(file);
+            }
         }
         catch (...)
         {
             COUT(1) << "Error: Couln't load billboard \"" << file << "\"" << std::endl;
+            this->billboardSet_ = 0;
         }
 
         this->scenemanager_ = scenemanager;
@@ -88,13 +93,17 @@ namespace orxonox
 
         try
         {
-            this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
-            this->billboardSet_->createBillboard(position, colour);
-            this->billboardSet_->setMaterialName(file);
+            if (Core::showsGraphics())
+            {
+                this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
+                this->billboardSet_->createBillboard(position, colour);
+                this->billboardSet_->setMaterialName(file);
+            }
         }
         catch (...)
         {
             COUT(1) << "Error: Couln't load billboard \"" << file << "\"" << std::endl;
+            this->billboardSet_ = 0;
         }
 
         this->scenemanager_ = scenemanager;
@@ -104,6 +113,7 @@ namespace orxonox
     {
         if (this->billboardSet_ && this->scenemanager_)
             this->scenemanager_->destroyBillboardSet(this->billboardSet_);
+        this->billboardSet_ = 0;
     }
 
     const std::string& BillboardSet::getName() const

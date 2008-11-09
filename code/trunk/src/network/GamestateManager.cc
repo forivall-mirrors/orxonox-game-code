@@ -50,7 +50,7 @@
 #include "ClientInformation.h"
 #include "Synchronisable.h"
 
-namespace network
+namespace orxonox
 {
   GamestateManager::GamestateManager() {
     id_=0;

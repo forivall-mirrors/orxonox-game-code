@@ -34,9 +34,9 @@
 #include "ClientInformation.h"
 #include "core/OrxonoxClass.h"
 
-namespace network
+namespace orxonox
 {
-    class _NetworkExport ChatListener : virtual public orxonox::OrxonoxClass
+    class _NetworkExport ChatListener : virtual public OrxonoxClass
     {
         public:
             ChatListener();

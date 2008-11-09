@@ -27,12 +27,10 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
 #include "LevelManager.h"
 
-#include "core/CoreIncludes.h"
-
-#include "objects/infos/Level.h"
+#include "PlayerManager.h"
+#include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
 
 namespace orxonox
@@ -41,12 +39,8 @@ namespace orxonox
 
     LevelManager::LevelManager()
     {
-        RegisterRootObject(LevelManager);
-
         assert(singletonRef_s == 0);
         singletonRef_s = this;
-
-        this->getConnectedClients();
     }
 
     LevelManager::~LevelManager()
@@ -94,51 +88,8 @@ namespace orxonox
         if (this->levels_s.size() > 0)
         {
             this->levels_s.front()->setActive(true);
-            for (std::map<unsigned int, PlayerInfo*>::iterator it = this->clients_.begin(); it != this->clients_.end(); ++it)
+            for (std::map<unsigned int, PlayerInfo*>::const_iterator it = PlayerManager::getInstance().getClients().begin(); it != PlayerManager::getInstance().getClients().end(); ++it)
                 this->levels_s.front()->playerEntered(it->second);
         }
-    }
-
-
-    void LevelManager::clientConnected(unsigned int clientID)
-    {
-        COUT(3) << "client connected" << std::endl;
-
-        // create new HumanPlayer instance
-        HumanPlayer* player = new HumanPlayer(0);
-        player->setClientID(clientID);
-
-        // add to clients-map
-        assert(!this->clients_[clientID]);
-        this->clients_[clientID] = player;
-
-        if (this->getActiveLevel())
-            this->getActiveLevel()->playerEntered(player);
-    }
-
-    void LevelManager::clientDisconnected(unsigned int clientID)
-    {
-        COUT(3) << "client disconnected" << std::endl;
-
-        // remove from clients-map
-        PlayerInfo* player = this->clients_[clientID];
-        this->clients_.erase(clientID);
-
-        if (this->getActiveLevel())
-            this->getActiveLevel()->playerLeft(player);
-
-        // delete PlayerInfo instance
-        if (player)
-            delete player;
-    }
-
-
-    PlayerInfo* LevelManager::getClient(unsigned int clientID) const
-    {
-        std::map<unsigned int, PlayerInfo*>::const_iterator it = this->clients_.find(clientID);
-        if (it != this->clients_.end())
-            return it->second;
-        else
-            return 0;
     }
 }

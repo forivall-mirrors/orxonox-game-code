@@ -46,7 +46,7 @@ namespace orxonox
             void registerVariables();
             void setConfigValues();
 
-            bool isReady() const;
+            bool isInitialized() const;
             float getPing() const;
             float getPacketLossRatio() const;
 
@@ -56,13 +56,13 @@ namespace orxonox
             void configvaluecallback_changednick();
             void networkcallback_changednick();
             void networkcallback_clientIDchanged();
-            void networkcallback_server_ready();
-            void networkcallback_client_ready();
+            void networkcallback_server_initialized();
+            void networkcallback_client_initialized();
 
             std::string nick_;
             std::string synchronize_nick_;
-            bool server_ready_;
-            bool client_ready_;
+            bool server_initialized_;
+            bool client_initialized_;
     };
 }
 

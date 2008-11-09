@@ -34,10 +34,11 @@
 #include "network/Synchronisable.h"
 #include "core/BaseObject.h"
 #include "util/Math.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Scene : public BaseObject, public network::Synchronisable
+    class _OrxonoxExport Scene : public BaseObject, public Synchronisable, public Tickable
     {
         public:
             Scene(BaseObject* creator);
@@ -62,6 +63,8 @@ namespace orxonox
             void setShadow(bool bShadow);
             inline bool getShadow() const
                 { return this->bShadows_; }
+
+            virtual void tick(float dt);
 
         private:
             void addObject(BaseObject* object);

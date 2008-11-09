@@ -79,8 +79,8 @@ namespace orxonox
 
     void Pawn::registerVariables()
     {
-        REGISTERDATA(this->bAlive_, network::direction::toclient);
-        REGISTERDATA(this->health_, network::direction::toclient);
+        REGISTERDATA(this->bAlive_, direction::toclient);
+        REGISTERDATA(this->health_, direction::toclient);
     }
 
     void Pawn::tick(float dt)

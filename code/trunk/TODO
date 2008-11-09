@@ -1,5 +1,7 @@
 todo: 
 
+	test network functionality with paketloss/delay: http://www.linuxfoundation.org/en/Net:Netem#Packet_loss
+
 	bidirectional
 
 	minimize synchronisableHeader

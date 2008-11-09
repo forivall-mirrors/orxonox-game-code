@@ -35,11 +35,9 @@
 #include <map>
 #include <cassert>
 
-#include "network/ClientConnectionListener.h"
-
 namespace orxonox
 {
-    class _OrxonoxExport LevelManager : public network::ClientConnectionListener
+    class _OrxonoxExport LevelManager
     {
         public:
             LevelManager();
@@ -49,23 +47,15 @@ namespace orxonox
             void releaseActivity(Level* level);
             Level* getActiveLevel();
 
-            PlayerInfo* getClient(unsigned int clientID) const;
-            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
-                { return this->clients_; }
-
+            static LevelManager* getInstancePtr() { return singletonRef_s; }
             static LevelManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
         private:
             LevelManager(const LevelManager&);
 
-            void clientConnected(unsigned int clientID);
-            void clientDisconnected(unsigned int clientID);
-
             void activateNextLevel();
 
             std::list<Level*> levels_s;
-            std::map<unsigned int, PlayerInfo*> clients_;
-
             static LevelManager* singletonRef_s;
     };
 }
