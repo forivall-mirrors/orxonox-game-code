@@ -52,7 +52,7 @@ namespace orxonox
         RegisterObject(Camera);
 
         if (!this->getScene() || !this->getScene()->getSceneManager())
-            throw AbortLoadingException("Can't create Camera, no scene or no scene manager given.");
+            ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
         this->getNode()->attachObject(this->camera_);

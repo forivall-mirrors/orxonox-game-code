@@ -61,7 +61,7 @@ namespace orxonox
         RegisterObject(OrxonoxOverlay);
 
         if (!Core::showsGraphics())
-            throw NoGraphicsException("Can't create OrxonoxOverlay, graphics engine not initialized");
+            ThrowException(NoGraphics, "Can't create OrxonoxOverlay, graphics engine not initialized");
 
         // add this overlay to the static map of OrxonoxOverlays
         if (overlays_s.find(this->getName()) != overlays_s.end())

@@ -53,7 +53,7 @@ namespace orxonox
         RegisterObject(WorldEntity);
 
         if (!this->getScene() || !this->getScene()->getRootSceneNode())
-            throw AbortLoadingException("Can't create WorldEntity, no scene or no root-scenenode given.");
+            ThrowException(AbortLoading, "Can't create WorldEntity, no scene or no root-scenenode given.");
 
         this->node_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
 
