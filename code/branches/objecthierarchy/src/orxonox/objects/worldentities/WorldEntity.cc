@@ -58,7 +58,7 @@ namespace orxonox
         this->node_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
 
         this->parent_ = 0;
-        this->parentID_ = (unsigned int)-1;
+        this->parentID_ = OBJECTID_UNKNOWN;
 
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
@@ -107,9 +107,12 @@ namespace orxonox
 
     void WorldEntity::updateParent()
     {
-        WorldEntity* parent = dynamic_cast<WorldEntity*>(Synchronisable::getSynchronisable(this->parentID_));
-        if (parent)
-            this->attachToParent(parent);
+        if (this->parentID_ != OBJECTID_UNKNOWN)
+        {
+            WorldEntity* parent = dynamic_cast<WorldEntity*>(Synchronisable::getSynchronisable(this->parentID_));
+            if (parent)
+                this->attachToParent(parent);
+        }
     }
 
     void WorldEntity::attach(WorldEntity* object)
@@ -134,7 +137,7 @@ namespace orxonox
         this->node_->removeChild(object->node_);
         this->children_.erase(object);
         object->parent_ = 0;
-        object->parentID_ = (unsigned int)-1;
+        object->parentID_ = OBJECTID_UNKNOWN;
 
 //        this->getScene()->getRootSceneNode()->addChild(object->node_);
     }
