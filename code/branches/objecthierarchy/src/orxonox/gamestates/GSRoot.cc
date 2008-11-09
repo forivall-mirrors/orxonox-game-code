@@ -40,6 +40,7 @@
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
 #include "tools/Timer.h"
+#include "objects/Tickable.h"
 #include "Settings.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
@@ -141,6 +142,12 @@ namespace orxonox
 
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
             it->tick(time);
+
+        /*** HACK *** HACK ***/
+        // Call the Tickable objects
+        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
+            it->tick(time.getDeltaTime());
+        /*** HACK *** HACK ***/
 
         this->tickChild(time);
     }

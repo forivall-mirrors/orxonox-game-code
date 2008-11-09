@@ -74,11 +74,5 @@ namespace orxonox
         GSLevel::ticked(time);
         server_->tick(time.getDeltaTime());
         this->tickChild(time);
-
-        /*** HACK *** HACK ***/
-        // Call the Tickable objects
-        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(time.getDeltaTime());
-        /*** HACK *** HACK ***/
     }
 }
