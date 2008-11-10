@@ -68,7 +68,8 @@ namespace orxonox
     enum Mode
     {
       LoadObject,
-      SaveObject
+      SaveObject,
+      ExpandObject
     };
   }
 

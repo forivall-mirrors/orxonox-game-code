@@ -140,13 +140,13 @@ namespace orxonox
 
     void Level::playerEntered(PlayerInfo* player)
     {
-        COUT(3) << "player entered level" << std::endl;
+        COUT(3) << "player entered level (id: " << player->getClientID() << ", name: " << player->getName() << ")" << std::endl;
         player->setGametype(this->getGametype());
     }
 
     void Level::playerLeft(PlayerInfo* player)
     {
-        COUT(3) << "player left level" << std::endl;
+        COUT(3) << "player left level (id: " << player->getClientID() << ", name: " << player->getName() << ")" << std::endl;
         player->setGametype(0);
     }
 }

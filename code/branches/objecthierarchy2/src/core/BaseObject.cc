@@ -108,7 +108,7 @@ namespace orxonox
         {
             std::list<std::string> eventnames;
 
-            if (mode == XMLPort::LoadObject)
+            if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
             {
                 for (ticpp::Iterator<ticpp::Element> child = events->FirstChildElement(false); child != child.end(); child++)
                     eventnames.push_back(child->Value());

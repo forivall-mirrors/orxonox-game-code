@@ -42,6 +42,7 @@ namespace orxonox
         RegisterObject(Template);
 
         this->bIsLink_ = false;
+        this->bLoadDefaults_ = true;
         this->bIsReturningXMLElement_ = false;
         this->baseclassIdentifier_ = 0;
     }
@@ -55,8 +56,9 @@ namespace orxonox
     {
         SUPER(Template, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Template, "link", setLink, getLink, xmlelement, mode);
-        XMLPortParam(Template, "baseclass", setBaseclass, getBaseclass, xmlelement, mode);
+        XMLPortParam(Template, "link",      setLink,         getLink,         xmlelement, mode);
+        XMLPortParam(Template, "baseclass", setBaseclass,    getBaseclass,    xmlelement, mode);
+        XMLPortParam(Template, "defaults",  setLoadDefaults, getLoadDefaults, xmlelement, mode).defaultValues(true);
 
         Element* element = xmlelement.FirstChildElement(false);
         if (element)
@@ -133,7 +135,11 @@ namespace orxonox
         COUT(4) << object->getLoaderIndentation() << " aplying Template \"" << this->getName() << "\"..." << std::endl;
 
         Element temp = ((TiXmlElement*)&this->getXMLElement());
-        object->XMLPort(temp, XMLPort::LoadObject);
+
+        if (this->bLoadDefaults_)
+            object->XMLPort(temp, XMLPort::LoadObject);
+        else
+            object->XMLPort(temp, XMLPort::ExpandObject);
     }
 
     std::map<std::string, Template*>& Template::getTemplateMap()
