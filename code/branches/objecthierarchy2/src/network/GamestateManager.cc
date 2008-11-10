@@ -49,6 +49,7 @@
 #include "core/BaseObject.h"
 #include "ClientInformation.h"
 #include "Synchronisable.h"
+#include "packet/Acknowledgement.h"
 
 namespace orxonox
 {
@@ -167,7 +168,7 @@ namespace orxonox
     assert(temp);
     unsigned int curid = temp->getGamestateID();
 
-    if(gamestateID == 0){
+    if(gamestateID == ACKID_NACK){
       temp->setGamestateID(GAMESTATEID_INITIAL);
       return true;
     }

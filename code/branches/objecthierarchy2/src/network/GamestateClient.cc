@@ -76,8 +76,10 @@ namespace orxonox
     int id = GAMESTATEID_INITIAL;
     packet::Gamestate *processed = processGamestate(tempGamestate_);
 //    assert(processed);
-    if (!processed)
-        return false;
+    if (!processed){
+      sendAck(0);
+      return false;
+    }
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
     tempGamestate_=NULL;
     gamestateMap_[processed->getID()]=processed;
