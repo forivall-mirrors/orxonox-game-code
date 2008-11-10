@@ -38,16 +38,21 @@ namespace orxonox
 {
     class _OrxonoxExport GSDedicated : public GameState<GSRoot>, public GSLevel
     {
+    friend class ClassIdentifier<GSDedicated>;
     public:
         GSDedicated();
         ~GSDedicated();
+        
 
     private:
         void enter();
         void leave();
         void ticked(const Clock& time);
+        
+        void setConfigValues();
 
         Server*      server_;
+        unsigned int tickrate_;
     };
 }
 

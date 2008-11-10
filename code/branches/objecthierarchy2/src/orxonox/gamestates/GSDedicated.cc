@@ -32,8 +32,14 @@
 #include "core/CommandLine.h"
 #include "core/Core.h"
 #include "core/Iterator.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
+#include "util/Sleep.h"
 #include "network/Server.h"
 #include "objects/Tickable.h"
+
+const unsigned int  DEFAULT_DEDICATED_SERVER_TICKRATE = 25;
+const float         MIN_WIN32_SLEEP_TIME = 0.01; // scheduler limited
 
 namespace orxonox
 {
@@ -41,6 +47,9 @@ namespace orxonox
         : GameState<GSRoot>("dedicated")
         , server_(0)
     {
+        RegisterObject(GSDedicated);
+        
+        this->setConfigValues();
     }
 
     GSDedicated::~GSDedicated()
@@ -52,7 +61,7 @@ namespace orxonox
         Core::setHasServer(true);
 
         this->server_ = new Server(CommandLine::getValue("port"));
-        COUT(0) << "Loading scene in server mode" << std::endl;
+        COUT(0) << "Loading scene in dedicated server mode" << std::endl;
 
         GSLevel::enter(0);
 
@@ -71,8 +80,41 @@ namespace orxonox
 
     void GSDedicated::ticked(const Clock& time)
     {
+        static int timeSinceLastTick = 0; // in microseconds
+        const int tickPeriod = 1000000. / this->tickrate_; // in microseconds
+        
         GSLevel::ticked(time);
-        server_->tick(time.getDeltaTime());
+        
+        timeSinceLastTick += time.getDeltaTimeMicroseconds();
+        if ( timeSinceLastTick >= tickPeriod )
+        {
+            server_->tick( timeSinceLastTick );
+            //timeSinceLastTick -= static_cast<unsigned int>( timeSinceLastTick / tickPeriod ) * tickPeriod;
+            timeSinceLastTick = 0;
+        }
+        else
+        {
+            unsigned int sleepTime;
+            
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+            if ( tickPeriod-timeSinceLastTick < MIN_WIN32_SLEEP_TIME )
+                sleepTime = MIN_WIN32_SLEEP_TIME*1000000;
+            else
+                sleepTime = tickPeriod - timeSinceLastTick;
+            msleep( sleepTime / 1000 );
+            
+#else /* unix */
+            sleepTime = tickPeriod - timeSinceLastTick;
+            usleep( sleepTime );
+#endif
+            
+        }
+        
         this->tickChild(time);
+    }
+    
+    void GSDedicated::setConfigValues()
+    {
+        SetConfigValue ( tickrate_, DEFAULT_DEDICATED_SERVER_TICKRATE );
     }
 }
