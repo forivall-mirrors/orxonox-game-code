@@ -59,7 +59,6 @@ namespace orxonox
         , inputState_(0)
         , radar_(0)
         , startFile_(0)
-        , stats_(0)
         , cameraManager_(0)
         , levelManager_(0)
     {
@@ -93,9 +92,6 @@ namespace orxonox
 
             // Start the Radar
             this->radar_ = new Radar();
-
-            stats_ = new XMLFile(Settings::getDataPath() + "overlay/stats.oxo");
-            Loader::open(stats_);
         }
 
         if (Core::isMaster())

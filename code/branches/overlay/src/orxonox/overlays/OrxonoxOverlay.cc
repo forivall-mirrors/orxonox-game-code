@@ -86,7 +86,7 @@ namespace orxonox
         setPickPoint(Vector2(0.0f, 0.0f));
         setPosition(Vector2(0.0f, 0.0f));
         setRotation(Degree(0.0));
-        setAspectCorrection(true);
+        setAspectCorrection(false);
         setBackgroundMaterial("");
     }
 

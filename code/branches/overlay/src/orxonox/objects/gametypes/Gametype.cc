@@ -33,6 +33,9 @@
 #include <ctime>
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/Loader.h"
+#include "core/XMLFile.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
@@ -57,6 +60,19 @@ namespace orxonox
         this->initialStartCountdown_ = 3;
         this->startCountdown_ = 0;
         this->bStartCountdownRunning_ = false;
+
+        this->statsOverlay_ = 0;
+
+        setConfigValues();
+
+        // load the corresponding score board
+        statsOverlay_ = new XMLFile(Settings::getDataPath() + "overlay/" + this->statsOverlayName_);
+        Loader::open(statsOverlay_);
+    }
+
+    void Gametype::setConfigValues()
+    {
+        SetConfigValue(statsOverlayName_, "stats.oxo");
     }
 
     void Gametype::tick(float dt)

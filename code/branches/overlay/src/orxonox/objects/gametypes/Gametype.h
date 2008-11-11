@@ -43,6 +43,7 @@ namespace orxonox
     class _OrxonoxExport Gametype : public BaseObject, public Tickable
     {
         friend class PlayerInfo;
+        friend class ClassIdentifier<Gametype>;
 
         public:
             Gametype(BaseObject* creator);
@@ -81,6 +82,8 @@ namespace orxonox
                 { return this->startCountdown_; }
 
         private:
+            void setConfigValues();
+
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
             void addPlayer(PlayerInfo* player);
@@ -104,6 +107,11 @@ namespace orxonox
             std::set<PlayerInfo*> players_;
             std::set<SpawnPoint*> spawnpoints_;
             SubclassIdentifier<ControllableEntity> defaultControllableEntity_;
+
+            XMLFile* statsOverlay_;
+
+            // Config Values
+            std::string statsOverlayName_;
     };
 }
 
