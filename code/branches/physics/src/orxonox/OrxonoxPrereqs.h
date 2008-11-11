@@ -202,6 +202,15 @@ namespace CEGUI
     class OgreCEGUITexture;
 }
 
+// Bullet Physics Engine
+
+class btRigidBody;
+class btCollisionObject;
+class btGhostObject;
+class btCollisionShape;
+class btSphereShape;
+
+
 struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

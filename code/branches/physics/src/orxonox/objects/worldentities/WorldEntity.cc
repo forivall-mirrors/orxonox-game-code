@@ -31,6 +31,7 @@
 
 #include <cassert>
 #include <OgreSceneManager.h>
+#include "BulletCollision/CollisionShapes/btSphereShape.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -62,6 +63,10 @@ namespace orxonox
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
 
+        // Default behaviour does not include physics
+        this->bAddedToPhysicalWorld_ = false;
+        this->physicalBody_ = 0;
+
         this->registerVariables();
     }
 
@@ -72,6 +77,16 @@ namespace orxonox
             this->node_->detachAllObjects();
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
+            
+            // Physics is not guaranteed, so check first
+            if (this->physicalBody_)
+            {
+                if (this->bAddedToPhysicalWorld_)
+                    this->getScene()->getPhysicalWorld()->removeRigidBody(this->physicalBody_);
+                if (this->physicalBody_->getCollisionShape())
+                    delete this->physicalBody_->getCollisionShape();
+                delete this->physicalBody_;
+            }
         }
     }
 
@@ -88,6 +103,7 @@ namespace orxonox
         XMLPortParamLoadOnly(WorldEntity, "roll", roll_xmlport, xmlelement, mode);
         XMLPortParamTemplate(WorldEntity, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
         XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
+        XMLPortParam(WorldEntity, "collisionRadius", setcollisionRadius, getcollisionRadius, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
     }
@@ -126,6 +142,9 @@ namespace orxonox
         this->children_.insert(object);
         object->parent_ = this;
         object->parentID_ = this->getObjectID();
+
+        // Do the physical connection if required
+        this->attachPhysicalObject(object);
     }
 
     void WorldEntity::detach(WorldEntity* object)
@@ -148,5 +167,38 @@ namespace orxonox
             ++i;
         }
         return 0;
+    }
+
+    void WorldEntity::createPhysicalBody()
+    {
+        // Note: The motion state will be configured in a derived class.
+        btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, 0, btVector3(0,0,0));
+        this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
+        this->getScene()->getPhysicalWorld()->addRigidBody(this->physicalBody_);
+        this->bAddedToPhysicalWorld_ = true;
+    }
+
+    void WorldEntity::setcollisionRadius(float radius)
+    {
+        if (!this->physicalBody_)
+            createPhysicalBody();
+
+        // destroy old onw first
+        btCollisionShape* oldShape = this->physicalBody_->getCollisionShape();
+        if (oldShape)
+            delete oldShape;
+
+        this->physicalBody_->setCollisionShape(new btSphereShape(btScalar(radius)));
+    }
+
+    float WorldEntity::getcollisionRadius()
+    {
+        if (this->physicalBody_)
+        {
+            btSphereShape* sphere = dynamic_cast<btSphereShape*>(this->physicalBody_->getCollisionShape());
+            if (sphere)
+                return (float)sphere->getRadius();
+        }
+        return 0.0f;
     }
 }

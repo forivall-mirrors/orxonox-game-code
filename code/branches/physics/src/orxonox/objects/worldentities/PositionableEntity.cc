@@ -27,30 +27,37 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "MovableEntity.h"
-
+#include "PositionableEntity.h"
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 
 namespace orxonox
 {
-    MovableEntity::MovableEntity(BaseObject* creator) : WorldEntity(creator)
+    CreateFactory(PositionableEntity);
+
+    PositionableEntity::PositionableEntity(BaseObject* creator) : MovableEntity(creator)
     {
-        RegisterObject(MovableEntity);
+        RegisterObject(PositionableEntity);
 
         this->registerVariables();
     }
 
-    MovableEntity::~MovableEntity()
+    PositionableEntity::~PositionableEntity()
     {
     }
 
-    void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void PositionableEntity::registerVariables()
     {
-        SUPER(MovableEntity, XMLPort, xmlelement, mode);
+        REGISTERDATA(this->getPosition().x, network::direction::toclient);
+        REGISTERDATA(this->getPosition().y, network::direction::toclient);
+        REGISTERDATA(this->getPosition().z, network::direction::toclient);
+
+        REGISTERDATA(this->getOrientation().w, network::direction::toclient);
+        REGISTERDATA(this->getOrientation().x, network::direction::toclient);
+        REGISTERDATA(this->getOrientation().y, network::direction::toclient);
+        REGISTERDATA(this->getOrientation().z, network::direction::toclient);
     }
 
-    void MovableEntity::registerVariables()
-    {
-    }
+    //void PositionableEntity::attachPhysicalObject(WorldEntity* object)
+    //{
+    //}
 }

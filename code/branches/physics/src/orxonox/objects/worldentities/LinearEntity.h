@@ -26,22 +26,22 @@
  *
  */
 
-#ifndef _DynamicEntity_H__
-#define _DynamicEntity_H__
+#ifndef _LinearEntity_H__
+#define _LinearEntity_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
+#include "MovableEntity.h"
 #include "objects/Tickable.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport DynamicEntity : public WorldEntity, public Tickable
+    class _OrxonoxExport LinearEntity : public MovableEntity, public network::ClientConnectionListener
     {
         public:
-            DynamicEntity(BaseObject* creator);
-            virtual ~DynamicEntity();
+            LinearEntity(BaseObject* creator);
+            virtual ~LinearEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
@@ -121,4 +121,4 @@ namespace orxonox
     };
 }
 
-#endif /* _DynamicEntity_H__ */
+#endif /* _LinearEntity_H__ */

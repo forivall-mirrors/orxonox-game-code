@@ -32,8 +32,10 @@
 #include "OrxonoxPrereqs.h"
 
 #define OGRE_FORCE_ANGLE_TYPES
-
 #include <OgreSceneNode.h>
+
+#include "LinearMath/btMotionState.h"
+#include "BulletDynamics/Dynamics/btRigidBody.h"
 
 #include "network/Synchronisable.h"
 #include "core/BaseObject.h"
@@ -41,7 +43,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport WorldEntity : public BaseObject, public network::Synchronisable
+    class _OrxonoxExport WorldEntity : public BaseObject, public network::Synchronisable, public btMotionState
     {
         public:
             WorldEntity(BaseObject* creator);
@@ -124,6 +126,13 @@ namespace orxonox
             inline void scale(float scale)
                 { this->node_->scale(scale, scale, scale); }
 
+            void setcollisionRadius(float radius);
+            float getcollisionRadius();
+
+            bool hasPhysics()  { return this->physicalBody_; }
+            bool isKinematic() { return this->physicalBody_ && this->physicalBody_->isKinematicObject(); }
+            bool isDynamic()   { return this->physicalBody_ && !this->physicalBody_->isStaticOrKinematicObject(); }
+
             void attach(WorldEntity* object);
             void detach(WorldEntity* object);
             WorldEntity* getAttachedObject(unsigned int index) const;
@@ -138,7 +147,14 @@ namespace orxonox
                 { return this->parent_; }
 
         protected:
+            //virtual btCollisionShape* getCollisionShape() = 0;
+
+            void createPhysicalBody();
+            virtual void attachPhysicalObject(WorldEntity* object) { }
+
             Ogre::SceneNode* node_;
+            bool bAddedToPhysicalWorld_;
+            btRigidBody* physicalBody_;
 
         private:
             void updateParent();
@@ -153,6 +169,16 @@ namespace orxonox
                 { this->pitch(angle); }
             inline void roll_xmlport(const Degree& angle)
                 { this->roll(angle); }
+
+            // Bullet btMotionState related
+            virtual void setWorldTransform(const btTransform& worldTrans)
+            {
+            }
+
+            // Bullet btMotionState related
+            virtual void getWorldTransform(btTransform& worldTrans) const
+            {
+            }
 
             WorldEntity* parent_;
             unsigned int parentID_;

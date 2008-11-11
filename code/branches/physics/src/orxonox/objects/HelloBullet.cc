@@ -33,8 +33,6 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
-// #include "ogreode/OgreOde_Core.h"
-// #include "ogreode/OgreOdeGeometry.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -51,9 +49,9 @@ namespace orxonox
     HelloBullet::HelloBullet(BaseObject* creator)
         : BaseObject(creator)
     {
- 	   RegisterObject(HelloBullet);
-  	   COUT(0) << "HelloBullet loaded" << std::endl ;
-           int maxProxies = 1024;
+        RegisterObject(HelloBullet);
+        COUT(0) << "HelloBullet loaded" << std::endl ;
+        int maxProxies = 1024;
 
 
   //      btVector3 worldAabbMin(-10000,-10000,-10000);
@@ -67,8 +65,7 @@ namespace orxonox
 
   //      dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
 
-	dynamicsWorld =  creator->getScene()->getPhysicalWorld();
-        dynamicsWorld-> setGravity(btVector3(0,-10,0));
+        dynamicsWorld = getCreator()->getScene()->getPhysicalWorld();
 
 
         btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
@@ -93,8 +90,7 @@ namespace orxonox
         dynamicsWorld->addRigidBody(fallRigidBody);
 
  
-
-//load floor mash
+        //load floor mash
         Ogre::SceneManager* sceneMgr = creator->getScene()->getSceneManager();
 
         int i = 0;
@@ -118,7 +114,7 @@ namespace orxonox
         floor->build();
 
 
-// crate
+        // crate
 
         entity_ = sceneMgr->createEntity("crate","crate.mesh");
         entity_->setQueryFlags (1<<2);
@@ -126,12 +122,7 @@ namespace orxonox
         sceneNode_->attachObject(entity_);
         entity_->setNormaliseNormals(true);
         entity_->setCastShadows(true);
-	sceneNode_ -> setPosition(Vector3(0,100,0));
-
-
-      
-
-
+        sceneNode_ -> setPosition(Vector3(0,100,0));
     }
 
     HelloBullet::~HelloBullet()
@@ -180,14 +171,11 @@ namespace orxonox
 
     void HelloBullet::tick(float dt)
     {
-                dynamicsWorld->stepSimulation(dt,10);
-                btTransform trans;
-                fallRigidBody->getMotionState()->getWorldTransform(trans);
-	       // COUT(0) << "sphere height: " << trans.getOrigin().getY() << std::endl;
-		sceneNode_ -> setPosition(Vector3(0,trans.getOrigin().getY(),0));
-	//	msleep(20);
-		
-		
+        dynamicsWorld->stepSimulation(dt,10);
+        btTransform trans;
+        fallRigidBody->getMotionState()->getWorldTransform(trans);
+        // COUT(0) << "sphere height: " << trans.getOrigin().getY() << std::endl;
+        sceneNode_ -> setPosition(Vector3(0,trans.getOrigin().getY(),0));
+        //	msleep(20);
     }
-
 }

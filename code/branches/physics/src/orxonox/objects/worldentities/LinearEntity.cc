@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "DynamicEntity.h"
+#include "LinearEntity.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -38,11 +38,11 @@ namespace orxonox
 {
     static const float MAX_RESYNCHRONIZE_TIME = 3.0f;
 
-    CreateFactory(DynamicEntity);
+    CreateFactory(LinearEntity);
 
-    DynamicEntity::DynamicEntity(BaseObject* creator) : WorldEntity(creator)
+    LinearEntity::LinearEntity(BaseObject* creator) : MovableEntity(creator)
     {
-        RegisterObject(DynamicEntity);
+        RegisterObject(LinearEntity);
 
         this->velocity_ = Vector3::ZERO;
         this->acceleration_ = Vector3::ZERO;
@@ -56,20 +56,20 @@ namespace orxonox
         this->registerVariables();
     }
 
-    DynamicEntity::~DynamicEntity()
+    LinearEntity::~LinearEntity()
     {
     }
 
-    void DynamicEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void LinearEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(DynamicEntity, XMLPort, xmlelement, mode);
+        SUPER(LinearEntity, XMLPort, xmlelement, mode);
 
-        XMLPortParamTemplate(DynamicEntity, "velocity", setVelocity, getVelocity, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(DynamicEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(DynamicEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Degree&);
+        XMLPortParamTemplate(LinearEntity, "velocity", setVelocity, getVelocity, xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(LinearEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(LinearEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Degree&);
     }
 
-    void DynamicEntity::tick(float dt)
+    void LinearEntity::tick(float dt)
     {
         if (this->isActive())
         {
@@ -81,7 +81,7 @@ namespace orxonox
         }
     }
 
-    void DynamicEntity::registerVariables()
+    void LinearEntity::registerVariables()
     {
         REGISTERDATA(this->velocity_.x, network::direction::toclient);
         REGISTERDATA(this->velocity_.y, network::direction::toclient);
@@ -93,84 +93,84 @@ namespace orxonox
 
         REGISTERDATA(this->rotationRate_, network::direction::toclient);
 
-        REGISTERDATA(this->overwrite_position_,    network::direction::toclient, new network::NetworkCallback<DynamicEntity>(this, &DynamicEntity::overwritePosition));
-        REGISTERDATA(this->overwrite_orientation_, network::direction::toclient, new network::NetworkCallback<DynamicEntity>(this, &DynamicEntity::overwriteOrientation));
+        REGISTERDATA(this->overwrite_position_,    network::direction::toclient, new network::NetworkCallback<LinearEntity>(this, &LinearEntity::overwritePosition));
+        REGISTERDATA(this->overwrite_orientation_, network::direction::toclient, new network::NetworkCallback<LinearEntity>(this, &LinearEntity::overwriteOrientation));
     }
 
-    void DynamicEntity::overwritePosition()
+    void LinearEntity::overwritePosition()
     {
         this->node_->setPosition(this->overwrite_position_);
     }
 
-    void DynamicEntity::overwriteOrientation()
+    void LinearEntity::overwriteOrientation()
     {
         this->node_->setOrientation(this->overwrite_orientation_);
     }
 
-    void DynamicEntity::clientConnected(unsigned int clientID)
+    void LinearEntity::clientConnected(unsigned int clientID)
     {
-        new Timer<DynamicEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&DynamicEntity::resynchronize)), true);
+        new Timer<LinearEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&LinearEntity::resynchronize)), true);
     }
 
-    void DynamicEntity::clientDisconnected(unsigned int clientID)
+    void LinearEntity::clientDisconnected(unsigned int clientID)
     {
     }
 
-    void DynamicEntity::resynchronize()
+    void LinearEntity::resynchronize()
     {
         this->overwrite_position_ = this->getPosition();
         this->overwrite_orientation_ = this->getOrientation();
     }
 
-    void DynamicEntity::setPosition(const Vector3& position)
+    void LinearEntity::setPosition(const Vector3& position)
     {
         this->node_->setPosition(position);
         this->overwrite_position_ = this->node_->getPosition();
     }
 
-    void DynamicEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
+    void LinearEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->translate(distance, relativeTo);
         this->overwrite_position_ = this->node_->getPosition();
     }
 
-    void DynamicEntity::setOrientation(const Quaternion& orientation)
+    void LinearEntity::setOrientation(const Quaternion& orientation)
     {
         this->node_->setOrientation(orientation);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void DynamicEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
+    void LinearEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->rotate(rotation, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void DynamicEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    void LinearEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->yaw(angle, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void DynamicEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    void LinearEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->pitch(angle, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void DynamicEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    void LinearEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->roll(angle, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void DynamicEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
+    void LinearEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
         this->node_->lookAt(target, relativeTo, localDirectionVector);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void DynamicEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
+    void LinearEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
         this->node_->setDirection(direction, relativeTo, localDirectionVector);
         this->overwrite_orientation_ = this->node_->getOrientation();
