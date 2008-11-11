@@ -42,6 +42,8 @@ bool MultiType::convert(MT_Type type)
 {
     switch (type)
     {
+        case MT_null:
+            this->reset(); return true;
         case MT_char:
             return this->convert<char>(); break;
         case MT_uchar:
