@@ -33,8 +33,8 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
-#include "ogreode/OgreOde_Core.h"
-#include "ogreode/OgreOdeGeometry.h"
+// #include "ogreode/OgreOde_Core.h"
+// #include "ogreode/OgreOdeGeometry.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -71,7 +71,7 @@ namespace orxonox
         dynamicsWorld-> setGravity(btVector3(0,-10,0));
 
 
-        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),10);
+        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
 
         btCollisionShape* fallShape = new btSphereShape(1);
 
