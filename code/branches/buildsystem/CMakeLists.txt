@@ -64,3 +64,4 @@ FIND_PACKAGE(Lua50 REQUIRED)
 
 # Add main source dir
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(bin)

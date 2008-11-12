@@ -1,20 +1,20 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ !  -f orxonox ]] ; then
+if [ ! -f orxonox ]; then
 	echo "orxonox does not exist"
 	echo "did you compile it?"
 
 	exit 1
 fi
 
-if [[ -ne orge.cfg ]] ; then
+if [ ! -f orge.cfg ]; then
 	cp ogre.cfg-init ogre.cfg
 fi
 
 # check if plugins.cfg exists, and of not create it
 # and modify 
-if [[ ! -f plugins.cfg ]] ; then 
-	if uname -n | grep "tardis" > /dev/null ; then
+if [ ! -f plugins.cfg ]; then
+	if uname -n | grep -q "tardis"; then
 		sed -e 's:PluginFolder=/usr/lib/OGRE:PluginFolder=/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/OGRE/:' \
 		-e 's:#Plugin=Plugin_CgProgramManager:Plugin=Plugin_CgProgramManager:' plugins.cfg-init > plugins.cfg
 	else

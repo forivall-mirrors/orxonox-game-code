@@ -1,4 +1,4 @@
-#!/bin/bash
-cd bin
-./run-script $@
-cd ..
+#!/bin/sh
+# convenience script for starting orxonox
+
+cd build/bin && exec ./run-script $@
