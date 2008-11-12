@@ -1,3 +1,0 @@
-This source code was taken from revision
-2493
-of the ogreaddons SVN repositories.
