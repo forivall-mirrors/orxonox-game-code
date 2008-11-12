@@ -47,21 +47,23 @@ namespace orxonox
 
             virtual void fire();
             void reloaded();
-            virtual void attachNeededMunition(Munition *PointerToMunition);
+            virtual void setParentWeaponSystem();
+            void attachNeededMunition(Munition *munitionPointer);
 
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
                 { parentWeaponSlot_=parentWeaponSlot; };
             inline WeaponSlot * getParentWeaponSlot()
                 { return parentWeaponSlot_; };
 
-            //void setParentWeaponSystem();
+
+
 
         private:
             bool weaponReadyToShoot_;
             float loadingTime_;
             Munition *pointerToMunition_;
             WeaponSlot *parentWeaponSlot_;
-            //WeaponSystem *parentWeaponSystem_;
+            WeaponSystem *parentWeaponSystem_;
             Timer<Weapon> reloadTimer_;
 
 

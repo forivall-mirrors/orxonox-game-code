@@ -41,7 +41,9 @@ namespace orxonox
     {
         RegisterObject(Weapon);
         this->weaponReadyToShoot_ = true;
-        //this->setParentWeaponSystem();
+        this->setParentWeaponSystem();
+        this->pointerToMunition_ = this->parentWeaponSystem_->getAttachedMunitionPointer;
+        this->attachNeededMunition(this->pointerToMunition_);
 
     }
 
@@ -65,10 +67,19 @@ namespace orxonox
         this->weaponReadyToShoot_ = true;
     }
 
-    void Weapon::attachNeededMunition(Munition *PointerToMunition)
+    void attachNeededMunition(Munition *pointerToMunition)
     {
+        //if munition type already exist attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
+        if ( this->parentWeaponSystem_->munitionSet_[laserGunMunition] )
+            this->pointerToMunition_ = pointerToMunition;
+        else
+        {
+            this->pointerToMunition_ = new LaserGunMunition;
+            this->parentWeaponSystem_->munitionSet_[laserGunMunition] = this->pointerToMunition_;
 
+        }
     }
+
 /*
     void Weapon::setParentWeaponSystem()
     {

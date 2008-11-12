@@ -51,7 +51,7 @@ namespace orxonox
 
         this->activeWeaponSet_ = 0;
         this->parentSpaceShip_ = 0;
-        //this->attachedMunition_ =0;
+        this->attachedMunition_ =0;
     }
 
     WeaponSystem::~WeaponSystem()
@@ -79,7 +79,7 @@ namespace orxonox
     //SpaceShip.cc only needs to have the keybinding to a specific Set-number n
     void WeaponSystem::fire(WeaponMode::Enum n)
     {
-        if (n < this->weaponSets_.size())
+        if (n < (int)this->weaponSets_.size())
             this->weaponSets_[n]->fire();
     }
 
@@ -97,7 +97,11 @@ namespace orxonox
 
     }
 
-    /*
+    Munition * WeaponSystem::getAttachedMunitionPointer()
+    {
+        return this->attachedMunition_;
+    }
+
     void WeaponSystem::addMunitionType(Munition *munitionPointer)
     {
 
@@ -105,9 +109,9 @@ namespace orxonox
         if (munitionPointer != NULL)  //gewährleiste, dass munitionPointer auf etwas sinnvolles zeigt
             this->attachedMunition_ = munitionPointer;
         else
-            this->unlimitedAmmo_ = true;
+            ;//was?
 
     }
-    */
+
 
 }

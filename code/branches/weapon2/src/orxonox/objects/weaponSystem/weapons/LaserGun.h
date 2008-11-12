@@ -33,8 +33,9 @@
 
 #include "core/BaseObject.h"
 
-#include "LaserGunMunition.h"
+#include "../munitions/LaserGunMunition.h"
 #include "util/Math.h"
+#include "../Weapon.h"
 
 namespace orxonox
 {
@@ -47,10 +48,10 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void fire();
-            ColourValue LaserGun::getProjectileColour();
+
 
         private:
-            ColorValue projectileColor_;
+
 
     };
 }

@@ -33,6 +33,8 @@
 #include "core/XMLPort.h"
 #include "util/Debug.h"
 
+#include "LaserGun.h"
+
 
 namespace orxonox
 {
@@ -40,10 +42,7 @@ namespace orxonox
     {
         RegisterObject(LaserGun);
 
-        this->attachNeededMunition();
-
         //set weapon properties here
-        this->projectileColor_ = ColourValue(1.0, 1.0, 0.5)
         this->loadingTime_ = 0.5;
     }
 
@@ -75,20 +74,4 @@ namespace orxonox
 
     }
 
-    ColorValue LaserGun::getProjectileColor()
-    {
-        return projectileColor_;
-    }
-
-    void attachNeededMunition(Munition *pointerToMunition)
-    {
-        //if munition type already exist attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
-        if ( this->parentWeaponSystem_->munitionSet_[laserGunMunition] )
-            this->pointerToMunition_ = pointerToMunition;
-        else
-        {
-            this->pointerToMunition_ = new LaserGunMunition;
-
-        }
-    }
 }

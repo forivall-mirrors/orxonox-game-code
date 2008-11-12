@@ -42,7 +42,7 @@ namespace orxonox
     namespace MunitionType
     {
         enum Enum
-        { LaserGunMunition };
+        { laserGunMunition };
     }
 
     //put here all weapon fire modes.
@@ -67,6 +67,7 @@ namespace orxonox
             void fire(WeaponMode::Enum fireMode);
             //void setActiveWeaponSet(unsigned int n);
             WeaponSet * getWeaponSetPointer(unsigned int n);
+            Munition * getAttachedMunitionPointer();
 
             inline void setParentSpaceShip(SpaceShip *parentSpaceShip)
                 { parentSpaceShip_=parentSpaceShip; }
@@ -79,6 +80,7 @@ namespace orxonox
             std::map<MunitionType::Enum,Munition *> munitionSet_;
             WeaponSet *activeWeaponSet_;
             SpaceShip *parentSpaceShip_;
+            Munition * attachedMunition_;
     };
 }
 

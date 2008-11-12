@@ -132,6 +132,8 @@ namespace orxonox
     class WeaponSlot;
     class Weapon;
     class Munition;
+    class LaserGun;
+    class LaserGunMunition;
 
     class EventListener;
     class EventDispatcher;

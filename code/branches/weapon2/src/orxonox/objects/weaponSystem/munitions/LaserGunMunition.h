@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
-
+#include "../Munition.h"
 
 namespace orxonox
 {
