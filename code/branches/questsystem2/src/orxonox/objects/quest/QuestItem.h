@@ -50,7 +50,7 @@ namespace orxonox {
 
     /**
     @brief
-        Functions as a base class for Quest classes such as Quest or QuestHint.
+        Functions as a base class for quest classes such as Quest or QuestHint.
         Has a unique identifier and a description.
     @author
         Damian 'Mozork' Frick
@@ -64,21 +64,34 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestItem object through XML.
 
-            inline const std::string & getId(void) const //!< Returns the id of this quest.
+            /**
+            @brief Returns the id of this QuestItem.
+	    @return Returns the id of the QuestItem.
+            */
+            inline const std::string & getId(void) const
                 { return this->id_; }
-            inline const QuestDescription* getDescription(void) const //!< Returns the description of the QuestItem.
+	    /**
+	    @brief Returns the QuestDescription of the QuestItem.
+	    @return Returns a pointer to the QuestDescription object of the QuestItem.
+	    */
+            inline const QuestDescription* getDescription(void) const
                 { return this->description_; }
 
             static bool isId(const std::string & id); //!< Checks whether a given id is valid.
 
         protected:
             void setId(const std::string & id); //!< Sets the id of the QuestItem.
-            inline void setDescription(QuestDescription* description) //!< Sets the description of the QuestItem.
+            
+            /**
+            @brief Sets the description of the QuestItem.
+            @param description The QuestDescription to be set.
+            */
+            inline void setDescription(QuestDescription* description)
                 { this->description_ = description; }
 
         private:
             std::string id_; //!< Identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
-            QuestDescription* description_; //!< The description of the QuestItem.
+            QuestDescription* description_; //!< The QuestDescription of the QuestItem.
 
     };
 

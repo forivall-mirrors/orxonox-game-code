@@ -46,8 +46,8 @@ namespace orxonox {
 
     /**
     @brief
-        Is a static class and manages quests, by registering every quest/hint (through registerX()) and making them globally accessable (through findX()).
-        Quests (and Hints) are registered in the QuestManager with their id, and can be accessed in the same way.
+        Is a static class and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
+        Quests (and QuestHints) are registered in the QuestManager with their id, and can be accessed in the same way.
     @author
         Damian 'Mozork' Frick
     */
@@ -58,15 +58,15 @@ namespace orxonox {
             QuestManager(BaseObject* creator);
             virtual ~QuestManager();
 
-            static bool registerQuest(Quest* quest); //!< Registers a quest in the QuestManager.
+            static bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
             static bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
 
-            static Quest* findQuest(const std::string & questId); //!< Returns the quest with the input id.
+            static Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
             static QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
         private:
-            static std::map<std::string, Quest*> questMap_s; //!< All quests registered by their id's.
-            static std::map<std::string, QuestHint*> hintMap_s; //!< All hints registered by their id's.
+            static std::map<std::string, Quest*> questMap_s; //!< All Quests registered by their id's.
+            static std::map<std::string, QuestHint*> hintMap_s; //!< All QuestHints registered by their id's.
 
     };
 

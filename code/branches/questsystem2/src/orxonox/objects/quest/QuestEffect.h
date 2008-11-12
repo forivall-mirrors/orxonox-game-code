@@ -45,8 +45,8 @@ namespace orxonox {
 
     /**
     @brief
-        Handles effects for quests.
-        QuestEffects are the only way for quests to have any sideeffects in the game world. They are also the only way to gain, complete or fail quests.
+        Handles QuestEffects for Quests.
+        QuestEffects are the only way for Quests to have any sideeffects in the game world. They are also the only way for a player to gain, complete or fail Quests.
     @author
         Damian 'Mozork' Frick
     */
@@ -56,8 +56,8 @@ namespace orxonox {
             QuestEffect(BaseObject* creator);
             virtual ~QuestEffect();
 
-            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the effect.
-            static bool invokeEffects(ControllableEntity* player, std::list<QuestEffect*> & effects); //!< Invokes all effects in the list.
+            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the QuestEffect.
+            static bool invokeEffects(ControllableEntity* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
 
 
     };

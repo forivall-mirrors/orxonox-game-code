@@ -60,23 +60,30 @@ namespace orxonox {
 	    
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
+	    virtual void processEvent(Event& event);
+	    
 	    bool execute(ControllableEntity* player);
 	    
 	    bool isActive(void);
 	    
 	protected:
-            std::list<QuestEffect*> effects_;
-            int times_; //!< Number of times the beacon can be exectued.
-            QuestEffectBeaconStatus::Enum status_;
-            
             bool decrementTimes(void);
-            
-            bool setTimes(const int & n);
-            bool addEffect(QuestEffect* effect);
             
             inline const int & getTimes(void) const
                 { return this->times_; }
-            const QuestEffect* getEffects(unsigned int index) const;
+
+        private:
+            std::list<QuestEffect*> effects_;
+            int times_; //!< Number of times the beacon can be exectued.
+            QuestEffectBeaconStatus::Enum status_;
+            Trigger* trigger_;
+            
+            bool setTimes(const int & n);
+            bool addEffect(QuestEffect* effect);
+            bool addTrigger(Trigger* trigger);
+            
+            const QuestEffect* getEffect(unsigned int index) const;
+            const Trigger* getTrigger(unsigned int index) const;
     
     };
 

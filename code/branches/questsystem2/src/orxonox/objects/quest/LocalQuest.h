@@ -47,7 +47,7 @@ namespace orxonox {
 
     /**
     @brief
-        Handles quests which have different states for different players.
+        Handles Quests which have different states for different players.
         LocalQuests have (as opposed to GlobalQuests) a different state for each player, that means if for one player the status of the Quest changes it does not for all the other players which also possess this quest.
         
         Creating a LocalQuest through XML goes as follows:
@@ -86,15 +86,15 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a LocalQuest object through XML.
             
-            virtual bool fail(ControllableEntity* player); //!< Fails the quest.
-            virtual bool complete(ControllableEntity* player); //!< Completes the quest.
+            virtual bool fail(ControllableEntity* player); //!< Fails the Quest.
+            virtual bool complete(ControllableEntity* player); //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const ControllableEntity* player) const; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const ControllableEntity* player) const; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const ControllableEntity* player) const; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const ControllableEntity* player) const; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const ControllableEntity* player) const; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const ControllableEntity* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const ControllableEntity* player) const; //!< Returns the status of the quest for a specific player.
+            virtual questStatus::Enum getStatus(const ControllableEntity* player) const; //!< Returns the status of the Quest for a specific player.
             virtual bool setStatus(ControllableEntity* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
         private:

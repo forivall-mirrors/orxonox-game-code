@@ -43,9 +43,9 @@
 
 namespace orxonox {
 
-    //! All quests registered by their id's.
+    //! All Quests registered by their id's.
     std::map<std::string, Quest*> QuestManager::questMap_s;
-    //! All hints registered by their id's.
+    //! All QuestHints registered by their id's.
     std::map<std::string, QuestHint*> QuestManager::hintMap_s;
 
     /**
@@ -68,10 +68,10 @@ namespace orxonox {
 
     /**
     @brief
-        Registers a quest with the QuestManager to make it globally accessable.
+        Registers a Quest with the QuestManager to make it globally accessable.
         Uses it's id to make sure to be able to be identify and retrieve it later.
     @param quest
-        The quest that is to be registered.
+        The Quest that is to be registered.
     @return
         Returns true if successful, false if not.
     */
@@ -84,7 +84,7 @@ namespace orxonox {
         }
 
         std::pair<std::map<std::string, Quest*>::iterator,bool> result;
-        result = questMap_s.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); //!< Inserting the quest.
+        result = questMap_s.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); //!< Inserting the Quest.
 
         if(result.second) //!< If inserting was a success.
         {
@@ -116,7 +116,7 @@ namespace orxonox {
         }
 
         std::pair<std::map<std::string, QuestHint*>::iterator,bool> result;
-        result = hintMap_s.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); //!< Inserting the hint.
+        result = hintMap_s.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); //!< Inserting the QuestHSint.
 
         if(result.second) //!< If inserting was a success.
         {
@@ -132,12 +132,12 @@ namespace orxonox {
 
     /**
     @brief
-        Finds a quest with the given id.
+        Finds a Quest with the given id.
     @param questId
-        The id of the quest sought for.
+        The id of the Quest sought for.
     @return
-        Returns a reference to the quest with the input id.
-        Returns NULL if there is no quest with the given questId.
+        Returns a pointer to the Quest with the input id.
+        Returns NULL if there is no Quest with the given questId.
     @throws
         Throws an exception if the given questId is invalid.
     */
@@ -150,7 +150,7 @@ namespace orxonox {
 
         Quest* quest;
         std::map<std::string, Quest*>::iterator it = questMap_s.find(questId);
-        if (it != questMap_s.end()) //!< If the quest is registered.
+        if (it != questMap_s.end()) //!< If the Quest is registered.
         {
             quest = it->second;
         }
@@ -166,12 +166,12 @@ namespace orxonox {
 
     /**
     @brief
-        Finds a hint with the given id.
+        Finds a QuestHint with the given id.
     @param hintId
-        The id of the hint sought for.
+        The id of the QuestHint sought for.
     @return
-        Returns a reference to the hint with the input id.
-        Returns NULL if there is no hint with the given hintId.
+        Returns a pointer to the QuestHint with the input id.
+        Returns NULL if there is no QuestHint with the given hintId.
     @throws
         Throws an exception if the given hintId is invalid.
     */
@@ -184,7 +184,7 @@ namespace orxonox {
 
         QuestHint* hint;
         std::map<std::string, QuestHint*>::iterator it = hintMap_s.find(hintId);
-        if (it != hintMap_s.end()) //!< If the hint is registered.
+        if (it != hintMap_s.end()) //!< If the QuestHint is registered.
         {
             hint = it->second;
         }

@@ -77,13 +77,13 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the hint is active for a specific player.
+        Checks whether the QuestHint is active for a specific player.
     @param player
         The player.
     @throws
         Throws an Argument Exception if the input Player-pointer is NULL.
     @return
-        Returns true if the hint is active for the specified player.
+        Returns true if the QuestHint is active for the specified player.
     */
     bool QuestHint::isActive(ControllableEntity* player)
     {
@@ -133,9 +133,9 @@ namespace orxonox {
 
     /**
     @brief
-        Sets the quest the QuestHitn belongs to.
+        Sets the Quest the QuestHint belongs to.
     @param quest
-        The quest to be set as quest the hint is attached to.
+        The Quest to be set as Quest the QuestHint is attached to.
     @return
         Returns true if successful.
     */

@@ -49,7 +49,7 @@
 namespace questStatus
 {
 
-    //!Different states of a quest.
+    //!Different states of a Quest.
     enum Enum
     {
         inactive,
@@ -64,11 +64,11 @@ namespace orxonox {
 
     /**
     @brief
-        Represents a quest in the game.
-        A quest has a list of subquests and a parentquest (if it is not a rootquest).
-        Each quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
-        A quest has several hints (QuestHint) that can be unlocked through QuestEffects and then display aid in solving the quest.
-        A quest has a list of QuestEffects that are invoked when the quest is failed and also a list of effects that are invoked, when the quest is completed.
+        Represents a Quest in the game.
+        A Quest has a list of subquests and a parentquest (if it is not a rootquest).
+        Each Quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
+        A Quest has several hints (QuestHint) that can be unlocked through QuestEffects and then display aid in solving the Quest.
+        A Quest has a list of QuestEffects that are invoked when the quest is failed and also a list of QuestEffects that are invoked, when the Quest is completed.
         
         Quest itself should not be instantiated, if you want to create a quest either go for LocalQuest or GlobalQuest, whichever suits you needs better.
     @author
@@ -82,11 +82,25 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Quest object through XML.
 
-            inline Quest* getParentQuest(void) const //!< Returns the parent quest of the quest.
+            /**
+            @brief Returns the parentquest of the Quest.
+            @return Returns a pointer to the parentquest of the Quest.
+            */
+            inline Quest* getParentQuest(void) const
                 { return this->parentQuest_; }
-            inline const std::list<Quest*> & getSubQuestList(void) const //!< Returns the list of sub quests.
+                
+	    /**
+	    @brief Returns the list of subquests.
+	    @return Returns a reference to the list of subquests of the quest.
+	    */
+            inline const std::list<Quest*> & getSubQuestList(void) const
                 { return this->subQuests_; }
-	    inline const std::list<QuestHint*> & getHintsList(void) const //!< Returns the list of all hints of this quest.
+                
+	    /**
+	    @brief Returns the list of all QuestHints of this Quest.
+	    @return Returns a reference to the list of QuestHints of the Quest.
+	    */
+	    inline const std::list<QuestHint*> & getHintsList(void) const
                 { return this->hints_; }
 
             bool isInactive(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
@@ -94,42 +108,52 @@ namespace orxonox {
             bool isFailed(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
             bool isCompleted(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
 
-            bool start(ControllableEntity* player); //!< Sets a quest to active.
-	    virtual bool fail(ControllableEntity* player) = 0; //!< Fails the quest.
-            virtual bool complete(ControllableEntity* player) = 0; //!< Completes the quest.
+            bool start(ControllableEntity* player); //!< Sets a Quest to active.
+	    virtual bool fail(ControllableEntity* player) = 0; //!< Fails the Quest.
+            virtual bool complete(ControllableEntity* player) = 0; //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const ControllableEntity* player) const = 0; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const ControllableEntity* player) const = 0; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const ControllableEntity* player) const = 0; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const ControllableEntity* player) const = 0; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const ControllableEntity* player) const = 0; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const ControllableEntity* player) const = 0; //!< Checks whether the Quest can be completed.
 
-            const Quest* getParentQuest(void); //!< Returns the parent quest of the quest.
-            const Quest* getSubQuest(unsigned int index) const; //!<Returns the sub quest of the given index.
-            const QuestHint* getHint(unsigned int index) const; //!< Returns the hint of the given index.
-            const QuestEffect* getFailEffect(unsigned int index) const; //!< Returns the failEffect of the given index.
-            const QuestEffect* getCompleteEffect(unsigned int index) const; //!< Returns the completeEffect of the given index.
-            inline std::list<QuestEffect*> & getFailEffectList(void) //!< Returns the list of failEffects.
+            const Quest* getParentQuest(void); //!< Returns the parentquest of the Quest.
+            const Quest* getSubQuest(unsigned int index) const; //!<Returns the subquest at the given index.
+            const QuestHint* getHint(unsigned int index) const; //!< Returns the QuestHint at the given index.
+            const QuestEffect* getFailEffect(unsigned int index) const; //!< Returns the fail QuestEffect at the given index.
+            const QuestEffect* getCompleteEffect(unsigned int index) const; //!< Returns the complete QuestEffect at the given index.
+            
+            /**
+            @brief Returns the list of fail QuestEffects.
+            @return Returns a reference to the list of fail QuestEffects.
+            */
+            inline std::list<QuestEffect*> & getFailEffectList(void)
                 { return this->failEffects_; }
-	    inline std::list<QuestEffect*> & getCompleteEffectList(void) //!< Returns the list of completeEffects.
+                
+	    /**
+	    @brief Returns the list of complete QuestEffects.
+	    @return Returns a reference to the list of complete QuestEffects.
+	    */
+	    inline std::list<QuestEffect*> & getCompleteEffectList(void)
                 { return this->completeEffects_; }
 
-            virtual questStatus::Enum getStatus(const ControllableEntity* player) const = 0; //!< Returns the status of the quest for a specific player.
+            virtual questStatus::Enum getStatus(const ControllableEntity* player) const = 0; //!< Returns the status of the Quest for a specific player.
             virtual bool setStatus(ControllableEntity* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
             
 	private:
-            Quest* parentQuest_; //!< Pointer to the parent quest.
-            std::list<Quest*> subQuests_; //!< List of all the sub quests.
+            Quest* parentQuest_; //!< Pointer to the parentquest.
+            std::list<Quest*> subQuests_; //!< List of all the subquests.
 
-            std::list<QuestHint*> hints_; //!< A list of all the hints tied to this quest.
+            std::list<QuestHint*> hints_; //!< A list of all the QuestHints tied to this Quest.
 
-            std::list<QuestEffect*> failEffects_; //!< A list of all effects to be invoked, when the quest has been failed.
-            std::list<QuestEffect*> completeEffects_; //!< A list of effects to be invoked, when the quest has been completed.
+            std::list<QuestEffect*> failEffects_; //!< A list of all QuestEffects to be invoked, when the Quest has been failed.
+            std::list<QuestEffect*> completeEffects_; //!< A list of QuestEffects to be invoked, when the Quest has been completed.
             
-            bool setParentQuest(Quest* quest); //!< Sets the parent quest of the quest.
-            bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
-            bool addHint(QuestHint* hint); //!< Add a hint to the list of hints.
-            bool addFailEffect(QuestEffect* effect); //!< Adds an effect to the list of failEffects.
-            bool addCompleteEffect(QuestEffect* effect); //!< Adds an effect to the list of completeEffects.
+            bool setParentQuest(Quest* quest); //!< Sets the parentquest of the Quest.
+            bool addSubQuest(Quest* quest); //!< Adds a subquest to the Quest.
+            bool addHint(QuestHint* hint); //!< Add a QuestHint to the list of QuestHints.
+            bool addFailEffect(QuestEffect* effect); //!< Adds an QuestEffect to the list of fail QuestEffects.
+            bool addCompleteEffect(QuestEffect* effect); //!< Adds an QuestEffect to the list of complete QuestEffects.
 
     };
 

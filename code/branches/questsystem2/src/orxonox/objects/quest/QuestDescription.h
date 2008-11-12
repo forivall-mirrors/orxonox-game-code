@@ -59,18 +59,36 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestDescription object through XML.
 
-            inline const std::string & getTitle(void) const //!< Returns the title.
+	    /**
+	    @brief Returns the title.
+	    @return Returns a string containing the title of the QuestDescription.
+	    */
+            inline const std::string & getTitle(void) const
                 { return this->title_; }
-            inline const std::string & getDescription(void) const //!< Returns the description text.
+	    
+	    /**
+	    @brief Returns the description text.
+	    @return Returns a string containing the description text of the QuestDescription.
+	    */
+            inline const std::string & getDescription(void) const
                 { return this->description_; }
 
         private:
             std::string title_; //!< The title.
             std::string description_; //!< The description.
 
-            inline void setTitle(const std::string & title) //!< Sets the title.
+            /**
+            @brief Sets the title.
+            @param title The title to be set.
+            */
+            inline void setTitle(const std::string & title)
                 { this->title_ = title; }
-            inline void setDescription(const std::string & description) //!< Sets the description text.
+                
+	    /**
+            @brief Sets the description text.
+            @param description The description text to be set.
+            */
+            inline void setDescription(const std::string & description)
                 { this->description_ = description; }
 
     };

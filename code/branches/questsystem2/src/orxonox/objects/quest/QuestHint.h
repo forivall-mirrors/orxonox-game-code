@@ -61,8 +61,8 @@ namespace orxonox
     /**
     @brief
         Represents a hint in the game towards completing a Quest.
-        Consists of title and description in textual form and must belong to a quest.
-        A QuestHit has a defined status (inactive or active, where inactive is default) for each player, which means each QuestHint exists only once for all players, it doesn't belong to a player, it just has different states for each of them.
+        Consists of title and description (which is stored in a QuestDescription object) in textual form and must belong to a quest.
+        A QuestHint has a defined status (inactive or active, where inactive is default) for each player, which means each a QuestHint exists only once for all players, it doesn't belong to a player, it just has different states for each of them.
         
         Creating a QuestHint through XML goes as follows:
         
@@ -81,16 +81,20 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestHint object through XML.
 
-            bool isActive(ControllableEntity* player); //!< Returns true if the hint is active for the input player.
+            bool isActive(ControllableEntity* player); //!< Returns true if the QuestHint is active for the input player.
 
-            bool setActive(ControllableEntity* player); //!< Activates the hint for the input player.
-            bool setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
+            bool setActive(ControllableEntity* player); //!< Activates the QuestHint for the input player.
+            bool setQuest(Quest* quest); //!< Sets the Quest the QuestHint belongs to.
 
-            inline Quest* getQuest(void) //!< Returns the quest the hint is attached to.
+            /**
+            @brief Returns the Quest the QuestHint is attached to.
+            @return  Returns a pointer to the Quest the QuestHint is attached to.
+            */
+            inline Quest* getQuest(void)
                { return this->quest_; }
 
         private:
-            Quest* quest_; //!< The quest the hint belongs to.
+            Quest* quest_; //!< The Quest the QuestHint belongs to.
             std::map<ControllableEntity*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
 
     };

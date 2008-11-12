@@ -83,11 +83,11 @@ namespace orxonox {
 
     /**
     @brief
-        Sets the parent quest of the quest.
+        Sets the parentquest of the Quest.
     @param quest
-        A pointer to the quest to be set as parent quest.
+        A pointer to the Quest to be set as parentquest.
     @return
-        Returns true if the parentQuest could be set.
+        Returns true if the parentquest could be set.
     */
     bool Quest::setParentQuest(Quest* quest)
     {
@@ -105,11 +105,11 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a sub quest to the quest.
+        Adds a subquest to the Quest.
     @param quest
-        A pointer to the quest to be set as sub quest.
+        A pointer to the Quest to be set as subquest.
     @return
-        Returns true if the subQuest vould be set.
+        Returns true if the subquest could be set.
     */
     bool Quest::addSubQuest(Quest* quest)
     {
@@ -119,8 +119,8 @@ namespace orxonox {
             return false;
         }
 
-        quest->setParentQuest(this); //!< Sets the current quest (this) as parent quest for the added subquest.
-        this->subQuests_.push_back(quest); //!< Adds the quest to the end of the list of subquests.
+        quest->setParentQuest(this); //!< Sets the currentQuest (this) as parentquest for the added subquest.
+        this->subQuests_.push_back(quest); //!< Adds the Quest to the end of the list of subquests.
 
         COUT(3) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -129,9 +129,9 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a Hint to the list of hints
+        Adds a QuestHint to the list of QuestHints
     @param hint
-        The hint that should be added to the list of hints.
+        The QuestHint that should be added to the list of QuestHints.
     @return
         Returns true if the hint was successfully added.
     */
@@ -143,8 +143,8 @@ namespace orxonox {
             return false;
         }
 
-        hint->setQuest(this); //!< Sets the current quest (this) as quest for the added hint.
-        this->hints_.push_back(hint); //!< Adds the hint to the end of the list of hints.
+        hint->setQuest(this); //!< Sets the current Quest (this) as Quest for the added QuestHint.
+        this->hints_.push_back(hint); //!< Adds the QuestHint to the end of the list of QuestHints.
 
         COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -152,7 +152,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds an effect to the list of failEffects.
+        Adds an QuestEffect to the list of fail QuestEffects.
     @param effect
         The QuestEffect to be added.
     @return
@@ -166,7 +166,7 @@ namespace orxonox {
             return false;
         }
 
-        this->failEffects_.push_back(effect); //!< Adds the effect to the end of the list of failEffects.
+        this->failEffects_.push_back(effect); //!< Adds the QuestEffect to the end of the list of fail QuestEffects.
 
         COUT(3) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -174,7 +174,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds an effect to the list of completeEffects.
+        Adds an QuestEffect to the list of complete QuestEffects.
     @param effect
         The QuestEffect to be added.
     @return
@@ -188,7 +188,7 @@ namespace orxonox {
             return false;
         }
 
-        this->completeEffects_.push_back(effect); //!< Adds the effect to the end of the list of completeEffects.
+        this->completeEffects_.push_back(effect); //!< Adds the QuestEffect to the end of the list of complete QuestEffects.
 
         COUT(3) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -196,9 +196,9 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the parent quest of the quest.
+        Returns the parentquest of the Quest.
     @return
-        Returns the parent quest of the quest.
+        Returns a pointer to the parentquest of the Quest.
     */
     const Quest* Quest::getParentQuest(void)
     {
@@ -207,11 +207,11 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the sub quest of the given index.
+        Returns the subquest at the given index.
     @param
         The index.
     @return
-        Returns the subquest of the given index. NULL if there is no element on the given index.
+        Returns a pointer to the subquest at the given index. NULL if there is no element at the given index.
     */
     const Quest* Quest::getSubQuest(unsigned int index) const
     {
@@ -232,17 +232,17 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the hint of the given index.
+        Returns the QuestHint at the given index.
     @param
         The index.
     @return
-        Returns the hint of the given index. NULL if there is no element on the given index.
+        Returns a pointer to the QuestHint at the given index. NULL if there is no element at the given index.
     */
     const QuestHint* Quest::getHint(unsigned int index) const
     {
         int i = index;
         
-        //! Iterate through all hints.
+        //! Iterate through all QuestHints.
         for (std::list<QuestHint*>::const_iterator hint = this->hints_.begin(); hint != this->hints_.end(); ++hint)
         {
             if(i == 0) //!< We're counting down...
@@ -256,17 +256,17 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the failEffect of the given index.
+        Returns the fail QuestEffect at the given index.
     @param
         The index.
     @return
-        Returns the failEffect of the given index. NULL if there is no element on the given index.
+        Returns a pointer to the fail QuestEffect at the given index. NULL if there is no element at the given index.
     */
     const QuestEffect* Quest::getFailEffect(unsigned int index) const
     {
         int i = index;
         
-        //! Iterate through all failEffects.
+        //! Iterate through all fail QuestEffects.
         for (std::list<QuestEffect*>::const_iterator effect = this->failEffects_.begin(); effect != this->failEffects_.end(); ++effect)
         {
             if(i == 0) //!< We're counting down...
@@ -280,17 +280,17 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the completeEffect of the given index.
+        Returns the complete QuestEffect at the given index.
     @param
         The index.
     @return
-        Returns the completeEffect of the given index. NULL if there is no element on the given index.
+        Returns a pointer to the complete QuestEffect at the given index. NULL if there is no element at the given index.
     */
     const QuestEffect* Quest::getCompleteEffect(unsigned int index) const
     {
         int i = index;
         
-        //! Iterate through all completeEffects.
+        //! Iterate through all complete QuestEffects.
         for (std::list<QuestEffect*>::const_iterator effect = this->completeEffects_.begin(); effect != this->completeEffects_.end(); ++effect)
         {
             if(i == 0) //!< We're counting down...
@@ -365,11 +365,11 @@ namespace orxonox {
 
     /**
     @brief
-        Starts the quest for an input player.
+        Starts the Quest for an input player.
     @param player
         The player.
     @return
-        Returns true if the quest could be started, false if not.
+        Returns true if the Quest could be started, false if not.
     */
     bool Quest::start(ControllableEntity* player)
     {

@@ -78,13 +78,13 @@ namespace orxonox {
 
     /**
     @brief
-        Sets the id of the quest hint to be added to the player the effect is invoked on.
+        Sets the id of the QuestHint to be added to the player the QuestEffect is invoked on.
     @param id
         The QuestHint id.
     @param
         Returns true if successful.
     */
-    inline void AddQuestHint::setHintId(const std::string & id)
+    bool AddQuestHint::setHintId(const std::string & id)
     {
         if(!QuestItem::isId(id))
         {
@@ -98,11 +98,11 @@ namespace orxonox {
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
         The player.
     @return
-        Returns true if the effect was successfully invoked.
+        Returns true if the QuestEffect was successfully invoked.
     */
     bool AddQuestHint::invoke(ControllableEntity* player)
     {

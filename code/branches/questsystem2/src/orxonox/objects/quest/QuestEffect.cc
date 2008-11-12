@@ -62,11 +62,11 @@ namespace orxonox {
 
     /**
     @brief
-        Static method. Invoke all effects in an effect list on a given player.
+        Static method. Invoke all QuestEffects in an QuestEffect-list on a given player.
     @param player
-        The player the effects are invoked on.
+        The player the QuestEffects are invoked on.
     @param effects
-        A list of all the effects to be invoked.
+        A list of all the QuestEffects to be invoked.
     @return
         Returns false if there was an error, view console of log for further detail.
     */

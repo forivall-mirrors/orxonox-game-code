@@ -47,7 +47,7 @@ namespace orxonox {
 
     /**
     @brief
-        Global quests are quests, that have the same status for all players.
+        GlobalQuests are Quests, that have the same status for all players.
         This means, that when a player successfully completes a GlobalQuest, it is completed for all players that have it.
         
         Creating a GlobalQuest through XML goes as follows:
@@ -91,24 +91,24 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a GlobalQuest object through XML.
             
-            virtual bool fail(ControllableEntity* player); //!< Fails the quest.
-            virtual bool complete(ControllableEntity* player); //!< Completes the quest.
+            virtual bool fail(ControllableEntity* player); //!< Fails the Quest.
+            virtual bool complete(ControllableEntity* player); //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const ControllableEntity* player) const; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const ControllableEntity* player) const; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const ControllableEntity* player) const; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const ControllableEntity* player) const; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const ControllableEntity* player) const; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const ControllableEntity* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const ControllableEntity* player) const; //!< Returns the status of the quest for a specific player.
+            virtual questStatus::Enum getStatus(const ControllableEntity* player) const; //!< Returns the status of the Quest for a specific player.
             virtual bool setStatus(ControllableEntity* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
         private:
-            std::set<ControllableEntity*> players_; //!< The set of players which possess this quest.
-            questStatus::Enum status_; //!< The status of this quest.
-            std::list<QuestEffect*> rewards_; //!< Reward effects only invoked on the player completing the quest.
+            std::set<ControllableEntity*> players_; //!< The set of players which possess this Quest.
+            questStatus::Enum status_; //!< The status of this Quest.
+            std::list<QuestEffect*> rewards_; //!< Reward QuestEffects only invoked on the player completing the Quest.
             
-            bool addRewardEffect(QuestEffect* effect); //!< Adds a reward effect to the list of reward effects.
-            const QuestEffect* getRewardEffects(unsigned int index) const; //!< Returns the reward effect at the given index.
+            bool addRewardEffect(QuestEffect* effect); //!< Adds a reward QuestEffect to the list of reward QuestEffects.
+            const QuestEffect* getRewardEffects(unsigned int index) const; //!< Returns the reward QuestEffect at the given index.
 
     };
 

@@ -60,9 +60,9 @@ namespace orxonox {
 
     /**
     @brief
-        Sets the id of the quest the effect chagnes the status of.
+        Sets the id of the Quest the Questffect changes the status of.
     @param id
-        The id of the quest.
+        The id of the Quest.
     @return
         Returns true if successful.
     */

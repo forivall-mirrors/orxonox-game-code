@@ -74,11 +74,11 @@ namespace orxonox {
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
-        The player the effect is invoked on.
+        The player the QuestEffect is invoked on.
     @return
-        Returns true if the effect was invoked successfully.
+        Returns true if the QuestEffect was invoked successfully.
     */
     bool CompleteQuest::invoke(ControllableEntity* player)
     {

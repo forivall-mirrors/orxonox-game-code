@@ -74,11 +74,11 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the rewardbale object at the given index.
+        Returns the Rewardable object at the given index.
     @param index
         The index.
     @return
-        Returns a pointer to the rewardable object at the given index.
+        Returns a pointer to the Rewardable object at the given index.
     */
     const Rewardable* AddReward::getRewardables(unsigned int index) const
     {
@@ -96,11 +96,11 @@ namespace orxonox {
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
         The player.
     @return
-        Returns true if the effect was invoked successfully.
+        Returns true if the QuestEffect was invoked successfully.
     */
     bool AddReward::invoke(ControllableEntity* player)
     {

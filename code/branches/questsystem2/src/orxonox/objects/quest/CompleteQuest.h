@@ -46,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        Completes a quest (with a specified id) for the player invoking the effect.
+        Completes a Quest (with a specified id) for the player invoking the QuestEffect.
     @author
         Damian 'Mozork' Frick
     */
@@ -58,7 +58,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CompleteQuest object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
 
     };
 

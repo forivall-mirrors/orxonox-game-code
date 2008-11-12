@@ -76,12 +76,12 @@ namespace orxonox {
 
     /**
     @brief
-        Fails the quest for a given player.
+        Fails the Quest for a given player.
         Invokes all the failEffects on the player.
     @param player
         The player.
     @return
-        Returns true if the quest could be failed, false if not.
+        Returns true if the Quest could be failed, false if not.
     */
     bool LocalQuest::fail(ControllableEntity* player)
     {
@@ -98,19 +98,19 @@ namespace orxonox {
 
     /**
     @brief
-        Completes the quest for a given player.
-	Invokes all the completeEffects on the player.
+        Completes the Quest for a given player.
+	Invokes all the complete QuestEffects on the player.
     @param player
         The player.
     @return
-        Returns true if the quest could be completed, false if not.
+        Returns true if the Quest could be completed, false if not.
     */
     bool LocalQuest::complete(ControllableEntity* player)
     {
-        if(this->isCompletable(player)) //!< Checks whether the quest can be completed.
+        if(this->isCompletable(player)) //!< Checks whether the Quest can be completed.
         {
             this->setStatus(player, questStatus::completed);
-            QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the completeEffects.
+            QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
             return true;
         }
         
@@ -120,11 +120,11 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the quest can be started.
+        Checks whether the Quest can be started.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be started, false if not.
+        Returns true if the Quest can be started, false if not.
     @throws
         Throws an exception if isInactive(ControllableEntity*) throws one.
     */
@@ -135,11 +135,11 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the quest can be failed.
+        Checks whether the Quest can be failed.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be failed, false if not.
+        Returns true if the Quest can be failed, false if not.
     @throws
         Throws an exception if isActive(ControllableEntity*) throws one.
     */
@@ -150,11 +150,11 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the quest can be completed.
+        Checks whether the Quest can be completed.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be completed, false if not.
+        Returns true if the Quest can be completed, false if not.
     @throws
         Throws an exception if isInactive(ControllableEntity*) throws one.
     */
@@ -165,11 +165,11 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the status of the quest for a specific player.
+        Returns the status of the Quest for a specific player.
     @param player
         The player.
     @return
-        Returns the status of the quest for the input player.
+        Returns the status of the Quest for the input player.
     @throws
         Throws an Exception if player is NULL.
     */

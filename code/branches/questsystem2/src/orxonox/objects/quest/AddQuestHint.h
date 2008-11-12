@@ -45,7 +45,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a QuestHint, resp. activates the QuestHint of the given id for the player the effect is invoked on.
+        Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.
     @author
         Damian 'Mozork' Frick
     */
@@ -57,14 +57,18 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuestHint object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
 
         private:
             std::string hintId_; //!< The id of the QuestHint.
 
-            inline const std::string & getHintId(void) const //!< Returns the if of the hint.
+            /**
+            @brief Returns the id of the QuestHint.
+            @return Returns the id of the QuestHint.
+            */
+            inline const std::string & getHintId(void) const
                 { return this->hintId_; }
-            void setHintId(const std::string & id); //!< Sets the id of the hint.
+            bool setHintId(const std::string & id); //!< Sets the id of the QuestHint.
 
     };
 

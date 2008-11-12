@@ -50,7 +50,7 @@ namespace orxonox {
 
     /**
     @brief
-        Constructor. Registers the quest.
+        Constructor. Registers the object.
     */
     AddQuest::AddQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
@@ -77,11 +77,11 @@ namespace orxonox {
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
-        The player the effect is invoked on.
+        The player the QuestEffect is invoked on.
     @return
-        Returns true if the effect was successfully invoked.
+        Returns true if the QuestEffect was successfully invoked.
     */
     bool AddQuest::invoke(ControllableEntity* player)
     {

@@ -46,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a quest, resp. changes the quests status to active for the player invoking the quest.
+        Adds a Quest, resp. changes the quests status to active for the player invoking the Quest.
     @author
         Damian 'Mozork' Frick
     */
@@ -58,7 +58,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
 
     };
 

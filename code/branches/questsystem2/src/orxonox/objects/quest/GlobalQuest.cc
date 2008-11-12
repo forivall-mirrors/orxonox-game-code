@@ -78,20 +78,20 @@ namespace orxonox {
     
     /**
     @brief
-        Fails the quest for all players.
-        Invokes the failEffects on all the players possessing this quest.
+        Fails the Quest for all players.
+        Invokes the fail QuestEffects on all the players possessing this Quest.
     @param player
         The player failing it.
     @return
-        Returns true if the quest could be failed, false if not.
+        Returns true if the Quest could be failed, false if not.
     */
     bool GlobalQuest::fail(ControllableEntity* player)
     {
-        if(this->isFailable(player)) //!< Check whether the quest can be failed.
+        if(this->isFailable(player)) //!< Check whether the Quest can be failed.
         {
             this->setStatus(player, questStatus::failed);
             
-            //! Iterate through all players possessing this quest.
+            //! Iterate through all players possessing this Quest.
             for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
             {
                 QuestEffect::invokeEffects(*it, this->getFailEffectList());
@@ -106,27 +106,27 @@ namespace orxonox {
 
     /**
     @brief
-        Completes the quest for all players.
-        Invokes the completeEffects on all the players possessing this quest.
-        Invokes the reward effects on the player completing the quest.
+        Completes the Quest for all players.
+        Invokes the complete QuestEffects on all the players possessing this Quest.
+        Invokes the reward QuestEffects on the player completing the Quest.
     @param player
         The player completing it.
     @return
-        Returns true if the quest could be completed, false if not.
+        Returns true if the Quest could be completed, false if not.
     */
     bool GlobalQuest::complete(ControllableEntity* player)
     {
-        if(this->isCompletable(player)) //!< Check whether the quest can be completed.
+        if(this->isCompletable(player)) //!< Check whether the Quest can be completed.
         {
             this->setStatus(player, questStatus::completed);
             
-            //! Iterate through all players possessing the quest.
+            //! Iterate through all players possessing the Quest.
             for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
             {
                 QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
             }
             
-            QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward effects on the player completing the quest.
+            QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
             return true;
         }
         
@@ -136,7 +136,7 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the quest can be started.
+        Checks whether the Quest can be started.
     @param player
         The player for whom is to be checked.
     @return
@@ -151,11 +151,11 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the quest can be failed.
+        Checks whether the Quest can be failed.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be failed, false if not.
+        Returns true if the Quest can be failed, false if not.
     @throws
         Throws an Exception if isActive() throws one.
     */
@@ -167,11 +167,11 @@ namespace orxonox {
 
     /**
     @brief
-        Checks whether the quest can be completed.
+        Checks whether the Quest can be completed.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be completed, false if not.
+        Returns true if the Quest can be completed, false if not.
     @throws
         Throws an Exception if isActive() throws one.
     */
@@ -182,7 +182,7 @@ namespace orxonox {
 
     /**
     @brief
-        Returns the status of the quest for a specific player.
+        Returns the status of the Quest for a specific player.
     @param player
         The player.
     @throws
@@ -236,9 +236,9 @@ namespace orxonox {
     
     /**
     @brief
-        Adds a reward effect to the list of reward effects.
+        Adds a reward QuestEffect to the list of reward QuestEffects.
     @param effect
-        The effect to be added.
+        The QuestEffect to be added.
     @return
         Returns true if successful.
     */
@@ -250,7 +250,7 @@ namespace orxonox {
             return false;
         }
 
-        this->rewards_.push_back(effect); //!< Add the effect to the list.
+        this->rewards_.push_back(effect); //!< Add the QuestEffect to the list.
 
         COUT(3) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -258,7 +258,7 @@ namespace orxonox {
     
     /**
     @brief
-        Returns the reward effect at the given index.
+        Returns the reward QuestEffect at the given index.
     @param index
         The index.
     @return

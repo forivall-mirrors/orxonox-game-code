@@ -46,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        An effect which changes a quests status of a specified quest for the player invoking the effect.
+        A QuestEffect which changes the status of a specified Quest for the player invoking the QuestEffect.
     @author
         Damian 'Mozork' Frick
     */
@@ -58,16 +58,20 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a ChangeQuestStatus object through XML.
 
-            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the QuestEffect.
 
         protected:
-            inline const std::string & getQuestId(void) const //!< Returns the quest id.
+            /**
+                @brief Returns the id of the Quest.
+                @return Returns the id of the Quest.
+            */
+            inline const std::string & getQuestId(void) const
                 { return this->questId_; }
 
         private:
-            std::string questId_; //!< The id of the quest the status should be changed of.
+            std::string questId_; //!< The id of the Quest the status should be changed of.
             
-            void setQuestId(const std::string & id); //!< Sets the quest id.
+            bool setQuestId(const std::string & id); //!< Sets the id of the Quest.
 
     };
 

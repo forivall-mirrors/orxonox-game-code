@@ -46,7 +46,7 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a list of rewards to a player.
+        Adds a list of Rewardables to a player.
     @author
         Damian 'Mozork' Frick
     */
@@ -58,14 +58,18 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddReward object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the effect.
+            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
 
         private:
-            std::list<Rewardable*> rewards_; //!< A list of rewards to be added to the player invoking the effect.
+            std::list<Rewardable*> rewards_; //!< A list of Rewardables to be added to the player invoking the QuestEffect.
 
-            inline void addRewardable(Rewardable* reward) //!< Add a rewardable object to the list of objects to be awarded to the player invoking the effect.
+            /**
+            @brief Add a Rewardable object to the list of objects to be awarded to the player invoking the QuestEffect.
+            @param reward Pointer to the Rewardable to be added.
+            */
+            inline void addRewardable(Rewardable* reward)
                 { this->rewards_.push_back(reward); }
-            const Rewardable* getRewardables(unsigned int index) const; //!< Returns the rewardable object at the given index.
+            const Rewardable* getRewardables(unsigned int index) const; //!< Returns the Rewardable object at the given index.
 
     };
 

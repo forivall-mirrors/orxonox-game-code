@@ -31,8 +31,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "core/Event.h"
 
 #include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/worldentities/triggers/Trigger.h"
 #include "QuestEffect.h"
 
 namespace orxonox {
@@ -45,8 +47,8 @@ namespace orxonox {
         
         this->status_ = QuestEffectBeaconStatus::active;
         this->times_ = -1;
+        this->trigger_ = NULL;
     }
-
 
     QuestEffectBeacon::~QuestEffectBeacon()
     {
@@ -57,7 +59,17 @@ namespace orxonox {
         SUPER(QuestEffectBeacon, XMLPort, xmlelement, mode);
 
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
-        XMLPortObject(QuestEffectBeacon, QuestEffect, "", addEffect, getEffects, xmlelement, mode);
+        XMLPortObject(QuestEffectBeacon, QuestEffect, "", addEffect, getEffect, xmlelement, mode);
+        XMLPortObject(QuestEffectBeacon, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
+    }
+    
+    void processEvent(Event& event)
+    {
+        //TDO. Resolve pseudo code.
+        //if(isControllableEntity(event.originator_))
+        //{
+        //    SetEvent(BaseObject, "activity", execute, event);
+	//}
     }
     
     bool QuestEffectBeacon::execute(ControllableEntity* player)
@@ -92,13 +104,13 @@ namespace orxonox {
         {
             return false;
         }
-        if(this->times_ == -1)
+        if(this->getTimes() == -1)
         {
             return true;
         }
         
         this->times_ = this->times_ - 1;
-	if(this->times_ == 0)
+	if(this->getTimes() == 0)
 	{
             this->status_ = QuestEffectBeaconStatus::inactive;
 	}
@@ -133,15 +145,33 @@ namespace orxonox {
 
         this->effects_.push_back(effect);
 
-        COUT(3) << "An effect was added to a QuestEffectBeacon." << std::endl;
+        COUT(3) << "A QuestEffect was added to a QuestEffectBeacon." << std::endl;
         return true;
+    }
+    
+    bool QuestEffectBeacon::addTrigger(Trigger* trigger)
+    {
+        if(this->trigger_ != NULL)
+	{
+	   COUT(2) << "A Trigger was trying to be added, where one was already set." << std::endl;
+	   return false;
+	}
+	if(trigger == NULL)
+	{
+            COUT(2) << "A NULL-Trigger was trying to be added." << std::endl;
+            return false;
+	}
+	
+	COUT(3) << "A Trigger was added to a QuestEffectBeacon." << std::endl;
+	this->trigger_ = trigger;
+	return true;
     }
     
      /**
     @brief
 
     */
-    const QuestEffect* QuestEffectBeacon::getEffects(unsigned int index) const
+    const QuestEffect* QuestEffectBeacon::getEffect(unsigned int index) const
     {
         int i = index;
         for (std::list<QuestEffect*>::const_iterator effect = this->effects_.begin(); effect != this->effects_.end(); ++effect)
@@ -155,5 +185,14 @@ namespace orxonox {
         return NULL;
     }
 
+    const Trigger* QuestEffectBeacon::getTrigger(unsigned int index) const
+    {
+        if(index == 0)
+        {
+            return this->trigger_;
+        }
+        
+        return NULL;
+    }
 
 }
