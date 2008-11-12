@@ -102,9 +102,11 @@ namespace orxonox
     class Rewardable;
 
     class WorldEntity;
-    class PositionableEntity;
+    class StaticEntity;
     class MovableEntity;
+    class PositionableEntity;
     class ControllableEntity;
+    class LinearEntity;
     class Sublevel;
 
     class Model;
@@ -201,6 +203,15 @@ namespace CEGUI
     class OgreCEGUIResourceProvider;
     class OgreCEGUITexture;
 }
+
+// Bullet Physics Engine
+
+class btRigidBody;
+class btCollisionObject;
+class btGhostObject;
+class btCollisionShape;
+class btSphereShape;
+
 
 struct lua_State;
 

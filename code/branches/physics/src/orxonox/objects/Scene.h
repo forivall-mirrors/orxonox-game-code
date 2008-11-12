@@ -35,6 +35,8 @@
 #include "core/BaseObject.h"
 #include "util/Math.h"
 
+#include "ogrebullet/Dynamics/OgreBulletDynamics.h"
+
 namespace orxonox
 {
     class _OrxonoxExport Scene : public BaseObject, public network::Synchronisable
@@ -50,6 +52,9 @@ namespace orxonox
                 { return this->sceneManager_; }
             inline Ogre::SceneNode* getRootSceneNode() const
                 { return this->rootSceneNode_; }
+
+            inline btDiscreteDynamicsWorld* getPhysicalWorld() const
+                { return this->dynamicsWorld_; }
 
             void setSkybox(const std::string& skybox);
             inline const std::string& getSkybox() const
@@ -74,6 +79,13 @@ namespace orxonox
 
             Ogre::SceneManager*    sceneManager_;
             Ogre::SceneNode*       rootSceneNode_;
+
+	    btDiscreteDynamicsWorld* dynamicsWorld_;
+	    btSequentialImpulseConstraintSolver* solver_;
+	    btDefaultCollisionConfiguration* collisionConfiguration_;
+	    btCollisionDispatcher* dispatcher_; 
+	    // Point auf Bullet btDynamics world && solver
+
             std::string            skybox_;
             ColourValue            ambientLight_;
             std::list<BaseObject*> objects_;

@@ -31,12 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
+#include "MovableEntity.h"
 #include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ControllableEntity : public WorldEntity, public Tickable
+    class _OrxonoxExport ControllableEntity : public MovableEntity, public Tickable
     {
         public:
             ControllableEntity(BaseObject* creator);

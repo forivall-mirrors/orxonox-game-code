@@ -31,27 +31,12 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Executor.h"
-#include "tools/Timer.h"
 
 namespace orxonox
 {
-    static const float MAX_RESYNCHRONIZE_TIME = 3.0f;
-
-    CreateFactory(MovableEntity);
-
     MovableEntity::MovableEntity(BaseObject* creator) : WorldEntity(creator)
     {
         RegisterObject(MovableEntity);
-
-        this->velocity_ = Vector3::ZERO;
-        this->acceleration_ = Vector3::ZERO;
-        this->rotationAxis_ = Vector3::ZERO;
-        this->rotationRate_ = 0;
-        this->momentum_ = 0;
-
-        this->overwrite_position_ = Vector3::ZERO;
-        this->overwrite_orientation_ = Quaternion::IDENTITY;
 
         this->registerVariables();
     }
@@ -63,116 +48,9 @@ namespace orxonox
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(MovableEntity, XMLPort, xmlelement, mode);
-
-        XMLPortParamTemplate(MovableEntity, "velocity", setVelocity, getVelocity, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(MovableEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(MovableEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Degree&);
-    }
-
-    void MovableEntity::tick(float dt)
-    {
-        if (this->isActive())
-        {
-            this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_);
-
-            this->rotationRate_ += (dt * this->momentum_);
-            this->node_->rotate(this->rotationAxis_, this->rotationRate_  * dt);
-        }
     }
 
     void MovableEntity::registerVariables()
     {
-        REGISTERDATA(this->velocity_.x, network::direction::toclient);
-        REGISTERDATA(this->velocity_.y, network::direction::toclient);
-        REGISTERDATA(this->velocity_.z, network::direction::toclient);
-
-        REGISTERDATA(this->rotationAxis_.x, network::direction::toclient);
-        REGISTERDATA(this->rotationAxis_.y, network::direction::toclient);
-        REGISTERDATA(this->rotationAxis_.z, network::direction::toclient);
-
-        REGISTERDATA(this->rotationRate_, network::direction::toclient);
-
-        REGISTERDATA(this->overwrite_position_,    network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::overwritePosition));
-        REGISTERDATA(this->overwrite_orientation_, network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
-    }
-
-    void MovableEntity::overwritePosition()
-    {
-        this->node_->setPosition(this->overwrite_position_);
-    }
-
-    void MovableEntity::overwriteOrientation()
-    {
-        this->node_->setOrientation(this->overwrite_orientation_);
-    }
-
-    void MovableEntity::clientConnected(unsigned int clientID)
-    {
-        new Timer<MovableEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), true);
-    }
-
-    void MovableEntity::clientDisconnected(unsigned int clientID)
-    {
-    }
-
-    void MovableEntity::resynchronize()
-    {
-        this->overwrite_position_ = this->getPosition();
-        this->overwrite_orientation_ = this->getOrientation();
-    }
-
-    void MovableEntity::setPosition(const Vector3& position)
-    {
-        this->node_->setPosition(position);
-        this->overwrite_position_ = this->node_->getPosition();
-    }
-
-    void MovableEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->translate(distance, relativeTo);
-        this->overwrite_position_ = this->node_->getPosition();
-    }
-
-    void MovableEntity::setOrientation(const Quaternion& orientation)
-    {
-        this->node_->setOrientation(orientation);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void MovableEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->rotate(rotation, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void MovableEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->yaw(angle, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void MovableEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->pitch(angle, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void MovableEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->roll(angle, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void MovableEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        this->node_->lookAt(target, relativeTo, localDirectionVector);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void MovableEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        this->node_->setDirection(direction, relativeTo, localDirectionVector);
-        this->overwrite_orientation_ = this->node_->getOrientation();
     }
 }

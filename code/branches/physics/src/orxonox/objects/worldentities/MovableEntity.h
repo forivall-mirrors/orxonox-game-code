@@ -37,87 +37,33 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable, public network::ClientConnectionListener
+    class _OrxonoxExport MovableEntity : public WorldEntity
     {
         public:
             MovableEntity(BaseObject* creator);
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
             void registerVariables();
 
-            using WorldEntity::setPosition;
-            using WorldEntity::translate;
-            using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
-
-            void setPosition(const Vector3& position);
-            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void setOrientation(const Quaternion& orientation);
-            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-
-            inline void setVelocity(const Vector3& velocity)
-                { this->velocity_ = velocity; }
-            inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
-
-            inline void setAcceleration(const Vector3& acceleration)
-                { this->acceleration_ = acceleration; }
-            inline void setAcceleration(float x, float y, float z)
-                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
-
-            inline void setRotationAxis(const Vector3& axis)
-                { this->rotationAxis_ = axis; this->rotationAxis_.normalise(); }
-            inline void setRotationAxis(float x, float y, float z)
-                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; rotationAxis_.normalise(); }
-            inline const Vector3& getRotationAxis() const
-                { return this->rotationAxis_; }
-
-            inline void setRotationRate(const Degree& angle)
-                { this->rotationRate_ = angle; }
-            inline void setRotationRate(const Radian& angle)
-                { this->rotationRate_ = angle; }
-            inline const Degree& getRotationRate() const
-                { return this->rotationRate_; }
-
-            inline void setMomentum(const Degree& angle)
-                { this->momentum_ = angle; }
-            inline void setMomentum(const Radian& angle)
-                { this->momentum_ = angle; }
-            inline const Degree& getMomentum() const
-                { return this->momentum_; }
-
         private:
-            void clientConnected(unsigned int clientID);
-            void clientDisconnected(unsigned int clientID);
-            void resynchronize();
 
-            void overwritePosition();
-            void overwriteOrientation();
+            //void attachPhysicalObject(WorldEntity* object);
 
-            Vector3 velocity_;
-            Vector3 acceleration_;
-            Vector3 rotationAxis_;
-            Degree rotationRate_;
-            Degree momentum_;
+            //// Bullet btMotionState related
+            //void setWorldTransform(const btTransform& worldTrans)
+            //{
+            //    this->node_->setPosition(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z());
+            //    this->node_->setOrientation(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z());
+            //    //this->velocity_.x = this->physicalBody_->
+            //}
 
-            Vector3 overwrite_position_;
-            Quaternion overwrite_orientation_;
+            //// Bullet btMotionState related
+            //void getWorldTransform(btTransform& worldTrans) const
+            //{
+            //    worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
+            //    worldTrans.setRotation(btQuaternion(node_->getOrientation().w, node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z));
+            //}
     };
 }
 

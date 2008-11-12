@@ -69,4 +69,4 @@ namespace orxonox
     };
 }
 
-#endif /* _PositionableEntity_H__ */
+#endif /* _Model_H__ */

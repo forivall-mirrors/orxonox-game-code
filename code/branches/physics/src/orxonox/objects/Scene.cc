@@ -69,6 +69,28 @@ namespace orxonox
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }
 
+        /////////////
+        // Physics //
+        /////////////
+
+        // create bullet world; bullet solver etc.
+
+        // int maxProxies = 1024;
+
+        btVector3 worldAabbMin(-10000,-10000,-10000);
+        btVector3 worldAabbMax(10000,10000,10000);
+        bt32BitAxisSweep3* broadphase = new bt32BitAxisSweep3(worldAabbMin,worldAabbMax);
+
+        this -> collisionConfiguration_ = new btDefaultCollisionConfiguration();
+        this -> dispatcher_ = new btCollisionDispatcher(collisionConfiguration_);
+
+        this -> solver_ = new btSequentialImpulseConstraintSolver;
+
+        this -> dynamicsWorld_ =  new btDiscreteDynamicsWorld(dispatcher_,broadphase,solver_,collisionConfiguration_);
+
+        dynamicsWorld_->setGravity(btVector3(0,-10,0));
+
+
         // test test test
         if (Core::showsGraphics() && this->sceneManager_)
         {
@@ -90,7 +112,6 @@ namespace orxonox
         {
             if (Ogre::Root::getSingletonPtr())
             {
-//                this->sceneManager_->destroySceneNode(this->rootSceneNode_->getName()); // TODO: remove getName() for newer versions of Ogre
                 Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
             }
             else if (!Core::showsGraphics())

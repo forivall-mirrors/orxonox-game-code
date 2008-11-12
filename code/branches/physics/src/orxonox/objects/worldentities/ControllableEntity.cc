@@ -43,7 +43,7 @@ namespace orxonox
 {
     CreateFactory(ControllableEntity);
 
-    ControllableEntity::ControllableEntity(BaseObject* creator) : WorldEntity(creator)
+    ControllableEntity::ControllableEntity(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(ControllableEntity);
 

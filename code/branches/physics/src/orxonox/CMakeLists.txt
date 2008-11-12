@@ -45,6 +45,7 @@ SET( ORXONOX_SRC_FILES
   objects/EventListener.cc
   objects/EventDispatcher.cc
   objects/EventTarget.cc
+  objects/HelloBullet.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc
@@ -54,8 +55,10 @@ SET( ORXONOX_SRC_FILES
 
   objects/Scene.cc
   objects/worldentities/WorldEntity.cc
-  objects/worldentities/PositionableEntity.cc
+  objects/worldentities/StaticEntity.cc
   objects/worldentities/MovableEntity.cc
+  objects/worldentities/PositionableEntity.cc
+  objects/worldentities/LinearEntity.cc
   objects/worldentities/ControllableEntity.cc
   objects/worldentities/Model.cc
   objects/worldentities/Billboard.cc
@@ -143,6 +146,12 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
+#LibBulletSoftBody
+  LibBulletDynamics
+  LibBulletCollision
+  LibLinearMath
+#ogrebullet_collisions_orxonox
+#ogrebullet_dynamics_orxonox
   util
   core
   audio

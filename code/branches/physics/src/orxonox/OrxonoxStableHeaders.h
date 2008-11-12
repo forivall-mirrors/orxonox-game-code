@@ -47,6 +47,8 @@
 #include <Ogre.h>
 #include <CEGUI.h>
 #include "ois/OIS.h"
+//#include "btBulletCollisionCommon.h"
+//#include "btBulletDynamicsCommon.h"
 #include <boost/thread/recursive_mutex.hpp>
 //#include <boost/thread/mutex.hpp>
 //#include <boost/thread/condition.hpp>
@@ -96,7 +98,7 @@
 
 #include "network/Synchronisable.h"
 
-#include "Settings.h"
+//#include "Settings.h"
 
 //#endif /* ifdef NDEBUG */
 

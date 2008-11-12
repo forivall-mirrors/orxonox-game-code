@@ -34,7 +34,7 @@ namespace orxonox
 {
     CreateFactory(PositionableEntity);
 
-    PositionableEntity::PositionableEntity(BaseObject* creator) : WorldEntity(creator)
+    PositionableEntity::PositionableEntity(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(PositionableEntity);
 
@@ -56,4 +56,8 @@ namespace orxonox
         REGISTERDATA(this->getOrientation().y, network::direction::toclient);
         REGISTERDATA(this->getOrientation().z, network::direction::toclient);
     }
+
+    //void PositionableEntity::attachPhysicalObject(WorldEntity* object)
+    //{
+    //}
 }

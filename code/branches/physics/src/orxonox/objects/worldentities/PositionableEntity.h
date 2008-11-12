@@ -30,11 +30,11 @@
 #define _PositionableEntity_H__
 
 #include "OrxonoxPrereqs.h"
-#include "WorldEntity.h"
+#include "MovableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PositionableEntity : public WorldEntity
+    class _OrxonoxExport PositionableEntity : public MovableEntity
     {
         public:
             PositionableEntity(BaseObject* creator);
@@ -70,6 +70,9 @@ namespace orxonox
                 { this->node_->lookAt(target, relativeTo, localDirectionVector); }
             inline void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->node_->setDirection(direction, relativeTo, localDirectionVector); }
+
+        private:
+            //void attachPhysicalObject(WorldEntity* object);
     };
 }
 
