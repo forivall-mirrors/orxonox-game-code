@@ -38,12 +38,13 @@ namespace orxonox
 {
   CreateFactory(DistanceTrigger);
 
-  DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
+  DistanceTrigger::DistanceTrigger(BaseObject* creator) : PlayerTrigger(creator)
   {
     RegisterObject(DistanceTrigger);
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
+    this->player_ = NULL;
   }
 
   DistanceTrigger::~DistanceTrigger()
@@ -116,10 +117,18 @@ namespace orxonox
 
       Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
       if (distanceVec.length() < this->distance_)
+      {
+        this->player_ = dynamic_cast<ControllableEntity*>(entity);
         return true;
+      }
     }
     return false;
 
+  }
+  
+  ControllableEntity* DistanceTrigger::getTriggeringPlayer(void) const
+  {
+    return this->player_;
   }
 
   bool DistanceTrigger::isTriggered(TriggerMode mode)

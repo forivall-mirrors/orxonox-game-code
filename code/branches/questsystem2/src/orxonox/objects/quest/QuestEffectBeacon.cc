@@ -31,10 +31,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Event.h"
+#include "core/EventIncludes.h"
 
 #include "orxonox/objects/worldentities/ControllableEntity.h"
-#include "orxonox/objects/worldentities/triggers/Trigger.h"
+#include "orxonox/objects/worldentities/triggers/PlayerTrigger.h"
 #include "QuestEffect.h"
 
 namespace orxonox {
@@ -63,13 +63,9 @@ namespace orxonox {
         XMLPortObject(QuestEffectBeacon, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
     }
     
-    void processEvent(Event& event)
+    void QuestEffectBeacon::processEvent(Event& event)
     {
-        //TDO. Resolve pseudo code.
-        //if(isControllableEntity(event.originator_))
-        //{
-        //    SetEvent(BaseObject, "activity", execute, event);
-	//}
+	SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
     }
     
     bool QuestEffectBeacon::execute(ControllableEntity* player)
@@ -149,7 +145,7 @@ namespace orxonox {
         return true;
     }
     
-    bool QuestEffectBeacon::addTrigger(Trigger* trigger)
+    bool QuestEffectBeacon::addTrigger(PlayerTrigger* trigger)
     {
         if(this->trigger_ != NULL)
 	{

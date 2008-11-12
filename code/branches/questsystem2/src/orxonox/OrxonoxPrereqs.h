@@ -127,6 +127,7 @@ namespace orxonox
     class Trigger;
     class DistanceTrigger;
     class EventTrigger;
+    class PlayerTrigger;
 
     class WeaponSystem;
     class WeaponSet;

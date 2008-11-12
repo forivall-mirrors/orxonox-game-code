@@ -76,11 +76,11 @@ namespace orxonox {
             std::list<QuestEffect*> effects_;
             int times_; //!< Number of times the beacon can be exectued.
             QuestEffectBeaconStatus::Enum status_;
-            Trigger* trigger_;
+            PlayerTrigger* trigger_;
             
             bool setTimes(const int & n);
             bool addEffect(QuestEffect* effect);
-            bool addTrigger(Trigger* trigger);
+            bool addTrigger(PlayerTrigger* trigger);
             
             const QuestEffect* getEffect(unsigned int index) const;
             const Trigger* getTrigger(unsigned int index) const;
