@@ -111,7 +111,7 @@ namespace orxonox
             // this creates a flickering effect (extracts exactly 80% of the texture at a random location)
             float uRand = (rand() & 1023) / 1023.0f * 0.2f;
             float vRand = (rand() & 1023) / 1023.0f * 0.2f;
-            this->statsOverlayNoise_->setUV(uRand, vRand, 0.8f + uRand, 0.8f + vRand);
+            this->statsOverlayNoise_->setUV(uRand, vRand, 7.5f + uRand, 7.5f + vRand);
     }
 
 }
