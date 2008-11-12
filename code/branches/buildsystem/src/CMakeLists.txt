@@ -15,12 +15,6 @@ INCLUDE_DIRECTORIES(
   ${ZLIB_INCLUDE_DIR}
 )
 
-# TODO: remove this after the CMake Modules have been fixed and use absolut paths
-# Set the search paths for the linking
-LINK_DIRECTORIES(
-  ${OGRE_LIB_DIR}
-)
-
 INCLUDE_DIRECTORIES(
   .
   ois

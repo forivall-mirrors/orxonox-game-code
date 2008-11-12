@@ -40,7 +40,7 @@ IF(NETWORK_TESTING_ENABLED)
   )
   ADD_EXECUTABLE(networktest ${TEST_SRC_FILES})
   TARGET_LINK_LIBRARIES( networktest
-    ${OGRE_LIBRARIES}
+    ${OGRE_LIBRARY}
     network
     ${ENet_LIBRARIES}
     ${ZLIB_LIBRARY}
