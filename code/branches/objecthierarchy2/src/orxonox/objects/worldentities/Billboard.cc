@@ -41,6 +41,9 @@ namespace orxonox
     {
         RegisterObject(Billboard);
 
+        this->material_ = "";
+        this->colour_ = ColourValue::White;
+
         this->registerVariables();
     }
 
@@ -87,7 +90,7 @@ namespace orxonox
     {
         if (!this->billboard_.getBillboardSet())
         {
-            if (this->getScene() && this->getScene()->getSceneManager())
+            if (this->getScene() && this->getScene()->getSceneManager() && (this->material_ != ""))
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())

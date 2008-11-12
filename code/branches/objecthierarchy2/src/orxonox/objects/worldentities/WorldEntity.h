@@ -138,6 +138,8 @@ namespace orxonox
                 { return this->parent_; }
 
         protected:
+            virtual void notifyAttached() {}
+
             Ogre::SceneNode* node_;
 
         private:

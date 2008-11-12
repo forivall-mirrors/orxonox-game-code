@@ -29,20 +29,167 @@
 #include "OrxonoxStableHeaders.h"
 #include "Backlight.h"
 
-#include <OgreBillboard.h>
 #include <OgreRibbonTrail.h>
 #include <OgreSceneManager.h>
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/Executor.h"
-#include "util/Math.h"
-#include "GraphicsEngine.h"
+#include "core/XMLPort.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
     CreateFactory(Backlight);
 
+    Backlight::Backlight(BaseObject* creator) : Billboard(creator)
+    {
+        RegisterObject(Backlight);
+
+        this->ribbonTrail_ = 0;
+        this->ribbonTrailNode_ = 0;
+
+        this->width_ = 0;
+        this->length_ = 1.0f;
+        this->lifetime_ = 1.0f;
+        this->maxelements_ = 1;
+
+        if (Core::showsGraphics())
+        {
+            assert(this->getScene());
+            assert(this->getScene()->getSceneManager());
+            assert(this->getScene()->getRootSceneNode());
+
+            this->ribbonTrail_ = this->getScene()->getSceneManager()->createRibbonTrail(this->getNode()->getName());
+            this->ribbonTrailNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
+            this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
+            this->ribbonTrail_->addNode(this->getNode());
+
+            this->ribbonTrail_->setMaxChainElements(this->maxelements_);
+            this->ribbonTrail_->setTrailLength(this->length_);
+            this->ribbonTrail_->setInitialWidth(0, this->width_);
+        }
+
+        this->registerVariables();
+    }
+
+    Backlight::~Backlight()
+    {
+        if (this->isInitialized())
+        {
+            if (this->ribbonTrail_)
+            {
+                if (this->ribbonTrailNode_)
+                {
+                    this->ribbonTrailNode_->detachObject(this->ribbonTrail_);
+                    this->getScene()->getSceneManager()->destroySceneNode(this->ribbonTrailNode_->getName());
+                }
+                this->getScene()->getSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
+            }
+        }
+    }
+
+    void Backlight::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(Backlight, XMLPort, xmlelement, mode);
+
+        XMLPortParam(Backlight, "length",        setLength,        getLength,        xmlelement, mode).defaultValues(100.0f);
+        XMLPortParam(Backlight, "width",         setWidth,         getWidth,         xmlelement, mode).defaultValues(1.0f);
+        XMLPortParam(Backlight, "elements",      setMaxElements,   getMaxElements,   xmlelement, mode).defaultValues(10);
+        XMLPortParam(Backlight, "lifetime",      setLifetime,      getLifetime,      xmlelement, mode).defaultValues(1.0f);
+        XMLPortParam(Backlight, "trailmaterial", setTrailMaterial, getTrailMaterial, xmlelement, mode);
+    }
+
+    void Backlight::registerVariables()
+    {
+        REGISTERDATA  (this->width_,         direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_width));
+        REGISTERDATA  (this->lifetime_,      direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_lifetime));
+        REGISTERDATA  (this->length_,        direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_length));
+        REGISTERDATA  (this->maxelements_,   direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_maxelements));
+        REGISTERSTRING(this->trailmaterial_, direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_trailmaterial));
+    }
+
+    void Backlight::changedColour()
+    {
+        Billboard::changedColour();
+
+        if (this->ribbonTrail_ && this->isActive())
+            this->ribbonTrail_->setInitialColour(0, this->getColour());
+    }
+
+    void Backlight::update_width()
+    {
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setInitialWidth(0, this->width_);
+        this->update_lifetime();
+    }
+
+    void Backlight::update_lifetime()
+    {
+        if (this->ribbonTrail_)
+        {
+            this->ribbonTrail_->setWidthChange(0, this->width_ / this->lifetime_/* * Backlight::timeFactor_s*/);
+            this->ribbonTrail_->setColourChange(0, 0, 0, 0, 1.0f / this->lifetime_/* * Backlight::timeFactor_s*/);
+        }
+    }
+
+    void Backlight::update_length()
+    {
+//        if (this->ribbonTrail_)
+//            this->ribbonTrail_->setTrailLength(this->length_);
+    }
+
+    void Backlight::update_maxelements()
+    {
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setMaxChainElements(this->maxelements_);
+    }
+
+    void Backlight::update_trailmaterial()
+    {
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setMaterialName(this->trailmaterial_);
+    }
+
+    void Backlight::changedVisibility()
+    {
+        SUPER(Backlight, changedVisibility);
+
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setVisible(this->isVisible());
+    }
+
+    void Backlight::changedActivity()
+    {
+        SUPER(Backlight, changedActivity);
+
+        if (this->ribbonTrail_)
+        {
+            if (this->isActive())
+                this->ribbonTrail_->setInitialColour(0, this->getColour());
+            else
+                this->ribbonTrail_->setInitialColour(0, 0, 0, 0, 0);
+        }
+    }
+
+    void Backlight::notifyAttached()
+    {
+        Billboard::notifyAttached();
+
+//        if (this->ribbonTrail_)
+//            this->ribbonTrail_->clearChain(0);
+
+//        if (this->ribbonTrail_)
+//            this->ribbonTrail_->setTrailLength(this->length_);
+    }
+
+    void Backlight::tick(float dt)
+    {
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setTrailLength(this->length_);
+    }
+
+//------------------------------------------------------------------------------------
+/*
     float Backlight::timeFactor_s = 1.0;
 
     Backlight::Backlight(float maxspeed, float brakingtime, float scale)
@@ -51,14 +198,15 @@ namespace orxonox
 
         this->setConfigValues();
         this->traillength_ = 1;
+        this->colour_ = ColourValue::White;
 
         this->configure(maxspeed, brakingtime, scale);
     }
-    
+
     bool Backlight::create(){
       if(!WorldEntity::create())
         return false;
-      
+
       this->getNode()->setInheritScale(false);
 
       this->billboard_.setBillboardSet("Flares/backlightflare");
@@ -75,7 +223,7 @@ namespace orxonox
 
         //this->setTimeFactor(Orxonox::getInstance().getTimeFactor());
       this->setTimeFactor(1.0f);
-      
+
       this->ribbonTrail_->setMaxChainElements(this->maxTrailsegments_);
       this->ribbonTrail_->setTrailLength(this->traillength_ = 2 * this->maxTrailsegments_);
       this->ribbonTrail_->setInitialWidth(0, this->width_ * this->getScale());
@@ -112,13 +260,6 @@ namespace orxonox
     {
         this->ribbonTrail_->setColourChange(0, ColourValue(0, 0, 0, this->maxTraillength_ / this->traillength_ / this->maxLifeTime_ * Backlight::timeFactor_s));
     }
-    
-    
-    void Backlight::XMLPort(Element& xmlelement, XMLPort::Mode mode){
-      SUPER(Backlight, XMLPort, xmlelement, mode);
-      
-      Backlight::create();
-    }
 
     void Backlight::tick(float dt)
     {
@@ -144,12 +285,6 @@ namespace orxonox
         this->ribbonTrail_->setTrailLength(this->traillength_);
     }
 
-    void Backlight::setColour(const ColourValue& colour)
-    {
-        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
-        this->ribbonTrail_->setInitialColour(0, ColourValue(colour.r / 4 + 0.75, colour.g / 4 + 0.75, colour.b / 4 + 0.75));
-    }
-
     void Backlight::configure(float maxspeed, float brakingtime, float scale)
     {
         this->maxTraillength_ = this->maxLifeTime_ * maxspeed;
@@ -167,4 +302,5 @@ namespace orxonox
         this->billboard_.setVisible(this->isVisible());
         this->ribbonTrail_->setVisible(this->isVisible());
     }
+*/
 }

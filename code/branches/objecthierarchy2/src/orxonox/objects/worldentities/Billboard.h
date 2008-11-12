@@ -60,9 +60,11 @@ namespace orxonox
             inline const ColourValue& getColour() const
                 { return this->colour_; }
 
+        protected:
+            virtual void changedColour();
+
         private:
             void changedMaterial();
-            void changedColour();
 
             BillboardSet billboard_;
             std::string material_;

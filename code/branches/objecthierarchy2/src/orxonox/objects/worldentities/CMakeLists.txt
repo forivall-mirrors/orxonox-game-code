@@ -3,16 +3,17 @@ SET( SRC_FILES
   PositionableEntity.cc
   MovableEntity.cc
   ControllableEntity.cc
-  Model.cc
+
+  Backlight.cc
   Billboard.cc
   BlinkingBillboard.cc
   Light.cc
   Camera.cc
   CameraPosition.cc
-  SpawnPoint.cc
+  Model.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
-#  Backlight.cc
+  SpawnPoint.cc
 )
 
 ADD_SOURCE_DIRECTORY(SRC_FILES pawns)

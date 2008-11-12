@@ -130,6 +130,8 @@ namespace orxonox
         this->children_.insert(object);
         object->parent_ = this;
         object->parentID_ = this->getObjectID();
+
+        object->notifyAttached();
     }
 
     void WorldEntity::detach(WorldEntity* object)
