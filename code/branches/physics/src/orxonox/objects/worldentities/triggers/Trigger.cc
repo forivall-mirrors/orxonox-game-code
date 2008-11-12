@@ -43,7 +43,7 @@ namespace orxonox
 
   CreateFactory(Trigger);
 
-  Trigger::Trigger(BaseObject* creator) : StaticEntity(creator)
+  Trigger::Trigger(BaseObject* creator) : PositionableEntity(creator)
   {
     RegisterObject(Trigger);
 

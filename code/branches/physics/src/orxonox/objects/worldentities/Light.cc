@@ -46,7 +46,7 @@ namespace orxonox
 
     CreateFactory(Light);
 
-    Light::Light(BaseObject* creator) : StaticEntity(creator)
+    Light::Light(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(Light);
 

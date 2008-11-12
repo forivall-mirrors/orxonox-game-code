@@ -57,9 +57,9 @@ SET( ORXONOX_SRC_FILES
   objects/Scene.cc
   objects/worldentities/WorldEntity.cc
   objects/worldentities/StaticEntity.cc
-  objects/worldentities/KinematicEntity.cc
-  objects/worldentities/DynamicEntity.cc
   objects/worldentities/MovableEntity.cc
+  objects/worldentities/PositionableEntity.cc
+  objects/worldentities/LinearEntity.cc
   objects/worldentities/ControllableEntity.cc
   objects/worldentities/Model.cc
   objects/worldentities/Billboard.cc

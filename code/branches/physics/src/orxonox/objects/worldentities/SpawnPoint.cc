@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(SpawnPoint);
 
-    SpawnPoint::SpawnPoint(BaseObject* creator) : StaticEntity(creator)
+    SpawnPoint::SpawnPoint(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(SpawnPoint);
 
