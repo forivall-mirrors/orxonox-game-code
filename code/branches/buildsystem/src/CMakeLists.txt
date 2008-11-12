@@ -15,11 +15,10 @@ INCLUDE_DIRECTORIES(
   ${ZLIB_INCLUDE_DIR}
 )
 
-# Set the search paths for the linking
 # TODO: remove this after the CMake Modules have been fixed and use absolut paths
+# Set the search paths for the linking
 LINK_DIRECTORIES(
   ${OGRE_LIB_DIR}
-  ${CEGUI_LIB_DIR}
 )
 
 INCLUDE_DIRECTORIES(
@@ -32,7 +31,6 @@ INCLUDE_DIRECTORIES(
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
-#ADD_SUBDIRECTORY(lua)
 ADD_SUBDIRECTORY(tolua)
 
 # TODO: write include file for this stuff
@@ -45,13 +43,14 @@ IF (WIN32)
     ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
     INCLUDE_DIRECTORIES(ceguilua-0.6.1)
 ELSE (WIN32)
-    IF (${CEGUI_VERSION} LESS 0.6.0)
+    # FIXME
+    #IF (${CEGUI_VERSION} LESS 0.6.0)
         ADD_SUBDIRECTORY(ceguilua-0.5.0/ceguilua)
         INCLUDE_DIRECTORIES(ceguilua-0.5.0)
-    ELSE (${CEGUI_VERSION} LESS 0.6.0)
-        ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-        INCLUDE_DIRECTORIES(ceguilua-0.6.1)
-    ENDIF (${CEGUI_VERSION} LESS 0.6.0)
+    #ELSE (${CEGUI_VERSION} LESS 0.6.0)
+    #    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
+    #    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    #ENDIF (${CEGUI_VERSION} LESS 0.6.0)
 ENDIF (WIN32)
 
 # Our own libraries

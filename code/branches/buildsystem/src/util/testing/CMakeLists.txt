@@ -1,12 +1,7 @@
-INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES}
-	../
-)
+INCLUDE_DIRECTORIES(..)
 
-ADD_EXECUTABLE(TestConverter
- TestConverter.cpp
-)
+IF(ENABLE_TESTS)
+  ADD_EXECUTABLE(TestConverter TestConverter.cpp)
+ENDIF(ENABLE_TESTS)
 
-
-ADD_TEST(TestConverter
-	${EXECUTABLE_OUTPUT_PATH}/TestConverter
-)
+ADD_TEST(TestConverter ${EXECUTABLE_OUTPUT_PATH}/TestConverter)

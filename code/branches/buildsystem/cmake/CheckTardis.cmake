@@ -44,4 +44,7 @@ IF (IS_TARDIS)
   SET(ENV{ENETDIR} "/usr/pack/enet-2007-sd;/usr/pack/enet-2007-sd/i686-debian-linux3.1")
   SET(ENV{OGGVORBISDIR} "/usr/pack/oggvorbis-1.0-ds;/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.0")
   #SET(TCL_INCLUDE_PATH "/usr/pack/tcltk-8.4.9.linux-mo/include")
+  SET(ENV{CEGUIDIR} "/usr/pack/cegui-0.5.0-sd;/usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1")
 ENDIF (IS_TARDIS)
+
+MARK_AS_ADVANCED(UNAME_CMD IS_TARDIS)
