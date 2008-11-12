@@ -35,6 +35,9 @@ namespace orxonox {
     PlayerTrigger::PlayerTrigger(BaseObject* creator) : Trigger(creator)
     {
         RegisterObject(PlayerTrigger);
+        
+        this->player_ = NULL;
+        this->isForPlayer_ = true;
     }
     
     

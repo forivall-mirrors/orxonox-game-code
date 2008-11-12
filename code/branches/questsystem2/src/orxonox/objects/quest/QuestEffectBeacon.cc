@@ -62,7 +62,7 @@ namespace orxonox {
 
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
         XMLPortObject(QuestEffectBeacon, QuestEffect, "", addEffect, getEffect, xmlelement, mode);
-        XMLPortObject(QuestEffectBeacon, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
+        XMLPortObject(QuestEffectBeacon, PlayerTrigger, "", addTrigger, getTrigger, xmlelement, mode);
     }
     
     void QuestEffectBeacon::processEvent(Event& event)
@@ -186,7 +186,7 @@ namespace orxonox {
         return NULL;
     }
 
-    const Trigger* QuestEffectBeacon::getTrigger(unsigned int index) const
+    const PlayerTrigger* QuestEffectBeacon::getTrigger(unsigned int index) const
     {
         if(index == 0)
         {

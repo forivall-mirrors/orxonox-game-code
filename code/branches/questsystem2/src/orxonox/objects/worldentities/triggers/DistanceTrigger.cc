@@ -44,7 +44,7 @@ namespace orxonox
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
-    this->player_ = NULL;
+    this->setForPlayer(false);
   }
 
   DistanceTrigger::~DistanceTrigger()
@@ -82,6 +82,12 @@ namespace orxonox
 
   void DistanceTrigger::addTargets(const std::string& targets)
   {
+  
+    if(targets == "ControllableEntity")
+    {
+        this->setForPlayer(true);
+    }
+  
     Identifier* targetId = ClassByString(targets);
     if (!targetId)
     {
@@ -118,17 +124,16 @@ namespace orxonox
       Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
       if (distanceVec.length() < this->distance_)
       {
-        this->player_ = dynamic_cast<ControllableEntity*>(entity);
+        if(this->isForPlayer())
+	{
+            ControllableEntity* player = dynamic_cast<ControllableEntity*>(entity);
+            this->setTriggeringPlayer(player);
+	}
+        
         return true;
       }
     }
     return false;
-
-  }
-  
-  ControllableEntity* DistanceTrigger::getTriggeringPlayer(void) const
-  {
-    return this->player_;
   }
 
   bool DistanceTrigger::isTriggered(TriggerMode mode)

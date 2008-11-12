@@ -47,10 +47,22 @@ namespace orxonox {
 	    
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             
-            virtual ControllableEntity* getTriggeringPlayer(void) const = 0;
+            inline ControllableEntity* getTriggeringPlayer(void) const
+                { return this->player_; }
             
 	protected:
 	    virtual bool isTriggered(TriggerMode mode) = 0;
+	    
+	    inline void setTriggeringPlayer(ControllableEntity* player)
+	       { this->player_ = player; }
+	    inline bool isForPlayer(void) const
+	       { return this->isForPlayer_; }
+	    inline void setForPlayer(bool isForPlayer)
+	       { this->isForPlayer_ = isForPlayer; }
+	    
+	private:
+	    ControllableEntity* player_;
+	    bool isForPlayer_;
 	
     };
 

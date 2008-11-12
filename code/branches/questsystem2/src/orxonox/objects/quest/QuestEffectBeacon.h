@@ -84,7 +84,7 @@ namespace orxonox {
             bool addTrigger(PlayerTrigger* trigger);
             
             const QuestEffect* getEffect(unsigned int index) const;
-            const Trigger* getTrigger(unsigned int index) const;
+            const PlayerTrigger* getTrigger(unsigned int index) const;
     
     };
 

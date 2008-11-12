@@ -57,8 +57,6 @@ namespace orxonox
         { this->distance_ = distance; }
       inline float getDistance() const
         { return this->distance_; }
-        
-        virtual ControllableEntity* getTriggeringPlayer(void) const;
 
       bool checkDistance();
 
@@ -69,8 +67,6 @@ namespace orxonox
       ClassTreeMask targetMask_;
       std::set<Ogre::Node*> targetSet_;
       float distance_;
-      
-      ControllableEntity* player_;
       
   };
 }
