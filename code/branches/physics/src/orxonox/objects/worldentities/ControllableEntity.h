@@ -78,17 +78,7 @@ namespace orxonox
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
 
-            using WorldEntity::setPosition;
-            using WorldEntity::translate;
-            using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
-
-            void setPosition(const Vector3& position);
+            void setPosition();
             void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
             void setOrientation(const Quaternion& orientation);
             void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);

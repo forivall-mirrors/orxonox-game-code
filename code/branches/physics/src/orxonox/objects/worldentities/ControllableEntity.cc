@@ -325,17 +325,16 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     }
 
 
-    void ControllableEntity::setPosition(const Vector3& position)
+    // virtual void PositionChanged() { }
+    void ControllableEntity::positionChanged(const Vector3& position)
     {
         if (Core::isMaster())
         {
-            this->node_->setPosition(position);
-            this->server_position_ = position;
+            this->server_position_ = this->getPosition();
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->node_->setPosition(position);
             this->client_position_ = position;
         }
     }
@@ -354,8 +353,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_velocity_ = velocity;
         }
     }
-
-    void ControllableEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
+    // virtual void translateChanged() { }
+    void ControllableEntity::translateChanged(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
     {
         if (Core::isMaster())
         {
@@ -369,8 +368,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_position_ = this->node_->getPosition();
         }
     }
-
-    void ControllableEntity::setOrientation(const Quaternion& orientation)
+    // virtual void orientationChanged() { }
+    void ControllableEntity::orientationChanged(const Quaternion& orientation)
     {
         if (Core::isMaster())
         {
@@ -384,8 +383,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_orientation_ = orientation;
         }
     }
-
-    void ControllableEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
+    // virtual void rotateChanged() { }
+    void ControllableEntity::rotateChanged(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
     {
         if (Core::isMaster())
         {
@@ -399,8 +398,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_orientation_ = this->node_->getOrientation();
         }
     }
-
-    void ControllableEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    // virtual void yawChanged() { }
+    void ControllableEntity::yawChanged(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         if (Core::isMaster())
         {
@@ -414,8 +413,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_orientation_ = this->node_->getOrientation();
         }
     }
-
-    void ControllableEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    // virtual void pitchChanged() { }
+    void ControllableEntity::pitchChanged(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         if (Core::isMaster())
         {
@@ -429,8 +428,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_orientation_ = this->node_->getOrientation();
         }
     }
-
-    void ControllableEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    // virtual void rollChanged() { }
+    void ControllableEntity::rollChanged(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         if (Core::isMaster())
         {
@@ -444,8 +443,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_orientation_ = this->node_->getOrientation();
         }
     }
-
-    void ControllableEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
+    //virtual void lookAtChanged() { }
+    void ControllableEntity::lookAtChanged(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
         if (Core::isMaster())
         {
@@ -459,8 +458,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->client_orientation_ = this->node_->getOrientation();
         }
     }
-
-    void ControllableEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
+    // virtual void directionChanged( ) { }
+    void ControllableEntity::directionChanged(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
         if (Core::isMaster())
         {

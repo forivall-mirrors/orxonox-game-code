@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "HelloBullet.h"
 
+#include <OgreSceneNode.h>
 #include <OgreStaticGeometry.h>
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>

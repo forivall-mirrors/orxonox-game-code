@@ -147,6 +147,24 @@ namespace orxonox
         this->attachPhysicalObject(object);
     }
 
+    void WorldEntitiy::attachPhysicalObject(WorldEntity* object){
+    //function attachhysicalObject
+        StaticEntity* staticObject = dynamic_cast<WorldEntity*>(object);
+        if (staticObject != 0 && hasPhysics()){
+           btCompountShape* compoundShape = dynamic_cast<btCompoundShape*>(physicalBody_->getCollisionShape());
+           if(compoundShape == 0){
+                //NEW
+                btCompoundShape* newShape = new btCompoundShape();
+                newShape->addChildShape(this->physcialBody_->getCollisionShape());
+                newShape->addChildShape(staticObject->getCollisionShape());
+                this->physicalBody_->setCollisionShape();
+           }
+           else{
+               compoundShape -> addChildShape(staticObject->getCollisionShape());
+           }
+        }
+    }
+
     void WorldEntity::detach(WorldEntity* object)
     {
         this->node_->removeChild(object->node_);

@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/BaseObject.h"
+#include <OgrePrerequisites.h>
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
