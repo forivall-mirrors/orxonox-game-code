@@ -209,26 +209,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\PhysicsTest.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.cc"
 					>
 				</File>
@@ -1150,10 +1130,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\HelloBullet.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\PhysicsTest.h"
 					>
 				</File>
 				<File

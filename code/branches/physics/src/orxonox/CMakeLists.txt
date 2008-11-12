@@ -45,7 +45,6 @@ SET( ORXONOX_SRC_FILES
   objects/EventListener.cc
   objects/EventDispatcher.cc
   objects/EventTarget.cc
-#  objects/PhysicsTest.cc
   objects/HelloBullet.cc
   objects/Radar.cc
   objects/RadarListener.cc
