@@ -44,10 +44,14 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
+            void decrementBullets();
+            void decrementMagazines();
+            void incrementBullets();
+            void incrementMagazines();
 
         private:
-
-
+            int bullets;
+            int magazines;
     };
 }
 

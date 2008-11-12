@@ -73,6 +73,7 @@ namespace orxonox
 
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(WeaponSlot, XMLPort, xmlelement, mode);
     }
+
 }

@@ -34,6 +34,10 @@
 #include "core/BaseObject.h"
 #include "tools/BillboardSet.h"
 #include "tools/Timer.h"
+#include "core/Identifier.h"
+
+#include "WeaponSystem.h"
+#include "Munition.h"
 
 namespace orxonox
 {
@@ -46,27 +50,33 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void fire();
+            void timer();
             void reloaded();
+            void attachNeededMunition(std::string munitionType);
+
+            //get and set functions
             virtual void setParentWeaponSystem();
-            void attachNeededMunition(Munition *munitionPointer);
+            Munition * getAttachedMunition();
+            void setLoadingTime(float loadingTime);
+            float getLoadingTime();
+            void setWeaponReadyToShoot(bool b);
+            bool getWeaponReadyToShoot();
+            Timer<Weapon> *getTimer();
 
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
                 { parentWeaponSlot_=parentWeaponSlot; };
             inline WeaponSlot * getParentWeaponSlot()
                 { return parentWeaponSlot_; };
 
-
-
-
         private:
             bool weaponReadyToShoot_;
             float loadingTime_;
-            Munition *pointerToMunition_;
+            Munition *munition_;
+
             WeaponSlot *parentWeaponSlot_;
             WeaponSystem *parentWeaponSystem_;
+            SubclassIdentifier<Munition> munitionIdentifier_;
             Timer<Weapon> reloadTimer_;
-
-
     };
 }
 

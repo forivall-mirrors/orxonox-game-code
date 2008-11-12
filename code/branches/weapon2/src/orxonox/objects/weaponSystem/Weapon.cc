@@ -34,7 +34,6 @@
 
 #include "Weapon.h"
 
-
 namespace orxonox
 {
     Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
@@ -42,9 +41,6 @@ namespace orxonox
         RegisterObject(Weapon);
         this->weaponReadyToShoot_ = true;
         this->setParentWeaponSystem();
-        this->pointerToMunition_ = this->parentWeaponSystem_->getAttachedMunitionPointer;
-        this->attachNeededMunition(this->pointerToMunition_);
-
     }
 
     Weapon::~Weapon()
@@ -61,30 +57,52 @@ namespace orxonox
     {
 
     }
+    void Weapon::timer()
+    {
+        this->reloadTimer_.setTimer( this->loadingTime_ , false , this , createExecutor(createFunctor(&Weapon::reloaded)));
+    }
 
     void Weapon::reloaded()
     {
+
         this->weaponReadyToShoot_ = true;
     }
 
-    void attachNeededMunition(Munition *pointerToMunition)
+    void Weapon::attachNeededMunition(std::string munitionName)
     {
         //if munition type already exist attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
-        if ( this->parentWeaponSystem_->munitionSet_[laserGunMunition] )
-            this->pointerToMunition_ = pointerToMunition;
+        if ( this->parentWeaponSystem_->getMunitionType(munitionName) )
+            this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionName);
         else
         {
-            this->pointerToMunition_ = new LaserGunMunition;
-            this->parentWeaponSystem_->munitionSet_[laserGunMunition] = this->pointerToMunition_;
-
+            //create new munition with identifier
+            this->munitionIdentifier_ = ClassByString(munitionName);
+            this->munition_ = this->munitionIdentifier_.fabricate(this);
+            this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
         }
     }
 
-/*
-    void Weapon::setParentWeaponSystem()
-    {
-        this->parentWeaponSystem_ = this->parentWeaponSlot_->parentWeaponSet_->parentWeaponSystem_;
-    }
-*/
 
+    /*get and set functions
+     *
+     */
+    void Weapon::setParentWeaponSystem()
+    {   this->parentWeaponSystem_ = this->parentWeaponSlot_->getParentWeaponSet()->getParentWeaponSystem(); }
+
+    Munition * Weapon::getAttachedMunition()
+    {   return this->munition_; }
+
+    void Weapon::setLoadingTime(float loadingTime)
+    {   this->loadingTime_ = loadingTime;   }
+
+    float Weapon::getLoadingTime()
+    {   return this->loadingTime_;  }
+
+    void Weapon::setWeaponReadyToShoot(bool b)
+    {   this->weaponReadyToShoot_ = b;   }
+
+    bool Weapon::getWeaponReadyToShoot()
+    {   return this->weaponReadyToShoot_;    }
+    Timer<Weapon> * Weapon::getTimer()
+    {   return &this->reloadTimer_;   }
 }

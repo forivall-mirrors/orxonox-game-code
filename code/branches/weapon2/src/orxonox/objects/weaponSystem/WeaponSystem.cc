@@ -51,7 +51,6 @@ namespace orxonox
 
         this->activeWeaponSet_ = 0;
         this->parentSpaceShip_ = 0;
-        this->attachedMunition_ =0;
     }
 
     WeaponSystem::~WeaponSystem()
@@ -63,6 +62,16 @@ namespace orxonox
         this->weaponSets_.push_back(wSet);
         wSet->setParentWeaponSystem(this);
     }
+
+    void WeaponSystem::setNewMunition(std::string munitionType, Munition * munitionToAdd)
+    {
+        this->munitionSet_[munitionType] = munitionToAdd;
+    }
+    Munition * WeaponSystem::getMunitionType(std::string munitionType)
+    {
+        return this->munitionSet_[munitionType];
+    }
+
 
 /*
     //the first weaponSet is at n=0
@@ -96,22 +105,5 @@ namespace orxonox
     {
 
     }
-
-    Munition * WeaponSystem::getAttachedMunitionPointer()
-    {
-        return this->attachedMunition_;
-    }
-
-    void WeaponSystem::addMunitionType(Munition *munitionPointer)
-    {
-
-
-        if (munitionPointer != NULL)  //gewährleiste, dass munitionPointer auf etwas sinnvolles zeigt
-            this->attachedMunition_ = munitionPointer;
-        else
-            ;//was?
-
-    }
-
 
 }

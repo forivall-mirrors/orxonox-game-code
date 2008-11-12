@@ -45,6 +45,25 @@ namespace orxonox
     {
     }
 
+
+    void Munition::decrementBullets()
+    {
+        this->bullets--;
+    }
+    void Munition::decrementMagazines()
+    {
+        this->magazines--;
+    }
+    void Munition::incrementBullets()
+    {
+        this->bullets++;
+    }
+    void Munition::incrementMagazines()
+    {
+        this->magazines++;
+    }
+
+
     void Munition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 

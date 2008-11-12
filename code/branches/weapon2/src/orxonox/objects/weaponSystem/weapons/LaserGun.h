@@ -36,6 +36,8 @@
 #include "../munitions/LaserGunMunition.h"
 #include "util/Math.h"
 #include "../Weapon.h"
+#include "../projectiles/BillboardProjectile.h"
+#include "../projectiles/ParticleProjectile.h"
 
 namespace orxonox
 {
@@ -48,7 +50,6 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void fire();
-
 
         private:
 

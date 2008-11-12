@@ -43,29 +43,34 @@ namespace orxonox
         RegisterObject(LaserGun);
 
         //set weapon properties here
-        this->loadingTime_ = 0.5;
+        this->setLoadingTime(0.5);
+
+        //Hack --> will be loaded by XML
+        this->attachNeededMunition("LaserGunMunition");
     }
 
     LaserGun::~LaserGun()
     {
     }
 
-    LaserGun::fire()
+    void LaserGun::fire()
     {
-        if { this->weaponReadyToShoot_ }
+        if ( this->getWeaponReadyToShoot() )
         {
-            this->weaponReadyToShoot_ = false;
+            this->setWeaponReadyToShoot(false);
+
+            Weapon::timer();
+
             //take munition
-            //this->pointerToMunition_->
+            this->getAttachedMunition()->decrementBullets();
 
-            this->reloadTimer_.setTimer( loadingTime_ , false , this , &this->reloaded );
-
-            BillboardProjectile* projectile = new ParticleProjectile(this);
-            projectile->setColour(this->getProjectileColour());
+            //create projectile
+            //BillboardProjectile* projectile = new ParticleProjectile(this);
+            //projectile->setColour(this->getProjectileColour());
         }
         else
         {
-            //actions, when weapon is not reloaded
+            //actions, when weapon is not reloaded if there are some
         }
     }
 
@@ -73,5 +78,7 @@ namespace orxonox
     {
 
     }
+
+
 
 }

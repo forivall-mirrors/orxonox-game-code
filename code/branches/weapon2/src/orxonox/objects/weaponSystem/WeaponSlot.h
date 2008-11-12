@@ -33,7 +33,6 @@
 
 #include "core/BaseObject.h"
 
-
 #include "Weapon.h"
 #include "../worldentities/PositionableEntity.h"
 
@@ -62,11 +61,6 @@ namespace orxonox
             bool unlimitedAmmo_;
 
             WeaponSet *parentWeaponSet_;
-
-            //attached weapon orientation
-            int yaw_ = 0;
-            int pitch_ = 0;
-            int roll_ = 0;
     };
 }
 
