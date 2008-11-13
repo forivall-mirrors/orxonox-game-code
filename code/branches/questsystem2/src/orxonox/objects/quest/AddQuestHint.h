@@ -57,7 +57,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuestHint object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
+            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
         private:
             std::string hintId_; //!< The id of the QuestHint.

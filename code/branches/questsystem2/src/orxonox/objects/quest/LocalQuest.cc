@@ -38,7 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestEffect.h"
 
 namespace orxonox {
@@ -83,7 +83,7 @@ namespace orxonox {
     @return
         Returns true if the Quest could be failed, false if not.
     */
-    bool LocalQuest::fail(ControllableEntity* player)
+    bool LocalQuest::fail(PlayerInfo* player)
     {
         if(this->isFailable(player)) //!< Checks whether the quest can be failed.
         {
@@ -105,7 +105,7 @@ namespace orxonox {
     @return
         Returns true if the Quest could be completed, false if not.
     */
-    bool LocalQuest::complete(ControllableEntity* player)
+    bool LocalQuest::complete(PlayerInfo* player)
     {
         if(this->isCompletable(player)) //!< Checks whether the Quest can be completed.
         {
@@ -126,9 +126,9 @@ namespace orxonox {
     @return
         Returns true if the Quest can be started, false if not.
     @throws
-        Throws an exception if isInactive(ControllableEntity*) throws one.
+        Throws an exception if isInactive(PlayerInfo*) throws one.
     */
-    bool LocalQuest::isStartable(const ControllableEntity* player) const
+    bool LocalQuest::isStartable(const PlayerInfo* player) const
     {
         return this->isInactive(player);
     }
@@ -141,9 +141,9 @@ namespace orxonox {
     @return
         Returns true if the Quest can be failed, false if not.
     @throws
-        Throws an exception if isActive(ControllableEntity*) throws one.
+        Throws an exception if isActive(PlayerInfo*) throws one.
     */
-    bool LocalQuest::isFailable(const ControllableEntity* player) const
+    bool LocalQuest::isFailable(const PlayerInfo* player) const
     {
         return this->isActive(player);
     }
@@ -156,9 +156,9 @@ namespace orxonox {
     @return
         Returns true if the Quest can be completed, false if not.
     @throws
-        Throws an exception if isInactive(ControllableEntity*) throws one.
+        Throws an exception if isInactive(PlayerInfo*) throws one.
     */
-    bool LocalQuest::isCompletable(const ControllableEntity* player) const
+    bool LocalQuest::isCompletable(const PlayerInfo* player) const
     {
         return this->isActive(player);
     }
@@ -173,14 +173,14 @@ namespace orxonox {
     @throws
         Throws an Exception if player is NULL.
     */
-    questStatus::Enum LocalQuest::getStatus(const ControllableEntity* player) const
+    questStatus::Enum LocalQuest::getStatus(const PlayerInfo* player) const
     {
         if(player == NULL) //!< No player has no defined status.
         {
-            ThrowException(Argument, "The input ControllableEntity* is NULL.");
+            ThrowException(Argument, "The input PlayerInfo* is NULL.");
         }
 
-        std::map<ControllableEntity*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((ControllableEntity*)(void*)player); //Thx. to x3n for the (ControllableEntity*)(void*) 'hack'.
+        std::map<const PlayerInfo*, questStatus::Enum>::const_iterator it = this->playerStatus_.find(player);
         if (it != this->playerStatus_.end()) //!< If there is a player in the map.
         {
             return it->second;
@@ -200,7 +200,7 @@ namespace orxonox {
     @return
         Returns false if player is NULL.
     */
-    bool LocalQuest::setStatus(ControllableEntity* player, const questStatus::Enum & status)
+    bool LocalQuest::setStatus(PlayerInfo* player, const questStatus::Enum & status)
     {
         if(player == NULL) //!< We can't set a status for no player.
         {

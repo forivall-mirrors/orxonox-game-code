@@ -40,7 +40,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "Quest.h"
 
@@ -83,7 +83,7 @@ namespace orxonox {
     @return
         Returns true if the QuestEffect was successfully invoked.
     */
-    bool AddQuest::invoke(ControllableEntity* player)
+    bool AddQuest::invoke(PlayerInfo* player)
     {
         if(player == NULL) //!< Null-pointers are badass.
         {
@@ -105,6 +105,7 @@ namespace orxonox {
             return false;
         }
 
+	COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player." << std::endl;
         return true;
     }
 

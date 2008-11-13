@@ -35,7 +35,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "GlobalQuest.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
@@ -85,14 +85,14 @@ namespace orxonox {
     @return
         Returns true if the Quest could be failed, false if not.
     */
-    bool GlobalQuest::fail(ControllableEntity* player)
+    bool GlobalQuest::fail(PlayerInfo* player)
     {
         if(this->isFailable(player)) //!< Check whether the Quest can be failed.
         {
             this->setStatus(player, questStatus::failed);
             
             //! Iterate through all players possessing this Quest.
-            for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+            for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
             {
                 QuestEffect::invokeEffects(*it, this->getFailEffectList());
             }
@@ -114,14 +114,14 @@ namespace orxonox {
     @return
         Returns true if the Quest could be completed, false if not.
     */
-    bool GlobalQuest::complete(ControllableEntity* player)
+    bool GlobalQuest::complete(PlayerInfo* player)
     {
         if(this->isCompletable(player)) //!< Check whether the Quest can be completed.
         {
             this->setStatus(player, questStatus::completed);
             
             //! Iterate through all players possessing the Quest.
-            for(std::set<ControllableEntity*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+            for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
             {
                 QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
             }
@@ -144,7 +144,7 @@ namespace orxonox {
     @throws
         Throws an exception if either isInactive() of isActive() throws one.
     */
-    bool GlobalQuest::isStartable(const ControllableEntity* player) const
+    bool GlobalQuest::isStartable(const PlayerInfo* player) const
     {
         return this->isInactive(player) ||  this->isActive(player);
     }
@@ -159,7 +159,7 @@ namespace orxonox {
     @throws
         Throws an Exception if isActive() throws one.
     */
-    bool GlobalQuest::isFailable(const ControllableEntity* player) const
+    bool GlobalQuest::isFailable(const PlayerInfo* player) const
     {
         return this->isActive(player);
 
@@ -175,7 +175,7 @@ namespace orxonox {
     @throws
         Throws an Exception if isActive() throws one.
     */
-    bool GlobalQuest::isCompletable(const ControllableEntity* player) const
+    bool GlobalQuest::isCompletable(const PlayerInfo* player) const
     {
         return this->isActive(player);
     }
@@ -188,15 +188,15 @@ namespace orxonox {
     @throws
         Throws an Exception if player is NULL.
     */
-    questStatus::Enum GlobalQuest::getStatus(const ControllableEntity* player) const
+    questStatus::Enum GlobalQuest::getStatus(const PlayerInfo* player) const
     {
         if(player == NULL) //!< We don't want NULL-Pointers!
         {
-            ThrowException(Argument, "The input ControllableEntity* is NULL.");
+            ThrowException(Argument, "The input PlayerInfo* is NULL.");
         }
 
         //! Find the player.
-        std::set<ControllableEntity*>::const_iterator it = this->players_.find((ControllableEntity*)(void*)player);
+        std::set<PlayerInfo*>::const_iterator it = this->players_.find((PlayerInfo*)(void*)player);
         if (it != this->players_.end()) //!< If the player was found.
         {
             return this->status_;
@@ -216,7 +216,7 @@ namespace orxonox {
     @return
         Returns false if player is NULL.
     */
-    bool GlobalQuest::setStatus(ControllableEntity* player, const questStatus::Enum & status)
+    bool GlobalQuest::setStatus(PlayerInfo* player, const questStatus::Enum & status)
     {
         if(player == NULL) //!< We don't want NULL-Pointers!
         {
@@ -224,7 +224,7 @@ namespace orxonox {
         }
 
         //! Find the player.
-        std::set<ControllableEntity*>::const_iterator it = this->players_.find(player);
+        std::set<PlayerInfo*>::const_iterator it = this->players_.find(player);
         if (it == this->players_.end()) //!< Player is not yet in the list.
         {
             this->players_.insert(player); //!< Add the player to the set.

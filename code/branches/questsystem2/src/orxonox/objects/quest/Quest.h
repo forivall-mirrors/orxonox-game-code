@@ -43,8 +43,8 @@
 #include <string>
 
 #include "core/XMLPort.h"
-#include "QuestItem.h"
 
+#include "QuestItem.h"
 
 namespace questStatus
 {
@@ -103,19 +103,19 @@ namespace orxonox {
 	    inline const std::list<QuestHint*> & getHintsList(void) const
                 { return this->hints_; }
 
-            bool isInactive(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
-            bool isActive(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'active'.
-            bool isFailed(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
-            bool isCompleted(const ControllableEntity* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
+            bool isInactive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
+            bool isActive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'active'.
+            bool isFailed(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
+            bool isCompleted(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
 
-            bool start(ControllableEntity* player); //!< Sets a Quest to active.
-	    virtual bool fail(ControllableEntity* player) = 0; //!< Fails the Quest.
-            virtual bool complete(ControllableEntity* player) = 0; //!< Completes the Quest.
+            bool start(PlayerInfo* player); //!< Sets a Quest to active.
+	    virtual bool fail(PlayerInfo* player) = 0; //!< Fails the Quest.
+            virtual bool complete(PlayerInfo* player) = 0; //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const ControllableEntity* player) const = 0; //!< Checks whether the Quest can be started.
-            virtual bool isFailable(const ControllableEntity* player) const = 0; //!< Checks whether the Quest can be failed.
-            virtual bool isCompletable(const ControllableEntity* player) const = 0; //!< Checks whether the Quest can be completed.
+            virtual bool isStartable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be completed.
 
             const Quest* getParentQuest(void); //!< Returns the parentquest of the Quest.
             const Quest* getSubQuest(unsigned int index) const; //!<Returns the subquest at the given index.
@@ -137,8 +137,8 @@ namespace orxonox {
 	    inline std::list<QuestEffect*> & getCompleteEffectList(void)
                 { return this->completeEffects_; }
 
-            virtual questStatus::Enum getStatus(const ControllableEntity* player) const = 0; //!< Returns the status of the Quest for a specific player.
-            virtual bool setStatus(ControllableEntity* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
+            virtual questStatus::Enum getStatus(const PlayerInfo* player) const = 0; //!< Returns the status of the Quest for a specific player.
+            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
             
 	private:
             Quest* parentQuest_; //!< Pointer to the parentquest.

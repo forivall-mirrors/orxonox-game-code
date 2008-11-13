@@ -139,7 +139,10 @@ namespace orxonox
   bool DistanceTrigger::isTriggered(TriggerMode mode)
   {
     if (Trigger::isTriggered(mode))
+    {
+        COUT << "Triggers" << std::endl;
       return checkDistance();
+    }
     else
       return false;
   }

@@ -65,7 +65,7 @@ namespace orxonox {
 	    @return
                 Return true if successful.
             */
-            virtual bool reward(ControllableEntity* player) = 0; //!<
+            virtual bool reward(PlayerInfo* player) = 0; //!<
 
     };
 

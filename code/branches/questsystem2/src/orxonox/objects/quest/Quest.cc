@@ -37,7 +37,7 @@
 
 #include "core/CoreIncludes.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "QuestDescription.h"
 #include "QuestHint.h"
@@ -312,7 +312,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isInactive(const ControllableEntity* player) const
+    bool Quest::isInactive(const PlayerInfo* player) const
     {
         return this->getStatus(player) == questStatus::inactive;
     }
@@ -327,7 +327,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isActive(const ControllableEntity* player) const
+    bool Quest::isActive(const PlayerInfo* player) const
     {
 
         return this->getStatus(player) == questStatus::active;
@@ -343,7 +343,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isFailed(const ControllableEntity* player) const
+    bool Quest::isFailed(const PlayerInfo* player) const
     {
         return this->getStatus(player) == questStatus::failed;
     }
@@ -358,7 +358,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isCompleted(const ControllableEntity* player) const
+    bool Quest::isCompleted(const PlayerInfo* player) const
     {
         return this->getStatus(player) == questStatus::completed;
     }
@@ -371,7 +371,7 @@ namespace orxonox {
     @return
         Returns true if the Quest could be started, false if not.
     */
-    bool Quest::start(ControllableEntity* player)
+    bool Quest::start(PlayerInfo* player)
     {
         if(this->isStartable(player)) //!< Checks whether the quest can be started.
         {

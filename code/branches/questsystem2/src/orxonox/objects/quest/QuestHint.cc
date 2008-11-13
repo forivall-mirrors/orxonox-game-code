@@ -38,7 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "Quest.h"
 
 namespace orxonox {
@@ -85,16 +85,16 @@ namespace orxonox {
     @return
         Returns true if the QuestHint is active for the specified player.
     */
-    bool QuestHint::isActive(ControllableEntity* player)
+    bool QuestHint::isActive(const PlayerInfo* player) const
     {
         if(player == NULL) //!< NULL-Pointers are ugly!
         {
-            ThrowException(Argument, "The input ControllableEntity* is NULL.");
+            ThrowException(Argument, "The input PlayerInfo* is NULL.");
             return false;
         }
 
         //! Find the player.
-        std::map<ControllableEntity*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
+        std::map<const PlayerInfo*, questHintStatus::Enum>::const_iterator it = this->playerStatus_.find(player);
         if (it != this->playerStatus_.end()) //!< If the player is in the map.
         {
             return it->second;
@@ -111,7 +111,7 @@ namespace orxonox {
     @return
         Returns true if the activation was successful, false if there were problems.
     */
-    bool QuestHint::setActive(ControllableEntity* player)
+    bool QuestHint::setActive(PlayerInfo* player)
     {
         if(this->quest_->isActive(player)) //!< For a hint to get activated the quest must be active.
         {

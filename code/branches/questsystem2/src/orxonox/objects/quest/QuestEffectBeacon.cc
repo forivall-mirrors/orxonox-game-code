@@ -34,6 +34,7 @@
 #include "core/Event.h"
 #include "core/EventIncludes.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "orxonox/objects/worldentities/ControllableEntity.h"
 #include "orxonox/objects/worldentities/triggers/PlayerTrigger.h"
 #include "QuestEffect.h"
@@ -49,7 +50,6 @@ namespace orxonox {
         this->status_ = QuestEffectBeaconStatus::active;
         this->times_ = -1;
         this->trigger_ = NULL;
-        this->player_ = NULL;
     }
 
     QuestEffectBeacon::~QuestEffectBeacon()
@@ -68,23 +68,22 @@ namespace orxonox {
     void QuestEffectBeacon::processEvent(Event& event)
     {
 	SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
-	
-	this->player_ = dynamic_cast<ControllableEntity*>(event.originator_);
     }
     
-    bool QuestEffectBeacon::execute(void)
+    bool QuestEffectBeacon::execute(bool b, ControllableEntity* entity)
     {
-        
-        if(!(this->isActive()))
+        if(!b || !(this->isActive()))
         {
             return false;
         }
-        if(this->player_ == NULL)
+        if(entity == NULL)
         {
             return false;
         }
         
-        bool check = QuestEffect::invokeEffects(this->player_, this->effects_);
+        PlayerInfo* player = entity->getPlayer();
+        
+        bool check = QuestEffect::invokeEffects(player, this->effects_);
         if(check)
         {
             this->decrementTimes();

@@ -81,9 +81,9 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestHint object through XML.
 
-            bool isActive(ControllableEntity* player); //!< Returns true if the QuestHint is active for the input player.
+            bool isActive(const PlayerInfo* player) const; //!< Returns true if the QuestHint is active for the input player.
 
-            bool setActive(ControllableEntity* player); //!< Activates the QuestHint for the input player.
+            bool setActive(PlayerInfo* player); //!< Activates the QuestHint for the input player.
             bool setQuest(Quest* quest); //!< Sets the Quest the QuestHint belongs to.
 
             /**
@@ -95,7 +95,7 @@ namespace orxonox
 
         private:
             Quest* quest_; //!< The Quest the QuestHint belongs to.
-            std::map<ControllableEntity*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
+            std::map<const PlayerInfo*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
 
     };
 

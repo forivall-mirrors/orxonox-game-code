@@ -58,7 +58,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddReward object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
+            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
         private:
             std::list<Rewardable*> rewards_; //!< A list of Rewardables to be added to the player invoking the QuestEffect.

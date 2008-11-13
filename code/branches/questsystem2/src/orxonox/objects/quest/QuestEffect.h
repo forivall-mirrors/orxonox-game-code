@@ -56,8 +56,8 @@ namespace orxonox {
             QuestEffect(BaseObject* creator);
             virtual ~QuestEffect();
 
-            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the QuestEffect.
-            static bool invokeEffects(ControllableEntity* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
+            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
+            static bool invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
 
 
     };

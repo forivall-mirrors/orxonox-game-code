@@ -58,7 +58,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a FailQuest object through XML.
 
-            virtual bool invoke(ControllableEntity* player); //!< Invokes the QuestEffect.
+            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
     };
 

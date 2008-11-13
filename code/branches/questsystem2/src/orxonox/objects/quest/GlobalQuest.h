@@ -91,19 +91,19 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a GlobalQuest object through XML.
             
-            virtual bool fail(ControllableEntity* player); //!< Fails the Quest.
-            virtual bool complete(ControllableEntity* player); //!< Completes the Quest.
+            virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
+            virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const ControllableEntity* player) const; //!< Checks whether the Quest can be started.
-            virtual bool isFailable(const ControllableEntity* player) const; //!< Checks whether the Quest can be failed.
-            virtual bool isCompletable(const ControllableEntity* player) const; //!< Checks whether the Quest can be completed.
+            virtual bool isStartable(const PlayerInfo* player) const; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const PlayerInfo* player) const; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const ControllableEntity* player) const; //!< Returns the status of the Quest for a specific player.
-            virtual bool setStatus(ControllableEntity* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+            virtual questStatus::Enum getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
+            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
         private:
-            std::set<ControllableEntity*> players_; //!< The set of players which possess this Quest.
+            std::set<PlayerInfo*> players_; //!< The set of players which possess this Quest.
             questStatus::Enum status_; //!< The status of this Quest.
             std::list<QuestEffect*> rewards_; //!< Reward QuestEffects only invoked on the player completing the Quest.
             

@@ -37,7 +37,7 @@
 
 #include "core/CoreIncludes.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "Rewardable.h"
 
 namespace orxonox {
@@ -102,7 +102,7 @@ namespace orxonox {
     @return
         Returns true if the QuestEffect was invoked successfully.
     */
-    bool AddReward::invoke(ControllableEntity* player)
+    bool AddReward::invoke(PlayerInfo* player)
     {
         bool check = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )

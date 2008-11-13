@@ -62,7 +62,7 @@ namespace orxonox {
 	    
 	    virtual void processEvent(Event& event);
 	    
-	    bool execute(void);
+	    bool execute(bool b, ControllableEntity* player);
 	    
 	    bool isActive(void);
 	    
@@ -77,7 +77,6 @@ namespace orxonox {
             int times_; //!< Number of times the beacon can be exectued.
             QuestEffectBeaconStatus::Enum status_;
             PlayerTrigger* trigger_;
-            ControllableEntity* player_;
             
             bool setTimes(const int & n);
             bool addEffect(QuestEffect* effect);

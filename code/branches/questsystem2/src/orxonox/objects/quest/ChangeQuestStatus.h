@@ -58,7 +58,7 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a ChangeQuestStatus object through XML.
 
-            virtual bool invoke(ControllableEntity* player) = 0; //!< Invokes the QuestEffect.
+            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
 
         protected:
             /**
