@@ -74,14 +74,22 @@ namespace orxonox {
     {
         if(!b || !(this->isActive()))
         {
+            COUT(3) << "The QuestEffectBeacon is inactive." << std::endl;
             return false;
         }
         if(entity == NULL)
         {
+            COUT(2) << "No one triggered the beacon? Curious!" << std::endl;
             return false;
         }
         
         PlayerInfo* player = entity->getPlayer();
+        
+        if(player == NULL)
+        {
+            COUT(3) << "The PlayerInfo* is NULL." << std::endl;
+            return false;
+        }
         
         bool check = QuestEffect::invokeEffects(player, this->effects_);
         if(check)

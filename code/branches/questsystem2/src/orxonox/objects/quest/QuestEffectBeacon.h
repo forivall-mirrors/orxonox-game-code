@@ -48,7 +48,9 @@ namespace orxonox {
 
     /**
     @brief
-        
+        A QuestEffectBeacon is an entity which can (under some condition(s)) invoke a number QuestEffects on players meeting the condition(s).
+        The conditions under which the QuestEffects are invoked on the player are defined by Triggers.
+        A QuestEffectBeacon can be executed a defined number of times.
     @author
         Damian 'Mozork' Frick
     */
@@ -62,23 +64,23 @@ namespace orxonox {
 	    
 	    virtual void processEvent(Event& event);
 	    
-	    bool execute(bool b, ControllableEntity* player);
+	    bool execute(bool b, ControllableEntity* player); //!< Executes the QuestEffects of the QuestEffectBeacon.
 	    
-	    bool isActive(void);
+	    bool isActive(void); //!< Test whether the QuestEffectBeacon is active.
 	    
 	protected:
-            bool decrementTimes(void);
+            bool decrementTimes(void); //!< Decrement the number of times the QuestEffectBeacon can still be executed.
             
-            inline const int & getTimes(void) const
+            inline const int & getTimes(void) const //!< Return the number of times the QUestEffectBeacon can still be executed.
                 { return this->times_; }
 
         private:
-            std::list<QuestEffect*> effects_;
+            std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
             int times_; //!< Number of times the beacon can be exectued.
-            QuestEffectBeaconStatus::Enum status_;
+            QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
             PlayerTrigger* trigger_;
             
-            bool setTimes(const int & n);
+            bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
             bool addEffect(QuestEffect* effect);
             bool addTrigger(PlayerTrigger* trigger);
             
