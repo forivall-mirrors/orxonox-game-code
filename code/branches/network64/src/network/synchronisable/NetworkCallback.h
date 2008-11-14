@@ -1,7 +1,7 @@
 #ifndef _NETWORK_CALLBACK__
 #define _NETWORK_CALLBACK__
 
-#include "NetworkPrereqs.h"
+#include "network/NetworkPrereqs.h"
 
 namespace orxonox{
   class _NetworkExport NetworkCallbackBase

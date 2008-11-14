@@ -49,7 +49,7 @@
 #include "core/BaseObject.h"
 // #include "core/Identifier.h"
 
-#include "Host.h"
+#include "network/Host.h"
 namespace orxonox
 {
 

@@ -29,7 +29,7 @@
 
 #include "DeleteObjects.h"
 #include <enet/enet.h>
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include <assert.h>
 

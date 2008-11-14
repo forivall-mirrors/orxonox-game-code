@@ -1,0 +1,5 @@
+SET( SRC_FILES
+  Synchronisable.cc
+)
+
+ADD_SOURCE_FILES(SRC_FILES)

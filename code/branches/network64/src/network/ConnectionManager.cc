@@ -51,7 +51,7 @@
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
 #include "packet/ClassID.h"
 
 namespace std

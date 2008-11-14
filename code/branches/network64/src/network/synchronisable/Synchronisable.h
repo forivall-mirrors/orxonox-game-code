@@ -29,7 +29,7 @@
 #ifndef _Synchronisable_H__
 #define _Synchronisable_H__
 
-#include "NetworkPrereqs.h"
+#include "network/NetworkPrereqs.h"
 
 #include <list>
 #include <map>

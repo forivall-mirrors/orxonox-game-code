@@ -48,7 +48,7 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "ClientInformation.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
 
 namespace orxonox
 {

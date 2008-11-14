@@ -33,7 +33,7 @@
 #include "../NetworkPrereqs.h"
 
 #include "Packet.h"
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 #include <map>
 #ifndef NDEBUG
 #include "util/CRC32.h"
