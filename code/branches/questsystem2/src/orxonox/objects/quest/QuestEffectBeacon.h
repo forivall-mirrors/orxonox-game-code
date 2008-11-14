@@ -64,7 +64,7 @@ namespace orxonox {
 	    
 	    virtual void processEvent(Event& event);
 	    
-	    bool execute(bool b, ControllableEntity* player); //!< Executes the QuestEffects of the QuestEffectBeacon.
+	    bool execute(bool b, PlayerTrigger* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
 	    
 	    bool isActive(void); //!< Test whether the QuestEffectBeacon is active.
 	    

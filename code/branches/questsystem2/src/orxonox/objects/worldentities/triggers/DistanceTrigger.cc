@@ -140,7 +140,6 @@ namespace orxonox
   {
     if (Trigger::isTriggered(mode))
     {
-        COUT(3) << "Triggers" << std::endl;
       return checkDistance();
     }
     else

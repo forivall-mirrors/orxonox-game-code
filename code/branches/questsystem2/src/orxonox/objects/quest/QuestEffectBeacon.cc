@@ -70,13 +70,20 @@ namespace orxonox {
 	SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
     }
     
-    bool QuestEffectBeacon::execute(bool b, ControllableEntity* entity)
+    bool QuestEffectBeacon::execute(bool b, PlayerTrigger* trigger)
     {
-        if(!b || !(this->isActive()))
+        if(!b)
+        {
+            COUT(2) << "b is false." << std::endl;
+        }
+        if(!(this->isActive()))
         {
             COUT(3) << "The QuestEffectBeacon is inactive." << std::endl;
             return false;
         }
+
+        ControllableEntity* entity = trigger->getTriggeringPlayer();
+
         if(entity == NULL)
         {
             COUT(2) << "No one triggered the beacon? Curious!" << std::endl;
@@ -90,7 +97,9 @@ namespace orxonox {
             COUT(3) << "The PlayerInfo* is NULL." << std::endl;
             return false;
         }
-        
+
+        COUT(3) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;        
+
         bool check = QuestEffect::invokeEffects(player, this->effects_);
         if(check)
         {

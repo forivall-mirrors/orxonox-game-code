@@ -91,6 +91,8 @@ namespace orxonox {
             return false;
         }
 
+        COUT(3) << "AddQuest on player: " << player << " ." << std::endl;
+
         try
         {
             Quest* quest = QuestManager::findQuest(this->getQuestId());
@@ -105,7 +107,7 @@ namespace orxonox {
             return false;
         }
 
-	COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player." << std::endl;
+        COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player." << std::endl;
         return true;
     }
 

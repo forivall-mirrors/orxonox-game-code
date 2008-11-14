@@ -88,9 +88,13 @@ namespace orxonox {
             return false;
         }
 
+        COUT(3) << "CompleteQuest on player: " << player << " ." << std::endl;
+
+        Quest* quest;
+
         try
         {
-            Quest* quest = QuestManager::findQuest(this->getQuestId());
+            quest = QuestManager::findQuest(this->getQuestId());
             if(!quest->complete(player))
             {
                return false;
@@ -102,6 +106,7 @@ namespace orxonox {
             return false;
         }
 
+        COUT(3) << "Quest {" << quest->getId() << "} successfully completed by player: " << player << " ." << std::endl;
         return true;
     }
 
