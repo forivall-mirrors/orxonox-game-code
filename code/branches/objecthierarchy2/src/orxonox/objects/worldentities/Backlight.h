@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 #include "Billboard.h"
 #include "objects/Tickable.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -58,6 +59,11 @@ namespace orxonox
             inline float getLifetime() const
                 { return this->lifetime_; }
 
+            inline void setTurnOffTime(float turnofftime)
+                { this->turnofftime_ = turnofftime; }
+            inline float getTurnOffTime() const
+                { return this->turnofftime_; }
+
             inline void setLength(float length)
                 { this->length_ = length; this->update_length(); }
             inline float getLength() const
@@ -73,10 +79,8 @@ namespace orxonox
             inline const std::string& getTrailMaterial() const
                 { return this->trailmaterial_; }
 
-        protected:
-            virtual void notifyAttached();
-
         private:
+            void stopturnoff();
             virtual void changedColour();
             void update_width();
             void update_lifetime();
@@ -89,8 +93,12 @@ namespace orxonox
             float width_;
             float length_;
             float lifetime_;
+            float turnofftime_;
+            bool bTurningOff_;
             size_t maxelements_;
             std::string trailmaterial_;
+            char tickcount_;
+            Timer<Backlight> turnofftimer_;
     };
 
 

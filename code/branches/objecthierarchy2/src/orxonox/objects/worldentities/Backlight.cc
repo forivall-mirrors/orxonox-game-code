@@ -34,6 +34,7 @@
 
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
+#include "core/Executor.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
 
@@ -50,8 +51,12 @@ namespace orxonox
 
         this->width_ = 0;
         this->length_ = 1.0f;
-        this->lifetime_ = 1.0f;
+        this->lifetime_ = 0.001f;
+        this->turnofftime_ = 0.5f;
+        this->bTurningOff_ = false;
         this->maxelements_ = 1;
+
+        this->tickcount_ = 0;
 
         if (Core::showsGraphics())
         {
@@ -60,13 +65,10 @@ namespace orxonox
             assert(this->getScene()->getRootSceneNode());
 
             this->ribbonTrail_ = this->getScene()->getSceneManager()->createRibbonTrail(this->getNode()->getName());
+            this->ribbonTrail_->addNode(this->getNode());
             this->ribbonTrailNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
             this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
-            this->ribbonTrail_->addNode(this->getNode());
-
-            this->ribbonTrail_->setMaxChainElements(this->maxelements_);
-            this->ribbonTrail_->setTrailLength(this->length_);
-            this->ribbonTrail_->setInitialWidth(0, this->width_);
+            this->ribbonTrail_->setInitialWidth(0, 0);
         }
 
         this->registerVariables();
@@ -96,6 +98,7 @@ namespace orxonox
         XMLPortParam(Backlight, "width",         setWidth,         getWidth,         xmlelement, mode).defaultValues(1.0f);
         XMLPortParam(Backlight, "elements",      setMaxElements,   getMaxElements,   xmlelement, mode).defaultValues(10);
         XMLPortParam(Backlight, "lifetime",      setLifetime,      getLifetime,      xmlelement, mode).defaultValues(1.0f);
+        XMLPortParam(Backlight, "turnofftime",   setTurnOffTime,   getTurnOffTime,   xmlelement, mode).defaultValues(0.5f);
         XMLPortParam(Backlight, "trailmaterial", setTrailMaterial, getTrailMaterial, xmlelement, mode);
     }
 
@@ -112,20 +115,20 @@ namespace orxonox
     {
         Billboard::changedColour();
 
-        if (this->ribbonTrail_ && this->isActive())
+        if (this->ribbonTrail_ && this->isActive() && this->tickcount_ >= 2)
             this->ribbonTrail_->setInitialColour(0, this->getColour());
     }
 
     void Backlight::update_width()
     {
-        if (this->ribbonTrail_)
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
             this->ribbonTrail_->setInitialWidth(0, this->width_);
         this->update_lifetime();
     }
 
     void Backlight::update_lifetime()
     {
-        if (this->ribbonTrail_)
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
         {
             this->ribbonTrail_->setWidthChange(0, this->width_ / this->lifetime_/* * Backlight::timeFactor_s*/);
             this->ribbonTrail_->setColourChange(0, 0, 0, 0, 1.0f / this->lifetime_/* * Backlight::timeFactor_s*/);
@@ -134,19 +137,19 @@ namespace orxonox
 
     void Backlight::update_length()
     {
-//        if (this->ribbonTrail_)
-//            this->ribbonTrail_->setTrailLength(this->length_);
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setTrailLength(this->length_);
     }
 
     void Backlight::update_maxelements()
     {
-        if (this->ribbonTrail_)
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
             this->ribbonTrail_->setMaxChainElements(this->maxelements_);
     }
 
     void Backlight::update_trailmaterial()
     {
-        if (this->ribbonTrail_)
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
             this->ribbonTrail_->setMaterialName(this->trailmaterial_);
     }
 
@@ -167,25 +170,38 @@ namespace orxonox
             if (this->isActive())
                 this->ribbonTrail_->setInitialColour(0, this->getColour());
             else
-                this->ribbonTrail_->setInitialColour(0, 0, 0, 0, 0);
+            {
+                this->bTurningOff_ = true;
+                this->turnofftimer_.setTimer(this->turnofftime_, false, this, createExecutor(createFunctor(&Backlight::stopturnoff)));
+            }
         }
     }
 
-    void Backlight::notifyAttached()
+    void Backlight::stopturnoff()
     {
-        Billboard::notifyAttached();
-
-//        if (this->ribbonTrail_)
-//            this->ribbonTrail_->clearChain(0);
-
-//        if (this->ribbonTrail_)
-//            this->ribbonTrail_->setTrailLength(this->length_);
+        this->bTurningOff_ = false;
     }
 
     void Backlight::tick(float dt)
     {
-        if (this->ribbonTrail_)
-            this->ribbonTrail_->setTrailLength(this->length_);
+        if (this->tickcount_ < 2)
+        {
+            ++this->tickcount_;
+            if (this->tickcount_ == 2)
+            {
+                this->changedColour();
+                this->update_width();
+                this->update_lifetime();
+                this->update_length();
+                this->update_maxelements();
+                this->update_trailmaterial();
+            }
+        }
+
+        if (this->bTurningOff_ && this->ribbonTrail_)
+        {
+            this->ribbonTrail_->setInitialColour(0, this->ribbonTrail_->getInitialColour(0) - this->getColour() / this->turnofftime_ * dt);
+        }
     }
 
 //------------------------------------------------------------------------------------

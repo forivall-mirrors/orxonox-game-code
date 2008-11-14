@@ -72,6 +72,9 @@ namespace orxonox
 
     void Billboard::changedMaterial()
     {
+        if (this->material_ == "")
+            return;
+
         if (!this->billboard_.getBillboardSet())
         {
             if (this->getScene() && this->getScene()->getSceneManager())
