@@ -65,9 +65,12 @@ namespace orxonox
             assert(this->getScene()->getRootSceneNode());
 
             this->ribbonTrail_ = this->getScene()->getSceneManager()->createRibbonTrail(this->getNode()->getName());
-            this->ribbonTrail_->addNode(this->getNode());
+
             this->ribbonTrailNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
             this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
+
+            this->ribbonTrail_->setMaxChainElements(this->maxelements_);
+            this->ribbonTrail_->setTrailLength(this->length_);
             this->ribbonTrail_->setInitialWidth(0, 0);
         }
 
@@ -122,7 +125,7 @@ namespace orxonox
     void Backlight::update_width()
     {
         if (this->ribbonTrail_ && this->tickcount_ >= 2)
-            this->ribbonTrail_->setInitialWidth(0, this->width_);
+            this->ribbonTrail_->setInitialWidth(0, this->width_ * this->getWorldScale());
         this->update_lifetime();
     }
 
@@ -130,7 +133,7 @@ namespace orxonox
     {
         if (this->ribbonTrail_ && this->tickcount_ >= 2)
         {
-            this->ribbonTrail_->setWidthChange(0, this->width_ / this->lifetime_/* * Backlight::timeFactor_s*/);
+            this->ribbonTrail_->setWidthChange(0, this->width_ * this->getWorldScale() / this->lifetime_/* * Backlight::timeFactor_s*/);
             this->ribbonTrail_->setColourChange(0, 0, 0, 0, 1.0f / this->lifetime_/* * Backlight::timeFactor_s*/);
         }
     }
@@ -138,7 +141,7 @@ namespace orxonox
     void Backlight::update_length()
     {
         if (this->ribbonTrail_ && this->tickcount_ >= 2)
-            this->ribbonTrail_->setTrailLength(this->length_);
+            this->ribbonTrail_->setTrailLength(this->length_ * this->getWorldScale());
     }
 
     void Backlight::update_maxelements()
@@ -177,6 +180,14 @@ namespace orxonox
         }
     }
 
+    void Backlight::changedScale()
+    {
+        SUPER(Backlight, changedScale);
+
+        this->update_width();
+        this->update_length();
+    }
+
     void Backlight::stopturnoff()
     {
         this->bTurningOff_ = false;
@@ -195,6 +206,8 @@ namespace orxonox
                 this->update_length();
                 this->update_maxelements();
                 this->update_trailmaterial();
+                if (this->ribbonTrail_)
+                    this->ribbonTrail_->addNode(this->getNode());
             }
         }
 
@@ -203,120 +216,4 @@ namespace orxonox
             this->ribbonTrail_->setInitialColour(0, this->ribbonTrail_->getInitialColour(0) - this->getColour() / this->turnofftime_ * dt);
         }
     }
-
-//------------------------------------------------------------------------------------
-/*
-    float Backlight::timeFactor_s = 1.0;
-
-    Backlight::Backlight(float maxspeed, float brakingtime, float scale)
-    {
-        RegisterObject(Backlight);
-
-        this->setConfigValues();
-        this->traillength_ = 1;
-        this->colour_ = ColourValue::White;
-
-        this->configure(maxspeed, brakingtime, scale);
-    }
-
-    bool Backlight::create(){
-      if(!WorldEntity::create())
-        return false;
-
-      this->getNode()->setInheritScale(false);
-
-      this->billboard_.setBillboardSet("Flares/backlightflare");
-      this->attachObject(this->billboard_.getBillboardSet());
-
-      this->ribbonTrail_ = GraphicsEngine::getInstance().getLevelSceneManager()->createRibbonTrail(this->getName() + "RibbonTrail");
-      this->ribbonTrailNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName() + "RibbonTrailNode");
-      this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
-      this->ribbonTrail_->addNode(this->getNode());
-
-
-      this->ribbonTrail_->setTrailLength(this->maxTraillength_);
-      this->ribbonTrail_->setMaterialName("Trail/backlighttrail");
-
-        //this->setTimeFactor(Orxonox::getInstance().getTimeFactor());
-      this->setTimeFactor(1.0f);
-
-      this->ribbonTrail_->setMaxChainElements(this->maxTrailsegments_);
-      this->ribbonTrail_->setTrailLength(this->traillength_ = 2 * this->maxTrailsegments_);
-      this->ribbonTrail_->setInitialWidth(0, this->width_ * this->getScale());
-      this->ribbonTrail_->setWidthChange(0, this->width_ * this->getScale() / this->maxLifeTime_ * Backlight::timeFactor_s);
-      return true;
-    }
-
-    Backlight::~Backlight()
-    {
-        if (this->isInitialized())
-        {
-            this->detachObject(this->billboard_.getBillboardSet());
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroySceneNode(this->getName() + "RibbonTrailNode");
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
-        }
-    }
-
-    void Backlight::setConfigValues()
-    {
-        SetConfigValue(maxLifeTime_, 4.0).description("The maximal amount of seconds the trail behind a SpaceShip stays visible");
-        SetConfigValue(trailSegmentLength_, 50).description("The length of one segment of the trail behind a SpaceShip (lower values make it more smooth)");
-        SetConfigValue(width_, 7.0).description("The width of the trail");
-    }
-
-    void Backlight::setTimeFactor(float factor)
-    {
-        Backlight::timeFactor_s = factor;
-        float change = Backlight::timeFactor_s / this->maxLifeTime_;
-        this->ribbonTrail_->setWidthChange(0, this->width_ * change);
-        this->updateColourChange();
-    }
-
-    void Backlight::updateColourChange()
-    {
-        this->ribbonTrail_->setColourChange(0, ColourValue(0, 0, 0, this->maxTraillength_ / this->traillength_ / this->maxLifeTime_ * Backlight::timeFactor_s));
-    }
-
-    void Backlight::tick(float dt)
-    {
-        SUPER(Backlight, tick, dt);
-
-        if (this->isActive())
-        {
-            if (this->traillength_ < this->maxTraillength_)
-            {
-                this->traillength_ = min<float>(this->maxTraillength_, this->traillength_ + dt * this->maxTraillength_ / this->maxLifeTime_);
-                this->updateColourChange();
-            }
-        }
-        else
-        {
-            if (this->traillength_ > 1)
-            {
-                this->traillength_ = max<float>(1, this->traillength_ - this->brakefactor_ * dt * this->maxTraillength_ / this->maxLifeTime_);
-                this->updateColourChange();
-            }
-        }
-
-        this->ribbonTrail_->setTrailLength(this->traillength_);
-    }
-
-    void Backlight::configure(float maxspeed, float brakingtime, float scale)
-    {
-        this->maxTraillength_ = this->maxLifeTime_ * maxspeed;
-        this->maxTrailsegments_ = (size_t)(this->maxTraillength_ / this->trailSegmentLength_);
-
-        this->brakefactor_ = this->maxLifeTime_ / brakingtime;
-
-        this->scale(scale);
-    }
-
-    void Backlight::changedVisibility()
-    {
-        SUPER(Backlight, changedVisibility);
-
-        this->billboard_.setVisible(this->isVisible());
-        this->ribbonTrail_->setVisible(this->isVisible());
-    }
-*/
 }

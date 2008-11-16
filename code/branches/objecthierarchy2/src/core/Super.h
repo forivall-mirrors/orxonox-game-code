@@ -232,6 +232,9 @@
 
     #define SUPER_processEvent(classname, functionname, ...) \
         SUPER_ARGS(classname, functionname, __VA_ARGS__)
+
+    #define SUPER_changedScale(classname, functionname, ...) \
+        SUPER_NOARGS(classname, functionname)
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
@@ -440,6 +443,10 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(4, processEvent, true, Event& event)
             (event)
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(5, changedScale, false)
+            ()
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 }
@@ -487,6 +494,7 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(changedActivity);
     SUPER_INTRUSIVE_DECLARATION(changedVisibility);
     SUPER_INTRUSIVE_DECLARATION(processEvent);
+    SUPER_INTRUSIVE_DECLARATION(changedScale);
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 

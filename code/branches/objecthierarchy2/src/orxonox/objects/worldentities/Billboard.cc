@@ -52,7 +52,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (this->isInitialized() && this->billboard_.getBillboardSet())
-                this->getNode()->detachObject(this->billboard_.getName());
+                this->getNode()->detachObject(this->billboard_.getBillboardSet());
         }
     }
 

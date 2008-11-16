@@ -79,6 +79,8 @@ namespace orxonox
             inline const std::string& getTrailMaterial() const
                 { return this->trailmaterial_; }
 
+            virtual void changedScale();
+
         private:
             void stopturnoff();
             virtual void changedColour();
@@ -100,44 +102,6 @@ namespace orxonox
             char tickcount_;
             Timer<Backlight> turnofftimer_;
     };
-
-
-/*
-        public:
-            Backlight(float maxspeed = 1.0, float brakingtime = 1.0, float scale = 1.0);
-            virtual ~Backlight();
-
-            void setConfigValues();
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
-            virtual void changedVisibility();
-            virtual bool create();
-
-
-            void setTimeFactor(float factor);
-
-        private:
-            void configure(float maxspeed, float brakingtime, float scale = 1);
-            void updateColourChange();
-
-            static float timeFactor_s;
-            BillboardSet billboard_;
-            Ogre::SceneNode* ribbonTrailNode_;
-            Ogre::RibbonTrail* ribbonTrail_;
-
-
-            float maxLifeTime_;
-            float trailSegmentLength_;
-            float width_;
-
-            float brakefactor_;
-
-            float maxTraillength_;
-            float traillength_;
-
-            size_t maxTrailsegments_;
-    };
-*/
 }
 
 #endif /* _Backlight_H__ */

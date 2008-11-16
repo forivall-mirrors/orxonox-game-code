@@ -48,7 +48,7 @@ namespace orxonox
         , server_(0)
     {
         RegisterObject(GSDedicated);
-        
+
         this->setConfigValues();
     }
 
@@ -81,10 +81,10 @@ namespace orxonox
     void GSDedicated::ticked(const Clock& time)
     {
         static int timeSinceLastTick = 0; // in microseconds
-        const int tickPeriod = 1000000. / this->tickrate_; // in microseconds
-        
+        const int tickPeriod = (int)(1000000.0f / this->tickrate_); // in microseconds
+
         GSLevel::ticked(time);
-        
+
         timeSinceLastTick += time.getDeltaTimeMicroseconds();
         if ( timeSinceLastTick >= tickPeriod )
         {
@@ -95,24 +95,24 @@ namespace orxonox
         else
         {
             unsigned int sleepTime;
-            
+
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
             if ( tickPeriod-timeSinceLastTick < MIN_WIN32_SLEEP_TIME )
-                sleepTime = MIN_WIN32_SLEEP_TIME*1000000;
+                sleepTime = (unsigned int)(MIN_WIN32_SLEEP_TIME * 1000000);
             else
                 sleepTime = tickPeriod - timeSinceLastTick;
             msleep( sleepTime / 1000 );
-            
+
 #else /* unix */
             sleepTime = tickPeriod - timeSinceLastTick;
             usleep( sleepTime );
 #endif
-            
+
         }
-        
+
         this->tickChild(time);
     }
-    
+
     void GSDedicated::setConfigValues()
     {
         SetConfigValue ( tickrate_, DEFAULT_DEDICATED_SERVER_TICKRATE );

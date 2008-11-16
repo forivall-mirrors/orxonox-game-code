@@ -106,23 +106,29 @@ namespace orxonox
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
             inline void setScale3D(const Vector3& scale)
-                { this->node_->setScale(scale); }
+                { this->node_->setScale(scale); this->changedScale(); }
             inline void setScale3D(float x, float y, float z)
-                { this->node_->setScale(x, y, z); }
-            inline const Vector3& getScale3D(void) const
+                { this->node_->setScale(x, y, z); this->changedScale(); }
+            inline const Vector3& getScale3D() const
                 { return this->node_->getScale(); }
+            inline const Vector3& getWorldScale3D() const
+                { return this->node_->_getDerivedScale(); }
 
             inline void setScale(float scale)
-                { this->node_->setScale(scale, scale, scale); }
+                { this->node_->setScale(scale, scale, scale); this->changedScale(); }
             inline float getScale() const
                 { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
+            inline float getWorldScale() const
+                { Vector3 scale = this->getWorldScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
 
             inline void scale3D(const Vector3& scale)
-                { this->node_->scale(scale); }
+                { this->node_->scale(scale); this->changedScale(); }
             inline void scale3D(float x, float y, float z)
-                { this->node_->scale(x, y, z); }
+                { this->node_->scale(x, y, z); this->changedScale(); }
             inline void scale(float scale)
                 { this->node_->scale(scale, scale, scale); }
+
+            virtual void changedScale() {}
 
             void attach(WorldEntity* object);
             void detach(WorldEntity* object);
@@ -158,6 +164,8 @@ namespace orxonox
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
     };
+
+    SUPER_FUNCTION(5, WorldEntity, changedScale, false);
 }
 
 #endif /* _WorldEntity_H__ */
