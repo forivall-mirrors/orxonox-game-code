@@ -71,6 +71,10 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->node_->detachAllObjects();
+
+            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
+                delete (*it);
+
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
         }
