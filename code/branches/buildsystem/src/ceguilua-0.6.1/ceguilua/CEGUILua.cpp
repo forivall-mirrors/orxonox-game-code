@@ -60,7 +60,7 @@ namespace CEGUI
 *************************************************************************/
 LuaScriptModule::LuaScriptModule()
 {
-    #if CEGUI_LUA_VER >= 51
+    #if LUA_VERSION_NUM >= 501
         static const luaL_Reg lualibs[] = {
             {"", luaopen_base},
             {LUA_LOADLIBNAME, luaopen_package},
@@ -81,7 +81,7 @@ LuaScriptModule::LuaScriptModule()
     d_state = lua_open();
 
     // init all standard libraries
-    #if CEGUI_LUA_VER >= 51
+    #if LUA_VERSION_NUM >= 501
             const luaL_Reg *lib = lualibs;
             for (; lib->func; lib++)
             {
