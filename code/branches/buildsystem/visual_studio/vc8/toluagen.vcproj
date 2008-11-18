@@ -156,7 +156,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="&quot;$(OutDir)\tolua_gen_d.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua-5.1.pkg&#x0D;&#x0A;"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\src\tolua&#x0D;&#x0A;&quot;$(OutDir)\toluagen_orxonox$(CS).exe&quot; -n tolua -o toluabind_orxonox.c -H toluabind_orxonox.h tolua-5.1.pkg&#x0D;&#x0A;"
 						AdditionalDependencies="$(RootDir)\src\tolua\lua\compat-5.1.lua;$(RootDir)\src\tolua\lua\compat.lua;$(RootDir)\src\tolua\lua\basic.lua;$(RootDir)\src\tolua\lua\feature.lua;$(RootDir)\src\tolua\lua\verbatim.lua;$(RootDir)\src\tolua\lua\code.lua;$(RootDir)\src\tolua\lua\typedef.lua;$(RootDir)\src\tolua\lua\container.lua;$(RootDir)\src\tolua\lua\package.lua;$(RootDir)\src\tolua\lua\module.lua;$(RootDir)\src\tolua\lua\namespace.lua;$(RootDir)\src\tolua\lua\define.lua;$(RootDir)\src\tolua\lua\enumerate.lua;$(RootDir)\src\tolua\lua\declaration.lua;$(RootDir)\src\tolua\lua\variable.lua;$(RootDir)\src\tolua\lua\array.lua;$(RootDir)\src\tolua\lua\function.lua;$(RootDir)\src\tolua\lua\operator.lua;$(RootDir)\src\tolua\lua\class.lua;$(RootDir)\src\tolua\lua\clean.lua;$(RootDir)\src\tolua\lua\doit.lua"
 						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.c; $(RootDir)\src\tolua\toluabind_orxonox.h"
 					/>
@@ -167,7 +167,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="&quot;$(OutDir)\tolua_gen.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua-5.1.pkg&#x0D;&#x0A;"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\src\tolua&#x0D;&#x0A;&quot;$(OutDir)\toluagen_orxonox$(CS).exe&quot; -n tolua -o toluabind_orxonox.c -H toluabind_orxonox.h tolua-5.1.pkg&#x0D;&#x0A;"
 						AdditionalDependencies="$(RootDir)\src\tolua\lua\compat-5.1.lua;$(RootDir)\src\tolua\lua\compat.lua;$(RootDir)\src\tolua\lua\basic.lua;$(RootDir)\src\tolua\lua\feature.lua;$(RootDir)\src\tolua\lua\verbatim.lua;$(RootDir)\src\tolua\lua\code.lua;$(RootDir)\src\tolua\lua\typedef.lua;$(RootDir)\src\tolua\lua\container.lua;$(RootDir)\src\tolua\lua\package.lua;$(RootDir)\src\tolua\lua\module.lua;$(RootDir)\src\tolua\lua\namespace.lua;$(RootDir)\src\tolua\lua\define.lua;$(RootDir)\src\tolua\lua\enumerate.lua;$(RootDir)\src\tolua\lua\declaration.lua;$(RootDir)\src\tolua\lua\variable.lua;$(RootDir)\src\tolua\lua\array.lua;$(RootDir)\src\tolua\lua\function.lua;$(RootDir)\src\tolua\lua\operator.lua;$(RootDir)\src\tolua\lua\class.lua;$(RootDir)\src\tolua\lua\clean.lua;$(RootDir)\src\tolua\lua\doit.lua"
 						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.c; $(RootDir)\src\tolua\toluabind_orxonox.h"
 					/>

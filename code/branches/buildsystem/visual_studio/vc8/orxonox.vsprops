@@ -14,7 +14,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CS).lib tcl85t.lib enet$(CS).lib zlib$(CS).lib CEGUIBase$(CS).lib"
+		AdditionalDependencies="OgreMain$(CS).lib tcl85t.lib enet$(CS).lib zlib$(CS).lib CEGUIBase$(CS).lib lua$(CS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 		IgnoreDefaultLibraryNames=""
 	/>

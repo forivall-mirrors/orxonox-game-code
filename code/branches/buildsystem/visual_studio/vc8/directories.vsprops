@@ -10,4 +10,8 @@
 		Name="RootDir"
 		Value="$(SolutionDir)..\..\"
 	/>
+	<UserMacro
+		Name="LibDir"
+		Value="$(RootDir)\..\lib_dist\vc8\dependencies\$(SolutionName)\"
+	/>
 </VisualStudioPropertySheet>

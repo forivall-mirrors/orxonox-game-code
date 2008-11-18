@@ -12,6 +12,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
+		AdditionalDependencies="lua$(CS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 	/>
 </VisualStudioPropertySheet>

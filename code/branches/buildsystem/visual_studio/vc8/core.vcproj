@@ -152,6 +152,32 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\CMakeLists.txt"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating tolua bind files..."
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\src\core&#x0D;&#x0A;echo $cfile &quot;CommandExecutor.h&quot; &gt; tolua.pkg&#x0D;&#x0A;echo $cfile &quot;Script.h&quot; &gt;&gt; tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluagen$(CS).exe&quot; -n Core -o tolua_bind.cc -H tolua_bind.h tolua.pkg&#x0D;&#x0A;"
+						AdditionalDependencies="$(RootDir)\src\core\Script.h;$(RootDir)\src\core\CommandExecutor.h"
+						Outputs="$(RootDir)\src\core\tolua_bind.cc; $(RootDir)\src\core\tolua_bind.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating tolua bind files..."
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\src\core&#x0D;&#x0A;echo $cfile &quot;CommandExecutor.h&quot; &gt; tolua.pkg&#x0D;&#x0A;echo $cfile &quot;Script.h&quot; &gt;&gt; tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluagen$(CS).exe&quot; -n Core -o tolua_bind.cc -H tolua_bind.h tolua.pkg&#x0D;&#x0A;"
+						AdditionalDependencies="$(RootDir)\src\core\Script.h;$(RootDir)\src\core\CommandExecutor.h"
+						Outputs="$(RootDir)\src\core\tolua_bind.cc; $(RootDir)\src\core\tolua_bind.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\core\ConfigFileManager.cc"
 				>
 			</File>
@@ -183,40 +209,10 @@
 				RelativePath="..\..\src\core\Script.cc"
 				>
 			</File>
-			<Filter
-				Name="tolua"
+			<File
+				RelativePath="..\..\src\core\tolua_bind.cc"
 				>
-				<File
-					RelativePath="..\..\src\core\tolua\tolua.pkg"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
-							AdditionalDependencies="$(RootDir)\src\core\Script.h;$(RootDir)\src\core\CommandExecutor.h"
-							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
-							AdditionalDependencies=""
-							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\core\tolua\tolua_bind.cc"
-					>
-				</File>
-			</Filter>
+			</File>
 			<Filter
 				Name="command"
 				>
@@ -416,6 +412,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\tolua_bind.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\XMLIncludes.h"
 				>
 			</File>
@@ -604,14 +604,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\XMLPort.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="tolua"
-				>
-				<File
-					RelativePath="..\..\src\core\tolua\tolua_bind.h"
 					>
 				</File>
 			</Filter>

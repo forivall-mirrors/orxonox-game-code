@@ -152,6 +152,30 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\orxonox\CMakeLists.txt"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating tolua bind files..."
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\src\orxonox&#x0D;&#x0A;echo /**/ &gt; tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluagen$(CS).exe&quot; -n Orxonox -o tolua_bind.cc -H tolua_bind.h tolua.pkg&#x0D;&#x0A;"
+						Outputs="$(RootDir)\src\orxonox\tolua_bind.cc; $(RootDir)\src\orxonox\tolua_bind.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating tolua bind files..."
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\src\orxonox&#x0D;&#x0A;echo /**/ &gt; tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluagen$(CS).exe&quot; -n Orxonox -o tolua_bind.cc -H tolua_bind.h tolua.pkg&#x0D;&#x0A;"
+						Outputs="$(RootDir)\src\orxonox\tolua_bind.cc; $(RootDir)\src\orxonox\tolua_bind.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.cc"
 				>
 			</File>
@@ -186,6 +210,26 @@
 			<File
 				RelativePath="..\..\src\orxonox\SignalHandler.cc"
 				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\tolua_bind.cc"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<Filter
 				Name="objects"
@@ -333,56 +377,6 @@
 				<File
 					RelativePath="..\..\src\orxonox\tools\WindowEventListener.cc"
 					>
-				</File>
-			</Filter>
-			<Filter
-				Name="tolua"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\tolua\tolua.pkg"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
-							AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
-							Outputs="$(RootDir)\src\orxonox\tolua\tolua_bind.cc; $(RootDir)\src\orxonox\tolua\tolua_bind.h"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
-							AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
-							Outputs="$(RootDir)\src\orxonox\tolua\tolua_bind.cc; $(RootDir)\src\orxonox\tolua\tolua_bind.h"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\tolua\tolua_bind.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -579,6 +573,10 @@
 				RelativePath="..\..\src\orxonox\SignalHandler.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\orxonox\tolua_bind.h"
+				>
+			</File>
 			<Filter
 				Name="objects"
 				>
@@ -688,14 +686,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\WindowEventListener.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="tolua"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\tolua\tolua_bind.h"
 					>
 				</File>
 			</Filter>

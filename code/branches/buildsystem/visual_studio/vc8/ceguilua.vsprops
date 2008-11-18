@@ -12,6 +12,6 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="CEGUIBase$(CS).lib"
+		AdditionalDependencies="CEGUIBase$(CS).lib lua$(CS).lib"
 	/>
 </VisualStudioPropertySheet>
