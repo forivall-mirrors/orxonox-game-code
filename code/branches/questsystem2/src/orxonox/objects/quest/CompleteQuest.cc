@@ -70,6 +70,8 @@ namespace orxonox {
     void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(CompleteQuest, XMLPort, xmlelement, mode);
+        
+        COUT(3) << "New CompleteQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
@@ -95,7 +97,7 @@ namespace orxonox {
         try
         {
             quest = QuestManager::findQuest(this->getQuestId());
-            if(!quest->complete(player))
+            if(quest == NULL || !quest->complete(player))
             {
                return false;
             }

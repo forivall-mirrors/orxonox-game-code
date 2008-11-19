@@ -78,6 +78,8 @@ namespace orxonox {
 
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
         XMLPortObject(QuestEffectBeacon, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
+        
+        COUT(3) << "New QuestEffectBeacon created." << std::endl;
     }
     
     /**
@@ -106,8 +108,7 @@ namespace orxonox {
     {
         if(!b)
         {
-            //TDO: Better message, please.
-            COUT(2) << "b is false." << std::endl;
+            return false;
         }
         if(!(this->isActive())) //!< If the QuestEffectBeacon is inactive it cannot be executed.
         {
@@ -125,7 +126,7 @@ namespace orxonox {
 
         if(entity == NULL)
         {
-            COUT(2) << "No one triggered the beacon? Curious!" << std::endl;
+            COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a ControllableEntity." << std::endl;
             return false;
         }
         

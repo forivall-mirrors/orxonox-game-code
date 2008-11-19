@@ -60,6 +60,17 @@ namespace orxonox {
 
     /**
     @brief
+        Method for creating a ChangeQuestStatus object through XML.
+    */
+    void ChangeQuestStatus::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(ChangeQuestStatus, XMLPort, xmlelement, mode);
+
+        XMLPortParam(ChangeQuestStatus, "questId", setQuestId, getQuestId, xmlelement, mode);
+    }
+
+    /**
+    @brief
         Sets the id of the Quest the Questffect changes the status of.
     @param id
         The id of the Quest.
@@ -76,17 +87,6 @@ namespace orxonox {
         
         this->questId_ = id;
         return true;
-    }
-
-    /**
-    @brief
-        Method for creating a ChangeQuestStatus object through XML.
-    */
-    void ChangeQuestStatus::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(ChangeQuestStatus, XMLPort, xmlelement, mode);
-
-        XMLPortParam(ChangeQuestStatus, "questId", setQuestId, getQuestId, xmlelement, mode);
     }
 
 }

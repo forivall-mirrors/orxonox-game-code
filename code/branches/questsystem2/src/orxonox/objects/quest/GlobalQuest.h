@@ -100,6 +100,7 @@ namespace orxonox {
             virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
             virtual questStatus::Enum getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
+            
             virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
         private:

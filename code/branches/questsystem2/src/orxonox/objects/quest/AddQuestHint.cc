@@ -73,7 +73,8 @@ namespace orxonox {
         SUPER(AddQuestHint, XMLPort, xmlelement, mode);
 
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
-
+        
+        COUT(3) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << std::endl;
     }
 
     /**
@@ -112,10 +113,12 @@ namespace orxonox {
             return false;
         }
 
+        COUT(3) << "AddQuestHint on player: " << player << " ." << std::endl;
+
         try
         {
             QuestHint* hint = QuestManager::findHint(this->hintId_);
-            if(!hint->setActive(player))
+            if(hint == NULL || !hint->setActive(player))
             {
                 return false;
             }
@@ -126,6 +129,7 @@ namespace orxonox {
            return false;
         }
 
+        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player." << std::endl;
         return true;
 
     }

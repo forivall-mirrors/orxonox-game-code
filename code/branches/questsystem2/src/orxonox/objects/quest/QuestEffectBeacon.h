@@ -70,9 +70,12 @@ namespace orxonox {
             </effects>
             <events>
 		<execute>
-		    <PlayerTrigger /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
+		    <EventListener event=eventIdString />
 		</execute>
 	    </events>
+	    <attached>
+	       <PlayerTrigger name=eventIdString /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
+	    </attached>
 	</QuestEffectBeacon>
     @author
         Damian 'Mozork' Frick

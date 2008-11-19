@@ -39,6 +39,7 @@
 #include "util/Exception.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
+#include "QuestManager.h"
 #include "Quest.h"
 
 namespace orxonox {
@@ -71,6 +72,8 @@ namespace orxonox {
     {
         SUPER(QuestHint, XMLPort, xmlelement, mode);
 
+        QuestManager::registerHint(this); //!< Registers the QuestHint with the QuestManager.
+        
         COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 

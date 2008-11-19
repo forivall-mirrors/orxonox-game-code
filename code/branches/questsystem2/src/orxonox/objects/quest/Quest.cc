@@ -78,7 +78,7 @@ namespace orxonox {
         XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffect, xmlelement, mode);
         XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffect, xmlelement, mode);
 
-        QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
+        QuestManager::registerQuest(this); //!<Registers the Quest with the QuestManager.
     }
 
     /**
