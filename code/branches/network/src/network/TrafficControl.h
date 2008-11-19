@@ -31,27 +31,107 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <utility>
 
 #include "NetworkPrereqs.h"
 #include "Synchronisable.h"
 
 namespace network {
 
+// Synchronisable *bla = Synchronisable::getSynchronisable(objectID);
+
+/**
+*a vector of objects of this type will be given by the Server's Gamestate Manager
+*/
+struct objInfo
+{
+  unsigned int objCreatorID;
+  unsigned int objCurGS;//current GameState ID
+  unsigned int objDiffGS;//difference between current and latest GameState
+  unsigned int objSize;
+};
+
+/**
+*a vector of objects of this type will be given by the Server's Gamestate Manager
+*/
+struct obj
+{
+  unsigned int objID;
+  unsigned int objCreatorID;
+  unsigned int objSize;
+};
+
+
 /**
 *
 */
-class _NetworkExport Host{
+class TrafficControl{
   private:
+
+    //start: lists to be used
+    /**
+    *creates list (typ map) that contains objids, struct with info concerning object(objid)
+    */
+    std::map<unsigned int, objInfo> *listToProcess_;//copy of argument, when traffic control tool is being called, the original of this must be returned later on, eg the vector given by GS
+    /**
+    *reference list: contains object ids and the reference belonging to this id.
+    */
+    std::map<unsigned int, Synchronisable*> *referenceList_;//has to be created with constructor and then needs to be updated by evaluateList().
+    /**
+    *permanent client list: contains client ids, gamestate ids and object ids (in this order)
+    */
+    std::map<unsigned int, objInfo> *clientListPerm_; //has to be created with constructor and then needs to be updated by evaluateList().
+    /**
+    *temporary client list: contains client ids, gamestate ids and object ids (in this order)
+    */
+    std::map<unsigned int,std::map<unsigned int, unsigned int>> *clientListTemp_;
+    /**
+    *static priority list: contains obj id, basic priority (in this order)
+    */
+    std::map<unsigned int, unsigned int> *permObjPrio_;
+    /**
+    *dynamic priority list: contains obj id, dynamic priority (eg scheduled) (in this order)
+    */
+    std::map<unsigned int, unsigned int> *schedObjPrio_;
+    //end: lists to be used
+
+    /**
+    *currentGamestateID and currentClientID will be defined as soon as TrafficControl is being called by Server
+    */
+    unsigned int currentGamestateID;
+    unsigned int currentClientID;
+
+    void updateReferenceList(std::map<unsigned int, objInfo> *list);
+    void insertinClientListPerm(unsigned int objid, objInfo objinf);
+    /**
+    *creates listToProcess, which can be easialy compared with other lists
+    */
+    void copyList(std::vector<obj> *list);
+    /**
+    *copies Data to be updated into vector, therefore vector can trashed by server
+    */
+    std::vector<unsigned int>* copyBackList(std::map<unsigned int,Synchronisable*>);
+    /**
+    *evaluates Data given (vector) and produces result(->Data to be updated)
+    */
+    void evaluateList(std::map<obj> *list);
+
 
 
 
   protected:
     TrafficControl();
-    virtual ~TrafficControl();
+    virtual ~TrafficControl();//virtual because???
     static TrafficControl *instance_;
 
   public:
-    void processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<unsigned int> *list); //gets a pointer to the vector (containing objectIDs) and sorts it
+    /**
+    *is being used by GSManager from Server:
+    *vector contains: ObjIds, CreatorIds, Size (in this order) from Client XY 
+    *Elements of vector are accessed by *list[i]
+    *Elements of struct i are therefore: *list[i].objID
+    */
+    std::vector<obj>* processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj>* list); //gets a pointer to the vector (containing objectIDs) and sorts it
     void processAck(unsigned int clientID, unsigned int gamestateID);	// this function gets called when the server receives an ack from the client
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
 };
