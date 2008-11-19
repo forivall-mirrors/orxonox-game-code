@@ -238,6 +238,10 @@ end
 function extract_code(fn,s)
     local code = '\n$#include "'..fn..'"\n'
     s= "\n" .. s .. "\n" -- add blank lines as sentinels
+
+    -- eliminate export macro problems in class declarations
+    s = gsub(s, ' _%w*Export ', ' ')
+
     local _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n")
     while e do
         t = strlower(t)

@@ -41,17 +41,17 @@
 #include <CEGUISystem.h>
 #include "core/input/InputInterfaces.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+// tolua_begin
+namespace orxonox
+{
     /**
     @brief
         Provides a simple interface to CEGUI with tolua methods and console commands
     */
-    class _OrxonoxExport GUIManager : public KeyHandler, public MouseHandler
-    /*
-    class GUIManager { // tolua_export
-    */
-    {
+    class _OrxonoxExport GUIManager
+// tolua_end
+		: public KeyHandler, public MouseHandler
+    { // tolua_export
     public:
         enum State
         {

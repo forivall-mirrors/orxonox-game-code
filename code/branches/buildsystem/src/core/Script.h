@@ -44,13 +44,12 @@ extern "C" {
 #include <list>
 #include <string>
 
-namespace orxonox // tolua_export
-{ // tolua_export
+// tolua_begin
+namespace orxonox
+{
   class _CoreExport Script
-  /*
-  class Script { // tolua_export
-  */
   {
+// tolua_end
     struct LoadS {
       const char *s;
       size_t size;

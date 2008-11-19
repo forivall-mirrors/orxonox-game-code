@@ -35,13 +35,12 @@
 
 #include "CommandEvaluation.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+// tolua_begin
+namespace orxonox
+{
     class _CoreExport CommandExecutor
-    /*
-    class CommandExecutor { // tolua_export
-    */
     {
+// tolua_end
         public:
             static bool execute(const std::string& command, bool useTcl = true); // tolua_export
             static std::string complete(const std::string& command);
