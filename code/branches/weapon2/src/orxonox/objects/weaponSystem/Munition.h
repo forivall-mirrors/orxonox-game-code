@@ -33,6 +33,8 @@
 
 #include "core/BaseObject.h"
 
+#include "Weapon.h"
+
 
 namespace orxonox
 {
@@ -44,14 +46,22 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void decrementBullets();
-            void decrementMagazines();
-            void incrementBullets();
-            void incrementMagazines();
+            void setMaxBullets(unsigned int amount);
+            void setMaxMagazines(unsigned int amount);
+
+            unsigned int getBullets();
+            unsigned int getMagazines();
+
+            void removeBullets(unsigned int k, Weapon * parentWeapon);
+            void removeMagazines(unsigned int k);
+            void addBullets(unsigned int k);
+            void addMagazines(unsigned int k);
 
         private:
-            int bullets;
-            int magazines;
+            unsigned int bullets_;
+            unsigned int magazines_;
+            unsigned int maxBullets_;
+            unsigned int maxMagazines_;
     };
 }
 

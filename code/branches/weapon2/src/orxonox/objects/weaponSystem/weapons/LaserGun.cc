@@ -43,7 +43,7 @@ namespace orxonox
         RegisterObject(LaserGun);
 
         //set weapon properties here
-        this->setLoadingTime(0.5);
+        //this->setLoadingTime(0.5);
 
         //Hack --> will be loaded by XML
         this->attachNeededMunition("LaserGunMunition");
@@ -55,17 +55,18 @@ namespace orxonox
 
     void LaserGun::fire()
     {
-        if ( this->getWeaponReadyToShoot() )
+        if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
         {
-            this->setWeaponReadyToShoot(false);
 
-            Weapon::timer();
+
 
             //take munition
-            this->getAttachedMunition()->decrementBullets();
+            this->getAttachedMunition()->removeBullets(1,this);
+            Weapon::bulletTimer();
+            this->setBulletReadyToShoot(false);
 
             //create projectile
-            //BillboardProjectile* projectile = new ParticleProjectile(this);
+            BillboardProjectile* projectile = new ParticleProjectile(this,this);
             //projectile->setColour(this->getProjectileColour());
         }
         else

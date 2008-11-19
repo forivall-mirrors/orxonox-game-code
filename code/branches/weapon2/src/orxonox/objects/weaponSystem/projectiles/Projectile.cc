@@ -53,7 +53,7 @@ namespace orxonox
         this->explosionTemplateName_ = "Orxonox/explosion3";
         this->smokeTemplateName_ = "Orxonox/smoke4";
 
-        this->setStatic(false);
+        //this->setStatic(false);
         this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
 
         if (this->owner_)

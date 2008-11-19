@@ -41,15 +41,15 @@ namespace orxonox
     {
         RegisterObject(BillboardProjectile);
 
-        this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
-        this->attachObject(this->billboard_.getBillboardSet());
+        this->billboard_.setBillboardSet(this->scenemanager_, "Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
+        //this->attachObject(this->billboard_.getBillboardSet());
         this->scale(0.5);
     }
 
     BillboardProjectile::~BillboardProjectile()
     {
-        if (this->isInitialized() && this->owner_)
-            this->detachObject(this->billboard_.getBillboardSet());
+        //if (this->isInitialized() && this->owner_)
+            //this->detachObject(this->billboard_.getBillboardSet());
     }
 
     void BillboardProjectile::setColour(const ColourValue& colour)

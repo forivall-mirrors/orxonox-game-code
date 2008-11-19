@@ -43,10 +43,12 @@ namespace orxonox
 
         this->parentWeaponSystem_ = 0;
 
+        /* will be made with XML
         for (int i=0;i<k;i++)
         {
             attachWeaponSlot(new WeaponSlot(this));
         }
+        */
     }
 
     WeaponSet::~WeaponSet()

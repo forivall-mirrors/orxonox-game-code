@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "ParticleProjectile.h"
 
-#include "SpaceShip.h"
+#include "../../worldentities/pawns/SpaceShip.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 
@@ -41,7 +41,7 @@ namespace orxonox
     {
         RegisterObject(ParticleProjectile);
 
-        this->particles_ = new ParticleInterface("Orxonox/shot2", LODParticle::normal);
+        this->particles_ = new ParticleInterface(this->getSceneManager(), "Orxonox/shot2", LODParticle::normal);
         this->particles_->addToSceneNode(this->getNode());
         this->particles_->setKeepParticlesInLocalSpace(true);
         if (this->owner_)

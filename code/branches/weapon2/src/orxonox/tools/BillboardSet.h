@@ -51,6 +51,8 @@ namespace orxonox
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
+            inline Ogre::SceneManager* getSceneManager()
+                { return this->scenemanager_; }
 
             const std::string& getName() const;
 

@@ -50,18 +50,25 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void fire();
-            void timer();
-            void reloaded();
+            void bulletTimer();
+            void magazineTimer();
+            void bulletReloaded();
+            void magazineReloaded();
             void attachNeededMunition(std::string munitionType);
 
             //get and set functions
             virtual void setParentWeaponSystem();
             Munition * getAttachedMunition();
-            void setLoadingTime(float loadingTime);
-            float getLoadingTime();
-            void setWeaponReadyToShoot(bool b);
-            bool getWeaponReadyToShoot();
-            Timer<Weapon> *getTimer();
+            void setBulletLoadingTime(float loadingTime);
+            float getBulletLoadingTime();
+            void setMagazineLoadingTime(float loadingTime);
+            float getMagazineLoadingTime();
+            void setBulletReadyToShoot(bool b);
+            bool getBulletReadyToShoot();
+            void setMagazineReadyToShoot(bool b);
+            bool getMagazineReadyToShoot();
+            Timer<Weapon> *getBulletTimer();
+            Timer<Weapon> *getMagazineTimer();
 
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
                 { parentWeaponSlot_=parentWeaponSlot; };
@@ -69,14 +76,17 @@ namespace orxonox
                 { return parentWeaponSlot_; };
 
         private:
-            bool weaponReadyToShoot_;
-            float loadingTime_;
+            bool bulletReadyToShoot_;
+            bool magazineReadyToShoot_;
+            float bulletLoadingTime_;
+            float magazineLoadingTime_;
             Munition *munition_;
 
             WeaponSlot *parentWeaponSlot_;
             WeaponSystem *parentWeaponSystem_;
             SubclassIdentifier<Munition> munitionIdentifier_;
-            Timer<Weapon> reloadTimer_;
+            Timer<Weapon> bulletReloadTimer_;
+            Timer<Weapon> magazineReloadTimer_;
     };
 }
 

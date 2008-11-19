@@ -39,7 +39,8 @@ namespace orxonox
     Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Weapon);
-        this->weaponReadyToShoot_ = true;
+        this->bulletReadyToShoot_ = true;
+        this->magazineReadyToShoot_ = true;
         this->setParentWeaponSystem();
     }
 
@@ -50,27 +51,34 @@ namespace orxonox
 
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(Weapon, XMLPort, xmlelement, mode);
     }
 
     void Weapon::fire()
     {
 
     }
-    void Weapon::timer()
+
+
+    void Weapon::bulletTimer()
     {
-        this->reloadTimer_.setTimer( this->loadingTime_ , false , this , createExecutor(createFunctor(&Weapon::reloaded)));
+        this->bulletReloadTimer_.setTimer( this->bulletLoadingTime_ , false , this , createExecutor(createFunctor(&Weapon::bulletReloaded)));
+    }
+    void Weapon::magazineTimer()
+    {
+        this->magazineReloadTimer_.setTimer( this->magazineLoadingTime_ , false , this , createExecutor(createFunctor(&Weapon::magazineReloaded)));
     }
 
-    void Weapon::reloaded()
-    {
+    void Weapon::bulletReloaded()
+    { this->bulletReadyToShoot_ = true; }
 
-        this->weaponReadyToShoot_ = true;
-    }
+    void Weapon::magazineReloaded()
+    { this->magazineReadyToShoot_ = true; }
+
 
     void Weapon::attachNeededMunition(std::string munitionName)
     {
-        //if munition type already exist attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
+        //if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
         if ( this->parentWeaponSystem_->getMunitionType(munitionName) )
             this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionName);
         else
@@ -92,17 +100,33 @@ namespace orxonox
     Munition * Weapon::getAttachedMunition()
     {   return this->munition_; }
 
-    void Weapon::setLoadingTime(float loadingTime)
-    {   this->loadingTime_ = loadingTime;   }
+    void Weapon::setBulletLoadingTime(float loadingTime)
+    {   this->bulletLoadingTime_ = loadingTime;   }
 
-    float Weapon::getLoadingTime()
-    {   return this->loadingTime_;  }
+    float Weapon::getBulletLoadingTime()
+    {   return this->bulletLoadingTime_;  }
 
-    void Weapon::setWeaponReadyToShoot(bool b)
-    {   this->weaponReadyToShoot_ = b;   }
+    void Weapon::setMagazineLoadingTime(float loadingTime)
+    {   this->magazineLoadingTime_ = loadingTime;   }
 
-    bool Weapon::getWeaponReadyToShoot()
-    {   return this->weaponReadyToShoot_;    }
-    Timer<Weapon> * Weapon::getTimer()
-    {   return &this->reloadTimer_;   }
+    float Weapon::getMagazineLoadingTime()
+    {   return this->magazineLoadingTime_;  }
+
+    void Weapon::setBulletReadyToShoot(bool b)
+    {   this->bulletReadyToShoot_ = b;   }
+
+    bool Weapon::getBulletReadyToShoot()
+    {   return this->bulletReadyToShoot_;    }
+
+    void Weapon::setMagazineReadyToShoot(bool b)
+    {   this->magazineReadyToShoot_ = b;   }
+
+    bool Weapon::getMagazineReadyToShoot()
+    {   return this->magazineReadyToShoot_;    }
+
+    Timer<Weapon> * Weapon::getBulletTimer()
+    {   return &this->bulletReloadTimer_;   }
+
+    Timer<Weapon> * Weapon::getMagazineTimer()
+    {   return &this->magazineReloadTimer_;   }
 }

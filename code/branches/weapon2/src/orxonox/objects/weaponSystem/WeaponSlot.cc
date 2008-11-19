@@ -51,11 +51,6 @@ namespace orxonox
     {
     }
 
-    void WeaponSlot::attachWeapon(Weapon *weaponPointer)
-    {
-        this->attachedWeapon_ = weaponPointer;
-    }
-
 
     /*sets the munition type
      *unlimited: true
@@ -66,14 +61,25 @@ namespace orxonox
         unlimitedAmmo_ = isUnlimited;
     }
 
+
     void WeaponSlot::fire()
     {
         this->attachedWeapon_->fire();
     }
 
+
+    //XMLPort functions
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WeaponSlot, XMLPort, xmlelement, mode);
+        XMLPortObject(WeaponSlot, Weapon, "attached-weapon", attachWeapon, getAttachedWeapon, xmlelement, mode);
     }
+
+    void WeaponSlot::attachWeapon(Weapon *weaponPointer)
+    {   this->attachedWeapon_ = weaponPointer;   }
+
+    Weapon * WeaponSlot::getAttachedWeapon(unsigned int index) const
+    {   return this->attachedWeapon_;   }
+
 
 }

@@ -45,22 +45,65 @@ namespace orxonox
     {
     }
 
+    unsigned int Munition::getBullets()
+    { return this->bullets_; }
 
-    void Munition::decrementBullets()
+    unsigned int Munition::getMagazines()
+    { return this->magazines_; }
+
+    void Munition::setMaxBullets(unsigned int amount)
+    { this->maxBullets_ = amount; }
+
+    void Munition::setMaxMagazines(unsigned int amount)
+    { this->maxMagazines_ = amount; }
+
+    void Munition::removeBullets(unsigned int amount, Weapon * parentWeapon)
     {
-        this->bullets--;
+        //if actual magazine is empty, decrement it and set the bullets amount to full (masBullets_)
+        if ( this->bullets_ == 0 )
+        {
+            this->removeMagazines(1);
+            parentWeapon->magazineTimer();
+            this->bullets_ = this->maxBullets_;
+        }
+        else
+            this->bullets_ = this->bullets_ - amount;
     }
-    void Munition::decrementMagazines()
+
+    void Munition::removeMagazines(unsigned int amount)
     {
-        this->magazines--;
+        if ( this->magazines_ == 0 )
+        {
+            if ( this->bullets_ == 0 )
+                {
+                    //no bullets and no magazines
+                }
+            else
+            {
+                //what to do when there are no more magazines?
+            }
+        }
+        else
+            this->magazines_ = this->magazines_ - amount; }
+
+    void Munition::addBullets(unsigned int amount)
+    {
+        if ( this->bullets_ == this->maxBullets_ )
+        {
+            //cannot add bullets to actual magazine
+        }
+        else
+            this->bullets_ = this->bullets_ + amount;
     }
-    void Munition::incrementBullets()
+
+    void Munition::addMagazines(unsigned int amount)
     {
-        this->bullets++;
-    }
-    void Munition::incrementMagazines()
-    {
-        this->magazines++;
+        if ( this->magazines_ == this->maxMagazines_ )
+        {
+            //no more capacity for another magazine
+        }
+        else
+            this->magazines_ = this->magazines_ + amount;
     }
 
 

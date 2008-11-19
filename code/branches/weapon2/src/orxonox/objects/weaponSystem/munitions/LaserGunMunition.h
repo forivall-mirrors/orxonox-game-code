@@ -46,10 +46,6 @@ namespace orxonox
 
 
         private:
-            int bullets_;
-            int magazines_;
-            int maxBullets_;
-            int maxMagazines_;
 
 
     };

@@ -31,10 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
-
 #include "Weapon.h"
-#include "../worldentities/PositionableEntity.h"
+#include "objects/worldentities/PositionableEntity.h"
 
 namespace orxonox
 {
@@ -47,6 +45,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void attachWeapon(Weapon *weaponPointer);
+            Weapon * getAttachedWeapon(unsigned int index) const;
             void setAmmoType(bool isUnlimited);
             void fire();
 
