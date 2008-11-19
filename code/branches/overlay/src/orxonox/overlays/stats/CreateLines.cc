@@ -59,12 +59,39 @@ namespace orxonox
         SUPER(CreateLines, XMLPort, xmlElement, mode);
     }
 
-    void createTextArea(unsigned int lineIndex) {
+    /**
+        @brief Ensures that the number of OverlayElements is equal to numberOfColumns.
+    */
+    void setNumberOfColumns(unsigned int numberOfColumns) {
 
-        this->statsOverlayTextAreas_ = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex)));
-        this->overlay_->add2D(this->statsOverlayTextAreas_);
+        Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
 
-        // this->textColumns_.push_back();    pointer to be added
+        while (textColumns_.getSize() < numberOfColumns) {
+
+            tempTextArea* = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex)));
+            textColumns_->add2D(tempTextArea);
+            textColumns_.push_back(tempTextArea);
+
+        }
+
+        while (textColumns_.getSize() > numberOfColumns) {
+
+            ovMan->destroy(textColumns_.back());
+            textColumns_.pop_back();
+
+        }
+
+    }
+
+    void alignColumn(int columnIndex, float leftOffset) {
+
+        this->textColumns_[columnIndex]->setPosition(leftOffset,0);
+
+    }
+
+    void setColumnText(int columnIndex, string columnText) {
+
+        this->textColumns_[columnIndex]->setCaption(columnText);
 
     }
 

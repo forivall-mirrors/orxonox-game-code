@@ -49,7 +49,9 @@ namespace orxonox
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
     private: // functions
-        void createTextArea();
+        void setNumberOfColumns();
+        void alignColumn();
+        void setColumnText();
 
     private: // variables
         std::vector<Ogre::TextAreaOverlayElement*> textColumns_;
