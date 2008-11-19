@@ -47,6 +47,14 @@ namespace orxonox {
     /**
     @brief
         Adds a list of Rewardables to a player.
+        
+        Creating a AddReward through XML goes as follows:
+        
+        <AddReward>
+            <Rewardable /> //A list of Rewardable objects to be rewarded the player, see the specific Rewardables for their respective XML representations.
+            ...
+            <Rewardable />
+        </AddReward>
     @author
         Damian 'Mozork' Frick
     */

@@ -48,6 +48,10 @@ namespace orxonox {
     @brief
         This class is a description of a QuestItem.
         It holds a title and a description.
+        
+        Creating a QuestDescription through XML goes as follows:
+        
+        <QuestDescription title="Title" description="Description Text" />
     @author
         Damian 'Mozork' Frick
     */

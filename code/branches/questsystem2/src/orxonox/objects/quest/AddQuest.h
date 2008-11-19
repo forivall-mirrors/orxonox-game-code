@@ -47,6 +47,10 @@ namespace orxonox {
     /**
     @brief
         Adds a Quest, resp. changes the quests status to active for the player invoking the Quest.
+        
+        Creating a AddQuest through XML goes as follows:
+        
+        <AddQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be added.
     @author
         Damian 'Mozork' Frick
     */

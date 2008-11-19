@@ -34,6 +34,8 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
+
 namespace orxonox
 {
   CreateFactory(DistanceTrigger);
@@ -44,7 +46,7 @@ namespace orxonox
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
-    this->setForPlayer(false);
+    this->setForPlayer(false); //!< Normally hasn't just ControllableEntities as targets.
   }
 
   DistanceTrigger::~DistanceTrigger()
@@ -82,13 +84,15 @@ namespace orxonox
 
   void DistanceTrigger::addTargets(const std::string& targets)
   {
-  
-    if(targets == "ControllableEntity")
-    {
-        this->setForPlayer(true);
-    }
-  
     Identifier* targetId = ClassByString(targets);
+    
+    //! Checks whether the target is (or is derived from) a ControllableEntity.
+    Identifier* controllableEntityId = Class(ControllableEntity);
+    if(targetId->isA(controllableEntityId))
+    {
+      this->setForPlayer(true);
+    }
+    
     if (!targetId)
     {
         COUT(1) << "Error: \"" << targets << "\" is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << std::endl;
@@ -124,10 +128,12 @@ namespace orxonox
       Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
       if (distanceVec.length() < this->distance_)
       {
+        
+        //! If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
         if(this->isForPlayer())
 	{
-            ControllableEntity* player = dynamic_cast<ControllableEntity*>(entity);
-            this->setTriggeringPlayer(player);
+          ControllableEntity* player = dynamic_cast<ControllableEntity*>(entity);
+	  this->setTriggeringPlayer(player);
 	}
         
         return true;

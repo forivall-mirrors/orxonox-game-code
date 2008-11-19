@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file QuestEffectBeacon.cc
+    @brief
+	Implementation of the QuestEffectBeacon class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "QuestEffectBeacon.h"
 
@@ -43,45 +49,78 @@ namespace orxonox {
 
     CreateFactory(QuestEffectBeacon);
 
+    /**
+    @brief
+        Constructor. Registers the object and initializes defaults.
+    */
     QuestEffectBeacon::QuestEffectBeacon(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(QuestEffectBeacon);
         
         this->status_ = QuestEffectBeaconStatus::active;
-        this->times_ = -1;
-        this->trigger_ = NULL;
+        this->times_ = INFINITE;
     }
 
+    /**
+        Destructor.
+    */
     QuestEffectBeacon::~QuestEffectBeacon()
     {
     }
     
+    /**
+    @brief
+        Method for creating a QuestEffectBeacon object through XML.
+    */
     void QuestEffectBeacon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(QuestEffectBeacon, XMLPort, xmlelement, mode);
 
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
-        XMLPortObject(QuestEffectBeacon, QuestEffect, "", addEffect, getEffect, xmlelement, mode);
-        XMLPortObject(QuestEffectBeacon, PlayerTrigger, "", addTrigger, getTrigger, xmlelement, mode);
+        XMLPortObject(QuestEffectBeacon, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
     }
     
+    /**
+    @brief
+        Processes an event for this QuestEffectBeacon.
+    */
     void QuestEffectBeacon::processEvent(Event& event)
     {
+        SUPER(QuestEffectBeacon, processEvent, event);
+    
 	SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
     }
     
+    /**
+    @brief
+        Executes the QuestEffectBeacon.
+        This means extracting the ControllableEntity from the PlayerTrigger, provided by the Event causing the execution, and the extracting the PlayerInfo from the received ControllableEntity and invoking the QuestEffectbeacon's QuestEffects on the received PlayerInfo.
+    @param b
+        TDO: What is this???
+    @param trigger
+        Apointer to the PlayerTrigger that threw the Event.
+    @return
+        Returns true if successfully executed, false if not.
+    */
     bool QuestEffectBeacon::execute(bool b, PlayerTrigger* trigger)
     {
         if(!b)
         {
+            //TDO: Better message, please.
             COUT(2) << "b is false." << std::endl;
         }
-        if(!(this->isActive()))
+        if(!(this->isActive())) //!< If the QuestEffectBeacon is inactive it cannot be executed.
         {
             COUT(3) << "The QuestEffectBeacon is inactive." << std::endl;
             return false;
         }
+        
+        if(!trigger->isForPlayer()) //!< The PlayerTrigger is not exclusively for ControllableEntities which means we cannot extract one.
+        {
+            return false;
+        }
 
+        //! Extracting the ControllableEntity form the PlayerTrigger.
         ControllableEntity* entity = trigger->getTriggeringPlayer();
 
         if(entity == NULL)
@@ -90,6 +129,7 @@ namespace orxonox {
             return false;
         }
         
+        //! Extract the PlayerInfo from the ControllableEntity.
         PlayerInfo* player = entity->getPlayer();
         
         if(player == NULL)
@@ -98,36 +138,62 @@ namespace orxonox {
             return false;
         }
 
-        COUT(3) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;        
+        COUT(3) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;
 
-        bool check = QuestEffect::invokeEffects(player, this->effects_);
+        bool check = QuestEffect::invokeEffects(player, this->effects_); //!< Invoke the QuestEffects on the PlayerInfo.
         if(check)
         {
-            this->decrementTimes();
+            this->decrementTimes(); //!< Decrement the number of times the beacon can be used.
             return true;
 	}
-	
+
 	return false;
     }
     
-    bool QuestEffectBeacon::isActive(void)
+    /**
+    @brief
+        Set the status of the QuestEffectBeacon.
+    @param activate
+        If true the QuestEffectBeacon is activated, if false it is deactivated.
+    @return
+        Returns whether the activation/deactivation was successful.
+    */
+    bool QuestEffectBeacon::setActive(bool activate)
     {
-        return this->status_ == QuestEffectBeaconStatus::active;
-    }
-    
-    bool QuestEffectBeacon::decrementTimes(void)
-    {
-        if(!(this->isActive()))
+        if(this->getTimes() == 0 && activate) //!< A QuestEffectBeacon that can be executed only 0 times is always inactive.
         {
             return false;
         }
-        if(this->getTimes() == -1)
+        
+        if(activate)
+        {
+	    this->status_ = QuestEffectBeaconStatus::active;
+	    return true;
+        }
+        
+        this->status_ = QuestEffectBeaconStatus::inactive;
+        return true;
+    }
+    
+    /**
+    @brief
+        Decrement the number of times the QuestEffectBeacon can be executed.
+    @return
+        Returns true if successful.
+    */
+    bool QuestEffectBeacon::decrementTimes(void)
+    {
+        if(!(this->isActive())) //!< The QuestEffectBeacon mus be active to decrement the number of times it can be executed.
+        {
+            return false;
+        }
+        if(this->getTimes() == INFINITE) //!< If times is infinity the QuestEffectBeacon can be executed an infinite number fo times.
         {
             return true;
         }
         
-        this->times_ = this->times_ - 1;
-	if(this->getTimes() == 0)
+        this->times_ = this->times_ - 1; //!< Decrement number of times the QuestEffectBeacon can be executed.
+	if(this->getTimes() == 0) //!< Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
 	{
             this->status_ = QuestEffectBeaconStatus::inactive;
 	}
@@ -135,10 +201,19 @@ namespace orxonox {
         return true;
     }
     
-    
+    /**
+    @brief
+        Set the number of times the QuestEffectBeacon can be executed.
+        The number must be eighter <= 0, or INFINITY which is '-1'.
+    @param n
+        The number of times the QuestEffectBeacon can be executed.
+        The number must be eighter <= 0, or INFINITY which is '-1'.
+    @return
+        Returns true if successful.
+    */
     bool QuestEffectBeacon::setTimes(const int & n)
     {
-        if(n < -1)
+        if(n < 0 && n != INFINITE)
         {
             return false;
         }
@@ -147,14 +222,17 @@ namespace orxonox {
         return true;
     }
     
-    
     /**
     @brief
-
+        Adds a QuestEffect to the QuestEffectBeacon.
+    @param effect
+        A pointer to the QuestEffect to be added.
+    @return
+        Returns true if successful.
     */
     bool QuestEffectBeacon::addEffect(QuestEffect* effect)
     {
-        if(effect == NULL)
+        if(effect == NULL) //!< NULL-pointers are not well liked here...
         {
             COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
             return false;
@@ -166,27 +244,13 @@ namespace orxonox {
         return true;
     }
     
-    bool QuestEffectBeacon::addTrigger(PlayerTrigger* trigger)
-    {
-        if(this->trigger_ != NULL)
-	{
-	   COUT(2) << "A Trigger was trying to be added, where one was already set." << std::endl;
-	   return false;
-	}
-	if(trigger == NULL)
-	{
-            COUT(2) << "A NULL-Trigger was trying to be added." << std::endl;
-            return false;
-	}
-	
-	COUT(3) << "A Trigger was added to a QuestEffectBeacon." << std::endl;
-	this->trigger_ = trigger;
-	return true;
-    }
-    
-     /**
+    /**
     @brief
-
+        Returns the QuestEffect at the given index.
+    @param index
+        The index.
+    @return
+        Returns a pointer to the QuestEffect at the given index.
     */
     const QuestEffect* QuestEffectBeacon::getEffect(unsigned int index) const
     {
@@ -199,16 +263,6 @@ namespace orxonox {
             }
             i--;
         }
-        return NULL;
-    }
-
-    const PlayerTrigger* QuestEffectBeacon::getTrigger(unsigned int index) const
-    {
-        if(index == 0)
-        {
-            return this->trigger_;
-        }
-        
         return NULL;
     }
 

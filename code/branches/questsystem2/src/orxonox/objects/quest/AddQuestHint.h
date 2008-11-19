@@ -46,6 +46,10 @@ namespace orxonox {
     /**
     @brief
         Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.
+        
+	Creating a AddQuestHint through XML goes as follows:
+        
+        <AddQuestHint hintId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the QuestHint that should be added.
     @author
         Damian 'Mozork' Frick
     */

@@ -26,12 +26,23 @@
  *
  */
 
-#include "core/CoreIncludes.h"
+/**
+    @file PlayerTrigger.cc
+    @brief
+	Implementation of the PlayerTrigger class.
+*/
 
+#include "OrxonoxStableHeaders.h"
 #include "PlayerTrigger.h"
+
+#include "core/CoreIncludes.h"
 
 namespace orxonox {
 
+    /**
+    @brief
+        Constructor. Registers the object and initializes defaults.
+    */
     PlayerTrigger::PlayerTrigger(BaseObject* creator) : Trigger(creator)
     {
         RegisterObject(PlayerTrigger);
@@ -40,11 +51,18 @@ namespace orxonox {
         this->isForPlayer_ = true;
     }
     
-    
+    /**
+    @brief
+        Destructor.
+    */
     PlayerTrigger::~PlayerTrigger()
     {
     }
 
+    /**
+    @brief
+        Method for creating a QuestEffectBeacon object through XML.
+    */
     void PlayerTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 	SUPER(PlayerTrigger, XMLPort, xmlelement, mode);

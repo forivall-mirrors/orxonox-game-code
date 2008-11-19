@@ -46,7 +46,11 @@ namespace orxonox {
 
     /**
     @brief
-        Fails a quest.
+        Fails a quest (with a specified id) for the player invoking the QuestEffect.
+        
+        Creating a FailQuest through XML goes as follows:
+        
+        <FailQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be failed.
     @author
         Damian 'Mozork' Frick
     */
