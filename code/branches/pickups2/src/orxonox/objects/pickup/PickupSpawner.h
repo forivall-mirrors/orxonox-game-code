@@ -1,45 +1,55 @@
+#ifndef _PickupSpawner_H__
+#define _PickupSpawner_H__
 
+#include "OrxonoxPrereqs.h"
+
+#include "objects/worldentities/PositionableEntity.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-	class _OrxonoxExport PickupSpawner: public PositionableEnity
+	class _OrxonoxExport PickupSpawner : public PositionableEntity, public Tickable
 	{
 	public:
 	PickupSpawner(BaseObject* creator);
 	virtual ~PickupSpawner();
 
+	virtual void tick(float dt);
+
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	virtual void processEvent(Event& event);
-	virtual void changedActivity();
-	virtual void triggering(bool active, DistanceTrigger* trigger); // Wenn ein Spieler in die Naehe kommt
-	void activateSpawner(bool active);
+	virtual void triggering(Pawn* trigger); // Wenn ein Spieler in die Naehe kommt
 
 	void setItemTemplate(const std::string& itemtemplate);
-	inline const sdt::string& getItemTemplate() const
+	inline const std::string& getItemTemplate() const
 		{ return this->itemtemplate_; }
+
+	inline void setDistance(float distance)
+		{ this->distance_ = distance; }
+	inline float getDistance() const
+		{ return this->distance_; }
 	
 	private:
 	std::string itemtemplate_;
 	Template* template_;
-	bool isActive;
-	}
-	
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	float distance_;
+	};
 }
+
+#endif /* _PickupSpawner_H__ */
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

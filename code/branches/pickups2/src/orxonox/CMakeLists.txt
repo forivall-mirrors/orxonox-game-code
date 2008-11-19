@@ -66,7 +66,11 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/SpawnPoint.cc
   objects/worldentities/ParticleEmitter.cc
   objects/worldentities/ParticleSpawner.cc
+  objects/pickup/PickupSpawner.cc
 #  objects/worldentities/Backlight.cc
+
+  objects/pickup/Item.cc
+  objects/pickup/Turbo.cc
 
   objects/quest/AddQuest.cc
   objects/quest/AddQuestHint.cc
