@@ -70,7 +70,7 @@ namespace orxonox {
 
         XMLPortObject(AddReward, Rewardable, "", addRewardable, getRewardables, xmlelement, mode);
         
-        COUT(3) << "New AddReward, with " << this->rewards_size() << " Rewardables created." << std::endl;
+        COUT(3) << "New AddReward, with " << this->rewards_.size() << " Rewardables created." << std::endl;
     }
 
     /**
