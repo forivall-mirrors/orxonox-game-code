@@ -23,7 +23,7 @@ SET (TOLUA_PACKAGE "${CMAKE_CURRENT_SOURCE_DIR}/tolua-5.1.pkg")
 GET_TARGET_PROPERTY(TOLUAGEN_EXE toluagen_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/toluabind_orxonox.c
-  COMMAND ${TOLUAGEN_EXE} -n tolua -o ${CMAKE_CURRENT_BINARY_DIR}/toluabind_orxonox.c -H ${CMAKE_CURRENT_BINARY_DIR}/toluabind_orxonox.h ${TOLUA_PACKAGE}
+  COMMAND ${TOLUAGEN_EXE} -n tolua -w ${CMAKE_CURRENT_SOURCE_DIR} -o ${CMAKE_CURRENT_BINARY_DIR}/toluabind_orxonox.c -H ${CMAKE_CURRENT_BINARY_DIR}/toluabind_orxonox.h ${TOLUA_PACKAGE}
   DEPENDS
     toluagen_orxonox
     tolua-5.1.pkg

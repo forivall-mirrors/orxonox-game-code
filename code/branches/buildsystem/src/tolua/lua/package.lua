@@ -276,13 +276,27 @@ function Package (name,fn)
         readfrom()
     end
 
+    -- prepare working directory
+    local current_path
+    if not flags.w and flags.f then
+        current_path = gsub(flags.f, '(/)[^/]*%.?[^/]*$', '%1')
+    elseif flags.w then
+        if not (string.sub(flags.w, string.len(flags.w)) == '/') then
+            current_path = flags.w..'/'
+        else
+            current_path = flags.w
+        end
+    else
+        current_path = ''
+    end
+
     -- deal with include directive
     local nsubst
     repeat
         code,nsubst = gsub(code,'\n%s*%$(.)file%s*"(.-)"([^\n]*)\n',
             function (kind,fn,extra)
                 local _, _, ext = strfind(fn,".*%.(.*)$")
-                local fp,msg = openfile(fn,'r')
+                local fp,msg = openfile(current_path..fn,'r')
                 if not fp then
                     error('#'..msg..': '..fn)
                 end

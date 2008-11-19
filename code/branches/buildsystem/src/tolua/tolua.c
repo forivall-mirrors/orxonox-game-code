@@ -33,6 +33,7 @@ static void help (void)
          "  -o  file : set output file; default is stdout.\n"
          "  -H  file : create include file.\n"
          "  -n  name : set package name; default is input file root name.\n"
+         "  -w  folder : set working directory; efault is location of package file.\n"
          "  -p       : parse only.\n"
          "  -P       : parse and print structure information (for debug).\n"
          "  -S       : disable support for c++ strings.\n"
@@ -124,6 +125,7 @@ int main (int argc, char* argv[])
      case 'o': setfield(L,t,"o",argv[++i]); break;
      case 'n': setfield(L,t,"n",argv[++i]); break;
      case 'H': setfield(L,t,"H",argv[++i]); break;
+     case 'w': setfield(L,t,"w",argv[++i]); break;
      case 'S': setfield(L,t,"S",""); break;
      case '1': setfield(L,t,"1",""); break;
      case 'L': setfield(L,t,"L",argv[++i]); break;

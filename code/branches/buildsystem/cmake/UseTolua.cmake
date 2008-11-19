@@ -43,7 +43,7 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
 
   ADD_CUSTOM_COMMAND(
     OUTPUT "${_tolua_cxxfile}" "${_tolua_hfile}"
-    COMMAND "${TOLUA_EXECUTABLE}" -n "${_tolua_package}" -o "${_tolua_cxxfile}" -H "${_tolua_hfile}" "${_tolua_pkgfile}"
+    COMMAND "${TOLUA_EXECUTABLE}" -n "${_tolua_package}" -w ${CMAKE_CURRENT_SOURCE_DIR} -o "${_tolua_cxxfile}" -H "${_tolua_hfile}" "${_tolua_pkgfile}"
     DEPENDS "${_tolua_executable_name}" ${_tolua_inputfiles}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   )
