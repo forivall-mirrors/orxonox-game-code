@@ -1,16 +1,34 @@
 SET(CONFIG_FILES
-    def_keybindings.ini
-    disco.txt
-    irc.tcl
-    ogre.cfg-init
-    orxonox.bat
-    Plugins.cfg
-    plugins.cfg-init
-    remote.tcl
-    run-script
-    telnet_server.tcl
+  def_keybindings.ini
+  disco.txt
+  irc.tcl
+  remote.tcl
+  telnet_server.tcl
 )
 
+IF(IS_TARDIS)
+  SET(CONFIG_FILES ${CONFIG_FILES}
+    linux/run-script
+	tardis/plugins.cfg
+  )
+
+ELSEIF(UNIX)
+  SET(CONFIG_FILES ${CONFIG_FILES}
+    linux/run-script
+	linux/plugins.cfg
+  )
+ENDIF(IS_TARDIS)
+
+IF(MINGW)
+  SET(CONFIG_FILES ${CONFIG_FILES}
+    "mingw/plugins.cfg"
+    "mingw/orxonox.bat"
+  )
+ENDIF(MINGW)
+
 FOREACH(_FILE ${CONFIG_FILES})
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${_FILE} ${EXECUTABLE_OUTPUT_PATH}/${_FILE} COPYONLY)
+  GET_FILENAME_COMPONENT(_filename ${_FILE} NAME)
+  IF (NOT EXISTS ${EXECUTABLE_OUTPUT_PATH}/${_filename})
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${_FILE} ${EXECUTABLE_OUTPUT_PATH}/${_filename} COPYONLY)
+  ENDIF (NOT EXISTS ${EXECUTABLE_OUTPUT_PATH}/${_filename})
 ENDFOREACH(_FILE)

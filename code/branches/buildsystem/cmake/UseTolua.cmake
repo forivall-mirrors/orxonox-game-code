@@ -42,7 +42,8 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
                                   -H "${_tolua_hfile}"
                                   -s "${TOLUA_PARSER_SOURCE}"
                                      "${_tolua_pkgfile}"
-    DEPENDS "${_tolua_executable_name}" ${_tolua_inputfiles} ${TOLUA_PARSER_DEPENDENCIES}
+    DEPENDS "${_tolua_executable_name}" ${TOLUA_PARSER_DEPENDENCIES}
+    IMPLICIT_DEPENDS CXX ${_tolua_inputfiles}
     WORKING_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
   )
 ENDMACRO(TOLUA)
