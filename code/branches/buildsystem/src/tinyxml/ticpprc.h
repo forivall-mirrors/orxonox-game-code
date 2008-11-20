@@ -1,5 +1,3 @@
-#define TIXML_USE_TICPP
-
 /*
 http://code.google.com/p/ticpp/
 Copyright (c) 2006 Ryan Pusztai, Ryan Mulder

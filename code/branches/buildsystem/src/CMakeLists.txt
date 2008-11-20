@@ -22,6 +22,9 @@ INCLUDE_DIRECTORIES(
   tolua
 )
 
+# Set special macro symbols across all libraries
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIXML_USE_TICPP")
+
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
