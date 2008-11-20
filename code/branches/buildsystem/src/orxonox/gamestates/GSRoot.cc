@@ -285,7 +285,8 @@ namespace orxonox
         else
             probe.close();
 
-        ogreRoot_ = new Ogre::Root(ogrePluginsFile_, ogreConfigFile_, ogreLogFile_);
+        // Leave plugins file empty. We're going to do that part manually later
+        ogreRoot_ = new Ogre::Root("", ogreConfigFile_, ogreLogFile_);
 
 #if 0 // Ogre 1.4.3 doesn't yet support setDebugOutputEnabled(.)
 #if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32

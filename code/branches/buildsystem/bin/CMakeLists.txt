@@ -9,19 +9,19 @@ SET(CONFIG_FILES
 IF(IS_TARDIS)
   SET(CONFIG_FILES ${CONFIG_FILES}
     linux/run-script
-	tardis/plugins.cfg
+	tardis/orxonox.ini
   )
 
 ELSEIF(UNIX)
   SET(CONFIG_FILES ${CONFIG_FILES}
     linux/run-script
-	linux/plugins.cfg
+	linux/orxonox.ini
   )
 ENDIF(IS_TARDIS)
 
 IF(MINGW)
   SET(CONFIG_FILES ${CONFIG_FILES}
-    "mingw/plugins.cfg"
+    "mingw/orxonox.ini"
     "mingw/orxonox.bat"
   )
 ENDIF(MINGW)

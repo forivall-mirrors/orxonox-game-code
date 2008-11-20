@@ -55,6 +55,7 @@ namespace orxonox
 
         void setConfigValues();
 
+        void loadOgrePlugins();
         void declareResources();
         void loadRenderer();
         void initialiseResources();
@@ -87,6 +88,8 @@ namespace orxonox
 
         // config values
         std::string           resourceFile_;          //!< resources file name
+        std::string           ogrePluginsFolder_;     //!< Folder where the Ogre plugins are located
+        std::string           ogrePlugins_;           //!< Comma separated list of all plugins to load
         unsigned int          detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
     };
 }

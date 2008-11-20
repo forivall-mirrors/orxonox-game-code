@@ -42,6 +42,8 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/String.h"
+#include "util/SubString.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -81,6 +83,8 @@ namespace orxonox
     void GSGraphics::setConfigValues()
     {
         SetConfigValue(resourceFile_, "resources.cfg").description("Location of the resources file in the data path.");
+        SetConfigValue(ogrePluginsFolder_, ".").description("Folder where the Ogre plugins are located.");
+        SetConfigValue(ogrePlugins_, "RenderSystem_GL, Plugin_ParticleFX").description("Comma separated list of all plugins to load.");
         SetConfigValue(statisticsRefreshCycle_, 200000).description("Sets the time in microseconds interval at which average fps, etc. get updated.");
     }
 
@@ -92,8 +96,13 @@ namespace orxonox
 
         this->ogreRoot_ = getParent()->getOgreRoot();
 
+        // load all the required plugins for Ogre
+        loadOgrePlugins();
+        // read resource declaration file
         this->declareResources();
-        this->loadRenderer();    // creates the render window
+        // Reads ogre config and creates the render window
+        this->loadRenderer();
+
         // TODO: Spread this so that this call only initialises things needed for the Console and GUI
         this->initialiseResources();
 
@@ -231,6 +240,24 @@ namespace orxonox
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
 
         ++frameCount_;
+    }
+
+    void GSGraphics::loadOgrePlugins()
+    {
+        // just to make sure the next statement doesn't segfault
+        if (ogrePluginsFolder_ == "")
+            ogrePluginsFolder_ = ".";
+
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+        convertToWindowsPath(&ogrePluginsFolder_);
+#else
+        convertToUnixPath(&ogrePluginsFolder_);
+#endif
+
+        // Do some SubString magic to get the comma separated list of plugins
+        SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
+        for (unsigned int i = 0; i < plugins.size(); ++i)
+            ogreRoot_->loadPlugin(ogrePluginsFolder_ + plugins[i]);
     }
 
     void GSGraphics::declareResources()

@@ -76,4 +76,7 @@ _UtilExport std::string  getComment(const std::string& str);
 _UtilExport unsigned int getCommentPosition(const std::string& str);
 _UtilExport unsigned int getNextCommentPosition(const std::string& str, unsigned int start = 0);
 
+_UtilExport void         convertToWindowsPath(std::string* str);
+_UtilExport void         convertToUnixPath(std::string* str);
+
 #endif /* _Util_String_H__ */
