@@ -39,7 +39,7 @@ extern "C" {
 }
 
 #include "tolua++.h"
-#include "tolua_bind.h"
+#include "core/ToluaBindCore.h"
 
 namespace orxonox
 {

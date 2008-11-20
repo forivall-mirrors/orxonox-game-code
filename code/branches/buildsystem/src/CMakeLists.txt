@@ -20,6 +20,8 @@ INCLUDE_DIRECTORIES(
   ois
   orxonox
   tolua
+  # Required for tolua bind files that are in the build folder
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 # Set special macro symbols across all libraries

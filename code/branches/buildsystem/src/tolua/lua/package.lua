@@ -127,7 +127,8 @@ function classPackage:preamble ()
 
     if flags.H then
         local header = gsub(flags.H, '^.-([%w_]*%.[%w_]*)$', '%1')
-        output('#include "'..header..'"\n')
+        local package_lower = string.lower(self.name)
+        output('#include "'..package_lower..'/'..header..'"\n')
     end
 
     local i=1
@@ -202,7 +203,8 @@ function classPackage:header ()
     output('*/\n\n')
 
     if flags.H then
-        output('#include "'..self.name..'Prereqs.h"\n')
+        local package_lower = string.lower(self.name)
+        output('#include "'..package_lower..'/'..self.name..'Prereqs.h"\n')
         output('/* Exported function */')
         output('_'..self.name..'Export')
         output('int  tolua_'..self.name..'_open (lua_State* tolua_S);')
@@ -219,7 +221,7 @@ end
 -- Parse C header file with tolua directives
 -- *** Thanks to Ariel Manzur for fixing bugs in nested directives ***
 function extract_code(fn,s)
-    local code = '\n$#include "'..fn..'"\n'
+    local code = '\n$#include "'..string.lower(flags.n)..'/'..fn..'"\n'
     s= "\n" .. s .. "\n" -- add blank lines as sentinels
 
     -- eliminate export macro problems in class declarations

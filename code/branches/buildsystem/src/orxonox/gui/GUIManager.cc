@@ -42,10 +42,10 @@
 #include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
-#include "../core/tolua_bind.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
-#include "tolua_bind.h"
+#include "core/ToluaBindCore.h"
+#include "orxonox/ToluaBindOrxonox.h"
 #include "GraphicsEngine.h"
 #include "OgreCEGUIRenderer.h"
 

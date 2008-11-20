@@ -18,21 +18,14 @@
 SET(_tolua_executable_name toluaexe_orxonox)
 GET_TARGET_PROPERTY(TOLUA_EXECUTABLE "${_tolua_executable_name}" LOCATION)
 
-MACRO(INCLUDE_DIRECTORIES_QUOTES)
-  FOREACH(_tolua_quote_dir ${ARGN})
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -iquote ${_tolua_quote_dir}")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -iquote ${_tolua_quote_dir}")
-  ENDFOREACH(_tolua_quote_dir)
-ENDMACRO(INCLUDE_DIRECTORIES_QUOTES)
-
 MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
   # TODO: cleaner arguments handling
   SET(_tolua_inputfiles ${ARGN})
   LIST(REMOVE_ITEM _tolua_inputfiles "INPUTFILES")
 
   SET(_tolua_pkgfile "${CMAKE_CURRENT_BINARY_DIR}/tolua.pkg")
-  SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/tolua_bind.cc")
-  SET(_tolua_hfile   "${CMAKE_CURRENT_BINARY_DIR}/tolua_bind.h")
+  SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/ToluaBind${_tolua_package}.cc")
+  SET(_tolua_hfile   "${CMAKE_CURRENT_BINARY_DIR}/ToluaBind${_tolua_package}.h")
   SET(${_tolua_srcfiles_varname} ${${_tolua_srcfiles_varname}} "${_tolua_cxxfile}")
 
   # TODO: check secureness of this temporary file
