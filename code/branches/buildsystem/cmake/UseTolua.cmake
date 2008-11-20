@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-SET(_tolua_executable_name tolua_orxonox)
+SET(_tolua_executable_name toluaexe_orxonox)
 GET_TARGET_PROPERTY(TOLUA_EXECUTABLE "${_tolua_executable_name}" LOCATION)
 
 MACRO(INCLUDE_DIRECTORIES_QUOTES)
@@ -32,7 +32,7 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
 
   SET(_tolua_pkgfile "${CMAKE_CURRENT_BINARY_DIR}/tolua.pkg")
   SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/tolua_bind.cc")
-  SET(_tolua_hfile "${CMAKE_CURRENT_BINARY_DIR}/tolua_bind.h")
+  SET(_tolua_hfile   "${CMAKE_CURRENT_BINARY_DIR}/tolua_bind.h")
   SET(${_tolua_srcfiles_varname} ${${_tolua_srcfiles_varname}} "${_tolua_cxxfile}")
 
   # TODO: check secureness of this temporary file
@@ -43,8 +43,13 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
 
   ADD_CUSTOM_COMMAND(
     OUTPUT "${_tolua_cxxfile}" "${_tolua_hfile}"
-    COMMAND "${TOLUA_EXECUTABLE}" -n "${_tolua_package}" -w ${CMAKE_CURRENT_SOURCE_DIR} -o "${_tolua_cxxfile}" -H "${_tolua_hfile}" "${_tolua_pkgfile}"
-    DEPENDS "${_tolua_executable_name}" ${_tolua_inputfiles}
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    COMMAND "${TOLUA_EXECUTABLE}" -n "${_tolua_package}"
+                                  -w "${CMAKE_CURRENT_SOURCE_DIR}"
+                                  -o "${_tolua_cxxfile}"
+                                  -H "${_tolua_hfile}"
+                                  -s "${TOLUA_PARSER_SOURCE}"
+                                     "${_tolua_pkgfile}"
+    DEPENDS "${_tolua_executable_name}" ${_tolua_inputfiles} ${TOLUA_PARSER_DEPENDENCIES}
+    WORKING_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
   )
 ENDMACRO(TOLUA)

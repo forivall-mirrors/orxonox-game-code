@@ -4,6 +4,8 @@
 ** TeCGraf/PUC-Rio
 ** Aug 2003
 ** $Id:$
+** Extension by Orxonox (Reto Grieder) to support working directory
+** and direct usage of lua files. (2008)
 */
 
 /* This code is free software; you can redistribute it and/or modify it.
@@ -33,7 +35,8 @@ static void help (void)
          "  -o  file : set output file; default is stdout.\n"
          "  -H  file : create include file.\n"
          "  -n  name : set package name; default is input file root name.\n"
-         "  -w  folder : set working directory; efault is location of package file.\n"
+         "  -w  directory : set working directory; default is location of package file.\n"
+         "  -s  file : specify source lua code for the parser; all.lua is default.\n"
          "  -p       : parse only.\n"
          "  -P       : parse and print structure information (for debug).\n"
          "  -S       : disable support for c++ strings.\n"
@@ -98,6 +101,9 @@ int main (int argc, char* argv[])
  lua_pushstring(L,TOLUA_VERSION); lua_setglobal(L,"TOLUA_VERSION");
  lua_pushstring(L,LUA_VERSION); lua_setglobal(L,"TOLUA_LUA_VERSION");
 
+ char* working_directory = "";
+ char* lua_source = "";
+
  if (argc==1)
  {
   help();
@@ -125,7 +131,14 @@ int main (int argc, char* argv[])
      case 'o': setfield(L,t,"o",argv[++i]); break;
      case 'n': setfield(L,t,"n",argv[++i]); break;
      case 'H': setfield(L,t,"H",argv[++i]); break;
-     case 'w': setfield(L,t,"w",argv[++i]); break;
+     case 'w':
+      working_directory = argv[++i];
+      setfield(L,t,"w",argv[i]);
+      break;
+     case 's':
+      lua_source = argv[++i];
+      setfield(L,t,"s",argv[i]);
+      break;
      case 'S': setfield(L,t,"S",""); break;
      case '1': setfield(L,t,"1",""); break;
      case 'L': setfield(L,t,"L",argv[++i]); break;
@@ -145,25 +158,38 @@ int main (int argc, char* argv[])
   }
   lua_pop(L,1);
  }
-/* #define TOLUA_SCRIPT_RUN */
-#ifndef TOLUA_SCRIPT_RUN
+
  {
-  int tolua_tolua_open (lua_State* L);
-  tolua_tolua_open(L);
+  char path[BUFSIZ];
+  char file[BUFSIZ];
+
+  if (lua_source[0] == '/' || lua_source[0] == '\\')
+  {
+   strcpy(path, lua_source);
+   char* p = strrchr(path, '/');
+   if (p == NULL)
+    p = strrchr(path, '\\');
+   p = (p == NULL) ? path : p + 1;
+   strcpy(file, p);
+   *p = '\0';
+  }
+  else
+  {
+   strcpy(path, working_directory);
+   strcpy(file, "all.lua");
+
+   if (strlen(path) > 0)
+   {
+    char last = path[strlen(path) - 1];
+    if (last != '\\' && last != '/')
+     strcat(path, "/");
+   }
+  }
+
+  lua_pushstring(L, path);
+  lua_setglobal(L, "path");
+  strcat(path, file);
+  lua_dofile(L, path);
  }
-#else
- {
-  char* p;
-  char  path[BUFSIZ];
-  strcpy(path,argv[0]);
-  p = strrchr(path,'/');
-  if (p==NULL) p = strrchr(path,'\\');
-  p = (p==NULL) ? path : p+1;
-  sprintf(p,"%s","../src/bin/lua/");
-  lua_pushstring(L,path); lua_setglobal(L,"path");
-		strcat(path,"all.lua");
-  lua_dofile(L,path);
- }
-#endif
  return 0;
 }

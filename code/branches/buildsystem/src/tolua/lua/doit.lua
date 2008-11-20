@@ -38,27 +38,52 @@ function doit ()
     -- parse table with extra paramters
     parse_extra()
 
+    -- get potential working directory
+    if not flags.w then
+        flags.w = ''
+    end
+
     -- do this after setting the package name
-    if flags['L'] then
-        dofile(flags['L'])
+    if flags.L then
+        if string.sub(flags.L, 1, 1) == '/' or string.sub(flags.L, 1, 1) == '\\' then
+            dofile(flags.L)
+        else
+            dofile(flags.w..'/'..flags.L)
+        end
     end
 
     -- add cppstring
-    if not flags['S'] then
+    if not flags.S then
         _basic['string'] = 'cppstring'
         _basic['std::string'] = 'cppstring'
         _basic_ctype.cppstring = 'const char*'
     end
 
     -- proccess package
-    local p  = Package(flags.n,flags.f)
+	local file
+	if flags.f then
+        if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' then
+            file = flags.f
+        else
+            file = flags.w..'/'..flags.f
+        end
+    else
+        file = flags.f
+    end
+    local p  = Package(flags.n, file)
 
     if flags.p then
         return        -- only parse
     end
 
     if flags.o then
-        local st,msg = writeto(flags.o)
+	    local file
+        if string.sub(flags.o, 1, 1) == '/' or string.sub(flags.o, 1, 1) == '\\' then
+            file = flags.o
+        else
+            file = flags.w..'/'..flags.o
+        end
+        local st,msg = writeto(file)
         if not st then
             error('#'..msg)
         end
@@ -83,7 +108,13 @@ function doit ()
     -- write header file
     if not flags.P then
         if flags.H then
-            local st,msg = writeto(flags.H)
+	        local file
+            if string.sub(flags.H, 1, 1) == '/' or string.sub(flags.H, 1, 1) == '\\' then
+                file = flags.H
+            else
+                file = flags.w..'/'..flags.H
+            end
+            local st,msg = writeto(file)
             if not st then
                 error('#'..msg)
             end

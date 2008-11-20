@@ -123,29 +123,11 @@ function classPackage:preamble ()
     output('#include "stdlib.h"\n')
     output('#endif\n')
     output('#include "string.h"\n\n')
-    output('#include "tolua/tolua++.h"\n\n')
+    output('#include "tolua++.h"\n\n')
 
-    if not flags.h then
-        --  local temp = string.reverse(flags.H)
-        --  local start1, end1 = string.find(temp, '/')
-        --  local start2, end2 = string.find(temp, '\\')
-        --  local res
-        --  if not start1 == nil then
-        --   if not start2 == nil then
-        --    if start1 > start2 then
-        --     res = string.sub(temp, 1, start2)
-        --    else
-        --     res = string.sub(temp, 1, start1)
-        --    end
-        --   else
-        --    res = string.sub(temp, 1, start1)
-        --   end
-        --  elseif not start2 == nil then
-        --   res = string.sub(temp, 1, start2)
-        --  end
-        --  res = string.reverse(res)
-        output('#include "tolua_bind.h"')
-        output('\n')
+    if flags.H then
+        local header = gsub(flags.H, '^.-([%w_]*%.[%w_]*)$', '%1')
+        output('#include "'..header..'"\n')
     end
 
     local i=1
@@ -219,10 +201,11 @@ function classPackage:header ()
     output('** Generated automatically by '..TOLUA_VERSION..' on '..date()..'.\n')
     output('*/\n\n')
 
-    if not flags.h then
+    if flags.H then
         output('#include "'..self.name..'Prereqs.h"\n')
         output('/* Exported function */')
-        output('_'..self.name..'Export int  tolua_'..self.name..'_open (lua_State* tolua_S);')
+        output('_'..self.name..'Export')
+        output('int  tolua_'..self.name..'_open (lua_State* tolua_S);')
         output('\n')
     end
 end
