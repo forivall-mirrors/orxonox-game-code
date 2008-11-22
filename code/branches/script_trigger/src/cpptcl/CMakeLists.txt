@@ -1,5 +1,0 @@
-ADD_LIBRARY(cpptcl SHARED CppTcl.cc)
-
-TARGET_LINK_LIBRARIES(cpptcl
-  ${TCL_LIBRARY}
-)
