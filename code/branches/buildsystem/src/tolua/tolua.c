@@ -85,6 +85,9 @@ static void error (char* o)
 
 int main (int argc, char* argv[])
 {
+ char* working_directory = "";
+ char* lua_source = "";
+
  #ifdef LUA_VERSION_NUM /* lua 5.1 */
  lua_State* L = luaL_newstate();
  luaL_openlibs(L);
@@ -101,8 +104,6 @@ int main (int argc, char* argv[])
  lua_pushstring(L,TOLUA_VERSION); lua_setglobal(L,"TOLUA_VERSION");
  lua_pushstring(L,LUA_VERSION); lua_setglobal(L,"TOLUA_LUA_VERSION");
 
- char* working_directory = "";
- char* lua_source = "";
 
  if (argc==1)
  {
@@ -162,22 +163,18 @@ int main (int argc, char* argv[])
  {
   char path[BUFSIZ];
   char file[BUFSIZ];
+  path[0] = '\0';
+  file[0] = '\0';
 
-  if (lua_source[0] == '/' || lua_source[0] == '\\')
+  if (strlen(lua_source) > 0 &&
+      lua_source[0] != '/' &&
+      lua_source[0] != '\\' &&
+      strlen(lua_source) > 1 &&
+      lua_source[1] != ':')
   {
-   strcpy(path, lua_source);
-   char* p = strrchr(path, '/');
-   if (p == NULL)
-    p = strrchr(path, '\\');
-   p = (p == NULL) ? path : p + 1;
-   strcpy(file, p);
-   *p = '\0';
-  }
-  else
-  {
+   /* Relative path, prefix working directory */
    strcpy(path, working_directory);
-   strcpy(file, "all.lua");
-
+   /* Make sure there is '\\' or '/' at the end of the path */
    if (strlen(path) > 0)
    {
     char last = path[strlen(path) - 1];
@@ -186,10 +183,29 @@ int main (int argc, char* argv[])
    }
   }
 
+  strcat(path, lua_source);
+
+  /* Extract the full path */
+  {
+   char* p;
+   p = strrchr(path, '/');
+   if (p == NULL)
+    p = strrchr(path, '\\');
+   p = (p == NULL) ? path : p + 1;
+   strcpy(file, p);
+   *p = '\0';
+  }
+  if (strlen(file) == 0)
+   strcpy(file, "all.lua");
+
   lua_pushstring(L, path);
   lua_setglobal(L, "path");
   strcat(path, file);
+#ifdef LUA_VERSION_NUM /* lua 5.1 */
+  luaL_dofile(L, path);
+#else
   lua_dofile(L, path);
+#endif
  }
  return 0;
 }

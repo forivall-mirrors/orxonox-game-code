@@ -249,9 +249,19 @@ function Package (name,fn)
 
     -- open input file, if any
     if fn then
-        local st, msg = readfrom(flags.f)
+        local file
+        if flags.f then
+            if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' then
+                file = flags.f
+            else
+                file = flags.w..'/'..flags.f
+            end
+        else
+            file = flags.f
+        end
+        local st, msg = readfrom(file)
         if not st then
-            error('#'..msg)
+            error('#'..msg..' path: '..flags.f)
         end
         local _; _, _, ext = strfind(fn,".*%.(.*)$")
     end
