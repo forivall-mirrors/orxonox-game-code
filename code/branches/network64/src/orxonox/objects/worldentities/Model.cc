@@ -60,8 +60,8 @@ namespace orxonox
 
     void Model::registerVariables()
     {
-        REGISTERSTRING(this->meshSrc_,    direction::toclient, new NetworkCallback<Model>(this, &Model::changedMesh));
-        REGISTERDATA(this->bCastShadows_, direction::toclient, new NetworkCallback<Model>(this, &Model::changedShadows));
+        registerVariable(this->meshSrc_,    variableDirection::toclient, new NetworkCallback<Model>(this, &Model::changedMesh));
+        registerVariable(this->bCastShadows_, variableDirection::toclient, new NetworkCallback<Model>(this, &Model::changedShadows));
     }
 
     void Model::changedMesh()

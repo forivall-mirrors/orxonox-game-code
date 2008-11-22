@@ -69,15 +69,18 @@ namespace orxonox
   class GamestateClient;
   class GamestateManager;
   class GamestateHandler;
+  class NetworkCallbackBase;
   class PacketBuffer;
   class Server;
   class ServerFrameListener;
   class Synchronisable;
+  class SynchronisableVariableBase;
+  template <class T> class SynchronisableVariable;
+  template <class T> class SynchronisableVariableBidirectional;
   struct ClientList;
   struct PacketEnvelope;
   struct QueueItem;
   struct syncData;
-  struct synchronisableVariable;
   namespace packet{
     class Gamestate;
     class Packet;

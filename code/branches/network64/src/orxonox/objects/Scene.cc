@@ -113,8 +113,8 @@ namespace orxonox
 
     void Scene::registerVariables()
     {
-        REGISTERSTRING(this->skybox_,     direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
-        REGISTERDATA(this->ambientLight_, direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+        registerVariable(this->skybox_,     variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
+        registerVariable(this->ambientLight_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
     }
 
     void Scene::setSkybox(const std::string& skybox)

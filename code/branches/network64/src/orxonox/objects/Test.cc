@@ -69,10 +69,10 @@ namespace orxonox
 
 	void Test::registerVariables()
 	{
-		REGISTERDATA ( v1,direction::toclient, new NetworkCallback<Test> ( this, &Test::checkV1 ) );
-    REGISTERDATA ( v2,direction::toserver, new NetworkCallback<Test> ( this, &Test::checkV2 ) );
-		REGISTERDATA ( v3,direction::serverMaster, new NetworkCallback<Test> ( this, &Test::checkV3 ) );
-    REGISTERDATA ( v4,direction::clientMaster, new NetworkCallback<Test> ( this, &Test::checkV4 ) );
+		registerVariable ( v1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkV1 ));
+    registerVariable ( v2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkV2 ));
+		registerVariable ( v3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkV3 ), true );
+    registerVariable ( v4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkV4 ), true );
 	}
 
   void Test::checkV1(){

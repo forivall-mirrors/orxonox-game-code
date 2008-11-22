@@ -83,18 +83,18 @@ namespace orxonox
 
     void MovableEntity::registerVariables()
     {
-        REGISTERDATA(this->velocity_.x, direction::toclient);
-        REGISTERDATA(this->velocity_.y, direction::toclient);
-        REGISTERDATA(this->velocity_.z, direction::toclient);
-
-        REGISTERDATA(this->rotationAxis_.x, direction::toclient);
-        REGISTERDATA(this->rotationAxis_.y, direction::toclient);
-        REGISTERDATA(this->rotationAxis_.z, direction::toclient);
-
-        REGISTERDATA(this->rotationRate_, direction::toclient);
-
-        REGISTERDATA(this->overwrite_position_,    direction::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwritePosition));
-        REGISTERDATA(this->overwrite_orientation_, direction::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
+        registerVariable(this->velocity_.x, variableDirection::toclient);
+        registerVariable(this->velocity_.y, variableDirection::toclient);
+        registerVariable(this->velocity_.z, variableDirection::toclient);
+  
+        registerVariable(this->rotationAxis_.x, variableDirection::toclient);
+        registerVariable(this->rotationAxis_.y, variableDirection::toclient);
+        registerVariable(this->rotationAxis_.z, variableDirection::toclient);
+  
+        registerVariable(this->rotationRate_, variableDirection::toclient);
+  
+        registerVariable(this->overwrite_position_,    variableDirection::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwritePosition));
+        registerVariable(this->overwrite_orientation_, variableDirection::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
     }
 
     void MovableEntity::overwritePosition()

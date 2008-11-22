@@ -54,10 +54,10 @@ namespace orxonox
       void checkV3();
       void checkV4();
       
-      void printV1(){ instance_->checkV1(); }
-      void printV2(){ instance_->checkV2(); }
-      void printV3(){ instance_->checkV3(); }
-      void printV4(){ instance_->checkV4(); }
+      static void printV1(){ instance_->checkV1(); }
+      static void printV2(){ instance_->checkV2(); }
+      static void printV3(){ instance_->checkV3(); }
+      static void printV4(){ instance_->checkV4(); }
 
     private:
       unsigned int v1;

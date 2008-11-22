@@ -34,42 +34,33 @@
 #include <list>
 #include <map>
 #include <queue>
-#include "util/Integers.h"
+#include <cassert>
+#include "util/Math.h"
+#include "util/mbool.h"
 #include "core/OrxonoxClass.h"
-#include "core/XMLIncludes.h"
+// TODO: this has to be removed
+// #include <OgreLight.h>
+// #include "OrxonoxPrereqs.h"
+// ============================
 #include "NetworkCallback.h"
-#include "util/Integers.h"
+#include "SynchronisableVariable.h"
 
-#define REGISTERDATA(varname, ...) \
+/*#define REGISTERDATA(varname, ...) \
     registerVariable((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)
 #define REGISTERSTRING(stringname, ...) \
-    registerVariable(&stringname, stringname.length()+1, STRING, __VA_ARGS__)
+    registerVariable(&stringname, stringname.length()+1, STRING, __VA_ARGS__)*/
 
 namespace orxonox
 {
   static const unsigned int OBJECTID_UNKNOWN = (unsigned int)-1;
 
-  namespace direction{
-    enum syncdirection{
+  namespace objectDirection{
+    enum objectdirection{
       toclient=0x1,
       toserver=0x2,
-      bidirectional=0x3,
-      serverMaster=0x3,
-      clientMaster=0x7
+      bidirectional=0x3
     };
   }
-
-  namespace syncmode{
-    enum mode{
-      once=0,
-      always=1
-    };
-  }
-
-  enum variableType{
-    DATA,
-    STRING,
-  };
 
   struct _NetworkExport synchronisableHeader{
     uint32_t size:31;
@@ -79,15 +70,6 @@ namespace orxonox
     uint32_t classID;
   };
 
-  struct _NetworkExport synchronisableVariable{
-    size_t size;
-    uint8_t mode; // this determines in which direction the variable gets synchronised
-    void *var;
-    variableType type;
-    NetworkCallbackBase *callback;
-    void *varBuffer;
-    uint8_t varReference;
-  };
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
@@ -100,8 +82,6 @@ namespace orxonox
 //     friend class Server;
     virtual ~Synchronisable();
 
-
-    virtual bool create();
     static void setClient(bool b);
 
     static Synchronisable *fabricate(uint8_t*& mem, uint8_t mode=0x0);
@@ -114,8 +94,9 @@ namespace orxonox
     inline unsigned int getClassID(){return classID;}
   protected:
     Synchronisable(BaseObject* creator);
-    void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
-    void unregisterVariable(void *var);
+//     void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
+    template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
+    template <class T> void unregisterVariable(T& var);
     void setObjectMode(uint8_t mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
 
@@ -132,7 +113,7 @@ namespace orxonox
     unsigned int creatorID;
     unsigned int classID;
 
-    std::list<synchronisableVariable *> *syncList;
+    std::list<SynchronisableVariableBase*> syncList;
     static uint8_t state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
     unsigned int objectFrequency_;
@@ -140,6 +121,45 @@ namespace orxonox
     static std::map<unsigned int, Synchronisable *> objectMap_;
     static std::queue<unsigned int> deletedObjects_;
   };
+  
+  template <class T> void Synchronisable::registerVariable(T& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+  {
+    if (bidirectional)
+      syncList.push_back(new SynchronisableVariableBidirectional<const T>(variable, mode, cb));
+    else
+      syncList.push_back(new SynchronisableVariable<const T>(variable, mode, cb));
+  }
+
+  template <class T> void Synchronisable::unregisterVariable(T& var){
+    std::list<SynchronisableVariableBase*>::iterator it = syncList.begin();
+    while(it!=syncList.end()){
+      if( ((*it)->getReference()) == &var ){
+        delete (*it);
+        syncList.erase(it);
+        return;
+      }
+      else
+        it++;
+    }
+    bool unregistered_nonexistent_variable = false;
+    assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
+    // the variable has not been registered before
+  }
+  
+  // ================= Specialisation declarations
+  template <> void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);template <> void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( const Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( const Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( const Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( mbool& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( const Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> void Synchronisable::registerVariable( Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+//   template <> void Synchronisable::registerVariable( LODParticle::LOD& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+//   template <> void Synchronisable::registerVariable( Ogre::Light::LightTypes& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
 }
 
 #endif /* _Synchronisable_H__ */
