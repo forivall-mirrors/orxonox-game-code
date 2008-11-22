@@ -8,7 +8,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\tolua&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)src\ceguilua-0.6.1\ceguilua&quot;;&quot;$(LibDir)ogre-1.4.9\include&quot;;&quot;$(LibDir)boost-1.35.0\include&quot;;&quot;$(LibDir)cegui-0.6.1\include&quot;;&quot;$(LibDir)enet-1.2\include&quot;;&quot;$(LibDir)libogg-1.1.3\include&quot;;&quot;$(LibDir)libvorbis-1.2.0\include&quot;;&quot;$(LibDir)openal-1.1\include&quot;;&quot;$(LibDir)freealut-1.1.0\include&quot;;&quot;$(LibDir)tcl-8.5.2\include&quot;;&quot;$(LibDir)zlib-1.2.3\include&quot;;&quot;$(LibDir)lua-5.1.3\include&quot;"
-		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;_WINDOWS;BOOST_ALL_DYN_LINK;OIS_DYNAMIC_LIB;ZLIB_WINAPI;LUA_BUILD_AS_DLL"
+		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;_WINDOWS;BOOST_ALL_DYN_LINK;OIS_DYNAMIC_LIB;ZLIB_WINAPI;LUA_BUILD_AS_DLL;TIXML_USE_TICPP;_CRT_SECURE_NO_WARNINGS"
 		WarningLevel="3"
 		DisableSpecificWarnings="4522;4251;4800"
 	/>
