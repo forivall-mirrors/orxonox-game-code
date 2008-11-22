@@ -192,7 +192,6 @@ namespace orxonox{
         if ( *static_cast<uint8_t*>(mem) != this->varReference_ )
         { // wrong reference number, so discard the data
           mem += getSize( mode ); // SynchronisableVariableBidirectional::getSize returns size of variable + reference
-          COUT(0) << "not updateing variable because of wrong reference number" << endl;
           return;
         }
         else{
@@ -205,7 +204,6 @@ namespace orxonox{
           }
           else
           {
-            COUT(0) << "variable changed so copy over the buffer and do callback" << endl;
             memcpy((void*)&this->varBuffer_, &this->variable_, sizeof(T));
             if ( this->callback_ != 0 )
               callback = true;
