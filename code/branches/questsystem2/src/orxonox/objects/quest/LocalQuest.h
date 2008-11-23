@@ -29,7 +29,7 @@
 /**
     @file LocalQuest.h
     @brief
-	Definition of the LocalQuest class.
+    Definition of the LocalQuest class.
 */
 
 #ifndef _LocalQuest_H__
@@ -55,15 +55,15 @@ namespace orxonox {
         <LocalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
             <QuestDescription title="Title" description="Description." /> //The description of the quest.
             <subquests>
-		<Quest id ="questId1" /> //A list of n subquest, be aware, each of the <Quest /> tags must have a description and so on and so forth as well.
-		...
-		<Quest id="questIdn" />
-	    </subquests>
-	    <hints>
-		<QuestHint id="hintId1" /> //A list of n QuestHints, see QuestHint for the full XML representation of those.
-		...
-		<QuestHint id="hintIdn" />
-	    </hints>
+        <Quest id ="questId1" /> //A list of n subquest, be aware, each of the <Quest /> tags must have a description and so on and so forth as well.
+        ...
+        <Quest id="questIdn" />
+        </subquests>
+        <hints>
+        <QuestHint id="hintId1" /> //A list of n QuestHints, see QuestHint for the full XML representation of those.
+        ...
+        <QuestHint id="hintIdn" />
+        </hints>
             <fail-effects>
                 <QuestEffect /> //A list of QuestEffects, invoked when the Quest is failed, see QuestEffect for the full XML representation.
                 ...

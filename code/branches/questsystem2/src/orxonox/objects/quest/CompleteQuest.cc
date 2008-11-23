@@ -29,7 +29,7 @@
 /**
     @file CompleteQuest.cc
     @brief
-	Implementation of the CompleteQuest class.
+    Implementation of the CompleteQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"

@@ -29,9 +29,9 @@
 /**
     @file QuestItem.h
     @brief
-	Definition of the QuestItem class.
-	
-	The QuestItem is the parent class of Quest and QuestHint.
+    Definition of the QuestItem class.
+    
+    The QuestItem is the parent class of Quest and QuestHint.
 */
 
 
@@ -66,14 +66,14 @@ namespace orxonox {
 
             /**
             @brief Returns the id of this QuestItem.
-	    @return Returns the id of the QuestItem.
+        @return Returns the id of the QuestItem.
             */
             inline const std::string & getId(void) const
                 { return this->id_; }
-	    /**
-	    @brief Returns the QuestDescription of the QuestItem.
-	    @return Returns a pointer to the QuestDescription object of the QuestItem.
-	    */
+        /**
+        @brief Returns the QuestDescription of the QuestItem.
+        @return Returns a pointer to the QuestDescription object of the QuestItem.
+        */
             inline const QuestDescription* getDescription(void) const
                 { return this->description_; }
 

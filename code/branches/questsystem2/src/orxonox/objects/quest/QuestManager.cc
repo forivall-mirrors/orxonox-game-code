@@ -29,7 +29,7 @@
 /**
     @file QuestManager.cc
     @brief
-	Implementation of the QuestManager class.
+    Implementation of the QuestManager class.
 */
 
 #include "OrxonoxStableHeaders.h"

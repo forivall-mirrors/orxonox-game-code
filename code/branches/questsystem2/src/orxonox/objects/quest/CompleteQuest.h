@@ -29,7 +29,7 @@
 /**
     @file CompleteQuest.h
     @brief
-	Definition of the CompleteQuest class.
+    Definition of the CompleteQuest class.
 */
 
 #ifndef _CompleteQuest_H__

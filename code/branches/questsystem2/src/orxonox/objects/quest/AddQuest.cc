@@ -29,7 +29,7 @@
 /**
     @file AddQuest.cc
     @brief
-	Implementation of the AddQuest class.
+    Implementation of the AddQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"

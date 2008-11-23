@@ -29,7 +29,7 @@
 /**
     @file GlobalQuest.cc
     @brief
-	Implementation of the GlobalQuest class.
+    Implementation of the GlobalQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -100,7 +100,7 @@ namespace orxonox {
             return true;
         }
         
-        COUT(2) << "A non-completable quest was trying to be failed." << std::endl;
+        COUT(4) << "A non-completable quest was trying to be failed." << std::endl;
         return false;
     }
 
@@ -130,7 +130,7 @@ namespace orxonox {
             return true;
         }
         
-        COUT(2) << "A non-completable quest was trying to be completed." << std::endl;
+        COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
         return false;
     }
 
@@ -202,7 +202,7 @@ namespace orxonox {
             return this->status_;
         }
 
-	return questStatus::inactive;
+    return questStatus::inactive;
     }
 
     /**

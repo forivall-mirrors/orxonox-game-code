@@ -29,7 +29,7 @@
 /**
     @file QuestDescription.h
     @brief
-	Definition of the QuestDescription class.
+    Definition of the QuestDescription class.
 */
 
 #ifndef _QuestDescription_H__
@@ -63,17 +63,17 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestDescription object through XML.
 
-	    /**
-	    @brief Returns the title.
-	    @return Returns a string containing the title of the QuestDescription.
-	    */
+        /**
+        @brief Returns the title.
+        @return Returns a string containing the title of the QuestDescription.
+        */
             inline const std::string & getTitle(void) const
                 { return this->title_; }
-	    
-	    /**
-	    @brief Returns the description text.
-	    @return Returns a string containing the description text of the QuestDescription.
-	    */
+        
+        /**
+        @brief Returns the description text.
+        @return Returns a string containing the description text of the QuestDescription.
+        */
             inline const std::string & getDescription(void) const
                 { return this->description_; }
 
@@ -88,7 +88,7 @@ namespace orxonox {
             inline void setTitle(const std::string & title)
                 { this->title_ = title; }
                 
-	    /**
+        /**
             @brief Sets the description text.
             @param description The description text to be set.
             */

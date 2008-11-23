@@ -29,7 +29,7 @@
 /**
     @file LocalQuest.cc
     @brief
-	Implementation of the LocalQuest class.
+    Implementation of the LocalQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -92,14 +92,14 @@ namespace orxonox {
             return true;
         }
         
-        COUT(2) << "A non-failable quest was trying to be failed." << std::endl;
+        COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
         return false;
     }
 
     /**
     @brief
         Completes the Quest for a given player.
-	Invokes all the complete QuestEffects on the player.
+    Invokes all the complete QuestEffects on the player.
     @param player
         The player.
     @return
@@ -114,7 +114,7 @@ namespace orxonox {
             return true;
         }
         
-        COUT(2) << "A non-completable quest was trying to be completed." << std::endl;
+        COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
         return false;
     }
 

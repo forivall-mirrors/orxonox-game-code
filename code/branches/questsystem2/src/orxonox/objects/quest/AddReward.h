@@ -29,7 +29,7 @@
 /**
     @file AddReward.h
     @brief
-	Definition of the AddReward class.
+    Definition of the AddReward class.
 */
 
 #ifndef _AddReward_H__

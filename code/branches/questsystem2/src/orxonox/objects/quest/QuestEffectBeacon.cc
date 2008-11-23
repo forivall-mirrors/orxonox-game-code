@@ -29,7 +29,7 @@
 /**
     @file QuestEffectBeacon.cc
     @brief
-	Implementation of the QuestEffectBeacon class.
+    Implementation of the QuestEffectBeacon class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -90,15 +90,13 @@ namespace orxonox {
     {
         SUPER(QuestEffectBeacon, processEvent, event);
     
-	SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
+    SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
     }
     
     /**
     @brief
         Executes the QuestEffectBeacon.
         This means extracting the ControllableEntity from the PlayerTrigger, provided by the Event causing the execution, and the extracting the PlayerInfo from the received ControllableEntity and invoking the QuestEffectbeacon's QuestEffects on the received PlayerInfo.
-    @param b
-        TDO: What is this???
     @param trigger
         Apointer to the PlayerTrigger that threw the Event.
     @return
@@ -146,9 +144,9 @@ namespace orxonox {
         {
             this->decrementTimes(); //!< Decrement the number of times the beacon can be used.
             return true;
-	}
+    }
 
-	return false;
+    return false;
     }
     
     /**
@@ -168,8 +166,8 @@ namespace orxonox {
         
         if(activate)
         {
-	    this->status_ = QuestEffectBeaconStatus::active;
-	    return true;
+        this->status_ = QuestEffectBeaconStatus::active;
+        return true;
         }
         
         this->status_ = QuestEffectBeaconStatus::inactive;
@@ -194,10 +192,10 @@ namespace orxonox {
         }
         
         this->times_ = this->times_ - 1; //!< Decrement number of times the QuestEffectBeacon can be executed.
-	if(this->getTimes() == 0) //!< Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
-	{
+    if(this->getTimes() == 0) //!< Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
+    {
             this->status_ = QuestEffectBeaconStatus::inactive;
-	}
+    }
         
         return true;
     }

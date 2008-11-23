@@ -29,7 +29,7 @@
 /**
     @file AddReward.cc
     @brief
-	Implementation of the AddReward class.
+    Implementation of the AddReward class.
 */
 
 #include "OrxonoxStableHeaders.h"

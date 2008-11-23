@@ -29,7 +29,7 @@
 /**
     @file ChangeQuestStatus.h
     @brief
-	Definition of the ChangeQuestStatus class.
+    Definition of the ChangeQuestStatus class.
 */
 
 #ifndef _ChangeQuestStatus_H__

@@ -29,7 +29,7 @@
 /**
     @file QuestEffect.cc
     @brief
-	Implementation of the QuestEffect class.
+    Implementation of the QuestEffect class.
 */
 
 #include "OrxonoxStableHeaders.h"

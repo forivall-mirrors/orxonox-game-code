@@ -29,7 +29,7 @@
 /**
     @file QuestHint.h
     @brief
-	Definition of the QuestHint class.
+    Definition of the QuestHint class.
 */
 
 #ifndef _QuestHint_H__

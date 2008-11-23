@@ -29,7 +29,7 @@
 /**
     @file ChangeQuestStatus.cc
     @brief
-	Implementation of the ChangeQuestStatus class.
+    Implementation of the ChangeQuestStatus class.
 */
 
 #include "OrxonoxStableHeaders.h"

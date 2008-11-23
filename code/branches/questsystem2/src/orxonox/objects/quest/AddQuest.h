@@ -29,7 +29,7 @@
 /**
     @file AddQuest.h
     @brief
-	Definition of the AddQuest class.
+    Definition of the AddQuest class.
 */
 
 #ifndef _AddQuest_H__

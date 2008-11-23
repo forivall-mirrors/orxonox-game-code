@@ -29,7 +29,7 @@
 /**
     @file Quest.cc
     @brief
-	Implementation of the Quest class.
+    Implementation of the Quest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -379,7 +379,7 @@ namespace orxonox {
             return true;
         }
         
-        COUT(2) << "A non-startable quest was trying to be started." << std::endl;
+        COUT(4) << "A non-startable quest was trying to be started." << std::endl;
         return false;
     }
 

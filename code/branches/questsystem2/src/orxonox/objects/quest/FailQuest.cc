@@ -29,7 +29,7 @@
 /**
     @file FailQuest.cc
     @brief
-	Implementation of the FailQuest class.
+    Implementation of the FailQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
