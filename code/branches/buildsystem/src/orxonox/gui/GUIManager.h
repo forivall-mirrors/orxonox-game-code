@@ -50,8 +50,10 @@ namespace orxonox
     */
     class _OrxonoxExport GUIManager
 // tolua_end
-		: public KeyHandler, public MouseHandler
-    { // tolua_export
+        : public KeyHandler, public MouseHandler
+// tolua_begin
+    {
+// tolua_end
     public:
         enum State
         {

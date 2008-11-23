@@ -60,8 +60,8 @@ function doit ()
     end
 
     -- proccess package
-	local file
-	if flags.f then
+    local file
+    if flags.f then
         if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' then
             file = flags.f
         else
@@ -77,7 +77,7 @@ function doit ()
     end
 
     if flags.o then
-	    local file
+        local file
         if string.sub(flags.o, 1, 1) == '/' or string.sub(flags.o, 1, 1) == '\\' then
             file = flags.o
         else
@@ -108,7 +108,7 @@ function doit ()
     -- write header file
     if not flags.P then
         if flags.H then
-	        local file
+            local file
             if string.sub(flags.H, 1, 1) == '/' or string.sub(flags.H, 1, 1) == '\\' then
                 file = flags.H
             else
