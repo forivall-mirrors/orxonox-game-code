@@ -55,39 +55,42 @@ namespace orxonox
             virtual void rotateRoll(const Vector2& value);
 
             virtual void fire();
+            virtual void boost();
 
-            void setMaxSpeed(float value)
-                { this->maxSpeed_ = value; }
-            void setMaxSecondarySpeed(float value)
-                { this->maxSecondarySpeed_ = value; }
             void setMaxRotation(const Degree& value)
                 { this->maxRotation_ = value; }
-            void setTransAcc(float value)
-                { this->translationAcceleration_ = value; }
             void setRotAcc(const Degree& value)
                 { this->rotationAcceleration_ = value; }
             void setTransDamp(float value)
                 { this->translationDamping_ = value; }
 
-            inline float getMaxSpeed() const
-                { return this->maxSpeed_; }
-            inline float getMaxSecondarySpeed() const
-                { return this->maxSecondarySpeed_; }
             inline float getMaxRotation() const
                 { return this->maxRotation_.valueDegrees(); }
-            inline float getTransAcc() const
-                { return this->translationAcceleration_; }
             inline float getRotAcc() const
                 { return this->rotationAcceleration_.valueDegrees(); }
             inline float getTransDamp() const
                 { return this->translationDamping_; }
 
+            inline void setSteeringDirection(const Vector3& direction)
+                { this->steering_ = direction; }
+            inline const Vector3& getSteeringDirection() const
+                { return this->steering_; }
+
+            inline void setBoost(bool bBoost)
+                { this->bBoost_ = bBoost; }
+            inline bool getBoost() const
+                { return this->bBoost_; }
+
+            inline void setEngineTemplate(const std::string& temp)
+                { this->enginetemplate_ = temp; this->loadEngineTemplate(); }
+            inline const std::string& getEngineTemplate() const
+                { return this->enginetemplate_; }
+
         protected:
             bool bInvertYAxis_;
 
-            float maxSpeed_;
-            float maxSecondarySpeed_;
-            float translationAcceleration_;
+            bool bBoost_;
+            Vector3 steering_;
             float translationDamping_;
 
             Degree maxRotation_;
@@ -97,6 +100,12 @@ namespace orxonox
             Degree pitchRotation_;
             Degree yawRotation_;
             Degree rollRotation_;
+
+        private:
+            void loadEngineTemplate();
+
+            std::string enginetemplate_;
+            Engine* engine_;
     };
 }
 

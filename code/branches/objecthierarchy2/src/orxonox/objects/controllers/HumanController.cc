@@ -43,6 +43,7 @@ namespace orxonox
     SetConsoleCommand(HumanController, rotateRoll,    true).setAsInputCommand();
     SetConsoleCommand(HumanController, fire,          true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, altFire,       true).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(HumanController, boost,         true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, greet,         true);
     SetConsoleCommand(HumanController, use,           true);
     SetConsoleCommand(HumanController, switchCamera,  true);
@@ -109,6 +110,12 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->altFire();
+    }
+
+    void HumanController::boost()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->boost();
     }
 
     void HumanController::greet()

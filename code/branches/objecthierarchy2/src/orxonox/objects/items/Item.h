@@ -26,41 +26,22 @@
  *
  */
 
-#ifndef _HumanController_H__
-#define _HumanController_H__
+#ifndef _Item_H__
+#define _Item_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "util/Math.h"
-#include "Controller.h"
+#include "core/BaseObject.h"
+#include "network/Synchronisable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanController : public Controller
+    class _OrxonoxExport Item : public BaseObject, public Synchronisable
     {
         public:
-            HumanController(BaseObject* creator);
-            virtual ~HumanController();
-
-            static void moveFrontBack(const Vector2& value);
-            static void moveRightLeft(const Vector2& value);
-            static void moveUpDown(const Vector2& value);
-
-            static void rotateYaw(const Vector2& value);
-            static void rotatePitch(const Vector2& value);
-            static void rotateRoll(const Vector2& value);
-
-            static void fire();
-            static void altFire();
-
-            static void boost();
-            static void greet();
-            static void use();
-            static void switchCamera();
-
-        private:
-            static HumanController* localController_s;
+            Item(BaseObject* creator);
+            virtual ~Item();
     };
 }
 
-#endif /* _HumanController_H__ */
+#endif /* _Item_H__ */

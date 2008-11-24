@@ -93,6 +93,7 @@ namespace orxonox
     {
         if (!this->billboard_.getBillboardSet())
         {
+/*
             if (this->getScene() && this->getScene()->getSceneManager() && (this->material_ != ""))
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
@@ -100,6 +101,7 @@ namespace orxonox
                     this->getNode()->attachObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
+*/
         }
         else
             this->billboard_.setColour(this->colour_);

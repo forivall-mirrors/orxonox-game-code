@@ -235,6 +235,9 @@
 
     #define SUPER_changedScale(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
+
+    #define SUPER_changedMainState(classname, functionname, ...) \
+        SUPER_NOARGS(classname, functionname)
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
@@ -447,6 +450,10 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(5, changedScale, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(6, changedMainState, false)
+            ()
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 }
@@ -495,6 +502,7 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(changedVisibility);
     SUPER_INTRUSIVE_DECLARATION(processEvent);
     SUPER_INTRUSIVE_DECLARATION(changedScale);
+    SUPER_INTRUSIVE_DECLARATION(changedMainState);
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 

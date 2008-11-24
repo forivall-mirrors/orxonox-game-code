@@ -47,7 +47,9 @@ namespace orxonox
     {
         RegisterObject(ControllableEntity);
 
-        this->bControlled_ = false;
+        this->bHasLocalController_ = false;
+        this->bHasHumanController_ = false;
+
         this->server_overwrite_ = 0;
         this->client_overwrite_ = 0;
         this->player_ = 0;
@@ -73,8 +75,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (this->bControlled_)
-                this->stopLocalControl();
+            if (this->bHasLocalController_)
+                this->stopLocalHumanControl();
 
             if (this->hud_)
                 delete this->hud_;
@@ -155,10 +157,12 @@ namespace orxonox
 
         this->player_ = player;
         this->playerID_ = player->getObjectID();
-        this->bControlled_ = (player->isLocalPlayer() && player->isHumanPlayer());
-        if (this->bControlled_)
+        this->bHasLocalController_ = player->isLocalPlayer();
+        this->bHasHumanController_ = player->isHumanPlayer();
+
+        if (this->bHasLocalController_ && this->bHasHumanController_)
         {
-            this->startLocalControl();
+            this->startLocalHumanControl();
 
             if (!Core::isMaster())
             {
@@ -171,12 +175,13 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::removePlayer()
     {
-        if (this->bControlled_)
-            this->stopLocalControl();
+        if (this->bHasLocalController_ && this->bHasHumanController_)
+            this->stopLocalHumanControl();
 
         this->player_ = 0;
         this->playerID_ = OBJECTID_UNKNOWN;
-        this->bControlled_ = false;
+        this->bHasLocalController_ = false;
+        this->bHasHumanController_ = false;
         this->setObjectMode(direction::toclient);
 
         if (this->bDestroyWhenPlayerLeft_)
@@ -194,7 +199,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
     }
 
-    void ControllableEntity::startLocalControl()
+    void ControllableEntity::startLocalHumanControl()
     {
 //        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
         this->camera_ = new Camera(this);
@@ -213,7 +218,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
     }
 
-    void ControllableEntity::stopLocalControl()
+    void ControllableEntity::stopLocalHumanControl()
     {
 //        std::cout << "###### stop local control" << std::endl;
         this->camera_->detachFromParent();
@@ -236,7 +241,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
                 this->server_velocity_ = this->velocity_;
                 this->server_position_ = this->node_->getPosition();
             }
-            else if (this->bControlled_)
+            else if (this->bHasLocalController_)
             {
 //                COUT(2) << "setting client position" << endl;
                 this->client_velocity_ = this->velocity_;
@@ -250,7 +255,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         REGISTERSTRING(this->cameraPositionTemplate_, direction::toclient);
 
         REGISTERDATA(this->client_overwrite_,   direction::toserver);
-        
+
         REGISTERDATA(this->server_position_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
         REGISTERDATA(this->server_velocity_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
         REGISTERDATA(this->server_orientation_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
@@ -266,25 +271,25 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::processServerPosition()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             this->node_->setPosition(this->server_position_);
     }
 
     void ControllableEntity::processServerVelocity()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             this->velocity_ = this->server_velocity_;
     }
 
     void ControllableEntity::processServerOrientation()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             this->node_->setOrientation(this->server_orientation_);
     }
 
     void ControllableEntity::processOverwrite()
     {
-        if (this->bControlled_)
+        if (this->bHasLocalController_)
         {
             this->setPosition(this->server_position_);
             this->setVelocity(this->server_velocity_);
@@ -333,7 +338,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_position_ = position;
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->setPosition(position);
             this->client_position_ = position;
@@ -348,7 +353,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_velocity_ = velocity;
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->velocity_ = velocity;
             this->client_velocity_ = velocity;
@@ -363,7 +368,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_position_ = this->node_->getPosition();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->translate(distance, relativeTo);
             this->client_position_ = this->node_->getPosition();
@@ -378,7 +383,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = orientation;
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->setOrientation(orientation);
             this->client_orientation_ = orientation;
@@ -393,7 +398,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->rotate(rotation, relativeTo);
             this->client_orientation_ = this->node_->getOrientation();
@@ -408,7 +413,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->yaw(angle, relativeTo);
             this->client_orientation_ = this->node_->getOrientation();
@@ -423,7 +428,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->pitch(angle, relativeTo);
             this->client_orientation_ = this->node_->getOrientation();
@@ -438,7 +443,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->roll(angle, relativeTo);
             this->client_orientation_ = this->node_->getOrientation();
@@ -453,7 +458,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->lookAt(target, relativeTo, localDirectionVector);
             this->client_orientation_ = this->node_->getOrientation();
@@ -468,7 +473,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->node_->setDirection(direction, relativeTo, localDirectionVector);
             this->client_orientation_ = this->node_->getOrientation();

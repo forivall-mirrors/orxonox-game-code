@@ -75,6 +75,9 @@ namespace orxonox
             for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
                 delete (*it);
 
+            if (this->parent_)
+                this->detachFromParent();
+
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
         }
@@ -99,6 +102,8 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
+        REGISTERSTRING(this->mainStateName_, direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedMainState));
+
         REGISTERDATA(this->bActive_,  direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
         REGISTERDATA(this->bVisible_, direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
 
@@ -121,6 +126,12 @@ namespace orxonox
 
     void WorldEntity::attach(WorldEntity* object)
     {
+        if (object == this)
+        {
+            COUT(2) << "Warning: Can't attach a WorldEntity to itself." << std::endl;
+            return;
+        }
+
         if (object->getParent())
             object->detachFromParent();
         else

@@ -42,7 +42,7 @@ namespace orxonox
 {
     CreateFactory(Backlight);
 
-    Backlight::Backlight(BaseObject* creator) : Billboard(creator)
+    Backlight::Backlight(BaseObject* creator) : FadingBillboard(creator)
     {
         RegisterObject(Backlight);
 
@@ -52,8 +52,6 @@ namespace orxonox
         this->width_ = 0;
         this->length_ = 1.0f;
         this->lifetime_ = 0.001f;
-        this->turnofftime_ = 0.5f;
-        this->bTurningOff_ = false;
         this->maxelements_ = 1;
 
         this->tickcount_ = 0;
@@ -101,7 +99,6 @@ namespace orxonox
         XMLPortParam(Backlight, "width",         setWidth,         getWidth,         xmlelement, mode).defaultValues(1.0f);
         XMLPortParam(Backlight, "elements",      setMaxElements,   getMaxElements,   xmlelement, mode).defaultValues(10);
         XMLPortParam(Backlight, "lifetime",      setLifetime,      getLifetime,      xmlelement, mode).defaultValues(1.0f);
-        XMLPortParam(Backlight, "turnofftime",   setTurnOffTime,   getTurnOffTime,   xmlelement, mode).defaultValues(0.5f);
         XMLPortParam(Backlight, "trailmaterial", setTrailMaterial, getTrailMaterial, xmlelement, mode);
     }
 
@@ -116,10 +113,10 @@ namespace orxonox
 
     void Backlight::changedColour()
     {
-        Billboard::changedColour();
+        FadingBillboard::changedColour();
 
-        if (this->ribbonTrail_ && this->isActive() && this->tickcount_ >= 2)
-            this->ribbonTrail_->setInitialColour(0, this->getColour());
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setInitialColour(0, this->getFadedColour());
     }
 
     void Backlight::update_width()
@@ -164,20 +161,30 @@ namespace orxonox
             this->ribbonTrail_->setVisible(this->isVisible());
     }
 
-    void Backlight::changedActivity()
+    void Backlight::startturnonoff()
     {
-        SUPER(Backlight, changedActivity);
+        FadingBillboard::startturnonoff();
+
+        if (this->ribbonTrail_ && this->isActive() && this->isVisible())
+            this->ribbonTrail_->setVisible(true);
+    }
+
+    void Backlight::stopturnonoff()
+    {
+        this->postprocessingtime_ = max(0.0f, this->lifetime_ - this->turnofftime_);
+
+        FadingBillboard::stopturnonoff();
 
         if (this->ribbonTrail_)
-        {
-            if (this->isActive())
-                this->ribbonTrail_->setInitialColour(0, this->getColour());
-            else
-            {
-                this->bTurningOff_ = true;
-                this->turnofftimer_.setTimer(this->turnofftime_, false, this, createExecutor(createFunctor(&Backlight::stopturnoff)));
-            }
-        }
+            this->ribbonTrail_->setInitialColour(0, this->getFadedColour());
+    }
+
+    void Backlight::poststopturnonoff()
+    {
+        FadingBillboard::poststopturnonoff();
+
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setVisible(false);
     }
 
     void Backlight::changedScale()
@@ -186,11 +193,6 @@ namespace orxonox
 
         this->update_width();
         this->update_length();
-    }
-
-    void Backlight::stopturnoff()
-    {
-        this->bTurningOff_ = false;
     }
 
     void Backlight::tick(float dt)
@@ -211,9 +213,13 @@ namespace orxonox
             }
         }
 
-        if (this->bTurningOff_ && this->ribbonTrail_)
+        SUPER(Backlight, tick, dt);
+
+        if (this->ribbonTrail_ && this->changedirection_ != 0)
         {
-            this->ribbonTrail_->setInitialColour(0, this->ribbonTrail_->getInitialColour(0) - this->getColour() / this->turnofftime_ * dt);
+            // we use alpha_blend, only adjust alpha
+            const ColourValue& colour = this->getColour();
+            this->ribbonTrail_->setInitialColour(0, colour.r, colour.g, colour.b, this->getFadedColour().a);
         }
     }
 }

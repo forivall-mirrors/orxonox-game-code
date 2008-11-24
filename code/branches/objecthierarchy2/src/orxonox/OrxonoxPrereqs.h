@@ -112,6 +112,7 @@ namespace orxonox
     class Model;
     class Billboard;
     class BlinkingBillboard;
+    class FadingBillboard;
     class Light;
     class Backlight;
     class ParticleEmitter;
@@ -124,6 +125,11 @@ namespace orxonox
     class Spectator;
     class Pawn;
     class SpaceShip;
+
+    class Item;
+    class Engine;
+    class MultiStateEngine;
+    class RotatingEngine;
 
     class Trigger;
     class DistanceTrigger;

@@ -31,8 +31,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Template.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
+#include "objects/items/Engine.h"
 
 namespace orxonox
 {
@@ -44,10 +46,11 @@ namespace orxonox
 
         this->zeroDegree_ = 0;
 
-        this->maxSpeed_ = 0;
-        this->maxSecondarySpeed_ = 0;
+        this->bBoost_ = false;
+        this->steering_ = Vector3::ZERO;
+        this->engine_ = 0;
+
         this->maxRotation_ = 0;
-        this->translationAcceleration_ = 0;
         this->rotationAcceleration_ = 0;
         this->translationDamping_ = 0;
 
@@ -65,26 +68,23 @@ namespace orxonox
 
     SpaceShip::~SpaceShip()
     {
+        if (this->isInitialized() && this->engine_)
+            delete this->engine_;
     }
 
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(SpaceShip, XMLPort, xmlelement, mode);
 
-        XMLPortParam(SpaceShip, "maxspeed",          setMaxSpeed,          getMaxSpeed,          xmlelement, mode);
-        XMLPortParam(SpaceShip, "maxsecondaryspeed", setMaxSecondarySpeed, getMaxSecondarySpeed, xmlelement, mode);
+        XMLPortParam(SpaceShip, "engine",            setEngineTemplate,    getEngineTemplate,    xmlelement, mode);
         XMLPortParam(SpaceShip, "maxrotation",       setMaxRotation,       getMaxRotation,       xmlelement, mode);
-        XMLPortParam(SpaceShip, "transacc",          setTransAcc,          getTransAcc,          xmlelement, mode);
         XMLPortParam(SpaceShip, "rotacc",            setRotAcc,            getRotAcc,            xmlelement, mode);
         XMLPortParam(SpaceShip, "transdamp",         setTransDamp,         getTransDamp,         xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
     {
-        REGISTERDATA(this->maxSpeed_,                direction::toclient);
-        REGISTERDATA(this->maxSecondarySpeed_,       direction::toclient);
         REGISTERDATA(this->maxRotation_,             direction::toclient);
-        REGISTERDATA(this->translationAcceleration_, direction::toclient);
         REGISTERDATA(this->rotationAcceleration_,    direction::toclient);
         REGISTERDATA(this->translationDamping_,      direction::toclient);
     }
@@ -96,25 +96,13 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        if (this->isLocallyControlled())
+        if (this->hasLocalController())
         {
             // #####################################
             // ############# STEERING ##############
             // #####################################
 
             Vector3 velocity = this->getVelocity();
-            if (velocity.x > this->maxSecondarySpeed_)
-                velocity.x = this->maxSecondarySpeed_;
-            if (velocity.x < -this->maxSecondarySpeed_)
-                velocity.x = -this->maxSecondarySpeed_;
-            if (velocity.y > this->maxSecondarySpeed_)
-                velocity.y = this->maxSecondarySpeed_;
-            if (velocity.y < -this->maxSecondarySpeed_)
-                velocity.y = -this->maxSecondarySpeed_;
-            if (velocity.z > this->maxSecondarySpeed_)
-                velocity.z = this->maxSecondarySpeed_;
-            if (velocity.z < -this->maxSpeed_)
-                velocity.z = -this->maxSpeed_;
 
             // normalize velocity and acceleration
             for (size_t dimension = 0; dimension < 3; ++dimension)
@@ -143,7 +131,7 @@ namespace orxonox
         SUPER(SpaceShip, tick, dt);
 
 
-        if (this->isLocallyControlled())
+        if (this->hasLocalController())
         {
             this->yaw(this->yawRotation_ * dt);
             if (this->bInvertYAxis_)
@@ -151,10 +139,6 @@ namespace orxonox
             else
                 this->pitch(Degree( this->pitchRotation_ * dt));
             this->roll(this->rollRotation_ * dt);
-
-            this->acceleration_.x = 0;
-            this->acceleration_.y = 0;
-            this->acceleration_.z = 0;
 
             this->yawRotation_   = this->zeroDegree_;
             this->pitchRotation_ = this->zeroDegree_;
@@ -164,17 +148,17 @@ namespace orxonox
 
     void SpaceShip::moveFrontBack(const Vector2& value)
     {
-        this->acceleration_.z = -this->translationAcceleration_ * value.x;
+        this->steering_.z = -value.x;
     }
 
     void SpaceShip::moveRightLeft(const Vector2& value)
     {
-        this->acceleration_.x = this->translationAcceleration_ * value.x;
+        this->steering_.x = value.x;
     }
 
     void SpaceShip::moveUpDown(const Vector2& value)
     {
-        this->acceleration_.y = this->translationAcceleration_ * value.x;
+        this->steering_.y = value.x;
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)
@@ -209,5 +193,39 @@ namespace orxonox
 
     void SpaceShip::fire()
     {
+    }
+
+    void SpaceShip::boost()
+    {
+        this->bBoost_ = true;
+    }
+
+    void SpaceShip::loadEngineTemplate()
+    {
+        if (this->enginetemplate_ != "")
+        {
+            Template* temp = Template::getTemplate(this->enginetemplate_);
+
+            if (temp)
+            {
+                Identifier* identifier = temp->getBaseclassIdentifier();
+
+                if (identifier)
+                {
+                    BaseObject* object = identifier->fabricate(this);
+                    this->engine_ = dynamic_cast<Engine*>(object);
+
+                    if (this->engine_)
+                    {
+                        this->engine_->addTemplate(temp);
+                        this->engine_->addToSpaceShip(this);
+                    }
+                    else
+                    {
+                        delete object;
+                    }
+                }
+            }
+        }
     }
 }

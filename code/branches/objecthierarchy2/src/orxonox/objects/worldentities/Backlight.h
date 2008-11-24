@@ -30,13 +30,11 @@
 #define _Backlight_H__
 
 #include "OrxonoxPrereqs.h"
-#include "Billboard.h"
-#include "objects/Tickable.h"
-#include "tools/Timer.h"
+#include "FadingBillboard.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Backlight : public Billboard, public Tickable
+    class _OrxonoxExport Backlight : public FadingBillboard
     {
         public:
             Backlight(BaseObject* creator);
@@ -46,7 +44,6 @@ namespace orxonox
             void registerVariables();
 
             virtual void tick(float dt);
-            virtual void changedActivity();
             virtual void changedVisibility();
 
             inline void setWidth(float width)
@@ -58,11 +55,6 @@ namespace orxonox
                 { this->lifetime_ = lifetime; this->update_lifetime(); }
             inline float getLifetime() const
                 { return this->lifetime_; }
-
-            inline void setTurnOffTime(float turnofftime)
-                { this->turnofftime_ = turnofftime; }
-            inline float getTurnOffTime() const
-                { return this->turnofftime_; }
 
             inline void setLength(float length)
                 { this->length_ = length; this->update_length(); }
@@ -82,7 +74,9 @@ namespace orxonox
             virtual void changedScale();
 
         private:
-            void stopturnoff();
+            virtual void startturnonoff();
+            virtual void stopturnonoff();
+            virtual void poststopturnonoff();
             virtual void changedColour();
             void update_width();
             void update_lifetime();
@@ -95,12 +89,9 @@ namespace orxonox
             float width_;
             float length_;
             float lifetime_;
-            float turnofftime_;
-            bool bTurningOff_;
             size_t maxelements_;
             std::string trailmaterial_;
             char tickcount_;
-            Timer<Backlight> turnofftimer_;
     };
 }
 

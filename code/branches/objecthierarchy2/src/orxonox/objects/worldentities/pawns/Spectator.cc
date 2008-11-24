@@ -105,7 +105,7 @@ namespace orxonox
     {
         this->updateHUD();
 
-        if (this->isLocallyControlled())
+        if (this->hasLocalController())
         {
             Vector3 velocity = this->getVelocity();
             velocity.normalise();
@@ -120,7 +120,7 @@ namespace orxonox
 
         SUPER(Spectator, tick, dt);
 
-        if (this->isLocallyControlled())
+        if (this->hasLocalController())
         {
             this->setVelocity(Vector3::ZERO);
         }
@@ -133,10 +133,10 @@ namespace orxonox
 //        this->setObjectMode(direction::toclient);
     }
 
-    void Spectator::startLocalControl()
+    void Spectator::startLocalHumanControl()
     {
-        ControllableEntity::startLocalControl();
-//        if (this->isLocallyControlled())
+        ControllableEntity::startLocalHumanControl();
+//        if (this->hasLocalController())
 //            this->testmesh_->setVisible(false);
     }
 

@@ -45,7 +45,7 @@ namespace orxonox
             virtual void tick(float dt);
 
             virtual void setPlayer(PlayerInfo* player);
-            virtual void startLocalControl();
+            virtual void startLocalHumanControl();
 
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);

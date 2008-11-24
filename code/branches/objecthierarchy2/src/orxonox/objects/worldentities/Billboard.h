@@ -61,6 +61,9 @@ namespace orxonox
                 { return this->colour_; }
 
         protected:
+            inline BillboardSet& getBillboardSet()
+                { return this->billboard_; }
+
             virtual void changedColour();
 
         private:

@@ -67,6 +67,7 @@ namespace orxonox
             virtual void fire() {}
             virtual void altFire() {}
 
+            virtual void boost() {}
             virtual void greet() {}
             virtual void use() {}
             virtual void switchCamera();
@@ -122,15 +123,17 @@ namespace orxonox
             inline const std::string& getCameraPositionTemkplate() const
                 { return this->cameraPositionTemplate_; }
 
+            inline bool hasLocalController() const
+                { return this->bHasLocalController_; }
+            inline bool hasHumanController() const
+                { return this->bHasHumanController_; }
+
         protected:
-            virtual void startLocalControl();
-            virtual void stopLocalControl();
+            virtual void startLocalHumanControl();
+            virtual void stopLocalHumanControl();
 
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
-
-            inline bool isLocallyControlled() const
-                { return this->bControlled_; }
 
             Vector3 acceleration_;
 
@@ -153,7 +156,9 @@ namespace orxonox
 
             Vector3 velocity_;
 
-            bool bControlled_;
+            bool bHasLocalController_;
+            bool bHasHumanController_;
+
             Vector3 server_position_;
             Vector3 client_position_;
             Vector3 server_velocity_;
