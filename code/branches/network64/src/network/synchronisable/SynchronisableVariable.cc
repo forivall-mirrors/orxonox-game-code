@@ -396,7 +396,7 @@ template <> void SynchronisableVariable<const Degree>::getAndIncrease( uint8_t*&
 template <> void SynchronisableVariable<const Degree>::setAndIncrease( uint8_t*& mem )
 {
   Ogre::Real* r = (Ogre::Real*)mem;
-  static_cast<Degree>(this->variable_) = *r;
+  (Degree&)this->variable_ = *r;
   mem += returnSize();
 }
 
