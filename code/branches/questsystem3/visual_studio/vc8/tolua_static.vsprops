@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="tolua_static"
+	InheritedPropertySheets=".\directories.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="TOLUA_STATIC_BUILD"
+		CompileAs="1"
+		DisableSpecificWarnings="4996"
+	/>
+</VisualStudioPropertySheet>
