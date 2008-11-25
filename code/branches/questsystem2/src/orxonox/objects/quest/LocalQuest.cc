@@ -130,6 +130,10 @@ namespace orxonox {
     */
     bool LocalQuest::isStartable(const PlayerInfo* player) const
     {
+        if(!(this->getParentQuest() == NULL || this->getParentQuest()->isActive(player)))
+        {
+            return false;
+        }
         return this->isInactive(player);
     }
 

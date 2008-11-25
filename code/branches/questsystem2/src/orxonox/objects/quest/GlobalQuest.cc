@@ -146,6 +146,10 @@ namespace orxonox {
     */
     bool GlobalQuest::isStartable(const PlayerInfo* player) const
     {
+        if(!(this->getParentQuest() == NULL || this->getParentQuest()->isActive(player)))
+        {
+            return false;
+        }
         return (this->isInactive(player) && !(this->status_ == questStatus::completed || this->status_ == questStatus::failed));
     }
 

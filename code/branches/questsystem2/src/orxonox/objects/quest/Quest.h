@@ -89,28 +89,28 @@ namespace orxonox {
             inline Quest* getParentQuest(void) const
                 { return this->parentQuest_; }
                 
-        /**
-        @brief Returns the list of subquests.
-        @return Returns a reference to the list of subquests of the quest.
-        */
-            inline const std::list<Quest*> & getSubQuestList(void) const
-                { return this->subQuests_; }
-                
-        /**
-        @brief Returns the list of all QuestHints of this Quest.
-        @return Returns a reference to the list of QuestHints of the Quest.
-        */
-        inline const std::list<QuestHint*> & getHintsList(void) const
-                { return this->hints_; }
-
-            bool isInactive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
-            bool isActive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'active'.
-            bool isFailed(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
-            bool isCompleted(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
-
-            bool start(PlayerInfo* player); //!< Sets a Quest to active.
-        virtual bool fail(PlayerInfo* player) = 0; //!< Fails the Quest.
-            virtual bool complete(PlayerInfo* player) = 0; //!< Completes the Quest.
+	    /**
+	    @brief Returns the list of subquests.
+	    @return Returns a reference to the list of subquests of the quest.
+	    */
+	    inline const std::list<Quest*> & getSubQuestList(void) const
+		{ return this->subQuests_; }
+		    
+	    /**
+	    @brief Returns the list of all QuestHints of this Quest.
+	    @return Returns a reference to the list of QuestHints of the Quest.
+	    */
+	    inline const std::list<QuestHint*> & getHintsList(void) const
+		{ return this->hints_; }
+	    
+	    bool isInactive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
+	    bool isActive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'active'.
+	    bool isFailed(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
+	    bool isCompleted(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
+	    
+	    bool start(PlayerInfo* player); //!< Sets a Quest to active.
+	    virtual bool fail(PlayerInfo* player) = 0; //!< Fails the Quest.
+	    virtual bool complete(PlayerInfo* player) = 0; //!< Completes the Quest.
 
         protected:
             virtual bool isStartable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be started.
@@ -130,11 +130,11 @@ namespace orxonox {
             inline std::list<QuestEffect*> & getFailEffectList(void)
                 { return this->failEffects_; }
                 
-        /**
-        @brief Returns the list of complete QuestEffects.
-        @return Returns a reference to the list of complete QuestEffects.
-        */
-        inline std::list<QuestEffect*> & getCompleteEffectList(void)
+	    /**
+	    @brief Returns the list of complete QuestEffects.
+	    @return Returns a reference to the list of complete QuestEffects.
+	    */
+	    inline std::list<QuestEffect*> & getCompleteEffectList(void)
                 { return this->completeEffects_; }
 
             virtual questStatus::Enum getStatus(const PlayerInfo* player) const = 0; //!< Returns the status of the Quest for a specific player.
