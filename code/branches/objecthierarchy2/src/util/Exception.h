@@ -85,12 +85,12 @@ namespace orxonox
             /* Let the catcher decide whether to display the message below level 4  \
                Note: Don't place this code in Exception c'tor because getTypeName() \
                is still pure virtual at that time. */                               \
-            COUT(1) << this->getFullDescription() << std::endl;                     \
+            COUT(4) << this->getFullDescription() << std::endl;                     \
         }                                                                           \
                                                                                     \
         ExceptionName##Exception(const std::string& description)                    \
                   : Exception(description)                                          \
-        { COUT(1) << this->getFullDescription() << std::endl; }                     \
+        { COUT(4) << this->getFullDescription() << std::endl; }                     \
                                                                                     \
         ~ExceptionName##Exception() throw() { }                                     \
                                                                                     \
