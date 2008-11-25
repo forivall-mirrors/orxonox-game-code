@@ -72,6 +72,9 @@ namespace orxonox
             inline void translate(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
+            virtual inline const Vector3& getVelocity() const
+                { return Vector3::ZERO; }
+
             virtual void setOrientation(const Quaternion& orientation) = 0;
             inline void setOrientation(float w, float x, float y, float z)
                 { this->setOrientation(Quaternion(w, x, y, z)); }

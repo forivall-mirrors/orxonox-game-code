@@ -68,6 +68,10 @@ namespace orxonox
 
         void changedVisibility();
 
+        void setOwner(ControllableEntity* owner);
+        inline ControllableEntity* getOwner() const
+            { return this->owner_; }
+
     private:
         //! Scales each OrxonoxOverlay individually by scale.
         void scale(const Vector2& scale) { this->setScale(scale * this->scale_); }
@@ -87,6 +91,7 @@ namespace orxonox
         std::map<std::string, OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
         Vector2 scale_;                                         //!< Current scale (independant of the elements).
         Vector2 scroll_;                                        //!< Current scrolling offset.
+        ControllableEntity* owner_;                             //!< The owner of this OverlayGroup
     };
 }
 

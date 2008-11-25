@@ -32,10 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/RadarViewable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Pawn : public ControllableEntity
+    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable
     {
         public:
             Pawn(BaseObject* creator);
@@ -76,6 +77,9 @@ namespace orxonox
             virtual void fire();
 
             virtual void postSpawn();
+
+            inline const WorldEntity* getWorldEntity() const
+                { return (WorldEntity*)this; }
 
         protected:
             virtual void spawn();

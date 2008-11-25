@@ -167,7 +167,6 @@ namespace orxonox
             if (!Core::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
-COUT(0) << "CE: bidirectional synchronization" << std::endl;
                 this->setObjectMode(direction::bidirectional);
             }
         }
@@ -201,7 +200,6 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::startLocalHumanControl()
     {
-//        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
         this->camera_ = new Camera(this);
         this->camera_->requestFocus();
         if (this->cameraPositionTemplate_ != "")
@@ -215,12 +213,12 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         {
             this->hud_ = new OverlayGroup(this);
             this->hud_->addTemplate(this->hudtemplate_);
+            this->hud_->setOwner(this);
         }
     }
 
     void ControllableEntity::stopLocalHumanControl()
     {
-//        std::cout << "###### stop local control" << std::endl;
         this->camera_->detachFromParent();
         delete this->camera_;
         this->camera_ = 0;
@@ -243,7 +241,6 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             }
             else if (this->bHasLocalController_)
             {
-//                COUT(2) << "setting client position" << endl;
                 this->client_velocity_ = this->velocity_;
                 this->client_position_ = this->node_->getPosition();
             }
@@ -253,6 +250,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     void ControllableEntity::registerVariables()
     {
         REGISTERSTRING(this->cameraPositionTemplate_, direction::toclient);
+        REGISTERSTRING(this->hudtemplate_, direction::toclient);
 
         REGISTERDATA(this->client_overwrite_,   direction::toserver);
 
@@ -303,12 +301,9 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-//            COUT(2) << "callback: setting client position" << endl;
             this->node_->setPosition(this->client_position_);
             this->server_position_ = this->client_position_;
         }
-//        else
-//          COUT(2) << "callback: not setting client position" << endl;
     }
 
     void ControllableEntity::processClientVelocity()

@@ -71,6 +71,15 @@ namespace orxonox
             inline void setMaxSpeedUpDown(float speed)
                 { this->maxSpeedUpDown_ = speed; }
 
+            inline float getMaxSpeedFront() const
+                { return this->maxSpeedFront_; }
+            inline float getMaxSpeedBack() const
+                { return this->maxSpeedBack_; }
+            inline float getMaxSpeedLeftRight() const
+                { return this->maxSpeedLeftRight_; }
+            inline float getMaxSpeedUpDown() const
+                { return this->maxSpeedUpDown_; }
+
             inline void setAccelerationFront(float acceleration)
                 { this->accelerationFront_ = acceleration; }
             inline void setAccelerationBrake(float acceleration)
@@ -81,6 +90,17 @@ namespace orxonox
                 { this->accelerationLeftRight_ = acceleration; }
             inline void setAccelerationUpDown(float acceleration)
                 { this->accelerationUpDown_ = acceleration; }
+
+            inline float getAccelerationFront() const
+                { return this->accelerationFront_; }
+            inline float getAccelerationBrake() const
+                { return this->accelerationBrake_; }
+            inline float getAccelerationBack() const
+                { return this->accelerationBack_; }
+            inline float getAccelerationLeftRight() const
+                { return this->accelerationLeftRight_; }
+            inline float getAccelerationUpDown() const
+                { return this->accelerationUpDown_; }
 
             virtual const Vector3& getDirection() const;
 

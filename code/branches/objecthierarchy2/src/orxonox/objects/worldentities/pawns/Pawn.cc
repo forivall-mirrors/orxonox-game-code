@@ -61,6 +61,9 @@ namespace orxonox
         this->weaponSystem_->getWeaponSetPointer(0)->getWeaponSlotPointer(0)->setAmmoType(true);
         */
 
+        this->setRadarObjectColour(ColourValue::Red);
+        this->setRadarObjectShape(RadarViewable::Dot);
+
         this->registerVariables();
     }
 

@@ -228,4 +228,11 @@ namespace orxonox
             }
         }
     }
+
+    void SpaceShip::setEngine(Engine* engine)
+    {
+        this->engine_ = engine;
+        if (engine && engine->getShip() != this)
+            engine->addToSpaceShip(this);
+    }
 }

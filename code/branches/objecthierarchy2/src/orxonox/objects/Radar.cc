@@ -111,10 +111,8 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
             {
-/*
-                if ((*itElement) != SpaceShip::getLocalShip() && (*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
+                if ((*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
                     (*itListener)->displayObject(*itElement, *itElement == this->focus_);
-*/
             }
         }
     }
@@ -127,9 +125,10 @@ namespace orxonox
             this->itFocus_ = 0;
             this->focus_ = 0;
         }
-        else
+/*
+        else if (this->owner_)
         {
-            Vector3 localPosition;// = SpaceShip::getLocalShip()->getPosition();
+            Vector3 localPosition = this->owner_->getPosition();
             Vector3 targetPosition = localPosition;
             if (*(this->itFocus_))
                 targetPosition = this->itFocus_->getWorldPosition();
@@ -142,10 +141,9 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it)
             {
-/*
-                if (*it == SpaceShip::getLocalShip())
+                if (*it == (RadarViewable*)this->owner_)
                     continue;
-*/
+
                 float targetDistance = localPosition.squaredDistance((*it)->getWorldPosition());
                 if (targetDistance > currentDistance && targetDistance < nextDistance)
                 {
@@ -170,6 +168,7 @@ namespace orxonox
                 this->focus_ = *(this->itFocus_);
             }
         }
+*/
     }
 
     void Radar::releaseFocus()

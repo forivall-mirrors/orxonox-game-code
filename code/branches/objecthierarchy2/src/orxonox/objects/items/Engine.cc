@@ -63,6 +63,8 @@ namespace orxonox
 
     Engine::~Engine()
     {
+        if (this->isInitialized() && this->ship_)
+            this->ship_->setEngine(0);
     }
 
     void Engine::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -110,7 +112,7 @@ namespace orxonox
         {
             Synchronisable* object = Synchronisable::getSynchronisable(this->shipID_);
             if (object)
-                this->ship_ = dynamic_cast<SpaceShip*>(object);
+                this->addToSpaceShip(dynamic_cast<SpaceShip*>(object));
         }
     }
 
@@ -181,7 +183,11 @@ namespace orxonox
     {
         this->ship_ = ship;
         if (ship)
+        {
             this->shipID_ = ship->getObjectID();
+            if (ship->getEngine() != this)
+                ship->setEngine(this);
+        }
     }
 
     const Vector3& Engine::getDirection() const

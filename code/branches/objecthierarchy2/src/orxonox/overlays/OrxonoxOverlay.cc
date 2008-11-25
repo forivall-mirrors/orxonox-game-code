@@ -60,6 +60,8 @@ namespace orxonox
     {
         RegisterObject(OrxonoxOverlay);
 
+        this->owner_ = 0;
+
         if (!Core::showsGraphics())
             ThrowException(NoGraphics, "Can't create OrxonoxOverlay, graphics engine not initialized");
 

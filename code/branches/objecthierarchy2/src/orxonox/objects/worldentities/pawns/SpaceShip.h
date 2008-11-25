@@ -57,6 +57,10 @@ namespace orxonox
             virtual void fire();
             virtual void boost();
 
+            void setEngine(Engine* engine);
+            inline Engine* getEngine() const
+                { return this->engine_; }
+
             void setMaxRotation(const Degree& value)
                 { this->maxRotation_ = value; }
             void setRotAcc(const Degree& value)
