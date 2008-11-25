@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file LocalQuest.h
+    @brief
+    Definition of the LocalQuest class.
+*/
 
 #ifndef _LocalQuest_H__
 #define _LocalQuest_H__
@@ -39,11 +45,36 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
-        Handles quests which have different states for different players.
+        Handles Quests which have different states for different players.
+        LocalQuests have (as opposed to GlobalQuests) a different state for each player, that means if for one player the status of the Quest changes it does not for all the other players which also possess this quest.
+        
+        Creating a LocalQuest through XML goes as follows:
+        
+        <LocalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
+            <QuestDescription title="Title" description="Description." /> //The description of the quest.
+            <subquests>
+        <Quest id ="questId1" /> //A list of n subquest, be aware, each of the <Quest /> tags must have a description and so on and so forth as well.
+        ...
+        <Quest id="questIdn" />
+        </subquests>
+        <hints>
+        <QuestHint id="hintId1" /> //A list of n QuestHints, see QuestHint for the full XML representation of those.
+        ...
+        <QuestHint id="hintIdn" />
+        </hints>
+            <fail-effects>
+                <QuestEffect /> //A list of QuestEffects, invoked when the Quest is failed, see QuestEffect for the full XML representation.
+                ...
+                <QuestEffect />
+            </fail-effects>
+            <complete-effects>
+                <QuestEffect /> //A list of QuestEffects, invoked when the Quest is completed, see QuestEffect for the full XML representation.
+                ...
+                <QuestEffect />
+            </complete-effects>
+        </LocalQuest>
     @author
         Damian 'Mozork' Frick
     */
@@ -53,23 +84,23 @@ namespace orxonox {
             LocalQuest(BaseObject* creator);
             virtual ~LocalQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a LocalQuest object through XML.
+            
+            virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
+            virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const Player* player) const; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const Player* player) const; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const Player* player) const; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const PlayerInfo* player) const; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const PlayerInfo* player) const; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const Player* player) const; //!< Returns the status of the quest for a specific player.
-            virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+            virtual questStatus::Enum getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
+            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
         private:
-            std::map<Player*, questStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
-
-            void initialize(void);
+            std::map<const PlayerInfo*, questStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
 
     };
-
 
 }
 

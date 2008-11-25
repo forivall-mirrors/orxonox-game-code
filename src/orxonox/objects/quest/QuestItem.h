@@ -25,6 +25,15 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestItem.h
+    @brief
+    Definition of the QuestItem class.
+    
+    The QuestItem is the parent class of Quest and QuestHint.
+*/
+
 
 #ifndef _QuestItem_H__
 #define _QuestItem_H__
@@ -41,7 +50,7 @@ namespace orxonox {
 
     /**
     @brief
-        Functions as a base class for Quest classes such as Quest or QuestHint.
+        Functions as a base class for quest classes such as Quest or QuestHint.
         Has a unique identifier and a description.
     @author
         Damian 'Mozork' Frick
@@ -53,26 +62,36 @@ namespace orxonox {
             QuestItem(BaseObject* creator);
             virtual ~QuestItem();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestItem object through XML.
 
-            inline const std::string & getId(void) const //!< Returns the id of this quest.
+            /**
+            @brief Returns the id of this QuestItem.
+        @return Returns the id of the QuestItem.
+            */
+            inline const std::string & getId(void) const
                 { return this->id_; }
-            inline const QuestDescription* getDescription(void) const //!< Returns the description of the QuestItem.
+        /**
+        @brief Returns the QuestDescription of the QuestItem.
+        @return Returns a pointer to the QuestDescription object of the QuestItem.
+        */
+            inline const QuestDescription* getDescription(void) const
                 { return this->description_; }
-            //const QuestDescription* getDescription(unsigned int index) const; //!< Returns the description of the QuestItem.
 
             static bool isId(const std::string & id); //!< Checks whether a given id is valid.
 
         protected:
-            void setId(const std::string & id);
+            void setId(const std::string & id); //!< Sets the id of the QuestItem.
+            
+            /**
+            @brief Sets the description of the QuestItem.
+            @param description The QuestDescription to be set.
+            */
             inline void setDescription(QuestDescription* description)
                 { this->description_ = description; }
 
         private:
             std::string id_; //!< Identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
-            QuestDescription* description_; //!< The description of the QuestItem.
-
-            void initialize(void); //!< Initializes the object.
+            QuestDescription* description_; //!< The QuestDescription of the QuestItem.
 
     };
 

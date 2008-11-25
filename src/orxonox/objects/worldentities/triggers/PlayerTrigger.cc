@@ -27,45 +27,45 @@
  */
 
 /**
-    @file AddQuest.h
+    @file PlayerTrigger.cc
     @brief
-    Definition of the AddQuest class.
+	Implementation of the PlayerTrigger class.
 */
 
-#ifndef _AddQuest_H__
-#define _AddQuest_H__
+#include "OrxonoxStableHeaders.h"
+#include "PlayerTrigger.h"
 
-#include "OrxonoxPrereqs.h"
-
-#include <string>
-
-#include "core/XMLPort.h"
-#include "ChangeQuestStatus.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox {
 
     /**
     @brief
-        Adds a Quest, resp. changes the quests status to active for the player invoking the Quest.
-        
-        Creating a AddQuest through XML goes as follows:
-        
-        <AddQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be added.
-    @author
-        Damian 'Mozork' Frick
+        Constructor. Registers the object and initializes defaults.
     */
-    class _OrxonoxExport AddQuest : public ChangeQuestStatus
+    PlayerTrigger::PlayerTrigger(BaseObject* creator) : Trigger(creator)
     {
-        public:
-            AddQuest(BaseObject* creator);
-            virtual ~AddQuest();
+        RegisterObject(PlayerTrigger);
+        
+        this->player_ = NULL;
+        this->isForPlayer_ = true;
+    }
+    
+    /**
+    @brief
+        Destructor.
+    */
+    PlayerTrigger::~PlayerTrigger()
+    {
+    }
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.
-
-            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
-
-    };
+    /**
+    @brief
+        Method for creating a QuestEffectBeacon object through XML.
+    */
+    void PlayerTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+	SUPER(PlayerTrigger, XMLPort, xmlelement, mode);
+    }
 
 }
-
-#endif /* _AddQuest_H__ */

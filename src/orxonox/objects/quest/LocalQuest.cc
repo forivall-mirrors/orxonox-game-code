@@ -26,21 +26,32 @@
  *
  */
 
+/**
+    @file LocalQuest.cc
+    @brief
+    Implementation of the LocalQuest class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "LocalQuest.h"
 
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
+#include "QuestEffect.h"
+
 namespace orxonox {
 
     CreateFactory(LocalQuest);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     LocalQuest::LocalQuest(BaseObject* creator) : Quest(creator)
     {
         RegisterObject(LocalQuest);
-
-        this->initialize();
     }
 
     /**
@@ -52,6 +63,10 @@ namespace orxonox {
 
     }
 
+    /**
+    @brief
+        Method for creating a LocalQuest object through XML.
+    */
     void LocalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(LocalQuest, XMLPort, xmlelement, mode);
@@ -59,98 +74,143 @@ namespace orxonox {
         COUT(3) << "New LocalQuest {" << this->getId() << "} created." << std::endl;
     }
 
-    void LocalQuest::initialize(void)
+    /**
+    @brief
+        Fails the Quest for a given player.
+        Invokes all the failEffects on the player.
+    @param player
+        The player.
+    @return
+        Returns true if the Quest could be failed, false if not.
+    */
+    bool LocalQuest::fail(PlayerInfo* player)
     {
-        RegisterObject(LocalQuest);
+        if(this->isFailable(player)) //!< Checks whether the quest can be failed.
+        {
+            this->setStatus(player, questStatus::failed);
+            QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
+            return true;
+        }
+        
+        COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
+        return false;
     }
 
     /**
     @brief
-        Checks whether the quest can be started.
+        Completes the Quest for a given player.
+    Invokes all the complete QuestEffects on the player.
+    @param player
+        The player.
+    @return
+        Returns true if the Quest could be completed, false if not.
+    */
+    bool LocalQuest::complete(PlayerInfo* player)
+    {
+        if(this->isCompletable(player)) //!< Checks whether the Quest can be completed.
+        {
+            this->setStatus(player, questStatus::completed);
+            QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
+            return true;
+        }
+        
+        COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
+        return false;
+    }
+
+    /**
+    @brief
+        Checks whether the Quest can be started.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be started, false if not.
+        Returns true if the Quest can be started, false if not.
     @throws
-        Throws an exception if isInactive(Player*) throws one.
+        Throws an exception if isInactive(PlayerInfo*) throws one.
     */
-    bool LocalQuest::isStartable(const Player* player) const
+    bool LocalQuest::isStartable(const PlayerInfo* player) const
     {
+        if(!(this->getParentQuest() == NULL || this->getParentQuest()->isActive(player)))
+        {
+            return false;
+        }
         return this->isInactive(player);
     }
 
     /**
     @brief
-        Checks whether the quest can be failed.
+        Checks whether the Quest can be failed.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be failed, false if not.
+        Returns true if the Quest can be failed, false if not.
     @throws
-        Throws an exception if isActive(Player*) throws one.
+        Throws an exception if isActive(PlayerInfo*) throws one.
     */
-    bool LocalQuest::isFailable(const Player* player) const
+    bool LocalQuest::isFailable(const PlayerInfo* player) const
     {
         return this->isActive(player);
     }
 
     /**
     @brief
-        Checks whether the quest can be completed.
+        Checks whether the Quest can be completed.
     @param player
         The player for whom is to be checked.
     @return
-        Returns true if the quest can be completed, false if not.
+        Returns true if the Quest can be completed, false if not.
     @throws
-        Throws an exception if isInactive(Player*) throws one.
+        Throws an exception if isInactive(PlayerInfo*) throws one.
     */
-    bool LocalQuest::isCompletable(const Player* player) const
+    bool LocalQuest::isCompletable(const PlayerInfo* player) const
     {
         return this->isActive(player);
     }
 
     /**
     @brief
-        Returns the status of the quest for a specific player.
+        Returns the status of the Quest for a specific player.
     @param player
         The player.
     @return
-        Returns the status of the quest for the input player.
+        Returns the status of the Quest for the input player.
     @throws
         Throws an Exception if player is NULL.
     */
-    questStatus::Enum LocalQuest::getStatus(const Player* player) const
+    questStatus::Enum LocalQuest::getStatus(const PlayerInfo* player) const
     {
-        if(player == NULL)
+        if(player == NULL) //!< No player has no defined status.
         {
-            ThrowException(Argument, "The input Player* is NULL.");
+            ThrowException(Argument, "The input PlayerInfo* is NULL.");
         }
 
-        std::map<Player*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((Player*)(void*)player); //Thx. to x3n for the (Player*)(void*) 'hack'.
-        if (it != this->playerStatus_.end())
+        std::map<const PlayerInfo*, questStatus::Enum>::const_iterator it = this->playerStatus_.find(player);
+        if (it != this->playerStatus_.end()) //!< If there is a player in the map.
         {
             return it->second;
         }
-        return questStatus::inactive;
+        
+        return questStatus::inactive; //!< If the player is not yet in the map, that means the status of the quest form him is 'inactive'.
     }
 
     /**
     @brief
         Sets the status for a specific player.
-        But be careful wit this one, the status will just be set without checking for its validity. You have to know what you're doing.
+        But be careful wit this one, the status will just be set without checking for its validity. You have to know what you're doing. Really!
     @param player
-        The player.
+        The player the status should be set for.
     @param status
-        The status.
+        The status to be set.
     @return
         Returns false if player is NULL.
     */
-    bool LocalQuest::setStatus(Player* player, const questStatus::Enum & status)
+    bool LocalQuest::setStatus(PlayerInfo* player, const questStatus::Enum & status)
     {
-        if(player == NULL)
+        if(player == NULL) //!< We can't set a status for no player.
         {
             return false;
         }
+        
         this->playerStatus_[player] = status;
         return true;
     }

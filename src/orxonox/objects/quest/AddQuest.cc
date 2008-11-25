@@ -26,13 +26,21 @@
  *
  */
 
+/**
+    @file AddQuest.cc
+    @brief
+    Implementation of the AddQuest class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "AddQuest.h"
 
 #include <string>
+
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "Quest.h"
 
@@ -40,7 +48,10 @@ namespace orxonox {
 
     CreateFactory(AddQuest);
 
-
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     AddQuest::AddQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(AddQuest);
@@ -54,32 +65,39 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a AddQuest object through XML.
+    */
     void AddQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuest, XMLPort, xmlelement, mode);
-
+        
+        COUT(3) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
-        The player the effect is invoked on.
+        The player the QuestEffect is invoked on.
     @return
-        Returns true if the effect was successfully invoked.
+        Returns true if the QuestEffect was successfully invoked.
     */
-    bool AddQuest::invoke(Player* player)
+    bool AddQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< Null-pointers are badass.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
         }
 
+        COUT(3) << "AddQuest on player: " << player << " ." << std::endl;
+
         try
         {
             Quest* quest = QuestManager::findQuest(this->getQuestId());
-            if(!quest->start(player))
+            if(quest == NULL || !quest->start(player))
             {
                return false;
             }
@@ -90,6 +108,7 @@ namespace orxonox {
             return false;
         }
 
+        COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player." << std::endl;
         return true;
     }
 

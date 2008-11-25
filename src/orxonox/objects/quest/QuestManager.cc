@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file QuestManager.cc
+    @brief
+    Implementation of the QuestManager class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "QuestManager.h"
 
@@ -37,15 +43,24 @@
 
 namespace orxonox {
 
-    std::map<std::string, Quest*> QuestManager::questMap_;
-    std::map<std::string, QuestHint*> QuestManager::hintMap_;
+    //! All Quests registered by their id's.
+    std::map<std::string, Quest*> QuestManager::questMap_s;
+    //! All QuestHints registered by their id's.
+    std::map<std::string, QuestHint*> QuestManager::hintMap_s;
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     QuestManager::QuestManager(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestManager);
     }
 
-
+    /**
+    @brief
+        Destructor.
+    */
     QuestManager::~QuestManager()
     {
 
@@ -53,24 +68,25 @@ namespace orxonox {
 
     /**
     @brief
-        Registers a quest with the QuestManager to make it globally accessable.
+        Registers a Quest with the QuestManager to make it globally accessable.
+        Uses it's id to make sure to be able to be identify and retrieve it later.
     @param quest
-        The quest that is to be registered.
+        The Quest that is to be registered.
     @return
         Returns true if successful, false if not.
     */
     bool QuestManager::registerQuest(Quest* quest)
     {
-        if(quest == NULL)
+        if(quest == NULL) //!< Doh! Just as if there were actual quests behind NULL-pointers.
         {
             COUT(2) << "Registration of Quest in QuestManager failed, because inserted Quest-pointer was NULL." << std::endl;
             return false;
         }
 
-        std::pair<std::map<std::string, Quest*>::iterator,bool> ret;
-        ret = questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) );
+        std::pair<std::map<std::string, Quest*>::iterator,bool> result;
+        result = questMap_s.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); //!< Inserting the Quest.
 
-        if(ret.second)
+        if(result.second) //!< If inserting was a success.
         {
             COUT(3) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
             return true;
@@ -85,6 +101,7 @@ namespace orxonox {
     /**
     @brief
         Registers a QuestHint with the QuestManager to make it globally accessable.
+        Uses it's id to make sure to be able to be identify and retrieve it later.
     @param hint
         The QuestHint to be registered.
     @return
@@ -92,16 +109,16 @@ namespace orxonox {
     */
     bool QuestManager::registerHint(QuestHint* hint)
     {
-        if(hint == NULL)
+        if(hint == NULL) //!< Still not liking NULL-pointers.
         {
             COUT(2) << "Registration of QuestHint in QuestManager failed, because inserted QuestHint-pointer was NULL." << std::endl;
             return false;
         }
 
-        std::pair<std::map<std::string, QuestHint*>::iterator,bool> ret;
-        ret = hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) );
+        std::pair<std::map<std::string, QuestHint*>::iterator,bool> result;
+        result = hintMap_s.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); //!< Inserting the QuestHSint.
 
-        if(ret.second)
+        if(result.second) //!< If inserting was a success.
         {
             COUT(3) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
             return true;
@@ -115,25 +132,25 @@ namespace orxonox {
 
     /**
     @brief
-        Finds a quest with the given id.
+        Finds a Quest with the given id.
     @param questId
-        The id of the quest sought for.
+        The id of the Quest sought for.
     @return
-        Returns a reference to the quest with the input id.
-        Returns NULL if there is no quest with the given questId.
+        Returns a pointer to the Quest with the input id.
+        Returns NULL if there is no Quest with the given questId.
     @throws
         Throws an exception if the given questId is invalid.
     */
     Quest* QuestManager::findQuest(const std::string & questId)
     {
-        if(!QuestItem::isId(questId))
+        if(!QuestItem::isId(questId)) //!< Check vor validity of the given id.
         {
             ThrowException(Argument, "Invalid questId.");
         }
 
         Quest* quest;
-        std::map<std::string, Quest*>::iterator it = questMap_.find(questId);
-        if (it != questMap_.end())
+        std::map<std::string, Quest*>::iterator it = questMap_s.find(questId);
+        if (it != questMap_s.end()) //!< If the Quest is registered.
         {
             quest = it->second;
         }
@@ -149,25 +166,25 @@ namespace orxonox {
 
     /**
     @brief
-        Finds a hint with the given id.
+        Finds a QuestHint with the given id.
     @param hintId
-        The id of the hint sought for.
+        The id of the QuestHint sought for.
     @return
-        Returns a reference to the hint with the input id.
-        Returns NULL if there is no hint with the given hintId.
+        Returns a pointer to the QuestHint with the input id.
+        Returns NULL if there is no QuestHint with the given hintId.
     @throws
         Throws an exception if the given hintId is invalid.
     */
     QuestHint* QuestManager::findHint(const std::string & hintId)
     {
-        if(!QuestItem::isId(hintId))
+        if(!QuestItem::isId(hintId)) //!< Check vor validity of the given id.
         {
             ThrowException(Argument, "Invalid hintId.");
         }
 
         QuestHint* hint;
-        std::map<std::string, QuestHint*>::iterator it = hintMap_.find(hintId);
-        if (it != hintMap_.end())
+        std::map<std::string, QuestHint*>::iterator it = hintMap_s.find(hintId);
+        if (it != hintMap_s.end()) //!< If the QuestHint is registered.
         {
             hint = it->second;
         }

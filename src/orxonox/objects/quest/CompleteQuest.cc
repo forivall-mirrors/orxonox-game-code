@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file CompleteQuest.cc
+    @brief
+    Implementation of the CompleteQuest class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "CompleteQuest.h"
@@ -32,6 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "Quest.h"
 
@@ -39,6 +46,10 @@ namespace orxonox {
 
     CreateFactory(CompleteQuest);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     CompleteQuest::CompleteQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(CompleteQuest);
@@ -52,31 +63,41 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a CompleteQuest object through XML.
+    */
     void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(CompleteQuest, XMLPort, xmlelement, mode);
+        
+        COUT(3) << "New CompleteQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
-        The player the effect is invoked on.
+        The player the QuestEffect is invoked on.
     @return
-        Returns true if the effect was invoked successfully.
+        Returns true if the QuestEffect was invoked successfully.
     */
-    bool CompleteQuest::invoke(Player* player)
+    bool CompleteQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< You know, what we think of NULL-pointers...
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
         }
 
+        COUT(3) << "CompleteQuest on player: " << player << " ." << std::endl;
+
+        Quest* quest;
+
         try
         {
-            Quest* quest = QuestManager::findQuest(this->getQuestId());
-            if(!quest->complete(player))
+            quest = QuestManager::findQuest(this->getQuestId());
+            if(quest == NULL || !quest->complete(player))
             {
                return false;
             }
@@ -87,6 +108,7 @@ namespace orxonox {
             return false;
         }
 
+        COUT(3) << "Quest {" << quest->getId() << "} successfully completed by player: " << player << " ." << std::endl;
         return true;
     }
 
