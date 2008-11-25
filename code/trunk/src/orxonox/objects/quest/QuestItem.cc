@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestItem.cc
+    @brief
+    Implementation of the QuestItem class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "QuestItem.h"
@@ -35,11 +41,15 @@
 
 namespace orxonox {
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestItem);
 
-        this->initialize();
+        this->id_ = "";
     }
 
     /**
@@ -51,46 +61,35 @@ namespace orxonox {
 
     }
 
+    /**
+    @brief
+        Method for creating a QuestItem object through XML.
+    */
     void QuestItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(QuestItem, XMLPort, xmlelement, mode);
 
         XMLPortParam(QuestItem, "id", setId, getId, xmlelement, mode);
-        //Doesn't getDescription have to be of type getDescription(unsigned int) ?
-        //XMLPortObjectTemplate(QuestItem, QuestDescription, "", setDescription, getDescription, xmlelement, mode, unsigned int);
         XMLPortObject(QuestItem, QuestDescription, "", setDescription, getDescription, xmlelement, mode);
-
     }
-
 
     /**
     @brief
-        Initializes the object.
-        Should be called first in every constructor of this class.
+        Sets the id of the QuestItem.
+    The id must be of GUID form. See 'http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure' for more information.
+    @param id
+        The id to be set.
     */
-    void QuestItem::initialize(void)
-    {
-        RegisterObject(QuestItem);
-
-        this->id_ = "";
-    }
-
     void QuestItem::setId(const std::string & id)
     {
-        if(!isId(id))
+        if(!isId(id)) //!< Checks whether the id is a valid id.
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return;
         }
+        
         this->id_ = id;
     }
-
-    //const QuestDescription* QuestItem::getDescription(unsigned int index) const //!< Returns the description of the QuestItem.
-    //{
-    //    if(index != 0)
-    //        return NULL;
-    //    return this->description_;
-    //}
 
     /**
     @brief

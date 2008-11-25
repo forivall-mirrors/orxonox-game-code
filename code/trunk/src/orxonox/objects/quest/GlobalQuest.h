@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file GlobalQuest.h
+    @brief
+    Definition of the GlobalQuest class.
+*/
 
 #ifndef _GlobalQuest_H__
 #define _GlobalQuest_H__
@@ -32,18 +38,48 @@
 #include "OrxonoxPrereqs.h"
 
 #include <set>
+#include <list>
 
 #include "core/XMLPort.h"
 #include "Quest.h"
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
-        Global quests are quests, that have the same status for all players.
-        This means, that when a player successfully completes this quest, it is completed for all players that have it.
+        GlobalQuests are Quests, that have the same status for all players.
+        This means, that when a player successfully completes a GlobalQuest, it is completed for all players that have it.
+        
+        Creating a GlobalQuest through XML goes as follows:
+        
+        <GlobalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
+            <QuestDescription title="Title" description="Description." /> //The description of the quest.
+            <subquests>
+        <Quest id ="questId1" /> //A list of n subquest, be aware, each of the <Quest /> tags must have a description and so on and so forth as well.
+        ...
+        <Quest id="questIdn" />
+        </subquests>
+        <hints>
+        <QuestHint id="hintId1" /> //A list of n QuestHints, see QuestHint for the full XML representation of those.
+        ...
+        <QuestHint id="hintIdn" />
+        </hints>
+            <fail-effects>
+                <QuestEffect /> //A list of QuestEffects, invoked on all players possessing this quest, when the Quest is failed, see QuestEffect for the full XML representation.
+                ...
+                <QuestEffect />
+            </fail-effects>
+            <complete-effects>
+                <QuestEffect /> //A list of QuestEffects, invoked on all players possessing this quest, when the Quest is completed, see QuestEffect for the full XML representation.
+                ...
+                <QuestEffect />
+            </complete-effects>
+            <reward-effects>
+                <QuestEffect /> //A list of QuestEffects, invoked on the player completing this quest. See QuestEffect for the full XML representation.
+                ...
+                <QuestEffect />
+            </reward-effects>
+        </GlobalQuest>
     @author
         Damian 'Mozork' Frick
     */
@@ -53,21 +89,27 @@ namespace orxonox {
             GlobalQuest(BaseObject* creator);
             virtual ~GlobalQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a GlobalQuest object through XML.
+            
+            virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
+            virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
 
         protected:
-            virtual bool isStartable(const Player* player) const; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const Player* player) const; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const Player* player) const; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const PlayerInfo* player) const; //!< Checks whether the Quest can be started.
+            virtual bool isFailable(const PlayerInfo* player) const; //!< Checks whether the Quest can be failed.
+            virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const Player* player) const; //!< Returns the status of the quest for a specific player.
-            virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+            virtual questStatus::Enum getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
+            
+            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
         private:
-            std::set<Player*> players_; //!< The set of players which possess this quest.
-            questStatus::Enum status_; //!< The status of this quest.
-
-            void initialize(void);
+            std::set<PlayerInfo*> players_; //!< The set of players which possess this Quest.
+            questStatus::Enum status_; //!< The status of this Quest.
+            std::list<QuestEffect*> rewards_; //!< Reward QuestEffects only invoked on the player completing the Quest.
+            
+            bool addRewardEffect(QuestEffect* effect); //!< Adds a reward QuestEffect to the list of reward QuestEffects.
+            const QuestEffect* getRewardEffects(unsigned int index) const; //!< Returns the reward QuestEffect at the given index.
 
     };
 

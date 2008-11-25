@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file FailQuest.h
+    @brief
+    Definition of the FailQuest class.
+*/
+
 #ifndef _FailQuest_H__
 #define _FailQuest_H__
 
@@ -38,11 +44,13 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
-        Fails a quest.
+        Fails a quest (with a specified id) for the player invoking the QuestEffect.
+        
+        Creating a FailQuest through XML goes as follows:
+        
+        <FailQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be failed.
     @author
         Damian 'Mozork' Frick
     */
@@ -52,9 +60,9 @@ namespace orxonox {
             FailQuest(BaseObject* creator);
             virtual ~FailQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a FailQuest object through XML.
 
-            virtual bool invoke(Player* player); //!< Invokes the effect.
+            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
     };
 

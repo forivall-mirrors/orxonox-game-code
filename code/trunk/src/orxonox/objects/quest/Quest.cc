@@ -25,12 +25,19 @@
  *      ...
  *
  */
+ 
+/**
+    @file Quest.cc
+    @brief
+    Implementation of the Quest class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "Quest.h"
 
 #include "core/CoreIncludes.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "QuestDescription.h"
 #include "QuestHint.h"
@@ -38,11 +45,15 @@
 
 namespace orxonox {
 
+    /**
+    @brief
+        Constructor. Registers and initializes object.
+    */
     Quest::Quest(BaseObject* creator) : QuestItem(creator)
     {
         RegisterObject(Quest);
 
-        this->initialize();
+        this->parentQuest_ = NULL;
     }
 
     /**
@@ -54,40 +65,33 @@ namespace orxonox {
 
     }
 
+    /**
+    @brief
+        Method for creating a Quest object through XML.
+    */
     void Quest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Quest, XMLPort, xmlelement, mode);
 
-        XMLPortObject(Quest, Quest, "", addSubQuest, getSubQuests, xmlelement, mode);
-        XMLPortObject(Quest, QuestHint, "", addHint, getHints, xmlelement, mode);
-        XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffects, xmlelement, mode);
-        XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffects, xmlelement, mode);
+        XMLPortObject(Quest, Quest, "subquests", addSubQuest, getSubQuest, xmlelement, mode);
+        XMLPortObject(Quest, QuestHint, "hints", addHint, getHint, xmlelement, mode);
+        XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffect, xmlelement, mode);
+        XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffect, xmlelement, mode);
 
-        QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
+        QuestManager::registerQuest(this); //!<Registers the Quest with the QuestManager.
     }
 
     /**
     @brief
-        Initializes the object. Needs to be called first in every constructor of this class.
-    */
-    void Quest::initialize(void)
-    {
-        RegisterObject(Quest);
-
-        this->parentQuest_ = NULL;
-    }
-
-    /**
-    @brief
-        Sets the parent quest of the quest.
+        Sets the parentquest of the Quest.
     @param quest
-        A pointer to the quest to be set as parent quest.
+        A pointer to the Quest to be set as parentquest.
     @return
-        Returns true if the parentQuest could be set.
+        Returns true if the parentquest could be set.
     */
     bool Quest::setParentQuest(Quest* quest)
     {
-        if(quest == NULL)
+        if(quest == NULL) //!< We don't want to set NULL-Pointers.
         {
             COUT(2) << "The parentquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
             return false;
@@ -101,22 +105,22 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a sub quest to the quest.
+        Adds a subquest to the Quest.
     @param quest
-        A pointer to the quest to be set as sub quest.
+        A pointer to the Quest to be set as subquest.
     @return
-        Returns true if the subQuest vould be set.
+        Returns true if the subquest could be set.
     */
     bool Quest::addSubQuest(Quest* quest)
     {
-        if(quest == NULL)
+        if(quest == NULL) //!< We don't want to set NULL-Pointers.
         {
             COUT(2) << "The subquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
             return false;
         }
 
-        quest->setParentQuest(this);
-        this->subQuests_.push_back(quest);
+        quest->setParentQuest(this); //!< Sets the currentQuest (this) as parentquest for the added subquest.
+        this->subQuests_.push_back(quest); //!< Adds the Quest to the end of the list of subquests.
 
         COUT(3) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -125,22 +129,22 @@ namespace orxonox {
 
     /**
     @brief
-        Adds a Hint to the list of hints
+        Adds a QuestHint to the list of QuestHints
     @param hint
-        The hint that should be added to the list of hints.
+        The QuestHint that should be added to the list of QuestHints.
     @return
         Returns true if the hint was successfully added.
     */
     bool Quest::addHint(QuestHint* hint)
     {
-        if(hint == NULL)
+        if(hint == NULL) //!< We don't want to set NULL-Pointers. Seriously!
         {
             COUT(2) << "A NULL-QuestHint was trying to be added." << std::endl;
             return false;
         }
 
-        this->hints_.push_back(hint);
-        hint->setQuest(this);
+        hint->setQuest(this); //!< Sets the current Quest (this) as Quest for the added QuestHint.
+        this->hints_.push_back(hint); //!< Adds the QuestHint to the end of the list of QuestHints.
 
         COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -148,17 +152,21 @@ namespace orxonox {
 
     /**
     @brief
-
+        Adds an QuestEffect to the list of fail QuestEffects.
+    @param effect
+        The QuestEffect to be added.
+    @return
+        Returns true if successful.
     */
     bool Quest::addFailEffect(QuestEffect* effect)
     {
-        if(effect == NULL)
+        if(effect == NULL) //!< We don't want to set NULL-Pointers.
         {
             COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
             return false;
         }
 
-        this->failEffects_.push_back(effect);
+        this->failEffects_.push_back(effect); //!< Adds the QuestEffect to the end of the list of fail QuestEffects.
 
         COUT(3) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -166,17 +174,21 @@ namespace orxonox {
 
     /**
     @brief
-
+        Adds an QuestEffect to the list of complete QuestEffects.
+    @param effect
+        The QuestEffect to be added.
+    @return
+        Returns true if successful.
     */
     bool Quest::addCompleteEffect(QuestEffect* effect)
     {
-        if(effect == NULL)
+        if(effect == NULL) //!< We don't want to set NULL-Pointers.
         {
             COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
             return false;
         }
 
-        this->completeEffects_.push_back(effect);
+        this->completeEffects_.push_back(effect); //!< Adds the QuestEffect to the end of the list of complete QuestEffects.
 
         COUT(3) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -184,7 +196,9 @@ namespace orxonox {
 
     /**
     @brief
-
+        Returns the parentquest of the Quest.
+    @return
+        Returns a pointer to the parentquest of the Quest.
     */
     const Quest* Quest::getParentQuest(void)
     {
@@ -193,74 +207,99 @@ namespace orxonox {
 
     /**
     @brief
-
+        Returns the subquest at the given index.
+    @param
+        The index.
+    @return
+        Returns a pointer to the subquest at the given index. NULL if there is no element at the given index.
     */
-    const Quest* Quest::getSubQuests(unsigned int index) const
+    const Quest* Quest::getSubQuest(unsigned int index) const
     {
         int i = index;
+        
+        //! Iterate through all subquests.
         for (std::list<Quest*>::const_iterator subQuest = this->subQuests_.begin(); subQuest != this->subQuests_.end(); ++subQuest)
         {
-            if(i == 0)
+            if(i == 0) //!< We're counting down...
             {
                return *subQuest;
             }
             i--;
         }
-        return NULL;
+        
+        return NULL; //!< If the index is greater than the number of elements in the list.
     }
 
     /**
     @brief
-
+        Returns the QuestHint at the given index.
+    @param
+        The index.
+    @return
+        Returns a pointer to the QuestHint at the given index. NULL if there is no element at the given index.
     */
-    const QuestHint* Quest::getHints(unsigned int index) const
+    const QuestHint* Quest::getHint(unsigned int index) const
     {
         int i = index;
+        
+        //! Iterate through all QuestHints.
         for (std::list<QuestHint*>::const_iterator hint = this->hints_.begin(); hint != this->hints_.end(); ++hint)
         {
-            if(i == 0)
+            if(i == 0) //!< We're counting down...
             {
                return *hint;
             }
             i--;
         }
-        return NULL;
+        return NULL; //!< If the index is greater than the number of elements in the list.
     }
 
     /**
     @brief
-
+        Returns the fail QuestEffect at the given index.
+    @param
+        The index.
+    @return
+        Returns a pointer to the fail QuestEffect at the given index. NULL if there is no element at the given index.
     */
-    const QuestEffect* Quest::getFailEffects(unsigned int index) const
+    const QuestEffect* Quest::getFailEffect(unsigned int index) const
     {
         int i = index;
+        
+        //! Iterate through all fail QuestEffects.
         for (std::list<QuestEffect*>::const_iterator effect = this->failEffects_.begin(); effect != this->failEffects_.end(); ++effect)
         {
-            if(i == 0)
+            if(i == 0) //!< We're counting down...
             {
                return *effect;
             }
             i--;
         }
-        return NULL;
+        return NULL; //!< If the index is greater than the number of elements in the list.
     }
 
     /**
     @brief
-
+        Returns the complete QuestEffect at the given index.
+    @param
+        The index.
+    @return
+        Returns a pointer to the complete QuestEffect at the given index. NULL if there is no element at the given index.
     */
-    const QuestEffect* Quest::getCompleteEffects(unsigned int index) const
+    const QuestEffect* Quest::getCompleteEffect(unsigned int index) const
     {
         int i = index;
+        
+        //! Iterate through all complete QuestEffects.
         for (std::list<QuestEffect*>::const_iterator effect = this->completeEffects_.begin(); effect != this->completeEffects_.end(); ++effect)
         {
-            if(i == 0)
+            if(i == 0) //!< We're counting down...
             {
                return *effect;
             }
             i--;
         }
-        return NULL;
+        return NULL; //!< If the index is greater than the number of elements in the list.
     }
 
     /**
@@ -273,7 +312,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isInactive(const Player* player) const
+    bool Quest::isInactive(const PlayerInfo* player) const
     {
         return this->getStatus(player) == questStatus::inactive;
     }
@@ -288,7 +327,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isActive(const Player* player) const
+    bool Quest::isActive(const PlayerInfo* player) const
     {
 
         return this->getStatus(player) == questStatus::active;
@@ -304,7 +343,7 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isFailed(const Player* player) const
+    bool Quest::isFailed(const PlayerInfo* player) const
     {
         return this->getStatus(player) == questStatus::failed;
     }
@@ -319,67 +358,28 @@ namespace orxonox {
     @throws
         Throws an exception if getStatus throws one.
     */
-    bool Quest::isCompleted(const Player* player) const
+    bool Quest::isCompleted(const PlayerInfo* player) const
     {
         return this->getStatus(player) == questStatus::completed;
     }
 
     /**
     @brief
-        Starts the quest.
+        Starts the Quest for an input player.
     @param player
         The player.
     @return
-        Returns true if the quest could be started, false if not.
+        Returns true if the Quest could be started, false if not.
     */
-    bool Quest::start(Player* player)
+    bool Quest::start(PlayerInfo* player)
     {
-        if(this->isStartable(player))
+        if(this->isStartable(player)) //!< Checks whether the quest can be started.
         {
             this->setStatus(player, questStatus::active);
             return true;
         }
-        COUT(2) << "A non-startable quest was trying to be started." << std::endl;
-        return false;
-    }
-
-    /**
-    @brief
-        Fails the quest.
-    @param player
-        The player.
-    @return
-        Returns true if the quest could be failed, false if not.
-    */
-    bool Quest::fail(Player* player)
-    {
-        if(this->isFailable(player))
-        {
-            this->setStatus(player, questStatus::failed);
-            QuestEffect::invokeEffects(player, this->failEffects_);
-            return true;
-        }
-        COUT(2) << "A non-failable quest was trying to be failed." << std::endl;
-        return false;
-    }
-
-    /**
-    @brief
-        Completes the quest.
-    @param player
-        The player.
-    @return
-        Returns true if the quest could be completed, false if not.
-    */
-    bool Quest::complete(Player* player)
-    {
-        if(this->isCompletable(player))
-        {
-            this->setStatus(player, questStatus::completed);
-            QuestEffect::invokeEffects(player, this->completeEffects_);
-            return true;
-        }
-        COUT(2) << "A non-completable quest was trying to be completed." << std::endl;
+        
+        COUT(4) << "A non-startable quest was trying to be started." << std::endl;
         return false;
     }
 

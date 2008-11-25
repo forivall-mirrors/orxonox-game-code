@@ -29,16 +29,18 @@
 #ifndef _DistanceTrigger_H__
 #define _DistanceTrigger_H__
 
-#include "Trigger.h"
+#include "PlayerTrigger.h"
 
 #include <set>
 
 #include "core/ClassTreeMask.h"
 #include "core/BaseObject.h"
 
+#include "orxonox/objects/worldentities/ControllableEntity.h"
+
 namespace orxonox
 {
-  class _OrxonoxExport DistanceTrigger : public Trigger
+  class _OrxonoxExport DistanceTrigger : public PlayerTrigger
   {
     public:
       DistanceTrigger(BaseObject* creator);
@@ -65,6 +67,7 @@ namespace orxonox
       ClassTreeMask targetMask_;
       std::set<Ogre::Node*> targetSet_;
       float distance_;
+      
   };
 }
 

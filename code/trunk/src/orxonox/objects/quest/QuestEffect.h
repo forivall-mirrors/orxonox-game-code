@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file QuestEffect.h
+    @brief
+    Definition of the QuestEffect class.
+*/
 
 #ifndef _QuestEffect_H__
 #define _QuestEffect_H__
@@ -37,11 +43,10 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
-        Handles effects for quests.
+        Handles QuestEffects for Quests.
+        QuestEffects are the only way for Quests to have any sideeffects in the game world. They are also the only way for a player to gain, complete or fail Quests.
     @author
         Damian 'Mozork' Frick
     */
@@ -51,8 +56,8 @@ namespace orxonox {
             QuestEffect(BaseObject* creator);
             virtual ~QuestEffect();
 
-            virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
-            static bool invokeEffects(Player* player, std::list<QuestEffect*> & effects); //!< Invokes all effects in the list.
+            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
+            static bool invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
 
 
     };
