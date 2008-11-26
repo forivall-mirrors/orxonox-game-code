@@ -18,6 +18,7 @@ namespace orxonox
 		this->boost_ = 0;
 		this->duration_ = 0;
 		this->accboost_ = 1;
+		this->rotacc_= 0;
 	}
 
 	Turbo::~Turbo()
@@ -31,6 +32,8 @@ namespace orxonox
         XMLPortParam(Turbo, "boost", setBoost, getBoost, xmlelement, mode);
         XMLPortParam(Turbo, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(Turbo, "accboost", setAccBoost, getAccBoost, xmlelement, mode);
+	XMLPortParam(Turbo, "rotacc", setRotAcc, getRotAcc, xmlelement, mode);
+        
     }
 
 	bool Turbo::pickedUp(Pawn* player)
@@ -52,6 +55,8 @@ namespace orxonox
 	{
 	ship->setMaxSpeed( ship->getMaxSpeed() - this->boost_);
 	ship->setTransAcc( ship->getTransAcc()/this->accboost_);
+	ship->setMaxRotation( ship->getMaxRotation()-this->rotacc_);
+	ship->setRotAcc( ship->getRotAcc()-this->rotacc_);
 	COUT(3)<<"PickUp Timer expired"<<std::endl;
 	}
 
@@ -59,6 +64,8 @@ namespace orxonox
 	{
 	ship->setMaxSpeed( ship->getMaxSpeed() + this->boost_);
 	ship->setTransAcc( ship->getTransAcc()*this->accboost_);
+	ship->setMaxRotation( ship->getMaxRotation()+this->rotacc_);
+	ship->setRotAcc( ship->getRotAcc()+this->rotacc_);
 	if( this->duration_ != 0)
 	{
 		ExecutorMember<Turbo>* executor = createExecutor(createFunctor(&Turbo::unsetSpeedBoost));
@@ -71,9 +78,11 @@ namespace orxonox
 	{
 		if (this->duration_ == 0)
 		{
-			//player->Equipment.erase ( std::pair<std::string, Item*>(this->itemname,this) );
+			if(remove(player)==true);
+			{
 			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);
 			this->unsetSpeedBoost(ship);
+			}	
 		}
 		return true;
 	}

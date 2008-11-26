@@ -30,7 +30,7 @@
 #define _Pawn_H__
 
 #include "OrxonoxPrereqs.h"
-
+#include "objects/pickup/ShipEquipment.h"
 #include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
@@ -74,7 +74,7 @@ namespace orxonox
             virtual void kill();
 
             virtual void fire();
-
+            ShipEquipment pickUp;
             virtual void postSpawn();
 
         protected:
@@ -82,6 +82,7 @@ namespace orxonox
             virtual void death();
 
             bool bAlive_;
+            
 
             float health_;
             float maxHealth_;

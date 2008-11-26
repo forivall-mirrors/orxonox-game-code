@@ -28,9 +28,33 @@ Item::~Item()
 
 void Item::addTo (Pawn* player)
 {
-	//player->Equipment.insert ( std::pair<std::string, Item*>(this->itemname,this) );
+	if(checkSlot(player)==true)
+	player->pickUp.Equipment.insert ( std::pair<std::string, Item*>(this->getName(),this) );
+	else
+	COUT(3) << "swap?" << std::endl;
 }
-
+bool Item::remove(Pawn* player)
+{
+ 	if(player->pickUp.Equipment.find(this->getName())!= player->pickUp.Equipment.end())
+ 	{
+ 	std::multimap<std::string,Item*>::iterator it;
+ 	it=player->pickUp.Equipment.find(this->getName());
+  	player->pickUp.Equipment.erase (it);
+  	return true;
+  	}
+  	else
+  	return false;
+}
+bool Item::checkSlot(Pawn* player)
+{
+	std::multimap<std::string,Item*>::iterator it;
+	for ( it=player->pickUp.Equipment.begin() ; it != player->pickUp.Equipment.end(); it++ )
+	{
+	if((*it).second->playerBaseClass_==this->playerBaseClass_)
+	return false;
+	}
+	return true;
+}
 void Item::setPlayerBaseClassName(const std::string& name)
 {
 	this->playerBaseClass_ = ClassByString(name);

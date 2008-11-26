@@ -73,12 +73,12 @@ namespace orxonox
                 { return this->maxSpeed_; }
             inline float getMaxSecondarySpeed() const
                 { return this->maxSecondarySpeed_; }
-            inline float getMaxRotation() const
-                { return this->maxRotation_.valueDegrees(); }
+            inline const Degree& getMaxRotation() const
+                { return this->maxRotation_; }
             inline float getTransAcc() const
                 { return this->translationAcceleration_; }
-            inline float getRotAcc() const
-                { return this->rotationAcceleration_.valueDegrees(); }
+            inline const Degree& getRotAcc() const
+                { return this->rotationAcceleration_; }
             inline float getTransDamp() const
                 { return this->translationDamping_; }
 
@@ -89,7 +89,6 @@ namespace orxonox
             float maxSecondarySpeed_;
             float translationAcceleration_;
             float translationDamping_;
-
             Degree maxRotation_;
             Degree rotationAcceleration_;
 

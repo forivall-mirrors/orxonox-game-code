@@ -11,11 +11,12 @@ namespace orxonox
 	public:
 	Item( BaseObject* creator);
 	virtual ~Item();
-
+	bool checkSlot(Pawn* player);
 	virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
+	
 	virtual bool pickedUp(Pawn* player) { return true; }
 	virtual bool dropped(Pawn* player) { return true; } //erst bei festen Items
+	bool remove(Pawn* player);
 	void addTo(Pawn* player);
 
 	inline void setPlayerBaseClass(Identifier* identifier)
@@ -27,7 +28,7 @@ namespace orxonox
 	void setPlayerBaseClassName(const std::string& name);
 	const std::string& getPlayerBaseClassName() const;
 
-	Identifier* playerBaseClass_; //class(...)
+	Identifier* playerBaseClass_;
 	};
 }
 	

@@ -4,6 +4,7 @@
 #include "tools/Timer.h"
 #include "Item.h"
 #include "OrxonoxPrereqs.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -32,6 +33,11 @@ namespace orxonox
 	inline float getDuration() const
 		{ return this->duration_; }
 
+	inline void setRotAcc(Degree rotacc)
+		{ this->rotacc_ = rotacc; }
+	inline Degree getRotAcc() const
+		{ return this->rotacc_; }
+
 	
 	inline void setAccBoost(float accboost)
 		{ this->accboost_ = accboost; }
@@ -43,6 +49,7 @@ namespace orxonox
 	float boost_;
 	float duration_;
 	float accboost_;
+	Degree rotacc_;
 	};
 }
 
