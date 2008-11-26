@@ -31,7 +31,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Super.h"
 
 #include "NotificationManager.h"
 
@@ -70,8 +69,6 @@ namespace orxonox {
     void NotificationQueue::tick(float dt)
     {
         NotificationManager::tick(dt);
-    
-        SUPER(NotificationQueue, tick, dt);
     }
     
     bool NotificationQueue::setLength(int length)
