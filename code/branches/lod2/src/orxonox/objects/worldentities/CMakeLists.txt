@@ -12,6 +12,7 @@ SET( SRC_FILES
   SpawnPoint.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
+  Planet.cc
 #  Backlight.cc
 )
 
