@@ -64,7 +64,7 @@ namespace orxonox {
     {
         SUPER(NotificationQueue, XMLPort, xmlElement, mode);
         
-        XMLPortParam(NotificationQueue, "length", getLength, setLength, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "length", setLength, getLength, xmlElement, mode);
     }
     
     void NotificationQueue::tick(float dt)

@@ -86,6 +86,8 @@ namespace orxonox {
         
         updateQueue();
         
+        COUT(3) << "Notification inserted, title: " << notification->getTitle() << std::endl;
+        
         return true;
     }
     
@@ -103,6 +105,8 @@ namespace orxonox {
             
 	    text = text + "\n\n------------" + container->notification->getTitle(); + "\n" + container->notification->getMessage();
 	}
+	
+	COUT(3) << "Queue updated: " << std::endl;
         
         NotificationQueue::queue_s->setQueueText(text);
     }
