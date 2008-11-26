@@ -50,15 +50,15 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void fire();
+            void attachNeededMunition(std::string munitionType);
+            virtual void setParentWeaponSystem();
+            Munition * getAttachedMunition();
+
+            //reloading
             void bulletTimer();
             void magazineTimer();
             void bulletReloaded();
             void magazineReloaded();
-            void attachNeededMunition(std::string munitionType);
-
-            //get and set functions
-            virtual void setParentWeaponSystem();
-            Munition * getAttachedMunition();
             void setBulletLoadingTime(float loadingTime);
             float getBulletLoadingTime();
             void setMagazineLoadingTime(float loadingTime);

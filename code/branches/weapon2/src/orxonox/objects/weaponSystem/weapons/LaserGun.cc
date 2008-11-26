@@ -45,7 +45,7 @@ namespace orxonox
         //set weapon properties here
         //this->setLoadingTime(0.5);
 
-        //Hack --> will be loaded by XML
+        //how could it be loaded by XML
         this->attachNeededMunition("LaserGunMunition");
     }
 
@@ -57,16 +57,17 @@ namespace orxonox
     {
         if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
         {
-
-
-
             //take munition
             this->getAttachedMunition()->removeBullets(1,this);
             Weapon::bulletTimer();
             this->setBulletReadyToShoot(false);
 
             //create projectile
-            BillboardProjectile* projectile = new ParticleProjectile(this,this);
+            BillboardProjectile* projectile = new ParticleProjectile(this);
+            projectile->setOrientation(projectile->getOrientation());
+            projectile->setPosition(projectile->getWorldPosition());
+            projectile->setVelocity(WorldEntity::FRONT * this->speed_);
+
             //projectile->setColour(this->getProjectileColour());
         }
         else

@@ -52,6 +52,7 @@ namespace orxonox
             void fire();
 
         private:
+            float speed_;
 
 
     };

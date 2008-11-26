@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport BillboardProjectile : public Projectile
     {
         public:
-            BillboardProjectile(BaseObject* creator, Weapon* owner = 0);
+            BillboardProjectile(BaseObject* creator);
             virtual ~BillboardProjectile();
 
             virtual void setColour(const ColourValue& colour);

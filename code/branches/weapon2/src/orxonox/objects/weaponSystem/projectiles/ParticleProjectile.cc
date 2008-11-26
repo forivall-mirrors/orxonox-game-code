@@ -37,13 +37,15 @@ namespace orxonox
 {
     CreateFactory(ParticleProjectile);
 
-    ParticleProjectile::ParticleProjectile(BaseObject* creator, Weapon* owner) : BillboardProjectile(creator, owner)
+    ParticleProjectile::ParticleProjectile(BaseObject* creator) : BillboardProjectile(creator)
     {
         RegisterObject(ParticleProjectile);
 
         this->particles_ = new ParticleInterface(this->getSceneManager(), "Orxonox/shot2", LODParticle::normal);
         this->particles_->addToSceneNode(this->getNode());
         this->particles_->setKeepParticlesInLocalSpace(true);
+
+        /*
         if (this->owner_)
         {
         }
@@ -51,6 +53,7 @@ namespace orxonox
 //        {
 //            this->particles_ = 0;
 //        }
+        */
 
         this->setConfigValues();
     }
@@ -63,7 +66,7 @@ namespace orxonox
 
     void ParticleProjectile::setConfigValues()
     {
-        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback((Projectile*)this, &ParticleProjectile::speedChanged);
+        //SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback((Projectile*)this, &ParticleProjectile::speedChanged);
     }
 
     void ParticleProjectile::changedVisibility()

@@ -39,13 +39,11 @@
 
 #include "objects/worldentities/Model.h"
 #include "objects/worldentities/ParticleSpawner.h"
-#include "Settings.h"
+#include "core/Core.h"
 
 namespace orxonox
 {
-    float Projectile::speed_s = 5000;
-
-    Projectile::Projectile(BaseObject* creator, Weapon* owner) : MovableEntity(creator), owner_(owner)
+    Projectile::Projectile(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(Projectile);
 
@@ -56,14 +54,16 @@ namespace orxonox
         //this->setStatic(false);
         this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
 
+        /*
         if (this->owner_)
         {
             this->setOrientation(this->owner_->getOrientation());
             this->setPosition(this->owner_->getPosition());
             this->setVelocity(this->owner_->getInitialDir() * this->speed_);
         }
+        */
 
-        if(!orxonox::Settings::isClient()) //only if not on client
+        if(!Core::isClient()) //only if not on client
           this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
     }
 
@@ -75,15 +75,8 @@ namespace orxonox
     {
         SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
         SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
-        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(this, &Projectile::speedChanged);
     }
 
-    void Projectile::speedChanged()
-    {
-        Projectile::speed_s = this->speed_;
-        if (this->owner_)
-            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
-    }
 
     void Projectile::tick(float dt)
     {
@@ -102,10 +95,16 @@ namespace orxonox
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
                     // hit
-                    ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, LODParticle::low, 2.0);
+                    ParticleSpawner* explosion = new ParticleSpawner(this);
+                    explosion->setSource(this->explosionTemplateName_);
+                    explosion->setLOD(LODParticle::low);
+                    explosion->configure(2.0);
                     explosion->setPosition(this->getPosition());
                     explosion->create();
-                    ParticleSpawner* smoke = new ParticleSpawner(this->smokeTemplateName_, LODParticle::normal, 2.0, 0.0);
+                    ParticleSpawner* smoke = new ParticleSpawner(this);
+                    smoke->setSource(this->smokeTemplateName_);
+                    smoke->setLOD(LODParticle::normal);
+                    smoke->configure(2.0, 0.0);
                     smoke->setPosition(this->getPosition());
 //                    smoke->getParticleInterface()->setSpeedFactor(3.0);
                     smoke->create();

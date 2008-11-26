@@ -84,6 +84,7 @@ namespace orxonox
     }
 */
 
+
     //n is the n'th weaponSet, starting with zero
     //SpaceShip.cc only needs to have the keybinding to a specific Set-number n
     void WeaponSystem::fire(WeaponMode::Enum n)
