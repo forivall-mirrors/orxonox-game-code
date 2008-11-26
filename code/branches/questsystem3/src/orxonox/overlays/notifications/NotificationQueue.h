@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "orxonox/overlays/OverlayText.h"
+#include "orxonox/objects/Tickable.h"
 
 #include <string>
 
@@ -43,7 +44,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport NotificationQueue : public OverlayText
+    class _OrxonoxExport NotificationQueue : public OverlayText, public Tickable
     {
 	public:
 	    NotificationQueue(BaseObject* creator);
