@@ -169,6 +169,9 @@ namespace orxonox
     class HUDRadar;
     class HUDSpeedBar;
     class InGameConsole;
+    class Notification;
+    class NotificationManager;
+    class NotificationQueue;
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
