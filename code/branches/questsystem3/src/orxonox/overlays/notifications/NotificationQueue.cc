@@ -83,6 +83,7 @@ namespace orxonox {
     
     void NotificationQueue::setQueueText(const std::string & text)
     {
+        COUT(3) << text << std::endl;
         this->queueText_ = text;
     }
     
