@@ -55,11 +55,9 @@ namespace orxonox
 
         //WeaponSystem
         weaponSystem_ = new WeaponSystem(this);
-        /*
-        WeaponSet * weaponSet1 = new WeaponSet(1);
+        WeaponSet * weaponSet1 = new WeaponSet(this,1);
         this->weaponSystem_->attachWeaponSet(weaponSet1);
-        this->weaponSystem_->getWeaponSetPointer(0)->getWeaponSlotPointer(0)->setAmmoType(true);
-        */
+
 
         this->registerVariables();
     }
