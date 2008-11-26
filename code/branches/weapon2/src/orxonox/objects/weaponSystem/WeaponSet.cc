@@ -34,6 +34,7 @@
 #include "util/Debug.h"
 
 #include "WeaponSet.h"
+#include "WeaponPack.h"
 
 namespace orxonox
 {
@@ -43,39 +44,34 @@ namespace orxonox
 
         this->parentWeaponSystem_ = 0;
 
-        /* will be made with XML
-        for (int i=0;i<k;i++)
-        {
-            attachWeaponSlot(new WeaponSlot(this));
-        }
-        */
     }
 
     WeaponSet::~WeaponSet()
     {
     }
 
-    void WeaponSet::attachWeaponSlot(WeaponSlot *wSlot)
+    void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
-        this->weaponSlots_.push_back(wSlot);
+        if (this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
+        {
+            //should be possible to choose which slot to use
+            for (  int i=0; i < wPack->getSize() ; i++  )
+            {
+                this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(i) );
+            }
+        }
     }
 
+    /* this function will be in WeaponPack
     void WeaponSet::fire()
     {
         for (int i=0; i < (int) this->weaponSlots_.size(); i++)
         {
+COUT(0) << "WeaponSlot::fire"<< i << std::endl;
             this->weaponSlots_[i]->fire();
         }
     }
-
-    WeaponSlot * WeaponSet::getWeaponSlotPointer(unsigned int n)
-    {
-        if (n < this->weaponSlots_.size())
-            return this->weaponSlots_[n];
-        else
-            return 0;
-    }
-
+    */
 
     void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {

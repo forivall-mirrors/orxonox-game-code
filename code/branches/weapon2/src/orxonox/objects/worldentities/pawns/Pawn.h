@@ -78,6 +78,9 @@ namespace orxonox
 
             virtual void postSpawn();
 
+            void setWeaponSlot(WeaponSlot * wSlot);
+            WeaponSlot * getWeaponSlot(unsigned int index) const;
+
         protected:
             virtual void spawn();
             virtual void death();

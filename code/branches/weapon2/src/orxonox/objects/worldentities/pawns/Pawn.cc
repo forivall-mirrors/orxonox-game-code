@@ -51,12 +51,13 @@ namespace orxonox
         this->initialHealth_ = 0;
 
         this->lastHitOriginator_ = 0;
-        this->weaponSystem_ = 0;
 
         //WeaponSystem
         weaponSystem_ = new WeaponSystem(this);
         WeaponSet * weaponSet1 = new WeaponSet(this,1);
         this->weaponSystem_->attachWeaponSet(weaponSet1);
+        //totally bad solution...
+        weaponSet1->setParentWeaponSystem(weaponSystem_);
 
 
         this->registerVariables();
@@ -73,7 +74,11 @@ namespace orxonox
         XMLPortParam(Pawn, "health", setHealth, getHealht, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
-    }
+
+        XMLPortObject(Pawn, WeaponSlot, "weaponslots", setWeaponSlot, getWeaponSlot, xmlelement, mode);
+        //XMLPortObject(Pawn, WeaponPack, "weapons", setWeaponPack, getWeaponPack, xmlelement, mode);
+
+        }
 
     void Pawn::registerVariables()
     {
@@ -136,6 +141,7 @@ namespace orxonox
 
     void Pawn::fire(WeaponMode::Enum fireMode)
     {
+COUT(0) << "Pawn::fire" << std::endl;
         if (this->weaponSystem_)
             this->weaponSystem_->fire(fireMode);
     }
@@ -145,4 +151,15 @@ namespace orxonox
         this->setHealth(this->initialHealth_);
         this->spawn();
     }
+
+    void Pawn::setWeaponSlot(WeaponSlot * wSlot)
+    {
+        this->weaponSystem_->attachWeaponSlot(wSlot);
+    }
+
+    WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
+    {
+        return this->weaponSystem_->getWeaponSlotPointer(index);
+    }
+
 }

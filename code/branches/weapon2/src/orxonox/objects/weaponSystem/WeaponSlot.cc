@@ -43,7 +43,6 @@ namespace orxonox
 
         this->unlimitedAmmo_ = false;
         this->attachedWeapon_ = 0;
-        this->parentWeaponSet_ = 0;
         this->setObjectMode(0x0);
     }
 
@@ -64,6 +63,7 @@ namespace orxonox
 
     void WeaponSlot::fire()
     {
+COUT(0) << "WeaponSlot::fire" << std::endl;
         this->attachedWeapon_->fire();
     }
 

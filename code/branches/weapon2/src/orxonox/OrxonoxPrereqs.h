@@ -153,6 +153,7 @@ namespace orxonox
     class WeaponSystem;
     class WeaponSet;
     class WeaponSlot;
+    class WeaponPack;
     class Weapon;
     class Munition;
     class LaserGun;

@@ -49,17 +49,17 @@ namespace orxonox
             void setAmmoType(bool isUnlimited);
             void fire();
 
-            inline void setParentWeaponSet(WeaponSet *parentWeaponSet)
-                { parentWeaponSet_=parentWeaponSet; }
-            inline WeaponSet * getParentWeaponSet()
-                { return parentWeaponSet_; }
+            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
+                { parentWeaponSystem_=parentWeaponSystem; }
+            inline WeaponSystem * getParentWeaponSystem()
+                { return parentWeaponSystem_; }
 
 
         private:
             Weapon *attachedWeapon_;
             bool unlimitedAmmo_;
 
-            WeaponSet *parentWeaponSet_;
+            WeaponSystem *parentWeaponSystem_;
     };
 }
 

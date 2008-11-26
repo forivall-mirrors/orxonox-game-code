@@ -35,6 +35,7 @@
 #include "util/Debug.h"
 
 #include "WeaponSystem.h"
+#include "WeaponPack.h"
 
 /* WEAPONSYSTEM
  * creates the WeaponSystem and the ability to use weapons and munition
@@ -55,6 +56,17 @@ namespace orxonox
 
     WeaponSystem::~WeaponSystem()
     {
+    }
+
+    void WeaponSystem::attachWeaponPack(WeaponPack *wPack, int setNumber)
+    {
+        this->weaponSets_[setNumber]->attachWeaponPack(wPack);
+    }
+
+    void WeaponSystem::attachWeaponSlot(WeaponSlot *wSlot)
+    {
+        this->weaponSlots_.push_back(wSlot);
+        wSlot->setParentWeaponSystem(this);
     }
 
     void WeaponSystem::attachWeaponSet(WeaponSet *wSet)
@@ -89,8 +101,10 @@ namespace orxonox
     //SpaceShip.cc only needs to have the keybinding to a specific Set-number n
     void WeaponSystem::fire(WeaponMode::Enum n)
     {
+COUT(0) << "WeaponSystem::fire" << std::endl;
         if (n < (int)this->weaponSets_.size())
-            this->weaponSets_[n]->fire();
+COUT(0) << "WeaponSystem::fire - after if" << std::endl;
+            //this->weaponSets_[n]->fire();
     }
 
 
@@ -98,6 +112,14 @@ namespace orxonox
     {
         if (n < this->weaponSets_.size())
             return this->weaponSets_[n];
+        else
+            return 0;
+    }
+
+    WeaponSlot * WeaponSystem::getWeaponSlotPointer(unsigned int n)
+    {
+        if (n < this->weaponSlots_.size())
+            return this->weaponSlots_[n];
         else
             return 0;
     }

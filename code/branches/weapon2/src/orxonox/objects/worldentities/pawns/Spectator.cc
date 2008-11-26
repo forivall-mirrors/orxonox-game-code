@@ -168,7 +168,7 @@ namespace orxonox
         this->roll_ = value.y;
     }
 
-    void Spectator::fire()
+    void Spectator::fire(WeaponMode::Enum fireMode)
     {
         if (this->getPlayer())
             this->getPlayer()->setReadyToSpawn(true);

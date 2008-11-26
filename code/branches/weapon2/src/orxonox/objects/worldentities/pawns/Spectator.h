@@ -55,7 +55,7 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
 
-            virtual void fire();
+            virtual void fire(WeaponMode::Enum fireMode);
             virtual void greet();
 
         private:

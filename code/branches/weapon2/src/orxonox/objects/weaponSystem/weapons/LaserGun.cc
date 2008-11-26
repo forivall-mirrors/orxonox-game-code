@@ -55,6 +55,7 @@ namespace orxonox
 
     void LaserGun::fire()
     {
+COUT(0) << "LaserGun::fire" << std::endl;
         if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
         {
             //take munition

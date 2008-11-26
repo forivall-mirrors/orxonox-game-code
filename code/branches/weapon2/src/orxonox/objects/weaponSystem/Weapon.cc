@@ -95,7 +95,7 @@ namespace orxonox
      *
      */
     void Weapon::setParentWeaponSystem()
-    {   this->parentWeaponSystem_ = this->parentWeaponSlot_->getParentWeaponSet()->getParentWeaponSystem(); }
+    {   this->parentWeaponSystem_ = this->parentWeaponSlot_->getParentWeaponSystem(); }
 
     Munition * Weapon::getAttachedMunition()
     {   return this->munition_; }
