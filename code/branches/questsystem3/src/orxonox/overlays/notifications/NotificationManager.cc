@@ -52,7 +52,7 @@ namespace orxonox {
     {
         bool update = false;
     
-        for (std::list<NotificationContainer*>::iterator notification = NotificationManager::notifications_s.begin(); notification != NotificationManager::notifications_s.end(); ++notification)
+        for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end(); ++notification)
 	{
             NotificationContainer* container = *notification;
             if(container->remainingTime == 0)
@@ -82,11 +82,11 @@ namespace orxonox {
 	NotificationContainer* container = new NotificationContainer;
 	container->notification = notification;
 	container->remainingTime = notification->getDisplayTime();
-        NotificationManager::notifications_s.push_front(container);
+        notifications_s.push_front(container);
         
         updateQueue();
         
-        COUT(3) << "Notification inserted, title: " << notification->getTitle() << std::endl;
+        COUT(3) << "Notification inserted, title: " << notification->getTitle() << ", message: " << notification->getMessage() << std::endl;
         
         return true;
     }
@@ -96,17 +96,17 @@ namespace orxonox {
         std::string text = "";
         
         int i = NotificationQueue::queue_s->getLength();
-        for (std::list<NotificationContainer*>::iterator notification = NotificationManager::notifications_s.begin(); notification != NotificationManager::notifications_s.end() || i <= 0; ++notification)
-	{
+        for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end() || i <= 0; ++notification)
+        {
             i--;
             NotificationContainer* container = *notification;
             if(container->remainingTime == 0)
                 continue;
             
 	    text = text + "\n\n------------" + container->notification->getTitle(); + "\n" + container->notification->getMessage();
-	}
-	
-	COUT(3) << "Queue updated: " << std::endl;
+        }
+
+        COUT(3) << "Queue updated: " << text << std::endl;
         
         NotificationQueue::queue_s->setQueueText(text);
     }
