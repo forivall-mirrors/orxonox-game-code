@@ -103,6 +103,8 @@ namespace orxonox {
             if(container->remainingTime == 0)
                 continue;
             
+            COUT(3) << "Update, title: " << container->notification->getTitle() << ", message: " << container->notification->getMessage() << std::endl;
+            
 	    text = text + "\n\n\n------------" + container->notification->getTitle(); + "\n\n" + container->notification->getMessage();
         }
 

@@ -51,7 +51,7 @@ namespace orxonox {
 	    NotificationQueue(BaseObject* creator);
 	    virtual ~NotificationQueue();
 	    
-	    static NotificationQueue* queue_s;
+	    static NotificationQueue* queue_s; //TDO Singleton? oder im level.
 	    
 	    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 	    

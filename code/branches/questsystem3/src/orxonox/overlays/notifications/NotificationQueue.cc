@@ -36,7 +36,7 @@
 
 namespace orxonox {
 
-    NotificationQueue* NotificationQueue::queue_s;
+    NotificationQueue* NotificationQueue::queue_s = 0;
     
     CreateFactory(NotificationQueue);
 
@@ -69,6 +69,8 @@ namespace orxonox {
     void NotificationQueue::tick(float dt)
     {
         NotificationManager::tick(dt);
+        
+        update();
     }
     
     bool NotificationQueue::setLength(int length)
@@ -83,13 +85,11 @@ namespace orxonox {
     
     void NotificationQueue::setQueueText(const std::string & text)
     {
-        COUT(3) << text << std::endl;
         this->queueText_ = text;
     }
     
     void NotificationQueue::update(void)
     {
-        //TDO UTF string
         this->text_->setCaption(queueText_);
     }
 
