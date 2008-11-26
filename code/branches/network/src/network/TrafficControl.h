@@ -32,6 +32,7 @@
 #include <vector>
 #include <map>
 #include <utility>
+#include <algorithm>
 
 #include "NetworkPrereqs.h"
 #include "Synchronisable.h"
@@ -39,6 +40,14 @@
 namespace network {
 
 // Synchronisable *bla = Synchronisable::getSynchronisable(objectID);
+
+//stuff to iterate through:  map<unsigned int, objInfo>::iterator itproc;
+//   map<unsigned int, Synchronisable>::iterator itref;
+//   for(it=listToProcess_->begin(); it != listToProcess_->end();it++)
+//   {
+//   
+//     itref=referenceList_->find((*itproc).first);
+//     refCurObj=(*itref).second;
 
 /**
 *a vector of objects of this type will be given by the Server's Gamestate Manager
@@ -49,6 +58,8 @@ struct objInfo
   unsigned int objCurGS;//current GameState ID
   unsigned int objDiffGS;//difference between current and latest GameState
   unsigned int objSize;
+  unsigned int objValuePerm;
+  unsigned int objValueSched;
 };
 
 /**
@@ -61,6 +72,17 @@ struct obj
   unsigned int objSize;
 };
 
+/**
+*eigener sortieralgorithmus
+*/
+bool priodiffer(obj i, obj j)
+{ 
+  map<unsigned int, objInfo>::iterator iti;
+  map<unsigned int, objInfo>::iterator itj;
+  iti=listToProcess_->find(i.objID);
+  itj=listToProcess_->find(j.objID);
+  return iti->second.objValuePerm < itj->second.objValuePerm;
+}
 
 /**
 *
@@ -76,15 +98,17 @@ class TrafficControl{
     /**
     *reference list: contains object ids and the reference belonging to this id.
     */
-    std::map<unsigned int, Synchronisable*> *referenceList_;//has to be created with constructor and then needs to be updated by evaluateList().
+//     std::map<unsigned int, Synchronisable*> *referenceList_;//has to be created with constructor and then needs to be updated by evaluateList().
     /**
     *permanent client list: contains client ids, gamestate ids and object ids (in this order)
     */
-    std::map<unsigned int, objInfo> *clientListPerm_; //has to be created with constructor and then needs to be updated by evaluateList().
+    std::map<unsigned int, std::map<unsigned int, objInfo>> *clientListPerm_;
+    //has to be created with constructor and then needs to be updated by evaluateList().
+
     /**
     *temporary client list: contains client ids, gamestate ids and object ids (in this order)
     */
-    std::map<unsigned int,std::map<unsigned int, unsigned int>> *clientListTemp_;
+    std::map<unsigned int, std::map<unsigned int, std::vector<obj>>> *clientListTemp_;
     /**
     *static priority list: contains obj id, basic priority (in this order)
     */
@@ -100,6 +124,9 @@ class TrafficControl{
     */
     unsigned int currentGamestateID;
     unsigned int currentClientID;
+    Synchronisable *refCurObj;//reference to current object, uninitialized yet, do I have to or can I just set refCurObj=...; later on? 
+    //not used yet anyway
+    std::vector<obj> copiedVector; //copy of original that I get from GSmanager
 
     void updateReferenceList(std::map<unsigned int, objInfo> *list);
     void insertinClientListPerm(unsigned int objid, objInfo objinf);

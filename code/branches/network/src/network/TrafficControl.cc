@@ -60,7 +60,7 @@ TrafficControl::~TrafficControl()
 *Definition of public members
 */
 
-TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<unsigned> *list)
+TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj> *list)
 {
   currentClientID=clientID;
   currentGamestateID=gamestateID;
@@ -135,9 +135,68 @@ TrafficControl::evaluateList(std::map<obj> *list)
 {
   copyList(list);
   updateReferenceList(listToProcess_);
-
-  //now the sorting
   
+  //now the sorting
+
+  //compare listToProcess vs clientListPerm
+  map<unsigned int, objInfo>::iterator itproc;
+  map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;
+  map<unsigned int, objInfo>::iterator itpermobj;
+  map<unsigned int, unsigned int>::iterator itpermprio
+  for(itproc=listToProcess_->begin(); itproc != listToProcess_->end();it++)
+  {
+    itperm=clientListPerm->find(currentClientID);
+    itpermobj=itperm->find(itproc->first);
+    if(currentGamestateID < (itpermobj->second).objCurGS)
+    {
+      //obj bleibt in liste und permanente prio wird berechnet
+      (itpermobj->second).objDiffGS = (itpermobj->second).objCurGS - currentGamestateID;
+      itpermprio = permObjPrio_->find(itproc->first);
+      (itpermobj->second).objValuePerm = (itpermobj->second).objDiffGS * itpermprio->second;
+      continue;//check next objId
+    }
+    else
+    {
+      listToProcess_->erase (itproc);
+    }
+  }
+  //end compare listToProcess vs clientListPerm
+
+  //listToProc vs clientListTemp
+  map<unsigned int, std::map<unsigned int, unsigned int>>::iterator ittemp;
+  map<unsigned int, unsigned int>::iterator ittempgs;
+  for(itproc=listToProcess_->begin(); itproc != listToProcess_->end();it++)
+  {
+    ittemp = clientListTemp_->find(currentClientID);
+    if(ittempgs = ittemp->find(currentGamestateID))
+    {
+      if(itproc->first == ittempgs->find(itproc->first))
+      {
+        listToProcess_->erase (itproc);
+      }
+      else continue;
+    }
+    else continue;
+  }
+  //end listToProc vs clientListTemp
+  
+  //listToProcess contains obj to send now, shorten copiedvector therefor too.
+  vector<obj>::iterator itvec;
+  for(itvec = copiedvector.begin(); itvec < copiedvector.end(); itvec++)
+  {
+    if(listToProcess_->find(itvec->objID))
+    {
+      continue;
+    }
+    else
+    {
+      copiedvector.remove(itvec);
+    }
+  }
+  //sort copied vector aufgrund der objprioperm in clientlistperm
+  sort(copiedvector.begin(),copiedvector.end(),priodiffer);
+  //swappen aufgrund von creator oder ganz rausnehmen!?
+
   //end of sorting
   return evaluatedList_;
 }
