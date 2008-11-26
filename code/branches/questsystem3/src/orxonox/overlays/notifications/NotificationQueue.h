@@ -30,6 +30,7 @@
 #define _NotificationOueue_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgreTextAreaOverlayElement.h>
 
 #include "orxonox/overlays/OverlayText.h"
 #include "orxonox/objects/Tickable.h"
@@ -65,7 +66,7 @@ namespace orxonox {
 	    bool setLength(int length);
 	    
 	private:
-            std::string queueText_;
+            Ogre::UTFString queueText_;
             int length_;
     
     };
