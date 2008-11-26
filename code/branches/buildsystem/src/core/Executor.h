@@ -176,11 +176,11 @@ namespace orxonox
                 { return this->functor_->hasReturnvalue(); }
             inline FunctionType getType() const
                 { return this->functor_->getType(); }
-            inline MultiType getReturnvalue() const
+            inline const MultiType& getReturnvalue() const
                 { return this->functor_->getReturnvalue(); }
-            inline std::string getTypenameParam(unsigned int param) const
+            inline const std::string& getTypenameParam(unsigned int param) const
                 { return this->functor_->getTypenameParam(param); }
-            inline std::string getTypenameReturnvalue() const
+            inline const std::string& getTypenameReturnvalue() const
                 { return this->functor_->getTypenameReturnvalue(); }
 
             inline void setName(const std::string name)

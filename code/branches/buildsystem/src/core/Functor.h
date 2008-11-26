@@ -33,6 +33,7 @@
 #include "CorePrereqs.h"
 
 #include "util/MultiType.h"
+#include "util/String.h"
 #include "util/Debug.h"
 
 
@@ -102,10 +103,10 @@ namespace orxonox
             inline unsigned int getParamCount() const { return this->numParams_; }
             inline bool hasReturnvalue() const { return this->hasReturnValue_; }
             inline FunctionType getType() const { return this->type_; }
-            inline MultiType getReturnvalue() const { return this->returnedValue_; }
+            inline const MultiType& getReturnvalue() const { return this->returnedValue_; }
 
-            std::string getTypenameParam(unsigned int param) const { return (param >= 0 && param < 5) ? this->typeParam_[param] : ""; }
-            std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
+            const std::string& getTypenameParam(unsigned int param) const { return (param < 5) ? this->typeParam_[param] : blankString; }
+            const std::string& getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
             virtual void evaluateParam(unsigned int index, MultiType& param) const = 0;
 

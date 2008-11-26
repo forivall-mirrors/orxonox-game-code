@@ -133,46 +133,27 @@ namespace orxonox
     }
   }
 
-  unsigned int Script::getNextQuote(const std::string& text, unsigned int start)
-  {
-    unsigned int quote = start - 1;
-
-    while ((quote = text.find('\"', quote + 1)) != std::string::npos)
-    {
-      unsigned int backslash = quote;
-      unsigned int numbackslashes = 0;
-      for (; backslash > 0; backslash--, numbackslashes++)
-        if (text[backslash - 1] != '\\')
-          break;
-
-      if (numbackslashes % 2 == 0)
-        break;
-    }
-
-    return quote;
-  }
-
   std::string Script::replaceLuaTags(const std::string& text)
   {
     // chreate map with all Lua tags
-    std::map<unsigned int, bool> luaTags;
+    std::map<size_t, bool> luaTags;
     {
-      unsigned int pos = 0;
+      size_t pos = 0;
       while ((pos = text.find("<?lua", pos)) != std::string::npos)
         luaTags[pos++] = true;
     }
     {
-      unsigned int pos = 0;
+      size_t pos = 0;
       while ((pos = text.find("?>", pos)) != std::string::npos)
         luaTags[pos++] = false;
     }
 
     // erase all tags from the map that are between two quotes
     {
-      std::map<unsigned int, bool>::iterator it = luaTags.begin();
-      std::map<unsigned int, bool>::iterator it2 = it;
+      std::map<size_t, bool>::iterator it = luaTags.begin();
+      std::map<size_t, bool>::iterator it2 = it;
       bool bBetweenQuotes = false;
-      unsigned int pos = 0;
+      size_t pos = 0;
       while ((pos = getNextQuote(text, pos)) != std::string::npos)
       {
         while ((it != luaTags.end()) && (it->first < pos))
@@ -195,7 +176,7 @@ namespace orxonox
     // check whether on every opening <?lua tag a closing ?> tag follows
     {
       bool expectedValue = true;
-      for (std::map<unsigned int, bool>::iterator it = luaTags.begin(); it != luaTags.end(); ++it)
+      for (std::map<size_t, bool>::iterator it = luaTags.begin(); it != luaTags.end(); ++it)
       {
         if (it->second == expectedValue)
           expectedValue = !expectedValue;
@@ -214,10 +195,10 @@ namespace orxonox
     // cut the original string into pieces and put them together with print() instead of lua tags
     std::string output;
     {
-      std::map<unsigned int, bool>::iterator it = luaTags.begin();
+      std::map<size_t, bool>::iterator it = luaTags.begin();
       bool bInPrintFunction = true;
-      unsigned int start = 0;
-      unsigned int end = 0;
+      size_t start = 0;
+      size_t end = 0;
 
       do
       {
@@ -233,11 +214,11 @@ namespace orxonox
           // count ['='[ and ]'='] and replace tags with print([[ and ]])
           std::string temp = text.substr(start, end - start);
           {
-            unsigned int pos = 0;
+            size_t pos = 0;
             while ((pos = temp.find('[', pos)) != std::string::npos)
             {
               unsigned int tempCounter = 1;
-              unsigned int tempPos = pos++;
+              size_t tempPos = pos++;
               while(temp[++tempPos] == '=') {
                 tempCounter++;
               }
@@ -252,11 +233,11 @@ namespace orxonox
             }
           }
           {
-            unsigned int pos = 0;
+            size_t pos = 0;
             while ((pos = temp.find(']', pos)) != std::string::npos)
             {
               unsigned int tempCounter = 1;
-              unsigned int tempPos = pos++;
+              size_t tempPos = pos++;
               while(temp[++tempPos] == '=') {
                 tempCounter++;
               }

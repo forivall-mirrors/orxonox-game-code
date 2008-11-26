@@ -41,40 +41,40 @@
 
 extern _UtilExport std::string blankString;
 
-_UtilExport void         strip(std::string* str);
-_UtilExport std::string  getStripped(const std::string& str);
+_UtilExport void        strip(std::string* str);
+_UtilExport std::string getStripped(const std::string& str);
 
-_UtilExport std::string  removeTrailingWhitespaces(const std::string& str);
+_UtilExport std::string removeTrailingWhitespaces(const std::string& str);
 
-_UtilExport unsigned int getNextQuote(const std::string& str, unsigned int start);
-_UtilExport bool         isBetweenQuotes(const std::string& str, unsigned int pos);
+_UtilExport size_t      getNextQuote(const std::string& str, size_t start);
+_UtilExport bool        isBetweenQuotes(const std::string& str, size_t pos);
 
-_UtilExport bool         hasStringBetweenQuotes(const std::string& str);
-_UtilExport std::string  getStringBetweenQuotes(const std::string& str);
+_UtilExport bool        hasStringBetweenQuotes(const std::string& str);
+_UtilExport std::string getStringBetweenQuotes(const std::string& str);
 
-_UtilExport std::string  stripEnclosingQuotes(const std::string& str);
-_UtilExport std::string  stripEnclosingBraces(const std::string& str);
+_UtilExport std::string stripEnclosingQuotes(const std::string& str);
+_UtilExport std::string stripEnclosingBraces(const std::string& str);
 
-_UtilExport bool         isEmpty(const std::string& str);
-_UtilExport bool         isComment(const std::string& str);
-_UtilExport bool         isNumeric(const std::string& str);
+_UtilExport bool        isEmpty(const std::string& str);
+_UtilExport bool        isComment(const std::string& str);
+_UtilExport bool        isNumeric(const std::string& str);
 
-_UtilExport std::string  addSlashes(const std::string& str);
-_UtilExport std::string  removeSlashes(const std::string& str);
+_UtilExport std::string addSlashes(const std::string& str);
+_UtilExport std::string removeSlashes(const std::string& str);
 
-_UtilExport void         lowercase(std::string* str);
-_UtilExport std::string  getLowercase(const std::string& str);
+_UtilExport void        lowercase(std::string* str);
+_UtilExport std::string getLowercase(const std::string& str);
 
-_UtilExport void         uppercase(std::string* str);
-_UtilExport std::string  getUppercase(const std::string& str);
+_UtilExport void        uppercase(std::string* str);
+_UtilExport std::string getUppercase(const std::string& str);
 
-_UtilExport int          nocaseCmp(const std::string& s1, const std::string& s2);
-_UtilExport int          nocaseCmp(const std::string& s1, const std::string& s2, unsigned int len);
+_UtilExport int         nocaseCmp(const std::string& s1, const std::string& s2);
+_UtilExport int         nocaseCmp(const std::string& s1, const std::string& s2, size_t len);
 
-_UtilExport bool         hasComment(const std::string& str);
-_UtilExport std::string  getComment(const std::string& str);
-_UtilExport unsigned int getCommentPosition(const std::string& str);
-_UtilExport unsigned int getNextCommentPosition(const std::string& str, unsigned int start = 0);
+_UtilExport bool        hasComment(const std::string& str);
+_UtilExport std::string getComment(const std::string& str);
+_UtilExport size_t      getCommentPosition(const std::string& str);
+_UtilExport size_t      getNextCommentPosition(const std::string& str, size_t start = 0);
 
 _UtilExport void         convertToWindowsPath(std::string* str);
 _UtilExport void         convertToUnixPath(std::string* str);

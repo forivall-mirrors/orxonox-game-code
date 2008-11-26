@@ -62,7 +62,7 @@ namespace orxonox
         SUPER(Namespace, XMLPort, xmlelement, mode);
 
         std::string name = this->getName();
-        unsigned int pos = 0;
+        size_t pos = 0;
         while ((pos = name.find(',')) != std::string::npos)
             name.replace(pos, 1, " ");
         while ((pos = name.find(';')) != std::string::npos)

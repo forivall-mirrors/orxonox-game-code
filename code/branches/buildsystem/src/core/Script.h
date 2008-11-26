@@ -74,7 +74,6 @@ namespace orxonox
     //inline std::string* getFileString() { return &fileString_; };
     inline void clearLuaOutput() { output_ = ""; }
 
-    unsigned int getNextQuote(const std::string& text, unsigned int start);
     std::string replaceLuaTags(const std::string& text);
 
     private:
