@@ -26,7 +26,9 @@ namespace orxonox
 	{
 	return Usable.size()+Trunk.size();
 	};
-
+	bool insert(Item* item);
+	bool erase (Item* item);
+	bool checkSlot(Item* item) const;
 //	const std::multimap<std::string, Item*>& getEquipment() const { return this->Equipment; }
 
         private:
