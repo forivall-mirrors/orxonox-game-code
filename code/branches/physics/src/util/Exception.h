@@ -59,6 +59,8 @@ namespace orxonox
             General,
             FileNotFound,
             Argument,
+            PhysicsViolation,
+            ParseError,
             PluginsNotFound,
             InitialisationFailed,
             NotImplemented,
@@ -122,6 +124,8 @@ namespace orxonox
             RETURN_EXCEPTION_CODE(General)
             RETURN_EXCEPTION_CODE(FileNotFound);
             RETURN_EXCEPTION_CODE(Argument);
+            RETURN_EXCEPTION_CODE(PhysicsViolation);
+            RETURN_EXCEPTION_CODE(ParseError);
             RETURN_EXCEPTION_CODE(PluginsNotFound);
             RETURN_EXCEPTION_CODE(InitialisationFailed);
             RETURN_EXCEPTION_CODE(NotImplemented);
@@ -136,6 +140,8 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(General);
     CREATE_ORXONOX_EXCEPTION(FileNotFound);
     CREATE_ORXONOX_EXCEPTION(Argument);
+    CREATE_ORXONOX_EXCEPTION(PhysicsViolation);
+    CREATE_ORXONOX_EXCEPTION(ParseError);
     CREATE_ORXONOX_EXCEPTION(PluginsNotFound);
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);

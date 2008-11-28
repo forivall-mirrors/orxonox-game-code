@@ -46,14 +46,6 @@ namespace orxonox
     class _OrxonoxExport WorldEntity : public BaseObject, public network::Synchronisable, public btMotionState
     {
         public:
-            enum CollisionType
-            {
-                Dynamic,
-                Kinematic,
-                Static
-            };
-
-        public:
             WorldEntity(BaseObject* creator);
             virtual ~WorldEntity();
 
@@ -134,10 +126,6 @@ namespace orxonox
             inline void scale(float scale)
                 { this->node_->scale(scale, scale, scale); }
 
-            bool hasPhysics()  { return this->physicalBody_; }
-            bool isKinematic() { return this->physicalBody_ && this->physicalBody_->isKinematicObject(); }
-            bool isDynamic()   { return this->physicalBody_ && !this->physicalBody_->isStaticOrKinematicObject(); }
-
             void attach(WorldEntity* object);
             void detach(WorldEntity* object);
             WorldEntity* getAttachedObject(unsigned int index) const;
@@ -158,26 +146,8 @@ namespace orxonox
             inline WorldEntity* getParent() const
                 { return this->parent_; }
 
-            void setCollisionRadius(float radius);
-            float getCollisionRadius();
-
-            void setCollisionTypeStr(const std::string& type);
-            std::string getCollisionTypeStr();
-
-            void setMass(float mass);
-            float getMass();
-
-            CollisionType getCollisionType();
-
         protected:
-            //virtual btCollisionShape* getCollisionShape() = 0;
-
-            void createPhysicalBody();
-            //virtual void attachPhysicalObject(WorldEntity* object);
-            virtual void setCollisionType(CollisionType type);
-
             Ogre::SceneNode* node_;
-            btRigidBody* physicalBody_;
 
         private:
             void updateParent();
@@ -196,6 +166,51 @@ namespace orxonox
             WorldEntity* parent_;
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
+
+            /////////////
+            // Physics //
+            /////////////
+
+        public:
+            enum CollisionType
+            {
+                Dynamic,
+                Kinematic,
+                Static,
+                None
+            };
+
+            bool hasPhysics()  { return getCollisionType() != None; }
+
+            CollisionType getCollisionType() { return this->collisionType_; }
+            void setCollisionType(CollisionType type);
+
+            void setCollisionTypeStr(const std::string& type);
+            std::string getCollisionTypeStr();
+
+            bool isStatic()    { return getCollisionType() == Static   ; }
+            bool isKinematic() { return getCollisionType() == Kinematic; }
+            bool isDynamic()   { return getCollisionType() == Dynamic  ; }
+
+            void setMass(float mass);
+            float getMass();
+
+            void setCollisionRadius(float radius);
+            float getCollisionRadius();
+
+        protected:
+            //virtual btCollisionShape* getCollisionShape() = 0;
+            //virtual void attachPhysicalObject(WorldEntity* object);
+
+            virtual bool isCollisionTypeLegal(CollisionType type) = 0;
+            bool checkPhysics();
+            void updateCollisionType();
+
+            btRigidBody*  physicalBody_;
+
+        private:
+            CollisionType collisionType_;
+
     };
 }
 

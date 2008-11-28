@@ -302,6 +302,17 @@ namespace orxonox
         }
     }
 
+    bool MovableEntity::isCollisionTypeLegal(WorldEntity::CollisionType type)
+    {
+        if (type == WorldEntity::Static)
+        {
+            ThrowException(PhysicsViolation, "Cannot tell a MovableEntity to have static collision type");
+            return false;
+        }
+        else
+            return true;
+    }
+
     void MovableEntity::setWorldTransform(const btTransform& worldTrans)
     {
         // We use a dynamic body. So we translate our node accordingly.

@@ -73,6 +73,7 @@ namespace orxonox
             virtual void internalSetVelocity(const Vector3& velocity) { }
             virtual void positionChanged() { }
             virtual void orientationChanged() { }
+            virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type);
 
             // Bullet btMotionState related
             void setWorldTransform(const btTransform& worldTrans);

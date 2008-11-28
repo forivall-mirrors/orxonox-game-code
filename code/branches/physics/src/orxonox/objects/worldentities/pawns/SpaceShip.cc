@@ -60,10 +60,6 @@ namespace orxonox
 
         this->setDestroyWhenPlayerLeft(true);
 
-        // create a phyisical body
-        OrxAssert(this->physicalBody_ == 0, " Check why there is already a physical body in the space ship.");
-        this->createPhysicalBody();
-
         this->setConfigValues();
         this->registerVariables();
     }

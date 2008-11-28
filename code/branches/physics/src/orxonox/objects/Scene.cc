@@ -144,9 +144,8 @@ namespace orxonox
 
             this->physicalWorld_ =  new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
 
-            // test test test
+            // Disable Gravity for space
             this->physicalWorld_->setGravity(btVector3(0,0,0));
-            // test test test
         }
         else
         {

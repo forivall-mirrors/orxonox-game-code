@@ -59,14 +59,15 @@ namespace orxonox
         REGISTERDATA(this->getOrientation().z, network::direction::toclient);
     }
 
-    void StaticEntity::setCollisionType(CollisionType type)
+    bool StaticEntity::isCollisionTypeLegal(WorldEntity::CollisionType type)
     {
-        if (!this->physicalBody_)
-            return;
-        if (type != Static)
-            ThrowException(Argument, "Cannot tell a StaticEntity to be kinematic or dynamic");
-
-        this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
+        if (type == WorldEntity::Static)
+        {
+            ThrowException(PhysicsViolation, "Cannot tell a MovableEntity to have static collision type");
+            return false;
+        }
+        else
+            return true;
     }
 
     void StaticEntity::setWorldTransform(const btTransform& worldTrans)
