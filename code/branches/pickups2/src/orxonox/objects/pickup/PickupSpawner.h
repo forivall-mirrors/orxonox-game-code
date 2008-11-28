@@ -2,6 +2,7 @@
 #define _PickupSpawner_H__
 
 #include "OrxonoxPrereqs.h"
+#include "Item.h"
 
 #include "objects/worldentities/PositionableEntity.h"
 #include "objects/Tickable.h"

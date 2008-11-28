@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "ShipEquipment.h"
 
 
 namespace orxonox

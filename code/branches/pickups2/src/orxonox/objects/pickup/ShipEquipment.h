@@ -1,10 +1,8 @@
-
 #ifndef _ShipEquipment_H__
 #define _ShipEquipment_H__
 #include <string>
 #include <map>
 #include "Item.h"
-
 
 /*
 multimap<std::string, Item*> equipment_;
