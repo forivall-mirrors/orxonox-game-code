@@ -53,9 +53,6 @@ namespace orxonox
             inline Ogre::ParticleSystem* getParticleSystem() const
                 { return this->particleSystem_; }
 
-            void addToSceneNode(Ogre::SceneNode* sceneNode);
-            void detachFromSceneNode();
-
             Ogre::ParticleEmitter* createNewEmitter();
             Ogre::ParticleEmitter* getEmitter(unsigned int emitterNr) const;
             void removeEmitter(unsigned int emitterNr);
@@ -95,7 +92,6 @@ namespace orxonox
             static ParticleInterface* currentParticleInterface_s;
             static unsigned int       counter_s;
 
-            Ogre::SceneNode*          sceneNode_;
             Ogre::ParticleSystem*     particleSystem_;
             bool                      bVisible_;
             bool                      bEnabled_;

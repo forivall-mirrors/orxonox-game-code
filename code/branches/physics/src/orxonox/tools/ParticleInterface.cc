@@ -55,7 +55,6 @@ namespace orxonox
         assert(scenemanager);
 
         this->scenemanager_ = scenemanager;
-        this->sceneNode_ = 0;
 
         this->bEnabled_ = true;
         this->bVisible_ = true;
@@ -71,26 +70,7 @@ namespace orxonox
     ParticleInterface::~ParticleInterface()
     {
         this->particleSystem_->removeAllEmitters();
-        this->detachFromSceneNode();
         this->scenemanager_->destroyParticleSystem(particleSystem_);
-    }
-
-    void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)
-    {
-        if (this->sceneNode_)
-            this->detachFromSceneNode();
-
-        this->sceneNode_ = sceneNode;
-        this->sceneNode_->attachObject(this->particleSystem_);
-    }
-
-    void ParticleInterface::detachFromSceneNode()
-    {
-        if (this->sceneNode_)
-        {
-            this->sceneNode_->detachObject(this->particleSystem_);
-            this->sceneNode_ = 0;
-        }
     }
 
     Ogre::ParticleEmitter* ParticleInterface::createNewEmitter()

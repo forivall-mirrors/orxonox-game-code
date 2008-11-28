@@ -54,7 +54,7 @@ namespace orxonox
         assert(this->getScene()->getSceneManager());
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
-        this->getNode()->attachObject(this->camera_);
+        this->attachOgreObject(this->camera_);
 
         this->bHasFocus_ = false;
         this->bDrag_ = false;

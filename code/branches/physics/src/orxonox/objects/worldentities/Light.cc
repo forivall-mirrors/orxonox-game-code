@@ -52,7 +52,7 @@ namespace orxonox
 
         if (this->getScene() && this->getScene()->getSceneManager())
         this->light_ = this->getScene()->getSceneManager()->createLight("Light" + convertToString(Light::lightCounter_s++));
-        this->getNode()->attachObject(this->light_);
+        this->attachOgreObject(this->light_);
 
         this->registerVariables();
     }

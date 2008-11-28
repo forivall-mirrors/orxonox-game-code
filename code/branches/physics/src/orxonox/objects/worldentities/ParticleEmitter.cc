@@ -60,7 +60,10 @@ namespace orxonox
     ParticleEmitter::~ParticleEmitter()
     {
         if (this->isInitialized() && this->particles_)
+        {
+            this->detachOgreObject(this->particles_->getParticleSystem());
             delete this->particles_;
+        }
     }
 
     void ParticleEmitter::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -103,7 +106,7 @@ namespace orxonox
             try
             {
                 this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), this->source_, this->LOD_);
-                this->particles_->addToSceneNode(this->getNode());
+                this->attachOgreObject(particles_->getParticleSystem());
                 this->particles_->setVisible(this->isVisible());
                 this->particles_->setEnabled(this->isActive());
             }

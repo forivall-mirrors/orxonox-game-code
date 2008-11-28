@@ -70,7 +70,7 @@ namespace orxonox
       this->debugBillboard_.setVisible(false);
     }
 
-    this->getNode()->attachObject(this->debugBillboard_.getBillboardSet());
+    this->attachOgreObject(this->debugBillboard_.getBillboardSet());
     this->setObjectMode(0x0);
   }
 

@@ -60,7 +60,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
 
-            inline Ogre::SceneNode* getNode() const
+            inline const Ogre::SceneNode* getNode() const
                 { return this->node_; }
 
             static const Vector3 FRONT;
@@ -143,6 +143,13 @@ namespace orxonox
             WorldEntity* getAttachedObject(unsigned int index) const;
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
+
+            inline void attachOgreObject(Ogre::MovableObject* object)
+                { this->node_->attachObject(object); }
+            inline void detachOgreObject(Ogre::MovableObject* object)
+                { this->node_->detachObject(object); }
+            inline Ogre::MovableObject* detachOgreObject(const Ogre::String& name)
+                { return this->node_->detachObject(name); }
 
             inline void attachToParent(WorldEntity* parent)
                 { parent->attach(this); }

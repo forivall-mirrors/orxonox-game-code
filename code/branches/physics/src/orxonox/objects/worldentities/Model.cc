@@ -47,7 +47,7 @@ namespace orxonox
     Model::~Model()
     {
         if (this->isInitialized() && this->mesh_.getEntity())
-            this->getNode()->detachObject(this->mesh_.getEntity());
+            this->detachOgreObject(this->mesh_.getEntity());
     }
 
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -67,13 +67,13 @@ namespace orxonox
     void Model::changedMesh()
     {
         if (this->mesh_.getEntity())
-            this->getNode()->detachObject(this->mesh_.getEntity());
+            this->detachOgreObject(this->mesh_.getEntity());
 
         this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
 
         if (this->mesh_.getEntity())
         {
-            this->getNode()->attachObject(this->mesh_.getEntity());
+            this->attachOgreObject(this->mesh_.getEntity());
             this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
             this->mesh_.setVisible(this->isVisible());
         }

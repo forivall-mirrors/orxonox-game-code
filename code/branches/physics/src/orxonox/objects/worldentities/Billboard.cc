@@ -49,7 +49,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (this->isInitialized() && this->billboard_.getBillboardSet())
-                this->getNode()->detachObject(this->billboard_.getName());
+                this->detachOgreObject(this->billboard_.getName());
         }
     }
 
@@ -74,7 +74,7 @@ namespace orxonox
             if (this->getScene() && this->getScene()->getSceneManager())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
-                this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }
@@ -89,7 +89,7 @@ namespace orxonox
             if (this->getScene() && this->getScene()->getSceneManager())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
-                this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }
