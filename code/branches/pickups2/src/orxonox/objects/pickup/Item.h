@@ -3,6 +3,7 @@
 
 #include "core/BaseObject.h"
 #include "OrxonoxPrereqs.h"
+#include "ShipEquipment.h"
 
 namespace orxonox
 {
@@ -17,7 +18,7 @@ namespace orxonox
 	virtual bool pickedUp(Pawn* player) { return true; }
 	virtual bool dropped(Pawn* player) { return true; } //erst bei festen Items
 	bool remove(Pawn* player);
-	void addTo(Pawn* player);
+	bool addTo(Pawn* player);
 
 	inline void setPlayerBaseClass(Identifier* identifier)
 		{ this->playerBaseClass_ = identifier; }

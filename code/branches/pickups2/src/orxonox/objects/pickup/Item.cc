@@ -1,6 +1,7 @@
 /* has to be added to player
    multimap<std::string, Item*> Equipment;*/
 
+
 #include "Item.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -26,16 +27,17 @@ Item::~Item()
         XMLPortParam(Item, "playerclass", setPlayerBaseClassName, getPlayerBaseClassName, xmlelement, mode);
     }
 
-void Item::addTo (Pawn* player)
+bool Item::addTo (Pawn* player)
 {
-	if(checkSlot(player)==true)
+	/*if(checkSlot(player)==true)
 	player->pickUp.Equipment.insert ( std::pair<std::string, Item*>(this->getName(),this) );
 	else
-	COUT(3) << "swap?" << std::endl;
+	COUT(3) << "swap?" << std::endl;*/
+	return player->getPickUp().insert(this);
 }
 bool Item::remove(Pawn* player)
 {
- 	if(player->pickUp.Equipment.find(this->getName())!= player->pickUp.Equipment.end())
+ 	/*if(player->pickUp.Equipment.find(this->getName())!= player->pickUp.Equipment.end())
  	{
  	std::multimap<std::string,Item*>::iterator it;
  	it=player->pickUp.Equipment.find(this->getName());
@@ -43,17 +45,19 @@ bool Item::remove(Pawn* player)
   	return true;
   	}
   	else
-  	return false;
+  	return false;*/
+  	return player->getPickUp().erase(this);
 }
 bool Item::checkSlot(Pawn* player)
 {
-	std::multimap<std::string,Item*>::iterator it;
+	/*std::multimap<std::string,Item*>::iterator it;
 	for ( it=player->pickUp.Equipment.begin() ; it != player->pickUp.Equipment.end(); it++ )
 	{
 	if((*it).second->playerBaseClass_==this->playerBaseClass_)
 	return false;
 	}
-	return true;
+	return true;*/
+	return player->getPickUp().checkSlot(this);
 }
 void Item::setPlayerBaseClassName(const std::string& name)
 {
