@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LinearEntity : public MovableEntity, public network::ClientConnectionListener
+    class _OrxonoxExport LinearEntity : public MovableEntity, public network::ClientConnectionListener, public Tickable
     {
         public:
             LinearEntity(BaseObject* creator);
@@ -47,28 +47,7 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
-            using WorldEntity::setPosition;
-            using WorldEntity::translate;
-            using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
-
-            void setPosition(const Vector3& position);
-            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void setOrientation(const Quaternion& orientation);
-            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-
-            inline void setVelocity(const Vector3& velocity)
-                { this->velocity_ = velocity; }
+            inline void setVelocity(const Vector3& velocity);
             inline void setVelocity(float x, float y, float z)
                 { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
             inline const Vector3& getVelocity() const
@@ -109,6 +88,11 @@ namespace orxonox
 
             void overwritePosition();
             void overwriteOrientation();
+
+            void positionChanged();
+            void orientationChanged();
+            inline void internalSetVelocity(const Vector3& velocity)
+                { this->velocity_ = velocity; }
 
             Vector3 velocity_;
             Vector3 acceleration_;

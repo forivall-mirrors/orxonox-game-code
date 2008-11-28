@@ -28,6 +28,8 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "StaticEntity.h"
+
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -55,5 +57,27 @@ namespace orxonox
         REGISTERDATA(this->getOrientation().x, network::direction::toclient);
         REGISTERDATA(this->getOrientation().y, network::direction::toclient);
         REGISTERDATA(this->getOrientation().z, network::direction::toclient);
+    }
+
+    void StaticEntity::setCollisionType(CollisionType type)
+    {
+        if (!this->physicalBody_)
+            return;
+        if (type != Static)
+            ThrowException(Argument, "Cannot tell a StaticEntity to be kinematic or dynamic");
+
+        this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
+    }
+
+    void StaticEntity::setWorldTransform(const btTransform& worldTrans)
+    {
+        OrxAssert(false, "Setting world transform of a StaticEntity, which is static!");
+        //COUT(0) << "Setting world transform of a StaticEntity, which is static!" << std::endl;
+    }
+
+    void StaticEntity::getWorldTransform(btTransform& worldTrans) const
+    {
+        worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
+        worldTrans.setRotation(btQuaternion(node_->getOrientation().w, node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z));
     }
 }

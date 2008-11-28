@@ -31,13 +31,17 @@
 
 #include <cassert>
 #include <OgreSceneManager.h>
+
 #include "BulletCollision/CollisionShapes/btSphereShape.h"
 
+#include "util/Exception.h"
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Convert.h"
 
 #include "objects/Scene.h"
+
+#include "StaticEntity.h"
 
 namespace orxonox
 {
@@ -64,7 +68,6 @@ namespace orxonox
         this->node_->setOrientation(Quaternion::IDENTITY);
 
         // Default behaviour does not include physics
-        this->bAddedToPhysicalWorld_ = false;
         this->physicalBody_ = 0;
 
         this->registerVariables();
@@ -81,7 +84,7 @@ namespace orxonox
             // Physics is not guaranteed, so check first
             if (this->physicalBody_)
             {
-                if (this->bAddedToPhysicalWorld_)
+                if (this->physicalBody_->isInWorld())
                     this->getScene()->getPhysicalWorld()->removeRigidBody(this->physicalBody_);
                 if (this->physicalBody_->getCollisionShape())
                     delete this->physicalBody_->getCollisionShape();
@@ -103,7 +106,13 @@ namespace orxonox
         XMLPortParamLoadOnly(WorldEntity, "roll", roll_xmlport, xmlelement, mode);
         XMLPortParamTemplate(WorldEntity, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
         XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
-        XMLPortParam(WorldEntity, "collisionRadius", setcollisionRadius, getcollisionRadius, xmlelement, mode);
+
+        XMLPortParam(WorldEntity, "collisionRadius", setCollisionRadius, getCollisionRadius, xmlelement, mode);
+        XMLPortParam(WorldEntity, "collisionType", setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
+        XMLPortParam(WorldEntity, "mass", setMass, getMass, xmlelement, mode);
+
+        if (this->physicalBody_)
+            this->getScene()->getPhysicalWorld()->addRigidBody(this->physicalBody_);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
     }
@@ -144,26 +153,29 @@ namespace orxonox
         object->parentID_ = this->getObjectID();
 
         // Do the physical connection if required
-        this->attachPhysicalObject(object);
+        //this->attachPhysicalObject(object);
     }
 
-    void WorldEntitiy::attachPhysicalObject(WorldEntity* object){
-    //function attachhysicalObject
-        StaticEntity* staticObject = dynamic_cast<WorldEntity*>(object);
-        if (staticObject != 0 && hasPhysics()){
-           btCompountShape* compoundShape = dynamic_cast<btCompoundShape*>(physicalBody_->getCollisionShape());
-           if(compoundShape == 0){
-                //NEW
-                btCompoundShape* newShape = new btCompoundShape();
-                newShape->addChildShape(this->physcialBody_->getCollisionShape());
-                newShape->addChildShape(staticObject->getCollisionShape());
-                this->physicalBody_->setCollisionShape();
-           }
-           else{
-               compoundShape -> addChildShape(staticObject->getCollisionShape());
-           }
-        }
-    }
+    //void WorldEntity::attachPhysicalObject(WorldEntity* object)
+    //{
+    //    StaticEntity* staticObject = dynamic_cast<StaticEntity*>(object);
+    //    if (staticObject != 0 && this->hasPhysics())
+    //    {
+    //       btCompoundShape* compoundShape = dynamic_cast<btCompoundShape*>(this->physicalBody_->getCollisionShape());
+    //       if (compoundShape == 0)
+    //       {
+    //            // create a compound shape and add both
+    //            compoundShape = new btCompoundShape();
+    //            compoundShape->addChildShape(this->physicalBody_->getCollisionShape());
+    //            compoundShape->addChildShape(staticObject->getCollisionShape());
+    //            this->physicalBody_->setCollisionShape();
+    //       }
+    //       else
+    //       {
+    //           compoundShape -> addChildShape(staticObject->getCollisionShape());
+    //       }
+    //    }
+    //}
 
     void WorldEntity::detach(WorldEntity* object)
     {
@@ -192,16 +204,91 @@ namespace orxonox
         // Note: The motion state will be configured in a derived class.
         btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, 0, btVector3(0,0,0));
         this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
-        this->getScene()->getPhysicalWorld()->addRigidBody(this->physicalBody_);
-        this->bAddedToPhysicalWorld_ = true;
     }
 
-    void WorldEntity::setcollisionRadius(float radius)
+    float WorldEntity::getMass()
+    {
+        if (!this->physicalBody_)
+            return 0.0f;
+
+        return 1.0f/this->physicalBody_->getInvMass();
+    }
+
+    void WorldEntity::setMass(float mass)
+    {
+        if (!this->physicalBody_)
+            this->createPhysicalBody();
+
+        this->physicalBody_->setMassProps(mass, btVector3(0,0,0));
+    }
+
+    void WorldEntity::setCollisionType(WorldEntity::CollisionType type)
+    {
+        if (!this->physicalBody_)
+            this->createPhysicalBody();
+
+        switch (type)
+        {
+        case Dynamic:
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT));
+            break;
+        case Kinematic:
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);
+            break;
+        case Static:
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
+            break;
+        }
+    }
+
+    WorldEntity::CollisionType WorldEntity::getCollisionType()
+    {
+        if (!this->physicalBody_)
+            ThrowException(Argument, "Cannot retrieve collision type of a non physical object.");
+
+        int flags = this->physicalBody_->getCollisionFlags();
+        if (flags & btCollisionObject::CF_STATIC_OBJECT)
+            return Static;
+        else if (flags & btCollisionObject::CF_KINEMATIC_OBJECT)
+            return Kinematic;
+        else
+            return Dynamic;
+    }
+
+    void WorldEntity::setCollisionTypeStr(const std::string& type)
+    {
+        std::string lower = getLowercase(type);
+        if (lower == "dynamic")
+            setCollisionType(Dynamic);
+        else if (lower == "static")
+            setCollisionType(Static);
+        else if (lower == "kinematic")
+            setCollisionType(Kinematic);
+        else
+            ThrowException(Argument, std::string("Trying to set an unknown collision type: '") + type + "'.");
+    }
+
+    std::string WorldEntity::getCollisionTypeStr()
+    {
+        switch (this->getCollisionType())
+        {
+        case Dynamic:
+            return "dynamic";
+        case Kinematic:
+            return "kinematic";
+        case Static:
+            return "static";
+        default:
+            ThrowException(Argument, "Encountered unknown collision Type.");
+        }
+    }
+
+    void WorldEntity::setCollisionRadius(float radius)
     {
         if (!this->physicalBody_)
             createPhysicalBody();
 
-        // destroy old onw first
+        // destroy old one first
         btCollisionShape* oldShape = this->physicalBody_->getCollisionShape();
         if (oldShape)
             delete oldShape;
@@ -209,7 +296,7 @@ namespace orxonox
         this->physicalBody_->setCollisionShape(new btSphereShape(btScalar(radius)));
     }
 
-    float WorldEntity::getcollisionRadius()
+    float WorldEntity::getCollisionRadius()
     {
         if (this->physicalBody_)
         {

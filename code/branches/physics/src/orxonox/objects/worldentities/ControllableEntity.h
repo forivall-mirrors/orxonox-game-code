@@ -78,19 +78,9 @@ namespace orxonox
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
 
-            void setPosition();
-            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void setOrientation(const Quaternion& orientation);
-            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-
             void setVelocity(const Vector3& velocity);
             inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
+                { setVelocity(Vector3(x,y,z)); }
 
             inline void setAcceleration(const Vector3& acceleration)
                 { this->acceleration_ = acceleration; }
@@ -135,6 +125,12 @@ namespace orxonox
             void processClientPosition();
             void processClientVelocity();
             void processClientOrientation();
+
+            inline void internalSetVelocity(const Vector3& velocity)
+                { this->velocity_ = velocity; }
+            void positionChanged();
+            void orientationChanged();
+            void velocityChanged();
 
             void networkcallback_changedplayerID();
 

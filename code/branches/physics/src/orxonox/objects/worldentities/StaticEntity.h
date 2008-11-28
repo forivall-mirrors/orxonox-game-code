@@ -70,6 +70,14 @@ namespace orxonox
                 { this->node_->lookAt(target, relativeTo, localDirectionVector); }
             inline void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->node_->setDirection(direction, relativeTo, localDirectionVector); }
+
+        private:
+
+            void setCollisionType(CollisionType type);
+
+            // Bullet btMotionState related
+            void setWorldTransform(const btTransform& worldTrans);
+            void getWorldTransform(btTransform& worldTrans) const;
     };
 }
 

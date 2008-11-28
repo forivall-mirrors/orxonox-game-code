@@ -34,12 +34,13 @@
 #include "network/Synchronisable.h"
 #include "core/BaseObject.h"
 #include "util/Math.h"
+#include "objects/Tickable.h"
 
-#include "ogrebullet/Dynamics/OgreBulletDynamics.h"
+#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Scene : public BaseObject, public network::Synchronisable
+    class _OrxonoxExport Scene : public BaseObject, public network::Synchronisable, public Tickable
     {
         public:
             Scene(BaseObject* creator);
@@ -54,7 +55,7 @@ namespace orxonox
                 { return this->rootSceneNode_; }
 
             inline btDiscreteDynamicsWorld* getPhysicalWorld() const
-                { return this->dynamicsWorld_; }
+                { return this->physicalWorld_; }
 
             void setSkybox(const std::string& skybox);
             inline const std::string& getSkybox() const
@@ -68,6 +69,17 @@ namespace orxonox
             inline bool getShadow() const
                 { return this->bShadows_; }
 
+            inline const Vector3& getWorldAabbMax()
+            {
+                this->physicalWorld_->getBroadphase();
+            }
+
+            inline bool hasPhysics()
+                { return this->physicalWorld_ != 0; }
+            void setPhysicalWorld(bool wantsPhysics, const Vector3& worldAabbMin, const Vector3& worldAabbMax);
+
+            void tick(float dt);
+
         private:
             void addObject(BaseObject* object);
             BaseObject* getObject(unsigned int index) const;
@@ -80,11 +92,7 @@ namespace orxonox
             Ogre::SceneManager*    sceneManager_;
             Ogre::SceneNode*       rootSceneNode_;
 
-	    btDiscreteDynamicsWorld* dynamicsWorld_;
-	    btSequentialImpulseConstraintSolver* solver_;
-	    btDefaultCollisionConfiguration* collisionConfiguration_;
-	    btCollisionDispatcher* dispatcher_; 
-	    // Point auf Bullet btDynamics world && solver
+            btDiscreteDynamicsWorld* physicalWorld_;
 
             std::string            skybox_;
             ColourValue            ambientLight_;

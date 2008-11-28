@@ -38,6 +38,10 @@
 #include "core/Core.h"
 #include "core/XMLPort.h"
 
+#include "BulletCollision/BroadphaseCollision/btAxisSweep3.h"
+#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
+
 namespace orxonox
 {
     CreateFactory(Scene);
@@ -69,27 +73,8 @@ namespace orxonox
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }
 
-        /////////////
-        // Physics //
-        /////////////
-
-        // create bullet world; bullet solver etc.
-
-        // int maxProxies = 1024;
-
-        btVector3 worldAabbMin(-10000,-10000,-10000);
-        btVector3 worldAabbMax(10000,10000,10000);
-        bt32BitAxisSweep3* broadphase = new bt32BitAxisSweep3(worldAabbMin,worldAabbMax);
-
-        this -> collisionConfiguration_ = new btDefaultCollisionConfiguration();
-        this -> dispatcher_ = new btCollisionDispatcher(collisionConfiguration_);
-
-        this -> solver_ = new btSequentialImpulseConstraintSolver;
-
-        this -> dynamicsWorld_ =  new btDiscreteDynamicsWorld(dispatcher_,broadphase,solver_,collisionConfiguration_);
-
-        dynamicsWorld_->setGravity(btVector3(0,-10,0));
-
+        // No physics for default
+        this->physicalWorld_ = 0;
 
         // test test test
         if (Core::showsGraphics() && this->sceneManager_)
@@ -129,6 +114,13 @@ namespace orxonox
         XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
         XMLPortParam(Scene, "shadow", setShadow, getShadow, xmlelement, mode).defaultValues(true);
 
+        const int defaultMaxWorldSize = 100000;
+        Vector3 worldAabbMin(-defaultMaxWorldSize, -defaultMaxWorldSize, -defaultMaxWorldSize);
+        Vector3 worldAabbMax( defaultMaxWorldSize,  defaultMaxWorldSize,  defaultMaxWorldSize);
+        XMLPortParamVariable(Scene, "negativeWorldRange", worldAabbMin, xmlelement, mode);
+        XMLPortParamVariable(Scene, "positiveWorldRange", worldAabbMax, xmlelement, mode);
+        XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValue(0, true).defaultValue(1, worldAabbMin).defaultValue(2, worldAabbMax);
+
         XMLPortObjectExtended(Scene, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
     }
 
@@ -136,6 +128,36 @@ namespace orxonox
     {
         REGISTERSTRING(this->skybox_,     network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
         REGISTERDATA(this->ambientLight_, network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+    }
+
+    void Scene::setPhysicalWorld(bool wantPhysics, const Vector3& worldAabbMin, const Vector3& worldAabbMax)
+    {
+        if (wantPhysics && !hasPhysics())
+        {
+            btVector3 worldAabbMin(worldAabbMin.x, worldAabbMin.y, worldAabbMin.z);
+            btVector3 worldAabbMax(worldAabbMax.x, worldAabbMax.y, worldAabbMax.z);
+
+            btDefaultCollisionConfiguration*     collisionConfig = new btDefaultCollisionConfiguration();
+            btCollisionDispatcher*               dispatcher      = new btCollisionDispatcher(collisionConfig);
+            bt32BitAxisSweep3*                   broadphase      = new bt32BitAxisSweep3(worldAabbMin,worldAabbMax);
+            btSequentialImpulseConstraintSolver* solver          = new btSequentialImpulseConstraintSolver;
+
+            this->physicalWorld_ =  new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
+
+            // test test test
+            this->physicalWorld_->setGravity(btVector3(0,0,0));
+            // test test test
+        }
+        else
+        {
+            // TODO: Destroy Bullet physics
+        }
+    }
+
+    void Scene::tick(float dt)
+    {
+        if (physicalWorld_)
+            physicalWorld_->stepSimulation(dt,10);
     }
 
     void Scene::setSkybox(const std::string& skybox)

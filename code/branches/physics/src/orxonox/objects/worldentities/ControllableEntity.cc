@@ -228,8 +228,11 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->isActive())
         {
-            this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
+            if (!this->isDynamic())
+            {
+                this->velocity_ += (dt * this->acceleration_);
+                this->node_->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
+            }
 
             if (Core::isMaster())
             {
@@ -324,153 +327,59 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
     }
 
-
-    // virtual void PositionChanged() { }
-    void ControllableEntity::positionChanged(const Vector3& position)
+    void ControllableEntity::positionChanged()
     {
         if (Core::isMaster())
         {
-            this->server_position_ = this->getPosition();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->client_position_ = position;
-        }
-    }
-
-    void ControllableEntity::setVelocity(const Vector3& velocity)
-    {
-        if (Core::isMaster())
-        {
-            this->velocity_ = velocity;
-            this->server_velocity_ = velocity;
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->velocity_ = velocity;
-            this->client_velocity_ = velocity;
-        }
-    }
-    // virtual void translateChanged() { }
-    void ControllableEntity::translateChanged(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->translate(distance, relativeTo);
             this->server_position_ = this->node_->getPosition();
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->node_->translate(distance, relativeTo);
             this->client_position_ = this->node_->getPosition();
         }
     }
-    // virtual void orientationChanged() { }
-    void ControllableEntity::orientationChanged(const Quaternion& orientation)
+
+    void ControllableEntity::orientationChanged()
     {
         if (Core::isMaster())
         {
-            this->node_->setOrientation(orientation);
-            this->server_orientation_ = orientation;
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->setOrientation(orientation);
-            this->client_orientation_ = orientation;
-        }
-    }
-    // virtual void rotateChanged() { }
-    void ControllableEntity::rotateChanged(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->rotate(rotation, relativeTo);
             this->server_orientation_ = this->node_->getOrientation();
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->node_->rotate(rotation, relativeTo);
             this->client_orientation_ = this->node_->getOrientation();
         }
     }
-    // virtual void yawChanged() { }
-    void ControllableEntity::yawChanged(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+
+    void ControllableEntity::velocityChanged()
     {
         if (Core::isMaster())
         {
-            this->node_->yaw(angle, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
+            this->server_velocity_ = this->velocity_;
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->node_->yaw(angle, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
+            this->client_velocity_ = this->velocity_;
         }
     }
-    // virtual void pitchChanged() { }
-    void ControllableEntity::pitchChanged(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+
+    void ControllableEntity::setVelocity(const Vector3& velocity)
     {
-        if (Core::isMaster())
+        if (this->bControlled_ || Core::isMaster())
         {
-            this->node_->pitch(angle, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->pitch(angle, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
-        }
-    }
-    // virtual void rollChanged() { }
-    void ControllableEntity::rollChanged(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->roll(angle, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->roll(angle, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
-        }
-    }
-    //virtual void lookAtChanged() { }
-    void ControllableEntity::lookAtChanged(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->lookAt(target, relativeTo, localDirectionVector);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->lookAt(target, relativeTo, localDirectionVector);
-            this->client_orientation_ = this->node_->getOrientation();
-        }
-    }
-    // virtual void directionChanged( ) { }
-    void ControllableEntity::directionChanged(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->setDirection(direction, relativeTo, localDirectionVector);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->setDirection(direction, relativeTo, localDirectionVector);
-            this->client_orientation_ = this->node_->getOrientation();
+            if (!this->isDynamic())
+            {
+                // no physics, we do it ourselves
+                internalSetVelocity(velocity);
+            }
+            else
+            {
+                this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+            }
+            velocityChanged();
         }
     }
 }

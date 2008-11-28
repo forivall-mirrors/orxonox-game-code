@@ -68,33 +68,15 @@ namespace orxonox
 
 
         private:
-
-            virtual void rollChanged() { }
-            virtual void positionChanged() { }
-            virtual void translateChanged() { }
-            virtual void orientationChanged() { }
-            virtual void rotateChanged() { }
-            virtual void yawChanged() { }
-            virtual void pitchChanged() { }
-            virtual void lookAtChanged() { }
-            virtual void directionChanged( ) { }
-
             //void attachPhysicalObject(WorldEntity* object);
 
-            //// Bullet btMotionState related
-            //void setWorldTransform(const btTransform& worldTrans)
-            //{
-            //    this->node_->setPosition(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z());
-            //    this->node_->setOrientation(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z());
-            //    //this->velocity_.x = this->physicalBody_->
-            //}
+            virtual void internalSetVelocity(const Vector3& velocity) { }
+            virtual void positionChanged() { }
+            virtual void orientationChanged() { }
 
-            //// Bullet btMotionState related
-            //void getWorldTransform(btTransform& worldTrans) const
-            //{
-            //    worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
-            //    worldTrans.setRotation(btQuaternion(node_->getOrientation().w, node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z));
-            //}
+            // Bullet btMotionState related
+            void setWorldTransform(const btTransform& worldTrans);
+            void getWorldTransform(btTransform& worldTrans) const;
     };
 }
 

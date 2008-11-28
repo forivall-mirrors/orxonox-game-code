@@ -29,10 +29,11 @@
 #include "OrxonoxStableHeaders.h"
 #include "SpaceShip.h"
 
+#include "util/Math.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Math.h"
 
 namespace orxonox
 {
@@ -58,6 +59,10 @@ namespace orxonox
         this->bInvertYAxis_ = false;
 
         this->setDestroyWhenPlayerLeft(true);
+
+        // create a phyisical body
+        OrxAssert(this->physicalBody_ == 0, " Check why there is already a physical body in the space ship.");
+        this->createPhysicalBody();
 
         this->setConfigValues();
         this->registerVariables();
@@ -164,17 +169,21 @@ namespace orxonox
 
     void SpaceShip::moveFrontBack(const Vector2& value)
     {
-        this->acceleration_.z = -this->translationAcceleration_ * value.x;
+        assert(this->physicalBody_);
+        this->physicalBody_->applyCentralForce(btVector3(0.0f, 0.0f, -1.0f/this->physicalBody_->getInvMass() * value.x));
+//        this->acceleration_.z = -this->translationAcceleration_ * value.x;
     }
 
     void SpaceShip::moveRightLeft(const Vector2& value)
     {
-        this->acceleration_.x = this->translationAcceleration_ * value.x;
+        this->physicalBody_->applyCentralForce(btVector3(1.0f/this->physicalBody_->getInvMass() * value.x, 0.0f, 0.0f));
+//        this->acceleration_.x = this->translationAcceleration_ * value.x;
     }
 
     void SpaceShip::moveUpDown(const Vector2& value)
     {
-        this->acceleration_.y = this->translationAcceleration_ * value.x;
+        this->physicalBody_->applyCentralForce(btVector3(0.0f, 1.0f/this->physicalBody_->getInvMass() * value.x, 0.0f));
+//        this->acceleration_.y = this->translationAcceleration_ * value.x;
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)

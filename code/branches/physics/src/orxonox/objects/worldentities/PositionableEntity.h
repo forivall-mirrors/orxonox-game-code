@@ -42,35 +42,6 @@ namespace orxonox
 
             void registerVariables();
 
-            using WorldEntity::setPosition;
-            using WorldEntity::translate;
-            using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
-
-            inline void setPosition(const Vector3& position)
-                { this->node_->setPosition(position); }
-            inline void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->translate(distance, relativeTo); }
-            inline void setOrientation(const Quaternion& orientation)
-                { this->node_->setOrientation(orientation); }
-            inline void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->rotate(rotation, relativeTo); }
-            inline void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->yaw(angle, relativeTo); }
-            inline void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->pitch(angle, relativeTo); }
-            inline void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->roll(angle, relativeTo); }
-            inline void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
-                { this->node_->lookAt(target, relativeTo, localDirectionVector); }
-            inline void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
-                { this->node_->setDirection(direction, relativeTo, localDirectionVector); }
-
         private:
             //void attachPhysicalObject(WorldEntity* object);
     };

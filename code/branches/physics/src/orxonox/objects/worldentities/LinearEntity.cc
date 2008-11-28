@@ -73,11 +73,15 @@ namespace orxonox
     {
         if (this->isActive())
         {
-            this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_);
+            if (!this->isDynamic())
+            {
+                // we have to do 'physics' ourselves.
+                this->velocity_ += (dt * this->acceleration_);
+                this->node_->translate(dt * this->velocity_);
 
-            this->rotationRate_ += (dt * this->momentum_);
-            this->node_->rotate(this->rotationAxis_, this->rotationRate_  * dt);
+                this->rotationRate_ += (dt * this->momentum_);
+                this->node_->rotate(this->rotationAxis_, this->rotationRate_  * dt);
+            }
         }
     }
 
@@ -122,57 +126,26 @@ namespace orxonox
         this->overwrite_orientation_ = this->getOrientation();
     }
 
-    void LinearEntity::setPosition(const Vector3& position)
+    void LinearEntity::positionChanged()
     {
-        this->node_->setPosition(position);
-        this->overwrite_position_ = this->node_->getPosition();
+        this->overwrite_position_  = this->node_->getPosition();
     }
 
-    void LinearEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
+    void LinearEntity::orientationChanged()
     {
-        this->node_->translate(distance, relativeTo);
-        this->overwrite_position_ = this->node_->getPosition();
+        this->overwrite_orientation_  = this->node_->getOrientation();
     }
 
-    void LinearEntity::setOrientation(const Quaternion& orientation)
+    void LinearEntity::setVelocity(const Vector3& velocity)
     {
-        this->node_->setOrientation(orientation);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void LinearEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->rotate(rotation, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void LinearEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->yaw(angle, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void LinearEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->pitch(angle, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void LinearEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        this->node_->roll(angle, relativeTo);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void LinearEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        this->node_->lookAt(target, relativeTo, localDirectionVector);
-        this->overwrite_orientation_ = this->node_->getOrientation();
-    }
-
-    void LinearEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        this->node_->setDirection(direction, relativeTo, localDirectionVector);
-        this->overwrite_orientation_ = this->node_->getOrientation();
+        if (!this->isDynamic())
+        {
+            // no physics, we do it ourselves
+            internalSetVelocity(velocity);
+        }
+        else
+        {
+            this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+        }
     }
 }
