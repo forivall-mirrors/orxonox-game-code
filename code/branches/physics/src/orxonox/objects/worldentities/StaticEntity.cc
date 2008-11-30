@@ -59,7 +59,7 @@ namespace orxonox
         REGISTERDATA(this->getOrientation().z, network::direction::toclient);
     }
 
-    bool StaticEntity::isCollisionTypeLegal(WorldEntity::CollisionType type)
+    bool StaticEntity::isCollisionTypeLegal(WorldEntity::CollisionType type) const
     {
         if (type == WorldEntity::Static)
         {
@@ -72,7 +72,7 @@ namespace orxonox
 
     void StaticEntity::setWorldTransform(const btTransform& worldTrans)
     {
-        OrxAssert(false, "Setting world transform of a StaticEntity, which is static!");
+        OrxAssert(false, "Setting world transform of a StaticEntity, which is CF_STATIC!");
         //COUT(0) << "Setting world transform of a StaticEntity, which is static!" << std::endl;
     }
 

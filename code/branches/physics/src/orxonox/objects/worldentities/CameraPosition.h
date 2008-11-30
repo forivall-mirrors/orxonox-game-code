@@ -31,11 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/worldentities/PositionableEntity.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraPosition : public PositionableEntity
+    class _OrxonoxExport CameraPosition : public StaticEntity
     {
         public:
             CameraPosition(BaseObject* creator);

@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(Model);
 
-    Model::Model(BaseObject* creator) : PositionableEntity(creator)
+    Model::Model(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Model);
 

@@ -78,10 +78,6 @@ namespace orxonox
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
 
-            void setVelocity(const Vector3& velocity);
-            inline void setVelocity(float x, float y, float z)
-                { setVelocity(Vector3(x,y,z)); }
-
             inline void setAcceleration(const Vector3& acceleration)
                 { this->acceleration_ = acceleration; }
             inline void setAcceleration(float x, float y, float z)
@@ -126,8 +122,6 @@ namespace orxonox
             void processClientVelocity();
             void processClientOrientation();
 
-            inline void internalSetVelocity(const Vector3& velocity)
-                { this->velocity_ = velocity; }
             void positionChanged();
             void orientationChanged();
             void velocityChanged();
@@ -136,8 +130,6 @@ namespace orxonox
 
             unsigned int server_overwrite_;
             unsigned int client_overwrite_;
-
-            Vector3 velocity_;
 
             bool bControlled_;
             Vector3 server_position_;

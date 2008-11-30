@@ -30,7 +30,7 @@
 #define _Light_H__
 
 #include "OrxonoxPrereqs.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 
 #include <string>
 #include <OgreLight.h>
@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Light : public PositionableEntity
+    class _OrxonoxExport Light : public StaticEntity
     {
         public:
             Light(BaseObject* creator);

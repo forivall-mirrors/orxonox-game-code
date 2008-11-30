@@ -191,12 +191,15 @@ namespace orxonox
         return 0;
     }
 
-    float WorldEntity::getMass()
+    float WorldEntity::getMass() const
     {
         if (!checkPhysics())
             return 0.0f;
 
-        return 1.0f/this->physicalBody_->getInvMass();
+        if (this->physicalBody_->getInvMass() == 0.0f)
+            return 0.0f;
+        else
+            return 1.0f/this->physicalBody_->getInvMass();
     }
 
     void WorldEntity::setMass(float mass)
@@ -220,13 +223,18 @@ namespace orxonox
         // Check first whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
         {
+            // First, check whether our SceneNode is relative to the root space of the scene.
+            // TODO: Static and Kinematic objects don't always have to obey this rule.
+            if (this->node_->getParent() != this->getScene()->getRootSceneNode())
+                ThrowException(PhysicsViolation, "Cannot make WorldEntity physical that is not in the root space of the Scene.");
+
             // Create new rigid body
             btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, 0, btVector3(0,0,0));
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
             this->physicalBody_->setUserPointer(this);
 
             // Adjust parameters according to the node
-            btTransform nodeTransform;
+            //btTransform nodeTransform;
             //this->
         }
         else if (type == None && this->collisionType_ != None)
@@ -302,7 +310,7 @@ namespace orxonox
         this->setCollisionType(type);
     }
 
-    std::string WorldEntity::getCollisionTypeStr()
+    std::string WorldEntity::getCollisionTypeStr() const
     {
         switch (this->getCollisionType())
         {
@@ -333,7 +341,7 @@ namespace orxonox
         this->physicalBody_->setCollisionShape(new btSphereShape(btScalar(radius)));
     }
 
-    float WorldEntity::getCollisionRadius()
+    float WorldEntity::getCollisionRadius() const
     {
         if (checkPhysics())
         {
@@ -344,7 +352,7 @@ namespace orxonox
         return 0.0f;
     }
 
-    bool WorldEntity::checkPhysics()
+    bool WorldEntity::checkPhysics() const
     {
         if (!this->physicalBody_)
         {

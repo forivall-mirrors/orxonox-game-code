@@ -304,10 +304,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
 						>
 					</File>
@@ -1209,10 +1205,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleSpawner.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
 						>
 					</File>
 					<File

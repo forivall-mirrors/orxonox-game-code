@@ -73,7 +73,7 @@ namespace orxonox
 
         private:
 
-            bool isCollisionTypeLegal(CollisionType type);
+            bool isCollisionTypeLegal(CollisionType type) const;
 
             // Bullet btMotionState related
             void setWorldTransform(const btTransform& worldTrans);

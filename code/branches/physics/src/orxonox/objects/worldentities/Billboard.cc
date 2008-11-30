@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(Billboard);
 
-    Billboard::Billboard(BaseObject* creator) : PositionableEntity(creator)
+    Billboard::Billboard(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Billboard);
 

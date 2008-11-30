@@ -47,12 +47,6 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
-            inline void setVelocity(const Vector3& velocity);
-            inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
-
             inline void setAcceleration(const Vector3& acceleration)
                 { this->acceleration_ = acceleration; }
             inline void setAcceleration(float x, float y, float z)
@@ -91,10 +85,7 @@ namespace orxonox
 
             void positionChanged();
             void orientationChanged();
-            inline void internalSetVelocity(const Vector3& velocity)
-                { this->velocity_ = velocity; }
 
-            Vector3 velocity_;
             Vector3 acceleration_;
             Vector3 rotationAxis_;
             Degree rotationRate_;

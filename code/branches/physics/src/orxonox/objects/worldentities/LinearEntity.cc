@@ -44,7 +44,6 @@ namespace orxonox
     {
         RegisterObject(LinearEntity);
 
-        this->velocity_ = Vector3::ZERO;
         this->acceleration_ = Vector3::ZERO;
         this->rotationAxis_ = Vector3::ZERO;
         this->rotationRate_ = 0;
@@ -64,7 +63,6 @@ namespace orxonox
     {
         SUPER(LinearEntity, XMLPort, xmlelement, mode);
 
-        XMLPortParamTemplate(LinearEntity, "velocity", setVelocity, getVelocity, xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(LinearEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(LinearEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Degree&);
     }
@@ -128,24 +126,11 @@ namespace orxonox
 
     void LinearEntity::positionChanged()
     {
-        this->overwrite_position_  = this->node_->getPosition();
+        this->overwrite_position_  = this->getPosition();
     }
 
     void LinearEntity::orientationChanged()
     {
-        this->overwrite_orientation_  = this->node_->getOrientation();
-    }
-
-    void LinearEntity::setVelocity(const Vector3& velocity)
-    {
-        if (!this->isDynamic())
-        {
-            // no physics, we do it ourselves
-            internalSetVelocity(velocity);
-        }
-        else
-        {
-            this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
-        }
+        this->overwrite_orientation_  = this->getOrientation();
     }
 }

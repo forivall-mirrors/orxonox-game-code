@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(CameraPosition);
 
-    CameraPosition::CameraPosition(BaseObject* creator) : PositionableEntity(creator)
+    CameraPosition::CameraPosition(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(CameraPosition);
 

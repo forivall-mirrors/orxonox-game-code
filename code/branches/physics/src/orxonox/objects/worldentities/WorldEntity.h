@@ -167,9 +167,10 @@ namespace orxonox
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
 
-            /////////////
-            // Physics //
-            /////////////
+
+        /////////////
+        // Physics //
+        /////////////
 
         public:
             enum CollisionType
@@ -180,30 +181,30 @@ namespace orxonox
                 None
             };
 
-            bool hasPhysics()  { return getCollisionType() != None; }
+            bool hasPhysics() const { return getCollisionType() != None; }
 
-            CollisionType getCollisionType() { return this->collisionType_; }
+            CollisionType getCollisionType() const { return this->collisionType_; }
             void setCollisionType(CollisionType type);
 
             void setCollisionTypeStr(const std::string& type);
-            std::string getCollisionTypeStr();
+            std::string getCollisionTypeStr() const;
 
-            bool isStatic()    { return getCollisionType() == Static   ; }
-            bool isKinematic() { return getCollisionType() == Kinematic; }
-            bool isDynamic()   { return getCollisionType() == Dynamic  ; }
+            bool isStatic()    const { return getCollisionType() == Static   ; }
+            bool isKinematic() const { return getCollisionType() == Kinematic; }
+            bool isDynamic()   const { return getCollisionType() == Dynamic  ; }
 
             void setMass(float mass);
-            float getMass();
+            float getMass() const;
 
             void setCollisionRadius(float radius);
-            float getCollisionRadius();
+            float getCollisionRadius() const;
 
         protected:
             //virtual btCollisionShape* getCollisionShape() = 0;
             //virtual void attachPhysicalObject(WorldEntity* object);
 
-            virtual bool isCollisionTypeLegal(CollisionType type) = 0;
-            bool checkPhysics();
+            virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
+            bool checkPhysics() const;
             void updateCollisionType();
 
             btRigidBody*  physicalBody_;

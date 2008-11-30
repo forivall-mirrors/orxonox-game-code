@@ -56,7 +56,6 @@ namespace orxonox
         this->camera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
 
-        this->velocity_ = Vector3::ZERO;
         this->acceleration_ = Vector3::ZERO;
 
         this->server_position_ = Vector3::ZERO;
@@ -331,12 +330,12 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (Core::isMaster())
         {
-            this->server_position_ = this->node_->getPosition();
+            this->server_position_ = this->getPosition();
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->client_position_ = this->node_->getPosition();
+            this->client_position_ = this->getPosition();
         }
     }
 
@@ -344,12 +343,12 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (Core::isMaster())
         {
-            this->server_orientation_ = this->node_->getOrientation();
+            this->server_orientation_ = this->getOrientation();
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->client_orientation_ = this->node_->getOrientation();
+            this->client_orientation_ = this->getOrientation();
         }
     }
 
@@ -357,29 +356,12 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (Core::isMaster())
         {
-            this->server_velocity_ = this->velocity_;
+            this->server_velocity_ = this->getVelocity();
             ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
-            this->client_velocity_ = this->velocity_;
-        }
-    }
-
-    void ControllableEntity::setVelocity(const Vector3& velocity)
-    {
-        if (this->bControlled_ || Core::isMaster())
-        {
-            if (!this->isDynamic())
-            {
-                // no physics, we do it ourselves
-                internalSetVelocity(velocity);
-            }
-            else
-            {
-                this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
-            }
-            velocityChanged();
+            this->client_velocity_ = this->getVelocity();
         }
     }
 }

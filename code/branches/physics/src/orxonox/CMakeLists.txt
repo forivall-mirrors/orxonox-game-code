@@ -57,7 +57,6 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/WorldEntity.cc
   objects/worldentities/StaticEntity.cc
   objects/worldentities/MovableEntity.cc
-  objects/worldentities/PositionableEntity.cc
   objects/worldentities/LinearEntity.cc
   objects/worldentities/ControllableEntity.cc
   objects/worldentities/Model.cc

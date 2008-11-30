@@ -44,7 +44,7 @@ namespace orxonox
 {
     CreateFactory(ParticleEmitter);
 
-    ParticleEmitter::ParticleEmitter(BaseObject* creator) : PositionableEntity(creator)
+    ParticleEmitter::ParticleEmitter(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(ParticleEmitter);
 

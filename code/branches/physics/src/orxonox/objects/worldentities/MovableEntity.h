@@ -66,14 +66,23 @@ namespace orxonox
             void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
             void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
 
+            void setVelocity(const Vector3& velocity);
+            inline void setVelocity(float x, float y, float z)
+                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
+            inline const Vector3& getVelocity() const
+                { return this->velocity_; }
+
+        protected:
+            Vector3 velocity_;
 
         private:
             //void attachPhysicalObject(WorldEntity* object);
 
-            virtual void internalSetVelocity(const Vector3& velocity) { }
             virtual void positionChanged() { }
             virtual void orientationChanged() { }
-            virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type);
+            virtual void velocityChanged() { }
+
+            virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
 
             // Bullet btMotionState related
             void setWorldTransform(const btTransform& worldTrans);
