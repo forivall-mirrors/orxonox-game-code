@@ -195,15 +195,15 @@
     @param loadfunction The function to get all added objects from the class
     @param xmlelement The XMLElement (recieved through the XMLPort function)
     @param mode The mode (load/save) (received through the XMLPort function)
-    @param bApplyLoaderMask If this is true, an added sub-object only gets loaded if it's class is included in the Loaders ClassTreeMask (this is usually false)
-    @param bLoadBefore If this is true, the sub-cobject gets loaded (through XMLPort) BEFORE it gets added to the main class (this is usually true)
+    @param bApplyLoaderMask If this is true, an added sub-object gets loaded only if it's class is included in the Loaders ClassTreeMask (this is usually false)
+    @param bLoadBefore If this is true, the sub-object gets loaded (through XMLPort) BEFORE it gets added to the main class (this is usually true)
 
     bApplyLoaderMask is usually false for the following reason:
     If the loaders mask says, for example, "load only SpaceShips" and you added weapons to the
     SpaceShips, then the Weapons will still be loaded (which is most probably what you want).
     Of course, if there are "standalone" weapons in the level, they wont be loaded.
 
-    If bLoadBefore, an added object already has all attributes set (like it's name). This is most
+    If bLoadBefore is true, an added object already has all attributes set (like it's name). This is most
     likely the best option, so this is usually true.
 
     @note
@@ -242,7 +242,7 @@
 
     Note that "weapons" is the subsection. This allows you to add more types of sub-objects. In our example,
     you could add pilots, blinking lights or other stuff. If you don't want a subsection, just use "" (an
-    empty string). The you can add sub-objects directly into the mainclass.
+    empty string). Then you can add sub-objects directly into the mainclass.
 */
 #define XMLPortObjectExtended(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
     static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##loadexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction); \

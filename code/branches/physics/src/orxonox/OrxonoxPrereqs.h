@@ -150,6 +150,10 @@ namespace orxonox
 
     class Scores;
 
+    // collision
+    class CollisionShape;
+    class SphereCollisionShape;
+
     // tools
     class BillboardSet;
     class Light;
@@ -208,10 +212,14 @@ namespace CEGUI
 class btRigidBody;
 class btCollisionObject;
 class btGhostObject;
+
 class btCollisionShape;
 class btSphereShape;
+class btCompoundShape;
 
+class btDiscreteDynamicsWorld;
 
+// lua
 struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

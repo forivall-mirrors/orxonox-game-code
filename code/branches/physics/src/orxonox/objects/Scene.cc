@@ -34,13 +34,15 @@
 #include <OgreSceneNode.h>
 #include <OgreLight.h>
 
+#include "BulletCollision/BroadphaseCollision/btAxisSweep3.h"
+#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
+#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 #include "core/XMLPort.h"
-
-#include "BulletCollision/BroadphaseCollision/btAxisSweep3.h"
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
+#include "objects/worldentities/WorldEntity.h"
 
 namespace orxonox
 {
@@ -122,6 +124,20 @@ namespace orxonox
         XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValue(0, true).defaultValue(1, worldAabbMin).defaultValue(2, worldAabbMax);
 
         XMLPortObjectExtended(Scene, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
+
+        // finally add all rigid bodies to the physics engine
+        if (hasPhysics())
+        {
+            for (std::list<BaseObject*>::const_iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
+            {
+                WorldEntity* temp = dynamic_cast<WorldEntity*>(*it);
+                if (temp)
+                {
+                    if (temp->getCollisionType() != WorldEntity::None)
+                        this->physicalWorld_->addRigidBody(temp->getPhysicalBody());
+                }
+            }
+        }
     }
 
     void Scene::registerVariables()
@@ -156,7 +172,7 @@ namespace orxonox
     void Scene::tick(float dt)
     {
         if (physicalWorld_)
-            physicalWorld_->stepSimulation(dt,10);
+            physicalWorld_->stepSimulation(dt,(int)(dt/0.0166666f));
     }
 
     void Scene::setSkybox(const std::string& skybox)

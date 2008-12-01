@@ -32,7 +32,9 @@
 #include <cassert>
 #include <OgreSceneManager.h>
 
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "BulletCollision/CollisionShapes/btCollisionShape.h"
+#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include "BulletDynamics/Dynamics/btRigidBody.h"
 
 #include "util/Exception.h"
 #include "util/Convert.h"
@@ -40,6 +42,8 @@
 #include "core/XMLPort.h"
 
 #include "objects/Scene.h"
+#include "objects/worldentities/collisionshapes/CollisionShape.h"
+#include "objects/worldentities/collisionshapes/CompoundCollisionShape.h"
 
 namespace orxonox
 {
@@ -67,6 +71,8 @@ namespace orxonox
 
         // Default behaviour does not include physics
         this->physicalBody_ = 0;
+        this->collisionShape_ = 0;
+        this->mass_ = 0;
         updateCollisionType();
 
         this->registerVariables();
@@ -99,14 +105,11 @@ namespace orxonox
         XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
 
         XMLPortParam(WorldEntity, "collisionType", setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
-        XMLPortParam(WorldEntity, "collisionRadius", setCollisionRadius, getCollisionRadius, xmlelement, mode);
+        //XMLPortParam(WorldEntity, "collisionRadius", setCollisionRadius, getCollisionRadius, xmlelement, mode);
         XMLPortParam(WorldEntity, "mass", setMass, getMass, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
-
-        // Add the physical after loading because we cannot change its attributes without removing.
-        if (getCollisionType() != None)
-            this->getScene()->getPhysicalWorld()->addRigidBody(this->physicalBody_);
+        XMLPortObject(WorldEntity, CollisionShape, "collisionShapes", attachCollisionShape, getAttachedCollisionShape, xmlelement, mode);
     }
 
     void WorldEntity::registerVariables()
@@ -130,6 +133,29 @@ namespace orxonox
 
     void WorldEntity::attach(WorldEntity* object)
     {
+        // check first whether attaching is even allowed
+        if (object->hasPhysics())
+        {
+            if (!this->hasPhysics())
+                ThrowException(PhysicsViolation, "Cannot attach a physical object to a non physical one.");
+            else if (object->isDynamic())
+                ThrowException(PhysicsViolation, "Cannot attach a dynamic object to a WorldEntity.");
+            else if (object->isKinematic() && this->isDynamic())
+                ThrowException(PhysicsViolation, "Cannot attach a kinematic object to a dynamic one.");
+            else if (object->isKinematic())
+                ThrowException(NotImplemented, "Cannot attach a kinematic object to a static or kinematic one: Not yet implemented.");
+            else if (object->physicalBody_->isInWorld() || this->physicalBody_->isInWorld())
+                ThrowException(PhysicsViolation, "Cannot attach a physical object at runtime.");
+            else
+            {
+                // static to static/kinematic/dynamic --> merge shapes
+                this->attachCollisionShape(object->getCollisionShape());
+                // Remove the btRigidBody from the child object.
+                // That also implies that cannot add a physics WE to the child afterwards.
+                object->setCollisionType(None);
+            }
+        }
+
         if (object->getParent())
             object->detachFromParent();
         else
@@ -143,31 +169,7 @@ namespace orxonox
         this->children_.insert(object);
         object->parent_ = this;
         object->parentID_ = this->getObjectID();
-
-        // Do the physical connection if required
-        //this->attachPhysicalObject(object);
     }
-
-    //void WorldEntity::attachPhysicalObject(WorldEntity* object)
-    //{
-    //    StaticEntity* staticObject = dynamic_cast<StaticEntity*>(object);
-    //    if (staticObject != 0 && this->hasPhysics())
-    //    {
-    //       btCompoundShape* compoundShape = dynamic_cast<btCompoundShape*>(this->physicalBody_->getCollisionShape());
-    //       if (compoundShape == 0)
-    //       {
-    //            // create a compound shape and add both
-    //            compoundShape = new btCompoundShape();
-    //            compoundShape->addChildShape(this->physicalBody_->getCollisionShape());
-    //            compoundShape->addChildShape(staticObject->getCollisionShape());
-    //            this->physicalBody_->setCollisionShape();
-    //       }
-    //       else
-    //       {
-    //           compoundShape -> addChildShape(staticObject->getCollisionShape());
-    //       }
-    //    }
-    //}
 
     void WorldEntity::detach(WorldEntity* object)
     {
@@ -191,68 +193,129 @@ namespace orxonox
         return 0;
     }
 
-    float WorldEntity::getMass() const
+    void WorldEntity::mergeCollisionShape(CollisionShape* shape)
     {
-        if (!checkPhysics())
-            return 0.0f;
+        if (!this->collisionShape_)
+            this->collisionShape_ = new CompoundCollisionShape(this);
+        assert(this->collisionShape_->isCompoundShape());
 
-        if (this->physicalBody_->getInvMass() == 0.0f)
-            return 0.0f;
+        // merge with transform
+        CompoundCollisionShape* compoundShape = static_cast<CompoundCollisionShape*>(this->collisionShape_);
+        assert(compoundShape);
+        compoundShape->addChildShape(shape);
+    }
+
+    void WorldEntity::attachCollisionShape(CollisionShape* shape)
+    {
+        this->attachedShapes_.push_back(shape);
+
+        if (!this->collisionShape_ && shape->hasNoTransform())
+        {
+            // Simply add the shape as is.
+            shape->getCollisionShape()->setLocalScaling(shape->getTotalScaling());
+            this->collisionShape_ = shape;
+        }
         else
-            return 1.0f/this->physicalBody_->getInvMass();
+        {
+            if (this->collisionShape_ && !this->collisionShape_->isCompoundShape())
+            {
+                // We have to create a new compound shape and add the old one first.
+                CollisionShape* thisShape = this->collisionShape_;
+                this->collisionShape_ = 0;
+                this->mergeCollisionShape(thisShape);
+            }
+            this->mergeCollisionShape(shape);
+        }
+
+        if (this->physicalBody_)
+        {
+            if (this->physicalBody_->isInWorld())
+                COUT(2) << "Warning: Cannot attach a physical object at runtime.";
+            else
+                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+        }
+    }
+
+    CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
+    {
+        if (index < this->attachedShapes_.size())
+            return attachedShapes_[index];
+        else
+            return 0;
+    }
+
+    //BlinkingBillboard* WorldEntity::getAttachedAsdfObject(unsigned int index) const
+    //{
+    //    return 0;
+    //}
+
+    void WorldEntity::setScale3D(const Vector3& scale)
+    {
+        if (this->hasPhysics())
+            ThrowException(NotImplemented, "Cannot set the scale of a physical object: Not yet implemented.");
+
+        this->node_->setScale(scale);
+    }
+
+    void WorldEntity::scale3D(const Vector3& scale)
+    {
+        if (this->hasPhysics())
+            ThrowException(NotImplemented, "Cannot set the scale of a physical object: Not yet implemented.");
+
+        this->node_->scale(scale);
     }
 
     void WorldEntity::setMass(float mass)
     {
-        if (!checkPhysics())
-            return;
+        this->mass_ = mass;
+        if (!hasPhysics())
+            COUT(2) << "Warning: Setting the mass of a WorldEntity with no physics has no effect." << std::endl;
         else if (this->physicalBody_->isInWorld())
-        {
-            CCOUT(2) << "Cannot set the physical mass at run time." << std::endl;
-            assert(false);
-        }
+            COUT(2) << "Warning: Cannot set the physical mass at run time. Storing temporarily." << std::endl;
         else
         {
-            this->physicalBody_->setMassProps(mass, btVector3(0,0,0));
-            updateCollisionType();
+            if (this->collisionType_ != Dynamic)
+                COUT(2) << "Warning: Cannot set the physical mass of a static or kinematic object. Storing temporarily." << std::endl;
+            else if (mass == 0.0f)
+                COUT(2) << "Warning: Cannot set physical mass of a dynamic object to zero. Storing temporarily." << std::endl;
+            else
+                this->physicalBody_->setMassProps(mass, btVector3(0,0,0));
         }
     }
 
     void WorldEntity::setCollisionType(CollisionType type)
     {
-        // Check first whether we have to create or destroy.
+        // If we are already attached to a parent, this would be a bad idea..
+        if (this->parent_)
+            ThrowException(PhysicsViolation, "Cannot set the collision type of a WorldEntity with a parent");
+        else if (this->physicalBody_ && this->physicalBody_->isInWorld())
+            ThrowException(PhysicsViolation, "Warning: Cannot set the collision type at run time.");
+
+        // Check for type legality. Could be StaticEntity or MovableEntity
+        if (!this->isCollisionTypeLegal(type))
+            return; // exception gets issued anyway
+
+        // Check whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
         {
-            // First, check whether our SceneNode is relative to the root space of the scene.
-            // TODO: Static and Kinematic objects don't always have to obey this rule.
-            if (this->node_->getParent() != this->getScene()->getRootSceneNode())
-                ThrowException(PhysicsViolation, "Cannot make WorldEntity physical that is not in the root space of the Scene.");
-
             // Create new rigid body
-            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, 0, btVector3(0,0,0));
+            btCollisionShape* temp = 0;
+            if (this->collisionShape_)
+                temp = this->collisionShape_->getCollisionShape();
+            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, temp, btVector3(0,0,0));
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
             this->physicalBody_->setUserPointer(this);
-
-            // Adjust parameters according to the node
-            //btTransform nodeTransform;
-            //this->
         }
         else if (type == None && this->collisionType_ != None)
         {
             // Destroy rigid body
             if (this->physicalBody_->isInWorld())
                 this->getScene()->getPhysicalWorld()->removeRigidBody(this->physicalBody_);
-            if (this->physicalBody_->getCollisionShape())
-                delete this->physicalBody_->getCollisionShape();
             delete this->physicalBody_;
             this->physicalBody_ = 0;
             this->collisionType_ = None;
             return;
         }
-
-        // Check for type legality. Could be StaticEntity or MovableEntity
-        if (!this->isCollisionTypeLegal(type))
-            return; // exception gets issued anyway
 
         // Change type
         switch (type)
@@ -270,15 +333,17 @@ namespace orxonox
             return; // this->collisionType_ was None too
         }
 
+        // update our variable for faster checks
+        updateCollisionType();
+
         // Mass non zero is a bad idea for kinematic and static objects
-        if ((type == Kinematic || type == Static) && getMass() != 0.0f)
+        if ((type == Kinematic || type == Static) && this->mass_ != 0.0f)
             this->setMass(0.0f);
         // Mass zero is not such a good idea for dynamic objects
-        else if (type == Dynamic && getMass() == 0.0f)
+        else if (type == Dynamic && this->mass_ == 0.0f)
             this->setMass(1.0f);
-
-        // finally update our variable for faster checks
-        updateCollisionType();
+        else if (hasPhysics())
+            this->physicalBody_->setMassProps(this->mass_, btVector3(0,0,0));
     }
 
     void WorldEntity::updateCollisionType()
@@ -328,29 +393,41 @@ namespace orxonox
         }
     }
 
-    void WorldEntity::setCollisionRadius(float radius)
-    {
-        if (!checkPhysics())
-            return;
+    //void WorldEntity::setCollisionRadius(float radius)
+    //{
+    //    if (!checkPhysics())
+    //        return;
 
-        // destroy old one first
-        btCollisionShape* oldShape = this->physicalBody_->getCollisionShape();
-        if (oldShape)
-            delete oldShape;
+    //    // destroy old one first
+    //    btCollisionShape* oldShape = this->physicalBody_->getCollisionShape();
+    //    if (oldShape)
+    //        delete oldShape;
 
-        this->physicalBody_->setCollisionShape(new btSphereShape(btScalar(radius)));
-    }
+    //    //if (this->getName() == "blubb")
+    //    //{
+    //    //    btCompoundShape* cShape = new btCompoundShape();
+    //    //    cShape->setLocalScaling(btVector3(1,1,1));
+    //    //    btTransform offset(btQuaternion(0, 0, 0), btVector3(0, 0, 0));
+    //    //    offset.setBasis(btMatrix3x3(3, 0, 0, 0, 3, 0, 0, 0, 3));
+    //    //    btSphereShape* sphere = new btSphereShape(radius);
+    //    //    sphere->setLocalScaling(btVector3(1,1,3));
+    //    //    cShape->addChildShape(offset, sphere);
+    //    //    this->physicalBody_->setCollisionShape(cShape);
+    //    //}
+    //    //else
+    //    this->physicalBody_->setCollisionShape(new btSphereShape(btScalar(radius)));
+    //}
 
-    float WorldEntity::getCollisionRadius() const
-    {
-        if (checkPhysics())
-        {
-            btSphereShape* sphere = dynamic_cast<btSphereShape*>(this->physicalBody_->getCollisionShape());
-            if (sphere)
-                return (float)sphere->getRadius();
-        }
-        return 0.0f;
-    }
+    //float WorldEntity::getCollisionRadius() const
+    //{
+    //    if (checkPhysics())
+    //    {
+    //        btSphereShape* sphere = dynamic_cast<btSphereShape*>(this->physicalBody_->getCollisionShape());
+    //        if (sphere)
+    //            return (float)sphere->getRadius();
+    //    }
+    //    return 0.0f;
+    //}
 
     bool WorldEntity::checkPhysics() const
     {

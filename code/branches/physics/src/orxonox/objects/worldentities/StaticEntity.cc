@@ -61,9 +61,9 @@ namespace orxonox
 
     bool StaticEntity::isCollisionTypeLegal(WorldEntity::CollisionType type) const
     {
-        if (type == WorldEntity::Static)
+        if (type == WorldEntity::Kinematic || type == WorldEntity::Dynamic)
         {
-            ThrowException(PhysicsViolation, "Cannot tell a MovableEntity to have static collision type");
+            ThrowException(PhysicsViolation, "Cannot tell a StaticEntity to have kinematic or dynamic collision type");
             return false;
         }
         else

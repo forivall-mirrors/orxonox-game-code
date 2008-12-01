@@ -35,7 +35,6 @@
 #include <OgreSceneNode.h>
 
 #include "LinearMath/btMotionState.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
 
 #include "network/Synchronisable.h"
 #include "core/BaseObject.h"
@@ -107,28 +106,28 @@ namespace orxonox
             inline void setDirection(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
-            inline void setScale3D(const Vector3& scale)
-                { this->node_->setScale(scale); }
+            void setScale3D(const Vector3& scale);
             inline void setScale3D(float x, float y, float z)
-                { this->node_->setScale(x, y, z); }
+                { this->setScale3D(Vector3(x, y, z)); }
             inline const Vector3& getScale3D(void) const
                 { return this->node_->getScale(); }
 
-            inline void setScale(float scale)
-                { this->node_->setScale(scale, scale, scale); }
+            void setScale(float scale)
+                { this->setScale3D(scale, scale, scale); }
             inline float getScale() const
                 { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
 
-            inline void scale3D(const Vector3& scale)
-                { this->node_->scale(scale); }
+            void scale3D(const Vector3& scale);
             inline void scale3D(float x, float y, float z)
-                { this->node_->scale(x, y, z); }
+                { this->scale3D(Vector3(x, y, z)); }
             inline void scale(float scale)
-                { this->node_->scale(scale, scale, scale); }
+                { this->scale3D(scale, scale, scale); }
 
             void attach(WorldEntity* object);
+//            void attachAsdf(BlinkingBillboard* object);
             void detach(WorldEntity* object);
             WorldEntity* getAttachedObject(unsigned int index) const;
+//            BlinkingBillboard* getAttachedAsdfObject(unsigned int index) const;
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
 
@@ -194,10 +193,14 @@ namespace orxonox
             bool isDynamic()   const { return getCollisionType() == Dynamic  ; }
 
             void setMass(float mass);
-            float getMass() const;
+            inline float getMass() const
+                { return this->mass_; }
 
-            void setCollisionRadius(float radius);
-            float getCollisionRadius() const;
+            void attachCollisionShape(CollisionShape* shape);
+            CollisionShape* getAttachedCollisionShape(unsigned int index) const;
+
+            CollisionShape* getCollisionShape() { return this->collisionShape_; }
+            btRigidBody* getPhysicalBody() { return this->physicalBody_; }
 
         protected:
             //virtual btCollisionShape* getCollisionShape() = 0;
@@ -210,8 +213,12 @@ namespace orxonox
             btRigidBody*  physicalBody_;
 
         private:
-            CollisionType collisionType_;
+            void mergeCollisionShape(CollisionShape* shape);
 
+            CollisionType                collisionType_;
+            std::vector<CollisionShape*> attachedShapes_;
+            CollisionShape*              collisionShape_;
+            btScalar                     mass_;
     };
 }
 

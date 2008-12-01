@@ -36,8 +36,6 @@
 #include "util/Math.h"
 #include "objects/Tickable.h"
 
-#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
-
 namespace orxonox
 {
     class _OrxonoxExport Scene : public BaseObject, public network::Synchronisable, public Tickable
@@ -69,10 +67,10 @@ namespace orxonox
             inline bool getShadow() const
                 { return this->bShadows_; }
 
-            inline const Vector3& getWorldAabbMax()
-            {
-                this->physicalWorld_->getBroadphase();
-            }
+            //inline const Vector3& getWorldAabbMax()
+            //{
+            //    this->physicalWorld_->getBroadphase();
+            //}
 
             inline bool hasPhysics()
                 { return this->physicalWorld_ != 0; }

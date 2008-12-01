@@ -70,6 +70,10 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/ParticleSpawner.cc
 #  objects/worldentities/Backlight.cc
 
+  objects/worldentities/collisionshapes/CollisionShape.cc
+  objects/worldentities/collisionshapes/CompoundCollisionShape.cc
+  objects/worldentities/collisionshapes/SphereCollisionShape.cc
+  
   objects/quest/AddQuest.cc
   objects/quest/AddQuestHint.cc
   objects/quest/AddReward.cc
