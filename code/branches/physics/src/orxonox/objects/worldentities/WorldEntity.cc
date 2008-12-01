@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder (physics)
  *   Co-authors:
  *      ...
  *
@@ -392,42 +393,6 @@ namespace orxonox
                 return "";
         }
     }
-
-    //void WorldEntity::setCollisionRadius(float radius)
-    //{
-    //    if (!checkPhysics())
-    //        return;
-
-    //    // destroy old one first
-    //    btCollisionShape* oldShape = this->physicalBody_->getCollisionShape();
-    //    if (oldShape)
-    //        delete oldShape;
-
-    //    //if (this->getName() == "blubb")
-    //    //{
-    //    //    btCompoundShape* cShape = new btCompoundShape();
-    //    //    cShape->setLocalScaling(btVector3(1,1,1));
-    //    //    btTransform offset(btQuaternion(0, 0, 0), btVector3(0, 0, 0));
-    //    //    offset.setBasis(btMatrix3x3(3, 0, 0, 0, 3, 0, 0, 0, 3));
-    //    //    btSphereShape* sphere = new btSphereShape(radius);
-    //    //    sphere->setLocalScaling(btVector3(1,1,3));
-    //    //    cShape->addChildShape(offset, sphere);
-    //    //    this->physicalBody_->setCollisionShape(cShape);
-    //    //}
-    //    //else
-    //    this->physicalBody_->setCollisionShape(new btSphereShape(btScalar(radius)));
-    //}
-
-    //float WorldEntity::getCollisionRadius() const
-    //{
-    //    if (checkPhysics())
-    //    {
-    //        btSphereShape* sphere = dynamic_cast<btSphereShape*>(this->physicalBody_->getCollisionShape());
-    //        if (sphere)
-    //            return (float)sphere->getRadius();
-    //    }
-    //    return 0.0f;
-    //}
 
     bool WorldEntity::checkPhysics() const
     {

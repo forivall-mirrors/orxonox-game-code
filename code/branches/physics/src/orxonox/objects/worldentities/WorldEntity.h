@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder (physics)
  *   Co-authors:
  *      ...
  *
