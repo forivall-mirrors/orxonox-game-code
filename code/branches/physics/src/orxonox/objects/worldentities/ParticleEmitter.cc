@@ -32,8 +32,9 @@
 */
 
 #include "OrxonoxStableHeaders.h"
-
 #include "ParticleEmitter.h"
+
+#include <OgreParticleSystem.h>
 
 #include "tools/ParticleInterface.h"
 #include "core/CoreIncludes.h"
