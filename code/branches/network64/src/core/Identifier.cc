@@ -234,7 +234,7 @@ namespace orxonox
         @brief Sets the network ID to a new value and changes the entry in the Factory.
         @param id The new network ID
     */
-    void Identifier::setNetworkID(unsigned int id)
+    void Identifier::setNetworkID(uint32_t id)
     {
         Factory::changeNetworkID(this, this->classID_, id);
         this->classID_ = id;

@@ -54,8 +54,8 @@ namespace orxonox
 {
 
 
-  std::map<unsigned int, Synchronisable *> Synchronisable::objectMap_;
-  std::queue<unsigned int> Synchronisable::deletedObjects_;
+  std::map<uint32_t, Synchronisable *> Synchronisable::objectMap_;
+  std::queue<uint32_t> Synchronisable::deletedObjects_;
 
   uint8_t Synchronisable::state_=0x1; // detemines wheter we are server (default) or client
 
@@ -76,7 +76,7 @@ namespace orxonox
     }
     else
       objectID=OBJECTID_UNKNOWN;
-    classID = (unsigned int)-1;
+    classID = static_cast<uint32_t>(-1);
 
 
 #ifndef NDEBUG
@@ -121,7 +121,7 @@ namespace orxonox
 //       assert(objectMap_[objectID]->objectID==objectID);
 //       objectMap_.erase(objectID);
     }
-    std::map<unsigned int, Synchronisable*>::iterator it;
+    std::map<uint32_t, Synchronisable*>::iterator it;
     it = objectMap_.find(objectID);
     if (it != objectMap_.end())
       objectMap_.erase(it);
@@ -198,7 +198,7 @@ namespace orxonox
    * @param objectID objectID of the Synchronisable
    * @return true/false
    */
-  bool Synchronisable::deleteObject(unsigned int objectID){
+  bool Synchronisable::deleteObject(uint32_t objectID){
 //     assert(getSynchronisable(objectID));
     if(!getSynchronisable(objectID))
       return false;
@@ -217,8 +217,8 @@ namespace orxonox
    * @param objectID objectID of the Synchronisable
    * @return pointer to the Synchronisable with the objectID
    */
-  Synchronisable* Synchronisable::getSynchronisable(unsigned int objectID){
-    std::map<unsigned int, Synchronisable*>::iterator it1;
+  Synchronisable* Synchronisable::getSynchronisable(uint32_t objectID){
+    std::map<uint32_t, Synchronisable*>::iterator it1;
     it1 = objectMap_.find(objectID);
     if (it1 != objectMap_.end())
       return it1->second;
@@ -294,24 +294,24 @@ namespace orxonox
    *             0x3: bidirectional
    * @return true: if !doSync or if everything was successfully saved
    */
-  bool Synchronisable::getData(uint8_t*& mem, unsigned int id, uint8_t mode){
+  bool Synchronisable::getData(uint8_t*& mem, int32_t id, uint8_t mode){
     if(mode==0x0)
       mode=state_;
     //if this tick is we dont synchronise, then abort now
     if(!doSync(id, mode))
       return true;
     //std::cout << "inside getData" << std::endl;
-    unsigned int tempsize = 0;
+    uint32_t tempsize = 0;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
 
-    if (this->classID == (unsigned int)-1)
+    if (this->classID == static_cast<uint32_t>(-1))
         this->classID = this->getIdentifier()->getNetworkID();
 
     assert(this->classID==this->getIdentifier()->getNetworkID());
 //     this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<SynchronisableVariableBase*>::iterator i;
-    unsigned int size;
+    uint32_t size;
     size=getSize(id, mode);
 
     // start copy header
@@ -383,7 +383,7 @@ namespace orxonox
   * @param mode same as getData
   * @return amount of bytes
   */
-  uint32_t Synchronisable::getSize(unsigned int id, uint8_t mode){
+  uint32_t Synchronisable::getSize(int32_t id, uint8_t mode){
     int tsize=sizeof(synchronisableHeader);
     if(mode==0x0)
       mode=state_;
@@ -401,13 +401,13 @@ namespace orxonox
    * @param id gamestate id
    * @return true/false
    */
-  bool Synchronisable::doSync(unsigned int id, uint8_t mode){
+  bool Synchronisable::doSync(int32_t id, uint8_t mode){
     if(mode==0x0)
       mode=state_;
     return ( (objectMode_&mode)!=0 && (!syncList.empty() ) );
   }
 
-  bool Synchronisable::doSelection(unsigned int id){
+  bool Synchronisable::doSelection(int32_t id){
     return true; //TODO: change this
     //return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }

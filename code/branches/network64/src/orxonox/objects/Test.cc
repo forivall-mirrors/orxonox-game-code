@@ -60,36 +60,39 @@ namespace orxonox
 
 	void Test::setConfigValues()
 	{
-		SetConfigValue ( v1, 1 )/*.callback ( this, &Test::checkV1 )*/;
-    SetConfigValue ( v2, 2 )/*.callback ( this, &Test::checkV2 )*/;
-    SetConfigValue ( v3, 3 )/*.callback ( this, &Test::checkV3 )*/;
-    SetConfigValue ( v4, 4 )/*.callback ( this, &Test::checkV4 )*/;
+		SetConfigValue ( u1, 1 )/*.callback ( this, &Test::checkV1 )*/;
+    SetConfigValue ( u2, 2 )/*.callback ( this, &Test::checkV2 )*/;
+    SetConfigValue ( u3, 3 )/*.callback ( this, &Test::checkV3 )*/;
+    SetConfigValue ( u4, 4 )/*.callback ( this, &Test::checkV4 )*/;
+    
+    SetConfigValue ( s1, 1 )/*.callback ( this, &Test::checkV1 )*/;
+    SetConfigValue ( s2, 2 )/*.callback ( this, &Test::checkV2 )*/;
+    SetConfigValue ( s3, 3 )/*.callback ( this, &Test::checkV3 )*/;
+    SetConfigValue ( s4, 4 )/*.callback ( this, &Test::checkV4 )*/;
 	}
 
 
 	void Test::registerVariables()
 	{
-		registerVariable ( v1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkV1 ));
-    registerVariable ( v2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkV2 ));
-		registerVariable ( v3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkV3 ), true );
-    registerVariable ( v4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkV4 ), true );
+		registerVariable ( u1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
+    registerVariable ( u2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkU2 ));
+		registerVariable ( u3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
+    registerVariable ( u4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkU4 ), true );
+    
+    registerVariable ( s1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkS1 ));
+    registerVariable ( s2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkS2 ));
+    registerVariable ( s3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkS3 ), true );
+    registerVariable ( s4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkS4 ), true );
 	}
 
-  void Test::checkV1(){
-    COUT(1) << "V1 changed: " << v1 << std::endl;
-  }
+  void Test::checkU1(){ COUT(1) << "U1 changed: " << u1 << std::endl; }
+  void Test::checkU2(){ COUT(1) << "U2 changed: " << u2 << std::endl; }
+  void Test::checkU3(){ COUT(1) << "U3 changed: " << u3 << std::endl; }
+  void Test::checkU4(){ COUT(1) << "U4 changed: " << u4 << std::endl; }
 
-  void Test::checkV2(){
-    COUT(1) << "V2 changed: " << v2 << std::endl;
-  }
-
-  void Test::checkV3(){
-    COUT(1) << "V3 changed: " << v3 << std::endl;
-  }
-  
-  void Test::checkV4(){
-    COUT(1) << "V4 changed: " << v4 << std::endl;
-  }
-
+  void Test::checkS1(){ COUT(1) << "S1 changed: " << s1 << std::endl; }
+  void Test::checkS2(){ COUT(1) << "S2 changed: " << s2 << std::endl; }
+  void Test::checkS3(){ COUT(1) << "S3 changed: " << s3 << std::endl; }
+  void Test::checkS4(){ COUT(1) << "S4 changed: " << s4 << std::endl; }
 
 }

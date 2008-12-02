@@ -52,7 +52,7 @@
 
 namespace orxonox
 {
-  static const unsigned int OBJECTID_UNKNOWN = (unsigned int)-1;
+  static const uint32_t OBJECTID_UNKNOWN = static_cast<uint32_t>(-1);
 
   namespace objectDirection{
     enum objectdirection{
@@ -85,13 +85,13 @@ namespace orxonox
     static void setClient(bool b);
 
     static Synchronisable *fabricate(uint8_t*& mem, uint8_t mode=0x0);
-    static bool deleteObject(unsigned int objectID);
-    static Synchronisable *getSynchronisable(unsigned int objectID);
+    static bool deleteObject(uint32_t objectID);
+    static Synchronisable *getSynchronisable(uint32_t objectID);
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
-    static unsigned int popDeletedObject(){ unsigned int i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
+    static uint32_t popDeletedObject(){ uint32_t i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
 
-    inline unsigned int getObjectID(){return objectID;}
-    inline unsigned int getClassID(){return classID;}
+    inline uint32_t getObjectID(){return objectID;}
+    inline uint32_t getClassID(){return classID;}
   protected:
     Synchronisable(BaseObject* creator);
 //     void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
@@ -102,24 +102,24 @@ namespace orxonox
 
 
   private:
-    bool getData(uint8_t*& men, unsigned int id, uint8_t mode=0x0);
-    uint32_t getSize(unsigned int id, uint8_t mode=0x0);
+    bool getData(uint8_t*& men, int32_t id, uint8_t mode=0x0);
+    uint32_t getSize(int32_t id, uint8_t mode=0x0);
     bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
-    bool doSelection(unsigned int id);
-    bool doSync(unsigned int id, uint8_t mode=0x0);
+    bool doSelection(int32_t id);
+    bool doSync(int32_t id, uint8_t mode=0x0);
 
-    unsigned int objectID;
-    unsigned int creatorID;
-    unsigned int classID;
+    uint32_t objectID;
+    uint32_t creatorID;
+    uint32_t classID;
 
     std::list<SynchronisableVariableBase*> syncList;
     static uint8_t state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
     unsigned int objectFrequency_;
     int objectMode_;
-    static std::map<unsigned int, Synchronisable *> objectMap_;
-    static std::queue<unsigned int> deletedObjects_;
+    static std::map<uint32_t, Synchronisable *> objectMap_;
+    static std::queue<uint32_t> deletedObjects_;
   };
   
   template <class T> void Synchronisable::registerVariable(T& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)

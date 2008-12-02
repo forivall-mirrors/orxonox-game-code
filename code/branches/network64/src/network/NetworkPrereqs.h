@@ -70,6 +70,8 @@ namespace orxonox
   class GamestateManager;
   class GamestateHandler;
   class NetworkCallbackBase;
+  template <class T> class NetworkCallback;
+  class NetworkCallbackManager;
   class PacketBuffer;
   class Server;
   class ServerFrameListener;

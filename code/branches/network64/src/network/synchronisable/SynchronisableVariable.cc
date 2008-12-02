@@ -63,6 +63,30 @@ template <> bool SynchronisableVariable<const bool>::checkEquality( uint8_t* mem
   return *static_cast<uint8_t*>(mem) == *(uint8_t*)(&this->variable_);
 }
 
+// =========== char
+
+template <> uint32_t SynchronisableVariable<const char>::returnSize()
+{
+  return sizeof(uint8_t);
+}
+
+template <> void SynchronisableVariable<const char>::setAndIncrease( uint8_t*& mem )
+{
+  *(uint8_t*)(&this->variable_) = *static_cast<uint8_t*>(mem);
+  mem += SynchronisableVariable<const char>::returnSize();
+}
+
+template <> void SynchronisableVariable<const char>::getAndIncrease( uint8_t*& mem )
+{
+  *static_cast<uint8_t*>(mem) = *(uint8_t*)(&this->variable_);
+  mem += SynchronisableVariable<const char>::returnSize();
+}
+
+template <> bool SynchronisableVariable<const char>::checkEquality( uint8_t* mem )
+{
+  return *static_cast<uint8_t*>(mem) == *(uint8_t*)(&this->variable_);
+}
+
 // =========== unsigned char
 
 template <> uint32_t SynchronisableVariable<const unsigned char>::returnSize()

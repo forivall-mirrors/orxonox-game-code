@@ -38,6 +38,7 @@
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "network/synchronisable/NetworkCallback.h"
+#include "network/synchronisable/NetworkCallbackManager.h"
 
 namespace orxonox{
   
@@ -118,7 +119,7 @@ namespace orxonox{
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()
   {
     if (this->callback_ != 0)
-      delete this->callback_;
+      NetworkCallbackManager::deleteCallback(this->callback_); //safe call for deletion
   }
 
   template <class T> void SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
@@ -145,7 +146,8 @@ namespace orxonox{
 //   mem += SynchronisableVariable<T>::getSize();
   // now do a callback if neccessary
     if ( callback )
-      this->callback_->call();
+      NetworkCallbackManager::triggerCallback( this->callback_ );
+      //this->callback_->call();
   }
 
   template <class T> uint32_t SynchronisableVariable<T>::getSize(uint8_t mode)
@@ -298,7 +300,8 @@ namespace orxonox{
       SynchronisableVariable<T>::setAndIncrease(mem);
   // now do a callback if neccessary
       if ( callback )
-        this->callback_->call();
+        NetworkCallbackManager::triggerCallback( this->callback_ );
+        //this->callback_->call();
     }
 
     template <class T> uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)

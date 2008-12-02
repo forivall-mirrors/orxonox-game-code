@@ -33,6 +33,11 @@
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
 
+
+typedef int TYPE;
+typedef unsigned int UTYPE;
+
+
 namespace orxonox
 {
   class _OrxonoxExport Test: public BaseObject, public Synchronisable
@@ -44,26 +49,42 @@ namespace orxonox
       void setConfigValues();
       void registerVariables();
 
-      void setV1(unsigned int value){ v1 = value; }
-      void setV2(unsigned int value){ v2 = value; }
-      void setV3(unsigned int value){ v3 = value; }
-      void setV4(unsigned int value){ v4 = value; }
 
-      void checkV1();
-      void checkV2();
-      void checkV3();
-      void checkV4();
+      //unsigned functions
+      void setU1(UTYPE value){ u1 = value; }
+      void setU2(UTYPE value){ u2 = value; }
+      void setU3(UTYPE value){ u3 = value; }
+      void setU4(UTYPE value){ u4 = value; }
+      void checkU1();
+      void checkU2();
+      void checkU3();
+      void checkU4();
       
-      static void printV1(){ instance_->checkV1(); }
-      static void printV2(){ instance_->checkV2(); }
-      static void printV3(){ instance_->checkV3(); }
-      static void printV4(){ instance_->checkV4(); }
+      //signed functions
+      void setS1(TYPE value){ s1 = value; }
+      void setS2(TYPE value){ s2 = value; }
+      void setS3(TYPE value){ s3 = value; }
+      void setS4(TYPE value){ s4 = value; }
+      void checkS1();
+      void checkS2();
+      void checkS3();
+      void checkS4();
+      
+      static void printV1(){ instance_->checkU1(); }
+      static void printV2(){ instance_->checkU2(); }
+      static void printV3(){ instance_->checkU3(); }
+      static void printV4(){ instance_->checkU4(); }
 
     private:
-      unsigned int v1;
-      unsigned int v2;
-      unsigned int v3;
-      unsigned int v4;
+      UTYPE u1;
+      UTYPE u2;
+      UTYPE u3;
+      UTYPE u4;
+      
+      TYPE s1;
+      TYPE s2;
+      TYPE s3;
+      TYPE s4;
       
       static Test* instance_;
   };

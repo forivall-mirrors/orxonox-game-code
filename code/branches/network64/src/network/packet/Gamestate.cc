@@ -72,9 +72,9 @@ Gamestate::~Gamestate()
 
 bool Gamestate::collectData(int id, uint8_t mode)
 {
-  unsigned int tempsize=0, currentsize=0;
+  uint32_t tempsize=0, currentsize=0;
   assert(data_==0);
-  unsigned int size = calcGamestateSize(id, mode);
+  uint32_t size = calcGamestateSize(id, mode);
 
   COUT(4) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
   if(size==0)
@@ -165,7 +165,7 @@ int Gamestate::getID(){
   return HEADER->id;
 }
 
-unsigned int Gamestate::getSize() const
+uint32_t Gamestate::getSize() const
 {
   assert(data_);
   if(HEADER->compressed)
@@ -250,9 +250,9 @@ bool Gamestate::decompressData()
   assert(HEADER);
   assert(HEADER->compressed);
   COUT(4) << "GameStateClient: uncompressing gamestate. id: " << HEADER->id << ", baseid: " << HEADER->base_id << ", datasize: " << HEADER->datasize << ", compsize: " << HEADER->compsize << std::endl;
-  unsigned int datasize = HEADER->datasize;
-  unsigned int compsize = HEADER->compsize;
-  unsigned int bufsize;
+  uint32_t datasize = HEADER->datasize;
+  uint32_t compsize = HEADER->compsize;
+  uint32_t bufsize;
 //  assert(compsize<=datasize);
   bufsize = datasize;
   assert(bufsize!=0);
@@ -301,8 +301,8 @@ Gamestate *Gamestate::diff(Gamestate *base)
   assert(!HEADER->diffed);
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   uint8_t *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
-  unsigned int of=0; // pointers offset
-  unsigned int dest_length=0;
+  uint32_t of=0; // pointers offset
+  uint32_t dest_length=0;
   dest_length=HEADER->datasize;
   if(dest_length==0)
     return NULL;
@@ -333,7 +333,7 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
 Gamestate* Gamestate::doSelection(unsigned int clientID){
   assert(data_);
-  std::map<unsigned int, Synchronisable *>::iterator it;
+  std::map<uint32_t, Synchronisable *>::iterator it;
 
   // allocate memory for new data
   uint8_t *gdata = new uint8_t[HEADER->datasize+sizeof(GamestateHeader)];
@@ -346,13 +346,13 @@ Gamestate* Gamestate::doSelection(unsigned int clientID){
   *(GamestateHeader*)gdata = *HEADER;
 
   synchronisableHeader *oldobjectheader, *newobjectheader;
-  unsigned int objectOffset;
+  uint32_t objectOffset;
 
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
     oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
-    unsigned int objectsize = oldobjectheader->size;
+    uint32_t objectsize = oldobjectheader->size;
     assert(it->second->objectID==oldobjectheader->objectID);
     *newobjectheader = *oldobjectheader;
     objectOffset=sizeof(synchronisableHeader); //skip the size and the availableData variables in the objectheader
@@ -381,10 +381,10 @@ Gamestate* Gamestate::intelligentDiff(Gamestate *base, unsigned int clientID){
   assert(!HEADER->diffed);
 
   //preparations
-  std::map<unsigned int, Synchronisable *>::iterator it;
+  std::map<uint32_t, Synchronisable *>::iterator it;
   uint8_t *origdata, *basedata, *destdata, *ndata;
-  unsigned int objectOffset, streamOffset=0;    //data offset
-  unsigned int minsize = (HEADER->datasize < GAMESTATE_HEADER(base->data_)->datasize) ? HEADER->datasize : GAMESTATE_HEADER(base->data_)->datasize;
+  uint32_t objectOffset, streamOffset=0;    //data offset
+  uint32_t minsize = (HEADER->datasize < GAMESTATE_HEADER(base->data_)->datasize) ? HEADER->datasize : GAMESTATE_HEADER(base->data_)->datasize;
   synchronisableHeader *origheader;
   synchronisableHeader *destheader;
 
@@ -401,7 +401,7 @@ Gamestate* Gamestate::intelligentDiff(Gamestate *base, unsigned int clientID){
     destheader = (synchronisableHeader *)(destdata+streamOffset);
 
     //copy and partially diff the object header
-    assert(sizeof(synchronisableHeader)==3*sizeof(unsigned int)+sizeof(bool));
+    assert(sizeof(synchronisableHeader)==3*sizeof(uint32_t)+sizeof(bool));
     *(uint32_t*)destdata = *(uint32_t*)origdata; //size (do not diff)
     *(bool*)(destdata+sizeof(uint32_t)) = sendData;
     if(sendData){
@@ -449,10 +449,10 @@ Gamestate* Gamestate::intelligentUnDiff(Gamestate *base){
   assert(HEADER->diffed);
 
   //preparations
-  std::map<unsigned int, Synchronisable *>::iterator it;
+  std::map<uint32_t, Synchronisable *>::iterator it;
   uint8_t *origdata, *basedata, *destdata, *ndata;
-  unsigned int objectOffset, streamOffset=0;    //data offset
-  unsigned int minsize = (HEADER->datasize < GAMESTATE_HEADER(base->data_)->datasize) ? HEADER->datasize : GAMESTATE_HEADER(base->data_)->datasize;
+  uint32_t objectOffset, streamOffset=0;    //data offset
+  uint32_t minsize = (HEADER->datasize < GAMESTATE_HEADER(base->data_)->datasize) ? HEADER->datasize : GAMESTATE_HEADER(base->data_)->datasize;
   synchronisableHeader *origheader;
   synchronisableHeader *destheader;
 
@@ -469,16 +469,16 @@ Gamestate* Gamestate::intelligentUnDiff(Gamestate *base){
     bool sendData;
 
     //copy and partially diff the object header
-    assert(sizeof(synchronisableHeader)==3*sizeof(unsigned int)+sizeof(bool));
-    *(unsigned int*)destdata = *(unsigned int*)origdata; //size (do not diff)
-    *(bool*)(destdata+sizeof(unsigned int)) = *(bool*)(origdata+sizeof(unsigned int));
-    sendData = *(bool*)(origdata+sizeof(unsigned int));
+    assert(sizeof(synchronisableHeader)==3*sizeof(uint32_t)+sizeof(bool));
+    *(uint32_t*)destdata = *(uint32_t*)origdata; //size (do not diff)
+    *(bool*)(destdata+sizeof(uint32_t)) = *(bool*)(origdata+sizeof(uint32_t));
+    sendData = *(bool*)(origdata+sizeof(uint32_t));
     if(sendData){
-      *(unsigned int*)(destdata+sizeof(unsigned int)+sizeof(bool)) = *(unsigned int*)(basedata+sizeof(unsigned int)+sizeof(bool)) ^ *(unsigned int*)(origdata+sizeof(unsigned int)+sizeof(bool)); //objectid (diff it)
-      *(unsigned int*)(destdata+2*sizeof(unsigned int)+sizeof(bool)) = *(unsigned int*)(basedata+2*sizeof(unsigned int)+sizeof(bool)) ^ *(unsigned int*)(origdata+2*sizeof(unsigned int)+sizeof(bool)); //classid (diff it)
+      *(uint32_t*)(destdata+sizeof(uint32_t)+sizeof(bool)) = *(uint32_t*)(basedata+sizeof(uint32_t)+sizeof(bool)) ^ *(uint32_t*)(origdata+sizeof(uint32_t)+sizeof(bool)); //objectid (diff it)
+      *(uint32_t*)(destdata+2*sizeof(uint32_t)+sizeof(bool)) = *(uint32_t*)(basedata+2*sizeof(uint32_t)+sizeof(bool)) ^ *(uint32_t*)(origdata+2*sizeof(uint32_t)+sizeof(bool)); //classid (diff it)
     }else{
-      *(unsigned int*)(destdata+sizeof(unsigned int)+sizeof(bool)) = 0;
-      *(unsigned int*)(destdata+2*sizeof(unsigned int)+sizeof(bool)) = 0;
+      *(uint32_t*)(destdata+sizeof(uint32_t)+sizeof(bool)) = 0;
+      *(uint32_t*)(destdata+2*sizeof(uint32_t)+sizeof(bool)) = 0;
     }
     objectOffset=sizeof(synchronisableHeader);
     streamOffset+=sizeof(synchronisableHeader);
@@ -516,8 +516,8 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   uint8_t *basep = GAMESTATE_START(base->data_);
   uint8_t *gs = GAMESTATE_START(this->data_);
-  unsigned int of=0; // pointers offset
-  unsigned int dest_length=0;
+  uint32_t of=0; // pointers offset
+  uint32_t dest_length=0;
   dest_length=HEADER->datasize;
   if(dest_length==0)
     return NULL;
@@ -547,9 +547,9 @@ Gamestate *Gamestate::undiff(Gamestate *base)
 }
 
 
-unsigned int Gamestate::calcGamestateSize(unsigned int id, uint8_t mode)
+uint32_t Gamestate::calcGamestateSize(int32_t id, uint8_t mode)
 {
-  unsigned int size=0;
+  uint32_t size=0;
     // get the start of the Synchronisable list
   ObjectList<Synchronisable>::iterator it;
     // get total size of gamestate

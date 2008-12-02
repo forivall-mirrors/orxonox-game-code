@@ -1,4 +1,5 @@
 SET( SRC_FILES
+  NetworkCallbackManager.cc
   Synchronisable.cc
   SynchronisableSpecialisations.cc
   SynchronisableVariable.cc

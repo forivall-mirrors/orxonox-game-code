@@ -36,9 +36,9 @@ namespace orxonox{
   
   template <> void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
-    registerVariable(variable.r, mode, 0, bidirectional);
-    registerVariable(variable.g, mode, 0, bidirectional);
-    registerVariable(variable.b, mode, 0, bidirectional);
+    registerVariable(variable.r, mode, cb, bidirectional);
+    registerVariable(variable.g, mode, cb, bidirectional);
+    registerVariable(variable.b, mode, cb, bidirectional);
     registerVariable(variable.a, mode, cb, bidirectional);
   }
   template <> void Synchronisable::registerVariable( ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
@@ -48,7 +48,7 @@ namespace orxonox{
 
   template <> void Synchronisable::registerVariable( const Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
-    registerVariable(variable.x, mode, 0, bidirectional);
+    registerVariable(variable.x, mode, cb, bidirectional);
     registerVariable(variable.y, mode, cb, bidirectional);
   }
   template <> void Synchronisable::registerVariable( Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
@@ -58,8 +58,8 @@ namespace orxonox{
   
   template <> void Synchronisable::registerVariable( const Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
-    registerVariable(variable.x, mode, 0, bidirectional);
-    registerVariable(variable.y, mode, 0, bidirectional);
+    registerVariable(variable.x, mode, cb, bidirectional);
+    registerVariable(variable.y, mode, cb, bidirectional);
     registerVariable(variable.z, mode, cb, bidirectional);
   }
   template <> void Synchronisable::registerVariable( Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
@@ -69,9 +69,9 @@ namespace orxonox{
 
   template <> void Synchronisable::registerVariable( const Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
-    registerVariable(variable.x, mode, 0, bidirectional);
-    registerVariable(variable.y, mode, 0, bidirectional);
-    registerVariable(variable.z, mode, 0, bidirectional);
+    registerVariable(variable.x, mode, cb, bidirectional);
+    registerVariable(variable.y, mode, cb, bidirectional);
+    registerVariable(variable.z, mode, cb, bidirectional);
     registerVariable(variable.w, mode, cb, bidirectional);
   }
   template <> void Synchronisable::registerVariable( Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
@@ -86,10 +86,10 @@ namespace orxonox{
   
   template <> void Synchronisable::registerVariable( const Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
-    registerVariable(variable.w, mode, 0, bidirectional);
-    registerVariable(variable.x, mode, 0, bidirectional);
-    registerVariable(variable.y, mode, 0, bidirectional);
+    registerVariable(variable.x, mode, cb, bidirectional);
+    registerVariable(variable.y, mode, cb, bidirectional);
     registerVariable(variable.z, mode, cb, bidirectional);
+    registerVariable(variable.w, mode, cb, bidirectional);
   }
   template <> void Synchronisable::registerVariable( Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {

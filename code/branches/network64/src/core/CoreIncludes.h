@@ -47,6 +47,7 @@
 #include "ClassFactory.h"
 #include "Functor.h"
 #include "util/Debug.h"
+#include "util/Integers.h"
 
 
 /**

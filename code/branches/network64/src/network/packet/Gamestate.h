@@ -84,14 +84,14 @@ class _NetworkExport Gamestate: public Packet{
 
     // Packet functions
   private:
-    virtual unsigned int getSize() const;
+    virtual uint32_t getSize() const;
     virtual bool process();
 
     bool operator ==(packet::Gamestate gs);
   private:
-    unsigned int calcGamestateSize(unsigned int id, uint8_t mode=0x0);
+    uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
     void removeObject(ObjectListIterator<Synchronisable> &it);
-    std::map<unsigned int, Synchronisable*> dataMap_;
+    std::map<uint32_t, Synchronisable*> dataMap_;
 };
 
 }

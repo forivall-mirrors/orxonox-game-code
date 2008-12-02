@@ -49,6 +49,7 @@
 #include "core/BaseObject.h"
 #include "ClientInformation.h"
 #include "synchronisable/Synchronisable.h"
+#include "synchronisable/NetworkCallbackManager.h"
 
 namespace orxonox
 {
@@ -85,6 +86,8 @@ namespace orxonox
     }
     // now clear the queue
     gamestateQueue.clear();
+    //and call all queued callbacks
+    NetworkCallbackManager::callCallbacks();
     return true;
   }
 
