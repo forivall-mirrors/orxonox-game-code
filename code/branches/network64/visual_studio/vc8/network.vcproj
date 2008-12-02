@@ -231,6 +231,10 @@
 				Name="synchronisable"
 				>
 				<File
+					RelativePath="..\..\src\network\synchronisable\NetworkCallbackManager.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\network\synchronisable\Synchronisable.cc"
 					>
 				</File>
@@ -338,6 +342,10 @@
 				>
 				<File
 					RelativePath="..\..\src\network\synchronisable\NetworkCallback.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\NetworkCallbackManager.h"
 					>
 				</File>
 				<File

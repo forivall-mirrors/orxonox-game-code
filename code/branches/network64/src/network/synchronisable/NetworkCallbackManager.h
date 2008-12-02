@@ -36,7 +36,7 @@
 
 namespace orxonox{
   
-  class NetworkCallbackManager{
+  class _NetworkExport NetworkCallbackManager{
     public:
       static void registerCallback(NetworkCallbackBase *cb);
       static void deleteCallback(NetworkCallbackBase *cb);
