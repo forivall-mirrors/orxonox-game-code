@@ -77,4 +77,14 @@ namespace orxonox
     {
         return omni_cast<btVector3>(this->node_->getScale());
     }
+
+    void CollisionShape::setScale3D(const Vector3& scale)
+    {
+        ThrowException(NotImplemented, "Cannot set the scale of a collision shape: Not yet implemented.");
+    }
+
+    void CollisionShape::scale3D(const Vector3& scale)
+    {
+        ThrowException(NotImplemented, "Cannot set the scale of a collision shape: Not yet implemented.");
+    }
 }

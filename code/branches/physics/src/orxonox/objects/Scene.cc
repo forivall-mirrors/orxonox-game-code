@@ -171,8 +171,10 @@ namespace orxonox
 
     void Scene::tick(float dt)
     {
+        // TODO: This is not stable! If physics cannot be calculated real time anymore,
+        //       framerate will drop exponentially.
         if (physicalWorld_)
-            physicalWorld_->stepSimulation(dt,(int)(dt/0.0166666f));
+            physicalWorld_->stepSimulation(dt,(int)(dt/0.0166666f + 1.0f));
     }
 
     void Scene::setSkybox(const std::string& skybox)

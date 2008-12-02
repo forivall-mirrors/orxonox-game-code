@@ -54,6 +54,9 @@ namespace orxonox
             btCollisionShape* collisionShape_;
 
         private:
+            virtual void setScale3D(const Vector3& scale);
+            virtual void scale3D(const Vector3& scale);
+
             bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
     };
 }

@@ -31,6 +31,7 @@
 
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 
+#include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -219,7 +220,9 @@ namespace orxonox
         this->node_->setPosition(Vector3(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z()));
         this->node_->setOrientation(Quaternion(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z()));
         const btVector3& velocity = this->physicalBody_->getLinearVelocity();
-        this->velocity_ = Vector3(velocity.x(), velocity.y(), velocity.z());
+        this->velocity_.x = velocity.x();
+        this->velocity_.y = velocity.y();
+        this->velocity_.z = velocity.z();
         velocityChanged();
         positionChanged();
         orientationChanged();

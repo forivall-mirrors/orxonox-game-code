@@ -107,7 +107,7 @@ namespace orxonox
             inline void setDirection(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
-            void setScale3D(const Vector3& scale);
+            virtual void setScale3D(const Vector3& scale);
             inline void setScale3D(float x, float y, float z)
                 { this->setScale3D(Vector3(x, y, z)); }
             inline const Vector3& getScale3D(void) const
@@ -118,7 +118,7 @@ namespace orxonox
             inline float getScale() const
                 { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
 
-            void scale3D(const Vector3& scale);
+            virtual void scale3D(const Vector3& scale);
             inline void scale3D(float x, float y, float z)
                 { this->scale3D(Vector3(x, y, z)); }
             inline void scale(float scale)
@@ -181,17 +181,17 @@ namespace orxonox
                 None
             };
 
-            bool hasPhysics() const { return getCollisionType() != None; }
+            bool hasPhysics()  const { return getCollisionType() != None     ; }
+            bool isStatic()    const { return getCollisionType() == Static   ; }
+            bool isKinematic() const { return getCollisionType() == Kinematic; }
+            bool isDynamic()   const { return getCollisionType() == Dynamic  ; }
 
-            CollisionType getCollisionType() const { return this->collisionType_; }
+            inline CollisionType getCollisionType() const
+                { return this->collisionType_; }
             void setCollisionType(CollisionType type);
 
             void setCollisionTypeStr(const std::string& type);
             std::string getCollisionTypeStr() const;
-
-            bool isStatic()    const { return getCollisionType() == Static   ; }
-            bool isKinematic() const { return getCollisionType() == Kinematic; }
-            bool isDynamic()   const { return getCollisionType() == Dynamic  ; }
 
             void setMass(float mass);
             inline float getMass() const
@@ -200,26 +200,28 @@ namespace orxonox
             void attachCollisionShape(CollisionShape* shape);
             CollisionShape* getAttachedCollisionShape(unsigned int index) const;
 
-            CollisionShape* getCollisionShape() { return this->collisionShape_; }
-            btRigidBody* getPhysicalBody() { return this->physicalBody_; }
+            inline CollisionShape* getCollisionShape()
+                { return this->collisionShape_; }
+            inline btRigidBody* getPhysicalBody()
+                { return this->physicalBody_; }
 
         protected:
-            //virtual btCollisionShape* getCollisionShape() = 0;
-            //virtual void attachPhysicalObject(WorldEntity* object);
-
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
-            bool checkPhysics() const;
-            void updateCollisionType();
 
             btRigidBody*  physicalBody_;
 
         private:
+            void updateCollisionType();
             void mergeCollisionShape(CollisionShape* shape);
+            void internalSetMassProps();
+            btVector3 getLocalInertia(btScalar mass) const;
+            bool checkPhysics() const;
 
             CollisionType                collisionType_;
             std::vector<CollisionShape*> attachedShapes_;
             CollisionShape*              collisionShape_;
             btScalar                     mass_;
+            btScalar                     childMass_;
     };
 }
 

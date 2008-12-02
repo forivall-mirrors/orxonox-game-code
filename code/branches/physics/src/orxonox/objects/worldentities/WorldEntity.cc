@@ -74,7 +74,8 @@ namespace orxonox
         this->physicalBody_ = 0;
         this->collisionShape_ = 0;
         this->mass_ = 0;
-        updateCollisionType();
+        this->childMass_ = 0;
+        this->collisionType_ = None;
 
         this->registerVariables();
     }
@@ -150,6 +151,7 @@ namespace orxonox
             else
             {
                 // static to static/kinematic/dynamic --> merge shapes
+                this->childMass_ += object->getMass();
                 this->attachCollisionShape(object->getCollisionShape());
                 // Remove the btRigidBody from the child object.
                 // That also implies that cannot add a physics WE to the child afterwards.
@@ -194,27 +196,21 @@ namespace orxonox
         return 0;
     }
 
-    void WorldEntity::mergeCollisionShape(CollisionShape* shape)
-    {
-        if (!this->collisionShape_)
-            this->collisionShape_ = new CompoundCollisionShape(this);
-        assert(this->collisionShape_->isCompoundShape());
-
-        // merge with transform
-        CompoundCollisionShape* compoundShape = static_cast<CompoundCollisionShape*>(this->collisionShape_);
-        assert(compoundShape);
-        compoundShape->addChildShape(shape);
-    }
-
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
         this->attachedShapes_.push_back(shape);
 
         if (!this->collisionShape_ && shape->hasNoTransform())
         {
-            // Simply add the shape as is.
+            // Set local scaling right when adding it. It can include both scaling parameters
+            // and shape parameters (like sphere radius)
             shape->getCollisionShape()->setLocalScaling(shape->getTotalScaling());
             this->collisionShape_ = shape;
+            // recalculate inertia tensor
+            if (this->isDynamic())
+            {
+                internalSetMassProps();
+            }
         }
         else
         {
@@ -245,10 +241,20 @@ namespace orxonox
             return 0;
     }
 
-    //BlinkingBillboard* WorldEntity::getAttachedAsdfObject(unsigned int index) const
-    //{
-    //    return 0;
-    //}
+    void WorldEntity::mergeCollisionShape(CollisionShape* shape)
+    {
+        if (!this->collisionShape_)
+            this->collisionShape_ = new CompoundCollisionShape(this);
+        assert(this->collisionShape_->isCompoundShape());
+
+        // merge with transform
+        CompoundCollisionShape* compoundShape = static_cast<CompoundCollisionShape*>(this->collisionShape_);
+        assert(compoundShape);
+        compoundShape->addChildShape(shape);
+
+        // recalculate inertia tensor
+        internalSetMassProps();
+    }
 
     void WorldEntity::setScale3D(const Vector3& scale)
     {
@@ -269,19 +275,38 @@ namespace orxonox
     void WorldEntity::setMass(float mass)
     {
         this->mass_ = mass;
-        if (!hasPhysics())
-            COUT(2) << "Warning: Setting the mass of a WorldEntity with no physics has no effect." << std::endl;
+        if (!this->hasPhysics())
+            COUT(3) << "Warning: Setting the mass of a WorldEntity with no physics has no effect." << std::endl;
         else if (this->physicalBody_->isInWorld())
-            COUT(2) << "Warning: Cannot set the physical mass at run time. Storing temporarily." << std::endl;
+            COUT(2) << "Warning: Cannot set the physical mass at run time. Storing new mass." << std::endl;
         else
+            internalSetMassProps();
+    }
+
+    void WorldEntity::internalSetMassProps()
+    {
+        assert(hasPhysics());
+
+        if ((this->isKinematic() || this->isStatic()) && (this->mass_ + this->childMass_) != 0.0f)
         {
-            if (this->collisionType_ != Dynamic)
-                COUT(2) << "Warning: Cannot set the physical mass of a static or kinematic object. Storing temporarily." << std::endl;
-            else if (mass == 0.0f)
-                COUT(2) << "Warning: Cannot set physical mass of a dynamic object to zero. Storing temporarily." << std::endl;
-            else
-                this->physicalBody_->setMassProps(mass, btVector3(0,0,0));
+            // Mass non zero is a bad idea for kinematic and static objects
+            this->physicalBody_->setMassProps(0.0f, btVector3(0, 0, 0));
         }
+        else if (this->isDynamic() && (this->mass_ + this->childMass_) == 0.0f)
+        {
+            // Mass zero is not such a good idea for dynamic objects
+            this->physicalBody_->setMassProps(1.0f, this->getLocalInertia(1.0f));
+        }
+        else
+            this->physicalBody_->setMassProps(this->mass_, this->getLocalInertia(this->mass_ + this->childMass_));
+    }
+
+    btVector3 WorldEntity::getLocalInertia(btScalar mass) const
+    {
+        btVector3 inertia(0, 0, 0);
+        if (this->collisionShape_)
+            this->collisionShape_->getCollisionShape()->calculateLocalInertia(mass, inertia);
+        return inertia;
     }
 
     void WorldEntity::setCollisionType(CollisionType type)
@@ -299,6 +324,10 @@ namespace orxonox
         // Check whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
         {
+            // Check whether there was some scaling applied.
+            if (!this->node_->getScale().positionEquals(Vector3(1, 1, 1), 0.001))
+                ThrowException(NotImplemented, "Cannot create a physical body if there is scaling applied to the node: Not yet implemented.");
+
             // Create new rigid body
             btCollisionShape* temp = 0;
             if (this->collisionShape_)
@@ -336,27 +365,10 @@ namespace orxonox
 
         // update our variable for faster checks
         updateCollisionType();
+        assert(this->collisionType_ == type);
 
-        // Mass non zero is a bad idea for kinematic and static objects
-        if ((type == Kinematic || type == Static) && this->mass_ != 0.0f)
-            this->setMass(0.0f);
-        // Mass zero is not such a good idea for dynamic objects
-        else if (type == Dynamic && this->mass_ == 0.0f)
-            this->setMass(1.0f);
-        else if (hasPhysics())
-            this->physicalBody_->setMassProps(this->mass_, btVector3(0,0,0));
-    }
-
-    void WorldEntity::updateCollisionType()
-    {
-        if (!this->physicalBody_)
-            this->collisionType_ = None;
-        else if (this->physicalBody_->isKinematicObject())
-            this->collisionType_ = Kinematic;
-        else if (this->physicalBody_->isStaticObject())
-            this->collisionType_ = Static;
-        else
-            this->collisionType_ = Dynamic;
+        // update mass and inertia tensor
+        internalSetMassProps(); // type is not None! See case None: in switch
     }
 
     void WorldEntity::setCollisionTypeStr(const std::string& typeStr)
@@ -392,6 +404,18 @@ namespace orxonox
                 assert(false);
                 return "";
         }
+    }
+
+    void WorldEntity::updateCollisionType()
+    {
+        if (!this->physicalBody_)
+            this->collisionType_ = None;
+        else if (this->physicalBody_->isKinematicObject())
+            this->collisionType_ = Kinematic;
+        else if (this->physicalBody_->isStaticObject())
+            this->collisionType_ = Static;
+        else
+            this->collisionType_ = Dynamic;
     }
 
     bool WorldEntity::checkPhysics() const
