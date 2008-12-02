@@ -39,7 +39,6 @@
 //
 
 #include "Synchronisable.h"
-#include "SynchronisableSpecialisations.cc" // this defines all specialisations for registerVariable
 
 #include <cstring>
 #include <string>

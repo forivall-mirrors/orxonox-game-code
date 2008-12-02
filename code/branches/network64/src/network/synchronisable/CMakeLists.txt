@@ -1,5 +1,6 @@
 SET( SRC_FILES
   Synchronisable.cc
+  SynchronisableSpecialisations.cc
   SynchronisableVariable.cc
 )
 

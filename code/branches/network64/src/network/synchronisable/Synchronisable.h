@@ -147,19 +147,19 @@ namespace orxonox
   }
   
   // ================= Specialisation declarations
-  template <> void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);template <> void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( const Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( const Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( const Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( mbool& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( const Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-  template <> void Synchronisable::registerVariable( Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-//   template <> void Synchronisable::registerVariable( LODParticle::LOD& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-//   template <> void Synchronisable::registerVariable( Ogre::Light::LightTypes& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( const Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( const Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( const Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( Vector4& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( mbool& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( const Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+//   template <> _NetworkExport void Synchronisable::registerVariable( LODParticle::LOD& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+//   template <> _NetworkExport void Synchronisable::registerVariable( Ogre::Light::LightTypes& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
 }
 
 #endif /* _Synchronisable_H__ */

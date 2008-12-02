@@ -27,7 +27,7 @@
  *
  */
 
-
+#include "network/synchronisable/Synchronisable.h"
 
 // ================ template spezialisation
   
