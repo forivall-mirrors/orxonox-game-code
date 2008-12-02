@@ -54,28 +54,34 @@ namespace orxonox
     {
         if (this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
         {
+            this->attachedWeaponPack_ = wPack;
             //should be possible to choose which slot to use
             for (  int i=0; i < wPack->getSize() ; i++  )
             {
+                //at the moment this function only works for one weaponPack in the entire WeaponSystem...
+                this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(i) );
                 this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(i) );
             }
         }
     }
 
-    /* this function will be in WeaponPack
+
     void WeaponSet::fire()
     {
-        for (int i=0; i < (int) this->weaponSlots_.size(); i++)
-        {
-COUT(0) << "WeaponSlot::fire"<< i << std::endl;
-            this->weaponSlots_[i]->fire();
-        }
+        //fires all WeaponSlots available for this weaponSet attached from the WeaponPack
+        this->attachedWeaponPack_->fire();
     }
-    */
+
+    void WeaponSet::setFireMode(const unsigned int firemode)
+    {   this->firemode_ = firemode; }
+
+    const unsigned int WeaponSet::getFireMode() const
+    {   return this->firemode_; }
 
     void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(WeaponSet, XMLPort, xmlelement, mode);
+        XMLPortParam(WeaponSet, "firemode", setFireMode, getFireMode, xmlelement, mode);
     }
 
 }

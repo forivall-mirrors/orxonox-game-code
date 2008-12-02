@@ -71,8 +71,7 @@ COUT(0) << "WeaponSlot::fire" << std::endl;
     //XMLPort functions
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(WeaponSlot, XMLPort, xmlelement, mode);
-        XMLPortObject(WeaponSlot, Weapon, "attached-weapon", attachWeapon, getAttachedWeapon, xmlelement, mode);
+
     }
 
     void WeaponSlot::attachWeapon(Weapon *weaponPointer)

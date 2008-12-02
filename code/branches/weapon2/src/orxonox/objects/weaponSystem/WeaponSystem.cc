@@ -104,7 +104,7 @@ namespace orxonox
 COUT(0) << "WeaponSystem::fire" << std::endl;
         if (n < (int)this->weaponSets_.size())
 COUT(0) << "WeaponSystem::fire - after if" << std::endl;
-            //this->weaponSets_[n]->fire();
+            this->weaponSets_[n]->fire();
     }
 
 

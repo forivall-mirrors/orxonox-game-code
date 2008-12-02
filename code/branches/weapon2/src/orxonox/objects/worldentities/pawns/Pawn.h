@@ -80,6 +80,10 @@ namespace orxonox
 
             void setWeaponSlot(WeaponSlot * wSlot);
             WeaponSlot * getWeaponSlot(unsigned int index) const;
+         //   void setWeaponPack(WeaponPack * wPack);
+         //   WeaponPack * getWeaponPack(unsigned int index) const;
+            void setWeaponSet(WeaponSet * wSet);
+            WeaponSet * getWeaponSet(unsigned int index) const;
 
         protected:
             virtual void spawn();
