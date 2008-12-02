@@ -102,15 +102,11 @@ namespace orxonox
                   const char* filename, const char* functionName)
                   : Exception(description, lineNumber, filename, functionName)
         {
-            // let the catcher decide whether to display the message below level 4
-            COUT(4) << this->getFullDescription() << std::endl;
         }
 
         SpecificException(const std::string& description)
             : Exception(description)
         {
-            // let the catcher decide whether to display the message below level 4
-            COUT(4) << this->getFullDescription() << std::endl;
         }
 
         ~SpecificException() throw() { }
@@ -147,8 +143,20 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
     CREATE_ORXONOX_EXCEPTION(GameState);
 
+    /**
+    @brief
+        Helper function that creates an exception, displays the message, but doesn't throw it.
+    */
+    template <class T>
+    inline const T& InternalHandleException(const T& exception)
+    {
+        // let the catcher decide whether to display the message below level 4
+        COUT(4) << exception.getFullDescription() << std::endl;
+        return exception;
+    }
+
 #define ThrowException(type, description) \
-    throw SpecificException<Exception::type>(description, __LINE__, __FILE__, __FUNCTIONNAME__)
+    throw InternalHandleException(SpecificException<Exception::type>(description, __LINE__, __FILE__, __FUNCTIONNAME__))
 
     // define an assert macro that can display a message
 #ifndef NDEBUG
