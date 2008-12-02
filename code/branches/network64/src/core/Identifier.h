@@ -67,6 +67,7 @@
 #include "Iterator.h"
 #include "Super.h"
 #include "Functor.h"
+#include "util/Integers.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
