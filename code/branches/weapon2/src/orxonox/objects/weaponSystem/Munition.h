@@ -58,6 +58,8 @@ namespace orxonox
             void addMagazines(unsigned int k);
 
         private:
+
+        protected:
             unsigned int bullets_;
             unsigned int magazines_;
             unsigned int maxBullets_;

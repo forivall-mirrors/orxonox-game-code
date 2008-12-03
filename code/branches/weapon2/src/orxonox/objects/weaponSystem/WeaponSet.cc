@@ -45,7 +45,7 @@ namespace orxonox
         RegisterObject(WeaponSet);
 
         this->parentWeaponSystem_ = 0;
-
+        this->attachedWeaponPack_ = 0;
     }
 
     WeaponSet::~WeaponSet()

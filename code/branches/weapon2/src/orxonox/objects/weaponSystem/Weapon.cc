@@ -43,6 +43,9 @@ namespace orxonox
         RegisterObject(Weapon);
         this->bulletReadyToShoot_ = true;
         this->magazineReadyToShoot_ = true;
+        this->parentWeaponSystem_ = 0;
+        this->parentWeaponSlot_ = 0;
+        this->munition_ = 0;
     }
 
     Weapon::~Weapon()
@@ -89,6 +92,7 @@ namespace orxonox
             else
             {
                 //create new munition with identifier
+COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munitionName << std::endl;
                 this->munitionIdentifier_ = ClassByString(munitionName);
                 this->munition_ = this->munitionIdentifier_.fabricate(this);
                 this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
@@ -107,8 +111,12 @@ namespace orxonox
     std::string Weapon::getMunitionType()
     {   return this->munitionType_;  }
 
-    Munition * Weapon::getAttachedMunition()
-    {   return this->munition_; }
+    Munition * Weapon::getAttachedMunition(std::string munitionType)
+    {   
+COUT(0) << "Weapon::getAttachedMunition, parentWeaponSystem_="<< this->parentWeaponSystem_ << std::endl;   
+        this->parentWeaponSystem_->getMunitionType(munitionType);
+COUT(0) << "Weapon::getAttachedMunition, munition_="<< this->munition_ << std::endl;
+return this->munition_; }
 
     void Weapon::setBulletLoadingTime(float loadingTime)
     {   this->bulletLoadingTime_ = loadingTime;   }

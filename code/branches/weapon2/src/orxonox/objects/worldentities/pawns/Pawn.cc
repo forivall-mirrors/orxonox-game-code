@@ -166,7 +166,11 @@ COUT(0) << "Pawn::setWeaponSlot" << std::endl;
     void Pawn::setWeaponPack(WeaponPack * wPack)
     {   
 COUT(0) << "Pawn::setWeaponPack" << std::endl;
-        this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );   }
+        this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );
+        wPack->setParentWeaponSystem(this->weaponSystem_);
+        wPack->setWeaponSystemToAllWeapons(this->weaponSystem_);
+    }
+
     WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
     {   return this->weaponSystem_->getWeaponPackPointer(firemode);    }
     

@@ -103,4 +103,13 @@ COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << st
     {
         return weapons_[index];
     }
+
+    void WeaponPack::setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
+    {
+        for (int i=0; i < (int) this->weapons_.size(); i++)
+        {
+            this->weapons_[i]->setParentWeaponSystem(weaponSystem);
+        }
+        
+    }
 }

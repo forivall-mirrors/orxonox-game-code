@@ -83,6 +83,8 @@ namespace orxonox
     {
         this->munitionSet_[munitionType] = munitionToAdd;
     }
+
+    //returns the Pointer to the munitionType
     Munition * WeaponSystem::getMunitionType(std::string munitionType)
     {
         std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);

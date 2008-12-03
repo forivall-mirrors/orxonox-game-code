@@ -60,8 +60,9 @@ namespace orxonox
 COUT(0) << "LaserGun::fire" << std::endl;
         if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
         {
+COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;    
             //take munition
-            this->getAttachedMunition()->removeBullets(1,this);
+            this->getAttachedMunition(this->munitionType_)->removeBullets(1,this);
             Weapon::bulletTimer();
             this->setBulletReadyToShoot(false);
 

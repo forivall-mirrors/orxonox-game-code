@@ -51,7 +51,7 @@ namespace orxonox
 
             virtual void fire();
             void attachNeededMunition(std::string munitionType);
-            Munition * getAttachedMunition();
+            Munition * getAttachedMunition(std::string munitiontype);
 
             //reloading
             void bulletTimer();
@@ -82,6 +82,8 @@ namespace orxonox
                 { return this->parentWeaponSystem_; };
 
         private:
+
+        protected:
             bool bulletReadyToShoot_;
             bool magazineReadyToShoot_;
             float bulletLoadingTime_;

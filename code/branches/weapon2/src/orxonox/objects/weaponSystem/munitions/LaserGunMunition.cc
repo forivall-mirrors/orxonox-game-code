@@ -36,6 +36,8 @@
 
 namespace orxonox
 {
+    CreateFactory(LaserGunMunition);
+
     LaserGunMunition::LaserGunMunition(BaseObject* creator) : Munition(creator)
     {
         RegisterObject(LaserGunMunition);

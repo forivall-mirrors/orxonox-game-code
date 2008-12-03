@@ -59,6 +59,8 @@ namespace orxonox
             void addWeapon(Weapon * weapon);
             Weapon * getWeapon(unsigned int index);
 
+            void setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
+
             inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }
             inline WeaponSystem * getParentWeaponSystem()
