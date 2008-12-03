@@ -45,13 +45,7 @@ namespace network {
 	{
 	  assert(instance_=0);
 	  instance_=this;
-	  listToProcess_ = new std::map<unsigned int, objInfo>;
-	  clientListPerm_ = new std::map<unsigned int,std::map<unsigned int, objInfo>>;
-	  clientListTemp_ = new std::map std::map<unsigned int, std::map<unsigned int, std::vector<obj>>>;
-	  permObjPrio_ = new std::map<unsigned int, unsigned int> ;
-	  schedObjPrio_ = new std::map<unsigned int, unsigned int> schedObjPrio_;
-          copiedVector = new std::vector<obj>;
-          targetSize = 5000;//5000bytes
+    targetSize = 5000;//5000bytes
 	}
 	
 	/**
@@ -73,10 +67,10 @@ namespace network {
         */
         bool TrafficControl::priodiffer(obj i, obj j)
         {
-          map<unsigned int, objInfo>::iterator iti;
-          map<unsigned int, objInfo>::iterator itj;
-          iti=listToProcess_->find(i.objID);
-          itj=listToProcess_->find(j.objID);
+          std::map<unsigned int, objInfo>::iterator iti;
+          std::map<unsigned int, objInfo>::iterator itj;
+          iti=listToProcess_.find(i.objID);
+          itj=listToProcess_.find(j.objID);
           return iti->second.objValuePerm < itj->second.objValuePerm;
         }
 
@@ -89,45 +83,50 @@ namespace network {
 	  currentGamestateID=gamestateID;
 	  evaluateList(list);
 	  //list hatte vorher ja vielmehr elemente, nach zuweisung nicht mehr... speicherplatz??
-	  list=copiedVector;
+	  *list=copiedVector;
           //später wird copiedVector ja überschrieben, ist das ein problem für list-dh. für gamestatemanager?
 	  return list;
 	}
 	
 	void TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
 	{
-	  map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;//iterator clientListPerm
-	  map<unsigned int, objInfo>::iterator itpermoid;//iterator over objectid
-	  map<unsigned int, std::map<unsigned int, obj>>::iterator ittemp;//iterator clientListTemp, iterates over clientIDs
-	  map<unsigned int, unsigned int>::iterator ittempgs;//iterator that iterates over gsIDs of a client
-	  vector<obj>::iterator itvec;
+	  std::map<unsigned int, std::map<unsigned int, std::vector<objInfo> > >::iterator itperm;//iterator clientListPerm
+	  std::map<unsigned int, std::vector<objInfo> >::iterator itpermObjectIDList;//iterator over objectid
+    std::vector<objInfo>::iterator itpermObjectID;
+    std::map<unsigned int, std::map<unsigned int, std::vector<obj> > >::iterator ittemp;//iterator clientListTemp, iterates over clientIDs
+	  std::map<unsigned int, std::vector<obj> >::iterator ittempgs;//iterator that iterates over gsIDs of a client
+	  std::vector<obj>::iterator itvec;
 	  //following code helps to put clientListTemp infos into clientListPerm infos
-	  ittemp = (clientListTemp_).find(clientID);
-	  assert(ittemp != clientListTemp_.end() ); //muss da nicht was anderes überprüft werden?
-	  itperm = (clientListPerm_).find(clientID);
+	  ittemp = clientListTemp_.find(clientID);
+	  assert(ittemp != clientListTemp_.end() ); //muss da nicht was anderes überprüft werden? -> nein
+	  itperm = clientListPerm_.find(clientID);
 	  assert(itperm != clientListPerm_.end() );
-	  ittempgs = (*ittemp).find(gamestateID);
-	  assert( ittempgs != (*ittemp).end() );//gleiche frage wie vorher
-	  for(itvec = *ittempgs.begin(); itvec = *ittempgs.end(); itvec++)
-	  { 
-	    if(itpermoid = (*itperm).find(itvec.objID))
-	    {
-	      if(gamestateID>(*itpermoid).second.objCurGS)
-	      {
-		(*itpermoid).second.objCurGS = gamestateID;
-	      }
-	      else continue;
-	    }
-	    else
-	    {
-	      objInfo objinf = new objInfo;
-	      objinf.objCurGS = gamestateID;
-	      insertinClientListPerm(clientID, itvec.objID, objinf);
-	    }
-	    //entferne objekt aus temporärer liste
-	    ittempgs.erase(itvec);
+	  ittempgs = ittemp->second.find(gamestateID);
+	  assert( ittempgs != ittemp->second.end() );//gleiche frage wie vorher -> nein
+	  for(itvec = ittempgs->second.begin(); itvec != ittempgs->second.end(); itvec++)
+	  {
+      bool alreadyExisting = false;
+      itpermObjectIDList = itperm->second.find(gamestateID);
+      assert(itpermObjectIDList != itperm->second.end());
+      for (itpermObjectID = itpermObjectIDList->second.begin(); itpermObjectID != itpermObjectIDList->second.end(); itpermObjectID++ )
+      {
+        if ( (*itpermObjectID).objID == (*itvec).objID)
+        {
+          (*itpermObjectID).objCurGS = gamestateID;
+          alreadyExisting = true;
+          break;
+        }
+        if ( !alreadyExisting )
+        {
+          objInfo objinf;    // TODO: is this initialisation complete ?
+          objinf.objCurGS = gamestateID;
+          objinf.objID = (*itvec).objID;
+          insertinClientListPerm(clientID, (*itvec).objID, objinf);
+        }
+      }
 	  }
-	
+	   // remove temporary vector (with acked objects) from the map
+    ittemp->second.erase(ittempgs);
 	}
 
 /**
@@ -138,15 +137,15 @@ namespace network {
 	/**
 	*copyList gets vector of Gamestate Manager and turns it to *listToProcess
 	*/
-	void TrafficControl::copyList(std::map<obj> *list)
+	void TrafficControl::copyList(std::vector<obj> *list)
 	{
-	  vector<obj>::iterator itvec;
-	  for(itvec = (*list).begin(); itvec < (*list).end(); itvec++)
+	  std::vector<obj>::iterator itvec;
+	  for(itvec = (*list).begin(); itvec != (*list).end(); itvec++)
 	  {
-	    objInfo objectA = new objInfo;
-	    (*objectA).objCreatorID=(*itvec).objCreatorID;
-	    (*objectA).objSize = (*itvec).objSize;
-	    (*listToProcess_).insert(pair<currentClientID, map<(*itvec).objID,objectA>>);//unsicher: ob map<...> so richtig ist
+	    objInfo objectA;
+	    objectA.objCreatorID=(*itvec).objCreatorID;
+	    objectA.objSize = (*itvec).objSize;
+	    listToProcess_.insert(pair<currentClientID, map<(*itvec).objID,objectA>>);//unsicher: ob map<...> so richtig ist
 	  }
 	}
 	/**
@@ -227,14 +226,13 @@ namespace network {
 	void TrafficControl::evaluateList(std::vector<obj> *list)
 	{
 	  copyList(list);
-	  updateReferenceList(listToProcess_);
 	
 	  //now the sorting
 	
 	  //compare listToProcess vs clientListPerm
           //if listToProcess contains new Objects, add them to clientListPerm
 	  std::map<unsigned int, objInfo>::iterator itproc;
-	  std::map<unsigned int, std::map<unsigned int, objInfo>>::iterator itperm;
+	  std::map<unsigned int, std::map<unsigned int, objInfo> >::iterator itperm;
 	  std::map<unsigned int, objInfo>::iterator itpermobj;
 	  std::map<unsigned int, unsigned int>::iterator itpermprio;
 	  for((*itproc)=(listToProcess_).begin(); itproc != (listToProcess_).end();it++)
@@ -268,7 +266,7 @@ namespace network {
 	  //end compare listToProcess vs clientListPerm
 	
 	//listToProc vs clientListTemp
-	map<unsigned int, std::map<unsigned int, unsigned int>>::iterator ittemp;
+	map<unsigned int, std::map<unsigned int, unsigned int> >::iterator ittemp;
 	map<unsigned int, unsigned int>::iterator ittempgs;
 	for((itproc=listToProcess_).begin(); itproc != (listToProcess_).end();itproc++)
 	{

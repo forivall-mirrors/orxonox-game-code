@@ -36,6 +36,7 @@
 
 #include "NetworkPrereqs.h"
 #include "Synchronisable.h"
+#include "util/Integers.h"
 
 namespace network {
 
@@ -44,10 +45,11 @@ namespace network {
 */
 struct objInfo
 {
-  unsigned int objCreatorID;
-  unsigned int objCurGS;//current GameState ID
-  unsigned int objDiffGS;//difference between current and latest GameState
-  unsigned int objSize;
+  uint32_t objID;
+  uint32_t objCreatorID;
+  int32_t objCurGS;//current GameState ID
+  int32_t objDiffGS;//difference between current and latest GameState
+  uint32_t objSize;
   unsigned int objValuePerm;
   unsigned int objValueSched;
 };
@@ -87,13 +89,13 @@ class TrafficControl{
     /**
     *permanent client list: contains client ids, object ids and objectInfos (in this order)
     */
-    std::map<unsigned int, std::map<unsigned int, objInfo>> clientListPerm_;
+    std::map<unsigned int, std::map<unsigned int, std::vector<objInfo> > > clientListPerm_;
     //has to be created with constructor and then needs to be updated by evaluateList().
 
     /**
     *temporary client list: contains client ids, gamestate ids and object ids (in this order)
     */
-    std::map<unsigned int, std::map<unsigned int, std::vector<obj>>> clientListTemp_;
+    std::map<unsigned int, std::map<unsigned int, std::vector<obj> > > clientListTemp_;
     /**
     *static priority list: contains obj id, basic priority (in this order)
     */
@@ -104,7 +106,7 @@ class TrafficControl{
     std::map<unsigned int, unsigned int> schedObjPrio_;
     //end: lists to be used
 
-    /**
+    /**updateReferenceList
     *currentGamestateID and currentClientID will be defined as soon as TrafficControl is being called by Server
     */
     unsigned int currentGamestateID;
