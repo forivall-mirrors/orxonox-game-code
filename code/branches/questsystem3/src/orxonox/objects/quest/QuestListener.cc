@@ -60,6 +60,8 @@ namespace orxonox {
         XMLPortParam(QuestListener, "questStatus", setQuestStatus, getQuestStatus, xmlelement, mode);
 
         this->quest_->addListener(this);
+        
+        COUT(3) << "QuestListener created for quest: {" << this->quest_->getId() << "} and status '" << this->status_ << "'." << std::endl;
     }
     
     void QuestListener::advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status)
@@ -77,6 +79,9 @@ namespace orxonox {
     bool QuestListener::execute()
     {
         this->fireEvent(true); //TDO This' right?
+        
+        COUT(3) << "QuestListener fired Event, expect for somethign to happen." << std::endl;
+        
         return true;
     }
     
