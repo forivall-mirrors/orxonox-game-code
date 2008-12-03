@@ -54,7 +54,6 @@ namespace orxonox
         private:
             float speed_;
 
-
     };
 }
 

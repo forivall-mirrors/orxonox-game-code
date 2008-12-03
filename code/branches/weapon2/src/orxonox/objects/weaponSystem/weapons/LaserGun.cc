@@ -48,7 +48,7 @@ namespace orxonox
         //this->setLoadingTime(0.5);
 
         //how could it be loaded by XML
-        this->attachNeededMunition("LaserGunMunition");
+        this->attachNeededMunition(this->getMunitionType());
     }
 
     LaserGun::~LaserGun()

@@ -53,6 +53,7 @@ namespace orxonox
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Weapon, XMLPort, xmlelement, mode);
+        XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
     }
 
     void Weapon::fire()
@@ -80,14 +81,18 @@ namespace orxonox
     void Weapon::attachNeededMunition(std::string munitionName)
     {
         //if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
-        if ( this->parentWeaponSystem_->getMunitionType(munitionName) )
-            this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionName);
-        else
+        if (this->parentWeaponSystem_)
         {
-            //create new munition with identifier
-            this->munitionIdentifier_ = ClassByString(munitionName);
-            this->munition_ = this->munitionIdentifier_.fabricate(this);
-            this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
+            Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
+            if ( munition )
+                this->munition_ = munition;
+            else
+            {
+                //create new munition with identifier
+                this->munitionIdentifier_ = ClassByString(munitionName);
+                this->munition_ = this->munitionIdentifier_.fabricate(this);
+                this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
+            }
         }
     }
 
@@ -95,6 +100,13 @@ namespace orxonox
     /*get and set functions
      *
      */
+
+    void Weapon::setMunitionType(std::string munitionType)
+    {   this->munitionType_ = munitionType; }
+
+    std::string Weapon::getMunitionType()
+    {   return this->munitionType_;  }
+
     Munition * Weapon::getAttachedMunition()
     {   return this->munition_; }
 

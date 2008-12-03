@@ -69,6 +69,9 @@ namespace orxonox
             Timer<Weapon> *getBulletTimer();
             Timer<Weapon> *getMagazineTimer();
 
+            void setMunitionType(std::string munitionType);
+            std::string getMunitionType();
+
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
                 { this->parentWeaponSlot_=parentWeaponSlot; };
             inline WeaponSlot * getParentWeaponSlot()
@@ -84,6 +87,7 @@ namespace orxonox
             float bulletLoadingTime_;
             float magazineLoadingTime_;
             Munition *munition_;
+            std::string munitionType_;
 
             WeaponSlot *parentWeaponSlot_;
             WeaponSystem *parentWeaponSystem_;

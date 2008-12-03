@@ -45,7 +45,7 @@ namespace orxonox
         RegisterObject(WeaponPack);
 
         this->parentWeaponSystem_ = 0;
-        this->firemode_ = 1;
+        this->firemode_ = 0;
 
     }
 
@@ -67,7 +67,7 @@ namespace orxonox
     {
         for (int i=0; i < (int) this->weapons_.size(); i++)
         {
-COUT(0) << "WeaponPack::fire (attached from WeaponSet)"<< i << std::endl;
+COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << std::endl;
             this->weapons_[i]->fire();
         }
     }
