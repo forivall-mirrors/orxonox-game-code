@@ -136,8 +136,14 @@ namespace orxonox
     {
         if (wantPhysics && !hasPhysics())
         {
-            btVector3 worldAabbMin(worldAabbMin.x, worldAabbMin.y, worldAabbMin.z);
-            btVector3 worldAabbMax(worldAabbMax.x, worldAabbMax.y, worldAabbMax.z);
+			float x = worldAabbMin.x;
+			float y = worldAabbMin.y;
+			float z = worldAabbMin.z;
+            btVector3 worldAabbMin(x,y,z);
+			x = worldAabbMax.x;
+			y = worldAabbMax.y;
+			z = worldAabbMax.z;
+            btVector3 worldAabbMax(x,y,z);
 
             btDefaultCollisionConfiguration*     collisionConfig = new btDefaultCollisionConfiguration();
             btCollisionDispatcher*               dispatcher      = new btCollisionDispatcher(collisionConfig);
