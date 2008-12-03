@@ -302,7 +302,7 @@ namespace orxonox
       return true;
     //std::cout << "inside getData" << std::endl;
     uint32_t tempsize = 0;
-    if(classID==0)
+    if (this->classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
 
     if (this->classID == static_cast<uint32_t>(-1))
