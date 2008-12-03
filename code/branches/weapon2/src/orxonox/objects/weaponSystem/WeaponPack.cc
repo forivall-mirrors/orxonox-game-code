@@ -38,6 +38,8 @@
 
 namespace orxonox
 {
+    CreateFactory(WeaponPack);
+
     WeaponPack::WeaponPack(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponPack);
@@ -65,7 +67,7 @@ namespace orxonox
     {
         for (int i=0; i < (int) this->weapons_.size(); i++)
         {
-COUT(0) << "WeaponPack::fire"<< i << std::endl;
+COUT(0) << "WeaponPack::fire (attached from WeaponSet)"<< i << std::endl;
             this->weapons_[i]->fire();
         }
     }
@@ -93,6 +95,7 @@ COUT(0) << "WeaponPack::fire"<< i << std::endl;
 
     void WeaponPack::addWeapon(Weapon * weapon)
     {
+        weapon->setParentWeaponSystem(this->parentWeaponSystem_);
         this->weapons_.push_back(weapon);
     }
     

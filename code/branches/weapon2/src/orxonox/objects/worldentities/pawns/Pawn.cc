@@ -54,11 +54,12 @@ namespace orxonox
 
         //WeaponSystem
         weaponSystem_ = new WeaponSystem(this);
+        /*
         WeaponSet * weaponSet1 = new WeaponSet(this,1);
         this->weaponSystem_->attachWeaponSet(weaponSet1);
         //totally bad solution...
         weaponSet1->setParentWeaponSystem(weaponSystem_);
-
+        */
 
         this->registerVariables();
     }
@@ -156,17 +157,23 @@ COUT(0) << "Pawn::fire" << std::endl;
 
 
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)
-    {   this->weaponSystem_->attachWeaponSlot(wSlot);   }
+    {   
+COUT(0) << "Pawn::setWeaponSlot" << std::endl;
+        this->weaponSystem_->attachWeaponSlot(wSlot);   }
     WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
     {   return this->weaponSystem_->getWeaponSlotPointer(index);    }
     
     void Pawn::setWeaponPack(WeaponPack * wPack)
-    {   this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );   }
+    {   
+COUT(0) << "Pawn::setWeaponPack" << std::endl;
+        this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );   }
     WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
     {   return this->weaponSystem_->getWeaponPackPointer(firemode);    }
     
     void Pawn::setWeaponSet(WeaponSet * wSet)
-    {   this->weaponSystem_->attachWeaponSet(wSet);   }
+    {   
+COUT(0) << "Pawn::setWeaponSet" << std::endl;
+        this->weaponSystem_->attachWeaponSet(wSet);   }
     WeaponSet * Pawn::getWeaponSet(unsigned int index) const
     {   return this->weaponSystem_->getWeaponSetPointer(index);    }
 

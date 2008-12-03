@@ -36,12 +36,13 @@
 
 namespace orxonox
 {
+    CreateFactory(Weapon);
+
     Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Weapon);
         this->bulletReadyToShoot_ = true;
         this->magazineReadyToShoot_ = true;
-        this->setParentWeaponSystem();
     }
 
     Weapon::~Weapon()
@@ -94,9 +95,6 @@ namespace orxonox
     /*get and set functions
      *
      */
-    void Weapon::setParentWeaponSystem()
-    {   this->parentWeaponSystem_ = this->parentWeaponSlot_->getParentWeaponSystem(); }
-
     Munition * Weapon::getAttachedMunition()
     {   return this->munition_; }
 

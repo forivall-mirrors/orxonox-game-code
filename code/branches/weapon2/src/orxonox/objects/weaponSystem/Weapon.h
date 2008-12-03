@@ -51,7 +51,6 @@ namespace orxonox
 
             virtual void fire();
             void attachNeededMunition(std::string munitionType);
-            virtual void setParentWeaponSystem();
             Munition * getAttachedMunition();
 
             //reloading
@@ -71,9 +70,13 @@ namespace orxonox
             Timer<Weapon> *getMagazineTimer();
 
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
-                { parentWeaponSlot_=parentWeaponSlot; };
+                { this->parentWeaponSlot_=parentWeaponSlot; };
             inline WeaponSlot * getParentWeaponSlot()
-                { return parentWeaponSlot_; };
+                { return this->parentWeaponSlot_; };
+            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
+                { this->parentWeaponSystem_=parentWeaponSystem; };
+            inline WeaponSystem * getParentWeaponSystem()
+                { return this->parentWeaponSystem_; };
 
         private:
             bool bulletReadyToShoot_;

@@ -37,6 +37,8 @@
 
 namespace orxonox
 {
+    CreateFactory(WeaponSlot);
+
     WeaponSlot::WeaponSlot(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(WeaponSlot);

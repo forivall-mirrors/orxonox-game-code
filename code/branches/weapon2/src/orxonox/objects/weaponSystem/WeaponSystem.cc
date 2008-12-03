@@ -45,6 +45,7 @@
 
 namespace orxonox
 {
+    CreateFactory(WeaponSystem);
 
     WeaponSystem::WeaponSystem(BaseObject* creator) : BaseObject(creator)
     {
@@ -60,21 +61,21 @@ namespace orxonox
 
     void WeaponSystem::attachWeaponPack(WeaponPack *wPack, unsigned int firemode)
     {
+        wPack->setParentWeaponSystem(this);
         this->weaponSets_[firemode]->attachWeaponPack(wPack);
         this->weaponPacks_[firemode] = wPack;
-        wPack->setParentWeaponSystem(this);
     }
 
     void WeaponSystem::attachWeaponSlot(WeaponSlot *wSlot)
     {
-        this->weaponSlots_.push_back(wSlot);
         wSlot->setParentWeaponSystem(this);
+        this->weaponSlots_.push_back(wSlot);
     }
 
     void WeaponSystem::attachWeaponSet(WeaponSet *wSet)
     {
-        this->weaponSets_.push_back(wSet);
         wSet->setParentWeaponSystem(this);
+        this->weaponSets_.push_back(wSet);
     }
 
     void WeaponSystem::setNewMunition(std::string munitionType, Munition * munitionToAdd)

@@ -38,6 +38,8 @@
 
 namespace orxonox
 {
+    CreateFactory(WeaponSet);
+
     WeaponSet::WeaponSet(BaseObject* creator, int k) : BaseObject(creator)
     {
         RegisterObject(WeaponSet);
@@ -52,6 +54,7 @@ namespace orxonox
 
     void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
+COUT(0) << "WeaponSet::attachWeaponPack" << std::endl;
         if ( this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
         {
             this->attachedWeaponPack_ = wPack;
@@ -74,6 +77,7 @@ namespace orxonox
     void WeaponSet::fire()
     {
         //fires all WeaponSlots available for this weaponSet attached from the WeaponPack
+COUT(0) << "WeaponSet::fire" << std::endl;
         this->attachedWeaponPack_->fire();
     }
 
