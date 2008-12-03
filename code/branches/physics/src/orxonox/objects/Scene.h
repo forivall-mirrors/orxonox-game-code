@@ -67,14 +67,12 @@ namespace orxonox
             inline bool getShadow() const
                 { return this->bShadows_; }
 
-            //inline const Vector3& getWorldAabbMax()
-            //{
-            //    this->physicalWorld_->getBroadphase();
-            //}
-
             inline bool hasPhysics()
                 { return this->physicalWorld_ != 0; }
             void setPhysicalWorld(bool wantsPhysics, const Vector3& worldAabbMin, const Vector3& worldAabbMax);
+
+            void addRigidBody(btRigidBody* body);
+            void removeRigidBody(btRigidBody* body);
 
             void tick(float dt);
 
@@ -91,6 +89,7 @@ namespace orxonox
             Ogre::SceneNode*       rootSceneNode_;
 
             btDiscreteDynamicsWorld* physicalWorld_;
+            std::set<btRigidBody*>   physicsQueue_;
 
             std::string            skybox_;
             ColourValue            ambientLight_;

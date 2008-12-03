@@ -88,7 +88,13 @@ namespace orxonox
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
 
-            this->setCollisionType(None);
+            if (this->physicalBody_)
+            {
+                if (this->physicalBody_->isInWorld())
+                    this->getScene()->getPhysicalWorld()->removeRigidBody(this->physicalBody_);
+                delete this->physicalBody_;
+            }
+            // TODO: Delete collisionShapes
         }
     }
 
@@ -146,16 +152,21 @@ namespace orxonox
                 ThrowException(PhysicsViolation, "Cannot attach a kinematic object to a dynamic one.");
             else if (object->isKinematic())
                 ThrowException(NotImplemented, "Cannot attach a kinematic object to a static or kinematic one: Not yet implemented.");
-            else if (object->physicalBody_->isInWorld() || this->physicalBody_->isInWorld())
-                ThrowException(PhysicsViolation, "Cannot attach a physical object at runtime.");
             else
             {
+                if (this->physicalBody_->isInWorld())
+                    removeFromPhysicalWorld();
+                if (object->physicalBody_->isInWorld())
+                    this->getScene()->removeRigidBody(object->physicalBody_);
+
                 // static to static/kinematic/dynamic --> merge shapes
                 this->childMass_ += object->getMass();
                 this->attachCollisionShape(object->getCollisionShape());
                 // Remove the btRigidBody from the child object.
                 // That also implies that cannot add a physics WE to the child afterwards.
                 object->setCollisionType(None);
+
+                addToPhysicalWorld();
             }
         }
 
@@ -208,9 +219,7 @@ namespace orxonox
             this->collisionShape_ = shape;
             // recalculate inertia tensor
             if (this->isDynamic())
-            {
                 internalSetMassProps();
-            }
         }
         else
         {
@@ -227,10 +236,14 @@ namespace orxonox
         if (this->physicalBody_)
         {
             if (this->physicalBody_->isInWorld())
-                COUT(2) << "Warning: Cannot attach a physical object at runtime.";
-            else
-                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+            {
+                COUT(2) << "Warning: Attaching collision shapes at run time causes its physical body to be removed and added again.";
+                removeFromPhysicalWorld();
+            }
+            this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
         }
+
+        addToPhysicalWorld();
     }
 
     CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
@@ -256,6 +269,18 @@ namespace orxonox
         internalSetMassProps();
     }
 
+    void WorldEntity::addToPhysicalWorld() const
+    {
+        if (this->isActive() && this->hasPhysics() && !this->physicalBody_->isInWorld())
+            this->getScene()->addRigidBody(this->physicalBody_);
+    }
+
+    void WorldEntity::removeFromPhysicalWorld() const
+    {
+        if (this->hasPhysics())
+            this->getScene()->removeRigidBody(this->physicalBody_);
+    }
+
     void WorldEntity::setScale3D(const Vector3& scale)
     {
         if (this->hasPhysics())
@@ -277,10 +302,17 @@ namespace orxonox
         this->mass_ = mass;
         if (!this->hasPhysics())
             COUT(3) << "Warning: Setting the mass of a WorldEntity with no physics has no effect." << std::endl;
-        else if (this->physicalBody_->isInWorld())
-            COUT(2) << "Warning: Cannot set the physical mass at run time. Storing new mass." << std::endl;
         else
+        {
+            if (this->physicalBody_->isInWorld())
+            {
+                COUT(2) << "Warning: Setting the mass of a WorldEntity at run time causes its physical body to be removed and added again." << std::endl;
+                removeFromPhysicalWorld();
+            }
             internalSetMassProps();
+        }
+
+        addToPhysicalWorld();
     }
 
     void WorldEntity::internalSetMassProps()
@@ -339,8 +371,8 @@ namespace orxonox
         else if (type == None && this->collisionType_ != None)
         {
             // Destroy rigid body
-            if (this->physicalBody_->isInWorld())
-                this->getScene()->getPhysicalWorld()->removeRigidBody(this->physicalBody_);
+            assert(this->physicalBody_);
+            removeFromPhysicalWorld();
             delete this->physicalBody_;
             this->physicalBody_ = 0;
             this->collisionType_ = None;
@@ -369,6 +401,8 @@ namespace orxonox
 
         // update mass and inertia tensor
         internalSetMassProps(); // type is not None! See case None: in switch
+
+        addToPhysicalWorld();
     }
 
     void WorldEntity::setCollisionTypeStr(const std::string& typeStr)

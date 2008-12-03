@@ -124,20 +124,6 @@ namespace orxonox
         XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValue(0, true).defaultValue(1, worldAabbMin).defaultValue(2, worldAabbMax);
 
         XMLPortObjectExtended(Scene, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
-
-        // finally add all rigid bodies to the physics engine
-        if (hasPhysics())
-        {
-            for (std::list<BaseObject*>::const_iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
-            {
-                WorldEntity* temp = dynamic_cast<WorldEntity*>(*it);
-                if (temp)
-                {
-                    if (temp->getCollisionType() != WorldEntity::None)
-                        this->physicalWorld_->addRigidBody(temp->getPhysicalBody());
-                }
-            }
-        }
     }
 
     void Scene::registerVariables()
@@ -171,10 +157,24 @@ namespace orxonox
 
     void Scene::tick(float dt)
     {
-        // TODO: This is not stable! If physics cannot be calculated real time anymore,
-        //       framerate will drop exponentially.
         if (physicalWorld_)
+        {
+            if (this->physicsQueue_.size() > 0)
+            {
+                // Add all scheduled WorldEntities
+                for (std::set<btRigidBody*>::const_iterator it = this->physicsQueue_.begin();
+                    it != this->physicsQueue_.end(); ++it)
+                {
+                    if (!(*it)->isInWorld())
+                        this->physicalWorld_->addRigidBody(*it);
+                }
+                this->physicsQueue_.clear();
+            }
+
+            // TODO: This is not stable! If physics cannot be calculated real time anymore,
+            //       framerate will drop exponentially.
             physicalWorld_->stepSimulation(dt,(int)(dt/0.0166666f + 1.0f));
+        }
     }
 
     void Scene::setSkybox(const std::string& skybox)
@@ -222,5 +222,27 @@ namespace orxonox
             ++i;
         }
         return 0;
+    }
+
+    void Scene::addRigidBody(btRigidBody* body)
+    {
+        if (!this->physicalWorld_)
+            COUT(1) << "Error: Cannot WorldEntity body to physical Scene: No physics." << std::endl;
+        else if (body)
+            this->physicsQueue_.insert(body);
+    }
+
+    void Scene::removeRigidBody(btRigidBody* body)
+    {
+        if (!this->physicalWorld_)
+            COUT(1) << "Error: Cannot WorldEntity body to physical Scene: No physics." << std::endl;
+        else if (body)
+        {
+            this->physicalWorld_->removeRigidBody(body);
+            // Also check queue
+            std::set<btRigidBody*>::iterator it = this->physicsQueue_.find(body);
+            if (it != this->physicsQueue_.end())
+                this->physicsQueue_.erase(it);
+        }
     }
 }

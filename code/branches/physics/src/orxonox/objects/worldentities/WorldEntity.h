@@ -216,6 +216,8 @@ namespace orxonox
             void internalSetMassProps();
             btVector3 getLocalInertia(btScalar mass) const;
             bool checkPhysics() const;
+            void addToPhysicalWorld() const;
+            void removeFromPhysicalWorld() const;
 
             CollisionType                collisionType_;
             std::vector<CollisionShape*> attachedShapes_;
