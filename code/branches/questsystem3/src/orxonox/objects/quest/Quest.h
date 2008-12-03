@@ -109,8 +109,10 @@ namespace orxonox {
 	    bool isCompleted(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
 	    
 	    bool start(PlayerInfo* player); //!< Sets a Quest to active.
-	    virtual bool fail(PlayerInfo* player) = 0; //!< Fails the Quest.
-	    virtual bool complete(PlayerInfo* player) = 0; //!< Completes the Quest.
+	    virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
+	    virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
+	    
+	    bool addListener(QuestListener* listener); //!< Adds a QuestListener to the list of QuestListeners listening to this Quest.
 
         protected:
             virtual bool isStartable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be started.
@@ -148,6 +150,8 @@ namespace orxonox {
 
             std::list<QuestEffect*> failEffects_; //!< A list of all QuestEffects to be invoked, when the Quest has been failed.
             std::list<QuestEffect*> completeEffects_; //!< A list of QuestEffects to be invoked, when the Quest has been completed.
+            
+            std::list<QuestListener*> listeners_; //!< A list of QuestListeners, that listen to what exactly happens with this Quest.
             
             bool setParentQuest(Quest* quest); //!< Sets the parentquest of the Quest.
             bool addSubQuest(Quest* quest); //!< Adds a subquest to the Quest.

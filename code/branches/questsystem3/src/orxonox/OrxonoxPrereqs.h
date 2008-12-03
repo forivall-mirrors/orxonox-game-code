@@ -101,6 +101,7 @@ namespace orxonox
     class QuestEffectBeacon;
     class QuestHint;
     class QuestItem;
+    class QuestListener;
     class QuestManager;
     class Rewardable;
 

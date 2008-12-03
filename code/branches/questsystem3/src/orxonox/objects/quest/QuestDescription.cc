@@ -73,6 +73,8 @@ namespace orxonox {
 
         XMLPortParam(QuestDescription, "title", setTitle, getTitle, xmlelement, mode);
         XMLPortParam(QuestDescription, "description", setDescription, getDescription, xmlelement, mode);
+        XMLPortParam(QuestDescription, "failMessage", setFailMessage, getFailMessage, xmlelement, mode);
+        XMLPortParam(QuestDescription, "failMessage", setCompleteMessage, getCompleteMessage, xmlelement, mode);
 
         COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
     }

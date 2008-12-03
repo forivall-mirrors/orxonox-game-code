@@ -41,6 +41,7 @@
 #include "util/Exception.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
+#include "orxonox/overlays/notifications/Notification.h"
 #include "QuestManager.h"
 #include "Quest.h"
 
@@ -109,6 +110,8 @@ namespace orxonox {
         }
 
         COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player." << std::endl;
+        Notification* notification = new Notification("Crazy Message...", "Title", 30);
+        notification->send();
         return true;
     }
 

@@ -96,16 +96,16 @@ namespace orxonox {
         std::string text = "";
         
         int i = NotificationQueue::queue_s->getLength();
-        for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end() || i <= 0; ++notification)
+        for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end() && i > 0; ++notification)
         {
             i--;
             NotificationContainer* container = *notification;
-            if(container->remainingTime == 0)
+            if(container->remainingTime == 0.0)
                 continue;
             
             COUT(3) << "Update, title: " << container->notification->getTitle() << ", message: " << container->notification->getMessage() << std::endl;
             
-	    text = text + "\n\n\n------------" + container->notification->getTitle(); + "\n\n" + container->notification->getMessage();
+	    text = text + "\n\n\n------------" + container->notification->getTitle() + "\n\n" + container->notification->getMessage();
         }
 
         COUT(3) << "Queue updated: " << text << std::endl;
