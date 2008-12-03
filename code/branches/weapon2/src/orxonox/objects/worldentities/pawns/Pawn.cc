@@ -77,7 +77,7 @@ namespace orxonox
 
         XMLPortObject(Pawn, WeaponSlot, "weaponslots", setWeaponSlot, getWeaponSlot, xmlelement, mode);
         XMLPortObject(Pawn, WeaponSet, "weaponsets", setWeaponSet, getWeaponSet, xmlelement, mode);
-        //XMLPortObject(Pawn, WeaponPack, "weapons", setWeaponPack, getWeaponPack, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", setWeaponPack, getWeaponPack, xmlelement, mode);
 
         }
 
@@ -154,18 +154,17 @@ COUT(0) << "Pawn::fire" << std::endl;
     }
 
 
+
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)
     {   this->weaponSystem_->attachWeaponSlot(wSlot);   }
     WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
     {   return this->weaponSystem_->getWeaponSlotPointer(index);    }
-
-    /*
+    
     void Pawn::setWeaponPack(WeaponPack * wPack)
-    {   this->weaponSystem_->attachWeaponPack(wPack);   }
-    WeaponPack * Pawn::getWeaponPack(unsigned int index) const
-    {   return this->weaponSystem_->getWeaponPackPointer(index);
-    */
-
+    {   this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );   }
+    WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
+    {   return this->weaponSystem_->getWeaponPackPointer(firemode);    }
+    
     void Pawn::setWeaponSet(WeaponSet * wSet)
     {   this->weaponSystem_->attachWeaponSet(wSet);   }
     WeaponSet * Pawn::getWeaponSet(unsigned int index) const

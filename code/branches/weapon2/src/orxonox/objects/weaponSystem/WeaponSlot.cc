@@ -68,7 +68,6 @@ COUT(0) << "WeaponSlot::fire" << std::endl;
     }
 
 
-    //XMLPort functions
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 
@@ -77,7 +76,7 @@ COUT(0) << "WeaponSlot::fire" << std::endl;
     void WeaponSlot::attachWeapon(Weapon *weaponPointer)
     {   this->attachedWeapon_ = weaponPointer;   }
 
-    Weapon * WeaponSlot::getAttachedWeapon(unsigned int index) const
+    Weapon * WeaponSlot::getAttachedWeapon() const
     {   return this->attachedWeapon_;   }
 
 

@@ -34,6 +34,7 @@
 #include "util/Debug.h"
 
 #include "WeaponPack.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -42,6 +43,7 @@ namespace orxonox
         RegisterObject(WeaponPack);
 
         this->parentWeaponSystem_ = 0;
+        this->firemode_ = 1;
 
     }
 
@@ -75,7 +77,27 @@ COUT(0) << "WeaponPack::fire"<< i << std::endl;
 
     void WeaponPack::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
+        XMLPortParam(WeaponPack, "firemode", setFireMode, getFireMode, xmlelement, mode);
     }
 
+    void WeaponPack::setFireMode(unsigned int firemode)
+    {
+        this->firemode_ = firemode;
+    }
+
+    unsigned int WeaponPack::getFireMode()
+    {
+        return this->firemode_;
+    }
+
+    void WeaponPack::addWeapon(Weapon * weapon)
+    {
+        this->weapons_.push_back(weapon);
+    }
+    
+    Weapon * WeaponPack::getWeapon(unsigned int index)
+    {
+        return weapons_[index];
+    }
 }

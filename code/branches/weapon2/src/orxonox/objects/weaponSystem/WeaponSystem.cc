@@ -35,7 +35,7 @@
 #include "util/Debug.h"
 
 #include "WeaponSystem.h"
-#include "WeaponPack.h"
+
 
 /* WEAPONSYSTEM
  * creates the WeaponSystem and the ability to use weapons and munition
@@ -51,16 +51,18 @@ namespace orxonox
         RegisterObject(WeaponSystem);
 
         this->activeWeaponSet_ = 0;
-        this->parentSpaceShip_ = 0;
+        this->parentPawn_ = 0;
     }
 
     WeaponSystem::~WeaponSystem()
     {
     }
 
-    void WeaponSystem::attachWeaponPack(WeaponPack *wPack, int setNumber)
+    void WeaponSystem::attachWeaponPack(WeaponPack *wPack, unsigned int firemode)
     {
-        this->weaponSets_[setNumber]->attachWeaponPack(wPack);
+        this->weaponSets_[firemode]->attachWeaponPack(wPack);
+        this->weaponPacks_[firemode] = wPack;
+        wPack->setParentWeaponSystem(this);
     }
 
     void WeaponSystem::attachWeaponSlot(WeaponSlot *wSlot)
@@ -120,6 +122,14 @@ COUT(0) << "WeaponSystem::fire - after if" << std::endl;
     {
         if (n < this->weaponSlots_.size())
             return this->weaponSlots_[n];
+        else
+            return 0;
+    }
+
+    WeaponPack * WeaponSystem::getWeaponPackPointer(unsigned int n)
+    {
+        if (n < this->weaponPacks_.size())
+            return this->weaponPacks_[n];
         else
             return 0;
     }

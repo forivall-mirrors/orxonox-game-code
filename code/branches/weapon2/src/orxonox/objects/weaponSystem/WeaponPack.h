@@ -53,6 +53,12 @@ namespace orxonox
             int getSize();
             void attachWeapon(Weapon *weapon);
 
+            void setFireMode(unsigned int firemode);
+            unsigned int getFireMode();
+
+            void addWeapon(Weapon * weapon);
+            Weapon * getWeapon(unsigned int index);
+
             inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }
             inline WeaponSystem * getParentWeaponSystem()
@@ -61,6 +67,7 @@ namespace orxonox
         private:
             std::vector<Weapon *> weapons_;
             WeaponSystem *parentWeaponSystem_;
+            unsigned int firemode_;
     };
 }
 

@@ -52,15 +52,20 @@ namespace orxonox
 
     void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
-        if (this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
+        if ( this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
         {
             this->attachedWeaponPack_ = wPack;
+            int wPackWeapon = 0;    //WeaponCounter for Attaching
             //should be possible to choose which slot to use
             for (  int i=0; i < wPack->getSize() ; i++  )
             {
                 //at the moment this function only works for one weaponPack in the entire WeaponSystem...
-                this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(i) );
-                this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(i) );
+                if ( this->parentWeaponSystem_->getWeaponSlotPointer(i)->getAttachedWeapon() != 0 ) //if slot not full
+                {
+                    this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(i) );
+                    this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
+                    wPackWeapon++;
+                }
             }
         }
     }
