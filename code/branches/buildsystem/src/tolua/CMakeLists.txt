@@ -17,8 +17,13 @@ SET(TOLUAGEN_SRC_FILES
 ADD_EXECUTABLE       (toluaexe_orxonox ${TOLUAGEN_SRC_FILES})
 TARGET_LINK_LIBRARIES(toluaexe_orxonox tolualib_orxonox ${LUA_LIBRARIES})
 
-# TODO: determine lua version and set appropriate pack file
-SET(TOLUA_ALL_PACK all-5.1.lua)
+# Determine Lua version and set appropriate pack file
+IF(LUA50_FOUND)
+  SET(TOLUA_ALL_PACK all-5.0.lua)
+ELSE(LUA50_FOUND)
+  SET(TOLUA_ALL_PACK all-5.1.lua)
+ENDIF(LUA50_FOUND)
+
 SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${TOLUA_ALL_PACK}" PARENT_SCOPE)
 SET(TOLUA_PARSER_DEPENDENCIES
   ${CMAKE_CURRENT_SOURCE_DIR}/${TOLUA_ALL_PACK}
