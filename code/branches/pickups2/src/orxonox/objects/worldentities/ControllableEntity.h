@@ -69,6 +69,7 @@ namespace orxonox
 
             virtual void greet() {}
             virtual void use() {}
+            virtual void dropItems() {}
             virtual void switchCamera();
 
             inline const Vector3& getVelocity() const

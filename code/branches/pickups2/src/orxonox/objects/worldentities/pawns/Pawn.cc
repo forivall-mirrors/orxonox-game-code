@@ -45,7 +45,7 @@ namespace orxonox
         RegisterObject(Pawn);
 
         this->bAlive_ = false;
-
+	this->getPickUp().setPlayer(this);
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
@@ -146,5 +146,10 @@ namespace orxonox
     {
         this->setHealth(this->initialHealth_);
         this->spawn();
+    }
+
+    void Pawn::dropItems()
+    {
+	pickUp.eraseAll();
     }
 }

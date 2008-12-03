@@ -8,6 +8,7 @@
 #include "util/String.h"
 #include "objects/worldentities/pawns/Pawn.h"
 
+
 namespace orxonox
 {
 Item::Item(BaseObject* creator) : BaseObject(creator)
@@ -29,11 +30,12 @@ Item::~Item()
 
 bool Item::addTo (Pawn* player)
 {
+	
+	return player->getPickUp().insert(this);
 	/*if(checkSlot(player)==true)
 	player->pickUp.Equipment.insert ( std::pair<std::string, Item*>(this->getName(),this) );
 	else
 	COUT(3) << "swap?" << std::endl;*/
-	return player->getPickUp().insert(this);
 }
 bool Item::remove(Pawn* player)
 {
@@ -50,14 +52,14 @@ bool Item::remove(Pawn* player)
 }
 bool Item::checkSlot(Pawn* player)
 {
-	/*std::multimap<std::string,Item*>::iterator it;
-	for ( it=player->pickUp.Equipment.begin() ; it != player->pickUp.Equipment.end(); it++ )
+	std::multimap<std::string,Item*>::iterator it;
+	for ( it=player->getPickUp().getEquipment().begin() ; it != player->getPickUp().getEquipment().end(); it++ )
 	{
 	if((*it).second->playerBaseClass_==this->playerBaseClass_)
 	return false;
 	}
-	return true;*/
-	return player->getPickUp().checkSlot(this);
+	return true;
+	//return player->getPickUp().checkSlot(player);
 }
 void Item::setPlayerBaseClassName(const std::string& name)
 {

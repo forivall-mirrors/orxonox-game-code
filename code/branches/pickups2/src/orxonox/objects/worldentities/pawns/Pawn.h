@@ -74,9 +74,12 @@ namespace orxonox
             virtual void kill();
 
             virtual void fire();
+            virtual void postSpawn();
+
             inline ShipEquipment& getPickUp()
                 {return this->pickUp;}
-            virtual void postSpawn();
+
+            virtual void dropItems();
 
         protected:
             virtual void spawn();

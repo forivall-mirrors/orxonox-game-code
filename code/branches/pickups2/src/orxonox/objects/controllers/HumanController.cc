@@ -46,6 +46,7 @@ namespace orxonox
     SetConsoleCommand(HumanController, greet,         true);
     SetConsoleCommand(HumanController, use,           true);
     SetConsoleCommand(HumanController, switchCamera,  true);
+    SetConsoleCommand(HumanController, dropItems,     true);
 
     CreateUnloadableFactory(HumanController);
 
@@ -127,5 +128,11 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->switchCamera();
+    }
+
+    void HumanController::dropItems()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->dropItems();
     }
 }

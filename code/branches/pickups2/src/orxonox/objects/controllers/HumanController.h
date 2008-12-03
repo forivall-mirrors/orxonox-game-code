@@ -56,6 +56,7 @@ namespace orxonox
             static void greet();
             static void use();
             static void switchCamera();
+            static void dropItems();
 
         private:
             static HumanController* localController_s;

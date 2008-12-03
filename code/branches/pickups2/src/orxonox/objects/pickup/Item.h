@@ -3,10 +3,11 @@
 
 #include "core/BaseObject.h"
 #include "OrxonoxPrereqs.h"
-#include "ShipEquipment.h"
 
 namespace orxonox
 {
+	class ShipEquipment;
+
 	class _OrxonoxExport Item : public BaseObject
 	{
 	public:

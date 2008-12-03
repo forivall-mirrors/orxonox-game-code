@@ -1,35 +1,52 @@
 #include "Item.h"
 #include "ShipEquipment.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 
 namespace orxonox
 {
+
 	bool ShipEquipment::insert(Item* item)
 	{
-	if(checkSlot(player)==true)
+	if(checkSlot(item)==true)
+	{
 		Equipment.insert ( std::pair<std::string, Item*>(item->getName(),item) );
-	else
+		return true;
+	}
 		COUT(3) << "swap?" << std::endl;
+		return false;
 	
+	return false;
 	};
 	bool ShipEquipment::erase (Item* item)
 	{
-	if(Equipment.find(item->getName())!= Equipment.end())
+	std::multimap<std::string,Item*>::iterator it = Equipment.find(item->getName());
+	if(it != Equipment.end())
  	{
- 		std::multimap<std::string,Item*>::iterator it;
- 		it=Equipment.find(item->getName());
+		//it->second->dropped(this->getPlayer());
   		Equipment.erase (it);
   		return true;
   	}
   	else
   		return false;
 	};
-	bool ShipEquipment::checkSlot(Item* item) const
+
+	void ShipEquipment::eraseAll()
+	{
+		
+		for (std::multimap<std::string,Item*>::iterator it = Equipment.begin(); it != Equipment.end(); )
+		{
+		
+			(it++)->second->dropped(this->getPlayer());
+		}
+	}
+
+	bool ShipEquipment::checkSlot(Item* item)
 	{
 	std::multimap<std::string,Item*>::iterator it;
-	for ( it=Equipment.begin() ; it != Equipment.end(); it++ )
+	for ( it= getPlayer()->getPickUp().getEquipment().begin() ; it != getPlayer()->getPickUp().getEquipment().end(); it++ )
 	{
-		if((*it).second->playerBaseClass_==item->playerBaseClass_)
+		if((*it).second->getPlayerBaseClass()==item->getPlayerBaseClass())
 		return false;
 	}
 	return true;

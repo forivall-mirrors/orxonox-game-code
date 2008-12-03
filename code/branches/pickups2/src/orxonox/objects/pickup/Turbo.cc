@@ -41,10 +41,19 @@ namespace orxonox
 		if(player-> isA(this->getPlayerBaseClass()))
 			{
 			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);
-			this->setSpeedBoost(ship);
-			if(duration_==0)
-			addTo(player);
-			return true;
+			if(duration_==0 )
+			{	if(addTo(player))
+					{
+						this->setSpeedBoost(ship);
+						return true;
+					}
+			}
+			else
+			{
+				this->setSpeedBoost(ship);
+				return true;
+			}
+			return false;
 			}
 		return false;
 
@@ -78,6 +87,7 @@ namespace orxonox
 	{
 		if (this->duration_ == 0)
 		{
+			COUT(0) << "dropped" << std::endl;
 			if(remove(player)==true);
 			{
 			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);

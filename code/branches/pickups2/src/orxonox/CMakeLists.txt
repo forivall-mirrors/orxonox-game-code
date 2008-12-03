@@ -71,6 +71,7 @@ SET( ORXONOX_SRC_FILES
 
   objects/pickup/Item.cc
   objects/pickup/Turbo.cc
+  objects/pickup/ShipEquipment.cc
 
   objects/quest/AddQuest.cc
   objects/quest/AddQuestHint.cc
