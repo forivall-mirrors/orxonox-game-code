@@ -44,7 +44,7 @@ TrafficControl::TrafficControl()
 {
   assert(instance_=0);
   instance_=this;
-  clientListPerm_=new std::map<unsigned int,std::map<unsigned int, unsigned int>>;
+  clientListPerm_=new std::map<unsigned int,std::map<unsigned int, objInfo>>;
   referenceList_=new std::map<unsigned int, Synchronisable*>;
 }
 
@@ -196,9 +196,56 @@ TrafficControl::evaluateList(std::map<obj> *list)
   //sort copied vector aufgrund der objprioperm in clientlistperm
   sort(copiedvector.begin(),copiedvector.end(),priodiffer);
   //swappen aufgrund von creator oder ganz rausnehmen!?
-
+  for(itvec = copiedVector.begin(); itvec < copiedVector.end(); itvec++)
+  { 
+    itproc = listToProcess_->find(itvec->objID);
+    if(itproc->second.objCreatorID)
+    {
+      //vor dem child in copiedvector einfügen, wie?
+      copiedVector.insert(itproc->second.objCreatorID);
+    }
+    else continue;
+  }
   //end of sorting
-  return evaluatedList_;
+  //now the cutting, work the same obj out in processobjectlist and copiedvector, compression rate muss noch festgelegt werden. 
+  cut(copiedVector,compressionRate-1);
+  //diese Funktion updateClientList muss noch gemacht werden
+  updateClientListTemp(copiedVector);
+  //end of sorting
+}
+
+TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
+{
+  map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;
+  map<unsigned int, std::map<unsigned int, unsigned int>>::iterator ittemp;
+  map<unsigned int, unsigned int>::iterator ittempgs;
+  vector<obj>::iterator itvec;
+  //put temporarylist infos into permanentlist infos
+  ittemp = clientListTemp_->find(clientID);
+  assert(ittemp != clientListTemp_.end() );
+  ittempgs = (*ittemp).find(gamestateID);
+  assert( ittempgs != (*ittemp).end() );
+  for(itvec = *ittempgs.begin(); itvec = *ittempgs.end(); itvec++)
+  {
+    if(itperm = (*clientListPerm_).find(itvec.objID))
+    {
+      itperm = (*clientListPerm_).find(itvec.objID);
+      if(gamestateID>itperm.second.objCurGS)
+      {
+        itperm.second.objCurGS = gamestateID;
+      }
+      else continue;
+    }
+    else
+    {
+      objInfo objinf = new objInfo;
+      objinf.objCurGS = gamestateID;
+      insertinClientListPerm(itvec.objID, objinf);
+    }
+    //entferne objekt aus temporärer liste
+    ittempgs.erase(itvec);
+  }
+  
 }
 
 
