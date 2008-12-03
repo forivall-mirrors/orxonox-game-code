@@ -43,7 +43,7 @@ namespace orxonox
     CreateFactory(CreateLines);
 
     /**
-        @brief Constructor: Creates and initializes a line.
+        @brief Constructor: Creates a line.
     */
     CreateLines::CreateLines(BaseObject* creator)
         : OrxonoxOverlay(creator)
@@ -62,34 +62,35 @@ namespace orxonox
     /**
         @brief Ensures that the number of OverlayElements is equal to numberOfColumns.
     */
-    void setNumberOfColumns(unsigned int numberOfColumns) {
+    void CreateLines::setNumberOfColumns(unsigned int numberOfColumns, unsigned int lineIndex) {
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
 
-        while (textColumns_.getSize() < numberOfColumns) {
+        while (textColumns_.size() < numberOfColumns) {
 
-            tempTextArea* = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex)));
-            textColumns_->add2D(tempTextArea);
+            Ogre::TextAreaOverlayElement* tempTextArea = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex)));
             textColumns_.push_back(tempTextArea);
+            this->background_->addChild(tempTextArea);
 
         }
 
-        while (textColumns_.getSize() > numberOfColumns) {
+        while (textColumns_.size() > numberOfColumns) {
 
-            ovMan->destroy(textColumns_.back());
+            this->background_->_removeChild(textColumns_.back());
+            ovMan->destroyOverlayElement(textColumns_.back());
             textColumns_.pop_back();
 
         }
 
     }
 
-    void alignColumn(int columnIndex, float leftOffset) {
+    void CreateLines::alignColumn(int columnIndex, float leftOffset, float topOffset) {
 
-        this->textColumns_[columnIndex]->setPosition(leftOffset,0);
+        this->textColumns_[columnIndex]->setPosition(leftOffset, topOffset);
 
     }
 
-    void setColumnText(int columnIndex, string columnText) {
+    void CreateLines::setColumnText(int columnIndex, std::string columnText) {
 
         this->textColumns_[columnIndex]->setCaption(columnText);
 

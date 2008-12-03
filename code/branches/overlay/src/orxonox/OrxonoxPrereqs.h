@@ -169,6 +169,8 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+    class CreateLines;
+    class Scoreboard;
 
     //gui
     class GUIManager;

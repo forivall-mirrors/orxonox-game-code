@@ -37,6 +37,8 @@ SET( ORXONOX_SRC_FILES
 
   overlays/stats/Stats.cc
   overlays/stats/StatsTest.cc
+  overlays/stats/CreateLines.cc
+  overlays/stats/Scoreboard.cc
 
   tools/BillboardSet.cc
   tools/Mesh.cc

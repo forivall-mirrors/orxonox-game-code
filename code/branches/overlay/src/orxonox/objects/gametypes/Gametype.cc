@@ -39,6 +39,7 @@
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
+#include "Settings.h"
 
 #include "network/Host.h"
 
@@ -66,8 +67,9 @@ namespace orxonox
         setConfigValues();
 
         // load the corresponding score board
-        statsOverlay_ = new XMLFile(Settings::getDataPath() + "overlay/" + this->statsOverlayName_);
+        this->statsOverlay_ = new XMLFile(Settings::getDataPath() + "overlay/" + this->statsOverlayName_);
         Loader::open(statsOverlay_);
+        this->setGametype(this);
     }
 
     void Gametype::setConfigValues()

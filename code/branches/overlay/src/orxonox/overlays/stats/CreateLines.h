@@ -43,15 +43,16 @@ namespace orxonox
     {
 
     public: // functions
-        CreateLines();
-        ~CreateLines();
+        CreateLines(BaseObject* creator);
+        virtual ~CreateLines() {}
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
+        void setNumberOfColumns(unsigned int numberOfColumns, unsigned int lineIndex);
+        void alignColumn(int columnIndex, float leftOffset, float topOffset);
+        void setColumnText(int columnIndex, std::string columnText);
+
     private: // functions
-        void setNumberOfColumns();
-        void alignColumn();
-        void setColumnText();
 
     private: // variables
         std::vector<Ogre::TextAreaOverlayElement*> textColumns_;

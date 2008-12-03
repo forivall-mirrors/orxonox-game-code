@@ -81,6 +81,15 @@ namespace orxonox
             inline float getStartCountdown() const
                 { return this->startCountdown_; }
 
+            inline unsigned int getNumberOfPlayers() const
+                { return this->players_.size(); }
+
+            inline std::string getPlayersName() const
+                { return "StatsBot77"; }
+
+            inline unsigned int getPlayersFrags() const
+                { return 123; }
+
         private:
             void setConfigValues();
 

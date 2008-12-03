@@ -25,7 +25,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "CreateLines.h"
+#include "Scoreboard.h"
 
 #include <string>
 #include <OgreOverlay.h>
@@ -37,18 +37,54 @@
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "objects/gametypes/Gametype.h"
+#include "CreateLines.h"
 
 namespace orxonox
 {
     CreateFactory(Scoreboard);
 
     /**
-        @brief Constructor: Creates and initializes a line.
+        @brief Constructor: Creates the scoreboard.
     */
     Scoreboard::Scoreboard(BaseObject* creator)
         : OrxonoxOverlay(creator)
     {
         RegisterObject(Scoreboard);
+    }
+
+    /**
+        @brief Prints the scoreboard on the screen.
+    */
+    void Scoreboard::printLines() {
+
+        numberOfColumns = 2;
+        numberOfLines = this->gametype_->getNumberOfPlayers();
+        columnIndex = 0;
+        topOffset = 0.3;
+        lineSpacing = 0.1;
+
+        for (unsigned int i = 0; i < numberOfLines; i++) {
+
+            leftOffset = 0.3;
+
+            this->createlines_->setNumberOfColumns(numberOfColumns, i);
+
+            columnText = this->gametype_->getPlayersName();
+            this->createlines_->alignColumn(columnIndex, topOffset, leftOffset);
+            this->createlines_->setColumnText(columnIndex, columnText);
+
+            columnIndex++;
+            leftOffset = leftOffset + 0.4;
+
+            columnText = this->gametype_->getPlayersFrags();
+            this->createlines_->alignColumn(columnIndex, topOffset, leftOffset);
+            this->createlines_->setColumnText(columnIndex, columnText);
+
+            topOffset = topOffset + lineSpacing;
+
+        }
+
     }
 
 }

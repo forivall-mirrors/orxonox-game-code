@@ -43,15 +43,32 @@ namespace orxonox
     {
 
     public: // functions
-        Scoreboard();
-        ~Scoreboard();
+        Scoreboard(BaseObject* creator);
+        ~Scoreboard() {}
+
+        inline void setGametype(Gametype* gt)
+            { this->gametype_ = gt; }
+        inline Gametype* getGametype() const
+            { return this->gametype_; }
+
+        inline void setCreateLines(CreateLines* cl)
+            { this->createlines_ = cl; }
+        inline CreateLines* getCreateLines() const
+            { return this->createlines_; }
 
     private: // functions
-        
+        void printLines();
 
     private: // variables
-        
-
+        unsigned int numberOfColumns;
+        unsigned int numberOfLines;
+        unsigned int columnIndex;
+        float topOffset;
+        float leftOffset;
+        float lineSpacing;
+        std::string columnText;
+        Gametype* gametype_;
+        CreateLines* createlines_;
     };
 }
 
