@@ -80,7 +80,7 @@ namespace orxonox {
     {
         this->fireEvent(true); //TDO This' right?
         
-        COUT(3) << "QuestListener fired Event, expect for somethign to happen." << std::endl;
+        COUT(3) << "QuestListener fired Event, expect for something to happen." << std::endl; //TDO remove
         
         return true;
     }
@@ -102,14 +102,17 @@ namespace orxonox {
         if(status == "start")
         {
             this->status_ = questListenerStatus::start;
+            return true;
         }
         else if(status == "fail")
         {
             this->status_ = questListenerStatus::fail;
+            return true;
         }
         else if(status == "complete")
         {
             this->status_ = questListenerStatus::complete;
+            return true;
         }
         else
         {
@@ -117,8 +120,6 @@ namespace orxonox {
 	    this->status_ = questListenerStatus::start;
 	    return false;
         }
-
-        return true;
     }
     
     const std::string QuestListener::getQuestStatus(void)
