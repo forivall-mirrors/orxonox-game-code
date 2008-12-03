@@ -40,15 +40,15 @@ ADD_SUBDIRECTORY(tolua)
 
 IF (WIN32)
     ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    INCLUDE_DIRECTORIES(ceguilua-0.6.1/ceguilua)
 ELSE (WIN32)
     # FIXME
     #IF (${CEGUI_VERSION} LESS 0.6.0)
         ADD_SUBDIRECTORY(ceguilua-0.5.0/ceguilua)
-        INCLUDE_DIRECTORIES(ceguilua-0.5.0)
+        INCLUDE_DIRECTORIES(ceguilua-0.5.0/ceguilua)
     #ELSE (${CEGUI_VERSION} LESS 0.6.0)
     #    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-    #    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    #    INCLUDE_DIRECTORIES(ceguilua-0.6.1/ceguilua)
     #ENDIF (${CEGUI_VERSION} LESS 0.6.0)
 ENDIF (WIN32)
 
