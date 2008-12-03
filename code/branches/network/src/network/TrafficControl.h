@@ -62,17 +62,7 @@ struct obj
   unsigned int objSize;
 };
 
-/**
-*eigener sortieralgorithmus
-*/
-bool priodiffer(obj i, obj j)
-{ 
-  map<unsigned int, objInfo>::iterator iti;
-  map<unsigned int, objInfo>::iterator itj;
-  iti=listToProcess_->find(i.objID);
-  itj=listToProcess_->find(j.objID);
-  return iti->second.objValuePerm < itj->second.objValuePerm;
-}
+
 
 /**
 *
@@ -94,10 +84,6 @@ class TrafficControl{
     *creates list (typ map) that contains objids, struct with info concerning object(objid)
     */
     std::map<unsigned int, objInfo> listToProcess_;//copy of argument, when traffic control tool is being called, the original of this must be returned later on, eg the vector given by GS
-    /**
-    *reference list: contains object ids and the reference belonging to this id.
-    */
-    //std::map<unsigned int, Synchronisable*> *referenceList_;//has to be created with constructor and then needs to be updated by evaluateList().
     /**
     *permanent client list: contains client ids, object ids and objectInfos (in this order)
     */
@@ -130,7 +116,6 @@ class TrafficControl{
 
     void updateReferenceList(std::map<unsigned int, objInfo> *list);//done
     void insertinClientListPerm(unsigned int objid, objInfo objinf);//done
-    void createReferenceList(Synchronisable *list);//done
     /**
     *creates listToProcess, which can be easialy compared with other lists
     */
@@ -160,6 +145,8 @@ class TrafficControl{
     void processAck(unsigned int clientID, unsigned int gamestateID);	// this function gets called when the server receives an ack from the client
     //done
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
+    
+    bool priodiffer(obj i, obj j);
 };
 
 }

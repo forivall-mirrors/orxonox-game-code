@@ -29,13 +29,14 @@
 #include "TrafficControl.h"
 
 #include <cassert>
+#include <boost/bind.hpp>
 
 namespace network {
 
 /**
 *Initializing protected members
 */
-	TrafficControl *TraffiControl::instance_=0;
+	TrafficControl *TrafficControl::instance_=0;
 	
 	/**
 	* @brief Constructor: assures that only one reference will be created and sets the pointer
@@ -47,7 +48,6 @@ namespace network {
 	  listToProcess_ = new std::map<unsigned int, objInfo>;
 	  clientListPerm_ = new std::map<unsigned int,std::map<unsigned int, objInfo>>;
 	  clientListTemp_ = new std::map std::map<unsigned int, std::map<unsigned int, std::vector<obj>>>;
-	  referenceList_ = new std::map<unsigned int, Synchronisable*>;
 	  permObjPrio_ = new std::map<unsigned int, unsigned int> ;
 	  schedObjPrio_ = new std::map<unsigned int, unsigned int> schedObjPrio_;
 	}
@@ -66,7 +66,21 @@ namespace network {
 *Definition of public members
 */
 
-	TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj> *list)
+        /**
+                *eigener sortieralgorithmus
+        */
+        bool TrafficControl::priodiffer(obj i, obj j)
+        {
+          map<unsigned int, objInfo>::iterator iti;
+          map<unsigned int, objInfo>::iterator itj;
+          iti=listToProcess_->find(i.objID);
+          itj=listToProcess_->find(j.objID);
+          return iti->second.objValuePerm < itj->second.objValuePerm;
+        }
+
+
+
+	std::vector<obj>* TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj> *list)
 	{
 	  copiedVector = *list;
 	  currentClientID=clientID;
@@ -78,7 +92,7 @@ namespace network {
 	  return list;
 	}
 	
-	TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
+	void TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
 	{
 	  map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;//iterator clientListPerm
 	  map<unsigned int, objInfo>::iterator itpermoid;//iterator over objectid
@@ -118,19 +132,11 @@ namespace network {
 *Definition of private members
 */
 	
-	//brauch ich die noch??,
-	TrafficControl::createReferenceList(Synchronisable *list)
-	{
-	  map<unsigned int, Synchronisable*>::iterator itref;
-	  itref=referenceList_->begin();
-	  referenceList_->insert(itref,pair<unsigned int, Synchronisable*>((*itref).getObjectID,(*itref).getSynchronisable));
-	}
-	//end brauch ich die noch
 	
 	/**
 	*copyList gets vector of Gamestate Manager and turns it to *listToProcess
 	*/
-	TrafficControl::copyList(std::map<obj> *list)
+	void TrafficControl::copyList(std::map<obj> *list)
 	{
 	  vector<obj>::iterator itvec;
 	  for(itvec = (*list).begin(); itvec < (*list).end(); itvec++)
@@ -138,17 +144,17 @@ namespace network {
 	    objInfo objectA = new objInfo;
 	    (*objectA).objCreatorID=(*itvec).objCreatorID;
 	    (*objectA).objSize = (*itvec).objSize;
-	    (*listToProcess_).insert(pair<currentClientID, map<(*itvec).objID,objectA>>)//unsicher: ob map<...> so richtig ist
+	    (*listToProcess_).insert(pair<currentClientID, map<(*itvec).objID,objectA>>);//unsicher: ob map<...> so richtig ist
 	  }
 	}
 	/**
 	*updateReferenceList compares the sent list by GSmanager with the current *reference list and updates it.
 	*returns void
 	*/
-	TrafficControl::updateReferenceList(std::map<unsigned int, objInfo> *list)
+	void TrafficControl::updateReferenceList(std::map<unsigned int, objInfo> *list)
 	{
-	  map<unsigned int, Synchronisable*>::iterator itref;
-	  map<unsigned int, objInfo>::iterator itproc;
+	  std::map<unsigned int, Synchronisable*>::iterator itref;
+	  std::map<unsigned int, objInfo>::iterator itproc;
 	  for(itproc=(*listToProcess_).begin();itproc != (*listToProcess_).end(); itproc++)
 	  {
 	    //itproc->first=objectid that is looked for
@@ -158,7 +164,7 @@ namespace network {
 	    }
 	    else
 	    {
-	      (*referenceList_).insert(pair<unsigned int,          Synchronisable*>((*itproc).first,Synchronisable::getSynchronisable((*itproc).first));//important: how to get adress of an object!
+	      (*referenceList_).insert(pair<unsigned int,          Synchronisable*>((*itproc).first,Synchronisable::getSynchronisable((*itproc).first)));//important: how to get adress of an object!
 	      insertinClientListPerm(currentClientID,itproc->first,itproc->second);
 	    }
 	  }
@@ -167,9 +173,9 @@ namespace network {
 	*updateClientListPerm
 	*returns void
 	*/
-	TrafficControl::insertinClientListPerm(unsigned int clientid, unsigned int objid, objInfo objinf)
+	void TrafficControl::insertinClientListPerm(unsigned int clientid, unsigned int objid, objInfo objinf)
 	{ 
-	  map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;//iterator clientListPerm over clientIDs
+	  std::map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;//iterator clientListPerm over clientIDs
 	  itperm = (clientListPerm_).find(clientiD);
 	  assert(itperm != clientListPerm_.end() );
 	  (*itperm).insert(pair<unsigned int, objInfo>(objid,objinf));
@@ -179,7 +185,7 @@ namespace network {
 	/**
 	*evaluateList evaluates whether new obj are there, whether there are things to be updatet and manipulates all this.
 	*/
-	TrafficControl::evaluateList(std::map<obj> *list)
+	void TrafficControl::evaluateList(std::map<obj> *list)
 	{
 	  copyList(list);
 	  updateReferenceList(listToProcess_);
@@ -187,10 +193,10 @@ namespace network {
 	  //now the sorting
 	
 	  //compare listToProcess vs clientListPerm
-	  map<unsigned int, objInfo>::iterator itproc;
-	  map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;
-	  map<unsigned int, objInfo>::iterator itpermobj;
-	  map<unsigned int, unsigned int>::iterator itpermprio;
+	  std::map<unsigned int, objInfo>::iterator itproc;
+	  std::map<unsigned int, std::map<unsigned int, objInfo>>::iterator itperm;
+	  std::map<unsigned int, objInfo>::iterator itpermobj;
+	  std::map<unsigned int, unsigned int>::iterator itpermprio;
 	  for((*itproc=listToProcess_).begin(); itproc != (*listToProcess_).end();it++)
 	  {
 	    itperm=(clientListPerm_).find(currentClientID);
@@ -242,7 +248,8 @@ namespace network {
 	  }
 	}
 	//sort copied vector aufgrund der objprioperm in clientlistperm
-	sort(copiedVector.begin(),copiedVector.end(),priodiffer);
+        // use boost bind here because we need to pass a memberfunction to stl sort
+        sort(copiedvector.begin(), copiedvector.end(), boost::bind(&TrafficControl::priodiffer,this,_1,_2) );
 	//swappen aufgrund von creator oder ganz rausnehmen!?
 	for(itvec = copiedVector.begin(); itvec < copiedVector.end(); itvec++)
 	{ 
