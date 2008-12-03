@@ -32,7 +32,7 @@ ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
 ADD_SUBDIRECTORY(tolua)
 
-# TODO: write include file for this stuff
+# TODO: FIXME
 # Some people may not have CEGUILua installed, espc. with version 0.5
 # And we don't know what lua version it was linked against, so we compile
 # it ourselves.

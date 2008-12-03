@@ -28,15 +28,36 @@ FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
     PATH_SUFFIXES include include/CEGUI
 )
 
-#SET(CEGUI_LIBRARIES debug CEGUIBase_d optimized CEGUIBase)
-FIND_LIBRARY(CEGUI_LIBRARY
-    NAMES CEGUIBase
-    PATHS
-    $ENV{CEGUIDIR}
-    /usr/local
-    /usr
-    PATH_SUFFIXES lib
-)
+IF(WIN32)
+    FIND_LIBRARY(CEGUI_LIBRARY_
+        NAMES CEGUIBase
+        PATHS
+        $ENV{CEGUIDIR}
+        PATH_SUFFIXES lib
+    )
+    FIND_LIBRARY(CEGUI_LIBRARY_d
+        NAMES CEGUIBase_d
+        PATHS
+        $ENV{CEGUIDIR}
+        PATH_SUFFIXES lib
+    )
+    IF(CEGUI_LIBRARY_)
+        IF(CEGUI_LIBRARY_d)
+            SET(CEGUI_LIBRARY optimized ${CEGUI_LIBRARY_} debug ${CEGUI_LIBRARY_d})
+        ELSE(CEGUI_LIBRARY_d)
+            SET(CEGUI_LIBRARY ${CEGUI_LIBRARY_})
+        ENDIF(CEGUI_LIBRARY_d)
+    ENDIF(CEGUI_LIBRARY_)
+ELSE(WIN32)
+    FIND_LIBRARY(CEGUI_LIBRARY
+        NAMES CEGUIBase
+        PATHS
+        $ENV{CEGUIDIR}
+        /usr/local
+        /usr
+        PATH_SUFFIXES lib
+    )
+ENDIF(WIN32)
 
 #    IF (NOT CEGUI_SCRIPT_LIBDIR)
 #        # Search Lua script module
@@ -64,6 +85,8 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(CEGUI DEFAULT_MSG
 
 MARK_AS_ADVANCED(
     CEGUI_LIBRARY
+    CEGUI_LIBRARY_
+    CEGUI_LIBRARY_d
     CEGUI_INCLUDE_DIR
     #CEGUI_SCRIPT_LIBRARIES
 )
