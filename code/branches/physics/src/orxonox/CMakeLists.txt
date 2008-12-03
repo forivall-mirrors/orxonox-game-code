@@ -73,6 +73,7 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/collisionshapes/CollisionShape.cc
   objects/worldentities/collisionshapes/CompoundCollisionShape.cc
   objects/worldentities/collisionshapes/SphereCollisionShape.cc
+  objects/worldentities/collisionshapes/PlaneCollisionShape.cc
   
   objects/quest/AddQuest.cc
   objects/quest/AddQuestHint.cc
