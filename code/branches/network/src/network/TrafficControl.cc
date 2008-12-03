@@ -50,6 +50,8 @@ namespace network {
 	  clientListTemp_ = new std::map std::map<unsigned int, std::map<unsigned int, std::vector<obj>>>;
 	  permObjPrio_ = new std::map<unsigned int, unsigned int> ;
 	  schedObjPrio_ = new std::map<unsigned int, unsigned int> schedObjPrio_;
+          copiedVector = new std::vector<obj>;
+          targetSize = 5000;//5000bytes
 	}
 	
 	/**
@@ -179,13 +181,50 @@ namespace network {
 	  itperm = (clientListPerm_).find(clientiD);
 	  assert(itperm != clientListPerm_.end() );
 	  (*itperm).insert(pair<unsigned int, objInfo>(objid,objinf));
+          (permObjPrio_).insert(objid,objinf.objValuePerm);
 	}
 	
-	
+        /**
+        *updateClientListTemp
+        *takes the shortened vector which will be sent to the gsmanager and puts the *info into clientListTemp
+        */	
+        TrafficControl::updateClientListTemp(std::vector<obj> *list)
+        {
+          vector<obj>::iterator itvec;
+          map<unsigned int,std::map<unsigned int, obj>>::iterator ittemp;
+          map<unsigned int, obj>::iterator ittempgs;
+          ittemp = (clientListTemp_).find(currentClientID);
+          ittempgs = (*ittemp).find(currentGamestateID);
+          for(itvec=list.begin();itvec!=list.end(),itvec++)
+          {
+            ittempgs.insert(itvec);
+          }
+        }
+
+        /**
+        *cut
+        *takes the current vector that has to be returned to the gsmanager and shortens it in criteria of bandwidth of clientID(XY)
+        */
+        TrafficControl::cut(std::vector<obj> *list,int targetsize)
+        {
+          unsigned int size=0;
+          vector<obj>::iterator itvec;
+          itvec = list.begin();
+          unsigned int i=0;
+	  while(size<targetsize && (itvec!=list.end()))
+          {
+            size = size + (*itvec).objSize;//objSize is given in bytes!??
+            i++;
+            itvec = list.begin()+i;
+          }
+          list.erase(itvec, list.end());
+	}
+
+
 	/**
 	*evaluateList evaluates whether new obj are there, whether there are things to be updatet and manipulates all this.
 	*/
-	void TrafficControl::evaluateList(std::map<obj> *list)
+	void TrafficControl::evaluateList(std::vector<obj> *list)
 	{
 	  copyList(list);
 	  updateReferenceList(listToProcess_);
@@ -193,15 +232,17 @@ namespace network {
 	  //now the sorting
 	
 	  //compare listToProcess vs clientListPerm
+          //if listToProcess contains new Objects, add them to clientListPerm
 	  std::map<unsigned int, objInfo>::iterator itproc;
 	  std::map<unsigned int, std::map<unsigned int, objInfo>>::iterator itperm;
 	  std::map<unsigned int, objInfo>::iterator itpermobj;
 	  std::map<unsigned int, unsigned int>::iterator itpermprio;
-	  for((*itproc=listToProcess_).begin(); itproc != (*listToProcess_).end();it++)
+	  for((*itproc)=(listToProcess_).begin(); itproc != (listToProcess_).end();it++)
 	  {
 	    itperm=(clientListPerm_).find(currentClientID);
-	    itpermobj=(*itperm).find((*itproc).first);
-	    if(currentGamestateID < ((*itpermobj).second).objCurGS)
+	    if(itpermobj=(*itperm).find((*itproc).first))
+            {
+	     if(currentGamestateID > ((*itpermobj).second).objCurGS)
 	      {
 	      //obj bleibt in liste und permanente prio wird berechnet
 	        ((*itpermobj).second).objDiffGS = ((*itpermobj).second).objCurGS - currentGamestateID;
@@ -213,7 +254,17 @@ namespace network {
 	      {
 	        (listToProcess_).erase(itproc);
 	      }
-	  }
+             }
+             else
+             {
+               insertinClientListPerm(currentClientID,(*itproc).first,(*itproc).second);
+               itpermobj=(*itperm).find((*itproc).first)
+               ((*itpermobj).second).objDiffGS = ((*itpermobj).second).objCurGS - currentGamestateID;
+	       itpermprio = (permObjPrio_).find((*itproc).first);
+	       ((*itpermobj).second).objValuePerm = ((*itpermobj).second).objDiffGS * (*itpermprio).second;
+	       continue;//check next objId
+             }
+	    }
 	  //end compare listToProcess vs clientListPerm
 	
 	//listToProc vs clientListTemp
@@ -234,7 +285,7 @@ namespace network {
 	}
 	//end listToProc vs clientListTemp
 	
-	//listToProcess contains obj to send now, shorten copiedvector therefor too.
+	//listToProcess contains obj to send now, and since we give gsmanager the copiedvector and not listToProcess shorten copiedvector therefor too.
 	vector<obj>::iterator itvec;
 	for(itvec = copiedVector.begin(); itvec < copiedVector.end(); itvec++)
 	{
@@ -263,7 +314,7 @@ namespace network {
 	}
 	  //end of sorting
 	  //now the cutting, work the same obj out in processobjectlist and copiedvector, compression rate muss noch festgelegt werden. 
-	  cut(copiedVector,currentClientID???bandWidth);
+	  cut(copiedVector,targetSize);
 	  //diese Funktion updateClientList muss noch gemacht werden
 	  updateClientListTemp(copiedVector);
 	  //end of sorting

@@ -109,24 +109,25 @@ class TrafficControl{
     */
     unsigned int currentGamestateID;
     unsigned int currentClientID;
+    unsigned int targetSize;
     /**
     *copiedVector is a copy of the given Vector by the GSmanager, on this vector all manipulations are performed
     */
     std::vector<obj> copiedVector;
 
     void updateReferenceList(std::map<unsigned int, objInfo> *list);//done
-    void insertinClientListPerm(unsigned int objid, objInfo objinf);//done
+    void insertinClientListPerm(unsigned int clientid, unsigned int objid, objInfo objinf);//done
     /**
     *creates listToProcess, which can be easialy compared with other lists
     */
     void copyList(std::vector<obj> *list);//done
     
-    void cut(vector<obj> *list,int bandwidth);
-    void updateClientListTemp(vector<obj> *list);
+    void cut(std::vector<obj> *list,int targetsize);
+    void updateClientListTemp(std::vector<obj> *list);//done
     /**
     *evaluates Data given (vector) and produces result(->Data to be updated)
     */
-    void evaluateList(std::map<obj> *list);
+    void evaluateList(std::vector<obj> *list);//done
 
   protected:
     TrafficControl();
