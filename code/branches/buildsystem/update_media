@@ -1,0 +1,4 @@
+#!/bin/sh
+# convenience script for updating media repository
+
+cd ../media && svn up
