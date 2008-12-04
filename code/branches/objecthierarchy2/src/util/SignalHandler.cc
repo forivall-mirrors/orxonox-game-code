@@ -54,10 +54,6 @@ namespace orxonox
 {
     bool SignalHandler::bXAutoKeyRepeatOn_ = false;
 
-    SignalHandler::SignalHandler()
-    {
-    }
-
     /**
      * register signal handlers for SIGSEGV and SIGABRT
      * @param appName path to executable eg argv[0]

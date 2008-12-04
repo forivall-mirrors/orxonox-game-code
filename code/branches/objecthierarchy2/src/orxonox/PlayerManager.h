@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <cassert>
 #include <map>
 #include "network/ClientConnectionListener.h"
 
