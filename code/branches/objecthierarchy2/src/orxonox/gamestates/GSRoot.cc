@@ -39,6 +39,7 @@
 #include "core/Shell.h"
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
+#include "core/LuaBind.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
 #include "Settings.h"
@@ -87,6 +88,9 @@ namespace orxonox
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
 
+        // Create the lua interface
+        this->luaBind_ = new LuaBind();
+
         // instantiate Settings class
         this->settings_ = new Settings();
 
@@ -116,24 +120,28 @@ namespace orxonox
         // add console commands
         FunctorMember<GSRoot>* functor1 = createFunctor(&GSRoot::exitGame);
         functor1->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "exit"));
+        ccExit_ = createConsoleCommand(functor1, "exit");
+        CommandExecutor::addConsoleCommandShortcut(ccExit_);
 
         // add console commands
         FunctorMember01<GameStateBase, const std::string&>* functor2 = createFunctor(&GameStateBase::requestState);
         functor2->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor2, "selectGameState"));
+        ccSelectGameState_ = createConsoleCommand(functor2, "selectGameState");
+        CommandExecutor::addConsoleCommandShortcut(ccSelectGameState_);
     }
 
     void GSRoot::leave()
     {
-        // TODO: remove and destroy console commands
+        // destroy console commands
+        delete this->ccExit_;
+        delete this->ccSelectGameState_;
 
         delete this->shell_;
         delete this->tclThreadManager_;
         delete this->tclBind_;
 
-        delete settings_;
-
+        delete this->settings_;
+        delete this->luaBind_;
     }
 
     void GSRoot::ticked(const Clock& time)

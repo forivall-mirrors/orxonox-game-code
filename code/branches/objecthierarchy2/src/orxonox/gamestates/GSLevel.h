@@ -69,11 +69,17 @@ namespace orxonox
         XMLFile*              startFile_;        //!< current hard coded default level
         CameraManager*        cameraManager_;
         LevelManager*         levelManager_;
+        PlayerManager*        playerManager_;
 
         //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;
         //! Filename of default keybindings.
         std::string           defaultKeybindings_;
+
+        // console commands
+        ConsoleCommand*       ccKeybind_;
+        ConsoleCommand*       ccTkeybind_;
+        ConsoleCommand*       ccSetTimeFactor_;
 
     private:
         void setConfigValues();

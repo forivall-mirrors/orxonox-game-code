@@ -42,7 +42,8 @@ namespace orxonox
             PlayerManager();
             virtual ~PlayerManager();
 
-            static PlayerManager& getInstance();
+            static PlayerManager& getInstance()
+            { assert(singletonRef_s); return *singletonRef_s; }
 
             PlayerInfo* getClient(unsigned int clientID) const;
             inline const std::map<unsigned int, PlayerInfo*>& getClients() const
@@ -53,6 +54,8 @@ namespace orxonox
             void clientDisconnected(unsigned int clientID);
 
             std::map<unsigned int, PlayerInfo*> clients_;
+
+            static PlayerManager* singletonRef_s;
     };
 }
 

@@ -58,6 +58,11 @@ namespace orxonox
         TclBind*              tclBind_;
         TclThreadManager*     tclThreadManager_;
         Shell*                shell_;
+        LuaBind*              luaBind_;
+
+        // console commands
+        ConsoleCommand*       ccExit_;
+        ConsoleCommand*       ccSelectGameState_;
     };
 }
 

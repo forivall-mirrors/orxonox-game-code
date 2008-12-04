@@ -45,6 +45,8 @@ namespace orxonox
     bool Core::bIsStandalone_s  = false;
     bool Core::bIsMaster_s      = false;
 
+    Core* Core::singletonRef_s = 0;
+
     /**
         @brief Constructor: Registers the object and sets the config-values.
         @param A reference to a global variable, used to avoid an infinite recursion in getSoftDebugLevel()
@@ -52,8 +54,11 @@ namespace orxonox
     Core::Core()
     {
         RegisterRootObject(Core);
+
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
+
         this->setConfigValues();
-        isCreatingCoreSettings() = false;
     }
 
     /**
@@ -61,37 +66,8 @@ namespace orxonox
     */
     Core::~Core()
     {
-        isCreatingCoreSettings() = true;
-    }
-
-    /**
-        @brief Returns true if the Core instance is not yet ready and the static functions have to return a default value.
-    */
-    bool& Core::isCreatingCoreSettings()
-    {
-        static bool bCreatingCoreSettings = true;
-        return bCreatingCoreSettings;
-    }
-
-    /**
-        @brief Returns a unique instance of Core.
-        @return The instance
-    */
-    Core& Core::getInstance()
-    {
-        // If bCreatingSoftDebugLevelObject is true, we're just about to create an instance of the DebugLevel class
-        //if (Core::isCreatingCoreSettings())
-        //{
-        //    isCreatingCoreSettings() = false;
-        //    //instance.setConfigValues();
-        //}
-
-        static bool firstTime = true;
-        if (firstTime)
-            isCreatingCoreSettings() = true;
-
-        static Core instance;
-        return instance;
+        assert(singletonRef_s);
+        singletonRef_s = 0;
     }
 
     /**
@@ -139,25 +115,20 @@ namespace orxonox
     */
     int Core::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        if (!Core::isCreatingCoreSettings())
+        switch (device)
         {
-            switch (device)
-            {
-            case OutputHandler::LD_All:
-                return Core::getInstance().softDebugLevel_;
-            case OutputHandler::LD_Console:
-                return Core::getInstance().softDebugLevelConsole_;
-            case OutputHandler::LD_Logfile:
-                return Core::getInstance().softDebugLevelLogfile_;
-            case OutputHandler::LD_Shell:
-                return Core::getInstance().softDebugLevelShell_;
-            default:
-                assert(0);
-            }
+        case OutputHandler::LD_All:
+            return Core::getInstance().softDebugLevel_;
+        case OutputHandler::LD_Console:
+            return Core::getInstance().softDebugLevelConsole_;
+        case OutputHandler::LD_Logfile:
+            return Core::getInstance().softDebugLevelLogfile_;
+        case OutputHandler::LD_Shell:
+            return Core::getInstance().softDebugLevelShell_;
+        default:
+            assert(0);
+            return 2;
         }
-
-        // Return a constant value while we're creating the object
-        return 2;
     }
 
      /**
@@ -167,19 +138,16 @@ namespace orxonox
     */
      void Core::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
      {
-        if (!Core::isCreatingCoreSettings())
-        {
-            if (device == OutputHandler::LD_All)
-                Core::getInstance().softDebugLevel_ = level;
-            else if (device == OutputHandler::LD_Console)
-                Core::getInstance().softDebugLevelConsole_ = level;
-            else if (device == OutputHandler::LD_Logfile)
-                Core::getInstance().softDebugLevelLogfile_ = level;
-            else if (device == OutputHandler::LD_Shell)
-                Core::getInstance().softDebugLevelShell_ = level;
+        if (device == OutputHandler::LD_All)
+            Core::getInstance().softDebugLevel_ = level;
+        else if (device == OutputHandler::LD_Console)
+            Core::getInstance().softDebugLevelConsole_ = level;
+        else if (device == OutputHandler::LD_Logfile)
+            Core::getInstance().softDebugLevelLogfile_ = level;
+        else if (device == OutputHandler::LD_Shell)
+            Core::getInstance().softDebugLevelShell_ = level;
 
-            OutputHandler::setSoftDebugLevel(device, level);
-        }
+        OutputHandler::setSoftDebugLevel(device, level);
      }
 
     /**
@@ -187,10 +155,7 @@ namespace orxonox
     */
     const std::string& Core::getLanguage()
     {
-        if (!Core::isCreatingCoreSettings())
-            return Core::getInstance().language_;
-
-        return Language::getLanguage().defaultLanguage_;
+        return Core::getInstance().language_;
     }
 
     /**

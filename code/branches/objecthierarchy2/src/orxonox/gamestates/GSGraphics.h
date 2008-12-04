@@ -111,6 +111,9 @@ namespace orxonox
         int                   ogreLogLevelCritical_;     //!< Corresponding Orxonx debug level for LL_CRITICAL
         unsigned int          detailLevelParticle_;      //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
         std::string           defaultMasterKeybindings_; //!< Filename of default master keybindings.
+
+        // console commands
+        ConsoleCommand*       ccPrintScreen_;
     };
 }
 

@@ -41,8 +41,6 @@ namespace orxonox
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
-
-        PlayerManager::getInstance(); // ensure existence of PlayerManager
     }
 
     LevelManager::~LevelManager()

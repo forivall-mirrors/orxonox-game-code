@@ -39,6 +39,7 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
@@ -48,16 +49,18 @@ namespace orxonox
     class _CoreExport Core : public OrxonoxClass
     {
         public:
-            static Core& getInstance();
-            static bool& isCreatingCoreSettings();
+            Core();
+            ~Core();
             void setConfigValues();
             void debugLevelChanged();
             void languageChanged();
 
-            static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
-            static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
+            static Core& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+
+            static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
+            static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
-            static void resetLanguage();
+            static void  resetLanguage();
 
             // fast access global variables.
             static bool showsGraphics() { return bShowsGraphics_s; }
@@ -72,11 +75,8 @@ namespace orxonox
             static void updateIsMaster  ()         { bIsMaster_s      = (bHasServer_s || bIsStandalone_s); }
 
         private:
+            Core(const Core&);
             void resetLanguageIntern();
-
-            Core();
-            Core(const Core& other);
-            virtual ~Core();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
@@ -89,6 +89,8 @@ namespace orxonox
             static bool bIsClient_s;
             static bool bIsStandalone_s;
             static bool bIsMaster_s;
+
+            static Core* singletonRef_s;
     };
 }
 

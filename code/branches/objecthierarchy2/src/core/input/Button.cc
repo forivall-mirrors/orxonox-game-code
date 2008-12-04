@@ -58,6 +58,7 @@ namespace orxonox
         nCommands_[0]=0;
         nCommands_[1]=0;
         nCommands_[2]=0;
+        this->configContainer_ = 0;
         clear();
     }
 
@@ -79,6 +80,10 @@ namespace orxonox
                 commands_[j] = 0;
             }
         }
+
+        if (this->configContainer_)
+            delete this->configContainer_;
+        this->configContainer_ = 0;
     }
 
     void Button::readConfigValue(ConfigFileType configFile)

@@ -41,6 +41,7 @@ extern "C" {
 #include <lua/lua.h>
 }
 
+#include <cassert>
 #include <list>
 #include <string>
 
@@ -57,8 +58,10 @@ namespace orxonox // tolua_export
     };
 
     public:
-      inline static LuaBind* getInstance() { if (!LuaBind::singletonRef) LuaBind::singletonRef = new LuaBind(); return LuaBind::singletonRef; } // tolua_export
-      inline ~LuaBind() { LuaBind::singletonRef = NULL; };
+      LuaBind();
+      inline ~LuaBind() { assert(singletonRef_s); LuaBind::singletonRef_s = NULL; };
+
+      inline static LuaBind& getInstance() { assert(singletonRef_s); return *LuaBind::singletonRef_s; } // tolua_export
 
     void loadFile(std::string filename, bool luaTags);
     void loadString(std::string code);
@@ -82,8 +85,7 @@ namespace orxonox // tolua_export
         { this->includePath_ = includepath; }
 
     private:
-      LuaBind();
-      static LuaBind* singletonRef;
+      static LuaBind* singletonRef_s;
 
       std::string luaSource_;
       std::string output_;

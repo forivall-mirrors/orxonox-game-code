@@ -46,6 +46,7 @@
 //#include "tools/ParticleInterface.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
+#include "PlayerManager.h"
 #include "Settings.h"
 
 namespace orxonox
@@ -98,6 +99,7 @@ namespace orxonox
         {
             // create the global LevelManager
             this->levelManager_ = new LevelManager();
+            this->playerManager_ = new PlayerManager();
 
             // reset game speed to normal
             timeFactor_ = 1.0f;
@@ -113,10 +115,12 @@ namespace orxonox
             // keybind console command
             FunctorMember<GSLevel>* functor1 = createFunctor(&GSLevel::keybind);
             functor1->setObject(this);
-            CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "keybind"));
+            ccKeybind_ = createConsoleCommand(functor1, "keybind");
+            CommandExecutor::addConsoleCommandShortcut(ccKeybind_);
             FunctorMember<GSLevel>* functor2 = createFunctor(&GSLevel::tkeybind);
             functor2->setObject(this);
-            CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor2, "tkeybind"));
+            ccTkeybind_ = createConsoleCommand(functor2, "tkeybind");
+            CommandExecutor::addConsoleCommandShortcut(ccTkeybind_);
             // set our console command as callback for the key detector
             InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);
 
@@ -129,12 +133,18 @@ namespace orxonox
             // time factor console command
             FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::setTimeFactor);
             functor->setObject(this);
-            CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "setTimeFactor")).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
+            ccSetTimeFactor_ = createConsoleCommand(functor, "setTimeFactor");
+            CommandExecutor::addConsoleCommandShortcut(ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
         }
     }
 
     void GSLevel::leave()
     {
+        // destroy console commands
+        delete this->ccKeybind_;
+        delete this->ccSetTimeFactor_;
+        delete this->ccTkeybind_;
+
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
         // The only 'memory leak' is the ParticleSpawer. They would be deleted here
@@ -155,6 +165,9 @@ namespace orxonox
 
         if (this->levelManager_)
             delete this->levelManager_;
+
+        if (this->playerManager_)
+            delete this->playerManager_;
 
         if (Core::showsGraphics())
         {

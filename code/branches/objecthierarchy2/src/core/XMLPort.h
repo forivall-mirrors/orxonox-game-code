@@ -42,6 +42,7 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/MultiType.h"
@@ -328,6 +329,14 @@ namespace orxonox
                 this->saveexecutor_ = saveexecutor;
             }
 
+            ~XMLPortClassParamContainer()
+            {
+                assert(this->loadexecutor_);
+                delete this->loadexecutor_;
+                if (this->saveexecutor_)
+                    delete this->saveexecutor_;
+            }
+
             XMLPortParamContainer& port(BaseObject* owner, T* object, Element& xmlelement, XMLPort::Mode mode)
             {
                 this->owner_ = owner;
@@ -470,6 +479,14 @@ namespace orxonox
                 this->saveexecutor_ = saveexecutor;
                 this->bApplyLoaderMask_ = bApplyLoaderMask;
                 this->bLoadBefore_ = bLoadBefore;
+            }
+
+            ~XMLPortClassObjectContainer()
+            {
+                assert(this->loadexecutor_);
+                delete this->loadexecutor_;
+                if (this->saveexecutor_)
+                    delete this->saveexecutor_;
             }
 
             XMLPortObjectContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)

@@ -163,12 +163,15 @@ namespace orxonox
         // add console commands
         FunctorMember<GSGraphics>* functor1 = createFunctor(&GSGraphics::printScreen);
         functor1->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "printScreen"));
+        ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
+        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
     void GSGraphics::leave()
     {
         using namespace Ogre;
+
+        delete this->ccPrintScreen_;
 
         // remove our WindowEventListener first to avoid bad calls after the window has been destroyed
         Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
