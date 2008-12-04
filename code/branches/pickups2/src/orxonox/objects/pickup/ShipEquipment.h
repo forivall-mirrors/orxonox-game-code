@@ -27,6 +27,7 @@ namespace orxonox
 	};
 	bool insert(Item* item);
 	bool erase (Item* item);
+	//void print(std::multimap<std::string, Item*> eut);
 	void eraseAll();
 	bool checkSlot(Item* item);
 //	const std::multimap<std::string, Item*>& getEquipment() const { return this->Equipment; }
@@ -36,7 +37,6 @@ namespace orxonox
 	inline Pawn* getPlayer() {return this->player ;}
 	inline void setPlayer(Pawn* setplayer)
 	{this->player = setplayer;}
-
         private:
             Pawn* player;
             std::multimap<std::string, Item*> Equipment;

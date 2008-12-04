@@ -17,7 +17,7 @@ namespace orxonox
 
 	virtual void tick(float dt);
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	virtual void triggering(Pawn* trigger); // Wenn ein Spieler in die Naehe kommt
 
 	void setItemTemplate(const std::string& itemtemplate);
@@ -28,7 +28,7 @@ namespace orxonox
 		{ this->distance_ = distance; }
 	inline float getDistance() const
 		{ return this->distance_; }
-	
+
 	private:
 	std::string itemtemplate_;
 	Template* template_;
@@ -37,7 +37,7 @@ namespace orxonox
 }
 
 #endif /* _PickupSpawner_H__ */
-	
+
 
 
 

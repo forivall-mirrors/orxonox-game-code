@@ -30,7 +30,7 @@ Item::~Item()
 
 bool Item::addTo (Pawn* player)
 {
-	
+
 	return player->getPickUp().insert(this);
 	/*if(checkSlot(player)==true)
 	player->pickUp.Equipment.insert ( std::pair<std::string, Item*>(this->getName(),this) );
@@ -52,14 +52,15 @@ bool Item::remove(Pawn* player)
 }
 bool Item::checkSlot(Pawn* player)
 {
-	std::multimap<std::string,Item*>::iterator it;
+	/*std::multimap<std::string,Item*>::iterator it;
 	for ( it=player->getPickUp().getEquipment().begin() ; it != player->getPickUp().getEquipment().end(); it++ )
 	{
 	if((*it).second->playerBaseClass_==this->playerBaseClass_)
+		//das isch schmarre...machs mit isExactlyA(...)
 	return false;
 	}
-	return true;
-	//return player->getPickUp().checkSlot(player);
+	return true;*/
+	return player->getPickUp().checkSlot(this);
 }
 void Item::setPlayerBaseClassName(const std::string& name)
 {
