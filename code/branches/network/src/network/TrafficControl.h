@@ -52,6 +52,8 @@ struct objInfo
   uint32_t objSize;
   unsigned int objValuePerm;
   unsigned int objValueSched;
+  objInfo(uint32_t ID, uint32_t creatorID, int32_t curGsID, int32_t diffGsID, uint32_t size, unsigned int prioperm, unsigned int priosched)
+    { objID = ID; objCreatorID = creatorID; objCurGS = curGsID; objDiffGS = diffGsID; objSize = size; objValuePerm = prioperm; objValueSched = priosched; }
 };
 
 /**
@@ -89,7 +91,7 @@ class TrafficControl{
     /**
     *permanent client list: contains client ids, object ids and objectInfos (in this order)
     */
-    std::map<unsigned int, std::map<unsigned int, std::vector<objInfo> > > clientListPerm_;
+    std::map<unsigned int, std::map<unsigned int, objInfo > > clientListPerm_;
     //has to be created with constructor and then needs to be updated by evaluateList().
 
     /**
@@ -99,11 +101,11 @@ class TrafficControl{
     /**
     *static priority list: contains obj id, basic priority (in this order)
     */
-    std::map<unsigned int, unsigned int> permObjPrio_;
+//     std::map<unsigned int, unsigned int> permObjPrio_;
     /**
     *dynamic priority list: contains obj id, dynamic priority (eg scheduled) (in this order)
     */
-    std::map<unsigned int, unsigned int> schedObjPrio_;
+//     std::map<unsigned int, unsigned int> schedObjPrio_;
     //end: lists to be used
 
     /**updateReferenceList
@@ -117,19 +119,19 @@ class TrafficControl{
     */
     std::vector<obj> copiedVector;
 
-    void updateReferenceList(std::map<unsigned int, objInfo> *list);//done
-    void insertinClientListPerm(unsigned int clientid, unsigned int objid, objInfo objinf);//done
+//     void updateReferenceList(std::map<unsigned int, objInfo> *list);//done
+    void insertinClientListPerm(unsigned int clientID, obj objinf);//done
     /**
     *creates listToProcess, which can be easialy compared with other lists
     */
-    void copyList(std::vector<obj> *list);//done
+//     void copyList(std::vector<obj> *list);//done
     
-    void cut(std::vector<obj> *list,int targetsize);
+    void cut(std::vector<obj> *list, unsigned int targetsize);
     void updateClientListTemp(std::vector<obj> *list);//done
     /**
     *evaluates Data given (vector) and produces result(->Data to be updated)
     */
-    void evaluateList(std::vector<obj> *list);//done
+    void evaluateList(unsigned int clientID, std::vector<obj> *list);//done
 
   protected:
     TrafficControl();
@@ -149,7 +151,7 @@ class TrafficControl{
     //done
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
     
-    bool priodiffer(obj i, obj j);
+    bool priodiffer(uint32_t clientID, obj i, obj j);
 };
 
 }

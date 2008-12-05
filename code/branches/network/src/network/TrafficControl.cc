@@ -30,6 +30,8 @@
 
 #include <cassert>
 #include <boost/bind.hpp>
+#include "Synchronisable.h"
+#include "ClientInformation.h"
 
 namespace network {
 
@@ -62,18 +64,29 @@ namespace network {
 *Definition of public members
 */
 
-        /**
-                *eigener sortieralgorithmus
-        */
-        bool TrafficControl::priodiffer(obj i, obj j)
-        {
-          std::map<unsigned int, objInfo>::iterator iti;
-          std::map<unsigned int, objInfo>::iterator itj;
-          iti=listToProcess_.find(i.objID);
-          itj=listToProcess_.find(j.objID);
-          return iti->second.objValuePerm < itj->second.objValuePerm;
-        }
-
+  /**
+          *eigener sortieralgorithmus
+  */
+//   bool TrafficControl::priodiffer(obj i, obj j)
+//   {
+//     std::map<unsigned int, objInfo>::iterator iti;
+//     std::map<unsigned int, objInfo>::iterator itj;
+//     iti=listToProcess_.find(i.objID);
+//     itj=listToProcess_.find(j.objID);
+//     return iti->second.objValuePerm < itj->second.objValuePerm;
+//   }
+  
+  /**
+  * eigener sortieralgorithmus
+  */
+  bool TrafficControl::priodiffer(uint32_t clientID, obj i, obj j)
+  {
+    assert(clientListPerm_.find(clientID) != clientListPerm_.end());  //make sure the client exists in our list
+    assert(clientListPerm_[clientID].find(i.objID) != clientListPerm_[clientID].end()); // make sure the object i is in the client list
+    assert(clientListPerm_[clientID].find(j.objID) != clientListPerm_[clientID].end()); // make sure the object j is in the client list
+    
+    return clientListPerm_[clientID][i.objID].objID < clientListPerm_[clientID][j.objID].objID;
+  }
 
 
 	std::vector<obj>* TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj> *list)
@@ -81,52 +94,38 @@ namespace network {
 	  copiedVector = *list;
 	  currentClientID=clientID;
 	  currentGamestateID=gamestateID;
-	  evaluateList(list);
+	  evaluateList(clientID, list);
 	  //list hatte vorher ja vielmehr elemente, nach zuweisung nicht mehr... speicherplatz??
 	  *list=copiedVector;
-          //später wird copiedVector ja überschrieben, ist das ein problem für list-dh. für gamestatemanager?
+    //später wird copiedVector ja überschrieben, ist das ein problem für list-dh. für gamestatemanager?
 	  return list;
 	}
 	
 	void TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
 	{
-	  std::map<unsigned int, std::map<unsigned int, std::vector<objInfo> > >::iterator itperm;//iterator clientListPerm
-	  std::map<unsigned int, std::vector<objInfo> >::iterator itpermObjectIDList;//iterator over objectid
-    std::vector<objInfo>::iterator itpermObjectID;
-    std::map<unsigned int, std::map<unsigned int, std::vector<obj> > >::iterator ittemp;//iterator clientListTemp, iterates over clientIDs
-	  std::map<unsigned int, std::vector<obj> >::iterator ittempgs;//iterator that iterates over gsIDs of a client
-	  std::vector<obj>::iterator itvec;
-	  //following code helps to put clientListTemp infos into clientListPerm infos
-	  ittemp = clientListTemp_.find(clientID);
-	  assert(ittemp != clientListTemp_.end() ); //muss da nicht was anderes überprüft werden? -> nein
-	  itperm = clientListPerm_.find(clientID);
-	  assert(itperm != clientListPerm_.end() );
-	  ittempgs = ittemp->second.find(gamestateID);
-	  assert( ittempgs != ittemp->second.end() );//gleiche frage wie vorher -> nein
-	  for(itvec = ittempgs->second.begin(); itvec != ittempgs->second.end(); itvec++)
+	  std::vector<obj>::iterator itvec;  // iterator to iterate through the acked objects
+    
+    //assertions to make sure the maps already exist
+    assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
+    assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
+	  assert( clientListTemp_[clientID].find(gamestateID) != clientListTemp_[clientID].end() );
+    
+    for(itvec = clientListTemp_[clientID][gamestateID].begin(); itvec != clientListTemp_[clientID][gamestateID].end(); itvec++)
 	  {
-      bool alreadyExisting = false;
-      itpermObjectIDList = itperm->second.find(gamestateID);
-      assert(itpermObjectIDList != itperm->second.end());
-      for (itpermObjectID = itpermObjectIDList->second.begin(); itpermObjectID != itpermObjectIDList->second.end(); itpermObjectID++ )
+      if(clientListPerm_[clientID].find((*itvec).objID) != clientListPerm_[clientID].end()) // check whether the obj already exists in our lists
       {
-        if ( (*itpermObjectID).objID == (*itvec).objID)
-        {
-          (*itpermObjectID).objCurGS = gamestateID;
-          alreadyExisting = true;
-          break;
-        }
-        if ( !alreadyExisting )
-        {
-          objInfo objinf;    // TODO: is this initialisation complete ?
-          objinf.objCurGS = gamestateID;
-          objinf.objID = (*itvec).objID;
-          insertinClientListPerm(clientID, (*itvec).objID, objinf);
-        }
+        clientListPerm_[clientID][(*itvec).objID].objID = gamestateID;
+      }
+      else
+      {
+        clientListPerm_[clientID][(*itvec).objID].objCurGS = gamestateID;
+        clientListPerm_[clientID][(*itvec).objID].objID = (*itvec).objID;
+        clientListPerm_[clientID][(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
+        clientListPerm_[clientID][(*itvec).objID].objSize = (*itvec).objSize;
       }
 	  }
 	   // remove temporary vector (with acked objects) from the map
-    ittemp->second.erase(ittempgs);
+    clientListTemp_[clientID].erase( clientListTemp_[clientID].find(gamestateID) );
 	}
 
 /**
@@ -137,186 +136,194 @@ namespace network {
 	/**
 	*copyList gets vector of Gamestate Manager and turns it to *listToProcess
 	*/
-	void TrafficControl::copyList(std::vector<obj> *list)
-	{
-	  std::vector<obj>::iterator itvec;
-	  for(itvec = (*list).begin(); itvec != (*list).end(); itvec++)
-	  {
-	    objInfo objectA;
-	    objectA.objCreatorID=(*itvec).objCreatorID;
-	    objectA.objSize = (*itvec).objSize;
-	    listToProcess_.insert(pair<currentClientID, map<(*itvec).objID,objectA>>);//unsicher: ob map<...> so richtig ist
-	  }
-	}
+// 	void TrafficControl::copyList(std::vector<obj> *list)
+// 	{
+// 	  std::vector<obj>::iterator itvec;
+// 	  for(itvec = (*list).begin(); itvec != (*list).end(); itvec++)
+// 	  {
+// 	    objInfo objectA;
+// 	    objectA.objCreatorID=(*itvec).objCreatorID;
+// 	    objectA.objSize = (*itvec).objSize;
+// 	    listToProcess_.insert(std::pair<currentClientID, map<(*itvec).objID,objectA>>);//unsicher: ob map<...> so richtig ist
+// 	  }
+// 	}
 	/**
 	*updateReferenceList compares the sent list by GSmanager with the current *reference list and updates it.
 	*returns void
 	*/
-	void TrafficControl::updateReferenceList(std::map<unsigned int, objInfo> *list)
-	{
-	  std::map<unsigned int, Synchronisable*>::iterator itref;
-	  std::map<unsigned int, objInfo>::iterator itproc;
-	  for(itproc=(*listToProcess_).begin();itproc != (*listToProcess_).end(); itproc++)
-	  {
-	    //itproc->first=objectid that is looked for
-	    if(referenceList_->find(itproc->first))
-	    {
-	      continue;
-	    }
-	    else
-	    {
-	      (*referenceList_).insert(pair<unsigned int,          Synchronisable*>((*itproc).first,Synchronisable::getSynchronisable((*itproc).first)));//important: how to get adress of an object!
-	      insertinClientListPerm(currentClientID,itproc->first,itproc->second);
-	    }
-	  }
-	}
+// 	void TrafficControl::updateReferenceList(std::map<unsigned int, objInfo> *list)
+// 	{
+// 	  std::map<unsigned int, Synchronisable*>::iterator itref;
+// 	  std::map<unsigned int, objInfo>::iterator itproc;
+// 	  for(itproc=listToProcess_.begin(); itproc != listToProcess_.end(); itproc++)
+// 	  {
+// 	    //itproc->first=objectid that is looked for
+// 	    if(referenceList_->find(itproc->first))
+// 	    {
+// 	      continue;
+// 	    }
+// 	    else
+// 	    {
+// 	      (*referenceList_).insert(pair<unsigned int,          Synchronisable*>((*itproc).first,Synchronisable::getSynchronisable((*itproc).first)));//important: how to get adress of an object!
+// 	      insertinClientListPerm(currentClientID,itproc->first,itproc->second);
+// 	    }
+// 	  }
+// 	}
 	/**
 	*updateClientListPerm
 	*returns void
 	*/
-	void TrafficControl::insertinClientListPerm(unsigned int clientid, unsigned int objid, objInfo objinf)
+	void TrafficControl::insertinClientListPerm(unsigned int clientID, obj objinf)
 	{ 
-	  std::map<unsigned int,std::map<unsigned int, objInfo>>::iterator itperm;//iterator clientListPerm over clientIDs
-	  itperm = (clientListPerm_).find(clientiD);
-	  assert(itperm != clientListPerm_.end() );
-	  (*itperm).insert(pair<unsigned int, objInfo>(objid,objinf));
-          (permObjPrio_).insert(objid,objinf.objValuePerm);
+	  std::map<unsigned int,std::map<unsigned int, objInfo> >::iterator itperm;//iterator clientListPerm over clientIDs
+// 	  itperm = (clientListPerm_).find(clientID);
+// 	  assert(itperm != clientListPerm_.end() );
+    unsigned int gsid=GAMESTATEID_INITIAL, gsdiff=currentGamestateID, prioperm=Synchronisable::getSynchronisable(objinf.objID)->getPriority(), priomom=0;
+    clientListPerm_[clientID][objinf.objID] = objInfo(objinf.objID, objinf.objCreatorID,gsid,gsdiff, objinf.objSize,prioperm,priomom);
+// 	  itperm->second.insert(std::pair<unsigned int, objInfo>(objid,objinf));
+//     permObjPrio_.insert(objid, objinf.objValuePerm);
 	}
 	
-        /**
-        *updateClientListTemp
-        *takes the shortened vector which will be sent to the gsmanager and puts the *info into clientListTemp
-        */	
-        TrafficControl::updateClientListTemp(std::vector<obj> *list)
-        {
-          vector<obj>::iterator itvec;
-          map<unsigned int,std::map<unsigned int, obj>>::iterator ittemp;
-          map<unsigned int, obj>::iterator ittempgs;
-          ittemp = (clientListTemp_).find(currentClientID);
-          ittempgs = (*ittemp).find(currentGamestateID);
-          for(itvec=list.begin();itvec!=list.end(),itvec++)
-          {
-            ittempgs.insert(itvec);
-          }
-        }
+  /**
+  * updateClientListTemp
+  * takes the shortened vector which will be sent to the gsmanager and puts the *info into clientListTemp
+  */	
+  void TrafficControl::updateClientListTemp(std::vector<obj> *list)
+  {
+    clientListTemp_[currentClientID][currentGamestateID] = std::vector<obj>(*list);
+//     std::vector<obj>::iterator itvec;
+//     std::map<unsigned int,std::map<unsigned int, obj> >::iterator ittemp;
+//     std::map<unsigned int, obj>::iterator ittempgs;
+//     ittemp = clientListTemp_.find(currentClientID);
+//     ittempgs = (*ittemp).find(currentGamestateID);
+//     for(itvec = list.begin(); itvec!=list.end(), itvec++)
+//     {
+//       ittempgs.insert(itvec);
+//     }
+  }
 
-        /**
-        *cut
-        *takes the current vector that has to be returned to the gsmanager and shortens it in criteria of bandwidth of clientID(XY)
-        */
-        TrafficControl::cut(std::vector<obj> *list,int targetsize)
-        {
-          unsigned int size=0;
-          vector<obj>::iterator itvec;
-          itvec = list.begin();
-          unsigned int i=0;
-	  while(size<targetsize && (itvec!=list.end()))
-          {
-            size = size + (*itvec).objSize;//objSize is given in bytes!??
-            i++;
-            itvec = list.begin()+i;
-          }
-          list.erase(itvec, list.end());
-	}
+  /**
+  *cut
+  *takes the current vector that has to be returned to the gsmanager and shortens it in criteria of bandwidth of clientID(XY)
+  */
+  void TrafficControl::cut(std::vector<obj> *list, unsigned int targetsize)
+  {
+    unsigned int size=0;
+    std::vector<obj>::iterator itvec;
+    itvec = list->begin();
+//     unsigned int i=0;
+    for(itvec = list->begin(); itvec != list->end() && size<targetsize; itvec++)
+//     while(size<targetsize && (itvec!=list.end()))
+    {
+      size = size + (*itvec).objSize;//objSize is given in bytes!??
+//       i++;
+//       itvec = list.begin()+i;
+    }
+    list->erase(itvec, list->end());
+  }
 
 
 	/**
 	*evaluateList evaluates whether new obj are there, whether there are things to be updatet and manipulates all this.
 	*/
-	void TrafficControl::evaluateList(std::vector<obj> *list)
+	void TrafficControl::evaluateList(unsigned int clientID, std::vector<obj> *list)
 	{
-	  copyList(list);
+	  //copyList(list);
 	
 	  //now the sorting
 	
 	  //compare listToProcess vs clientListPerm
-          //if listToProcess contains new Objects, add them to clientListPerm
+    //if listToProcess contains new Objects, add them to clientListPerm
 	  std::map<unsigned int, objInfo>::iterator itproc;
+    std::vector<obj>::iterator itvec;
 	  std::map<unsigned int, std::map<unsigned int, objInfo> >::iterator itperm;
-	  std::map<unsigned int, objInfo>::iterator itpermobj;
-	  std::map<unsigned int, unsigned int>::iterator itpermprio;
-	  for((*itproc)=(listToProcess_).begin(); itproc != (listToProcess_).end();it++)
+// 	  std::map<unsigned int, objInfo>::iterator itpermobj;
+	  unsigned int permprio;
+	  for( itvec=list->begin(); itvec != list->end(); itvec++)
 	  {
-	    itperm=(clientListPerm_).find(currentClientID);
-	    if(itpermobj=(*itperm).find((*itproc).first))
-            {
-	     if(currentGamestateID > ((*itpermobj).second).objCurGS)
-	      {
-	      //obj bleibt in liste und permanente prio wird berechnet
-	        ((*itpermobj).second).objDiffGS = ((*itpermobj).second).objCurGS - currentGamestateID;
-	        itpermprio = (permObjPrio_).find((*itproc).first);
-	        ((*itpermobj).second).objValuePerm = ((*itpermobj).second).objDiffGS * (*itpermprio).second;
-	        continue;//check next objId
-	      }
-	      else
-	      {
-	        (listToProcess_).erase(itproc);
-	      }
-             }
-             else
-             {
-               insertinClientListPerm(currentClientID,(*itproc).first,(*itproc).second);
-               itpermobj=(*itperm).find((*itproc).first)
-               ((*itpermobj).second).objDiffGS = ((*itpermobj).second).objCurGS - currentGamestateID;
-	       itpermprio = (permObjPrio_).find((*itproc).first);
-	       ((*itpermobj).second).objValuePerm = ((*itpermobj).second).objDiffGS * (*itpermprio).second;
-	       continue;//check next objId
-             }
-	    }
+	    itperm = clientListPerm_.find(clientID);
+	    if ( clientListPerm_[clientID].find( (*itvec).objID) != clientListPerm_[clientID].end() )
+      {
+        // we already have the object in our map
+        //obj bleibt in liste und permanente prio wird berechnet
+        clientListPerm_[clientID][(*itvec).objID].objDiffGS = currentGamestateID - clientListPerm_[clientID][(*itvec).objID].objCurGS;
+//         ((*itpermobj).second).objDiffGS = ((*itpermobj).second).objCurGS - currentGamestateID;
+//         permprio = clientListPerm_[clientID][(*itproc).first].objValuePerm;
+//         itpermprio = (permObjPrio_).find((*itproc).first);
+//         ((*itpermobj).second).objValuePerm = ((*itpermobj).second).objDiffGS * (*itpermprio).second;
+        continue;//check next objId
+      }
+      else
+      {
+        // insert the object into clientListPerm
+        insertinClientListPerm(clientID,*itvec);
+//         itpermobj=(*itperm).find((*itproc).first)
+//         ((*itpermobj).second).objDiffGS = ((*itpermobj).second).objCurGS - currentGamestateID;
+//         itpermprio = (permObjPrio_).find((*itproc).first);
+//         ((*itpermobj).second).objValuePerm = ((*itpermobj).second).objDiffGS * (*itpermprio).second;
+        continue;//check next objId
+      }
+    }
 	  //end compare listToProcess vs clientListPerm
 	
-	//listToProc vs clientListTemp
-	map<unsigned int, std::map<unsigned int, unsigned int> >::iterator ittemp;
-	map<unsigned int, unsigned int>::iterator ittempgs;
-	for((itproc=listToProcess_).begin(); itproc != (listToProcess_).end();itproc++)
-	{
-	  ittemp = clientListTemp_->find(currentClientID);
-	  if(ittempgs = (*ittemp).find(currentGamestateID))
-	  {
-	    if((*itproc).first == (*ittempgs).find((*itproc).first))//ja, dann ist objekt schon in der zu sendenden liste-muss nicht nochmal gesendet werden
-	    {
- 	      (listToProcess_).erase (itproc);
-	    }
-            else continue;
-          }
-	  else continue;
-	}
-	//end listToProc vs clientListTemp
-	
-	//listToProcess contains obj to send now, and since we give gsmanager the copiedvector and not listToProcess shorten copiedvector therefor too.
-	vector<obj>::iterator itvec;
-	for(itvec = copiedVector.begin(); itvec < copiedVector.end(); itvec++)
-	{
-	  if((listToProcess_).find(itvec->objID))
-	  {
-            continue;//therefore object wasnt thrown out yet and has to be sent back to gsmanager
-          }
-	  else
-	  {
-	    copiedVector.remove(itvec);
-	  }
-	}
-	//sort copied vector aufgrund der objprioperm in clientlistperm
-        // use boost bind here because we need to pass a memberfunction to stl sort
-        sort(copiedvector.begin(), copiedvector.end(), boost::bind(&TrafficControl::priodiffer,this,_1,_2) );
-	//swappen aufgrund von creator oder ganz rausnehmen!?
-	for(itvec = copiedVector.begin(); itvec < copiedVector.end(); itvec++)
-	{ 
-	  itproc = (listToProcess_).find((*itvec).objID);
-	  if((*itproc).second.objCreatorID)
-	  {
-	  //vor dem child in copiedvector einfügen, wie?
-	    copiedVector.insert(copiedVector.find((*itproc).first),(*itproc).second.objCreatorID);
-	  }
-	  else continue;
-	}
-	  //end of sorting
-	  //now the cutting, work the same obj out in processobjectlist and copiedvector, compression rate muss noch festgelegt werden. 
-	  cut(copiedVector,targetSize);
-	  //diese Funktion updateClientList muss noch gemacht werden
-	  updateClientListTemp(copiedVector);
-	  //end of sorting
+    //listToProc vs clientListTemp
+    //TODO: uncomment it again and change some things
+    /*
+    std::map<unsigned int, std::map<unsigned int, unsigned int> >::iterator ittemp;
+    std::map<unsigned int, unsigned int>::iterator ittempgs;
+    for( itproc=listToProcess_.begin(); itproc != listToProcess_.end();itproc++)
+    {
+      ittemp = clientListTemp_->find(currentClientID);
+      if( ittempgs = (*ittemp).find(currentGamestateID))
+      {
+        if((*itproc).first == (*ittempgs).find((*itproc).first))//ja, dann ist objekt schon in der zu sendenden liste-muss nicht nochmal gesendet werden
+        {
+          (listToProcess_).erase (itproc);
+        }
+        else
+          continue;
       }
+      else
+        continue;
+    }*/
+    //end listToProc vs clientListTemp
+    
+    //TODO: check whether we need this, cause i don't think so.
+    //listToProcess contains obj to send now, and since we give gsmanager the copiedvector and not listToProcess shorten copiedvector therefor too.
+    /*std::vector<obj>::iterator itvec;
+    for(itvec = copiedVector.begin(); itvec != copiedVector.end(); itvec++)
+    {
+      if ( listToProcess_.find(itvec->objID) )
+      {
+        continue;//therefore object wasnt thrown out yet and has to be sent back to gsmanager
+      }
+      else
+      {
+        copiedVector.remove(itvec);
+      }
+    }*/
+    //sort copied vector aufgrund der objprioperm in clientlistperm
+    // use boost bind here because we need to pass a memberfunction to stl sort
+    sort(list->begin(), list->end(), boost::bind(&TrafficControl::priodiffer, this, clientID, _1, _2) );
+    //swappen aufgrund von creator oder ganz rausnehmen!?
+    for(itvec = list->begin(); itvec != list->end(); itvec++)
+    { 
+      //TODO: TODO TODO TODO
+      itproc = (listToProcess_).find((*itvec).objID);
+      if((*itproc).second.objCreatorID)
+      {
+      //vor dem child in copiedvector einfügen, wie?
+        copiedVector.insert(copiedVector.find((*itproc).first),(*itproc).second.objCreatorID);
+      }
+      else continue;
+    }
+    //end of sorting
+    //now the cutting, work the same obj out in processobjectlist and copiedvector, compression rate muss noch festgelegt werden. 
+    cut(copiedVector,targetSize);
+    //diese Funktion updateClientList muss noch gemacht werden
+    updateClientListTemp(list);
+    //end of sorting
+  }
 
 
 

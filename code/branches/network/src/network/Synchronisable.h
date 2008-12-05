@@ -113,6 +113,7 @@ namespace network
 
     inline unsigned int getObjectID(){return objectID;}
     inline unsigned int getClassID(){return classID;}
+    inline unsigned int getPriority(){ return objectFrequency_;}
   protected:
     Synchronisable(orxonox::BaseObject* creator);
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
