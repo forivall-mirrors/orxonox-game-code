@@ -61,13 +61,17 @@ namespace orxonox {
 	    
 	    int getLength(void) const
                 { return this->length_; }
+	    int getWidth(void) const
+                { return this->width_; }
 	    
 	    void setQueueText(const std::string & text);
 	    bool setLength(int length);
+	    bool setWidth(int width);
 	    
 	private:
             Ogre::UTFString queueText_;
             int length_;
+            int width_;
     
     };
 

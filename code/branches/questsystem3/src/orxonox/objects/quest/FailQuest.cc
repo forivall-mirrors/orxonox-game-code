@@ -39,7 +39,6 @@
 #include "util/Exception.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
-#include "orxonox/overlays/notifications/Notification.h"
 #include "QuestManager.h"
 #include "Quest.h"
 

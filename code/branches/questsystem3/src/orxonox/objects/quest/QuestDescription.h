@@ -90,12 +90,42 @@ namespace orxonox {
 	    */
 	    inline const std::string & getCompleteMessage(void) const
 		{ return this->completeMessage_; }
+	    
+	    /**
+	    @brief Sends a Notification displaying that a QuestHint was added.
+	    @return Returns true if successful.
+	    */
+	    inline bool sendAddHintNotification(void) const
+                { return notificationHelper("hint", ""); }
+	    
+	    /**
+	    @brief Sends a Notification displaying that a Quest was added.
+	    @return Returns true if successful.
+	    */
+	    inline bool sendAddQuestNotification(void) const
+                { return notificationHelper("quest", "start"); }
+	    
+	    /**
+	    @brief Sends a Notification displaying that a Quest was failed.
+	    @return Returns true if successful.
+	    */
+	    inline bool sendFailQuestNotification(void) const
+                { return notificationHelper("quest", "fail"); }
+	    
+	    /**
+	    @brief Sends a Notification displaying that a Quest was completed.
+	    @return Returns true if successful.
+	    */
+	    inline bool sendCompleteQuestNotification(void) const
+                { return notificationHelper("quest", "complete"); }
 
         private:
             std::string title_; //!< The title.
             std::string description_; //!< The description.
             std::string failMessage_; //!< The message displayed when the Quest is failed.
             std::string completeMessage_; //!< The message displayed when the Quest is completed.
+
+            bool notificationHelper(const std::string & item, const std::string & status) const; //!< Helper for sending QuestDescriptions as Notifications.
 
             /**
             @brief Sets the title.

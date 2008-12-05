@@ -37,6 +37,7 @@
 #include "QuestDescription.h"
 
 #include "core/CoreIncludes.h"
+#include "orxonox/overlays/notifications/Notification.h"
 
 namespace orxonox {
 
@@ -74,9 +75,62 @@ namespace orxonox {
         XMLPortParam(QuestDescription, "title", setTitle, getTitle, xmlelement, mode);
         XMLPortParam(QuestDescription, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(QuestDescription, "failMessage", setFailMessage, getFailMessage, xmlelement, mode);
-        XMLPortParam(QuestDescription, "failMessage", setCompleteMessage, getCompleteMessage, xmlelement, mode);
+        XMLPortParam(QuestDescription, "completeMessage", setCompleteMessage, getCompleteMessage, xmlelement, mode);
 
         COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
+    }
+    
+    /**
+    @brief
+        This method is a helper for sending QuestDescriptions as Notifications.
+    @param item
+        The item the QuestDescription is for.
+    @param status
+        The status the QuestDescription us for.
+    @return
+        Returns true if successful.
+    */
+    bool QuestDescription::notificationHelper(const std::string & item, const std::string & status) const
+    {
+        std::string message = "";
+        std::string title = "";
+        if(item == "hint")
+        {
+            title = "You received a hint: '" + this->title_ + "'";
+            message = this->description_;
+        }
+        else if(item == "quest")
+        {
+            if(status == "start")
+            {
+                title = "You received a new quest: '" + this->title_ + "'";
+                message = this->description_;
+            }
+            else if(status == "fail")
+            {
+                title = "You failed the quest: '" + this->title_ + "'";
+                message = this->failMessage_;
+            }
+            else if(status == "complete")
+            {
+                title = "You successfully completed the quest: '" + this->title_ + "'";
+                message = this->completeMessage_;
+            }
+            else
+            {
+                COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;
+                return false;
+            }
+        }
+        else
+        {
+            COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;
+            return false;
+        }
+        
+        Notification* notification = new Notification(message, title, 10);
+        notification->send();
+        return true;
     }
 
 

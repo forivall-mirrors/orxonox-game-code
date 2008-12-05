@@ -86,7 +86,7 @@ namespace orxonox {
         
         updateQueue();
         
-        COUT(3) << "Notification inserted, title: " << notification->getTitle() << ", message: " << notification->getMessage() << std::endl;
+        COUT(4) << "Notification inserted. Title: " << notification->getTitle() << std::endl;
         
         return true;
     }
@@ -103,14 +103,49 @@ namespace orxonox {
             if(container->remainingTime == 0.0)
                 continue;
             
-            COUT(3) << "Update, title: " << container->notification->getTitle() << ", message: " << container->notification->getMessage() << std::endl;
-            
-	    text = text + "\n\n\n------------" + container->notification->getTitle() + "\n\n" + container->notification->getMessage();
+	    text = text + "\n\n\n------------\n\n" + container->notification->getTitle() + "\n\n" + container->notification->getMessage();
         }
-
-        COUT(3) << "Queue updated: " << text << std::endl;
         
         NotificationQueue::queue_s->setQueueText(text);
+    }
+    
+    const std::string & NotificationManager::clipMessage(const std::string & message)
+    {
+        std::string* clippedMessageP = new std::string();
+        std::string clippedMessage = *clippedMessageP;
+        clippedMessage = "";
+        std::string tempWord = "";
+        int wordLength = 0;
+        signed int i = 0;
+        int widthLeft = NotificationQueue::queue_s->getWidth();
+        while(i < message.length())
+        {
+            while(i < message.length() && message[i] != ' ' && message[i] != '\n')
+            {
+                tempWord = tempWord + message[i];
+                i++;
+                wordLength++;
+            }
+            
+            if(wordLength <= widthLeft)
+            {
+                clippedMessage = clippedMessage + tempWord + message[i];
+                widthLeft -= (wordLength+1);
+                wordLength = 0;
+                tempWord = "";
+                i++;
+            }
+            else
+            {
+                clippedMessage = clippedMessage + '\n' + tempWord + message[i];
+                widthLeft = NotificationQueue::queue_s->getWidth() - (wordLength+1);
+                i++;
+                wordLength = 0;
+                tempWord = "";
+            }
+        }
+        
+        return clippedMessage;
     }
 
 }

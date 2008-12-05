@@ -79,7 +79,6 @@ namespace orxonox {
 	private:
             questListenerStatus::Enum status_;
             Quest* quest_;
-            BaseObject* target_;
     
     };
 

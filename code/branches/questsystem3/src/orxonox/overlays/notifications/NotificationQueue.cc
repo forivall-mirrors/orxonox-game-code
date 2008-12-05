@@ -52,6 +52,9 @@ namespace orxonox {
 	{
             queue_s = this;
 	}
+	
+	this->length_ = 3;
+	this->width_ = 50;
     }
     
     NotificationQueue::~NotificationQueue()
@@ -64,6 +67,7 @@ namespace orxonox {
         SUPER(NotificationQueue, XMLPort, xmlElement, mode);
         
         XMLPortParam(NotificationQueue, "length", setLength, getLength, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "width", setWidth, getWidth, xmlElement, mode);
     }
     
     void NotificationQueue::tick(float dt)
@@ -78,6 +82,16 @@ namespace orxonox {
         if(length > 0)
         {
             this->length_ = length;
+            return true;
+        }
+        return false;
+    }
+    
+    bool NotificationQueue::setWidth(int width)
+    {
+        if(width > 0)
+        {
+            this->width_ = width;
             return true;
         }
         return false;

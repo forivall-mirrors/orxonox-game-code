@@ -65,6 +65,7 @@ namespace orxonox {
             static std::list<NotificationContainer*> notifications_s;
             
             static void updateQueue(void);
+            static const std::string & clipMessage(const std::string & message);
 
     };
 

@@ -376,6 +376,8 @@ namespace orxonox {
     {
         QuestListener::advertiseStatusChange(this->listeners_, "fail"); //!< Tells the QuestListeners, that the status has changed to failed.
         this->setStatus(player, questStatus::failed);
+        
+        this->getDescription()->sendFailQuestNotification();
         return true;
     }
     
@@ -391,6 +393,8 @@ namespace orxonox {
     {
         QuestListener::advertiseStatusChange(this->listeners_, "complete"); //!< Tells the QuestListeners, that the status has changed to completed.
         this->setStatus(player, questStatus::completed);
+        
+        this->getDescription()->sendCompleteQuestNotification();
         return true;
     }
 
@@ -413,6 +417,8 @@ namespace orxonox {
         QuestListener::advertiseStatusChange(this->listeners_, "start"); //!< Tells the QuestListeners, that the status has changed to active.
         
         this->setStatus(player, questStatus::active);
+        
+        this->getDescription()->sendAddQuestNotification();
 	return true;
     }
     
