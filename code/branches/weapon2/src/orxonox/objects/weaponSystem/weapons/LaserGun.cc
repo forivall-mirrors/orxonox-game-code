@@ -47,7 +47,7 @@ namespace orxonox
         //set weapon properties here
         //this->setLoadingTime(0.5);
 
-        //how could it be loaded by XML
+COUT(0) << "LaserGun::LaserGun" << std::endl;
         this->attachNeededMunition(this->getMunitionType());
     }
 
@@ -60,11 +60,11 @@ namespace orxonox
 COUT(0) << "LaserGun::fire" << std::endl;
         if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
         {
-COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;    
+COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
             //take munition
-            this->getAttachedMunition(this->munitionType_)->removeBullets(1,this);
-            Weapon::bulletTimer();
             this->setBulletReadyToShoot(false);
+            Weapon::bulletTimer();
+            this->getAttachedMunition(this->munitionType_)->removeBullets(1,this);
 
             //create projectile
             BillboardProjectile* projectile = new ParticleProjectile(this);

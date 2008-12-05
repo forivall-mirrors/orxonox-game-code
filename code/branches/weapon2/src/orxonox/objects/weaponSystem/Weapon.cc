@@ -106,7 +106,9 @@ COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munit
      */
 
     void Weapon::setMunitionType(std::string munitionType)
-    {   this->munitionType_ = munitionType; }
+    {   
+COUT(0) << "Weapon::setMunitionType (XMLPort) "<< munitionType << std::endl;
+this->munitionType_ = munitionType; }
 
     std::string Weapon::getMunitionType()
     {   return this->munitionType_;  }

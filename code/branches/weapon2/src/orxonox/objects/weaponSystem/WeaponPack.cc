@@ -96,9 +96,10 @@ COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << st
     void WeaponPack::addWeapon(Weapon * weapon)
     {
         weapon->setParentWeaponSystem(this->parentWeaponSystem_);
+COUT(0) << "WeaponPack::addWeapon " << weapon->getMunitionType() << std::endl;
         this->weapons_.push_back(weapon);
     }
-    
+
     Weapon * WeaponPack::getWeapon(unsigned int index)
     {
         return weapons_[index];
@@ -110,6 +111,6 @@ COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << st
         {
             this->weapons_[i]->setParentWeaponSystem(weaponSystem);
         }
-        
+
     }
 }
