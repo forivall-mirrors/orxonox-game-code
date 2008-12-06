@@ -128,7 +128,7 @@ namespace orxonox {
             return false;
         }
         
-        Notification* notification = new Notification(message, title, 10);
+        Notification* notification = new Notification(message, title, 30);
         notification->send();
         return true;
     }

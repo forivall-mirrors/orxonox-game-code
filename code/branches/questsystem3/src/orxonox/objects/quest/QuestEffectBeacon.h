@@ -63,12 +63,12 @@ namespace orxonox {
     Creating a QuestEffectBeacon through XML goes as follows:
     
     <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
-            <effects>
-                <QuestEffect /> //A list of QuestEffects, invoked when the QuestEffectBeacon is executed, see QuestEffect for the full XML representation.
-                ...
-                <QuestEffect />
-            </effects>
-            <events>
+	<effects>
+	    <QuestEffect /> //A list of QuestEffects, invoked when the QuestEffectBeacon is executed, see QuestEffect for the full XML representation.
+	    ...
+	    <QuestEffect />
+	</effects>
+	<events>
         <execute>
             <EventListener event=eventIdString />
         </execute>
@@ -102,26 +102,26 @@ namespace orxonox {
         bool setActive(bool activate); //!< Set the status of the QuestEffectBeacon.
         
     protected:
-            bool decrementTimes(void); //!< Decrement the number of times the QuestEffectBeacon can still be executed.
-            
-            /**
-            @brief Returns the number of times the QUestEffectBeacon can still be executed.
-            @return Returns the number of times the QUestEffectBeacon can still be executed.
-            */
-            inline const int & getTimes(void) const
-                { return this->times_; }
+	bool decrementTimes(void); //!< Decrement the number of times the QuestEffectBeacon can still be executed.
+	
+	/**
+	@brief Returns the number of times the QUestEffectBeacon can still be executed.
+	@return Returns the number of times the QUestEffectBeacon can still be executed.
+	*/
+	inline const int & getTimes(void) const
+	    { return this->times_; }
 
-        private:
-            static const int INFINITE = -1; //!< Constant to avoid using magic numbers.
-        
-            std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
-            int times_; //!< Number of times the beacon can be exectued.
-            QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
-            
-            bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
-            bool addEffect(QuestEffect* effect); //!< Add a QuestEffect to the QuestEffectBeacon.
-            
-            const QuestEffect* getEffect(unsigned int index) const; //!< Get the QuestEffect at a given index.
+    private:
+	static const int INFINITE = -1; //!< Constant to avoid using magic numbers.
+    
+	std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
+	int times_; //!< Number of times the beacon can be exectued.
+	QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
+	
+	bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
+	bool addEffect(QuestEffect* effect); //!< Add a QuestEffect to the QuestEffectBeacon.
+	
+	const QuestEffect* getEffect(unsigned int index) const; //!< Get the QuestEffect at a given index.
     
     };
 
