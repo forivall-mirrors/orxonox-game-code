@@ -30,8 +30,6 @@
 
 #include <cassert>
 #include <boost/bind.hpp>
-#include "Synchronisable.h"
-#include "ClientInformation.h"
 
 namespace network {
 
@@ -85,20 +83,23 @@ namespace network {
     assert(clientListPerm_[clientID].find(i.objID) != clientListPerm_[clientID].end()); // make sure the object i is in the client list
     assert(clientListPerm_[clientID].find(j.objID) != clientListPerm_[clientID].end()); // make sure the object j is in the client list
     
-    return clientListPerm_[clientID][i.objID].objID < clientListPerm_[clientID][j.objID].objID;
+    int prio1 = clientListPerm_[clientID][i.objID].objValuePerm + clientListPerm_[clientID][i.objID].objValueSched;
+    int prio2 = clientListPerm_[clientID][j.objID].objValuePerm + clientListPerm_[clientID][j.objID].objValueSched;
+    // NOTE: smaller priority is better
+    return prio1 < prio2;
   }
 
 
-	std::vector<obj>* TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj> *list)
+	void TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj> *list)
 	{
-	  copiedVector = *list;
+// 	  copiedVector = *list;
 	  currentClientID=clientID;
 	  currentGamestateID=gamestateID;
 	  evaluateList(clientID, list);
 	  //list hatte vorher ja vielmehr elemente, nach zuweisung nicht mehr... speicherplatz??
-	  *list=copiedVector;
+// 	  *list=copiedVector;
     //später wird copiedVector ja überschrieben, ist das ein problem für list-dh. für gamestatemanager?
-	  return list;
+	  return;
 	}
 	
 	void TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
@@ -211,15 +212,18 @@ namespace network {
     unsigned int size=0;
     std::vector<obj>::iterator itvec;
     itvec = list->begin();
-//     unsigned int i=0;
     for(itvec = list->begin(); itvec != list->end() && size<targetsize; itvec++)
-//     while(size<targetsize && (itvec!=list.end()))
     {
-      size = size + (*itvec).objSize;//objSize is given in bytes!??
-//       i++;
-//       itvec = list.begin()+i;
+      if ( size + (*itvec).objSize < targetsize )
+      {
+        size = size + (*itvec).objSize;//objSize is given in bytes
+      }
+      else
+      {
+        clientListPerm_[currentClientID][(*itvec).objID].objValueSched -= SCHED_PRIORITY_OFFSET;
+        list->erase(itvec++);
+      }
     }
-    list->erase(itvec, list->end());
   }
 
 
@@ -234,14 +238,13 @@ namespace network {
 	
 	  //compare listToProcess vs clientListPerm
     //if listToProcess contains new Objects, add them to clientListPerm
-	  std::map<unsigned int, objInfo>::iterator itproc;
+// 	  std::map<unsigned int, objInfo>::iterator itproc;
     std::vector<obj>::iterator itvec;
-	  std::map<unsigned int, std::map<unsigned int, objInfo> >::iterator itperm;
+// 	  std::map<unsigned int, std::map<unsigned int, objInfo> >::iterator itperm;
 // 	  std::map<unsigned int, objInfo>::iterator itpermobj;
-	  unsigned int permprio;
 	  for( itvec=list->begin(); itvec != list->end(); itvec++)
 	  {
-	    itperm = clientListPerm_.find(clientID);
+// 	    itperm = clientListPerm_.find(clientID);
 	    if ( clientListPerm_[clientID].find( (*itvec).objID) != clientListPerm_[clientID].end() )
       {
         // we already have the object in our map
@@ -305,26 +308,35 @@ namespace network {
     //sort copied vector aufgrund der objprioperm in clientlistperm
     // use boost bind here because we need to pass a memberfunction to stl sort
     sort(list->begin(), list->end(), boost::bind(&TrafficControl::priodiffer, this, clientID, _1, _2) );
-    //swappen aufgrund von creator oder ganz rausnehmen!?
+    
+    //now we check, that the creator of an object always exists on a client
+    std::vector<obj>::iterator itcreator;
     for(itvec = list->begin(); itvec != list->end(); itvec++)
     { 
-      //TODO: TODO TODO TODO
-      itproc = (listToProcess_).find((*itvec).objID);
-      if((*itproc).second.objCreatorID)
+      if ( (*itvec).objCreatorID != OBJECTID_UNKNOWN )
       {
-      //vor dem child in copiedvector einfügen, wie?
-        copiedVector.insert(copiedVector.find((*itproc).first),(*itproc).second.objCreatorID);
+        if( clientListPerm_[clientID][(*itvec).objCreatorID].objCurGS != GAMESTATEID_INITIAL )
+          continue;
+        for( itcreator = list->begin(); itcreator != list->end(); itcreator++)
+        {
+          if ( (*itcreator).objID == (*itvec).objCreatorID )
+            break;
+        }
+        // if the creator is before the object everything is fine
+        if( itcreator < itvec )
+          continue;
+        // otherwise insert the creator right before our object and delete it at the old position
+        list->insert(itvec, *itcreator);
+        list->erase(itcreator);
       }
-      else continue;
     }
     //end of sorting
     //now the cutting, work the same obj out in processobjectlist and copiedvector, compression rate muss noch festgelegt werden. 
-    cut(copiedVector,targetSize);
+    cut(list, targetSize);
     //diese Funktion updateClientList muss noch gemacht werden
     updateClientListTemp(list);
     //end of sorting
   }
-
 
 
 

@@ -45,6 +45,7 @@
 #include <enet/enet.h>
 #include <boost/thread/recursive_mutex.hpp>
 
+
 // WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
 
 namespace network

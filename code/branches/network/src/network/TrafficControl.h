@@ -36,6 +36,7 @@
 
 #include "NetworkPrereqs.h"
 #include "Synchronisable.h"
+#include "ClientInformation.h"
 #include "util/Integers.h"
 
 namespace network {
@@ -47,13 +48,15 @@ struct objInfo
 {
   uint32_t objID;
   uint32_t objCreatorID;
-  int32_t objCurGS;//current GameState ID
-  int32_t objDiffGS;//difference between current and latest GameState
+  uint32_t objCurGS;//current GameState ID
+  uint32_t objDiffGS;//difference between current and latest GameState
   uint32_t objSize;
   unsigned int objValuePerm;
   unsigned int objValueSched;
   objInfo(uint32_t ID, uint32_t creatorID, int32_t curGsID, int32_t diffGsID, uint32_t size, unsigned int prioperm, unsigned int priosched)
     { objID = ID; objCreatorID = creatorID; objCurGS = curGsID; objDiffGS = diffGsID; objSize = size; objValuePerm = prioperm; objValueSched = priosched; }
+  objInfo()
+    { objID = OBJECTID_UNKNOWN; objCreatorID = OBJECTID_UNKNOWN; objCurGS = GAMESTATEID_INITIAL; objDiffGS = objCurGS; objSize = 0; objValuePerm = 0; objValueSched = 0; }
 };
 
 /**
@@ -61,11 +64,18 @@ struct objInfo
 */
 struct obj
 {
-  unsigned int objID;
-  unsigned int objCreatorID;
-  unsigned int objSize;
+  uint32_t objID;
+  uint32_t objCreatorID;
+  uint32_t objSize;
+  uint32_t objDataOffset;
+  obj()
+    { objID = OBJECTID_UNKNOWN; objCreatorID = OBJECTID_UNKNOWN; objSize = 0; objDataOffset = 0; }
+  obj( uint32_t ID, uint32_t creatorID, uint32_t size, uint32_t offset )
+  { objID = ID; objCreatorID = creatorID; objSize = size; objDataOffset = offset; }
 };
 
+
+const unsigned int SCHED_PRIORITY_OFFSET = -5;
 
 
 /**
@@ -87,7 +97,7 @@ class TrafficControl{
     /**
     *creates list (typ map) that contains objids, struct with info concerning object(objid)
     */
-    std::map<unsigned int, objInfo> listToProcess_;//copy of argument, when traffic control tool is being called, the original of this must be returned later on, eg the vector given by GS
+//     std::map<unsigned int, objInfo> listToProcess_;//copy of argument, when traffic control tool is being called, the original of this must be returned later on, eg the vector given by GS
     /**
     *permanent client list: contains client ids, object ids and objectInfos (in this order)
     */
@@ -117,7 +127,7 @@ class TrafficControl{
     /**
     *copiedVector is a copy of the given Vector by the GSmanager, on this vector all manipulations are performed
     */
-    std::vector<obj> copiedVector;
+//     std::vector<obj> copiedVector;
 
 //     void updateReferenceList(std::map<unsigned int, objInfo> *list);//done
     void insertinClientListPerm(unsigned int clientID, obj objinf);//done
@@ -131,7 +141,7 @@ class TrafficControl{
     /**
     *evaluates Data given (vector) and produces result(->Data to be updated)
     */
-    void evaluateList(unsigned int clientID, std::vector<obj> *list);//done
+    void evaluateList(unsigned int clientID, std::vector<obj> *list);//done    
 
   protected:
     TrafficControl();
@@ -145,7 +155,7 @@ class TrafficControl{
     *Elements of vector are accessed by *list[i]
     *Elements of struct i are therefore: *list[i].objID
     */
-    std::vector<obj>* processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj>* list); //gets a pointer to the vector (containing objectIDs) and sorts it
+    void processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj>* list); //gets a pointer to the vector (containing objectIDs) and sorts it
     //done
     void processAck(unsigned int clientID, unsigned int gamestateID);	// this function gets called when the server receives an ack from the client
     //done

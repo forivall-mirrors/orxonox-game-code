@@ -112,6 +112,7 @@ namespace network
     static unsigned int popDeletedObject(){ unsigned int i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
 
     inline unsigned int getObjectID(){return objectID;}
+    inline unsigned int getCreatorID(){return creatorID;}
     inline unsigned int getClassID(){return classID;}
     inline unsigned int getPriority(){ return objectFrequency_;}
   protected:
