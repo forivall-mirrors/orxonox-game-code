@@ -64,6 +64,11 @@ namespace orxonox
         , levelManager_(0)
     {
         RegisterObject(GSLevel);
+
+        this->ccKeybind_ = 0;
+        this->ccTkeybind_ = 0;
+        this->ccSetTimeFactor_ = 0;
+
         setConfigValues();
     }
 
@@ -141,9 +146,21 @@ namespace orxonox
     void GSLevel::leave()
     {
         // destroy console commands
-        delete this->ccKeybind_;
-        delete this->ccSetTimeFactor_;
-        delete this->ccTkeybind_;
+        if (this->ccKeybind_)
+        {
+            delete this->ccKeybind_;
+            this->ccKeybind_ = 0;
+        }
+        if (this->ccSetTimeFactor_)
+        {
+            delete this->ccSetTimeFactor_;
+            this->ccSetTimeFactor_ = 0;
+        }
+        if (this->ccTkeybind_)
+        {
+            delete this->ccTkeybind_;
+            this->ccTkeybind_ = 0;
+        }
 
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
@@ -158,23 +175,38 @@ namespace orxonox
             this->unloadLevel();
 
         if (this->radar_)
+        {
             delete this->radar_;
+            this->radar_ = 0;
+        }
 
         if (this->cameraManager_)
+        {
             delete this->cameraManager_;
+            this->cameraManager_ = 0;
+        }
 
         if (this->levelManager_)
+        {
             delete this->levelManager_;
+            this->levelManager_ = 0;
+        }
 
         if (this->playerManager_)
+        {
             delete this->playerManager_;
+            this->playerManager_ = 0;
+        }
 
         if (Core::showsGraphics())
         {
             inputState_->setHandler(0);
             InputManager::getInstance().requestDestroyState("game");
             if (this->keyBinder_)
+            {
                 delete this->keyBinder_;
+                this->keyBinder_ = 0;
+            }
         }
     }
 

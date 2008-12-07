@@ -37,6 +37,7 @@
 #include "core/Executor.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
+#include "util/Exception.h"
 
 namespace orxonox
 {
@@ -58,9 +59,12 @@ namespace orxonox
 
         if (Core::showsGraphics())
         {
-            assert(this->getScene());
-            assert(this->getScene()->getSceneManager());
-            assert(this->getScene()->getRootSceneNode());
+            if (!this->getScene())
+                ThrowException(AbortLoading, "Can't create Camera, no scene given.");
+            if (!this->getScene()->getSceneManager())
+                ThrowException(AbortLoading, "Can't create Camera, no scene manager given.");
+            if (!this->getScene()->getRootSceneNode())
+                ThrowException(AbortLoading, "Can't create Camera, no root scene node given.");
 
             this->ribbonTrail_ = this->getScene()->getSceneManager()->createRibbonTrail(this->getNode()->getName());
 

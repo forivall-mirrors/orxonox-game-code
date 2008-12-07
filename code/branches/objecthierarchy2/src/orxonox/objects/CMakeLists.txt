@@ -2,6 +2,7 @@ SET( SRC_FILES
   EventListener.cc
   EventDispatcher.cc
   EventTarget.cc
+  GlobalShader.cc
   Level.cc
   Radar.cc
   RadarListener.cc

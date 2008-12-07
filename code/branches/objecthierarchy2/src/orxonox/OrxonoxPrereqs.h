@@ -113,6 +113,7 @@ namespace orxonox
     class Billboard;
     class BlinkingBillboard;
     class FadingBillboard;
+    class GlobalShader;
     class Light;
     class Backlight;
     class ParticleEmitter;
@@ -161,6 +162,7 @@ namespace orxonox
     class Light;
     class Mesh;
     class ParticleInterface;
+    class Shader;
     template <class T>
     class Timer;
 

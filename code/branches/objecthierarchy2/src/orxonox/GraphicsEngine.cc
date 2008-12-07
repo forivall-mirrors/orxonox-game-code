@@ -76,6 +76,8 @@ namespace orxonox
         assert(singletonRef_s == 0);
         singletonRef_s = this;
 
+        this->viewport_ = 0;
+
         this->detailLevelParticle_ = 0;
 
         this->setConfigValues();

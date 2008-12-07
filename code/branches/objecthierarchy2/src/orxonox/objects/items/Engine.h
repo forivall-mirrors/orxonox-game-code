@@ -47,6 +47,7 @@ namespace orxonox
             void registerVariables();
 
             virtual void tick(float dt);
+            virtual void changedActivity();
 
             virtual void addToSpaceShip(SpaceShip* ship);
             inline SpaceShip* getShip() const
@@ -123,6 +124,8 @@ namespace orxonox
             float accelerationBack_;
             float accelerationLeftRight_;
             float accelerationUpDown_;
+
+            Shader* boostBlur_;
     };
 }
 

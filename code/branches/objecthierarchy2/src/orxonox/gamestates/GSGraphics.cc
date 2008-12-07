@@ -30,6 +30,7 @@
 #include "GSGraphics.h"
 
 #include <fstream>
+#include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -186,6 +187,9 @@ namespace orxonox
 
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
+
+        // unload all compositors
+        Ogre::CompositorManager::getSingleton().removeAll();
 
         // destroy render window
         RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
@@ -432,6 +436,9 @@ namespace orxonox
 
         // create a full screen default viewport
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
+
+        if (this->graphicsEngine_)
+            this->graphicsEngine_->setViewport(this->viewport_);
     }
 
     void GSGraphics::initialiseResources()

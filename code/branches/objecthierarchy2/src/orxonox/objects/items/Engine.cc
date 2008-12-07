@@ -31,7 +31,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "objects/Scene.h"
 #include "objects/worldentities/pawns/SpaceShip.h"
+#include "tools/Shader.h"
 
 namespace orxonox
 {
@@ -58,13 +60,20 @@ namespace orxonox
         this->accelerationLeftRight_ = 0.0;
         this->accelerationUpDown_ = 0.0;
 
+        this->boostBlur_ = 0;
+
         this->registerVariables();
     }
 
     Engine::~Engine()
     {
         if (this->isInitialized() && this->ship_)
+        {
             this->ship_->setEngine(0);
+
+            if (this->boostBlur_)
+                delete this->boostBlur_;
+        }
     }
 
     void Engine::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -177,6 +186,23 @@ namespace orxonox
 
         this->ship_->setBoost(false);
         this->ship_->setSteeringDirection(Vector3::ZERO);
+
+        if (!this->boostBlur_ && this->ship_->hasLocalController() && this->ship_->hasHumanController())
+        {
+            this->boostBlur_ = new Shader(this->ship_->getScene()->getSceneManager());
+            this->boostBlur_->setCompositor("Radial Blur");
+        }
+
+        if (this->boostBlur_ && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
+            this->boostBlur_->setParameter("Ogre/Compositor/Radial_Blur", 0, 0, "sampleStrength", 5.0f * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f));
+    }
+
+    void Engine::changedActivity()
+    {
+        SUPER(Engine, changedActivity);
+
+        if (this->boostBlur_)
+            this->boostBlur_->setVisible(this->isVisible());
     }
 
     void Engine::addToSpaceShip(SpaceShip* ship)
@@ -187,6 +213,12 @@ namespace orxonox
             this->shipID_ = ship->getObjectID();
             if (ship->getEngine() != this)
                 ship->setEngine(this);
+
+            if (this->boostBlur_)
+            {
+                delete this->boostBlur_;
+                this->boostBlur_ = 0;
+            }
         }
     }
 
