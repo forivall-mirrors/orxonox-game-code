@@ -28,8 +28,7 @@
 
 /**
     @file AddQuestHint.cc
-    @brief
-    Implementation of the AddQuestHint class.
+    @brief Implementation of the AddQuestHint class.
 */
 
 #include "OrxonoxStableHeaders.h"

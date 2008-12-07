@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file QuestListener.cc
+    @brief Implementation of the QuestListener class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "QuestListener.h"
 
@@ -39,14 +44,22 @@ namespace orxonox {
 
     CreateFactory(QuestListener);
 
+    /**
+    @brief
+        Constructor. Registers the object and initializes variables.
+    */
     QuestListener::QuestListener(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestListener);
         
-        this->status_ = questListenerStatus::start;
+        this->status_ = questListenerMode::all;
         this->quest_ = NULL;
     }
     
+    /**
+    @brief
+        Destructor.
+    */
     QuestListener::~QuestListener()
     {
     }
@@ -60,79 +73,111 @@ namespace orxonox {
         SUPER(QuestListener, XMLPort, xmlelement, mode);
 
         XMLPortParam(QuestListener, "questId", setQuestId, getQuestId, xmlelement, mode);
-        XMLPortParam(QuestListener, "questStatus", setQuestStatus, getQuestStatus, xmlelement, mode);
+        XMLPortParam(QuestListener, "mode", setMode, getMode, xmlelement, mode);
 
-        this->quest_->addListener(this);
+        this->quest_->addListener(this); //!< Adds the QuestListener to the Quests list of listeners.
         
-        COUT(3) << "QuestListener created for quest: {" << this->quest_->getId() << "} and status '" << this->getQuestStatus() << "'." << std::endl;
+        COUT(3) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getQuestStatus() << "'." << std::endl;
     }
     
-    void QuestListener::advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status)
+    /**
+    @brief
+        Makes all QuestListener in the list aware that a certain status change has occured and executes them if the status change affects them.
+    @param listeners
+        The list of QuestListeners that have to be made aware of the status change.
+    @param status
+        The status that has changed. Can be 'start' (if the Quest was started), 'complete' (if the Quest was completed) or 'fail' (if the Quest was failed).
+    */
+    /* static */ void QuestListener::advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status)
     {
-        for (std::list<QuestListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it)
+        for (std::list<QuestListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) //!< Iterate through all QuestListeners
         {
             QuestListener* listener = *it;
-            if(listener->getQuestStatus() == status)
+            if(listener->getMode() == status || listener->getMode() == questListenerMode::all) //!< Check whether the status change affects the give QuestListener.
             {
                 listener->execute();
             }
         }
     }
     
-    bool QuestListener::execute()
-    {
-        this->fireEvent(true); //TDO This' right?
-        return true;
-    }
-    
+    /**
+    @brief
+        Sets the questId of the Quest the QuestListener reacts to.
+    @param id
+        The questId of the Quest the QUestListener reacts to.
+    @return
+        Returns true if successful.
+    */
     bool QuestListener::setQuestId(const std::string & id)
     {
-        this->quest_ = QuestManager::findQuest(id);
-        if(this->quest_ == NULL)
+        this->quest_ = QuestManager::findQuest(id); //!< Find the Quest corresponding to the given questId.
+        
+        if(this->quest_ == NULL) //!< If there is no such Quest.
         {
-            COUT(1) << "This is bad!" << std::endl; //TDO Find a better way.
+            COUT(1) << "This is bad! The QuestListener has not found a Quest qith a corresponding id." << std::endl; //TDO Throw a damn Exception!
             return false;
         }
         
         return true;
     }
     
-    bool QuestListener::setQuestStatus(const std::string & status)
+    /**
+    @brief
+        Sets the mode of the QuestListener.
+    @param mode
+        The mode to be set. Can be eighter 'all', 'start', 'fail' or 'complete'.
+    @return
+        Returns true if successful.
+    */
+    bool QuestListener::setMode(const std::string & mode)
     {
-        if(status == "start")
+        if(status == "all")
         {
-            this->status_ = questListenerStatus::start;
-            return true;
+            this->status_ = questListenerMode::all;
+        }
+        else if(status == "start")
+        {
+            this->status_ = questListenerMode::start;
         }
         else if(status == "fail")
         {
-            this->status_ = questListenerStatus::fail;
-            return true;
+            this->status_ = questListenerMode::fail;
         }
         else if(status == "complete")
         {
-            this->status_ = questListenerStatus::complete;
-            return true;
+            this->status_ = questListenerMode::complete;
         }
         else
         {
-            COUT(2) << "QuestListener with invalid status '" << status << "' created. Status set to 'start'." << std::endl;
-	    this->status_ = questListenerStatus::start;
+            COUT(2) << "QuestListener with invalid mode '" << mode << "' created. Mode set to 'all'." << std::endl;
+	    this->status_ = questListenerMode::all;
 	    return false;
         }
+        
+        return true;
     }
     
-    const std::string QuestListener::getQuestStatus(void)
+    /**
+    @brief
+        Get the mode of the QuestListener.
+    @return
+        Return the mode of the QuestListener. Can be eighter 'all', 'start', 'fail' or 'complete'.
+    */
+    const std::string QuestListener::getMode(void)
     {
-        if(this->status_ == questListenerStatus::start)
+        if(this->status_ == questListenerMode::all)
+        {
+            return "all";
+        }
+        else if(this->status_ == questListenerMode::start)
         {
             return "start";
         }
-        else if(this->status_ == questListenerStatus::fail)
+        else if(this->status_ == questListenerMode::fail)
         {
             return "fail";
         }
-        else if(this->status_ == questListenerStatus::complete)
+        else if(this->status_ == questListenerMode::complete)
         {
             return "complete";
         }
@@ -143,5 +188,16 @@ namespace orxonox {
         }
     }
 
+    /**
+    @brief
+        Executes the QuestListener, resp. fires an Event.
+    @return
+        Returns true if successful.
+    */
+    bool QuestListener::execute()
+    {
+        this->fireEvent(true); //TDO This' right?
+        return true;
+    }
 
 }

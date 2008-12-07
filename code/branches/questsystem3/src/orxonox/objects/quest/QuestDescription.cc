@@ -28,8 +28,7 @@
 
 /**
     @file QuestDescription.cc
-    @brief
-    Implementation of the QuestDescription class.
+    @brief Implementation of the QuestDescription class.
 */
 
 #include "OrxonoxStableHeaders.h"

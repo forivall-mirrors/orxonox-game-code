@@ -28,8 +28,7 @@
  
 /**
     @file GlobalQuest.cc
-    @brief
-    Implementation of the GlobalQuest class.
+    @brief Implementation of the GlobalQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -95,14 +94,14 @@ namespace orxonox {
         }
         
         Quest::fail(player);
-	
-	//! Iterate through all players possessing this Quest.
-	for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
-	{
-	    QuestEffect::invokeEffects(*it, this->getFailEffectList());
-	}
+    
+    //! Iterate through all players possessing this Quest.
+    for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+    {
+        QuestEffect::invokeEffects(*it, this->getFailEffectList());
+    }
 
-	return true;
+    return true;
     }
 
     /**
@@ -124,15 +123,15 @@ namespace orxonox {
         }
         
         //! Iterate through all players possessing the Quest.
-	for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
-	{
-	    QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
-	}
-	
-	Quest::complete(player);
-	
-	QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
-	return true;
+        for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+        {
+            QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
+        }
+    
+        Quest::complete(player);
+    
+        QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
+        return true;
     }
 
     /**
@@ -207,7 +206,7 @@ namespace orxonox {
             return this->status_;
         }
 
-    return questStatus::inactive;
+        return questStatus::inactive;
     }
 
     /**

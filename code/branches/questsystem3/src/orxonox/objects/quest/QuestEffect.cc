@@ -28,8 +28,7 @@
 
 /**
     @file QuestEffect.cc
-    @brief
-    Implementation of the QuestEffect class.
+    @brief Implementation of the QuestEffect class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -70,7 +69,7 @@ namespace orxonox {
     @return
         Returns false if there was an error, view console of log for further detail.
     */
-    bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
+    /*static*/ bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
     {
         bool check = true;
 

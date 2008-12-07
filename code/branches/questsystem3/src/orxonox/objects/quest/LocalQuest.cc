@@ -28,8 +28,7 @@
 
 /**
     @file LocalQuest.cc
-    @brief
-    Implementation of the LocalQuest class.
+    @brief Implementation of the LocalQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -94,8 +93,8 @@ namespace orxonox {
         
         Quest::fail(player);
         
-	QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
-	return true;
+        QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
+        return true;
     }
 
     /**
@@ -117,8 +116,8 @@ namespace orxonox {
         
         Quest::complete(player);
         
-	QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
-	return true;
+        QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
+        return true;
     }
 
     /**

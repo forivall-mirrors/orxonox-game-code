@@ -28,8 +28,7 @@
  
 /**
     @file QuestHint.cc
-    @brief
-    Implementation of the QuestHint class.
+    @brief Implementation of the QuestHint class.
 */
 
 #include "OrxonoxStableHeaders.h"

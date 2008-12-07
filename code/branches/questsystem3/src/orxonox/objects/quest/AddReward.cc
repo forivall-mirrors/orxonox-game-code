@@ -28,8 +28,7 @@
 
 /**
     @file AddReward.cc
-    @brief
-    Implementation of the AddReward class.
+    @brief Implementation of the AddReward class.
 */
 
 #include "OrxonoxStableHeaders.h"

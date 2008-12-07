@@ -28,8 +28,7 @@
  
 /**
     @file Quest.cc
-    @brief
-    Implementation of the Quest class.
+    @brief Implementation of the Quest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -419,7 +418,7 @@ namespace orxonox {
         this->setStatus(player, questStatus::active);
         
         this->getDescription()->sendAddQuestNotification();
-	return true;
+        return true;
     }
     
     /**

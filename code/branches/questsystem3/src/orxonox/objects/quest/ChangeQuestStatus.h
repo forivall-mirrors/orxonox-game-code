@@ -28,8 +28,7 @@
 
 /**
     @file ChangeQuestStatus.h
-    @brief
-    Definition of the ChangeQuestStatus class.
+    @brief Definition of the ChangeQuestStatus class.
 */
 
 #ifndef _ChangeQuestStatus_H__
@@ -62,8 +61,8 @@ namespace orxonox {
 
         protected:
             /**
-                @brief Returns the id of the Quest.
-                @return Returns the id of the Quest.
+            @brief Returns the id of the Quest.
+            @return Returns the id of the Quest.
             */
             inline const std::string & getQuestId(void) const
                 { return this->questId_; }

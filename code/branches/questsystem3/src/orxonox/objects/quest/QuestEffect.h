@@ -28,8 +28,7 @@
  
 /**
     @file QuestEffect.h
-    @brief
-    Definition of the QuestEffect class.
+    @brief Definition of the QuestEffect class.
 */
 
 #ifndef _QuestEffect_H__

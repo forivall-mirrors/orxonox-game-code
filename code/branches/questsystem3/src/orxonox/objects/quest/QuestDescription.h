@@ -28,8 +28,7 @@
 
 /**
     @file QuestDescription.h
-    @brief
-    Definition of the QuestDescription class.
+    @brief Definition of the QuestDescription class.
 */
 
 #ifndef _QuestDescription_H__
@@ -63,60 +62,60 @@ namespace orxonox {
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestDescription object through XML.
 
-	    /**
-	    @brief Returns the title.
-	    @return Returns a string containing the title of the QuestDescription.
-	    */
-	    inline const std::string & getTitle(void) const
-		{ return this->title_; }
-	    
-	    /**
-	    @brief Returns the description text.
-	    @return Returns a string containing the description text of the QuestDescription.
-	    */
-	    inline const std::string & getDescription(void) const
-		{ return this->description_; }
-		
-	    /**
-	    @brief Returns the fail message.
-	    @return Returns a string containing the fail message of the QuestDescription.
-	    */
-	    inline const std::string & getFailMessage(void) const
-		{ return this->failMessage_; }
-		
-	    /**
-	    @brief Returns the complete message.
-	    @return Returns a string containing the complete message of the QuestDescription.
-	    */
-	    inline const std::string & getCompleteMessage(void) const
-		{ return this->completeMessage_; }
-	    
-	    /**
-	    @brief Sends a Notification displaying that a QuestHint was added.
-	    @return Returns true if successful.
-	    */
-	    inline bool sendAddHintNotification(void) const
+            /**
+            @brief Returns the title.
+            @return Returns a string containing the title of the QuestDescription.
+            */
+            inline const std::string & getTitle(void) const
+                { return this->title_; }
+        
+            /**
+            @brief Returns the description text.
+            @return Returns a string containing the description text of the QuestDescription.
+            */
+            inline const std::string & getDescription(void) const
+                { return this->description_; }
+        
+            /**
+            @brief Returns the fail message.
+            @return Returns a string containing the fail message of the QuestDescription.
+            */
+            inline const std::string & getFailMessage(void) const
+                { return this->failMessage_; }
+        
+            /**
+            @brief Returns the complete message.
+            @return Returns a string containing the complete message of the QuestDescription.
+            */
+            inline const std::string & getCompleteMessage(void) const
+                { return this->completeMessage_; }
+        
+            /**
+            @brief Sends a Notification displaying that a QuestHint was added.
+            @return Returns true if successful.
+            */
+            inline bool sendAddHintNotification(void) const
                 { return notificationHelper("hint", ""); }
-	    
-	    /**
-	    @brief Sends a Notification displaying that a Quest was added.
-	    @return Returns true if successful.
-	    */
-	    inline bool sendAddQuestNotification(void) const
+        
+            /**
+            @brief Sends a Notification displaying that a Quest was added.
+            @return Returns true if successful.
+            */
+            inline bool sendAddQuestNotification(void) const
                 { return notificationHelper("quest", "start"); }
-	    
-	    /**
-	    @brief Sends a Notification displaying that a Quest was failed.
-	    @return Returns true if successful.
-	    */
-	    inline bool sendFailQuestNotification(void) const
+        
+            /**
+            @brief Sends a Notification displaying that a Quest was failed.
+            @return Returns true if successful.
+            */
+            inline bool sendFailQuestNotification(void) const
                 { return notificationHelper("quest", "fail"); }
-	    
-	    /**
-	    @brief Sends a Notification displaying that a Quest was completed.
-	    @return Returns true if successful.
-	    */
-	    inline bool sendCompleteQuestNotification(void) const
+        
+            /**
+            @brief Sends a Notification displaying that a Quest was completed.
+            @return Returns true if successful.
+            */
+            inline bool sendCompleteQuestNotification(void) const
                 { return notificationHelper("quest", "complete"); }
 
         private:
@@ -148,7 +147,7 @@ namespace orxonox {
             inline void setFailMessage(const std::string & message)
                 { this->failMessage_ = message; }
                 
-	    /**
+            /**
             @brief Sets the complete message.
             @param message The complete message to be set.
             */

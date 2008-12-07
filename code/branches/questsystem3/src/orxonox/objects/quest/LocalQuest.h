@@ -28,8 +28,7 @@
  
 /**
     @file LocalQuest.h
-    @brief
-    Definition of the LocalQuest class.
+    @brief Definition of the LocalQuest class.
 */
 
 #ifndef _LocalQuest_H__
@@ -64,16 +63,16 @@ namespace orxonox {
         ...
         <QuestHint id="hintIdn" />
         </hints>
-            <fail-effects>
-                <QuestEffect /> //A list of QuestEffects, invoked when the Quest is failed, see QuestEffect for the full XML representation.
-                ...
-                <QuestEffect />
-            </fail-effects>
-            <complete-effects>
-                <QuestEffect /> //A list of QuestEffects, invoked when the Quest is completed, see QuestEffect for the full XML representation.
-                ...
-                <QuestEffect />
-            </complete-effects>
+    <fail-effects>
+        <QuestEffect /> //A list of QuestEffects, invoked when the Quest is failed, see QuestEffect for the full XML representation.
+        ...
+        <QuestEffect />
+    </fail-effects>
+    <complete-effects>
+        <QuestEffect /> //A list of QuestEffects, invoked when the Quest is completed, see QuestEffect for the full XML representation.
+        ...
+        <QuestEffect />
+    </complete-effects>
         </LocalQuest>
     @author
         Damian 'Mozork' Frick

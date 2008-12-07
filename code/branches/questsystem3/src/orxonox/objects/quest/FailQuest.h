@@ -28,8 +28,7 @@
 
 /**
     @file FailQuest.h
-    @brief
-    Definition of the FailQuest class.
+    @brief Definition of the FailQuest class.
 */
 
 #ifndef _FailQuest_H__

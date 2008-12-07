@@ -28,8 +28,7 @@
  
 /**
     @file QuestItem.cc
-    @brief
-    Implementation of the QuestItem class.
+    @brief Implementation of the QuestItem class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -101,7 +100,7 @@ namespace orxonox {
     @todo
         Clarify form, more vigorous checks.
     */
-    bool QuestItem::isId(const std::string & id)
+    /*static*/ bool QuestItem::isId(const std::string & id)
     {
         return id.size() >= 32;
     }

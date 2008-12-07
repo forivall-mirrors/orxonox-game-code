@@ -28,8 +28,7 @@
 
 /**
     @file QuestManager.h
-    @brief
-    Definition of the QuestManager class.
+    @brief Definition of the QuestManager class.
 */
 
 #ifndef _QuestManager_H__

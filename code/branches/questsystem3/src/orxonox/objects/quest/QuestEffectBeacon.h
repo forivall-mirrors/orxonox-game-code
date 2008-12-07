@@ -28,8 +28,7 @@
 
 /**
     @file QuestEffectBeacon.h
-    @brief
-    Definition of the QuestEffectBeacon class.
+    @brief Definition of the QuestEffectBeacon class.
 */
 
 #ifndef _QuestEffectBeacon_H__
@@ -60,68 +59,68 @@ namespace orxonox {
         A QuestEffectBeacon can be executed a defined number of times.
         A QuestEffectBeacon can be inactive or active.
         
-    Creating a QuestEffectBeacon through XML goes as follows:
-    
-    <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
-	<effects>
-	    <QuestEffect /> //A list of QuestEffects, invoked when the QuestEffectBeacon is executed, see QuestEffect for the full XML representation.
-	    ...
-	    <QuestEffect />
-	</effects>
-	<events>
-        <execute>
-            <EventListener event=eventIdString />
-        </execute>
-        </events>
-        <attached>
-           <PlayerTrigger name=eventIdString /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
-        </attached>
-    </QuestEffectBeacon>
+        Creating a QuestEffectBeacon through XML goes as follows:
+        
+        <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
+            <effects>
+                <QuestEffect /> //A list of QuestEffects, invoked when the QuestEffectBeacon is executed, see QuestEffect for the full XML representation.
+                ...
+                <QuestEffect />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=eventIdString />
+                </execute>
+            </events>
+            <attached>
+                <PlayerTrigger name=eventIdString /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
+            </attached>
+        </QuestEffectBeacon>
     @author
         Damian 'Mozork' Frick
     */
     class _OrxonoxExport QuestEffectBeacon : public PositionableEntity
     {
-    public:
-        QuestEffectBeacon(BaseObject* creator);
-        virtual ~QuestEffectBeacon();
-        
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.
-        
-        virtual void processEvent(Event& event); //!< Processes an event for this QuestEffectBeacon.
-        
-        bool execute(bool b, PlayerTrigger* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
-        
-        /**
-        @brief Tests whether the QuestEffectBeacon is active.
-        @return Returns true if the QuestEffectBeacon is active, fals if not.
-        */
-        inline bool isActive(void)
-           { return this->status_ == QuestEffectBeaconStatus::active; }
-        
-        bool setActive(bool activate); //!< Set the status of the QuestEffectBeacon.
-        
-    protected:
-	bool decrementTimes(void); //!< Decrement the number of times the QuestEffectBeacon can still be executed.
-	
-	/**
-	@brief Returns the number of times the QUestEffectBeacon can still be executed.
-	@return Returns the number of times the QUestEffectBeacon can still be executed.
-	*/
-	inline const int & getTimes(void) const
-	    { return this->times_; }
-
-    private:
-	static const int INFINITE = -1; //!< Constant to avoid using magic numbers.
+        public:
+            QuestEffectBeacon(BaseObject* creator);
+            virtual ~QuestEffectBeacon();
+            
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.
+            
+            virtual void processEvent(Event& event); //!< Processes an event for this QuestEffectBeacon.
+            
+            bool execute(bool b, PlayerTrigger* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
+            
+            /**
+            @brief Tests whether the QuestEffectBeacon is active.
+            @return Returns true if the QuestEffectBeacon is active, fals if not.
+            */
+            inline bool isActive(void)
+            { return this->status_ == QuestEffectBeaconStatus::active; }
+            
+            bool setActive(bool activate); //!< Set the status of the QuestEffectBeacon.
+            
+        protected:
+            bool decrementTimes(void); //!< Decrement the number of times the QuestEffectBeacon can still be executed.
+            
+            /**
+            @brief Returns the number of times the QUestEffectBeacon can still be executed.
+            @return Returns the number of times the QUestEffectBeacon can still be executed.
+            */
+            inline const int & getTimes(void) const
+                { return this->times_; }
     
-	std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
-	int times_; //!< Number of times the beacon can be exectued.
-	QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
-	
-	bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
-	bool addEffect(QuestEffect* effect); //!< Add a QuestEffect to the QuestEffectBeacon.
-	
-	const QuestEffect* getEffect(unsigned int index) const; //!< Get the QuestEffect at a given index.
+        private:
+            static const int INFINITE = -1; //!< Constant to avoid using magic numbers.
+            
+            std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
+            int times_; //!< Number of times the beacon can be exectued.
+            QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
+            
+            bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
+            bool addEffect(QuestEffect* effect); //!< Add a QuestEffect to the QuestEffectBeacon.
+            
+            const QuestEffect* getEffect(unsigned int index) const; //!< Get the QuestEffect at a given index.
     
     };
 

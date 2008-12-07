@@ -28,8 +28,7 @@
 
 /**
     @file Rewardable.cc
-    @brief
-    Implementation of the Rewardable class.
+    @brief Implementation of the Rewardable class.
 */
 
 #include "OrxonoxStableHeaders.h"
