@@ -98,8 +98,7 @@ namespace orxonox
             bool bViewportInitialized_;
             std::string compositor_;
             std::string oldcompositor_;
-//            float* parameter_;
-//            std::map<std::string, std::vector<std::vector<std::map<std::string, std::pair<bool, void*> > > > > parameters_;
+
             static MaterialMap parameters_s;
             static bool bLoadedCgPlugin_s;
     };
