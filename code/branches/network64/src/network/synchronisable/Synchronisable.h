@@ -52,7 +52,6 @@
 
 namespace orxonox
 {
-  static const uint32_t OBJECTID_UNKNOWN = static_cast<uint32_t>(-1);
 
   namespace objectDirection{
     enum objectdirection{
@@ -91,14 +90,17 @@ namespace orxonox
     static uint32_t popDeletedObject(){ uint32_t i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
 
     inline uint32_t getObjectID(){return objectID;}
+    inline unsigned int getCreatorID(){return creatorID;}
     inline uint32_t getClassID(){return classID;}
+    inline unsigned int getPriority(){ return objectFrequency_;}
+
   protected:
     Synchronisable(BaseObject* creator);
 //     void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
     template <class T> void unregisterVariable(T& var);
     void setObjectMode(uint8_t mode);
-    void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
+    void setObjectPriority(unsigned int freq){ objectFrequency_ = freq; }
 
 
   private:

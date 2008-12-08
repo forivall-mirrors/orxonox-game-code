@@ -136,8 +136,7 @@ namespace orxonox
     unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
     if(!reference)
       return 0;
-    gs = reference->doSelection(clientID);
-//     gs = new packet::Gamestate(*reference);
+    gs = reference->doSelection(clientID, 10000);
 //     gs = new packet::Gamestate(*reference);
     // save the (undiffed) gamestate in the clients gamestate map
     gamestateMap_[clientID].insert(std::pair<int, packet::Gamestate*>(gs->getID(), gs));

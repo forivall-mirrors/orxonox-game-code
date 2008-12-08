@@ -53,7 +53,6 @@
 namespace orxonox
 {
 
-
   std::map<uint32_t, Synchronisable *> Synchronisable::objectMap_;
   std::queue<uint32_t> Synchronisable::deletedObjects_;
 

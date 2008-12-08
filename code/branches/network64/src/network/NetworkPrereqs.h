@@ -56,10 +56,27 @@
 #endif
 
 //-----------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------
+#include "util/Math.h"
+
+
+//-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
 namespace orxonox
 {
+
+// Constants definition
+
+  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
+  static const unsigned int CLIENTID_UNKNOWN = (unsigned int)-2;
+  static const uint32_t OBJECTID_UNKNOWN = static_cast<uint32_t>(-1);
+  static const unsigned int SCHED_PRIORITY_OFFSET = -5;
+
+  
+
+  
   class Client;
   class ClientConnection;
   class ClientConnectionListener;
@@ -83,6 +100,8 @@ namespace orxonox
   struct PacketEnvelope;
   struct QueueItem;
   struct syncData;
+  class obj;
+  class objInfo;
   namespace packet{
     class Gamestate;
     class Packet;

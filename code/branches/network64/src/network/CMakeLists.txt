@@ -10,6 +10,7 @@ SET( NETWORK_SRC_FILES
   GamestateHandler.cc
   PacketBuffer.cc
   Server.cc
+  TrafficControl.cc
   Host.cc
 )
 
