@@ -11,12 +11,13 @@ IF(WIN32)
   FIND_PATH(DirectX_INCLUDE_DIR dinput.h
     PATHS
     $ENV{DXSDK_DIR}
-    PATH_SUFFIXES include
+    PATH_SUFFIXES include Include
   )
 
   FIND_PATH(DirectX_LIB_DIR dinput8.lib
+    PATHS
     $ENV{DXSDK_DIR}
-    PATH_SUFFIXES lib lib/x86
+    PATH_SUFFIXES lib Lib lib/x86 Lib/x86
   )
 
   INCLUDE(FindPackageHandleStandardArgs)
