@@ -110,13 +110,13 @@ COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munit
 COUT(0) << "Weapon::setMunitionType (XMLPort) "<< munitionType << std::endl;
 this->munitionType_ = munitionType; }
 
-    std::string Weapon::getMunitionType()
+    const std::string Weapon::getMunitionType()
     {   return this->munitionType_;  }
 
     Munition * Weapon::getAttachedMunition(std::string munitionType)
     {   
-COUT(0) << "Weapon::getAttachedMunition, parentWeaponSystem_="<< this->parentWeaponSystem_ << std::endl;   
-        this->parentWeaponSystem_->getMunitionType(munitionType);
+COUT(0) << "Weapon::getAttachedMunition, parentWeaponSystem_="<< this->parentWeaponSystem_ << std::endl;
+        this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionType);
 COUT(0) << "Weapon::getAttachedMunition, munition_="<< this->munition_ << std::endl;
 return this->munition_; }
 

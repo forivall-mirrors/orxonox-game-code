@@ -58,11 +58,6 @@ namespace orxonox
         return this->weapons_.size();
     }
 
-    void WeaponPack::attachWeapon(Weapon *weapon)
-    {
-        this->weapons_.push_back(weapon);
-    }
-
     void WeaponPack::fire()
     {
         for (int i=0; i < (int) this->weapons_.size(); i++)
@@ -85,6 +80,7 @@ COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << st
 
     void WeaponPack::setFireMode(unsigned int firemode)
     {
+COUT(0) << "WeaponPack::setFireMode " << std::endl;
         this->firemode_ = firemode;
     }
 
@@ -96,11 +92,11 @@ COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << st
     void WeaponPack::addWeapon(Weapon * weapon)
     {
         weapon->setParentWeaponSystem(this->parentWeaponSystem_);
-COUT(0) << "WeaponPack::addWeapon " << weapon->getMunitionType() << std::endl;
+COUT(0) << "WeaponPack::addWeapon " << weapon << "   munition " << weapon->getMunitionType() << std::endl;
         this->weapons_.push_back(weapon);
     }
 
-    Weapon * WeaponPack::getWeapon(unsigned int index)
+    const Weapon * WeaponPack::getWeapon(unsigned int index)
     {
         return weapons_[index];
     }

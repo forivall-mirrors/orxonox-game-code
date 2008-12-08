@@ -51,13 +51,12 @@ namespace orxonox
 
             Weapon * getWeaponPointer(unsigned int n);
             int getSize();
-            void attachWeapon(Weapon *weapon);
 
             void setFireMode(unsigned int firemode);
             unsigned int getFireMode();
 
             void addWeapon(Weapon * weapon);
-            Weapon * getWeapon(unsigned int index);
+            const Weapon * getWeapon(unsigned int index);
 
             void setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
 

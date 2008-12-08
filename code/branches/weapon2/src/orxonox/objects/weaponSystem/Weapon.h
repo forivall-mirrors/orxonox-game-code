@@ -70,7 +70,7 @@ namespace orxonox
             Timer<Weapon> *getMagazineTimer();
 
             void setMunitionType(std::string munitionType);
-            std::string getMunitionType();
+            const std::string getMunitionType();
 
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
                 { this->parentWeaponSlot_=parentWeaponSlot; };

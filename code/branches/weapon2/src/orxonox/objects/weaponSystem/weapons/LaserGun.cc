@@ -82,9 +82,16 @@ COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
 
     void LaserGun::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(LaserGun, XMLPort, xmlelement, mode);
+        XMLPortParam(LaserGun, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
     }
 
+    void LaserGun::setMunitionType(std::string munitionType)
+    {   
+COUT(0) << "LaserGun::setMunitionType (XMLPort) "<< munitionType << std::endl;
+        this->munitionType_ = munitionType; }
 
+    const std::string LaserGun::getMunitionType()
+    {   return this->munitionType_;  }
 
 }

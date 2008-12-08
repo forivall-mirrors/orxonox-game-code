@@ -51,6 +51,9 @@ namespace orxonox
 
             void fire();
 
+            void setMunitionType(std::string munitionType);
+            const std::string getMunitionType();
+
         private:
             float speed_;
 
