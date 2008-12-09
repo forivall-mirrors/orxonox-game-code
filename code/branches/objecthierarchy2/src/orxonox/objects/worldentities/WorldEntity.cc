@@ -72,8 +72,8 @@ namespace orxonox
         {
             this->node_->detachAllObjects();
 
-            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
-                delete (*it);
+            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
+                delete (*(it++));
 
             if (this->parent_)
                 this->detachFromParent();
