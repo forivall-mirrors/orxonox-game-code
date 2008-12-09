@@ -91,8 +91,7 @@ COUT(0) << "WeaponPack::setFireMode " << std::endl;
 
     void WeaponPack::addWeapon(Weapon * weapon)
     {
-        weapon->setParentWeaponSystem(this->parentWeaponSystem_);
-COUT(0) << "WeaponPack::addWeapon " << weapon << "   munition " << weapon->getMunitionType() << std::endl;
+COUT(0) << "WeaponPack::addWeapon:" << weapon << "   munition " << weapon->getMunitionType() << std::endl;
         this->weapons_.push_back(weapon);
     }
 
@@ -101,7 +100,7 @@ COUT(0) << "WeaponPack::addWeapon " << weapon << "   munition " << weapon->getMu
         return weapons_[index];
     }
 
-    void WeaponPack::setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
+    void WeaponPack::setParentWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
     {
         for (int i=0; i < (int) this->weapons_.size(); i++)
         {
@@ -109,4 +108,14 @@ COUT(0) << "WeaponPack::addWeapon " << weapon << "   munition " << weapon->getMu
         }
 
     }
+
+    void WeaponPack::attachNeededMunitionToAllWeapons()
+    {
+        for (int i=0; i < (int) this->weapons_.size(); i++)
+        {
+            this->weapons_[i]->attachNeededMunition(weapons_[i]->getMunitionType());
+        }
+
+    }
+
 }

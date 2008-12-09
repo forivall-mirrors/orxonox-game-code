@@ -43,12 +43,6 @@ namespace orxonox
     LaserGun::LaserGun(BaseObject* creator) : Weapon(creator)
     {
         RegisterObject(LaserGun);
-
-        //set weapon properties here
-        //this->setLoadingTime(0.5);
-
-COUT(0) << "LaserGun::LaserGun" << std::endl;
-        this->attachNeededMunition(this->getMunitionType());
     }
 
     LaserGun::~LaserGun()
@@ -57,7 +51,7 @@ COUT(0) << "LaserGun::LaserGun" << std::endl;
 
     void LaserGun::fire()
     {
-COUT(0) << "LaserGun::fire" << std::endl;
+COUT(0) << "LaserGun::fire, this=" << this << std::endl;
         if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
         {
 COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
@@ -79,19 +73,5 @@ COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
             //actions, when weapon is not reloaded if there are some
         }
     }
-
-    void LaserGun::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(LaserGun, XMLPort, xmlelement, mode);
-        XMLPortParam(LaserGun, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
-    }
-
-    void LaserGun::setMunitionType(std::string munitionType)
-    {   
-COUT(0) << "LaserGun::setMunitionType (XMLPort) "<< munitionType << std::endl;
-        this->munitionType_ = munitionType; }
-
-    const std::string LaserGun::getMunitionType()
-    {   return this->munitionType_;  }
 
 }

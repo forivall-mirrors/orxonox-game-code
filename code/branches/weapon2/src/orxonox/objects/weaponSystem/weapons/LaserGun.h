@@ -47,12 +47,7 @@ namespace orxonox
             LaserGun(BaseObject* creator);
             virtual ~LaserGun();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
             void fire();
-
-            void setMunitionType(std::string munitionType);
-            const std::string getMunitionType();
 
         private:
             float speed_;

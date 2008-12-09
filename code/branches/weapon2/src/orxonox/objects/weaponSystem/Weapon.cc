@@ -83,9 +83,11 @@ namespace orxonox
 
     void Weapon::attachNeededMunition(std::string munitionName)
     {
+COUT(0) << "Weapon::attachNeededMunition, parentWeaponSystem=" << this->parentWeaponSystem_ << std::endl;
         //if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
         if (this->parentWeaponSystem_)
         {
+COUT(0) << "Weapon::attachNeededMunition " << munitionName << std::endl;
             Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
             if ( munition )
                 this->munition_ = munition;

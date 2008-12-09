@@ -55,8 +55,12 @@ namespace orxonox
     void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
 COUT(0) << "WeaponSet::attachWeaponPack" << std::endl;
+COUT(0) << "........ parentWeaponSystem_=" << this->parentWeaponSystem_ << std::endl;
+COUT(0) << "........ this->parentWeaponSystem_->getWeaponSlotSize()" << this->parentWeaponSystem_->getWeaponSlotSize() << std::endl;
+COUT(0) << "........ wPack->getSize()" << wPack->getSize() << std::endl;
         if ( this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
         {
+COUT(0) << "WeaponSet::attachWeaponPack after if" << std::endl;
             this->attachedWeaponPack_ = wPack;
             int wPackWeapon = 0;    //WeaponCounter for Attaching
             //should be possible to choose which slot to use
@@ -77,7 +81,7 @@ COUT(0) << "WeaponSet::attachWeaponPack" << std::endl;
     void WeaponSet::fire()
     {
         //fires all WeaponSlots available for this weaponSet attached from the WeaponPack
-COUT(0) << "WeaponSet::fire" << std::endl;
+COUT(0) << "WeaponSet::fire from Pack: " << this->attachedWeaponPack_ << std::endl;
         this->attachedWeaponPack_->fire();
     }
 

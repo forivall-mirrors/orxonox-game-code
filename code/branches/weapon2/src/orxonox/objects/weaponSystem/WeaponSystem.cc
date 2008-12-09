@@ -61,7 +61,6 @@ namespace orxonox
 
     void WeaponSystem::attachWeaponPack(WeaponPack *wPack, unsigned int firemode)
     {
-        wPack->setParentWeaponSystem(this);
         if (firemode < this->weaponSets_.size())
             this->weaponSets_[firemode]->attachWeaponPack(wPack);
         this->weaponPacks_.push_back(wPack);
@@ -87,6 +86,7 @@ namespace orxonox
     //returns the Pointer to the munitionType
     Munition * WeaponSystem::getMunitionType(std::string munitionType)
     {
+COUT(0) << "WeaponSystem::getMunitionType " << munitionType << std::endl;
         std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);
         if (it != this->munitionSet_.end())
             return it->second;

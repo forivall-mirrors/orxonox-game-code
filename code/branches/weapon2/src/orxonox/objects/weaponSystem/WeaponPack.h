@@ -58,7 +58,9 @@ namespace orxonox
             void addWeapon(Weapon * weapon);
             const Weapon * getWeapon(unsigned int index);
 
-            void setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
+            //functions needed for creating Pointer to the right objects (-->Pawn.cc)
+            void setParentWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
+            void attachNeededMunitionToAllWeapons();
 
             inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }
