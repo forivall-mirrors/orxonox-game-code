@@ -55,8 +55,9 @@ namespace orxonox
     {
         RegisterRootObject(Core);
 
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
+        assert(this->singletonRef_s == 0);
+        this->singletonRef_s = this;
+        this->bInitializeRandomNumberGenerator_ = false;
 
         this->setConfigValues();
     }
@@ -79,6 +80,7 @@ namespace orxonox
         SetConfigValue(softDebugLevelLogfile_, 3).description("The maximal level of debug output shown in the logfile").callback(this, &Core::debugLevelChanged);
         SetConfigValue(softDebugLevelShell_, 1).description("The maximal level of debug output shown in the ingame shell").callback(this, &Core::debugLevelChanged);
         SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(this, &Core::languageChanged);
+        SetConfigValue(bInitializeRandomNumberGenerator_, true).description("If true, all random actions are different each time you start the game").callback(this, &Core::initializeRandomNumberGenerator);
     }
 
     /**
@@ -172,5 +174,16 @@ namespace orxonox
     void Core::resetLanguageIntern()
     {
         ResetConfigValue(language_);
+    }
+
+    void Core::initializeRandomNumberGenerator()
+    {
+        static bool bInitialized = false;
+        if (!bInitialized && this->bInitializeRandomNumberGenerator_)
+        {
+            srand(time(0));
+            rand();
+            bInitialized = true;
+        }
     }
 }

@@ -100,6 +100,8 @@ namespace orxonox
 
     void Shader::tick(float dt)
     {
+        SUPER(Shader, tick, dt);
+
         if (this->bLoadCompositor_ && !this->bViewportInitialized_ && this->scenemanager_ && this->scenemanager_->getCurrentViewport())
         {
             this->bViewportInitialized_ = true;

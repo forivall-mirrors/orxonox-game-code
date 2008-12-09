@@ -98,6 +98,8 @@ namespace orxonox
 
     void Radar::tick(float dt)
     {
+        SUPER(Radar, tick, dt);
+
         if (this->focus_ != *(this->itFocus_))
         {
             // focus object was deleted, release focus

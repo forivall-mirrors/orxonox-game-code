@@ -98,11 +98,19 @@
             } \
             \
             static void apply(void* temp) {} \
+            \
             static void apply(baseclass* temp) \
             { \
                 ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier(); \
                 for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it) \
                 { \
+                    if (((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_##functionname##_isFallback_ && ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_) \
+                    { \
+                        delete ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_; \
+                        ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = 0; \
+                        ((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_##functionname##_isFallback_ = false; \
+                    } \
+                    \
                     if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_) \
                     { \
                         COUT(5) << "Added SuperFunctionCaller for " << #functionname << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl; \
@@ -162,6 +170,15 @@
                 // Iterate through all children
                 for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it)
                 {
+                    // Check if the caller is a fallback-caller
+                    if (((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_##functionname##_isFallback_ && ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_)
+                    {
+                        // Delete the fallback caller an prepare to get a real caller
+                        delete ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_;
+                        ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = 0;
+                        ((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_##functionname##_isFallback_ = false;
+                    }
+
                     // Check if there's not already a caller
                     if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_)
                     {
@@ -182,7 +199,7 @@
         template <int templatehack2> \
         struct SuperFunctionCondition<functionnumber, baseclass, 0, templatehack2> \
         { \
-            // The check function just behaves like the fallback - it advances to the check for the next super-function (functionnumber + 1)
+            // The check function acts like the fallback - it advances to the check for the next super-function (functionnumber + 1)
             static void check() \
             { \
                 SuperFunctionCondition<functionnumber + 1, baseclass, 0, templatehack2>::check(); \
@@ -300,12 +317,29 @@ namespace orxonox
                 } \
             }; \
             \
+            class _CoreExport SuperFunctionCaller_##functionname \
+            { \
+                public: \
+                    virtual void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) = 0; \
+                    virtual ~SuperFunctionCaller_##functionname () {} \
+            }; \
+            \
+            template <class T> \
+            class SuperFunctionClassCaller_purevirtualfallback_##functionname : public SuperFunctionCaller_##functionname \
+            { \
+                public: \
+                    inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) \
+                    { \
+                    } \
+            }; \
+            \
             template <class T> \
             struct SuperFunctionInitialization<functionnumber, T> \
             { \
                 static void initialize(ClassIdentifier<T>* identifier) \
                 { \
-                    identifier->superFunctionCaller_##functionname##_ = 0; \
+                    identifier->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_purevirtualfallback_##functionname <T>; \
+                    identifier->bSuperFunctionCaller_##functionname##_isFallback_ = true; \
                     SuperFunctionInitialization<functionnumber + 1, T>::initialize(identifier); \
                 } \
             }; \
@@ -319,13 +353,6 @@ namespace orxonox
                         delete identifier->superFunctionCaller_##functionname##_; \
                     SuperFunctionDestruction<functionnumber + 1, T>::destroy(identifier); \
                 } \
-            }; \
-            \
-            class _CoreExport SuperFunctionCaller_##functionname \
-            { \
-                public: \
-                    virtual void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) = 0; \
-                    virtual ~SuperFunctionCaller_##functionname () {} \
             }; \
             \
             template <class T> \
@@ -374,13 +401,34 @@ namespace orxonox
             }
         };
 
-        // Initializes the SuperFunctionCaller-pointer with zero.
+        // Baseclass of the super-function caller. The real call will be done by a
+        // templatized subclass through the virtual () operator.
+        class _CoreExport SuperFunctionCaller_##functionname
+        {
+            public:
+                virtual void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) = 0;
+                virtual ~SuperFunctionCaller_##functionname () {}
+        };
+
+        // Fallback if the base is pure virtual
+        template <class T>
+        class SuperFunctionClassCaller_purevirtualfallback_##functionname : public SuperFunctionCaller_##functionname
+        {
+            public:
+                // Fallback does nothing
+                inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) )
+                {
+                }
+        };
+
+        // Initializes the SuperFunctionCaller-pointer with a fallback caller in case the base function is pure virtual
         template <class T>
         struct SuperFunctionInitialization<functionnumber, T>
         {
             static void initialize(ClassIdentifier<T>* identifier)
             {
-                identifier->superFunctionCaller_##functionname##_ = 0;
+                identifier->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_purevirtualfallback_##functionname <T>;
+                identifier->bSuperFunctionCaller_##functionname##_isFallback_ = true;
 
                 // Calls the initialization of the next super-function (functionnumber + 1)
                 SuperFunctionInitialization<functionnumber + 1, T>::initialize(identifier);
@@ -399,15 +447,6 @@ namespace orxonox
                 // Calls the destruction of the next super-function (functionnumber + 1)
                 SuperFunctionDestruction<functionnumber + 1, T>::destroy(identifier);
             }
-        };
-
-        // Baseclass of the super-function caller. The real call will be done by a
-        // templatized subclass through the virtual () operator.
-        class _CoreExport SuperFunctionCaller_##functionname
-        {
-            public:
-                virtual void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) = 0;
-                virtual ~SuperFunctionCaller_##functionname () {}
         };
 
         // The real super-function caller: Calls T::functionname()
@@ -496,7 +535,8 @@ namespace orxonox
         */
         #ifndef SUPER_INTRUSIVE_DECLARATION
           #define SUPER_INTRUSIVE_DECLARATION(functionname) \
-            SuperFunctionCaller_##functionname * superFunctionCaller_##functionname##_
+            SuperFunctionCaller_##functionname * superFunctionCaller_##functionname##_; \
+            bool bSuperFunctionCaller_##functionname##_isFallback_
         #endif
 
 

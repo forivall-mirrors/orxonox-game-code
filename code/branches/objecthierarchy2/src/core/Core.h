@@ -77,12 +77,14 @@ namespace orxonox
         private:
             Core(const Core&);
             void resetLanguageIntern();
+            void initializeRandomNumberGenerator();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
             int softDebugLevelLogfile_;                     //!< The debug level for the logfile
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             std::string language_;                          //!< The language
+            bool bInitializeRandomNumberGenerator_;          //!< If true, srand(time(0)) is called
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server

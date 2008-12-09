@@ -61,6 +61,8 @@ namespace orxonox
 
     void Gametype::tick(float dt)
     {
+        SUPER(Gametype, tick, dt);
+
         if (this->bStartCountdownRunning_ && !this->bStarted_)
             this->startCountdown_ -= dt;
 
@@ -149,9 +151,6 @@ namespace orxonox
     {
         if (this->spawnpoints_.size() > 0)
         {
-            srand(time(0));
-            rnd();
-
             unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)

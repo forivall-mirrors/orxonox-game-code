@@ -73,6 +73,8 @@ namespace orxonox
     {
         if (this->isActive())
         {
+            SUPER(MovableEntity, tick, dt);
+
             this->velocity_ += (dt * this->acceleration_);
             this->node_->translate(dt * this->velocity_);
 

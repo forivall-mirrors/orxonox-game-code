@@ -166,6 +166,8 @@ namespace orxonox
 
     void Scene::tick(float dt)
     {
+        SUPER(Scene, tick, dt);
+
         if (!Core::showsGraphics())
         {
             // We need to update the scene nodes if we don't render

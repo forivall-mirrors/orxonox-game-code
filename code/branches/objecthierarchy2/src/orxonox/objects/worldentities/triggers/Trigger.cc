@@ -106,6 +106,8 @@ namespace orxonox
     if (!this->BaseObject::isActive())
         return;
 
+    SUPER(Trigger, tick, dt);
+
     bool newTriggered = this->isTriggered() ^ this->bInvertMode_;
 
     // check if new triggering event is really new

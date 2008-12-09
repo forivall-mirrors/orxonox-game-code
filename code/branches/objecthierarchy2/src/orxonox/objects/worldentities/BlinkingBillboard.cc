@@ -74,6 +74,8 @@ namespace orxonox
 
     void BlinkingBillboard::tick(float dt)
     {
+        SUPER(BlinkingBillboard, tick, dt);
+
         if (Core::isMaster() && this->isActive())
         {
             this->time_ += dt;

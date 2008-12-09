@@ -143,6 +143,8 @@ namespace orxonox
         if (!this->isActive())
             return;
 
+        SUPER(Engine, tick, dt);
+
         const Vector3& direction = this->getDirection();
         Vector3 velocity = this->ship_->getVelocity();
         Vector3 acceleration = Vector3::ZERO;

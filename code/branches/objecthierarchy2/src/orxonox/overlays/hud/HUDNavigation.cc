@@ -128,6 +128,8 @@ namespace orxonox
 
     void HUDNavigation::tick(float dt)
     {
+        SUPER(HUDNavigation, tick, dt);
+
         if (!Radar::getInstance().getFocus())
         {
             this->overlay_->hide();

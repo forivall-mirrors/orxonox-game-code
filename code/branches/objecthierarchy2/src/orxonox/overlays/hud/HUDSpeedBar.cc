@@ -51,6 +51,8 @@ namespace orxonox
 
     void HUDSpeedBar::tick(float dt)
     {
+        SUPER(HUDSpeedBar, tick, dt);
+
         if (this->owner_ && this->owner_->getEngine())
         {
             float v = this->owner_->getVelocity().length();

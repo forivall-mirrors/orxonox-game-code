@@ -139,6 +139,8 @@ namespace orxonox
 
     void FadingBillboard::tick(float dt)
     {
+        SUPER(FadingBillboard, tick, dt);
+
         if (this->changedirection_ > 0 && (this->fadedColour_.a < this->getColour().a))
         {
             ColourValue colour = this->fadedColour_ + this->getColour() / this->turnontime_ * dt;
