@@ -55,8 +55,8 @@ namespace orxonox
     {
         RegisterRootObject(Core);
 
-        assert(this->singletonRef_s == 0);
-        this->singletonRef_s = this;
+        assert(Core::singletonRef_s == 0);
+        Core::singletonRef_s = this;
         this->bInitializeRandomNumberGenerator_ = false;
 
         this->setConfigValues();
@@ -67,8 +67,8 @@ namespace orxonox
     */
     Core::~Core()
     {
-        assert(singletonRef_s);
-        singletonRef_s = 0;
+        assert(Core::singletonRef_s);
+        Core::singletonRef_s = 0;
     }
 
     /**

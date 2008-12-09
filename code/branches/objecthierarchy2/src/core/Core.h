@@ -55,7 +55,7 @@ namespace orxonox
             void debugLevelChanged();
             void languageChanged();
 
-            static Core& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+            static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
             static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
