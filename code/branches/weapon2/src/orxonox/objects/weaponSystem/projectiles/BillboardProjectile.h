@@ -46,12 +46,8 @@ namespace orxonox
             virtual void setColour(const ColourValue& colour);
             virtual void changedVisibility();
 
-            inline Ogre::SceneManager* getSceneManager()
-            { return this->scenemanager_; }
-
         private:
             BillboardSet billboard_;
-            Ogre::SceneManager* scenemanager_;
     };
 }
 

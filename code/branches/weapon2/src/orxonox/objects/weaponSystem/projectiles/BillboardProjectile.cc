@@ -32,6 +32,7 @@
 #include <OgreBillboard.h>
 
 #include "core/CoreIncludes.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
@@ -41,7 +42,9 @@ namespace orxonox
     {
         RegisterObject(BillboardProjectile);
 
-        this->billboard_.setBillboardSet(this->scenemanager_, "Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
+        assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
+
+        this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
         //this->attachObject(this->billboard_.getBillboardSet());
         this->scale(0.5);
     }
