@@ -148,10 +148,14 @@ namespace orxonox
 
     class Controller;
     class HumanController;
+    class ArtificialController;
+    class AIController;
+    class ScriptController;
 
     class Info;
     class PlayerInfo;
     class HumanPlayer;
+    class Bot;
 
     class Gametype;
 

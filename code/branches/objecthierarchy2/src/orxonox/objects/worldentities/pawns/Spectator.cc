@@ -30,6 +30,7 @@
 #include "Spectator.h"
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Core.h"
 #include "objects/worldentities/Model.h"
 #include "objects/Scene.h"
@@ -48,7 +49,7 @@ namespace orxonox
     {
         RegisterObject(Spectator);
 
-        this->speed_ = 100;
+        this->speed_ = 200;
         this->rotationSpeed_ = 3;
 
         this->yaw_ = 0;
@@ -67,6 +68,7 @@ namespace orxonox
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
 
+        this->setConfigValues();
         this->registerVariables();
     }
 
@@ -81,6 +83,12 @@ namespace orxonox
                 delete this->greetingFlare_;
             }
         }
+    }
+
+    void Spectator::setConfigValues()
+    {
+        SetConfigValue(speed_, 200.0f);
+        SetConfigValue(rotationSpeed_, 3.0f);
     }
 
     void Spectator::registerVariables()
@@ -136,8 +144,6 @@ namespace orxonox
     void Spectator::startLocalHumanControl()
     {
         ControllableEntity::startLocalHumanControl();
-//        if (this->hasLocalController())
-//            this->testmesh_->setVisible(false);
     }
 
     void Spectator::moveFrontBack(const Vector2& value)

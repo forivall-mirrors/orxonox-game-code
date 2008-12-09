@@ -46,10 +46,17 @@ namespace orxonox
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
-            virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
-            virtual inline ControllableEntity* getControllableEntity() const
+            inline void setControllableEntity(ControllableEntity* entity)
+            {
+                if (entity != this->controllableEntity_)
+                {
+                    this->controllableEntity_ = entity;
+                    this->changedControllableEntity();
+                }
+            }
+            inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
+            virtual void changedControllableEntity() {}
 
         protected:
             PlayerInfo* player_;

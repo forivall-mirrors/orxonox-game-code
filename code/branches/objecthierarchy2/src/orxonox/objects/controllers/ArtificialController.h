@@ -26,42 +26,41 @@
  *
  */
 
-#ifndef _HumanPlayer_H__
-#define _HumanPlayer_H__
+#ifndef _ArtificialController_H__
+#define _ArtificialController_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "PlayerInfo.h"
+#include "Controller.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanPlayer : public PlayerInfo
+    class _OrxonoxExport ArtificialController : public Controller
     {
         public:
-            HumanPlayer(BaseObject* creator);
-            virtual ~HumanPlayer();
+            ArtificialController(BaseObject* creator);
+            virtual ~ArtificialController();
 
-            void registerVariables();
-            void setConfigValues();
-
-            bool isInitialized() const;
-            float getPing() const;
-            float getPacketLossRatio() const;
-
-            void setClientID(unsigned int clientID);
+            void shipDied(Pawn* ship);
 
         protected:
-            void configvaluecallback_changednick();
-            void networkcallback_changednick();
-            void networkcallback_clientIDchanged();
-            void networkcallback_server_initialized();
-            void networkcallback_client_initialized();
+            void moveToTargetPosition(float dt);
+            void searchRandomTargetPosition();
+            void searchNewTarget();
+            void forgetTarget();
+            void aimAtTarget();
 
-            std::string nick_;
-            std::string synchronize_nick_;
-            bool server_initialized_;
-            bool client_initialized_;
+            bool isCloseAtTarget(float distance) const;
+            bool isLookingAtTarget(float angle) const;
+
+            bool bHasTargetPosition_;
+            Vector3 targetPosition_;
+            Pawn* target_;
+            bool bShooting_;
+
+        private:
     };
 }
 
-#endif /* _HumanPlayer_H__ */
+#endif /* _ArtificialController_H__ */

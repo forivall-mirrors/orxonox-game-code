@@ -26,42 +26,25 @@
  *
  */
 
-#ifndef _HumanPlayer_H__
-#define _HumanPlayer_H__
+#ifndef _ScriptController_H__
+#define _ScriptController_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "PlayerInfo.h"
+#include "ArtificialController.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanPlayer : public PlayerInfo
+    class _OrxonoxExport ScriptController : public ArtificialController
     {
         public:
-            HumanPlayer(BaseObject* creator);
-            virtual ~HumanPlayer();
-
-            void registerVariables();
-            void setConfigValues();
-
-            bool isInitialized() const;
-            float getPing() const;
-            float getPacketLossRatio() const;
-
-            void setClientID(unsigned int clientID);
+            ScriptController(BaseObject* creator);
+            virtual ~ScriptController();
 
         protected:
-            void configvaluecallback_changednick();
-            void networkcallback_changednick();
-            void networkcallback_clientIDchanged();
-            void networkcallback_server_initialized();
-            void networkcallback_client_initialized();
 
-            std::string nick_;
-            std::string synchronize_nick_;
-            bool server_initialized_;
-            bool client_initialized_;
+        private:
     };
 }
 
-#endif /* _HumanPlayer_H__ */
+#endif /* _ScriptController_H__ */

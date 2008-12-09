@@ -45,6 +45,7 @@ namespace orxonox
         this->bHumanPlayer_ = false;
         this->bLocalPlayer_ = false;
         this->bReadyToSpawn_ = false;
+        this->bSetUnreadyAfterSpawn_ = true;
         this->controller_ = 0;
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = CLIENTID_UNKNOWN;
@@ -121,7 +122,7 @@ namespace orxonox
         {
             this->controllableEntityID_ = entity->getObjectID();
             entity->setPlayer(this);
-            this->bReadyToSpawn_ = false;
+            this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
         }
         else
         {

@@ -41,6 +41,7 @@ namespace orxonox
             Spectator(BaseObject* creator);
             virtual ~Spectator();
 
+            void setConfigValues();
             void registerVariables();
             virtual void tick(float dt);
 

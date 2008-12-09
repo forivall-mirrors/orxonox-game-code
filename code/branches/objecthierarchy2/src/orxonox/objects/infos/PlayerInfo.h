@@ -72,16 +72,20 @@ namespace orxonox
 
         protected:
             void createController();
-            void networkcallback_changedcontrollableentityID();
 
             bool bHumanPlayer_;
             bool bLocalPlayer_;
-            bool bReadyToSpawn_;
+            bool bSetUnreadyAfterSpawn_;
             SubclassIdentifier<Controller> defaultController_;
+            unsigned int clientID_;
+
+        private:
+            void networkcallback_changedcontrollableentityID();
+
+            bool bReadyToSpawn_;
             Controller* controller_;
             ControllableEntity* controllableEntity_;
             unsigned int controllableEntityID_;
-            unsigned int clientID_;
     };
 }
 

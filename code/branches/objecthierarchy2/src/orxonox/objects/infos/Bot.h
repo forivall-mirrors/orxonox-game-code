@@ -26,42 +26,34 @@
  *
  */
 
-#ifndef _HumanPlayer_H__
-#define _HumanPlayer_H__
+#ifndef _Bot_H__
+#define _Bot_H__
 
 #include "OrxonoxPrereqs.h"
+#include <vector>
 
 #include "PlayerInfo.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanPlayer : public PlayerInfo
+    class _OrxonoxExport Bot : public PlayerInfo
     {
         public:
-            HumanPlayer(BaseObject* creator);
-            virtual ~HumanPlayer();
+            Bot(BaseObject* creator);
+            virtual ~Bot();
 
-            void registerVariables();
             void setConfigValues();
 
-            bool isInitialized() const;
-            float getPing() const;
-            float getPacketLossRatio() const;
+            inline bool isInitialized() const
+                { return true; }
+            inline float getPing() const
+                { return 0; }
+            inline float getPacketLossRatio() const
+                { return 0; }
 
-            void setClientID(unsigned int clientID);
-
-        protected:
-            void configvaluecallback_changednick();
-            void networkcallback_changednick();
-            void networkcallback_clientIDchanged();
-            void networkcallback_server_initialized();
-            void networkcallback_client_initialized();
-
-            std::string nick_;
-            std::string synchronize_nick_;
-            bool server_initialized_;
-            bool client_initialized_;
+        private:
+            std::vector<std::string> names_;
     };
 }
 
-#endif /* _HumanPlayer_H__ */
+#endif /* _Bot_H__ */

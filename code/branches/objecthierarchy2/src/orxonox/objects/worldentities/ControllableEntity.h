@@ -64,6 +64,20 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value) {}
             virtual void rotateRoll(const Vector2& value) {}
 
+            inline void moveFrontBack(float value)
+                { this->moveFrontBack(Vector2(value, 0)); }
+            inline void moveRightLeft(float value)
+                { this->moveRightLeft(Vector2(value, 0)); }
+            inline void moveUpDown(float value)
+                { this->moveUpDown(Vector2(value, 0)); }
+
+            inline void rotateYaw(float value)
+                { this->rotateYaw(Vector2(value, 0)); }
+            inline void rotatePitch(float value)
+                { this->rotatePitch(Vector2(value, 0)); }
+            inline void rotateRoll(float value)
+                { this->rotateRoll(Vector2(value, 0)); }
+
             virtual void fire() {}
             virtual void altFire() {}
 

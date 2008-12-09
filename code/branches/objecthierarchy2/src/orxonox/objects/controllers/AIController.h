@@ -26,42 +26,31 @@
  *
  */
 
-#ifndef _HumanPlayer_H__
-#define _HumanPlayer_H__
+#ifndef _AIController_H__
+#define _AIController_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "PlayerInfo.h"
+#include "ArtificialController.h"
+#include "objects/Tickable.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanPlayer : public PlayerInfo
+    class _OrxonoxExport AIController : public ArtificialController, public Tickable
     {
         public:
-            HumanPlayer(BaseObject* creator);
-            virtual ~HumanPlayer();
+            AIController(BaseObject* creator);
+            virtual ~AIController();
 
-            void registerVariables();
-            void setConfigValues();
-
-            bool isInitialized() const;
-            float getPing() const;
-            float getPacketLossRatio() const;
-
-            void setClientID(unsigned int clientID);
+            virtual void tick(float dt);
 
         protected:
-            void configvaluecallback_changednick();
-            void networkcallback_changednick();
-            void networkcallback_clientIDchanged();
-            void networkcallback_server_initialized();
-            void networkcallback_client_initialized();
+            virtual void action();
 
-            std::string nick_;
-            std::string synchronize_nick_;
-            bool server_initialized_;
-            bool client_initialized_;
+        private:
+            Timer<AIController> actionTimer_;
     };
 }
 
-#endif /* _HumanPlayer_H__ */
+#endif /* _AIController_H__ */
