@@ -209,6 +209,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\GlobalShader.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Level.cc"
 					>
 				</File>
@@ -246,22 +250,6 @@
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Backlight.cc"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Billboard.cc"
@@ -281,6 +269,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ControllableEntity.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\FadingBillboard.cc"
 						>
 					</File>
 					<File
@@ -360,6 +352,10 @@
 					Name="infos"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\infos\Bot.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\infos\HumanPlayer.cc"
 						>
 					</File>
@@ -376,11 +372,23 @@
 					Name="controllers"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\AIController.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ArtificialController.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\Controller.cc"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\HumanController.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ScriptController.cc"
 						>
 					</File>
 				</Filter>
@@ -604,6 +612,22 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="items"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Engine.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Item.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\MultiStateEngine.cc"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -618,6 +642,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\ParticleInterface.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\Shader.cc"
 					>
 				</File>
 				<File
@@ -853,6 +881,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\GlobalShader.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Level.h"
 					>
 				</File>
@@ -909,6 +941,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ControllableEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\FadingBillboard.h"
 						>
 					</File>
 					<File
@@ -988,6 +1024,14 @@
 					Name="infos"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\infos\Bot.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\HumanPlayer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Info.h"
 						>
 					</File>
@@ -1000,11 +1044,23 @@
 					Name="controllers"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\AIController.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ArtificialController.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\Controller.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\HumanController.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ScriptController.h"
 						>
 					</File>
 				</Filter>
@@ -1132,6 +1188,22 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="items"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Engine.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Item.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\MultiStateEngine.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -1146,6 +1218,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\ParticleInterface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\Shader.h"
 					>
 				</File>
 				<File
