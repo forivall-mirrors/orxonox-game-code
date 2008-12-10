@@ -53,7 +53,7 @@ namespace orxonox
     Camera::Camera(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(Camera);
-
+COUT(0) << this << ": created camera" << std::endl;
         if (!this->getScene() || !this->getScene()->getSceneManager())
             ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
 
@@ -69,7 +69,7 @@ namespace orxonox
         this->setConfigValues();
         this->configvaluecallback_changedNearClipDistance();
 
-        this->requestFocus(); // ! HACK ! REMOVE THIS !
+//        this->requestFocus(); // ! HACK ! REMOVE THIS !
     }
 
     Camera::~Camera()
@@ -79,6 +79,7 @@ namespace orxonox
             this->releaseFocus();
             this->getScene()->getSceneManager()->destroyCamera(this->camera_);
         }
+COUT(0) << this << ": destroyed camera" << std::endl;
     }
 
     void Camera::setConfigValues()
@@ -121,6 +122,7 @@ namespace orxonox
     */
     void Camera::removeFocus()
     {
+COUT(0) << this << ": remove focus" << std::endl;
         this->bHasFocus_ = false;
     }
 
@@ -141,6 +143,7 @@ namespace orxonox
 
         this->bHasFocus_ = true;
         viewport->setCamera(this->camera_);
+COUT(0) << this << ": set focus" << std::endl;
 
         // reactivate all visible compositors
         {

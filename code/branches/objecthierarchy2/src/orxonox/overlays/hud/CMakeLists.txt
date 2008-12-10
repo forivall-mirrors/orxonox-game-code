@@ -3,6 +3,7 @@ SET( SRC_FILES
   HUDNavigation.cc
   HUDRadar.cc
   HUDSpeedBar.cc
+  HUDHealthBar.cc
   ChatOverlay.cc
 )
 

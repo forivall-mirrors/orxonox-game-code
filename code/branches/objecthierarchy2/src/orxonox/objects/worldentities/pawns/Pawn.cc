@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
+#include "PawnManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/weaponSystem/WeaponSystem.h"
@@ -44,7 +45,9 @@ namespace orxonox
     {
         RegisterObject(Pawn);
 
-        this->bAlive_ = false;
+        PawnManager::touch();
+
+        this->bAlive_ = true;
 
         this->health_ = 0;
         this->maxHealth_ = 0;
@@ -69,13 +72,18 @@ namespace orxonox
 
     Pawn::~Pawn()
     {
+        if (this->isInitialized())
+        {
+            for (ObjectList<PawnListener>::iterator it = ObjectList<PawnListener>::begin(); it != ObjectList<PawnListener>::end(); ++it)
+                it->destroyedPawn(this);
+        }
     }
 
     void Pawn::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Pawn, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Pawn, "health", setHealth, getHealht, xmlelement, mode).defaultValues(100);
+        XMLPortParam(Pawn, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
     }
@@ -84,11 +92,14 @@ namespace orxonox
     {
         REGISTERDATA(this->bAlive_, direction::toclient);
         REGISTERDATA(this->health_, direction::toclient);
+        REGISTERDATA(this->initialHealth_, direction::toclient);
     }
 
     void Pawn::tick(float dt)
     {
         SUPER(Pawn, tick, dt);
+
+        this->health_ -= 15 * dt * rnd();
 
         if (this->health_ <= 0)
             this->death();
@@ -128,13 +139,16 @@ namespace orxonox
 
     void Pawn::death()
     {
+        // Set bAlive_ to false and wait for PawnManager to do the destruction
         this->bAlive_ = false;
+
         if (this->getGametype())
             this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
+
+        this->setDestroyWhenPlayerLeft(false);
+
         if (this->getPlayer())
             this->getPlayer()->stopControl(this);
-
-        delete this;
 
         // play death effect
     }
@@ -149,5 +163,13 @@ namespace orxonox
     {
         this->setHealth(this->initialHealth_);
         this->spawn();
+    }
+
+    ///////////////////
+    // Pawn Listener //
+    ///////////////////
+    PawnListener::PawnListener()
+    {
+        RegisterRootObject(PawnListener);
     }
 }

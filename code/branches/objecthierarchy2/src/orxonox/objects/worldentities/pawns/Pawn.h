@@ -54,7 +54,7 @@ namespace orxonox
                 { this->setHealth(this->health_ + health); }
             inline void removeHealth(float health)
                 { this->setHealth(this->health_ - health); }
-            inline float getHealht() const
+            inline float getHealth() const
                 { return this->health_; }
 
             inline void setMaxHealth(float maxhealth)
@@ -94,6 +94,18 @@ namespace orxonox
             Pawn* lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
+    };
+
+    class _OrxonoxExport PawnListener : public OrxonoxClass
+    {
+        friend class Pawn;
+
+        public:
+            PawnListener();
+            virtual ~PawnListener() {}
+
+        protected:
+            virtual void destroyedPawn(Pawn* pawn) = 0;
     };
 }
 

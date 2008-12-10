@@ -27,45 +27,48 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "EventTarget.h"
+#include "PawnManager.h"
 
 #include "core/CoreIncludes.h"
-#include "core/EventIncludes.h"
+#include "objects/worldentities/pawns/Pawn.h"
+
 
 namespace orxonox
 {
-    CreateFactory(EventTarget);
+    PawnManager* PawnManager::singletonRef_s = 0;
 
-    EventTarget::EventTarget(BaseObject* creator) : BaseObject(creator)
+    PawnManager::PawnManager()
     {
-        RegisterObject(EventTarget);
+        RegisterRootObject(PawnManager);
+
+        assert(PawnManager::singletonRef_s == 0);
+        PawnManager::singletonRef_s = this;
     }
 
-    EventTarget::~EventTarget()
+    PawnManager::~PawnManager()
     {
+        assert(PawnManager::singletonRef_s != 0);
+        PawnManager::singletonRef_s = 0;
     }
 
-    void EventTarget::changedName()
+    void PawnManager::touch()
     {
-        SUPER(EventTarget, changedName);
-
-        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
-            if (it->getName() == this->getName())
-                this->addAsEvent(*it);
+        if (!PawnManager::singletonRef_s)
+            new PawnManager();
     }
 
-    void EventTarget::loadedNewXMLName(BaseObject* object)
+    void PawnManager::tick(float dt)
     {
-        if (this->getName() == "")
-            return;
+        unsigned int count = 0;
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++count)
+        {
+            if (!it->isAlive())
+                delete (*(it++));
+            else
+                ++it;
+        }
 
-        if (object->getName() == this->getName())
-            this->addAsEvent(object);
-    }
-
-    void EventTarget::addAsEvent(BaseObject* object)
-    {
-        if (object != (BaseObject*)this)
-            object->addEvent(this, "");
+        if (count == 0)
+            delete this;
     }
 }

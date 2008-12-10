@@ -195,6 +195,7 @@ namespace orxonox
     SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
     SUPER_FUNCTION(4, BaseObject, processEvent, false);
     SUPER_FUNCTION(6, BaseObject, changedMainState, false);
+    SUPER_FUNCTION(9, BaseObject, changedName, false);
 }
 
 #endif /* _BaseObject_H__ */

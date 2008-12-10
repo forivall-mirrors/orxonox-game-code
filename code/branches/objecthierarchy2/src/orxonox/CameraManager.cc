@@ -29,10 +29,13 @@
 #include "CameraManager.h"
 
 #include <OgreViewport.h>
+#include <OgreSceneManager.h>
+#include <OgreCamera.h>
 
 #include "core/Core.h"
 #include "objects/worldentities/Camera.h"
-
+#include "objects/Scene.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -43,12 +46,20 @@ namespace orxonox
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
+
+        this->fallbackCamera_ = 0;
     }
 
     CameraManager::~CameraManager()
     {
         assert(singletonRef_s != 0);
         singletonRef_s = 0;
+
+        if (this->fallbackCamera_)
+        {
+            this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
+COUT(0) << "remove camera-manager" << std::endl;
+        }
     }
 
     Camera* CameraManager::getActiveCamera() const
@@ -67,16 +78,21 @@ namespace orxonox
         // notify old camera (if it exists)
         if (this->cameraList_.size() > 0)
             this->cameraList_.front()->removeFocus();
+        else if (this->fallbackCamera_)
+        {
+            this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
+            this->fallbackCamera_ = 0;
+COUT(0) << "remove fallback camera" << std::endl;
+        }
 
         camera->setFocus(this->viewport_);
 
-        // add to list
-        std::list<Camera*>::iterator it;
-        for (it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
-        {
+        // make sure we don't add it twice
+        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
             if ((*it) == camera)
-                return; // make sure we don't add it twice
-        }
+                return;
+
+        // add to list
         this->cameraList_.push_front(camera);
     }
 
@@ -91,9 +107,20 @@ namespace orxonox
             camera->removeFocus();
             this->cameraList_.pop_front();
 
-            // set new focus if necessary
-            if (cameraList_.size() > 0)
-                cameraList_.front()->setFocus(this->viewport_);
+            // set new focus if possible
+            if (this->cameraList_.size() > 0)
+                this->cameraList_.front()->setFocus(this->viewport_);
+            else
+            {
+                // there are no more cameras, create a fallback
+                if (!this->fallbackCamera_)
+                {
+COUT(0) << "create fallback camera" << std::endl;
+                    this->fallbackCamera_ = camera->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
+                }
+                this->viewport_->setCamera(this->fallbackCamera_);
+COUT(0) << "use fallback camera" << std::endl;
+            }
         }
         else
         {

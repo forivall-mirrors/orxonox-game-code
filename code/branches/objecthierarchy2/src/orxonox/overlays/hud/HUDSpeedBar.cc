@@ -55,10 +55,8 @@ namespace orxonox
 
         if (this->owner_ && this->owner_->getEngine())
         {
-            float v = this->owner_->getVelocity().length();
-            float value = v / (this->owner_->getEngine()->getMaxSpeedFront() * this->owner_->getEngine()->getSpeedFactor() * this->owner_->getEngine()->getBoostFactor());
-            if (value != this->getValue())
-                this->setValue(value);
+            float value = this->owner_->getVelocity().length() / (this->owner_->getEngine()->getMaxSpeedFront() * this->owner_->getEngine()->getSpeedFactor() * this->owner_->getEngine()->getBoostFactor());
+            this->setValue(value);
         }
     }
 

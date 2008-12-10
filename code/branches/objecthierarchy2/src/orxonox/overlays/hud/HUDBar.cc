@@ -50,8 +50,8 @@ namespace orxonox
     {
         RegisterObject(BarColour);
 
-        setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
-        setPosition(0.0);
+        this->setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
+        this->setPosition(0.0);
     }
 
     void BarColour::XMLPort(Element& xmlElement, XMLPort::Mode mode)
@@ -83,9 +83,10 @@ namespace orxonox
             .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));
         this->bar_->setMaterialName(materialname);
 
-        setValue(0.4567654f);
-        setRightToLeft(false);
-        setAutoColour(true);
+        this->setValue(0.0f);
+        this->setRightToLeft(false);
+        this->setAutoColour(true);
+        this->currentColour_ = ColourValue::White;
 
         this->background_->addChild(bar_);
     }
@@ -100,9 +101,10 @@ namespace orxonox
     {
         SUPER(HUDBar, XMLPort, xmlElement, mode);
 
-        XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode);
-        XMLPortParam(HUDBar, "rightToLeft",  setRightToLeft, getRightToLeft, xmlElement, mode);
-        XMLPortParam(HUDBar, "autoColour",   setAutoColour,  getAutoColour,  xmlElement, mode);
+        XMLPortParam(HUDBar, "initialvalue", setValue,       getValue,       xmlElement, mode);
+        XMLPortParam(HUDBar, "righttoleft",  setRightToLeft, getRightToLeft, xmlElement, mode);
+        XMLPortParam(HUDBar, "autocolour",   setAutoColour,  getAutoColour,  xmlElement, mode);
+        XMLPortParam(HUDBar, "bartexture",   setBarTexture,  getBarTexture, xmlElement, mode);
         XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode);
     }
 
@@ -129,16 +131,20 @@ namespace orxonox
                 if (value2 > this->value_)
                 {
                     this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour2);
+                    this->currentColour_ = colour2;
                 }
                 else if (value1 < this->value_)
                 {
                     this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour1);
+                    this->currentColour_ = colour1;
                 }
                 else
                 {
                     //float interpolationfactor = (this->value_ - value2) / (value1 - value2);
                     float interpolationfactor = interpolateSmooth((this->value_ - value2) / (value1 - value2), 0.0f, 1.0f);
-                    this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour1 * interpolationfactor + colour2 * (1 - interpolationfactor));
+                    this->currentColour_ = colour1 * interpolationfactor + colour2 * (1 - interpolationfactor);
+                    this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, this->currentColour_);
+
                 }
             }
         }
@@ -179,5 +185,15 @@ namespace orxonox
     void HUDBar::clearColours()
     {
         this->colours_.clear();
+    }
+
+    void HUDBar::setBarTexture(const std::string& texture)
+    {
+        this->textureUnitState_->setTextureName(texture);
+    }
+
+    const std::string& HUDBar::getBarTexture() const
+    {
+        return this->textureUnitState_->getTextureName();
     }
 }

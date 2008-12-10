@@ -20,51 +20,33 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht
- *   Co-authors:
  *      Fabian 'x3n' Landau
+ *   Co-authors:
+ *      ...
  *
  */
 
- /**
- @file
- @brief Handles the instances of Camera class
- @author Benjamin Knecht <beni_at_orxonox.net>
-  */
-
-#ifndef _CameraManager_H__
-#define _CameraManager_H__
+#ifndef _PawnManager_H__
+#define _PawnManager_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <cassert>
-#include <list>
-#include <OgrePrerequisites.h>
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager
+    class _OrxonoxExport PawnManager : public Tickable
     {
         public:
-            CameraManager(Ogre::Viewport* viewport);
-            ~CameraManager();
+            static void touch();
 
-            Camera* getActiveCamera() const;
-
-            void requestFocus(Camera* camera);
-            void releaseFocus(Camera* camera);
-
-            static CameraManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+            virtual void tick(float dt);
 
         private:
-            CameraManager(const CameraManager&);
+            PawnManager();
+            virtual ~PawnManager();
 
-            std::list<Camera*> cameraList_;
-            Ogre::Viewport* viewport_;
-            Ogre::Camera* fallbackCamera_;
-
-            static CameraManager* singletonRef_s;
+            static PawnManager* singletonRef_s;
     };
 }
 
-#endif /* _CameraManager_H__ */
+#endif /* _PawnManager_H__ */

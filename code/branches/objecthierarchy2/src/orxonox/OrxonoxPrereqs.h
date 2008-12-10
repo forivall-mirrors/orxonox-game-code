@@ -81,6 +81,7 @@ namespace orxonox
 
     class CameraManager;
     class LevelManager;
+    class PawnManager;
     class PlayerManager;
 
     // objects
@@ -178,6 +179,7 @@ namespace orxonox
     class HUDNavigation;
     class HUDRadar;
     class HUDSpeedBar;
+    class HUDHealthBar;
     class InGameConsole;
     class OrxonoxOverlay;
     class OverlayGroup;

@@ -168,21 +168,26 @@ namespace orxonox
     {
         for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
-            if (!it->first->getControllableEntity() && (!it->first->isReadyToSpawn() || !this->bStarted_))
+            if (!it->first->getControllableEntity())
             {
-                SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
-                if (spawn)
+                it->second = PlayerState::Dead;
+
+                if (!it->first->isReadyToSpawn() || !this->bStarted_)
                 {
-                    // force spawn at spawnpoint with default pawn
-                    ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
-                    spawn->spawn(entity);
-                    it->first->startControl(entity);
-                    it->second = PlayerState::Dead;
-                }
-                else
-                {
-                    COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
-                    abort();
+                    SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
+                    if (spawn)
+                    {
+                        // force spawn at spawnpoint with default pawn
+                        ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
+                        spawn->spawn(entity);
+                        it->first->startControl(entity);
+                        it->second = PlayerState::Dead;
+                    }
+                    else
+                    {
+                        COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+                        abort();
+                    }
                 }
             }
         }
@@ -210,12 +215,15 @@ namespace orxonox
                 else
                 {
                     bool allplayersready = true;
+                    bool hashumanplayers = false;
                     for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
                     {
                         if (!it->first->isReadyToSpawn())
                             allplayersready = false;
+                        if (it->first->isHumanPlayer())
+                            hashumanplayers = true;
                     }
-                    if (allplayersready)
+                    if (allplayersready && hashumanplayers)
                     {
                         this->startCountdown_ = this->initialStartCountdown_;
                         this->bStartCountdownRunning_ = true;

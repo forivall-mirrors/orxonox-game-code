@@ -71,6 +71,8 @@ namespace orxonox
 
     void Template::changedName()
     {
+        SUPER(Template, changedName);
+
         if (this->getName() != "")
         {
             std::map<std::string, Template*>::iterator it;

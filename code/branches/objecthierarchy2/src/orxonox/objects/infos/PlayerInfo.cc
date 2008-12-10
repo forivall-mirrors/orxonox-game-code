@@ -76,6 +76,8 @@ namespace orxonox
 
     void PlayerInfo::changedName()
     {
+        SUPER(PlayerInfo, changedName);
+
         if (this->isInitialized() && this->getGametype())
             this->getGametype()->playerChangedName(this);
     }
