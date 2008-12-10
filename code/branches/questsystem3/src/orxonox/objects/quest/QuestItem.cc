@@ -97,8 +97,6 @@ namespace orxonox {
         The id to be checked.
     @return
         Returns true if the string is likely to be of the required form.
-    @todo
-        Clarify form, more vigorous checks.
     */
     /*static*/ bool QuestItem::isId(const std::string & id)
     {

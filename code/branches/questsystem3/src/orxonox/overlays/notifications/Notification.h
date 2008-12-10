@@ -39,7 +39,7 @@ namespace orxonox {
 
     /**
     @brief
-	
+	This is rather temporary, so don't start relying on it, some better version will come soon but the Interface will not likely be the same.
     @author
         Damian 'Mozork' Frick
     */

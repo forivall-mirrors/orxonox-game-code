@@ -36,6 +36,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "util/Exception.h"
 
 #include "Quest.h"
 #include "QuestManager.h"
@@ -114,7 +115,7 @@ namespace orxonox {
         
         if(this->quest_ == NULL) //!< If there is no such Quest.
         {
-            COUT(1) << "This is bad! The QuestListener has not found a Quest qith a corresponding id." << std::endl; //TDO Throw a damn Exception!
+            ThrowException(Argument, "This is bad! The QuestListener has not found a Quest with a corresponding id..");
             return false;
         }
         
@@ -196,7 +197,7 @@ namespace orxonox {
     */
     bool QuestListener::execute()
     {
-        this->fireEvent(true); //TDO This' right?
+        this->fireEvent(true);
         return true;
     }
 
