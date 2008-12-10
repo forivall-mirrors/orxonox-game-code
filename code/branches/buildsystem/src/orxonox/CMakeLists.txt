@@ -100,3 +100,5 @@ TARGET_LINK_LIBRARIES( orxonox
   audio
   network
 )
+
+INSTALL(TARGETS orxonox RUNTIME DESTINATION bin)
