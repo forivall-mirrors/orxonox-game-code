@@ -40,10 +40,8 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
-//#include "objects/Backlight.h"
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
-//#include "tools/ParticleInterface.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
@@ -55,8 +53,7 @@ namespace orxonox
 
     GSLevel::GSLevel()
 //        : GameState<GSGraphics>(name)
-        : timeFactor_(1.0f)
-        , keyBinder_(0)
+        : keyBinder_(0)
         , inputState_(0)
         , radar_(0)
         , startFile_(0)
@@ -67,7 +64,6 @@ namespace orxonox
 
         this->ccKeybind_ = 0;
         this->ccTkeybind_ = 0;
-        this->ccSetTimeFactor_ = 0;
 
         setConfigValues();
     }
@@ -107,9 +103,6 @@ namespace orxonox
             // create the global LevelManager
             this->levelManager_ = new LevelManager();
 
-            // reset game speed to normal
-            timeFactor_ = 1.0f;
-
             this->loadLevel();
         }
 
@@ -133,15 +126,6 @@ namespace orxonox
             // level is loaded: we can start capturing the input
             InputManager::getInstance().requestEnterState("game");
         }
-
-        if (Core::isMaster())
-        {
-            // time factor console command
-            FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::setTimeFactor);
-            functor->setObject(this);
-            ccSetTimeFactor_ = createConsoleCommand(functor, "setTimeFactor");
-            CommandExecutor::addConsoleCommandShortcut(ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
-        }
     }
 
     void GSLevel::leave()
@@ -151,11 +135,6 @@ namespace orxonox
         {
             delete this->ccKeybind_;
             this->ccKeybind_ = 0;
-        }
-        if (this->ccSetTimeFactor_)
-        {
-            delete this->ccSetTimeFactor_;
-            this->ccSetTimeFactor_ = 0;
         }
         if (this->ccTkeybind_)
         {
@@ -217,25 +196,6 @@ namespace orxonox
         //// Call the scene objects
         //for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
         //    it->tick(time.getDeltaTime() * this->timeFactor_);
-    }
-
-    /**
-    @brief
-        Changes the speed of Orxonox
-    */
-    void GSLevel::setTimeFactor(float factor)
-    {
-/*
-        float change = factor / this->timeFactor_;
-*/
-        this->timeFactor_ = factor;
-/*
-        for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
-            it->setSpeedFactor(it->getSpeedFactor() * change);
-
-        for (ObjectList<Backlight>::iterator it = ObjectList<Backlight>::begin(); it; ++it)
-            it->setTimeFactor(timeFactor_);
-*/
     }
 
     void GSLevel::loadLevel()

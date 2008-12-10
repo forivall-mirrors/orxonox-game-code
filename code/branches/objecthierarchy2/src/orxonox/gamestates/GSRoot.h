@@ -46,6 +46,11 @@ namespace orxonox
         void exitGame()
         { requestState("root"); }
 
+        // this has to be public because proteced triggers a bug in msvc
+        // when taking the function address.
+        void setTimeFactor(float factor);
+        float getTimeFactor() { return this->timeFactor_; }
+
     private:
         void enter();
         void leave();
@@ -54,6 +59,7 @@ namespace orxonox
         void setConfigValues();
         void setThreadAffinity(unsigned int limitToCPU);
 
+        float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
         Settings*             settings_;
         TclBind*              tclBind_;
         TclThreadManager*     tclThreadManager_;
@@ -63,6 +69,7 @@ namespace orxonox
         // console commands
         ConsoleCommand*       ccExit_;
         ConsoleCommand*       ccSelectGameState_;
+        ConsoleCommand*       ccSetTimeFactor_;
     };
 }
 

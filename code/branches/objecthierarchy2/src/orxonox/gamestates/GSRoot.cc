@@ -31,6 +31,7 @@
 
 #include "util/Exception.h"
 #include "util/Debug.h"
+#include "core/Core.h"
 #include "core/Factory.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -42,6 +43,8 @@
 #include "core/LuaBind.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
+#include "objects/worldentities/Backlight.h"
+#include "tools/ParticleInterface.h"
 #include "Settings.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
@@ -66,6 +69,7 @@ namespace orxonox
 
     GSRoot::GSRoot()
         : RootGameState("root")
+        , timeFactor_(1.0f)
         , settings_(0)
         , tclBind_(0)
         , tclThreadManager_(0)
@@ -73,6 +77,8 @@ namespace orxonox
     {
         RegisterRootObject(GSRoot);
         setConfigValues();
+
+        this->ccSetTimeFactor_ = 0;
     }
 
     GSRoot::~GSRoot()
@@ -87,6 +93,9 @@ namespace orxonox
     {
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
+
+        // reset game speed to normal
+        timeFactor_ = 1.0f;
 
         // Create the lua interface
         this->luaBind_ = new LuaBind();
@@ -128,6 +137,12 @@ namespace orxonox
         functor2->setObject(this);
         ccSelectGameState_ = createConsoleCommand(functor2, "selectGameState");
         CommandExecutor::addConsoleCommandShortcut(ccSelectGameState_);
+
+        // time factor console command
+        FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::setTimeFactor);
+        functor->setObject(this);
+        ccSetTimeFactor_ = createConsoleCommand(functor, "setTimeFactor");
+        CommandExecutor::addConsoleCommandShortcut(ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
     }
 
     void GSRoot::leave()
@@ -142,6 +157,12 @@ namespace orxonox
 
         delete this->settings_;
         delete this->luaBind_;
+
+        if (this->ccSetTimeFactor_)
+        {
+            delete this->ccSetTimeFactor_;
+            this->ccSetTimeFactor_ = 0;
+        }
     }
 
     void GSRoot::ticked(const Clock& time)
@@ -154,7 +175,7 @@ namespace orxonox
         /*** HACK *** HACK ***/
         // Call the Tickable objects
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(time.getDeltaTime());
+            it->tick(time.getDeltaTime() * this->timeFactor_);
         /*** HACK *** HACK ***/
 
         this->tickChild(time);
@@ -167,37 +188,58 @@ namespace orxonox
         For the latest info, see http://www.ogre3d.org/
 
         Copyright (c) 2000-2008 Torus Knot Software Ltd
-        
+
         OGRE is licensed under the LGPL. For more info, see OGRE license.
     */
     void GSRoot::setThreadAffinity(unsigned int limitToCPU)
     {
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // Get the current process core mask
-	    DWORD procMask;
-	    DWORD sysMask;
+        DWORD procMask;
+        DWORD sysMask;
 #  if _MSC_VER >= 1400 && defined (_M_X64)
-	    GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
+        GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
 #  else
-	    GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
+        GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
 #  endif
 
-	    // If procMask is 0, consider there is only one core available
-	    // (using 0 as procMask will cause an infinite loop below)
-	    if (procMask == 0)
-		    procMask = 1;
+        // If procMask is 0, consider there is only one core available
+        // (using 0 as procMask will cause an infinite loop below)
+        if (procMask == 0)
+            procMask = 1;
 
         // if the core specified with limitToCPU is not available, take the lowest one
         if (!(procMask & (1 << limitToCPU)))
             limitToCPU = 0;
 
-	    // Find the lowest core that this process uses and limitToCPU suggests
+        // Find the lowest core that this process uses and limitToCPU suggests
         DWORD threadMask = 1;
-	    while ((threadMask & procMask) == 0 || (threadMask < (1u << limitToCPU)))
-		    threadMask <<= 1;
+        while ((threadMask & procMask) == 0 || (threadMask < (1u << limitToCPU)))
+            threadMask <<= 1;
 
-	    // Set affinity to the first core
-	    SetThreadAffinityMask(GetCurrentThread(), threadMask);
+        // Set affinity to the first core
+        SetThreadAffinityMask(GetCurrentThread(), threadMask);
 #endif
+    }
+
+    /**
+    @brief
+        Changes the speed of Orxonox
+    */
+    void GSRoot::setTimeFactor(float factor)
+    {
+        if (Core::isMaster())
+        {
+            float change = factor / this->timeFactor_;
+
+            this->timeFactor_ = factor;
+/*
+            for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it != ObjectList<ParticleInterface>::end(); ++it)
+                it->setSpeedFactor(it->getSpeedFactor() * change);
+
+            for (ObjectList<Backlight>::iterator it = ObjectList<Backlight>::begin(); it != ObjectList<Backlight>::end(); ++it)
+                it->setTimeFactor(timeFactor_);
+*/
+        }
     }
 }
