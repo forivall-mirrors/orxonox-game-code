@@ -128,7 +128,7 @@ namespace orxonox {
            return false;
         }
 
-        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." std::endl;
+        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." << std::endl;
         return true;
 
     }
