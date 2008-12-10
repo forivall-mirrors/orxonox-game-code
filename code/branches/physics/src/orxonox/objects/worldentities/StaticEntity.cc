@@ -30,6 +30,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "StaticEntity.h"
 
+#include "BulletDynamics/Dynamics/btRigidBody.h"
+
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 
@@ -50,14 +52,142 @@ namespace orxonox
 
     void StaticEntity::registerVariables()
     {
-        REGISTERDATA(this->getPosition().x, network::direction::toclient);
-        REGISTERDATA(this->getPosition().y, network::direction::toclient);
-        REGISTERDATA(this->getPosition().z, network::direction::toclient);
+        REGISTERDATA(this->getPosition(),    network::direction::toclient, new network::NetworkCallback<StaticEntity>(this, &StaticEntity::positionChanged));
+        REGISTERDATA(this->getOrientation(), network::direction::toclient, new network::NetworkCallback<StaticEntity>(this, &StaticEntity::orientationChanged));
+    }
 
-        REGISTERDATA(this->getOrientation().w, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().x, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().y, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().z, network::direction::toclient);
+
+    void StaticEntity::setPosition(const Vector3& position)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            btTransform transf = this->physicalBody_->getWorldTransform();
+            transf.setOrigin(btVector3(position.x, position.y, position.z));
+            this->physicalBody_->setWorldTransform(transf);
+        }
+
+        this->node_->setPosition(position);
+    }
+
+    void StaticEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot translate physical object relative \
+                                                          to any other space than TS_LOCAL.");
+            this->physicalBody_->translate(btVector3(distance.x, distance.y, distance.z));
+        }
+
+        this->node_->translate(distance, relativeTo);
+    }
+
+    void StaticEntity::setOrientation(const Quaternion& orientation)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            btTransform transf = this->physicalBody_->getWorldTransform();
+            transf.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+            this->physicalBody_->setWorldTransform(transf);
+        }
+
+        this->node_->setOrientation(orientation);
+    }
+
+    void StaticEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot rotate physical object relative \
+                                                          to any other space than TS_LOCAL.");
+            btTransform transf = this->physicalBody_->getWorldTransform();
+            this->physicalBody_->setWorldTransform(transf * btTransform(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w)));
+        }
+
+        this->node_->rotate(rotation, relativeTo);
+    }
+
+    void StaticEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot yaw physical object relative \
+                                                          to any other space than TS_LOCAL.");
+            btTransform transf = this->physicalBody_->getWorldTransform();
+            btTransform rotation(btQuaternion(angle.valueRadians(), 0.0f, 0.0f));
+            this->physicalBody_->setWorldTransform(transf * rotation);
+        }
+
+        this->node_->yaw(angle, relativeTo);
+    }
+
+    void StaticEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot pitch physical object relative \
+                                                          to any other space than TS_LOCAL.");
+            btTransform transf = this->physicalBody_->getWorldTransform();
+            btTransform rotation(btQuaternion(0.0f, angle.valueRadians(), 0.0f));
+            this->physicalBody_->setWorldTransform(transf * rotation);
+        }
+
+        this->node_->pitch(angle, relativeTo);
+    }
+
+    void StaticEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot roll physical object relative \
+                                                          to any other space than TS_LOCAL.");
+            btTransform transf = this->physicalBody_->getWorldTransform();
+            btTransform rotation(btQuaternion(angle.valueRadians(), 0.0f, 0.0f));
+            this->physicalBody_->setWorldTransform(transf * rotation);
+        }
+
+        this->node_->roll(angle, relativeTo);
+    }
+
+    void StaticEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            ThrowException(NotImplemented, "ControllableEntity::lookAt() is not yet supported for physical objects.");
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
+                                                          to any other space than TS_LOCAL.");
+        }
+
+        this->node_->lookAt(target, relativeTo, localDirectionVector);
+    }
+
+    void StaticEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
+    {
+        if (this->isPhysicsRunning())
+            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        if (this->isStatic())
+        {
+            ThrowException(NotImplemented, "ControllableEntity::setDirection() is not yet supported for physical objects.");
+            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
+                                                          to any other space than TS_LOCAL.");
+        }
+
+        this->node_->setDirection(direction, relativeTo, localDirectionVector);
     }
 
     bool StaticEntity::isCollisionTypeLegal(WorldEntity::CollisionType type) const
@@ -80,6 +210,6 @@ namespace orxonox
     void StaticEntity::getWorldTransform(btTransform& worldTrans) const
     {
         worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
-        worldTrans.setRotation(btQuaternion(node_->getOrientation().w, node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z));
+        worldTrans.setRotation(btQuaternion(node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z, node_->getOrientation().w));
     }
 }

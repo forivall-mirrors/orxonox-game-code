@@ -32,11 +32,10 @@
 #include "OrxonoxPrereqs.h"
 
 #include "MovableEntity.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ControllableEntity : public MovableEntity, public Tickable
+    class _OrxonoxExport ControllableEntity : public MovableEntity
     {
         public:
             ControllableEntity(BaseObject* creator);
@@ -71,17 +70,8 @@ namespace orxonox
             virtual void use() {}
             virtual void switchCamera();
 
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
-
-            inline void setAcceleration(const Vector3& acceleration)
-                { this->acceleration_ = acceleration; }
-            inline void setAcceleration(float x, float y, float z)
-                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
 
             inline Camera* getCamera() const
                 { return this->camera_; }
@@ -108,23 +98,24 @@ namespace orxonox
             inline bool isLocallyControlled() const
                 { return this->bControlled_; }
 
-            Vector3 acceleration_;
-
         private:
             void overwrite();
             void processOverwrite();
 
             void processServerPosition();
-            void processServerVelocity();
+            void processServerLinearVelocity();
             void processServerOrientation();
+            void processServerAngularVelocity();
 
             void processClientPosition();
-            void processClientVelocity();
+            void processClientLinearVelocity();
             void processClientOrientation();
+            void processClientAngularVelocity();
 
-            void positionChanged();
-            void orientationChanged();
-            void velocityChanged();
+            void positionChanged       (bool bContinuous);
+            void orientationChanged    (bool bContinuous);
+            void linearVelocityChanged (bool bContinuous);
+            void angularVelocityChanged(bool bContinuous);
 
             void networkcallback_changedplayerID();
 
@@ -134,10 +125,12 @@ namespace orxonox
             bool bControlled_;
             Vector3 server_position_;
             Vector3 client_position_;
-            Vector3 server_velocity_;
-            Vector3 client_velocity_;
+            Vector3 server_linear_velocity_;
+            Vector3 client_linear_velocity_;
             Quaternion server_orientation_;
             Quaternion client_orientation_;
+            Vector3 server_angular_velocity_;
+            Vector3 client_angular_velocity_;
 
             PlayerInfo* player_;
             unsigned int playerID_;

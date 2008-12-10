@@ -163,6 +163,9 @@ namespace orxonox
             inline void roll_xmlport(const Degree& angle)
                 { this->roll(angle); }
 
+            inline void scaleChanged()
+                { this->setScale3D(this->getScale3D()); }
+
             WorldEntity* parent_;
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
@@ -185,6 +188,7 @@ namespace orxonox
             bool isStatic()    const { return getCollisionType() == Static   ; }
             bool isKinematic() const { return getCollisionType() == Kinematic; }
             bool isDynamic()   const { return getCollisionType() == Dynamic  ; }
+            bool isPhysicsRunning() const;
 
             inline CollisionType getCollisionType() const
                 { return this->collisionType_; }
@@ -200,7 +204,7 @@ namespace orxonox
             void attachCollisionShape(CollisionShape* shape);
             CollisionShape* getAttachedCollisionShape(unsigned int index) const;
 
-            inline CollisionShape* getCollisionShape()
+            inline CompoundCollisionShape* getCollisionShape()
                 { return this->collisionShape_; }
             inline btRigidBody* getPhysicalBody()
                 { return this->physicalBody_; }
@@ -219,9 +223,13 @@ namespace orxonox
             void addToPhysicalWorld() const;
             void removeFromPhysicalWorld() const;
 
+            // network callbacks
+            void collisionTypeChanged();
+            void massChanged();
+
             CollisionType                collisionType_;
-            std::vector<CollisionShape*> attachedShapes_;
-            CollisionShape*              collisionShape_;
+            CollisionType                collisionTypeSynchronised_;
+            CompoundCollisionShape*      collisionShape_;
             btScalar                     mass_;
             btScalar                     childMass_;
     };

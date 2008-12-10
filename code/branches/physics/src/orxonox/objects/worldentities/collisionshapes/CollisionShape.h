@@ -31,33 +31,58 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/worldentities/StaticEntity.h"
+#include "util/Math.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CollisionShape : public StaticEntity
+    class _OrxonoxExport CollisionShape : public BaseObject, public network::Synchronisable
     {
         public:
             CollisionShape(BaseObject* creator);
             virtual ~CollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void registerVariables();
 
-            btCollisionShape* getCollisionShape() const { return this->collisionShape_; }
-            bool isCompoundShape() const { return this->bIsCompound_; }
+            inline void setPosition(const Vector3& position)
+                { this->position_ = position; }
+            inline const Vector3& getPosition() const
+                { return this->position_; }
 
-            bool hasNoTransform() const;
-            virtual btVector3 getTotalScaling();
+            inline void setOrientation(const Quaternion& orientation)
+                { this->orientation_ = orientation; }
+            inline const Quaternion& getOrientation() const
+                { return this->orientation_; }
+
+            void yaw(const Degree& angle)   { this->orientation_ = this->orientation_ * Quaternion(angle, Vector3::UNIT_Y); }
+            void pitch(const Degree& angle) { this->orientation_ = this->orientation_ * Quaternion(angle, Vector3::UNIT_X); }
+            void roll(const Degree& angle)  { this->orientation_ = this->orientation_ * Quaternion(angle, Vector3::UNIT_Z); }
+
+            virtual void setScale3D(const Vector3& scale);
+            virtual void setScale(float scale);
+            inline const Vector3& getScale3D(void) const
+                { return this->scale_; }
+
+            virtual inline btCollisionShape* getCollisionShape() const
+                { return this->collisionShape_; }
+
+            bool hasTransform() const;
+
+            inline void setParent(CompoundCollisionShape* shape, unsigned int ID)
+                { this->parent_ = shape; this->parentID_ = ID; }
 
         protected:
-            bool              bIsCompound_;
             btCollisionShape* collisionShape_;
 
         private:
-            virtual void setScale3D(const Vector3& scale);
-            virtual void scale3D(const Vector3& scale);
+            void updateParent();
 
-            bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
+            Vector3           position_;
+            Quaternion        orientation_;
+            Vector3           scale_;
+            CompoundCollisionShape* parent_;
+            unsigned int      parentID_;
     };
 }
 

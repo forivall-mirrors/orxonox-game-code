@@ -43,9 +43,8 @@ namespace orxonox
     {
         RegisterObject(CompoundCollisionShape);
 
-        this->bIsCompound_    = true;
+        this->collisionShape_ = 0;
         this->compoundShape_  = new btCompoundShape();
-        this->collisionShape_ = this->compoundShape_;
     }
 
     CompoundCollisionShape::~CompoundCollisionShape()
@@ -57,16 +56,43 @@ namespace orxonox
     void CompoundCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(CompoundCollisionShape, XMLPort, xmlelement, mode);
-
+        // Attached collision shapes
         XMLPortObject(CompoundCollisionShape, CollisionShape, "", addChildShape, getChildShape, xmlelement, mode);
+    }
+
+    btCollisionShape* CompoundCollisionShape::getCollisionShape() const
+    {
+        // Note: Returning collisionShape_ means that it's the only one and has no transform.
+        //       So we can get rid of the additional overhead with the compound shape.
+        if (this->collisionShape_)
+            return this->collisionShape_;
+        else if (this->childShapes_.size() != 0)
+            return this->compoundShape_;
+        else
+            return 0;
     }
 
     void CompoundCollisionShape::addChildShape(CollisionShape* shape)
     {
-        this->childShapes_.push_back(shape);
+        if (!shape || !shape->getCollisionShape())
+            return;
+        assert(this->compoundShape_);
         btTransform transf(omni_cast<btQuaternion>(shape->getOrientation()), omni_cast<btVector3>(shape->getPosition()));
-        shape->getCollisionShape()->setLocalScaling(shape->getTotalScaling());
         this->compoundShape_->addChildShape(transf, shape->getCollisionShape());
+
+        if (this->childShapes_.size() == 1 && this->childShapes_[0] && !this->childShapes_[0]->hasTransform())
+        {
+            // --> Only shape to be added, no transform; add it directly
+            this->collisionShape_ = shape->getCollisionShape();
+        }
+        else
+        {
+            // Make sure we use the compound shape
+            this->collisionShape_ = 0;
+        }
+
+        // network synchro
+        shape->setParent(this, this->getObjectID());
     }
 
     CollisionShape* CompoundCollisionShape::getChildShape(unsigned int index) const

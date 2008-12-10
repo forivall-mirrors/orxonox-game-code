@@ -47,6 +47,8 @@ namespace orxonox
             void addChildShape(CollisionShape* shape);
             CollisionShape* getChildShape(unsigned int index) const;
 
+            virtual btCollisionShape* getCollisionShape() const;
+
         private:
             btCompoundShape* compoundShape_;
             std::vector<CollisionShape*> childShapes_;

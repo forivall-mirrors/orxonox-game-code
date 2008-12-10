@@ -32,12 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "MovableEntity.h"
-#include "objects/Tickable.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LinearEntity : public MovableEntity, public network::ClientConnectionListener, public Tickable
+    class _OrxonoxExport LinearEntity : public MovableEntity, public network::ClientConnectionListener
     {
         public:
             LinearEntity(BaseObject* creator);
@@ -47,49 +46,21 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
-            inline void setAcceleration(const Vector3& acceleration)
-                { this->acceleration_ = acceleration; }
-            inline void setAcceleration(float x, float y, float z)
-                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
-
-            inline void setRotationAxis(const Vector3& axis)
-                { this->rotationAxis_ = axis; this->rotationAxis_.normalise(); }
-            inline void setRotationAxis(float x, float y, float z)
-                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; rotationAxis_.normalise(); }
-            inline const Vector3& getRotationAxis() const
-                { return this->rotationAxis_; }
-
-            inline void setRotationRate(const Degree& angle)
-                { this->rotationRate_ = angle; }
-            inline void setRotationRate(const Radian& angle)
-                { this->rotationRate_ = angle; }
-            inline const Degree& getRotationRate() const
-                { return this->rotationRate_; }
-
-            inline void setMomentum(const Degree& angle)
-                { this->momentum_ = angle; }
-            inline void setMomentum(const Radian& angle)
-                { this->momentum_ = angle; }
-            inline const Degree& getMomentum() const
-                { return this->momentum_; }
-
         private:
             void clientConnected(unsigned int clientID);
             void clientDisconnected(unsigned int clientID);
             void resynchronize();
 
+            inline void processLinearVelocity()
+                { this->setVelocity(this->linearVelocity_); }
+            inline void processAngularVelocity()
+                { this->setAngularVelocity(this->angularVelocity_); }
+
             void overwritePosition();
             void overwriteOrientation();
 
-            void positionChanged();
-            void orientationChanged();
-
-            Vector3 acceleration_;
-            Vector3 rotationAxis_;
-            Degree rotationRate_;
-            Degree momentum_;
+            void positionChanged(bool bContinuous);
+            void orientationChanged(bool bContinuous);
 
             Vector3 overwrite_position_;
             Quaternion overwrite_orientation_;

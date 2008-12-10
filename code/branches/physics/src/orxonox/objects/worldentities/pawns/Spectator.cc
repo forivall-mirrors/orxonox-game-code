@@ -107,7 +107,7 @@ namespace orxonox
         {
             Vector3 velocity = this->getVelocity();
             velocity.normalise();
-            this->setVelocity(velocity * this->speed_);
+            this->setVelocity(this->getOrientation() * velocity * this->speed_);
 
             this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
             this->pitch(Radian(this->pitch_ * this->rotationSpeed_));

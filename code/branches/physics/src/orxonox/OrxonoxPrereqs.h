@@ -153,6 +153,8 @@ namespace orxonox
     // collision
     class CollisionShape;
     class SphereCollisionShape;
+    class CompoundCollisionShape;
+    class PlaneCollisionShape;
 
     // tools
     class BillboardSet;
@@ -216,6 +218,7 @@ class btGhostObject;
 class btCollisionShape;
 class btSphereShape;
 class btCompoundShape;
+class btStaticPlaneShape;
 
 class btDiscreteDynamicsWorld;
 

@@ -13,7 +13,7 @@
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *   GNU General Public License for more details. 
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
@@ -72,10 +72,11 @@ namespace orxonox
 
         // Default behaviour does not include physics
         this->physicalBody_ = 0;
-        this->collisionShape_ = 0;
+        this->collisionShape_ = new CompoundCollisionShape(this);
         this->mass_ = 0;
         this->childMass_ = 0;
         this->collisionType_ = None;
+        this->collisionTypeSynchronised_ = None;
 
         this->registerVariables();
     }
@@ -112,22 +113,27 @@ namespace orxonox
         XMLPortParamTemplate(WorldEntity, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
         XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
 
+        // Physics
         XMLPortParam(WorldEntity, "collisionType", setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
-        //XMLPortParam(WorldEntity, "collisionRadius", setCollisionRadius, getCollisionRadius, xmlelement, mode);
         XMLPortParam(WorldEntity, "mass", setMass, getMass, xmlelement, mode);
 
+        // Other attached WorldEntities
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
+        // Attached collision shapes
         XMLPortObject(WorldEntity, CollisionShape, "collisionShapes", attachCollisionShape, getAttachedCollisionShape, xmlelement, mode);
     }
 
     void WorldEntity::registerVariables()
     {
-        REGISTERDATA(this->bActive_,  network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
-        REGISTERDATA(this->bVisible_, network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
+        REGISTERDATA(this->bActive_,     network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
+        REGISTERDATA(this->bVisible_,    network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
 
-        REGISTERDATA(this->getScale3D().x, network::direction::toclient);
-        REGISTERDATA(this->getScale3D().y, network::direction::toclient);
-        REGISTERDATA(this->getScale3D().z, network::direction::toclient);
+        // HACK: Removed the call because it gets called the first time as well
+        REGISTERDATA(this->getScale3D(), network::direction::toclient);//, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
+
+        int* collisionType = (int*)&this->collisionTypeSynchronised_;
+        REGISTERDATA(*collisionType, network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
+        REGISTERDATA(this->mass_,    network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
 
         REGISTERDATA(this->parentID_, network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
     }
@@ -137,6 +143,29 @@ namespace orxonox
         WorldEntity* parent = dynamic_cast<WorldEntity*>(Synchronisable::getSynchronisable(this->parentID_));
         if (parent)
             this->attachToParent(parent);
+    }
+
+    void WorldEntity::collisionTypeChanged()
+    {
+        if (this->collisionTypeSynchronised_ != Dynamic &&
+            this->collisionTypeSynchronised_ != Kinematic &&
+            this->collisionTypeSynchronised_ != Static &&
+            this->collisionTypeSynchronised_ != None)
+        {
+            CCOUT(1) << "Error when collsion Type was received over network. Unknown enum value:" << this->collisionTypeSynchronised_ << std::endl;
+        }
+        else if (this->collisionTypeSynchronised_ != collisionType_)
+        {
+            if (this->parent_)
+                CCOUT(2) << "Warning: Network connection tried to set the collision type of an attached WE. Ignoring." << std::endl;
+            else
+                this->setCollisionType(this->collisionTypeSynchronised_);
+        }
+    }
+
+    void WorldEntity::massChanged()
+    {
+        this->setMass(this->mass_);
     }
 
     void WorldEntity::attach(WorldEntity* object)
@@ -209,29 +238,7 @@ namespace orxonox
 
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
-        this->attachedShapes_.push_back(shape);
-
-        if (!this->collisionShape_ && shape->hasNoTransform())
-        {
-            // Set local scaling right when adding it. It can include both scaling parameters
-            // and shape parameters (like sphere radius)
-            shape->getCollisionShape()->setLocalScaling(shape->getTotalScaling());
-            this->collisionShape_ = shape;
-            // recalculate inertia tensor
-            if (this->isDynamic())
-                internalSetMassProps();
-        }
-        else
-        {
-            if (this->collisionShape_ && !this->collisionShape_->isCompoundShape())
-            {
-                // We have to create a new compound shape and add the old one first.
-                CollisionShape* thisShape = this->collisionShape_;
-                this->collisionShape_ = 0;
-                this->mergeCollisionShape(thisShape);
-            }
-            this->mergeCollisionShape(shape);
-        }
+        this->collisionShape_->addChildShape(shape);
 
         if (this->physicalBody_)
         {
@@ -240,33 +247,17 @@ namespace orxonox
                 COUT(2) << "Warning: Attaching collision shapes at run time causes its physical body to be removed and added again.";
                 removeFromPhysicalWorld();
             }
-            this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+            if (this->collisionShape_->getCollisionShape())
+                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+            // recalculate inertia tensor
+            internalSetMassProps();
+            addToPhysicalWorld();
         }
-
-        addToPhysicalWorld();
     }
 
     CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
     {
-        if (index < this->attachedShapes_.size())
-            return attachedShapes_[index];
-        else
-            return 0;
-    }
-
-    void WorldEntity::mergeCollisionShape(CollisionShape* shape)
-    {
-        if (!this->collisionShape_)
-            this->collisionShape_ = new CompoundCollisionShape(this);
-        assert(this->collisionShape_->isCompoundShape());
-
-        // merge with transform
-        CompoundCollisionShape* compoundShape = static_cast<CompoundCollisionShape*>(this->collisionShape_);
-        assert(compoundShape);
-        compoundShape->addChildShape(shape);
-
-        // recalculate inertia tensor
-        internalSetMassProps();
+        return this->collisionShape_->getChildShape(index);
     }
 
     void WorldEntity::addToPhysicalWorld() const
@@ -301,7 +292,9 @@ namespace orxonox
     {
         this->mass_ = mass;
         if (!this->hasPhysics())
-            COUT(3) << "Warning: Setting the mass of a WorldEntity with no physics has no effect." << std::endl;
+            return;
+        // TODO: Add this again when new network callbacks work properly
+            //COUT(3) << "Warning: Setting the mass of a WorldEntity with no physics has no effect." << std::endl;
         else
         {
             if (this->physicalBody_->isInWorld())
@@ -319,14 +312,15 @@ namespace orxonox
     {
         assert(hasPhysics());
 
-        if ((this->isKinematic() || this->isStatic()) && (this->mass_ + this->childMass_) != 0.0f)
+        if (this->isStatic())
         {
-            // Mass non zero is a bad idea for kinematic and static objects
+            // Just set everything to zero
             this->physicalBody_->setMassProps(0.0f, btVector3(0, 0, 0));
         }
-        else if (this->isDynamic() && (this->mass_ + this->childMass_) == 0.0f)
+        else if ((this->mass_ + this->childMass_) == 0.0f)
         {
-            // Mass zero is not such a good idea for dynamic objects
+            // Use default values to avoid very large or very small values
+            CCOUT(2) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0." << std::endl;
             this->physicalBody_->setMassProps(1.0f, this->getLocalInertia(1.0f));
         }
         else
@@ -336,7 +330,7 @@ namespace orxonox
     btVector3 WorldEntity::getLocalInertia(btScalar mass) const
     {
         btVector3 inertia(0, 0, 0);
-        if (this->collisionShape_)
+        if (this->collisionShape_->getCollisionShape())
             this->collisionShape_->getCollisionShape()->calculateLocalInertia(mass, inertia);
         return inertia;
     }
@@ -367,6 +361,7 @@ namespace orxonox
             btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, temp, btVector3(0,0,0));
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
             this->physicalBody_->setUserPointer(this);
+            this->physicalBody_->setActivationState(DISABLE_DEACTIVATION);
         }
         else if (type == None && this->collisionType_ != None)
         {
@@ -376,6 +371,7 @@ namespace orxonox
             delete this->physicalBody_;
             this->physicalBody_ = 0;
             this->collisionType_ = None;
+            this->collisionTypeSynchronised_ = None;
             return;
         }
 
@@ -400,7 +396,7 @@ namespace orxonox
         assert(this->collisionType_ == type);
 
         // update mass and inertia tensor
-        internalSetMassProps(); // type is not None! See case None: in switch
+        internalSetMassProps(); // type is not None! See case None in switch
 
         addToPhysicalWorld();
     }
@@ -450,6 +446,12 @@ namespace orxonox
             this->collisionType_ = Static;
         else
             this->collisionType_ = Dynamic;
+        this->collisionTypeSynchronised_ = this->collisionType_;
+    }
+
+    bool WorldEntity::isPhysicsRunning() const
+    {
+        return this->physicalBody_ && this->physicalBody_->isInWorld();
     }
 
     bool WorldEntity::checkPhysics() const

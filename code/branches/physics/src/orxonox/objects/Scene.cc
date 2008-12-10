@@ -42,6 +42,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 #include "core/XMLPort.h"
+#include "tools/BulletConversions.h"
 #include "objects/worldentities/WorldEntity.h"
 
 namespace orxonox
@@ -116,12 +117,12 @@ namespace orxonox
         XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
         XMLPortParam(Scene, "shadow", setShadow, getShadow, xmlelement, mode).defaultValues(true);
 
-        const int defaultMaxWorldSize = 100000;
-        Vector3 worldAabbMin(-defaultMaxWorldSize, -defaultMaxWorldSize, -defaultMaxWorldSize);
-        Vector3 worldAabbMax( defaultMaxWorldSize,  defaultMaxWorldSize,  defaultMaxWorldSize);
-        XMLPortParamVariable(Scene, "negativeWorldRange", worldAabbMin, xmlelement, mode);
-        XMLPortParamVariable(Scene, "positiveWorldRange", worldAabbMax, xmlelement, mode);
-        XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValue(0, true).defaultValue(1, worldAabbMin).defaultValue(2, worldAabbMax);
+        //const int defaultMaxWorldSize = 100000;
+        //Vector3 worldAabbMin(-defaultMaxWorldSize, -defaultMaxWorldSize, -defaultMaxWorldSize);
+        //Vector3 worldAabbMax( defaultMaxWorldSize,  defaultMaxWorldSize,  defaultMaxWorldSize);
+        //XMLPortParamVariable(Scene, "negativeWorldRange", worldAabbMin, xmlelement, mode);
+        //XMLPortParamVariable(Scene, "positiveWorldRange", worldAabbMax, xmlelement, mode);
+        XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValue(0, true);//.defaultValue(1, worldAabbMin).defaultValue(2, worldAabbMax);
 
         XMLPortObjectExtended(Scene, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
     }
@@ -130,20 +131,22 @@ namespace orxonox
     {
         REGISTERSTRING(this->skybox_,     network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
         REGISTERDATA(this->ambientLight_, network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+        REGISTERDATA(this->bHasPhysics_,  network::direction::toclient, new network::NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
     }
 
-    void Scene::setPhysicalWorld(bool wantPhysics, const Vector3& worldAabbMin, const Vector3& worldAabbMax)
+    void Scene::setPhysicalWorld(bool wantPhysics)//, const Vector3& worldAabbMin, const Vector3& worldAabbMax)
     {
+        this->bHasPhysics_ = wantPhysics;
         if (wantPhysics && !hasPhysics())
         {
-			float x = worldAabbMin.x;
-			float y = worldAabbMin.y;
-			float z = worldAabbMin.z;
-            btVector3 worldAabbMin(x,y,z);
-			x = worldAabbMax.x;
-			y = worldAabbMax.y;
-			z = worldAabbMax.z;
-            btVector3 worldAabbMax(x,y,z);
+            //float x = worldAabbMin.x;
+            //float y = worldAabbMin.y;
+            //float z = worldAabbMin.z;
+            btVector3 worldAabbMin(-100000, -100000, -100000);
+            //x = worldAabbMax.x;
+            //y = worldAabbMax.y;
+            //z = worldAabbMax.z;
+            btVector3 worldAabbMax(100000, 100000, 100000);
 
             btDefaultCollisionConfiguration*     collisionConfig = new btDefaultCollisionConfiguration();
             btCollisionDispatcher*               dispatcher      = new btCollisionDispatcher(collisionConfig);
@@ -172,7 +175,15 @@ namespace orxonox
                     it != this->physicsQueue_.end(); ++it)
                 {
                     if (!(*it)->isInWorld())
+                    {
+                        //COUT(0) << "body position: " << omni_cast<Vector3>((*it)->getWorldTransform().getOrigin()) << std::endl;
+                        //COUT(0) << "body velocity: " << omni_cast<Vector3>((*it)->getLinearVelocity()) << std::endl;
+                        //COUT(0) << "body orientation: " << omni_cast<Quaternion>((*it)->getWorldTransform().getRotation()) << std::endl;
+                        //COUT(0) << "body angular: " << omni_cast<Vector3>((*it)->getAngularVelocity()) << std::endl;
+                        //COUT(0) << "body mass: " << omni_cast<float>((*it)->getInvMass()) << std::endl;
+                        //COUT(0) << "body inertia: " << omni_cast<Vector3>((*it)->getInvInertiaDiagLocal()) << std::endl;
                         this->physicalWorld_->addRigidBody(*it);
+                    }
                 }
                 this->physicsQueue_.clear();
             }
@@ -233,7 +244,7 @@ namespace orxonox
     void Scene::addRigidBody(btRigidBody* body)
     {
         if (!this->physicalWorld_)
-            COUT(1) << "Error: Cannot WorldEntity body to physical Scene: No physics." << std::endl;
+            COUT(1) << "Error: Cannot add WorldEntity body to physical Scene: No physics." << std::endl;
         else if (body)
             this->physicsQueue_.insert(body);
     }
@@ -241,7 +252,7 @@ namespace orxonox
     void Scene::removeRigidBody(btRigidBody* body)
     {
         if (!this->physicalWorld_)
-            COUT(1) << "Error: Cannot WorldEntity body to physical Scene: No physics." << std::endl;
+            COUT(1) << "Error: Cannot remove WorldEntity body from physical Scene: No physics." << std::endl;
         else if (body)
         {
             this->physicalWorld_->removeRigidBody(body);

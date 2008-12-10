@@ -44,12 +44,7 @@ namespace orxonox
     {
         RegisterObject(LinearEntity);
 
-        this->acceleration_ = Vector3::ZERO;
-        this->rotationAxis_ = Vector3::ZERO;
-        this->rotationRate_ = 0;
-        this->momentum_ = 0;
-
-        this->overwrite_position_ = Vector3::ZERO;
+        this->overwrite_position_    = Vector3::ZERO;
         this->overwrite_orientation_ = Quaternion::IDENTITY;
 
         this->registerVariables();
@@ -62,56 +57,42 @@ namespace orxonox
     void LinearEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(LinearEntity, XMLPort, xmlelement, mode);
-
-        XMLPortParamTemplate(LinearEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(LinearEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Degree&);
-    }
-
-    void LinearEntity::tick(float dt)
-    {
-        if (this->isActive())
-        {
-            if (!this->isDynamic())
-            {
-                // we have to do 'physics' ourselves.
-                this->velocity_ += (dt * this->acceleration_);
-                this->node_->translate(dt * this->velocity_);
-
-                this->rotationRate_ += (dt * this->momentum_);
-                this->node_->rotate(this->rotationAxis_, this->rotationRate_  * dt);
-            }
-        }
     }
 
     void LinearEntity::registerVariables()
     {
-        REGISTERDATA(this->velocity_.x, network::direction::toclient);
-        REGISTERDATA(this->velocity_.y, network::direction::toclient);
-        REGISTERDATA(this->velocity_.z, network::direction::toclient);
-
-        REGISTERDATA(this->rotationAxis_.x, network::direction::toclient);
-        REGISTERDATA(this->rotationAxis_.y, network::direction::toclient);
-        REGISTERDATA(this->rotationAxis_.z, network::direction::toclient);
-
-        REGISTERDATA(this->rotationRate_, network::direction::toclient);
+        REGISTERDATA(this->linearVelocity_,        network::direction::toclient, new network::NetworkCallback<LinearEntity>(this, &LinearEntity::processLinearVelocity));
+        REGISTERDATA(this->angularVelocity_,       network::direction::toclient, new network::NetworkCallback<LinearEntity>(this, &LinearEntity::processAngularVelocity));
 
         REGISTERDATA(this->overwrite_position_,    network::direction::toclient, new network::NetworkCallback<LinearEntity>(this, &LinearEntity::overwritePosition));
         REGISTERDATA(this->overwrite_orientation_, network::direction::toclient, new network::NetworkCallback<LinearEntity>(this, &LinearEntity::overwriteOrientation));
     }
 
+    void LinearEntity::tick(float dt)
+    {
+        MovableEntity::tick(dt);
+
+        if (this->isActive())
+        {
+        }
+    }
+
     void LinearEntity::overwritePosition()
     {
-        this->node_->setPosition(this->overwrite_position_);
+        //COUT(0) << "Setting position on client: " << this->overwrite_position_ << std::endl;
+        this->setPosition(this->overwrite_position_);
     }
 
     void LinearEntity::overwriteOrientation()
     {
-        this->node_->setOrientation(this->overwrite_orientation_);
+        //COUT(0) << "Setting orientation on client: " << this->overwrite_orientation_ << std::endl;
+        this->setOrientation(this->overwrite_orientation_);
     }
 
     void LinearEntity::clientConnected(unsigned int clientID)
     {
-        new Timer<LinearEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&LinearEntity::resynchronize)), true);
+        resynchronize();
+        new Timer<LinearEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, true, this, createExecutor(createFunctor(&LinearEntity::resynchronize)), false);
     }
 
     void LinearEntity::clientDisconnected(unsigned int clientID)
@@ -120,17 +101,27 @@ namespace orxonox
 
     void LinearEntity::resynchronize()
     {
-        this->overwrite_position_ = this->getPosition();
-        this->overwrite_orientation_ = this->getOrientation();
+        positionChanged(false);
+        orientationChanged(false);
     }
 
-    void LinearEntity::positionChanged()
+    void LinearEntity::positionChanged(bool bContinuous)
     {
-        this->overwrite_position_  = this->getPosition();
+        if (!bContinuous)
+        {
+            //if (Core::isMaster())
+            //    COUT(0) << "Setting position on server: " << this->getPosition() << std::endl;
+            this->overwrite_position_ = this->getPosition();
+        }
     }
 
-    void LinearEntity::orientationChanged()
+    void LinearEntity::orientationChanged(bool bContinuous)
     {
-        this->overwrite_orientation_  = this->getOrientation();
+        if (!bContinuous)
+        {
+            //if (Core::isMaster())
+            //    COUT(0) << "Setting orientation on server: " << this->getOrientation() << std::endl;
+            this->overwrite_orientation_ = this->getOrientation();
+        }
     }
 }

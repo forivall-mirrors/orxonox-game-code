@@ -33,17 +33,17 @@
 
 #include "WorldEntity.h"
 #include "objects/Tickable.h"
-#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport MovableEntity : public WorldEntity
+    class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable
     {
         public:
             MovableEntity(BaseObject* creator);
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void tick(float dt);
             void registerVariables();
 
             using WorldEntity::setPosition;
@@ -68,19 +68,49 @@ namespace orxonox
 
             void setVelocity(const Vector3& velocity);
             inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
+                { this->setVelocity(Vector3(x, y, z)); }
             inline const Vector3& getVelocity() const
-                { return this->velocity_; }
+                { return this->linearVelocity_; }
+
+            void setAngularVelocity(const Vector3& velocity);
+            inline void setAngularVelocity(float x, float y, float z)
+                { this->setAngularVelocity(Vector3(x, y, z)); }
+            inline const Vector3& getAngularVelocity() const
+                { return this->linearAcceleration_; }
+
+            void setAcceleration(const Vector3& acceleration);
+            inline void setAcceleration(float x, float y, float z)
+                { this->setAcceleration(Vector3(x, y, z)); }
+            inline const Vector3& getAcceleration() const
+                { return this->linearAcceleration_; }
+
+            void setAngularAcceleration(const Vector3& acceleration);
+            inline void setAngularAcceleration(float x, float y, float z)
+                { this->setAngularAcceleration(Vector3(x, y, z)); }
+            inline const Vector3& getAngularAcceleration() const
+                { return this->angularAcceleration_; }
+
+            inline void setRotationRate(Degree rate)
+                { this->setAngularVelocity(this->getAngularVelocity().normalisedCopy() * rate.valueRadians()); }
+            inline Degree getRotationRate() const
+                { return Degree(this->getAngularVelocity().length()); }
+
+            inline void setRotationAxis(const Vector3& axis)
+                { this->setAngularVelocity(axis * this->getAngularVelocity().length()); }
+            inline Vector3 getRotationAxis() const
+                { return this->getAngularVelocity().normalisedCopy(); }
 
         protected:
-            Vector3 velocity_;
+            Vector3 linearAcceleration_;
+            Vector3 linearVelocity_;
+            Vector3 angularAcceleration_;
+            Vector3 angularVelocity_;
 
         private:
-            //void attachPhysicalObject(WorldEntity* object);
-
-            virtual void positionChanged() { }
-            virtual void orientationChanged() { }
-            virtual void velocityChanged() { }
+            virtual void positionChanged       (bool bContinuous) { }
+            virtual void orientationChanged    (bool bContinuous) { }
+            virtual void linearVelocityChanged (bool bContinuous) { }
+            virtual void angularVelocityChanged(bool bContinuous) { }
 
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
 

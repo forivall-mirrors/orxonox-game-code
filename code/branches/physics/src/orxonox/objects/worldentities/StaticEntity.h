@@ -53,28 +53,23 @@ namespace orxonox
             using WorldEntity::lookAt;
             using WorldEntity::setDirection;
 
-            inline void setPosition(const Vector3& position)
-                { this->node_->setPosition(position); }
-            inline void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->translate(distance, relativeTo); }
-            inline void setOrientation(const Quaternion& orientation)
-                { this->node_->setOrientation(orientation); }
-            inline void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->rotate(rotation, relativeTo); }
-            inline void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->yaw(angle, relativeTo); }
-            inline void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->pitch(angle, relativeTo); }
-            inline void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->node_->roll(angle, relativeTo); }
-            inline void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
-                { this->node_->lookAt(target, relativeTo, localDirectionVector); }
-            inline void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
-                { this->node_->setDirection(direction, relativeTo, localDirectionVector); }
+            void setPosition(const Vector3& position);
+            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
+            void setOrientation(const Quaternion& orientation);
+            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
+            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
+            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
+            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
+            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
 
         private:
-
             bool isCollisionTypeLegal(CollisionType type) const;
+
+            inline void positionChanged()
+                { this->setPosition(this->getPosition()); }
+            inline void orientationChanged()
+                { this->setOrientation(this->getOrientation()); }
 
             // Bullet btMotionState related
             void setWorldTransform(const btTransform& worldTrans);

@@ -69,7 +69,7 @@ namespace orxonox
 
             inline bool hasPhysics()
                 { return this->physicalWorld_ != 0; }
-            void setPhysicalWorld(bool wantsPhysics, const Vector3& worldAabbMin, const Vector3& worldAabbMax);
+            void setPhysicalWorld(bool wantsPhysics);//, const Vector3& worldAabbMin, const Vector3& worldAabbMax);
 
             void addRigidBody(btRigidBody* body);
             void removeRigidBody(btRigidBody* body);
@@ -84,17 +84,20 @@ namespace orxonox
                 { this->setSkybox(this->skybox_); }
             void networkcallback_applyAmbientLight()
                 { this->setAmbientLight(this->ambientLight_); }
+            void networkcallback_hasPhysics()
+                { this->setPhysicalWorld(this->bHasPhysics_); }
 
-            Ogre::SceneManager*    sceneManager_;
-            Ogre::SceneNode*       rootSceneNode_;
+            Ogre::SceneManager*      sceneManager_;
+            Ogre::SceneNode*         rootSceneNode_;
 
             btDiscreteDynamicsWorld* physicalWorld_;
             std::set<btRigidBody*>   physicsQueue_;
+            bool                     bHasPhysics_;
 
-            std::string            skybox_;
-            ColourValue            ambientLight_;
-            std::list<BaseObject*> objects_;
-            bool                   bShadows_;
+            std::string              skybox_;
+            ColourValue              ambientLight_;
+            std::list<BaseObject*>   objects_;
+            bool                     bShadows_;
     };
 }
 

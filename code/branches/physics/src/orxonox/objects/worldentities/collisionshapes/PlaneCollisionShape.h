@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Martin Stypinski
  *   Co-authors:
  *      ...
  *
@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
-
 #include "CollisionShape.h"
 
 namespace orxonox
@@ -43,22 +42,27 @@ namespace orxonox
             PlaneCollisionShape(BaseObject* creator);
             virtual ~PlaneCollisionShape();
 
+            void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-               
-            
             inline float getOffset()
                 { return this->planeShape_->getPlaneConstant();}
+            void setOffset(float offset);
 
             inline btVector3 getNormal()
                 { return this->planeShape_->getPlaneNormal();}
-            void setOffset(float offset);
             void setNormal(const Vector3& normal);
 
-           private:
-            virtual btVector3 getTotalScaling();
+            inline void planeNormalChanged()
+                { this->setNormal(this->planeNormal_); }
 
+            inline void planeOffsetChanged()
+                { this->setOffset(this->planeOffset_); }
+
+        private:
             btStaticPlaneShape* planeShape_;
+            Vector3             planeNormal_;
+            float               planeOffset_;
      };
 }
 

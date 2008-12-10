@@ -32,6 +32,7 @@
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 
 #include "util/Debug.h"
+#include "util/MathConvert.h"
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -44,7 +45,10 @@ namespace orxonox
     {
         RegisterObject(MovableEntity);
 
-        this->velocity_ = Vector3::ZERO;
+        this->linearAcceleration_  = Vector3::ZERO;
+        this->linearVelocity_      = Vector3::ZERO;
+        this->angularAcceleration_ = Vector3::ZERO;
+        this->angularVelocity_     = Vector3::ZERO;
 
         this->registerVariables();
     }
@@ -57,24 +61,62 @@ namespace orxonox
     {
         SUPER(MovableEntity, XMLPort, xmlelement, mode);
 
-        XMLPortParamTemplate(MovableEntity, "velocity", setVelocity, getVelocity, xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(MovableEntity, "velocity",     setVelocity,     getVelocity,     xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(MovableEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
+        XMLPortParam(MovableEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode);
     }
 
     void MovableEntity::registerVariables()
     {
     }
 
+    void MovableEntity::tick(float dt)
+    {
+        if (this->isActive())
+        {
+            // Check whether Bullet doesn't do the physics for us
+            if (!this->isDynamic())
+            {
+                // Linear part
+                this->linearVelocity_.x += this->linearAcceleration_.x * dt;
+                this->linearVelocity_.y += this->linearAcceleration_.y * dt;
+                this->linearVelocity_.z += this->linearAcceleration_.z * dt;
+                linearVelocityChanged(true);
+                this->node_->translate(this->linearVelocity_ * dt);
+                positionChanged(true);
+
+                // Angular part
+                // Note: angularVelocity_ is a Quaternion with w = 0 while angularAcceleration_ is a Vector3
+                this->angularVelocity_.x += angularAcceleration_.x * dt;
+                this->angularVelocity_.y += angularAcceleration_.y * dt;
+                this->angularVelocity_.z += angularAcceleration_.z * dt;
+                angularVelocityChanged(true);
+                // Calculate new orientation with quaternion derivative. This is about 30% faster than with angle/axis method.
+                float mult = dt * 0.5;
+                // TODO: this could be optimized by writing it out. The calls currently create 4 new Quaternions!
+                Quaternion newOrientation(0.0f, this->angularVelocity_.x * mult, this->angularVelocity_.y * mult, this->angularVelocity_.z * mult);
+                newOrientation = this->node_->getOrientation() + newOrientation * this->node_->getOrientation();
+                newOrientation.normalise();
+                this->node_->setOrientation(newOrientation);
+                orientationChanged(true);
+            }
+        }
+    }
+
     void MovableEntity::setPosition(const Vector3& position)
     {
         if (this->isDynamic())
         {
+            //if (this->isPhysicsRunning())
+            //    return;
             btTransform transf = this->physicalBody_->getWorldTransform();
             transf.setOrigin(btVector3(position.x, position.y, position.z));
             this->physicalBody_->setWorldTransform(transf);
         }
 
+        //COUT(0) << "setting position: " << position << std::endl;
         this->node_->setPosition(position);
-        positionChanged();
+        positionChanged(false);
     }
 
     void MovableEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
@@ -87,7 +129,7 @@ namespace orxonox
         }
 
         this->node_->translate(distance, relativeTo);
-        positionChanged();
+        positionChanged(false);
     }
 
     void MovableEntity::setOrientation(const Quaternion& orientation)
@@ -95,12 +137,12 @@ namespace orxonox
         if (this->isDynamic())
         {
             btTransform transf = this->physicalBody_->getWorldTransform();
-            transf.setRotation(btQuaternion(orientation.w, orientation.x, orientation.y, orientation.z));
+            transf.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
             this->physicalBody_->setWorldTransform(transf);
         }
 
         this->node_->setOrientation(orientation);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
@@ -110,11 +152,11 @@ namespace orxonox
             OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot rotate physical object relative \
                                                           to any other space than TS_LOCAL.");
             btTransform transf = this->physicalBody_->getWorldTransform();
-            this->physicalBody_->setWorldTransform(transf * btTransform(btQuaternion(rotation.w, rotation.x, rotation.y, rotation.z)));
+            this->physicalBody_->setWorldTransform(transf * btTransform(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w)));
         }
 
         this->node_->rotate(rotation, relativeTo);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
@@ -129,7 +171,7 @@ namespace orxonox
         }
 
         this->node_->yaw(angle, relativeTo);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
@@ -144,7 +186,7 @@ namespace orxonox
         }
 
         this->node_->pitch(angle, relativeTo);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
@@ -159,7 +201,7 @@ namespace orxonox
         }
 
         this->node_->roll(angle, relativeTo);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
@@ -174,7 +216,7 @@ namespace orxonox
         }
 
         this->node_->lookAt(target, relativeTo, localDirectionVector);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
@@ -189,18 +231,44 @@ namespace orxonox
         }
 
         this->node_->setDirection(direction, relativeTo, localDirectionVector);
-        orientationChanged();
+        orientationChanged(false);
     }
 
     void MovableEntity::setVelocity(const Vector3& velocity)
     {
         if (this->isDynamic())
-        {
             this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+
+        this->linearVelocity_ = velocity;
+        linearVelocityChanged(false);
+    }
+
+    void MovableEntity::setAngularVelocity(const Vector3& velocity)
+    {
+        if (this->isDynamic())
+            this->physicalBody_->setAngularVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+
+        this->angularVelocity_ = velocity;
+        angularVelocityChanged(false);
+    }
+
+    void MovableEntity::setAcceleration(const Vector3& acceleration)
+    {
+        if (this->isDynamic())
+            this->physicalBody_->applyCentralForce(btVector3(acceleration.x * this->getMass(), acceleration.y * this->getMass(), acceleration.z * this->getMass()));
+
+        this->linearAcceleration_ = acceleration;
+    }
+
+    void MovableEntity::setAngularAcceleration(const Vector3& acceleration)
+    {
+        if (this->isDynamic())
+        {
+            btVector3 inertia(btVector3(1, 1, 1) / this->physicalBody_->getInvInertiaDiagLocal());
+            this->physicalBody_->applyTorque(btVector3(acceleration.x, acceleration.y, acceleration.z) * inertia);
         }
 
-        this->velocity_ = velocity;
-        velocityChanged();
+        this->angularAcceleration_ = acceleration;
     }
 
     bool MovableEntity::isCollisionTypeLegal(WorldEntity::CollisionType type) const
@@ -219,25 +287,30 @@ namespace orxonox
         // We use a dynamic body. So we translate our node accordingly.
         this->node_->setPosition(Vector3(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z()));
         this->node_->setOrientation(Quaternion(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z()));
-        const btVector3& velocity = this->physicalBody_->getLinearVelocity();
-        this->velocity_.x = velocity.x();
-        this->velocity_.y = velocity.y();
-        this->velocity_.z = velocity.z();
-        velocityChanged();
-        positionChanged();
-        orientationChanged();
+        COUT(0) << "setting world transform: " << omni_cast<std::string>(node_->getPosition()) << std::endl;
+        this->linearVelocity_.x = this->physicalBody_->getLinearVelocity().x();
+        this->linearVelocity_.y = this->physicalBody_->getLinearVelocity().y();
+        this->linearVelocity_.z = this->physicalBody_->getLinearVelocity().z();
+        this->angularVelocity_.x = this->physicalBody_->getAngularVelocity().x();
+        this->angularVelocity_.y = this->physicalBody_->getAngularVelocity().y();
+        this->angularVelocity_.z = this->physicalBody_->getAngularVelocity().z();
+        linearVelocityChanged(true);
+        angularVelocityChanged(true);
+        positionChanged(true);
+        orientationChanged(true);
     }
 
     void MovableEntity::getWorldTransform(btTransform& worldTrans) const
     {
-        // We use a kinematic body 
+        // We use a kinematic body
         worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
-        worldTrans.setRotation(btQuaternion(node_->getOrientation().w, node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z));
+        worldTrans.setRotation(btQuaternion(node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z, node_->getOrientation().w));
         if (this->isDynamic())
         {
             // This function gets called only once for dynamic objects to set the initial conditions
-            // We have to set the velocity too.
-            this->physicalBody_->setLinearVelocity(btVector3(velocity_.x, velocity_.y, velocity_.z));
+            // We have to set the velocities too.
+            this->physicalBody_->setLinearVelocity(btVector3(linearVelocity_.x, linearVelocity_.y, linearVelocity_.z));
+            this->physicalBody_->setAngularVelocity(btVector3(angularVelocity_.x, angularVelocity_.y, angularVelocity_.z));
         }
     }
 }

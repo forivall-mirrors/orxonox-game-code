@@ -205,10 +205,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\HelloBullet.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.cc"
 					>
 				</File>
@@ -356,6 +352,10 @@
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\CompoundCollisionShape.cc"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\collisionshapes\PlaneCollisionShape.cc"
 							>
 						</File>
 						<File
@@ -1141,10 +1141,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\HelloBullet.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.h"
 					>
 				</File>
@@ -1276,6 +1272,10 @@
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\CompoundCollisionShape.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\collisionshapes\PlaneCollisionShape.h"
 							>
 						</File>
 						<File
