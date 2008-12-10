@@ -81,17 +81,35 @@
     @param xmlelement The XMLElement, you get this from the XMLPort function
     @param mode The mode (load or save), you get this from the XMLPort function
 
-    *** EXPERIMENTAL. DO NOT USE UNLESS YOU KNOW EXACTLY WHAT YOU ARE DOING! ***
-
     In the XML file, a param or attribute will be set like this:
     <classname paramname="value" />
 
     The macro will then store "value" in the variable or read it when saving.
 */
 #define XMLPortParamVariable(classname, paramname, variable, xmlelement, mode) \
-    static XMLPortVariableHelperClass xmlcontainer##variable##dummy; \
-    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader")->setDefaultValue(1, &variable))); \
-    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##saveexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getSaver (variable)), std::string( #classname ) + "::" + #variable + "saver" )->setDefaultValue(0,  variable))); \
+    static XMLPortVariableHelperClass xmlcontainer##variable##dummy((void*)&variable); \
+    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader"))); \
+    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##saveexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getSaver (variable)), std::string( #classname ) + "::" + #variable + "saver" ))); \
+    XMLPortParamGeneric(xmlcontainer##variable, classname, orxonox::XMLPortVariableHelperClass, &xmlcontainer##variable##dummy, paramname, xmlcontainer##variable##loadexecutor, xmlcontainer##variable##saveexecutor, xmlelement, mode)
+
+/**
+    @brief Declares an XML attribute with a name, which will be set through a variable and gotten from a function.
+    @param classname The name of the class owning this param
+    @param paramname The name of the attribute
+    @param variable Name of the variable used to save the value
+    @param savefunction A function to get the value of the param from the object (~a get-function)
+    @param xmlelement The XMLElement, you get this from the XMLPort function
+    @param mode The mode (load or save), you get this from the XMLPort function
+
+    In the XML file, a param or attribute will be set like this:
+    <classname paramname="value" />
+
+    The macro will then store "value" in the variable or read it when saving.
+*/
+#define XMLPortParamVariableOnLoad(classname, paramname, variable, savefunction, xmlelement, mode) \
+    static XMLPortVariableHelperClass xmlcontainer##variable##dummy((void*)&variable); \
+    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader"))); \
+    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
     XMLPortParamGeneric(xmlcontainer##variable, classname, orxonox::XMLPortVariableHelperClass, &xmlcontainer##variable##dummy, paramname, xmlcontainer##variable##loadexecutor, xmlcontainer##variable##saveexecutor, xmlelement, mode)
 
 /**
@@ -607,21 +625,28 @@ namespace orxonox
     class XMLPortVariableHelperClass
     {
         public:
-            template <class T>
-            inline void load(const T& value, T* var)
-                { *var = value; }
+            XMLPortVariableHelperClass(void* var)
+                : variable_(var)
+                { }
 
             template <class T>
-            inline const T& save(const T& var)
-                { return var; }
+            void load(const T& value)
+                { *((T*)this->variable_) = value; }
 
             template <class T>
-            static void (XMLPortVariableHelperClass::*getLoader(const T& var))(const T& value, T* var)
+            const T& save()
+                { return *((T*)this->variable_); }
+
+            template <class T>
+            static void (XMLPortVariableHelperClass::*getLoader(const T& var))(const T& value)
                 { return &XMLPortVariableHelperClass::load<T>; }
 
             template <class T>
-            static const T& (XMLPortVariableHelperClass::*getSaver(const T& var))(const T& var)
+            static const T& (XMLPortVariableHelperClass::*getSaver(const T& var))()
                 { return &XMLPortVariableHelperClass::save<T>; }
+
+        private:
+            void* variable_;
     };
 }
 
