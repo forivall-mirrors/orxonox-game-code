@@ -35,15 +35,11 @@
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <OgreViewport.h>
-#include <OgreCompositorManager.h>
-#include <OgreResource.h>
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
-#include "tools/Shader.h"
 #include "CameraManager.h"
 
 namespace orxonox
@@ -53,7 +49,7 @@ namespace orxonox
     Camera::Camera(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(Camera);
-COUT(0) << this << ": created camera" << std::endl;
+
         if (!this->getScene() || !this->getScene()->getSceneManager())
             ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
 
@@ -79,7 +75,6 @@ COUT(0) << this << ": created camera" << std::endl;
             this->releaseFocus();
             this->getScene()->getSceneManager()->destroyCamera(this->camera_);
         }
-COUT(0) << this << ": destroyed camera" << std::endl;
     }
 
     void Camera::setConfigValues()
@@ -122,33 +117,12 @@ COUT(0) << this << ": destroyed camera" << std::endl;
     */
     void Camera::removeFocus()
     {
-COUT(0) << this << ": remove focus" << std::endl;
         this->bHasFocus_ = false;
     }
 
-    void Camera::setFocus(Ogre::Viewport* viewport)
+    void Camera::setFocus()
     {
-        // This workaround is needed to avoid weird behaviour with active compositors while
-        // switching the camera (like freezing the image)
-        //
-        // Last known Ogre version needing this workaround:
-        // 1.4.8
-
-        // deactivate all compositors
-        {
-            Ogre::ResourceManager::ResourceMapIterator iterator = Ogre::CompositorManager::getSingleton().getResourceIterator();
-            while (iterator.hasMoreElements())
-                Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, iterator.getNext()->getName(), false);
-        }
-
         this->bHasFocus_ = true;
-        viewport->setCamera(this->camera_);
-COUT(0) << this << ": set focus" << std::endl;
-
-        // reactivate all visible compositors
-        {
-            for (ObjectList<Shader>::iterator it = ObjectList<Shader>::begin(); it != ObjectList<Shader>::end(); ++it)
-                it->updateVisibility();
-        }
+        CameraManager::getInstance().useCamera(this->camera_);
     }
 }

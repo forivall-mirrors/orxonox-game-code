@@ -61,7 +61,7 @@ namespace orxonox
 
         private:
             void removeFocus();
-            void setFocus(Ogre::Viewport* viewport);
+            void setFocus();
             void configvaluecallback_changedNearClipDistance();
 
             Ogre::Camera*   camera_;

@@ -100,11 +100,12 @@ namespace orxonox
             this->radar_ = new Radar();
         }
 
+        this->playerManager_ = new PlayerManager();
+
         if (Core::isMaster())
         {
             // create the global LevelManager
             this->levelManager_ = new LevelManager();
-            this->playerManager_ = new PlayerManager();
 
             // reset game speed to normal
             timeFactor_ = 1.0f;

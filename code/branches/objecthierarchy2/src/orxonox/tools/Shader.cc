@@ -82,14 +82,14 @@ namespace orxonox
 
     Shader::~Shader()
     {
-/*
-        if (this->isInitialized() && this->bLoadCompositor_ && this->compositor_ != "")
+
+        if (this->bLoadCompositor_ && this->compositorInstance_)
         {
             Ogre::Viewport* viewport = GraphicsEngine::getInstance().getViewport();
             assert(viewport);
             Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->compositor_);
         }
-*/
+
     }
 
     void Shader::setSceneManager(Ogre::SceneManager* scenemanager)
