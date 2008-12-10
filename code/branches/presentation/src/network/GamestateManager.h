@@ -42,6 +42,7 @@
 
 #include "NetworkPrereqs.h"
 #include "GamestateHandler.h"
+#include "TrafficControl.h"
 #include <map>
 
 #include "packet/Gamestate.h"
@@ -88,6 +89,7 @@ namespace orxonox
     //std::map<int, int> gamestateUsed; // save the number of clients, that use the specific gamestate
     std::map<unsigned int, packet::Gamestate*> gamestateQueue;
     packet::Gamestate *reference;
+    TrafficControl *trafficControl_;
     unsigned int id_;
   };
 

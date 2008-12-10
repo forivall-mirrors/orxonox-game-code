@@ -48,8 +48,6 @@ namespace packet {
 
 
 #define PACKET_FLAG_GAMESTATE  ENET_PACKET_FLAG_RELIABLE
-  
-TrafficControl Gamestate::trafficControl_;
 
 Gamestate::Gamestate()
 {
@@ -361,7 +359,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   Synchronisable *object;
 
   //call TrafficControl
-  trafficControl_.processObjectList( clientID, HEADER->id, &dataMap_ );
+  TrafficControl::getInstance()->processObjectList( clientID, HEADER->id, &dataMap_ );
   
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end(); it++){

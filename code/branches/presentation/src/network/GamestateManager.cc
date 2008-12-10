@@ -55,9 +55,11 @@ namespace orxonox
 {
   GamestateManager::GamestateManager() {
     id_=0;
+    trafficControl_ = new TrafficControl();
   }
 
   GamestateManager::~GamestateManager() {
+    delete trafficControl_;
   }
 
   bool GamestateManager::update(){

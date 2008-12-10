@@ -29,6 +29,7 @@
 #include "TrafficControl.h"
 
 #include "synchronisable/Synchronisable.h"
+#include "core/ConfigValueIncludes.h"
 
 #include <cassert>
 #include <boost/bind.hpp>
@@ -66,9 +67,11 @@ namespace orxonox {
 	*/
 	TrafficControl::TrafficControl()
 	{
+    RegisterRootObject(TrafficControl);
 	  assert(instance_==0);
 	  instance_=this;
-    targetSize = 1000;//5000bytes
+//     targetSize = 2500;//5000bytes
+    SetConfigValue ( targetSize, 28000./25. );
 	}
 	
 	/**
@@ -126,6 +129,12 @@ namespace orxonox {
     //später wird copiedVector ja überschrieben, ist das ein problem für list-dh. für gamestatemanager?
 	  return;
 	}
+  
+  TrafficControl *TrafficControl::getInstance()
+  {
+    assert(instance_);
+    return instance_;
+  }
 	
 	void TrafficControl::ack(unsigned int clientID, unsigned int gamestateID)
 	{
@@ -346,7 +355,7 @@ namespace orxonox {
     list->sort(boost::bind(&TrafficControl::priodiffer, this, clientID, _1, _2) );
     
     //now we check, that the creator of an object always exists on a client
-    printList(list, clientID);
+//     printList(list, clientID);
     std::list<obj>::iterator itcreator;
     for(itvec = list->begin(); itvec != list->end(); itvec++)
     { 
@@ -355,7 +364,7 @@ namespace orxonox {
     //end of sorting
     //now the cutting, work the same obj out in processobjectlist and copiedlist, compression rate muss noch festgelegt werden. 
     cut(list, targetSize);
-    printList(list, clientID);
+//     printList(list, clientID);
     //diese Funktion updateClientList muss noch gemacht werden
     updateClientListTemp(list);
     //end of sorting

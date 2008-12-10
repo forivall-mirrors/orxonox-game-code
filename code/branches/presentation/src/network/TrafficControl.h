@@ -36,6 +36,7 @@
 #include <utility>
 #include <algorithm>
 #include "util/Integers.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox {
 
@@ -77,7 +78,7 @@ namespace orxonox {
 /**
 *
 */
-class TrafficControl{
+class TrafficControl : public OrxonoxClass{
   private:
 
     /**
@@ -152,6 +153,7 @@ class TrafficControl{
     *Elements of list are accessed by *list[i]
     *Elements of struct i are therefore: *list[i].objID
     */
+    static TrafficControl *getInstance();
     void processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>* list); //gets a pointer to the list (containing objectIDs) and sorts it
     //done
     static void processAck(unsigned int clientID, unsigned int gamestateID)
