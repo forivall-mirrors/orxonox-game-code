@@ -140,7 +140,8 @@ namespace orxonox {
 	  {
       if(clientListPerm_[clientID].find((*itvec).objID) != clientListPerm_[clientID].end()) // check whether the obj already exists in our lists
       {
-        clientListPerm_[clientID][(*itvec).objID].objID = gamestateID;
+        clientListPerm_[clientID][(*itvec).objID].objCurGS = gamestateID;
+        clientListPerm_[clientID][(*itvec).objID].objValueSched = 0; //set scheduling value back
       }
       else
       {
@@ -238,10 +239,11 @@ namespace orxonox {
     std::list<obj>::iterator itvec;
     assert(!list->empty());
     itvec = list->begin();
-    for(itvec = list->begin(); itvec != list->end() && size<targetsize; itvec++)
+    for(itvec = list->begin(); ( itvec != list->end() ) && ( size<targetsize ); itvec++)
     {
       assert( (*itvec).objSize < 1000);
-      if ( size + (*itvec).objSize < targetsize )
+      COUT(0) << "==targetsize==  " << targetsize << endl;
+      if ( ( size + (*itvec).objSize ) < targetsize )
       {
         size += (*itvec).objSize;//objSize is given in bytes
       }
