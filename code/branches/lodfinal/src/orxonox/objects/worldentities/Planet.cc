@@ -36,6 +36,7 @@
 #include "core/XMLPort.h"
 #include "CameraManager.h"
 #include "objects/Scene.h"
+#include "Camera.h"
 #include <math.h>
 
 #include <OgreEntity.h>
@@ -70,9 +71,9 @@ namespace orxonox
     {
         if(!this->isVisible())
             return;
-        
-        if(!activeCamera_) activeCamera_ = CameraManager::getInstance().getActiveCamera();
-        Real distance = this->getPosition().distance(activeCamera_->getWorldPosition() );
+            
+        Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
+        Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
         COUT(2) << distance << std::endl;
         Real planetRadius = this->getScale();
         

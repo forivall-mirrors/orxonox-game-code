@@ -34,7 +34,6 @@
 #include "MovableEntity.h"
 #include "tools/Mesh.h"
 #include "objects/Tickable.h"
-#include "Camera.h"
 
 namespace orxonox
 {
@@ -109,7 +108,6 @@ namespace orxonox
             Ogre::Mesh::LodDistanceList distList;
             BillboardSet billboard_;
             bool bCastShadows_;
-			Camera* activeCamera_;
 
     };
 }
