@@ -5,7 +5,16 @@
 
 namespace orxonox
 {
+/**
+@brief
+    Insert a permanent Item to the Equipment. Is usually called by the addTo function in Items.
+    
+@param item
+    pointer to the item which is to be inserted.
 
+@return
+    if new item has sucessfully been added it will return true, in any other case the return value is false.
+*/
 	bool ShipEquipment::insert(Item* item)
 	{
 	if(checkSlot(item)==NULL)
@@ -16,6 +25,7 @@ namespace orxonox
 	else
 	{
 		COUT(3) << "SWAP?" <<  endl;
+		//Abfrage- irgendne ifschleife... 
 		if((checkSlot(item)->dropped(player))==true);
 		{
 			Equipment.insert ( std::pair<std::string, Item*>(item->getName(),item) );
@@ -27,6 +37,17 @@ namespace orxonox
 
 	return false;
 	};
+
+/**
+@brief
+    Erases a permanent Item in the Equipment. Is usually called by the remove/dropped function in Items.
+    
+@param item
+    pointer to the item which is to be erased.
+
+@return
+    if new item has sucessfully been erased it will return true, in any other case the return value is false.
+*/
 	bool ShipEquipment::erase (Item* item)
 	{
 	std::multimap<std::string,Item*>::iterator it = Equipment.find(item->getName());
@@ -45,6 +66,11 @@ namespace orxonox
 		    COUT(3) << (*it).first << endl;
 
 	}*/
+/**
+@brief
+    Erases all permanent Items in the Equipment. Its Triggered by hitting the L button.
+
+*/
 	void ShipEquipment::eraseAll()
 	{
 		//print(Equipment);

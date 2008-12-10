@@ -42,20 +42,19 @@ namespace orxonox
 		if(player-> isA(this->getPlayerBaseClass()))
 			{
 			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);
-			COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 			if(duration_==0 )
-			{	if(addTo(player))
-					{	
+			{	
+				if(addTo(player))
+				{	
 						COUT(3)<<"ITEM EQUIPPED"<<std::endl;
 						this->setSpeedBoost(ship);
-						COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 						return true;
-					}
+				}
+				return false;
 			}
 			else
 			{
 				this->setSpeedBoost(ship);
-				COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 				return true;
 			}
 			return false;
@@ -72,10 +71,12 @@ namespace orxonox
 	ship->setMaxRotation( ship->getMaxRotation()-this->rotacc_);
 	ship->setRotAcc( ship->getRotAcc()-this->rotacc_);
 	COUT(3)<<"BOOST UNSET"<<std::endl;
+	COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 	}
 
 	void Turbo::setSpeedBoost(SpaceShip* ship)
 	{
+	COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 	ship->setMaxSpeed( ship->getMaxSpeed() + this->boost_);
 	ship->setTransAcc( ship->getTransAcc()*this->accboost_);
 	ship->setMaxRotation( ship->getMaxRotation()+this->rotacc_);
@@ -86,7 +87,7 @@ namespace orxonox
 		executor->setDefaultValues(ship);
 		turbotimer_.setTimer(this->duration_, false, this, executor);
 	}
-	
+	COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 	}
 	bool Turbo::dropped(Pawn* player)
 	{

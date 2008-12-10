@@ -17,7 +17,11 @@ equipment_.insert(pair<std::string, Item*>("Weapon", new Item()));*/
 namespace orxonox
 {
     class Item;
+/**
+@brief
+    ShipEquipment is the inventory of a player. It's part of the Pawn class.
 
+*/
     class _OrxonoxExport ShipEquipment
     {
         public:
@@ -39,10 +43,10 @@ namespace orxonox
 	inline void setPlayer(Pawn* setplayer)
 	{this->player = setplayer;}
         private:
-            Pawn* player;
-            std::multimap<std::string, Item*> Equipment;
-            std::multimap<std::string, Item*> Usable;
-            std::multimap<std::string, Item*> Trunk;
+            Pawn* player;//!< Is a pointer to the belonging player
+            std::multimap<std::string, Item*> Equipment;//!< the Equipment for permanent Items
+            std::multimap<std::string, Item*> Usable;//!< Where Usables are stored
+            std::multimap<std::string, Item*> Trunk;//!< Every other Item is stored here
     };
 }
 
