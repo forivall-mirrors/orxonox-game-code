@@ -72,7 +72,7 @@ namespace orxonox
             return;
         
         if(!activeCamera_) activeCamera_ = CameraManager::getInstance().getActiveCamera();
-        Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
+        Real distance = this->getPosition().distance(activeCamera_->getWorldPosition() );
         COUT(2) << distance << std::endl;
         Real planetRadius = this->getScale();
         
