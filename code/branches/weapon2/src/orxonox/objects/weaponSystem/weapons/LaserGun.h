@@ -46,8 +46,10 @@ namespace orxonox
         public:
             LaserGun(BaseObject* creator);
             virtual ~LaserGun();
-
-            void fire();
+            
+            virtual void takeBullets();
+            virtual void takeMagazines();
+            virtual void createProjectile();
 
         private:
             float speed_;

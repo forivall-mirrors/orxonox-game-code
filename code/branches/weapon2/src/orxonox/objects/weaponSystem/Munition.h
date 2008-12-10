@@ -49,8 +49,11 @@ namespace orxonox
             void setMaxBullets(unsigned int amount);
             void setMaxMagazines(unsigned int amount);
 
-            unsigned int getBullets();
-            unsigned int getMagazines();
+            void fillBullets();
+            void fillMagazines();
+
+            bool bullets();
+            bool magazines();
 
             void removeBullets(unsigned int k, Weapon * parentWeapon);
             void removeMagazines(unsigned int k);

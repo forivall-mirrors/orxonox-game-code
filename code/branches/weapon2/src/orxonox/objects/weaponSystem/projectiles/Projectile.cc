@@ -84,7 +84,7 @@ namespace orxonox
 
         if (!this->isActive())
             return;
-
+/*
         float radius;
         for (ObjectList<Model>::iterator it = ObjectList<Model>::begin(); it; ++it)
         {
@@ -113,6 +113,7 @@ namespace orxonox
                 }
             }
         }
+*/
     }
 
     void Projectile::destroyObject()

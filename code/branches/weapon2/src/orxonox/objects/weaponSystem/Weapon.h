@@ -54,23 +54,23 @@ namespace orxonox
             Munition * getAttachedMunition(std::string munitiontype);
 
             //reloading
-            void bulletTimer();
-            void magazineTimer();
+            void bulletTimer(float bulletLoadingTime);
+            void magazineTimer(float magazineLoadingTime);
             void bulletReloaded();
             void magazineReloaded();
             void setBulletLoadingTime(float loadingTime);
             float getBulletLoadingTime();
             void setMagazineLoadingTime(float loadingTime);
             float getMagazineLoadingTime();
-            void setBulletReadyToShoot(bool b);
-            bool getBulletReadyToShoot();
-            void setMagazineReadyToShoot(bool b);
-            bool getMagazineReadyToShoot();
             Timer<Weapon> *getBulletTimer();
             Timer<Weapon> *getMagazineTimer();
 
             virtual void setMunitionType(std::string munitionType);
             virtual const std::string getMunitionType();
+
+            virtual void takeBullets();
+            virtual void takeMagazines();
+            virtual void createProjectile();
 
             inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
                 { this->parentWeaponSlot_=parentWeaponSlot; };
@@ -80,6 +80,9 @@ namespace orxonox
                 { this->parentWeaponSystem_=parentWeaponSystem; };
             inline WeaponSystem * getParentWeaponSystem()
                 { return this->parentWeaponSystem_; };
+
+            //in future by XMLPort, 
+            virtual void setWeapon();
 
         private:
 

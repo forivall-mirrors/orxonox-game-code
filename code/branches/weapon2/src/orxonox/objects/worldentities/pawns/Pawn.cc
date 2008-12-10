@@ -52,14 +52,7 @@ namespace orxonox
 
         this->lastHitOriginator_ = 0;
 
-        //WeaponSystem
         weaponSystem_ = new WeaponSystem(this);
-        /*
-        WeaponSet * weaponSet1 = new WeaponSet(this,1);
-        this->weaponSystem_->attachWeaponSet(weaponSet1);
-        //totally bad solution...
-        weaponSet1->setParentWeaponSystem(weaponSystem_);
-        */
 
         this->registerVariables();
     }

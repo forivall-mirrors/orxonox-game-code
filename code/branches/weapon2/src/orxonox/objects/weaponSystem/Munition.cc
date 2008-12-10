@@ -45,11 +45,21 @@ namespace orxonox
     {
     }
 
-    unsigned int Munition::getBullets()
-    { return this->bullets_; }
+    bool Munition::bullets()
+    { 
+        if (this->bullets_ > 0)
+            return true;
+        else
+            return false;
+    }
 
-    unsigned int Munition::getMagazines()
-    { return this->magazines_; }
+    bool Munition::magazines()
+    { 
+        if (this->magazines_ > 0)
+            return true;
+        else
+            return false;
+    }
 
     void Munition::setMaxBullets(unsigned int amount)
     { this->maxBullets_ = amount; }
@@ -59,11 +69,10 @@ namespace orxonox
 
     void Munition::removeBullets(unsigned int amount, Weapon * parentWeapon)
     {
-        //if actual magazine is empty, decrement it and set the bullets amount to full (masBullets_)
         if ( this->bullets_ == 0 )
         {
             this->removeMagazines(1);
-            parentWeapon->magazineTimer();
+            parentWeapon->magazineTimer(0);
             this->bullets_ = this->maxBullets_;
         }
         else
@@ -84,7 +93,8 @@ namespace orxonox
             }
         }
         else
-            this->magazines_ = this->magazines_ - amount; }
+            this->magazines_ = this->magazines_ - amount;
+    }
 
     void Munition::addBullets(unsigned int amount)
     {
@@ -107,6 +117,16 @@ namespace orxonox
     }
 
 
+    void Munition::fillBullets()
+    {
+        this->bullets_ = this->maxBullets_;
+    }
+    
+    void Munition::fillMagazines()
+    {
+        this->magazines_ = this->maxMagazines_;
+    }
+    
     void Munition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 

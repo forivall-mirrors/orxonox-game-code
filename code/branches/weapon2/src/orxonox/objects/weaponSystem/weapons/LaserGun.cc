@@ -49,29 +49,23 @@ namespace orxonox
     {
     }
 
-    void LaserGun::fire()
+    void LaserGun::takeBullets()
     {
-COUT(0) << "LaserGun::fire, this=" << this << std::endl;
-        if ( this->getBulletReadyToShoot() && this->getMagazineReadyToShoot() )
-        {
-COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
-            //take munition
-            this->setBulletReadyToShoot(false);
-            Weapon::bulletTimer();
-            this->getAttachedMunition(this->munitionType_)->removeBullets(1,this);
-
-            //create projectile
-            BillboardProjectile* projectile = new ParticleProjectile(this);
-            projectile->setOrientation(projectile->getOrientation());
-            projectile->setPosition(projectile->getWorldPosition());
-            projectile->setVelocity(WorldEntity::FRONT * this->speed_);
-
-            //projectile->setColour(this->getProjectileColour());
-        }
-        else
-        {
-            //actions, when weapon is not reloaded if there are some
-        }
+        this->munition_->removeBullets(1,this);
+        this->bulletTimer(this->bulletLoadingTime_);
     }
 
+    void LaserGun::takeMagazines()
+    {
+        this->munition_->removeMagazines(1);
+        this->magazineTimer(this->magazineLoadingTime_);
+    }
+
+    void LaserGun::createProjectile()
+    {
+        BillboardProjectile* projectile = new ParticleProjectile(this);
+        projectile->setOrientation(projectile->getOrientation());
+        projectile->setPosition(projectile->getWorldPosition());
+        projectile->setVelocity(WorldEntity::FRONT * this->speed_);
+    }
 }

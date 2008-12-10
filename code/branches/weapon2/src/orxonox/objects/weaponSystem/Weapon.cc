@@ -59,26 +59,64 @@ namespace orxonox
         XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
     }
 
+    void Weapon::setWeapon()
+    {
+        this->bulletLoadingTime_ = 0.5;
+        this->magazineLoadingTime_ = 3.0;
+        this->munition_->setMaxMagazines(100);
+        this->munition_->setMaxBullets(30);
+        this->munition_->fillBullets();
+        this->munition_->fillMagazines();
+    }
+
+
     void Weapon::fire()
     {
+COUT(0) << "LaserGun::fire, this=" << this << std::endl;
+        if ( this->bulletReadyToShoot_ && this->magazineReadyToShoot_ )
+        {
+COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
+
+            this->bulletReadyToShoot_ = false;
+            if ( this->munition_->bullets() )
+            {
+                //shoot
+                this->takeBullets();
+                this->createProjectile();
+            }
+            //if there are no bullets, but magazines
+            else if ( this->munition_->magazines() && !this->munition_->bullets() )
+            {
+                this->takeMagazines();
+            }
+        }
+        else
+        {
+COUT(0) << "LaserGun::fire - weapon not reloaded" << std::endl;
+        }
 
     }
 
 
-    void Weapon::bulletTimer()
+    void Weapon::bulletTimer(float bulletLoadingTime)
     {
-        this->bulletReloadTimer_.setTimer( this->bulletLoadingTime_ , false , this , createExecutor(createFunctor(&Weapon::bulletReloaded)));
+COUT(0) << "Weapon::bulletTimer started" << std::endl;
+        this->bulletReloadTimer_.setTimer( bulletLoadingTime , false , this , createExecutor(createFunctor(&Weapon::bulletReloaded)));
     }
-    void Weapon::magazineTimer()
+    void Weapon::magazineTimer(float magazineLoadingTime)
     {
-        this->magazineReloadTimer_.setTimer( this->magazineLoadingTime_ , false , this , createExecutor(createFunctor(&Weapon::magazineReloaded)));
+COUT(0) << "Weapon::magazineTimer started" << std::endl;
+        this->magazineReloadTimer_.setTimer( magazineLoadingTime , false , this , createExecutor(createFunctor(&Weapon::magazineReloaded)));
     }
 
     void Weapon::bulletReloaded()
     { this->bulletReadyToShoot_ = true; }
 
     void Weapon::magazineReloaded()
-    { this->magazineReadyToShoot_ = true; }
+    { 
+        this->munition_->fillBullets();
+        this->magazineReadyToShoot_ = true;
+    }
 
 
     void Weapon::attachNeededMunition(std::string munitionName)
@@ -103,7 +141,7 @@ COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munit
     }
 
 
-    /*get and set functions
+     /*get and set functions
      *
      */
 
@@ -122,6 +160,8 @@ COUT(0) << "Weapon::getAttachedMunition, parentWeaponSystem_="<< this->parentWea
 COUT(0) << "Weapon::getAttachedMunition, munition_="<< this->munition_ << std::endl;
 return this->munition_; }
 
+
+
     void Weapon::setBulletLoadingTime(float loadingTime)
     {   this->bulletLoadingTime_ = loadingTime;   }
 
@@ -134,21 +174,15 @@ return this->munition_; }
     float Weapon::getMagazineLoadingTime()
     {   return this->magazineLoadingTime_;  }
 
-    void Weapon::setBulletReadyToShoot(bool b)
-    {   this->bulletReadyToShoot_ = b;   }
-
-    bool Weapon::getBulletReadyToShoot()
-    {   return this->bulletReadyToShoot_;    }
-
-    void Weapon::setMagazineReadyToShoot(bool b)
-    {   this->magazineReadyToShoot_ = b;   }
-
-    bool Weapon::getMagazineReadyToShoot()
-    {   return this->magazineReadyToShoot_;    }
 
     Timer<Weapon> * Weapon::getBulletTimer()
     {   return &this->bulletReloadTimer_;   }
 
     Timer<Weapon> * Weapon::getMagazineTimer()
     {   return &this->magazineReloadTimer_;   }
+
+    void Weapon::takeBullets() { };
+    void Weapon::createProjectile() { };
+    void Weapon::takeMagazines() { };
+
 }
