@@ -127,7 +127,7 @@ namespace orxonox {
 	  return;
 	}
 	
-	void TrafficControl::processAck(unsigned int clientID, unsigned int gamestateID)
+	void TrafficControl::ack(unsigned int clientID, unsigned int gamestateID)
 	{
 	  std::list<obj>::iterator itvec;  // iterator to iterate through the acked objects
     
@@ -145,6 +145,7 @@ namespace orxonox {
       }
       else
       {
+        assert(0);
         clientListPerm_[clientID][(*itvec).objID].objCurGS = gamestateID;
         clientListPerm_[clientID][(*itvec).objID].objID = (*itvec).objID;
         clientListPerm_[clientID][(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
@@ -225,7 +226,7 @@ namespace orxonox {
 //     ittempgs = (*ittemp).find(currentGamestateID);
 //     for(itvec = list.begin(); itvec!=list.end(), itvec++)
 //     {
-//       ittempgs.insert(itvec);
+//       ittempgs.insert(itvec);static
 //     }
   }
 
@@ -236,22 +237,27 @@ namespace orxonox {
   void TrafficControl::cut(std::list<obj> *list, unsigned int targetsize)
   {
     unsigned int size=0;
-    std::list<obj>::iterator itvec;
+    std::list<obj>::iterator itvec, ittemp;
     assert(!list->empty());
-    itvec = list->begin();
-    for(itvec = list->begin(); ( itvec != list->end() ) && ( size<targetsize ); itvec++)
+    for(itvec = list->begin(); itvec != list->end();)
     {
       assert( (*itvec).objSize < 1000);
-      COUT(0) << "==targetsize==  " << targetsize << endl;
+//       COUT(0) << "==targetsize==  " << targetsize << endl;
       if ( ( size + (*itvec).objSize ) < targetsize )
       {
+//         COUT(0) << "no cut" << endl;
         size += (*itvec).objSize;//objSize is given in bytes
+        ++itvec;
       }
       else
       {
-        clientListPerm_[currentClientID][(*itvec).objID].objValueSched -= SCHED_PRIORITY_OFFSET;
+//         COUT(0) << "cut" << endl;
+        clientListPerm_[currentClientID][(*itvec).objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
+//         ittemp = itvec;
         list->erase(itvec++);
+//         itvec = ittemp;
       }
+//       printList(list, currentClientID);
     }
     assert(!list->empty());
   }
@@ -360,7 +366,7 @@ namespace orxonox {
     std::list<obj>::iterator it;
     COUT(0) << "=========== Objectlist ===========" << endl;
     for( it=list->begin(); it!=list->end(); it++)
-      COUT(0) << "ObjectID: " << (*it).objID << " creatorID: " << (*it).objCreatorID << " Priority: " << clientListPerm_[clientID][(*it).objID].objValuePerm + clientListPerm_[clientID][(*it).objID].objValueSched << endl;
+      COUT(0) << "ObjectID: " << (*it).objID << " creatorID: " << (*it).objCreatorID << " Priority: " << clientListPerm_[clientID][(*it).objID].objValuePerm + clientListPerm_[clientID][(*it).objID].objValueSched << " size: " << (*it).objSize << endl;
   }
   
   void TrafficControl::fixCreatorDependencies(std::list<obj>::iterator it1, std::list<obj> *list, unsigned int clientID)

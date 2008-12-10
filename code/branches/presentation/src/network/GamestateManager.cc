@@ -183,6 +183,7 @@ namespace orxonox
       gamestateMap_[clientID].erase(tempit);
     }
     temp->setGamestateID(gamestateID);
+    TrafficControl::processAck(clientID, gamestateID);
     return true;
   }
 
