@@ -343,26 +343,6 @@
 							>
 						</File>
 					</Filter>
-					<Filter
-						Name="collisionShapes"
-						>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\CollisionShape.cc"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\CompoundCollisionShape.cc"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionshapes\PlaneCollisionShape.cc"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\SphereCollisionShape.cc"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="gametypes"
@@ -896,6 +876,26 @@
 						</FileConfiguration>
 					</File>
 				</Filter>
+				<Filter
+					Name="collisionShapes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\PlaneCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.cc"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -1263,26 +1263,6 @@
 							>
 						</File>
 					</Filter>
-					<Filter
-						Name="collisionShapes"
-						>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\CollisionShape.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\CompoundCollisionShape.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionshapes\PlaneCollisionShape.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\orxonox\objects\worldentities\collisionShapes\SphereCollisionShape.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="gametypes"
@@ -1443,6 +1423,26 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="collisionShapes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\PlaneCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
