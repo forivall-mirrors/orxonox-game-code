@@ -7,15 +7,18 @@ SET(CONFIG_FILES
 )
 
 IF(IS_TARDIS)
+  # OGRE can't find fonts to display config screen on Tardis,
+  # so providing default config file here.
   SET(CONFIG_FILES ${CONFIG_FILES}
     linux/run-script
-	tardis/orxonox.ini
+    tardis/orxonox.ini
+    tardis/ogre.cfg
   )
 
 ELSEIF(UNIX)
   SET(CONFIG_FILES ${CONFIG_FILES}
     linux/run-script
-	linux/orxonox.ini
+    linux/orxonox.ini
   )
 ENDIF(IS_TARDIS)
 
