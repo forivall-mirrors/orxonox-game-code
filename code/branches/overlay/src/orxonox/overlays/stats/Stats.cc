@@ -100,10 +100,6 @@ namespace orxonox
 
     }
 
-    /**
-        @brief Used to control the actual scrolling and the cursor.
-    */
-
     void Stats::tick(float dt)
     {
         // SUPER(Stats, tick, dt);

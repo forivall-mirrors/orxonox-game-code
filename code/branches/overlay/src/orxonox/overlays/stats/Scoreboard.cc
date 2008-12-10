@@ -51,6 +51,22 @@ namespace orxonox
         : OrxonoxOverlay(creator)
     {
         RegisterObject(Scoreboard);
+
+        createlines_ = new CreateLines(this);
+        // this->gametype_ = new Gametype(this);
+    }
+
+    /**
+        @brief Initializes the lines.
+    */
+    void Scoreboard::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    {
+        SUPER(Scoreboard, XMLPort, xmlElement, mode);
+
+        printLines();
+
+        COUT(0) << "XMLPort executed." << std::endl;
+
     }
 
     /**
@@ -59,25 +75,28 @@ namespace orxonox
     void Scoreboard::printLines() {
 
         numberOfColumns = 2;
-        numberOfLines = this->gametype_->getNumberOfPlayers();
-        columnIndex = 0;
-        topOffset = 0.3;
+        // numberOfLines = this->gametype_->getNumberOfPlayers();
+        numberOfLines = 3;
+        topOffset = 0.1;
         lineSpacing = 0.1;
 
         for (unsigned int i = 0; i < numberOfLines; i++) {
 
-            leftOffset = 0.3;
+            columnIndex = 0;
+            leftOffset = 0.1;
 
             this->createlines_->setNumberOfColumns(numberOfColumns, i);
 
-            columnText = this->gametype_->getPlayersName();
+            // columnText = this->gametype_->getPlayersName();
+            columnText = "PlayerName";
             this->createlines_->alignColumn(columnIndex, topOffset, leftOffset);
             this->createlines_->setColumnText(columnIndex, columnText);
 
             columnIndex++;
-            leftOffset = leftOffset + 0.4;
+            leftOffset = leftOffset + 0.3;
 
-            columnText = this->gametype_->getPlayersFrags();
+            // columnText = this->gametype_->getPlayersFrags();
+            columnText = "PlayerFrags";
             this->createlines_->alignColumn(columnIndex, topOffset, leftOffset);
             this->createlines_->setColumnText(columnIndex, columnText);
 

@@ -46,6 +46,8 @@ namespace orxonox
         Scoreboard(BaseObject* creator);
         ~Scoreboard() {}
 
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+
         inline void setGametype(Gametype* gt)
             { this->gametype_ = gt; }
         inline Gametype* getGametype() const

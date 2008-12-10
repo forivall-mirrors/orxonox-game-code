@@ -66,11 +66,15 @@ namespace orxonox
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
 
+        unsigned int colIndex = 0;
+
         while (textColumns_.size() < numberOfColumns) {
 
-            Ogre::TextAreaOverlayElement* tempTextArea = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex)));
+            Ogre::TextAreaOverlayElement* tempTextArea = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex) + convertToString(colIndex)));
             textColumns_.push_back(tempTextArea);
             this->background_->addChild(tempTextArea);
+
+            colIndex++;
 
         }
 
