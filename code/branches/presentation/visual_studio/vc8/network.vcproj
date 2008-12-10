@@ -195,10 +195,6 @@
 				RelativePath="..\..\src\network\Server.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\network\Synchronisable.cc"
-				>
-			</File>
 			<Filter
 				Name="packet"
 				>
@@ -228,6 +224,26 @@
 				</File>
 				<File
 					RelativePath="..\..\src\network\packet\Welcome.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="synchronisable"
+				>
+				<File
+					RelativePath="..\..\src\network\synchronisable\NetworkCallbackManager.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\Synchronisable.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\SynchronisableSpecialisations.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\SynchronisableVariable.cc"
 					>
 				</File>
 			</Filter>
@@ -278,10 +294,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\NetworkCallback.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\network\NetworkPrereqs.h"
 				>
 			</File>
@@ -291,10 +303,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\network\Server.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\Synchronisable.h"
 				>
 			</File>
 			<Filter
@@ -326,6 +334,26 @@
 				</File>
 				<File
 					RelativePath="..\..\src\network\packet\Welcome.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="synchronisable"
+				>
+				<File
+					RelativePath="..\..\src\network\synchronisable\NetworkCallback.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\NetworkCallbackManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\Synchronisable.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\synchronisable\SynchronisableVariable.h"
 					>
 				</File>
 			</Filter>

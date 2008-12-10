@@ -85,9 +85,9 @@ namespace orxonox
 
     void Spectator::registerVariables()
     {
-        REGISTERDATA(this->bGreetingFlareVisible_, direction::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
-        REGISTERDATA(this->bGreeting_,             direction::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
-        REGISTERDATA(this->hudmode_,               direction::toclient);
+        registerVariable(this->bGreetingFlareVisible_, variableDirection::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
+        registerVariable(this->bGreeting_,             variableDirection::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
+        registerVariable(this->hudmode_,               variableDirection::toclient);
     }
 
     void Spectator::changedGreeting()

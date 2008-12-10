@@ -34,7 +34,8 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "core/Iterator.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
+#include "synchronisable/NetworkCallbackManager.h"
 #include "packet/Acknowledgement.h"
 
 
@@ -76,6 +77,10 @@ namespace orxonox
     int id = GAMESTATEID_INITIAL;
     packet::Gamestate *processed = processGamestate(tempGamestate_);
 //    assert(processed);
+    
+    //now call the queued callbacks
+    NetworkCallbackManager::callCallbacks();
+    
     if (!processed)
         return false;
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs

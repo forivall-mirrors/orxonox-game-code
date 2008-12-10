@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 #include "core/BaseObject.h"
 #include "util/Math.h"
 #include "objects/Tickable.h"

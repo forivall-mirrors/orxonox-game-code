@@ -95,14 +95,14 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
-        REGISTERDATA(this->bActive_,  direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
-        REGISTERDATA(this->bVisible_, direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
-
-        REGISTERDATA(this->getScale3D().x, direction::toclient);
-        REGISTERDATA(this->getScale3D().y, direction::toclient);
-        REGISTERDATA(this->getScale3D().z, direction::toclient);
-
-        REGISTERDATA(this->parentID_, direction::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
+        registerVariable(this->bActive_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
+        registerVariable(this->bVisible_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
+  
+        registerVariable(this->getScale3D().x, variableDirection::toclient);
+        registerVariable(this->getScale3D().y, variableDirection::toclient);
+        registerVariable(this->getScale3D().z, variableDirection::toclient);
+  
+        registerVariable(this->parentID_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
     }
 
     void WorldEntity::updateParent()

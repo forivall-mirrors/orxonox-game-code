@@ -20,28 +20,35 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Oliver Scheuss, (C) 2008
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Info_H__
-#define _Info_H__
 
-#include "OrxonoxPrereqs.h"
+#ifndef _NETWORK_CALLBACKMANAGER__
+#define _NETWORK_CALLBACKMANAGER__
 
-#include "network/synchronisable/Synchronisable.h"
-#include "core/BaseObject.h"
+#include "network/NetworkPrereqs.h"
+#include <set>
+#include <queue>
 
-namespace orxonox
-{
-    class _OrxonoxExport Info : public BaseObject, public Synchronisable
-    {
-        public:
-            Info(BaseObject* creator);
-            virtual ~Info() {}
-    };
+namespace orxonox{
+  
+  class _NetworkExport NetworkCallbackManager{
+    public:
+      static void registerCallback(NetworkCallbackBase *cb);
+      static void deleteCallback(NetworkCallbackBase *cb);
+      static void triggerCallback(NetworkCallbackBase *cb);
+      static void callCallbacks();
+    private:
+      static std::set<NetworkCallbackBase*> callbackSet_;
+      static std::queue<NetworkCallbackBase*> triggeredCallbacks_;
+  };
+  
+
 }
 
-#endif /* _Info_H__ */
+
+#endif
