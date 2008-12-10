@@ -1,4 +1,4 @@
-SET(TOLUALIB_SRC_FILES
+ADD_LIBRARY(tolualib_orxonox STATIC
   tolua_event.c
   tolua_is.c
   tolua_map.c
@@ -6,15 +6,15 @@ SET(TOLUALIB_SRC_FILES
   tolua_to.c
 )
 
-ADD_LIBRARY          (tolualib_orxonox SHARED ${TOLUALIB_SRC_FILES})
 TARGET_LINK_LIBRARIES(tolualib_orxonox ${LUA_LIBRARIES})
-INSTALL(TARGETS tolualib_orxonox LIBRARY DESTINATION lib)
+
+#INSTALL(TARGETS tolualib_orxonox LIBRARY DESTINATION lib)
 
 SET(TOLUAGEN_SRC_FILES
   tolua.c
 )
 
-ADD_EXECUTABLE       (toluaexe_orxonox ${TOLUAGEN_SRC_FILES})
+ADD_EXECUTABLE(toluaexe_orxonox ${TOLUAGEN_SRC_FILES})
 TARGET_LINK_LIBRARIES(toluaexe_orxonox tolualib_orxonox ${LUA_LIBRARIES})
 
 #IF("${LUA_VERSION}" VERSION_LESS 5.1)
