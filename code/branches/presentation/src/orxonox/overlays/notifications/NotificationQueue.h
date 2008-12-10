@@ -26,48 +26,55 @@
  *
  */
 
-/**
-    @file Rewardable.h
-    @brief Definition of the Rewardable class.
-*/
-
-#ifndef _Rewardable_H__
-#define _Rewardable_H__
+#ifndef _NotificationOueue_H__
+#define _NotificationOueue_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgreTextAreaOverlayElement.h>
 
-#include "core/BaseObject.h"
+#include "orxonox/overlays/OverlayText.h"
+#include "orxonox/objects/Tickable.h"
+
+#include <string>
 
 namespace orxonox {
 
     /**
     @brief
-        Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects. (With the AddReward effect.)
         
-        It just needs to inherit form Rewardable, and implement the reward() method.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Rewardable : public BaseObject
+    class _OrxonoxExport NotificationQueue : public OverlayText, public Tickable
     {
-
-        public:
-            Rewardable(BaseObject* creator);
-            virtual ~Rewardable();
-
-            /**
-            @brief
-                Method to transcribe a rewardable object to the player.
-                Must be implemented by every class inheriting from Rewardable.
-            @param player
-                A pointer to the ControllableEntity, do whatever you want with it.
-            @return
-                Return true if successful.
-            */
-            virtual bool reward(PlayerInfo* player) = 0;
-
+	public:
+	    NotificationQueue(BaseObject* creator);
+	    virtual ~NotificationQueue();
+	    
+	    static NotificationQueue* queue_s; //TDO Singleton? oder im level.
+	    
+	    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+	    
+	    virtual void tick(float dt);
+	    
+	    void update(void);
+	    
+	    int getLength(void) const
+                { return this->length_; }
+	    int getWidth(void) const
+                { return this->width_; }
+	    
+	    void setQueueText(const std::string & text);
+	    bool setLength(int length);
+	    bool setWidth(int width);
+	    
+	private:
+            Ogre::UTFString queueText_;
+            int length_;
+            int width_;
+    
     };
 
 }
 
-#endif /* _Rewardable_H__ */
+#endif /* _NotificationOverlay_H__ */

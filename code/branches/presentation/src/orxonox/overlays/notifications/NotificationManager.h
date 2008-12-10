@@ -26,48 +26,49 @@
  *
  */
 
-/**
-    @file Rewardable.h
-    @brief Definition of the Rewardable class.
-*/
-
-#ifndef _Rewardable_H__
-#define _Rewardable_H__
+#ifndef _NotificationManager_H__
+#define _NotificationManager_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
 
+#include <list>
+#include <string>
+
 namespace orxonox {
+
+    struct NotificationContainer
+    {
+        Notification* notification;
+        float remainingTime;
+    };
 
     /**
     @brief
-        Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects. (With the AddReward effect.)
         
-        It just needs to inherit form Rewardable, and implement the reward() method.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Rewardable : public BaseObject
+    class _OrxonoxExport NotificationManager : public BaseObject
     {
-
+    
         public:
-            Rewardable(BaseObject* creator);
-            virtual ~Rewardable();
-
-            /**
-            @brief
-                Method to transcribe a rewardable object to the player.
-                Must be implemented by every class inheriting from Rewardable.
-            @param player
-                A pointer to the ControllableEntity, do whatever you want with it.
-            @return
-                Return true if successful.
-            */
-            virtual bool reward(PlayerInfo* player) = 0;
+	    NotificationManager(BaseObject* creator);
+	    virtual ~NotificationManager();
+	    
+	    static bool insertNotification(Notification* notification);
+	    
+	    static void tick(float dt);
+	    
+	private:
+            static std::list<NotificationContainer*> notifications_s;
+            
+            static void updateQueue(void);
+            static const std::string clipMessage(const std::string & message);
 
     };
 
 }
 
-#endif /* _Rewardable_H__ */
+#endif /* _NotificationManager_H__ */

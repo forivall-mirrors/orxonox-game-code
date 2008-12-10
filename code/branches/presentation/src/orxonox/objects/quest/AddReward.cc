@@ -28,8 +28,7 @@
 
 /**
     @file AddReward.cc
-    @brief
-    Implementation of the AddReward class.
+    @brief Implementation of the AddReward class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -105,11 +104,15 @@ namespace orxonox {
     */
     bool AddReward::invoke(PlayerInfo* player)
     {
+        COUT(3) << "AddReward on player: " << player << " ." << std::endl;
+        
         bool check = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
         {
             check = check && (*reward)->reward(player);
         }
+        
+        COUT(3) << "Rewardable successfully added to player." << player << " ." << std::endl;
 
         return check;
     }

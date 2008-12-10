@@ -28,8 +28,7 @@
 
 /**
     @file AddQuest.cc
-    @brief
-    Implementation of the AddQuest class.
+    @brief Implementation of the AddQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -108,7 +107,7 @@ namespace orxonox {
             return false;
         }
 
-        COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player." << std::endl;
+        COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player: " << player << " ." << std::endl;
         return true;
     }
 

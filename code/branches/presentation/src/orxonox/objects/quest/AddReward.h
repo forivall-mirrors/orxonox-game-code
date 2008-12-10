@@ -28,8 +28,7 @@
 
 /**
     @file AddReward.h
-    @brief
-    Definition of the AddReward class.
+    @brief Definition of the AddReward class.
 */
 
 #ifndef _AddReward_H__
@@ -77,6 +76,7 @@ namespace orxonox {
             */
             inline void addRewardable(Rewardable* reward)
                 { this->rewards_.push_back(reward); }
+        
             const Rewardable* getRewardables(unsigned int index) const; //!< Returns the Rewardable object at the given index.
 
     };

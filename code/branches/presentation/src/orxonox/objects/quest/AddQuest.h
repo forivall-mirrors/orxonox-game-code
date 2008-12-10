@@ -28,8 +28,7 @@
 
 /**
     @file AddQuest.h
-    @brief
-    Definition of the AddQuest class.
+    @brief Definition of the AddQuest class.
 */
 
 #ifndef _AddQuest_H__
@@ -57,12 +56,12 @@ namespace orxonox {
     class _OrxonoxExport AddQuest : public ChangeQuestStatus
     {
         public:
-            AddQuest(BaseObject* creator);
-            virtual ~AddQuest();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.
-
-            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
+        AddQuest(BaseObject* creator);
+        virtual ~AddQuest();
+    
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.
+    
+        virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
     };
 

@@ -28,14 +28,14 @@
 
 /**
     @file LocalQuest.cc
-    @brief
-    Implementation of the LocalQuest class.
+    @brief Implementation of the LocalQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
 #include "LocalQuest.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Super.h"
 #include "util/Exception.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
@@ -85,15 +85,16 @@ namespace orxonox {
     */
     bool LocalQuest::fail(PlayerInfo* player)
     {
-        if(this->isFailable(player)) //!< Checks whether the quest can be failed.
+        if(!this->isFailable(player)) //!< Checks whether the quest can be failed.
         {
-            this->setStatus(player, questStatus::failed);
-            QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
-            return true;
+            COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
+            return false;
         }
         
-        COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
-        return false;
+        Quest::fail(player);
+        
+        QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
+        return true;
     }
 
     /**
@@ -107,15 +108,16 @@ namespace orxonox {
     */
     bool LocalQuest::complete(PlayerInfo* player)
     {
-        if(this->isCompletable(player)) //!< Checks whether the Quest can be completed.
+        if(!this->isCompletable(player)) //!< Checks whether the Quest can be completed.
         {
-            this->setStatus(player, questStatus::completed);
-            QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
-            return true;
+            COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
+            return false;
         }
         
-        COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
-        return false;
+        Quest::complete(player);
+        
+        QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
+        return true;
     }
 
     /**

@@ -28,8 +28,7 @@
 
 /**
     @file AddQuestHint.h
-    @brief
-    Definition of the AddQuestHint class.
+    @brief Definition of the AddQuestHint class.
 */
 
 #ifndef _AddQuestHint_H__
@@ -72,6 +71,7 @@ namespace orxonox {
             */
             inline const std::string & getHintId(void) const
                 { return this->hintId_; }
+            
             bool setHintId(const std::string & id); //!< Sets the id of the QuestHint.
 
     };

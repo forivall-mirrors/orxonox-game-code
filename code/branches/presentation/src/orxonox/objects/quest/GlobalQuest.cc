@@ -28,8 +28,7 @@
  
 /**
     @file GlobalQuest.cc
-    @brief
-    Implementation of the GlobalQuest class.
+    @brief Implementation of the GlobalQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -37,6 +36,7 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "core/CoreIncludes.h"
+#include "core/Super.h"
 #include "util/Exception.h"
 
 #include "QuestEffect.h"
@@ -87,21 +87,21 @@ namespace orxonox {
     */
     bool GlobalQuest::fail(PlayerInfo* player)
     {
-        if(this->isFailable(player)) //!< Check whether the Quest can be failed.
+        if(!this->isFailable(player)) //!< Check whether the Quest can be failed.
         {
-            this->setStatus(player, questStatus::failed);
-            
-            //! Iterate through all players possessing this Quest.
-            for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
-            {
-                QuestEffect::invokeEffects(*it, this->getFailEffectList());
-            }
-
-            return true;
+            COUT(4) << "A non-completable quest was trying to be failed." << std::endl;
+            return false;
         }
         
-        COUT(4) << "A non-completable quest was trying to be failed." << std::endl;
-        return false;
+        Quest::fail(player);
+    
+    //! Iterate through all players possessing this Quest.
+    for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+    {
+        QuestEffect::invokeEffects(*it, this->getFailEffectList());
+    }
+
+    return true;
     }
 
     /**
@@ -116,22 +116,22 @@ namespace orxonox {
     */
     bool GlobalQuest::complete(PlayerInfo* player)
     {
-        if(this->isCompletable(player)) //!< Check whether the Quest can be completed.
+        if(!this->isCompletable(player)) //!< Check whether the Quest can be completed.
         {
-            this->setStatus(player, questStatus::completed);
-            
-            //! Iterate through all players possessing the Quest.
-            for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
-            {
-                QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
-            }
-            
-            QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
-            return true;
+            COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
+            return false;
         }
         
-        COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
-        return false;
+        //! Iterate through all players possessing the Quest.
+        for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+        {
+            QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
+        }
+    
+        Quest::complete(player);
+    
+        QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
+        return true;
     }
 
     /**
@@ -206,7 +206,7 @@ namespace orxonox {
             return this->status_;
         }
 
-    return questStatus::inactive;
+        return questStatus::inactive;
     }
 
     /**

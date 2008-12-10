@@ -28,8 +28,7 @@
 
 /**
     @file QuestManager.cc
-    @brief
-    Implementation of the QuestManager class.
+    @brief Implementation of the QuestManager class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -75,7 +74,7 @@ namespace orxonox {
     @return
         Returns true if successful, false if not.
     */
-    bool QuestManager::registerQuest(Quest* quest)
+    /*static*/ bool QuestManager::registerQuest(Quest* quest)
     {
         if(quest == NULL) //!< Doh! Just as if there were actual quests behind NULL-pointers.
         {
@@ -107,7 +106,7 @@ namespace orxonox {
     @return
         Returns true if successful, false if not.
     */
-    bool QuestManager::registerHint(QuestHint* hint)
+    /*static*/ bool QuestManager::registerHint(QuestHint* hint)
     {
         if(hint == NULL) //!< Still not liking NULL-pointers.
         {
@@ -141,7 +140,7 @@ namespace orxonox {
     @throws
         Throws an exception if the given questId is invalid.
     */
-    Quest* QuestManager::findQuest(const std::string & questId)
+    /*static*/ Quest* QuestManager::findQuest(const std::string & questId)
     {
         if(!QuestItem::isId(questId)) //!< Check vor validity of the given id.
         {
@@ -175,7 +174,7 @@ namespace orxonox {
     @throws
         Throws an exception if the given hintId is invalid.
     */
-    QuestHint* QuestManager::findHint(const std::string & hintId)
+    /*static*/ QuestHint* QuestManager::findHint(const std::string & hintId)
     {
         if(!QuestItem::isId(hintId)) //!< Check vor validity of the given id.
         {
