@@ -136,7 +136,7 @@ namespace orxonox
 
     void Pawn::fire(WeaponMode::Enum fireMode)
     {
-COUT(0) << "Pawn::fire" << std::endl;
+COUT(0) << "Pawn::fire" << fireMode << std::endl;
         if (this->weaponSystem_)
             this->weaponSystem_->fire(fireMode);
     }
@@ -151,7 +151,7 @@ COUT(0) << "Pawn::fire" << std::endl;
 
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)
     {   
-COUT(0) << "Pawn::setWeaponSlot" << std::endl;
+COUT(0) << "Pawn::setWeaponSlot" << wSlot << std::endl;
         this->attach(wSlot);
         this->weaponSystem_->attachWeaponSlot(wSlot);   }
 

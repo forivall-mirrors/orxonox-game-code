@@ -65,6 +65,7 @@ namespace orxonox
 
     void WeaponSlot::fire()
     {
+        if ( this->attachedWeapon_ )
 COUT(0) << "WeaponSlot::fire" << std::endl;
         this->attachedWeapon_->fire();
     }
@@ -78,6 +79,7 @@ COUT(0) << "WeaponSlot::fire" << std::endl;
     void WeaponSlot::attachWeapon(Weapon *weapon)
     {
         this->attachedWeapon_ = weapon;
+        weapon->setAttachedToWeaponSlot(this);
         this->attach(weapon);
 COUT(0) << "WeaponSlot::attachWeapon position=" << this->getWorldPosition() << std::endl;
     }

@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _LaserGun_H__
-#define _LaserGun_H__
+#ifndef _Fusion_H__
+#define _Fusion_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -41,11 +41,11 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGun : public Weapon
+    class _OrxonoxExport Fusion : public Weapon
     {
         public:
-            LaserGun(BaseObject* creator);
-            virtual ~LaserGun();
+            Fusion(BaseObject* creator);
+            virtual ~Fusion();
 
             virtual void takeBullets();
             virtual void takeMagazines();
@@ -57,4 +57,4 @@ namespace orxonox
     };
 }
 
-#endif /* _LaserGun_H__ */
+#endif /* _Fusion_H__ */

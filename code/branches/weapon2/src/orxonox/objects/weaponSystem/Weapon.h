@@ -60,47 +60,46 @@ namespace orxonox
             void magazineTimer(float magazineLoadingTime);
             void bulletReloaded();
             void magazineReloaded();
-            void setBulletLoadingTime(float loadingTime);
-            float getBulletLoadingTime();
-            void setMagazineLoadingTime(float loadingTime);
-            float getMagazineLoadingTime();
-            Timer<Weapon> *getBulletTimer();
-            Timer<Weapon> *getMagazineTimer();
 
             virtual void setMunitionType(std::string munitionType);
             virtual const std::string getMunitionType();
+            virtual void setBulletLoadingTime(float loadingTime);
+            virtual const float getBulletLoadingTime();
+            virtual void setMagazineLoadingTime(float loadingTime);
+            virtual const float getMagazineLoadingTime();
 
             virtual void takeBullets();
             virtual void takeMagazines();
             virtual void createProjectile();
 
-            inline void setParentWeaponSlot(WeaponSlot *parentWeaponSlot)
-                { this->parentWeaponSlot_=parentWeaponSlot; };
-            inline WeaponSlot * getParentWeaponSlot()
-                { return this->parentWeaponSlot_; };
             inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { this->parentWeaponSystem_=parentWeaponSystem; };
             inline WeaponSystem * getParentWeaponSystem()
                 { return this->parentWeaponSystem_; };
 
-            //in future by XMLPort
+            inline void setAttachedToWeaponSlot(WeaponSlot * wSlot)
+                { this->attachedToWeaponSlot_ = wSlot; }
+            inline WeaponSlot * getAttachedToWeaponSlot()
+                { return this->attachedToWeaponSlot_; }
+
             virtual void setWeapon();
 
         private:
 
         protected:
+            bool bReloading_;
             bool bulletReadyToShoot_;
             bool magazineReadyToShoot_;
             float bulletLoadingTime_;
             float magazineLoadingTime_;
-            bool bReloading_;
-
-            Munition *munition_;
             std::string munitionType_;
 
-            WeaponSlot *parentWeaponSlot_;
-            WeaponSystem *parentWeaponSystem_;
+            WeaponSlot * attachedToWeaponSlot_;
+            Munition * munition_;
+            WeaponSystem * parentWeaponSystem_;
+
             SubclassIdentifier<Munition> munitionIdentifier_;
+
             Timer<Weapon> bulletReloadTimer_;
             Timer<Weapon> magazineReloadTimer_;
     };

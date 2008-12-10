@@ -44,7 +44,7 @@ namespace orxonox
         this->bulletReadyToShoot_ = true;
         this->magazineReadyToShoot_ = true;
         this->parentWeaponSystem_ = 0;
-        this->parentWeaponSlot_ = 0;
+        this->attachedToWeaponSlot_ = 0;
         this->munition_ = 0;
         this->bulletLoadingTime_ = 0;
         this->magazineLoadingTime_ = 0;
@@ -60,15 +60,12 @@ namespace orxonox
     {
         SUPER(Weapon, XMLPort, xmlelement, mode);
         XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
+        XMLPortParam(Weapon, "bulletLoadingTime", setBulletLoadingTime, getBulletLoadingTime, xmlelement, mode);
+        XMLPortParam(Weapon, "magazineLoadingTime", setMagazineLoadingTime, getMagazineLoadingTime, xmlelement, mode);
     }
 
     void Weapon::setWeapon()
     {
-COUT(0) << "LaserGun::setWeapon" << std::endl;
-        this->bulletLoadingTime_ = 0.5;
-        this->magazineLoadingTime_ = 3.0;
-        this->munition_->setMaxMagazines(100);
-        this->munition_->setMaxBullets(6);
         this->munition_->fillBullets();
         this->munition_->fillMagazines();
     }
@@ -164,12 +161,23 @@ COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munit
      */
 
     void Weapon::setMunitionType(std::string munitionType)
-    {   
-COUT(0) << "Weapon::setMunitionType (XMLPort) "<< munitionType << std::endl;
-this->munitionType_ = munitionType; }
+    {   this->munitionType_ = munitionType; }
 
     const std::string Weapon::getMunitionType()
     {   return this->munitionType_;  }
+
+    void Weapon::setBulletLoadingTime(float loadingTime)
+    {   this->bulletLoadingTime_ = loadingTime; }
+
+    const float Weapon::getBulletLoadingTime()
+    {   return this->bulletLoadingTime_;  }
+
+    void Weapon::setMagazineLoadingTime(float loadingTime)
+    {   this->magazineLoadingTime_ = loadingTime; }
+
+    const float Weapon::getMagazineLoadingTime()
+    {   return this->magazineLoadingTime_;  }
+
 
     Munition * Weapon::getAttachedMunition(std::string munitionType)
     {   
@@ -177,27 +185,6 @@ COUT(0) << "Weapon::getAttachedMunition, parentWeaponSystem_="<< this->parentWea
         this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionType);
 COUT(0) << "Weapon::getAttachedMunition, munition_="<< this->munition_ << std::endl;
 return this->munition_; }
-
-
-
-    void Weapon::setBulletLoadingTime(float loadingTime)
-    {   this->bulletLoadingTime_ = loadingTime;   }
-
-    float Weapon::getBulletLoadingTime()
-    {   return this->bulletLoadingTime_;  }
-
-    void Weapon::setMagazineLoadingTime(float loadingTime)
-    {   this->magazineLoadingTime_ = loadingTime;   }
-
-    float Weapon::getMagazineLoadingTime()
-    {   return this->magazineLoadingTime_;  }
-
-
-    Timer<Weapon> * Weapon::getBulletTimer()
-    {   return &this->bulletReloadTimer_;   }
-
-    Timer<Weapon> * Weapon::getMagazineTimer()
-    {   return &this->magazineReloadTimer_;   }
 
     void Weapon::takeBullets() { };
     void Weapon::createProjectile() { };

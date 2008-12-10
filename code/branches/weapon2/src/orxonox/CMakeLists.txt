@@ -91,6 +91,7 @@ SET( ORXONOX_SRC_FILES
   objects/weaponSystem/Weapon.cc
   objects/weaponSystem/Munition.cc
   objects/weaponSystem/weapons/LaserGun.cc
+  objects/weaponSystem/weapons/Fusion.cc
   objects/weaponSystem/munitions/LaserGunMunition.cc
   objects/weaponSystem/projectiles/BillboardProjectile.cc
   objects/weaponSystem/projectiles/ParticleProjectile.cc

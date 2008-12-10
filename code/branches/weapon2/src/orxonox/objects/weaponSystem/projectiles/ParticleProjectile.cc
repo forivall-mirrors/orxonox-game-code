@@ -42,9 +42,9 @@ namespace orxonox
     {
         RegisterObject(ParticleProjectile);
 
-        this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot2_small", LODParticle::normal);
+        this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::normal);
         this->particles_->addToSceneNode(this->getNode());
-        //this->particles_->setKeepParticlesInLocalSpace(true);
+        this->particles_->setKeepParticlesInLocalSpace(0);
 
         this->particles_->getAllEmitters()->setDirection(-WorldEntity::FRONT);
         /*

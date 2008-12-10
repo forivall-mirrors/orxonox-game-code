@@ -67,11 +67,25 @@ COUT(0) << "WeaponSet::attachWeaponPack after if" << std::endl;
             for (  int i=0; i < wPack->getSize() ; i++  )
             {
                 //at the moment this function only works for one weaponPack in the entire WeaponSystem...
-                if ( this->parentWeaponSystem_->getWeaponSlotPointer(i)->getAttachedWeapon() == 0 ) //if slot not full
+                if ( this->parentWeaponSystem_->getWeaponSlotPointer(i)->getAttachedWeapon() == 0 && this->parentWeaponSystem_->getWeaponSlotPointer(i) != 0) //if slot not full
                 {
+COUT(0) << "WeaponSet::attachWeaponPack attaching Weapon" << std::endl;
                     this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(i) );
                     this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
                     wPackWeapon++;
+                }
+                else
+                {
+                    for (int k=0; k < this->parentWeaponSystem_->getWeaponSlotSize(); k++)
+                    {
+                        if ( this->parentWeaponSystem_->getWeaponSlotPointer(k)->getAttachedWeapon() == 0 )
+                        {
+COUT(0) << "WeaponSet::attachWeaponPack mode 2 k="<< k << std::endl;
+                            this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(k) );
+                            this->parentWeaponSystem_->getWeaponSlotPointer(k)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
+                            wPackWeapon++;
+                        }
+                    }
                 }
             }
         }

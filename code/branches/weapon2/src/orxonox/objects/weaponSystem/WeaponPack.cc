@@ -63,7 +63,7 @@ namespace orxonox
         for (int i=0; i < (int) this->weapons_.size(); i++)
         {
 COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << std::endl;
-            this->weapons_[i]->fire();
+            this->weapons_[i]->getAttachedToWeaponSlot()->fire();
         }
     }
 

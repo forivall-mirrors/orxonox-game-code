@@ -33,41 +33,41 @@
 #include "core/XMLPort.h"
 #include "util/Debug.h"
 
-#include "LaserGun.h"
+#include "Fusion.h"
 
 
 namespace orxonox
 {
-    CreateFactory(LaserGun);
+    CreateFactory(Fusion);
 
-    LaserGun::LaserGun(BaseObject* creator) : Weapon(creator)
+    Fusion::Fusion(BaseObject* creator) : Weapon(creator)
     {
-        RegisterObject(LaserGun);
+        RegisterObject(Fusion);
         
         this->speed_ = 1250;
 
     }
 
-    LaserGun::~LaserGun()
+    Fusion::~Fusion()
     {
     }
 
-    void LaserGun::takeBullets()
+    void Fusion::takeBullets()
     {
-COUT(0) << "LaserGun::takeBullets" << std::endl;
+COUT(0) << "Fusion::takeBullets" << std::endl;
         this->munition_->removeBullets(1);
         this->bulletTimer(this->bulletLoadingTime_);
     }
 
-    void LaserGun::takeMagazines()
+    void Fusion::takeMagazines()
     {
         this->munition_->removeMagazines(1);
         this->magazineTimer(this->magazineLoadingTime_);
     }
 
-    void LaserGun::createProjectile()
+    void Fusion::createProjectile()
     {
-COUT(0) << "LaserGun::createProjectile" << std::endl;
+COUT(0) << "Fusion::createProjectile" << std::endl;
         BillboardProjectile* projectile = new ParticleProjectile(this);
         projectile->setOrientation(this->getWorldOrientation());
         projectile->setPosition(this->getWorldPosition());
