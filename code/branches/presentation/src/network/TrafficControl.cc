@@ -397,7 +397,18 @@ namespace orxonox {
       }
     }
   }
-
+  
+  void TrafficControl::priRemoveClient(int clientID)
+  {
+    assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
+    assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
+    clientListTemp_.erase(clientListTemp_.find(clientID));
+    clientListPerm_.erase(clientListPerm_.find(clientID));
+  }
+  void TrafficControl::pubRemoveClient(int clientID)
+  {
+    priRemoveClient(clientID);
+  }
 
 /*
 void bvlabla(list *a){

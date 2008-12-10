@@ -140,7 +140,8 @@ class TrafficControl : public OrxonoxClass{
     */
     void evaluateList(unsigned int clientID, std::list<obj> *list);//done    
     void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
-
+    void priRemoveClient(int clientID);
+ 
   protected:
     static TrafficControl *instance_;
 
@@ -164,6 +165,7 @@ class TrafficControl : public OrxonoxClass{
     bool priodiffer(uint32_t clientID, obj i, obj j);
     void printList(std::list<obj> *list, unsigned int clientID);
     void fixCreatorDependencies(std::list<obj>::iterator it, std::list<obj> *list, unsigned int clientID);
+    void pubRemoveClient(int clientID);
 };
 
 }
