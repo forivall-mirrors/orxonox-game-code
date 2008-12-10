@@ -51,6 +51,9 @@ namespace orxonox
         this->parent_ = 0;
         this->parentID_ = (unsigned int)-1;
         this->collisionShape_ = 0;
+        this->position_ = Vector3::ZERO;
+        this->orientation_ = Quaternion::IDENTITY;
+        this->scale_ = Vector3::UNIT_SCALE;
     }
 
     CollisionShape::~CollisionShape()

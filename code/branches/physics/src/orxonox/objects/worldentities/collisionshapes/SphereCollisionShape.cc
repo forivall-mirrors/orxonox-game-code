@@ -43,8 +43,8 @@ namespace orxonox
     {
         RegisterObject(SphereCollisionShape);
 
-        this->sphereShape_ = new btSphereShape(1.0f);
-        this->collisionShape_ = this->sphereShape_;
+        this->radius_ = 1.0f;
+        updateSphere();
 
         this->registerVariables();
     }
@@ -57,7 +57,7 @@ namespace orxonox
 
     void SphereCollisionShape::registerVariables()
     {
-        REGISTERDATA(this->radius_, network::direction::toclient, new network::NetworkCallback<SphereCollisionShape>(this, &SphereCollisionShape::radiusChanged));
+        REGISTERDATA(this->radius_, network::direction::toclient, new network::NetworkCallback<SphereCollisionShape>(this, &SphereCollisionShape::updateSphere));
     }
 
     void SphereCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -67,11 +67,10 @@ namespace orxonox
         XMLPortParam(SphereCollisionShape, "radius", setRadius, getRadius, xmlelement, mode);
     }
 
-    void SphereCollisionShape::setRadius(float radius)
+    void SphereCollisionShape::updateSphere()
     {
-        // TODO: Think about where this could be referenced already.
-        this->radius_ = radius;
-        delete this->sphereShape_;
-        this->sphereShape_ = new btSphereShape(radius);
+        if (this->collisionShape_)
+            delete this->collisionShape_;
+        this->collisionShape_ = new btSphereShape(this->radius_);
     }
 }

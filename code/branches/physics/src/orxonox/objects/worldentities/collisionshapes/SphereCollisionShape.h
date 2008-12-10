@@ -44,16 +44,15 @@ namespace orxonox
             void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void setRadius(float radius);
+            inline void setRadius(float radius)
+                { this->radius_ = radius; updateSphere(); }
             inline float getRadius() const
                 { return this->radius_;}
 
-            inline void radiusChanged()
-                { this->setRadius(this->radius_); }
+            void updateSphere();
 
         private:
-            btSphereShape* sphereShape_;
-            float          radius_;
+            float radius_;
     };
 }
 

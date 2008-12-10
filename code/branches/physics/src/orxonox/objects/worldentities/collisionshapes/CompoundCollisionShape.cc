@@ -43,7 +43,6 @@ namespace orxonox
     {
         RegisterObject(CompoundCollisionShape);
 
-        this->collisionShape_ = 0;
         this->compoundShape_  = new btCompoundShape();
     }
 
@@ -66,7 +65,7 @@ namespace orxonox
         //       So we can get rid of the additional overhead with the compound shape.
         if (this->collisionShape_)
             return this->collisionShape_;
-        else if (this->childShapes_.size() != 0)
+        else if (!this->empty())
             return this->compoundShape_;
         else
             return 0;
@@ -74,21 +73,26 @@ namespace orxonox
 
     void CompoundCollisionShape::addChildShape(CollisionShape* shape)
     {
-        if (!shape || !shape->getCollisionShape())
+        if (!shape)
             return;
-        assert(this->compoundShape_);
-        btTransform transf(omni_cast<btQuaternion>(shape->getOrientation()), omni_cast<btVector3>(shape->getPosition()));
-        this->compoundShape_->addChildShape(transf, shape->getCollisionShape());
+        this->childShapes_.push_back(shape);
 
-        if (this->childShapes_.size() == 1 && this->childShapes_[0] && !this->childShapes_[0]->hasTransform())
+        if (shape->getCollisionShape())
         {
-            // --> Only shape to be added, no transform; add it directly
-            this->collisionShape_ = shape->getCollisionShape();
-        }
-        else
-        {
-            // Make sure we use the compound shape
-            this->collisionShape_ = 0;
+            // Only actually attach if we didn't pick a CompoundCollisionShape with no content
+            btTransform transf(omni_cast<btQuaternion>(shape->getOrientation()), omni_cast<btVector3>(shape->getPosition()));
+            this->compoundShape_->addChildShape(transf, shape->getCollisionShape());
+
+            if (this->childShapes_.size() == 1 && !this->childShapes_[0]->hasTransform())
+            {
+                // --> Only shape to be added, no transform; add it directly
+                this->collisionShape_ = shape->getCollisionShape();
+            }
+            else
+            {
+                // Make sure we use the compound shape when returning the btCollisionShape
+                this->collisionShape_ = 0;
+            }
         }
 
         // network synchro

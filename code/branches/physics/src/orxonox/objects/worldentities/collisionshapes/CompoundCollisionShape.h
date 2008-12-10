@@ -49,8 +49,11 @@ namespace orxonox
 
             virtual btCollisionShape* getCollisionShape() const;
 
+            inline bool empty() const
+                { return this->childShapes_.size() == 0; }
+
         private:
-            btCompoundShape* compoundShape_;
+            btCompoundShape*             compoundShape_;
             std::vector<CollisionShape*> childShapes_;
     };
 }

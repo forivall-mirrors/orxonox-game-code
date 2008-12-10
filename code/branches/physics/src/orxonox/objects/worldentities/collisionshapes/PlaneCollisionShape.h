@@ -45,24 +45,21 @@ namespace orxonox
             void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
+            inline void setNormal(const Vector3& normal)
+                { this->normal_ = normal; updatePlane(); }
+            inline const Vector3& getNormal()
+                { return normal_;}
+
+            inline void setOffset(float offset)
+                { this->offset_ = offset; updatePlane(); }
             inline float getOffset()
-                { return this->planeShape_->getPlaneConstant();}
-            void setOffset(float offset);
+                { return this->offset_;}
 
-            inline btVector3 getNormal()
-                { return this->planeShape_->getPlaneNormal();}
-            void setNormal(const Vector3& normal);
-
-            inline void planeNormalChanged()
-                { this->setNormal(this->planeNormal_); }
-
-            inline void planeOffsetChanged()
-                { this->setOffset(this->planeOffset_); }
+            void updatePlane();
 
         private:
-            btStaticPlaneShape* planeShape_;
-            Vector3             planeNormal_;
-            float               planeOffset_;
+            Vector3 normal_;
+            float   offset_;
      };
 }
 
