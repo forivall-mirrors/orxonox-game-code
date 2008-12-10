@@ -8,13 +8,22 @@ namespace orxonox
 
 	bool ShipEquipment::insert(Item* item)
 	{
-	if(checkSlot(item)==true)
+	if(checkSlot(item)==NULL)
 	{
 		Equipment.insert ( std::pair<std::string, Item*>(item->getName(),item) );
 		return true;
 	}
-		COUT(3) << "swap?" << std::endl;
+	else
+	{
+		COUT(3) << "SWAP?" <<  endl;
+		if((checkSlot(item)->dropped(player))==true);
+		{
+			Equipment.insert ( std::pair<std::string, Item*>(item->getName(),item) );
+			COUT(3) << "SWAPPED!" <<  endl;
+			return true;
+		}
 		return false;
+	}
 
 	return false;
 	};
@@ -47,15 +56,16 @@ namespace orxonox
 		//print(Equipment);
 	}
 
-	bool ShipEquipment::checkSlot(Item* item)
+	Item* ShipEquipment::checkSlot(Item* item)
 	{
 	std::multimap<std::string,Item*>::iterator it;
 	for ( it= getPlayer()->getPickUp().getEquipment().begin() ; it != getPlayer()->getPickUp().getEquipment().end(); it++ )
 	{
 		//if((*it).second->getPlayerBaseClass()==item->getPlayerBaseClass())
 		if(item->isExactlyA((*it).second->getIdentifier()))
-		return false;
+		return (*it).second;
 	}
-	return true;
+	return NULL;
 	};
+	
 }

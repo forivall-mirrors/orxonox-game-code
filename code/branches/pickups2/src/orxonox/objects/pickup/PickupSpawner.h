@@ -3,7 +3,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "Item.h"
-
+#include "tools/Timer.h"
 #include "objects/worldentities/PositionableEntity.h"
 #include "objects/Tickable.h"
 
@@ -14,11 +14,16 @@ namespace orxonox
 	public:
 	PickupSpawner(BaseObject* creator);
 	virtual ~PickupSpawner();
-
+	virtual void changedActivity();
 	virtual void tick(float dt);
-
-    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+	virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	virtual void triggering(Pawn* trigger); // Wenn ein Spieler in die Naehe kommt
+	void triggerRespawnTimer();
+
+	/*inline void setVisibility(bool visible)
+		{ this->setActive(visible); }
+	inline float getVisibility() const
+		{ return this->isActive(); }*/
 
 	void setItemTemplate(const std::string& itemtemplate);
 	inline const std::string& getItemTemplate() const
@@ -28,11 +33,17 @@ namespace orxonox
 		{ this->distance_ = distance; }
 	inline float getDistance() const
 		{ return this->distance_; }
+	inline void setRespawnTimer (float respawntimer)
+		{ this->respawntimer_ = respawntimer; }
+	inline float getRespawnTimer() const
+		{ return this->respawntimer_; }
 
 	private:
 	std::string itemtemplate_;
 	Template* template_;
 	float distance_;
+	float respawntimer_;
+	Timer<BaseObject> RespawnTimer_;
 	};
 }
 

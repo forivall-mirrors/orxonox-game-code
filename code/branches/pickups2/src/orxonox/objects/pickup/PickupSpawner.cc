@@ -15,7 +15,8 @@ PickupSpawner::PickupSpawner(BaseObject* creator) : PositionableEntity(creator)
 	RegisterObject(PickupSpawner);
 
 	this->template_ = 0;
-	this->distance_ = 50;
+	this->distance_ = 20;
+	this->respawntimer_= 0;
 }
 
 PickupSpawner::~PickupSpawner()
@@ -27,7 +28,9 @@ void PickupSpawner::XMLPort(Element& xmlelement, XMLPort::Mode mode)
 	SUPER(PickupSpawner, XMLPort, xmlelement, mode);
 
 	XMLPortParam(PickupSpawner, "item", setItemTemplate, getItemTemplate, xmlelement, mode);
-	XMLPortParam(PickupSpawner, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(50.0f);
+	XMLPortParam(PickupSpawner, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(20.0f);
+	XMLPortParam(PickupSpawner, "respawntimer", setRespawnTimer, getRespawnTimer, xmlelement, mode);
+	
 }
 
 void PickupSpawner::tick(float dt)
@@ -53,7 +56,7 @@ void PickupSpawner::triggering(Pawn* player)
 {
 	if (this->isActive() && this->template_ && this->template_->getBaseclassIdentifier())
 	{
-		COUT(0) << "activated" << std::endl;
+		COUT(0) << "ITEM PICKED UP" << std::endl;
 		//if(player->isA(itemtemplate_->getPlayerBaseClass())) 
 		{
 		BaseObject* newobject = this->template_->getBaseclassIdentifier()->fabricate(this);
@@ -62,7 +65,12 @@ void PickupSpawner::triggering(Pawn* player)
 		{
 			newitem->addTemplate(this->itemtemplate_);
 			if (newitem->pickedUp(player)== true)
+			{
+				if(respawntimer_!=0)
+					this->triggerRespawnTimer();
 				this->setActive(false);
+				this->fireEvent();
+			}	
 			else
 				delete newobject;
 		}
@@ -71,4 +79,42 @@ void PickupSpawner::triggering(Pawn* player)
 		//	delete newobject;
 	}
 }
+
+void PickupSpawner::triggerRespawnTimer()
+{	
+	
+	if(respawntimer_!=0)
+	{
+		ExecutorMember<BaseObject>* executor = createExecutor(createFunctor(&BaseObject::setActive));
+		executor->setDefaultValues(true);
+		RespawnTimer_.setTimer(this->respawntimer_, false, (BaseObject*)this, executor);
+		COUT(0) << "TIMER SET" << std::endl;
+	}	
 }
+void PickupSpawner::changedActivity()
+{
+/*
+	COUT(0) << "Visble?" << std::endl;
+	if(isActive())
+	{
+		setVisible(true);
+		COUT(0) << "Visble!" << std::endl;
+	}
+	if(isActive()==false)
+	{
+		setVisible(false);
+		COUT(0) << "INvisble!" << std::endl;
+	}
+		
+*/
+	SUPER(PickupSpawner, changedActivity);
+
+	for (std::set<WorldEntity*>::iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); ++it)
+		(*it)->setVisible(this->isActive());
+}
+
+
+}
+
+
+

@@ -38,19 +38,24 @@ namespace orxonox
 
 	bool Turbo::pickedUp(Pawn* player)
 	{
+		
 		if(player-> isA(this->getPlayerBaseClass()))
 			{
 			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);
+			COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 			if(duration_==0 )
 			{	if(addTo(player))
-					{
+					{	
+						COUT(3)<<"ITEM EQUIPPED"<<std::endl;
 						this->setSpeedBoost(ship);
+						COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 						return true;
 					}
 			}
 			else
 			{
 				this->setSpeedBoost(ship);
+				COUT(3)<<"Speed:"<< ship->getMaxSpeed()<<std::endl;
 				return true;
 			}
 			return false;
@@ -66,7 +71,7 @@ namespace orxonox
 	ship->setTransAcc( ship->getTransAcc()/this->accboost_);
 	ship->setMaxRotation( ship->getMaxRotation()-this->rotacc_);
 	ship->setRotAcc( ship->getRotAcc()-this->rotacc_);
-	COUT(3)<<"PickUp Timer expired"<<std::endl;
+	COUT(3)<<"BOOST UNSET"<<std::endl;
 	}
 
 	void Turbo::setSpeedBoost(SpaceShip* ship)
@@ -87,7 +92,7 @@ namespace orxonox
 	{
 		if (this->duration_ == 0)
 		{
-			COUT(0) << "dropped" << std::endl;
+			COUT(0) << "ITEM DROPPED" << std::endl;
 			if(remove(player)==true);
 			{
 			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);

@@ -29,7 +29,8 @@ namespace orxonox
 	bool erase (Item* item);
 	//void print(std::multimap<std::string, Item*> eut);
 	void eraseAll();
-	bool checkSlot(Item* item);
+	//bool checkSlot(Item* item);
+	Item* checkSlot(Item* item);
 //	const std::multimap<std::string, Item*>& getEquipment() const { return this->Equipment; }
 	inline std::multimap<std::string, Item*>& getEquipment() {return this->Equipment;}
 	inline std::multimap<std::string, Item*>& getUsable() {return this->Usable;}
