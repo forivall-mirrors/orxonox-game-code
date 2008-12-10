@@ -72,8 +72,9 @@ namespace orxonox
         if(!this->isVisible())
             return;
             
-        Camera* test = CameraManager::getInstance().getActiveCamera();
-        Real distance = this->getPosition().distance( test->getWorldPosition() );       
+        Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
+        Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
+        COUT(2) << distance << std::endl;
         Real planetRadius = this->getScale();
         
         Real newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
