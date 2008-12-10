@@ -33,6 +33,7 @@
 
 #include "util/Math.h"
 #include "core/BaseObject.h"
+#include "network/Synchronisable.h"
 
 namespace orxonox
 {
