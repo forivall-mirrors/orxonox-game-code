@@ -102,7 +102,7 @@ COUT(0) << "LaserGun::fire - no magazines" << std::endl;
         }
         else
         {
-COUT(0) << "LaserGun::fire - weapon not reloaded" << std::endl;
+COUT(0) << "LaserGun::fire - weapon not reloaded - bullets remaining:" << this->munition_->bullets() << std::endl;
             //actions
         }
 
@@ -133,6 +133,7 @@ COUT(0) << "Weapon::magazineTimer started" << std::endl;
         this->bReloading_ = false;
         this->munition_->fillBullets();
         this->magazineReadyToShoot_ = true;
+        this->bulletReadyToShoot_ = true;
     }
 
 
