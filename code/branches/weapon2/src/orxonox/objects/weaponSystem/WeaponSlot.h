@@ -44,7 +44,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeapon(Weapon *weaponPointer);
+            void attachWeapon(Weapon *weapon);
             Weapon * getAttachedWeapon() const;
             void setAmmoType(bool isUnlimited);
             void fire();

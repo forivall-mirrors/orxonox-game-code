@@ -47,12 +47,14 @@ namespace orxonox
     {
         RegisterObject(Projectile);
 
+COUT(0) << "Projectile::Projectile" << std::endl;
+
         this->setConfigValues();
         this->explosionTemplateName_ = "Orxonox/explosion3";
         this->smokeTemplateName_ = "Orxonox/smoke4";
 
         //this->setStatic(false);
-        this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
+//        this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
 
         /*
         if (this->owner_)
@@ -119,9 +121,5 @@ namespace orxonox
     void Projectile::destroyObject()
     {
         delete this;
-    }
-
-    bool Projectile::create(){
-      return WorldEntity::create();
     }
 }

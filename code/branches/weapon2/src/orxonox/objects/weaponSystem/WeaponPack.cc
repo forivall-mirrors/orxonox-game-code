@@ -74,6 +74,8 @@ COUT(0) << "WeaponPack::fire (attached from WeaponSet)  from Weapon: "<< i << st
 
     void WeaponPack::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
+        SUPER(WeaponPack, XMLPort, xmlelement, mode);
+
         XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
         XMLPortParam(WeaponPack, "firemode", setFireMode, getFireMode, xmlelement, mode);
     }
@@ -114,6 +116,8 @@ COUT(0) << "WeaponPack::addWeapon:" << weapon << "   munition " << weapon->getMu
         for (int i=0; i < (int) this->weapons_.size(); i++)
         {
             this->weapons_[i]->attachNeededMunition(weapons_[i]->getMunitionType());
+            //hack!
+            this->weapons_[i]->setWeapon();
         }
 
     }

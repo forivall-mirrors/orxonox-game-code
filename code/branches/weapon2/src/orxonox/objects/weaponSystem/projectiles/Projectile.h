@@ -44,8 +44,6 @@ namespace orxonox
             void destroyObject();
             virtual void tick(float dt);
 
-            virtual bool create();
-
         protected:
             Projectile(BaseObject* creator);
 

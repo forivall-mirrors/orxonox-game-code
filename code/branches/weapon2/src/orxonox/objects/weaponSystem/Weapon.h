@@ -39,9 +39,11 @@
 #include "WeaponSystem.h"
 #include "Munition.h"
 
+#include "objects/worldentities/PositionableEntity.h"
+
 namespace orxonox
 {
-    class _OrxonoxExport Weapon : public BaseObject
+    class _OrxonoxExport Weapon : public PositionableEntity
     {
         public:
             Weapon(BaseObject* creator);
@@ -81,7 +83,7 @@ namespace orxonox
             inline WeaponSystem * getParentWeaponSystem()
                 { return this->parentWeaponSystem_; };
 
-            //in future by XMLPort, 
+            //in future by XMLPort
             virtual void setWeapon();
 
         private:
@@ -91,6 +93,8 @@ namespace orxonox
             bool magazineReadyToShoot_;
             float bulletLoadingTime_;
             float magazineLoadingTime_;
+            bool bReloading_;
+
             Munition *munition_;
             std::string munitionType_;
 

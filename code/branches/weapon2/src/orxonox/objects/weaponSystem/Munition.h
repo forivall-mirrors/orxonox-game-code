@@ -52,10 +52,10 @@ namespace orxonox
             void fillBullets();
             void fillMagazines();
 
-            bool bullets();
-            bool magazines();
+            unsigned int bullets();
+            unsigned int magazines();
 
-            void removeBullets(unsigned int k, Weapon * parentWeapon);
+            void removeBullets(unsigned int k);
             void removeMagazines(unsigned int k);
             void addBullets(unsigned int k);
             void addMagazines(unsigned int k);

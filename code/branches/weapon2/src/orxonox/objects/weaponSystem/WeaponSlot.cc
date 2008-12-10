@@ -72,11 +72,15 @@ COUT(0) << "WeaponSlot::fire" << std::endl;
 
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(WeaponSlot, XMLPort, xmlelement, mode);
     }
 
-    void WeaponSlot::attachWeapon(Weapon *weaponPointer)
-    {   this->attachedWeapon_ = weaponPointer;   }
+    void WeaponSlot::attachWeapon(Weapon *weapon)
+    {
+        this->attachedWeapon_ = weapon;
+        this->attach(weapon);
+COUT(0) << "WeaponSlot::attachWeapon position=" << this->getWorldPosition() << std::endl;
+    }
 
     Weapon * WeaponSlot::getAttachedWeapon() const
     {   return this->attachedWeapon_;   }

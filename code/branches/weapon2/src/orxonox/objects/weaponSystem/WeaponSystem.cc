@@ -144,7 +144,7 @@ COUT(0) << "WeaponSystem::fire - after if" << std::endl;
 
     void WeaponSystem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(WeaponSystem, XMLPort, xmlelement, mode);
     }
 
 }

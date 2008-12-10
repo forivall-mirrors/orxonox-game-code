@@ -43,6 +43,10 @@ namespace orxonox
     LaserGun::LaserGun(BaseObject* creator) : Weapon(creator)
     {
         RegisterObject(LaserGun);
+
+        //in future XMLPort
+        this->speed_ = 250;
+
     }
 
     LaserGun::~LaserGun()
@@ -51,7 +55,8 @@ namespace orxonox
 
     void LaserGun::takeBullets()
     {
-        this->munition_->removeBullets(1,this);
+COUT(0) << "LaserGun::takeBullets" << std::endl;
+        this->munition_->removeBullets(1);
         this->bulletTimer(this->bulletLoadingTime_);
     }
 
@@ -63,9 +68,10 @@ namespace orxonox
 
     void LaserGun::createProjectile()
     {
+COUT(0) << "LaserGun::createProjectile" << std::endl;
         BillboardProjectile* projectile = new ParticleProjectile(this);
-        projectile->setOrientation(projectile->getOrientation());
-        projectile->setPosition(projectile->getWorldPosition());
+        projectile->setOrientation(this->getWorldOrientation());
+        projectile->setPosition(this->getWorldPosition());
         projectile->setVelocity(WorldEntity::FRONT * this->speed_);
     }
 }

@@ -152,7 +152,9 @@ COUT(0) << "Pawn::fire" << std::endl;
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)
     {   
 COUT(0) << "Pawn::setWeaponSlot" << std::endl;
+        this->attach(wSlot);
         this->weaponSystem_->attachWeaponSlot(wSlot);   }
+
     WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
     {   return this->weaponSystem_->getWeaponSlotPointer(index);    }
     

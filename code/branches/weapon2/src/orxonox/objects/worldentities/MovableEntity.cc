@@ -74,7 +74,7 @@ namespace orxonox
         if (this->isActive())
         {
             this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_);
+            this->node_->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
 
             this->rotationRate_ += (dt * this->momentum_);
             this->node_->rotate(this->rotationAxis_, this->rotationRate_  * dt);

@@ -44,9 +44,9 @@ namespace orxonox
 
         assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
 
-        this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
-        //this->attachObject(this->billboard_.getBillboardSet());
-        this->scale(0.5);
+        this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5, 0.5, 0.7, 0.8), 1);
+        this->getNode()->attachObject(this->billboard_.getBillboardSet());
+        this->scale(0.2);
     }
 
     BillboardProjectile::~BillboardProjectile()

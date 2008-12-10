@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateFactory(Weapon);
 
-    Weapon::Weapon(BaseObject* creator) : BaseObject(creator)
+    Weapon::Weapon(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(Weapon);
         this->bulletReadyToShoot_ = true;
@@ -46,6 +46,9 @@ namespace orxonox
         this->parentWeaponSystem_ = 0;
         this->parentWeaponSlot_ = 0;
         this->munition_ = 0;
+        this->bulletLoadingTime_ = 0;
+        this->magazineLoadingTime_ = 0;
+        this->bReloading_ = false;
     }
 
     Weapon::~Weapon()
@@ -61,10 +64,11 @@ namespace orxonox
 
     void Weapon::setWeapon()
     {
+COUT(0) << "LaserGun::setWeapon" << std::endl;
         this->bulletLoadingTime_ = 0.5;
         this->magazineLoadingTime_ = 3.0;
         this->munition_->setMaxMagazines(100);
-        this->munition_->setMaxBullets(30);
+        this->munition_->setMaxBullets(6);
         this->munition_->fillBullets();
         this->munition_->fillMagazines();
     }
@@ -73,26 +77,33 @@ namespace orxonox
     void Weapon::fire()
     {
 COUT(0) << "LaserGun::fire, this=" << this << std::endl;
-        if ( this->bulletReadyToShoot_ && this->magazineReadyToShoot_ )
+        if ( this->bulletReadyToShoot_ && this->magazineReadyToShoot_ && !this->bReloading_)
         {
 COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
-
+COUT(0) << "LaserGun::fire - bullets" << this->munition_->bullets() << std::endl;
             this->bulletReadyToShoot_ = false;
-            if ( this->munition_->bullets() )
+            if ( this->munition_->bullets() > 0)
             {
                 //shoot
                 this->takeBullets();
                 this->createProjectile();
             }
             //if there are no bullets, but magazines
-            else if ( this->munition_->magazines() && !this->munition_->bullets() )
+            else if ( this->munition_->magazines() > 0 && this->munition_->bullets() == 0 )
             {
+COUT(0) << "LaserGun::fire - no bullets" << std::endl;
                 this->takeMagazines();
+            }
+            else
+            {
+COUT(0) << "LaserGun::fire - no magazines" << std::endl;
+                //actions
             }
         }
         else
         {
 COUT(0) << "LaserGun::fire - weapon not reloaded" << std::endl;
+            //actions
         }
 
     }
@@ -101,19 +112,25 @@ COUT(0) << "LaserGun::fire - weapon not reloaded" << std::endl;
     void Weapon::bulletTimer(float bulletLoadingTime)
     {
 COUT(0) << "Weapon::bulletTimer started" << std::endl;
+        this->bReloading_ = true;
         this->bulletReloadTimer_.setTimer( bulletLoadingTime , false , this , createExecutor(createFunctor(&Weapon::bulletReloaded)));
     }
     void Weapon::magazineTimer(float magazineLoadingTime)
     {
 COUT(0) << "Weapon::magazineTimer started" << std::endl;
+        this->bReloading_ = true;
         this->magazineReloadTimer_.setTimer( magazineLoadingTime , false , this , createExecutor(createFunctor(&Weapon::magazineReloaded)));
     }
 
     void Weapon::bulletReloaded()
-    { this->bulletReadyToShoot_ = true; }
+    {
+        this->bReloading_ = false;
+        this->bulletReadyToShoot_ = true;
+    }
 
     void Weapon::magazineReloaded()
-    { 
+    {
+        this->bReloading_ = false;
         this->munition_->fillBullets();
         this->magazineReadyToShoot_ = true;
     }

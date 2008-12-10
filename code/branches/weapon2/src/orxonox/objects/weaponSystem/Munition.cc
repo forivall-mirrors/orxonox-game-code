@@ -45,20 +45,20 @@ namespace orxonox
     {
     }
 
-    bool Munition::bullets()
+    unsigned int Munition::bullets()
     { 
         if (this->bullets_ > 0)
-            return true;
+            return bullets_;
         else
-            return false;
+            return 0;
     }
 
-    bool Munition::magazines()
+    unsigned int Munition::magazines()
     { 
         if (this->magazines_ > 0)
-            return true;
+            return magazines_;
         else
-            return false;
+            return 0;
     }
 
     void Munition::setMaxBullets(unsigned int amount)
@@ -67,32 +67,15 @@ namespace orxonox
     void Munition::setMaxMagazines(unsigned int amount)
     { this->maxMagazines_ = amount; }
 
-    void Munition::removeBullets(unsigned int amount, Weapon * parentWeapon)
+    void Munition::removeBullets(unsigned int amount)
     {
-        if ( this->bullets_ == 0 )
-        {
-            this->removeMagazines(1);
-            parentWeapon->magazineTimer(0);
-            this->bullets_ = this->maxBullets_;
-        }
-        else
+        if ( this->bullets_ != 0 )
             this->bullets_ = this->bullets_ - amount;
     }
 
     void Munition::removeMagazines(unsigned int amount)
     {
-        if ( this->magazines_ == 0 )
-        {
-            if ( this->bullets_ == 0 )
-                {
-                    //no bullets and no magazines
-                }
-            else
-            {
-                //what to do when there are no more magazines?
-            }
-        }
-        else
+        if ( this->magazines_ != 0 )
             this->magazines_ = this->magazines_ - amount;
     }
 
@@ -119,6 +102,7 @@ namespace orxonox
 
     void Munition::fillBullets()
     {
+COUT(0) << "Munition::fillBullets maxBullets_=" << this->maxBullets_ << std::endl;
         this->bullets_ = this->maxBullets_;
     }
     
@@ -129,7 +113,7 @@ namespace orxonox
     
     void Munition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(Munition, XMLPort, xmlelement, mode);
     }
 
 }

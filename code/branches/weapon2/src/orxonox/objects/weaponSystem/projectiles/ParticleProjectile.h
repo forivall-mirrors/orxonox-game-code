@@ -45,8 +45,6 @@ namespace orxonox
             virtual void changedVisibility();
             void setConfigValues();
 
-            virtual bool create();
-
         private:
             ParticleInterface* particles_;
     };

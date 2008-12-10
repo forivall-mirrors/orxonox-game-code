@@ -42,10 +42,11 @@ namespace orxonox
     {
         RegisterObject(ParticleProjectile);
 
-        this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot2", LODParticle::normal);
+        this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot2_small", LODParticle::normal);
         this->particles_->addToSceneNode(this->getNode());
-        this->particles_->setKeepParticlesInLocalSpace(true);
+        //this->particles_->setKeepParticlesInLocalSpace(true);
 
+        this->particles_->getAllEmitters()->setDirection(-WorldEntity::FRONT);
         /*
         if (this->owner_)
         {
@@ -74,12 +75,5 @@ namespace orxonox
     {
         SUPER(ParticleProjectile, changedVisibility);
         this->particles_->setEnabled(this->isVisible());
-    }
-
-    bool ParticleProjectile::create(){
-      if(!Projectile::create())
-        return false;
-      this->particles_->getAllEmitters()->setDirection(-this->getOrientation()*Vector3(1,0,0));
-      return true;
     }
 }
