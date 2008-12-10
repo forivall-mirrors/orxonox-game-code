@@ -46,6 +46,7 @@ namespace orxonox {
 
     NotificationManager::~NotificationManager()
     {
+        //TDO: Destroy the containers
     }
     
     void NotificationManager::tick(float dt)

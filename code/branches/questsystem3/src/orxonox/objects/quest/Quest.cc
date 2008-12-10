@@ -376,6 +376,8 @@ namespace orxonox {
         QuestListener::advertiseStatusChange(this->listeners_, "fail"); //!< Tells the QuestListeners, that the status has changed to failed.
         this->setStatus(player, questStatus::failed);
         
+        COUT(4) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." <<std::endl;
+        
         this->getDescription()->sendFailQuestNotification();
         return true;
     }
@@ -392,6 +394,8 @@ namespace orxonox {
     {
         QuestListener::advertiseStatusChange(this->listeners_, "complete"); //!< Tells the QuestListeners, that the status has changed to completed.
         this->setStatus(player, questStatus::completed);
+        
+        COUT(4) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." <<std::endl;
         
         this->getDescription()->sendCompleteQuestNotification();
         return true;
@@ -412,6 +416,8 @@ namespace orxonox {
             COUT(4) << "A non-startable quest was trying to be started." << std::endl;
             return false;
         }
+        
+        COUT(4) << "Quest {" << this->getId() << "} is started for player: " << player << " ." <<std::endl;
         
         QuestListener::advertiseStatusChange(this->listeners_, "start"); //!< Tells the QuestListeners, that the status has changed to active.
         
