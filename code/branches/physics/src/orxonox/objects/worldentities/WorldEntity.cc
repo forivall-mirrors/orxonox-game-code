@@ -43,8 +43,8 @@
 #include "core/XMLPort.h"
 
 #include "objects/Scene.h"
-#include "objects/worldentities/collisionshapes/CollisionShape.h"
-#include "objects/worldentities/collisionshapes/CompoundCollisionShape.h"
+#include "objects/collisionshapes/CollisionShape.h"
+#include "objects/collisionshapes/CompoundCollisionShape.h"
 
 namespace orxonox
 {
@@ -190,7 +190,7 @@ namespace orxonox
 
                 // static to static/kinematic/dynamic --> merge shapes
                 this->childMass_ += object->getMass();
-                this->attachCollisionShape(object->getCollisionShape());
+                this->attachCollisionShape(object->getCollisionShape(), true);
                 // Remove the btRigidBody from the child object.
                 // That also implies that cannot add a physics WE to the child afterwards.
                 object->setCollisionType(None);
@@ -236,9 +236,9 @@ namespace orxonox
         return 0;
     }
 
-    void WorldEntity::attachCollisionShape(CollisionShape* shape)
+    void WorldEntity::attachCollisionShape(CollisionShape* shape, bool bWorldEntityRoot)
     {
-        this->collisionShape_->addChildShape(shape);
+        this->collisionShape_->addChildShape(shape, bWorldEntityRoot);
 
         if (this->physicalBody_)
         {

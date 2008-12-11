@@ -71,7 +71,7 @@ namespace orxonox
             return 0;
     }
 
-    void CompoundCollisionShape::addChildShape(CollisionShape* shape)
+    void CompoundCollisionShape::addChildShape(CollisionShape* shape, bool bWorldEntityRoot)
     {
         if (!shape)
             return;
@@ -96,7 +96,8 @@ namespace orxonox
         }
 
         // network synchro
-        shape->setParent(this, this->getObjectID());
+        if (!bWorldEntityRoot)
+            shape->setParent(this, this->getObjectID());
     }
 
     CollisionShape* CompoundCollisionShape::getChildShape(unsigned int index) const

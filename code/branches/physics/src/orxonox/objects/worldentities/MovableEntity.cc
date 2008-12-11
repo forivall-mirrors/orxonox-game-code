@@ -107,14 +107,11 @@ namespace orxonox
     {
         if (this->isDynamic())
         {
-            //if (this->isPhysicsRunning())
-            //    return;
             btTransform transf = this->physicalBody_->getWorldTransform();
             transf.setOrigin(btVector3(position.x, position.y, position.z));
             this->physicalBody_->setWorldTransform(transf);
         }
 
-        //COUT(0) << "setting position: " << position << std::endl;
         this->node_->setPosition(position);
         positionChanged(false);
     }
@@ -211,8 +208,6 @@ namespace orxonox
             ThrowException(NotImplemented, "ControllableEntity::lookAt() is not yet supported for physical objects.");
             OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
                                                           to any other space than TS_LOCAL.");
-            //btTransform transf = this->physicalBody_->getWorldTransform();
-            //this->physicalBody_->setWorldTransform(transf);
         }
 
         this->node_->lookAt(target, relativeTo, localDirectionVector);
@@ -226,8 +221,6 @@ namespace orxonox
             ThrowException(NotImplemented, "ControllableEntity::setDirection() is not yet supported for physical objects.");
             OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
                                                           to any other space than TS_LOCAL.");
-            //btTransform transf = this->physicalBody_->getWorldTransform();
-            //this->physicalBody_->setWorldTransform(transf);
         }
 
         this->node_->setDirection(direction, relativeTo, localDirectionVector);
@@ -287,7 +280,6 @@ namespace orxonox
         // We use a dynamic body. So we translate our node accordingly.
         this->node_->setPosition(Vector3(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z()));
         this->node_->setOrientation(Quaternion(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z()));
-        COUT(0) << "setting world transform: " << omni_cast<std::string>(node_->getPosition()) << std::endl;
         this->linearVelocity_.x = this->physicalBody_->getLinearVelocity().x();
         this->linearVelocity_.y = this->physicalBody_->getLinearVelocity().y();
         this->linearVelocity_.z = this->physicalBody_->getLinearVelocity().z();

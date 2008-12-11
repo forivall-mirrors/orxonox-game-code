@@ -107,8 +107,8 @@ namespace orxonox
             Vector3 angularVelocity_;
 
         private:
-            virtual void positionChanged       (bool bContinuous) { }
-            virtual void orientationChanged    (bool bContinuous) { }
+            virtual void positionChanged       (bool bContinuous) = 0;
+            virtual void orientationChanged    (bool bContinuous) = 0;
             virtual void linearVelocityChanged (bool bContinuous) { }
             virtual void angularVelocityChanged(bool bContinuous) { }
 

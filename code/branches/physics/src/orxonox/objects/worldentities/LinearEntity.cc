@@ -79,13 +79,11 @@ namespace orxonox
 
     void LinearEntity::overwritePosition()
     {
-        //COUT(0) << "Setting position on client: " << this->overwrite_position_ << std::endl;
         this->setPosition(this->overwrite_position_);
     }
 
     void LinearEntity::overwriteOrientation()
     {
-        //COUT(0) << "Setting orientation on client: " << this->overwrite_orientation_ << std::endl;
         this->setOrientation(this->overwrite_orientation_);
     }
 
@@ -108,20 +106,12 @@ namespace orxonox
     void LinearEntity::positionChanged(bool bContinuous)
     {
         if (!bContinuous)
-        {
-            //if (Core::isMaster())
-            //    COUT(0) << "Setting position on server: " << this->getPosition() << std::endl;
             this->overwrite_position_ = this->getPosition();
-        }
     }
 
     void LinearEntity::orientationChanged(bool bContinuous)
     {
         if (!bContinuous)
-        {
-            //if (Core::isMaster())
-            //    COUT(0) << "Setting orientation on server: " << this->getOrientation() << std::endl;
             this->overwrite_orientation_ = this->getOrientation();
-        }
     }
 }

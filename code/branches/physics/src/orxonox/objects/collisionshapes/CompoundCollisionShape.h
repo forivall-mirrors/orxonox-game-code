@@ -44,7 +44,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void addChildShape(CollisionShape* shape);
+            void addChildShape(CollisionShape* shape, bool bWorldEntityRoot = false);
             CollisionShape* getChildShape(unsigned int index) const;
 
             virtual btCollisionShape* getCollisionShape() const;

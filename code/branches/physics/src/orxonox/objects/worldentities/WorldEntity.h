@@ -201,7 +201,7 @@ namespace orxonox
             inline float getMass() const
                 { return this->mass_; }
 
-            void attachCollisionShape(CollisionShape* shape);
+            void attachCollisionShape(CollisionShape* shape, bool bWorldEntityRoot = false);
             CollisionShape* getAttachedCollisionShape(unsigned int index) const;
 
             inline CompoundCollisionShape* getCollisionShape()
