@@ -20,35 +20,32 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
- *      Martin Stypinski
+ *      ...
  *
  */
 
 #include "OrxonoxStableHeaders.h"
 #include "MovableEntity.h"
 
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-
-#include "util/Debug.h"
-#include "util/MathConvert.h"
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
-#include "objects/Scene.h"
+#include "core/Executor.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
-    MovableEntity::MovableEntity(BaseObject* creator) : WorldEntity(creator)
+    static const float MAX_RESYNCHRONIZE_TIME = 3.0f;
+
+    CreateFactory(MovableEntity);
+
+    MovableEntity::MovableEntity(BaseObject* creator) : MobileEntity(creator)
     {
         RegisterObject(MovableEntity);
 
-        this->linearAcceleration_  = Vector3::ZERO;
-        this->linearVelocity_      = Vector3::ZERO;
-        this->angularAcceleration_ = Vector3::ZERO;
-        this->angularVelocity_     = Vector3::ZERO;
+        this->overwrite_position_    = Vector3::ZERO;
+        this->overwrite_orientation_ = Quaternion::IDENTITY;
 
         this->registerVariables();
     }
@@ -60,249 +57,61 @@ namespace orxonox
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(MovableEntity, XMLPort, xmlelement, mode);
-
-        XMLPortParamTemplate(MovableEntity, "velocity",     setVelocity,     getVelocity,     xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(MovableEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
-        XMLPortParam(MovableEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode);
     }
 
     void MovableEntity::registerVariables()
     {
+        REGISTERDATA(this->linearVelocity_,        network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::processLinearVelocity));
+        REGISTERDATA(this->angularVelocity_,       network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::processAngularVelocity));
+
+        REGISTERDATA(this->overwrite_position_,    network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::overwritePosition));
+        REGISTERDATA(this->overwrite_orientation_, network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
     }
 
     void MovableEntity::tick(float dt)
     {
+        MobileEntity::tick(dt);
+
         if (this->isActive())
         {
-            // Check whether Bullet doesn't do the physics for us
-            if (!this->isDynamic())
-            {
-                // Linear part
-                this->linearVelocity_.x += this->linearAcceleration_.x * dt;
-                this->linearVelocity_.y += this->linearAcceleration_.y * dt;
-                this->linearVelocity_.z += this->linearAcceleration_.z * dt;
-                linearVelocityChanged(true);
-                this->node_->translate(this->linearVelocity_ * dt);
-                positionChanged(true);
-
-                // Angular part
-                // Note: angularVelocity_ is a Quaternion with w = 0 while angularAcceleration_ is a Vector3
-                this->angularVelocity_.x += angularAcceleration_.x * dt;
-                this->angularVelocity_.y += angularAcceleration_.y * dt;
-                this->angularVelocity_.z += angularAcceleration_.z * dt;
-                angularVelocityChanged(true);
-                // Calculate new orientation with quaternion derivative. This is about 30% faster than with angle/axis method.
-                float mult = dt * 0.5;
-                // TODO: this could be optimized by writing it out. The calls currently create 4 new Quaternions!
-                Quaternion newOrientation(0.0f, this->angularVelocity_.x * mult, this->angularVelocity_.y * mult, this->angularVelocity_.z * mult);
-                newOrientation = this->node_->getOrientation() + newOrientation * this->node_->getOrientation();
-                newOrientation.normalise();
-                this->node_->setOrientation(newOrientation);
-                orientationChanged(true);
-            }
         }
     }
 
-    void MovableEntity::setPosition(const Vector3& position)
+    void MovableEntity::overwritePosition()
     {
-        if (this->isDynamic())
-        {
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            transf.setOrigin(btVector3(position.x, position.y, position.z));
-            this->physicalBody_->setWorldTransform(transf);
-        }
+        this->setPosition(this->overwrite_position_);
+    }
 
-        this->node_->setPosition(position);
+    void MovableEntity::overwriteOrientation()
+    {
+        this->setOrientation(this->overwrite_orientation_);
+    }
+
+    void MovableEntity::clientConnected(unsigned int clientID)
+    {
+        resynchronize();
+        new Timer<MovableEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, true, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), false);
+    }
+
+    void MovableEntity::clientDisconnected(unsigned int clientID)
+    {
+    }
+
+    void MovableEntity::resynchronize()
+    {
         positionChanged(false);
-    }
-
-    void MovableEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot translate physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            this->physicalBody_->translate(btVector3(distance.x, distance.y, distance.z));
-        }
-
-        this->node_->translate(distance, relativeTo);
-        positionChanged(false);
-    }
-
-    void MovableEntity::setOrientation(const Quaternion& orientation)
-    {
-        if (this->isDynamic())
-        {
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            transf.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
-            this->physicalBody_->setWorldTransform(transf);
-        }
-
-        this->node_->setOrientation(orientation);
         orientationChanged(false);
     }
 
-    void MovableEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
+    void MovableEntity::positionChanged(bool bContinuous)
     {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot rotate physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            this->physicalBody_->setWorldTransform(transf * btTransform(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w)));
-        }
-
-        this->node_->rotate(rotation, relativeTo);
-        orientationChanged(false);
+        if (!bContinuous)
+            this->overwrite_position_ = this->getPosition();
     }
 
-    void MovableEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    void MovableEntity::orientationChanged(bool bContinuous)
     {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot yaw physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            btTransform rotation(btQuaternion(angle.valueRadians(), 0.0f, 0.0f));
-            this->physicalBody_->setWorldTransform(transf * rotation);
-        }
-
-        this->node_->yaw(angle, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MovableEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot pitch physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            btTransform rotation(btQuaternion(0.0f, angle.valueRadians(), 0.0f));
-            this->physicalBody_->setWorldTransform(transf * rotation);
-        }
-
-        this->node_->pitch(angle, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MovableEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot roll physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            btTransform rotation(btQuaternion(angle.valueRadians(), 0.0f, 0.0f));
-            this->physicalBody_->setWorldTransform(transf * rotation);
-        }
-
-        this->node_->roll(angle, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MovableEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (this->isDynamic())
-        {
-            ThrowException(NotImplemented, "ControllableEntity::lookAt() is not yet supported for physical objects.");
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
-                                                          to any other space than TS_LOCAL.");
-        }
-
-        this->node_->lookAt(target, relativeTo, localDirectionVector);
-        orientationChanged(false);
-    }
-
-    void MovableEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (this->isDynamic())
-        {
-            ThrowException(NotImplemented, "ControllableEntity::setDirection() is not yet supported for physical objects.");
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
-                                                          to any other space than TS_LOCAL.");
-        }
-
-        this->node_->setDirection(direction, relativeTo, localDirectionVector);
-        orientationChanged(false);
-    }
-
-    void MovableEntity::setVelocity(const Vector3& velocity)
-    {
-        if (this->isDynamic())
-            this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
-
-        this->linearVelocity_ = velocity;
-        linearVelocityChanged(false);
-    }
-
-    void MovableEntity::setAngularVelocity(const Vector3& velocity)
-    {
-        if (this->isDynamic())
-            this->physicalBody_->setAngularVelocity(btVector3(velocity.x, velocity.y, velocity.z));
-
-        this->angularVelocity_ = velocity;
-        angularVelocityChanged(false);
-    }
-
-    void MovableEntity::setAcceleration(const Vector3& acceleration)
-    {
-        if (this->isDynamic())
-            this->physicalBody_->applyCentralForce(btVector3(acceleration.x * this->getMass(), acceleration.y * this->getMass(), acceleration.z * this->getMass()));
-
-        this->linearAcceleration_ = acceleration;
-    }
-
-    void MovableEntity::setAngularAcceleration(const Vector3& acceleration)
-    {
-        if (this->isDynamic())
-        {
-            btVector3 inertia(btVector3(1, 1, 1) / this->physicalBody_->getInvInertiaDiagLocal());
-            this->physicalBody_->applyTorque(btVector3(acceleration.x, acceleration.y, acceleration.z) * inertia);
-        }
-
-        this->angularAcceleration_ = acceleration;
-    }
-
-    bool MovableEntity::isCollisionTypeLegal(WorldEntity::CollisionType type) const
-    {
-        if (type == WorldEntity::Static)
-        {
-            ThrowException(PhysicsViolation, "Cannot tell a MovableEntity to have static collision type");
-            return false;
-        }
-        else
-            return true;
-    }
-
-    void MovableEntity::setWorldTransform(const btTransform& worldTrans)
-    {
-        // We use a dynamic body. So we translate our node accordingly.
-        this->node_->setPosition(Vector3(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z()));
-        this->node_->setOrientation(Quaternion(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z()));
-        this->linearVelocity_.x = this->physicalBody_->getLinearVelocity().x();
-        this->linearVelocity_.y = this->physicalBody_->getLinearVelocity().y();
-        this->linearVelocity_.z = this->physicalBody_->getLinearVelocity().z();
-        this->angularVelocity_.x = this->physicalBody_->getAngularVelocity().x();
-        this->angularVelocity_.y = this->physicalBody_->getAngularVelocity().y();
-        this->angularVelocity_.z = this->physicalBody_->getAngularVelocity().z();
-        linearVelocityChanged(true);
-        angularVelocityChanged(true);
-        positionChanged(true);
-        orientationChanged(true);
-    }
-
-    void MovableEntity::getWorldTransform(btTransform& worldTrans) const
-    {
-        // We use a kinematic body
-        worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
-        worldTrans.setRotation(btQuaternion(node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z, node_->getOrientation().w));
-        if (this->isDynamic())
-        {
-            // This function gets called only once for dynamic objects to set the initial conditions
-            // We have to set the velocities too.
-            this->physicalBody_->setLinearVelocity(btVector3(linearVelocity_.x, linearVelocity_.y, linearVelocity_.z));
-            this->physicalBody_->setAngularVelocity(btVector3(angularVelocity_.x, angularVelocity_.y, angularVelocity_.z));
-        }
+        if (!bContinuous)
+            this->overwrite_orientation_ = this->getOrientation();
     }
 }

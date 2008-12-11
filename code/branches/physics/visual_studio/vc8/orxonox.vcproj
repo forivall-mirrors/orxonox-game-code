@@ -280,7 +280,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\LinearEntity.cc"
+						RelativePath="..\..\src\orxonox\objects\worldentities\MobileEntity.cc"
 						>
 					</File>
 					<File
@@ -1200,7 +1200,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\LinearEntity.h"
+						RelativePath="..\..\src\orxonox\objects\worldentities\MobileEntity.h"
 						>
 					</File>
 					<File

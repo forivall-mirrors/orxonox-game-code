@@ -45,7 +45,7 @@ namespace orxonox
 {
     float Projectile::speed_s = 5000;
 
-    Projectile::Projectile(BaseObject* creator, Weapon* owner) : MovableEntity(creator), owner_(owner)
+    Projectile::Projectile(BaseObject* creator, Weapon* owner) : MobileEntity(creator), owner_(owner)
     {
         RegisterObject(Projectile);
 

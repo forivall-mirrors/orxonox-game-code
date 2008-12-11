@@ -31,12 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/worldentities/MovableEntity.h"
+#include "objects/worldentities/MobileEntity.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public MovableEntity
+    class _OrxonoxExport Projectile : public MobileEntity
     {
         public:
             virtual ~Projectile();

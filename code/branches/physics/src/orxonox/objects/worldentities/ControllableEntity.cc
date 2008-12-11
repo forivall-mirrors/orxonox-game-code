@@ -43,7 +43,7 @@ namespace orxonox
 {
     CreateFactory(ControllableEntity);
 
-    ControllableEntity::ControllableEntity(BaseObject* creator) : MovableEntity(creator)
+    ControllableEntity::ControllableEntity(BaseObject* creator) : MobileEntity(creator)
     {
         RegisterObject(ControllableEntity);
 
@@ -225,7 +225,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::tick(float dt)
     {
-        MovableEntity::tick(dt);
+        MobileEntity::tick(dt);
 
         if (this->isActive())
         {

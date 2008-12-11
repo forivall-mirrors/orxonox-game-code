@@ -343,7 +343,7 @@ namespace orxonox
         else if (this->physicalBody_ && this->physicalBody_->isInWorld())
             ThrowException(PhysicsViolation, "Warning: Cannot set the collision type at run time.");
 
-        // Check for type legality. Could be StaticEntity or MovableEntity
+        // Check for type legality. Could be StaticEntity or MobileEntity
         if (!this->isCollisionTypeLegal(type))
             return; // exception gets issued anyway
 

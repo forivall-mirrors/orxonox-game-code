@@ -56,7 +56,7 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/WorldEntity.cc
   objects/worldentities/StaticEntity.cc
   objects/worldentities/MovableEntity.cc
-  objects/worldentities/LinearEntity.cc
+  objects/worldentities/MobileEntity.cc
   objects/worldentities/ControllableEntity.cc
   objects/worldentities/Model.cc
   objects/worldentities/Billboard.cc

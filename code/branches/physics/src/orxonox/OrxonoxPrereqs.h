@@ -103,9 +103,9 @@ namespace orxonox
 
     class WorldEntity;
     class StaticEntity;
-    class MovableEntity;
+    class MobileEntity;
     class ControllableEntity;
-    class LinearEntity;
+    class MovableEntity;
     class Sublevel;
 
     class Model;

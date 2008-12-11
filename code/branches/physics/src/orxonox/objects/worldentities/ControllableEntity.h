@@ -31,11 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "MovableEntity.h"
+#include "MobileEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ControllableEntity : public MovableEntity
+    class _OrxonoxExport ControllableEntity : public MobileEntity
     {
         public:
             ControllableEntity(BaseObject* creator);
