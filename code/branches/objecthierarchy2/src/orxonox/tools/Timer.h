@@ -62,6 +62,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
+#include "gamestates/GSRoot.h"
 
 namespace orxonox
 {
@@ -71,7 +72,7 @@ namespace orxonox
     void executeDelayedCommand(StaticTimer* timer, const std::string& command);
 
     //! TimerBase is the parent of the Timer class.
-    class _OrxonoxExport TimerBase : public OrxonoxClass
+    class _OrxonoxExport TimerBase : public TimeFactorListener
     {
         public:
             ~TimerBase();

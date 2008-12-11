@@ -134,8 +134,8 @@ namespace orxonox
     {
         if (this->ribbonTrail_ && this->tickcount_ >= 2)
         {
-            this->ribbonTrail_->setWidthChange(0, this->width_ * this->getWorldScale() / this->lifetime_/* * Backlight::timeFactor_s*/);
-            this->ribbonTrail_->setColourChange(0, 0, 0, 0, 1.0f / this->lifetime_/* * Backlight::timeFactor_s*/);
+            this->ribbonTrail_->setWidthChange(0, this->width_ * this->getWorldScale() / this->lifetime_ * this->getTimeFactor());
+            this->ribbonTrail_->setColourChange(0, 0, 0, 0, 1.0f / this->lifetime_ * this->getTimeFactor());
         }
     }
 
@@ -225,5 +225,10 @@ namespace orxonox
             const ColourValue& colour = this->getColour();
             this->ribbonTrail_->setInitialColour(0, colour.r, colour.g, colour.b, this->getFadedColour().a);
         }
+    }
+
+    void Backlight::changedTimeFactor(float factor_new, float factor_old)
+    {
+        this->update_lifetime();
     }
 }

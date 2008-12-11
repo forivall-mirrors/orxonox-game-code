@@ -71,6 +71,23 @@ namespace orxonox
         ConsoleCommand*       ccSelectGameState_;
         ConsoleCommand*       ccSetTimeFactor_;
     };
+
+    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
+    {
+        friend class GSRoot;
+
+        public:
+            TimeFactorListener();
+            virtual ~TimeFactorListener() {}
+
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old) {}
+            inline float getTimeFactor() const
+                { return TimeFactorListener::timefactor_s; }
+
+        private:
+            static float timefactor_s;
+    };
 }
 
 #endif /* _GSRoot_H__ */

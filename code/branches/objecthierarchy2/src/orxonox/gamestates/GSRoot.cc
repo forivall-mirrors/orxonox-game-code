@@ -43,11 +43,9 @@
 #include "core/LuaBind.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
-#include "objects/worldentities/Backlight.h"
-#include "tools/ParticleInterface.h"
 #include "Settings.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
 #  ifndef WIN32_LEAN_AND_MEAN
 #    define WIN32_LEAN_AND_MEAN
 #  endif
@@ -230,16 +228,22 @@ namespace orxonox
     {
         if (Core::isMaster())
         {
-            float change = factor / this->timeFactor_;
+            TimeFactorListener::timefactor_s = factor;
+
+            for (ObjectList<TimeFactorListener>::iterator it = ObjectList<TimeFactorListener>::begin(); it != ObjectList<TimeFactorListener>::end(); ++it)
+                it->changedTimeFactor(factor, this->timeFactor_);
 
             this->timeFactor_ = factor;
-/*
-            for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it != ObjectList<ParticleInterface>::end(); ++it)
-                it->setSpeedFactor(it->getSpeedFactor() * change);
-
-            for (ObjectList<Backlight>::iterator it = ObjectList<Backlight>::begin(); it != ObjectList<Backlight>::end(); ++it)
-                it->setTimeFactor(timeFactor_);
-*/
         }
+    }
+
+    ////////////////////////
+    // TimeFactorListener //
+    ////////////////////////
+    float TimeFactorListener::timefactor_s = 1.0f;
+
+    TimeFactorListener::TimeFactorListener()
+    {
+        RegisterRootObject(TimeFactorListener);
     }
 }

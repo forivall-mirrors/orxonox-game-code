@@ -36,6 +36,7 @@
 
 #include "core/OrxonoxClass.h"
 #include "util/Math.h"
+#include "gamestates/GSRoot.h"
 
 #define getAllEmitters() \
   storeThisAsCurrentParticleInterface(); \
@@ -44,7 +45,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleInterface : public OrxonoxClass
+    class _OrxonoxExport ParticleInterface : public TimeFactorListener
     {
         public:
             ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel);
@@ -68,7 +69,8 @@ namespace orxonox
             void removeAllAffectors();
             unsigned int getNumAffectors() const;
 
-            float getSpeedFactor() const;
+            inline float getSpeedFactor() const
+                { return this->speedFactor_; }
             void setSpeedFactor(float factor);
             bool getKeepParticlesInLocalSpace() const;
             void setKeepParticlesInLocalSpace(bool keep);
@@ -89,6 +91,9 @@ namespace orxonox
             inline static ParticleInterface* getCurrentParticleInterface()
                 { return ParticleInterface::currentParticleInterface_s; }
 
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old);
+
         private:
             void updateVisibility();
 
@@ -101,6 +106,7 @@ namespace orxonox
             bool                      bEnabled_;
             bool                      bAllowedByLOD_;
             unsigned int              detaillevel_;     //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
+            float                     speedFactor_;
             Ogre::SceneManager*       scenemanager_;
     };
 }

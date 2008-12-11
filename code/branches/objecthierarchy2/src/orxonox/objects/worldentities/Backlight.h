@@ -31,10 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 #include "FadingBillboard.h"
+#include "gamestates/GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Backlight : public FadingBillboard
+    class _OrxonoxExport Backlight : public FadingBillboard, public TimeFactorListener
     {
         public:
             Backlight(BaseObject* creator);
@@ -72,6 +73,9 @@ namespace orxonox
                 { return this->trailmaterial_; }
 
             virtual void changedScale();
+
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old);
 
         private:
             virtual void startturnonoff();

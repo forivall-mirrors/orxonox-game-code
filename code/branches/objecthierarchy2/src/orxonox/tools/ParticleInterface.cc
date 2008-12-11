@@ -51,7 +51,7 @@ namespace orxonox
 
     ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel)
     {
-        RegisterRootObject(ParticleInterface);
+        RegisterObject(ParticleInterface);
 
         assert(scenemanager);
 
@@ -68,8 +68,7 @@ namespace orxonox
             try
             {
                 this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
-                this->particleSystem_->setSpeedFactor(1.0f);
-//                this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor());
+                this->setSpeedFactor(1.0f);
             }
             catch (...)
             {
@@ -223,21 +222,14 @@ namespace orxonox
 
     void ParticleInterface::setSpeedFactor(float factor)
     {
+        this->speedFactor_ = factor;
+
         if (this->particleSystem_)
-        {
-//            this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor() * factor);
-            this->particleSystem_->setSpeedFactor(1.0f * factor);
-        }
+            this->particleSystem_->setSpeedFactor(factor * this->getTimeFactor());
     }
-    float ParticleInterface::getSpeedFactor() const
+    void ParticleInterface::changedTimeFactor(float factor_new, float factor_old)
     {
-        if (this->particleSystem_)
-        {
-//            return (this->particleSystem_->getSpeedFactor() / Orxonox::getInstance().getTimeFactor());
-            return (this->particleSystem_->getSpeedFactor() / 1.0f);
-        }
-        else
-            return 1.0f;
+        this->setSpeedFactor(this->speedFactor_);
     }
 
     bool ParticleInterface::getKeepParticlesInLocalSpace() const
