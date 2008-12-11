@@ -160,6 +160,8 @@ COUT(0) << "changedMesh callback -===================" << endl;
 	REGISTERSTRING(this->atmosphere_, direction::toclient);
         REGISTERSTRING(this->meshSrc_, direction::toclient, new NetworkCallback<Planet>(this, &Planet::changedMesh));
         REGISTERDATA(this->bCastShadows_, direction::toclient, new NetworkCallback<Planet>(this, &Planet::changedShadows));
+	REGISTERDATA(this->atmosphereSize, direction::toclient);
+	REGISTERDATA(this->imageSize, direction::toclient);
     }
 
     void Planet::changedVisibility()
