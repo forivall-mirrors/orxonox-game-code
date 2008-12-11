@@ -36,6 +36,8 @@
 
 namespace orxonox
 {
+    CreateFactory(Munition);
+
     Munition::Munition(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Munition);
@@ -46,7 +48,7 @@ namespace orxonox
     }
 
     unsigned int Munition::bullets()
-    { 
+    {
         if (this->bullets_ > 0)
             return bullets_;
         else
@@ -54,7 +56,7 @@ namespace orxonox
     }
 
     unsigned int Munition::magazines()
-    { 
+    {
         if (this->magazines_ > 0)
             return magazines_;
         else
@@ -105,12 +107,12 @@ namespace orxonox
 COUT(0) << "Munition::fillBullets maxBullets_=" << this->maxBullets_ << std::endl;
         this->bullets_ = this->maxBullets_;
     }
-    
+
     void Munition::fillMagazines()
     {
         this->magazines_ = this->maxMagazines_;
     }
-    
+
     void Munition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Munition, XMLPort, xmlelement, mode);
