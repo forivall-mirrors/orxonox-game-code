@@ -67,11 +67,10 @@ namespace orxonox {
 	*/
 	TrafficControl::TrafficControl()
 	{
-    RegisterRootObject(TrafficControl);
+    RegisterObject(TrafficControl);
 	  assert(instance_==0);
 	  instance_=this;
-//     targetSize = 2500;//5000bytes
-    SetConfigValue ( targetSize, 28000./25. );
+    this->setConfigValues();
 	}
 	
 	/**
@@ -87,6 +86,11 @@ namespace orxonox {
 /**
 *Definition of public members
 */
+
+  void TrafficControl::setConfigValues()
+  {
+    SetConfigValue ( targetSize, 5000 );
+  }
 
   /**
           *eigener sortieralgorithmus
@@ -260,7 +264,7 @@ namespace orxonox {
       }
       else
       {
-//         COUT(0) << "cut" << endl;
+        COUT(0) << "cut" << endl;
         clientListPerm_[currentClientID][(*itvec).objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
 //         ittemp = itvec;
         list->erase(itvec++);
@@ -398,16 +402,12 @@ namespace orxonox {
     }
   }
   
-  void TrafficControl::priRemoveClient(int clientID)
+  void TrafficControl::clientDisconnected(unsigned int clientID)
   {
     assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
     assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
     clientListTemp_.erase(clientListTemp_.find(clientID));
     clientListPerm_.erase(clientListPerm_.find(clientID));
-  }
-  void TrafficControl::pubRemoveClient(int clientID)
-  {
-    priRemoveClient(clientID);
   }
 
 /*

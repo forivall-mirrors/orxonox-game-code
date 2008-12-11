@@ -37,6 +37,7 @@
 #include <algorithm>
 #include "util/Integers.h"
 #include "core/OrxonoxClass.h"
+#include "network/ClientConnectionListener.h"
 
 namespace orxonox {
 
@@ -78,7 +79,7 @@ namespace orxonox {
 /**
 *
 */
-class TrafficControl : public OrxonoxClass{
+class TrafficControl : public ClientConnectionListener {
   private:
 
     /**
@@ -140,7 +141,11 @@ class TrafficControl : public OrxonoxClass{
     */
     void evaluateList(unsigned int clientID, std::list<obj> *list);//done    
     void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
-    void priRemoveClient(int clientID);
+    
+    //ClientConnectionListener functions
+    virtual void clientConnected(unsigned int clientID){};
+    virtual void clientDisconnected(unsigned int clientID);
+
  
   protected:
     static TrafficControl *instance_;
@@ -154,6 +159,7 @@ class TrafficControl : public OrxonoxClass{
     *Elements of list are accessed by *list[i]
     *Elements of struct i are therefore: *list[i].objID
     */
+    void setConfigValues();
     static TrafficControl *getInstance();
     void processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>* list); //gets a pointer to the list (containing objectIDs) and sorts it
     //done
@@ -165,7 +171,6 @@ class TrafficControl : public OrxonoxClass{
     bool priodiffer(uint32_t clientID, obj i, obj j);
     void printList(std::list<obj> *list, unsigned int clientID);
     void fixCreatorDependencies(std::list<obj>::iterator it, std::list<obj> *list, unsigned int clientID);
-    void pubRemoveClient(int clientID);
 };
 
 }
