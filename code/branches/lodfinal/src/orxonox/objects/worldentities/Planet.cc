@@ -73,15 +73,18 @@ namespace orxonox
             return;
             
         Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
-        Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
-        COUT(2) << distance << std::endl;
-        Real planetRadius = this->getScale();
+	if(activeCamera)
+	{
+            Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
+            COUT(2) << distance << std::endl;
+            Real planetRadius = this->getScale();
         
-        Real newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
-        Real tempTest = newScale*(1+Real(this->atmosphereSize)/Real(this->imageSize));
-        newScale = tempTest;
+            Real newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
+            Real tempTest = newScale*(1+Real(this->atmosphereSize)/Real(this->imageSize));
+            newScale = tempTest;
         
-        this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
+            this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
+	}
                 
         SUPER(Planet, tick, dt);
     }
@@ -115,6 +118,7 @@ namespace orxonox
     
     void Planet::changedMesh()
     {
+COUT(0) << "changedMesh callback -===================" << endl;
         if (this->mesh_.getEntity())
             this->getNode()->detachObject(this->mesh_.getEntity());
 
@@ -153,8 +157,9 @@ namespace orxonox
     }
 
     void Planet::registerVariables(){
-        //REGISTERSTRING(this->meshSrc_,    network::direction::toclient, new network::NetworkCallback<Planet>(this, &Planet::changedMesh));
-        //REGISTERDATA(this->bCastShadows_, network::direction::toclient, new network::NetworkCallback<Planet>(this, &Planet::changedShadows));
+	REGISTERSTRING(this->atmosphere_, direction::toclient);
+        REGISTERSTRING(this->meshSrc_, direction::toclient, new NetworkCallback<Planet>(this, &Planet::changedMesh));
+        REGISTERDATA(this->bCastShadows_, direction::toclient, new NetworkCallback<Planet>(this, &Planet::changedShadows));
     }
 
     void Planet::changedVisibility()
