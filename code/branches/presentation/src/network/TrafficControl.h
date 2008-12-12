@@ -122,6 +122,7 @@ class TrafficControl : public ClientConnectionListener {
     unsigned int currentGamestateID;
     unsigned int currentClientID;
     unsigned int targetSize;
+    bool         bActive_;
     /**
     *copiedVector is a copy of the given Vector by the GSmanager, on this list all manipulations are performed
     */
@@ -168,7 +169,8 @@ class TrafficControl : public ClientConnectionListener {
     //done
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
     
-    bool priodiffer(uint32_t clientID, obj i, obj j);
+    bool prioritySort(uint32_t clientID, obj i, obj j);
+    bool dataSort(obj i, obj j);
     void printList(std::list<obj> *list, unsigned int clientID);
     void fixCreatorDependencies(std::list<obj>::iterator it, std::list<obj> *list, unsigned int clientID);
 };

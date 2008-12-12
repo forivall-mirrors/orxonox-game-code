@@ -79,10 +79,8 @@ namespace orxonox {
 	* @brief Destructor: resets the instance pointer to 0
 	*/
 	TrafficControl::~TrafficControl()
-	{ 
-	  //was macht das genau? da instance ja gleich this ist im moment
+	{
 	  instance_=0;
-	  //muss ich alles deallozieren was ich im constructor aufgebaut habe?
 	}
 
 /**
@@ -91,6 +89,7 @@ namespace orxonox {
 
   void TrafficControl::setConfigValues()
   {
+    SetConfigValue ( bActive_, true );
     SetConfigValue ( targetSize, 5000 );
   }
 
@@ -107,9 +106,9 @@ namespace orxonox {
 //   }
   
   /**
-  * eigener sortieralgorithmus
+  * sort-algorithm for sorting the objectlist after priorities
   */
-  bool TrafficControl::priodiffer(uint32_t clientID, obj i, obj j)
+  bool TrafficControl::prioritySort(uint32_t clientID, obj i, obj j)
   {
     assert(clientListPerm_.find(clientID) != clientListPerm_.end());  //make sure the client exists in our list
     assert(clientListPerm_[clientID].find(i.objID) != clientListPerm_[clientID].end()); // make sure the object i is in the client list
@@ -117,12 +116,20 @@ namespace orxonox {
     
     int prio1 = clientListPerm_[clientID][i.objID].objValuePerm + clientListPerm_[clientID][i.objID].objValueSched;
     int prio2 = clientListPerm_[clientID][j.objID].objValuePerm + clientListPerm_[clientID][j.objID].objValueSched;
-//     int prio1 = clientListPerm_[clientID][i.objID].objID;
-//     int prio2 = clientListPerm_[clientID][j.objID].objID;
-    // NOTE: smaller priority is better
     return prio1 < prio2;
   }
 
+  /**
+  * sort-algorithm for sorting the objectList after position in original data stream
+  */
+  bool TrafficControl::dataSort(obj i, obj j)
+  {
+    int pos1 = i.objDataOffset;
+    int pos2 = j.objDataOffset;
+    return pos1 < pos2;
+  }
+
+  
 
 	void TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj> *list)
 	{
@@ -353,7 +360,7 @@ namespace orxonox {
     }*/
     //sort copied list aufgrund der objprioperm in clientlistperm
     // use boost bind here because we need to pass a memberfunction to stl sort
-    list->sort(boost::bind(&TrafficControl::priodiffer, this, clientID, _1, _2) );
+    list->sort(boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
     
     //now we check, that the creator of an object always exists on a client
 //     printList(list, clientID);
@@ -365,6 +372,9 @@ namespace orxonox {
     //end of sorting
     //now the cutting, work the same obj out in processobjectlist and copiedlist, compression rate muss noch festgelegt werden. 
     cut(list, targetSize);
+    
+    //now sort again after objDataOffset
+    list->sort(boost::bind(&TrafficControl::dataSort, this, _1, _2) );
 //     printList(list, clientID);
     //diese Funktion updateClientList muss noch gemacht werden
     updateClientListTemp(list);
