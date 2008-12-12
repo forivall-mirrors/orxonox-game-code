@@ -48,6 +48,7 @@ namespace orxonox
         void ticked(const Clock& time);
 
         Server*      server_;
+        float        timeSinceLastUpdate_;
     };
 }
 

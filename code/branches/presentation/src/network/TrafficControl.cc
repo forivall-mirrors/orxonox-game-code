@@ -35,6 +35,8 @@
 #include <boost/bind.hpp>
 
 namespace orxonox {
+  
+  static const unsigned int SCHED_PRIORITY_OFFSET = -1;
 
   objInfo::objInfo(uint32_t ID, uint32_t creatorID, int32_t curGsID, int32_t diffGsID, uint32_t size, unsigned int prioperm, unsigned int priosched)
   { 
@@ -255,20 +257,15 @@ namespace orxonox {
     for(itvec = list->begin(); itvec != list->end();)
     {
       assert( (*itvec).objSize < 1000);
-//       COUT(0) << "==targetsize==  " << targetsize << endl;
       if ( ( size + (*itvec).objSize ) < targetsize )
       {
-//         COUT(0) << "no cut" << endl;
         size += (*itvec).objSize;//objSize is given in bytes
         ++itvec;
       }
       else
       {
-        COUT(0) << "cut" << endl;
         clientListPerm_[currentClientID][(*itvec).objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
-//         ittemp = itvec;
         list->erase(itvec++);
-//         itvec = ittemp;
       }
 //       printList(list, currentClientID);
     }

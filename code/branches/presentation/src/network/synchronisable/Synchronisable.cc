@@ -65,7 +65,6 @@ namespace orxonox
   Synchronisable::Synchronisable(BaseObject* creator){
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
-    objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
     if ( !Host::running() || ( Host::running() && Host::isServer() ) )
     {
@@ -77,7 +76,11 @@ namespace orxonox
       objectID=OBJECTID_UNKNOWN;
     classID = static_cast<uint32_t>(-1);
 
+    // set standard priority
+    this->setPriority( priority::normal );
 
+    
+    // get creator id
 #ifndef NDEBUG
     ObjectList<Synchronisable>::iterator it;
     for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){

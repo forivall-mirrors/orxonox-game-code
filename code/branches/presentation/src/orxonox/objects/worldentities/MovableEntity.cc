@@ -52,6 +52,8 @@ namespace orxonox
 
         this->overwrite_position_ = Vector3::ZERO;
         this->overwrite_orientation_ = Quaternion::IDENTITY;
+        
+        this->setPriority( priority::low );
 
         this->registerVariables();
     }
