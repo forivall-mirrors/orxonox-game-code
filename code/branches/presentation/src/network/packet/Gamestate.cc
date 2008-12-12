@@ -150,9 +150,7 @@ bool Gamestate::spreadData(uint8_t mode)
     s = Synchronisable::getSynchronisable( objectheader->objectID );
     if(!s)
     {
-      s = Synchronisable::fabricate(mem, mode);
-      if(s==0)
-        assert(0);
+      Synchronisable::fabricate(mem, mode);
 //         COUT(0) << "could not fabricate synchronisable: " << objectheader->objectID << " classid: " << objectheader->classID << " creator: " << objectheader->creatorID << endl;
 //       else
 //         COUT(0) << "fabricated: " << objectheader->objectID << " classid: " << objectheader->classID << " creator: "  << objectheader->creatorID << endl;
@@ -348,7 +346,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   // create a gamestate out of it
   Gamestate *gs = new Gamestate(gdata);
   uint8_t *newdata = gdata + sizeof(GamestateHeader);
-//   uint8_t *origdata = GAMESTATE_START(data_);
+  uint8_t *origdata = GAMESTATE_START(data_);
 
   //copy the GamestateHeader
   *(GamestateHeader*)gdata = *HEADER;
@@ -363,22 +361,22 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
-    oldobjectheader = (synchronisableHeader*)(data_ + (*it).objDataOffset);
+    oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
-    object = Synchronisable::getSynchronisable( (*it).objID );
-    assert(object->objectID == oldobjectheader->objectID);
+//     object = Synchronisable::getSynchronisable( (*it).objID );
+//     assert(object->objectID == oldobjectheader->objectID);
     objectsize = oldobjectheader->size;
-    *newobjectheader = *oldobjectheader;
     objectOffset=sizeof(synchronisableHeader); //skip the size and the availableData variables in the objectheader
-    if ( /*object->doSelection(HEADER->id)*/true ){
+    if ( (*it).objID == oldobjectheader->objectID ){
+      memcpy(newdata, origdata, objectsize);
       assert(newobjectheader->dataAvailable==true);
-      memcpy(newdata+objectOffset, data_ + (*it).objDataOffset + objectOffset, objectsize-objectOffset);
     }else{
+      *newobjectheader = *oldobjectheader;
       newobjectheader->dataAvailable=false;
       memset(newdata+objectOffset, 0, objectsize-objectOffset);
-      assert(objectOffset==objectsize);
     }
     newdata += objectsize;
+    origdata += objectsize;
     destsize += objectsize;
 //     origdata += objectsize;
   }

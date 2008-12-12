@@ -169,6 +169,7 @@ namespace orxonox
       if (!synchronisable_creator)
       {
         mem += header->size; //.TODO: this suckz.... remove size from header
+        assert(0);
         return 0;
       }
       else
