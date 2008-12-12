@@ -81,9 +81,25 @@ namespace orxonox
             inline const WorldEntity* getWorldEntity() const
                 { return (WorldEntity*)this; }
 
+            inline void setSpawnParticleSource(const std::string& source)
+                { this->spawnparticlesource_ = source; }
+            inline const std::string& getSpawnParticleSource() const
+                { return this->spawnparticlesource_; }
+
+            inline void setSpawnParticleDuration(float duration)
+                { this->spawnparticleduration_ = duration; }
+            inline float getSpawnParticleDuration() const
+                { return this->spawnparticleduration_; }
+
+            inline void setExplosionChunks(unsigned int chunks)
+                { this->numexplosionchunks_ = chunks; }
+            inline unsigned int getExplosionChunks() const
+                { return this->numexplosionchunks_; }
+
         protected:
-            virtual void spawn();
             virtual void death();
+            virtual void deatheffect();
+            virtual void spawneffect();
 
             bool bAlive_;
 
@@ -94,6 +110,10 @@ namespace orxonox
             Pawn* lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
+
+            std::string spawnparticlesource_;
+            float spawnparticleduration_;
+            unsigned int numexplosionchunks_;
     };
 
     class _OrxonoxExport PawnListener : public OrxonoxClass

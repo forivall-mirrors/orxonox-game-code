@@ -36,6 +36,8 @@
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/weaponSystem/WeaponSystem.h"
+#include "objects/worldentities/ParticleSpawner.h"
+#include "objects/worldentities/ExplosionChunk.h"
 
 namespace orxonox
 {
@@ -55,6 +57,8 @@ namespace orxonox
 
         this->lastHitOriginator_ = 0;
         this->weaponSystem_ = 0;
+
+        this->spawnparticleduration_ = 3.0f;
 
         /*
         //WeaponSystem
@@ -86,6 +90,9 @@ namespace orxonox
         XMLPortParam(Pawn, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
+        XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
+        XMLPortParam(Pawn, "spawnparticleduration", setSpawnParticleDuration, getSpawnParticleDuration, xmlelement, mode).defaultValues(3.0f);
+        XMLPortParam(Pawn, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
     }
 
     void Pawn::registerVariables()
@@ -132,9 +139,18 @@ namespace orxonox
         this->death();
     }
 
-    void Pawn::spawn()
+    void Pawn::spawneffect()
     {
         // play spawn effect
+        if (this->spawnparticlesource_ != "")
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this);
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource(this->spawnparticlesource_);
+            effect->setLifetime(this->spawnparticleduration_);
+        }
     }
 
     void Pawn::death()
@@ -150,7 +166,42 @@ namespace orxonox
         if (this->getPlayer())
             this->getPlayer()->stopControl(this);
 
+        this->deatheffect();
+    }
+
+    void Pawn::deatheffect()
+    {
         // play death effect
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this);
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("Orxonox/explosion2");
+            effect->setLifetime(4.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this);
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("Orxonox/smoke6");
+            effect->setLifetime(4.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this);
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("Orxonox/sparks");
+            effect->setLifetime(4.0f);
+        }
+        for (unsigned int i = 0; i < this->numexplosionchunks_; ++i)
+        {
+            ExplosionChunk* chunk = new ExplosionChunk(this);
+            chunk->setPosition(this->getPosition());
+
+        }
     }
 
     void Pawn::fire()
@@ -162,7 +213,7 @@ namespace orxonox
     void Pawn::postSpawn()
     {
         this->setHealth(this->initialHealth_);
-        this->spawn();
+        this->spawneffect();
     }
 
     ///////////////////

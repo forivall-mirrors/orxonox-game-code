@@ -60,11 +60,11 @@ namespace orxonox
         if (Core::showsGraphics())
         {
             if (!this->getScene())
-                ThrowException(AbortLoading, "Can't create Camera, no scene given.");
+                ThrowException(AbortLoading, "Can't create Backlight, no scene given.");
             if (!this->getScene()->getSceneManager())
-                ThrowException(AbortLoading, "Can't create Camera, no scene manager given.");
+                ThrowException(AbortLoading, "Can't create Backlight, no scene manager given.");
             if (!this->getScene()->getRootSceneNode())
-                ThrowException(AbortLoading, "Can't create Camera, no root scene node given.");
+                ThrowException(AbortLoading, "Can't create Backlight, no root scene node given.");
 
             this->ribbonTrail_ = this->getScene()->getSceneManager()->createRibbonTrail(this->getNode()->getName());
 

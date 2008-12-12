@@ -62,6 +62,7 @@ namespace orxonox
         this->bEnabled_ = true;
         this->bVisible_ = true;
         this->bAllowedByLOD_ = true;
+        this->speedFactor_ = 1.0f;
 
         if (Core::showsGraphics())
         {

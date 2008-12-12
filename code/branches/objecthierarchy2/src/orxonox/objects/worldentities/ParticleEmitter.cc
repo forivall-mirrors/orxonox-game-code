@@ -50,7 +50,7 @@ namespace orxonox
         RegisterObject(ParticleEmitter);
 
         if (!this->getScene() || !this->getScene()->getSceneManager())
-            ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
+            ThrowException(AbortLoading, "Can't create ParticleEmitter, no scene or no scene manager given.");
 
         this->particles_ = 0;
         this->LOD_ = LODParticle::normal;

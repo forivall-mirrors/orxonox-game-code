@@ -43,9 +43,9 @@ namespace orxonox
         RegisterObject(GlobalShader);
 
         if (!this->getScene())
-            ThrowException(AbortLoading, "Can't create Camera, no scene given.");
+            ThrowException(AbortLoading, "Can't create GlobalShader, no scene given.");
         if (!this->getScene()->getSceneManager())
-            ThrowException(AbortLoading, "Can't create Camera, no scene manager given.");
+            ThrowException(AbortLoading, "Can't create GlobalShader, no scene manager given.");
 
         this->shader_.setSceneManager(this->getScene()->getSceneManager());
 

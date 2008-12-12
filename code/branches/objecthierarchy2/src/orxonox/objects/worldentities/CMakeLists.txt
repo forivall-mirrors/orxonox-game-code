@@ -7,6 +7,7 @@ SET( SRC_FILES
   Backlight.cc
   Billboard.cc
   BlinkingBillboard.cc
+  ExplosionChunk.cc
   FadingBillboard.cc
   Light.cc
   Camera.cc
