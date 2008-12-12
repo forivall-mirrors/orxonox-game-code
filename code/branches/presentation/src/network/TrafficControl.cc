@@ -262,6 +262,7 @@ namespace orxonox {
       }
       //end of sorting
       //now the cutting, work the same obj out in processobjectlist and copiedlist, compression rate muss noch festgelegt werden. 
+//       printList(list, clientID);
       cut(list, targetSize);
       
       //now sort again after objDataOffset

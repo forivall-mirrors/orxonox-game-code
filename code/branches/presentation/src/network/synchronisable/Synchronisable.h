@@ -63,11 +63,11 @@ namespace orxonox
   
   namespace priority{
     enum prio{
-      very_high   = -30,
+      very_high   = -100,
       high        = -15,
       normal      = 0,
       low         = 15,
-      very_low    = 30
+      very_low    = 100
     };
   }
 

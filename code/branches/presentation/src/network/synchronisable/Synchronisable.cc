@@ -353,6 +353,7 @@ namespace orxonox
     //assert(objectMode_!=0x0);
     //assert( (mode ^ objectMode_) != 0);
     if(syncList.empty()){
+      assert(0);
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
       return false;
     }

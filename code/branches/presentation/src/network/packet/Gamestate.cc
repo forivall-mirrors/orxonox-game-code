@@ -360,7 +360,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   TrafficControl::getInstance()->processObjectList( clientID, HEADER->id, &dataMap_ );
   
   //copy in the zeros
-  for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
+  for(it=dataMap_.begin(); it!=dataMap_.end();){
     oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
 //     object = Synchronisable::getSynchronisable( (*it).objID );
@@ -370,6 +370,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
     if ( (*it).objID == oldobjectheader->objectID ){
       memcpy(newdata, origdata, objectsize);
       assert(newobjectheader->dataAvailable==true);
+      ++it;
     }else{
       *newobjectheader = *oldobjectheader;
       newobjectheader->dataAvailable=false;
@@ -381,6 +382,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 //     origdata += objectsize;
   }
   ((GamestateHeader*)gdata)->datasize = destsize;
+  assert(destsize==HEADER->datasize);
   assert(destsize!=0);
   return gs;
 }
