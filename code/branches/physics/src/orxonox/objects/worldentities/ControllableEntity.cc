@@ -229,6 +229,24 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
         if (this->isActive())
         {
+            // Check whether Bullet doesn't do the physics for us
+            if (!this->isDynamic())
+            {
+                if (Core::isMaster())
+                {
+                    this->server_position_ = this->getPosition();
+                    this->server_orientation_ = this->getOrientation();
+                    this->server_linear_velocity_ = this->getVelocity();
+                    this->server_angular_velocity_ = this->getAngularVelocity();
+                }
+                else if (this->bControlled_)
+                {
+                    this->client_position_ = this->getPosition();
+                    this->client_orientation_ = this->getOrientation();
+                    this->client_linear_velocity_ = this->getVelocity();
+                    this->client_angular_velocity_ = this->getAngularVelocity();
+                }
+            }
         }
     }
 
@@ -329,58 +347,81 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
     }
 
-    void ControllableEntity::positionChanged(bool bContinuous)
+    void ControllableEntity::setPosition(const Vector3& position)
     {
         if (Core::isMaster())
         {
+            MobileEntity::setPosition(position);
             this->server_position_ = this->getPosition();
-            if (!bContinuous)
-                ++this->server_overwrite_;
+            ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
+            MobileEntity::setPosition(position);
             this->client_position_ = this->getPosition();
         }
     }
 
-    void ControllableEntity::orientationChanged(bool bContinuous)
+    void ControllableEntity::setOrientation(const Quaternion& orientation)
     {
         if (Core::isMaster())
         {
+            MobileEntity::setOrientation(orientation);
             this->server_orientation_ = this->getOrientation();
-            if (!bContinuous)
-                ++this->server_overwrite_;
+            ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
+            MobileEntity::setOrientation(orientation);
             this->client_orientation_ = this->getOrientation();
         }
     }
 
-    void ControllableEntity::linearVelocityChanged(bool bContinuous)
+    void ControllableEntity::setVelocity(const Vector3& velocity)
     {
         if (Core::isMaster())
         {
+            MobileEntity::setVelocity(velocity);
             this->server_linear_velocity_ = this->getVelocity();
-            if (!bContinuous)
-                ++this->server_overwrite_;
+            ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
+            MobileEntity::setVelocity(velocity);
             this->client_linear_velocity_ = this->getVelocity();
         }
     }
 
-    void ControllableEntity::angularVelocityChanged(bool bContinuous)
+    void ControllableEntity::setAngularVelocity(const Vector3& velocity)
     {
         if (Core::isMaster())
         {
+            MobileEntity::setAngularVelocity(velocity);
             this->server_angular_velocity_ = this->getAngularVelocity();
-            if (!bContinuous)
-                ++this->server_overwrite_;
+            ++this->server_overwrite_;
         }
         else if (this->bControlled_)
         {
+            MobileEntity::setAngularVelocity(velocity);
+            this->client_angular_velocity_ = this->getAngularVelocity();
+        }
+    }
+
+    void ControllableEntity::setWorldTransform(const btTransform& worldTrans)
+    {
+        MobileEntity::setWorldTransform(worldTrans);
+        if (Core::isMaster())
+        {
+            this->server_position_ = this->getPosition();
+            this->server_orientation_ = this->getOrientation();
+            this->server_linear_velocity_ = this->getVelocity();
+            this->server_angular_velocity_ = this->getAngularVelocity();
+        }
+        else if (this->bControlled_)
+        {
+            this->client_position_ = this->getPosition();
+            this->client_orientation_ = this->getOrientation();
+            this->client_linear_velocity_ = this->getVelocity();
             this->client_angular_velocity_ = this->getAngularVelocity();
         }
     }

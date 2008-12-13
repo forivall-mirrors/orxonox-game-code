@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -75,25 +76,6 @@ namespace orxonox
         REGISTERDATA(this->overwrite_orientation_, network::direction::toclient, new network::NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
     }
 
-    void MovableEntity::tick(float dt)
-    {
-        MobileEntity::tick(dt);
-
-        if (this->isActive())
-        {
-        }
-    }
-
-    void MovableEntity::overwritePosition()
-    {
-        this->setPosition(this->overwrite_position_);
-    }
-
-    void MovableEntity::overwriteOrientation()
-    {
-        this->setOrientation(this->overwrite_orientation_);
-    }
-
     void MovableEntity::clientConnected(unsigned int clientID)
     {
         new Timer<MovableEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), true);
@@ -105,19 +87,7 @@ namespace orxonox
 
     void MovableEntity::resynchronize()
     {
-        positionChanged(false);
-        orientationChanged(false);
-    }
-
-    void MovableEntity::positionChanged(bool bContinuous)
-    {
-        if (!bContinuous)
-            this->overwrite_position_ = this->getPosition();
-    }
-
-    void MovableEntity::orientationChanged(bool bContinuous)
-    {
-        if (!bContinuous)
-            this->overwrite_orientation_ = this->getOrientation();
+        this->overwrite_position_ = this->getPosition();
+        this->overwrite_orientation_ = this->getOrientation();
     }
 }

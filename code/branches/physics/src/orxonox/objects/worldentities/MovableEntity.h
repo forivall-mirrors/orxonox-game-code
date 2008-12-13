@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -43,8 +44,15 @@ namespace orxonox
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
             void registerVariables();
+
+            using WorldEntity::setPosition;
+            using WorldEntity::setOrientation;
+
+            inline void setPosition(const Vector3& position)
+                { MobileEntity::setPosition(position); this->overwrite_position_ = this->getPosition(); }
+            inline void setOrientation(const Quaternion& orientation)
+                { MobileEntity::setOrientation(orientation); this->overwrite_orientation_ = this->getOrientation(); }
 
         private:
             void clientConnected(unsigned int clientID);
@@ -56,13 +64,12 @@ namespace orxonox
             inline void processAngularVelocity()
                 { this->setAngularVelocity(this->angularVelocity_); }
 
-            void overwritePosition();
-            void overwriteOrientation();
+            inline void overwritePosition()
+                { this->setPosition(this->overwrite_position_); }
+            inline void overwriteOrientation()
+                { this->setOrientation(this->overwrite_orientation_); }
 
-            void positionChanged(bool bContinuous);
-            void orientationChanged(bool bContinuous);
-
-            Vector3 overwrite_position_;
+            Vector3    overwrite_position_;
             Quaternion overwrite_orientation_;
             Timer<MovableEntity>* continuousResynchroTimer_;
     };

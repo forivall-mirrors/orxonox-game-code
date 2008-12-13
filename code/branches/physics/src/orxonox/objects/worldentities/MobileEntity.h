@@ -46,19 +46,16 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
-            using WorldEntity::setPosition;
-            using WorldEntity::setOrientation;
+            virtual void setPosition(const Vector3& position);
+            virtual void setOrientation(const Quaternion& orientation);
 
-            void setPosition(const Vector3& position);
-            void setOrientation(const Quaternion& orientation);
-
-            void setVelocity(const Vector3& velocity);
+            virtual void setVelocity(const Vector3& velocity);
             inline void setVelocity(float x, float y, float z)
                 { this->setVelocity(Vector3(x, y, z)); }
             inline const Vector3& getVelocity() const
                 { return this->linearVelocity_; }
 
-            void setAngularVelocity(const Vector3& velocity);
+            virtual void setAngularVelocity(const Vector3& velocity);
             inline void setAngularVelocity(float x, float y, float z)
                 { this->setAngularVelocity(Vector3(x, y, z)); }
             inline const Vector3& getAngularVelocity() const
@@ -87,22 +84,17 @@ namespace orxonox
                 { return this->getAngularVelocity().normalisedCopy(); }
 
         protected:
+            // Bullet btMotionState related
+            virtual void setWorldTransform(const btTransform& worldTrans);
+            void getWorldTransform(btTransform& worldTrans) const;
+
             Vector3 linearAcceleration_;
             Vector3 linearVelocity_;
             Vector3 angularAcceleration_;
             Vector3 angularVelocity_;
 
         private:
-            virtual void positionChanged       (bool bContinuous) = 0;
-            virtual void orientationChanged    (bool bContinuous) = 0;
-            virtual void linearVelocityChanged (bool bContinuous) { }
-            virtual void angularVelocityChanged(bool bContinuous) { }
-
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
-
-            // Bullet btMotionState related
-            void setWorldTransform(const btTransform& worldTrans);
-            void getWorldTransform(btTransform& worldTrans) const;
     };
 }
 

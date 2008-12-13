@@ -82,16 +82,13 @@ namespace orxonox
                 this->linearVelocity_.x += this->linearAcceleration_.x * dt;
                 this->linearVelocity_.y += this->linearAcceleration_.y * dt;
                 this->linearVelocity_.z += this->linearAcceleration_.z * dt;
-                linearVelocityChanged(true);
                 this->node_->translate(this->linearVelocity_ * dt);
-                positionChanged(true);
 
                 // Angular part
                 // Note: angularVelocity_ is a Quaternion with w = 0 while angularAcceleration_ is a Vector3
                 this->angularVelocity_.x += angularAcceleration_.x * dt;
                 this->angularVelocity_.y += angularAcceleration_.y * dt;
                 this->angularVelocity_.z += angularAcceleration_.z * dt;
-                angularVelocityChanged(true);
                 // Calculate new orientation with quaternion derivative. This is about 30% faster than with angle/axis method.
                 float mult = dt * 0.5;
                 // TODO: this could be optimized by writing it out. The calls currently create 4 new Quaternions!
@@ -99,7 +96,6 @@ namespace orxonox
                 newOrientation = this->node_->getOrientation() + newOrientation * this->node_->getOrientation();
                 newOrientation.normalise();
                 this->node_->setOrientation(newOrientation);
-                orientationChanged(true);
             }
         }
     }
@@ -114,7 +110,6 @@ namespace orxonox
         }
 
         this->node_->setPosition(position);
-        positionChanged(false);
     }
 
     void MobileEntity::setOrientation(const Quaternion& orientation)
@@ -127,7 +122,6 @@ namespace orxonox
         }
 
         this->node_->setOrientation(orientation);
-        orientationChanged(false);
     }
 
     void MobileEntity::setVelocity(const Vector3& velocity)
@@ -136,7 +130,6 @@ namespace orxonox
             this->physicalBody_->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
 
         this->linearVelocity_ = velocity;
-        linearVelocityChanged(false);
     }
 
     void MobileEntity::setAngularVelocity(const Vector3& velocity)
@@ -145,7 +138,6 @@ namespace orxonox
             this->physicalBody_->setAngularVelocity(btVector3(velocity.x, velocity.y, velocity.z));
 
         this->angularVelocity_ = velocity;
-        angularVelocityChanged(false);
     }
 
     void MobileEntity::setAcceleration(const Vector3& acceleration)
@@ -189,10 +181,6 @@ namespace orxonox
         this->angularVelocity_.x = this->physicalBody_->getAngularVelocity().x();
         this->angularVelocity_.y = this->physicalBody_->getAngularVelocity().y();
         this->angularVelocity_.z = this->physicalBody_->getAngularVelocity().z();
-        linearVelocityChanged(true);
-        angularVelocityChanged(true);
-        positionChanged(true);
-        orientationChanged(true);
     }
 
     void MobileEntity::getWorldTransform(btTransform& worldTrans) const

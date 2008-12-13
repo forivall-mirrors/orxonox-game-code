@@ -88,6 +88,16 @@ namespace orxonox
             inline const std::string& getCameraPositionTemkplate() const
                 { return this->cameraPositionTemplate_; }
 
+            using WorldEntity::setPosition;
+            using WorldEntity::setOrientation;
+            using MobileEntity::setVelocity;
+            using MobileEntity::setAngularVelocity;
+
+            void setPosition(const Vector3& position);
+            void setOrientation(const Quaternion& orientation);
+            void setVelocity(const Vector3& velocity);
+            void setAngularVelocity(const Vector3& velocity);
+
         protected:
             virtual void startLocalControl();
             virtual void stopLocalControl();
@@ -112,12 +122,10 @@ namespace orxonox
             void processClientOrientation();
             void processClientAngularVelocity();
 
-            void positionChanged       (bool bContinuous);
-            void orientationChanged    (bool bContinuous);
-            void linearVelocityChanged (bool bContinuous);
-            void angularVelocityChanged(bool bContinuous);
-
             void networkcallback_changedplayerID();
+
+            // Bullet btMotionState related
+            void setWorldTransform(const btTransform& worldTrans);
 
             unsigned int server_overwrite_;
             unsigned int client_overwrite_;
