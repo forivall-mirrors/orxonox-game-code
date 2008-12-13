@@ -186,6 +186,7 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+    class GametypeStatus;
 
     //gui
     class GUIManager;

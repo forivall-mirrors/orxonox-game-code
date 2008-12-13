@@ -5,6 +5,7 @@ SET( SRC_FILES
   HUDSpeedBar.cc
   HUDHealthBar.cc
   ChatOverlay.cc
+  GametypeStatus.cc
 )
 
 ADD_SOURCE_FILES(SRC_FILES)

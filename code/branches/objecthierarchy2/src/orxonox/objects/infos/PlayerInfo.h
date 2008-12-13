@@ -70,6 +70,10 @@ namespace orxonox
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
 
+            inline Controller* getController() const
+                { return this->controller_; }
+            virtual void changedController() {}
+
         protected:
             void createController();
 

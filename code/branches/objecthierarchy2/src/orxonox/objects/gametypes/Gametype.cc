@@ -33,6 +33,7 @@
 #include <ctime>
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
@@ -43,30 +44,33 @@ namespace orxonox
 {
     CreateUnloadableFactory(Gametype);
 
-    Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
+    Gametype::Gametype(BaseObject* creator) : BaseObject(creator), gtinfo_(creator)
     {
         RegisterObject(Gametype);
 
         this->defaultControllableEntity_ = Class(Spectator);
 
-        this->bStarted_ = false;
-        this->bEnded_ = false;
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
 
         this->initialStartCountdown_ = 3;
-        this->startCountdown_ = 0;
-        this->bStartCountdownRunning_ = false;
+
+        this->setConfigValues();
+    }
+
+    void Gametype::setConfigValues()
+    {
+        SetConfigValue(initialStartCountdown_, 3.0f);
     }
 
     void Gametype::tick(float dt)
     {
         SUPER(Gametype, tick, dt);
 
-        if (this->bStartCountdownRunning_ && !this->bStarted_)
-            this->startCountdown_ -= dt;
+        if (this->gtinfo_.bStartCountdownRunning_ && !this->gtinfo_.bStarted_)
+            this->gtinfo_.startCountdown_ -= dt;
 
-        if (!this->bStarted_)
+        if (!this->gtinfo_.bStarted_)
             this->checkStart();
         else
             this->spawnDeadPlayersIfRequested();
@@ -77,7 +81,7 @@ namespace orxonox
     void Gametype::start()
     {
         COUT(0) << "game started" << std::endl;
-        this->bStarted_ = true;
+        this->gtinfo_.bStarted_ = true;
 
         this->spawnPlayersIfRequested();
     }
@@ -85,7 +89,7 @@ namespace orxonox
     void Gametype::end()
     {
         COUT(0) << "game ended" << std::endl;
-        this->bEnded_ = true;
+        this->gtinfo_.bEnded_ = true;
     }
 
     void Gametype::playerEntered(PlayerInfo* player)
@@ -172,7 +176,7 @@ namespace orxonox
             {
                 it->second = PlayerState::Dead;
 
-                if (!it->first->isReadyToSpawn() || !this->bStarted_)
+                if (!it->first->isReadyToSpawn() || !this->gtinfo_.bStarted_)
                 {
                     SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
                     if (spawn)
@@ -195,14 +199,14 @@ namespace orxonox
 
     void Gametype::checkStart()
     {
-        if (!this->bStarted_)
+        if (!this->gtinfo_.bStarted_)
         {
-            if (this->bStartCountdownRunning_)
+            if (this->gtinfo_.bStartCountdownRunning_)
             {
-                if (this->startCountdown_ <= 0)
+                if (this->gtinfo_.startCountdown_ <= 0)
                 {
-                    this->bStartCountdownRunning_ = false;
-                    this->startCountdown_ = 0;
+                    this->gtinfo_.bStartCountdownRunning_ = false;
+                    this->gtinfo_.startCountdown_ = 0;
                     this->start();
                 }
             }
@@ -225,8 +229,8 @@ namespace orxonox
                     }
                     if (allplayersready && hashumanplayers)
                     {
-                        this->startCountdown_ = this->initialStartCountdown_;
-                        this->bStartCountdownRunning_ = true;
+                        this->gtinfo_.startCountdown_ = this->initialStartCountdown_;
+                        this->gtinfo_.bStartCountdownRunning_ = true;
                     }
                 }
             }

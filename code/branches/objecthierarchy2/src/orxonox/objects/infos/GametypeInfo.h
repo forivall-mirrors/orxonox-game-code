@@ -26,46 +26,41 @@
  *
  */
 
-#ifndef _HumanPlayer_H__
-#define _HumanPlayer_H__
+#ifndef _GametypeInfo_H__
+#define _GametypeInfo_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "PlayerInfo.h"
+#include "Info.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanPlayer : public PlayerInfo
+    class _OrxonoxExport GametypeInfo : public Info
     {
+        friend class Gametype;
+
         public:
-            HumanPlayer(BaseObject* creator);
-            virtual ~HumanPlayer();
+            GametypeInfo(BaseObject* creator);
+            virtual ~GametypeInfo();
 
             void registerVariables();
-            void setConfigValues();
 
-            bool isInitialized() const;
-            float getPing() const;
-            float getPacketLossRatio() const;
+            inline bool hasStarted() const
+                { return this->bStarted_; }
+            inline bool hasEnded() const
+                { return this->bEnded_; }
 
-            void setClientID(unsigned int clientID);
+            inline bool isStartCountdownRunning() const
+                { return this->bStartCountdownRunning_; }
+            inline float getStartCountdown() const
+                { return this->startCountdown_; }
 
-            virtual void changedController();
-
-        protected:
-            void configvaluecallback_changednick();
-            void configvaluecallback_changedHUDTemplate();
-            void networkcallback_changednick();
-            void networkcallback_clientIDchanged();
-            void networkcallback_server_initialized();
-            void networkcallback_client_initialized();
-
-            std::string nick_;
-            std::string synchronize_nick_;
-            std::string hudtemplate_;
-            bool server_initialized_;
-            bool client_initialized_;
+        private:
+            bool bStarted_;
+            bool bEnded_;
+            bool bStartCountdownRunning_;
+            float startCountdown_;
     };
 }
 
-#endif /* _HumanPlayer_H__ */
+#endif /* _GametypeInfo_H__ */

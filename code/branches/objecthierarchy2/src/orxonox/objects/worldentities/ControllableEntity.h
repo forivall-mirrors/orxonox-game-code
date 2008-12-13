@@ -46,6 +46,8 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
+            virtual void changedGametype();
+
             virtual void setPlayer(PlayerInfo* player);
             virtual void removePlayer();
             inline PlayerInfo* getPlayer() const
@@ -142,6 +144,9 @@ namespace orxonox
             inline bool hasHumanController() const
                 { return this->bHasHumanController_; }
 
+            inline const GametypeInfo* getGametypeInfo() const
+                { return this->gtinfo_; }
+
         protected:
             virtual void startLocalHumanControl();
             virtual void stopLocalHumanControl();
@@ -164,6 +169,7 @@ namespace orxonox
             void processClientOrientation();
 
             void networkcallback_changedplayerID();
+            void networkcallback_changedgtinfoID();
 
             unsigned int server_overwrite_;
             unsigned int client_overwrite_;
@@ -189,6 +195,9 @@ namespace orxonox
 
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
+
+            const GametypeInfo* gtinfo_;
+            unsigned int gtinfoID_;
     };
 }
 

@@ -110,8 +110,8 @@ namespace orxonox
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
     static unsigned int popDeletedObject(){ unsigned int i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
 
-    inline unsigned int getObjectID(){return objectID;}
-    inline unsigned int getClassID(){return classID;}
+    inline unsigned int getObjectID() const { return objectID; }
+    inline unsigned int getClassID() const { return classID; }
   protected:
     Synchronisable(BaseObject* creator);
     void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);

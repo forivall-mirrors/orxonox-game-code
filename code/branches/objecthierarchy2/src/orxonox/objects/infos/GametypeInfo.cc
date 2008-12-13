@@ -27,56 +27,35 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "Controller.h"
+#include "GametypeInfo.h"
 
 #include "core/CoreIncludes.h"
-#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Controller);
+    CreateUnloadableFactory(GametypeInfo);
 
-    Controller::Controller(BaseObject* creator) : BaseObject(creator)
+    GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
     {
-        RegisterObject(Controller);
+        RegisterObject(GametypeInfo);
 
-        this->player_ = 0;
-        this->controllableEntity_ = 0;
-        this->hud_ = 0;
-        this->bUpdateHUD_ = false;
+        this->bStarted_ = false;
+        this->bEnded_ = false;
+        this->startCountdown_ = 0;
+        this->bStartCountdownRunning_ = false;
+
+        this->registerVariables();
     }
 
-    Controller::~Controller()
+    GametypeInfo::~GametypeInfo()
     {
-        if (this->isInitialized() && this->hud_)
-            delete this->hud_;
     }
 
-    void Controller::changedControllableEntity()
+    void GametypeInfo::registerVariables()
     {
-        if (this->bUpdateHUD_)
-        {
-            this->updateHUD();
-            this->bUpdateHUD_ = false;
-        }
-
-        if (this->hud_)
-            this->hud_->setOwner(this->getControllableEntity());
-    }
-
-    void Controller::updateHUD()
-    {
-        if (this->hud_)
-        {
-            delete this->hud_;
-            this->hud_ = 0;
-        }
-
-        if (this->hudtemplate_ != "")
-        {
-            this->hud_ = new OverlayGroup(this);
-            this->hud_->addTemplate(this->hudtemplate_);
-            this->hud_->setOwner(this->getControllableEntity());
-        }
+        REGISTERDATA(this->bStarted_,               direction::toclient);
+        REGISTERDATA(this->bEnded_,                 direction::toclient);
+        REGISTERDATA(this->startCountdown_,         direction::toclient);
+        REGISTERDATA(this->bStartCountdownRunning_, direction::toclient);
     }
 }

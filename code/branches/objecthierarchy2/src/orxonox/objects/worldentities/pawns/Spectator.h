@@ -62,7 +62,6 @@ namespace orxonox
         private:
             void changedGreeting();
             void changedFlareVisibility();
-            void updateHUD();
 
             BillboardSet* greetingFlare_;
             bool bGreetingFlareVisible_;
@@ -74,8 +73,6 @@ namespace orxonox
             float yaw_;
             float pitch_;
             float roll_;
-
-            int hudmode_;
     };
 }
 

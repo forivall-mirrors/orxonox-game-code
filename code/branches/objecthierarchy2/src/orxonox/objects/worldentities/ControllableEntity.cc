@@ -37,6 +37,7 @@
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/worldentities/CameraPosition.h"
+#include "objects/gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox
@@ -57,6 +58,10 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
+
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+        this->changedGametype();
 
         this->velocity_ = Vector3::ZERO;
         this->acceleration_ = Vector3::ZERO;
@@ -97,6 +102,20 @@ namespace orxonox
         XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemkplate, xmlelement, mode);
 
         XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
+    }
+
+    void ControllableEntity::changedGametype()
+    {
+        SUPER(ControllableEntity, changedGametype);
+
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+
+        if (this->getGametype() && this->getGametype()->getGametypeInfo())
+        {
+            this->gtinfo_ = this->getGametype()->getGametypeInfo();
+            this->gtinfoID_ = this->gtinfo_->getObjectID();
+        }
     }
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
@@ -198,6 +217,17 @@ namespace orxonox
         }
     }
 
+    void ControllableEntity::networkcallback_changedgtinfoID()
+    {
+        if (this->gtinfoID_ != OBJECTID_UNKNOWN)
+        {
+            this->gtinfo_ = dynamic_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
+
+            if (!this->gtinfo_)
+                this->gtinfoID_ = OBJECTID_UNKNOWN;
+        }
+    }
+
     void ControllableEntity::startLocalHumanControl()
     {
         this->camera_ = new Camera(this);
@@ -267,6 +297,7 @@ namespace orxonox
 
 
         REGISTERDATA(this->playerID_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
+        REGISTERDATA(this->gtinfoID_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedgtinfoID));
     }
 
     void ControllableEntity::processServerPosition()

@@ -56,7 +56,6 @@ namespace orxonox
         this->pitch_ = 0;
         this->roll_ = 0;
         this->setHudTemplate("spectatorhud");
-        this->hudmode_ = 0;
 
         this->setDestroyWhenPlayerLeft(true);
 
@@ -95,7 +94,6 @@ namespace orxonox
     {
         REGISTERDATA(this->bGreetingFlareVisible_, direction::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
         REGISTERDATA(this->bGreeting_,             direction::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
-        REGISTERDATA(this->hudmode_,               direction::toclient);
     }
 
     void Spectator::changedGreeting()
@@ -111,8 +109,6 @@ namespace orxonox
 
     void Spectator::tick(float dt)
     {
-        this->updateHUD();
-
         if (this->hasLocalController())
         {
             Vector3 velocity = this->getVelocity();
@@ -191,73 +187,5 @@ namespace orxonox
             this->bGreetingFlareVisible_ = this->bGreeting_;
             this->changedFlareVisibility();
         }
-    }
-
-    void Spectator::updateHUD()
-    {
-        // <hack>
-        if (Core::isMaster())
-        {
-            if (this->getPlayer() && this->getGametype())
-            {
-                if (!this->getGametype()->hasStarted() && !this->getGametype()->isStartCountdownRunning())
-                {
-                    if (!this->getPlayer()->isReadyToSpawn())
-                        this->hudmode_ = 0;
-                    else
-                        this->hudmode_ = 1;
-                }
-                else if (!this->getGametype()->hasEnded())
-                {
-                    if (this->getGametype()->isStartCountdownRunning())
-                        this->hudmode_ = 2 + 10*(int)ceil(this->getGametype()->getStartCountdown());
-                    else
-                        this->hudmode_ = 3;
-                }
-                else
-                    this->hudmode_ = 4;
-            }
-            else
-                return;
-        }
-
-        if (this->getHUD())
-        {
-            std::string text;
-            int hudmode = this->hudmode_ % 10;
-
-            switch (hudmode)
-            {
-                case 0:
-                    text = "Press [Fire] to start the match";
-                    break;
-                case 1:
-                    text = "Waiting for other players";
-                    break;
-                case 2:
-                    text = convertToString((this->hudmode_ - 2) / 10);
-                    break;
-                case 3:
-                    text = "Press [Fire] to respawn";
-                    break;
-                case 4:
-                    text = "Game has ended";
-                    break;
-                default:;
-            }
-
-            std::map<std::string, OrxonoxOverlay*>::const_iterator it = this->getHUD()->getOverlays().begin();
-            for (; it != this->getHUD()->getOverlays().end(); ++it)
-            {
-                if (it->second->isA(Class(OverlayText)) && it->second->getName() == "state")
-                {
-                    OverlayText* overlay = dynamic_cast<OverlayText*>(it->second);
-                    if (overlay)
-                        overlay->setCaption(text);
-                    break;
-                }
-            }
-        }
-        // </hack>
     }
 }

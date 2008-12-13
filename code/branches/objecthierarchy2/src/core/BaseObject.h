@@ -134,10 +134,18 @@ namespace orxonox
             inline void setScene(Scene* scene) { this->scene_ = scene; }
             inline Scene* getScene() const { return this->scene_; }
 
-            inline void setGametype(Gametype* gametype) { this->oldGametype_ = this->gametype_; this->gametype_ = gametype; this->changedGametype(); }
+            inline void setGametype(Gametype* gametype)
+            {
+                if (gametype != this->gametype_)
+                {
+                    this->oldGametype_ = this->gametype_;
+                    this->gametype_ = gametype;
+                    this->changedGametype();
+                }
+            }
             inline Gametype* getGametype() const { return this->gametype_; }
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
-            virtual inline void changedGametype() {}
+            virtual void changedGametype() {}
 
             void fireEvent();
             void fireEvent(bool activate);
@@ -196,6 +204,7 @@ namespace orxonox
     SUPER_FUNCTION(4, BaseObject, processEvent, false);
     SUPER_FUNCTION(6, BaseObject, changedMainState, false);
     SUPER_FUNCTION(9, BaseObject, changedName, false);
+    SUPER_FUNCTION(10, BaseObject, changedGametype, false);
 }
 
 #endif /* _BaseObject_H__ */
