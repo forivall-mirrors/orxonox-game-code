@@ -207,6 +207,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Character"
+				>
+				<File
+					RelativePath="..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -314,6 +322,18 @@
 				</File>
 				<File
 					RelativePath="..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Character"
+				>
+				<File
+					RelativePath="..\..\src\bullet\BulletDynamics\Character\btCharacterControllerInterface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.h"
 					>
 				</File>
 			</Filter>

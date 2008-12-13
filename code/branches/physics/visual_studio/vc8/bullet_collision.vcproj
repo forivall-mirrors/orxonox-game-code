@@ -179,6 +179,10 @@
 				Name="CollisionDispatch"
 				>
 				<File
+					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp"
 					>
 				</File>
@@ -220,6 +224,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btGhostObject.cpp"
 					>
 				</File>
 				<File
@@ -388,7 +396,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="GIMPACT"
+				Name="Gimpact"
 				>
 				<File
 					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\btContactProcessing.cpp"
@@ -448,10 +456,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkConvexCast.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa.cpp"
 					>
 				</File>
 				<File
@@ -553,6 +557,10 @@
 				Name="CollisionDispatch"
 				>
 				<File
+					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.h"
 					>
 				</File>
@@ -602,6 +610,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\CollisionDispatch\btGhostObject.h"
 					>
 				</File>
 				<File
@@ -782,7 +794,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="GIMPACT"
+				Name="Gimpact"
 				>
 				<File
 					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\btBoxCollision.h"
@@ -832,6 +844,66 @@
 					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\btTriangleShapeEx.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_array.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_basic_geometry_operations.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_bitset.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_box_collision.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_box_set.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_clip_polygon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_contact.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_geom_types.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_geometry.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_hash_table.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_linear_math.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_math.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_memory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_radixsort.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\bullet\BulletCollision\GIMPACT\gim_tri_collision.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="NarrowPhaseCollision"
@@ -854,10 +926,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkConvexCast.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa.h"
 					>
 				</File>
 				<File

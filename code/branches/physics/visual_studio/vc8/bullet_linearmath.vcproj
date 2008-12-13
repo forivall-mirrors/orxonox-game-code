@@ -202,10 +202,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\bullet\LinearMath\btPoint3.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\bullet\LinearMath\btPoolAllocator.h"
 				>
 			</File>
