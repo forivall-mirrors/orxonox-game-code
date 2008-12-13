@@ -193,13 +193,25 @@ namespace orxonox
         if (object->hasPhysics())
         {
             if (!this->hasPhysics())
-                ThrowException(PhysicsViolation, "Cannot attach a physical object to a non physical one.");
+            {
+                COUT(2) << "Warning: Cannot attach a physical object to a non physical one." << std::endl;
+                return;
+            }
             else if (object->isDynamic())
-                ThrowException(PhysicsViolation, "Cannot attach a dynamic object to a WorldEntity.");
+            {
+                COUT(2) << "Warning: Cannot attach a dynamic object to a WorldEntity." << std::endl;
+                return;
+            }
             else if (object->isKinematic() && this->isDynamic())
-                ThrowException(PhysicsViolation, "Cannot attach a kinematic object to a dynamic one.");
+            {
+                COUT(2) << "Warning: Cannot attach a kinematic object to a dynamic one." << std::endl;
+                return;
+            }
             else if (object->isKinematic())
-                ThrowException(NotImplemented, "Cannot attach a kinematic object to a static or kinematic one: Not yet implemented.");
+            {
+                COUT(2) << "Warning: Cannot attach a kinematic object to a static or kinematic one: Not yet implemented." << std::endl;
+                return;
+            }
             else
             {
                 object->deactivatePhysics();
@@ -423,7 +435,10 @@ namespace orxonox
     void WorldEntity::setScale3D(const Vector3& scale)
     {
         if (this->hasPhysics())
-            ThrowException(NotImplemented, "Cannot set the scale of a physical object: Not yet implemented.");
+        {
+            CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented." << std::endl;
+            return;
+        }
 
         this->node_->setScale(scale);
     }
@@ -432,22 +447,34 @@ namespace orxonox
     {
         // If we are already attached to a parent, this would be a bad idea..
         if (this->parent_)
-            ThrowException(PhysicsViolation, "Cannot set the collision type of a WorldEntity with a parent");
+        {
+            CCOUT(2) << "Warning: Cannot set the collision type of a WorldEntity with a parent." << std::endl;
+            return;
+        }
         else if (this->addedToPhysicalWorld())
-            ThrowException(PhysicsViolation, "Cannot set the collision type at run time.");
+        {
+            CCOUT(2) << "Warning: Cannot set the collision type at run time." << std::endl;
+            return;
+        }
 
         // Check for type legality. Could be StaticEntity or MobileEntity
         if (!this->isCollisionTypeLegal(type))
             return; // exception gets issued anyway
         if (type != None && !this->getScene()->hasPhysics())
-            ThrowException(PhysicsViolation, "Cannot have physical bodies in a non physical scene");
+        {
+            CCOUT(2) << "Warning: Cannot have physical bodies in a non physical scene." << std::endl;
+            return;
+        }
 
         // Check whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
         {
             // Check whether there was some scaling applied.
             if (!this->node_->getScale().positionEquals(Vector3(1, 1, 1), 0.001))
-                ThrowException(NotImplemented, "Cannot create a physical body if there is scaling applied to the node: Not yet implemented.");
+            {
+                CCOUT(2) << "Warning: Cannot create a physical body if there is scaling applied to the node: Not yet implemented." << std::endl;
+                return;
+            }
 
             // Create new rigid body
             btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_->getCollisionShape());

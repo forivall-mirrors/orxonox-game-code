@@ -61,7 +61,10 @@ namespace orxonox
     void StaticEntity::setPosition(const Vector3& position)
     {
         if (this->addedToPhysicalWorld())
-            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        {
+            CCOUT(2) << "Warning: Attempting to change the position of a StaticEntity at physics run time. Ignoring change." << std::endl;
+            return;
+        }
         if (this->isStatic())
         {
             btTransform transf = this->physicalBody_->getWorldTransform();
@@ -75,7 +78,10 @@ namespace orxonox
     void StaticEntity::setOrientation(const Quaternion& orientation)
     {
         if (this->addedToPhysicalWorld())
-            ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
+        {
+            CCOUT(2) << "Warning: Attempting to change the orientation of a StaticEntity at physics run time. Ignoring change." << std::endl;
+            return;
+        }
         if (this->isStatic())
         {
             btTransform transf = this->physicalBody_->getWorldTransform();
@@ -100,7 +106,6 @@ namespace orxonox
     void StaticEntity::setWorldTransform(const btTransform& worldTrans)
     {
         OrxAssert(false, "Setting world transform of a StaticEntity, which is CF_STATIC!");
-        //COUT(0) << "Setting world transform of a StaticEntity, which is static!" << std::endl;
     }
 
     void StaticEntity::getWorldTransform(btTransform& worldTrans) const

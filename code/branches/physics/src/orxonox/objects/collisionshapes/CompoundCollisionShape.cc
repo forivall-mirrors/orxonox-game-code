@@ -71,7 +71,7 @@ namespace orxonox
             return;
         if (this->childShapes_.find(shape) != this->childShapes_.end())
         {
-            ThrowException(NotImplemented, "Warning: Attaching a CollisionShape twice is not yet supported.");
+            CCOUT(2) << "Warning: Attaching a CollisionShape twice is not yet supported." << std::endl;
             return;
         }
         this->childShapes_[shape] = shape->getCollisionShape();

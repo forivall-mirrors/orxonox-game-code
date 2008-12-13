@@ -99,14 +99,12 @@ namespace orxonox
 
     void CollisionShape::setScale3D(const Vector3& scale)
     {
-        ThrowException(NotImplemented, "Cannot set the scale of a collision shape: Not yet implemented.");
-        this->updateParent();
+        CCOUT(2) << "Warning: Cannot set the scale of a collision shape: Not yet implemented." << std::endl;
     }
 
     void CollisionShape::setScale(float scale)
     {
-        ThrowException(NotImplemented, "Cannot set the scale of a collision shape: Not yet implemented.");
-        this->updateParent();
+        CCOUT(2) << "Warning: Cannot set the scale of a collision shape: Not yet implemented." << std::endl;
     }
 
     btVector3 CollisionShape::getLocalInertia(btScalar mass) const
