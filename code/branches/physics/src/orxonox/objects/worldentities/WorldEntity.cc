@@ -31,6 +31,7 @@
 #include "WorldEntity.h"
 
 #include <cassert>
+#include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 
@@ -248,6 +249,21 @@ namespace orxonox
         return 0;
     }
 
+    void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
+    {
+        this->node_->attachObject(object);
+    }
+
+    void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
+    {
+        this->node_->detachObject(object);
+    }
+
+    Ogre::MovableObject* WorldEntity::detachOgreObject(const Ogre::String& name)
+    {
+        return this->node_->detachObject(name);
+    }
+
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
         this->collisionShape_->addChildShape(shape);
@@ -288,20 +304,117 @@ namespace orxonox
         return this->physicalBody_ && this->physicalBody_->isInWorld();
     }
 
+#ifndef _NDEBUG
+    const Vector3& WorldEntity::getPosition() const
+    {
+        return this->node_->getPosition();
+    }
+
+    const Quaternion& WorldEntity::getOrientation() const
+    {
+        return this->node_->getOrientation();
+    }
+
+    const Vector3& WorldEntity::getScale3D() const
+    {
+        return this->node_->getScale();
+    }
+#endif
+
+    const Vector3& WorldEntity::getWorldPosition() const
+    {
+        return this->node_->_getDerivedPosition();
+    }
+
+    const Quaternion& WorldEntity::getWorldOrientation() const
+    {
+        return this->node_->_getDerivedOrientation();
+    }
+
+    void WorldEntity::translate(const Vector3& distance, TransformSpace::Space relativeTo)
+    {
+        switch (relativeTo)
+        {
+        case TransformSpace::Local:
+            // position is relative to parent so transform downwards
+            this->setPosition(this->getPosition() + this->getOrientation() * distance);
+            break;
+        case TransformSpace::Parent:
+            this->setPosition(this->getPosition() + distance);
+            break;
+        case TransformSpace::World:
+            // position is relative to parent so transform upwards
+            if (this->node_->getParent())
+                setPosition(getPosition() + (node_->getParent()->_getDerivedOrientation().Inverse() * distance)
+                    / node_->getParent()->_getDerivedScale());
+            else
+                this->setPosition(this->getPosition() + distance);
+            break;
+        }
+    }
+
+    void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Space relativeTo)
+    {
+        switch(relativeTo)
+        {
+        case TransformSpace::Local:
+            this->setOrientation(this->getOrientation() * rotation);
+            break;
+        case TransformSpace::Parent:
+            // Rotations are normally relative to local axes, transform up
+            this->setOrientation(rotation * this->getOrientation());
+            break;
+        case TransformSpace::World:
+            // Rotations are normally relative to local axes, transform up
+            this->setOrientation(this->getOrientation() * this->getWorldOrientation().Inverse()
+                * rotation * this->getWorldOrientation());
+            break;
+        }
+    }
+
+    void WorldEntity::lookAt(const Vector3& target, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    {
+        Vector3 origin;
+        switch (relativeTo)
+        {
+        case TransformSpace::Local:
+            origin = Vector3::ZERO;
+            break;
+        case TransformSpace::Parent:
+            origin = this->getPosition();
+            break;
+        case TransformSpace::World:
+            origin = this->getWorldPosition();
+            break;
+        }
+        this->setDirection(target - origin, relativeTo, localDirectionVector);
+    }
+
+    void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    {
+        Quaternion savedOrientation(this->getOrientation());
+        Ogre::Node::TransformSpace ogreRelativeTo;
+        switch (relativeTo)
+        {
+        case TransformSpace::Local:
+            ogreRelativeTo = Ogre::Node::TS_LOCAL; break;
+        case TransformSpace::Parent:
+            ogreRelativeTo = Ogre::Node::TS_PARENT; break;
+        case TransformSpace::World:
+            ogreRelativeTo = Ogre::Node::TS_WORLD; break;
+        }
+        this->node_->setDirection(direction, ogreRelativeTo, localDirectionVector);
+        Quaternion newOrientation(this->node_->getOrientation());
+        this->node_->setOrientation(savedOrientation);
+        this->setOrientation(newOrientation);
+    }
+
     void WorldEntity::setScale3D(const Vector3& scale)
     {
         if (this->hasPhysics())
             ThrowException(NotImplemented, "Cannot set the scale of a physical object: Not yet implemented.");
 
         this->node_->setScale(scale);
-    }
-
-    void WorldEntity::scale3D(const Vector3& scale)
-    {
-        if (this->hasPhysics())
-            ThrowException(NotImplemented, "Cannot set the scale of a physical object: Not yet implemented.");
-
-        this->node_->scale(scale);
     }
 
     void WorldEntity::setMass(float mass)

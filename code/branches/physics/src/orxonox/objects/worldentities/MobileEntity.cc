@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "MobileEntity.h"
 
+#include <OgreSceneNode.h>
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 
 #include "util/Debug.h"
@@ -116,19 +117,6 @@ namespace orxonox
         positionChanged(false);
     }
 
-    void MobileEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot translate physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            this->physicalBody_->translate(btVector3(distance.x, distance.y, distance.z));
-        }
-
-        this->node_->translate(distance, relativeTo);
-        positionChanged(false);
-    }
-
     void MobileEntity::setOrientation(const Quaternion& orientation)
     {
         if (this->isDynamic())
@@ -139,91 +127,6 @@ namespace orxonox
         }
 
         this->node_->setOrientation(orientation);
-        orientationChanged(false);
-    }
-
-    void MobileEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot rotate physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            this->physicalBody_->setWorldTransform(transf * btTransform(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w)));
-        }
-
-        this->node_->rotate(rotation, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MobileEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot yaw physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            btTransform rotation(btQuaternion(angle.valueRadians(), 0.0f, 0.0f));
-            this->physicalBody_->setWorldTransform(transf * rotation);
-        }
-
-        this->node_->yaw(angle, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MobileEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot pitch physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            btTransform rotation(btQuaternion(0.0f, angle.valueRadians(), 0.0f));
-            this->physicalBody_->setWorldTransform(transf * rotation);
-        }
-
-        this->node_->pitch(angle, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MobileEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (this->isDynamic())
-        {
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot roll physical object relative \
-                                                          to any other space than TS_LOCAL.");
-            btTransform transf = this->physicalBody_->getWorldTransform();
-            btTransform rotation(btQuaternion(angle.valueRadians(), 0.0f, 0.0f));
-            this->physicalBody_->setWorldTransform(transf * rotation);
-        }
-
-        this->node_->roll(angle, relativeTo);
-        orientationChanged(false);
-    }
-
-    void MobileEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (this->isDynamic())
-        {
-            ThrowException(NotImplemented, "ControllableEntity::lookAt() is not yet supported for physical objects.");
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
-                                                          to any other space than TS_LOCAL.");
-        }
-
-        this->node_->lookAt(target, relativeTo, localDirectionVector);
-        orientationChanged(false);
-    }
-
-    void MobileEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (this->isDynamic())
-        {
-            ThrowException(NotImplemented, "ControllableEntity::setDirection() is not yet supported for physical objects.");
-            OrxAssert(relativeTo == Ogre::Node::TS_LOCAL, "Cannot align physical object relative \
-                                                          to any other space than TS_LOCAL.");
-        }
-
-        this->node_->setDirection(direction, relativeTo, localDirectionVector);
         orientationChanged(false);
     }
 

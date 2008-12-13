@@ -32,8 +32,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#define OGRE_FORCE_ANGLE_TYPES
+#ifdef _NDEBUG
 #include <OgreSceneNode.h>
+#else
+#include <OgrePrerequisites.h>
+#endif
 #include "LinearMath/btMotionState.h"
 
 #include "network/Synchronisable.h"
@@ -64,13 +67,11 @@ namespace orxonox
             virtual void setPosition(const Vector3& position) = 0;
             inline void setPosition(float x, float y, float z)
                 { this->setPosition(Vector3(x, y, z)); }
-            inline const Vector3& getPosition() const
-                { return this->node_->getPosition(); }
-            inline const Vector3& getWorldPosition() const
-                { return this->node_->getWorldPosition(); }
+            const Vector3& getPosition() const;
+            const Vector3& getWorldPosition() const;
 
-            virtual void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void translate(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            void translate(const Vector3& distance, TransformSpace::Space relativeTo = TransformSpace::Parent);
+            inline void translate(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Parent)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
             virtual void setOrientation(const Quaternion& orientation) = 0;
@@ -80,44 +81,37 @@ namespace orxonox
                 { this->setOrientation(Quaternion(angle, axis)); }
             inline void setOrientation(const Vector3& axis, const Degree& angle)
                 { this->setOrientation(Quaternion(angle, axis)); }
-            inline const Quaternion& getOrientation() const
-                { return this->node_->getOrientation(); }
-            inline const Quaternion& getWorldOrientation() const
-                { return this->node_->getWorldOrientation(); }
+            const Quaternion& getOrientation() const;
+            const Quaternion& getWorldOrientation() const;
 
-            virtual void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void rotate(const Vector3& axis, const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->rotate(Quaternion(angle, axis), relativeTo); }
-            inline void rotate(const Vector3& axis, const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            void rotate(const Quaternion& rotation, TransformSpace::Space relativeTo = TransformSpace::Local);
+            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
                 { this->rotate(Quaternion(angle, axis), relativeTo); }
 
-            virtual void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->yaw(Degree(angle), relativeTo); }
-            virtual void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->pitch(Degree(angle), relativeTo); }
-            virtual void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->roll(Degree(angle), relativeTo); }
+            inline void yaw(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+                { this->rotate(Quaternion(angle, Vector3::UNIT_Y), relativeTo); }
+            inline void pitch(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+                { this->rotate(Quaternion(angle, Vector3::UNIT_X), relativeTo); }
+            inline void roll(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+                { this->rotate(Quaternion(angle, Vector3::UNIT_Z), relativeTo); }
 
-            virtual void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z) = 0;
-            virtual void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z) = 0;
-            inline void setDirection(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
+            void lookAt(const Vector3& target, TransformSpace::Space relativeTo = TransformSpace::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            void setDirection(const Vector3& direction, TransformSpace::Space relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            inline void setDirection(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
             virtual void setScale3D(const Vector3& scale);
             inline void setScale3D(float x, float y, float z)
                 { this->setScale3D(Vector3(x, y, z)); }
-            inline const Vector3& getScale3D(void) const
-                { return this->node_->getScale(); }
+            const Vector3& getScale3D(void) const;
 
             void setScale(float scale)
                 { this->setScale3D(scale, scale, scale); }
             inline float getScale() const
                 { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
 
-            virtual void scale3D(const Vector3& scale);
+            inline void scale3D(const Vector3& scale)
+                { this->setScale3D(this->getScale3D() * scale); }
             inline void scale3D(float x, float y, float z)
                 { this->scale3D(Vector3(x, y, z)); }
             inline void scale(float scale)
@@ -129,12 +123,9 @@ namespace orxonox
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
 
-            inline void attachOgreObject(Ogre::MovableObject* object)
-                { this->node_->attachObject(object); }
-            inline void detachOgreObject(Ogre::MovableObject* object)
-                { this->node_->detachObject(object); }
-            inline Ogre::MovableObject* detachOgreObject(const Ogre::String& name)
-                { return this->node_->detachObject(name); }
+            void attachOgreObject(Ogre::MovableObject* object);
+            void detachOgreObject(Ogre::MovableObject* object);
+            Ogre::MovableObject* detachOgreObject(const Ogre::String& name);
 
             inline void attachToParent(WorldEntity* parent)
                 { parent->attach(this); }
@@ -240,6 +231,16 @@ namespace orxonox
             btScalar                     mass_;
             btScalar                     childrenMass_;
     };
+
+    // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.
+#ifdef _NDEBUG
+    inline const Vector3& WorldEntity::getPosition() const
+        { return this->node_->getPosition(); }
+    inline const Quaternion& WorldEntity::getOrientation() const
+        { return this->node_->getrOrientation(); }
+    inline const Vector3& WorldEntity::getScale3D(void) const
+        { return this->node_->getScale(); }
+#endif
 }
 
 #endif /* _WorldEntity_H__ */
