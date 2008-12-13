@@ -34,6 +34,7 @@
 #include "WorldEntity.h"
 #include "objects/Tickable.h"
 #include "network/ClientConnectionListener.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -118,6 +119,8 @@ namespace orxonox
 
             Vector3 overwrite_position_;
             Quaternion overwrite_orientation_;
+
+            Timer<MovableEntity> resynchronizeTimer_;
     };
 }
 

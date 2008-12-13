@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "Pawn.h"
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
@@ -144,7 +145,7 @@ namespace orxonox
         // play spawn effect
         if (this->spawnparticlesource_ != "")
         {
-            ParticleSpawner* effect = new ParticleSpawner(this);
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -166,14 +167,15 @@ namespace orxonox
         if (this->getPlayer())
             this->getPlayer()->stopControl(this);
 
-        this->deatheffect();
+        if (Core::isMaster())
+            this->deatheffect();
     }
 
     void Pawn::deatheffect()
     {
         // play death effect
         {
-            ParticleSpawner* effect = new ParticleSpawner(this);
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -181,7 +183,7 @@ namespace orxonox
             effect->setLifetime(4.0f);
         }
         {
-            ParticleSpawner* effect = new ParticleSpawner(this);
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -189,7 +191,7 @@ namespace orxonox
             effect->setLifetime(4.0f);
         }
         {
-            ParticleSpawner* effect = new ParticleSpawner(this);
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -198,7 +200,7 @@ namespace orxonox
         }
         for (unsigned int i = 0; i < this->numexplosionchunks_; ++i)
         {
-            ExplosionChunk* chunk = new ExplosionChunk(this);
+            ExplosionChunk* chunk = new ExplosionChunk(this->getCreator());
             chunk->setPosition(this->getPosition());
 
         }
@@ -213,7 +215,8 @@ namespace orxonox
     void Pawn::postSpawn()
     {
         this->setHealth(this->initialHealth_);
-        this->spawneffect();
+        if (Core::isMaster())
+            this->spawneffect();
     }
 
     ///////////////////

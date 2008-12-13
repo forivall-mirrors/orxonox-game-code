@@ -52,9 +52,11 @@ namespace orxonox
 
         private:
             void LODchanged();
+            void checkStop();
             void stop();
             void destroy();
 
+            bool                  bStop_;
             ParticleInterface*    fire_;
             ParticleInterface*    smoke_;
             LODParticle::LOD      LOD_;

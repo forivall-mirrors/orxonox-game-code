@@ -51,7 +51,7 @@ namespace orxonox
     bool Shader::bLoadedCgPlugin_s = false;
     Shader::MaterialMap Shader::parameters_s;
 
-    Shader::Shader(Ogre::SceneManager* scenemanager)
+    Shader::Shader(Ogre::SceneManager* scenemanager) : compositorInstance_(0)
     {
         RegisterObject(Shader);
 

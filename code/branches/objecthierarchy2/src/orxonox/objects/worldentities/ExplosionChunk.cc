@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "ExplosionChunk.h"
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "objects/Scene.h"
@@ -46,6 +47,7 @@ namespace orxonox
         if (!this->getScene() || !this->getScene()->getSceneManager())
             ThrowException(AbortLoading, "Can't create ExplosionChunk, no scene or no scene manager given.");
 
+        this->bStop_ = false;
         this->LOD_ = LODParticle::normal;
 
         try
@@ -62,12 +64,15 @@ namespace orxonox
             this->smoke_ = 0;
         }
 
-        Vector3 velocity(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1));
-        velocity.normalise();
-        velocity *= rnd(40, 60);
-        this->setVelocity(velocity);
+        if (Core::isMaster())
+        {
+            Vector3 velocity(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1));
+            velocity.normalise();
+            velocity *= rnd(60, 80);
+            this->setVelocity(velocity);
 
-        this->destroyTimer_.setTimer(rnd(1, 2), false, this, createExecutor(createFunctor(&ExplosionChunk::stop)));
+            this->destroyTimer_.setTimer(rnd(1, 2), false, this, createExecutor(createFunctor(&ExplosionChunk::stop)));
+        }
 
         this->registerVariables();
     }
@@ -85,7 +90,8 @@ namespace orxonox
 
     void ExplosionChunk::registerVariables()
     {
-        REGISTERDATA(this->LOD_, direction::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::LODchanged));
+        REGISTERDATA(this->LOD_,   direction::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::LODchanged));
+        REGISTERDATA(this->bStop_, direction::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::checkStop));
     }
 
     void ExplosionChunk::LODchanged()
@@ -96,6 +102,12 @@ namespace orxonox
             this->smoke_->setDetailLevel(this->LOD_);
     }
 
+    void ExplosionChunk::checkStop()
+    {
+        if (this->bStop_)
+            this->stop();
+    }
+
     void ExplosionChunk::stop()
     {
         if (this->fire_)
@@ -103,7 +115,11 @@ namespace orxonox
         if (this->smoke_)
             this->smoke_->setEnabled(false);
 
-        this->destroyTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&ExplosionChunk::destroy)));
+        if (Core::isMaster())
+        {
+            this->bStop_ = true;
+            this->destroyTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&ExplosionChunk::destroy)));
+        }
     }
 
     void ExplosionChunk::destroy()
@@ -115,7 +131,7 @@ namespace orxonox
     {
         static const unsigned int CHANGES_PER_SECOND = 5;
 
-        if (rnd() < dt*CHANGES_PER_SECOND)
+        if (Core::isMaster() && rnd() < dt*CHANGES_PER_SECOND)
         {
             float length = this->getVelocity().length();
 

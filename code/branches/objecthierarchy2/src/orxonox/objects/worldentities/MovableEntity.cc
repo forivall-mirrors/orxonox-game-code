@@ -32,7 +32,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/Executor.h"
-#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -111,7 +110,7 @@ namespace orxonox
 
     void MovableEntity::clientConnected(unsigned int clientID)
     {
-        new Timer<MovableEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), true);
+        this->resynchronizeTimer_.setTimer(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&MovableEntity::resynchronize)));
     }
 
     void MovableEntity::clientDisconnected(unsigned int clientID)

@@ -113,6 +113,7 @@ namespace orxonox
     class Model;
     class Billboard;
     class BlinkingBillboard;
+    class ExplosionChunk;
     class FadingBillboard;
     class GlobalShader;
     class Light;
@@ -157,6 +158,7 @@ namespace orxonox
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
+    class GametypeInfo;
 
     class Gametype;
 

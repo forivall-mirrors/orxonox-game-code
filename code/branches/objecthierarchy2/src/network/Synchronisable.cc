@@ -84,7 +84,12 @@ namespace orxonox
     ObjectList<Synchronisable>::iterator it;
     for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){
       if( it->getObjectID()==this->objectID )
-        assert(*it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0));
+        if(!(*it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0)))
+        {
+            COUT(1) << "Assertion failed: *it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0)" << std::endl;
+            COUT(1) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
+            abort();
+        }
     }
 #endif
 
@@ -176,6 +181,12 @@ namespace orxonox
     COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
     Identifier* id = ClassByID(header->classID);
+    if (!id)
+    {
+        COUT(1) << "Assertion failed: id" << std::endl;
+        COUT(1) << "Possible reason for this error: Client received a synchronizable object whose class has no factory." << std::endl;
+        abort();
+    }
     assert(id);
     BaseObject* creator = 0;
     if (header->creatorID != OBJECTID_UNKNOWN)
