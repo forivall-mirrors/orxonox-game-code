@@ -37,6 +37,7 @@
 namespace orxonox
 {
     static const float MAX_RESYNCHRONIZE_TIME = 3.0f;
+    static const float CONTINUOUS_SYNCHRONIZATION_TIME = 10.0f;
 
     CreateFactory(MovableEntity);
 
@@ -47,11 +48,17 @@ namespace orxonox
         this->overwrite_position_    = Vector3::ZERO;
         this->overwrite_orientation_ = Quaternion::IDENTITY;
 
+        // Resynchronise every few seconds because we only work with velocities (no positions)
+        continuousResynchroTimer_ = new Timer<MovableEntity>(CONTINUOUS_SYNCHRONIZATION_TIME + rnd(-1, 1),
+                true, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), false);
+
         this->registerVariables();
     }
 
     MovableEntity::~MovableEntity()
     {
+        if (this->isInitialized())
+            delete this->continuousResynchroTimer_;
     }
 
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -89,8 +96,7 @@ namespace orxonox
 
     void MovableEntity::clientConnected(unsigned int clientID)
     {
-        resynchronize();
-        new Timer<MovableEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, true, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), false);
+        new Timer<MovableEntity>(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), true);
     }
 
     void MovableEntity::clientDisconnected(unsigned int clientID)

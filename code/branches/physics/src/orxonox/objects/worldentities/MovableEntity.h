@@ -64,6 +64,7 @@ namespace orxonox
 
             Vector3 overwrite_position_;
             Quaternion overwrite_orientation_;
+            Timer<MovableEntity>* continuousResynchroTimer_;
     };
 }
 
