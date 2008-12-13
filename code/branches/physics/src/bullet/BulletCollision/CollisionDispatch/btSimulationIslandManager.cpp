@@ -143,11 +143,13 @@ class btPersistentManifoldSortPredicate
 };
 
 
-void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher,btCollisionObjectArray& collisionObjects)
+void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher,btCollisionWorld* collisionWorld)
 {
 
 	BT_PROFILE("islandUnionFindAndQuickSort");
 	
+	btCollisionObjectArray& collisionObjects = collisionWorld->getCollisionObjectArray();
+
 	m_islandmanifold.resize(0);
 
 	//we are going to sort the unionfind array, and store the element id in the size
@@ -238,6 +240,7 @@ void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher,btCollisio
 					if ( colObj0->getActivationState() == ISLAND_SLEEPING)
 					{
 						colObj0->setActivationState( WANTS_DEACTIVATION);
+						colObj0->setDeactivationTime(0.f);
 					}
 				}
 			}
@@ -262,7 +265,7 @@ void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher,btCollisio
 		 btCollisionObject* colObj0 = static_cast<btCollisionObject*>(manifold->getBody0());
 		 btCollisionObject* colObj1 = static_cast<btCollisionObject*>(manifold->getBody1());
 		
-		 //todo: check sleeping conditions!
+		 ///@todo: check sleeping conditions!
 		 if (((colObj0) && colObj0->getActivationState() != ISLAND_SLEEPING) ||
 			((colObj1) && colObj1->getActivationState() != ISLAND_SLEEPING))
 		{
@@ -287,13 +290,12 @@ void btSimulationIslandManager::buildIslands(btDispatcher* dispatcher,btCollisio
 
 
 
-//
-// todo: this is random access, it can be walked 'cache friendly'!
-//
-void btSimulationIslandManager::buildAndProcessIslands(btDispatcher* dispatcher,btCollisionObjectArray& collisionObjects, IslandCallback* callback)
+///@todo: this is random access, it can be walked 'cache friendly'!
+void btSimulationIslandManager::buildAndProcessIslands(btDispatcher* dispatcher,btCollisionWorld* collisionWorld, IslandCallback* callback)
 {
+	btCollisionObjectArray& collisionObjects = collisionWorld->getCollisionObjectArray();
 
-	buildIslands(dispatcher,collisionObjects);
+	buildIslands(dispatcher,collisionWorld);
 
 	int endIslandIndex=1;
 	int startIslandIndex;

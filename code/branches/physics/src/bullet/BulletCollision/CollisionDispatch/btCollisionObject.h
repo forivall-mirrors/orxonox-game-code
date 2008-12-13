@@ -29,7 +29,10 @@ struct	btBroadphaseProxy;
 class	btCollisionShape;
 #include "LinearMath/btMotionState.h"
 #include "LinearMath/btAlignedAllocator.h"
+#include "LinearMath/btAlignedObjectArray.h"
 
+
+typedef btAlignedObjectArray<class btCollisionObject*> btCollisionObjectArray;
 
 
 /// btCollisionObject can be used to manage collision detection objects. 
@@ -71,7 +74,7 @@ protected:
 	///users can point to their objects, m_userPointer is not used by Bullet, see setUserPointer/getUserPointer
 	void*			m_userObjectPointer;
 
-	///m_internalType is reserved to distinguish Bullet's btCollisionObject, btRigidBody, btSoftBody etc.
+	///m_internalType is reserved to distinguish Bullet's btCollisionObject, btRigidBody, btSoftBody, btGhostObject etc.
 	///do not assign your own m_internalType unless you write a new dynamics object class.
 	int				m_internalType;
 
@@ -103,14 +106,18 @@ public:
 		CF_STATIC_OBJECT= 1,
 		CF_KINEMATIC_OBJECT= 2,
 		CF_NO_CONTACT_RESPONSE = 4,
-		CF_CUSTOM_MATERIAL_CALLBACK = 8//this allows per-triangle material (friction/restitution)
+		CF_CUSTOM_MATERIAL_CALLBACK = 8,//this allows per-triangle material (friction/restitution)
+		CF_CHARACTER_OBJECT = 16
 	};
 
 	enum	CollisionObjectTypes
 	{
 		CO_COLLISION_OBJECT =1,
 		CO_RIGID_BODY,
-		CO_SOFT_BODY
+		CO_SOFT_BODY,
+		///CO_GHOST_OBJECT keeps track of all objects overlapping its AABB and that pass its collision filter
+		///It is useful for collision sensors, explosion objects, character controller etc.
+		CO_GHOST_OBJECT
 	};
 
 	SIMD_FORCE_INLINE bool mergesSimulationIslands() const
@@ -176,7 +183,7 @@ public:
 		m_collisionShape = collisionShape;
 	}
 
-	int	getActivationState() const { return m_activationState1;}
+	SIMD_FORCE_INLINE	int	getActivationState() const { return m_activationState1;}
 	
 	void setActivationState(int newState);
 
@@ -193,7 +200,7 @@ public:
 
 	void	activate(bool forceActivation = false);
 
-	inline bool isActive() const
+	SIMD_FORCE_INLINE bool isActive() const
 	{
 		return ((getActivationState() != ISLAND_SLEEPING) && (getActivationState() != DISABLE_SIMULATION));
 	}
@@ -237,12 +244,12 @@ public:
 	}
 
 
-	btBroadphaseProxy*	getBroadphaseHandle()
+	SIMD_FORCE_INLINE btBroadphaseProxy*	getBroadphaseHandle()
 	{
 		return m_broadphaseHandle;
 	}
 
-	const btBroadphaseProxy*	getBroadphaseHandle() const
+	SIMD_FORCE_INLINE const btBroadphaseProxy*	getBroadphaseHandle() const
 	{
 		return m_broadphaseHandle;
 	}
@@ -288,7 +295,7 @@ public:
 		return m_interpolationAngularVelocity;
 	}
 
-	const int getIslandTag() const
+	SIMD_FORCE_INLINE int getIslandTag() const
 	{
 		return	m_islandTag1;
 	}
@@ -298,7 +305,7 @@ public:
 		m_islandTag1 = tag;
 	}
 
-	const int getCompanionId() const
+	SIMD_FORCE_INLINE int getCompanionId() const
 	{
 		return	m_companionId;
 	}
@@ -308,7 +315,7 @@ public:
 		m_companionId = id;
 	}
 
-	const btScalar			getHitFraction() const
+	SIMD_FORCE_INLINE btScalar			getHitFraction() const
 	{
 		return m_hitFraction; 
 	}
@@ -319,7 +326,7 @@ public:
 	}
 
 	
-	const int	getCollisionFlags() const
+	SIMD_FORCE_INLINE int	getCollisionFlags() const
 	{
 		return m_collisionFlags;
 	}

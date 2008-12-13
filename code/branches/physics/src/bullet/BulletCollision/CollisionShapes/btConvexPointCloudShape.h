@@ -23,33 +23,57 @@ subject to the following restrictions:
 ///The btConvexPointCloudShape implements an implicit convex hull of an array of vertices.
 ATTRIBUTE_ALIGNED16(class) btConvexPointCloudShape : public btPolyhedralConvexShape
 {
-	btVector3* m_points;
+	btVector3* m_unscaledPoints;
 	int m_numPoints;
+
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	btConvexPointCloudShape(btVector3* points,int numPoints);
-
-	void setPoints (btVector3* points, int numPoints);
-
-	btPoint3* getPoints()
+	btConvexPointCloudShape(btVector3* points,int numPoints, const btVector3& localScaling,bool computeAabb = true)
 	{
-		return m_points;
+		m_localScaling = localScaling;
+		m_shapeType = CONVEX_POINT_CLOUD_SHAPE_PROXYTYPE;
+		m_unscaledPoints = points;
+		m_numPoints = numPoints;
+
+		if (computeAabb)
+			recalcLocalAabb();
 	}
 
-	const btPoint3* getPoints() const
+	void setPoints (btVector3* points, int numPoints, bool computeAabb = true)
 	{
-		return m_points;
+		m_unscaledPoints = points;
+		m_numPoints = numPoints;
+
+		if (computeAabb)
+			recalcLocalAabb();
 	}
 
-	int getNumPoints() const 
+	SIMD_FORCE_INLINE	btVector3* getUnscaledPoints()
+	{
+		return m_unscaledPoints;
+	}
+
+	SIMD_FORCE_INLINE	const btVector3* getUnscaledPoints() const
+	{
+		return m_unscaledPoints;
+	}
+
+	SIMD_FORCE_INLINE	int getNumPoints() const 
 	{
 		return m_numPoints;
 	}
 
+	SIMD_FORCE_INLINE	btVector3	getScaledPoint( int index) const
+	{
+		return m_unscaledPoints[index] * m_localScaling;
+	}
+
+#ifndef __SPU__
 	virtual btVector3	localGetSupportingVertex(const btVector3& vec)const;
 	virtual btVector3	localGetSupportingVertexWithoutMargin(const btVector3& vec)const;
 	virtual void	batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors,btVector3* supportVerticesOut,int numVectors) const;
+#endif
 
 
 	//debugging
@@ -57,11 +81,11 @@ public:
 
 	virtual int	getNumVertices() const;
 	virtual int getNumEdges() const;
-	virtual void getEdge(int i,btPoint3& pa,btPoint3& pb) const;
-	virtual void getVertex(int i,btPoint3& vtx) const;
+	virtual void getEdge(int i,btVector3& pa,btVector3& pb) const;
+	virtual void getVertex(int i,btVector3& vtx) const;
 	virtual int	getNumPlanes() const;
-	virtual void getPlane(btVector3& planeNormal,btPoint3& planeSupport,int i ) const;
-	virtual	bool isInside(const btPoint3& pt,btScalar tolerance) const;
+	virtual void getPlane(btVector3& planeNormal,btVector3& planeSupport,int i ) const;
+	virtual	bool isInside(const btVector3& pt,btScalar tolerance) const;
 
 	///in case we receive negative scaling
 	virtual void	setLocalScaling(const btVector3& scaling);

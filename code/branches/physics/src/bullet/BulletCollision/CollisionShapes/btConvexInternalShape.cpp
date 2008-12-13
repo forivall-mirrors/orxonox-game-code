@@ -17,8 +17,9 @@ subject to the following restrictions:
 #include "btConvexInternalShape.h"
 
 
+
 btConvexInternalShape::btConvexInternalShape()
-: btConvexShape (), m_localScaling(btScalar(1.),btScalar(1.),btScalar(1.)),
+: m_localScaling(btScalar(1.),btScalar(1.),btScalar(1.)),
 m_collisionMargin(CONVEX_DISTANCE_MARGIN)
 {
 }
@@ -48,7 +49,8 @@ void	btConvexInternalShape::getAabbSlow(const btTransform& trans,btVector3&minAa
 		tmp = trans(localGetSupportingVertex(vec*trans.getBasis()));
 		minAabb[i] = tmp[i]-margin;
 	}
-};
+}
+
 
 
 btVector3	btConvexInternalShape::localGetSupportingVertex(const btVector3& vec)const
@@ -70,6 +72,7 @@ btVector3	btConvexInternalShape::localGetSupportingVertex(const btVector3& vec)c
 	return supVertex;
 
 #else
+	btAssert(0);
 	return btVector3(0,0,0);
 #endif //__SPU__
 

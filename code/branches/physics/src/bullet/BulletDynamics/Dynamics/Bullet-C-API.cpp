@@ -38,7 +38,7 @@ subject to the following restrictions:
 #include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
 #include "BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
 #include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkEpa.h"
+#include "BulletCollision/NarrowPhaseCollision/btGjkEpa2.h"
 #include "BulletCollision/CollisionShapes/btMinkowskiSumShape.h"
 #include "BulletCollision/NarrowPhaseCollision/btDiscreteCollisionDetectorInterface.h"
 #include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
@@ -255,7 +255,7 @@ void		plAddVertex(plCollisionShapeHandle cshape, plReal x,plReal y,plReal z)
 	(void)colShape;
 	btAssert(colShape->getShapeType()==CONVEX_HULL_SHAPE_PROXYTYPE);
 	btConvexHullShape* convexHullShape = reinterpret_cast<btConvexHullShape*>( cshape);
-	convexHullShape->addPoint(btPoint3(x,y,z));
+	convexHullShape->addPoint(btVector3(x,y,z));
 
 }
 

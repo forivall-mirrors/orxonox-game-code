@@ -23,10 +23,10 @@ class btIDebugDraw;
 #include "btSolverConstraint.h"
 
 
-/// btSequentialImpulseConstraintSolver uses a Propagation Method and Sequentially applies impulses
-/// The approach is the 3D version of Erin Catto's GDC 2006 tutorial. See http://www.gphysics.com
-/// Although Sequential Impulse is more intuitive, it is mathematically equivalent to Projected Successive Overrelaxation (iterative LCP)
-/// Applies impulses for combined restitution and penetration recovery and to simulate friction
+///The btSequentialImpulseConstraintSolver uses a Propagation Method and Sequentially applies impulses
+///The approach is the 3D version of Erin Catto's GDC 2006 tutorial. See http://www.gphysics.com
+///Although Sequential Impulse is more intuitive, it is mathematically equivalent to Projected Successive Overrelaxation (iterative LCP)
+///Applies impulses for combined restitution and penetration recovery and to simulate friction
 class btSequentialImpulseConstraintSolver : public btConstraintSolver
 {
 
@@ -41,7 +41,7 @@ protected:
 	btScalar solve(btRigidBody* body0,btRigidBody* body1, btManifoldPoint& cp, const btContactSolverInfo& info,int iter,btIDebugDraw* debugDrawer);
 	btScalar solveFriction(btRigidBody* body0,btRigidBody* body1, btManifoldPoint& cp, const btContactSolverInfo& info,int iter,btIDebugDraw* debugDrawer);
 	void  prepareConstraints(btPersistentManifold* manifoldPtr, const btContactSolverInfo& info,btIDebugDraw* debugDrawer);
-	void	addFrictionConstraint(const btVector3& normalAxis,int solverBodyIdA,int solverBodyIdB,int frictionIndex,btManifoldPoint& cp,const btVector3& rel_pos1,const btVector3& rel_pos2,btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation);
+	btSolverConstraint&	addFrictionConstraint(const btVector3& normalAxis,int solverBodyIdA,int solverBodyIdB,int frictionIndex,btManifoldPoint& cp,const btVector3& rel_pos1,const btVector3& rel_pos2,btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation);
 
 	ContactSolverFunc m_contactDispatch[MAX_CONTACT_SOLVER_TYPES][MAX_CONTACT_SOLVER_TYPES];
 	ContactSolverFunc m_frictionDispatch[MAX_CONTACT_SOLVER_TYPES][MAX_CONTACT_SOLVER_TYPES];

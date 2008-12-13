@@ -15,8 +15,7 @@ subject to the following restrictions:
 
 #include "BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
 
-btPolyhedralConvexShape::btPolyhedralConvexShape()
-:btConvexInternalShape(),
+btPolyhedralConvexShape::btPolyhedralConvexShape() :btConvexInternalShape(),
 m_localAabbMin(1,1,1),
 m_localAabbMax(-1,-1,-1),
 m_isLocalAabbValid(false),
@@ -24,7 +23,6 @@ m_optionalHull(0)
 {
 
 }
-
 
 
 btVector3	btPolyhedralConvexShape::localGetSupportingVertexWithoutMargin(const btVector3& vec0)const

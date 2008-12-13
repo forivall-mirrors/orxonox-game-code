@@ -19,7 +19,6 @@ subject to the following restrictions:
 #include "LinearMath/btTransform.h"
 #include "LinearMath/btVector3.h"
 #include "LinearMath/btMatrix3x3.h"
-#include "LinearMath/btPoint3.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h" //for the shape types
 
 ///The btCollisionShape class provides an interface for collision shapes that can be shared among btCollisionObjects.
@@ -46,6 +45,8 @@ public:
 
 	///getAngularMotionDisc returns the maximus radius needed for Conservative Advancement to handle time-of-impact with rotations.
 	virtual btScalar	getAngularMotionDisc() const;
+
+	virtual btScalar	getContactBreakingThreshold() const;
 
 
 	///calculateTemporalAabb calculates the enclosing aabb for the moving object over interval [0..timeStep)
