@@ -140,8 +140,6 @@ namespace orxonox
             Ogre::SceneNode* node_;
 
         private:
-            void updateParent();
-
             inline void lookAt_xmlport(const Vector3& target)
                 { this->lookAt(target); }
             inline void setDirection_xmlport(const Vector3& direction)
@@ -153,6 +151,8 @@ namespace orxonox
             inline void roll_xmlport(const Degree& angle)
                 { this->roll(angle); }
 
+            // network callbacks
+            void parentChanged();
             inline void scaleChanged()
                 { this->setScale3D(this->getScale3D()); }
 
@@ -191,11 +191,38 @@ namespace orxonox
             void setCollisionTypeStr(const std::string& type);
             std::string getCollisionTypeStr() const;
 
-            void setMass(float mass);
+            inline void setMass(float mass)
+                { this->mass_ = mass; recalculateMassProps(); }
             inline float getMass() const
                 { return this->mass_; }
+
             inline float getTotalMass() const
                 { return this->mass_ + this->childrenMass_; }
+
+            inline void setRestitution(float restitution)
+                { this->restitution_ = restitution; resetPhysicsProps(); }
+            inline float getRestitution() const
+                { return this->restitution_; }
+
+            inline void setAngularFactor(float angularFactor)
+                { this->angularFactor_ = angularFactor; resetPhysicsProps(); }
+            inline float getAngularFactor() const
+                { return this->angularFactor_; }
+
+            inline void setLinearDamping(float linearDamping)
+                { this->linearDamping_ = linearDamping; resetPhysicsProps(); }
+            inline float getLinearDamping() const
+                { return this->linearDamping_; }
+
+            inline void setAngularDamping(float angularDamping)
+                { this->angularDamping_ = angularDamping; resetPhysicsProps(); }
+            inline float getAngularDamping() const
+                { return this->angularDamping_; }
+
+            inline void setFriction(float friction)
+                { this->friction_ = friction; resetPhysicsProps(); }
+            inline float getFriction() const
+                { return this->friction_; }
 
             void attachCollisionShape(CollisionShape* shape);
             void detachCollisionShape(CollisionShape* shape);
@@ -216,12 +243,24 @@ namespace orxonox
 
         private:
             void updateCollisionType();
-            void recalculatePhysicsProps();
+            void recalculateMassProps();
+            void resetPhysicsProps();
 
             // network callbacks
             void collisionTypeChanged();
-            void massChanged();
             void physicsActivityChanged();
+            inline void massChanged()
+                { this->setMass(this->mass_); }
+            inline void restitutionChanged()
+                { this->setRestitution(this->restitution_); }
+            inline void angularFactorChanged()
+                { this->setAngularFactor(this->angularFactor_); }
+            inline void linearDampingChanged()
+                { this->setLinearDamping(this->linearDamping_); }
+            inline void angularDampingChanged()
+                { this->setAngularDamping(this->angularDamping_); }
+            inline void frictionChanged()
+                { this->setFriction(this->friction_); }
 
             CollisionType                collisionType_;
             CollisionType                collisionTypeSynchronised_;
@@ -229,6 +268,11 @@ namespace orxonox
             bool                         bPhysicsActiveSynchronised_;
             CompoundCollisionShape*      collisionShape_;
             btScalar                     mass_;
+            btScalar                     restitution_;
+            btScalar                     angularFactor_;
+            btScalar                     linearDamping_;
+            btScalar                     angularDamping_;
+            btScalar                     friction_;
             btScalar                     childrenMass_;
     };
 

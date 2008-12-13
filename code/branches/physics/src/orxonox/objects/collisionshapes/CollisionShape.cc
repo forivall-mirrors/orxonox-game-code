@@ -66,11 +66,11 @@ namespace orxonox
 
         XMLPortParamTemplate(CollisionShape, "position", setPosition, getPosition, xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(CollisionShape, "orientation", setOrientation, getOrientation, xmlelement, mode, const Quaternion&);
+        XMLPortParamTemplate(CollisionShape, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
+        XMLPortParamLoadOnly(CollisionShape, "scale", setScale, xmlelement, mode);
         XMLPortParamLoadOnly(CollisionShape, "yaw",   yaw,   xmlelement, mode);
         XMLPortParamLoadOnly(CollisionShape, "pitch", pitch, xmlelement, mode);
         XMLPortParamLoadOnly(CollisionShape, "roll",  roll,  xmlelement, mode);
-        XMLPortParamTemplate(CollisionShape, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
-        XMLPortParamLoadOnly(CollisionShape, "scale", setScale, xmlelement, mode);
     }
 
     void CollisionShape::registerVariables()

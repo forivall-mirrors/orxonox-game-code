@@ -71,10 +71,16 @@ namespace orxonox
         this->physicalBody_ = 0;
         this->bPhysicsActive_ = false;
         this->collisionShape_ = new CompoundCollisionShape(this);
-        this->mass_ = 0;
-        this->childrenMass_ = 0;
         this->collisionType_ = None;
         this->collisionTypeSynchronised_ = None;
+        this->mass_           = 0;
+        this->childrenMass_   = 0;
+        // Use bullet default values
+        this->restitution_    = 0;
+        this->angularFactor_  = 1;
+        this->linearDamping_  = 0;
+        this->angularDamping_ = 0;
+        this->friction_       = 0.5;
 
         this->registerVariables();
     }
@@ -102,19 +108,24 @@ namespace orxonox
     {
         SUPER(WorldEntity, XMLPort, xmlelement, mode);
 
-        XMLPortParamTemplate(WorldEntity, "position", setPosition, getPosition, xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(WorldEntity, "position",    setPosition,    getPosition,    xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(WorldEntity, "orientation", setOrientation, getOrientation, xmlelement, mode, const Quaternion&);
-        XMLPortParamLoadOnly(WorldEntity, "lookat", lookAt_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "direction", setDirection_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "yaw", yaw_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "pitch", pitch_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "roll", roll_xmlport, xmlelement, mode);
-        XMLPortParamTemplate(WorldEntity, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
-        XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
+        XMLPortParamTemplate(WorldEntity, "scale3D",     setScale3D,     getScale3D,     xmlelement, mode, const Vector3&);
+        XMLPortParam        (WorldEntity, "scale",       setScale,       getScale,       xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "lookat",      lookAt_xmlport,       xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "direction",   setDirection_xmlport, xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "yaw",         yaw_xmlport,          xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "pitch",       pitch_xmlport,        xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "roll",        roll_xmlport,         xmlelement, mode);
 
         // Physics
-        XMLPortParam(WorldEntity, "collisionType", setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
-        XMLPortParam(WorldEntity, "mass", setMass, getMass, xmlelement, mode);
+        XMLPortParam(WorldEntity, "collisionType",  setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
+        XMLPortParam(WorldEntity, "mass",           setMass,             getMass,             xmlelement, mode);
+        XMLPortParam(WorldEntity, "restitution",    setRestitution,      getRestitution,      xmlelement, mode);
+        XMLPortParam(WorldEntity, "angularFactor",  setAngularFactor,    getAngularFactor,    xmlelement, mode);
+        XMLPortParam(WorldEntity, "linearDamping",  setLinearDamping,    getLinearDamping,    xmlelement, mode);
+        XMLPortParam(WorldEntity, "angularDamping", setAngularDamping,   getAngularDamping,   xmlelement, mode);
+        XMLPortParam(WorldEntity, "friction",       setFriction,         getFriction,         xmlelement, mode);
 
         // Other attached WorldEntities
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
@@ -124,21 +135,26 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
-        REGISTERDATA(this->bActive_,     network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
-        REGISTERDATA(this->bVisible_,    network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
+        REGISTERDATA(this->bActive_,        network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
+        REGISTERDATA(this->bVisible_,       network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
 
-        REGISTERDATA(this->getScale3D(), network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
+        REGISTERDATA(this->getScale3D(),    network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
 
         REGISTERDATA((int&)this->collisionTypeSynchronised_,
-                                         network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
-        REGISTERDATA(this->mass_,        network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
+                                            network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
+        REGISTERDATA(this->mass_,           network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
+        REGISTERDATA(this->restitution_,    network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::restitutionChanged));
+        REGISTERDATA(this->angularFactor_,  network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::angularFactorChanged));
+        REGISTERDATA(this->linearDamping_,  network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::linearDampingChanged));
+        REGISTERDATA(this->angularDamping_, network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::angularDampingChanged));
+        REGISTERDATA(this->friction_,       network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
         REGISTERDATA(this->bPhysicsActiveSynchronised_,
-                                         network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
+                                            network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
 
-        REGISTERDATA(this->parentID_,    network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
+        REGISTERDATA(this->parentID_,       network::direction::toclient, new network::NetworkCallback<WorldEntity>(this, &WorldEntity::parentChanged));
     }
 
-    void WorldEntity::updateParent()
+    void WorldEntity::parentChanged()
     {
         WorldEntity* parent = dynamic_cast<WorldEntity*>(Synchronisable::getSynchronisable(this->parentID_));
         if (parent)
@@ -161,11 +177,6 @@ namespace orxonox
             else
                 this->setCollisionType(this->collisionTypeSynchronised_);
         }
-    }
-
-    void WorldEntity::massChanged()
-    {
-        this->setMass(this->mass_);
     }
 
     void WorldEntity::physicsActivityChanged()
@@ -213,7 +224,7 @@ namespace orxonox
         this->attachCollisionShape(object->getCollisionShape());
         // mass
         this->childrenMass_ += object->getMass();
-        recalculatePhysicsProps();
+        recalculateMassProps();
     }
 
     void WorldEntity::detach(WorldEntity* object)
@@ -224,7 +235,7 @@ namespace orxonox
         if (object->getMass() > 0.0f)
         {
             this->childrenMass_ -= object->getMass();
-            recalculatePhysicsProps();
+            recalculateMassProps();
         }
 
         this->node_->removeChild(object->node_);
@@ -417,23 +428,19 @@ namespace orxonox
         this->node_->setScale(scale);
     }
 
-    void WorldEntity::setMass(float mass)
-    {
-        this->mass_ = mass;
-        recalculatePhysicsProps();
-    }
-
     void WorldEntity::setCollisionType(CollisionType type)
     {
         // If we are already attached to a parent, this would be a bad idea..
         if (this->parent_)
             ThrowException(PhysicsViolation, "Cannot set the collision type of a WorldEntity with a parent");
         else if (this->addedToPhysicalWorld())
-            ThrowException(PhysicsViolation, "Warning: Cannot set the collision type at run time.");
+            ThrowException(PhysicsViolation, "Cannot set the collision type at run time.");
 
         // Check for type legality. Could be StaticEntity or MobileEntity
         if (!this->isCollisionTypeLegal(type))
             return; // exception gets issued anyway
+        if (type != None && !this->getScene()->hasPhysics())
+            ThrowException(PhysicsViolation, "Cannot have physical bodies in a non physical scene");
 
         // Check whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
@@ -443,9 +450,7 @@ namespace orxonox
                 ThrowException(NotImplemented, "Cannot create a physical body if there is scaling applied to the node: Not yet implemented.");
 
             // Create new rigid body
-            btCollisionShape* temp = 0;
             btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_->getCollisionShape());
-            bodyConstructionInfo.m_restitution = 1;
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
             this->physicalBody_->setUserPointer(this);
             this->physicalBody_->setActivationState(DISABLE_DEACTIVATION);
@@ -484,7 +489,8 @@ namespace orxonox
         assert(this->collisionType_ == type);
 
         // update mass and inertia tensor
-        recalculatePhysicsProps();
+        recalculateMassProps();
+        resetPhysicsProps();
         activatePhysics();
     }
 
@@ -543,7 +549,7 @@ namespace orxonox
         this->childrenMass_ = 0.0f;
         for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
             this->childrenMass_ += (*it)->getMass();
-        recalculatePhysicsProps();
+        recalculateMassProps();
         // Notify parent WE
         if (this->parent_)
             parent_->notifyChildMassChanged();
@@ -563,10 +569,10 @@ namespace orxonox
             else
                 this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
         }
-        recalculatePhysicsProps();
+        recalculateMassProps();
     }
 
-    void WorldEntity::recalculatePhysicsProps()
+    void WorldEntity::recalculateMassProps()
     {
         if (this->hasPhysics())
         {
@@ -586,6 +592,17 @@ namespace orxonox
                 float mass = this->mass_ + this->childrenMass_;
                 this->physicalBody_->setMassProps(mass, this->collisionShape_->getLocalInertia(mass));
             }
+        }
+    }
+
+    void WorldEntity::resetPhysicsProps()
+    {
+        if (this->hasPhysics())
+        {
+            this->physicalBody_->setRestitution(this->restitution_);
+            this->physicalBody_->setAngularFactor(this->angularFactor_);
+            this->physicalBody_->setDamping(this->linearDamping_, this->angularDamping_);
+            this->physicalBody_->setFriction(this->friction_);
         }
     }
 }
