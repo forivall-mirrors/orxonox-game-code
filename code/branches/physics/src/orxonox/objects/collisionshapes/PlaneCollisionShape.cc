@@ -73,5 +73,6 @@ namespace orxonox
         if (this->collisionShape_)
             delete this->collisionShape_;
         this->collisionShape_ = new btStaticPlaneShape(omni_cast<btVector3>(this->normal_), this->offset_);
+        this->updateParent();
     }
 }

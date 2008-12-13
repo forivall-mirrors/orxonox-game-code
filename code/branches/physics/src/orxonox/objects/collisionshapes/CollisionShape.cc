@@ -75,14 +75,20 @@ namespace orxonox
 
     void CollisionShape::registerVariables()
     {
-        REGISTERDATA(this->parentID_, network::direction::toclient, new network::NetworkCallback<CollisionShape>(this, &CollisionShape::updateParent));
+        REGISTERDATA(this->parentID_, network::direction::toclient, new network::NetworkCallback<CollisionShape>(this, &CollisionShape::parentChanged));
     }
 
-    void CollisionShape::updateParent()
+    void CollisionShape::parentChanged()
     {
         CompoundCollisionShape* parent = dynamic_cast<CompoundCollisionShape*>(Synchronisable::getSynchronisable(this->parentID_));
         if (parent)
             parent->addChildShape(this);
+    }
+
+    void CollisionShape::updateParent()
+    {
+        if (this->parent_)
+            this->parent_->updateChildShape(this);
     }
 
     bool CollisionShape::hasTransform() const
@@ -94,10 +100,20 @@ namespace orxonox
     void CollisionShape::setScale3D(const Vector3& scale)
     {
         ThrowException(NotImplemented, "Cannot set the scale of a collision shape: Not yet implemented.");
+        this->updateParent();
     }
 
     void CollisionShape::setScale(float scale)
     {
         ThrowException(NotImplemented, "Cannot set the scale of a collision shape: Not yet implemented.");
+        this->updateParent();
+    }
+
+    btVector3 CollisionShape::getLocalInertia(btScalar mass) const
+    {
+        btVector3 inertia(0, 0, 0);
+        if (this->collisionShape_)
+            this->collisionShape_->calculateLocalInertia(mass, inertia);
+        return inertia;
     }
 }

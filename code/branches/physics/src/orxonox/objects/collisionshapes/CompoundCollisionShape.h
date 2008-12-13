@@ -44,17 +44,21 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void addChildShape(CollisionShape* shape, bool bWorldEntityRoot = false);
+            void addChildShape(CollisionShape* shape);
+            void removeChildShape(CollisionShape* shape);
+            void removeAllChildShapes();
             CollisionShape* getChildShape(unsigned int index) const;
 
-            virtual btCollisionShape* getCollisionShape() const;
+            void updateChildShape(CollisionShape* shape);
 
-            inline bool empty() const
-                { return this->childShapes_.size() == 0; }
+        protected:
+            virtual void updateParent();
 
         private:
-            btCompoundShape*             compoundShape_;
-            std::vector<CollisionShape*> childShapes_;
+            void updatePublicShape();
+
+            btCompoundShape* compoundShape_;
+            std::map<CollisionShape*, btCollisionShape*> childShapes_;
     };
 }
 

@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "LinearMath/btVector3.h"
 #include "util/Math.h"
 #include "core/BaseObject.h"
 #include "network/Synchronisable.h"
@@ -47,25 +48,27 @@ namespace orxonox
             void registerVariables();
 
             inline void setPosition(const Vector3& position)
-                { this->position_ = position; }
+                { this->position_ = position; this->updateParent(); }
             inline const Vector3& getPosition() const
                 { return this->position_; }
 
             inline void setOrientation(const Quaternion& orientation)
-                { this->orientation_ = orientation; }
+                { this->orientation_ = orientation; this->updateParent(); }
             inline const Quaternion& getOrientation() const
                 { return this->orientation_; }
 
-            void yaw(const Degree& angle)   { this->orientation_ = this->orientation_ * Quaternion(angle, Vector3::UNIT_Y); }
-            void pitch(const Degree& angle) { this->orientation_ = this->orientation_ * Quaternion(angle, Vector3::UNIT_X); }
-            void roll(const Degree& angle)  { this->orientation_ = this->orientation_ * Quaternion(angle, Vector3::UNIT_Z); }
+            void yaw(const Degree& angle)   { this->setOrientation(this->orientation_ * Quaternion(angle, Vector3::UNIT_Y)); }
+            void pitch(const Degree& angle) { this->setOrientation(this->orientation_ * Quaternion(angle, Vector3::UNIT_X)); }
+            void roll(const Degree& angle)  { this->setOrientation(this->orientation_ * Quaternion(angle, Vector3::UNIT_Z)); }
 
             virtual void setScale3D(const Vector3& scale);
             virtual void setScale(float scale);
             inline const Vector3& getScale3D(void) const
                 { return this->scale_; }
 
-            virtual inline btCollisionShape* getCollisionShape() const
+            btVector3 getLocalInertia(float mass) const;
+
+            inline btCollisionShape* getCollisionShape() const
                 { return this->collisionShape_; }
 
             bool hasTransform() const;
@@ -74,16 +77,18 @@ namespace orxonox
                 { this->parent_ = shape; this->parentID_ = ID; }
 
         protected:
-            btCollisionShape* collisionShape_;
+            virtual void updateParent();
+
+            btCollisionShape*       collisionShape_;
+            CompoundCollisionShape* parent_;
 
         private:
-            void updateParent();
+            void parentChanged();
 
-            Vector3           position_;
-            Quaternion        orientation_;
-            Vector3           scale_;
-            CompoundCollisionShape* parent_;
-            unsigned int      parentID_;
+            Vector3                 position_;
+            Quaternion              orientation_;
+            Vector3                 scale_;
+            unsigned int            parentID_;
     };
 }
 

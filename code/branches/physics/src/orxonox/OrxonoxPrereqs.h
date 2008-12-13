@@ -211,6 +211,9 @@ namespace CEGUI
 
 // Bullet Physics Engine
 
+class btTransform;
+class btVector3;
+
 class btRigidBody;
 class btCollisionObject;
 class btGhostObject;

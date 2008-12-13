@@ -34,7 +34,6 @@
 
 #define OGRE_FORCE_ANGLE_TYPES
 #include <OgreSceneNode.h>
-
 #include "LinearMath/btMotionState.h"
 
 #include "network/Synchronisable.h"
@@ -125,10 +124,8 @@ namespace orxonox
                 { this->scale3D(scale, scale, scale); }
 
             void attach(WorldEntity* object);
-//            void attachAsdf(BlinkingBillboard* object);
             void detach(WorldEntity* object);
             WorldEntity* getAttachedObject(unsigned int index) const;
-//            BlinkingBillboard* getAttachedAsdfObject(unsigned int index) const;
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
 
@@ -145,6 +142,8 @@ namespace orxonox
                 { if (this->parent_) { this->parent_->detach(this); } }
             inline WorldEntity* getParent() const
                 { return this->parent_; }
+
+            void notifyChildPropsChanged();
 
         protected:
             Ogre::SceneNode* node_;
@@ -184,11 +183,15 @@ namespace orxonox
                 None
             };
 
-            bool hasPhysics()  const { return getCollisionType() != None     ; }
-            bool isStatic()    const { return getCollisionType() == Static   ; }
-            bool isKinematic() const { return getCollisionType() == Kinematic; }
-            bool isDynamic()   const { return getCollisionType() == Dynamic  ; }
-            bool isPhysicsRunning() const;
+            bool hasPhysics()       const { return getCollisionType() != None     ; }
+            bool isStatic()         const { return getCollisionType() == Static   ; }
+            bool isKinematic()      const { return getCollisionType() == Kinematic; }
+            bool isDynamic()        const { return getCollisionType() == Dynamic  ; }
+            bool isPhysicsActive()  const { return this->bPhysicsActive_; }
+            bool addedToPhysicalWorld() const;
+
+            void activatePhysics();
+            void deactivatePhysics();
 
             inline CollisionType getCollisionType() const
                 { return this->collisionType_; }
@@ -200,14 +203,20 @@ namespace orxonox
             void setMass(float mass);
             inline float getMass() const
                 { return this->mass_; }
+            inline float getTotalMass() const
+                { return this->mass_ + this->childrenMass_; }
 
-            void attachCollisionShape(CollisionShape* shape, bool bWorldEntityRoot = false);
+            void attachCollisionShape(CollisionShape* shape);
+            void detachCollisionShape(CollisionShape* shape);
             CollisionShape* getAttachedCollisionShape(unsigned int index) const;
 
             inline CompoundCollisionShape* getCollisionShape()
                 { return this->collisionShape_; }
             inline btRigidBody* getPhysicalBody()
                 { return this->physicalBody_; }
+
+            void notifyCollisionShapeChanged();
+            void notifyChildMassChanged();
 
         protected:
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
@@ -216,22 +225,20 @@ namespace orxonox
 
         private:
             void updateCollisionType();
-            void mergeCollisionShape(CollisionShape* shape);
-            void internalSetMassProps();
-            btVector3 getLocalInertia(btScalar mass) const;
-            bool checkPhysics() const;
-            void addToPhysicalWorld() const;
-            void removeFromPhysicalWorld() const;
+            void recalculatePhysicsProps();
 
             // network callbacks
             void collisionTypeChanged();
             void massChanged();
+            void physicsActivityChanged();
 
             CollisionType                collisionType_;
             CollisionType                collisionTypeSynchronised_;
+            bool                         bPhysicsActive_;
+            bool                         bPhysicsActiveSynchronised_;
             CompoundCollisionShape*      collisionShape_;
             btScalar                     mass_;
-            btScalar                     childMass_;
+            btScalar                     childrenMass_;
     };
 }
 

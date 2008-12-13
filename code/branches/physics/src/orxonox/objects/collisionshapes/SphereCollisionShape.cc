@@ -71,6 +71,8 @@ namespace orxonox
     {
         if (this->collisionShape_)
             delete this->collisionShape_;
+        // When we recreate the shape, we have to inform the parent about this to update the shape
         this->collisionShape_ = new btSphereShape(this->radius_);
+        this->updateParent();
     }
 }

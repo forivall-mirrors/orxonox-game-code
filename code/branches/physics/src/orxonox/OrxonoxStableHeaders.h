@@ -102,6 +102,6 @@
 
 //#endif /* ifdef NDEBUG */
 
-#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
+#endif /* defined(ORXONOX_ENABLE_PCH) */
 
 #endif /* _OrxonoxStableHeaders_H__ */

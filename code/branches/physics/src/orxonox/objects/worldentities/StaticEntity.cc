@@ -59,7 +59,7 @@ namespace orxonox
 
     void StaticEntity::setPosition(const Vector3& position)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -73,7 +73,7 @@ namespace orxonox
 
     void StaticEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -87,7 +87,7 @@ namespace orxonox
 
     void StaticEntity::setOrientation(const Quaternion& orientation)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -101,7 +101,7 @@ namespace orxonox
 
     void StaticEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -116,7 +116,7 @@ namespace orxonox
 
     void StaticEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -132,7 +132,7 @@ namespace orxonox
 
     void StaticEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -148,7 +148,7 @@ namespace orxonox
 
     void StaticEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -164,7 +164,7 @@ namespace orxonox
 
     void StaticEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
@@ -178,7 +178,7 @@ namespace orxonox
 
     void StaticEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
-        if (this->isPhysicsRunning())
+        if (this->addedToPhysicalWorld())
             ThrowException(PhysicsViolation, "Cannot change position or orientation of a StaticEntity with physics at run time.");
         if (this->isStatic())
         {
