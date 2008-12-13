@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreParticleEmitter.h>
+#include <OgrePrerequisites.h>
 
 #include "core/OrxonoxClass.h"
 #include "util/Math.h"

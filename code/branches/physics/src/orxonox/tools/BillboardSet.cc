@@ -33,6 +33,7 @@
 #include <cassert>
 
 #include <OgreSceneManager.h>
+#include <OgreBillboardSet.h>
 #include <OgreBillboard.h>
 
 #include "util/Convert.h"

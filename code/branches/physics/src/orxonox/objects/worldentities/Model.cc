@@ -28,6 +28,7 @@
 
 #include "OrxonoxStableHeaders.h"
 
+#include <OgreEntity.h>
 #include "Model.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

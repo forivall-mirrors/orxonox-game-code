@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "Billboard.h"
 
+#include <OgreBillboardSet.h>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"

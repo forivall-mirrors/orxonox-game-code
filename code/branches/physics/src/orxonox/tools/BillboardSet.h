@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreBillboardSet.h>
+#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
 

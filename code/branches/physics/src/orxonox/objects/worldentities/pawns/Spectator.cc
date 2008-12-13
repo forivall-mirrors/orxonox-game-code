@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "Spectator.h"
 
+#include <OgreBillboardSet.h>
+
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 #include "objects/worldentities/Model.h"
