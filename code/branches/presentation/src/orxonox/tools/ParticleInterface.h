@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreParticleEmitter.h>
+#include <OgrePrerequisites.h>
 
 #include "core/OrxonoxClass.h"
 #include "util/Math.h"
@@ -52,9 +52,6 @@ namespace orxonox
 
             inline Ogre::ParticleSystem* getParticleSystem() const
                 { return this->particleSystem_; }
-
-            void addToSceneNode(Ogre::SceneNode* sceneNode);
-            void detachFromSceneNode();
 
             Ogre::ParticleEmitter* createNewEmitter();
             Ogre::ParticleEmitter* getEmitter(unsigned int emitterNr) const;
@@ -95,7 +92,6 @@ namespace orxonox
             static ParticleInterface* currentParticleInterface_s;
             static unsigned int       counter_s;
 
-            Ogre::SceneNode*          sceneNode_;
             Ogre::ParticleSystem*     particleSystem_;
             bool                      bVisible_;
             bool                      bEnabled_;

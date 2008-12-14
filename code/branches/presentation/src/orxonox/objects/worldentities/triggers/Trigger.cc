@@ -30,6 +30,7 @@
 #include "Trigger.h"
 
 #include <OgreBillboard.h>
+#include <OgreBillboardSet.h>
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -43,7 +44,7 @@ namespace orxonox
 
   CreateFactory(Trigger);
 
-  Trigger::Trigger(BaseObject* creator) : PositionableEntity(creator)
+  Trigger::Trigger(BaseObject* creator) : StaticEntity(creator)
   {
     RegisterObject(Trigger);
 
@@ -70,7 +71,7 @@ namespace orxonox
       this->debugBillboard_.setVisible(false);
 
       if (this->debugBillboard_.getBillboardSet())
-        this->getNode()->attachObject(this->debugBillboard_.getBillboardSet());
+          this->attachOgreObject(this->debugBillboard_.getBillboardSet());
     }
 
     this->setObjectMode(0x0);

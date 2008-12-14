@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreEntity.h>
+#include <OgrePrerequisites.h>
 
 namespace orxonox
 {

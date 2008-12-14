@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "Billboard.h"
 
+#include <OgreBillboardSet.h>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
@@ -37,7 +39,7 @@ namespace orxonox
 {
     CreateFactory(Billboard);
 
-    Billboard::Billboard(BaseObject* creator) : PositionableEntity(creator)
+    Billboard::Billboard(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Billboard);
 
@@ -49,7 +51,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (this->isInitialized() && this->billboard_.getBillboardSet())
-                this->getNode()->detachObject(this->billboard_.getName());
+                this->detachOgreObject(this->billboard_.getName());
         }
     }
 
@@ -75,7 +77,7 @@ namespace orxonox
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())
-                    this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                     this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }
@@ -91,7 +93,7 @@ namespace orxonox
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())
-                    this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                    this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }

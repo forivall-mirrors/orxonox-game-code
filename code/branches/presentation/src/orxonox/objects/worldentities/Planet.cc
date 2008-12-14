@@ -32,7 +32,7 @@
 #include <math.h>
 
 #include <OgreEntity.h>
-#include <OgreMesh.h>
+#include <OgreBillboardSet.h>
 #include <OgreHardwareVertexBuffer.h>
 #include <OgreMeshManager.h>
 
@@ -62,7 +62,7 @@ namespace orxonox
     Planet::~Planet()
     {
         if (this->isInitialized() && this->mesh_.getEntity())
-            this->getNode()->detachObject(this->mesh_.getEntity());
+            this->detachOgreObject(this->mesh_.getEntity());
     }    
 
     void Planet::tick(float dt)
@@ -107,7 +107,7 @@ namespace orxonox
         this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
         billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));
 
-        this->getNode()->attachObject(this->billboard_.getBillboardSet());    
+        this->attachOgreObject(this->billboard_.getBillboardSet());    
         this->billboard_.getBillboardSet()->setUseAccurateFacing(true);
         this->setCastShadows(true);
         this->billboard_.getBillboardSet()->setRenderQueueGroup(this->mesh_.getEntity()->getRenderQueueGroup());
@@ -117,13 +117,13 @@ namespace orxonox
     void Planet::changedMesh()
     {
         if (this->mesh_.getEntity())
-            this->getNode()->detachObject(this->mesh_.getEntity());
+            this->detachOgreObject(this->mesh_.getEntity());
 
         this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
 
         if (this->mesh_.getEntity())
         {
-            this->getNode()->attachObject(this->mesh_.getEntity());
+            this->attachOgreObject(this->mesh_.getEntity());
             this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
             this->mesh_.setVisible(this->isVisible());
         }

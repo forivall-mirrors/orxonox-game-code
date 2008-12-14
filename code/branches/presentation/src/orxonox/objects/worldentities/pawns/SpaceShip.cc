@@ -29,35 +29,37 @@
 #include "OrxonoxStableHeaders.h"
 #include "SpaceShip.h"
 
+#include "BulletDynamics/Dynamics/btRigidBody.h"
+
+#include "util/Math.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Math.h"
 
 namespace orxonox
 {
+    const float orientationGain = 100;
     CreateFactory(SpaceShip);
 
     SpaceShip::SpaceShip(BaseObject* creator) : Pawn(creator)
     {
         RegisterObject(SpaceShip);
 
-        this->zeroDegree_ = 0;
+        this->primaryThrust_  = 100;
+        this->auxilaryThrust_ =  30;
+        this->rotationThrust_ =  10;
 
-        this->maxSpeed_ = 0;
-        this->maxSecondarySpeed_ = 0;
-        this->maxRotation_ = 0;
-        this->translationAcceleration_ = 0;
-        this->rotationAcceleration_ = 0;
-        this->translationDamping_ = 0;
-
-        this->yawRotation_ = 0;
-        this->pitchRotation_ = 0;
-        this->rollRotation_ = 0;
+        this->localLinearAcceleration_.setValue(0, 0, 0);
+        this->localAngularAcceleration_.setValue(0, 0, 0);
 
         this->bInvertYAxis_ = false;
 
         this->setDestroyWhenPlayerLeft(true);
+
+        // SpaceShip is always a physical object per default
+        // Be aware of this call: The collision type legality check will not reach derived classes!
+        this->setCollisionType(WorldEntity::Dynamic);
 
         this->setConfigValues();
         this->registerVariables();
@@ -71,22 +73,16 @@ namespace orxonox
     {
         SUPER(SpaceShip, XMLPort, xmlelement, mode);
 
-        XMLPortParam(SpaceShip, "maxspeed",          setMaxSpeed,          getMaxSpeed,          xmlelement, mode);
-        XMLPortParam(SpaceShip, "maxsecondaryspeed", setMaxSecondarySpeed, getMaxSecondarySpeed, xmlelement, mode);
-        XMLPortParam(SpaceShip, "maxrotation",       setMaxRotation,       getMaxRotation,       xmlelement, mode);
-        XMLPortParam(SpaceShip, "transacc",          setTransAcc,          getTransAcc,          xmlelement, mode);
-        XMLPortParam(SpaceShip, "rotacc",            setRotAcc,            getRotAcc,            xmlelement, mode);
-        XMLPortParam(SpaceShip, "transdamp",         setTransDamp,         getTransDamp,         xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "primaryThrust",  primaryThrust_,  xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "rotationThrust", rotationThrust_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
     {
-        registerVariable(this->maxSpeed_,                variableDirection::toclient);
-        registerVariable(this->maxSecondarySpeed_,       variableDirection::toclient);
-        registerVariable(this->maxRotation_,             variableDirection::toclient);
-        registerVariable(this->translationAcceleration_, variableDirection::toclient);
-        registerVariable(this->rotationAcceleration_,    variableDirection::toclient);
-        registerVariable(this->translationDamping_,      variableDirection::toclient);
+        registerVariable(this->primaryThrust_,  variableDirection::toclient);
+        registerVariable(this->auxilaryThrust_, variableDirection::toclient);
+        registerVariable(this->rotationThrust_, variableDirection::toclient);
     }
 
     void SpaceShip::setConfigValues()
@@ -94,117 +90,67 @@ namespace orxonox
         SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
     }
 
+    bool SpaceShip::isCollisionTypeLegal(WorldEntity::CollisionType type) const
+    {
+        if (type != WorldEntity::Dynamic)
+        {
+            CCOUT(1) << "Error: Cannot tell a SpaceShip not to be dynamic! Ignoring." << std::endl;
+            assert(false); // Only in debug mode
+            return false;
+        }
+        else
+            return true;
+    }
+
     void SpaceShip::tick(float dt)
     {
-        if (this->isLocallyControlled())
-        {
-            // #####################################
-            // ############# STEERING ##############
-            // #####################################
-
-            Vector3 velocity = this->getVelocity();
-            if (velocity.x > this->maxSecondarySpeed_)
-                velocity.x = this->maxSecondarySpeed_;
-            if (velocity.x < -this->maxSecondarySpeed_)
-                velocity.x = -this->maxSecondarySpeed_;
-            if (velocity.y > this->maxSecondarySpeed_)
-                velocity.y = this->maxSecondarySpeed_;
-            if (velocity.y < -this->maxSecondarySpeed_)
-                velocity.y = -this->maxSecondarySpeed_;
-            if (velocity.z > this->maxSecondarySpeed_)
-                velocity.z = this->maxSecondarySpeed_;
-            if (velocity.z < -this->maxSpeed_)
-                velocity.z = -this->maxSpeed_;
-
-            // normalize velocity and acceleration
-            for (size_t dimension = 0; dimension < 3; ++dimension)
-            {
-                if (this->acceleration_[dimension] == 0)
-                {
-                    if (velocity[dimension] > 0)
-                    {
-                        velocity[dimension] -= (this->translationDamping_ * dt);
-                        if (velocity[dimension] < 0)
-                            velocity[dimension] = 0;
-                    }
-                    else if (velocity[dimension] < 0)
-                    {
-                        velocity[dimension] += (this->translationDamping_ * dt);
-                        if (velocity[dimension] > 0)
-                            velocity[dimension] = 0;
-                    }
-                }
-            }
-
-            this->setVelocity(velocity);
-        }
-
-
         SUPER(SpaceShip, tick, dt);
 
-
         if (this->isLocallyControlled())
         {
-            this->yaw(this->yawRotation_ * dt);
-            if (this->bInvertYAxis_)
-                this->pitch(Degree(-this->pitchRotation_ * dt));
+            this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
+            this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
+            if (this->localLinearAcceleration_.z() > 0)
+                this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
             else
-                this->pitch(Degree( this->pitchRotation_ * dt));
-            this->roll(this->rollRotation_ * dt);
+                this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
+            this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
+            this->localLinearAcceleration_.setValue(0, 0, 0);
 
-            this->acceleration_.x = 0;
-            this->acceleration_.y = 0;
-            this->acceleration_.z = 0;
-
-            this->yawRotation_   = this->zeroDegree_;
-            this->pitchRotation_ = this->zeroDegree_;
-            this->rollRotation_  = this->zeroDegree_;
+            this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
+            this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
+            this->localAngularAcceleration_.setValue(0, 0, 0);
         }
     }
 
     void SpaceShip::moveFrontBack(const Vector2& value)
     {
-        this->acceleration_.z = -this->translationAcceleration_ * value.x;
+        this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
     }
 
     void SpaceShip::moveRightLeft(const Vector2& value)
     {
-        this->acceleration_.x = this->translationAcceleration_ * value.x;
+        this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
     }
 
     void SpaceShip::moveUpDown(const Vector2& value)
     {
-        this->acceleration_.y = this->translationAcceleration_ * value.x;
+        this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)
     {
-        Degree temp = value.x * value.x * sgn(value.x) * this->rotationAcceleration_;
-        if (temp > this->maxRotation_)
-            temp = this->maxRotation_;
-        if (temp < -this->maxRotation_)
-            temp = -this->maxRotation_;
-        this->yawRotation_ = Degree(temp);
+        this->localAngularAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
     }
 
     void SpaceShip::rotatePitch(const Vector2& value)
     {
-        Degree temp = value.x * value.x * sgn(value.x) * this->rotationAcceleration_;
-        if (temp > this->maxRotation_)
-            temp = this->maxRotation_;
-        if (temp < -this->maxRotation_)
-            temp = -this->maxRotation_;
-        this->pitchRotation_ = Degree(temp);
+        this->localAngularAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
     }
 
     void SpaceShip::rotateRoll(const Vector2& value)
     {
-        Degree temp = value.x * value.x * sgn(value.x) * this->rotationAcceleration_;
-        if (temp > this->maxRotation_)
-            temp = this->maxRotation_;
-        if (temp < -this->maxRotation_)
-            temp = -this->maxRotation_;
-        this->rollRotation_ = Degree(temp);
+        this->localAngularAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
     }
 
     void SpaceShip::fire()

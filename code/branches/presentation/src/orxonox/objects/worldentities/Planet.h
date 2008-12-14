@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <OgreMesh.h>
+
 #include "tools/BillboardSet.h"
 #include "tools/Mesh.h"
 #include "MovableEntity.h"

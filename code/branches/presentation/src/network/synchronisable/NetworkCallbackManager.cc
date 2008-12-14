@@ -51,7 +51,7 @@ namespace orxonox{
   
   void NetworkCallbackManager::triggerCallback(NetworkCallbackBase *cb)
   {
-    if (triggeredCallbacks_.front() != cb)
+    if (triggeredCallbacks_.empty() || triggeredCallbacks_.front() != cb)
       triggeredCallbacks_.push(cb);
   }
 

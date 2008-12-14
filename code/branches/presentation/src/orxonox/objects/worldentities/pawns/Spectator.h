@@ -68,11 +68,13 @@ namespace orxonox
             bool bGreeting_;
 
             float speed_;
-            float rotationSpeed_;
+            float rotationGain_;
 
             float yaw_;
             float pitch_;
             float roll_;
+
+            Vector3 localVelocity_;
 
             int hudmode_;
     };

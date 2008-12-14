@@ -36,7 +36,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "orxonox/objects/worldentities/PositionableEntity.h"
+#include "orxonox/objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
@@ -79,7 +79,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestEffectBeacon : public PositionableEntity
+    class _OrxonoxExport QuestEffectBeacon : public StaticEntity
     {
         public:
             QuestEffectBeacon(BaseObject* creator);

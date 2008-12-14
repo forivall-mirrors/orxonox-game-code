@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "LinearMath/btVector3.h"
+
 #include "Pawn.h"
 
 namespace orxonox
@@ -56,47 +58,18 @@ namespace orxonox
 
             virtual void fire();
 
-            void setMaxSpeed(float value)
-                { this->maxSpeed_ = value; }
-            void setMaxSecondarySpeed(float value)
-                { this->maxSecondarySpeed_ = value; }
-            void setMaxRotation(const Degree& value)
-                { this->maxRotation_ = value; }
-            void setTransAcc(float value)
-                { this->translationAcceleration_ = value; }
-            void setRotAcc(const Degree& value)
-                { this->rotationAcceleration_ = value; }
-            void setTransDamp(float value)
-                { this->translationDamping_ = value; }
-
-            inline float getMaxSpeed() const
-                { return this->maxSpeed_; }
-            inline float getMaxSecondarySpeed() const
-                { return this->maxSecondarySpeed_; }
-            inline float getMaxRotation() const
-                { return this->maxRotation_.valueDegrees(); }
-            inline float getTransAcc() const
-                { return this->translationAcceleration_; }
-            inline float getRotAcc() const
-                { return this->rotationAcceleration_.valueDegrees(); }
-            inline float getTransDamp() const
-                { return this->translationDamping_; }
-
         protected:
             bool bInvertYAxis_;
 
-            float maxSpeed_;
-            float maxSecondarySpeed_;
-            float translationAcceleration_;
-            float translationDamping_;
+            float primaryThrust_;
+            float auxilaryThrust_;
+            float rotationThrust_;
 
-            Degree maxRotation_;
-            Degree rotationAcceleration_;
+            btVector3 localLinearAcceleration_;
+            btVector3 localAngularAcceleration_;
 
-            Degree zeroDegree_;
-            Degree pitchRotation_;
-            Degree yawRotation_;
-            Degree rollRotation_;
+        private:
+            virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
     };
 }
 

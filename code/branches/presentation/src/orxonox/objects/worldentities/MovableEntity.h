@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -31,93 +32,46 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
-#include "objects/Tickable.h"
+#include "MobileEntity.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable, public ClientConnectionListener
+    class _OrxonoxExport MovableEntity : public MobileEntity, public ClientConnectionListener
     {
         public:
             MovableEntity(BaseObject* creator);
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
             void registerVariables();
 
             using WorldEntity::setPosition;
-            using WorldEntity::translate;
             using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
 
-            void setPosition(const Vector3& position);
-            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void setOrientation(const Quaternion& orientation);
-            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-
-            inline void setVelocity(const Vector3& velocity)
-                { this->velocity_ = velocity; }
-            inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
-
-            inline void setAcceleration(const Vector3& acceleration)
-                { this->acceleration_ = acceleration; }
-            inline void setAcceleration(float x, float y, float z)
-                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
-
-            inline void setRotationAxis(const Vector3& axis)
-                { this->rotationAxis_ = axis; this->rotationAxis_.normalise(); }
-            inline void setRotationAxis(float x, float y, float z)
-                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; rotationAxis_.normalise(); }
-            inline const Vector3& getRotationAxis() const
-                { return this->rotationAxis_; }
-
-            inline void setRotationRate(const Degree& angle)
-                { this->rotationRate_ = angle; }
-            inline void setRotationRate(const Radian& angle)
-                { this->rotationRate_ = angle; }
-            inline const Degree& getRotationRate() const
-                { return this->rotationRate_; }
-
-            inline void setMomentum(const Degree& angle)
-                { this->momentum_ = angle; }
-            inline void setMomentum(const Radian& angle)
-                { this->momentum_ = angle; }
-            inline const Degree& getMomentum() const
-                { return this->momentum_; }
+            inline void setPosition(const Vector3& position)
+                { MobileEntity::setPosition(position); this->overwrite_position_ = this->getPosition(); }
+            inline void setOrientation(const Quaternion& orientation)
+                { MobileEntity::setOrientation(orientation); this->overwrite_orientation_ = this->getOrientation(); }
 
         private:
             void clientConnected(unsigned int clientID);
             void clientDisconnected(unsigned int clientID);
             void resynchronize();
 
-            void overwritePosition();
-            void overwriteOrientation();
+            inline void processLinearVelocity()
+                { this->setVelocity(this->linearVelocity_); }
+            inline void processAngularVelocity()
+                { this->setAngularVelocity(this->angularVelocity_); }
 
-            Vector3 velocity_;
-            Vector3 acceleration_;
-            Vector3 rotationAxis_;
-            Degree rotationRate_;
-            Degree momentum_;
+            inline void overwritePosition()
+                { this->setPosition(this->overwrite_position_); }
+            inline void overwriteOrientation()
+                { this->setOrientation(this->overwrite_orientation_); }
 
-            Vector3 overwrite_position_;
+            Vector3    overwrite_position_;
             Quaternion overwrite_orientation_;
+            Timer<MovableEntity>* continuousResynchroTimer_;
     };
 }
 
