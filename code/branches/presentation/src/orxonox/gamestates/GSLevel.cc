@@ -50,7 +50,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(level, "physicstest2.oxw").shortcut("l");
+    SetCommandLineArgument(level, "presentation.oxw").shortcut("l");
 
     GSLevel::GSLevel()
 //        : GameState<GSGraphics>(name)
