@@ -29,6 +29,7 @@
 #include "Gamestate.h"
 #include "network/ClientInformation.h"
 #include "network/GamestateHandler.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 
@@ -147,7 +148,10 @@ bool Gamestate::spreadData(uint8_t mode)
     s = Synchronisable::getSynchronisable( objectheader->objectID );
     if(!s)
     {
-      Synchronisable::fabricate(mem, mode);
+      if (!Core::isMaster())
+        Synchronisable::fabricate(mem, mode);
+      else
+        mem += objectheader->size;
     }
     else
     {
