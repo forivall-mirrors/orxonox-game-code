@@ -51,11 +51,12 @@ namespace orxonox
         RegisterObject(Spectator);
 
         this->speed_ = 100;
-        this->rotationSpeed_ = 3;
+        this->rotationGain_ = 3;
 
         this->yaw_ = 0;
         this->pitch_ = 0;
         this->roll_ = 0;
+        this->localVelocity_ = Vector3::ZERO;
         this->setHudTemplate("spectatorhud");
         this->hudmode_ = 0;
 
@@ -109,23 +110,29 @@ namespace orxonox
 
         if (this->isLocallyControlled())
         {
-            Vector3 velocity = this->getVelocity();
-            velocity.normalise();
-            this->setVelocity(this->getOrientation() * velocity * this->speed_);
+            float localSpeedSquared = this->localVelocity_.squaredLength();
+            float localSpeed;
+            if (localSpeedSquared > 1.0)
+                localSpeed = this->speed_ / sqrtf(localSpeedSquared);
+            else
+                localSpeed = this->speed_;
 
-            this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
-            this->pitch(Radian(this->pitch_ * this->rotationSpeed_));
-            this->roll(Radian(this->roll_ * this->rotationSpeed_));
+            this->localVelocity_.x *= localSpeed;
+            this->localVelocity_.y *= localSpeed;
+            this->localVelocity_.z *= localSpeed;
+            this->setVelocity(this->getOrientation() * this->localVelocity_);
+            this->localVelocity_.x = 0;
+            this->localVelocity_.y = 0;
+            this->localVelocity_.z = 0;
+
+            this->yaw  (Radian(this->yaw_   * this->rotationGain_));
+            this->pitch(Radian(this->pitch_ * this->rotationGain_));
+            this->roll (Radian(this->roll_  * this->rotationGain_));
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
         }
 
         SUPER(Spectator, tick, dt);
-
-        if (this->isLocallyControlled())
-        {
-            this->setVelocity(Vector3::ZERO);
-        }
     }
 
     void Spectator::setPlayer(PlayerInfo* player)
@@ -144,32 +151,32 @@ namespace orxonox
 
     void Spectator::moveFrontBack(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::FRONT);
+        this->localVelocity_.z -= value.x;
     }
 
     void Spectator::moveRightLeft(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::RIGHT);
+        this->localVelocity_.x += value.x;
     }
 
     void Spectator::moveUpDown(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::UP);
+        this->localVelocity_.y += value.x;
     }
 
     void Spectator::rotateYaw(const Vector2& value)
     {
-        this->yaw_ = value.y;
+        this->yaw_ += value.y;
     }
 
     void Spectator::rotatePitch(const Vector2& value)
     {
-        this->pitch_ = value.y;
+        this->pitch_ += value.y;
     }
 
     void Spectator::rotateRoll(const Vector2& value)
     {
-        this->roll_ = value.y;
+        this->roll_ += value.y;
     }
 
     void Spectator::fire()

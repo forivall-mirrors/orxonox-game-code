@@ -79,9 +79,9 @@ namespace orxonox
 
         // No physics yet, XMLPort will do that.
         const int defaultMaxWorldSize = 100000;
-        this->negativeWorldRange_ = Vector3(-defaultMaxWorldSize, -defaultMaxWorldSize, -defaultMaxWorldSize);
-        this->positiveWorldRange_ = Vector3( defaultMaxWorldSize,  defaultMaxWorldSize,  defaultMaxWorldSize);
-        this->gravity_ = Vector3(0, 0, 0);
+        this->negativeWorldRange_ = Vector3::UNIT_SCALE * -defaultMaxWorldSize;
+        this->positiveWorldRange_ = Vector3::UNIT_SCALE *  defaultMaxWorldSize;
+        this->gravity_ = Vector3::ZERO;
         this->physicalWorld_   = 0;
         this->solver_          = 0;
         this->dispatcher_      = 0;
