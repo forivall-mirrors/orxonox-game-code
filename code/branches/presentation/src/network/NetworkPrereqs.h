@@ -58,24 +58,23 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "util/Math.h"
+#include "util/Integers.h"
 
+//-----------------------------------------------------------------------
+// Library global contants
+//-----------------------------------------------------------------------
+namespace orxonox
+{
+  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
+  static const unsigned int CLIENTID_UNKNOWN    = (unsigned int)-2;
+  static const uint32_t     OBJECTID_UNKNOWN    = (uint32_t)(-1);
+}
 
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
 namespace orxonox
 {
-
-// Constants definition
-
-  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
-  static const unsigned int CLIENTID_UNKNOWN = (unsigned int)-2;
-  static const uint32_t OBJECTID_UNKNOWN = static_cast<uint32_t>(-1);
-
-  
-
-  
   class Client;
   class ClientConnection;
   class ClientConnectionListener;
@@ -101,7 +100,9 @@ namespace orxonox
   struct syncData;
   class obj;
   class objInfo;
-  namespace packet{
+
+  namespace packet
+  {
     class Gamestate;
     class Packet;
     class Acknowledgement;

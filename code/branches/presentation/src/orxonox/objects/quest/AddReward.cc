@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddReward.cc
+    @file
     @brief Implementation of the AddReward class.
 */
 
@@ -39,8 +39,8 @@
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "Rewardable.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(AddReward);
 
     /**

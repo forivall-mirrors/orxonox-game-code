@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestDescription.h
+    @file
     @brief Definition of the QuestDescription class.
 */
 
@@ -41,8 +41,8 @@
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         This class is a description of a QuestItem.
@@ -54,8 +54,8 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestDescription : public BaseObject {
-
+    class _OrxonoxExport QuestDescription : public BaseObject
+    {
         public:
             QuestDescription(BaseObject* creator);
             virtual ~QuestDescription();

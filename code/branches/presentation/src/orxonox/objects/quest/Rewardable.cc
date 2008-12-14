@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Rewardable.cc
+    @file
     @brief Implementation of the Rewardable class.
 */
 
@@ -36,8 +36,8 @@
 
 #include "core/CoreIncludes.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers the object.

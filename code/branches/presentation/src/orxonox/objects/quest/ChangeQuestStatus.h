@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ChangeQuestStatus.h
+    @file
     @brief Definition of the ChangeQuestStatus class.
 */
 
@@ -41,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         A QuestEffect which changes the status of a specified Quest for the player invoking the QuestEffect.

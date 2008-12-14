@@ -27,7 +27,7 @@
  */
  
 /**
-    @file GlobalQuest.cc
+    @file
     @brief Implementation of the GlobalQuest class.
 */
 
@@ -41,8 +41,8 @@
 
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(GlobalQuest);
 
     /**

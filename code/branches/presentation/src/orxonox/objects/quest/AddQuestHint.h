@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddQuestHint.h
+    @file
     @brief Definition of the AddQuestHint class.
 */
 
@@ -40,8 +40,8 @@
 
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.

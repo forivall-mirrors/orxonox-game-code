@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddQuest.cc
+    @file
     @brief Implementation of the AddQuest class.
 */
 
@@ -43,8 +43,8 @@
 #include "QuestManager.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(AddQuest);
 
     /**

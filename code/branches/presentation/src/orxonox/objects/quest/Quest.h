@@ -27,7 +27,7 @@
  */
  
 /**
-    @file Quest.h
+    @file
     @brief Definition of the Quest class.
         The Quest is the parent class of LocalQuest and GlobalQuest.
 */
@@ -44,21 +44,21 @@
 
 #include "QuestItem.h"
 
-namespace questStatus
+namespace orxonox
 {
-
-    //!Different states of a Quest.
-    enum Enum
+    namespace questStatus
     {
-        inactive,
-        active,
-        failed,
-        completed
-    };
 
-}
+        //!Different states of a Quest.
+        enum Enum
+        {
+            inactive,
+            active,
+            failed,
+            completed
+        };
 
-namespace orxonox {
+    }
 
     /**
     @brief

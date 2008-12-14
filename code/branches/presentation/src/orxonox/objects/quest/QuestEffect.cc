@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestEffect.cc
+    @file
     @brief Implementation of the QuestEffect class.
 */
 
@@ -38,8 +38,8 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Creates a new QuestEffect.

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ChangeQuestStatus.cc
+    @file
     @brief Implementation of the ChangeQuestStatus class.
 */
 
@@ -38,8 +38,8 @@
 
 #include "QuestItem.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers the object.

@@ -33,14 +33,14 @@
 
 #include "NotificationManager.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     Notification::Notification(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Notification);
     }
     
-    Notification::Notification(const std::string & message, const std::string & title, float time) : BaseObject(this)
+    Notification::Notification(BaseObject* creator, const std::string & message, const std::string & title, float time) : BaseObject(creator)
     {
         this->title_ = title;
         this->message_ = message;
@@ -58,7 +58,7 @@ namespace orxonox {
         
         this->title_ = "";
         this->message_ = "";
-        this->displayTime_ = DISPLAY_TIME;
+        this->displayTime_ = NOTIFICATION_DISPLAY_TIME;
         this->sent_ = false;
     }
     
@@ -67,23 +67,23 @@ namespace orxonox {
         bool successful = NotificationManager::insertNotification(this);
         if(successful)
             this->sent_ = true;
-	return successful;
+        return successful;
     }
     
     bool Notification::setTitle(const std::string & title)
     {
         if(this->isSent())
             return false;
-	this->title_ = title;
-	return true;
+        this->title_ = title;
+        return true;
     }
     
     bool Notification::setMessage(const std::string & message)
     {
         if(this->isSent())
             return false;
-	this->message_ = message;
-	return true;
+        this->message_ = message;
+        return true;
     }
     
     bool Notification::setDisplayTime(float time)
@@ -91,13 +91,12 @@ namespace orxonox {
         if(this->isSent())
         {
             return false;
-	}
-	if(time > 0)
-	{
-	    this->displayTime_ = time;
-	    return true;
-	}
-	return false;
+        }
+        if(time > 0)
+        {
+            this->displayTime_ = time;
+            return true;
+        }
+        return false;
     }
-
 }

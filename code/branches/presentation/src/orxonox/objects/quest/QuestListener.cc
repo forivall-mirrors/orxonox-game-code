@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestListener.cc
+    @file
     @brief Implementation of the QuestListener class.
 */
 
@@ -41,8 +41,8 @@
 #include "Quest.h"
 #include "QuestManager.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(QuestListener);
 
     /**
@@ -151,8 +151,8 @@ namespace orxonox {
         else
         {
             COUT(2) << "QuestListener with invalid mode '" << mode << "' created. Mode set to 'all'." << std::endl;
-	    this->mode_ = questListenerMode::all;
-	    return false;
+        this->mode_ = questListenerMode::all;
+        return false;
         }
         
         return true;
@@ -185,7 +185,7 @@ namespace orxonox {
         else
         {
             COUT(1) << "An unforseen, never to happen, Error has occured. This is impossible!" << std::endl;
-	    return "";
+        return "";
         }
     }
 

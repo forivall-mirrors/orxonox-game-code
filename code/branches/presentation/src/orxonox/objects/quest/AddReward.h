@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddReward.h
+    @file
     @brief Definition of the AddReward class.
 */
 
@@ -41,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Adds a list of Rewardables to a player.

@@ -354,7 +354,8 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   synchronisableHeader *oldobjectheader, *newobjectheader;
   uint32_t objectOffset;
   unsigned int objectsize, destsize=0;
-  Synchronisable *object;
+  // TODO: Why is this variable not used?
+  //Synchronisable *object;
 
   //call TrafficControl
   TrafficControl::getInstance()->processObjectList( clientID, HEADER->id, &dataMap_ );

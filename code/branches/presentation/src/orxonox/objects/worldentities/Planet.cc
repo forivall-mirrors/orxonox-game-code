@@ -26,17 +26,9 @@
  *
  */
 
-
 #include "OrxonoxStableHeaders.h"
 #include "Planet.h"
 
-#include "tinyxml/tinyxml.h"
-#include "core/CoreIncludes.h"
-#include "GraphicsEngine.h"
-#include "core/XMLPort.h"
-#include "CameraManager.h"
-#include "objects/Scene.h"
-#include "Camera.h"
 #include <math.h>
 
 #include <OgreEntity.h>
@@ -44,6 +36,12 @@
 #include <OgreHardwareVertexBuffer.h>
 #include <OgreMeshManager.h>
 
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "objects/Scene.h"
+#include "CameraManager.h"
+#include "Camera.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -66,33 +64,33 @@ namespace orxonox
         if (this->isInitialized() && this->mesh_.getEntity())
             this->getNode()->detachObject(this->mesh_.getEntity());
     }    
-    
+
     void Planet::tick(float dt)
     {
         if(!this->isVisible())
             return;
-            
+
         Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
-	if(activeCamera)
-	{
+        if(activeCamera)
+        {
             Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
-//             COUT(2) << distance << std::endl;
+            //             COUT(2) << distance << std::endl;
             Real planetRadius = this->getScale();
-        
+
             Real newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
             Real tempTest = newScale*(1+Real(this->atmosphereSize)/Real(this->imageSize));
             newScale = tempTest;
-        
+
             this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
-	}
-                
+        }
+
         SUPER(Planet, tick, dt);
     }
-  
-    void Planet::init(){
-    
+
+    void Planet::init()
+    {
         Real scaleFactor = this->getScale();
-        
+
         this->distList.push_back(10.0*scaleFactor);
         this->distList.push_back(19.0*scaleFactor);
         this->distList.push_back(27.0*scaleFactor);
@@ -103,19 +101,19 @@ namespace orxonox
         this->distList.push_back(52.0*scaleFactor);
         this->distList.push_back(54.0*scaleFactor);
         this->distList.push_back(55.0*scaleFactor);
-        
+
         Real reductionValue = 0.2;
-        
+
         this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
         billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));
-        
+
         this->getNode()->attachObject(this->billboard_.getBillboardSet());    
         this->billboard_.getBillboardSet()->setUseAccurateFacing(true);
         this->setCastShadows(true);
         this->billboard_.getBillboardSet()->setRenderQueueGroup(this->mesh_.getEntity()->getRenderQueueGroup());
         this->mesh_.setCastShadows(true);
     }
-    
+
     void Planet::changedMesh()
     {
         if (this->mesh_.getEntity())
@@ -146,16 +144,16 @@ namespace orxonox
     void Planet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Planet, XMLPort, xmlelement, mode);
-        
+
         XMLPortParam(Planet, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("planet/Atmosphere");
         XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);     
         XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);         
         XMLPortParam(Planet, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(Planet, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
-        
     }
 
-    void Planet::registerVariables(){
+    void Planet::registerVariables()
+    {
         registerVariable(this->atmosphere_, variableDirection::toclient);
         registerVariable(this->meshSrc_, variableDirection::toclient, new NetworkCallback<Planet>(this, &Planet::changedMesh));
         registerVariable(this->bCastShadows_, variableDirection::toclient, new NetworkCallback<Planet>(this, &Planet::changedShadows));
@@ -167,7 +165,9 @@ namespace orxonox
     {
         SUPER(Planet, changedVisibility);
         if (this->isInitialized())
+        {
             this->mesh_.setVisible(this->isVisible());
             this->billboard_.setVisible(this->isVisible());
+        }
     }
 }

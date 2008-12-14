@@ -27,7 +27,7 @@
  */
  
 /**
-    @file LocalQuest.h
+    @file
     @brief Definition of the LocalQuest class.
 */
 
@@ -42,8 +42,8 @@
 #include "core/XMLPort.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Handles Quests which have different states for different players.

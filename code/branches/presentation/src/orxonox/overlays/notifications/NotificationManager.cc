@@ -35,8 +35,8 @@
 
 #include "NotificationQueue.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     std::list<NotificationContainer*> NotificationManager::notifications_s;
 
     NotificationManager::NotificationManager(BaseObject* creator) : BaseObject(creator)
@@ -54,24 +54,24 @@ namespace orxonox {
         bool update = false;
     
         for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end(); ++notification)
-	{
+        {
             NotificationContainer* container = *notification;
             if(container->remainingTime == 0)
             {
                 continue;
-	    }
-	    else if(container->remainingTime - dt <= 0)
-	    {
-	       container->remainingTime = 0;
-	       update = true;
-	    }
-	    else
-	    {
+            }
+            else if(container->remainingTime - dt <= 0)
+            {
+                container->remainingTime = 0;
+                update = true;
+            }
+            else
+            {
                 container->remainingTime = container->remainingTime -dt;
-	    }
-	}
-	
-	if(update)
+            }
+        }
+    
+        if(update)
             updateQueue();
     }
     
@@ -80,9 +80,9 @@ namespace orxonox {
         if(notification == NULL)
             return false;
             
-	NotificationContainer* container = new NotificationContainer;
-	container->notification = notification;
-	container->remainingTime = notification->getDisplayTime();
+        NotificationContainer* container = new NotificationContainer;
+        container->notification = notification;
+        container->remainingTime = notification->getDisplayTime();
         notifications_s.push_front(container);
         
         updateQueue();
@@ -104,7 +104,7 @@ namespace orxonox {
             if(container->remainingTime == 0.0)
                 continue;
             
-	    text = text + "\n\n\n------------\n\n" + clipMessage(container->notification->getTitle()) + "\n\n" + clipMessage(container->notification->getMessage());
+            text = text + "\n\n\n------------\n\n" + clipMessage(container->notification->getTitle()) + "\n\n" + clipMessage(container->notification->getMessage());
         }
         
         NotificationQueue::queue_s->setQueueText(text);

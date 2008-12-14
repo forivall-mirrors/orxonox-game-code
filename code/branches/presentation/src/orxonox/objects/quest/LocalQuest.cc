@@ -27,7 +27,7 @@
  */
 
 /**
-    @file LocalQuest.cc
+    @file
     @brief Implementation of the LocalQuest class.
 */
 
@@ -41,8 +41,8 @@
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(LocalQuest);
 
     /**

@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestHint.cc
+    @file
     @brief Implementation of the QuestHint class.
 */
 
@@ -42,8 +42,8 @@
 #include "QuestDescription.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(QuestHint);
 
     /**

@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestEffect.h
+    @file
     @brief Definition of the QuestEffect class.
 */
 
@@ -40,8 +40,8 @@
 
 #include "core/BaseObject.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Handles QuestEffects for Quests.

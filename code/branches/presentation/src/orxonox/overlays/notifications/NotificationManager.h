@@ -36,8 +36,8 @@
 #include <list>
 #include <string>
 
-namespace orxonox {
-
+namespace orxonox
+{
     struct NotificationContainer
     {
         Notification* notification;
@@ -53,19 +53,19 @@ namespace orxonox {
     class _OrxonoxExport NotificationManager : public BaseObject
     {
     
-        public:
-	    NotificationManager(BaseObject* creator);
-	    virtual ~NotificationManager();
-	    
-	    static bool insertNotification(Notification* notification);
-	    
-	    static void tick(float dt);
-	    
-	private:
-            static std::list<NotificationContainer*> notifications_s;
-            
-            static void updateQueue(void);
-            static const std::string clipMessage(const std::string & message);
+    public:
+        NotificationManager(BaseObject* creator);
+        virtual ~NotificationManager();
+        
+        static bool insertNotification(Notification* notification);
+        
+        static void tick(float dt);
+        
+    private:
+        static std::list<NotificationContainer*> notifications_s;
+        
+        static void updateQueue(void);
+        static const std::string clipMessage(const std::string & message);
 
     };
 

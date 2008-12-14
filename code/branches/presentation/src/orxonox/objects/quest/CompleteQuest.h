@@ -27,7 +27,7 @@
  */
 
 /**
-    @file CompleteQuest.h
+    @file
     @brief Definition of the CompleteQuest class.
 */
 
@@ -41,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Completes a Quest (with a specified id) for the player invoking the QuestEffect.

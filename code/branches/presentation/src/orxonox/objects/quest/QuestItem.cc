@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestItem.cc
+    @file
     @brief Implementation of the QuestItem class.
 */
 
@@ -38,8 +38,8 @@
 
 #include "QuestDescription.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers and initializes the object.

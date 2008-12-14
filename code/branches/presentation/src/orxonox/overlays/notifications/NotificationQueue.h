@@ -37,8 +37,8 @@
 
 #include <string>
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         
@@ -47,31 +47,31 @@ namespace orxonox {
     */
     class _OrxonoxExport NotificationQueue : public OverlayText, public Tickable
     {
-	public:
-	    NotificationQueue(BaseObject* creator);
-	    virtual ~NotificationQueue();
-	    
-	    static NotificationQueue* queue_s; //TDO Singleton? oder im level.
-	    
-	    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-	    
-	    virtual void tick(float dt);
-	    
-	    void update(void);
-	    
-	    int getLength(void) const
+    public:
+        NotificationQueue(BaseObject* creator);
+        virtual ~NotificationQueue();
+        
+        static NotificationQueue* queue_s; //TDO Singleton? oder im level.
+        
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        
+        virtual void tick(float dt);
+        
+        void update(void);
+        
+        int getLength(void) const
                 { return this->length_; }
-	    int getWidth(void) const
+        int getWidth(void) const
                 { return this->width_; }
-	    
-	    void setQueueText(const std::string & text);
-	    bool setLength(int length);
-	    bool setWidth(int width);
-	    
-	private:
-            Ogre::UTFString queueText_;
-            int length_;
-            int width_;
+        
+        void setQueueText(const std::string & text);
+        bool setLength(int length);
+        bool setWidth(int width);
+        
+    private:
+        Ogre::UTFString queueText_;
+        int length_;
+        int width_;
     
     };
 

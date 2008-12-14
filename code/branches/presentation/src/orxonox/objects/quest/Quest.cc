@@ -27,7 +27,7 @@
  */
  
 /**
-    @file Quest.cc
+    @file
     @brief Implementation of the Quest class.
 */
 
@@ -43,8 +43,8 @@
 #include "QuestEffect.h"
 #include "QuestListener.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers and initializes object.

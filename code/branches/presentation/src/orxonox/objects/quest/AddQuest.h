@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddQuest.h
+    @file
     @brief Definition of the AddQuest class.
 */
 
@@ -41,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Adds a Quest, resp. changes the quests status to active for the player invoking the Quest.

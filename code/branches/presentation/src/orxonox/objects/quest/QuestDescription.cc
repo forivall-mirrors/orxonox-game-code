@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestDescription.cc
+    @file
     @brief Implementation of the QuestDescription class.
 */
 
@@ -38,8 +38,8 @@
 #include "core/CoreIncludes.h"
 #include "orxonox/overlays/notifications/Notification.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(QuestDescription);
 
     /**
@@ -127,7 +127,7 @@ namespace orxonox {
             return false;
         }
         
-        Notification* notification = new Notification(message, title, 30);
+        Notification* notification = new Notification(0, message, title, 30);
         notification->send();
         return true;
     }

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestManager.cc
+    @file
     @brief Implementation of the QuestManager class.
 */
 
@@ -40,8 +40,8 @@
 #include "Quest.h"
 #include "QuestHint.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     //! All Quests registered by their id's.
     std::map<std::string, Quest*> QuestManager::questMap_s;
     //! All QuestHints registered by their id's.

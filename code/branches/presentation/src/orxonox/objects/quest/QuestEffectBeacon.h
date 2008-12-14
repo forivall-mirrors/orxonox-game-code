@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestEffectBeacon.h
+    @file
     @brief Definition of the QuestEffectBeacon class.
 */
 
@@ -38,19 +38,19 @@
 
 #include "orxonox/objects/worldentities/PositionableEntity.h"
 
-namespace QuestEffectBeaconStatus
+namespace orxonox
 {
-
-    //! The status of the beacon, can be either active or inactive.
-    enum Enum
+    namespace QuestEffectBeaconStatus
     {
-        inactive,
-        active
-    };
 
-}
+        //! The status of the beacon, can be either active or inactive.
+        enum Enum
+        {
+            inactive,
+            active
+        };
 
-namespace orxonox {
+    }
 
     /**
     @brief
@@ -111,7 +111,7 @@ namespace orxonox {
                 { return this->times_; }
     
         private:
-            static const int INFINITE = -1; //!< Constant to avoid using magic numbers.
+            static const int INFINITE_TIME = -1; //!< Constant to avoid using magic numbers.
             
             std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
             int times_; //!< Number of times the beacon can be exectued.

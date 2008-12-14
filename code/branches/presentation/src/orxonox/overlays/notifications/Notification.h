@@ -35,48 +35,46 @@
 
 #include "core/BaseObject.h"
 
-namespace orxonox {
+namespace orxonox
+{
+    static const float NOTIFICATION_DISPLAY_TIME = 4.0;
 
     /**
     @brief
-	This is rather temporary, so don't start relying on it, some better version will come soon but the Interface will not likely be the same.
+        This is rather temporary, so don't start relying on it, some better version will come soon but the Interface will not likely be the same.
     @author
         Damian 'Mozork' Frick
     */
     class _OrxonoxExport Notification : public BaseObject
     {
-	public:
-	    Notification(BaseObject* creator);
-	    Notification(const std::string & message, const std::string & title = "", float time = DISPLAY_TIME);
-	    virtual ~Notification();
-	    
-	    bool send(void);
-	    
-	    inline bool isSent(void) const
-                { return this->sent_; }
-	    inline const std::string & getTitle(void) const
-                { return this->title_; }
-	    inline const std::string & getMessage(void) const
-                { return this->message_; }
-	    inline const float getDisplayTime(void) const
-                { return displayTime_; }
-	    
-	    bool setTitle(const std::string & title);
-	    bool setMessage(const std::string & message);
-	    bool setDisplayTime(float time);
-	    
-	private:
-            static const float DISPLAY_TIME = 4.0;
-	
-            std::string title_; //!< The title of the Notification.
-            std::string message_; //!< The Notification message.
-            float displayTime_; //!< The time duration the Notification is displayed in seconds.
-            bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
-            
-            void initialize(void);
-	
+    public:
+        Notification(BaseObject* creator);
+        Notification(BaseObject* creator, const std::string & message, const std::string & title = "", float time = NOTIFICATION_DISPLAY_TIME);
+        virtual ~Notification();
+        
+        bool send(void);
+        
+        inline bool isSent(void) const
+            { return this->sent_; }
+        inline const std::string & getTitle(void) const
+            { return this->title_; }
+        inline const std::string & getMessage(void) const
+            { return this->message_; }
+        inline const float getDisplayTime(void) const
+            { return displayTime_; }
+        
+        bool setTitle(const std::string & title);
+        bool setMessage(const std::string & message);
+        bool setDisplayTime(float time);
+        
+    private:
+        std::string title_; //!< The title of the Notification.
+        std::string message_; //!< The Notification message.
+        float displayTime_; //!< The time duration the Notification is displayed in seconds.
+        bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
+        
+        void initialize(void);
     };
-
 }
 
 #endif /* _Notification_H__ */

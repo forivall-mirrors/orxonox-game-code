@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestEffectBeacon.cc
+    @file
     @brief Implementation of the QuestEffectBeacon class.
 */
 
@@ -44,8 +44,8 @@
 #include "orxonox/objects/worldentities/triggers/PlayerTrigger.h"
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(QuestEffectBeacon);
 
     /**
@@ -57,7 +57,7 @@ namespace orxonox {
         RegisterObject(QuestEffectBeacon);
         
         this->status_ = QuestEffectBeaconStatus::active;
-        this->times_ = INFINITE;
+        this->times_ = INFINITE_TIME;
     }
 
     /**
@@ -185,7 +185,7 @@ namespace orxonox {
         {
             return false;
         }
-        if(this->getTimes() == INFINITE) //!< If times is infinity the QuestEffectBeacon can be executed an infinite number fo times.
+        if(this->getTimes() == INFINITE_TIME) //!< If times is infinity the QuestEffectBeacon can be executed an infinite number fo times.
         {
             return true;
         }
@@ -211,7 +211,7 @@ namespace orxonox {
     */
     bool QuestEffectBeacon::setTimes(const int & n)
     {
-        if(n < 0 && n != INFINITE)
+        if(n < 0 && n != INFINITE_TIME)
         {
             return false;
         }

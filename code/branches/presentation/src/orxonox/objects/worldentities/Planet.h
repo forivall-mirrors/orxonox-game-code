@@ -28,16 +28,16 @@
 
 #ifndef _Planet_H__
 #define _Planet_H__
-#include "tools/BillboardSet.h"
+
 #include "OrxonoxPrereqs.h"
 
-#include "MovableEntity.h"
+#include "tools/BillboardSet.h"
 #include "tools/Mesh.h"
+#include "MovableEntity.h"
 #include "objects/Tickable.h"
 
 namespace orxonox
 {
-
     class _OrxonoxExport Planet : public MovableEntity
     {
         public:

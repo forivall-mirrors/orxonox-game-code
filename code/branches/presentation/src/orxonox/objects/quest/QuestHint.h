@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestHint.h
+    @file
     @brief Definition of the QuestHint class.
 */
 
@@ -42,20 +42,19 @@
 #include "core/XMLPort.h"
 #include "QuestItem.h"
 
-namespace questHintStatus
-{
-
-    //! The state of the hint.
-    enum Enum
-    {
-        inactive,
-        active
-    };
-
-}
-
 namespace orxonox
 {
+    namespace questHintStatus
+    {
+
+        //! The state of the hint.
+        enum Enum
+        {
+            inactive,
+            active
+        };
+
+    }
 
     /**
     @brief

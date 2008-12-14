@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestManager.h
+    @file
     @brief Definition of the QuestManager class.
 */
 
@@ -41,8 +41,8 @@
 
 #include "core/BaseObject.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Is a static class and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).

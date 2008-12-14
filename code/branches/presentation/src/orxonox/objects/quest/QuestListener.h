@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestListener.h
+    @file
     @brief Definition of the QuestListener class.
 */
 
@@ -43,21 +43,21 @@
 
 #include "Quest.h"
 
-namespace questListenerMode
+namespace orxonox
 {
-
-    //! The mode of the QuestListener.
-    enum Enum
+    namespace questListenerMode
     {
-        all,
-        start,
-        fail,
-        complete
-    };
 
-}
+        //! The mode of the QuestListener.
+        enum Enum
+        {
+            all,
+            start,
+            fail,
+            complete
+        };
 
-namespace orxonox {
+    }
 
     /**
     @brief
@@ -74,35 +74,35 @@ namespace orxonox {
             </events>
         </BaseObject>
     @author
-	Damian 'Mozork' Frick
+    Damian 'Mozork' Frick
     */
     class _OrxonoxExport QuestListener : public BaseObject
     {
-	public:
-	    QuestListener(BaseObject* creator);
-	    virtual ~QuestListener();
-	    
-	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestListener object through XML.
-	    
-	    static void advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status); //!< Makes all QuestListener in the list aware that a certain status change has occured.
-	    
-	    bool setQuestId(const std::string & id); //!< Sets the questId of the Quest the QuestListener reacts to.
-	    bool setMode(const std::string & mode); //!< Sets the mode of the QuestListener.
-	    
-	    const std::string getMode(void); //!< Get the mode of the QuestListener.
-	    
-	    /**
-	    @brief Get the questId of the Quest the QuestListener reacts to.
-	    @return Returns the questId of the Quest the QuestListener reacts to.
-	    */
-	    inline const std::string & getQuestId(void)
+    public:
+        QuestListener(BaseObject* creator);
+        virtual ~QuestListener();
+        
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestListener object through XML.
+        
+        static void advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status); //!< Makes all QuestListener in the list aware that a certain status change has occured.
+        
+        bool setQuestId(const std::string & id); //!< Sets the questId of the Quest the QuestListener reacts to.
+        bool setMode(const std::string & mode); //!< Sets the mode of the QuestListener.
+        
+        const std::string getMode(void); //!< Get the mode of the QuestListener.
+        
+        /**
+        @brief Get the questId of the Quest the QuestListener reacts to.
+        @return Returns the questId of the Quest the QuestListener reacts to.
+        */
+        inline const std::string & getQuestId(void)
                 { return this->quest_->getId(); }
-	    
-	    bool execute(void); //!< Executes the QuestListener, resp. fires an Event.
-	    
-	private:
-            questListenerMode::Enum mode_; //!< The mode of the QuestListener.
-            Quest* quest_; //!< A pointer to the Quest the QuestListener is reacting to.
+        
+        bool execute(void); //!< Executes the QuestListener, resp. fires an Event.
+        
+    private:
+        questListenerMode::Enum mode_; //!< The mode of the QuestListener.
+        Quest* quest_; //!< A pointer to the Quest the QuestListener is reacting to.
     
     };
 

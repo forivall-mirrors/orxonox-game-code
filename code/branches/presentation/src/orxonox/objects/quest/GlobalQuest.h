@@ -27,7 +27,7 @@
  */
  
 /**
-    @file GlobalQuest.h
+    @file
     @brief Definition of the GlobalQuest class.
 */
 
@@ -42,8 +42,8 @@
 #include "core/XMLPort.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         GlobalQuests are Quests, that have the same status for all players.

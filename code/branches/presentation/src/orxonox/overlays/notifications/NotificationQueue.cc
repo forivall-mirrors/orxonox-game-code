@@ -34,8 +34,8 @@
 
 #include "NotificationManager.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     NotificationQueue* NotificationQueue::queue_s = 0;
     
     CreateFactory(NotificationQueue);
@@ -45,16 +45,16 @@ namespace orxonox {
         RegisterObject(NotificationQueue);
         //TDO: Does this work?
         if(queue_s != NULL)
-	{
-            COUT(2) << "There is now more than one NotificationQueue, this shouldn't happen, since only the first NotificationQueue will be targeted by the NotificationManager." << std::endl;
-	}
-	else
-	{
-            queue_s = this;
-	}
-	
-	this->length_ = 3;
-	this->width_ = 50;
+        {
+                COUT(2) << "There is now more than one NotificationQueue, this shouldn't happen, since only the first NotificationQueue will be targeted by the NotificationManager." << std::endl;
+        }
+        else
+        {
+                queue_s = this;
+        }
+        
+        this->length_ = 3;
+        this->width_ = 50;
     }
     
     NotificationQueue::~NotificationQueue()

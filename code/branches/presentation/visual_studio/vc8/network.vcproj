@@ -195,6 +195,10 @@
 				RelativePath="..\..\src\network\Server.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\network\TrafficControl.cc"
+				>
+			</File>
 			<Filter
 				Name="packet"
 				>
@@ -303,6 +307,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\network\Server.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\TrafficControl.h"
 				>
 			</File>
 			<Filter

@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestItem.h
+    @file
     @brief Definition of the QuestItem class.
         The QuestItem is the parent class of Quest and QuestHint.
 */
@@ -43,9 +43,8 @@
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
 
-namespace orxonox {
-
-
+namespace orxonox
+{
     /**
     @brief
         Functions as a base class for quest classes such as Quest or QuestHint.
