@@ -50,8 +50,6 @@ namespace orxonox
         this->linearVelocity_      = Vector3::ZERO;
         this->angularAcceleration_ = Vector3::ZERO;
         this->angularVelocity_     = Vector3::ZERO;
-
-        this->registerVariables();
     }
 
     MobileEntity::~MobileEntity()
@@ -65,10 +63,6 @@ namespace orxonox
         XMLPortParamTemplate(MobileEntity, "velocity",     setVelocity,     getVelocity,     xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(MobileEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
         XMLPortParam(MobileEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode);
-    }
-
-    void MobileEntity::registerVariables()
-    {
     }
 
     void MobileEntity::tick(float dt)

@@ -199,6 +199,9 @@ namespace orxonox
             inline float getTotalMass() const
                 { return this->mass_ + this->childrenMass_; }
 
+            inline const btVector3& getLocalInertia() const
+                { return this->localInertia_; }
+
             inline void setRestitution(float restitution)
                 { this->restitution_ = restitution; resetPhysicsProps(); }
             inline float getRestitution() const
@@ -268,6 +271,7 @@ namespace orxonox
             bool                         bPhysicsActiveSynchronised_;
             CompoundCollisionShape*      collisionShape_;
             btScalar                     mass_;
+            btVector3                    localInertia_;
             btScalar                     restitution_;
             btScalar                     angularFactor_;
             btScalar                     linearDamping_;

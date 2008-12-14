@@ -65,7 +65,7 @@ namespace orxonox
             inline const Vector3& getScale3D(void) const
                 { return this->scale_; }
 
-            btVector3 getLocalInertia(float mass) const;
+            void calculateLocalInertia(float mass, btVector3& inertia) const;
 
             inline btCollisionShape* getCollisionShape() const
                 { return this->collisionShape_; }

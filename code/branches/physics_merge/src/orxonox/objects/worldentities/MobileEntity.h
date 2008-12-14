@@ -44,7 +44,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
 
             virtual void setPosition(const Vector3& position);
             virtual void setOrientation(const Quaternion& orientation);

@@ -107,11 +107,11 @@ namespace orxonox
         CCOUT(2) << "Warning: Cannot set the scale of a collision shape: Not yet implemented." << std::endl;
     }
 
-    btVector3 CollisionShape::getLocalInertia(btScalar mass) const
+    void CollisionShape::calculateLocalInertia(btScalar mass, btVector3& inertia) const
     {
-        btVector3 inertia(0, 0, 0);
         if (this->collisionShape_)
             this->collisionShape_->calculateLocalInertia(mass, inertia);
-        return inertia;
+        else
+            inertia.setValue(0, 0, 0);
     }
 }

@@ -604,6 +604,9 @@ namespace orxonox
 
     void WorldEntity::recalculateMassProps()
     {
+        // Store local inertia for faster access. Evaluates to (0,0,0) if there is no collision shape.
+        float totalMass = this->mass_ + this->childrenMass_;
+        this->collisionShape_->calculateLocalInertia(totalMass, this->localInertia_);
         if (this->hasPhysics())
         {
             if (this->isStatic())
@@ -615,12 +618,13 @@ namespace orxonox
             {
                 // Use default values to avoid very large or very small values
                 CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0." << std::endl;
-                this->physicalBody_->setMassProps(1.0f, this->collisionShape_->getLocalInertia(1.0f));
+                btVector3 inertia(0, 0, 0);
+                this->collisionShape_->calculateLocalInertia(1.0f, inertia);
+                this->physicalBody_->setMassProps(1.0f, inertia);
             }
             else
             {
-                float mass = this->mass_ + this->childrenMass_;
-                this->physicalBody_->setMassProps(mass, this->collisionShape_->getLocalInertia(mass));
+                this->physicalBody_->setMassProps(totalMass, this->localInertia_);
             }
         }
     }
