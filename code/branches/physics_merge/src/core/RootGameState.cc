@@ -129,7 +129,8 @@ namespace orxonox
     */
     void RootGameState::start()
     {
-#ifdef NDEBUG
+        // Don't catch errors when having a debugger in msvc
+#if ORXONOX_COMPILER != ORXONOX_COMPILER_MSVC || defined(NDEBUG)
         try
         {
 #endif
@@ -155,19 +156,21 @@ namespace orxonox
             }
 
             this->deactivate();
-#ifdef NDEBUG
+#if ORXONOX_COMPILER != ORXONOX_COMPILER_MSVC || defined(NDEBUG)
         }
         // Note: These are all unhandled exceptions that should not have made its way here!
         // almost complete game catch block to display the messages appropriately.
         catch (std::exception& ex)
         {
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Program aborted." << std::endl;
+            COUT(0) << ex.what() << std::endl;
+            COUT(0) << "Program aborted." << std::endl;
+            abort();
         }
         // anything that doesn't inherit from std::exception
         catch (...)
         {
-            COUT(1) << "An unidentifiable exception has occured. Program aborted." << std::endl;
+            COUT(0) << "An unidentifiable exception has occured. Program aborted." << std::endl;
+            abort();
         }
 #endif
     }

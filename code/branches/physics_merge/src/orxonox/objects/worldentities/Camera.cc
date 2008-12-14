@@ -47,7 +47,7 @@ namespace orxonox
 {
     CreateFactory(Camera);
 
-    Camera::Camera(BaseObject* creator) : PositionableEntity(creator)
+    Camera::Camera(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Camera);
 
@@ -55,7 +55,7 @@ namespace orxonox
             ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
-        this->getNode()->attachObject(this->camera_);
+        this->attachOgreObject(this->camera_);
 
         this->bHasFocus_ = false;
         this->bDrag_ = false;

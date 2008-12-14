@@ -106,9 +106,10 @@ namespace orxonox
     class Rewardable;
 
     class WorldEntity;
-    class PositionableEntity;
-    class MovableEntity;
+    class StaticEntity;
+    class MobileEntity;
     class ControllableEntity;
+    class MovableEntity;
     class Sublevel;
 
     class Model;
@@ -152,6 +153,12 @@ namespace orxonox
     class Gametype;
 
     class Scores;
+
+    // collision
+    class CollisionShape;
+    class SphereCollisionShape;
+    class CompoundCollisionShape;
+    class PlaneCollisionShape;
 
     // tools
     class BillboardSet;
@@ -209,6 +216,23 @@ namespace CEGUI
     class OgreCEGUITexture;
 }
 
+// Bullet Physics Engine
+
+class btTransform;
+class btVector3;
+
+class btRigidBody;
+class btCollisionObject;
+class btGhostObject;
+
+class btCollisionShape;
+class btSphereShape;
+class btCompoundShape;
+class btStaticPlaneShape;
+
+class btDiscreteDynamicsWorld;
+
+// lua
 struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

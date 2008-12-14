@@ -46,13 +46,13 @@ namespace orxonox
 
     CreateFactory(Light);
 
-    Light::Light(BaseObject* creator) : PositionableEntity(creator)
+    Light::Light(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Light);
 
         if (this->getScene() && this->getScene()->getSceneManager())
         this->light_ = this->getScene()->getSceneManager()->createLight("Light" + convertToString(Light::lightCounter_s++));
-        this->getNode()->attachObject(this->light_);
+        this->attachOgreObject(this->light_);
 
         this->registerVariables();
     }

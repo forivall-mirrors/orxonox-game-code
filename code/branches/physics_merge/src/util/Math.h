@@ -62,15 +62,33 @@
 
 namespace orxonox
 {
-    typedef Ogre::Radian Radian;
-    typedef Ogre::Degree Degree;
-    typedef Ogre::Vector2 Vector2;
-    typedef Ogre::Vector3 Vector3;
-    typedef Ogre::Vector4 Vector4;
-    typedef Ogre::Matrix3 Matrix3;
-    typedef Ogre::Matrix4 Matrix4;
-    typedef Ogre::Quaternion Quaternion;
-    typedef Ogre::ColourValue ColourValue;
+    using Ogre::Radian;
+    using Ogre::Degree;
+    using Ogre::Vector2;
+    using Ogre::Vector3;
+    using Ogre::Vector4;
+    using Ogre::Matrix3;
+    using Ogre::Matrix4;
+    using Ogre::Quaternion;
+    using Ogre::ColourValue;
+
+    // Also define our own transform space enum
+    namespace TransformSpace
+    {
+        /**
+        @brief
+            Enumeration denoting the spaces which a transform can be relative to.
+        */
+        enum Space
+        {
+            /// Transform is relative to the local space
+            Local,
+            /// Transform is relative to the space of the parent node
+            Parent,
+            /// Transform is relative to world space
+            World
+        };
+    }
 
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian);
     _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
@@ -173,8 +191,10 @@ namespace orxonox
     template <typename T>
     inline T zeroise()
     {
-        BOOST_STATIC_ASSERT(sizeof(T) == 0);
-        return T();
+        // Default, raise a compiler error without including large boost header cascade.
+        T temp();
+        *********temp; // If you reach this code, you abused zeroise()!
+        return temp;
     }
 
     template <> inline char                 zeroise<char>()                 { return 0; }

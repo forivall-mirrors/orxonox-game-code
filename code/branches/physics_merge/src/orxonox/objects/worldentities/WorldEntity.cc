@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder (physics)
  *   Co-authors:
  *      ...
  *
@@ -30,14 +31,17 @@
 #include "WorldEntity.h"
 
 #include <cassert>
+#include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
+#include "BulletDynamics/Dynamics/btRigidBody.h"
 
+#include "util/Exception.h"
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Convert.h"
-#include "util/Exception.h"
 
 #include "objects/Scene.h"
+#include "objects/collisionshapes/CompoundCollisionShape.h"
 
 namespace orxonox
 {
@@ -63,6 +67,21 @@ namespace orxonox
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
 
+        // Default behaviour does not include physics
+        this->physicalBody_ = 0;
+        this->bPhysicsActive_ = false;
+        this->collisionShape_ = new CompoundCollisionShape(this);
+        this->collisionType_ = None;
+        this->collisionTypeSynchronised_ = None;
+        this->mass_           = 0;
+        this->childrenMass_   = 0;
+        // Use bullet default values
+        this->restitution_    = 0;
+        this->angularFactor_  = 1;
+        this->linearDamping_  = 0;
+        this->angularDamping_ = 0;
+        this->friction_       = 0.5;
+
         this->registerVariables();
     }
 
@@ -73,6 +92,15 @@ namespace orxonox
             this->node_->detachAllObjects();
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
+
+            // TODO: Detach from parent and detach all children.
+
+            if (this->physicalBody_)
+            {
+                this->deactivatePhysics();
+                delete this->physicalBody_;
+            }
+            delete this->collisionShape_;
         }
     }
 
@@ -80,32 +108,53 @@ namespace orxonox
     {
         SUPER(WorldEntity, XMLPort, xmlelement, mode);
 
-        XMLPortParamTemplate(WorldEntity, "position", setPosition, getPosition, xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(WorldEntity, "position",    setPosition,    getPosition,    xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(WorldEntity, "orientation", setOrientation, getOrientation, xmlelement, mode, const Quaternion&);
-        XMLPortParamLoadOnly(WorldEntity, "lookat", lookAt_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "direction", setDirection_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "yaw", yaw_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "pitch", pitch_xmlport, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "roll", roll_xmlport, xmlelement, mode);
-        XMLPortParamTemplate(WorldEntity, "scale3D", setScale3D, getScale3D, xmlelement, mode, const Vector3&);
-        XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
+        XMLPortParamTemplate(WorldEntity, "scale3D",     setScale3D,     getScale3D,     xmlelement, mode, const Vector3&);
+        XMLPortParam        (WorldEntity, "scale",       setScale,       getScale,       xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "lookat",      lookAt_xmlport,       xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "direction",   setDirection_xmlport, xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "yaw",         yaw_xmlport,          xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "pitch",       pitch_xmlport,        xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "roll",        roll_xmlport,         xmlelement, mode);
 
+        // Physics
+        XMLPortParam(WorldEntity, "collisionType",  setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
+        XMLPortParam(WorldEntity, "mass",           setMass,             getMass,             xmlelement, mode);
+        XMLPortParam(WorldEntity, "restitution",    setRestitution,      getRestitution,      xmlelement, mode);
+        XMLPortParam(WorldEntity, "angularFactor",  setAngularFactor,    getAngularFactor,    xmlelement, mode);
+        XMLPortParam(WorldEntity, "linearDamping",  setLinearDamping,    getLinearDamping,    xmlelement, mode);
+        XMLPortParam(WorldEntity, "angularDamping", setAngularDamping,   getAngularDamping,   xmlelement, mode);
+        XMLPortParam(WorldEntity, "friction",       setFriction,         getFriction,         xmlelement, mode);
+
+        // Other attached WorldEntities
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
+        // Attached collision shapes
+        XMLPortObject(WorldEntity, CollisionShape, "collisionShapes", attachCollisionShape, getAttachedCollisionShape, xmlelement, mode);
     }
 
     void WorldEntity::registerVariables()
     {
-        registerVariable(this->bActive_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
-        registerVariable(this->bVisible_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
-  
-        registerVariable(this->getScale3D().x, variableDirection::toclient);
-        registerVariable(this->getScale3D().y, variableDirection::toclient);
-        registerVariable(this->getScale3D().z, variableDirection::toclient);
-  
-        registerVariable(this->parentID_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::updateParent));
+        registerVariable(this->bActive_,        variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
+        registerVariable(this->bVisible_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
+
+        registerVariable(this->getScale3D(),    variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
+
+        registerVariable((int&)this->collisionTypeSynchronised_,
+                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
+        registerVariable(this->mass_,           variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
+        registerVariable(this->restitution_,    variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::restitutionChanged));
+        registerVariable(this->angularFactor_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularFactorChanged));
+        registerVariable(this->linearDamping_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::linearDampingChanged));
+        registerVariable(this->angularDamping_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularDampingChanged));
+        registerVariable(this->friction_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
+        registerVariable(this->bPhysicsActiveSynchronised_,
+                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
+
+        registerVariable(this->parentID_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::parentChanged));
     }
 
-    void WorldEntity::updateParent()
+    void WorldEntity::parentChanged()
     {
         if (this->parentID_ != OBJECTID_UNKNOWN)
         {
@@ -115,8 +164,63 @@ namespace orxonox
         }
     }
 
+    void WorldEntity::collisionTypeChanged()
+    {
+        if (this->collisionTypeSynchronised_ != Dynamic &&
+            this->collisionTypeSynchronised_ != Kinematic &&
+            this->collisionTypeSynchronised_ != Static &&
+            this->collisionTypeSynchronised_ != None)
+        {
+            CCOUT(1) << "Error when collsion Type was received over network. Unknown enum value:" << this->collisionTypeSynchronised_ << std::endl;
+        }
+        else if (this->collisionTypeSynchronised_ != collisionType_)
+        {
+            if (this->parent_)
+                CCOUT(2) << "Warning: Network connection tried to set the collision type of an attached WE. Ignoring." << std::endl;
+            else
+                this->setCollisionType(this->collisionTypeSynchronised_);
+        }
+    }
+
+    void WorldEntity::physicsActivityChanged()
+    {
+        if (this->bPhysicsActiveSynchronised_)
+            this->activatePhysics();
+        else
+            this->deactivatePhysics();
+    }
+
     void WorldEntity::attach(WorldEntity* object)
     {
+        // check first whether attaching is even allowed
+        if (object->hasPhysics())
+        {
+            if (!this->hasPhysics())
+            {
+                COUT(2) << "Warning: Cannot attach a physical object to a non physical one." << std::endl;
+                return;
+            }
+            else if (object->isDynamic())
+            {
+                COUT(2) << "Warning: Cannot attach a dynamic object to a WorldEntity." << std::endl;
+                return;
+            }
+            else if (object->isKinematic() && this->isDynamic())
+            {
+                COUT(2) << "Warning: Cannot attach a kinematic object to a dynamic one." << std::endl;
+                return;
+            }
+            else if (object->isKinematic())
+            {
+                COUT(2) << "Warning: Cannot attach a kinematic object to a static or kinematic one: Not yet implemented." << std::endl;
+                return;
+            }
+            else
+            {
+                object->deactivatePhysics();
+            }
+        }
+
         if (object->getParent())
             object->detachFromParent();
         else
@@ -130,16 +234,33 @@ namespace orxonox
         this->children_.insert(object);
         object->parent_ = this;
         object->parentID_ = this->getObjectID();
+
+        // collision shapes
+        this->attachCollisionShape(object->getCollisionShape());
+        // mass
+        this->childrenMass_ += object->getMass();
+        recalculateMassProps();
     }
 
     void WorldEntity::detach(WorldEntity* object)
     {
+        // collision shapes
+        this->detachCollisionShape(object->getCollisionShape());
+        // mass
+        if (object->getMass() > 0.0f)
+        {
+            this->childrenMass_ -= object->getMass();
+            recalculateMassProps();
+        }
+
         this->node_->removeChild(object->node_);
         this->children_.erase(object);
         object->parent_ = 0;
         object->parentID_ = OBJECTID_UNKNOWN;
-
 //        this->getScene()->getRootSceneNode()->addChild(object->node_);
+
+        // Note: It is possible that the object has physics but was disabled when attaching
+        object->activatePhysics();
     }
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const
@@ -152,5 +273,366 @@ namespace orxonox
             ++i;
         }
         return 0;
+    }
+
+    void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
+    {
+        this->node_->attachObject(object);
+    }
+
+    void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
+    {
+        this->node_->detachObject(object);
+    }
+
+    Ogre::MovableObject* WorldEntity::detachOgreObject(const Ogre::String& name)
+    {
+        return this->node_->detachObject(name);
+    }
+
+    void WorldEntity::attachCollisionShape(CollisionShape* shape)
+    {
+        this->collisionShape_->addChildShape(shape);
+        // Note: this->collisionShape_ already notifies us of any changes.
+    }
+
+    void WorldEntity::detachCollisionShape(CollisionShape* shape)
+    {
+        this->collisionShape_->removeChildShape(shape);
+        // Note: this->collisionShape_ already notifies us of any changes.
+    }
+
+    CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
+    {
+        return this->collisionShape_->getChildShape(index);
+    }
+
+    void WorldEntity::activatePhysics()
+    {
+        if (this->isActive() && this->hasPhysics() && !this->isPhysicsActive() && !this->parent_)
+        {
+            this->getScene()->addRigidBody(this->physicalBody_);
+            this->bPhysicsActive_ = true;
+        }
+    }
+
+    void WorldEntity::deactivatePhysics()
+    {
+        if (this->isPhysicsActive())
+        {
+            this->getScene()->removeRigidBody(this->physicalBody_);
+            this->bPhysicsActive_ = false;
+        }
+    }
+
+    bool WorldEntity::addedToPhysicalWorld() const
+    {
+        return this->physicalBody_ && this->physicalBody_->isInWorld();
+    }
+
+#ifndef _NDEBUG
+    const Vector3& WorldEntity::getPosition() const
+    {
+        return this->node_->getPosition();
+    }
+
+    const Quaternion& WorldEntity::getOrientation() const
+    {
+        return this->node_->getOrientation();
+    }
+
+    const Vector3& WorldEntity::getScale3D() const
+    {
+        return this->node_->getScale();
+    }
+#endif
+
+    const Vector3& WorldEntity::getWorldPosition() const
+    {
+        return this->node_->_getDerivedPosition();
+    }
+
+    const Quaternion& WorldEntity::getWorldOrientation() const
+    {
+        return this->node_->_getDerivedOrientation();
+    }
+
+    void WorldEntity::translate(const Vector3& distance, TransformSpace::Space relativeTo)
+    {
+        switch (relativeTo)
+        {
+        case TransformSpace::Local:
+            // position is relative to parent so transform downwards
+            this->setPosition(this->getPosition() + this->getOrientation() * distance);
+            break;
+        case TransformSpace::Parent:
+            this->setPosition(this->getPosition() + distance);
+            break;
+        case TransformSpace::World:
+            // position is relative to parent so transform upwards
+            if (this->node_->getParent())
+                setPosition(getPosition() + (node_->getParent()->_getDerivedOrientation().Inverse() * distance)
+                    / node_->getParent()->_getDerivedScale());
+            else
+                this->setPosition(this->getPosition() + distance);
+            break;
+        }
+    }
+
+    void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Space relativeTo)
+    {
+        switch(relativeTo)
+        {
+        case TransformSpace::Local:
+            this->setOrientation(this->getOrientation() * rotation);
+            break;
+        case TransformSpace::Parent:
+            // Rotations are normally relative to local axes, transform up
+            this->setOrientation(rotation * this->getOrientation());
+            break;
+        case TransformSpace::World:
+            // Rotations are normally relative to local axes, transform up
+            this->setOrientation(this->getOrientation() * this->getWorldOrientation().Inverse()
+                * rotation * this->getWorldOrientation());
+            break;
+        }
+    }
+
+    void WorldEntity::lookAt(const Vector3& target, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    {
+        Vector3 origin;
+        switch (relativeTo)
+        {
+        case TransformSpace::Local:
+            origin = Vector3::ZERO;
+            break;
+        case TransformSpace::Parent:
+            origin = this->getPosition();
+            break;
+        case TransformSpace::World:
+            origin = this->getWorldPosition();
+            break;
+        }
+        this->setDirection(target - origin, relativeTo, localDirectionVector);
+    }
+
+    void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    {
+        Quaternion savedOrientation(this->getOrientation());
+        Ogre::Node::TransformSpace ogreRelativeTo;
+        switch (relativeTo)
+        {
+        case TransformSpace::Local:
+            ogreRelativeTo = Ogre::Node::TS_LOCAL; break;
+        case TransformSpace::Parent:
+            ogreRelativeTo = Ogre::Node::TS_PARENT; break;
+        case TransformSpace::World:
+            ogreRelativeTo = Ogre::Node::TS_WORLD; break;
+        }
+        this->node_->setDirection(direction, ogreRelativeTo, localDirectionVector);
+        Quaternion newOrientation(this->node_->getOrientation());
+        this->node_->setOrientation(savedOrientation);
+        this->setOrientation(newOrientation);
+    }
+
+    void WorldEntity::setScale3D(const Vector3& scale)
+    {
+        if (this->hasPhysics())
+        {
+            CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented." << std::endl;
+            return;
+        }
+
+        this->node_->setScale(scale);
+    }
+
+    void WorldEntity::setCollisionType(CollisionType type)
+    {
+        // If we are already attached to a parent, this would be a bad idea..
+        if (this->parent_)
+        {
+            CCOUT(2) << "Warning: Cannot set the collision type of a WorldEntity with a parent." << std::endl;
+            return;
+        }
+        else if (this->addedToPhysicalWorld())
+        {
+            CCOUT(2) << "Warning: Cannot set the collision type at run time." << std::endl;
+            return;
+        }
+
+        // Check for type legality. Could be StaticEntity or MobileEntity
+        if (!this->isCollisionTypeLegal(type))
+            return; // exception gets issued anyway
+        if (type != None && !this->getScene()->hasPhysics())
+        {
+            CCOUT(2) << "Warning: Cannot have physical bodies in a non physical scene." << std::endl;
+            return;
+        }
+
+        // Check whether we have to create or destroy.
+        if (type != None && this->collisionType_ == None)
+        {
+            // Check whether there was some scaling applied.
+            if (!this->node_->getScale().positionEquals(Vector3(1, 1, 1), 0.001))
+            {
+                CCOUT(2) << "Warning: Cannot create a physical body if there is scaling applied to the node: Not yet implemented." << std::endl;
+                return;
+            }
+
+            // Create new rigid body
+            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_->getCollisionShape());
+            this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
+            this->physicalBody_->setUserPointer(this);
+            this->physicalBody_->setActivationState(DISABLE_DEACTIVATION);
+        }
+        else if (type == None && this->collisionType_ != None)
+        {
+            // Destroy rigid body
+            assert(this->physicalBody_);
+            deactivatePhysics();
+            delete this->physicalBody_;
+            this->physicalBody_ = 0;
+            this->collisionType_ = None;
+            this->collisionTypeSynchronised_ = None;
+            return;
+        }
+
+        // Change type
+        switch (type)
+        {
+        case Dynamic:
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT));
+            break;
+        case Kinematic:
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);
+            break;
+        case Static:
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
+            break;
+        case None:
+            return; // this->collisionType_ was None too
+        }
+
+        // Only sets this->collisionShape_
+        // However the assertion is to ensure that the internal bullet setting is right
+        updateCollisionType();
+        assert(this->collisionType_ == type);
+
+        // update mass and inertia tensor
+        recalculateMassProps();
+        resetPhysicsProps();
+        activatePhysics();
+    }
+
+    void WorldEntity::setCollisionTypeStr(const std::string& typeStr)
+    {
+        std::string typeStrLower = getLowercase(typeStr);
+        CollisionType type;
+        if (typeStrLower == "dynamic")
+            type = Dynamic;
+        else if (typeStrLower == "static")
+            type = Static;
+        else if (typeStrLower == "kinematic")
+            type = Kinematic;
+        else if (typeStrLower == "none")
+            type = None;
+        else
+            ThrowException(ParseError, std::string("Attempting to set an unknown collision type: '") + typeStr + "'.");
+        this->setCollisionType(type);
+    }
+
+    std::string WorldEntity::getCollisionTypeStr() const
+    {
+        switch (this->getCollisionType())
+        {
+            case Dynamic:
+                return "dynamic";
+            case Kinematic:
+                return "kinematic";
+            case Static:
+                return "static";
+            case None:
+                return "none";
+            default:
+                assert(false);
+                return "";
+        }
+    }
+
+    void WorldEntity::updateCollisionType()
+    {
+        if (!this->physicalBody_)
+            this->collisionType_ = None;
+        else if (this->physicalBody_->isKinematicObject())
+            this->collisionType_ = Kinematic;
+        else if (this->physicalBody_->isStaticObject())
+            this->collisionType_ = Static;
+        else
+            this->collisionType_ = Dynamic;
+        this->collisionTypeSynchronised_ = this->collisionType_;
+    }
+
+    void WorldEntity::notifyChildMassChanged() // Called by a child WE
+    {
+        // Note: CollisionShape changes of a child get handled over the internal CompoundCollisionShape already
+        // Recalculate mass
+        this->childrenMass_ = 0.0f;
+        for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
+            this->childrenMass_ += (*it)->getMass();
+        recalculateMassProps();
+        // Notify parent WE
+        if (this->parent_)
+            parent_->notifyChildMassChanged();
+    }
+
+    void WorldEntity::notifyCollisionShapeChanged() // called by this->collisionShape_
+    {
+        if (hasPhysics())
+        {
+            // Bullet doesn't like sudden changes of the collision shape, so we remove and add it again
+            if (this->addedToPhysicalWorld())
+            {
+                this->deactivatePhysics();
+                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+                this->activatePhysics();
+            }
+            else
+                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+        }
+        recalculateMassProps();
+    }
+
+    void WorldEntity::recalculateMassProps()
+    {
+        if (this->hasPhysics())
+        {
+            if (this->isStatic())
+            {
+                // Just set everything to zero
+                this->physicalBody_->setMassProps(0.0f, btVector3(0, 0, 0));
+            }
+            else if ((this->mass_ + this->childrenMass_) == 0.0f)
+            {
+                // Use default values to avoid very large or very small values
+                CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0." << std::endl;
+                this->physicalBody_->setMassProps(1.0f, this->collisionShape_->getLocalInertia(1.0f));
+            }
+            else
+            {
+                float mass = this->mass_ + this->childrenMass_;
+                this->physicalBody_->setMassProps(mass, this->collisionShape_->getLocalInertia(mass));
+            }
+        }
+    }
+
+    void WorldEntity::resetPhysicsProps()
+    {
+        if (this->hasPhysics())
+        {
+            this->physicalBody_->setRestitution(this->restitution_);
+            this->physicalBody_->setAngularFactor(this->angularFactor_);
+            this->physicalBody_->setDamping(this->linearDamping_, this->angularDamping_);
+            this->physicalBody_->setFriction(this->friction_);
+        }
     }
 }

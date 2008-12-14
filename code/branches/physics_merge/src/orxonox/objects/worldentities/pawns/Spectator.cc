@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "Spectator.h"
 
+#include <OgreBillboardSet.h>
+
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 #include "objects/worldentities/Model.h"
@@ -62,7 +64,7 @@ namespace orxonox
         this->greetingFlare_ = new BillboardSet();
         this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
         if (this->greetingFlare_->getBillboardSet())
-            this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
+            this->attachOgreObject(this->greetingFlare_->getBillboardSet());
         this->greetingFlare_->setVisible(false);
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
@@ -77,7 +79,7 @@ namespace orxonox
             if (this->greetingFlare_)
             {
                 if (this->greetingFlare_->getBillboardSet())
-                    this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
+                    this->detachOgreObject(this->greetingFlare_->getBillboardSet());
                 delete this->greetingFlare_;
             }
         }
@@ -109,7 +111,7 @@ namespace orxonox
         {
             Vector3 velocity = this->getVelocity();
             velocity.normalise();
-            this->setVelocity(velocity * this->speed_);
+            this->setVelocity(this->getOrientation() * velocity * this->speed_);
 
             this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
             this->pitch(Radian(this->pitch_ * this->rotationSpeed_));

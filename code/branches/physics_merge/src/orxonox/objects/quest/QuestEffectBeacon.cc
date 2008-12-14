@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes defaults.
     */
-    QuestEffectBeacon::QuestEffectBeacon(BaseObject* creator) : PositionableEntity(creator)
+    QuestEffectBeacon::QuestEffectBeacon(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(QuestEffectBeacon);
         

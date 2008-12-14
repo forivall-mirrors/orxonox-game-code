@@ -145,8 +145,14 @@ namespace orxonox
 
         /*** HACK *** HACK ***/
         // Call the Tickable objects
+        float leveldt = time.getDeltaTime();
+        if (leveldt > 1.0f)
+        {
+            // just loaded
+            leveldt = 0.0f;
+        }
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(time.getDeltaTime());
+            it->tick(leveldt);
         /*** HACK *** HACK ***/
 
         this->tickChild(time);

@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -31,12 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
-#include "objects/Tickable.h"
+#include "MobileEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ControllableEntity : public WorldEntity, public Tickable
+    class _OrxonoxExport ControllableEntity : public MobileEntity
     {
         public:
             ControllableEntity(BaseObject* creator);
@@ -71,41 +70,8 @@ namespace orxonox
             virtual void use() {}
             virtual void switchCamera();
 
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
-
-            using WorldEntity::setPosition;
-            using WorldEntity::translate;
-            using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
-
-            void setPosition(const Vector3& position);
-            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void setOrientation(const Quaternion& orientation);
-            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-
-            void setVelocity(const Vector3& velocity);
-            inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
-
-            inline void setAcceleration(const Vector3& acceleration)
-                { this->acceleration_ = acceleration; }
-            inline void setAcceleration(float x, float y, float z)
-                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
 
             inline Camera* getCamera() const
                 { return this->camera_; }
@@ -122,6 +88,16 @@ namespace orxonox
             inline const std::string& getCameraPositionTemkplate() const
                 { return this->cameraPositionTemplate_; }
 
+            using WorldEntity::setPosition;
+            using WorldEntity::setOrientation;
+            using MobileEntity::setVelocity;
+            using MobileEntity::setAngularVelocity;
+
+            void setPosition(const Vector3& position);
+            void setOrientation(const Quaternion& orientation);
+            void setVelocity(const Vector3& velocity);
+            void setAngularVelocity(const Vector3& velocity);
+
         protected:
             virtual void startLocalControl();
             virtual void stopLocalControl();
@@ -132,34 +108,37 @@ namespace orxonox
             inline bool isLocallyControlled() const
                 { return this->bControlled_; }
 
-            Vector3 acceleration_;
-
         private:
             void overwrite();
             void processOverwrite();
 
             void processServerPosition();
-            void processServerVelocity();
+            void processServerLinearVelocity();
             void processServerOrientation();
+            void processServerAngularVelocity();
 
             void processClientPosition();
-            void processClientVelocity();
+            void processClientLinearVelocity();
             void processClientOrientation();
+            void processClientAngularVelocity();
 
             void networkcallback_changedplayerID();
+
+            // Bullet btMotionState related
+            void setWorldTransform(const btTransform& worldTrans);
 
             unsigned int server_overwrite_;
             unsigned int client_overwrite_;
 
-            Vector3 velocity_;
-
             bool bControlled_;
             Vector3 server_position_;
             Vector3 client_position_;
-            Vector3 server_velocity_;
-            Vector3 client_velocity_;
+            Vector3 server_linear_velocity_;
+            Vector3 client_linear_velocity_;
             Quaternion server_orientation_;
             Quaternion client_orientation_;
+            Vector3 server_angular_velocity_;
+            Vector3 client_angular_velocity_;
 
             PlayerInfo* player_;
             unsigned int playerID_;

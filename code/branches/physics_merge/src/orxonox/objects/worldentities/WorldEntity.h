@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder (physics)
  *   Co-authors:
  *      ...
  *
@@ -31,9 +32,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#define OGRE_FORCE_ANGLE_TYPES
-
+#ifdef _NDEBUG
 #include <OgreSceneNode.h>
+#else
+#include <OgrePrerequisites.h>
+#endif
+#include "LinearMath/btMotionState.h"
 
 #include "network/synchronisable/Synchronisable.h"
 #include "core/BaseObject.h"
@@ -41,7 +45,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable
+    class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
         public:
             WorldEntity(BaseObject* creator);
@@ -50,7 +54,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
 
-            inline Ogre::SceneNode* getNode() const
+            inline const Ogre::SceneNode* getNode() const
                 { return this->node_; }
 
             static const Vector3 FRONT;
@@ -63,13 +67,11 @@ namespace orxonox
             virtual void setPosition(const Vector3& position) = 0;
             inline void setPosition(float x, float y, float z)
                 { this->setPosition(Vector3(x, y, z)); }
-            inline const Vector3& getPosition() const
-                { return this->node_->getPosition(); }
-            inline const Vector3& getWorldPosition() const
-                { return this->node_->getWorldPosition(); }
+            const Vector3& getPosition() const;
+            const Vector3& getWorldPosition() const;
 
-            virtual void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void translate(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            void translate(const Vector3& distance, TransformSpace::Space relativeTo = TransformSpace::Parent);
+            inline void translate(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Parent)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
             virtual void setOrientation(const Quaternion& orientation) = 0;
@@ -79,56 +81,51 @@ namespace orxonox
                 { this->setOrientation(Quaternion(angle, axis)); }
             inline void setOrientation(const Vector3& axis, const Degree& angle)
                 { this->setOrientation(Quaternion(angle, axis)); }
-            inline const Quaternion& getOrientation() const
-                { return this->node_->getOrientation(); }
-            inline const Quaternion& getWorldOrientation() const
-                { return this->node_->getWorldOrientation(); }
+            const Quaternion& getOrientation() const;
+            const Quaternion& getWorldOrientation() const;
 
-            virtual void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void rotate(const Vector3& axis, const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->rotate(Quaternion(angle, axis), relativeTo); }
-            inline void rotate(const Vector3& axis, const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            void rotate(const Quaternion& rotation, TransformSpace::Space relativeTo = TransformSpace::Local);
+            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
                 { this->rotate(Quaternion(angle, axis), relativeTo); }
 
-            virtual void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->yaw(Degree(angle), relativeTo); }
-            virtual void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->pitch(Degree(angle), relativeTo); }
-            virtual void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            inline void roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
-                { this->roll(Degree(angle), relativeTo); }
+            inline void yaw(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+                { this->rotate(Quaternion(angle, Vector3::UNIT_Y), relativeTo); }
+            inline void pitch(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+                { this->rotate(Quaternion(angle, Vector3::UNIT_X), relativeTo); }
+            inline void roll(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+                { this->rotate(Quaternion(angle, Vector3::UNIT_Z), relativeTo); }
 
-            virtual void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z) = 0;
-            virtual void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z) = 0;
-            inline void setDirection(float x, float y, float z, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
+            void lookAt(const Vector3& target, TransformSpace::Space relativeTo = TransformSpace::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            void setDirection(const Vector3& direction, TransformSpace::Space relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            inline void setDirection(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
-            inline void setScale3D(const Vector3& scale)
-                { this->node_->setScale(scale); }
+            virtual void setScale3D(const Vector3& scale);
             inline void setScale3D(float x, float y, float z)
-                { this->node_->setScale(x, y, z); }
-            inline const Vector3& getScale3D(void) const
-                { return this->node_->getScale(); }
+                { this->setScale3D(Vector3(x, y, z)); }
+            const Vector3& getScale3D(void) const;
 
-            inline void setScale(float scale)
-                { this->node_->setScale(scale, scale, scale); }
+            void setScale(float scale)
+                { this->setScale3D(scale, scale, scale); }
             inline float getScale() const
                 { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
 
             inline void scale3D(const Vector3& scale)
-                { this->node_->scale(scale); }
+                { this->setScale3D(this->getScale3D() * scale); }
             inline void scale3D(float x, float y, float z)
-                { this->node_->scale(x, y, z); }
+                { this->scale3D(Vector3(x, y, z)); }
             inline void scale(float scale)
-                { this->node_->scale(scale, scale, scale); }
+                { this->scale3D(scale, scale, scale); }
 
             void attach(WorldEntity* object);
             void detach(WorldEntity* object);
             WorldEntity* getAttachedObject(unsigned int index) const;
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
+
+            void attachOgreObject(Ogre::MovableObject* object);
+            void detachOgreObject(Ogre::MovableObject* object);
+            Ogre::MovableObject* detachOgreObject(const Ogre::String& name);
 
             inline void attachToParent(WorldEntity* parent)
                 { parent->attach(this); }
@@ -137,12 +134,12 @@ namespace orxonox
             inline WorldEntity* getParent() const
                 { return this->parent_; }
 
+            void notifyChildPropsChanged();
+
         protected:
             Ogre::SceneNode* node_;
 
         private:
-            void updateParent();
-
             inline void lookAt_xmlport(const Vector3& target)
                 { this->lookAt(target); }
             inline void setDirection_xmlport(const Vector3& direction)
@@ -154,10 +151,140 @@ namespace orxonox
             inline void roll_xmlport(const Degree& angle)
                 { this->roll(angle); }
 
+            // network callbacks
+            void parentChanged();
+            inline void scaleChanged()
+                { this->setScale3D(this->getScale3D()); }
+
             WorldEntity* parent_;
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
+
+
+        /////////////
+        // Physics //
+        /////////////
+
+        public:
+            enum CollisionType
+            {
+                Dynamic,
+                Kinematic,
+                Static,
+                None
+            };
+
+            bool hasPhysics()       const { return getCollisionType() != None     ; }
+            bool isStatic()         const { return getCollisionType() == Static   ; }
+            bool isKinematic()      const { return getCollisionType() == Kinematic; }
+            bool isDynamic()        const { return getCollisionType() == Dynamic  ; }
+            bool isPhysicsActive()  const { return this->bPhysicsActive_; }
+            bool addedToPhysicalWorld() const;
+
+            void activatePhysics();
+            void deactivatePhysics();
+
+            inline CollisionType getCollisionType() const
+                { return this->collisionType_; }
+            void setCollisionType(CollisionType type);
+
+            void setCollisionTypeStr(const std::string& type);
+            std::string getCollisionTypeStr() const;
+
+            inline void setMass(float mass)
+                { this->mass_ = mass; recalculateMassProps(); }
+            inline float getMass() const
+                { return this->mass_; }
+
+            inline float getTotalMass() const
+                { return this->mass_ + this->childrenMass_; }
+
+            inline void setRestitution(float restitution)
+                { this->restitution_ = restitution; resetPhysicsProps(); }
+            inline float getRestitution() const
+                { return this->restitution_; }
+
+            inline void setAngularFactor(float angularFactor)
+                { this->angularFactor_ = angularFactor; resetPhysicsProps(); }
+            inline float getAngularFactor() const
+                { return this->angularFactor_; }
+
+            inline void setLinearDamping(float linearDamping)
+                { this->linearDamping_ = linearDamping; resetPhysicsProps(); }
+            inline float getLinearDamping() const
+                { return this->linearDamping_; }
+
+            inline void setAngularDamping(float angularDamping)
+                { this->angularDamping_ = angularDamping; resetPhysicsProps(); }
+            inline float getAngularDamping() const
+                { return this->angularDamping_; }
+
+            inline void setFriction(float friction)
+                { this->friction_ = friction; resetPhysicsProps(); }
+            inline float getFriction() const
+                { return this->friction_; }
+
+            void attachCollisionShape(CollisionShape* shape);
+            void detachCollisionShape(CollisionShape* shape);
+            CollisionShape* getAttachedCollisionShape(unsigned int index) const;
+
+            inline CompoundCollisionShape* getCollisionShape()
+                { return this->collisionShape_; }
+            inline btRigidBody* getPhysicalBody()
+                { return this->physicalBody_; }
+
+            void notifyCollisionShapeChanged();
+            void notifyChildMassChanged();
+
+        protected:
+            virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
+
+            btRigidBody*  physicalBody_;
+
+        private:
+            void updateCollisionType();
+            void recalculateMassProps();
+            void resetPhysicsProps();
+
+            // network callbacks
+            void collisionTypeChanged();
+            void physicsActivityChanged();
+            inline void massChanged()
+                { this->setMass(this->mass_); }
+            inline void restitutionChanged()
+                { this->setRestitution(this->restitution_); }
+            inline void angularFactorChanged()
+                { this->setAngularFactor(this->angularFactor_); }
+            inline void linearDampingChanged()
+                { this->setLinearDamping(this->linearDamping_); }
+            inline void angularDampingChanged()
+                { this->setAngularDamping(this->angularDamping_); }
+            inline void frictionChanged()
+                { this->setFriction(this->friction_); }
+
+            CollisionType                collisionType_;
+            CollisionType                collisionTypeSynchronised_;
+            bool                         bPhysicsActive_;
+            bool                         bPhysicsActiveSynchronised_;
+            CompoundCollisionShape*      collisionShape_;
+            btScalar                     mass_;
+            btScalar                     restitution_;
+            btScalar                     angularFactor_;
+            btScalar                     linearDamping_;
+            btScalar                     angularDamping_;
+            btScalar                     friction_;
+            btScalar                     childrenMass_;
     };
+
+    // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.
+#ifdef _NDEBUG
+    inline const Vector3& WorldEntity::getPosition() const
+        { return this->node_->getPosition(); }
+    inline const Quaternion& WorldEntity::getOrientation() const
+        { return this->node_->getrOrientation(); }
+    inline const Vector3& WorldEntity::getScale3D(void) const
+        { return this->node_->getScale(); }
+#endif
 }
 
 #endif /* _WorldEntity_H__ */

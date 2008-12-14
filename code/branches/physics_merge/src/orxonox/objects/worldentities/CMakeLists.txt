@@ -1,7 +1,8 @@
 SET( SRC_FILES
   WorldEntity.cc
-  PositionableEntity.cc
+  StaticEntity.cc
   MovableEntity.cc
+  MobileEntity.cc
   ControllableEntity.cc
   Model.cc
   Billboard.cc

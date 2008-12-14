@@ -288,6 +288,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\MobileEntity.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Model.cc"
 						>
 					</File>
@@ -308,11 +312,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
+						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
+						RelativePath="..\..\src\orxonox\objects\worldentities\StaticEntity.cc"
 						>
 					</File>
 					<File
@@ -617,6 +621,26 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\quest\Rewardable.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="collisionShapes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\PlaneCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.cc"
 						>
 					</File>
 				</Filter>
@@ -948,6 +972,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\MobileEntity.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Model.h"
 						>
 					</File>
@@ -968,11 +996,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
+						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.h"
+						RelativePath="..\..\src\orxonox\objects\worldentities\StaticEntity.h"
 						>
 					</File>
 					<File
@@ -1180,12 +1208,36 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="collisionShapes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\PlaneCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
 				>
 				<File
 					RelativePath="..\..\src\orxonox\tools\BillboardSet.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\BulletConversions.h"
 					>
 				</File>
 				<File

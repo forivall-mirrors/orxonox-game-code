@@ -47,6 +47,8 @@
 #include <Ogre.h>
 #include <CEGUI.h>
 #include "ois/OIS.h"
+//#include "btBulletCollisionCommon.h"
+//#include "btBulletDynamicsCommon.h"
 #include <boost/thread/recursive_mutex.hpp>
 //#include <boost/thread/mutex.hpp>
 //#include <boost/thread/condition.hpp>
@@ -96,10 +98,10 @@
 
 #include "network/synchronisable/Synchronisable.h"
 
-#include "Settings.h"
+//#include "Settings.h"
 
 //#endif /* ifdef NDEBUG */
 
-#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
+#endif /* defined(ORXONOX_ENABLE_PCH) */
 
 #endif /* _OrxonoxStableHeaders_H__ */
