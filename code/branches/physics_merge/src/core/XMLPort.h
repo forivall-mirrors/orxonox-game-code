@@ -89,8 +89,8 @@
 */
 #define XMLPortParamVariable(classname, paramname, variable, xmlelement, mode) \
     static XMLPortVariableHelperClass xmlcontainer##variable##dummy((void*)&variable); \
-    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader"))); \
-    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##saveexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getSaver (variable)), std::string( #classname ) + "::" + #variable + "saver" ))); \
+    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader")); \
+    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##saveexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getSaver (variable)), std::string( #classname ) + "::" + #variable + "saver" )); \
     XMLPortParamGeneric(xmlcontainer##variable, classname, orxonox::XMLPortVariableHelperClass, &xmlcontainer##variable##dummy, paramname, xmlcontainer##variable##loadexecutor, xmlcontainer##variable##saveexecutor, xmlelement, mode)
 
 /**
