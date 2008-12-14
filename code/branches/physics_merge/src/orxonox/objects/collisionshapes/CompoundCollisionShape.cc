@@ -93,7 +93,7 @@ namespace orxonox
     {
         if (this->childShapes_.find(shape) != this->childShapes_.end())
         {
-            shape->setParent(0, (unsigned int)-1);
+            shape->setParent(0, OBJECTID_UNKNOWN);
             this->childShapes_.erase(shape);
             if (shape->getCollisionShape())
                 this->compoundShape_->removeChildShape(shape->getCollisionShape());

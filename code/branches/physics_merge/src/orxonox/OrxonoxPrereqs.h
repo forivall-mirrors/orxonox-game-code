@@ -231,6 +231,10 @@ class btCompoundShape;
 class btStaticPlaneShape;
 
 class btDiscreteDynamicsWorld;
+class bt32BitAxisSweep3;
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btSequentialImpulseConstraintSolver;
 
 // lua
 struct lua_State;

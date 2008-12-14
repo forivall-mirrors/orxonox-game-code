@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "LinearMath/btVector3.h"
 #include "util/Math.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"

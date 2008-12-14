@@ -46,14 +46,14 @@
 #endif
 #include <Ogre.h>
 #include <CEGUI.h>
-#include "ois/OIS.h"
-//#include "btBulletCollisionCommon.h"
-//#include "btBulletDynamicsCommon.h"
 #include <boost/thread/recursive_mutex.hpp>
 //#include <boost/thread/mutex.hpp>
 //#include <boost/thread/condition.hpp>
 //#include <boost/thread/thread.hpp>
 #include <boost/static_assert.hpp>
+
+#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "ois/OIS.h"
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
 #include "tolua/tolua++.h"

@@ -49,7 +49,7 @@ namespace orxonox
         RegisterObject(CollisionShape);
 
         this->parent_ = 0;
-        this->parentID_ = (unsigned int)-1;
+        this->parentID_ = OBJECTID_UNKNOWN;
         this->collisionShape_ = 0;
         this->position_ = Vector3::ZERO;
         this->orientation_ = Quaternion::IDENTITY;

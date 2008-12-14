@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
 #include "CollisionShape.h"
 
 namespace orxonox
