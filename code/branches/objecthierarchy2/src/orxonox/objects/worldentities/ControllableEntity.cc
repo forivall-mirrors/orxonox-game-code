@@ -80,7 +80,7 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (this->bHasLocalController_)
+            if (this->bHasLocalController_ && this->bHasHumanController_)
                 this->stopLocalHumanControl();
 
             if (this->hud_)
@@ -249,12 +249,18 @@ namespace orxonox
 
     void ControllableEntity::stopLocalHumanControl()
     {
-        this->camera_->detachFromParent();
-        delete this->camera_;
-        this->camera_ = 0;
+        if (this->camera_)
+        {
+            this->camera_->detachFromParent();
+            delete this->camera_;
+            this->camera_ = 0;
+        }
 
-        delete this->hud_;
-        this->hud_ = 0;
+        if (this->hud_)
+        {
+            delete this->hud_;
+            this->hud_ = 0;
+        }
     }
 
     void ControllableEntity::tick(float dt)

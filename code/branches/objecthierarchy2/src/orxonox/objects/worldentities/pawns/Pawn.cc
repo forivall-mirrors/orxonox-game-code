@@ -159,10 +159,10 @@ namespace orxonox
         // Set bAlive_ to false and wait for PawnManager to do the destruction
         this->bAlive_ = false;
 
+        this->setDestroyWhenPlayerLeft(false);
+
         if (this->getGametype())
             this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
-
-        this->setDestroyWhenPlayerLeft(false);
 
         if (this->getPlayer())
             this->getPlayer()->stopControl(this);

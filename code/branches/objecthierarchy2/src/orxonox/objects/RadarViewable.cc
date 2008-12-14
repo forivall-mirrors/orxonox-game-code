@@ -60,14 +60,14 @@ namespace orxonox
         this->radarObjectDescription_ = str;
     }
 
-    const Vector3& RadarViewable::getWorldPosition() const
+    const Vector3& RadarViewable::getRVWorldPosition() const
     {
         const WorldEntity* object = this->getWorldEntity();
         validate(object);
         return object->getWorldPosition();
     }
 
-    Vector3 RadarViewable::getOrientedVelocity() const
+    Vector3 RadarViewable::getRVOrientedVelocity() const
     {
         const WorldEntity* object = this->getWorldEntity();
         validate(object);

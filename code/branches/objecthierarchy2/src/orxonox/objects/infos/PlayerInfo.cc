@@ -114,13 +114,13 @@ namespace orxonox
         this->changedController();
     }
 
-    void PlayerInfo::startControl(ControllableEntity* entity)
+    void PlayerInfo::startControl(ControllableEntity* entity, bool callback)
     {
         if (entity == this->controllableEntity_)
             return;
 
         if (this->controllableEntity_)
-            this->stopControl(this->controllableEntity_);
+            this->stopControl(this->controllableEntity_, callback);
 
         this->controllableEntity_ = entity;
 

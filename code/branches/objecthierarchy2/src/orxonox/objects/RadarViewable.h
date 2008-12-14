@@ -71,8 +71,8 @@ namespace orxonox
 
         virtual const WorldEntity* getWorldEntity() const = 0;
 
-        const Vector3& getWorldPosition() const;
-        Vector3 getOrientedVelocity() const;
+        const Vector3& getRVWorldPosition() const;
+        Vector3 getRVOrientedVelocity() const;
 
         inline void setRadarObjectShape(Shape shape)
             { this->radarObjectShape_ = shape; }

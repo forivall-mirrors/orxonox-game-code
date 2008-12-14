@@ -133,7 +133,7 @@ namespace orxonox
             Vector3 localPosition = this->owner_->getPosition();
             Vector3 targetPosition = localPosition;
             if (*(this->itFocus_))
-                targetPosition = this->itFocus_->getWorldPosition();
+                targetPosition = this->itFocus_->getRVWorldPosition();
 
             // find the closed object further away than targetPosition
             float currentDistance = localPosition.squaredDistance(targetPosition);
@@ -146,7 +146,7 @@ namespace orxonox
                 if (*it == (RadarViewable*)this->owner_)
                     continue;
 
-                float targetDistance = localPosition.squaredDistance((*it)->getWorldPosition());
+                float targetDistance = localPosition.squaredDistance((*it)->getRVWorldPosition());
                 if (targetDistance > currentDistance && targetDistance < nextDistance)
                 {
                     this->itFocus_ = it;
@@ -186,7 +186,7 @@ namespace orxonox
         unsigned int i = 0;
         for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it, ++i)
         {
-            COUT(3) << i++ << ": " << (*it)->getWorldPosition() << std::endl;
+            COUT(3) << i++ << ": " << (*it)->getRVWorldPosition() << std::endl;
         }
     }
 

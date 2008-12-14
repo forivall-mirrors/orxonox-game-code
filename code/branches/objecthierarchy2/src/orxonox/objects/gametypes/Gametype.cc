@@ -37,6 +37,7 @@
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
+#include "objects/worldentities/Camera.h"
 
 #include "network/Host.h"
 
@@ -61,6 +62,8 @@ namespace orxonox
     void Gametype::setConfigValues()
     {
         SetConfigValue(initialStartCountdown_, 3.0f);
+        SetConfigValue(bAutoStart_, false);
+        SetConfigValue(bForceSpawn_, false);
     }
 
     void Gametype::tick(float dt)
@@ -145,6 +148,24 @@ namespace orxonox
 
     void Gametype::pawnKilled(Pawn* victim, Pawn* killer)
     {
+        if (victim)
+        {
+            std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.find(victim->getPlayer());
+            it->second = PlayerState::Dead;
+
+            ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
+            if (victim->getCamera())
+            {
+                entity->setPosition(victim->getCamera()->getWorldPosition());
+                entity->setOrientation(victim->getCamera()->getWorldOrientation());
+            }
+            else
+            {
+                entity->setPosition(victim->getWorldPosition());
+                entity->setOrientation(victim->getWorldOrientation());
+            }
+            it->first->startControl(entity);
+        }
     }
 
     void Gametype::playerScored(PlayerInfo* player)
