@@ -33,10 +33,6 @@
 #include "core/XMLPort.h"
 #include "Camera.h"
 
-// REMOVE THIS AS SOON AS THE SERVER CAN HANDLE DESTRUCTION OF OBJECTS WITH OBJECTMODE 0x0
-#include "core/Core.h" //--------------------------------------
-//----------------------------------------------------------------------------------------
-
 namespace orxonox
 {
     CreateFactory(CameraPosition);
@@ -47,10 +43,7 @@ namespace orxonox
 
         this->bDrag_ = false;
 
-// REMOVE THIS AS SOON AS THE SERVER CAN HANDLE DESTRUCTION OF OBJECTS WITH OBJECTMODE 0x0
-        if (!Core::isMaster()) //---------------------------------------------------------
-//----------------------------------------------------------------------------------------
-            this->setObjectMode(0x0);
+        this->setObjectMode(0x0);
     }
 
     CameraPosition::~CameraPosition()

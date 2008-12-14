@@ -42,10 +42,6 @@
 #include "objects/Scene.h"
 #include "CameraManager.h"
 
-// REMOVE THIS AS SOON AS THE SERVER CAN HANDLE DESTRUCTION OF OBJECTS WITH OBJECTMODE 0x0
-#include "core/Core.h" //--------------------------------------
-//----------------------------------------------------------------------------------------
-
 namespace orxonox
 {
     CreateFactory(Camera);
@@ -64,10 +60,7 @@ namespace orxonox
         this->bDrag_ = false;
         this->nearClipDistance_ = 1;
 
-// REMOVE THIS AS SOON AS THE SERVER CAN HANDLE DESTRUCTION OF OBJECTS WITH OBJECTMODE 0x0
-        if (!Core::isMaster()) //---------------------------------------------------------
-//----------------------------------------------------------------------------------------
-            this->setObjectMode(0x0);
+        this->setObjectMode(0x0);
 
         this->setConfigValues();
         this->configvaluecallback_changedNearClipDistance();

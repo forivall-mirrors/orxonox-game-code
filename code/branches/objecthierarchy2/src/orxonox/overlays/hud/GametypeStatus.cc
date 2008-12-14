@@ -47,8 +47,6 @@ namespace orxonox
         RegisterObject(GametypeStatus);
 
         this->owner_ = 0;
-
-COUT(0) << "created GametypeStatus" << std::endl;
     }
 
     GametypeStatus::~GametypeStatus()
