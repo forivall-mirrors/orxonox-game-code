@@ -35,24 +35,47 @@
 #include <OgreSceneManager.h>
 
 #include "util/String.h"
-#include "util/Convert.h"
+#include "util/Exception.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
 
 namespace orxonox
 {
-    unsigned int Light::lightCounter_s = 0;
-
     CreateFactory(Light);
 
     Light::Light(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(Light);
 
-        if (this->getScene() && this->getScene()->getSceneManager())
-        this->light_ = this->getScene()->getSceneManager()->createLight("Light" + convertToString(Light::lightCounter_s++));
-        this->getNode()->attachObject(this->light_);
+        this->light_ = 0;
+        this->diffuse_ = ColourValue::White;
+        this->specular_ = ColourValue::White;
+        this->type_ = Ogre::Light::LT_POINT;
+        this->attenuation_ = Vector4(100000, 1, 0, 0);
+        this->spotlightRange_ = Vector3(40.0f, 30.0f, 1.0f);
+
+        if (Core::showsGraphics())
+        {
+            if (!this->getScene())
+                ThrowException(AbortLoading, "Can't create Light, no scene given.");
+            if (!this->getScene()->getSceneManager())
+                ThrowException(AbortLoading, "Can't create Light, no scene manager given.");
+
+            if (this->getScene() && this->getScene()->getSceneManager())
+            {
+                this->light_ = this->getScene()->getSceneManager()->createLight("Light" + getUniqueNumberString());
+                this->light_->setDirection(WorldEntity::FRONT);
+                this->getNode()->attachObject(this->light_);
+
+                this->updateType();
+                this->updateDiffuseColour();
+                this->updateSpecularColour();
+                this->updateAttenuation();
+                this->updateSpotlightRange();
+            }
+        }
 
         this->registerVariables();
     }
@@ -70,68 +93,44 @@ namespace orxonox
     {
         SUPER(Light, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Light, "type", setTypeString, getTypeString, xmlelement, mode).defaultValues("point");
-        XMLPortParamExternTemplate(Light, Ogre::Light, this->light_, "diffuse",   setDiffuseColour,  getDiffuseColour,  xmlelement, mode, const ColourValue&);
-        XMLPortParamExternTemplate(Light, Ogre::Light, this->light_, "specular",  setSpecularColour, getSpecularColour, xmlelement, mode, const ColourValue&);
-        XMLPortParamExternTemplate(Light, Ogre::Light, this->light_, "direction", setDirection,      getDirection,      xmlelement, mode, const Vector3&);
+        XMLPortParam(Light, "type",           setTypeString,     getTypeString,     xmlelement, mode).defaultValues("point");
+        XMLPortParam(Light, "diffuse",        setDiffuseColour,  getDiffuseColour,  xmlelement, mode).defaultValues(ColourValue::White);
+        XMLPortParam(Light, "specular",       setSpecularColour, getSpecularColour, xmlelement, mode).defaultValues(ColourValue::White);
+        XMLPortParam(Light, "attenuation",    setAttenuation,    getAttenuation,    xmlelement, mode).defaultValues(Vector4(100000, 1, 0, 0));
+        XMLPortParam(Light, "spotlightrange", setSpotlightRange, getSpotlightRange, xmlelement, mode).defaultValues(Vector3(40.0f, 30.0f, 1.0f));
     }
 
     void Light::registerVariables()
     {
-        REGISTERDATA(this->type_, direction::toclient, new NetworkCallback<Light>(this, &Light::changedType));
-        REGISTERDATA(this->light_->getDiffuseColour(), direction::toclient);
-        REGISTERDATA(this->light_->getSpecularColour(), direction::toclient);
-        REGISTERDATA(this->light_->getDirection(), direction::toclient);
+        REGISTERDATA(this->type_,           direction::toclient, new NetworkCallback<Light>(this, &Light::updateType));
+        REGISTERDATA(this->diffuse_,        direction::toclient, new NetworkCallback<Light>(this, &Light::updateDiffuseColour));
+        REGISTERDATA(this->specular_,       direction::toclient, new NetworkCallback<Light>(this, &Light::updateSpecularColour));
+        REGISTERDATA(this->attenuation_,    direction::toclient, new NetworkCallback<Light>(this, &Light::updateAttenuation));
+        REGISTERDATA(this->spotlightRange_, direction::toclient, new NetworkCallback<Light>(this, &Light::updateSpotlightRange));
     }
 
-    const std::string& Light::getName() const
+    void Light::updateDiffuseColour()
     {
         if (this->light_)
-            return this->light_->getName();
-        else
-            return BLANKSTRING;
+            this->light_->setDiffuseColour(this->diffuse_);
     }
 
-    void Light::setDiffuseColour(const ColourValue& colour)
+    void Light::updateSpecularColour()
     {
         if (this->light_)
-            this->light_->setDiffuseColour(colour);
+            this->light_->setSpecularColour(this->specular_);
     }
 
-    const ColourValue& Light::getDiffuseColour() const
+    void Light::updateAttenuation()
     {
-        if (this->light_)
-            return this->light_->getDiffuseColour();
-        else
-            return ColourValue::White;
+        if (this->light_ && this->type_ != Ogre::Light::LT_DIRECTIONAL)
+            this->light_->setAttenuation(this->attenuation_.x, this->attenuation_.y, this->attenuation_.z, this->attenuation_.w);
     }
 
-    void Light::setSpecularColour(const ColourValue& colour)
+    void Light::updateSpotlightRange()
     {
-        if (this->light_)
-            this->light_->setSpecularColour(colour);
-    }
-
-    const ColourValue& Light::getSpecularColour() const
-    {
-        if (this->light_)
-            return this->light_->getSpecularColour();
-        else
-            return ColourValue::White;
-    }
-
-    void Light::setDirection(const Vector3& direction)
-    {
-        if (this->light_)
-            this->light_->setDirection(direction);
-    }
-
-    const Vector3& Light::getDirection() const
-    {
-        if (this->light_)
-            return this->light_->getDirection();
-        else
-            return Vector3::ZERO;
+        if (this->light_ && this->type_ == Ogre::Light::LT_SPOTLIGHT)
+            this->light_->setSpotlightRange(Degree(this->spotlightRange_.x), Degree(this->spotlightRange_.y), this->spotlightRange_.z);
     }
 
     void Light::setTypeString(const std::string& type)
@@ -156,14 +155,21 @@ namespace orxonox
                 return "spotlight";
             case Ogre::Light::LT_POINT:
             default:
-                return "poinT";
+                return "point";
         }
     }
 
-    void Light::changedType()
+    void Light::updateType()
     {
         if (this->light_)
+        {
             this->light_->setType(this->type_);
+
+            if (this->type_ != Ogre::Light::LT_DIRECTIONAL)
+                this->updateAttenuation();
+            if (this->type_ == Ogre::Light::LT_SPOTLIGHT)
+                this->updateSpotlightRange();
+        }
     }
 
     void Light::changedVisibility()

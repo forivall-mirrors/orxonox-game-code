@@ -179,7 +179,7 @@ namespace orxonox
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
-            effect->setSource("Orxonox/explosion2");
+            effect->setSource("Orxonox/explosion2b");
             effect->setLifetime(4.0f);
         }
         {

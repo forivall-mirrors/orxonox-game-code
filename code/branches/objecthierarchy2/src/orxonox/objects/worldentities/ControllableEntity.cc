@@ -80,17 +80,19 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
+            this->bDestroyWhenPlayerLeft_ = false;
+
             if (this->bHasLocalController_ && this->bHasHumanController_)
                 this->stopLocalHumanControl();
+
+            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
+                this->getPlayer()->stopControl(this, false);
 
             if (this->hud_)
                 delete this->hud_;
 
             if (this->camera_)
                 delete this->camera_;
-
-            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
-                this->getPlayer()->stopControl(this, false);
         }
     }
 
@@ -230,20 +232,26 @@ namespace orxonox
 
     void ControllableEntity::startLocalHumanControl()
     {
-        this->camera_ = new Camera(this);
-        this->camera_->requestFocus();
-        if (this->cameraPositionTemplate_ != "")
-            this->addTemplate(this->cameraPositionTemplate_);
-        if (this->cameraPositions_.size() > 0)
-            this->cameraPositions_.front()->attachCamera(this->camera_);
-        else
-            this->attach(this->camera_);
-
-        if (this->hudtemplate_ != "")
+        if (!this->camera_)
         {
-            this->hud_ = new OverlayGroup(this);
-            this->hud_->addTemplate(this->hudtemplate_);
-            this->hud_->setOwner(this);
+            this->camera_ = new Camera(this);
+            this->camera_->requestFocus();
+            if (this->cameraPositionTemplate_ != "")
+                this->addTemplate(this->cameraPositionTemplate_);
+            if (this->cameraPositions_.size() > 0)
+                this->cameraPositions_.front()->attachCamera(this->camera_);
+            else
+                this->attach(this->camera_);
+        }
+
+        if (!this->hud_)
+        {
+            if (this->hudtemplate_ != "")
+            {
+                this->hud_ = new OverlayGroup(this);
+                this->hud_->addTemplate(this->hudtemplate_);
+                this->hud_->setOwner(this);
+            }
         }
     }
 

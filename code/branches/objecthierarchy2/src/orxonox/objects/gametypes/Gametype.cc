@@ -148,23 +148,28 @@ namespace orxonox
 
     void Gametype::pawnKilled(Pawn* victim, Pawn* killer)
     {
-        if (victim)
+        if (victim && victim->getPlayer())
         {
             std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.find(victim->getPlayer());
-            it->second = PlayerState::Dead;
-
-            ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
-            if (victim->getCamera())
+            if (it != this->players_.end())
             {
-                entity->setPosition(victim->getCamera()->getWorldPosition());
-                entity->setOrientation(victim->getCamera()->getWorldOrientation());
+                it->second = PlayerState::Dead;
+
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
+                if (victim->getCamera())
+                {
+                    entity->setPosition(victim->getCamera()->getWorldPosition());
+                    entity->setOrientation(victim->getCamera()->getWorldOrientation());
+                }
+                else
+                {
+                    entity->setPosition(victim->getWorldPosition());
+                    entity->setOrientation(victim->getWorldOrientation());
+                }
+                it->first->startControl(entity);
             }
             else
-            {
-                entity->setPosition(victim->getWorldPosition());
-                entity->setOrientation(victim->getWorldOrientation());
-            }
-            it->first->startControl(entity);
+                COUT(2) << "Warning: Killed Pawn was not in the playerlist" << std::endl;
         }
     }
 

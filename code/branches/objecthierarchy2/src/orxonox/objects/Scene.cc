@@ -32,7 +32,6 @@
 #include <OgreRoot.h>
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreSceneNode.h>
-#include <OgreLight.h>
 
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
@@ -47,7 +46,7 @@ namespace orxonox
         RegisterObject(Scene);
 
         this->setScene(this);
-        this->bShadows_ = false;
+        this->bShadows_ = true;
 
         if (Core::showsGraphics())
         {
@@ -68,18 +67,6 @@ namespace orxonox
             this->sceneManager_ = new Ogre::DefaultSceneManager("");
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }
-
-        // test test test
-        if (Core::showsGraphics() && this->sceneManager_)
-        {
-            Ogre::Light* light;
-            light = this->sceneManager_->createLight("Light-1");
-            light->setType(Ogre::Light::LT_DIRECTIONAL);
-            light->setDiffuseColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setSpecularColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setDirection(1, -0.3, 0.3);
-        }
-        // test test test
 
         this->registerVariables();
     }
@@ -115,6 +102,7 @@ namespace orxonox
     {
         REGISTERSTRING(this->skybox_,     direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
         REGISTERDATA(this->ambientLight_, direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+        REGISTERDATA(this->bShadows_,     direction::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyShadows));
     }
 
     void Scene::setSkybox(const std::string& skybox)

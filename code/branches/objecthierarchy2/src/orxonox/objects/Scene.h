@@ -74,6 +74,8 @@ namespace orxonox
                 { this->setSkybox(this->skybox_); }
             void networkcallback_applyAmbientLight()
                 { this->setAmbientLight(this->ambientLight_); }
+            void networkcallback_applyShadows()
+                { this->setShadow(this->bShadows_); }
 
             Ogre::SceneManager*    sceneManager_;
             Ogre::SceneNode*       rootSceneNode_;
