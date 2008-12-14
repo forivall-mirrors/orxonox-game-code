@@ -47,9 +47,9 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
-  LibBulletDynamics
-  LibBulletCollision
-  LibLinearMath
+  BulletDynamics
+  BulletCollision
+  LinearMath
   util
   core
   audio

@@ -32,7 +32,7 @@
 #include <math.h>
 
 #include <OgreEntity.h>
-#include <OgreMesh.h>
+#include <OgreBillboardSet.h>
 #include <OgreHardwareVertexBuffer.h>
 #include <OgreMeshManager.h>
 
