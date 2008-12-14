@@ -462,7 +462,7 @@ namespace orxonox
 
         // Check for type legality. Could be StaticEntity or MobileEntity
         if (!this->isCollisionTypeLegal(type))
-            return; // exception gets issued anyway
+            return;
         if (type != None && !this->getScene()->hasPhysics())
         {
             CCOUT(2) << "Warning: Cannot have physical bodies in a non physical scene." << std::endl;

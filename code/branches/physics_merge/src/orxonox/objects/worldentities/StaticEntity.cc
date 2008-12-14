@@ -98,7 +98,8 @@ namespace orxonox
     {
         if (type == WorldEntity::Kinematic || type == WorldEntity::Dynamic)
         {
-            ThrowException(PhysicsViolation, "Cannot tell a StaticEntity to have kinematic or dynamic collision type");
+            CCOUT(1) << "Error: Cannot tell a StaticEntity to have kinematic or dynamic collision type! Ignoring." << std::endl;
+            assert(false); // Only in debug mode
             return false;
         }
         else

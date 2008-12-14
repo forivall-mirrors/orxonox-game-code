@@ -94,7 +94,8 @@ namespace orxonox
     {
         if (type != WorldEntity::Dynamic)
         {
-            ThrowException(PhysicsViolation, "Cannot tell a SpaceShip not to be dynamic!");
+            CCOUT(1) << "Error: Cannot tell a SpaceShip not to be dynamic! Ignoring." << std::endl;
+            assert(false); // Only in debug mode
             return false;
         }
         else
