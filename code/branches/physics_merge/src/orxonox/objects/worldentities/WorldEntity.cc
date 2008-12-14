@@ -311,7 +311,7 @@ namespace orxonox
     {
         if (this->isActive() && this->hasPhysics() && !this->isPhysicsActive() && !this->parent_)
         {
-            this->getScene()->addRigidBody(this->physicalBody_);
+            this->getScene()->addPhysicalObject(this);
             this->bPhysicsActive_ = true;
         }
     }
@@ -320,7 +320,7 @@ namespace orxonox
     {
         if (this->isPhysicsActive())
         {
-            this->getScene()->removeRigidBody(this->physicalBody_);
+            this->getScene()->removePhysicalObject(this);
             this->bPhysicsActive_ = false;
         }
     }

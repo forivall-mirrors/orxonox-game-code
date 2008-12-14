@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder (physics)
  *   Co-authors:
  *      ...
  *
@@ -52,9 +53,6 @@ namespace orxonox
             inline Ogre::SceneNode* getRootSceneNode() const
                 { return this->rootSceneNode_; }
 
-            inline btDiscreteDynamicsWorld* getPhysicalWorld() const
-                { return this->physicalWorld_; }
-
             void setSkybox(const std::string& skybox);
             inline const std::string& getSkybox() const
                 { return this->skybox_; }
@@ -67,13 +65,6 @@ namespace orxonox
             inline bool getShadow() const
                 { return this->bShadows_; }
 
-            inline bool hasPhysics()
-                { return this->physicalWorld_ != 0; }
-            void setPhysicalWorld(bool wantsPhysics);//, const Vector3& worldAabbMin, const Vector3& worldAabbMax);
-
-            void addRigidBody(btRigidBody* body);
-            void removeRigidBody(btRigidBody* body);
-
             virtual void tick(float dt);
 
         private:
@@ -84,20 +75,63 @@ namespace orxonox
                 { this->setSkybox(this->skybox_); }
             void networkcallback_applyAmbientLight()
                 { this->setAmbientLight(this->ambientLight_); }
-            void networkcallback_hasPhysics()
-                { this->setPhysicalWorld(this->bHasPhysics_); }
 
             Ogre::SceneManager*      sceneManager_;
             Ogre::SceneNode*         rootSceneNode_;
-
-            btDiscreteDynamicsWorld* physicalWorld_;
-            std::set<btRigidBody*>   physicsQueue_;
-            bool                     bHasPhysics_;
 
             std::string              skybox_;
             ColourValue              ambientLight_;
             std::list<BaseObject*>   objects_;
             bool                     bShadows_;
+
+
+        /////////////
+        // Physics //
+        /////////////
+
+        public:
+            inline bool hasPhysics()
+                { return this->physicalWorld_ != 0; }
+            void setPhysicalWorld(bool wantsPhysics);
+
+            void setNegativeWorldRange(const Vector3& range);
+            inline const Vector3& getNegativeWorldRange() const
+                { return this->negativeWorldRange_; }
+
+            void setPositiveWorldRange(const Vector3& range);
+            inline const Vector3& getPositiveWorldRange() const
+                { return this->positiveWorldRange_; }
+
+            void setGravity(const Vector3& gravity);
+            inline const Vector3& getGravity() const
+                { return this->gravity_; }
+
+            void addPhysicalObject(WorldEntity* object);
+            void removePhysicalObject(WorldEntity* object);
+
+        private:
+            inline void networkcallback_hasPhysics()
+                { this->setPhysicalWorld(this->bHasPhysics_); }
+            inline void networkcallback_negativeWorldRange()
+                { this->setNegativeWorldRange(this->negativeWorldRange_); }
+            inline void networkcallback_positiveWorldRange()
+                { this->setPositiveWorldRange(this->positiveWorldRange_); }
+            inline void networkcallback_gravity()
+                { this->setGravity(this->gravity_); }
+
+            // Bullet objects
+            btDiscreteDynamicsWorld*             physicalWorld_;
+            bt32BitAxisSweep3*                   broadphase_;
+            btDefaultCollisionConfiguration*     collisionConfig_;
+            btCollisionDispatcher*               dispatcher_;
+            btSequentialImpulseConstraintSolver* solver_;
+
+            std::set<WorldEntity*>               physicalObjectQueue_;
+            std::set<WorldEntity*>               physicalObjects_;
+            bool                                 bHasPhysics_;
+            Vector3                              negativeWorldRange_;
+            Vector3                              positiveWorldRange_;
+            Vector3                              gravity_;
     };
 }
 

@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
- *   Co-authors:
  *      Reto Grieder (physics)
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -76,8 +77,16 @@ namespace orxonox
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }
 
-        // No physics for default
-        this->physicalWorld_ = 0;
+        // No physics yet, XMLPort will do that.
+        const int defaultMaxWorldSize = 100000;
+        this->negativeWorldRange_ = Vector3(-defaultMaxWorldSize, -defaultMaxWorldSize, -defaultMaxWorldSize);
+        this->positiveWorldRange_ = Vector3( defaultMaxWorldSize,  defaultMaxWorldSize,  defaultMaxWorldSize);
+        this->gravity_ = Vector3(0, 0, 0);
+        this->physicalWorld_   = 0;
+        this->solver_          = 0;
+        this->dispatcher_      = 0;
+        this->collisionConfig_ = 0;
+        this->broadphase_      = 0;
 
         // test test test
         if (Core::showsGraphics() && this->sceneManager_)
@@ -106,6 +115,8 @@ namespace orxonox
             {
                 delete this->sceneManager_;
             }
+
+            this->setPhysicalWorld(false);
         }
     }
 
@@ -117,50 +128,105 @@ namespace orxonox
         XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
         XMLPortParam(Scene, "shadow", setShadow, getShadow, xmlelement, mode).defaultValues(true);
 
-        //const int defaultMaxWorldSize = 100000;
-        //Vector3 worldAabbMin(-defaultMaxWorldSize, -defaultMaxWorldSize, -defaultMaxWorldSize);
-        //Vector3 worldAabbMax( defaultMaxWorldSize,  defaultMaxWorldSize,  defaultMaxWorldSize);
-        //XMLPortParamVariable(Scene, "negativeWorldRange", worldAabbMin, xmlelement, mode);
-        //XMLPortParamVariable(Scene, "positiveWorldRange", worldAabbMax, xmlelement, mode);
-        XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValue(0, true);//.defaultValue(1, worldAabbMin).defaultValue(2, worldAabbMax);
+        XMLPortParam(Scene, "negativeWorldRange", setNegativeWorldRange, getNegativeWorldRange, xmlelement, mode);
+        XMLPortParam(Scene, "positiveWorldRange", setPositiveWorldRange, getPositiveWorldRange, xmlelement, mode);
+        XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValues(true);
 
         XMLPortObjectExtended(Scene, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
     }
 
     void Scene::registerVariables()
     {
-        registerVariable(this->skybox_,       variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
-        registerVariable(this->ambientLight_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
-        registerVariable(this->bHasPhysics_,  variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
+        registerVariable(this->skybox_,             variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
+        registerVariable(this->ambientLight_,       variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+        registerVariable(this->negativeWorldRange_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_negativeWorldRange));
+        registerVariable(this->positiveWorldRange_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_positiveWorldRange));
+        registerVariable(this->gravity_,            variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_gravity));
+        registerVariable(this->bHasPhysics_,        variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
     }
 
-    void Scene::setPhysicalWorld(bool wantPhysics)//, const Vector3& worldAabbMin, const Vector3& worldAabbMax)
+    void Scene::setNegativeWorldRange(const Vector3& range)
+    {
+        if (range.length() < 10.0f)
+        {
+            CCOUT(2) << "Warning: Setting the negative world range to a very small value: "
+                     << omni_cast<std::string>(range) << std::endl;
+        }
+        if (this->hasPhysics())
+        {
+            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. " 
+                     << "This causes a complete physical reload which might take some time." << std::endl;
+            this->setPhysicalWorld(false);
+            this->negativeWorldRange_ = range;
+            this->setPhysicalWorld(true);
+        }
+        else
+            this->negativeWorldRange_ = range;
+    }
+
+    void Scene::setPositiveWorldRange(const Vector3& range)
+    {
+        if (range.length() < 10.0f)
+        {
+            CCOUT(2) << "Warning: Setting the positive world range to a very small value: "
+                     << omni_cast<std::string>(range) << std::endl;
+        }
+        if (this->hasPhysics())
+        {
+            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. " 
+                     << "This causes a complete physical reload which might take some time." << std::endl;
+            this->setPhysicalWorld(false);
+            this->positiveWorldRange_ = range;
+            this->setPhysicalWorld(true);
+        }
+        else
+            this->positiveWorldRange_ = range;
+    }
+
+    void Scene::setGravity(const Vector3& gravity)
+    {
+        this->gravity_ = gravity;
+        if (this->hasPhysics())
+            this->physicalWorld_->setGravity(omni_cast<btVector3>(this->gravity_));
+    }
+
+    void Scene::setPhysicalWorld(bool wantPhysics)
     {
         this->bHasPhysics_ = wantPhysics;
         if (wantPhysics && !hasPhysics())
         {
-            //float x = worldAabbMin.x;
-            //float y = worldAabbMin.y;
-            //float z = worldAabbMin.z;
-            btVector3 worldAabbMin(-100000, -100000, -100000);
-            //x = worldAabbMax.x;
-            //y = worldAabbMax.y;
-            //z = worldAabbMax.z;
-            btVector3 worldAabbMax(100000, 100000, 100000);
+            // Note: These are all little known default classes and values.
+            //       It would require further investigation to properly dertermine the right choices.
+            this->broadphase_      = new bt32BitAxisSweep3(
+                omni_cast<btVector3>(this->negativeWorldRange_), omni_cast<btVector3>(this->positiveWorldRange_));
+            this->collisionConfig_ = new btDefaultCollisionConfiguration();
+            this->dispatcher_      = new btCollisionDispatcher(this->collisionConfig_);
+            this->solver_          = new btSequentialImpulseConstraintSolver;
 
-            btDefaultCollisionConfiguration*     collisionConfig = new btDefaultCollisionConfiguration();
-            btCollisionDispatcher*               dispatcher      = new btCollisionDispatcher(collisionConfig);
-            bt32BitAxisSweep3*                   broadphase      = new bt32BitAxisSweep3(worldAabbMin,worldAabbMax);
-            btSequentialImpulseConstraintSolver* solver          = new btSequentialImpulseConstraintSolver;
-
-            this->physicalWorld_ =  new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
-
-            // Disable Gravity for space
-            this->physicalWorld_->setGravity(btVector3(0,0,0));
+            this->physicalWorld_   = new btDiscreteDynamicsWorld(this->dispatcher_, this->broadphase_, this->solver_, this->collisionConfig_);
+            this->physicalWorld_->setGravity(omni_cast<btVector3>(this->gravity_));
         }
-        else
+        else if (!wantPhysics && hasPhysics())
         {
-            // TODO: Destroy Bullet physics
+            // Remove all WorldEntities and shove them to the queue since they would still like to be in a physical world.
+            for (std::set<WorldEntity*>::const_iterator it = this->physicalObjects_.begin();
+                it != this->physicalObjects_.end(); ++it)
+            {
+                this->physicalWorld_->removeRigidBody((*it)->getPhysicalBody());
+                this->physicalObjectQueue_.insert(*it);
+            }
+            this->physicalObjects_.clear();
+
+            delete this->physicalWorld_;
+            delete this->solver_;
+            delete this->dispatcher_;
+            delete this->collisionConfig_;
+            delete this->broadphase_;
+            this->physicalWorld_   = 0;
+            this->solver_          = 0;
+            this->dispatcher_      = 0;
+            this->collisionConfig_ = 0;
+            this->broadphase_      = 0;
         }
     }
 
@@ -171,31 +237,24 @@ namespace orxonox
             // We need to update the scene nodes if we don't render
             this->rootSceneNode_->_update(true, false);
         }
-        if (physicalWorld_)
+        if (this->hasPhysics())
         {
-            if (this->physicsQueue_.size() > 0)
+            // TODO: This here is bad practice! It will slow down the first tick() by ages.
+            //       Rather have an initialise() method as well, called by the Level after everything has been loaded.
+            if (this->physicalObjectQueue_.size() > 0)
             {
                 // Add all scheduled WorldEntities
-                for (std::set<btRigidBody*>::const_iterator it = this->physicsQueue_.begin();
-                    it != this->physicsQueue_.end(); ++it)
+                for (std::set<WorldEntity*>::const_iterator it = this->physicalObjectQueue_.begin();
+                    it != this->physicalObjectQueue_.end(); ++it)
                 {
-                    if (!(*it)->isInWorld())
-                    {
-                        //COUT(0) << "body position: " << omni_cast<Vector3>((*it)->getWorldTransform().getOrigin()) << std::endl;
-                        //COUT(0) << "body velocity: " << omni_cast<Vector3>((*it)->getLinearVelocity()) << std::endl;
-                        //COUT(0) << "body orientation: " << omni_cast<Quaternion>((*it)->getWorldTransform().getRotation()) << std::endl;
-                        //COUT(0) << "body angular: " << omni_cast<Vector3>((*it)->getAngularVelocity()) << std::endl;
-                        //COUT(0) << "body mass: " << omni_cast<float>((*it)->getInvMass()) << std::endl;
-                        //COUT(0) << "body inertia: " << omni_cast<Vector3>((*it)->getInvInertiaDiagLocal()) << std::endl;
-                        this->physicalWorld_->addRigidBody(*it);
-                    }
+                    this->physicalWorld_->addRigidBody((*it)->getPhysicalBody());
                 }
-                this->physicsQueue_.clear();
+                this->physicalObjectQueue_.clear();
             }
 
-            // TODO: This is not stable! If physics cannot be calculated real time anymore,
-            //       framerate will drop exponentially.
-            physicalWorld_->stepSimulation(dt,(int)(dt/0.0166666f + 1.0f));
+            // Note: 60 means that Bullet will do physics correctly down to 1 frames per seconds.
+            //       Under that mark, the simulation will "loose time" and get unusable.
+            physicalWorld_->stepSimulation(dt, 60);
         }
     }
 
@@ -246,25 +305,34 @@ namespace orxonox
         return 0;
     }
 
-    void Scene::addRigidBody(btRigidBody* body)
+    void Scene::addPhysicalObject(WorldEntity* object)
     {
-        if (!this->physicalWorld_)
-            COUT(1) << "Error: Cannot add WorldEntity body to physical Scene: No physics." << std::endl;
-        else if (body)
-            this->physicsQueue_.insert(body);
+        if (object)
+        {
+            std::set<WorldEntity*>::iterator it = this->physicalObjects_.find(object);
+            if (it != this->physicalObjects_.end())
+                return;
+
+            this->physicalObjectQueue_.insert(object);
+        }
     }
 
-    void Scene::removeRigidBody(btRigidBody* body)
+    void Scene::removePhysicalObject(WorldEntity* object)
     {
-        if (!this->physicalWorld_)
-            COUT(1) << "Error: Cannot remove WorldEntity body from physical Scene: No physics." << std::endl;
-        else if (body)
+        // check queue first
+        std::set<WorldEntity*>::iterator it = this->physicalObjectQueue_.find(object);
+        if (it != this->physicalObjectQueue_.end())
         {
-            this->physicalWorld_->removeRigidBody(body);
-            // Also check queue
-            std::set<btRigidBody*>::iterator it = this->physicsQueue_.find(body);
-            if (it != this->physicsQueue_.end())
-                this->physicsQueue_.erase(it);
+            this->physicalObjectQueue_.erase(it);
+            return;
         }
+
+        it = this->physicalObjects_.find(object);
+        if (it == this->physicalObjects_.end())
+            return;
+        this->physicalObjects_.erase(it);
+
+        if (this->hasPhysics())
+            this->physicalWorld_->removeRigidBody(object->getPhysicalBody());
     }
 }
