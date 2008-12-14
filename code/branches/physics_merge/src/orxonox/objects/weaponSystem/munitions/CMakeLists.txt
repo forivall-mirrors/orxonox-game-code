@@ -1,0 +1,5 @@
+SET( SRC_FILES
+  LaserGunMunition.cc
+)
+
+ADD_SOURCE_FILES(SRC_FILES)
