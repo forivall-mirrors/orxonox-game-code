@@ -362,8 +362,8 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end();){
-    if(it->second->getSize(HEADER->id)==0)
-      continue;
+//    if((*it).objSize==0)
+//      continue;
     oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
 //     object = Synchronisable::getSynchronisable( (*it).objID );
