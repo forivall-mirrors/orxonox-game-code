@@ -71,6 +71,9 @@ namespace orxonox
         this->physicalBody_ = 0;
         this->bPhysicsActive_ = false;
         this->collisionShape_ = new CompoundCollisionShape(this);
+        // Note: CompoundCollisionShape is a Synchronisable, but must not be synchronised.
+        //       All objects will get attached on the client anyway, so we don't need synchronisation.
+        this->collisionShape_->suppressSynchronisation();
         this->collisionType_ = None;
         this->collisionTypeSynchronised_ = None;
         this->mass_           = 0;

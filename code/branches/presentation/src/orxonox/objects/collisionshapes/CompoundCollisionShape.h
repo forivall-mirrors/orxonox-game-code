@@ -51,6 +51,9 @@ namespace orxonox
 
             void updateChildShape(CollisionShape* shape);
 
+            inline void suppressSynchronisation()
+                { this->setObjectMode(0x0); }
+
         protected:
             virtual void updateParent();
 
