@@ -97,6 +97,9 @@ namespace orxonox
             inline float getStartCountdown() const
                 { return this->gtinfo_.startCountdown_; }
 
+            void addBots(unsigned int amount);
+            void killBots(unsigned int amount = 0);
+
         private:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
@@ -115,6 +118,7 @@ namespace orxonox
             bool bForceSpawn_;
 
             float initialStartCountdown_;
+            unsigned int numberOfBots_;
 
             std::map<PlayerInfo*, PlayerState::Enum> players_;
             std::set<SpawnPoint*> spawnpoints_;

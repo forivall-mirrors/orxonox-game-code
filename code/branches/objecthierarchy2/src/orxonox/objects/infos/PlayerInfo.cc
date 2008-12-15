@@ -64,6 +64,9 @@ namespace orxonox
                 delete this->controller_;
                 this->controller_ = 0;
             }
+
+            if (this->getGametype())
+                this->getGametype()->playerLeft(this);
         }
     }
 

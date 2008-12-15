@@ -83,7 +83,8 @@ namespace orxonox
             .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));
         this->bar_->setMaterialName(materialname);
 
-        this->setValue(0.0f);
+        this->value_ = 1.0f;  // initielize with 1.0f to trigger a change when calling setValue(0.0f) on the line below
+        this->setValue(0.0f); // <--
         this->setRightToLeft(false);
         this->setAutoColour(true);
         this->currentColour_ = ColourValue::White;

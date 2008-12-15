@@ -68,6 +68,8 @@ namespace orxonox
     GSRoot::GSRoot()
         : RootGameState("root")
         , timeFactor_(1.0f)
+        , bPaused_(false)
+        , timeFactorPauseBackup_(1.0f)
         , settings_(0)
         , tclBind_(0)
         , tclThreadManager_(0)
@@ -77,6 +79,7 @@ namespace orxonox
         setConfigValues();
 
         this->ccSetTimeFactor_ = 0;
+        this->ccPause_ = 0;
     }
 
     GSRoot::~GSRoot()
@@ -124,23 +127,37 @@ namespace orxonox
         if (limitToCPU > 0)
             setThreadAffinity((unsigned int)(limitToCPU - 1));
 
-        // add console commands
-        FunctorMember<GSRoot>* functor1 = createFunctor(&GSRoot::exitGame);
-        functor1->setObject(this);
-        ccExit_ = createConsoleCommand(functor1, "exit");
-        CommandExecutor::addConsoleCommandShortcut(ccExit_);
+        {
+            // add console commands
+            FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::exitGame);
+            functor->setObject(this);
+            this->ccExit_ = createConsoleCommand(functor, "exit");
+            CommandExecutor::addConsoleCommandShortcut(this->ccExit_);
+        }
 
-        // add console commands
-        FunctorMember01<GameStateBase, const std::string&>* functor2 = createFunctor(&GameStateBase::requestState);
-        functor2->setObject(this);
-        ccSelectGameState_ = createConsoleCommand(functor2, "selectGameState");
-        CommandExecutor::addConsoleCommandShortcut(ccSelectGameState_);
+        {
+            // add console commands
+            FunctorMember01<GameStateBase, const std::string&>* functor = createFunctor(&GameStateBase::requestState);
+            functor->setObject(this);
+            this->ccSelectGameState_ = createConsoleCommand(functor, "selectGameState");
+            CommandExecutor::addConsoleCommandShortcut(this->ccSelectGameState_);
+        }
 
-        // time factor console command
-        FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::setTimeFactor);
-        functor->setObject(this);
-        ccSetTimeFactor_ = createConsoleCommand(functor, "setTimeFactor");
-        CommandExecutor::addConsoleCommandShortcut(ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
+        {
+            // time factor console command
+            FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::setTimeFactor);
+            functor->setObject(this);
+            this->ccSetTimeFactor_ = createConsoleCommand(functor, "setTimeFactor");
+            CommandExecutor::addConsoleCommandShortcut(this->ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
+        }
+
+        {
+            // time factor console command
+            FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::pause);
+            functor->setObject(this);
+            this->ccPause_ = createConsoleCommand(functor, "pause");
+            CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
+        }
     }
 
     void GSRoot::leave()
@@ -160,6 +177,12 @@ namespace orxonox
         {
             delete this->ccSetTimeFactor_;
             this->ccSetTimeFactor_ = 0;
+        }
+
+        if (this->ccPause_)
+        {
+            delete this->ccPause_;
+            this->ccPause_ = 0;
         }
     }
 
@@ -228,12 +251,35 @@ namespace orxonox
     {
         if (Core::isMaster())
         {
-            TimeFactorListener::timefactor_s = factor;
+            if (!this->bPaused_)
+            {
+                TimeFactorListener::timefactor_s = factor;
 
-            for (ObjectList<TimeFactorListener>::iterator it = ObjectList<TimeFactorListener>::begin(); it != ObjectList<TimeFactorListener>::end(); ++it)
-                it->changedTimeFactor(factor, this->timeFactor_);
+                for (ObjectList<TimeFactorListener>::iterator it = ObjectList<TimeFactorListener>::begin(); it != ObjectList<TimeFactorListener>::end(); ++it)
+                    it->changedTimeFactor(factor, this->timeFactor_);
 
-            this->timeFactor_ = factor;
+                this->timeFactor_ = factor;
+            }
+            else
+                this->timeFactorPauseBackup_ = factor;
+        }
+    }
+
+    void GSRoot::pause()
+    {
+        if (Core::isMaster())
+        {
+            if (!this->bPaused_)
+            {
+                this->timeFactorPauseBackup_ = this->timeFactor_;
+                this->setTimeFactor(0.0f);
+                this->bPaused_ = true;
+            }
+            else
+            {
+                this->bPaused_ = false;
+                this->setTimeFactor(this->timeFactorPauseBackup_);
+            }
         }
     }
 

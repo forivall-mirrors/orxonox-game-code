@@ -49,6 +49,7 @@ namespace orxonox
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
         void setTimeFactor(float factor);
+        void pause();
         float getTimeFactor() { return this->timeFactor_; }
 
     private:
@@ -60,6 +61,8 @@ namespace orxonox
         void setThreadAffinity(unsigned int limitToCPU);
 
         float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
+        bool                  bPaused_;
+        float                 timeFactorPauseBackup_;
         Settings*             settings_;
         TclBind*              tclBind_;
         TclThreadManager*     tclThreadManager_;
@@ -70,6 +73,7 @@ namespace orxonox
         ConsoleCommand*       ccExit_;
         ConsoleCommand*       ccSelectGameState_;
         ConsoleCommand*       ccSetTimeFactor_;
+        ConsoleCommand*       ccPause_;
     };
 
     class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass

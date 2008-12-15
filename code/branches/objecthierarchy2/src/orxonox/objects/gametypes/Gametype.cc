@@ -35,6 +35,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/infos/PlayerInfo.h"
+#include "objects/infos/Bot.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
 #include "objects/worldentities/Camera.h"
@@ -49,14 +50,19 @@ namespace orxonox
     {
         RegisterObject(Gametype);
 
+        this->setGametype(this);
+
         this->defaultControllableEntity_ = Class(Spectator);
 
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
+        this->numberOfBots_ = 0;
 
         this->initialStartCountdown_ = 3;
 
         this->setConfigValues();
+
+        this->addBots(this->numberOfBots_);
     }
 
     void Gametype::setConfigValues()
@@ -64,6 +70,7 @@ namespace orxonox
         SetConfigValue(initialStartCountdown_, 3.0f);
         SetConfigValue(bAutoStart_, false);
         SetConfigValue(bForceSpawn_, false);
+        SetConfigValue(numberOfBots_, 0);
     }
 
     void Gametype::tick(float dt)
@@ -290,6 +297,25 @@ namespace orxonox
         {
             COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
             abort();
+        }
+    }
+
+    void Gametype::addBots(unsigned int amount)
+    {
+        for (unsigned int i = 0; i < amount; ++i)
+            new Bot(this);
+    }
+
+    void Gametype::killBots(unsigned int amount)
+    {
+        unsigned int i = 0;
+        for (ObjectList<Bot>::iterator it = ObjectList<Bot>::begin(); (it != ObjectList<Bot>::end()) && ((amount == 0) || (i < amount)); )
+        {
+            if (it->getGametype() == this)
+            {
+                delete (*(it++));
+                ++i;
+            }
         }
     }
 }
