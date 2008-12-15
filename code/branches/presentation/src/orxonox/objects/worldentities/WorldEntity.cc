@@ -207,7 +207,7 @@ namespace orxonox
                     btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
             else
                 this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() &
-                    !btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+                    ~btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
         }
     }
 
