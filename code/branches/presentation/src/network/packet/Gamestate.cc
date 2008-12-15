@@ -162,6 +162,30 @@ bool Gamestate::spreadData(uint8_t mode)
     }
   }
 
+   // In debug mode, check first, whether there are no duplicate objectIDs
+#ifndef NDEBUG
+  ObjectList<Synchronisable>::iterator it;
+  for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
+    if (it->getObjectID() == OBJECTID_UNKNOWN) {
+      if (it->objectMode_ != 0x0) {
+        COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
+        assert(false);
+      }
+    }
+    else {
+      ObjectList<Synchronisable>::iterator it2;
+      for (it2 = ObjectList<Synchronisable>::begin(); it2 != ObjectList<Synchronisable>::end(); ++it2) {
+        if (it->getObjectID() == it2->getObjectID() && *it != *it2) {
+           COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
+                   << "Are you sure you don't create a Sychnronisable objcect with 'new' \
+                       that doesn't have objectMode = 0x0?" << std::endl;
+           assert(false);
+        }
+      }
+    }
+  }
+#endif
+
   return true;
 }
 

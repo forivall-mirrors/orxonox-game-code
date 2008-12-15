@@ -79,16 +79,7 @@ namespace orxonox
     // set standard priority
     this->setPriority( priority::normal );
 
-    
     // get creator id
-#ifndef NDEBUG
-    ObjectList<Synchronisable>::iterator it;
-    for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){
-      if( it->getObjectID()==this->objectID )
-        assert(*it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0));
-    }
-#endif
-
     this->creatorID = OBJECTID_UNKNOWN;
 
     searchcreatorID:
