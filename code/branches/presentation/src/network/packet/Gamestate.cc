@@ -390,6 +390,8 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 //      continue;
     oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
+    if ( (*it).objSize == 0 )
+      continue;
 //     object = Synchronisable::getSynchronisable( (*it).objID );
 //     assert(object->objectID == oldobjectheader->objectID);
     objectsize = oldobjectheader->size;
