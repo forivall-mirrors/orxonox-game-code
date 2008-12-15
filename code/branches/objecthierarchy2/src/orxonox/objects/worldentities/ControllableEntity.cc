@@ -108,7 +108,8 @@ namespace orxonox
 
     void ControllableEntity::changedGametype()
     {
-        SUPER(ControllableEntity, changedGametype);
+        //SUPER(ControllableEntity, changedGametype);
+        WorldEntity::changedGametype();
 
         this->gtinfo_ = 0;
         this->gtinfoID_ = OBJECTID_UNKNOWN;

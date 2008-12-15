@@ -166,6 +166,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PawnManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\PlayerManager.cc"
 				>
 			</File>
@@ -272,6 +276,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ExplosionChunk.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\FadingBillboard.cc"
 						>
 					</File>
@@ -353,6 +361,10 @@
 					>
 					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Bot.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\GametypeInfo.cc"
 						>
 					</File>
 					<File
@@ -742,7 +754,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\GametypeStatus.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDHealthBar.cc"
 						>
 					</File>
 					<File
@@ -858,6 +878,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PawnManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\PlayerManager.h"
 				>
 			</File>
@@ -944,6 +968,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ExplosionChunk.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\FadingBillboard.h"
 						>
 					</File>
@@ -1025,6 +1053,10 @@
 					>
 					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Bot.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\GametypeInfo.h"
 						>
 					</File>
 					<File
@@ -1268,7 +1300,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\GametypeStatus.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDHealthBar.h"
 						>
 					</File>
 					<File
