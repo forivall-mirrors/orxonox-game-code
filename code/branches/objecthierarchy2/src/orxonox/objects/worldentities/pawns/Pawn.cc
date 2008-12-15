@@ -107,8 +107,6 @@ namespace orxonox
     {
         SUPER(Pawn, tick, dt);
 
-        this->health_ -= 15 * dt * rnd();
-
         if (this->health_ <= 0)
             this->death();
     }
