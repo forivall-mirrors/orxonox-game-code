@@ -152,7 +152,7 @@ namespace orxonox
 
     void SpaceShip::rotateRoll(const Vector2& value)
     {
-        this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() - value.x);
+        this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x);
     }
 
     void SpaceShip::fire()
