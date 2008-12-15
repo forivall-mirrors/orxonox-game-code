@@ -70,6 +70,8 @@ namespace orxonox
                 this->attachOgreObject(this->greetingFlare_->getBillboardSet());
             this->greetingFlare_->setVisible(false);
         }
+        else
+            this->greetingFlare_ = 0;
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
 
