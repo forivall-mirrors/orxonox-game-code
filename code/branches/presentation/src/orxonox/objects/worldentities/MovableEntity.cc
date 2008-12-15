@@ -33,6 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/Executor.h"
+#include "core/Core.h"
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -48,12 +49,10 @@ namespace orxonox
 
         this->overwrite_position_    = Vector3::ZERO;
         this->overwrite_orientation_ = Quaternion::IDENTITY;
-        
-        this->setPriority( priority::low );
 
-        // Resynchronise every few seconds because we only work with velocities (no positions)
-        continuousResynchroTimer_ = new Timer<MovableEntity>(CONTINUOUS_SYNCHRONIZATION_TIME + rnd(-1, 1),
-                true, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), false);
+        this->continuousResynchroTimer_ = 0;
+
+        this->setPriority(priority::low);
 
         this->registerVariables();
     }
@@ -61,7 +60,8 @@ namespace orxonox
     MovableEntity::~MovableEntity()
     {
         if (this->isInitialized())
-            delete this->continuousResynchroTimer_;
+            if (this->continuousResynchroTimer_)
+                delete this->continuousResynchroTimer_;
     }
 
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -89,6 +89,13 @@ namespace orxonox
 
     void MovableEntity::resynchronize()
     {
+        if (Core::isMaster() && !this->continuousResynchroTimer_)
+        {
+            // Resynchronise every few seconds because we only work with velocities (no positions)
+            continuousResynchroTimer_ = new Timer<MovableEntity>(CONTINUOUS_SYNCHRONIZATION_TIME + rnd(-1, 1),
+                true, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), false);
+        }
+
         this->overwrite_position_ = this->getPosition();
         this->overwrite_orientation_ = this->getOrientation();
     }
