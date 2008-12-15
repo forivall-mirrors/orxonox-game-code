@@ -150,7 +150,14 @@ namespace orxonox
             }
         }
         if (bEmpty)
+        {
+            if (this->collisionShape_ == 0)
+            {
+                this->collisionShape_ = 0;
+                return;
+            }
             this->collisionShape_ = 0;
+        }
         else if (bPrimitive)
         {
             // --> Only one shape to be added, no transform; return it directly

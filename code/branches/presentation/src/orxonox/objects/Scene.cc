@@ -248,6 +248,7 @@ namespace orxonox
                     it != this->physicalObjectQueue_.end(); ++it)
                 {
                     this->physicalWorld_->addRigidBody((*it)->getPhysicalBody());
+                    this->physicalObjects_.insert(*it);
                 }
                 this->physicalObjectQueue_.clear();
             }

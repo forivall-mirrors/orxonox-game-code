@@ -140,17 +140,17 @@ namespace orxonox
 
     void SpaceShip::rotateYaw(const Vector2& value)
     {
-        this->localAngularAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
+        this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x);
     }
 
     void SpaceShip::rotatePitch(const Vector2& value)
     {
-        this->localAngularAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
+        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x);
     }
 
     void SpaceShip::rotateRoll(const Vector2& value)
     {
-        this->localAngularAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
+        this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() - value.x);
     }
 
     void SpaceShip::fire()
