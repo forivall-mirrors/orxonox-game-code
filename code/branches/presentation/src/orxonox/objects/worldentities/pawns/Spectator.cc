@@ -62,11 +62,14 @@ namespace orxonox
 
         this->setDestroyWhenPlayerLeft(true);
 
-        this->greetingFlare_ = new BillboardSet();
-        this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
-        if (this->greetingFlare_->getBillboardSet())
-            this->attachOgreObject(this->greetingFlare_->getBillboardSet());
-        this->greetingFlare_->setVisible(false);
+        if ( Core::showsGraphics() )
+	{
+            this->greetingFlare_ = new BillboardSet();
+            this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
+            if (this->greetingFlare_->getBillboardSet())
+                this->attachOgreObject(this->greetingFlare_->getBillboardSet());
+            this->greetingFlare_->setVisible(false);
+        }
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
 
@@ -101,7 +104,8 @@ namespace orxonox
 
     void Spectator::changedFlareVisibility()
     {
-        this->greetingFlare_->setVisible(this->bGreetingFlareVisible_);
+	if ( this->greetingFlare_ )	        
+            this->greetingFlare_->setVisible(this->bGreetingFlareVisible_);
     }
 
     void Spectator::tick(float dt)
