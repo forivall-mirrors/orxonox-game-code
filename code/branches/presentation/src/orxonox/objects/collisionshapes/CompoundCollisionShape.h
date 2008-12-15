@@ -51,8 +51,7 @@ namespace orxonox
 
             void updateChildShape(CollisionShape* shape);
 
-            inline void suppressSynchronisation()
-                { this->setObjectMode(0x0); }
+            void setWorldEntityParent(WorldEntity* parent);
 
         protected:
             virtual void updateParent();
@@ -62,6 +61,7 @@ namespace orxonox
 
             btCompoundShape* compoundShape_;
             std::map<CollisionShape*, btCollisionShape*> childShapes_;
+            WorldEntity* worldEntityParent_;
     };
 }
 

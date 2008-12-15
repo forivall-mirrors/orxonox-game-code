@@ -37,6 +37,7 @@
 #include "tools/BulletConversions.h"
 
 #include "CompoundCollisionShape.h"
+#include "objects/worldentities/WorldEntity.h"
 
 namespace orxonox
 {
@@ -54,6 +55,8 @@ namespace orxonox
         this->position_ = Vector3::ZERO;
         this->orientation_ = Quaternion::IDENTITY;
         this->scale_ = Vector3::UNIT_SCALE;
+
+        this->registerVariables();
     }
 
     CollisionShape::~CollisionShape()
@@ -80,9 +83,16 @@ namespace orxonox
 
     void CollisionShape::parentChanged()
     {
-        CompoundCollisionShape* parent = dynamic_cast<CompoundCollisionShape*>(Synchronisable::getSynchronisable(this->parentID_));
-        if (parent)
-            parent->addChildShape(this);
+        Synchronisable* synchronisable = Synchronisable::getSynchronisable(this->parentID_);
+        CompoundCollisionShape* CCSparent = dynamic_cast<CompoundCollisionShape*>(synchronisable);
+        if (CCSparent)
+            CCSparent->addChildShape(this);
+        else
+        {
+            WorldEntity* WEparent = dynamic_cast<WorldEntity*>(synchronisable);
+            if (WEparent)
+                WEparent->attachCollisionShape(this);
+        }
     }
 
     void CollisionShape::updateParent()

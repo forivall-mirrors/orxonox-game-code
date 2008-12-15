@@ -46,6 +46,7 @@ namespace orxonox
         RegisterObject(CompoundCollisionShape);
 
         this->compoundShape_  = new btCompoundShape();
+        this->worldEntityParent_ = 0;
     }
 
     CompoundCollisionShape::~CompoundCollisionShape()
@@ -63,6 +64,14 @@ namespace orxonox
         SUPER(CompoundCollisionShape, XMLPort, xmlelement, mode);
         // Attached collision shapes
         XMLPortObject(CompoundCollisionShape, CollisionShape, "", addChildShape, getChildShape, xmlelement, mode);
+    }
+
+    void CompoundCollisionShape::setWorldEntityParent(WorldEntity* parent)
+    {
+        // suppress synchronisation
+        this->setObjectMode(0x0);
+
+        this->worldEntityParent_ = parent;
     }
 
     void CompoundCollisionShape::addChildShape(CollisionShape* shape)
@@ -86,7 +95,14 @@ namespace orxonox
         }
 
         // network synchro
-        shape->setParent(this, this->getObjectID());
+        if (this->worldEntityParent_)
+        {
+            // This compound collision shape belongs to a WE and doesn't get synchronised
+            // So set our parent to be the WE
+            shape->setParent(this, this->worldEntityParent_->getObjectID());
+        }
+        else
+            shape->setParent(this, this->getObjectID());
     }
 
     void CompoundCollisionShape::removeChildShape(CollisionShape* shape)
@@ -175,14 +191,8 @@ namespace orxonox
     {
         if (this->parent_)
             this->parent_->updateChildShape(this);
-        else
-        {
-            // We can do this, because the CompoundCollisionShape of a WorldEntity always belongs to it,
-            // as long as its lifetime.
-            WorldEntity* parent = dynamic_cast<WorldEntity*>(this->getCreator());
-            if (parent)
-                parent->notifyCollisionShapeChanged();
-        }
+        else if (this->worldEntityParent_)
+            this->worldEntityParent_->notifyCollisionShapeChanged();
     }
 
     CollisionShape* CompoundCollisionShape::getChildShape(unsigned int index) const

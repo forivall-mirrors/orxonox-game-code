@@ -73,7 +73,7 @@ namespace orxonox
         this->collisionShape_ = new CompoundCollisionShape(this);
         // Note: CompoundCollisionShape is a Synchronisable, but must not be synchronised.
         //       All objects will get attached on the client anyway, so we don't need synchronisation.
-        this->collisionShape_->suppressSynchronisation();
+        this->collisionShape_->setWorldEntityParent(this);
         this->collisionType_ = None;
         this->collisionTypeSynchronised_ = None;
         this->mass_           = 0;
@@ -458,7 +458,7 @@ namespace orxonox
 
     void WorldEntity::setScale3D(const Vector3& scale)
     {
-        if (this->hasPhysics())
+        if (this->hasPhysics() && scale != Vector3::UNIT_SCALE)
         {
             CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented." << std::endl;
             return;
