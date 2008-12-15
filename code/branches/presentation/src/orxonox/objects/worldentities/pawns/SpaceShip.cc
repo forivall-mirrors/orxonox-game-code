@@ -60,6 +60,8 @@ namespace orxonox
         // SpaceShip is always a physical object per default
         // Be aware of this call: The collision type legality check will not reach derived classes!
         this->setCollisionType(WorldEntity::Dynamic);
+        // Get notification about collisions
+        this->enableCollisionCallback();
 
         this->setConfigValues();
         this->registerVariables();

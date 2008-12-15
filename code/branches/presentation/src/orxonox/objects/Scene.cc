@@ -205,6 +205,11 @@ namespace orxonox
 
             this->physicalWorld_   = new btDiscreteDynamicsWorld(this->dispatcher_, this->broadphase_, this->solver_, this->collisionConfig_);
             this->physicalWorld_->setGravity(omni_cast<btVector3>(this->gravity_));
+
+            // also set the collision callback variable.
+            // Note: This is a global variable which we assign a static function.
+            // TODO: Check whether this (or anything about Bullet) works with multiple physics engine instances.
+            gContactAddedCallback = &Scene::collisionCallback;
         }
         else if (!wantPhysics && hasPhysics())
         {
@@ -335,5 +340,28 @@ namespace orxonox
 
         if (this->hasPhysics())
             this->physicalWorld_->removeRigidBody(object->getPhysicalBody());
+    }
+
+    /*static*/ bool Scene::collisionCallback(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0,
+                                             int index0, const btCollisionObject* colObj1, int partId1, int index1)
+    {
+        // get the WorldEntity pointers
+        WorldEntity* object0 = (WorldEntity*)colObj0->getUserPointer();
+        assert(dynamic_cast<WorldEntity*>(object0));
+        WorldEntity* object1 = (WorldEntity*)colObj1->getUserPointer();
+        assert(dynamic_cast<WorldEntity*>(object1));
+
+        // false means that bullet will assume we didn't modify the contact
+        bool modified = false;
+        if (object0->isCollisionCallbackActive())
+        {
+            modified |= object0->collidesAgainst(object1, cp);
+            if (object1->isCollisionCallbackActive())
+                modified |= object1->collidesAgainst(object0, cp);
+        }
+        else
+            modified |= object1->collidesAgainst(object0, cp);
+
+        return modified;
     }
 }

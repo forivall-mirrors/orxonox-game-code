@@ -239,6 +239,16 @@ namespace orxonox
             void notifyCollisionShapeChanged();
             void notifyChildMassChanged();
 
+            virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+                { return false; } /* With false, Bullet assumes no modification to the collision objects. */
+
+            inline void enableCollisionCallback()
+                { this->bCollisionCallbackActive_ = true; this->collisionCallbackActivityChanged(); }
+            inline void disableCollisionCallback()
+                { this->bCollisionCallbackActive_ = false; this->collisionCallbackActivityChanged(); }
+            inline bool isCollisionCallbackActive()
+                { return this->bCollisionCallbackActive_; }
+
         protected:
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
 
@@ -252,6 +262,7 @@ namespace orxonox
             // network callbacks
             void collisionTypeChanged();
             void physicsActivityChanged();
+            void collisionCallbackActivityChanged();
             inline void massChanged()
                 { this->setMass(this->mass_); }
             inline void restitutionChanged()
@@ -278,6 +289,7 @@ namespace orxonox
             btScalar                     angularDamping_;
             btScalar                     friction_;
             btScalar                     childrenMass_;
+            bool                         bCollisionCallbackActive_;
     };
 
     // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.

@@ -56,6 +56,9 @@ namespace orxonox
         this->setStatic(false);
         this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
 
+        // Get notification about collisions
+        this->enableCollisionCallback();
+
         if (this->owner_)
         {
             this->setOrientation(this->owner_->getOrientation());

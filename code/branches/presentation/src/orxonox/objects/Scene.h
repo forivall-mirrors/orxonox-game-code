@@ -119,6 +119,10 @@ namespace orxonox
             inline void networkcallback_gravity()
                 { this->setGravity(this->gravity_); }
 
+            // collision callback from bullet
+            static bool collisionCallback(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0,
+                                          int index0, const btCollisionObject* colObj1, int partId1, int index1);
+
             // Bullet objects
             btDiscreteDynamicsWorld*             physicalWorld_;
             bt32BitAxisSweep3*                   broadphase_;

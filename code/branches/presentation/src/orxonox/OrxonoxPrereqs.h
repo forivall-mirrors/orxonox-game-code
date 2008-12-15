@@ -224,6 +224,7 @@ class btVector3;
 class btRigidBody;
 class btCollisionObject;
 class btGhostObject;
+class btManifoldPoint;
 
 class btCollisionShape;
 class btSphereShape;

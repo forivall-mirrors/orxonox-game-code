@@ -84,6 +84,7 @@ namespace orxonox
         this->linearDamping_  = 0;
         this->angularDamping_ = 0;
         this->friction_       = 0.5;
+        this->bCollisionCallbackActive_ = false;
 
         this->registerVariables();
     }
@@ -143,17 +144,21 @@ namespace orxonox
 
         registerVariable(this->getScale3D(),    variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
 
-        registerVariable((int&)this->collisionTypeSynchronised_,
-                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
+        // Physics stuff
         registerVariable(this->mass_,           variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
         registerVariable(this->restitution_,    variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::restitutionChanged));
         registerVariable(this->angularFactor_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularFactorChanged));
         registerVariable(this->linearDamping_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::linearDampingChanged));
         registerVariable(this->angularDamping_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularDampingChanged));
         registerVariable(this->friction_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
+        registerVariable(this->bCollisionCallbackActive_,
+                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionCallbackActivityChanged));
+        registerVariable((int&)this->collisionTypeSynchronised_,
+                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
         registerVariable(this->bPhysicsActiveSynchronised_,
                                                 variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
 
+        // Attach to parent if necessary
         registerVariable(this->parentID_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::parentChanged));
     }
 
@@ -191,6 +196,19 @@ namespace orxonox
             this->activatePhysics();
         else
             this->deactivatePhysics();
+    }
+
+    void WorldEntity::collisionCallbackActivityChanged()
+    {
+        if (this->hasPhysics())
+        {
+            if (bCollisionCallbackActive_)
+                this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() |
+                    btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+            else
+                this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() &
+                    !btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+        }
     }
 
     void WorldEntity::attach(WorldEntity* object)
@@ -524,6 +542,7 @@ namespace orxonox
         // update mass and inertia tensor
         recalculateMassProps();
         resetPhysicsProps();
+        collisionCallbackActivityChanged();
         activatePhysics();
     }
 
