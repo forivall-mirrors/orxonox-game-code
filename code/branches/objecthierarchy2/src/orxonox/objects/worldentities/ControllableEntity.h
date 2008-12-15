@@ -45,6 +45,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
             void registerVariables();
+            void setConfigValues();
 
             virtual void changedGametype();
 
@@ -62,9 +63,9 @@ namespace orxonox
             virtual void moveRightLeft(const Vector2& value) {}
             virtual void moveUpDown(const Vector2& value) {}
 
-            virtual void rotateYaw(const Vector2& value) {}
-            virtual void rotatePitch(const Vector2& value) {}
-            virtual void rotateRoll(const Vector2& value) {}
+            virtual void rotateYaw(const Vector2& value);
+            virtual void rotatePitch(const Vector2& value);
+            virtual void rotateRoll(const Vector2& value);
 
             inline void moveFrontBack(float value)
                 { this->moveFrontBack(Vector2(value, 0)); }
@@ -87,6 +88,7 @@ namespace orxonox
             virtual void greet() {}
             virtual void use() {}
             virtual void switchCamera();
+            virtual void mouseLook();
 
             inline const Vector3& getVelocity() const
                 { return this->velocity_; }
@@ -147,6 +149,11 @@ namespace orxonox
             inline const GametypeInfo* getGametypeInfo() const
                 { return this->gtinfo_; }
 
+            inline bool isInMouseLook() const
+                { return this->bMouseLook_; }
+            inline float getMouseLookSpeed() const
+                { return this->mouseLookSpeed_; }
+
         protected:
             virtual void startLocalHumanControl();
             virtual void stopLocalHumanControl();
@@ -178,6 +185,7 @@ namespace orxonox
 
             bool bHasLocalController_;
             bool bHasHumanController_;
+            bool bDestroyWhenPlayerLeft_;
 
             Vector3 server_position_;
             Vector3 client_position_;
@@ -188,11 +196,14 @@ namespace orxonox
 
             PlayerInfo* player_;
             unsigned int playerID_;
+
             std::string hudtemplate_;
             OverlayGroup* hud_;
-            Camera* camera_;
-            bool bDestroyWhenPlayerLeft_;
 
+            Camera* camera_;
+            bool bMouseLook_;
+            float mouseLookSpeed_;
+            Ogre::SceneNode* cameraPositionRootNode_;
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
 

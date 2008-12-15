@@ -133,12 +133,15 @@ namespace orxonox
 
         if (this->hasLocalController())
         {
-            this->yaw(this->yawRotation_ * dt);
-            if (this->bInvertYAxis_)
-                this->pitch(Degree(-this->pitchRotation_ * dt));
-            else
-                this->pitch(Degree( this->pitchRotation_ * dt));
-            this->roll(this->rollRotation_ * dt);
+            if (!this->isInMouseLook())
+            {
+                this->yaw(this->yawRotation_ * dt);
+                if (this->bInvertYAxis_)
+                    this->pitch(Degree(-this->pitchRotation_ * dt));
+                else
+                    this->pitch(Degree( this->pitchRotation_ * dt));
+                this->roll(this->rollRotation_ * dt);
+            }
 
             this->yawRotation_   = this->zeroDegree_;
             this->pitchRotation_ = this->zeroDegree_;
@@ -169,6 +172,8 @@ namespace orxonox
         if (temp < -this->maxRotation_)
             temp = -this->maxRotation_;
         this->yawRotation_ = Degree(temp);
+
+        Pawn::rotateYaw(value);
     }
 
     void SpaceShip::rotatePitch(const Vector2& value)
@@ -179,6 +184,8 @@ namespace orxonox
         if (temp < -this->maxRotation_)
             temp = -this->maxRotation_;
         this->pitchRotation_ = Degree(temp);
+
+        Pawn::rotatePitch(value);
     }
 
     void SpaceShip::rotateRoll(const Vector2& value)
@@ -189,6 +196,8 @@ namespace orxonox
         if (temp < -this->maxRotation_)
             temp = -this->maxRotation_;
         this->rollRotation_ = Degree(temp);
+
+        Pawn::rotateRoll(value);
     }
 
     void SpaceShip::fire()

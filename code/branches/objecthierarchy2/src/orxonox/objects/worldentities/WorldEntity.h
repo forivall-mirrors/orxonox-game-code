@@ -146,6 +146,11 @@ namespace orxonox
             inline WorldEntity* getParent() const
                 { return this->parent_; }
 
+            void attachNode(Ogre::SceneNode* node);
+            void detachNode(Ogre::SceneNode* node);
+            void attachToNode(Ogre::SceneNode* node);
+            void detachFromNode(Ogre::SceneNode* node);
+
         protected:
             Ogre::SceneNode* node_;
 

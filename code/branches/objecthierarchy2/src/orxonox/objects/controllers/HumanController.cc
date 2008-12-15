@@ -49,6 +49,7 @@ namespace orxonox
     SetConsoleCommand(HumanController, greet,         true);
     SetConsoleCommand(HumanController, use,           true);
     SetConsoleCommand(HumanController, switchCamera,  true);
+    SetConsoleCommand(HumanController, mouseLook,     true);
     SetConsoleCommand(HumanController, suicide,       true);
     SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
@@ -139,6 +140,12 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->switchCamera();
+    }
+
+    void HumanController::mouseLook()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->mouseLook();
     }
 
     void HumanController::suicide()

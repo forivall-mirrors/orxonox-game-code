@@ -29,11 +29,15 @@
 #include "OrxonoxStableHeaders.h"
 #include "ControllableEntity.h"
 
+#include <OgreSceneManager.h>
+
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Core.h"
 #include "core/XMLPort.h"
 #include "core/Template.h"
 
+#include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/worldentities/CameraPosition.h"
@@ -58,6 +62,9 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
+        this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
+        this->bMouseLook_ = false;
+        this->mouseLookSpeed_ = 200;
 
         this->gtinfo_ = 0;
         this->gtinfoID_ = OBJECTID_UNKNOWN;
@@ -73,6 +80,7 @@ namespace orxonox
         this->server_orientation_ = Quaternion::IDENTITY;
         this->client_orientation_ = Quaternion::IDENTITY;
 
+        this->setConfigValues();
         this->registerVariables();
     }
 
@@ -93,6 +101,12 @@ namespace orxonox
 
             if (this->camera_)
                 delete this->camera_;
+
+            for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                delete (*it);
+
+            if (this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->cameraPositionRootNode_->getName());
         }
     }
 
@@ -104,6 +118,11 @@ namespace orxonox
         XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemkplate, xmlelement, mode);
 
         XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
+    }
+
+    void ControllableEntity::setConfigValues()
+    {
+        SetConfigValue(mouseLookSpeed_, 3.0f);
     }
 
     void ControllableEntity::changedGametype()
@@ -123,7 +142,10 @@ namespace orxonox
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
     {
-        this->attach(position);
+        if (position->getAllowMouseLook())
+            position->attachToNode(this->cameraPositionRootNode_);
+        else
+            this->attach(position);
         this->cameraPositions_.push_back(position);
     }
 
@@ -164,9 +186,35 @@ namespace orxonox
             }
             else
             {
-                this->attach(this->camera_);
+                this->camera_->attachToNode(this->cameraPositionRootNode_);
             }
         }
+    }
+
+    void ControllableEntity::mouseLook()
+    {
+        this->bMouseLook_ = !this->bMouseLook_;
+
+        if (!this->bMouseLook_)
+            this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
+    }
+
+    void ControllableEntity::rotateYaw(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->yaw(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::rotatePitch(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->pitch(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::rotateRoll(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->roll(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)
@@ -242,7 +290,7 @@ namespace orxonox
             if (this->cameraPositions_.size() > 0)
                 this->cameraPositions_.front()->attachCamera(this->camera_);
             else
-                this->attach(this->camera_);
+                this->camera_->attachToNode(this->cameraPositionRootNode_);
         }
 
         if (!this->hud_)

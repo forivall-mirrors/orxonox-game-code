@@ -68,7 +68,6 @@ namespace orxonox
             bool bGreeting_;
 
             float speed_;
-            float rotationSpeed_;
 
             float yaw_;
             float pitch_;

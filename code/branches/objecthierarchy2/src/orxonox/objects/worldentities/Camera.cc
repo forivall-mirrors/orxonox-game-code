@@ -50,11 +50,14 @@ namespace orxonox
     {
         RegisterObject(Camera);
 
-        if (!this->getScene() || !this->getScene()->getSceneManager())
-            ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
+        if (!this->getScene())
+            ThrowException(AbortLoading, "Can't create Camera, no scene.");
+        if (!this->getScene()->getSceneManager())
+            ThrowException(AbortLoading, "Can't create Camera, no scene-manager given.");
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
-        this->getNode()->attachObject(this->camera_);
+        this->cameraNode_ = this->getNode()->createChildSceneNode();
+        this->cameraNode_->attachObject(this->camera_);
 
         this->bHasFocus_ = false;
         this->bDrag_ = false;
@@ -71,7 +74,15 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->releaseFocus();
+
+            this->cameraNode_->detachAllObjects();
             this->getScene()->getSceneManager()->destroyCamera(this->camera_);
+
+            if (this->bDrag_)
+                this->detachNode(this->cameraNode_);
+
+            if (this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->cameraNode_->getName());
         }
     }
 
@@ -88,15 +99,18 @@ namespace orxonox
     void Camera::tick(float dt)
     {
         SUPER(Camera, tick, dt);
-/*
-        // this stuff here may need some adjustments
-        float coeff = (this->bDrag_) ? min(1.0f, 15.0f * dt) : (1.0f);
 
-        Vector3 offset = this->getNode()->getWorldPosition() - this->cameraNode_->getWorldPosition();
-        this->cameraNode_->translate(coeff * offset);
+        if (this->bDrag_)
+        {
+            // this stuff here may need some adjustments
+            float coeff = min(1.0f, 15.0f * dt);
 
-        this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), false));
-*/
+            Vector3 offset = this->getNode()->getWorldPosition() - this->cameraNode_->getWorldPosition();
+            this->cameraNode_->translate(coeff * offset);
+
+            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), false));
+            //this->cameraNode_->setOrientation(this->getWorldOrientation());
+        }
     }
 
     void Camera::requestFocus()
@@ -122,5 +136,26 @@ namespace orxonox
     {
         this->bHasFocus_ = true;
         CameraManager::getInstance().useCamera(this->camera_);
+    }
+
+    void Camera::setDrag(bool bDrag)
+    {
+        if (bDrag != this->bDrag_)
+        {
+            this->bDrag_ = bDrag;
+
+            if (!bDrag)
+            {
+                this->attachNode(this->cameraNode_);
+                this->cameraNode_->setPosition(Vector3::ZERO);
+                this->cameraNode_->setOrientation(Quaternion::IDENTITY);
+            }
+            else
+            {
+                this->detachNode(this->cameraNode_);
+                this->cameraNode_->setPosition(this->getWorldPosition());
+                this->cameraNode_->setOrientation(this->getWorldOrientation());
+            }
+        }
     }
 }

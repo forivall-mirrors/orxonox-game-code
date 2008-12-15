@@ -30,6 +30,7 @@
 #include "Engine.h"
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
 #include "objects/worldentities/pawns/SpaceShip.h"
@@ -62,6 +63,7 @@ namespace orxonox
 
         this->boostBlur_ = 0;
 
+        this->setConfigValues();
         this->registerVariables();
     }
 
@@ -92,6 +94,11 @@ namespace orxonox
         XMLPortParam(Engine, "accelerationback",      setAccelerationBack,      setAccelerationBack,      xmlelement, mode);
         XMLPortParam(Engine, "accelerationleftright", setAccelerationLeftRight, setAccelerationLeftRight, xmlelement, mode);
         XMLPortParam(Engine, "accelerationupdown",    setAccelerationUpDown,    setAccelerationUpDown,    xmlelement, mode);
+    }
+
+    void Engine::setConfigValues()
+    {
+        SetConfigValue(blurStrength_, 3.0f);
     }
 
     void Engine::registerVariables()
@@ -196,7 +203,7 @@ namespace orxonox
         }
 
         if (this->boostBlur_ && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
-            this->boostBlur_->setParameter("Ogre/Compositor/Radial_Blur", 0, 0, "sampleStrength", 5.0f * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f));
+            this->boostBlur_->setParameter("Ogre/Compositor/Radial_Blur", 0, 0, "sampleStrength", this->blurStrength_ * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f));
     }
 
     void Engine::changedActivity()

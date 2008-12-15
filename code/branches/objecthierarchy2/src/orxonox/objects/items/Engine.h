@@ -45,6 +45,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
+            void setConfigValues();
 
             virtual void tick(float dt);
             virtual void changedActivity();
@@ -126,6 +127,7 @@ namespace orxonox
             float accelerationUpDown_;
 
             Shader* boostBlur_;
+            float blurStrength_;
     };
 }
 

@@ -78,6 +78,8 @@ namespace orxonox
             if (this->parent_)
                 this->detachFromParent();
 
+            this->node_->removeAllChildren();
+
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
         }
@@ -124,6 +126,34 @@ namespace orxonox
         }
     }
 
+    void WorldEntity::attachNode(Ogre::SceneNode* node)
+    {
+        Ogre::Node* parent = node->getParent();
+        if (parent)
+            parent->removeChild(node);
+        this->node_->addChild(node);
+    }
+
+    void WorldEntity::detachNode(Ogre::SceneNode* node)
+    {
+        this->node_->removeChild(node);
+//        this->getScene()->getRootSceneNode()->addChild(node);
+    }
+
+    void WorldEntity::attachToNode(Ogre::SceneNode* node)
+    {
+        Ogre::Node* parent = this->node_->getParent();
+        if (parent)
+            parent->removeChild(this->node_);
+        node->addChild(this->node_);
+    }
+
+    void WorldEntity::detachFromNode(Ogre::SceneNode* node)
+    {
+        node->removeChild(this->node_);
+//        this->getScene()->getRootSceneNode()->addChild(this->node_);
+    }
+
     void WorldEntity::attach(WorldEntity* object)
     {
         if (object == this)
@@ -134,14 +164,9 @@ namespace orxonox
 
         if (object->getParent())
             object->detachFromParent();
-        else
-        {
-            Ogre::Node* parent = object->node_->getParent();
-            if (parent)
-                parent->removeChild(object->node_);
-        }
 
-        this->node_->addChild(object->node_);
+        this->attachNode(object->node_);
+
         this->children_.insert(object);
         object->parent_ = this;
         object->parentID_ = this->getObjectID();
@@ -149,12 +174,10 @@ namespace orxonox
 
     void WorldEntity::detach(WorldEntity* object)
     {
-        this->node_->removeChild(object->node_);
+        this->detachNode(object->node_);
         this->children_.erase(object);
         object->parent_ = 0;
         object->parentID_ = OBJECTID_UNKNOWN;
-
-//        this->getScene()->getRootSceneNode()->addChild(object->node_);
     }
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const

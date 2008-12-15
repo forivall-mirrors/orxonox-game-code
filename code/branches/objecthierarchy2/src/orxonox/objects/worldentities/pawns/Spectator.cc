@@ -50,7 +50,6 @@ namespace orxonox
         RegisterObject(Spectator);
 
         this->speed_ = 200;
-        this->rotationSpeed_ = 3;
 
         this->yaw_ = 0;
         this->pitch_ = 0;
@@ -87,7 +86,6 @@ namespace orxonox
     void Spectator::setConfigValues()
     {
         SetConfigValue(speed_, 200.0f);
-        SetConfigValue(rotationSpeed_, 3.0f);
     }
 
     void Spectator::registerVariables()
@@ -115,9 +113,12 @@ namespace orxonox
             velocity.normalise();
             this->setVelocity(velocity * this->speed_);
 
-            this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
-            this->pitch(Radian(this->pitch_ * this->rotationSpeed_));
-            this->roll(Radian(this->roll_ * this->rotationSpeed_));
+            if (!this->isInMouseLook())
+            {
+                this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()));
+                this->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+                this->roll(Radian(this->roll_ * this->getMouseLookSpeed()));
+            }
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
         }
@@ -160,16 +161,22 @@ namespace orxonox
     void Spectator::rotateYaw(const Vector2& value)
     {
         this->yaw_ = value.y;
+
+        ControllableEntity::rotateYaw(value);
     }
 
     void Spectator::rotatePitch(const Vector2& value)
     {
         this->pitch_ = value.y;
+
+        ControllableEntity::rotatePitch(value);
     }
 
     void Spectator::rotateRoll(const Vector2& value)
     {
         this->roll_ = value.y;
+
+        ControllableEntity::rotateRoll(value);
     }
 
     void Spectator::fire()
