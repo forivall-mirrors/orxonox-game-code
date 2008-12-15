@@ -53,8 +53,13 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            // Detatch all children first
-            this->removeAllChildShapes();
+            // Notify children about removal
+            for (std::map<CollisionShape*, btCollisionShape*>::iterator it = this->childShapes_.begin();
+                it != this->childShapes_.end(); ++it)
+            {
+                it->first->setParent(0, OBJECTID_UNKNOWN);
+            }
+
             delete this->compoundShape_;
         }
     }
