@@ -73,8 +73,9 @@ namespace orxonox
         else
         {
             // create a dummy SceneManager of our own since we don't have Ogre::Root.
-            this->sceneManager_ = new Ogre::DefaultSceneManager("");
-            this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
+            this->sceneManagerDedicated_ = new Ogre::DefaultSceneManager("");
+            this->rootSceneNode_ = this->sceneManagerDedicated_->getRootSceneNode();
+            this->sceneManager_ = 0;
         }
 
         // No physics yet, XMLPort will do that.
@@ -113,7 +114,7 @@ namespace orxonox
             }
             else if (!Core::showsGraphics())
             {
-                delete this->sceneManager_;
+                delete this->sceneManagerDedicated_;
             }
 
             this->setPhysicalWorld(false);

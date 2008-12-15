@@ -50,7 +50,7 @@ namespace orxonox
     {
         RegisterObject(ParticleEmitter);
 
-        if (!this->getScene() || !this->getScene()->getSceneManager())
+        if (Core::showsGraphics() && (!this->getScene() || !this->getScene()->getSceneManager()))
             ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
 
         this->particles_ = 0;

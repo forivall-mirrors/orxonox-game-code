@@ -77,6 +77,7 @@ namespace orxonox
                 { this->setAmbientLight(this->ambientLight_); }
 
             Ogre::SceneManager*      sceneManager_;
+            Ogre::SceneManager*      sceneManagerDedicated_;
             Ogre::SceneNode*         rootSceneNode_;
 
             std::string              skybox_;

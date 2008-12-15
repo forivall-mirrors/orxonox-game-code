@@ -67,16 +67,19 @@ namespace orxonox
 
     void Model::changedMesh()
     {
-        if (this->mesh_.getEntity())
-            this->detachOgreObject(this->mesh_.getEntity());
-
-        this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
-
-        if (this->mesh_.getEntity())
+        if (Core::showsGraphics())
         {
-            this->attachOgreObject(this->mesh_.getEntity());
-            this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
-            this->mesh_.setVisible(this->isVisible());
+            if (this->mesh_.getEntity())
+                this->detachOgreObject(this->mesh_.getEntity());
+
+            this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
+
+            if (this->mesh_.getEntity())
+            {
+                this->attachOgreObject(this->mesh_.getEntity());
+                this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
+                this->mesh_.setVisible(this->isVisible());
+            }
         }
     }
 
