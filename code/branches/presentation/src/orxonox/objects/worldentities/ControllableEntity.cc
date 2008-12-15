@@ -275,25 +275,25 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     void ControllableEntity::processServerPosition()
     {
         if (!this->bControlled_)
-            this->setPosition(this->server_position_);
+            MobileEntity::setPosition(this->server_position_);
     }
 
     void ControllableEntity::processServerLinearVelocity()
     {
         if (!this->bControlled_)
-            this->setVelocity(this->server_linear_velocity_);
+            MobileEntity::setVelocity(this->server_linear_velocity_);
     }
 
     void ControllableEntity::processServerOrientation()
     {
         if (!this->bControlled_)
-            this->setOrientation(this->server_orientation_);
+            MobileEntity::setOrientation(this->server_orientation_);
     }
 
     void ControllableEntity::processServerAngularVelocity()
     {
         if (!this->bControlled_)
-            this->setAngularVelocity(this->server_angular_velocity_);
+            MobileEntity::setAngularVelocity(this->server_angular_velocity_);
     }
 
     void ControllableEntity::processOverwrite()
@@ -313,9 +313,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            this->setPosition(this->client_position_);
-            // The call above increments the overwrite. This is not desired to reduce traffic
-            --this->server_overwrite_;
+            MobileEntity::setPosition(this->client_position_);
+            this->server_position_ = this->getPosition();
         }
     }
 
@@ -323,9 +322,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            this->setVelocity(this->client_linear_velocity_);
-            // The call above increments the overwrite. This is not desired to reduce traffic
-            --this->server_overwrite_;
+            MobileEntity::setVelocity(this->client_linear_velocity_);
+            this->server_linear_velocity_ = this->getVelocity();
         }
     }
 
@@ -333,9 +331,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            this->setOrientation(this->client_orientation_);
-            // The call above increments the overwrite. This is not desired to reduce traffic
-            --this->server_overwrite_;
+            MobileEntity::setOrientation(this->client_orientation_);
+            this->server_orientation_ = this->getOrientation();
         }
     }
 
@@ -343,9 +340,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            this->setAngularVelocity(this->client_angular_velocity_);
-            // The call above increments the overwrite. This is not desired to reduce traffic
-            --this->server_overwrite_;
+            MobileEntity::setAngularVelocity(this->client_angular_velocity_);
+            this->server_angular_velocity_ = this->getAngularVelocity();
         }
     }
 
