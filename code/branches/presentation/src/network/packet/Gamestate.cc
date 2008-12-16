@@ -99,7 +99,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
       // start allocate additional memory
       COUT(3) << "G.St.Man: need additional memory" << std::endl;
       ObjectList<Synchronisable>::iterator temp = it;
-      int addsize=tempsize;
+      uint32_t addsize=tempsize;
       while(++temp)
         addsize+=temp->getSize(id, mode);
       data_ = (uint8_t *)realloc(data_, sizeof(GamestateHeader) + currentsize + addsize);
@@ -398,7 +398,10 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
     oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
     if ( (*it).objSize == 0 )
+    {
+      ++it;
       continue;
+    }
 //     object = Synchronisable::getSynchronisable( (*it).objID );
 //     assert(object->objectID == oldobjectheader->objectID);
     objectsize = oldobjectheader->size;
@@ -417,9 +420,19 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
     destsize += objectsize;
 //     origdata += objectsize;
   }
-  ((GamestateHeader*)gdata)->datasize = destsize;
-  assert(destsize==HEADER->datasize);
+#ifndef NDEBUG
+  uint32_t origsize = destsize;
+  while ( origsize < HEADER->datasize )
+  {
+    oldobjectheader = (synchronisableHeader*)origdata;
+    objectsize = oldobjectheader->size;
+    origdata += objectsize;
+    origsize += objectsize;
+  }
+  assert(origsize==HEADER->datasize);
   assert(destsize!=0);
+#endif
+  ((GamestateHeader*)gdata)->datasize = destsize;
   return gs;
 }
 
