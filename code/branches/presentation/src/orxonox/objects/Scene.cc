@@ -116,6 +116,7 @@ namespace orxonox
         XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
         XMLPortParam(Scene, "shadow", setShadow, getShadow, xmlelement, mode).defaultValues(true);
 
+        XMLPortParam(Scene, "gravity", setGravity, getGravity, xmlelement, mode);
         XMLPortParam(Scene, "negativeWorldRange", setNegativeWorldRange, getNegativeWorldRange, xmlelement, mode);
         XMLPortParam(Scene, "positiveWorldRange", setPositiveWorldRange, getPositiveWorldRange, xmlelement, mode);
         XMLPortParam(Scene, "hasPhysics", setPhysicalWorld, hasPhysics, xmlelement, mode).defaultValues(true);
@@ -190,7 +191,7 @@ namespace orxonox
                 omni_cast<btVector3>(this->negativeWorldRange_), omni_cast<btVector3>(this->positiveWorldRange_));
             this->collisionConfig_ = new btDefaultCollisionConfiguration();
             this->dispatcher_      = new btCollisionDispatcher(this->collisionConfig_);
-            this->solver_          = new btSequentialImpulseConstraintSolver;
+            this->solver_          = new btSequentialImpulseConstraintSolver();
 
             this->physicalWorld_   = new btDiscreteDynamicsWorld(this->dispatcher_, this->broadphase_, this->solver_, this->collisionConfig_);
             this->physicalWorld_->setGravity(omni_cast<btVector3>(this->gravity_));

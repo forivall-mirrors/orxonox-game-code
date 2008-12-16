@@ -63,8 +63,18 @@ namespace orxonox
         SUPER(MobileEntity, XMLPort, xmlelement, mode);
 
         XMLPortParamTemplate(MobileEntity, "velocity",     setVelocity,     getVelocity,     xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(MobileEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
-        XMLPortParam(MobileEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode);
+
+        Vector3 rotationAxis(this->getRotationAxis());
+        Degree rotationRate = this->getRotationRate();
+        XMLPortParamVariable(MobileEntity, "rotationaxis", rotationAxis, xmlelement, mode);
+        XMLPortParamVariable(MobileEntity, "rotationrate", rotationRate, xmlelement, mode);
+        if (mode == XMLPort::LoadObject)
+        {
+            if (rotationAxis == Vector3::ZERO)
+                this->setAngularVelocity(Vector3::ZERO);
+            else
+                this->setAngularVelocity(rotationAxis.normalisedCopy() * rotationRate.valueRadians());
+        }
     }
 
     void MobileEntity::tick(float dt)

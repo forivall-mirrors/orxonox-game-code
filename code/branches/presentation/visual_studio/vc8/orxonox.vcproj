@@ -648,11 +648,19 @@
 					Name="collisionShapes"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\BoxCollisionShape.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.cc"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\ConeCollisionShape.cc"
 						>
 					</File>
 					<File
@@ -1300,11 +1308,19 @@
 					Name="collisionShapes"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\BoxCollisionShape.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\ConeCollisionShape.h"
 						>
 					</File>
 					<File
