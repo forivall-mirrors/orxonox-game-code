@@ -191,7 +191,7 @@ namespace orxonox
                 acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
-        this->ship_->setAcceleration(acceleration);
+        this->ship_->setAcceleration(this->ship_->getOrientation() * acceleration);
 
         this->ship_->setBoost(false);
         this->ship_->setSteeringDirection(Vector3::ZERO);

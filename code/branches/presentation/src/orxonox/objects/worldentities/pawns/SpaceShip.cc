@@ -119,6 +119,7 @@ namespace orxonox
 
         if (this->hasLocalController())
         {
+/*
             this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
             this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
             if (this->localLinearAcceleration_.z() > 0)
@@ -127,7 +128,7 @@ namespace orxonox
                 this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
             this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
             this->localLinearAcceleration_.setValue(0, 0, 0);
-
+*/
             if (!this->isInMouseLook())
             {
                 this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
