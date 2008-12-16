@@ -41,10 +41,9 @@ namespace packet {
 #define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
 #define _PACKETID             0
 #define _CLIENTID             _PACKETID + sizeof(ENUM::Type)
-#define _SHIPID               _CLIENTID + sizeof(uint32_t)
-#define _ENDIANTEST           _SHIPID + sizeof(uint32_t)
+#define _ENDIANTEST           _CLIENTID + sizeof(uint32_t)
   
-  Welcome::Welcome( unsigned int clientID, unsigned int shipID )
+  Welcome::Welcome( uint32_t clientID, uint32_t shipID )
  : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
@@ -52,12 +51,11 @@ namespace packet {
   data_=new uint8_t[ getSize() ];
   assert(data_);
   *(packet::ENUM::Type *)(data_ + _PACKETID ) = packet::ENUM::Welcome;
-  *(uint32_t *)(data_ + _CLIENTID ) = clientID;
-  *(uint32_t *)(data_ + _SHIPID ) = shipID;
+  *(uint32_t *)(data_ + _CLIENTID ) = static_cast<uint32_t>(clientID);
   *(uint32_t *)(data_ + _ENDIANTEST ) = 0xFEDC4321;
 }
 
-Welcome::Welcome( uint8_t* data, unsigned int clientID )
+Welcome::Welcome( uint8_t* data, uint32_t clientID )
   : Packet(data, clientID)
 {
 }
@@ -71,17 +69,15 @@ uint8_t *Welcome::getData(){
 }
 
 unsigned int Welcome::getSize() const{
-  return sizeof(packet::ENUM::Type) + 3*sizeof(uint32_t);
+  return sizeof(packet::ENUM::Type) + 2*sizeof(uint32_t);
 }
 
 bool Welcome::process(){
-  unsigned int shipID, clientID;
-  clientID = *(uint32_t *)&data_[ _CLIENTID ];
-  shipID = *(uint32_t *)&data_[ _SHIPID ];
+  uint32_t shipID, clientID;
+  clientID = *(uint32_t *)(data_ + _CLIENTID );
   assert(*(uint32_t *)(data_ + _ENDIANTEST ) == 0xFEDC4321);
   Host::setClientID(clientID);
-  Host::setShipID(shipID);
-  COUT(3) << "Welcome set clientId: " << clientID << " shipID: " << shipID << std::endl;
+  COUT(3) << "Welcome set clientId: " << clientID << endl;
   Synchronisable::setClient(true);
   delete this;
   return true;
