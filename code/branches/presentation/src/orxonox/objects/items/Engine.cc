@@ -153,7 +153,7 @@ namespace orxonox
         SUPER(Engine, tick, dt);
 
         const Vector3& direction = this->getDirection();
-        Vector3 velocity = this->ship_->getVelocity();
+        Vector3 velocity = this->ship_->getLocalVelocity();
         Vector3 acceleration = Vector3::ZERO;
 
         float factor = 1.0f / this->speedFactor_;

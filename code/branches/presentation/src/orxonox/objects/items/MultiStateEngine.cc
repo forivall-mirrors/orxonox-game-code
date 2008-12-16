@@ -94,7 +94,7 @@ namespace orxonox
                 this->setObjectMode(objectDirection::bidirectional);
 
                 const Vector3& direction = this->getDirection();
-                const Vector3& velocity = this->getShip()->getVelocity();
+                const Vector3& velocity = this->getShip()->getLocalVelocity();
 
                 bool forward = (direction.z < 0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
                 bool boost = (this->getShip()->getBoost() && forward);
@@ -122,7 +122,7 @@ namespace orxonox
                     this->state_ &= ~STATE_BRAKE;
             }
 
-            if (this->getShip()->hasLocalController() || Core::isMaster())
+            if (Core::isMaster())
             {
                 for (std::list<WorldEntity*>::const_iterator it = this->activeEffects_.begin(); it != this->activeEffects_.end(); ++it)
                     (*it)->setMainState(this->state_ & STATE_ACTIVE);

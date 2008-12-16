@@ -53,6 +53,8 @@ namespace orxonox
                 { this->setVelocity(Vector3(x, y, z)); }
             inline const Vector3& getVelocity() const
                 { return this->linearVelocity_; }
+            inline Vector3 getLocalVelocity() const
+                { return (this->getOrientation().Inverse() * this->getVelocity()); }
 
             virtual void setAngularVelocity(const Vector3& velocity);
             inline void setAngularVelocity(float x, float y, float z)
