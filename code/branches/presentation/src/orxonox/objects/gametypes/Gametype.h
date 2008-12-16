@@ -55,6 +55,7 @@ namespace orxonox
     class _OrxonoxExport Gametype : public BaseObject, public Tickable
     {
         friend class PlayerInfo;
+        friend class ClassIdentifier<Gametype>;
 
         public:
             Gametype(BaseObject* creator);
@@ -100,6 +101,15 @@ namespace orxonox
             void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
 
+            inline unsigned int getNumberOfPlayers() const
+                { return this->players_.size(); }
+
+            inline std::string getPlayersName() const
+                { return "StatsBot77"; }
+
+            inline unsigned int getPlayersFrags() const
+                { return 123; }
+
         private:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
@@ -123,6 +133,11 @@ namespace orxonox
             std::map<PlayerInfo*, PlayerState::Enum> players_;
             std::set<SpawnPoint*> spawnpoints_;
             SubclassIdentifier<ControllableEntity> defaultControllableEntity_;
+
+            XMLFile* statsOverlay_;
+
+            // Config Values
+            std::string statsOverlayName_;
     };
 }
 

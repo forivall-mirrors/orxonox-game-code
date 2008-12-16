@@ -200,6 +200,8 @@ namespace orxonox
     class OverlayGroup;
     class OverlayText;
     class GametypeStatus;
+    class CreateLines;
+    class Scoreboard;
 
     //gui
     class GUIManager;

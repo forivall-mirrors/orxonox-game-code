@@ -839,6 +839,18 @@
 					</File>
 				</Filter>
 				<Filter
+					Name="stats"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\Stats.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\StatsTest.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
 					Name="notifications"
 					>
 					<File
@@ -1457,6 +1469,18 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="stats"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\Stats.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\StatsTest.h"
 						>
 					</File>
 				</Filter>

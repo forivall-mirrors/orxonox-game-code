@@ -34,11 +34,14 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Loader.h"
+#include "core/XMLFile.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/infos/Bot.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
 #include "objects/worldentities/Camera.h"
+#include "Settings.h"
 
 #include "network/Host.h"
 
@@ -63,6 +66,15 @@ namespace orxonox
         this->setConfigValues();
 
         this->addBots(this->numberOfBots_);
+
+        this->statsOverlay_ = 0;
+
+        setConfigValues();
+
+        // load the corresponding score board
+        //this->statsOverlay_ = new XMLFile(Settings::getDataPath() + "overlay/" + this->statsOverlayName_);
+        //Loader::open(statsOverlay_);
+        //this->setGametype(this);
     }
 
     void Gametype::setConfigValues()
@@ -71,6 +83,7 @@ namespace orxonox
         SetConfigValue(bAutoStart_, false);
         SetConfigValue(bForceSpawn_, false);
         SetConfigValue(numberOfBots_, 0);
+        SetConfigValue(statsOverlayName_, "stats.oxo");
     }
 
     void Gametype::tick(float dt)
