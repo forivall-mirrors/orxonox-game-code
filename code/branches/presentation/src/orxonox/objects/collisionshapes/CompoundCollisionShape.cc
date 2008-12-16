@@ -164,7 +164,7 @@ namespace orxonox
             if (it->second)
             {
                 bEmpty = false;
-                if (!it->first->hasTransform())
+                if (!it->first->hasTransform() && !bPrimitive)
                     primitive = it->second;
                 else
                     bPrimitive = false;
