@@ -118,6 +118,19 @@ namespace orxonox
     it = objectMap_.find(objectID);
     if (it != objectMap_.end())
       objectMap_.erase(it);
+    
+    //HACK HACK HACK HACK HACK HACK
+    // this hack ensures that childs of this object also get destroyed
+//     ObjectList<Synchronisable>::iterator it2, it3;
+//     // get total size of gamestate
+//     for(it2 = ObjectList<Synchronisable>::begin(); it2; ++it2)
+//     {
+//       if ( it2->getCreatorID() == this->objectID && it2->getCreatorID() != OBJECTID_UNKNOWN )
+//       {
+//         Synchronisable::deleteObject( it2->getObjectID() );
+//       }
+//     }
+    //HACK HACK HACK HACK HACK HACK
   }
 
 
@@ -160,7 +173,7 @@ namespace orxonox
       if (!synchronisable_creator)
       {
         mem += header->size; //.TODO: this suckz.... remove size from header
-        assert(0);
+//         assert(0); // TODO: uncomment this if we have a clean objecthierarchy (with destruction of children of objects) ^^
         return 0;
       }
       else
