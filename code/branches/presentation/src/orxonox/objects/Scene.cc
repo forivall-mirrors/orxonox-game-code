@@ -33,7 +33,6 @@
 #include <OgreRoot.h>
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreSceneNode.h>
-#include <OgreLight.h>
 
 #include "BulletCollision/BroadphaseCollision/btAxisSweep3.h"
 #include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
@@ -55,7 +54,7 @@ namespace orxonox
         RegisterObject(Scene);
 
         this->setScene(this);
-        this->bShadows_ = false;
+        this->bShadows_ = true;
 
         if (Core::showsGraphics())
         {
@@ -88,18 +87,6 @@ namespace orxonox
         this->dispatcher_      = 0;
         this->collisionConfig_ = 0;
         this->broadphase_      = 0;
-
-        // test test test
-        if (Core::showsGraphics() && this->sceneManager_)
-        {
-            Ogre::Light* light;
-            light = this->sceneManager_->createLight("Light-1");
-            light->setType(Ogre::Light::LT_DIRECTIONAL);
-            light->setDiffuseColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setSpecularColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setDirection(1, -0.3, 0.3);
-        }
-        // test test test
 
         this->registerVariables();
     }
@@ -144,6 +131,7 @@ namespace orxonox
         registerVariable(this->positiveWorldRange_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_positiveWorldRange));
         registerVariable(this->gravity_,            variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_gravity));
         registerVariable(this->bHasPhysics_,        variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
+        registerVariable(this->bShadows_,           variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyShadows));
     }
 
     void Scene::setNegativeWorldRange(const Vector3& range)
@@ -155,7 +143,7 @@ namespace orxonox
         }
         if (this->hasPhysics())
         {
-            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. " 
+            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. "
                      << "This causes a complete physical reload which might take some time." << std::endl;
             this->setPhysicalWorld(false);
             this->negativeWorldRange_ = range;
@@ -174,7 +162,7 @@ namespace orxonox
         }
         if (this->hasPhysics())
         {
-            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. " 
+            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. "
                      << "This causes a complete physical reload which might take some time." << std::endl;
             this->setPhysicalWorld(false);
             this->positiveWorldRange_ = range;

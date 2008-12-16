@@ -30,7 +30,6 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "Core.h"
 #include "Clock.h"
 #include "CommandLine.h"
 
@@ -136,9 +135,6 @@ namespace orxonox
 #endif
             // start global orxonox time
             Clock clock;
-
-            // create the Core settings to configure the output level
-            Core::getInstance();
 
             this->activate();
 

@@ -33,9 +33,12 @@
 #include <ctime>
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "objects/infos/PlayerInfo.h"
+#include "objects/infos/Bot.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
+#include "objects/worldentities/Camera.h"
 
 #include "network/Host.h"
 
@@ -43,28 +46,41 @@ namespace orxonox
 {
     CreateUnloadableFactory(Gametype);
 
-    Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
+    Gametype::Gametype(BaseObject* creator) : BaseObject(creator), gtinfo_(creator)
     {
         RegisterObject(Gametype);
 
+        this->setGametype(this);
+
         this->defaultControllableEntity_ = Class(Spectator);
 
-        this->bStarted_ = false;
-        this->bEnded_ = false;
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
+        this->numberOfBots_ = 0;
 
         this->initialStartCountdown_ = 3;
-        this->startCountdown_ = 0;
-        this->bStartCountdownRunning_ = false;
+
+        this->setConfigValues();
+
+        this->addBots(this->numberOfBots_);
+    }
+
+    void Gametype::setConfigValues()
+    {
+        SetConfigValue(initialStartCountdown_, 3.0f);
+        SetConfigValue(bAutoStart_, false);
+        SetConfigValue(bForceSpawn_, false);
+        SetConfigValue(numberOfBots_, 0);
     }
 
     void Gametype::tick(float dt)
     {
-        if (this->bStartCountdownRunning_ && !this->bStarted_)
-            this->startCountdown_ -= dt;
+        SUPER(Gametype, tick, dt);
 
-        if (!this->bStarted_)
+        if (this->gtinfo_.bStartCountdownRunning_ && !this->gtinfo_.bStarted_)
+            this->gtinfo_.startCountdown_ -= dt;
+
+        if (!this->gtinfo_.bStarted_)
             this->checkStart();
         else
             this->spawnDeadPlayersIfRequested();
@@ -75,7 +91,7 @@ namespace orxonox
     void Gametype::start()
     {
         COUT(0) << "game started" << std::endl;
-        this->bStarted_ = true;
+        this->gtinfo_.bStarted_ = true;
 
         this->spawnPlayersIfRequested();
     }
@@ -83,7 +99,7 @@ namespace orxonox
     void Gametype::end()
     {
         COUT(0) << "game ended" << std::endl;
-        this->bEnded_ = true;
+        this->gtinfo_.bEnded_ = true;
     }
 
     void Gametype::playerEntered(PlayerInfo* player)
@@ -139,6 +155,29 @@ namespace orxonox
 
     void Gametype::pawnKilled(Pawn* victim, Pawn* killer)
     {
+        if (victim && victim->getPlayer())
+        {
+            std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.find(victim->getPlayer());
+            if (it != this->players_.end())
+            {
+                it->second = PlayerState::Dead;
+
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
+                if (victim->getCamera())
+                {
+                    entity->setPosition(victim->getCamera()->getWorldPosition());
+                    entity->setOrientation(victim->getCamera()->getWorldOrientation());
+                }
+                else
+                {
+                    entity->setPosition(victim->getWorldPosition());
+                    entity->setOrientation(victim->getWorldOrientation());
+                }
+                it->first->startControl(entity);
+            }
+            else
+                COUT(2) << "Warning: Killed Pawn was not in the playerlist" << std::endl;
+        }
     }
 
     void Gametype::playerScored(PlayerInfo* player)
@@ -149,9 +188,6 @@ namespace orxonox
     {
         if (this->spawnpoints_.size() > 0)
         {
-            srand(time(0));
-            rnd();
-
             unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
@@ -169,21 +205,26 @@ namespace orxonox
     {
         for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
-            if (!it->first->getControllableEntity() && (!it->first->isReadyToSpawn() || !this->bStarted_))
+            if (!it->first->getControllableEntity())
             {
-                SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
-                if (spawn)
+                it->second = PlayerState::Dead;
+
+                if (!it->first->isReadyToSpawn() || !this->gtinfo_.bStarted_)
                 {
-                    // force spawn at spawnpoint with default pawn
-                    ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
-                    spawn->spawn(entity);
-                    it->first->startControl(entity);
-                    it->second = PlayerState::Dead;
-                }
-                else
-                {
-                    COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
-                    abort();
+                    SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
+                    if (spawn)
+                    {
+                        // force spawn at spawnpoint with default pawn
+                        ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
+                        spawn->spawn(entity);
+                        it->first->startControl(entity);
+                        it->second = PlayerState::Dead;
+                    }
+                    else
+                    {
+                        COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+                        abort();
+                    }
                 }
             }
         }
@@ -191,14 +232,14 @@ namespace orxonox
 
     void Gametype::checkStart()
     {
-        if (!this->bStarted_)
+        if (!this->gtinfo_.bStarted_)
         {
-            if (this->bStartCountdownRunning_)
+            if (this->gtinfo_.bStartCountdownRunning_)
             {
-                if (this->startCountdown_ <= 0)
+                if (this->gtinfo_.startCountdown_ <= 0)
                 {
-                    this->bStartCountdownRunning_ = false;
-                    this->startCountdown_ = 0;
+                    this->gtinfo_.bStartCountdownRunning_ = false;
+                    this->gtinfo_.startCountdown_ = 0;
                     this->start();
                 }
             }
@@ -211,15 +252,18 @@ namespace orxonox
                 else
                 {
                     bool allplayersready = true;
+                    bool hashumanplayers = false;
                     for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
                     {
                         if (!it->first->isReadyToSpawn())
                             allplayersready = false;
+                        if (it->first->isHumanPlayer())
+                            hashumanplayers = true;
                     }
-                    if (allplayersready)
+                    if (allplayersready && hashumanplayers)
                     {
-                        this->startCountdown_ = this->initialStartCountdown_;
-                        this->bStartCountdownRunning_ = true;
+                        this->gtinfo_.startCountdown_ = this->initialStartCountdown_;
+                        this->gtinfo_.bStartCountdownRunning_ = true;
                     }
                 }
             }
@@ -253,6 +297,25 @@ namespace orxonox
         {
             COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
             abort();
+        }
+    }
+
+    void Gametype::addBots(unsigned int amount)
+    {
+        for (unsigned int i = 0; i < amount; ++i)
+            new Bot(this);
+    }
+
+    void Gametype::killBots(unsigned int amount)
+    {
+        unsigned int i = 0;
+        for (ObjectList<Bot>::iterator it = ObjectList<Bot>::begin(); (it != ObjectList<Bot>::end()) && ((amount == 0) || (i < amount)); )
+        {
+            if (it->getGametype() == this)
+            {
+                delete (*(it++));
+                ++i;
+            }
         }
     }
 }

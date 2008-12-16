@@ -45,6 +45,7 @@ namespace orxonox
         this->bHumanPlayer_ = false;
         this->bLocalPlayer_ = false;
         this->bReadyToSpawn_ = false;
+        this->bSetUnreadyAfterSpawn_ = true;
         this->controller_ = 0;
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = CLIENTID_UNKNOWN;
@@ -63,6 +64,9 @@ namespace orxonox
                 delete this->controller_;
                 this->controller_ = 0;
             }
+
+            if (this->getGametype())
+                this->getGametype()->playerLeft(this);
         }
     }
 
@@ -75,6 +79,8 @@ namespace orxonox
 
     void PlayerInfo::changedName()
     {
+        SUPER(PlayerInfo, changedName);
+
         if (this->isInitialized() && this->getGametype())
             this->getGametype()->playerChangedName(this);
     }
@@ -108,12 +114,16 @@ namespace orxonox
         this->controller_->setPlayer(this);
         if (this->controllableEntity_)
             this->controller_->setControllableEntity(this->controllableEntity_);
+        this->changedController();
     }
 
-    void PlayerInfo::startControl(ControllableEntity* entity)
+    void PlayerInfo::startControl(ControllableEntity* entity, bool callback)
     {
+        if (entity == this->controllableEntity_)
+            return;
+
         if (this->controllableEntity_)
-            this->stopControl(this->controllableEntity_);
+            this->stopControl(this->controllableEntity_, callback);
 
         this->controllableEntity_ = entity;
 
@@ -121,7 +131,7 @@ namespace orxonox
         {
             this->controllableEntityID_ = entity->getObjectID();
             entity->setPlayer(this);
-            this->bReadyToSpawn_ = false;
+            this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
         }
         else
         {

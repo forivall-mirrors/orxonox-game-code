@@ -57,10 +57,32 @@ namespace orxonox
             virtual void rotateRoll(const Vector2& value);
 
             virtual void fire();
+            virtual void boost();
+
+            void setEngine(Engine* engine);
+            inline Engine* getEngine() const
+                { return this->engine_; }
+
+            inline void setSteeringDirection(const Vector3& direction)
+                { this->steering_ = direction; }
+            inline const Vector3& getSteeringDirection() const
+                { return this->steering_; }
+
+            inline void setBoost(bool bBoost)
+                { this->bBoost_ = bBoost; }
+            inline bool getBoost() const
+                { return this->bBoost_; }
+
+            inline void setEngineTemplate(const std::string& temp)
+                { this->enginetemplate_ = temp; this->loadEngineTemplate(); }
+            inline const std::string& getEngineTemplate() const
+                { return this->enginetemplate_; }
 
         protected:
             bool bInvertYAxis_;
 
+            bool bBoost_;
+            Vector3 steering_;
             float primaryThrust_;
             float auxilaryThrust_;
             float rotationThrust_;
@@ -70,6 +92,12 @@ namespace orxonox
 
         private:
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
+
+        private:
+            void loadEngineTemplate();
+
+            std::string enginetemplate_;
+            Engine* engine_;
     };
 }
 

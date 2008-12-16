@@ -459,7 +459,7 @@ namespace orxonox
               *output = "true";
             else
               *output = "false";
-            return false;
+            return true;
         }
     };
 

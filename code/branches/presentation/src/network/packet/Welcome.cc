@@ -42,7 +42,7 @@ namespace packet {
 #define _PACKETID             0
 #define _CLIENTID             _PACKETID + sizeof(ENUM::Type)
 #define _ENDIANTEST           _CLIENTID + sizeof(uint32_t)
-  
+
   Welcome::Welcome( uint32_t clientID, uint32_t shipID )
  : Packet()
 {
@@ -73,7 +73,7 @@ unsigned int Welcome::getSize() const{
 }
 
 bool Welcome::process(){
-  uint32_t shipID, clientID;
+  uint32_t clientID;
   clientID = *(uint32_t *)(data_ + _CLIENTID );
   assert(*(uint32_t *)(data_ + _ENDIANTEST ) == 0xFEDC4321);
   Host::setClientID(clientID);

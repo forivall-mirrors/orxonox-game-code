@@ -257,6 +257,8 @@ namespace orxonox
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
 
+            static void destroyAllIdentifiers();
+
         protected:
             Identifier();
             Identifier(const Identifier& identifier); // don't copy
@@ -299,9 +301,9 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            void initialize(std::set<const Identifier*>* parents);
+            static std::map<std::string, Identifier*>& getTypeIDIdentifierMap();
 
-            static void destroyAllIdentifiers();
+            void initialize(std::set<const Identifier*>* parents);
 
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
             std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to

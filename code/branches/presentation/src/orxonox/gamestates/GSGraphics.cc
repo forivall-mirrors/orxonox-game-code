@@ -30,6 +30,7 @@
 #include "GSGraphics.h"
 
 #include <fstream>
+#include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -163,12 +164,15 @@ namespace orxonox
         // add console commands
         FunctorMember<GSGraphics>* functor1 = createFunctor(&GSGraphics::printScreen);
         functor1->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "printScreen"));
+        ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
+        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
     void GSGraphics::leave()
     {
         using namespace Ogre;
+
+        delete this->ccPrintScreen_;
 
         // remove our WindowEventListener first to avoid bad calls after the window has been destroyed
         Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
@@ -183,6 +187,9 @@ namespace orxonox
 
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
+
+        // unload all compositors
+        Ogre::CompositorManager::getSingleton().removeAll();
 
         // destroy render window
         RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
@@ -429,6 +436,9 @@ namespace orxonox
 
         // create a full screen default viewport
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
+
+        if (this->graphicsEngine_)
+            this->graphicsEngine_->setViewport(this->viewport_);
     }
 
     void GSGraphics::initialiseResources()

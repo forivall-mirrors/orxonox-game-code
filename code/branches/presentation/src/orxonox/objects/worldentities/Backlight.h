@@ -30,46 +30,72 @@
 #define _Backlight_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "StaticEntity.h"
-#include "tools/BillboardSet.h"
+#include "FadingBillboard.h"
+#include "gamestates/GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Backlight : public StaticEntity
+    class _OrxonoxExport Backlight : public FadingBillboard, public TimeFactorListener
     {
         public:
-            Backlight(float maxspeed = 1.0, float brakingtime = 1.0, float scale = 1.0);
+            Backlight(BaseObject* creator);
             virtual ~Backlight();
 
-            void setConfigValues();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void registerVariables();
+
             virtual void tick(float dt);
             virtual void changedVisibility();
-            virtual bool create();
 
-            void setColour(const ColourValue& colour);
-            void setTimeFactor(float factor);
+            inline void setWidth(float width)
+                { this->width_ = width; this->update_width(); }
+            inline float getWidth() const
+                { return this->width_; }
+
+            inline void setLifetime(float lifetime)
+                { this->lifetime_ = lifetime; this->update_lifetime(); }
+            inline float getLifetime() const
+                { return this->lifetime_; }
+
+            inline void setLength(float length)
+                { this->length_ = length; this->update_length(); }
+            inline float getLength() const
+                { return this->length_; }
+
+            inline void setMaxElements(size_t maxelements)
+                { this->maxelements_ = maxelements; this->update_maxelements(); }
+            inline size_t getMaxElements() const
+                { return this->maxelements_; }
+
+            inline void setTrailMaterial(const std::string& material)
+                { this->trailmaterial_ = material; this->update_trailmaterial(); }
+            inline const std::string& getTrailMaterial() const
+                { return this->trailmaterial_; }
+
+            virtual void changedScale();
+
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old);
 
         private:
-            void configure(float maxspeed, float brakingtime, float scale = 1);
-            void updateColourChange();
+            virtual void startturnonoff();
+            virtual void stopturnonoff();
+            virtual void poststopturnonoff();
+            virtual void changedColour();
+            void update_width();
+            void update_lifetime();
+            void update_length();
+            void update_maxelements();
+            void update_trailmaterial();
 
-            static float timeFactor_s;
-            BillboardSet billboard_;
-            Ogre::SceneNode* ribbonTrailNode_;
             Ogre::RibbonTrail* ribbonTrail_;
-
-            float maxLifeTime_;
-            float trailSegmentLength_;
+            Ogre::SceneNode* ribbonTrailNode_;
             float width_;
-
-            float brakefactor_;
-
-            float maxTraillength_;
-            float traillength_;
-
-            size_t maxTrailsegments_;
+            float length_;
+            float lifetime_;
+            size_t maxelements_;
+            std::string trailmaterial_;
+            char tickcount_;
     };
 }
 

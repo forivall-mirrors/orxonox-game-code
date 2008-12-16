@@ -46,26 +46,29 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        void setCaption(const std::string& caption) { this->text_->setCaption(caption); }
-        std::string getCaption() const              { return this->text_->getCaption(); }
+        inline void setCaption(const std::string& caption) { this->text_->setCaption(caption); }
+        inline std::string getCaption() const              { return this->text_->getCaption(); }
 
         void setFont(const std::string& font);
-        const std::string& getFont() const { return this->text_->getFontName(); }
+        inline const std::string& getFont() const { return this->text_->getFontName(); }
 
-        void setColour(const ColourValue& colour) { this->text_->setColour(colour); }
-        const ColourValue& getColour() const      { return this->text_->getColour(); }
+        inline void setSpaceWidth(float width) { this->text_->setSpaceWidth(width); }
+        inline float getSpaceWidth() const     { return this->text_->getSpaceWidth(); }
 
-        void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment) { this->text_->setAlignment(alignment); }
-        Ogre::TextAreaOverlayElement::Alignment getAlignment() const         { return this->text_->getAlignment(); }
+        inline void setColour(const ColourValue& colour) { this->text_->setColour(colour); }
+        inline const ColourValue& getColour() const      { return this->text_->getColour(); }
 
-    protected:
-        virtual void sizeChanged();
+        inline void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment) { this->text_->setAlignment(alignment); }
+        inline Ogre::TextAreaOverlayElement::Alignment getAlignment() const         { return this->text_->getAlignment(); }
 
         void setAlignmentString(const std::string& alignment);
         std::string getAlignmentString() const;
 
-        void setTextSize(float size) { this->setSize(Vector2(size, size)); }
-        float getTextSize() const    { return this->getSize().y; }
+        inline void setTextSize(float size) { this->setSize(Vector2(size, size)); }
+        inline float getTextSize() const    { return this->getSize().y; }
+
+    protected:
+        virtual void sizeChanged();
 
         Ogre::TextAreaOverlayElement* text_;
     };

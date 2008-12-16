@@ -29,14 +29,19 @@
 #include "OrxonoxStableHeaders.h"
 #include "ControllableEntity.h"
 
+#include <OgreSceneManager.h>
+
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Core.h"
 #include "core/XMLPort.h"
 #include "core/Template.h"
 
+#include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/worldentities/CameraPosition.h"
+#include "objects/gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox
@@ -47,7 +52,9 @@ namespace orxonox
     {
         RegisterObject(ControllableEntity);
 
-        this->bControlled_ = false;
+        this->bHasLocalController_ = false;
+        this->bHasHumanController_ = false;
+
         this->server_overwrite_ = 0;
         this->client_overwrite_ = 0;
         this->player_ = 0;
@@ -55,6 +62,13 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
+        this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
+        this->bMouseLook_ = false;
+        this->mouseLookSpeed_ = 200;
+
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+        this->changedGametype();
 
         this->server_position_         = Vector3::ZERO;
         this->client_position_         = Vector3::ZERO;
@@ -66,6 +80,7 @@ namespace orxonox
         this->client_angular_velocity_ = Vector3::ZERO;
 
 
+        this->setConfigValues();
         this->setPriority( priority::very_high );
         this->registerVariables();
     }
@@ -74,8 +89,13 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (this->bControlled_)
-                this->stopLocalControl();
+            this->bDestroyWhenPlayerLeft_ = false;
+
+            if (this->bHasLocalController_ && this->bHasHumanController_)
+                this->stopLocalHumanControl();
+
+            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
+                this->getPlayer()->stopControl(this, false);
 
             if (this->hud_)
                 delete this->hud_;
@@ -83,8 +103,11 @@ namespace orxonox
             if (this->camera_)
                 delete this->camera_;
 
-            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
-                this->getPlayer()->stopControl(this, false);
+            for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                delete (*it);
+
+            if (this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->cameraPositionRootNode_->getName());
         }
     }
 
@@ -98,9 +121,32 @@ namespace orxonox
         XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
     }
 
+    void ControllableEntity::setConfigValues()
+    {
+        SetConfigValue(mouseLookSpeed_, 3.0f);
+    }
+
+    void ControllableEntity::changedGametype()
+    {
+        //SUPER(ControllableEntity, changedGametype);
+        WorldEntity::changedGametype();
+
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+
+        if (this->getGametype() && this->getGametype()->getGametypeInfo())
+        {
+            this->gtinfo_ = this->getGametype()->getGametypeInfo();
+            this->gtinfoID_ = this->gtinfo_->getObjectID();
+        }
+    }
+
     void ControllableEntity::addCameraPosition(CameraPosition* position)
     {
-        this->attach(position);
+        if (position->getAllowMouseLook())
+            position->attachToNode(this->cameraPositionRootNode_);
+        else
+            this->attach(position);
         this->cameraPositions_.push_back(position);
     }
 
@@ -141,9 +187,35 @@ namespace orxonox
             }
             else
             {
-                this->attach(this->camera_);
+                this->camera_->attachToNode(this->cameraPositionRootNode_);
             }
         }
+    }
+
+    void ControllableEntity::mouseLook()
+    {
+        this->bMouseLook_ = !this->bMouseLook_;
+
+        if (!this->bMouseLook_)
+            this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
+    }
+
+    void ControllableEntity::rotateYaw(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->yaw(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::rotatePitch(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->pitch(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::rotateRoll(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->roll(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)
@@ -156,15 +228,16 @@ namespace orxonox
 
         this->player_ = player;
         this->playerID_ = player->getObjectID();
-        this->bControlled_ = (player->isLocalPlayer() && player->isHumanPlayer());
-        if (this->bControlled_)
+        this->bHasLocalController_ = player->isLocalPlayer();
+        this->bHasHumanController_ = player->isHumanPlayer();
+
+        if (this->bHasLocalController_ && this->bHasHumanController_)
         {
-            this->startLocalControl();
+            this->startLocalHumanControl();
 
             if (!Core::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
-COUT(0) << "CE: bidirectional synchronization" << std::endl;
                 this->setObjectMode(objectDirection::bidirectional);
             }
         }
@@ -172,12 +245,13 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::removePlayer()
     {
-        if (this->bControlled_)
-            this->stopLocalControl();
+        if (this->bHasLocalController_ && this->bHasHumanController_)
+            this->stopLocalHumanControl();
 
         this->player_ = 0;
         this->playerID_ = OBJECTID_UNKNOWN;
-        this->bControlled_ = false;
+        this->bHasLocalController_ = false;
+        this->bHasHumanController_ = false;
         this->setObjectMode(objectDirection::toclient);
 
         if (this->bDestroyWhenPlayerLeft_)
@@ -195,34 +269,56 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
     }
 
-    void ControllableEntity::startLocalControl()
+    void ControllableEntity::networkcallback_changedgtinfoID()
     {
-//        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
-        this->camera_ = new Camera(this);
-        this->camera_->requestFocus();
-        if (this->cameraPositionTemplate_ != "")
-            this->addTemplate(this->cameraPositionTemplate_);
-        if (this->cameraPositions_.size() > 0)
-            this->cameraPositions_.front()->attachCamera(this->camera_);
-        else
-            this->attach(this->camera_);
-
-        if (this->hudtemplate_ != "")
+        if (this->gtinfoID_ != OBJECTID_UNKNOWN)
         {
-            this->hud_ = new OverlayGroup(this);
-            this->hud_->addTemplate(this->hudtemplate_);
+            this->gtinfo_ = dynamic_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
+
+            if (!this->gtinfo_)
+                this->gtinfoID_ = OBJECTID_UNKNOWN;
         }
     }
 
-    void ControllableEntity::stopLocalControl()
+    void ControllableEntity::startLocalHumanControl()
     {
-//        std::cout << "###### stop local control" << std::endl;
-        this->camera_->detachFromParent();
-        delete this->camera_;
-        this->camera_ = 0;
+        if (!this->camera_)
+        {
+            this->camera_ = new Camera(this);
+            this->camera_->requestFocus();
+            if (this->cameraPositionTemplate_ != "")
+                this->addTemplate(this->cameraPositionTemplate_);
+            if (this->cameraPositions_.size() > 0)
+                this->cameraPositions_.front()->attachCamera(this->camera_);
+            else
+                this->camera_->attachToNode(this->cameraPositionRootNode_);
+        }
 
-        delete this->hud_;
-        this->hud_ = 0;
+        if (!this->hud_)
+        {
+            if (this->hudtemplate_ != "")
+            {
+                this->hud_ = new OverlayGroup(this);
+                this->hud_->addTemplate(this->hudtemplate_);
+                this->hud_->setOwner(this);
+            }
+        }
+    }
+
+    void ControllableEntity::stopLocalHumanControl()
+    {
+        if (this->camera_)
+        {
+            this->camera_->detachFromParent();
+            delete this->camera_;
+            this->camera_ = 0;
+        }
+
+        if (this->hud_)
+        {
+            delete this->hud_;
+            this->hud_ = 0;
+        }
     }
 
     void ControllableEntity::tick(float dt)
@@ -241,7 +337,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
                     this->server_linear_velocity_ = this->getVelocity();
                     this->server_angular_velocity_ = this->getAngularVelocity();
                 }
-                else if (this->bControlled_)
+                else if (this->bHasLocalController_)
                 {
                     this->client_position_ = this->getPosition();
                     this->client_orientation_ = this->getOrientation();
@@ -254,7 +350,8 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::registerVariables()
     {
-        registerVariable(this->cameraPositionTemplate_, variableDirection::toclient);
+        registerVariable(this->cameraPositionTemplate_,  variableDirection::toclient);
+        registerVariable(this->hudtemplate_,             variableDirection::toclient);
 
         registerVariable(this->server_position_,         variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
         registerVariable(this->server_linear_velocity_,  variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity));
@@ -270,35 +367,36 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         registerVariable(this->client_angular_velocity_, variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
 
         registerVariable(this->playerID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
+        registerVariable(this->gtinfoID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedgtinfoID));
     }
 
     void ControllableEntity::processServerPosition()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             MobileEntity::setPosition(this->server_position_);
     }
 
     void ControllableEntity::processServerLinearVelocity()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             MobileEntity::setVelocity(this->server_linear_velocity_);
     }
 
     void ControllableEntity::processServerOrientation()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             MobileEntity::setOrientation(this->server_orientation_);
     }
 
     void ControllableEntity::processServerAngularVelocity()
     {
-        if (!this->bControlled_)
+        if (!this->bHasLocalController_)
             MobileEntity::setAngularVelocity(this->server_angular_velocity_);
     }
 
     void ControllableEntity::processOverwrite()
     {
-        if (this->bControlled_)
+        if (this->bHasLocalController_)
         {
             this->setPosition(this->server_position_);
             this->setOrientation(this->server_orientation_);
@@ -353,7 +451,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_position_ = this->getPosition();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             MobileEntity::setPosition(position);
             this->client_position_ = this->getPosition();
@@ -368,7 +466,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_orientation_ = this->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             MobileEntity::setOrientation(orientation);
             this->client_orientation_ = this->getOrientation();
@@ -383,7 +481,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_linear_velocity_ = this->getVelocity();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             MobileEntity::setVelocity(velocity);
             this->client_linear_velocity_ = this->getVelocity();
@@ -398,7 +496,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_angular_velocity_ = this->getAngularVelocity();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             MobileEntity::setAngularVelocity(velocity);
             this->client_angular_velocity_ = this->getAngularVelocity();
@@ -415,7 +513,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             this->server_linear_velocity_ = this->getVelocity();
             this->server_angular_velocity_ = this->getAngularVelocity();
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
             this->client_position_ = this->getPosition();
             this->client_orientation_ = this->getOrientation();

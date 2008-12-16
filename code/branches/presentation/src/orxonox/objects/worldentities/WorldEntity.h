@@ -74,6 +74,9 @@ namespace orxonox
             inline void translate(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Parent)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
+            virtual inline const Vector3& getVelocity() const
+                { return Vector3::ZERO; }
+
             virtual void setOrientation(const Quaternion& orientation) = 0;
             inline void setOrientation(float w, float x, float y, float z)
                 { this->setOrientation(Quaternion(w, x, y, z)); }
@@ -104,11 +107,13 @@ namespace orxonox
             inline void setScale3D(float x, float y, float z)
                 { this->setScale3D(Vector3(x, y, z)); }
             const Vector3& getScale3D(void) const;
+            const Vector3& getWorldScale3D() const;
 
-            void setScale(float scale)
+            inline void setScale(float scale)
                 { this->setScale3D(scale, scale, scale); }
             inline float getScale() const
                 { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
+            float getWorldScale() const;
 
             inline void scale3D(const Vector3& scale)
                 { this->setScale3D(this->getScale3D() * scale); }
@@ -116,6 +121,8 @@ namespace orxonox
                 { this->scale3D(Vector3(x, y, z)); }
             inline void scale(float scale)
                 { this->scale3D(scale, scale, scale); }
+
+            virtual void changedScale() {}
 
             void attach(WorldEntity* object);
             void detach(WorldEntity* object);
@@ -133,6 +140,11 @@ namespace orxonox
                 { if (this->parent_) { this->parent_->detach(this); } }
             inline WorldEntity* getParent() const
                 { return this->parent_; }
+
+            void attachNode(Ogre::SceneNode* node);
+            void detachNode(Ogre::SceneNode* node);
+            void attachToNode(Ogre::SceneNode* node);
+            void detachFromNode(Ogre::SceneNode* node);
 
             void notifyChildPropsChanged();
 
@@ -301,6 +313,8 @@ namespace orxonox
     inline const Vector3& WorldEntity::getScale3D(void) const
         { return this->node_->getScale(); }
 #endif
+
+    SUPER_FUNCTION(5, WorldEntity, changedScale, false);
 }
 
 #endif /* _WorldEntity_H__ */

@@ -56,11 +56,14 @@ namespace orxonox
 
             static CameraManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
+            void useCamera(Ogre::Camera* camera);
+
         private:
             CameraManager(const CameraManager&);
 
             std::list<Camera*> cameraList_;
             Ogre::Viewport* viewport_;
+            Ogre::Camera* fallbackCamera_;
 
             static CameraManager* singletonRef_s;
     };

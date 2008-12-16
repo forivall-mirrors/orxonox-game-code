@@ -35,7 +35,9 @@
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Template.h"
 #include "core/XMLPort.h"
+#include "objects/items/Engine.h"
 
 namespace orxonox
 {
@@ -52,6 +54,10 @@ namespace orxonox
 
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
+        this->bBoost_ = false;
+        this->steering_ = Vector3::ZERO;
+        this->engine_ = 0;
+
 
         this->bInvertYAxis_ = false;
 
@@ -69,12 +75,15 @@ namespace orxonox
 
     SpaceShip::~SpaceShip()
     {
+        if (this->isInitialized() && this->engine_)
+            delete this->engine_;
     }
 
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(SpaceShip, XMLPort, xmlelement, mode);
 
+        XMLPortParam(SpaceShip, "engine",            setEngineTemplate,    getEngineTemplate,    xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "primaryThrust",  primaryThrust_,  xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "rotationThrust", rotationThrust_, xmlelement, mode);
@@ -108,16 +117,19 @@ namespace orxonox
     {
         SUPER(SpaceShip, tick, dt);
 
-        if (this->isLocallyControlled())
+        if (this->hasLocalController())
         {
-            this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
-            this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
-            if (this->localLinearAcceleration_.z() > 0)
-                this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
-            else
-                this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
-            this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
-            this->localLinearAcceleration_.setValue(0, 0, 0);
+            if (!this->isInMouseLook())
+            {
+                this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
+                this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
+                if (this->localLinearAcceleration_.z() > 0)
+                    this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
+                else
+                    this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
+                this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
+                this->localLinearAcceleration_.setValue(0, 0, 0);
+            }
 
             this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
             this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
@@ -128,34 +140,84 @@ namespace orxonox
     void SpaceShip::moveFrontBack(const Vector2& value)
     {
         this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
+        this->steering_.z = -value.x;
     }
 
     void SpaceShip::moveRightLeft(const Vector2& value)
     {
         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
+        this->steering_.x = value.x;
     }
 
     void SpaceShip::moveUpDown(const Vector2& value)
     {
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
+        this->steering_.y = value.x;
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)
     {
         this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x);
+
+        Pawn::rotateYaw(value);
     }
 
     void SpaceShip::rotatePitch(const Vector2& value)
     {
         this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x);
+
+        Pawn::rotatePitch(value);
     }
 
     void SpaceShip::rotateRoll(const Vector2& value)
     {
         this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x);
+
+        Pawn::rotateRoll(value);
     }
 
     void SpaceShip::fire()
     {
+    }
+
+    void SpaceShip::boost()
+    {
+        this->bBoost_ = true;
+    }
+
+    void SpaceShip::loadEngineTemplate()
+    {
+        if (this->enginetemplate_ != "")
+        {
+            Template* temp = Template::getTemplate(this->enginetemplate_);
+
+            if (temp)
+            {
+                Identifier* identifier = temp->getBaseclassIdentifier();
+
+                if (identifier)
+                {
+                    BaseObject* object = identifier->fabricate(this);
+                    this->engine_ = dynamic_cast<Engine*>(object);
+
+                    if (this->engine_)
+                    {
+                        this->engine_->addTemplate(temp);
+                        this->engine_->addToSpaceShip(this);
+                    }
+                    else
+                    {
+                        delete object;
+                    }
+                }
+            }
+        }
+    }
+
+    void SpaceShip::setEngine(Engine* engine)
+    {
+        this->engine_ = engine;
+        if (engine && engine->getShip() != this)
+            engine->addToSpaceShip(this);
     }
 }

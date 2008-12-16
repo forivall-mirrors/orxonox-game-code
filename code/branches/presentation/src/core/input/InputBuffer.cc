@@ -72,6 +72,13 @@ namespace orxonox
         setConfigValues();
     }
 
+    InputBuffer::~InputBuffer()
+    {
+        for (std::list<BaseInputBufferListenerTuple*>::const_iterator it = this->listeners_.begin();
+            it != this->listeners_.end(); ++it)
+            delete *it;
+    }
+
     void InputBuffer::setConfigValues()
     {
         SetConfigValue(keyRepeatDeleay_, 0.4).description("Key repeat deleay of the input buffer");

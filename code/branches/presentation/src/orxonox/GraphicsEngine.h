@@ -71,9 +71,16 @@ namespace orxonox
         static GraphicsEngine& getInstance();
         static GraphicsEngine* getInstancePtr() { return singletonRef_s; }
 
+        inline void setViewport(Ogre::Viewport* viewport)
+            { this->viewport_ = viewport; }
+        inline Ogre::Viewport* getViewport() const
+            { return this->viewport_; }
+
     private:
         // don't mess with singletons
         GraphicsEngine(GraphicsEngine&);
+
+        Ogre::Viewport*     viewport_;              //!< default full size viewport
 
         // stats
         float               avgTickTime_;           //!< time in ms to tick() one frame

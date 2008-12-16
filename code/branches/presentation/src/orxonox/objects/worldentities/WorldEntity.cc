@@ -94,6 +94,15 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->node_->detachAllObjects();
+
+            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
+                delete (*(it++));
+
+            if (this->parent_)
+                this->detachFromParent();
+
+            this->node_->removeAllChildren();
+
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
 
@@ -139,6 +148,8 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
+        registerVariable(this->mainStateName_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedMainState));
+
         registerVariable(this->bActive_,        variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
         registerVariable(this->bVisible_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
 
@@ -211,6 +222,34 @@ namespace orxonox
         }
     }
 
+    void WorldEntity::attachNode(Ogre::SceneNode* node)
+    {
+        Ogre::Node* parent = node->getParent();
+        if (parent)
+            parent->removeChild(node);
+        this->node_->addChild(node);
+    }
+
+    void WorldEntity::detachNode(Ogre::SceneNode* node)
+    {
+        this->node_->removeChild(node);
+//        this->getScene()->getRootSceneNode()->addChild(node);
+    }
+
+    void WorldEntity::attachToNode(Ogre::SceneNode* node)
+    {
+        Ogre::Node* parent = this->node_->getParent();
+        if (parent)
+            parent->removeChild(this->node_);
+        node->addChild(this->node_);
+    }
+
+    void WorldEntity::detachFromNode(Ogre::SceneNode* node)
+    {
+        node->removeChild(this->node_);
+//        this->getScene()->getRootSceneNode()->addChild(this->node_);
+    }
+
     void WorldEntity::attach(WorldEntity* object)
     {
         // check first whether attaching is even allowed
@@ -242,16 +281,17 @@ namespace orxonox
             }
         }
 
-        if (object->getParent())
-            object->detachFromParent();
-        else
+        if (object == this)
         {
-            Ogre::Node* parent = object->node_->getParent();
-            if (parent)
-                parent->removeChild(object->node_);
+            COUT(2) << "Warning: Can't attach a WorldEntity to itself." << std::endl;
+            return;
         }
 
-        this->node_->addChild(object->node_);
+        if (object->getParent())
+            object->detachFromParent();
+
+        this->attachNode(object->node_);
+
         this->children_.insert(object);
         object->parent_ = this;
         object->parentID_ = this->getObjectID();
@@ -274,11 +314,10 @@ namespace orxonox
             recalculateMassProps();
         }
 
-        this->node_->removeChild(object->node_);
+        this->detachNode(object->node_);
         this->children_.erase(object);
         object->parent_ = 0;
         object->parentID_ = OBJECTID_UNKNOWN;
-//        this->getScene()->getRootSceneNode()->addChild(object->node_);
 
         // Note: It is possible that the object has physics but was disabled when attaching
         object->activatePhysics();
@@ -465,6 +504,19 @@ namespace orxonox
         }
 
         this->node_->setScale(scale);
+
+        this->changedScale();
+    }
+
+    const Vector3& WorldEntity::getWorldScale3D() const
+    {
+        return this->node_->_getDerivedScale();
+    }
+
+    float WorldEntity::getWorldScale() const
+    {
+        Vector3 scale = this->getWorldScale3D();
+        return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1;
     }
 
     void WorldEntity::setCollisionType(CollisionType type)

@@ -54,6 +54,8 @@ namespace orxonox
     {
         RegisterObject(OverlayGroup);
 
+        this->owner_ = 0;
+
         setScale(Vector2(1.0, 1.0));
         setScroll(Vector2(0.0, 0.0));
     }
@@ -112,6 +114,8 @@ namespace orxonox
         {
             hudElements_[element->getName()] = element;
             element->setVisible(this->isVisible());
+            if (this->owner_)
+                element->setOwner(this->owner_);
         }
     }
 
@@ -136,6 +140,13 @@ namespace orxonox
             (*it).second->setVisible(this->isVisible());
     }
 
+    void OverlayGroup::setOwner(ControllableEntity* owner)
+    {
+        this->owner_ = owner;
+
+        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it).second->setOwner(owner);
+    }
 
     //########### Console commands ############
 

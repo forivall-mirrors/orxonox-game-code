@@ -29,142 +29,206 @@
 #include "OrxonoxStableHeaders.h"
 #include "Backlight.h"
 
-#include <OgreBillboard.h>
 #include <OgreRibbonTrail.h>
 #include <OgreSceneManager.h>
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/Executor.h"
-#include "util/Math.h"
-#include "GraphicsEngine.h"
+#include "core/XMLPort.h"
+#include "objects/Scene.h"
+#include "util/Exception.h"
 
 namespace orxonox
 {
     CreateFactory(Backlight);
 
-    float Backlight::timeFactor_s = 1.0;
-
-    Backlight::Backlight(float maxspeed, float brakingtime, float scale)
+    Backlight::Backlight(BaseObject* creator) : FadingBillboard(creator)
     {
         RegisterObject(Backlight);
 
-        this->setConfigValues();
-        this->traillength_ = 1;
+        this->ribbonTrail_ = 0;
+        this->ribbonTrailNode_ = 0;
 
-        this->configure(maxspeed, brakingtime, scale);
-    }
-    
-    bool Backlight::create(){
-      if(!WorldEntity::create())
-        return false;
-      
-      this->getNode()->setInheritScale(false);
+        this->width_ = 0;
+        this->length_ = 1.0f;
+        this->lifetime_ = 0.001f;
+        this->maxelements_ = 1;
 
-      this->billboard_.setBillboardSet("Flares/backlightflare");
-      this->attachObject(this->billboard_.getBillboardSet());
+        this->tickcount_ = 0;
 
-      this->ribbonTrail_ = GraphicsEngine::getInstance().getLevelSceneManager()->createRibbonTrail(this->getName() + "RibbonTrail");
-      this->ribbonTrailNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName() + "RibbonTrailNode");
-      this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
-      this->ribbonTrail_->addNode(this->getNode());
+        if (Core::showsGraphics())
+        {
+            if (!this->getScene())
+                ThrowException(AbortLoading, "Can't create Backlight, no scene given.");
+            if (!this->getScene()->getSceneManager())
+                ThrowException(AbortLoading, "Can't create Backlight, no scene manager given.");
+            if (!this->getScene()->getRootSceneNode())
+                ThrowException(AbortLoading, "Can't create Backlight, no root scene node given.");
 
+            this->ribbonTrail_ = this->getScene()->getSceneManager()->createRibbonTrail(this->getNode()->getName());
 
-      this->ribbonTrail_->setTrailLength(this->maxTraillength_);
-      this->ribbonTrail_->setMaterialName("Trail/backlighttrail");
+            this->ribbonTrailNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
+            this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
 
-        //this->setTimeFactor(Orxonox::getInstance().getTimeFactor());
-      this->setTimeFactor(1.0f);
-      
-      this->ribbonTrail_->setMaxChainElements(this->maxTrailsegments_);
-      this->ribbonTrail_->setTrailLength(this->traillength_ = 2 * this->maxTrailsegments_);
-      this->ribbonTrail_->setInitialWidth(0, this->width_ * this->getScale());
-      this->ribbonTrail_->setWidthChange(0, this->width_ * this->getScale() / this->maxLifeTime_ * Backlight::timeFactor_s);
-      return true;
+            this->ribbonTrail_->setMaxChainElements(this->maxelements_);
+            this->ribbonTrail_->setTrailLength(this->length_);
+            this->ribbonTrail_->setInitialWidth(0, 0);
+        }
+
+        this->registerVariables();
     }
 
     Backlight::~Backlight()
     {
         if (this->isInitialized())
         {
-            this->detachObject(this->billboard_.getBillboardSet());
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroySceneNode(this->getName() + "RibbonTrailNode");
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
-        }
-    }
-
-    void Backlight::setConfigValues()
-    {
-        SetConfigValue(maxLifeTime_, 4.0).description("The maximal amount of seconds the trail behind a SpaceShip stays visible");
-        SetConfigValue(trailSegmentLength_, 50).description("The length of one segment of the trail behind a SpaceShip (lower values make it more smooth)");
-        SetConfigValue(width_, 7.0).description("The width of the trail");
-    }
-
-    void Backlight::setTimeFactor(float factor)
-    {
-        Backlight::timeFactor_s = factor;
-        float change = Backlight::timeFactor_s / this->maxLifeTime_;
-        this->ribbonTrail_->setWidthChange(0, this->width_ * change);
-        this->updateColourChange();
-    }
-
-    void Backlight::updateColourChange()
-    {
-        this->ribbonTrail_->setColourChange(0, ColourValue(0, 0, 0, this->maxTraillength_ / this->traillength_ / this->maxLifeTime_ * Backlight::timeFactor_s));
-    }
-    
-    
-    void Backlight::XMLPort(Element& xmlelement, XMLPort::Mode mode){
-      SUPER(Backlight, XMLPort, xmlelement, mode);
-      
-      Backlight::create();
-    }
-
-    void Backlight::tick(float dt)
-    {
-        SUPER(Backlight, tick, dt);
-
-        if (this->isActive())
-        {
-            if (this->traillength_ < this->maxTraillength_)
+            if (this->ribbonTrail_)
             {
-                this->traillength_ = min<float>(this->maxTraillength_, this->traillength_ + dt * this->maxTraillength_ / this->maxLifeTime_);
-                this->updateColourChange();
+                if (this->ribbonTrailNode_)
+                {
+                    this->ribbonTrailNode_->detachObject(this->ribbonTrail_);
+                    this->getScene()->getSceneManager()->destroySceneNode(this->ribbonTrailNode_->getName());
+                }
+                this->getScene()->getSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
             }
         }
-        else
+    }
+
+    void Backlight::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(Backlight, XMLPort, xmlelement, mode);
+
+        XMLPortParam(Backlight, "length",        setLength,        getLength,        xmlelement, mode).defaultValues(100.0f);
+        XMLPortParam(Backlight, "width",         setWidth,         getWidth,         xmlelement, mode).defaultValues(1.0f);
+        XMLPortParam(Backlight, "elements",      setMaxElements,   getMaxElements,   xmlelement, mode).defaultValues(10);
+        XMLPortParam(Backlight, "lifetime",      setLifetime,      getLifetime,      xmlelement, mode).defaultValues(1.0f);
+        XMLPortParam(Backlight, "trailmaterial", setTrailMaterial, getTrailMaterial, xmlelement, mode);
+    }
+
+    void Backlight::registerVariables()
+    {
+        registerVariable(this->width_,         variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_width));
+        registerVariable(this->lifetime_,      variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_lifetime));
+        registerVariable(this->length_,        variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_length));
+        registerVariable(this->maxelements_,   variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_maxelements));
+        registerVariable(this->trailmaterial_, variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_trailmaterial));
+    }
+
+    void Backlight::changedColour()
+    {
+        FadingBillboard::changedColour();
+
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setInitialColour(0, this->getFadedColour());
+    }
+
+    void Backlight::update_width()
+    {
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setInitialWidth(0, this->width_ * this->getWorldScale());
+        this->update_lifetime();
+    }
+
+    void Backlight::update_lifetime()
+    {
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
         {
-            if (this->traillength_ > 1)
-            {
-                this->traillength_ = max<float>(1, this->traillength_ - this->brakefactor_ * dt * this->maxTraillength_ / this->maxLifeTime_);
-                this->updateColourChange();
-            }
+            this->ribbonTrail_->setWidthChange(0, this->width_ * this->getWorldScale() / this->lifetime_ * this->getTimeFactor());
+            this->ribbonTrail_->setColourChange(0, 0, 0, 0, 1.0f / this->lifetime_ * this->getTimeFactor());
         }
-
-        this->ribbonTrail_->setTrailLength(this->traillength_);
     }
 
-    void Backlight::setColour(const ColourValue& colour)
+    void Backlight::update_length()
     {
-        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
-        this->ribbonTrail_->setInitialColour(0, ColourValue(colour.r / 4 + 0.75, colour.g / 4 + 0.75, colour.b / 4 + 0.75));
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setTrailLength(this->length_ * this->getWorldScale());
     }
 
-    void Backlight::configure(float maxspeed, float brakingtime, float scale)
+    void Backlight::update_maxelements()
     {
-        this->maxTraillength_ = this->maxLifeTime_ * maxspeed;
-        this->maxTrailsegments_ = (size_t)(this->maxTraillength_ / this->trailSegmentLength_);
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setMaxChainElements(this->maxelements_);
+    }
 
-        this->brakefactor_ = this->maxLifeTime_ / brakingtime;
-
-        this->scale(scale);
+    void Backlight::update_trailmaterial()
+    {
+        if (this->ribbonTrail_ && this->tickcount_ >= 2)
+            this->ribbonTrail_->setMaterialName(this->trailmaterial_);
     }
 
     void Backlight::changedVisibility()
     {
         SUPER(Backlight, changedVisibility);
 
-        this->billboard_.setVisible(this->isVisible());
-        this->ribbonTrail_->setVisible(this->isVisible());
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setVisible(this->isVisible());
+    }
+
+    void Backlight::startturnonoff()
+    {
+        FadingBillboard::startturnonoff();
+
+        if (this->ribbonTrail_ && this->isActive() && this->isVisible())
+            this->ribbonTrail_->setVisible(true);
+    }
+
+    void Backlight::stopturnonoff()
+    {
+        this->postprocessingtime_ = max(0.0f, this->lifetime_ - this->turnofftime_);
+
+        FadingBillboard::stopturnonoff();
+
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setInitialColour(0, this->getFadedColour());
+    }
+
+    void Backlight::poststopturnonoff()
+    {
+        FadingBillboard::poststopturnonoff();
+
+        if (this->ribbonTrail_)
+            this->ribbonTrail_->setVisible(false);
+    }
+
+    void Backlight::changedScale()
+    {
+        SUPER(Backlight, changedScale);
+
+        this->update_width();
+        this->update_length();
+    }
+
+    void Backlight::tick(float dt)
+    {
+        if (this->tickcount_ < 2)
+        {
+            ++this->tickcount_;
+            if (this->tickcount_ == 2)
+            {
+                this->changedColour();
+                this->update_width();
+                this->update_lifetime();
+                this->update_length();
+                this->update_maxelements();
+                this->update_trailmaterial();
+                if (this->ribbonTrail_)
+                    this->ribbonTrail_->addNode(const_cast<Ogre::SceneNode*>(this->getNode()));
+            }
+        }
+
+        SUPER(Backlight, tick, dt);
+
+        if (this->ribbonTrail_ && this->changedirection_ != 0)
+        {
+            // we use alpha_blend, only adjust alpha
+            const ColourValue& colour = this->getColour();
+            this->ribbonTrail_->setInitialColour(0, colour.r, colour.g, colour.b, this->getFadedColour().a);
+        }
+    }
+
+    void Backlight::changedTimeFactor(float factor_new, float factor_old)
+    {
+        this->update_lifetime();
     }
 }

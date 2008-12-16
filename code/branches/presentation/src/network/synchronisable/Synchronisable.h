@@ -60,7 +60,7 @@ namespace orxonox
       bidirectional=0x3
     };
   }
-  
+
   namespace priority{
     enum prio{
       very_high   = -100,
@@ -99,10 +99,10 @@ namespace orxonox
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
     static uint32_t popDeletedObject(){ uint32_t i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
 
-    inline uint32_t getObjectID(){return objectID;}
-    inline unsigned int getCreatorID(){return creatorID;}
-    inline uint32_t getClassID(){return classID;}
-    inline unsigned int getPriority(){ return objectFrequency_;}
+    inline uint32_t getObjectID() const {return objectID;}
+    inline unsigned int getCreatorID() const {return creatorID;}
+    inline uint32_t getClassID() const {return classID;}
+    inline unsigned int getPriority() const { return objectFrequency_;}
 
   protected:
     Synchronisable(BaseObject* creator);
@@ -133,7 +133,7 @@ namespace orxonox
     static std::map<uint32_t, Synchronisable *> objectMap_;
     static std::queue<uint32_t> deletedObjects_;
   };
-  
+
   template <class T> void Synchronisable::registerVariable(T& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
   {
     if (bidirectional)
@@ -157,7 +157,7 @@ namespace orxonox
     assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
     // the variable has not been registered before
   }
-  
+
   // ================= Specialisation declarations
   template <> _NetworkExport void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);

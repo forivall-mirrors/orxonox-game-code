@@ -60,15 +60,11 @@ namespace orxonox
     {
         RegisterObject(OrxonoxOverlay);
 
+        this->owner_ = 0;
+        this->group_ = 0;
+
         if (!Core::showsGraphics())
             ThrowException(NoGraphics, "Can't create OrxonoxOverlay, graphics engine not initialized");
-
-        // add this overlay to the static map of OrxonoxOverlays
-        if (overlays_s.find(this->getName()) != overlays_s.end())
-        {
-            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
-        }
-        overlays_s[this->getName()] = this;
 
         // create the Ogre::Overlay
         overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
@@ -129,15 +125,17 @@ namespace orxonox
         SUPER(OrxonoxOverlay, XMLPort, xmlElement, mode);
 
         XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "pickpoint", setPickPoint, getPickPoint, xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "correctaspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
     }
 
     void OrxonoxOverlay::changedName()
     {
+        SUPER(OrxonoxOverlay, changedName);
+
         OrxonoxOverlay::overlays_s.erase(this->getOldName());
 
         if (OrxonoxOverlay::overlays_s.find(this->getName()) != OrxonoxOverlay::overlays_s.end())

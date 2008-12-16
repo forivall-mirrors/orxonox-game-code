@@ -2,6 +2,7 @@ SET( SRC_FILES
   EventListener.cc
   EventDispatcher.cc
   EventTarget.cc
+  GlobalShader.cc
   Level.cc
   Radar.cc
   RadarListener.cc
@@ -16,6 +17,7 @@ ADD_SOURCE_DIRECTORY(SRC_FILES collisionshapes)
 ADD_SOURCE_DIRECTORY(SRC_FILES controllers)
 ADD_SOURCE_DIRECTORY(SRC_FILES gametypes)
 ADD_SOURCE_DIRECTORY(SRC_FILES infos)
+ADD_SOURCE_DIRECTORY(SRC_FILES items)
 #ADD_SOURCE_DIRECTORY(SRC_FILES pickup)
 ADD_SOURCE_DIRECTORY(SRC_FILES quest)
 ADD_SOURCE_DIRECTORY(SRC_FILES weaponSystem)

@@ -67,13 +67,15 @@ namespace orxonox
 
     void BlinkingBillboard::registerVariables()
     {
-//        REGISTERDATA(this->amplitude_, direction::toclient);
-//        REGISTERDATA(this->frequency_, direction::toclient);
-//        REGISTERDATA(this->phase_,     direction::toclient);
+//        registerVariable(this->amplitude_, variableDirection::toclient);
+//        registerVariable(this->frequency_, variableDirection::toclient);
+//        registerVariable(this->phase_,     variableDirection::toclient);
     }
 
     void BlinkingBillboard::tick(float dt)
     {
+        SUPER(BlinkingBillboard, tick, dt);
+
         if (Core::isMaster() && this->isActive())
         {
             this->time_ += dt;

@@ -100,7 +100,7 @@ namespace orxonox
             static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
 
-            void setOutputBuffer(OutputBuffer& buffer);
+            void setOutputBuffer(OutputBuffer* buffer);
 
             template <class T>
             OutputHandler& output(const T& output);

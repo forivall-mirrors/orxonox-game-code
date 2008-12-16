@@ -118,7 +118,7 @@ namespace orxonox
     it = objectMap_.find(objectID);
     if (it != objectMap_.end())
       objectMap_.erase(it);
-    
+
     //HACK HACK HACK HACK HACK HACK
     // this hack ensures that childs of this object also get destroyed
 //     ObjectList<Synchronisable>::iterator it2, it3;
@@ -165,6 +165,12 @@ namespace orxonox
     COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
     Identifier* id = ClassByID(header->classID);
+    if (!id)
+    {
+        COUT(0) << "Assertion failed: id" << std::endl;
+        COUT(0) << "Possible reason for this error: Client received a synchronizable object whose class has no factory." << std::endl;
+        abort();
+    }
     assert(id);
     BaseObject* creator = 0;
     if (header->creatorID != OBJECTID_UNKNOWN)
@@ -252,7 +258,7 @@ namespace orxonox
   */
 
 /*  void Synchronisable::registerVariable(void *var, int size, variableType t, uint8_t mode, NetworkCallbackBase *cb){
-    assert( mode==direction::toclient || mode==direction::toserver || mode==direction::serverMaster || mode==direction::clientMaster);
+    assert( mode==variableDirection::toclient || mode==variableDirection::toserver || mode==variableDirection::serverMaster || mode==variableDirection::clientMaster);
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
@@ -260,7 +266,7 @@ namespace orxonox
     temp->mode = mode;
     temp->type = t;
     temp->callback = cb;
-    if( ( mode & direction::bidirectional ) )
+    if( ( mode & variableDirection::bidirectional ) )
     {
       if(t!=STRING)
       {
@@ -285,7 +291,7 @@ namespace orxonox
     }
 #endif
   }*/
-  
+
 
   /**
    * This function takes all SynchronisableVariables out of the Synchronisable and saves them together with the size, objectID and classID to the given memory
@@ -443,6 +449,6 @@ namespace orxonox
     assert(mode==0x0 || mode==0x1 || mode==0x2 || mode==0x3);
     objectMode_=mode;
   }
-  
+
 
 }

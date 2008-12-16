@@ -32,6 +32,8 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/worldentities/pawns/Pawn.h"
+#include "objects/gametypes/Gametype.h"
 
 namespace orxonox
 {
@@ -43,9 +45,14 @@ namespace orxonox
     SetConsoleCommand(HumanController, rotateRoll,    true).setAsInputCommand();
     SetConsoleCommand(HumanController, fire,          true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, altFire,       true).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(HumanController, boost,         true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, greet,         true);
     SetConsoleCommand(HumanController, use,           true);
     SetConsoleCommand(HumanController, switchCamera,  true);
+    SetConsoleCommand(HumanController, mouseLook,     true);
+    SetConsoleCommand(HumanController, suicide,       true);
+    SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
+    SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
 
     CreateUnloadableFactory(HumanController);
 
@@ -111,6 +118,12 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->altFire();
     }
 
+    void HumanController::boost()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->boost();
+    }
+
     void HumanController::greet()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
@@ -127,5 +140,33 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->switchCamera();
+    }
+
+    void HumanController::mouseLook()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->mouseLook();
+    }
+
+    void HumanController::suicide()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        {
+            Pawn* pawn = dynamic_cast<Pawn*>(HumanController::localController_s->controllableEntity_);
+            if (pawn)
+                pawn->kill();
+        }
+    }
+
+    void HumanController::addBots(unsigned int amount)
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
+            HumanController::localController_s->controllableEntity_->getGametype()->addBots(amount);
+    }
+
+    void HumanController::killBots(unsigned int amount)
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
+            HumanController::localController_s->controllableEntity_->getGametype()->killBots(amount);
     }
 }

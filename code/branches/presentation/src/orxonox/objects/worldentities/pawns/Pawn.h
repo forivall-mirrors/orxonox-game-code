@@ -32,10 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/RadarViewable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Pawn : public ControllableEntity
+    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable
     {
         public:
             Pawn(BaseObject* creator);
@@ -53,7 +54,7 @@ namespace orxonox
                 { this->setHealth(this->health_ + health); }
             inline void removeHealth(float health)
                 { this->setHealth(this->health_ - health); }
-            inline float getHealht() const
+            inline float getHealth() const
                 { return this->health_; }
 
             inline void setMaxHealth(float maxhealth)
@@ -77,9 +78,28 @@ namespace orxonox
 
             virtual void postSpawn();
 
+            inline const WorldEntity* getWorldEntity() const
+                { return (WorldEntity*)this; }
+
+            inline void setSpawnParticleSource(const std::string& source)
+                { this->spawnparticlesource_ = source; }
+            inline const std::string& getSpawnParticleSource() const
+                { return this->spawnparticlesource_; }
+
+            inline void setSpawnParticleDuration(float duration)
+                { this->spawnparticleduration_ = duration; }
+            inline float getSpawnParticleDuration() const
+                { return this->spawnparticleduration_; }
+
+            inline void setExplosionChunks(unsigned int chunks)
+                { this->numexplosionchunks_ = chunks; }
+            inline unsigned int getExplosionChunks() const
+                { return this->numexplosionchunks_; }
+
         protected:
-            virtual void spawn();
             virtual void death();
+            virtual void deatheffect();
+            virtual void spawneffect();
 
             bool bAlive_;
 
@@ -90,6 +110,22 @@ namespace orxonox
             Pawn* lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
+
+            std::string spawnparticlesource_;
+            float spawnparticleduration_;
+            unsigned int numexplosionchunks_;
+    };
+
+    class _OrxonoxExport PawnListener : public OrxonoxClass
+    {
+        friend class Pawn;
+
+        public:
+            PawnListener();
+            virtual ~PawnListener() {}
+
+        protected:
+            virtual void destroyedPawn(Pawn* pawn) = 0;
     };
 }
 

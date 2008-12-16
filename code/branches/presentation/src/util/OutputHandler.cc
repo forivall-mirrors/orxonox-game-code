@@ -99,10 +99,15 @@ namespace orxonox
         @brief Sets the OutputBuffer, representing the third output stream.
         @param buffer The OutputBuffer
     */
-    void OutputHandler::setOutputBuffer(OutputBuffer& buffer)
+    void OutputHandler::setOutputBuffer(OutputBuffer* buffer)
     {
-        buffer.getStream() >> this->outputBuffer_->getStream().rdbuf();
-        this->outputBuffer_ = &buffer;
+        if (buffer == NULL)
+            this->outputBuffer_ = &this->fallbackBuffer_;
+        else
+        {
+            buffer->getStream() >> this->outputBuffer_->getStream().rdbuf();
+            this->outputBuffer_ = buffer;
+        }
     }
 
     /**

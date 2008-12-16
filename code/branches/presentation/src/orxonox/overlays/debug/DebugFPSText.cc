@@ -48,6 +48,8 @@ namespace orxonox
 
     void DebugFPSText::tick(float dt)
     {
+        SUPER(DebugFPSText, tick, dt);
+
         float fps = GraphicsEngine::getInstance().getAverageFramesPerSecond();
         this->setCaption(convertToString(fps));
     }

@@ -41,11 +41,12 @@ namespace orxonox
             Spectator(BaseObject* creator);
             virtual ~Spectator();
 
+            void setConfigValues();
             void registerVariables();
             virtual void tick(float dt);
 
             virtual void setPlayer(PlayerInfo* player);
-            virtual void startLocalControl();
+            virtual void startLocalHumanControl();
 
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);
@@ -61,22 +62,18 @@ namespace orxonox
         private:
             void changedGreeting();
             void changedFlareVisibility();
-            void updateHUD();
 
             BillboardSet* greetingFlare_;
             bool bGreetingFlareVisible_;
             bool bGreeting_;
 
             float speed_;
-            float rotationGain_;
 
             float yaw_;
             float pitch_;
             float roll_;
 
             Vector3 localVelocity_;
-
-            int hudmode_;
     };
 }
 

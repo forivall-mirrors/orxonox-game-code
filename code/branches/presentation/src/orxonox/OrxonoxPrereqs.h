@@ -81,6 +81,7 @@ namespace orxonox
 
     class CameraManager;
     class LevelManager;
+    class PawnManager;
     class PlayerManager;
 
     // objects
@@ -115,6 +116,9 @@ namespace orxonox
     class Model;
     class Billboard;
     class BlinkingBillboard;
+    class ExplosionChunk;
+    class FadingBillboard;
+    class GlobalShader;
     class Light;
     class Backlight;
     class ParticleEmitter;
@@ -127,6 +131,11 @@ namespace orxonox
     class Spectator;
     class Pawn;
     class SpaceShip;
+
+    class Item;
+    class Engine;
+    class MultiStateEngine;
+    class RotatingEngine;
 
     class Trigger;
     class DistanceTrigger;
@@ -145,10 +154,15 @@ namespace orxonox
 
     class Controller;
     class HumanController;
+    class ArtificialController;
+    class AIController;
+    class ScriptController;
 
     class Info;
     class PlayerInfo;
     class HumanPlayer;
+    class Bot;
+    class GametypeInfo;
 
     class Gametype;
 
@@ -165,6 +179,7 @@ namespace orxonox
     class Light;
     class Mesh;
     class ParticleInterface;
+    class Shader;
     template <class T>
     class Timer;
 
@@ -176,6 +191,7 @@ namespace orxonox
     class HUDNavigation;
     class HUDRadar;
     class HUDSpeedBar;
+    class HUDHealthBar;
     class InGameConsole;
     class Notification;
     class NotificationManager;
@@ -183,6 +199,7 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+    class GametypeStatus;
 
     //gui
     class GUIManager;

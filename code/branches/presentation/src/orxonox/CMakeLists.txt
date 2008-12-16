@@ -3,6 +3,7 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
+  PawnManager.cc
   PlayerManager.cc
   Settings.cc
   

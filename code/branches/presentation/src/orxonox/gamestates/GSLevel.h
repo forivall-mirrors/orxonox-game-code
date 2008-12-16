@@ -43,11 +43,6 @@ namespace orxonox
         GSLevel();
         ~GSLevel();
 
-        // this has to be public because proteced triggers a bug in msvc
-        // when taking the function address.
-        void setTimeFactor(float factor);
-        float getTimeFactor() { return this->timeFactor_; }
-
     protected:
         void enter(Ogre::Viewport* viewport);
         void leave();
@@ -55,8 +50,6 @@ namespace orxonox
 
         void loadLevel();
         void unloadLevel();
-
-        float timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
 
         // console commands
         void keybind(const std::string& command);
@@ -69,11 +62,16 @@ namespace orxonox
         XMLFile*              startFile_;        //!< current hard coded default level
         CameraManager*        cameraManager_;
         LevelManager*         levelManager_;
+        PlayerManager*        playerManager_;
 
         //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;
         //! Filename of default keybindings.
         std::string           defaultKeybindings_;
+
+        // console commands
+        ConsoleCommand*       ccKeybind_;
+        ConsoleCommand*       ccTkeybind_;
 
     private:
         void setConfigValues();

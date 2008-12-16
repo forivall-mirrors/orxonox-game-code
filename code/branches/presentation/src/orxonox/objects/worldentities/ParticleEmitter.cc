@@ -51,7 +51,7 @@ namespace orxonox
         RegisterObject(ParticleEmitter);
 
         if (Core::showsGraphics() && (!this->getScene() || !this->getScene()->getSceneManager()))
-            ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
+            ThrowException(AbortLoading, "Can't create ParticleEmitter, no scene or no scene manager given.");
 
         this->particles_ = 0;
         this->LOD_ = LODParticle::normal;
@@ -108,7 +108,7 @@ namespace orxonox
             try
             {
                 this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), this->source_, this->LOD_);
-                this->attachOgreObject(particles_->getParticleSystem());
+                this->attachOgreObject(this->particles_->getParticleSystem());
                 this->particles_->setVisible(this->isVisible());
                 this->particles_->setEnabled(this->isActive());
             }

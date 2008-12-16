@@ -30,6 +30,7 @@
 #include "../GamestateHandler.h"
 #include "../synchronisable/Synchronisable.h"
 #include "../TrafficControl.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 
@@ -150,7 +151,10 @@ bool Gamestate::spreadData(uint8_t mode)
     s = Synchronisable::getSynchronisable( objectheader->objectID );
     if(!s)
     {
-      Synchronisable::fabricate(mem, mode);
+      if (!Core::isMaster())
+        Synchronisable::fabricate(mem, mode);
+      else
+        mem += objectheader->size;
 //         COUT(0) << "could not fabricate synchronisable: " << objectheader->objectID << " classid: " << objectheader->classID << " creator: " << objectheader->creatorID << endl;
 //       else
 //         COUT(0) << "fabricated: " << objectheader->objectID << " classid: " << objectheader->classID << " creator: "  << objectheader->creatorID << endl;
@@ -169,6 +173,7 @@ bool Gamestate::spreadData(uint8_t mode)
     if (it->getObjectID() == OBJECTID_UNKNOWN) {
       if (it->objectMode_ != 0x0) {
         COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
+        COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
         assert(false);
       }
     }
@@ -383,11 +388,13 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 
   //call TrafficControl
   TrafficControl::getInstance()->processObjectList( clientID, HEADER->id, &dataMap_ );
-  
+
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end();){
 //    if((*it).objSize==0)
 //      continue;
+//    if(it->second->getSize(HEADER->id)==0) // merged from objecthierarchy2, doesn't work anymore; TODO: change this
+//      continue;                            // merged from objecthierarchy2, doesn't work anymore; TODO: change this
     oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
     if ( (*it).objSize == 0 )

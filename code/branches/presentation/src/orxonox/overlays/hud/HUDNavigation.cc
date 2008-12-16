@@ -128,6 +128,8 @@ namespace orxonox
 
     void HUDNavigation::tick(float dt)
     {
+        SUPER(HUDNavigation, tick, dt);
+
         if (!Radar::getInstance().getFocus())
         {
             this->overlay_->hide();
@@ -148,7 +150,7 @@ namespace orxonox
         Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
 */
         // transform to screen coordinates
-        Vector3 pos = /*transformationMatrix * */Radar::getInstance().getFocus()->getWorldPosition();
+        Vector3 pos = /*transformationMatrix * */Radar::getInstance().getFocus()->getRVWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)
@@ -222,7 +224,7 @@ namespace orxonox
             // object is in view
 /*
             Vector3 aimpos = transformationMatrix * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
-                    Projectile::getSpeed(), Radar::getInstance().getFocus()->getWorldPosition(), Radar::getInstance().getFocus()->getOrientedVelocity());
+                    Projectile::getSpeed(), Radar::getInstance().getFocus()->getRVWorldPosition(), Radar::getInstance().getFocus()->getRVOrientedVelocity());
 */
             if (wasOutOfView_)
             {
@@ -249,7 +251,7 @@ namespace orxonox
     {
 /*
         if (Radar::getInstance().getFocus())
-            return (Radar::getInstance().getFocus()->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
+            return (Radar::getInstance().getFocus()->getRVWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         else
 */
             return 0;

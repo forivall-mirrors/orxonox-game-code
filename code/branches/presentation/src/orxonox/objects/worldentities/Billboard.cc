@@ -43,6 +43,9 @@ namespace orxonox
     {
         RegisterObject(Billboard);
 
+        this->material_ = "";
+        this->colour_ = ColourValue::White;
+
         this->registerVariables();
     }
 
@@ -51,7 +54,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (this->isInitialized() && this->billboard_.getBillboardSet())
-                this->detachOgreObject(this->billboard_.getName());
+                this->detachOgreObject(this->billboard_.getBillboardSet());
         }
     }
 
@@ -71,6 +74,9 @@ namespace orxonox
 
     void Billboard::changedMaterial()
     {
+        if (this->material_ == "")
+            return;
+
         if (!this->billboard_.getBillboardSet())
         {
             if (this->getScene() && this->getScene()->getSceneManager())
@@ -89,13 +95,15 @@ namespace orxonox
     {
         if (!this->billboard_.getBillboardSet())
         {
-            if (this->getScene() && this->getScene()->getSceneManager())
+/*
+            if (this->getScene() && this->getScene()->getSceneManager() && (this->material_ != ""))
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())
                     this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
+*/
         }
         else
             this->billboard_.setColour(this->colour_);

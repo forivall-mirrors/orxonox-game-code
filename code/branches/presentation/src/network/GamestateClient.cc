@@ -81,8 +81,10 @@ namespace orxonox
     //now call the queued callbacks
     NetworkCallbackManager::callCallbacks();
     
-    if (!processed)
-        return false;
+    if (!processed){
+      sendAck(0);
+      return false;
+    }
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
     tempGamestate_=NULL;
     gamestateMap_[processed->getID()]=processed;

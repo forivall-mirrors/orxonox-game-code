@@ -42,6 +42,7 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/MultiType.h"
@@ -368,6 +369,14 @@ namespace orxonox
                 this->saveexecutor_ = saveexecutor;
             }
 
+            ~XMLPortClassParamContainer()
+            {
+                assert(this->loadexecutor_);
+                delete this->loadexecutor_;
+                if (this->saveexecutor_)
+                    delete this->saveexecutor_;
+            }
+
             XMLPortParamContainer& port(BaseObject* owner, T* object, Element& xmlelement, XMLPort::Mode mode)
             {
                 this->owner_ = owner;
@@ -375,19 +384,21 @@ namespace orxonox
                 this->parseParams_.xmlelement = &xmlelement;
                 this->parseParams_.mode = mode;
 
-                if (mode == XMLPort::LoadObject)
+                if ((mode == XMLPort::LoadObject) || (mode == XMLPort::ExpandObject))
                 {
                     try
                     {
                         std::string attribute = xmlelement.GetAttribute(this->paramname_);
-                        if ((attribute.size() > 0) || (this->loadexecutor_->allDefaultValuesSet()))
+                        if ((attribute.size() > 0) || ((mode != XMLPort::ExpandObject) && this->loadexecutor_->allDefaultValuesSet()))
                         {
                             COUT(5) << this->owner_->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << this->identifier_->getName() << " (objectname " << this->owner_->getName() << ")." << std::endl << this->owner_->getLoaderIndentation();
-                            if (this->loadexecutor_->parse(object, attribute, ","))
+                            if (this->loadexecutor_->parse(object, attribute, ",") || (mode  == XMLPort::ExpandObject))
                                 this->parseResult_ = PR_finished;
                             else
                                 this->parseResult_ = PR_waiting_for_default_values;
                         }
+                        else if (mode == XMLPort::ExpandObject)
+                            this->parseResult_ = PR_finished;
                         else
                             this->parseResult_ = PR_waiting_for_default_values;
                     }
@@ -510,9 +521,17 @@ namespace orxonox
                 this->bLoadBefore_ = bLoadBefore;
             }
 
+            ~XMLPortClassObjectContainer()
+            {
+                assert(this->loadexecutor_);
+                delete this->loadexecutor_;
+                if (this->saveexecutor_)
+                    delete this->saveexecutor_;
+            }
+
             XMLPortObjectContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)
             {
-                if (mode == XMLPort::LoadObject)
+                if ((mode == XMLPort::LoadObject) || (mode == XMLPort::ExpandObject))
                 {
                     try
                     {

@@ -42,6 +42,8 @@ namespace orxonox
     {
         RegisterObject(Model);
 
+        this->bCastShadows_ = true;
+
         this->registerVariables();
     }
 
