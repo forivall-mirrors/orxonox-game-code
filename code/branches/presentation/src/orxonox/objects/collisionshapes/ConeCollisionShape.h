@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _SphereCollisionShape_H__
-#define _SphereCollisionShape_H__
+#ifndef _ConeCollisionShape_H__
+#define _ConeCollisionShape_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -35,25 +35,31 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport SphereCollisionShape : public CollisionShape
+    class _OrxonoxExport ConeCollisionShape : public CollisionShape
     {
         public:
-            SphereCollisionShape(BaseObject* creator);
-            virtual ~SphereCollisionShape();
+            ConeCollisionShape(BaseObject* creator);
+            virtual ~ConeCollisionShape();
 
             void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setRadius(float radius)
-                { this->radius_ = radius; updateSphere(); }
+            inline void setRadius(float value)
+                { this->radius_ = value; updateCone(); }
             inline float getRadius() const
-                { return this->radius_; }
+                { return radius_; }
 
-            void updateSphere();
+            inline void setHeight(float value)
+                { this->height_ = value; updateCone(); }
+            inline float getHeight() const
+                { return this->height_; }
+
+            void updateCone();
 
         private:
             float radius_;
-    };
+            float height_;
+     };
 }
 
-#endif /* _SphereCollisionShape_H__ */
+#endif /* _ConeCollisionShape_H__ */

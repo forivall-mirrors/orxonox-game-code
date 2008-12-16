@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _SphereCollisionShape_H__
-#define _SphereCollisionShape_H__
+#ifndef _BoxCollisionShape_H__
+#define _BoxCollisionShape_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -35,25 +35,40 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport SphereCollisionShape : public CollisionShape
+    class _OrxonoxExport BoxCollisionShape : public CollisionShape
     {
         public:
-            SphereCollisionShape(BaseObject* creator);
-            virtual ~SphereCollisionShape();
+            BoxCollisionShape(BaseObject* creator);
+            virtual ~BoxCollisionShape();
 
             void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setRadius(float radius)
-                { this->radius_ = radius; updateSphere(); }
-            inline float getRadius() const
-                { return this->radius_; }
+            inline void setHalfExtents(const Vector3& extents)
+                { this->halfExtents_ = extents; updateBox(); }
+            inline const Vector3& getHalfExtents() const
+                { return halfExtents_;}
 
-            void updateSphere();
+            inline void setWidth(float value)
+                { this->halfExtents_.z = value / 2; updateBox(); }
+            inline float getWidth() const
+                { return this->halfExtents_.z * 2; }
+
+            inline void setHeight(float value)
+                { this->halfExtents_.y = value / 2; updateBox(); }
+            inline float getHeight() const
+                { return this->halfExtents_.y * 2; }
+
+            inline void setLength(float value)
+                { this->halfExtents_.x = value / 2; updateBox(); }
+            inline float getLength() const
+                { return this->halfExtents_.x * 2; }
+
+            void updateBox();
 
         private:
-            float radius_;
-    };
+            Vector3 halfExtents_;
+     };
 }
 
-#endif /* _SphereCollisionShape_H__ */
+#endif /* _BoxCollisionShape_H__ */
