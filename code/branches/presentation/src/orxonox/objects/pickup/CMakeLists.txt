@@ -1,6 +1,6 @@
 SET( SRC_FILES
   PickupSpawner.cc
-  Item.cc
+  BaseItem.cc
   Turbo.cc
   ShipEquipment.cc
 )
