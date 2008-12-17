@@ -62,7 +62,7 @@ namespace orxonox
     */
     void Settings::setConfigValues()
     {
-        SetConfigValue(dataPath_, "../../media/").description("Relative path to the game data.").callback(this, &Settings::dataPathChanged);
+        SetConfigValue(dataPath_, "../../../media/").description("Relative path to the game data.").callback(this, &Settings::dataPathChanged);
     }
 
     /**

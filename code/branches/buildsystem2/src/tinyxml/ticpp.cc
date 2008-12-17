@@ -1,5 +1,3 @@
-#define TIXML_USE_TICPP
-
 /*
 http://code.google.com/p/ticpp/
 Copyright (c) 2006 Ryan Pusztai, Ryan Mulder
@@ -20,13 +18,6 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/*
-Modifications by the orxonox team:
-In function: void Document::Parse( const std::string& xml, bool throwIfParseError, TiXmlEncoding encoding )
-     change: Added row and column number to the error description.
-     author: Reto Grieder
 */
 
 #ifdef TIXML_USE_TICPP
@@ -163,7 +154,7 @@ Attribute* Attribute::Next( bool throwIfNoAttribute ) const
 	}
 
 	Attribute* temp = new Attribute( attribute );
-	m_spawnedWrappers.push_back( temp );
+	attribute->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -185,7 +176,7 @@ Attribute* Attribute::Previous( bool throwIfNoAttribute ) const
 	}
 
 	Attribute* temp = new Attribute( attribute );
-	m_spawnedWrappers.push_back( temp );
+	attribute->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -261,7 +252,7 @@ Node* Node::NodeFactory( TiXmlNode* tiXmlNode, bool throwIfNull, bool rememberSp
 
 	if ( rememberSpawnedWrapper )
 	{
-		m_spawnedWrappers.push_back( temp );
+		tiXmlNode->m_spawnedWrappers.push_back( temp );
 	}
 	return temp;
 }
@@ -384,9 +375,6 @@ Node* Node::InsertEndChild( Node& addThis )
 	{
 		TICPPTHROW( "Node is a Document and can't be inserted" );
 	}
-
-	// Increment reference count when adding to the tree
-	addThis.m_impRC->IncRef();
 
 	TiXmlNode* pointer = GetTiXmlPointer()->InsertEndChild( *addThis.GetTiXmlPointer() );
 	if ( 0 == pointer )
@@ -575,7 +563,7 @@ Element* Node::NextSiblingElement( const char* value, bool throwIfNoSiblings ) c
 	}
 
 	Element* temp = new Element( sibling );
-	m_spawnedWrappers.push_back( temp );
+	sibling->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -615,7 +603,7 @@ Element* Node::FirstChildElement( const char* value, bool throwIfNoChildren ) co
 	}
 
 	Element* temp = new Element( element );
-	m_spawnedWrappers.push_back( temp );
+	element->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -640,7 +628,7 @@ Document* Node::GetDocument( bool throwIfNoDocument ) const
 		}
 	}
 	Document* temp = new Document( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -658,7 +646,7 @@ Document* Node::ToDocument() const
 		TICPPTHROW( "This node (" << Value() << ") is not a Document" )
 	}
 	Document* temp = new Document( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -671,7 +659,7 @@ Element* Node::ToElement() const
 		TICPPTHROW( "This node (" << Value() << ") is not a Element" )
 	}
 	Element* temp = new Element( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -684,7 +672,7 @@ Comment* Node::ToComment() const
 		TICPPTHROW( "This node (" << Value() << ") is not a Comment" )
 	}
 	Comment* temp = new Comment( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -697,7 +685,7 @@ Text* Node::ToText() const
 		TICPPTHROW( "This node (" << Value() << ") is not a Text" )
 	}
 	Text* temp = new Text( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -710,7 +698,7 @@ Declaration* Node::ToDeclaration() const
 		TICPPTHROW( "This node (" << Value() << ") is not a Declaration" )
 	}
 	Declaration* temp = new Declaration( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -723,7 +711,7 @@ StylesheetReference* Node::ToStylesheetReference() const
 		TICPPTHROW( "This node (" << Value() << ") is not a StylesheetReference" )
 	}
 	StylesheetReference* temp = new StylesheetReference( doc );
-	m_spawnedWrappers.push_back( temp );
+	doc->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -859,8 +847,7 @@ void Document::Parse( const std::string& xml, bool throwIfParseError, TiXmlEncod
 	m_tiXmlPointer->Parse( xml.c_str(), 0, encoding );
 	if( throwIfParseError && m_tiXmlPointer->Error() )
 	{
-		TICPPTHROW( "Error parsing xml: " << m_tiXmlPointer->ErrorDesc()
-            << " In row " << m_tiXmlPointer->ErrorRow() << ", column " << m_tiXmlPointer->ErrorCol() << ".");
+		TICPPTHROW( "Error parsing xml." );
 	}
 }
 
@@ -911,7 +898,7 @@ Attribute* Element::FirstAttribute( bool throwIfNoAttributes ) const
 	}
 
 	Attribute* temp = new Attribute( attribute );
-	m_spawnedWrappers.push_back( temp );
+	attribute->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -938,7 +925,7 @@ Attribute* Element::LastAttribute( bool throwIfNoAttributes ) const
 	}
 
 	Attribute* temp = new Attribute( attribute );
-	m_spawnedWrappers.push_back( temp );
+	attribute->m_spawnedWrappers.push_back( temp );
 
 	return temp;
 }
@@ -956,6 +943,18 @@ std::string Element::GetAttributeOrDefault( const std::string& name, const std::
 std::string Element::GetAttribute( const std::string& name ) const
 {
 	return GetAttributeOrDefault( name, std::string() );
+}
+
+bool Element::HasAttribute( const std::string& name ) const
+{
+	ValidatePointer();
+	return ( 0 != m_tiXmlPointer->Attribute( name.c_str() ) );
+}
+
+void Element::RemoveAttribute( const std::string& name )
+{
+	ValidatePointer();
+	m_tiXmlPointer->RemoveAttribute( name.c_str() );
 }
 
 bool Element::GetAttributeImp( const std::string& name, std::string* value ) const
@@ -1085,8 +1084,20 @@ TiCppRC::TiCppRC()
 	m_tiRC = new TiCppRCImp( this );
 }
 
-TiCppRC::~TiCppRC()
+void TiCppRC::DeleteSpawnedWrappers()
 {
+	std::vector< Base* >::reverse_iterator wrapper;
+	for ( wrapper = m_spawnedWrappers.rbegin(); wrapper != m_spawnedWrappers.rend(); ++wrapper )
+	{
+		delete *wrapper;
+	}
+	m_spawnedWrappers.clear();
+}
+		
+TiCppRC::~TiCppRC()
+{	
+	DeleteSpawnedWrappers();
+	
 	// Set pointer held by reference counter to NULL
 	this->m_tiRC->Nullify();
 

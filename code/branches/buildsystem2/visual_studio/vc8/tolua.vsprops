@@ -11,4 +11,8 @@
 		CompileAs="1"
 		DisableSpecificWarnings="4996"
 	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="lua$(CS).lib"
+	/>
 </VisualStudioPropertySheet>

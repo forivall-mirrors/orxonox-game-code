@@ -1,4 +1,4 @@
-SET (TOLUALIB_SRC_FILES
+SET(TOLUALIB_SRC_FILES
   tolua_event.c
   tolua_is.c
   tolua_map.c
@@ -6,68 +6,43 @@ SET (TOLUALIB_SRC_FILES
   tolua_to.c
 )
 
-ADD_LIBRARY (tolualib_orxonox SHARED ${TOLUALIB_SRC_FILES})
-
-TARGET_LINK_LIBRARIES (tolualib_orxonox
-  lua_orxonox
-)
+ADD_LIBRARY          (tolualib_orxonox SHARED ${TOLUALIB_SRC_FILES})
+TARGET_LINK_LIBRARIES(tolualib_orxonox ${LUA_LIBRARIES})
 
 
-SET (TOLUAGEN_SRC_FILES
+SET(TOLUAGEN_SRC_FILES
   tolua.c
-  toluabind.c
 )
 
-ADD_EXECUTABLE (toluagen_orxonox ${TOLUAGEN_SRC_FILES})
+ADD_EXECUTABLE       (toluaexe_orxonox ${TOLUAGEN_SRC_FILES})
+TARGET_LINK_LIBRARIES(toluaexe_orxonox tolualib_orxonox ${LUA_LIBRARIES})
 
-TARGET_LINK_LIBRARIES (toluagen_orxonox
-  lua_orxonox
-  tolualib_orxonox
-  m
-)
+# TODO: determine lua version and set appropriate pack file
+SET(TOLUA_ALL_PACK all-5.1.lua)
+SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${TOLUA_ALL_PACK}" PARENT_SCOPE)
+SET(TOLUA_PARSER_DEPENDENCIES
+  ${CMAKE_CURRENT_SOURCE_DIR}/${TOLUA_ALL_PACK}
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat-5.1.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/basic.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/feature.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/verbatim.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/code.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/typedef.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/container.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/package.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/module.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/namespace.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/define.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/enumerate.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/declaration.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/variable.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/array.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/function.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/operator.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/class.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/clean.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/lua/doit.lua
 
-
-SET (TOLUA_PACKAGE "../../src/tolua/tolua-5.1.pkg")
-GET_TARGET_PROPERTY(TOLUAGEN_EXE toluagen_orxonox LOCATION)
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/toluabind_orxonox.c
-  COMMAND ${TOLUAGEN_EXE} -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ${TOLUA_PACKAGE}
-  DEPENDS
-    toluagen_orxonox
-    tolua-5.1.pkg
-    lua/compat-5.1.lua
-    lua/compat.lua
-    lua/basic.lua
-    lua/feature.lua
-    lua/verbatim.lua
-    lua/code.lua
-    lua/typedef.lua
-    lua/container.lua
-    lua/package.lua
-    lua/module.lua
-    lua/namespace.lua
-    lua/define.lua
-    lua/enumerate.lua
-    lua/declaration.lua
-    lua/variable.lua
-    lua/array.lua
-    lua/function.lua
-    lua/operator.lua
-    lua/class.lua
-    lua/clean.lua
-    lua/doit.lua
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
-)
-
-SET (TOLUAEXE_SRC_FILES
-  tolua.c
-  toluabind_orxonox.c
-)
-
-ADD_EXECUTABLE (tolua_orxonox ${TOLUAEXE_SRC_FILES})
-
-TARGET_LINK_LIBRARIES (tolua_orxonox
-  lua_orxonox
-  tolualib_orxonox
-  m
+  PARENT_SCOPE
 )

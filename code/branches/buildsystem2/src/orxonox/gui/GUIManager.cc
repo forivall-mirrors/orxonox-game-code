@@ -38,17 +38,19 @@
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <CEGUI.h>
-#include "ceguilua/CEGUILua.h"
+#include <CEGUILua.h>
 #include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
-#include "core/tolua/tolua_bind.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
-#include "tolua/tolua_bind.h"
+#include "core/ToluaBindCore.h"
+#include "orxonox/ToluaBindOrxonox.h"
 #include "OgreCEGUIRenderer.h"
 
-#include "lua/lua.hpp"
+extern "C" {
+#include "lua.h"
+}
 
 namespace orxonox
 {

@@ -41,30 +41,20 @@ SET(CORE_SRC_FILES
   TclBind.cc
   TclThreadManager.cc
 
-  tolua/tolua_bind.cc
 )
 
 ADD_SOURCE_DIRECTORY(CORE_SRC_FILES input)
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.h
-  COMMAND ${TOLUA_EXE} -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
-  DEPENDS
-    tolua_orxonox
-    tolua/tolua.pkg
-    LuaBind.h
-    CommandExecutor.h
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
-)
+INCLUDE(UseTolua)
+TOLUA(Core CORE_SRC_FILES INPUTFILES LuaBind.h CommandExecutor.h)
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(core
-  ${OGRE_LIBRARIES}
-  ${Boost_thread_LIBRARIES}
-  ${Boost_filesystem_LIBRARIES}
-  lua_orxonox
+  ${OGRE_LIBRARY}
+  ${Boost_THREAD_LIBRARY}
+  ${Boost_FILESYSTEM_LIBRARY}
+  ${LUA_LIBRARIES}
   cpptcl_orxonox
   ois_orxonox
   tinyxml_orxonox

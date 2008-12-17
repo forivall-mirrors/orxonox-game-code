@@ -17,38 +17,22 @@
 # Other (Unix) systems should be able to utilize the non-framework paths.
 #
 # Several changes and additions by Fabian 'x3n' Landau
+# Some simplifications by Adrian Friedli
 #                 > www.orxonox.net <
 
-IF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-  SET (ALUT_FIND_QUIETLY TRUE)
-ENDIF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-
 FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
-  $ENV{ALUTDIR}/include
-  ~/Library/Frameworks/OpenAL.framework/Headers
-  /Library/Frameworks/OpenAL.framework/Headers
-  /System/Library/Frameworks/OpenAL.framework/Headers # Tiger
-  /usr/pack/openal-0.0.8-cl/include # Tardis specific hack
-  /usr/local/include/
-  /usr/local/include/OpenAL
-  /usr/local/include
-  /usr/include/
-  /usr/include/OpenAL
-  /usr/include
-  /sw/include/ # Fink
-  /sw/include/OpenAL
-  /sw/include
-  /opt/local/include/AL # DarwinPorts
-  /opt/local/include/OpenAL
-  /opt/local/include
-  /opt/csw/include/ # Blastwave
-  /opt/csw/include/OpenAL
-  /opt/csw/include
-  /opt/include/
-  /opt/include/OpenAL
-  /opt/include
-  ../libs/freealut-1.1.0/include
-  ${DEPENDENCY_DIR}/freealut-1.1.0/include
+  PATHS
+  $ENV{ALUTDIR}
+  ~/Library/Frameworks/OpenAL.framework
+  /Library/Frameworks/OpenAL.framework
+  /System/Library/Frameworks/OpenAL.framework # Tiger
+  /usr/local
+  /usr
+  /sw # Fink
+  /opt/local # DarwinPorts
+  /opt/csw # Blastwave
+  /opt
+  PATH_SUFFIXES include include/OpenAL include/AL Headers
   )
 
 # I'm not sure if I should do a special casing for Apple. It is
@@ -77,39 +61,20 @@ ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
   FIND_LIBRARY(ALUT_LIBRARY
     NAMES alut
     PATHS
-    $ENV{ALUTDIR}/lib
-    $ENV{ALUTDIR}/libs
-    /usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
-    /usr/local/lib
-    /usr/lib
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    ../libs/freealut-1.1.0/src/.libs
-    ../libs/freealut-1.1.0/lib
-    ${DEPENDENCY_DIR}/freealut-1.1.0/lib
+    $ENV{ALUTDIR}
+    /usr/local
+    /usr
+    /sw
+    /opt/local
+    /opt/csw
+    /opt
+    PATH_SUFFIXES lib libs
     )
 ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
 
-SET (ALUT_FOUND "NO")
-IF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-  SET (ALUT_FOUND "YES")
-  IF (NOT ALUT_FIND_QUIETLY)
-    MESSAGE (STATUS "FreeAlut was found.")
-    IF (VERBOSE_FIND)
-      MESSAGE (STATUS "  include path: ${ALUT_INCLUDE_DIR}")
-      MESSAGE (STATUS "  library path: ${ALUT_LIBRARY}")
-      MESSAGE (STATUS "  libraries:    alut")
-    ENDIF (VERBOSE_FIND)
-  ENDIF (NOT ALUT_FIND_QUIETLY)
-ELSE (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-  IF (NOT ALUT_INCLUDE_DIR)
-    MESSAGE (SEND_ERROR "FreeAlut include path was not found.")
-  ENDIF (NOT ALUT_INCLUDE_DIR)
-  IF (NOT ALUT_LIBRARY)
-    MESSAGE (SEND_ERROR "FreeAlut library was not found.")
-  ENDIF (NOT ALUT_LIBRARY)
-ENDIF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+# handle the QUIETLY and REQUIRED arguments and set ALUT_FOUND to TRUE if
+# all listed variables are TRUE
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(ALUT DEFAULT_MSG ALUT_LIBRARY ALUT_INCLUDE_DIR)
 
-
+MARK_AS_ADVANCED(ALUT_LIBRARY ALUT_INCLUDE_DIR)

@@ -31,9 +31,12 @@
 #include <fstream>
 #include <map>
 
-#include "lua/lua.hpp"
-#include "tolua/tolua++.h"
-#include "tolua/tolua_bind.h"
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+}
+#include "tolua++.h"
+#include "core/ToluaBindCore.h"
 #include "util/String.h"
 #include "CoreIncludes.h"
 
