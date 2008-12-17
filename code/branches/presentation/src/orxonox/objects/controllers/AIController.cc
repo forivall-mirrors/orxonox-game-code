@@ -56,7 +56,7 @@ namespace orxonox
     {
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
-/*
+
         // search enemy
         random = rnd(maxrand);
         if (random < 15 && (!this->target_))
@@ -71,7 +71,7 @@ namespace orxonox
         random = rnd(maxrand);
         if (random < 10 && (this->target_))
             this->searchNewTarget();
-*/
+
         // fly somewhere
         random = rnd(maxrand);
         if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
@@ -86,7 +86,7 @@ namespace orxonox
         random = rnd(maxrand);
         if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
             this->searchRandomTargetPosition();
-/*
+
         // shoot
         random = rnd(maxrand);
         if (random < 75 && (this->target_ && !this->bShooting_))
@@ -96,7 +96,6 @@ namespace orxonox
         random = rnd(maxrand);
         if (random < 25 && (this->bShooting_))
             this->bShooting_ = false;
-*/
     }
 
     void AIController::tick(float dt)
@@ -111,7 +110,7 @@ namespace orxonox
             this->moveToTargetPosition(dt);
 
         if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
-            this->getControllableEntity()->fire();
+            this->getControllableEntity()->fire(WeaponMode::fire);
 
         SUPER(AIController, tick, dt);
     }

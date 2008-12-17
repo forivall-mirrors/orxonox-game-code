@@ -29,32 +29,35 @@
 #include "OrxonoxStableHeaders.h"
 #include "BillboardProjectile.h"
 
-#include <OgreBillboard.h>
+#include <OgreBillboardSet.h>
 
 #include "core/CoreIncludes.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
     CreateFactory(BillboardProjectile);
 
-    BillboardProjectile::BillboardProjectile(BaseObject* creator, Weapon* owner) : Projectile(creator, owner)
+    BillboardProjectile::BillboardProjectile(BaseObject* creator) : Projectile(creator)
     {
         RegisterObject(BillboardProjectile);
 
-        this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
-        this->attachObject(this->billboard_.getBillboardSet());
-        this->scale(0.5);
+        assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
+
+        this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5, 0.5, 0.7, 0.8), 1);
+        this->attachOgreObject(this->billboard_.getBillboardSet());
+        this->scale(0.2);
     }
 
     BillboardProjectile::~BillboardProjectile()
     {
-        if (this->isInitialized() && this->owner_)
-            this->detachObject(this->billboard_.getBillboardSet());
+        //if (this->isInitialized() && this->owner_)
+            //this->detachObject(this->billboard_.getBillboardSet());
     }
 
     void BillboardProjectile::setColour(const ColourValue& colour)
     {
-        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
+        this->billboard_.setColour(colour);
     }
 
     void BillboardProjectile::changedVisibility()

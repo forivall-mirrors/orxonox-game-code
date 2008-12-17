@@ -55,16 +55,16 @@ namespace orxonox
             return;
 
         Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, this->targetPosition_);
-
         float distance = (this->targetPosition_ - this->getControllableEntity()->getPosition()).length();
-        if (this->target_ || distance > 50)
+
+        if (this->target_ || distance > 10)
         {
             // Multiply with 0.8 to make them a bit slower
-            this->getControllableEntity()->rotateYaw(0.8 * sgn(coord.x) * coord.x*coord.x);
+            this->getControllableEntity()->rotateYaw(-0.8 * sgn(coord.x) * coord.x*coord.x);
             this->getControllableEntity()->rotatePitch(0.8 * sgn(coord.y) * coord.y*coord.y);
         }
 
-        if (this->target_ && distance < 1000 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+        if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
             this->getControllableEntity()->moveFrontBack(-0.5); // They don't brake with full power to give the player a chance
         else
             this->getControllableEntity()->moveFrontBack(0.8);
@@ -72,7 +72,7 @@ namespace orxonox
 
     void ArtificialController::searchRandomTargetPosition()
     {
-        this->targetPosition_ = Vector3(rnd(-5000,5000), rnd(-5000,5000), rnd(-5000,5000));
+        this->targetPosition_ = Vector3(rnd(-2000,2000), rnd(-2000,2000), rnd(-2000,2000));
         this->bHasTargetPosition_ = true;
     }
 
@@ -87,6 +87,7 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
 //            if (it->getTeamNr() != this->getTeamNr())
+            if ((ControllableEntity*)(*it) != this->getControllableEntity())
             {
                 float speed = this->getControllableEntity()->getVelocity().length();
                 Vector3 distanceCurrent = this->targetPosition_ - this->getControllableEntity()->getPosition();
@@ -112,9 +113,9 @@ namespace orxonox
         if (!this->target_ || !this->getControllableEntity())
             return;
 
-        static const float hardcoded_projectile_speed = 500;
+        static const float hardcoded_projectile_speed = 1250;
 
-        this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(), hardcoded_projectile_speed, this->target_->getPosition(), this->target_->getOrientation() * this->target_->getVelocity());
+        this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(), hardcoded_projectile_speed, this->target_->getPosition(), this->target_->getVelocity());
         this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
     }
 
@@ -137,7 +138,7 @@ namespace orxonox
         return (getAngle(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->targetPosition_) < angle);
     }
 
-    void ArtificialController::shipDied(Pawn* ship)
+    void ArtificialController::destroyedPawn(Pawn* ship)
     {
         if (ship == this->target_)
         {

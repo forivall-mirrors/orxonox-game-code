@@ -35,9 +35,11 @@
 #include "core/BaseObject.h"
 
 #include "WeaponSet.h"
+#include "WeaponPack.h"
 
 namespace orxonox
 {
+
     class _OrxonoxExport WeaponSystem : public BaseObject
     {
         public:
@@ -46,23 +48,33 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
+            void attachWeaponSlot(WeaponSlot *wSlot);
             void attachWeaponSet(WeaponSet *wSet);
-            void fire();
-            void fire(unsigned int n);
-            void setActiveWeaponSet(unsigned int n);
+            //void fire();
+            void fire(WeaponMode::Enum fireMode);
+            //void setActiveWeaponSet(unsigned int n);
+            void attachWeaponPack(WeaponPack * wPack, unsigned int firemode);
             WeaponSet * getWeaponSetPointer(unsigned int n);
+            WeaponSlot * getWeaponSlotPointer(unsigned int n);
+            WeaponPack * getWeaponPackPointer(unsigned int n);
+            void setNewMunition(std::string munitionType, Munition * munitionToAdd);
+            Munition * getMunitionType(std::string munitionType);
 
-            inline void setParentSpaceShip(SpaceShip *parentSpaceShip)
-                { parentSpaceShip_=parentSpaceShip; }
-            inline SpaceShip * getParentSpaceShip()
-                { return parentSpaceShip_; }
+            inline void setParentPawn(Pawn *parentPawn)
+                { parentPawn_=parentPawn; }
+            inline Pawn * getParentPawn()
+                { return parentPawn_; }
 
+            inline int getWeaponSlotSize()
+                { return this->weaponSlots_.size(); }
 
         private:
             std::vector<WeaponSet *> weaponSets_;
+            std::vector<WeaponSlot *> weaponSlots_;
+            std::vector<WeaponPack *> weaponPacks_;
+            std::map<std::string, Munition *> munitionSet_;
             WeaponSet *activeWeaponSet_;
-
-            SpaceShip *parentSpaceShip_;
+            Pawn *parentPawn_;
     };
 }
 

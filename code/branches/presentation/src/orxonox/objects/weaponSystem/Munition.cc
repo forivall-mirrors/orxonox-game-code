@@ -36,6 +36,8 @@
 
 namespace orxonox
 {
+    CreateFactory(Munition);
+
     Munition::Munition(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Munition);
@@ -45,9 +47,75 @@ namespace orxonox
     {
     }
 
+    unsigned int Munition::bullets()
+    {
+        if (this->bullets_ > 0)
+            return bullets_;
+        else
+            return 0;
+    }
+
+    unsigned int Munition::magazines()
+    {
+        if (this->magazines_ > 0)
+            return magazines_;
+        else
+            return 0;
+    }
+
+    void Munition::setMaxBullets(unsigned int amount)
+    { this->maxBullets_ = amount; }
+
+    void Munition::setMaxMagazines(unsigned int amount)
+    { this->maxMagazines_ = amount; }
+
+    void Munition::removeBullets(unsigned int amount)
+    {
+        if ( this->bullets_ != 0 )
+            this->bullets_ = this->bullets_ - amount;
+    }
+
+    void Munition::removeMagazines(unsigned int amount)
+    {
+        if ( this->magazines_ != 0 )
+            this->magazines_ = this->magazines_ - amount;
+    }
+
+    void Munition::addBullets(unsigned int amount)
+    {
+        if ( this->bullets_ == this->maxBullets_ )
+        {
+            //cannot add bullets to actual magazine
+        }
+        else
+            this->bullets_ = this->bullets_ + amount;
+    }
+
+    void Munition::addMagazines(unsigned int amount)
+    {
+        if ( this->magazines_ == this->maxMagazines_ )
+        {
+            //no more capacity for another magazine
+        }
+        else
+            this->magazines_ = this->magazines_ + amount;
+    }
+
+
+    void Munition::fillBullets()
+    {
+//COUT(0) << "Munition::fillBullets maxBullets_=" << this->maxBullets_ << std::endl;
+        this->bullets_ = this->maxBullets_;
+    }
+
+    void Munition::fillMagazines()
+    {
+        this->magazines_ = this->maxMagazines_;
+    }
+
     void Munition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-
+        SUPER(Munition, XMLPort, xmlelement, mode);
     }
 
 }

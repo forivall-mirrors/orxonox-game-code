@@ -33,6 +33,7 @@
 
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/RadarViewable.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -74,9 +75,16 @@ namespace orxonox
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void kill();
 
-            virtual void fire();
+            virtual void fire(WeaponMode::Enum fireMode);
 
             virtual void postSpawn();
+
+            void setWeaponSlot(WeaponSlot * wSlot);
+            WeaponSlot * getWeaponSlot(unsigned int index) const;
+            void setWeaponPack(WeaponPack * wPack);
+            WeaponPack * getWeaponPack(unsigned int firemode) const;
+            void setWeaponSet(WeaponSet * wSet);
+            WeaponSet * getWeaponSet(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const
                 { return (WorldEntity*)this; }
@@ -110,13 +118,14 @@ namespace orxonox
             Pawn* lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
+            unsigned int fire_;
 
             std::string spawnparticlesource_;
             float spawnparticleduration_;
             unsigned int numexplosionchunks_;
     };
 
-    class _OrxonoxExport PawnListener : public OrxonoxClass
+    class _OrxonoxExport PawnListener : virtual public OrxonoxClass
     {
         friend class Pawn;
 

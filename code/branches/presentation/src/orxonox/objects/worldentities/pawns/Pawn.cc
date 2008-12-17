@@ -36,7 +36,6 @@
 #include "PawnManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
-#include "objects/weaponSystem/WeaponSystem.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
 
@@ -51,23 +50,23 @@ namespace orxonox
         PawnManager::touch();
 
         this->bAlive_ = true;
+        this->fire_ = 0x0;
 
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
 
         this->lastHitOriginator_ = 0;
-        this->weaponSystem_ = 0;
 
         this->spawnparticleduration_ = 3.0f;
 
-        /*
-        //WeaponSystem
-        weaponSystem_ = new WeaponSystem();
-        WeaponSet * weaponSet1 = new WeaponSet(1);
-        this->weaponSystem_->attachWeaponSet(weaponSet1);
-        this->weaponSystem_->getWeaponSetPointer(0)->getWeaponSlotPointer(0)->setAmmoType(true);
-        */
+        if (Core::isMaster())
+        {
+            this->weaponSystem_ = new WeaponSystem(this);
+            this->weaponSystem_->setParentPawn(this);
+        }
+        else
+            this->weaponSystem_ = 0;
 
         this->setRadarObjectColour(ColourValue::Red);
         this->setRadarObjectShape(RadarViewable::Dot);
@@ -81,6 +80,9 @@ namespace orxonox
         {
             for (ObjectList<PawnListener>::iterator it = ObjectList<PawnListener>::begin(); it != ObjectList<PawnListener>::end(); ++it)
                 it->destroyedPawn(this);
+
+            if (this->weaponSystem_)
+                delete this->weaponSystem_;
         }
     }
 
@@ -94,6 +96,10 @@ namespace orxonox
         XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
         XMLPortParam(Pawn, "spawnparticleduration", setSpawnParticleDuration, getSpawnParticleDuration, xmlelement, mode).defaultValues(3.0f);
         XMLPortParam(Pawn, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
+
+        XMLPortObject(Pawn, WeaponSlot, "weaponslots", setWeaponSlot, getWeaponSlot, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponSet, "weaponsets", setWeaponSet, getWeaponSet, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", setWeaponPack, getWeaponPack, xmlelement, mode);
     }
 
     void Pawn::registerVariables()
@@ -101,11 +107,23 @@ namespace orxonox
         registerVariable(this->bAlive_,        variableDirection::toclient);
         registerVariable(this->health_,        variableDirection::toclient);
         registerVariable(this->initialHealth_, variableDirection::toclient);
+        registerVariable(this->fire_,          variableDirection::toclient);
     }
 
     void Pawn::tick(float dt)
     {
         SUPER(Pawn, tick, dt);
+
+        if (this->weaponSystem_)
+        {
+            if (this->fire_ & WeaponMode::fire)
+                this->weaponSystem_->fire(WeaponMode::fire);
+            if (this->fire_ & WeaponMode::altFire)
+                this->weaponSystem_->fire(WeaponMode::altFire);
+            if (this->fire_ & WeaponMode::altFire2)
+                this->weaponSystem_->fire(WeaponMode::altFire2);
+        }
+        this->fire_ = 0x0;
 
         if (this->health_ <= 0)
             this->death();
@@ -204,10 +222,9 @@ namespace orxonox
         }
     }
 
-    void Pawn::fire()
+    void Pawn::fire(WeaponMode::Enum fireMode)
     {
-        if (this->weaponSystem_)
-            this->weaponSystem_->fire();
+        this->fire_ |= fireMode;
     }
 
     void Pawn::postSpawn()
@@ -216,6 +233,55 @@ namespace orxonox
         if (Core::isMaster())
             this->spawneffect();
     }
+
+    void Pawn::setWeaponSlot(WeaponSlot * wSlot)
+    {
+        this->attach(wSlot);
+        if (this->weaponSystem_)
+            this->weaponSystem_->attachWeaponSlot(wSlot);
+    }
+
+    WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponSlotPointer(index);
+        else
+            return 0;
+    }
+
+    void Pawn::setWeaponPack(WeaponPack * wPack)
+    {
+        if (this->weaponSystem_)
+        {
+            wPack->setParentWeaponSystem(this->weaponSystem_);
+            wPack->setParentWeaponSystemToAllWeapons(this->weaponSystem_);
+            this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );
+            wPack->attachNeededMunitionToAllWeapons();
+        }
+    }
+
+    WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponPackPointer(firemode);
+        else
+            return 0;
+    }
+
+    void Pawn::setWeaponSet(WeaponSet * wSet)
+    {
+        if (this->weaponSystem_)
+            this->weaponSystem_->attachWeaponSet(wSet);
+    }
+
+    WeaponSet * Pawn::getWeaponSet(unsigned int index) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponSetPointer(index);
+        else
+            return 0;
+    }
+
 
     ///////////////////
     // Pawn Listener //

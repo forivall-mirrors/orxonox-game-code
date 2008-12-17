@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "MobileEntity.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -80,8 +81,8 @@ namespace orxonox
             inline void rotateRoll(float value)
                 { this->rotateRoll(Vector2(value, 0)); }
 
-            virtual void fire() {}
-            virtual void altFire() {}
+            virtual void fire(WeaponMode::Enum fireMode) {}
+            virtual void altFire(WeaponMode::Enum fireMode) {}
 
             virtual void boost() {}
             virtual void greet() {}

@@ -32,17 +32,18 @@
 #include "OrxonoxPrereqs.h"
 
 #include "Controller.h"
+#include "objects/worldentities/pawns/Pawn.h"
 #include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ArtificialController : public Controller
+    class _OrxonoxExport ArtificialController : public Controller, public PawnListener
     {
         public:
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
 
-            void shipDied(Pawn* ship);
+            virtual void destroyedPawn(Pawn* pawn);
 
         protected:
             void moveToTargetPosition(float dt);

@@ -20,35 +20,41 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Martin Polak
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _BillboardProjectile_H__
-#define _BillboardProjectile_H__
+#ifndef _Fusion_H__
+#define _Fusion_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "Projectile.h"
-#include "tools/BillboardSet.h"
+#include "core/BaseObject.h"
+
+#include "../munitions/LaserGunMunition.h"
 #include "util/Math.h"
+#include "../Weapon.h"
+#include "../projectiles/BillboardProjectile.h"
+#include "../projectiles/ParticleProjectile.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport BillboardProjectile : public Projectile
+    class _OrxonoxExport Fusion : public Weapon
     {
         public:
-            BillboardProjectile(BaseObject* creator);
-            virtual ~BillboardProjectile();
+            Fusion(BaseObject* creator);
+            virtual ~Fusion();
 
-            virtual void setColour(const ColourValue& colour);
-            virtual void changedVisibility();
+            virtual void takeBullets();
+            virtual void takeMagazines();
+            virtual void createProjectile();
 
         private:
-            BillboardSet billboard_;
+            float speed_;
+
     };
 }
 
-#endif /* _BillboardProjectile_H__ */
+#endif /* _Fusion_H__ */

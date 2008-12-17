@@ -28,31 +28,49 @@
 
 #include "OrxonoxStableHeaders.h"
 
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Debug.h"
 
-#include "LaserGunMunition.h"
+#include "Fusion.h"
+
 
 namespace orxonox
 {
-    CreateFactory(LaserGunMunition);
+    CreateFactory(Fusion);
 
-    LaserGunMunition::LaserGunMunition(BaseObject* creator) : Munition(creator)
+    Fusion::Fusion(BaseObject* creator) : Weapon(creator)
     {
-        RegisterObject(LaserGunMunition);
+        RegisterObject(Fusion);
 
-        this->maxBullets_ = 40;
-        this->maxMagazines_ = 100;
-    }
-
-    LaserGunMunition::~LaserGunMunition()
-    {
-    }
-
-    void LaserGunMunition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
+        this->speed_ = 1250;
 
     }
 
+    Fusion::~Fusion()
+    {
+    }
+
+    void Fusion::takeBullets()
+    {
+//COUT(0) << "Fusion::takeBullets" << std::endl;
+        this->munition_->removeBullets(1);
+        this->bulletTimer(this->bulletLoadingTime_);
+    }
+
+    void Fusion::takeMagazines()
+    {
+        this->munition_->removeMagazines(1);
+        this->magazineTimer(this->magazineLoadingTime_);
+    }
+
+    void Fusion::createProjectile()
+    {
+//COUT(0) << "Fusion::createProjectile" << std::endl;
+        BillboardProjectile* projectile = new ParticleProjectile(this);
+        projectile->setOrientation(this->getWorldOrientation());
+        projectile->setPosition(this->getWorldPosition());
+        projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
+    }
 }

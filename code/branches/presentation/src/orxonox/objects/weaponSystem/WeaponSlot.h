@@ -31,15 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
-
-
 #include "Weapon.h"
-
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WeaponSlot : public BaseObject
+    class _OrxonoxExport WeaponSlot : public StaticEntity
     {
         public:
             WeaponSlot(BaseObject* creator);
@@ -47,22 +44,22 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeapon(Weapon *weaponName);
+            void attachWeapon(Weapon *weapon);
+            Weapon * getAttachedWeapon() const;
             void setAmmoType(bool isUnlimited);
             void fire();
 
-            inline void setParentWeaponSet(WeaponSet *parentWeaponSet)
-                { parentWeaponSet_=parentWeaponSet; }
-            inline WeaponSet * getParentWeaponSet()
-                { return parentWeaponSet_; }
-
+            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
+                { parentWeaponSystem_=parentWeaponSystem; }
+            inline WeaponSystem * getParentWeaponSystem()
+                { return parentWeaponSystem_; }
 
 
         private:
             Weapon *attachedWeapon_;
             bool unlimitedAmmo_;
 
-            WeaponSet *parentWeaponSet_;
+            WeaponSystem *parentWeaponSystem_;
     };
 }
 

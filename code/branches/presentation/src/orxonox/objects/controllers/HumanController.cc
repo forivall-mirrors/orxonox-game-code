@@ -109,13 +109,13 @@ namespace orxonox
     void HumanController::fire()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->fire();
+            HumanController::localController_s->controllableEntity_->fire(WeaponMode::fire);
     }
 
     void HumanController::altFire()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->altFire();
+            HumanController::localController_s->controllableEntity_->fire(WeaponMode::altFire);
     }
 
     void HumanController::boost()
