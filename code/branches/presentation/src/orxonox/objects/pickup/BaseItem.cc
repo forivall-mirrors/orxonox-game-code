@@ -2,6 +2,7 @@
    multimap<std::string, BaseItem*> Equipment;*/
 
 
+#include "OrxonoxStableHeaders.h"
 #include "BaseItem.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

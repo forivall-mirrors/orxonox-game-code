@@ -1,3 +1,4 @@
+#include "OrxonoxStableHeaders.h"
 #include "BaseItem.h"
 #include "ShipEquipment.h"
 #include "objects/worldentities/pawns/Pawn.h"
@@ -26,7 +27,7 @@ namespace orxonox
 	{
 		COUT(3) << "SWAP?" <<  endl;
 		//Abfrage- irgendne ifschleife...
-		if((checkSlot(item)->dropped(player))==true);
+		if((checkSlot(item)->dropped(player))==true)
 		{
 			Equipment.insert ( std::pair<std::string, BaseItem*>(item->getName(),item) );
 			COUT(3) << "SWAPPED!" <<  endl;

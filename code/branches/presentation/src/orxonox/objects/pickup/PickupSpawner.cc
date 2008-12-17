@@ -1,3 +1,4 @@
+#include "OrxonoxStableHeaders.h"
 #include "PickupSpawner.h"
 #include "BaseItem.h"
 #include "objects/worldentities/pawns/Pawn.h"
@@ -109,7 +110,7 @@ void PickupSpawner::changedActivity()
 */
 	SUPER(PickupSpawner, changedActivity);
 
-	for (std::set<WorldEntity*>::iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); ++it)
+	for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); ++it)
 		(*it)->setVisible(this->isActive());
 }
 

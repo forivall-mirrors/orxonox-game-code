@@ -1,3 +1,4 @@
+#include "OrxonoxStableHeaders.h"
 #include "Turbo.h"
 
 #include "objects/worldentities/pawns/SpaceShip.h"

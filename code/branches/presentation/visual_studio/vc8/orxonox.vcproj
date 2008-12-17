@@ -682,6 +682,26 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="pickup"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\BaseItem.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\PickupSpawner.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipEquipment.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\Turbo.cc"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -1359,6 +1379,38 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\items\MultiStateEngine.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="pickup"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\BaseItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\PickupSpawner.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipEquipment.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipEquipmentClasses.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\Turbo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\Usable.h"
 						>
 					</File>
 				</Filter>
