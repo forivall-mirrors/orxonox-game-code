@@ -52,10 +52,17 @@ namespace orxonox
         };
     }
 
+    struct Player
+    {
+        PlayerInfo* info_;
+        PlayerState::Enum state_;
+        int frags_;
+        int killed_;
+    };
+
     class _OrxonoxExport Gametype : public BaseObject, public Tickable
     {
         friend class PlayerInfo;
-        friend class ClassIdentifier<Gametype>;
 
         public:
             Gametype(BaseObject* creator);
@@ -81,13 +88,13 @@ namespace orxonox
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
             virtual void playerChangedName(PlayerInfo* player);
 
-            virtual void playerScored(PlayerInfo* player);
+            virtual void playerScored(Player& player);
 
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             virtual void pawnPreSpawn(Pawn* pawn);
             virtual void pawnPostSpawn(Pawn* pawn);
 
-            inline const std::map<PlayerInfo*, PlayerState::Enum>& getPlayers() const
+            inline const std::map<PlayerInfo*, Player>& getPlayers() const
                 { return this->players_; }
 
             inline void registerSpawnPoint(SpawnPoint* spawnpoint)
@@ -103,12 +110,6 @@ namespace orxonox
 
             inline unsigned int getNumberOfPlayers() const
                 { return this->players_.size(); }
-
-            inline std::string getPlayersName() const
-                { return "StatsBot77"; }
-
-            inline unsigned int getPlayersFrags() const
-                { return 123; }
 
         private:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
@@ -130,14 +131,14 @@ namespace orxonox
             float initialStartCountdown_;
             unsigned int numberOfBots_;
 
-            std::map<PlayerInfo*, PlayerState::Enum> players_;
+            std::map<PlayerInfo*, Player> players_;
             std::set<SpawnPoint*> spawnpoints_;
             SubclassIdentifier<ControllableEntity> defaultControllableEntity_;
 
-            XMLFile* statsOverlay_;
+            OverlayGroup* scoreboard_;
 
             // Config Values
-            std::string statsOverlayName_;
+            std::string scoreboardTemplate_;
     };
 }
 

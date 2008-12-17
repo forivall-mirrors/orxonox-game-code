@@ -193,6 +193,9 @@ namespace orxonox
     class Gametype;
 
     class Scores;
+    class CreateLines;
+    class Scoreboard;
+    class Stats;
 
     // collision
     class CollisionShape;

@@ -55,6 +55,42 @@ namespace orxonox
         RegisterObject(Stats);
 
         this->setConfigValues();
+
+        // create overlay and elements
+        Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
+
+        // create BorderPanel
+        this->statsOverlayBorder_ = static_cast<Ogre::BorderPanelOverlayElement*>(ovMan->createOverlayElement("BorderPanel", "StatsBorderPanel" + getUniqueNumberString()));
+        //this->statsOverlayBorder_->setMaterialName("StatsCenter");
+        this->statsOverlayBorder_->setBorderSize(0.003, 16 * 0.003);
+        this->statsOverlayBorder_->setBorderMaterialName("StatsBorder");
+        this->statsOverlayBorder_->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
+        this->statsOverlayBorder_->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
+        this->statsOverlayBorder_->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
+        this->statsOverlayBorder_->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
+        this->statsOverlayBorder_->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
+        this->statsOverlayBorder_->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
+        this->statsOverlayBorder_->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
+        this->statsOverlayBorder_->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+
+        background_->addChild(statsOverlayBorder_);
+
+        // create noise
+        //this->statsOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "StatsNoise" + getUniqueNumberString()));
+        //this->statsOverlayNoise_->setPosition(0,0);
+        //this->statsOverlayNoise_->setMaterialName("StatsNoiseSmall");
+        // comment following line to disable noise
+        //background_->addChild(this->statsOverlayNoise_);
+    }
+
+    Stats::~Stats()
+    {
+        if (this->isInitialized())
+        {
+            Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
+            ovMan->destroyOverlayElement(this->statsOverlayBorder_);
+            //ovMan->destroyOverlayElement(this->statsOverlayNoise_);
+        }
     }
 
     /**
@@ -71,33 +107,6 @@ namespace orxonox
     void Stats::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         OrxonoxOverlay::XMLPort(xmlElement, mode);
-
-        // create overlay and elements
-        Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
-
-        // create BorderPanel
-        this->statsOverlayBorder_ = static_cast<Ogre::BorderPanelOverlayElement*>(ovMan->createOverlayElement("BorderPanel", "StatsBorderPanel"));
-        this->statsOverlayBorder_->setMaterialName("StatsCenter");
-        this->statsOverlayBorder_->setBorderSize(0.02, 0.02, 0.02, 0.02);
-        this->statsOverlayBorder_->setBorderMaterialName("StatsBorder");
-        this->statsOverlayBorder_->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
-        this->statsOverlayBorder_->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
-        this->statsOverlayBorder_->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
-        this->statsOverlayBorder_->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
-        this->statsOverlayBorder_->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
-        this->statsOverlayBorder_->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
-        this->statsOverlayBorder_->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
-        this->statsOverlayBorder_->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
-
-        background_->addChild(statsOverlayBorder_);
-
-        // create noise
-        this->statsOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "StatsNoise"));
-        this->statsOverlayNoise_->setPosition(0,0);
-        this->statsOverlayNoise_->setMaterialName("StatsNoiseSmall");
-        // comment following line to disable noise
-        background_->addChild(this->statsOverlayNoise_);
-
     }
 
     void Stats::tick(float dt)
@@ -105,9 +114,9 @@ namespace orxonox
         // SUPER(Stats, tick, dt);
 
             // this creates a flickering effect (extracts exactly 80% of the texture at a random location)
-            float uRand = (rand() & 1023) / 1023.0f * 0.2f;
-            float vRand = (rand() & 1023) / 1023.0f * 0.2f;
-            this->statsOverlayNoise_->setUV(uRand, vRand, 7.5f + uRand, 7.5f + vRand);
+            //float uRand = (rand() & 1023) / 1023.0f * 0.2f;
+            //float vRand = (rand() & 1023) / 1023.0f * 0.2f;
+            //this->statsOverlayNoise_->setUV(uRand, vRand, 7.5f + uRand, 7.5f + vRand);
     }
 
 }

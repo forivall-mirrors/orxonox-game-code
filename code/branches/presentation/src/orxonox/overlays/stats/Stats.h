@@ -45,7 +45,7 @@ namespace orxonox
     {
     public: // functions
         Stats(BaseObject* creator);
-        virtual ~Stats(){}
+        virtual ~Stats();
 
         void setConfigValues();
 

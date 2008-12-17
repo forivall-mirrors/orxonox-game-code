@@ -39,14 +39,15 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Scoreboard : public OrxonoxOverlay
+    class _OrxonoxExport Scoreboard : public OrxonoxOverlay, public Tickable
     {
 
     public: // functions
         Scoreboard(BaseObject* creator);
-        ~Scoreboard() {}
+        virtual ~Scoreboard() {}
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void tick(float dt);
 
         inline void setGametype(Gametype* gt)
             { this->gametype_ = gt; }
@@ -58,10 +59,14 @@ namespace orxonox
         inline CreateLines* getCreateLines() const
             { return this->createlines_; }
 
+        virtual void changedVisibility();
+
     private: // functions
         void printLines();
 
     private: // variables
+        std::vector<CreateLines*> lines_;
+
         unsigned int numberOfColumns;
         unsigned int numberOfLines;
         unsigned int columnIndex;

@@ -39,23 +39,32 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport CreateLines : public OrxonoxOverlay
+    class _OrxonoxExport CreateLines
     {
 
     public: // functions
-        CreateLines(BaseObject* creator);
-        virtual ~CreateLines() {}
+        CreateLines(float, float, float, float);
+        virtual ~CreateLines();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        void setPlayerName(const std::string&);
+        void setScore(const std::string&);
+        void setDeaths(const std::string&);
 
-        void setNumberOfColumns(unsigned int numberOfColumns, unsigned int lineIndex);
-        void alignColumn(int columnIndex, float leftOffset, float topOffset);
-        void setColumnText(int columnIndex, std::string columnText);
+        void setVisibility(bool);
+
+        //void setNumberOfColumns(unsigned int numberOfColumns, unsigned int lineIndex);
+        //void alignColumn(int columnIndex, float leftOffset, float topOffset);
+        //void setColumnText(int columnIndex, std::string columnText);
 
     private: // functions
 
     private: // variables
-        std::vector<Ogre::TextAreaOverlayElement*> textColumns_;
+        //std::vector<OverlayText*> textColumns_;
+        OverlayText* playerNameText_;
+        OverlayText* scoreText_;
+        OverlayText* deathsText_;
+
+        Stats* background_;
 
     };
 }
