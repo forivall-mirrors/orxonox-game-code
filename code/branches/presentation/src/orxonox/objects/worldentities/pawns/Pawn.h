@@ -30,7 +30,7 @@
 #define _Pawn_H__
 
 #include "OrxonoxPrereqs.h"
-
+#include "objects/pickup/ShipEquipment.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/RadarViewable.h"
 #include "objects/weaponSystem/WeaponSystem.h"
@@ -76,7 +76,6 @@ namespace orxonox
             virtual void kill();
 
             virtual void fire(WeaponMode::Enum fireMode);
-
             virtual void postSpawn();
 
             void setWeaponSlot(WeaponSlot * wSlot);
@@ -104,12 +103,19 @@ namespace orxonox
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
 
+            inline ShipEquipment& getPickUp()
+                {return this->pickUp;}
+
+            virtual void dropItems();
+
         protected:
             virtual void death();
             virtual void deatheffect();
             virtual void spawneffect();
 
+            ShipEquipment pickUp;
             bool bAlive_;
+            
 
             float health_;
             float maxHealth_;

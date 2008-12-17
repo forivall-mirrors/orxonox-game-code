@@ -58,6 +58,7 @@ namespace orxonox
             static void use();
             static void switchCamera();
             static void mouseLook();
+            static void dropItems();
 
             static void suicide();
 

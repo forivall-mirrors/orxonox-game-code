@@ -48,7 +48,7 @@ namespace orxonox
         RegisterObject(Pawn);
 
         PawnManager::touch();
-
+	this->getPickUp().setPlayer(this);
         this->bAlive_ = true;
         this->fire_ = 0x0;
 
@@ -232,6 +232,11 @@ namespace orxonox
         this->setHealth(this->initialHealth_);
         if (Core::isMaster())
             this->spawneffect();
+    }
+
+    void Pawn::dropItems()
+    {
+	pickUp.eraseAll();
     }
 
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)

@@ -20,13 +20,12 @@ namespace orxonox
 
         public:
             itemType CheckType();
-            virtual
+            //virtual ChecksubType();
 
         private:
             itemType type;
             string itemname;
     };
-
 
     /* Useables are Items the Player can choose when to activate and then show an instant action/effect
      * or for a certain duration */
@@ -36,7 +35,7 @@ namespace orxonox
         {
             Rockets,
             Repairkits,
-            Triggers,		//trigger events usable by the player (Quests f.exp.)
+            Triggers,       //trigger events usable by the player (Quests f.exp.)
             Boosters,
             Shields,
             Appearance,

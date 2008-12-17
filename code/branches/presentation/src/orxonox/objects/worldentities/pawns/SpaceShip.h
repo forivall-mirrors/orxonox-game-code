@@ -78,15 +78,20 @@ namespace orxonox
             inline const std::string& getEngineTemplate() const
                 { return this->enginetemplate_; }
 
+            inline void setPermanentBoost(bool bPermanent)
+                { this->bPermanentBoost_ = bPermanent; }
+            inline bool getPermanentBoost() const
+                { return this->bPermanentBoost_; }
+
         protected:
             bool bInvertYAxis_;
 
             bool bBoost_;
+            bool bPermanentBoost_;
             Vector3 steering_;
             float primaryThrust_;
             float auxilaryThrust_;
             float rotationThrust_;
-
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 

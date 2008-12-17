@@ -53,6 +53,7 @@ namespace orxonox
     SetConsoleCommand(HumanController, suicide,       true);
     SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
+    SetConsoleCommand(HumanController, dropItems,     true);
 
     CreateUnloadableFactory(HumanController);
 
@@ -168,5 +169,11 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
             HumanController::localController_s->controllableEntity_->getGametype()->killBots(amount);
+    }
+
+    void HumanController::dropItems()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->dropItems();
     }
 }

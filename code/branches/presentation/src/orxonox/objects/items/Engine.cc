@@ -193,7 +193,8 @@ namespace orxonox
 
         this->ship_->setAcceleration(this->ship_->getOrientation() * acceleration);
 
-        this->ship_->setBoost(false);
+        if (!this->ship_->getPermanentBoost())
+            this->ship_->setBoost(false);
         this->ship_->setSteeringDirection(Vector3::ZERO);
 
         if (!this->boostBlur_ && this->ship_->hasLocalController() && this->ship_->hasHumanController())

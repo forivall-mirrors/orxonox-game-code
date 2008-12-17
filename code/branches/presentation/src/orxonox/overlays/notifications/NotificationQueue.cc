@@ -37,7 +37,7 @@
 namespace orxonox
 {
     NotificationQueue* NotificationQueue::queue_s = 0;
-    
+
     CreateFactory(NotificationQueue);
 
     NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayText(creator)
@@ -52,31 +52,33 @@ namespace orxonox
         {
                 queue_s = this;
         }
-        
+
         this->length_ = 3;
         this->width_ = 50;
+COUT(0) << "added notification queue" << std::endl;
     }
-    
+
     NotificationQueue::~NotificationQueue()
     {
-        
+COUT(0) << "deleted notification queue" << std::endl;
+
     }
-    
+
     void NotificationQueue::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(NotificationQueue, XMLPort, xmlElement, mode);
-        
+
         XMLPortParam(NotificationQueue, "length", setLength, getLength, xmlElement, mode);
         XMLPortParam(NotificationQueue, "width", setWidth, getWidth, xmlElement, mode);
     }
-    
+
     void NotificationQueue::tick(float dt)
     {
         NotificationManager::tick(dt);
-        
+
         update();
     }
-    
+
     bool NotificationQueue::setLength(int length)
     {
         if(length > 0)
@@ -86,7 +88,7 @@ namespace orxonox
         }
         return false;
     }
-    
+
     bool NotificationQueue::setWidth(int width)
     {
         if(width > 0)
@@ -96,12 +98,13 @@ namespace orxonox
         }
         return false;
     }
-    
+
     void NotificationQueue::setQueueText(const std::string & text)
     {
+COUT(0) << "queue: " << text << std::endl;
         this->queueText_ = text;
     }
-    
+
     void NotificationQueue::update(void)
     {
         this->text_->setCaption(queueText_);

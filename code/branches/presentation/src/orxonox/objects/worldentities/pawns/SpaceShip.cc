@@ -55,6 +55,7 @@ namespace orxonox
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
         this->bBoost_ = false;
+        this->bPermanentBoost_ = false;
         this->steering_ = Vector3::ZERO;
         this->engine_ = 0;
 

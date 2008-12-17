@@ -1,6 +1,8 @@
 SET( SRC_FILES
-  ShipEquipmentClasses.cc
-  ShipItem.cc
+  PickupSpawner.cc
+  Item.cc
+  Turbo.cc
+  ShipEquipment.cc
 )
 
 ADD_SOURCE_FILES(SRC_FILES)
