@@ -49,6 +49,8 @@ namespace orxonox
         this->bulletLoadingTime_ = 0;
         this->magazineLoadingTime_ = 0;
         this->bReloading_ = false;
+
+        this->setObjectMode(0x0);
     }
 
     Weapon::~Weapon()

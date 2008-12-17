@@ -115,7 +115,7 @@ namespace orxonox
 
             ShipEquipment pickUp;
             bool bAlive_;
-            
+
 
             float health_;
             float maxHealth_;
@@ -125,6 +125,7 @@ namespace orxonox
 
             WeaponSystem* weaponSystem_;
             unsigned int fire_;
+            unsigned int firehack_;
 
             std::string spawnparticlesource_;
             float spawnparticleduration_;

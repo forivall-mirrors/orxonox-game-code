@@ -41,7 +41,7 @@ namespace orxonox
 {
     /**
     @brief
-        
+
     @author
         Damian 'Mozork' Frick
     */
@@ -50,29 +50,29 @@ namespace orxonox
     public:
         NotificationQueue(BaseObject* creator);
         virtual ~NotificationQueue();
-        
+
         static NotificationQueue* queue_s; //TDO Singleton? oder im level.
-        
+
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-        
+
         virtual void tick(float dt);
-        
+
         void update(void);
-        
+
         int getLength(void) const
                 { return this->length_; }
         int getWidth(void) const
                 { return this->width_; }
-        
+
         void setQueueText(const std::string & text);
         bool setLength(int length);
         bool setWidth(int width);
-        
+
     private:
         Ogre::UTFString queueText_;
         int length_;
         int width_;
-    
+
     };
 
 }

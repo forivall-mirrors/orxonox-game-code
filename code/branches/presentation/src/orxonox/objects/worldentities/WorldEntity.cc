@@ -544,13 +544,14 @@ namespace orxonox
         // Check whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
         {
+/*
             // Check whether there was some scaling applied.
             if (!this->node_->getScale().positionEquals(Vector3(1, 1, 1), 0.001))
             {
                 CCOUT(2) << "Warning: Cannot create a physical body if there is scaling applied to the node: Not yet implemented." << std::endl;
                 return;
             }
-
+*/
             // Create new rigid body
             btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_->getCollisionShape());
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);

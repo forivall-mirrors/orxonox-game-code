@@ -68,8 +68,6 @@ namespace orxonox
 
         this->addBots(this->numberOfBots_);
 
-        setConfigValues();
-
         // load the corresponding score board
         if (Core::showsGraphics() && this->scoreboardTemplate_ != "")
         {

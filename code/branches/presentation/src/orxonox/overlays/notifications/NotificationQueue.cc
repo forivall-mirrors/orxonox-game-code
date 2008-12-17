@@ -55,12 +55,10 @@ namespace orxonox
 
         this->length_ = 3;
         this->width_ = 50;
-COUT(0) << "added notification queue" << std::endl;
     }
 
     NotificationQueue::~NotificationQueue()
     {
-COUT(0) << "deleted notification queue" << std::endl;
 
     }
 
@@ -101,7 +99,6 @@ COUT(0) << "deleted notification queue" << std::endl;
 
     void NotificationQueue::setQueueText(const std::string & text)
     {
-COUT(0) << "queue: " << text << std::endl;
         this->queueText_ = text;
     }
 
@@ -109,5 +106,4 @@ COUT(0) << "queue: " << text << std::endl;
     {
         this->text_->setCaption(queueText_);
     }
-
 }

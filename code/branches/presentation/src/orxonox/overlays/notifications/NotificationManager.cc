@@ -48,11 +48,11 @@ namespace orxonox
     {
         //TDO: Destroy the containers
     }
-    
+
     void NotificationManager::tick(float dt)
     {
         bool update = false;
-    
+
         for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end(); ++notification)
         {
             NotificationContainer* container = *notification;
@@ -70,32 +70,35 @@ namespace orxonox
                 container->remainingTime = container->remainingTime -dt;
             }
         }
-    
+
         if(update)
             updateQueue();
     }
-    
+
     bool NotificationManager::insertNotification(Notification* notification)
     {
         if(notification == NULL)
             return false;
-            
+
         NotificationContainer* container = new NotificationContainer;
         container->notification = notification;
         container->remainingTime = notification->getDisplayTime();
         notifications_s.push_front(container);
-        
+
         updateQueue();
-        
+
         COUT(4) << "Notification inserted. Title: " << notification->getTitle() << std::endl;
-        
+
         return true;
     }
-    
+
     void NotificationManager::updateQueue(void)
     {
         std::string text = "";
-        
+
+        if (!NotificationQueue::queue_s)
+            return;
+
         int i = NotificationQueue::queue_s->getLength();
         for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end() && i > 0; ++notification)
         {
@@ -103,19 +106,19 @@ namespace orxonox
             NotificationContainer* container = *notification;
             if(container->remainingTime == 0.0)
                 continue;
-            
+
             text = text + "\n\n\n------------\n\n" + clipMessage(container->notification->getTitle()) + "\n\n" + clipMessage(container->notification->getMessage());
         }
-        
+
         NotificationQueue::queue_s->setQueueText(text);
     }
-    
+
     const std::string NotificationManager::clipMessage(const std::string & str)
     {
-    
+
         std::string message = str;
         unsigned int i = 0;
-        
+
         unsigned int found = message.find("\\n", i);
         while(found != std::string::npos)
         {
@@ -123,7 +126,7 @@ namespace orxonox
             i = found+2;
             found = message.find("\\n", i);
         }
-    
+
         std::string clippedMessage = "";
         int wordLength = 0;
         i = 0;
@@ -135,7 +138,7 @@ namespace orxonox
                 i++;
                 wordLength++;
             }
-            
+
             if(wordLength <= widthLeft)
             {
                 clippedMessage = clippedMessage + message.substr(i-wordLength, wordLength);
@@ -164,7 +167,7 @@ namespace orxonox
                 wordLength = 0;
             }
         }
-        
+
         return clippedMessage;
     }
 

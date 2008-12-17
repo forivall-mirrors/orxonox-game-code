@@ -44,10 +44,11 @@ namespace orxonox
 
         if (!this->getScene())
             ThrowException(AbortLoading, "Can't create GlobalShader, no scene given.");
-        if (!this->getScene()->getSceneManager())
-            ThrowException(AbortLoading, "Can't create GlobalShader, no scene manager given.");
+//        if (!this->getScene()->getSceneManager())
+//            ThrowException(AbortLoading, "Can't create GlobalShader, no scene manager given.");
 
-        this->shader_.setSceneManager(this->getScene()->getSceneManager());
+        if (this->getScene()->getSceneManager())
+            this->shader_.setSceneManager(this->getScene()->getSceneManager());
 
         this->registerVariables();
     }

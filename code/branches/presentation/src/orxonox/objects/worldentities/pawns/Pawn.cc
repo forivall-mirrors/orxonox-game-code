@@ -48,9 +48,9 @@ namespace orxonox
         RegisterObject(Pawn);
 
         PawnManager::touch();
-	this->getPickUp().setPlayer(this);
         this->bAlive_ = true;
         this->fire_ = 0x0;
+        this->firehack_ = 0x0;
 
         this->health_ = 0;
         this->maxHealth_ = 0;
@@ -59,6 +59,8 @@ namespace orxonox
         this->lastHitOriginator_ = 0;
 
         this->spawnparticleduration_ = 3.0f;
+
+        this->getPickUp().setPlayer(this);
 
         if (Core::isMaster())
         {
@@ -107,7 +109,7 @@ namespace orxonox
         registerVariable(this->bAlive_,        variableDirection::toclient);
         registerVariable(this->health_,        variableDirection::toclient);
         registerVariable(this->initialHealth_, variableDirection::toclient);
-        registerVariable(this->fire_,          variableDirection::toclient);
+        registerVariable(this->fire_,          variableDirection::toserver);
     }
 
     void Pawn::tick(float dt)
@@ -123,7 +125,8 @@ namespace orxonox
             if (this->fire_ & WeaponMode::altFire2)
                 this->weaponSystem_->fire(WeaponMode::altFire2);
         }
-        this->fire_ = 0x0;
+        this->fire_ = this->firehack_;
+        this->firehack_ = 0x0;
 
         if (this->health_ <= 0)
             this->death();
@@ -224,7 +227,7 @@ namespace orxonox
 
     void Pawn::fire(WeaponMode::Enum fireMode)
     {
-        this->fire_ |= fireMode;
+        this->firehack_ |= fireMode;
     }
 
     void Pawn::postSpawn()

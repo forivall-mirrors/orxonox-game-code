@@ -53,16 +53,19 @@ namespace orxonox
         this->owner_ = 0;
 
         // Get notification about collisions
-        this->enableCollisionCallback();
 
-        this->setCollisionType(Kinematic);
+        if (Core::isMaster())
+        {
+            this->enableCollisionCallback();
 
-        SphereCollisionShape* shape = new SphereCollisionShape(this);
-        shape->setRadius(10);
-        this->attachCollisionShape(shape);
+            this->setCollisionType(Kinematic);
 
-        if(Core::isMaster())
-          this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+            SphereCollisionShape* shape = new SphereCollisionShape(this);
+            shape->setRadius(10);
+            this->attachCollisionShape(shape);
+
+            this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+        }
     }
 
     Projectile::~Projectile()

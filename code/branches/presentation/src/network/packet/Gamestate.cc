@@ -174,6 +174,7 @@ bool Gamestate::spreadData(uint8_t mode)
       if (it->objectMode_ != 0x0) {
         COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
         COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
+        COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
         assert(false);
       }
     }
