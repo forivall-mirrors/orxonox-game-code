@@ -32,7 +32,7 @@
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 
-#include "../../worldentities/pawns/SpaceShip.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
@@ -45,22 +45,16 @@ namespace orxonox
     {
         RegisterObject(ParticleProjectile);
 
-        this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::normal);
-        this->attachOgreObject(this->particles_->getParticleSystem());
-        this->particles_->setKeepParticlesInLocalSpace(0);
-
-        this->particles_->getAllEmitters()->setDirection(-WorldEntity::FRONT);
-        /*
-        if (this->owner_)
+        if (Core::showsGraphics())
         {
-        }
-//        else
-//        {
-//            this->particles_ = 0;
-//        }
-        */
+            this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::normal);
+            this->attachOgreObject(this->particles_->getParticleSystem());
+            this->particles_->setKeepParticlesInLocalSpace(0);
 
-        this->setConfigValues();
+            this->particles_->getAllEmitters()->setDirection(-WorldEntity::FRONT);
+        }
+        else
+            this->particles_ = 0;
     }
 
     ParticleProjectile::~ParticleProjectile()
@@ -72,14 +66,11 @@ namespace orxonox
         }
     }
 
-    void ParticleProjectile::setConfigValues()
-    {
-        //SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback((Projectile*)this, &ParticleProjectile::speedChanged);
-    }
-
     void ParticleProjectile::changedVisibility()
     {
         SUPER(ParticleProjectile, changedVisibility);
-        this->particles_->setEnabled(this->isVisible());
+
+        if (this->particles_)
+            this->particles_->setEnabled(this->isVisible());
     }
 }

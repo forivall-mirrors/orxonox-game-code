@@ -32,11 +32,12 @@
 #include "OrxonoxPrereqs.h"
 
 #include "objects/worldentities/MovableEntity.h"
+#include "objects/worldentities/pawns/Pawn.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public MovableEntity
+    class _OrxonoxExport Projectile : public MovableEntity, public PawnListener
     {
         public:
             Projectile(BaseObject* creator);
@@ -47,6 +48,7 @@ namespace orxonox
 
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            virtual void destroyedPawn(Pawn* pawn);
 
             inline void setOwner(Pawn* owner)
                 { this->owner_ = owner; }

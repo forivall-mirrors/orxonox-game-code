@@ -31,6 +31,7 @@
 
 #include <OgreBillboardSet.h>
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "objects/Scene.h"
 
@@ -42,17 +43,20 @@ namespace orxonox
     {
         RegisterObject(BillboardProjectile);
 
-        assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
+        if (Core::showsGraphics())
+        {
+            assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
+            this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5, 0.5, 0.7, 0.8), 1);
+            this->attachOgreObject(this->billboard_.getBillboardSet());
+        }
 
-        this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5, 0.5, 0.7, 0.8), 1);
-        this->attachOgreObject(this->billboard_.getBillboardSet());
-        this->scale(0.2);
+        this->setScale(0.2);
     }
 
     BillboardProjectile::~BillboardProjectile()
     {
-        //if (this->isInitialized() && this->owner_)
-            //this->detachObject(this->billboard_.getBillboardSet());
+        if (this->isInitialized() && Core::showsGraphics() && this->billboard_.getBillboardSet())
+            this->detachOgreObject(this->billboard_.getBillboardSet());
     }
 
     void BillboardProjectile::setColour(const ColourValue& colour)
@@ -63,6 +67,7 @@ namespace orxonox
     void BillboardProjectile::changedVisibility()
     {
         SUPER(BillboardProjectile, changedVisibility);
+
         this->billboard_.setVisible(this->isVisible());
     }
 }

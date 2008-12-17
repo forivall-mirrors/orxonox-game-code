@@ -39,7 +39,6 @@
 
 #include "objects/worldentities/Model.h"
 #include "objects/worldentities/ParticleSpawner.h"
-#include "objects/worldentities/pawns/Pawn.h"
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "core/Core.h"
 
@@ -62,7 +61,7 @@ namespace orxonox
         shape->setRadius(10);
         this->attachCollisionShape(shape);
 
-        if(!Core::isClient()) //only if not on client
+        if(Core::isMaster())
           this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
     }
 
@@ -90,18 +89,15 @@ namespace orxonox
 
     void Projectile::destroyObject()
     {
-        delete this;
+        if (Core::isMaster())
+            delete this;
     }
 
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        if (!this->bDestroy_)
+        if (!this->bDestroy_ && Core::isMaster())
         {
             this->bDestroy_ = true;
-            Pawn* victim = dynamic_cast<Pawn*>(otherObject);
-            if (victim)
-                victim->damage(this->damage_, this->owner_);
-
 
             if (this->owner_)
             {
@@ -122,7 +118,17 @@ namespace orxonox
                     effect->setLifetime(3.0f);
                 }
             }
+
+            Pawn* victim = dynamic_cast<Pawn*>(otherObject);
+            if (victim)
+                victim->damage(this->damage_, this->owner_);
         }
         return false;
+    }
+
+    void Projectile::destroyedPawn(Pawn* pawn)
+    {
+        if (this->owner_ == pawn)
+            this->owner_ = 0;
     }
 }

@@ -103,17 +103,15 @@ namespace orxonox
 
             this->node_->removeAllChildren();
 
-            if (this->getScene()->getSceneManager())
-                this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
-
-            // TODO: Detach from parent and detach all children.
-
             if (this->physicalBody_)
             {
                 this->deactivatePhysics();
                 delete this->physicalBody_;
             }
             delete this->collisionShape_;
+
+            if (this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
         }
     }
 

@@ -43,7 +43,6 @@ namespace orxonox
             ParticleProjectile(BaseObject* creator);
             virtual ~ParticleProjectile();
             virtual void changedVisibility();
-            void setConfigValues();
 
         private:
             ParticleInterface* particles_;

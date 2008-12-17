@@ -101,7 +101,10 @@ namespace orxonox
     void ParticleEmitter::sourceChanged()
     {
         if (this->particles_)
+        {
             delete this->particles_;
+            this->particles_ = 0;
+        }
 
         if (this->getScene() && this->getScene()->getSceneManager())
         {
@@ -118,8 +121,6 @@ namespace orxonox
                 this->particles_ = 0;
             }
         }
-        else
-            this->particles_ = 0;
     }
 
     void ParticleEmitter::LODchanged()

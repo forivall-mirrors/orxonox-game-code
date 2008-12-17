@@ -111,7 +111,7 @@ namespace orxonox
             Vector3 offset = this->getNode()->getWorldPosition() - this->cameraNode_->getWorldPosition();
             this->cameraNode_->translate(coeff * offset);
 
-            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), false));
+            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), true));
             //this->cameraNode_->setOrientation(this->getWorldOrientation());
         }
     }
