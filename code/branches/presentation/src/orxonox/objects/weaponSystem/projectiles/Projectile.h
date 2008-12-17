@@ -39,22 +39,25 @@ namespace orxonox
     class _OrxonoxExport Projectile : public MovableEntity
     {
         public:
+            Projectile(BaseObject* creator);
             virtual ~Projectile();
+
             void setConfigValues();
             void destroyObject();
+
             virtual void tick(float dt);
+            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
-        protected:
-            Projectile(BaseObject* creator);
+            inline void setOwner(Pawn* owner)
+                { this->owner_ = owner; }
+            inline Pawn* getOwner() const
+                { return this->owner_; }
 
         private:
-            std::string explosionTemplateName_;
-            std::string smokeTemplateName_;
-        protected:
-            float speed_;
-        private:
+            Pawn* owner_;
             float lifetime_;
             float damage_;
+            bool bDestroy_;
             Timer<Projectile> destroyTimer_;
     };
 }

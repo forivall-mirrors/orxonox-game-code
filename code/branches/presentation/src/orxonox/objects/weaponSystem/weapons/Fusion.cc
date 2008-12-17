@@ -72,5 +72,6 @@ namespace orxonox
         projectile->setOrientation(this->getWorldOrientation());
         projectile->setPosition(this->getWorldPosition());
         projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
+        projectile->setOwner(this->getParentWeaponSystem()->getParentPawn());
     }
 }

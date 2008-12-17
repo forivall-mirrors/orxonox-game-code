@@ -170,6 +170,23 @@ namespace orxonox
     {
         if (victim && victim->getPlayer())
         {
+            std::string message;
+            if (killer)
+            {
+                if (killer->getPlayer())
+                    message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
+                else
+                    message = victim->getPlayer()->getName() + " was killed";
+            }
+            else
+                message = victim->getPlayer()->getName() + " died";
+
+            COUT(0) << message << std::endl;
+            Host::Broadcast(message);
+        }
+
+        if (victim && victim->getPlayer())
+        {
             std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.find(victim->getPlayer());
             if (it != this->players_.end())
             {

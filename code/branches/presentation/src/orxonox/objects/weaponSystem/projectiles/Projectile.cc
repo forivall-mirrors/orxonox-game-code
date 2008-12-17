@@ -39,6 +39,8 @@
 
 #include "objects/worldentities/Model.h"
 #include "objects/worldentities/ParticleSpawner.h"
+#include "objects/worldentities/pawns/Pawn.h"
+#include "objects/collisionshapes/SphereCollisionShape.h"
 #include "core/Core.h"
 
 namespace orxonox
@@ -48,23 +50,17 @@ namespace orxonox
         RegisterObject(Projectile);
 
         this->setConfigValues();
-        this->explosionTemplateName_ = "Orxonox/explosion3";
-        this->smokeTemplateName_ = "Orxonox/smoke4";
-
-        //this->setStatic(false);
-//        this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
+        this->bDestroy_ = false;
+        this->owner_ = 0;
 
         // Get notification about collisions
         this->enableCollisionCallback();
 
-        /*
-        if (this->owner_)
-        {
-            this->setOrientation(this->owner_->getOrientation());
-            this->setPosition(this->owner_->getPosition());
-            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
-        }
-        */
+        this->setCollisionType(Kinematic);
+
+        SphereCollisionShape* shape = new SphereCollisionShape(this);
+        shape->setRadius(10);
+        this->attachCollisionShape(shape);
 
         if(!Core::isClient()) //only if not on client
           this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
@@ -87,40 +83,46 @@ namespace orxonox
 
         if (!this->isActive())
             return;
-/*
-        float radius;
-        for (ObjectList<Model>::iterator it = ObjectList<Model>::begin(); it; ++it)
-        {
-//            if ((*it) != this->owner_)
-            {
-                radius = it->getScale3D().x * 3.0;
 
-                if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
-                {
-                    // hit
-                    ParticleSpawner* explosion = new ParticleSpawner(this);
-                    explosion->setSource(this->explosionTemplateName_);
-                    explosion->setLOD(LODParticle::low);
-                    explosion->configure(2.0);
-                    explosion->setPosition(this->getPosition());
-                    explosion->create();
-                    ParticleSpawner* smoke = new ParticleSpawner(this);
-                    smoke->setSource(this->smokeTemplateName_);
-                    smoke->setLOD(LODParticle::normal);
-                    smoke->configure(2.0, 0.0);
-                    smoke->setPosition(this->getPosition());
-//                    smoke->getParticleInterface()->setSpeedFactor(3.0);
-                    smoke->create();
-                    delete this;
-                    return;
-                }
-            }
-        }
-*/
+        if (this->bDestroy_)
+            delete this;
     }
 
     void Projectile::destroyObject()
     {
         delete this;
+    }
+
+    bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    {
+        if (!this->bDestroy_)
+        {
+            this->bDestroy_ = true;
+            Pawn* victim = dynamic_cast<Pawn*>(otherObject);
+            if (victim)
+                victim->damage(this->damage_, this->owner_);
+
+
+            if (this->owner_)
+            {
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/explosion3");
+                    effect->setLifetime(2.0f);
+                }
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/smoke4");
+                    effect->setLifetime(3.0f);
+                }
+            }
+        }
+        return false;
     }
 }

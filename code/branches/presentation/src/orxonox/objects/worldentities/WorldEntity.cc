@@ -497,12 +497,13 @@ namespace orxonox
 
     void WorldEntity::setScale3D(const Vector3& scale)
     {
+/*
         if (this->hasPhysics() && scale != Vector3::UNIT_SCALE)
         {
             CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented." << std::endl;
             return;
         }
-
+*/
         this->node_->setScale(scale);
 
         this->changedScale();
