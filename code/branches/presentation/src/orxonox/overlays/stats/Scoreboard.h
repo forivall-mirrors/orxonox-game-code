@@ -49,11 +49,6 @@ namespace orxonox
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
 
-        inline void setGametype(Gametype* gt)
-            { this->gametype_ = gt; }
-        inline Gametype* getGametype() const
-            { return this->gametype_; }
-
         inline void setCreateLines(CreateLines* cl)
             { this->createlines_ = cl; }
         inline CreateLines* getCreateLines() const
@@ -74,7 +69,6 @@ namespace orxonox
         float leftOffset;
         float lineSpacing;
         std::string columnText;
-        Gametype* gametype_;
         CreateLines* createlines_;
     };
 }

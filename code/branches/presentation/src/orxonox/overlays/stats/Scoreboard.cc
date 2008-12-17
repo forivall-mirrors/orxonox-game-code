@@ -52,7 +52,6 @@ namespace orxonox
         : OrxonoxOverlay(creator)
     {
         RegisterObject(Scoreboard);
-        this->setGametype(creator->getGametype());
     }
 
     /**
@@ -88,7 +87,9 @@ namespace orxonox
         while (playerList.size() > this->lines_.size())
         {
             // create new lines
-            this->lines_.push_back(new CreateLines(leftOffset, topOffset + (distance + height) * lines_.size(), width, height));
+            CreateLines* lines = new CreateLines(leftOffset, topOffset + (distance + height) * lines_.size(), width, height);
+            lines->setVisibility(this->isVisible());
+            this->lines_.push_back(lines);
         }
         while (playerList.size() < this->lines_.size())
         {
@@ -120,7 +121,7 @@ namespace orxonox
 
         //    this->createlines_->setNumberOfColumns(numberOfColumns, i);
 
-        //    // columnText = this->gametype_->getPlayersName();
+        //    // columnText = this->getGametype()->getPlayersName();
         //    columnText = "PlayerName";
         //    this->createlines_->alignColumn(columnIndex, topOffset, leftOffset);
         //    this->createlines_->setColumnText(columnIndex, columnText);
@@ -128,7 +129,7 @@ namespace orxonox
         //    columnIndex++;
         //    leftOffset = leftOffset + 0.3;
 
-        //    // columnText = this->gametype_->getPlayersFrags();
+        //    // columnText = this->getGametype()->getPlayersFrags();
         //    columnText = "PlayerFrags";
         //    this->createlines_->alignColumn(columnIndex, topOffset, leftOffset);
         //    this->createlines_->setColumnText(columnIndex, columnText);
