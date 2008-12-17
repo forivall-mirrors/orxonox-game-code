@@ -324,11 +324,6 @@ namespace orxonox
         // Root will detect that we've already created a Log
         COUT(4) << "Creating Ogre Root..." << std::endl;
 
-        if (ogrePluginsFile_ == "")
-        {
-            COUT(2) << "Warning: Ogre plugins file set to \"\". Defaulting to plugins.cfg" << std::endl;
-            ModifyConfigValue(ogrePluginsFile_, tset, "plugins.cfg");
-        }
         if (ogreConfigFile_ == "")
         {
             COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
