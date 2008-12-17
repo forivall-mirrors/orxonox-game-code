@@ -1,6 +1,6 @@
 SET( SRC_FILES
   CreateLines.cc
-  ScoreBoard.cc
+  Scoreboard.cc
   Stats.cc
   StatsTest.cc
 )
