@@ -159,7 +159,7 @@ namespace orxonox
                 this->setInterval(interval);
                 this->bLoop_ = bLoop;
                 executor->setObject(object);
-                this->executor_ = (Executor*)executor;
+                this->executor_ = static_cast<Executor*>(executor);
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;
@@ -197,7 +197,7 @@ namespace orxonox
 
                 this->setInterval(interval);
                 this->bLoop_ = bLoop;
-                this->executor_ = (Executor*)executor;
+                this->executor_ = static_cast<Executor*>(executor);
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;

@@ -64,14 +64,14 @@ bool DeleteObjects::fetchIDs(){
   unsigned int size = sizeof(ENUM::Type) + sizeof(uint32_t)*(number+1);
   data_ = new uint8_t[size];
   uint8_t *tdata = data_;
-  *(ENUM::Type *)(tdata) = ENUM::DeleteObjects;
+  *reinterpret_cast<ENUM::Type*>(tdata) = ENUM::DeleteObjects;
   tdata += sizeof(ENUM::Type);
   *(uint32_t *)tdata = number;
   tdata += sizeof(uint32_t);
   for(unsigned int i=0; i<number; i++){
     unsigned int temp = Synchronisable::popDeletedObject();
 //     assert(temp<10000); //ugly hack
-    *(uint32_t *)(tdata) = temp;
+    *reinterpret_cast<uint32_t*>(tdata) = temp;
     COUT(3) << temp << " ";
     tdata += sizeof(uint32_t);
   }

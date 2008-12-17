@@ -86,7 +86,7 @@ namespace orxonox
             WeaponSet * getWeaponSet(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const
-                { return (WorldEntity*)this; }
+                { return const_cast<Pawn*>(this); }
 
             inline void setSpawnParticleSource(const std::string& source)
                 { this->spawnparticlesource_ = source; }

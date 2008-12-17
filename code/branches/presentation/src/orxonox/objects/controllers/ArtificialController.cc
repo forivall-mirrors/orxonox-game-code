@@ -87,7 +87,7 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
 //            if (it->getTeamNr() != this->getTeamNr())
-            if ((ControllableEntity*)(*it) != this->getControllableEntity())
+            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity())
             {
                 float speed = this->getControllableEntity()->getVelocity().length();
                 Vector3 distanceCurrent = this->targetPosition_ - this->getControllableEntity()->getPosition();
