@@ -83,12 +83,12 @@ namespace orxonox
       // some error msg
     }
 
-    char line[1024];
+    char line[1024*32];
     std::string levelString = "";
 
     while (file.good() && !file.eof())
     {
-      file.getline(line, 1024);
+      file.getline(line, 1024*32);
       levelString += line;
       levelString += "\n";
     }
@@ -96,7 +96,10 @@ namespace orxonox
     file.close();
     //std::string output;
 
-    if (luaTags) luaSource_ = replaceLuaTags(levelString);
+    if (luaTags)
+      luaSource_ = replaceLuaTags(levelString);
+    else
+      luaSource_ = levelString;
     COUT(5) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
@@ -122,7 +125,19 @@ namespace orxonox
     {
       isRunning_ = true;
       int error = 0;
-      std::string init = "local scr = orxonox.LuaBind:getInstance()\nlocal debug = print\nprint = function(s)\nscr:luaPrint(s)\nend\ninclude = function(f)\nfile = assert(io.open(\"" + this->includePath_ + "\"..\"/\"..f))\ncontent = file:read(\"*a\")\nfile:close()\nsource = scr:replaceLuaTags(content)\nassert(loadstring(source))()\nend\n";
+      std::string init =
+         "local scr = orxonox.LuaBind:getInstance()\n \
+          local debug = print\n \
+          print = function(s)\n \
+              scr:luaPrint(s)\n \
+          end\n \
+          include = function(f)\n \
+              file = assert(io.open(\"" + this->includePath_ + "\"..\"/\"..f))\n \
+              content = file:read(\"*a\")\n \
+              file:close()\n \
+              source = scr:replaceLuaTags(content)\n \
+              assert(loadstring(source))()\n \
+          end\n";
       init += luaSource_;
   #if LUA_VERSION_NUM == 501
       error = luaL_loadstring(luaState_, init.c_str());
