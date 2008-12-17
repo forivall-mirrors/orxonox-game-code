@@ -102,10 +102,10 @@ namespace orxonox
 		if (this->duration_ == 0)
 		{
 			COUT(0) << "ITEM DROPPED" << std::endl;
-			if(remove(player)==true);
+			if(remove(player)==true)
 			{
-			SpaceShip* ship = dynamic_cast <SpaceShip*>(player);
-			this->unsetSpeedBoost(ship);
+			    SpaceShip* ship = dynamic_cast <SpaceShip*>(player);
+			    this->unsetSpeedBoost(ship);
 			}
 		}
 		return true;
