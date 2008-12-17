@@ -22,15 +22,36 @@ FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
     PATH_SUFFIXES include include/OGRE
 )
 
-#SET(OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
-FIND_LIBRARY(OGRE_LIBRARY
-    NAMES OgreMain
-    PATHS
-    $ENV{OGREDIR}
-    /usr/local
-    /usr
-    PATH_SUFFIXES lib
-)
+IF(WIN32)
+    FIND_LIBRARY(OGRE_LIBRARY_
+        NAMES OgreMain
+        PATHS
+        $ENV{OGREDIR}
+        PATH_SUFFIXES lib
+    )
+    FIND_LIBRARY(OGRE_LIBRARY_d
+        NAMES OgreMain_d
+        PATHS
+        $ENV{OGREDIR}
+        PATH_SUFFIXES lib
+    )
+    IF(OGRE_LIBRARY_)
+        IF(OGRE_LIBRARY_d)
+            SET(OGRE_LIBRARY optimized ${OGRE_LIBRARY_} debug ${OGRE_LIBRARY_d})
+        ELSE(OGRE_LIBRARY_d)
+            SET(OGRE_LIBRARY ${OGRE_LIBRARY_})
+        ENDIF(OGRE_LIBRARY_d)
+    ENDIF(OGRE_LIBRARY_)
+ELSE(WIN32)
+    FIND_LIBRARY(OGRE_LIBRARY
+        NAMES OgreMain
+        PATHS
+        $ENV{OGREDIR}
+        /usr/local
+        /usr
+        PATH_SUFFIXES lib
+    )
+ENDIF(WIN32)
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(OGRE DEFAULT_MSG
@@ -40,5 +61,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(OGRE DEFAULT_MSG
 
 MARK_AS_ADVANCED(
     OGRE_LIBRARY
+    OGRE_LIBRARY_
+    OGRE_LIBRARY_d
     OGRE_INCLUDE_DIR
 )

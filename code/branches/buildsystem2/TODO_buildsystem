@@ -1,2 +1,1 @@
-- Detect lua version and modify all.lua accordingly (do not include compat-5.1 for lua 5.0)
 - Detect ceguilua version other than with the variable from the pkg config file. It might not exist everywhere.

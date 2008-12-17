@@ -3,33 +3,13 @@
 # is an ETH tardis box.                         #
 #################################################
 
-# only run this test on a lunix/unix machine
 IF (UNIX)
-  FIND_PROGRAM(UNAME_CMD "uname"
-  PATHS "/usr/bin /bin")
-  IF(NOT UNAME_CMD)
-    MESSAGE(ERROR "Unable to find uname. Tardis-Check cannot be done.")
-  ENDIF(NOT UNAME_CMD)
-
-  # run uname -n to get nodename
-  EXECUTE_PROCESS(
-  COMMAND "${UNAME_CMD}" "-n"
-  RESULT_VARIABLE UNAME_RV
-  ERROR_VARIABLE UNAME_EV
-  OUTPUT_VARIABLE UNAME_OV)
-
-  IF (NOT "${UNAME_RV}" STREQUAL "0")
-    MESSAGE(ERROR "ERROR: uname terminated unclean.")
-  ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
-
-  # check wheter we are on a tardis machine
-  IF ("${UNAME_OV}" MATCHES "tardis")
+  FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
+  IF ("${HOSTNAME}" MATCHES "^tardis-[a-z][0-9][0-9]$")
     SET (IS_TARDIS ON)
-  ENDIF ("${UNAME_OV}" MATCHES "tardis")
-
+  ENDIF ("${HOSTNAME}" MATCHES "^tardis-[a-z][0-9][0-9]$")
 ENDIF (UNIX)
-
-MARK_AS_ADVANCED(IS_TARDIS)
+MARK_AS_ADVANCED(HOSTNAME IS_TARDIS)
 
 IF (IS_TARDIS)
   MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
@@ -47,5 +27,3 @@ IF (IS_TARDIS)
   SET(ENV{CEGUIDIR} "/usr/pack/cegui-0.5.0-sd;/usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1")
   SET(ENV{OGREDIR} "/usr/pack/ogre-1.4.5-sd;/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1")
 ENDIF (IS_TARDIS)
-
-MARK_AS_ADVANCED(UNAME_CMD IS_TARDIS)

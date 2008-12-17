@@ -29,6 +29,7 @@ TARGET_LINK_LIBRARIES( network
   core
 )
 
+INSTALL(TARGETS network LIBRARY DESTINATION lib)
 
 # build those parts only on request.
 IF(NETWORK_TESTING_ENABLED)

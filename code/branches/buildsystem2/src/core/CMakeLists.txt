@@ -61,3 +61,5 @@ TARGET_LINK_LIBRARIES(core
   tolualib_orxonox
   util
 )
+
+INSTALL(TARGETS core LIBRARY DESTINATION lib)

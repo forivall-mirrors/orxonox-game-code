@@ -17,6 +17,11 @@
 
 SET(_tolua_executable_name toluaexe_orxonox)
 GET_TARGET_PROPERTY(TOLUA_EXECUTABLE "${_tolua_executable_name}" LOCATION)
+IF(MINGW_LIBRARY_DIR)
+  SET(_tolua_command_wd "WORKING_DIRECTORY;${MINGW_LIBRARY_DIR}/lua-5.1.3/lib")
+ELSE(MINGW_LIBRARY_DIR)
+  SET(_tolua_command_wd)
+ENDIF(MINGW_LIBRARY_DIR)
 
 MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
   # TODO: cleaner arguments handling
@@ -44,6 +49,6 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
                                      "${_tolua_pkgfile}"
     DEPENDS "${_tolua_executable_name}" ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS CXX ${_tolua_inputfiles}
-    WORKING_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
+    ${_tolua_command_wd}
   )
 ENDMACRO(TOLUA)

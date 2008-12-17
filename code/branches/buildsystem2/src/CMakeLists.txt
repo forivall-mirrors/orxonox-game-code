@@ -32,7 +32,7 @@ ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
 ADD_SUBDIRECTORY(tolua)
 
-# TODO: write include file for this stuff
+# TODO: FIXME
 # Some people may not have CEGUILua installed, espc. with version 0.5
 # And we don't know what lua version it was linked against, so we compile
 # it ourselves.
@@ -40,15 +40,15 @@ ADD_SUBDIRECTORY(tolua)
 
 IF (WIN32)
     ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    INCLUDE_DIRECTORIES(ceguilua-0.6.1/ceguilua)
 ELSE (WIN32)
     # FIXME
     #IF (${CEGUI_VERSION} LESS 0.6.0)
         ADD_SUBDIRECTORY(ceguilua-0.5.0/ceguilua)
-        INCLUDE_DIRECTORIES(ceguilua-0.5.0)
+        INCLUDE_DIRECTORIES(ceguilua-0.5.0/ceguilua)
     #ELSE (${CEGUI_VERSION} LESS 0.6.0)
     #    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-    #    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    #    INCLUDE_DIRECTORIES(ceguilua-0.6.1/ceguilua)
     #ENDIF (${CEGUI_VERSION} LESS 0.6.0)
 ENDIF (WIN32)
 
