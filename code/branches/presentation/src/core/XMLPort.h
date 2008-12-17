@@ -95,26 +95,6 @@
     XMLPortParamGeneric(xmlcontainer##variable, classname, orxonox::XMLPortVariableHelperClass, &xmlcontainer##variable##dummy, paramname, xmlcontainer##variable##loadexecutor, xmlcontainer##variable##saveexecutor, xmlelement, mode)
 
 /**
-    @brief Declares an XML attribute with a name, which will be set through a variable and gotten from a function.
-    @param classname The name of the class owning this param
-    @param paramname The name of the attribute
-    @param variable Name of the variable used to save the value
-    @param savefunction A function to get the value of the param from the object (~a get-function)
-    @param xmlelement The XMLElement, you get this from the XMLPort function
-    @param mode The mode (load or save), you get this from the XMLPort function
-
-    In the XML file, a param or attribute will be set like this:
-    <classname paramname="value" />
-
-    The macro will then store "value" in the variable or read it when saving.
-*/
-#define XMLPortParamVariableOnLoad(classname, paramname, variable, savefunction, xmlelement, mode) \
-    static XMLPortVariableHelperClass xmlcontainer##variable##dummy((void*)&variable); \
-    static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(&(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader"))); \
-    static ExecutorMember<classname>* xmlcontainer##loadfunction##savefunction##saveexecutor = orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction); \
-    XMLPortParamGeneric(xmlcontainer##variable, classname, orxonox::XMLPortVariableHelperClass, &xmlcontainer##variable##dummy, paramname, xmlcontainer##variable##loadexecutor, xmlcontainer##variable##saveexecutor, xmlelement, mode)
-
-/**
     @brief This is the same as XMLPortParam, but you can set the template arguments needed to store the loadfunction.
 
     Sometimes the name of the loadfunction is ambiguous (example: setPosition(Vector3) or
