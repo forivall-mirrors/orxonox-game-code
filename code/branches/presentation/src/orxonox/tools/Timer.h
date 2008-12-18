@@ -61,6 +61,7 @@
 #define _Timer_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/Executor.h"
 #include "core/OrxonoxClass.h"
 #include "gamestates/GSRoot.h"
 
@@ -197,7 +198,7 @@ namespace orxonox
 
                 this->setInterval(interval);
                 this->bLoop_ = bLoop;
-                this->executor_ = static_cast<Executor*>(executor);
+                this->executor_ = executor;
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;

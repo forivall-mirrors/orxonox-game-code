@@ -95,7 +95,7 @@ namespace orxonox
             template <class O>
             inline Iterator(ObjectListElement<O>* element)
             {
-                this->element_ = (element) ? static_cast<ObjectListBaseElement*<(element) : 0;
+                this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->iterator_ = this->list_->registerIterator(this);
             }
