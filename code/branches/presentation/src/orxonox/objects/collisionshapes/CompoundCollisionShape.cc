@@ -53,11 +53,13 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            // Notify children about removal
+            // Delete all children
             for (std::map<CollisionShape*, btCollisionShape*>::iterator it = this->childShapes_.begin();
                 it != this->childShapes_.end(); ++it)
             {
+                // make sure that the child doesn't want to detach itself --> speedup because of the missing update
                 it->first->setParent(0, OBJECTID_UNKNOWN);
+                delete it->first;
             }
 
             delete this->compoundShape_;
@@ -196,8 +198,14 @@ namespace orxonox
     {
         if (this->parent_)
             this->parent_->updateChildShape(this);
-        else if (this->worldEntityParent_)
+        if (this->worldEntityParent_)
             this->worldEntityParent_->notifyCollisionShapeChanged();
+    }
+
+    void CompoundCollisionShape::parentChanged()
+    {
+        if (!this->worldEntityParent_)
+            CollisionShape::parentChanged();
     }
 
     CollisionShape* CompoundCollisionShape::getChildShape(unsigned int index) const

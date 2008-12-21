@@ -45,7 +45,7 @@ namespace orxonox
 
         this->normal_ = Vector3(0, 1, 0);
         this->offset_ = 0.0f;
-        updatePlane();
+        updateShape();
 
         this->registerVariables();
     }
@@ -58,8 +58,8 @@ namespace orxonox
 
     void PlaneCollisionShape::registerVariables()
     {
-        registerVariable(this->normal_, variableDirection::toclient, new NetworkCallback<PlaneCollisionShape>(this, &PlaneCollisionShape::updatePlane));
-        registerVariable(this->offset_, variableDirection::toclient, new NetworkCallback<PlaneCollisionShape>(this, &PlaneCollisionShape::updatePlane));
+        registerVariable(this->normal_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->offset_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void PlaneCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -70,11 +70,8 @@ namespace orxonox
         XMLPortParam(PlaneCollisionShape, "offset", setOffset, getOffset, xmlelement, mode);    
     }
 
-    void PlaneCollisionShape::updatePlane()
+    btCollisionShape* PlaneCollisionShape::createNewShape() const
     {
-        if (this->collisionShape_)
-            delete this->collisionShape_;
-        this->collisionShape_ = new btStaticPlaneShape(omni_cast<btVector3>(this->normal_), this->offset_);
-        this->updateParent();
+        return new btStaticPlaneShape(omni_cast<btVector3>(this->normal_), this->offset_);
     }
 }

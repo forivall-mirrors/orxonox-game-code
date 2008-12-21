@@ -41,8 +41,6 @@
 
 namespace orxonox
 {
-    CreateFactory(CollisionShape);
-
     CollisionShape::CollisionShape(BaseObject* creator)
         : BaseObject(creator)
         , Synchronisable(creator)
@@ -61,6 +59,9 @@ namespace orxonox
 
     CollisionShape::~CollisionShape()
     {
+        // Detach from parent
+        if (this->isInitialized() && this->parent_)
+            this->parent_->removeChildShape(this);
     }
 
     void CollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -78,21 +79,14 @@ namespace orxonox
 
     void CollisionShape::registerVariables()
     {
-        registerVariable(this->parentID_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::parentChanged));
+        registerVariable(this->parentID_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::parentChangedCallback));
     }
 
     void CollisionShape::parentChanged()
     {
-        Synchronisable* synchronisable = Synchronisable::getSynchronisable(this->parentID_);
-        CompoundCollisionShape* CCSparent = dynamic_cast<CompoundCollisionShape*>(synchronisable);
-        if (CCSparent)
-            CCSparent->addChildShape(this);
-        else
-        {
-            WorldEntity* WEparent = dynamic_cast<WorldEntity*>(synchronisable);
-            if (WEparent)
-                WEparent->attachCollisionShape(this);
-        }
+        CompoundCollisionShape* parent = dynamic_cast<CompoundCollisionShape*>(Synchronisable::getSynchronisable(this->parentID_));
+        if (parent)
+            parent->addChildShape(this);
     }
 
     void CollisionShape::updateParent()
@@ -115,6 +109,16 @@ namespace orxonox
     void CollisionShape::setScale(float scale)
     {
         CCOUT(2) << "Warning: Cannot set the scale of a collision shape: Not yet implemented." << std::endl;
+    }
+
+    void CollisionShape::updateShape()
+    {
+        btCollisionShape* oldShape = this->collisionShape_;
+        this->collisionShape_ = this->createNewShape();
+        // When we recreate the shape, we have to inform the parent about this to update the shape
+        this->updateParent();
+        if (oldShape)
+            delete oldShape;
     }
 
     void CollisionShape::calculateLocalInertia(btScalar mass, btVector3& inertia) const

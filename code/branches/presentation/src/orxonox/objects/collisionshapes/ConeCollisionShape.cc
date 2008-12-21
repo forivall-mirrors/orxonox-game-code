@@ -45,7 +45,7 @@ namespace orxonox
 
         this->radius_ = 1.0f;
         this->height_ = 1.0f;
-        updateCone();
+        updateShape();
 
         this->registerVariables();
     }
@@ -58,8 +58,8 @@ namespace orxonox
 
     void ConeCollisionShape::registerVariables()
     {
-        registerVariable(this->radius_, variableDirection::toclient, new NetworkCallback<ConeCollisionShape>(this, &ConeCollisionShape::updateCone));
-        registerVariable(this->height_, variableDirection::toclient, new NetworkCallback<ConeCollisionShape>(this, &ConeCollisionShape::updateCone));
+        registerVariable(this->radius_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->height_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void ConeCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -70,11 +70,8 @@ namespace orxonox
         XMLPortParam(ConeCollisionShape, "height", setHeight, getHeight, xmlelement, mode);    
     }
 
-    void ConeCollisionShape::updateCone()
+    btCollisionShape* ConeCollisionShape::createNewShape() const
     {
-        if (this->collisionShape_)
-            delete this->collisionShape_;
-        this->collisionShape_ = new btConeShape(this->radius_, this->height_);
-        this->updateParent();
+        return  new btConeShape(this->radius_, this->height_);
     }
 }

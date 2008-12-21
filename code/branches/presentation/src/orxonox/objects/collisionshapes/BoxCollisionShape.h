@@ -45,28 +45,28 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void setHalfExtents(const Vector3& extents)
-                { this->halfExtents_ = extents; updateBox(); }
+                { this->halfExtents_ = extents; updateShape(); }
             inline const Vector3& getHalfExtents() const
                 { return halfExtents_;}
 
             inline void setWidth(float value)
-                { this->halfExtents_.z = value / 2; updateBox(); }
+                { this->halfExtents_.z = value / 2; updateShape(); }
             inline float getWidth() const
                 { return this->halfExtents_.z * 2; }
 
             inline void setHeight(float value)
-                { this->halfExtents_.y = value / 2; updateBox(); }
+                { this->halfExtents_.y = value / 2; updateShape(); }
             inline float getHeight() const
                 { return this->halfExtents_.y * 2; }
 
             inline void setLength(float value)
-                { this->halfExtents_.x = value / 2; updateBox(); }
+                { this->halfExtents_.x = value / 2; updateShape(); }
             inline float getLength() const
                 { return this->halfExtents_.x * 2; }
 
-            void updateBox();
-
         private:
+            btCollisionShape* createNewShape() const;
+
             Vector3 halfExtents_;
      };
 }

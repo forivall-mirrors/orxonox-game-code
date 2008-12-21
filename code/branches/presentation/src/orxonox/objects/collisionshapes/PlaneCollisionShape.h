@@ -45,18 +45,18 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void setNormal(const Vector3& normal)
-                { this->normal_ = normal; updatePlane(); }
+                { this->normal_ = normal; updateShape(); }
             inline const Vector3& getNormal()
                 { return normal_;}
 
             inline void setOffset(float offset)
-                { this->offset_ = offset; updatePlane(); }
+                { this->offset_ = offset; updateShape(); }
             inline float getOffset()
                 { return this->offset_;}
 
-            void updatePlane();
-
         private:
+            btCollisionShape* createNewShape()const;
+
             Vector3 normal_;
             float   offset_;
      };

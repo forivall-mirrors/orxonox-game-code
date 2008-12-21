@@ -65,6 +65,8 @@ namespace orxonox
             inline const Vector3& getScale3D(void) const
                 { return this->scale_; }
 
+            void updateShape();
+
             void calculateLocalInertia(float mass, btVector3& inertia) const;
 
             inline btCollisionShape* getCollisionShape() const
@@ -77,13 +79,15 @@ namespace orxonox
 
         protected:
             virtual void updateParent();
+            virtual void parentChanged();
+            // Note: This is required because the NetworkCallback will not call functions virtually
+            void parentChangedCallback() { this->parentChanged(); }
+            virtual btCollisionShape* createNewShape() const = 0;
 
             btCollisionShape*       collisionShape_;
             CompoundCollisionShape* parent_;
 
         private:
-            void parentChanged();
-
             Vector3                 position_;
             Quaternion              orientation_;
             Vector3                 scale_;

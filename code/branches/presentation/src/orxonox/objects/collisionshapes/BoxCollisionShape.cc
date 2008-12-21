@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(BoxCollisionShape);
 
         this->halfExtents_ = Vector3(1, 1, 1);
-        updateBox();
+        updateShape();
 
         this->registerVariables();
     }
@@ -57,7 +57,7 @@ namespace orxonox
 
     void BoxCollisionShape::registerVariables()
     {
-        registerVariable(this->halfExtents_, variableDirection::toclient, new NetworkCallback<BoxCollisionShape>(this, &BoxCollisionShape::updateBox));
+        registerVariable(this->halfExtents_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void BoxCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -70,11 +70,8 @@ namespace orxonox
         XMLPortParamLoadOnly(BoxCollisionShape, "length", setLength, xmlelement, mode);    
     }
 
-    void BoxCollisionShape::updateBox()
+    btCollisionShape* BoxCollisionShape::createNewShape() const
     {
-        if (this->collisionShape_)
-            delete this->collisionShape_;
-        this->collisionShape_ = new btBoxShape(omni_cast<btVector3>(this->halfExtents_));
-        this->updateParent();
+        return new btBoxShape(omni_cast<btVector3>(this->halfExtents_));
     }
 }

@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(SphereCollisionShape);
 
         this->radius_ = 1.0f;
-        updateSphere();
+        updateShape();
 
         this->registerVariables();
     }
@@ -57,7 +57,7 @@ namespace orxonox
 
     void SphereCollisionShape::registerVariables()
     {
-        registerVariable(this->radius_, variableDirection::toclient, new NetworkCallback<SphereCollisionShape>(this, &SphereCollisionShape::updateSphere));
+        registerVariable(this->radius_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void SphereCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -67,12 +67,8 @@ namespace orxonox
         XMLPortParam(SphereCollisionShape, "radius", setRadius, getRadius, xmlelement, mode);
     }
 
-    void SphereCollisionShape::updateSphere()
+    btCollisionShape* SphereCollisionShape::createNewShape() const
     {
-        if (this->collisionShape_)
-            delete this->collisionShape_;
-        // When we recreate the shape, we have to inform the parent about this to update the shape
-        this->collisionShape_ = new btSphereShape(this->radius_);
-        this->updateParent();
+        return new btSphereShape(this->radius_);
     }
 }

@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <vector>
+#include <cassert>
 #include "CollisionShape.h"
 
 namespace orxonox
@@ -58,6 +59,9 @@ namespace orxonox
 
         private:
             void updatePublicShape();
+            void parentChanged();
+            inline virtual btCollisionShape* createNewShape() const
+                { assert(false); return 0; }
 
             btCompoundShape* compoundShape_;
             std::map<CollisionShape*, btCollisionShape*> childShapes_;

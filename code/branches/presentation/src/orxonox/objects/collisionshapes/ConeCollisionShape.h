@@ -45,18 +45,18 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void setRadius(float value)
-                { this->radius_ = value; updateCone(); }
+                { this->radius_ = value; updateShape(); }
             inline float getRadius() const
                 { return radius_; }
 
             inline void setHeight(float value)
-                { this->height_ = value; updateCone(); }
+                { this->height_ = value; updateShape(); }
             inline float getHeight() const
                 { return this->height_; }
 
-            void updateCone();
-
         private:
+            btCollisionShape* createNewShape() const;
+
             float radius_;
             float height_;
      };
