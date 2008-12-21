@@ -80,8 +80,6 @@ namespace orxonox
         protected:
             virtual void updateParent();
             virtual void parentChanged();
-            // Note: This is required because the NetworkCallback will not call functions virtually
-            void parentChangedCallback() { this->parentChanged(); }
             virtual btCollisionShape* createNewShape() const = 0;
 
             btCollisionShape*       collisionShape_;
