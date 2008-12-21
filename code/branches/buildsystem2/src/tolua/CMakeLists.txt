@@ -6,8 +6,6 @@ ADD_LIBRARY(tolualib_orxonox STATIC
   tolua_to.c
 )
 
-TARGET_LINK_LIBRARIES(tolualib_orxonox ${LUA_LIBRARIES})
-
 #INSTALL(TARGETS tolualib_orxonox LIBRARY DESTINATION lib)
 
 SET(TOLUAGEN_SRC_FILES
@@ -26,8 +24,12 @@ ELSE("${LUA_VERSION}" MATCHES "^5.0")
 #ENDIF("${LUA_VERSION}" VERSION_LESS 5.1)
 ENDIF("${LUA_VERSION}" MATCHES "^5.0")
 
+# Set some variables to the parent scope in order to use them in the TOLUA macro
+GET_TARGET_PROPERTY(_temp_location toluaexe_orxonox LOCATION)
+SET(TOLUA_PARSER_EXECUTABLE ${_temp_location} PARENT_SCOPE)
 SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${TOLUA_ALL_PACK}" PARENT_SCOPE)
 SET(TOLUA_PARSER_DEPENDENCIES
+  toluaexe_orxonox
   ${CMAKE_CURRENT_SOURCE_DIR}/${TOLUA_ALL_PACK}
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat-5.1.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat.lua

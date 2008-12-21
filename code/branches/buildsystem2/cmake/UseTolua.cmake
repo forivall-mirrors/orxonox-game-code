@@ -15,8 +15,6 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-SET(_tolua_executable_name toluaexe_orxonox)
-GET_TARGET_PROPERTY(TOLUA_EXECUTABLE "${_tolua_executable_name}" LOCATION)
 IF(MINGW_LIBRARY_DIR)
   SET(_tolua_command_wd "WORKING_DIRECTORY;${MINGW_LIBRARY_DIR}/lua-5.1.3/lib")
 ELSE(MINGW_LIBRARY_DIR)
@@ -31,23 +29,24 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
   SET(_tolua_pkgfile "${CMAKE_CURRENT_BINARY_DIR}/tolua.pkg")
   SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/ToluaBind${_tolua_package}.cc")
   SET(_tolua_hfile   "${CMAKE_CURRENT_BINARY_DIR}/ToluaBind${_tolua_package}.h")
-  SET(${_tolua_srcfiles_varname} ${${_tolua_srcfiles_varname}} "${_tolua_cxxfile}")
+  SET(${_tolua_srcfiles_varname} ${${_tolua_srcfiles_varname}} ${_tolua_cxxfile})
 
   # TODO: check secureness of this temporary file
-  FILE(REMOVE "${_tolua_pkgfile}")
+  FILE(REMOVE ${_tolua_pkgfile})
   FOREACH(_tolua_inputfile ${_tolua_inputfiles})
-    FILE(APPEND "${_tolua_pkgfile}" "\$cfile \"${_tolua_inputfile}\"\n")
+    FILE(APPEND ${_tolua_pkgfile} "\$cfile \"${_tolua_inputfile}\"\n")
   ENDFOREACH(_tolua_inputfile)
 
+  # Note: Some of the variables are already defined in src/tolua/CMakeLists.txt
   ADD_CUSTOM_COMMAND(
-    OUTPUT "${_tolua_cxxfile}" "${_tolua_hfile}"
-    COMMAND "${TOLUA_EXECUTABLE}" -n "${_tolua_package}"
-                                  -w "${CMAKE_CURRENT_SOURCE_DIR}"
-                                  -o "${_tolua_cxxfile}"
-                                  -H "${_tolua_hfile}"
-                                  -s "${TOLUA_PARSER_SOURCE}"
-                                     "${_tolua_pkgfile}"
-    DEPENDS "${_tolua_executable_name}" ${TOLUA_PARSER_DEPENDENCIES}
+    OUTPUT ${_tolua_cxxfile} ${_tolua_hfile}
+    COMMAND ${TOLUA_PARSER_EXECUTABLE} -n ${_tolua_package}
+                                       -w ${CMAKE_CURRENT_SOURCE_DIR}
+                                       -o ${_tolua_cxxfile}
+                                       -H ${_tolua_hfile}
+                                       -s ${TOLUA_PARSER_SOURCE}
+                                          ${_tolua_pkgfile}
+    DEPENDS ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS CXX ${_tolua_inputfiles}
     ${_tolua_command_wd}
   )

@@ -52,8 +52,9 @@ ELSE (WIN32)
     #ENDIF (${CEGUI_VERSION} LESS 0.6.0)
 ENDIF (WIN32)
 
-# Include macro to easily add source files in subdirectories
+# Include macros
 INCLUDE(AddSourceFiles)
+INCLUDE(UseTolua)
 
 # Our own libraries
 ADD_SUBDIRECTORY(util)
