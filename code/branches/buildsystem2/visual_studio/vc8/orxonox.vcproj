@@ -75,8 +75,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copying files from init folder..."
-				CommandLine="for %%a in ($(RootDir)\bin\msvc\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;rem for %%a in ($(RootDir)\init\common\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
+				Description="Copying default configuration files..."
+				CommandLine="for %%a in ($(RootDir)\bin\msvc\$(SolutionName)\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\bin\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -140,8 +140,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copying files from init folder..."
-				CommandLine="for %%a in ($(RootDir)\bin\msvc\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;rem for %%a in ($(RootDir)\init\common\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
+				Description="Copying default configuration files..."
+				CommandLine="for %%a in ($(RootDir)\bin\msvc\$(SolutionName)\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\bin\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -166,7 +166,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(RootDir)\src\orxonox\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all.lua -o ToluaBindOrxonox.cc -H ToluaBindOrxonox.h tolua.pkg&#x0D;&#x0A;"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(RootDir)\src\orxonox\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all-5.1.lua -o ToluaBindOrxonox.cc -H ToluaBindOrxonox.h tolua.pkg&#x0D;&#x0A;"
 						AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
 						Outputs="$(RootDir)\src\orxonox\ToluaBindOrxonox.cc; $(RootDir)\src\orxonox\ToluaBindOrxonox.h"
 					/>
@@ -177,7 +177,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(RootDir)\src\orxonox\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all.lua -o ToluaBindOrxonox.cc -H ToluaBindOrxonox.h tolua.pkg&#x0D;&#x0A;"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(RootDir)\src\orxonox\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all-5.1.lua -o ToluaBindOrxonox.cc -H ToluaBindOrxonox.h tolua.pkg&#x0D;&#x0A;"
 						AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
 						Outputs="$(RootDir)\src\orxonox\ToluaBindOrxonox.cc; $(RootDir)\src\orxonox\ToluaBindOrxonox.h"
 					/>
@@ -390,6 +390,10 @@
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\EventTrigger.cc"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\PlayerTrigger.cc"
 							>
 						</File>
 						<File
@@ -976,6 +980,10 @@
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\EventTrigger.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\PlayerTrigger.h"
 							>
 						</File>
 						<File

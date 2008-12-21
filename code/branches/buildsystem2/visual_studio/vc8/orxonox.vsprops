@@ -18,9 +18,4 @@
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 		IgnoreDefaultLibraryNames=""
 	/>
-	<Tool
-		Name="VCPostBuildEventTool"
-		Description="Copying files from init folder..."
-		CommandLine="for %%a in ($(RootDir)\init\$(SolutionName)\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\init\common\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
-	/>
 </VisualStudioPropertySheet>

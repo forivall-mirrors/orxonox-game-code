@@ -13,6 +13,6 @@
 	<Tool
 		Name="VCLinkerTool"
 		AdditionalDependencies="enet$(CS).lib zlib$(CS).lib"
-		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
+		IgnoreDefaultLibraryNames=""
 	/>
 </VisualStudioPropertySheet>
