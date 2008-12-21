@@ -1,4 +1,4 @@
-SET(CORE_SRC_FILES
+ADD_SOURCE_FILES(
   Clock.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
@@ -40,10 +40,11 @@ SET(CORE_SRC_FILES
   Shell.cc
   TclBind.cc
   TclThreadManager.cc
-
 )
 
-ADD_SOURCE_DIRECTORY(CORE_SRC_FILES input)
+ADD_SOURCE_DIRECTORY(input)
+
+WRITE_SOURCE_FILES(CORE_SRC_FILES)
 
 INCLUDE(UseTolua)
 TOLUA(Core CORE_SRC_FILES INPUTFILES LuaBind.h CommandExecutor.h)

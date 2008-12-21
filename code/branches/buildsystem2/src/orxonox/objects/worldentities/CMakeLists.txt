@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(
   WorldEntity.cc
   PositionableEntity.cc
   MovableEntity.cc
@@ -15,7 +15,5 @@ SET( SRC_FILES
 #  Backlight.cc
 )
 
-ADD_SOURCE_DIRECTORY(SRC_FILES pawns)
-ADD_SOURCE_DIRECTORY(SRC_FILES triggers)
-
-ADD_SOURCE_FILES(SRC_FILES)
+ADD_SOURCE_DIRECTORY(pawns)
+ADD_SOURCE_DIRECTORY(triggers)

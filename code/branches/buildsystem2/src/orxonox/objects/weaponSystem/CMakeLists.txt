@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(
   Munition.cc
   Weapon.cc
   WeaponSet.cc
@@ -6,8 +6,6 @@ SET( SRC_FILES
   WeaponSystem.cc
 )
 
-#ADD_SOURCE_DIRECTORY(SRC_FILES munitions)
-#ADD_SOURCE_DIRECTORY(SRC_FILES projectiles)
-#ADD_SOURCE_DIRECTORY(SRC_FILES weapons)
-
-ADD_SOURCE_FILES(SRC_FILES)
+#ADD_SOURCE_DIRECTORY(munitions)
+#ADD_SOURCE_DIRECTORY(projectiles)
+#ADD_SOURCE_DIRECTORY(weapons)

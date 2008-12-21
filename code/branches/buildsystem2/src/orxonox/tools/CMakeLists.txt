@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(
   BillboardSet.cc
   Mesh.cc
   ParticleInterface.cc
@@ -6,5 +6,3 @@ SET( SRC_FILES
   Timer.cc
   WindowEventListener.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

@@ -1,7 +1,5 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(
   Info.cc
   PlayerInfo.cc
   HumanPlayer.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

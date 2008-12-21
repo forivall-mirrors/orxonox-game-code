@@ -1,7 +1,5 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(
   BillboardProjectile.cc
   ParticleProjectile.cc
   Projectile.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)
