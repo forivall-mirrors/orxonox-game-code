@@ -1,2 +1,0 @@
-$cfile "../../src/core/LuaBind.h"
-$cfile "../../src/core/CommandExecutor.h"
