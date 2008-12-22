@@ -1,5 +1,6 @@
 SET(CONFIG_FILES
   def_keybindings.ini
+  def_masterKeybindings.ini
   disco.txt
   irc.tcl
   remote.tcl
