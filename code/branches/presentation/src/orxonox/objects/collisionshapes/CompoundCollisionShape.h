@@ -45,12 +45,12 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void addChildShape(CollisionShape* shape);
-            void removeChildShape(CollisionShape* shape);
-            void removeAllChildShapes();
-            CollisionShape* getChildShape(unsigned int index) const;
+            void attach(CollisionShape* shape);
+            void detach(CollisionShape* shape);
+            void detachAll();
+            CollisionShape* getAttachedShape(unsigned int index) const;
 
-            void updateChildShape(CollisionShape* shape);
+            void updateAttachedShape(CollisionShape* shape);
 
             void setWorldEntityParent(WorldEntity* parent);
 
@@ -64,7 +64,7 @@ namespace orxonox
                 { assert(false); return 0; }
 
             btCompoundShape* compoundShape_;
-            std::map<CollisionShape*, btCollisionShape*> childShapes_;
+            std::map<CollisionShape*, btCollisionShape*> attachedShapes_;
             WorldEntity* worldEntityParent_;
     };
 }

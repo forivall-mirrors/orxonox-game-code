@@ -243,9 +243,9 @@ namespace orxonox
             void detachCollisionShape(CollisionShape* shape);
             CollisionShape* getAttachedCollisionShape(unsigned int index) const;
 
-            inline CompoundCollisionShape* getCollisionShape()
+            inline CompoundCollisionShape* getCollisionShape() const
                 { return this->collisionShape_; }
-            inline btRigidBody* getPhysicalBody()
+            inline btRigidBody* getPhysicalBody() const
                 { return this->physicalBody_; }
 
             void notifyCollisionShapeChanged();
@@ -258,7 +258,7 @@ namespace orxonox
                 { this->bCollisionCallbackActive_ = true; this->collisionCallbackActivityChanged(); }
             inline void disableCollisionCallback()
                 { this->bCollisionCallbackActive_ = false; this->collisionCallbackActivityChanged(); }
-            inline bool isCollisionCallbackActive()
+            inline bool isCollisionCallbackActive() const
                 { return this->bCollisionCallbackActive_; }
 
         protected:
@@ -270,6 +270,9 @@ namespace orxonox
             void updateCollisionType();
             void recalculateMassProps();
             void resetPhysicsProps();
+
+            bool notifyBeingAttached(WorldEntity* newParent);
+            void notifyDetached();
 
             // network callbacks
             void collisionTypeChanged();
@@ -292,6 +295,7 @@ namespace orxonox
             CollisionType                collisionTypeSynchronised_;
             bool                         bPhysicsActive_;
             bool                         bPhysicsActiveSynchronised_;
+            bool                         bPhysicsActiveBeforeAttaching_;
             CompoundCollisionShape*      collisionShape_;
             btScalar                     mass_;
             btVector3                    localInertia_;

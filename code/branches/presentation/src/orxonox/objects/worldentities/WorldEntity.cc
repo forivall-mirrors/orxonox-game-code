@@ -70,6 +70,8 @@ namespace orxonox
         // Default behaviour does not include physics
         this->physicalBody_ = 0;
         this->bPhysicsActive_ = false;
+        this->bPhysicsActiveSynchronised_ = false;
+        this->bPhysicsActiveBeforeAttaching_ = false;
         this->collisionShape_ = new CompoundCollisionShape(this);
         // Note: CompoundCollisionShape is a Synchronisable, but must not be synchronised.
         //       All objects will get attached on the client anyway, so we don't need synchronisation.
@@ -250,61 +252,80 @@ namespace orxonox
 
     void WorldEntity::attach(WorldEntity* object)
     {
-        // check first whether attaching is even allowed
-        if (object->hasPhysics())
-        {
-            if (!this->hasPhysics())
-            {
-                COUT(2) << "Warning: Cannot attach a physical object to a non physical one." << std::endl;
-                return;
-            }
-            else if (object->isDynamic())
-            {
-                COUT(2) << "Warning: Cannot attach a dynamic object to a WorldEntity." << std::endl;
-                return;
-            }
-            else if (object->isKinematic() && this->isDynamic())
-            {
-                COUT(2) << "Warning: Cannot attach a kinematic object to a dynamic one." << std::endl;
-                return;
-            }
-            else if (object->isKinematic())
-            {
-                COUT(2) << "Warning: Cannot attach a kinematic object to a static or kinematic one: Not yet implemented." << std::endl;
-                return;
-            }
-            else
-            {
-                object->deactivatePhysics();
-            }
-        }
-
         if (object == this)
         {
             COUT(2) << "Warning: Can't attach a WorldEntity to itself." << std::endl;
             return;
         }
 
-        if (object->getParent())
-            object->detachFromParent();
+        if (!object->notifyBeingAttached(this))
+            return;
 
         this->attachNode(object->node_);
-
         this->children_.insert(object);
-        object->parent_ = this;
-        object->parentID_ = this->getObjectID();
 
-        // collision shapes
         this->attachCollisionShape(object->getCollisionShape());
         // mass
         this->childrenMass_ += object->getMass();
         recalculateMassProps();
     }
 
+    bool WorldEntity::notifyBeingAttached(WorldEntity* newParent)
+    {
+        // check first whether attaching is even allowed
+        if (this->hasPhysics())
+        {
+            if (!newParent->hasPhysics())
+            {
+                COUT(2) << "Warning: Cannot attach a physical object to a non physical one." << std::endl;
+                return false;
+            }
+            else if (this->isDynamic())
+            {
+                COUT(2) << "Warning: Cannot attach a dynamic object to a WorldEntity." << std::endl;
+                return false;
+            }
+            else if (this->isKinematic() && newParent->isDynamic())
+            {
+                COUT(2) << "Warning: Cannot attach a kinematic object to a dynamic one." << std::endl;
+                return false;
+            }
+            else if (this->isKinematic())
+            {
+                COUT(2) << "Warning: Cannot attach a kinematic object to a static or kinematic one: Not yet implemented." << std::endl;
+                return false;
+            }
+        }
+
+        if (this->isPhysicsActive())
+            this->bPhysicsActiveBeforeAttaching_ = true;
+        this->deactivatePhysics();
+
+        if (this->parent_)
+            this->detachFromParent();
+
+        this->parent_ = newParent;
+        this->parentID_ = newParent->getObjectID();
+
+        // apply transform to collision shape
+        this->collisionShape_->setPosition(this->getPosition());
+        this->collisionShape_->setOrientation(this->getOrientation());
+        // TODO: Scale
+        
+        return true;
+    }
+
     void WorldEntity::detach(WorldEntity* object)
     {
+        if (this->children_.find(object) == this->children_.end())
+        {
+            CCOUT(2) << "Warning: Cannot detach an object that is not a child." << std::endl;
+            return;
+        }
+
         // collision shapes
         this->detachCollisionShape(object->getCollisionShape());
+
         // mass
         if (object->getMass() > 0.0f)
         {
@@ -314,11 +335,25 @@ namespace orxonox
 
         this->detachNode(object->node_);
         this->children_.erase(object);
-        object->parent_ = 0;
-        object->parentID_ = OBJECTID_UNKNOWN;
 
-        // Note: It is possible that the object has physics but was disabled when attaching
-        object->activatePhysics();
+        object->notifyDetached();
+    }
+
+    void WorldEntity::notifyDetached()
+    {
+        this->parent_ = 0;
+        this->parentID_ = OBJECTID_UNKNOWN;
+
+        // reset orientation of the collisionShape (cannot be set within a WE usually)
+        this->collisionShape_->setPosition(Vector3::ZERO);
+        this->collisionShape_->setOrientation(Quaternion::IDENTITY);
+        // TODO: Scale
+
+        if (this->bPhysicsActiveBeforeAttaching_)
+        {
+            this->activatePhysics();
+            this->bPhysicsActiveBeforeAttaching_ = false;
+        }
     }
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const
@@ -350,19 +385,19 @@ namespace orxonox
 
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
-        this->collisionShape_->addChildShape(shape);
+        this->collisionShape_->attach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
     void WorldEntity::detachCollisionShape(CollisionShape* shape)
     {
-        this->collisionShape_->removeChildShape(shape);
+        this->collisionShape_->detach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
     CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
     {
-        return this->collisionShape_->getChildShape(index);
+        return this->collisionShape_->getAttachedShape(index);
     }
 
     void WorldEntity::activatePhysics()

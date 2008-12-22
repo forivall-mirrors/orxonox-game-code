@@ -54,8 +54,8 @@ namespace orxonox
         if (this->isInitialized())
         {
             // Delete all children
-            for (std::map<CollisionShape*, btCollisionShape*>::iterator it = this->childShapes_.begin();
-                it != this->childShapes_.end(); ++it)
+            for (std::map<CollisionShape*, btCollisionShape*>::iterator it = this->attachedShapes_.begin();
+                it != this->attachedShapes_.end(); ++it)
             {
                 // make sure that the child doesn't want to detach itself --> speedup because of the missing update
                 it->first->setParent(0, OBJECTID_UNKNOWN);
@@ -70,7 +70,7 @@ namespace orxonox
     {
         SUPER(CompoundCollisionShape, XMLPort, xmlelement, mode);
         // Attached collision shapes
-        XMLPortObject(CompoundCollisionShape, CollisionShape, "", addChildShape, getChildShape, xmlelement, mode);
+        XMLPortObject(CompoundCollisionShape, CollisionShape, "", attach, detach, xmlelement, mode);
     }
 
     void CompoundCollisionShape::setWorldEntityParent(WorldEntity* parent)
@@ -81,16 +81,16 @@ namespace orxonox
         this->worldEntityParent_ = parent;
     }
 
-    void CompoundCollisionShape::addChildShape(CollisionShape* shape)
+    void CompoundCollisionShape::attach(CollisionShape* shape)
     {
         if (!shape || static_cast<CollisionShape*>(this) == shape)
             return;
-        if (this->childShapes_.find(shape) != this->childShapes_.end())
+        if (this->attachedShapes_.find(shape) != this->attachedShapes_.end())
         {
             CCOUT(2) << "Warning: Attaching a CollisionShape twice is not yet supported." << std::endl;
             return;
         }
-        this->childShapes_[shape] = shape->getCollisionShape();
+        this->attachedShapes_[shape] = shape->getCollisionShape();
 
         if (shape->getCollisionShape())
         {
@@ -112,31 +112,33 @@ namespace orxonox
             shape->setParent(this, this->getObjectID());
     }
 
-    void CompoundCollisionShape::removeChildShape(CollisionShape* shape)
+    void CompoundCollisionShape::detach(CollisionShape* shape)
     {
-        if (this->childShapes_.find(shape) != this->childShapes_.end())
+        if (this->attachedShapes_.find(shape) != this->attachedShapes_.end())
         {
             shape->setParent(0, OBJECTID_UNKNOWN);
-            this->childShapes_.erase(shape);
+            this->attachedShapes_.erase(shape);
             if (shape->getCollisionShape())
                 this->compoundShape_->removeChildShape(shape->getCollisionShape());
 
             this->updatePublicShape();
         }
+        else
+            CCOUT(2) << "Warning: Cannot detach non child collision shape" << std::endl;
     }
 
-    void CompoundCollisionShape::removeAllChildShapes()
+    void CompoundCollisionShape::detachAll()
     {
-        while (this->childShapes_.size() > 0)
-            this->removeChildShape(this->childShapes_.begin()->first);
+        while (this->attachedShapes_.size() > 0)
+            this->detach(this->attachedShapes_.begin()->first);
     }
 
-    void CompoundCollisionShape::updateChildShape(CollisionShape* shape)
+    void CompoundCollisionShape::updateAttachedShape(CollisionShape* shape)
     {
         if (!shape)
             return;
-        std::map<CollisionShape*, btCollisionShape*>::iterator it = this->childShapes_.find(shape);
-        if (it == this->childShapes_.end())
+        std::map<CollisionShape*, btCollisionShape*>::iterator it = this->attachedShapes_.find(shape);
+        if (it == this->attachedShapes_.end())
         {
             CCOUT(2) << "Warning: Cannot update child shape: Instance not a child." << std::endl;
             return;
@@ -161,7 +163,7 @@ namespace orxonox
         btCollisionShape* primitive = 0;
         bool bPrimitive = true;
         bool bEmpty = true;
-        for (std::map<CollisionShape*, btCollisionShape*>::const_iterator it = this->childShapes_.begin(); it != this->childShapes_.end(); ++it)
+        for (std::map<CollisionShape*, btCollisionShape*>::const_iterator it = this->attachedShapes_.begin(); it != this->attachedShapes_.end(); ++it)
         {
             if (it->second)
             {
@@ -197,7 +199,7 @@ namespace orxonox
     void CompoundCollisionShape::updateParent()
     {
         if (this->parent_)
-            this->parent_->updateChildShape(this);
+            this->parent_->updateAttachedShape(this);
         if (this->worldEntityParent_)
             this->worldEntityParent_->notifyCollisionShapeChanged();
     }
@@ -208,10 +210,10 @@ namespace orxonox
             CollisionShape::parentChanged();
     }
 
-    CollisionShape* CompoundCollisionShape::getChildShape(unsigned int index) const
+    CollisionShape* CompoundCollisionShape::getAttachedShape(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::map<CollisionShape*, btCollisionShape*>::const_iterator it = this->childShapes_.begin(); it != this->childShapes_.end(); ++it)
+        for (std::map<CollisionShape*, btCollisionShape*>::const_iterator it = this->attachedShapes_.begin(); it != this->attachedShapes_.end(); ++it)
         {
             if (i == index)
                 return it->first;

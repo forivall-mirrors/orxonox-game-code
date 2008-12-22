@@ -61,7 +61,7 @@ namespace orxonox
     {
         // Detach from parent
         if (this->isInitialized() && this->parent_)
-            this->parent_->removeChildShape(this);
+            this->parent_->detach(this);
     }
 
     void CollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -86,13 +86,13 @@ namespace orxonox
     {
         CompoundCollisionShape* parent = dynamic_cast<CompoundCollisionShape*>(Synchronisable::getSynchronisable(this->parentID_));
         if (parent)
-            parent->addChildShape(this);
+            parent->attach(this);
     }
 
     void CollisionShape::updateParent()
     {
         if (this->parent_)
-            this->parent_->updateChildShape(this);
+            this->parent_->updateAttachedShape(this);
     }
 
     bool CollisionShape::hasTransform() const
