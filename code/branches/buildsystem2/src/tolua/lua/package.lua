@@ -251,7 +251,7 @@ function Package (name,fn)
     if fn then
         local file
         if flags.f then
-            if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' then
+            if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' or (string.len(flags.f) > 1 and string.sub(flags.f, 2, 2) == ':') then
                 file = flags.f
             else
                 file = flags.w..'/'..flags.f

@@ -160,9 +160,9 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;CommandExecutor.h&quot; &gt; $(RootDir)\src\core\tolua.pkg&#x0D;&#x0A;echo $cfile &quot;LuaBind.h&quot; &gt;&gt; $(RootDir)\src\core\tolua.pkg&#x0D;&#x0A;$(OutDir)\toluaexe$(CS).exe -n Core -w $(RootDir)\src\core\ -s $(RootDir)\src\tolua\all-5.1.lua -o ToluaBindCore.cc -H ToluaBindCore.h tolua.pkg&#x0D;&#x0A;"
-						AdditionalDependencies="$(RootDir)\src\core\LuaBind.h;$(RootDir)\src\core\CommandExecutor.h"
-						Outputs="$(RootDir)\src\core\ToluaBindCore.cc; $(RootDir)\src\core\ToluaBindCore.h"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;CommandExecutor.h&quot; &gt; $(IntDir)\tolua.pkg&#x0D;&#x0A;echo $cfile &quot;LuaBind.h&quot; &gt;&gt; $(IntDir)\tolua.pkg&#x0D;&#x0A;$(OutDir)\toluaexe$(CS).exe -n Core -w $(RootDir)\src\core\ -s $(RootDir)\src\tolua\all-5.1.lua -o $(IntDir)\ToluaBindCore.cc -H $(IntDir)\ToluaBindCore.h $(IntDir)\tolua.pkg&#x0D;&#x0A;"
+						AdditionalDependencies="$(RootDir)\src\core\LuaBind.h; $(RootDir)\src\core\CommandExecutor.h"
+						Outputs="$(IntDir)\ToluaBindCore.cc; $(IntDir)\ToluaBindCore.h; $(IntDir)\tolua.pkg"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -171,9 +171,9 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;CommandExecutor.h&quot; &gt; $(RootDir)\src\core\tolua.pkg&#x0D;&#x0A;echo $cfile &quot;LuaBind.h&quot; &gt;&gt; $(RootDir)\src\core\tolua.pkg&#x0D;&#x0A;$(OutDir)\toluaexe$(CS).exe -n Core -w $(RootDir)\src\core\ -s $(RootDir)\src\tolua\all-5.1.lua -o ToluaBindCore.cc -H ToluaBindCore.h tolua.pkg&#x0D;&#x0A;"
-						AdditionalDependencies="$(RootDir)\src\core\LuaBind.h;$(RootDir)\src\core\CommandExecutor.h"
-						Outputs="$(RootDir)\src\core\ToluaBindCore.cc; $(RootDir)\src\core\ToluaBindCore.h"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;CommandExecutor.h&quot; &gt; $(IntDir)\tolua.pkg&#x0D;&#x0A;echo $cfile &quot;LuaBind.h&quot; &gt;&gt; $(IntDir)\tolua.pkg&#x0D;&#x0A;$(OutDir)\toluaexe$(CS).exe -n Core -w $(RootDir)\src\core\ -s $(RootDir)\src\tolua\all-5.1.lua -o $(IntDir)\ToluaBindCore.cc -H $(IntDir)\ToluaBindCore.h $(IntDir)\tolua.pkg&#x0D;&#x0A;"
+						AdditionalDependencies="$(RootDir)\src\core\LuaBind.h; $(RootDir)\src\core\CommandExecutor.h"
+						Outputs="$(IntDir)\ToluaBindCore.cc; $(IntDir)\ToluaBindCore.h; $(IntDir)\tolua.pkg"
 					/>
 				</FileConfiguration>
 			</File>
@@ -218,11 +218,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\XMLNameListener.cc"
+				RelativePath="$(IntDir)\ToluaBindCore.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\ToluaBindCore.cc"
+				RelativePath="..\..\src\core\XMLNameListener.cc"
 				>
 			</File>
 			<Filter
@@ -444,7 +444,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\ToluaBindCore.h"
+				RelativePath="$(IntDir)\ToluaBindCore.h"
 				>
 			</File>
 			<File

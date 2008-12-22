@@ -166,9 +166,9 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(RootDir)\src\orxonox\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all-5.1.lua -o ToluaBindOrxonox.cc -H ToluaBindOrxonox.h tolua.pkg&#x0D;&#x0A;"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(IntDir)\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all-5.1.lua -o $(IntDir)\ToluaBindOrxonox.cc -H $(IntDir)\ToluaBindOrxonox.h $(IntDir)\tolua.pkg&#x0D;&#x0A;"
 						AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
-						Outputs="$(RootDir)\src\orxonox\ToluaBindOrxonox.cc; $(RootDir)\src\orxonox\ToluaBindOrxonox.h"
+						Outputs="$(IntDir)\ToluaBindOrxonox.cc; $(IntDir)\ToluaBindOrxonox.h; $(IntDir)\tolua.pkg"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -177,9 +177,9 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(RootDir)\src\orxonox\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all-5.1.lua -o ToluaBindOrxonox.cc -H ToluaBindOrxonox.h tolua.pkg&#x0D;&#x0A;"
+						CommandLine="path $(LibDir)\..\..\bin\$(SolutionName)\$(ConfigurationName); %path%&#x0D;&#x0A;cd $(RootDir)\bin&#x0D;&#x0A;echo $cfile &quot;gui/GUIManager.h&quot; &gt; $(IntDir)\tolua.pkg&#x0D;&#x0A;&quot;$(OutDir)\toluaexe$(CS).exe&quot; -n Orxonox -w $(RootDir)\src\orxonox\ -s $(RootDir)\src\tolua\all-5.1.lua -o $(IntDir)\ToluaBindOrxonox.cc -H $(IntDir)\ToluaBindOrxonox.h $(IntDir)\tolua.pkg&#x0D;&#x0A;"
 						AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
-						Outputs="$(RootDir)\src\orxonox\ToluaBindOrxonox.cc; $(RootDir)\src\orxonox\ToluaBindOrxonox.h"
+						Outputs="$(IntDir)\ToluaBindOrxonox.cc; $(IntDir)\ToluaBindOrxonox.h; $(IntDir)\tolua.pkg"
 					/>
 				</FileConfiguration>
 			</File>
@@ -224,7 +224,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\ToluaBindOrxonox.cc"
+				RelativePath="$(IntDir)\ToluaBindOrxonox.cc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -846,7 +846,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\ToluaBindOrxonox.h"
+				RelativePath="$(IntDir)\ToluaBindOrxonox.h"
 				>
 			</File>
 			<Filter

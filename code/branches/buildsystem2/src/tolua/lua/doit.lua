@@ -45,7 +45,7 @@ function doit ()
 
     -- do this after setting the package name
     if flags.L then
-        if string.sub(flags.L, 1, 1) == '/' or string.sub(flags.L, 1, 1) == '\\' then
+        if string.sub(flags.L, 1, 1) == '/' or string.sub(flags.L, 1, 1) == '\\' or (string.len(flags.L) > 1 and string.sub(flags.L, 2, 2) == ':') then
             dofile(flags.L)
         else
             dofile(flags.w..'/'..flags.L)
@@ -62,7 +62,7 @@ function doit ()
     -- proccess package
     local file
     if flags.f then
-        if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' then
+        if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' or (string.len(flags.f) > 1 and string.sub(flags.f, 2, 2) == ':') then
             file = flags.f
         else
             file = flags.w..'/'..flags.f
@@ -78,7 +78,7 @@ function doit ()
 
     if flags.o then
         local file
-        if string.sub(flags.o, 1, 1) == '/' or string.sub(flags.o, 1, 1) == '\\' then
+        if string.sub(flags.o, 1, 1) == '/' or string.sub(flags.o, 1, 1) == '\\' or (string.len(flags.o) > 1 and string.sub(flags.o, 2, 2) == ':') then
             file = flags.o
         else
             file = flags.w..'/'..flags.o
@@ -109,7 +109,7 @@ function doit ()
     if not flags.P then
         if flags.H then
             local file
-            if string.sub(flags.H, 1, 1) == '/' or string.sub(flags.H, 1, 1) == '\\' then
+            if string.sub(flags.H, 1, 1) == '/' or string.sub(flags.H, 1, 1) == '\\' or (string.len(flags.H) > 1 and string.sub(flags.H, 2, 2) == ':') then
                 file = flags.H
             else
                 file = flags.w..'/'..flags.H
