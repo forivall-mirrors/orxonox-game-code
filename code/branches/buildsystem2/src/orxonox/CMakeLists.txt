@@ -40,7 +40,7 @@ TARGET_LINK_LIBRARIES( orxonox
   tolualib_orxonox
   util
   core
-  audio
+  #audio
   network
 )
 
