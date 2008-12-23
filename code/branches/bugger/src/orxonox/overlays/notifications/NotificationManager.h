@@ -26,34 +26,49 @@
  *
  */
 
-/**
-    @file
-    @brief Implementation of the Rewardable class.
-*/
+#ifndef _NotificationManager_H__
+#define _NotificationManager_H__
 
-#include "OrxonoxStableHeaders.h"
-#include "Rewardable.h"
+#include "OrxonoxPrereqs.h"
 
-#include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
+
+#include <list>
+#include <string>
 
 namespace orxonox
 {
-    /**
-    @brief
-        Constructor. Registers the object.
-    */
-    Rewardable::Rewardable(BaseObject* creator) : BaseObject(creator)
+    struct NotificationContainer
     {
-        RegisterObject(Rewardable);
-    }
+        Notification* notification;
+        float remainingTime;
+    };
 
     /**
     @brief
-        Destructor,
+        
+    @author
+        Damian 'Mozork' Frick
     */
-    Rewardable::~Rewardable()
+    class _OrxonoxExport NotificationManager : public BaseObject
     {
-    }
+    
+    public:
+        NotificationManager(BaseObject* creator);
+        virtual ~NotificationManager();
+        
+        static bool insertNotification(Notification* notification);
+        
+        static void tick(float dt);
+        
+    private:
+        static std::list<NotificationContainer*> notifications_s;
+        
+        static void updateQueue(void);
+        static const std::string clipMessage(const std::string & message);
 
+    };
 
 }
+
+#endif /* _NotificationManager_H__ */

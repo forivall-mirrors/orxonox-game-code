@@ -304,6 +304,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Planet.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
 						>
 					</File>
@@ -624,6 +628,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestListener.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestManager.cc"
 						>
 					</File>
@@ -795,6 +803,22 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="notifications"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\Notification.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationManager.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationQueue.cc"
 						>
 					</File>
 				</Filter>
@@ -1004,6 +1028,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Planet.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
 						>
 					</File>
@@ -1040,6 +1068,10 @@
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\EventTrigger.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\PlayerTrigger.h"
 							>
 						</File>
 						<File
@@ -1152,11 +1184,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestEffectBeacon.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestHint.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestListener.h"
 						>
 					</File>
 					<File
@@ -1349,6 +1389,22 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="notifications"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\Notification.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationManager.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationQueue.h"
 						>
 					</File>
 				</Filter>

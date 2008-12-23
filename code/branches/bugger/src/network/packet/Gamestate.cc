@@ -348,7 +348,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   // create a gamestate out of it
   Gamestate *gs = new Gamestate(gdata);
   uint8_t *newdata = gdata + sizeof(GamestateHeader);
-//   uint8_t *origdata = GAMESTATE_START(data_);
+  uint8_t *origdata = GAMESTATE_START(data_);
 
   //copy the GamestateHeader
   *(GamestateHeader*)gdata = *HEADER;
@@ -356,7 +356,8 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   synchronisableHeader *oldobjectheader, *newobjectheader;
   uint32_t objectOffset;
   unsigned int objectsize, destsize=0;
-  Synchronisable *object;
+  // TODO: Why is this variable not used?
+  //Synchronisable *object;
 
   //call TrafficControl
   TrafficControl::getInstance()->processObjectList( clientID, HEADER->id, &dataMap_ );
@@ -365,26 +366,28 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
     if((*it).objSize==0)
       continue;
-    oldobjectheader = (synchronisableHeader*)(data_ + (*it).objDataOffset);
+    oldobjectheader = (synchronisableHeader*)origdata;
     newobjectheader = (synchronisableHeader*)newdata;
-    object = Synchronisable::getSynchronisable( (*it).objID );
-    assert(object->objectID == oldobjectheader->objectID);
+//     object = Synchronisable::getSynchronisable( (*it).objID );
+//     assert(object->objectID == oldobjectheader->objectID);
     objectsize = oldobjectheader->size;
-    *newobjectheader = *oldobjectheader;
     objectOffset=sizeof(synchronisableHeader); //skip the size and the availableData variables in the objectheader
-    if ( /*object->doSelection(HEADER->id)*/true ){
+    if ( (*it).objID == oldobjectheader->objectID ){
+      memcpy(newdata, origdata, objectsize);
       assert(newobjectheader->dataAvailable==true);
-      memcpy(newdata+objectOffset, data_ + (*it).objDataOffset + objectOffset, objectsize-objectOffset);
+      ++it;
     }else{
+      *newobjectheader = *oldobjectheader;
       newobjectheader->dataAvailable=false;
       memset(newdata+objectOffset, 0, objectsize-objectOffset);
-      assert(objectOffset==objectsize);
     }
     newdata += objectsize;
+    origdata += objectsize;
     destsize += objectsize;
 //     origdata += objectsize;
   }
   ((GamestateHeader*)gdata)->datasize = destsize;
+  assert(destsize==HEADER->datasize);
   assert(destsize!=0);
   return gs;
 }

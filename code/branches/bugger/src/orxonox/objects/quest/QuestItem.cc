@@ -27,9 +27,8 @@
  */
  
 /**
-    @file QuestItem.cc
-    @brief
-    Implementation of the QuestItem class.
+    @file
+    @brief Implementation of the QuestItem class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -39,8 +38,8 @@
 
 #include "QuestDescription.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers and initializes the object.
@@ -98,10 +97,8 @@ namespace orxonox {
         The id to be checked.
     @return
         Returns true if the string is likely to be of the required form.
-    @todo
-        Clarify form, more vigorous checks.
     */
-    bool QuestItem::isId(const std::string & id)
+    /*static*/ bool QuestItem::isId(const std::string & id)
     {
         return id.size() >= 32;
     }

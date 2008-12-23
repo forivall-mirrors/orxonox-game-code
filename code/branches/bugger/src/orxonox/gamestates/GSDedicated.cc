@@ -37,6 +37,7 @@
 #include "util/Sleep.h"
 #include "network/Server.h"
 #include "objects/Tickable.h"
+#include "util/Sleep.h"
 
 const unsigned int  DEFAULT_DEDICATED_SERVER_TICKRATE = 25;
 const float         MIN_WIN32_SLEEP_TIME = 0.01; // scheduler limited

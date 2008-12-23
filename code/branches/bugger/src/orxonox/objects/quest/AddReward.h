@@ -27,9 +27,8 @@
  */
 
 /**
-    @file AddReward.h
-    @brief
-    Definition of the AddReward class.
+    @file
+    @brief Definition of the AddReward class.
 */
 
 #ifndef _AddReward_H__
@@ -42,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Adds a list of Rewardables to a player.
@@ -77,6 +76,7 @@ namespace orxonox {
             */
             inline void addRewardable(Rewardable* reward)
                 { this->rewards_.push_back(reward); }
+        
             const Rewardable* getRewardables(unsigned int index) const; //!< Returns the Rewardable object at the given index.
 
     };

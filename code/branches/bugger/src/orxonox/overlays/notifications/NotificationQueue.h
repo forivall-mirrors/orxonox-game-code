@@ -26,45 +26,55 @@
  *
  */
 
-/**
-    @file
-    @brief Definition of the CompleteQuest class.
-*/
-
-#ifndef _CompleteQuest_H__
-#define _CompleteQuest_H__
+#ifndef _NotificationOueue_H__
+#define _NotificationOueue_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgreTextAreaOverlayElement.h>
+
+#include "orxonox/overlays/OverlayText.h"
+#include "orxonox/objects/Tickable.h"
 
 #include <string>
-
-#include "core/XMLPort.h"
-#include "ChangeQuestStatus.h"
 
 namespace orxonox
 {
     /**
     @brief
-        Completes a Quest (with a specified id) for the player invoking the QuestEffect.
         
-        Creating a CompleteQuest through XML goes as follows:
-        
-        <CompleteQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be completed.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport CompleteQuest : public ChangeQuestStatus
+    class _OrxonoxExport NotificationQueue : public OverlayText, public Tickable
     {
-        public:
-            CompleteQuest(BaseObject* creator);
-            virtual ~CompleteQuest();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CompleteQuest object through XML.
-
-            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
-
+    public:
+        NotificationQueue(BaseObject* creator);
+        virtual ~NotificationQueue();
+        
+        static NotificationQueue* queue_s; //TDO Singleton? oder im level.
+        
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        
+        virtual void tick(float dt);
+        
+        void update(void);
+        
+        int getLength(void) const
+                { return this->length_; }
+        int getWidth(void) const
+                { return this->width_; }
+        
+        void setQueueText(const std::string & text);
+        bool setLength(int length);
+        bool setWidth(int width);
+        
+    private:
+        Ogre::UTFString queueText_;
+        int length_;
+        int width_;
+    
     };
 
 }
 
-#endif /* _CompleteQuest_H__ */
+#endif /* _NotificationOverlay_H__ */

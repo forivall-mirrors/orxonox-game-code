@@ -39,13 +39,11 @@ namespace orxonox
 
     Model::Model(BaseObject* creator) : PositionableEntity(creator)
     {
-        static unsigned int i=10;
         RegisterObject(Model);
 
         this->bCastShadows_ = true;
 
         this->registerVariables();
-        this->setObjectPriority(i++);
     }
 
     Model::~Model()

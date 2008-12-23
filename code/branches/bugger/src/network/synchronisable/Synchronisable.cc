@@ -65,7 +65,6 @@ namespace orxonox
   Synchronisable::Synchronisable(BaseObject* creator){
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
-    objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
     if ( !Host::running() || ( Host::running() && Host::isServer() ) )
     {
@@ -77,18 +76,22 @@ namespace orxonox
       objectID=OBJECTID_UNKNOWN;
     classID = static_cast<uint32_t>(-1);
 
+    // set standard priority
+    this->setPriority( priority::normal );
 
-//#ifndef NDEBUG
-//    ObjectList<Synchronisable>::iterator it;
-//    for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){
-//        if(!(*it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0)))
-//        {
-//            COUT(1) << "Assertion failed: *it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0)" << std::endl;
-//            COUT(1) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
-//            abort();
-//        }
-//    }
-//#endif
+    
+    // get creator id
+#ifndef NDEBUG
+    ObjectList<Synchronisable>::iterator it;
+    for(it = ObjectList<Synchronisable>::begin(); it!=ObjectList<Synchronisable>::end(); ++it){
+      if( it->getObjectID()==this->objectID )
+        if(!(*it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0))){
+          COUT(1) << "Assertion failed: *it==this || (it->objectID==OBJECTID_UNKNOWN && it->objectMode_==0x0)" << std::endl;
+          COUT(1) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
+          abort();
+        }
+    }
+#endif
 
     this->creatorID = OBJECTID_UNKNOWN;
 
@@ -176,6 +179,7 @@ namespace orxonox
       if (!synchronisable_creator)
       {
         mem += header->size; //.TODO: this suckz.... remove size from header
+        assert(0);
         return 0;
       }
       else
@@ -359,6 +363,7 @@ namespace orxonox
     //assert(objectMode_!=0x0);
     //assert( (mode ^ objectMode_) != 0);
     if(syncList.empty()){
+      assert(0);
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
       return false;
     }

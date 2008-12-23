@@ -37,6 +37,8 @@ namespace orxonox
     PositionableEntity::PositionableEntity(BaseObject* creator) : WorldEntity(creator)
     {
         RegisterObject(PositionableEntity);
+        
+        this->setPriority( priority::very_low );
 
         this->registerVariables();
     }

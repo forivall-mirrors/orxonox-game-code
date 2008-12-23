@@ -62,8 +62,6 @@
 namespace orxonox
 {
   const unsigned int MAX_FAILURES = 20;
-  const unsigned int NETWORK_FREQUENCY = 25;
-  const float NETWORK_PERIOD = (float)1/NETWORK_FREQUENCY;
 
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY

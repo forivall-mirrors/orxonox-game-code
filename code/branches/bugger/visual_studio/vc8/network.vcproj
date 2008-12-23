@@ -309,6 +309,10 @@
 				RelativePath="..\..\src\network\Server.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\network\TrafficControl.h"
+				>
+			</File>
 			<Filter
 				Name="packet"
 				>

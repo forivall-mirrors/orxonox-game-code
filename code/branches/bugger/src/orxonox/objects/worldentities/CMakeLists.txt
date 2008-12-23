@@ -15,6 +15,7 @@ SET( SRC_FILES
   Model.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
+  Planet.cc
   SpawnPoint.cc
 )
 

@@ -27,9 +27,8 @@
  */
 
 /**
-    @file QuestEffect.cc
-    @brief
-    Implementation of the QuestEffect class.
+    @file
+    @brief Implementation of the QuestEffect class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -39,8 +38,8 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Creates a new QuestEffect.
@@ -70,9 +69,11 @@ namespace orxonox {
     @return
         Returns false if there was an error, view console of log for further detail.
     */
-    bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
+    /*static*/ bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
     {
         bool check = true;
+        
+        COUT(4) << "Invoking QuestEffects on player: " << player << " ."  << std::endl;
 
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
         {

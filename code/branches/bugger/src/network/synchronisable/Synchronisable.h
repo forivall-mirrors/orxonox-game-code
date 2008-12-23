@@ -60,6 +60,16 @@ namespace orxonox
       bidirectional=0x3
     };
   }
+  
+  namespace priority{
+    enum prio{
+      very_high   = -100,
+      high        = -15,
+      normal      = 0,
+      low         = 15,
+      very_low    = 100
+    };
+  }
 
   struct _NetworkExport synchronisableHeader{
     uint32_t size:31;
@@ -100,7 +110,7 @@ namespace orxonox
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
     template <class T> void unregisterVariable(T& var);
     void setObjectMode(uint8_t mode);
-    void setObjectPriority(unsigned int freq){ objectFrequency_ = freq; }
+    void setPriority(unsigned int freq){ objectFrequency_ = freq; }
 
 
   private:

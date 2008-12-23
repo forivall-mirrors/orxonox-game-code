@@ -27,9 +27,8 @@
  */
  
 /**
-    @file CompleteQuest.cc
-    @brief
-    Implementation of the CompleteQuest class.
+    @file
+    @brief Implementation of the CompleteQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -42,8 +41,8 @@
 #include "QuestManager.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(CompleteQuest);
 
     /**

@@ -102,6 +102,7 @@ namespace orxonox
     class QuestEffectBeacon;
     class QuestHint;
     class QuestItem;
+    class QuestListener;
     class QuestManager;
     class Rewardable;
 
@@ -185,6 +186,9 @@ namespace orxonox
     class HUDSpeedBar;
     class HUDHealthBar;
     class InGameConsole;
+    class Notification;
+    class NotificationManager;
+    class NotificationQueue;
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;

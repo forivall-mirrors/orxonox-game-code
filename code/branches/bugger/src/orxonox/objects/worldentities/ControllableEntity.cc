@@ -79,6 +79,8 @@ namespace orxonox
         this->client_velocity_ = Vector3::ZERO;
         this->server_orientation_ = Quaternion::IDENTITY;
         this->client_orientation_ = Quaternion::IDENTITY;
+        
+        this->setPriority( priority::very_high );
 
         this->setConfigValues();
         this->registerVariables();

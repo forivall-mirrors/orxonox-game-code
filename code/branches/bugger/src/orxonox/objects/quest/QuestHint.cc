@@ -27,9 +27,8 @@
  */
  
 /**
-    @file QuestHint.cc
-    @brief
-    Implementation of the QuestHint class.
+    @file
+    @brief Implementation of the QuestHint class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -40,10 +39,11 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
+#include "QuestDescription.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(QuestHint);
 
     /**
@@ -121,6 +121,8 @@ namespace orxonox {
             if(!(this->isActive(player)))  //!< If the hint is already active, activation is pointless.
             {
                 this->playerStatus_[player] = questHintStatus::active;
+                
+                this->getDescription()->sendAddHintNotification();
                 return true;
             }
             else
