@@ -39,11 +39,13 @@ namespace orxonox
 
     Model::Model(BaseObject* creator) : PositionableEntity(creator)
     {
+        static unsigned int i=10;
         RegisterObject(Model);
 
         this->bCastShadows_ = true;
 
         this->registerVariables();
+        this->setObjectPriority(i++);
     }
 
     Model::~Model()
@@ -62,8 +64,8 @@ namespace orxonox
 
     void Model::registerVariables()
     {
-        REGISTERSTRING(this->meshSrc_,    direction::toclient, new NetworkCallback<Model>(this, &Model::changedMesh));
-        REGISTERDATA(this->bCastShadows_, direction::toclient, new NetworkCallback<Model>(this, &Model::changedShadows));
+        registerVariable(this->meshSrc_,    variableDirection::toclient, new NetworkCallback<Model>(this, &Model::changedMesh));
+        registerVariable(this->bCastShadows_, variableDirection::toclient, new NetworkCallback<Model>(this, &Model::changedShadows));
     }
 
     void Model::changedMesh()

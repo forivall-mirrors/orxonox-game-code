@@ -103,21 +103,21 @@ namespace orxonox
 
     void Engine::registerVariables()
     {
-        REGISTERDATA(this->shipID_, direction::toclient, new NetworkCallback<Engine>(this, &Engine::networkcallback_shipID));
+        registerVariable(this->shipID_, variableDirection::toclient, new NetworkCallback<Engine>(this, &Engine::networkcallback_shipID));
 
-        REGISTERDATA(this->speedFactor_, direction::toclient);
-        REGISTERDATA(this->boostFactor_, direction::toclient);
+        registerVariable(this->speedFactor_, variableDirection::toclient);
+        registerVariable(this->boostFactor_, variableDirection::toclient);
 
-        REGISTERDATA(this->maxSpeedFront_,     direction::toclient);
-        REGISTERDATA(this->maxSpeedBack_,      direction::toclient);
-        REGISTERDATA(this->maxSpeedLeftRight_, direction::toclient);
-        REGISTERDATA(this->maxSpeedUpDown_,    direction::toclient);
+        registerVariable(this->maxSpeedFront_,     variableDirection::toclient);
+        registerVariable(this->maxSpeedBack_,      variableDirection::toclient);
+        registerVariable(this->maxSpeedLeftRight_, variableDirection::toclient);
+        registerVariable(this->maxSpeedUpDown_,    variableDirection::toclient);
 
-        REGISTERDATA(this->accelerationFront_,     direction::toclient);
-        REGISTERDATA(this->accelerationBrake_,     direction::toclient);
-        REGISTERDATA(this->accelerationBack_,      direction::toclient);
-        REGISTERDATA(this->accelerationLeftRight_, direction::toclient);
-        REGISTERDATA(this->accelerationUpDown_,    direction::toclient);
+        registerVariable(this->accelerationFront_,     variableDirection::toclient);
+        registerVariable(this->accelerationBrake_,     variableDirection::toclient);
+        registerVariable(this->accelerationBack_,      variableDirection::toclient);
+        registerVariable(this->accelerationLeftRight_, variableDirection::toclient);
+        registerVariable(this->accelerationUpDown_,    variableDirection::toclient);
     }
 
     void Engine::networkcallback_shipID()

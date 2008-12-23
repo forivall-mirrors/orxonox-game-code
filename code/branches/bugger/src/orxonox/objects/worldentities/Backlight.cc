@@ -108,11 +108,11 @@ namespace orxonox
 
     void Backlight::registerVariables()
     {
-        REGISTERDATA  (this->width_,         direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_width));
-        REGISTERDATA  (this->lifetime_,      direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_lifetime));
-        REGISTERDATA  (this->length_,        direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_length));
-        REGISTERDATA  (this->maxelements_,   direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_maxelements));
-        REGISTERSTRING(this->trailmaterial_, direction::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_trailmaterial));
+        registerVariable  (this->width_,         variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_width));
+        registerVariable  (this->lifetime_,      variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_lifetime));
+        registerVariable  (this->length_,        variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_length));
+        registerVariable  (this->maxelements_,   variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_maxelements));
+        registerVariable  (this->trailmaterial_, variableDirection::toclient, new NetworkCallback<Backlight>(this, &Backlight::update_trailmaterial));
     }
 
     void Backlight::changedColour()

@@ -65,8 +65,8 @@ namespace orxonox
 
     void GlobalShader::registerVariables()
     {
-        REGISTERDATA  (this->bVisible_, direction::toclient, new NetworkCallback<GlobalShader>(this, &GlobalShader::changedVisibility));
-        REGISTERSTRING(const_cast<std::string&>(this->shader_.getCompositor()), direction::toclient, new NetworkCallback<Shader>(&this->shader_, &Shader::changedCompositor));
+        registerVariable(this->bVisible_, variableDirection::toclient, new NetworkCallback<GlobalShader>(this, &GlobalShader::changedVisibility));
+        registerVariable(const_cast<std::string&>(this->shader_.getCompositor()), variableDirection::toclient, new NetworkCallback<Shader>(&this->shader_, &Shader::changedCompositor));
     }
 
     void GlobalShader::changedVisibility()

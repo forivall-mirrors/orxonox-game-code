@@ -53,9 +53,9 @@ namespace orxonox
 
     void GametypeInfo::registerVariables()
     {
-        REGISTERDATA(this->bStarted_,               direction::toclient);
-        REGISTERDATA(this->bEnded_,                 direction::toclient);
-        REGISTERDATA(this->startCountdown_,         direction::toclient);
-        REGISTERDATA(this->bStartCountdownRunning_, direction::toclient);
+        registerVariable(this->bStarted_,               variableDirection::toclient);
+        registerVariable(this->bEnded_,                 variableDirection::toclient);
+        registerVariable(this->startCountdown_,         variableDirection::toclient);
+        registerVariable(this->bStartCountdownRunning_, variableDirection::toclient);
     }
 }

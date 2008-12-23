@@ -35,6 +35,7 @@ namespace orxonox
 {
     struct _UtilExport mbool
     {
+//        friend Synchronisable::registerVariable<>()
         public:
             inline mbool(bool value = false)
                 { this->value_.memory_ = 0; this->value_.bool_ = value; }
@@ -66,6 +67,8 @@ namespace orxonox
 
             inline bool operator!() const
                 { return (!this->value_.bool_); }
+            
+            inline unsigned char& getMemory(){ return value_.memory_; }
 
         private:
             union

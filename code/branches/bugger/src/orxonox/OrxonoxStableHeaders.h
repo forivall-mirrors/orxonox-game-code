@@ -94,7 +94,7 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/InputManager.h"
 
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 
 #include "Settings.h"
 

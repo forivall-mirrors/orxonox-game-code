@@ -48,7 +48,8 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "ClientInformation.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
+#include "synchronisable/NetworkCallbackManager.h"
 #include "packet/Acknowledgement.h"
 
 namespace orxonox
@@ -86,6 +87,8 @@ namespace orxonox
     }
     // now clear the queue
     gamestateQueue.clear();
+    //and call all queued callbacks
+    NetworkCallbackManager::callCallbacks();
     return true;
   }
 
@@ -134,8 +137,7 @@ namespace orxonox
     unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
     if(!reference)
       return 0;
-    gs = reference->doSelection(clientID);
-//     gs = new packet::Gamestate(*reference);
+    gs = reference->doSelection(clientID, 10000);
 //     gs = new packet::Gamestate(*reference);
     // save the (undiffed) gamestate in the clients gamestate map
     gamestateMap_[clientID].insert(std::pair<int, packet::Gamestate*>(gs->getID(), gs));

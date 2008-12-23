@@ -30,11 +30,13 @@
 #ifndef NETWORK_PACKETGAMESTATE_H
 #define NETWORK_PACKETGAMESTATE_H
 
-#include "../NetworkPrereqs.h"
+#include "network/NetworkPrereqs.h"
 
 #include "Packet.h"
-#include "network/Synchronisable.h"
+#include "network/TrafficControl.h"
+#include "core/CoreIncludes.h"
 #include <map>
+#include <list>
 #ifndef NDEBUG
 #include "util/CRC32.h"
 #endif
@@ -78,20 +80,21 @@ class _NetworkExport Gamestate: public Packet{
     Gamestate* intelligentDiff(Gamestate *base, unsigned int clientID);
     Gamestate *undiff(Gamestate *base);
     Gamestate* intelligentUnDiff(Gamestate *base);
-    Gamestate* doSelection(unsigned int clientID);
+    Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
 
     // Packet functions
   private:
-    virtual unsigned int getSize() const;
+    virtual uint32_t getSize() const;
     virtual bool process();
 
     bool operator ==(packet::Gamestate gs);
   private:
-    unsigned int calcGamestateSize(unsigned int id, uint8_t mode=0x0);
+    uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
     void removeObject(ObjectListIterator<Synchronisable> &it);
-    std::map<unsigned int, Synchronisable*> dataMap_;
+    std::list<obj> dataMap_;
+    static TrafficControl trafficControl_;
 };
 
 }

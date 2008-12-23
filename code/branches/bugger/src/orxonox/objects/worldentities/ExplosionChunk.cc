@@ -90,8 +90,8 @@ namespace orxonox
 
     void ExplosionChunk::registerVariables()
     {
-        REGISTERDATA(this->LOD_,   direction::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::LODchanged));
-        REGISTERDATA(this->bStop_, direction::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::checkStop));
+        registerVariable((int&)this->LOD_,   variableDirection::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::LODchanged));
+        registerVariable(this->bStop_, variableDirection::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::checkStop));
     }
 
     void ExplosionChunk::LODchanged()

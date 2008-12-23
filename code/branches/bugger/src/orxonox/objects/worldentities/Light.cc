@@ -102,11 +102,11 @@ namespace orxonox
 
     void Light::registerVariables()
     {
-        REGISTERDATA(this->type_,           direction::toclient, new NetworkCallback<Light>(this, &Light::updateType));
-        REGISTERDATA(this->diffuse_,        direction::toclient, new NetworkCallback<Light>(this, &Light::updateDiffuseColour));
-        REGISTERDATA(this->specular_,       direction::toclient, new NetworkCallback<Light>(this, &Light::updateSpecularColour));
-        REGISTERDATA(this->attenuation_,    direction::toclient, new NetworkCallback<Light>(this, &Light::updateAttenuation));
-        REGISTERDATA(this->spotlightRange_, direction::toclient, new NetworkCallback<Light>(this, &Light::updateSpotlightRange));
+        registerVariable((int &)this->type_,    variableDirection::toclient, new NetworkCallback<Light>(this, &Light::updateType));
+        registerVariable(this->diffuse_,        variableDirection::toclient, new NetworkCallback<Light>(this, &Light::updateDiffuseColour));
+        registerVariable(this->specular_,       variableDirection::toclient, new NetworkCallback<Light>(this, &Light::updateSpecularColour));
+        registerVariable(this->attenuation_,    variableDirection::toclient, new NetworkCallback<Light>(this, &Light::updateAttenuation));
+        registerVariable(this->spotlightRange_, variableDirection::toclient, new NetworkCallback<Light>(this, &Light::updateSpotlightRange));
     }
 
     void Light::updateDiffuseColour()

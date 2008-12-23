@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 #include "tools/Shader.h"
 
 namespace orxonox

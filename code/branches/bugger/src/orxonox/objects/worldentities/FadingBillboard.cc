@@ -65,8 +65,8 @@ namespace orxonox
 
     void FadingBillboard::registerVariables()
     {
-        REGISTERDATA(this->turnontime_,         direction::toclient);
-        REGISTERDATA(this->turnofftime_,        direction::toclient);
+        registerVariable(this->turnontime_,         variableDirection::toclient);
+        registerVariable(this->turnofftime_,        variableDirection::toclient);
     }
 
     void FadingBillboard::changedColour()
