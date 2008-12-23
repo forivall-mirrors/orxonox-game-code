@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file QuestDescription.h
+    @brief
+    Definition of the QuestDescription class.
+*/
+
 #ifndef _QuestDescription_H__
 #define _QuestDescription_H__
 
@@ -42,6 +48,10 @@ namespace orxonox {
     @brief
         This class is a description of a QuestItem.
         It holds a title and a description.
+        
+        Creating a QuestDescription through XML goes as follows:
+        
+        <QuestDescription title="Title" description="Description Text" />
     @author
         Damian 'Mozork' Frick
     */
@@ -51,23 +61,39 @@ namespace orxonox {
             QuestDescription(BaseObject* creator);
             virtual ~QuestDescription();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestDescription object through XML.
 
-            inline const std::string & getTitle(void) const //!< Returns the title.
+        /**
+        @brief Returns the title.
+        @return Returns a string containing the title of the QuestDescription.
+        */
+            inline const std::string & getTitle(void) const
                 { return this->title_; }
-            inline const std::string & getDescription(void) const //!< Returns the description text.
+        
+        /**
+        @brief Returns the description text.
+        @return Returns a string containing the description text of the QuestDescription.
+        */
+            inline const std::string & getDescription(void) const
                 { return this->description_; }
 
         private:
-            void initialize(void);
-
-            inline void setTitle(const std::string & title) //!< Sets the title.
-                { this->title_ = title; }
-            inline void setDescription(const std::string & description) //!< Sets the description text.
-                { this->description_ = description; }
-
             std::string title_; //!< The title.
             std::string description_; //!< The description.
+
+            /**
+            @brief Sets the title.
+            @param title The title to be set.
+            */
+            inline void setTitle(const std::string & title)
+                { this->title_ = title; }
+                
+        /**
+            @brief Sets the description text.
+            @param description The description text to be set.
+            */
+            inline void setDescription(const std::string & description)
+                { this->description_ = description; }
 
     };
 

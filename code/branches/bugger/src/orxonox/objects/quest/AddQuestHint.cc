@@ -26,12 +26,19 @@
  *
  */
 
+/**
+    @file AddQuestHint.cc
+    @brief
+    Implementation of the AddQuestHint class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "AddQuestHint.h"
 
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "QuestItem.h"
 #include "QuestHint.h"
@@ -40,6 +47,10 @@ namespace orxonox {
 
     CreateFactory(AddQuestHint);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     AddQuestHint::AddQuestHint(BaseObject* creator) : QuestEffect(creator)
     {
         RegisterObject(AddQuestHint);
@@ -53,44 +64,61 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a AddQuestHint object through XML.
+    */
     void AddQuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuestHint, XMLPort, xmlelement, mode);
 
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
-
-    }
-
-    inline void AddQuestHint::setHintId(const std::string & id)
-    {
-        if(!QuestItem::isId(id))
-        {
-            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
-            return;
-        }
-        this->hintId_ = id;
+        
+        COUT(3) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << std::endl;
     }
 
     /**
     @brief
-        Invokes the effect.
+        Sets the id of the QuestHint to be added to the player the QuestEffect is invoked on.
+    @param id
+        The QuestHint id.
+    @param
+        Returns true if successful.
+    */
+    bool AddQuestHint::setHintId(const std::string & id)
+    {
+        if(!QuestItem::isId(id))
+        {
+            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
+            return false;
+        }
+        
+        this->hintId_ = id;
+        return true;
+    }
+
+    /**
+    @brief
+        Invokes the QuestEffect.
     @param player
         The player.
     @return
-        Returns true if the effect was successfully invoked.
+        Returns true if the QuestEffect was successfully invoked.
     */
-    bool AddQuestHint::invoke(Player* player)
+    bool AddQuestHint::invoke(PlayerInfo* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< NULL-pointers are evil!
         {
             COUT(2) << "The input player is NULL." << std::endl;
             return false;
         }
 
+        COUT(3) << "AddQuestHint on player: " << player << " ." << std::endl;
+
         try
         {
             QuestHint* hint = QuestManager::findHint(this->hintId_);
-            if(!hint->activate(player))
+            if(hint == NULL || !hint->setActive(player))
             {
                 return false;
             }
@@ -101,6 +129,7 @@ namespace orxonox {
            return false;
         }
 
+        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player." << std::endl;
         return true;
 
     }

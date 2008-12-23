@@ -343,6 +343,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\PlayerTrigger.cc"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\Trigger.cc"
 							>
 						</File>
@@ -605,6 +609,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestEffect.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestEffectBeacon.cc"
 						>
 					</File>
 					<File

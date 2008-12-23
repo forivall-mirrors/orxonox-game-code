@@ -49,7 +49,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(level, "sample3.oxw").shortcut("l");
+    SetCommandLineArgument(level, "presentation_dm.oxw").shortcut("l");
 
     GSLevel::GSLevel()
 //        : GameState<GSGraphics>(name)

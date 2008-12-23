@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file CompleteQuest.h
+    @brief
+    Definition of the CompleteQuest class.
+*/
+
 #ifndef _CompleteQuest_H__
 #define _CompleteQuest_H__
 
@@ -38,11 +44,13 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
-        Completes a quest.
+        Completes a Quest (with a specified id) for the player invoking the QuestEffect.
+        
+        Creating a CompleteQuest through XML goes as follows:
+        
+        <CompleteQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be completed.
     @author
         Damian 'Mozork' Frick
     */
@@ -52,9 +60,9 @@ namespace orxonox {
             CompleteQuest(BaseObject* creator);
             virtual ~CompleteQuest();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CompleteQuest object through XML.
 
-            virtual bool invoke(Player* player); //!< Invokes the effect.
+            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
     };
 

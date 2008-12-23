@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file AddQuestHint.h
+    @brief
+    Definition of the AddQuestHint class.
+*/
+
 #ifndef _AddQuestHint_H__
 #define _AddQuestHint_H__
 
@@ -37,11 +43,13 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
-
     /**
     @brief
-        Adds a QuestHint, resp. Activates the QuestHint.
+        Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.
+        
+    Creating a AddQuestHint through XML goes as follows:
+        
+        <AddQuestHint hintId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the QuestHint that should be added.
     @author
         Damian 'Mozork' Frick
     */
@@ -51,16 +59,20 @@ namespace orxonox {
             AddQuestHint(BaseObject* creator);
             virtual ~AddQuestHint();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuestHint object through XML.
 
-            virtual bool invoke(Player* player); //!< Invokes the effect.
+            virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
         private:
-            std::string hintId_;
+            std::string hintId_; //!< The id of the QuestHint.
 
+            /**
+            @brief Returns the id of the QuestHint.
+            @return Returns the id of the QuestHint.
+            */
             inline const std::string & getHintId(void) const
                 { return this->hintId_; }
-            void setHintId(const std::string & id);
+            bool setHintId(const std::string & id); //!< Sets the id of the QuestHint.
 
     };
 

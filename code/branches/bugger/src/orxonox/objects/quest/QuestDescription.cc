@@ -26,7 +26,14 @@
  *
  */
 
+/**
+    @file QuestDescription.cc
+    @brief
+    Implementation of the QuestDescription class.
+*/
+
 #include "OrxonoxStableHeaders.h"
+
 #include "QuestDescription.h"
 
 #include "core/CoreIncludes.h"
@@ -35,18 +42,31 @@ namespace orxonox {
 
     CreateFactory(QuestDescription);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     QuestDescription::QuestDescription(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestDescription);
-
-        this->initialize();
+        
+        this->title_ = "";
+        this->description_ = "";
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     QuestDescription::~QuestDescription()
     {
 
     }
 
+    /**
+    @brief
+        Method for creating a QuestDescription object through XML.
+    */
     void QuestDescription::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(QuestDescription, XMLPort, xmlelement, mode);
@@ -55,15 +75,6 @@ namespace orxonox {
         XMLPortParam(QuestDescription, "description", setDescription, getDescription, xmlelement, mode);
 
         COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
-    }
-
-    /**
-    @brief
-        Initializes the object. Has to be called first in every constructor of this class.
-    */
-    void QuestDescription::initialize(void)
-    {
-        RegisterObject(QuestDescription);
     }
 
 

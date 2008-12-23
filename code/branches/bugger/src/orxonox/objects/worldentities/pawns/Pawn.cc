@@ -105,6 +105,8 @@ namespace orxonox
 
     void Pawn::tick(float dt)
     {
+        this->health_ -= dt * rnd() * 150;
+
         SUPER(Pawn, tick, dt);
 
         if (this->health_ <= 0)

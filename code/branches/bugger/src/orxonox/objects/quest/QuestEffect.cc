@@ -26,10 +26,18 @@
  *
  */
 
+/**
+    @file QuestEffect.cc
+    @brief
+    Implementation of the QuestEffect class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "QuestEffect.h"
 
 #include "core/CoreIncludes.h"
+
+#include "orxonox/objects/infos/PlayerInfo.h"
 
 namespace orxonox {
 
@@ -54,15 +62,15 @@ namespace orxonox {
 
     /**
     @brief
-        Static method. Invoke all effects of an effect list.
+        Static method. Invoke all QuestEffects in an QuestEffect-list on a given player.
     @param player
-        The player the effects are invoked on.
+        The player the QuestEffects are invoked on.
     @param effects
-        A list of all the effects to be invoked.
+        A list of all the QuestEffects to be invoked.
     @return
         Returns false if there was an error, view console of log for further detail.
     */
-    bool QuestEffect::invokeEffects(Player* player, std::list<QuestEffect*> & effects)
+    bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
     {
         bool check = true;
 

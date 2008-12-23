@@ -25,6 +25,12 @@
  *      ...
  *
  */
+ 
+/**
+    @file FailQuest.cc
+    @brief
+    Implementation of the FailQuest class.
+*/
 
 #include "OrxonoxStableHeaders.h"
 #include "FailQuest.h"
@@ -32,6 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "util/Exception.h"
 
+#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
 #include "Quest.h"
 
@@ -39,6 +46,10 @@ namespace orxonox {
 
     CreateFactory(FailQuest);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     FailQuest::FailQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(FailQuest);
@@ -52,31 +63,40 @@ namespace orxonox {
     {
     }
 
+    /**
+    @brief
+        Method for creating a FailQuest object through XML.
+    */
     void FailQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(FailQuest, XMLPort, xmlelement, mode);
+        
+        COUT(3) << "New FailQUest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
     @brief
-        Invokes the effect.
+        Invokes the QuestEffect.
     @param player
-        The player the effect is invoked on.
+        The player the QuestEffect is invoked on.
     @return
-        Returns true if the effect was invoked successfully.
+        Returns true if the QuestEffect was invoked successfully.
     */
-    bool FailQuest::invoke(Player* player)
+    bool FailQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL)
+        if(player == NULL) //!< We don't know what to do with no player.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
         }
 
+        COUT(3) << "FailQuest on player: " << player << " ." << std::endl;
+
+        Quest* quest;
         try
         {
-            Quest* quest = QuestManager::findQuest(this->getQuestId());
-            if(!quest->fail(player))
+            quest = QuestManager::findQuest(this->getQuestId());
+            if(quest == NULL || !quest->fail(player))
             {
                return false;
             }
@@ -86,7 +106,8 @@ namespace orxonox {
             COUT(2) << e.getFullDescription() << std::endl;
             return false;
         }
-
+        
+        COUT(3) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << std::endl;
         return true;
     }
 

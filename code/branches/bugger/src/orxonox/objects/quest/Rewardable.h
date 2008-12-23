@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file Rewardable.h
+    @brief
+    Definition of the Rewardable class.
+*/
+
 #ifndef _Rewardable_H__
 #define _Rewardable_H__
 
@@ -35,11 +41,11 @@
 
 namespace orxonox {
 
-    class Player; //Forward declaration, remove when fully integrated in objecthirarchy.
-
     /**
     @brief
-        Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects.
+        Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects. (With the AddReward effect.)
+        
+        It just needs to inherit form Rewardable, and implement the reward() method.
     @author
         Damian 'Mozork' Frick
     */
@@ -50,7 +56,16 @@ namespace orxonox {
             Rewardable(BaseObject* creator);
             virtual ~Rewardable();
 
-            virtual bool reward(Player* player) = 0; //!<Method to transcribe a rewardable object to the player.
+            /**
+            @brief
+                Method to transcribe a rewardable object to the player.
+                Must be implemented by every class inheriting from Rewardable.
+        @param player
+                A pointer to the ControllableEntity, do whatever you want with it.
+        @return
+                Return true if successful.
+            */
+            virtual bool reward(PlayerInfo* player) = 0; //!<
 
     };
 
