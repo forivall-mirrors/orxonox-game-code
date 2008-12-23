@@ -56,9 +56,11 @@ namespace orxonox
 {
   GamestateManager::GamestateManager() {
     id_=0;
+    trafficControl_ = new TrafficControl();
   }
 
   GamestateManager::~GamestateManager() {
+    delete trafficControl_;
   }
 
   bool GamestateManager::update(){
@@ -184,6 +186,7 @@ namespace orxonox
       gamestateMap_[clientID].erase(tempit);
     }
     temp->setGamestateID(gamestateID);
+    TrafficControl::processAck(clientID, gamestateID);
     return true;
   }
 

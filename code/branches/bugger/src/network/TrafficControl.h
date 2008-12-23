@@ -36,6 +36,7 @@
 #include <utility>
 #include <algorithm>
 #include "util/Integers.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox {
 
@@ -51,8 +52,8 @@ namespace orxonox {
       uint32_t objCurGS;//current GameState ID
       uint32_t objDiffGS;//difference between current and latest GameState
       uint32_t objSize;
-      unsigned int objValuePerm;
-      unsigned int objValueSched;
+      int objValuePerm;
+      int objValueSched;
       objInfo(uint32_t ID, uint32_t creatorID, int32_t curGsID, int32_t diffGsID, uint32_t size, unsigned int prioperm, unsigned int priosched);
       objInfo();
   };
@@ -77,7 +78,7 @@ namespace orxonox {
 /**
 *
 */
-class TrafficControl{
+class TrafficControl : public OrxonoxClass{
   private:
 
     /**
@@ -138,6 +139,7 @@ class TrafficControl{
     *evaluates Data given (list) and produces result(->Data to be updated)
     */
     void evaluateList(unsigned int clientID, std::list<obj> *list);//done    
+    void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
 
   protected:
     static TrafficControl *instance_;
@@ -151,9 +153,11 @@ class TrafficControl{
     *Elements of list are accessed by *list[i]
     *Elements of struct i are therefore: *list[i].objID
     */
+    static TrafficControl *getInstance();
     void processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>* list); //gets a pointer to the list (containing objectIDs) and sorts it
     //done
-    void processAck(unsigned int clientID, unsigned int gamestateID);	// this function gets called when the server receives an ack from the client
+    static void processAck(unsigned int clientID, unsigned int gamestateID)
+    { return instance_->ack(clientID, gamestateID); }
     //done
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
     

@@ -94,7 +94,7 @@ class _NetworkExport Gamestate: public Packet{
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
     void removeObject(ObjectListIterator<Synchronisable> &it);
     std::list<obj> dataMap_;
-    static TrafficControl trafficControl_;
+//     static TrafficControl *trafficControl_;
 };
 
 }
