@@ -110,13 +110,34 @@ namespace orxonox
         , stateMaster_(0)
         , keyDetector_(0)
         , calibratorCallbackBuffer_(0)
-        , bCalibrating_(false)
         , keyboardModifiers_(0)
     {
         RegisterRootObject(InputManager);
 
         assert(singletonRef_s == 0);
         singletonRef_s = this;
+
+        setConfigValues();
+    }
+
+    /**
+    @brief
+        Sets the configurable values.
+    */
+    void InputManager::setConfigValues()
+    {
+        SetConfigValue(calibrationFilename_, "joystick_calibration.ini")
+            .description("Ini filename for the the joy stick calibration data.")
+            .callback(this, &InputManager::_calibrationFileCallback);
+    }
+
+    /**
+    @brief
+        Callback for the joy stick calibration config file. @see setConfigValues.
+    */
+    void InputManager::_calibrationFileCallback()
+    {
+        ConfigFileManager::getInstance().setFilename(ConfigFileType::JoyStickCalibration, calibrationFilename_);
     }
 
     /**
@@ -173,7 +194,7 @@ namespace orxonox
             if (joyStickSupport)
                 _initialiseJoySticks();
             // Do this anyway to also inform everything when a joystick was detached.
-            _configureNumberOfJoySticks();
+            _configureJoySticks();
 
             // Set mouse/joystick region
             if (mouse_)
@@ -181,9 +202,6 @@ namespace orxonox
 
             // clear all buffers
             _clearBuffers();
-
-            // load joy stick calibration
-            setConfigValues();
 
             internalState_ |= OISReady;
 
@@ -333,31 +351,76 @@ namespace orxonox
 
     /**
     @brief
+        Helper function that loads the config value vector of one coefficient
+    */
+    void loadCalibration(std::vector<int>& list, const std::string& sectionName, const std::string& valueName, size_t size, int defaultValue)
+    {
+        list.resize(size);
+        unsigned int configValueVectorSize = ConfigFileManager::getInstance().getVectorSize(ConfigFileType::JoyStickCalibration, sectionName, valueName);
+        if (configValueVectorSize > size)
+            configValueVectorSize = size;
+
+        for (unsigned int i = 0; i < configValueVectorSize; ++i)
+        {
+            list[i] = omni_cast<int>(ConfigFileManager::getInstance().getValue(
+                ConfigFileType::JoyStickCalibration, sectionName, valueName, i, omni_cast<std::string>(defaultValue), false));
+        }
+
+        // fill the rest with default values
+        for (unsigned int i = configValueVectorSize; i < size; ++i)
+        {
+            list[i] = defaultValue;
+        }
+    }
+
+    /**
+    @brief
         Sets the size of all the different lists that are dependent on the number
-        of joy stick devices created.
+        of joy stick devices created and loads the joy stick calibration.
     @remarks
         No matter whether there are a mouse and/or keyboard, they will always
         occupy 2 places in the device number dependent lists.
     */
-    void InputManager::_configureNumberOfJoySticks()
+    void InputManager::_configureJoySticks()
     {
         joySticksSize_ = joySticks_.size();
-        devicesNum_ = 2 + joySticksSize_;
+        devicesNum_    = 2 + joySticksSize_;
+        joyStickIDs_         .resize(joySticksSize_);
         joyStickButtonsDown_ .resize(joySticksSize_);
         povStates_           .resize(joySticksSize_);
         sliderStates_        .resize(joySticksSize_);
-        joySticksCalibration_.resize(joySticksSize_);
+        joyStickMinValues_   .resize(joySticksSize_);
+        joyStickMaxValues_   .resize(joySticksSize_);
+        joyStickMiddleValues_.resize(joySticksSize_);
+        joyStickCalibrations_.resize(joySticksSize_);
 
         for (unsigned int iJoyStick = 0; iJoyStick < joySticksSize_; iJoyStick++)
         {
-            // reset the calibration with default values
-            for (unsigned int i = 0; i < 24; i++)
+            // Generate some sort of execution unique id per joy stick
+            std::string id = "JoyStick_";
+            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Button))  + "_";
+            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Axis))    + "_";
+            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Slider))  + "_";
+            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_POV))     + "_";
+            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Vector3)) + "_";
+            id += joySticks_[iJoyStick]->vendor();
+            for (unsigned int i = 0; i < iJoyStick; ++i)
             {
-                joySticksCalibration_[iJoyStick].negativeCoeff[i] = 1.0f/32767.0f;
-                joySticksCalibration_[iJoyStick].positiveCoeff[i] = 1.0f/32768.0f;
-                joySticksCalibration_[iJoyStick].zeroStates[i] = 0;
+                if (id == joyStickIDs_[i])
+                {
+                    // Two joysticks are probably equal --> add the index as well
+                    id += "_" + omni_cast<std::string>(iJoyStick);
+                }
             }
+            joyStickIDs_[iJoyStick] = id;
+
+            size_t axes = sliderAxes + (size_t)this->joySticks_[i]->getNumberOfComponents(OIS::OIS_Axis);
+            loadCalibration(joyStickMinValues_[iJoyStick], id, "MinValue", axes, -32768);
+            loadCalibration(joyStickMaxValues_[iJoyStick], id, "MaxValue", axes,  32768);
+            loadCalibration(joyStickMiddleValues_[iJoyStick], id, "MiddleValue", axes,      0);
         }
+
+        _evaluateCalibration();
 
         // state management
         activeStatesTop_.resize(devicesNum_);
@@ -378,62 +441,80 @@ namespace orxonox
 
     }
 
-    /**
-    @brief
-        Sets the configurable values.
-        This mainly concerns joy stick calibrations.
-    */
-    void InputManager::setConfigValues()
+    void InputManager::_evaluateCalibration()
     {
-        if (joySticksSize_ > 0)
+        for (unsigned int iJoyStick = 0; iJoyStick < this->joySticksSize_; ++iJoyStick)
         {
-            std::vector<double> coeffPos;
-            std::vector<double> coeffNeg;
-            std::vector<int> zero;
-            coeffPos.resize(24);
-            coeffNeg.resize(24);
-            zero.resize(24);
-            for (unsigned int i = 0; i < 24; i++)
+            for (unsigned int i = 0; i < this->joyStickMinValues_[iJoyStick].size(); i++)
             {
-                coeffPos[i] =  1.0f/32767.0f;
-                coeffNeg[i] =  1.0f/32768.0f;
-                zero[i]     =  0;
-            }
-
-            ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
-            if (!cont)
-            {
-                cont = new ConfigValueContainer(ConfigFileType::Settings, getIdentifier(), getIdentifier()->getName(), "CoeffPos", coeffPos);
-                getIdentifier()->addConfigValueContainer("CoeffPos", cont);
-            }
-            cont->getValue(&coeffPos, this);
-
-            cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
-            if (!cont)
-            {
-                cont = new ConfigValueContainer(ConfigFileType::Settings, getIdentifier(), getIdentifier()->getName(), "CoeffNeg", coeffNeg);
-                getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
-            }
-            cont->getValue(&coeffNeg, this);
-
-            cont = getIdentifier()->getConfigValueContainer("Zero");
-            if (!cont)
-            {
-                cont = new ConfigValueContainer(ConfigFileType::Settings, getIdentifier(), getIdentifier()->getName(), "Zero", zero);
-                getIdentifier()->addConfigValueContainer("Zero", cont);
-            }
-            cont->getValue(&zero, this);
-
-            // copy values to our own variables
-            for (unsigned int i = 0; i < 24; i++)
-            {
-                joySticksCalibration_[0].positiveCoeff[i] = coeffPos[i];
-                joySticksCalibration_[0].negativeCoeff[i] = coeffNeg[i];
-                joySticksCalibration_[0].zeroStates[i]    = zero[i];
+                this->joyStickCalibrations_[iJoyStick].middleValue[i] = this->joyStickMiddleValues_[iJoyStick][i];
+                this->joyStickCalibrations_[iJoyStick].negativeCoeff[i] = - 1.0f / (this->joyStickMinValues_[iJoyStick][i] - this->joyStickMiddleValues_[iJoyStick][i]);
+                this->joyStickCalibrations_[iJoyStick].positiveCoeff[i] =   1.0f / (this->joyStickMaxValues_[iJoyStick][i] - this->joyStickMiddleValues_[iJoyStick][i]);
             }
         }
     }
+    
+    void InputManager::_startCalibration()
+    {
+        for (unsigned int iJoyStick = 0; iJoyStick < this->joySticksSize_; ++iJoyStick)
+        {
+            // Set initial values
+            for (unsigned int i = 0; i < this->joyStickMinValues_[iJoyStick].size(); ++i)
+                this->joyStickMinValues_[iJoyStick][i] = INT_MAX;
+            for (unsigned int i = 0; i < this->joyStickMaxValues_[iJoyStick].size(); ++i)
+                this->joyStickMaxValues_[iJoyStick][i] = INT_MIN;
+            for (unsigned int i = 0; i < this->joyStickMiddleValues_[iJoyStick].size(); ++i)
+                this->joyStickMiddleValues_[iJoyStick][i] = 0;
+        }
 
+        getInstance().internalState_ |= Calibrating;
+        getInstance().requestEnterState("calibrator");
+    }
+
+    void InputManager::_completeCalibration()
+    {
+        for (unsigned int iJoyStick = 0; iJoyStick < this->joySticksSize_; ++iJoyStick)
+        {
+            // Get the middle positions now
+            unsigned int iAxis = 0;
+            for (unsigned int i = 0; i < sliderAxes/2; ++i)
+            {
+                this->joyStickMiddleValues_[iJoyStick][iAxis++] = this->joySticks_[iJoyStick]->getJoyStickState().mSliders[i].abX;
+                this->joyStickMiddleValues_[iJoyStick][iAxis++] = this->joySticks_[iJoyStick]->getJoyStickState().mSliders[i].abY;
+            }
+            // Note: joyStickMiddleValues_[iJoyStick] was already correctly resized in _configureJoySticks()
+            assert(joySticks_[iJoyStick]->getJoyStickState().mAxes.size() == joyStickMiddleValues_[iJoyStick].size() - sliderAxes);
+            for (unsigned int i = 0; i < joyStickMiddleValues_[iJoyStick].size() - sliderAxes; ++i)
+            {
+                this->joyStickMiddleValues_[iJoyStick][iAxis++] = this->joySticks_[iJoyStick]->getJoyStickState().mAxes[i].abs;
+            }
+
+            for (unsigned int i = 0; i < joyStickMinValues_[iJoyStick].size(); ++i)
+            {
+                // Minimum values
+                if (joyStickMinValues_[iJoyStick][i] == INT_MAX)
+                    joyStickMinValues_[iJoyStick][i] = -32768;
+                ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
+                    this->joyStickIDs_[iJoyStick], "MinValue", i, omni_cast<std::string>(joyStickMinValues_[iJoyStick][i]), false);
+
+                // Maximum values
+                if (joyStickMaxValues_[iJoyStick][i] == INT_MIN)
+                    joyStickMaxValues_[iJoyStick][i] = 32767;
+                ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
+                    this->joyStickIDs_[iJoyStick], "MaxValue", i, omni_cast<std::string>(joyStickMaxValues_[iJoyStick][i]), false);
+
+                // Middle values
+                ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
+                    this->joyStickIDs_[iJoyStick], "MiddleValue", i, omni_cast<std::string>(joyStickMiddleValues_[iJoyStick][i]), false);
+            }
+        }
+
+        _evaluateCalibration();
+
+        // restore old input state
+        requestLeaveState("calibrator");
+        internalState_ &= ~Calibrating;
+    }
 
     // ############################################################
     // #####                    Destruction                   #####
@@ -741,7 +822,7 @@ namespace orxonox
         for (unsigned  int i = 0; i < joySticksSize_; i++)
             joySticks_[i]->capture();
 
-        if (!bCalibrating_)
+        if (!(internalState_ & Calibrating))
         {
             // call all the handlers for the held key events
             for (unsigned int iKey = 0; iKey < keysDown_.size(); iKey++)
@@ -812,71 +893,8 @@ namespace orxonox
 
     /**
     @brief
-        Processes the accumultated data for the joy stick calibration.
+        Clears all buffers that store what keys/buttons are being pressed at the moment.
     */
-    void InputManager::_completeCalibration()
-    {
-        for (unsigned int i = 0; i < 24; i++)
-        {
-            // positive coefficient
-            if (marginalsMax_[i] == INT_MIN)
-                marginalsMax_[i] =  32767;
-            // coefficients
-            if (marginalsMax_[i] - joySticksCalibration_[0].zeroStates[i])
-            {
-                joySticksCalibration_[0].positiveCoeff[i]
-                    = 1.0f/(marginalsMax_[i] - joySticksCalibration_[0].zeroStates[i]);
-            }
-            else
-                joySticksCalibration_[0].positiveCoeff[i] =  1.0f;
-
-            // config value
-            ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
-            assert(cont);
-            cont->set(i, joySticksCalibration_[0].positiveCoeff[i]);
-
-            // negative coefficient
-            if (marginalsMin_[i] == INT_MAX)
-                marginalsMin_[i] = -32768;
-            // coefficients
-            if (marginalsMin_[i] - joySticksCalibration_[0].zeroStates[i])
-            {
-                joySticksCalibration_[0].negativeCoeff[i] = -1.0f
-                    / (marginalsMin_[i] - joySticksCalibration_[0].zeroStates[i]);
-            }
-            else
-                joySticksCalibration_[0].negativeCoeff[i] =  1.0f;
-            // config value
-            cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
-            assert(cont);
-            cont->set(i, joySticksCalibration_[0].negativeCoeff[i]);
-
-            // zero states
-            if (i < 8)
-            {
-                if (!(i & 1))
-                    joySticksCalibration_[0].zeroStates[i] = joySticks_[0]->getJoyStickState().mSliders[i/2].abX;
-                else
-                    joySticksCalibration_[0].zeroStates[i] = joySticks_[0]->getJoyStickState().mSliders[i/2].abY;
-            }
-            else
-            {
-                if (i - 8 < joySticks_[0]->getJoyStickState().mAxes.size())
-                    joySticksCalibration_[0].zeroStates[i] = joySticks_[0]->getJoyStickState().mAxes[i - 8].abs;
-                else
-                    joySticksCalibration_[0].zeroStates[i] = 0;
-            }
-            // config value
-            cont = getIdentifier()->getConfigValueContainer("Zero");
-            assert(cont);
-            cont->set(i, joySticksCalibration_[0].zeroStates[i]);
-        }
-
-        // restore old input state
-        requestLeaveState("calibrator");
-        bCalibrating_ = false;
-    }
-
     void InputManager::clearBuffers()
     {
         this->keysDown_.clear();
@@ -1107,20 +1125,20 @@ namespace orxonox
     */
     void InputManager::_fireAxis(unsigned int iJoyStick, int axis, int value)
     {
-        if (bCalibrating_)
+        if (internalState_ & Calibrating)
         {
-            if (value > marginalsMax_[axis])
-                marginalsMax_[axis] = value;
-            if (value < marginalsMin_[axis])
-                marginalsMin_[axis] = value;
+            if (value < joyStickMinValues_[iJoyStick][axis])
+                joyStickMinValues_[iJoyStick][axis] = value;
+            if (value > joyStickMaxValues_[iJoyStick][axis])
+                joyStickMaxValues_[iJoyStick][axis] = value;
         }
         else
         {
-            float fValue = value - joySticksCalibration_[iJoyStick].zeroStates[axis];
+            float fValue = value - joyStickCalibrations_[iJoyStick].middleValue[axis];
             if (fValue > 0.0f)
-                fValue *= joySticksCalibration_[iJoyStick].positiveCoeff[axis];
+                fValue *= joyStickCalibrations_[iJoyStick].positiveCoeff[axis];
             else
-                fValue *= joySticksCalibration_[iJoyStick].negativeCoeff[axis];
+                fValue *= joyStickCalibrations_[iJoyStick].negativeCoeff[axis];
 
             activeStatesTop_[2 + iJoyStick]->joyStickAxisMoved(iJoyStick, axis, fValue);
             stateMaster_->joyStickAxisMoved(iJoyStick, axis, fValue);
@@ -1398,8 +1416,10 @@ namespace orxonox
     */
     void InputManager::calibrate()
     {
-        getInstance().bCalibrating_ = true;
-        getInstance().requestEnterState("calibrator");
+        COUT(0) << "Move all joy stick axes fully in all directions." << std::endl
+                << "When done, put the axex in the middle position and press enter." << std::endl;
+
+        getInstance()._startCalibration();
     }
 
     /**
