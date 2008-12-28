@@ -58,10 +58,10 @@ namespace orxonox
     };
 }
 
-#define OrxEnumConstructors(enumName)              \
-enumName() { }                                     \
-enumName(int type) : OrxEnum<enumName>(type)   { } \
-enumName(const enumName& inst) : OrxEnum(inst) { } \
+#define OrxEnumConstructors(enumName)                        \
+enumName() { }                                               \
+enumName(int type) : OrxEnum<enumName>(type)             { } \
+enumName(const enumName& inst) : OrxEnum<enumName>(inst) { } \
 void dummyFunction()
 
 #endif /* _OrxEnum_H__ */
