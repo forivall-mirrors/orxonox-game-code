@@ -135,6 +135,7 @@ namespace orxonox
 
     public: // variables
         static EmptyHandler                 EMPTY_HANDLER;
+        static const unsigned int           sliderAxes = 8;
 
     private: // functions
         // don't mess with a Singleton
@@ -191,7 +192,7 @@ namespace orxonox
         // some internally handled states and handlers
         SimpleInputState*                   stateEmpty_;
         ExtendedInputState*                 stateMaster_;          //!< Always active master input state
-        KeyDetector*                        keyDetector_;        //!< KeyDetector instance
+        KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         InputBuffer*                        calibratorCallbackBuffer_;
 
         std::map<std::string, InputState*>  inputStatesByName_;
@@ -222,7 +223,7 @@ namespace orxonox
         std::vector<MouseButtonCode::ByEnum>      mouseButtonsDown_;
         std::vector<std::vector<JoyStickButtonCode::ByEnum> >  joyStickButtonsDown_;
 
-        static std::string                  bindingCommmandString_s;
+
         static InputManager*                singletonRef_s;
     };
 

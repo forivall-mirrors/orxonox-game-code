@@ -62,6 +62,14 @@ namespace orxonox
         clear();
     }
 
+    Button::~Button()
+    {
+        this->clear();
+
+        if (this->configContainer_)
+            delete this->configContainer_;
+    }
+
     void Button::clear()
     {
         for (unsigned int j = 0; j < 3; j++)
@@ -80,10 +88,6 @@ namespace orxonox
                 commands_[j] = 0;
             }
         }
-
-        if (this->configContainer_)
-            delete this->configContainer_;
-        this->configContainer_ = 0;
     }
 
     void Button::readConfigValue(ConfigFileType configFile)

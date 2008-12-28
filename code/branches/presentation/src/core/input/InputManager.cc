@@ -64,7 +64,6 @@ namespace orxonox
     SetConsoleCommand(InputManager, reload, false);
     SetCommandLineSwitch(keyboard_no_grab);
 
-    std::string InputManager::bindingCommmandString_s = "";
     EmptyHandler InputManager::EMPTY_HANDLER;
     InputManager* InputManager::singletonRef_s = 0;
 
@@ -173,7 +172,7 @@ namespace orxonox
 
             if (joyStickSupport)
                 _initialiseJoySticks();
-            // Do this anyway to also inform everyone if a joystick was detached.
+            // Do this anyway to also inform everything when a joystick was detached.
             _configureNumberOfJoySticks();
 
             // Set mouse/joystick region
@@ -491,7 +490,8 @@ namespace orxonox
                          << "This could lead to a possible memory/resource leak!" << std::endl;
             }
         }
-	singletonRef_s = 0;
+
+        singletonRef_s = 0;
     }
 
     /**
@@ -659,7 +659,7 @@ namespace orxonox
 
     /**
     @brief
-        Updates the InputManager. Tick is called by the Core class.
+        Updates the states and the InputState situation.
     @param dt
         Delta time
     */
@@ -675,38 +675,47 @@ namespace orxonox
         }
 
         // check for states to leave
-        for (std::set<InputState*>::reverse_iterator rit = stateLeaveRequests_.rbegin();
-            rit != stateLeaveRequests_.rend(); ++rit)
+        if (!stateLeaveRequests_.empty())
         {
-            (*rit)->onLeave();
-            // just to be sure that the state actually is registered
-            assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
+            for (std::set<InputState*>::reverse_iterator rit = stateLeaveRequests_.rbegin();
+                rit != stateLeaveRequests_.rend(); ++rit)
+            {
+                (*rit)->onLeave();
+                // just to be sure that the state actually is registered
+                assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
 
-            activeStates_.erase((*rit)->getPriority());
-            _updateActiveStates();
+                activeStates_.erase((*rit)->getPriority());
+                _updateActiveStates();
+            }
+            stateLeaveRequests_.clear();
         }
-        stateLeaveRequests_.clear();
 
         // check for states to enter
-        for (std::set<InputState*>::reverse_iterator rit = stateEnterRequests_.rbegin();
-            rit != stateEnterRequests_.rend(); ++rit)
+        if (!stateEnterRequests_.empty())
         {
-            // just to be sure that the state actually is registered
-            assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
+            for (std::set<InputState*>::reverse_iterator rit = stateEnterRequests_.rbegin();
+                rit != stateEnterRequests_.rend(); ++rit)
+            {
+                // just to be sure that the state actually is registered
+                assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
 
-            activeStates_[(*rit)->getPriority()] = (*rit);
-            _updateActiveStates();
-            (*rit)->onEnter();
+                activeStates_[(*rit)->getPriority()] = (*rit);
+                _updateActiveStates();
+                (*rit)->onEnter();
+            }
+            stateEnterRequests_.clear();
         }
-        stateEnterRequests_.clear();
 
         // check for states to destroy
-        for (std::set<InputState*>::reverse_iterator rit = stateDestroyRequests_.rbegin();
-            rit != stateDestroyRequests_.rend(); ++rit)
+        if (!stateDestroyRequests_.empty())
         {
-            _destroyState((*rit));
+            for (std::set<InputState*>::reverse_iterator rit = stateDestroyRequests_.rbegin();
+                rit != stateDestroyRequests_.rend(); ++rit)
+            {
+                _destroyState((*rit));
+            }
+            stateDestroyRequests_.clear();
         }
-        stateDestroyRequests_.clear();
 
         // check whether a state has changed its EMPTY_HANDLER situation
         bool bUpdateRequired = false;
@@ -1123,7 +1132,7 @@ namespace orxonox
         unsigned int iJoyStick = _getJoystick(arg);
 
         // keep in mind that the first 8 axes are reserved for the sliders
-        _fireAxis(iJoyStick, axis + 8, arg.state.mAxes[axis].abs);
+        _fireAxis(iJoyStick, axis + sliderAxes, arg.state.mAxes[axis].abs);
 
         return true;
     }

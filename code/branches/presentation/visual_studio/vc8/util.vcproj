@@ -172,10 +172,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\OrxEnum.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\util\OutputBuffer.cc"
 				>
 			</File>

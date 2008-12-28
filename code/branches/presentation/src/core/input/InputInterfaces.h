@@ -377,9 +377,9 @@ namespace orxonox
         // Names as string. Has no real linkage!
         const char* const ByString[] =
         {
-            "Button0",       "Button1",       "Button2",       "Button3",
-            "Button4",       "Button5",       "Button6",       "Button7",
-            "Button8",       "Button9",       "Button10",      "Button11",
+            "Button00",      "Button01",      "Button02",      "Button03",
+            "Button04",      "Button05",      "Button06",      "Button07",
+            "Button08",      "Button09",      "Button10",      "Button11",
             "Button12",      "Button13",      "Button14",      "Button15",
             "Button16",      "Button17",      "Button18",      "Button19",
             "Button20",      "Button21",      "Button22",      "Button23",
@@ -415,9 +415,9 @@ namespace orxonox
         {
             "Slider0", "Slider1", "Slider2", "Slider3",
             "Slider4", "Slider5", "Slider6", "Slider7",
-            "Axis0",   "Axis1",   "Axis2",   "Axis3",
-            "Axis4",   "Axis5",   "Axis6",   "Axis7",
-            "Axis8",   "Axis9",   "Axis10",  "Axis11",
+            "Axis00",  "Axis01",  "Axis02",  "Axis03",
+            "Axis04",  "Axis05",  "Axis06",  "Axis07",
+            "Axis08",  "Axis09",  "Axis10",  "Axis11",
             "Axis12",  "Axis13",  "Axis14",  "Axis15"
         };
     }

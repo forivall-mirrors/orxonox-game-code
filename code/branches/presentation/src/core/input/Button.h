@@ -48,7 +48,7 @@ namespace orxonox
     {
     public:
         Button();
-        virtual ~Button() { clear(); }
+        virtual ~Button();
         virtual void clear();
         virtual bool addParamCommand(ParamCommand* command) { return false; }
         void parse();
