@@ -61,6 +61,8 @@ namespace orxonox
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
+        template <class T> friend class XMLPortClassParamContainer;
+
         public:
             BaseObject(BaseObject* creator);
             virtual ~BaseObject();
@@ -172,10 +174,10 @@ namespace orxonox
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
 
         protected:
-            std::string name_;                          //!< The name of the object
-            std::string oldName_;                       //!< The old name of the object
-            mbool       bActive_;                       //!< True = the object is active
-            mbool       bVisible_;                      //!< True = the object is visible
+            std::string name_;                                 //!< The name of the object
+            std::string oldName_;                              //!< The old name of the object
+            mbool       bActive_;                              //!< True = the object is active
+            mbool       bVisible_;                             //!< True = the object is visible
             std::string mainStateName_;
             Functor*    functorSetMainState_;
             Functor*    functorGetMainState_;
@@ -184,9 +186,11 @@ namespace orxonox
             void setXMLName(const std::string& name);
             Template* getTemplate(unsigned int index) const;
 
-            bool                   bInitialized_;         //!< True if the object was initialized (passed the object registration)
-            const XMLFile*         file_;                 //!< The XMLFile that loaded this object
-            std::string            loaderIndentation_;    //!< Indentation of the debug output in the Loader
+            bool                   bInitialized_;              //!< True if the object was initialized (passed the object registration)
+            const XMLFile*         file_;                      //!< The XMLFile that loaded this object
+            Element*               lastLoadedXMLElement_;      //!< Non 0 if the TinyXML attributes have already been copied to our own lowercase map
+            std::map<std::string, std::string> xmlAttributes_; //!< Lowercase XML attributes
+            std::string            loaderIndentation_;         //!< Indentation of the debug output in the Loader
             Namespace*             namespace_;
             BaseObject*            creator_;
             Scene*                 scene_;

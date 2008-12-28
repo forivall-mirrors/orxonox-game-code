@@ -181,7 +181,7 @@
         containername = new orxonox::XMLPortClassParamContainer<objectclass>(std::string(paramname), ClassIdentifier<classname>::getIdentifier(), loadexecutor, saveexecutor); \
         ClassIdentifier<classname>::getIdentifier()->addXMLPortParamContainer(paramname, containername); \
     } \
-    containername->port((BaseObject*)this, object, xmlelement, mode)
+    containername->port(static_cast<BaseObject*>(this), object, xmlelement, mode)
 
 // --------------------
 // XMLPortObjectExtended
@@ -359,6 +359,7 @@ namespace orxonox
 
             XMLPortParamContainer& port(BaseObject* owner, T* object, Element& xmlelement, XMLPort::Mode mode)
             {
+                OrxAssert(owner, "XMLPortParamContainer must have a BaseObject as owner.");
                 this->owner_ = owner;
                 this->parseParams_.object = object;
                 this->parseParams_.xmlelement = &xmlelement;
@@ -368,11 +369,29 @@ namespace orxonox
                 {
                     try
                     {
-                        std::string attribute = xmlelement.GetAttribute(this->paramname_);
-                        if ((attribute.size() > 0) || ((mode != XMLPort::ExpandObject) && this->loadexecutor_->allDefaultValuesSet()))
+                        if (this->owner_->lastLoadedXMLElement_ != &xmlelement)
+                        {
+                            this->owner_->xmlAttributes_.clear();
+                            // Iterate through the attributes manually in order to make them case insensitive
+                            Attribute* attribute = xmlelement.FirstAttribute(false);
+                            while (attribute != 0)
+                            {
+                                this->owner_->xmlAttributes_[getLowercase(attribute->Name())] = attribute->Value();
+                                attribute = attribute->Next(false);
+                            }
+                            this->owner_->lastLoadedXMLElement_ = &xmlelement;
+                        }
+                        std::map<std::string, std::string>::const_iterator it = this->owner_->xmlAttributes_.find(getLowercase(this->paramname_));
+                        std::string attributeValue("");
+                        if (it != this->owner_->xmlAttributes_.end())
+                            attributeValue = it->second;
+
+                        // TODO: Checking the iterator would be better since then we can have strings with value "" as well.
+                        //       Unfortunately this does not seem to work with the Executor parser yet.
+                        if ((!attributeValue.empty()) || ((mode != XMLPort::ExpandObject) && this->loadexecutor_->allDefaultValuesSet()))
                         {
                             COUT(5) << this->owner_->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << this->identifier_->getName() << " (objectname " << this->owner_->getName() << ")." << std::endl << this->owner_->getLoaderIndentation();
-                            if (this->loadexecutor_->parse(object, attribute, ",") || (mode  == XMLPort::ExpandObject))
+                            if (this->loadexecutor_->parse(object, attributeValue, ",") || (mode  == XMLPort::ExpandObject))
                                 this->parseResult_ = PR_finished;
                             else
                                 this->parseResult_ = PR_waiting_for_default_values;

@@ -60,6 +60,8 @@ namespace orxonox
         this->bVisible_ = true;
         this->oldGametype_ = 0;
 
+        this->lastLoadedXMLElement_ = 0;
+
         this->functorSetMainState_ = 0;
         this->functorGetMainState_ = 0;
 
