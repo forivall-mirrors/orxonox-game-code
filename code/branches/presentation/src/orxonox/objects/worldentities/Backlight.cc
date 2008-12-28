@@ -213,7 +213,7 @@ namespace orxonox
                 this->update_maxelements();
                 this->update_trailmaterial();
                 if (this->ribbonTrail_)
-                    this->ribbonTrail_->addNode(const_cast<Ogre::SceneNode*>(this->getNode()));
+                    this->ribbonTrail_->addNode(this->node_);
             }
         }
 

@@ -79,7 +79,6 @@ namespace orxonox
                 { this->setShadow(this->bShadows_); }
 
             Ogre::SceneManager*      sceneManager_;
-            Ogre::SceneManager*      sceneManagerDedicated_;
             Ogre::SceneNode*         rootSceneNode_;
 
             std::string              skybox_;

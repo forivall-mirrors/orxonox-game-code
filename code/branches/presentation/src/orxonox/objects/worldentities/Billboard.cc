@@ -33,6 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "core/Core.h"
 #include "objects/Scene.h"
 
 namespace orxonox
@@ -79,7 +80,7 @@ namespace orxonox
 
         if (!this->billboard_.getBillboardSet())
         {
-            if (this->getScene() && this->getScene()->getSceneManager())
+            if (this->getScene() && Core::showsGraphics())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())
@@ -96,7 +97,7 @@ namespace orxonox
         if (!this->billboard_.getBillboardSet())
         {
 /*
-            if (this->getScene() && this->getScene()->getSceneManager() && (this->material_ != ""))
+            if (this->getScene() && Core::showsGraphics() && (this->material_ != ""))
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())

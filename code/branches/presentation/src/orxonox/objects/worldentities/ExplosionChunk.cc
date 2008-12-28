@@ -46,7 +46,7 @@ namespace orxonox
     {
         RegisterObject(ExplosionChunk);
 
-        if (!this->getScene() || !this->getScene()->getSceneManager())
+        if (!this->getScene() || !Core::showsGraphics() || !this->getScene()->getSceneManager())
             ThrowException(AbortLoading, "Can't create ExplosionChunk, no scene or no scene manager given.");
 
         this->bStop_ = false;

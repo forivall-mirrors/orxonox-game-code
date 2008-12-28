@@ -106,7 +106,7 @@ namespace orxonox
             this->particles_ = 0;
         }
 
-        if (this->getScene() && this->getScene()->getSceneManager())
+        if (Core::showsGraphics() && this->getScene() && this->getScene()->getSceneManager())
         {
             try
             {
