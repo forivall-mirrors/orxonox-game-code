@@ -414,7 +414,7 @@ namespace orxonox
             }
             joyStickIDs_[iJoyStick] = id;
 
-            size_t axes = sliderAxes + (size_t)this->joySticks_[i]->getNumberOfComponents(OIS::OIS_Axis);
+            size_t axes = sliderAxes + (size_t)this->joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Axis);
             loadCalibration(joyStickMinValues_[iJoyStick], id, "MinValue", axes, -32768);
             loadCalibration(joyStickMaxValues_[iJoyStick], id, "MaxValue", axes,  32768);
             loadCalibration(joyStickMiddleValues_[iJoyStick], id, "MiddleValue", axes,      0);
