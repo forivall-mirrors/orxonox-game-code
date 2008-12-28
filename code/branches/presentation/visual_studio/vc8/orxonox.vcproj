@@ -449,20 +449,6 @@
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\munitions\LaserGunMunition.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter
@@ -471,20 +457,6 @@
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\LaserGun.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\Missile.cc"
@@ -513,56 +485,14 @@
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\projectiles\BillboardProjectile.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\projectiles\ParticleProjectile.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\projectiles\Projectile.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 					</Filter>
 				</Filter>
