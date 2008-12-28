@@ -46,6 +46,30 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        The WorldEntity represents everything that can be put in a Scene at a certain location.
+
+        It is supposed to be the base class of everything you would call an 'object' in a Scene.
+        The class itself is abstract which means you cannot use it directly. You may use StaticEntity
+        as the simplest derivative or (derived from MobileEntity) MovableEntity and ControllableEntity
+        as more advanced ones.
+
+        The basic task of the WorldEntity is provide a location, a direction and a scaling and the possibility
+        to create an entire hierarchy of derivated objects.
+        It is also the basis for the physics interface to the Bullet physics engine.
+        Every WorldEntity can have a specific collision type: @see CollisionType
+        This would then imply that every scene object could have any collision type. To limit this, you can always
+        override this->isCollisionTypeLegal(CollisionType). Return false if the collision type is not supported
+        for a specific object.
+        There is also support for attaching WorldEntities with physics to each other. Currently, the collision shape
+        of both objects simply get merged into one larger shape (for static collision type).
+        The phyiscal body that is internally stored and administrated has the following supported properties:
+        - Restitution, angular factor, linear damping, angular damping, fricition, mass and collision shape.
+        You can get more information at the corresponding set function.
+
+        Collision shapes: These are controlled by the internal CompoundCollisionShape. @see CompoundCollisionShape.
+    */
     class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
         friend class Scene;
@@ -181,6 +205,15 @@ namespace orxonox
         /////////////
 
         public:
+            /**
+            @brief
+                Denotes the possible types of physical objects in a Scene.
+
+                Dynamic:   The object is influenced by its physical environment, like for instance little ball.
+                Kinematic: The object can only influence other dynamic objects. It's movement is coordinated by your own saying.
+                Static:    Like kinematic but the object is not allowed to move during the simulation.
+                None:      The object has no physics at all.
+            */
             enum CollisionType
             {
                 Dynamic,
@@ -189,16 +222,22 @@ namespace orxonox
                 None
             };
 
+            //! Tells whether the object has any connection to the Bullet physics engine. If hasPhysics() is false, the object may still have a velocity.
             bool hasPhysics()       const { return getCollisionType() != None     ; }
+            //! @see CollisionType
             bool isStatic()         const { return getCollisionType() == Static   ; }
+            //! @see CollisionType
             bool isKinematic()      const { return getCollisionType() == Kinematic; }
+            //! @see CollisionType
             bool isDynamic()        const { return getCollisionType() == Dynamic  ; }
+            //! Tells whether physics has been activated (you can temporarily deactivate it)
             bool isPhysicsActive()  const { return this->bPhysicsActive_; }
             bool addedToPhysicalWorld() const;
 
             void activatePhysics();
             void deactivatePhysics();
 
+            //! Returns the CollisionType. @see CollisionType.
             inline CollisionType getCollisionType() const
                 { return this->collisionType_; }
             void setCollisionType(CollisionType type);
@@ -206,39 +245,73 @@ namespace orxonox
             void setCollisionTypeStr(const std::string& type);
             std::string getCollisionTypeStr() const;
 
+            //! Sets the mass of this object. Note that the total mass may be influenced by attached objects!
             inline void setMass(float mass)
                 { this->mass_ = mass; recalculateMassProps(); }
+            //! Returns the mass of this object without its children.
             inline float getMass() const
                 { return this->mass_; }
 
+            //! Returns the total mass of this object with all its attached children.
             inline float getTotalMass() const
                 { return this->mass_ + this->childrenMass_; }
 
+            /**
+            @brief
+                Returns the diagonal elements of the inertia tensor when calculated in local coordinates.
+            @Note
+                The local inertia tensor cannot be set, but is calculated by Bullet according to the collisionShape.
+                With compound collision shapes, an approximation is used.
+            */
             inline const btVector3& getLocalInertia() const
                 { return this->localInertia_; }
 
+            /**
+            @brief
+                Sets how much reaction is applied in a collision.
+                
+                Consider two equal spheres colliding with equal velocities:
+                Restitution 1 means that both spheres simply reverse their velocity (no loss of energy)
+                Restitution 0 means that both spheres will immediately stop moving
+                (maximum loss of energy without violating of the preservation of momentum)
+            */
             inline void setRestitution(float restitution)
                 { this->restitution_ = restitution; internalSetPhysicsProps(); }
+            //! Returns the restitution parameter. @see setRestitution.
             inline float getRestitution() const
                 { return this->restitution_; }
 
+            /**
+            @brief
+                Sets an artificial parameter that tells how much torque is applied when you apply a non-central force.
+
+                Normally the angular factor is 1, which means it's physically 'correct'. Howerver if you have a player
+                character that should not rotate when hit sideways, you can set the angular factor to 0.
+            */
             inline void setAngularFactor(float angularFactor)
                 { this->angularFactor_ = angularFactor; internalSetPhysicsProps(); }
+            //! Returns the angular factor. @see setAngularFactor.
             inline float getAngularFactor() const
                 { return this->angularFactor_; }
 
+            //! Applies a mass independent damping. Velocities will simply diminish exponentially.
             inline void setLinearDamping(float linearDamping)
                 { this->linearDamping_ = linearDamping; internalSetPhysicsProps(); }
+            //! Returns the linear damping. @see setLinearDamping.
             inline float getLinearDamping() const
                 { return this->linearDamping_; }
 
+            //! Applies a tensor independent rotation damping. Angular velocities will simply diminish exponentially.
             inline void setAngularDamping(float angularDamping)
                 { this->angularDamping_ = angularDamping; internalSetPhysicsProps(); }
+            //! Returns the angular damping. @see setAngularDamping.
             inline float getAngularDamping() const
                 { return this->angularDamping_; }
 
+            //! Applies friction to the object. Friction occurs when two objects collide.
             inline void setFriction(float friction)
                 { this->friction_ = friction; internalSetPhysicsProps(); }
+            //! Returns the amount of friction applied to the object.
             inline float getFriction() const
                 { return this->friction_; }
 
@@ -249,20 +322,44 @@ namespace orxonox
             void notifyCollisionShapeChanged();
             void notifyChildMassChanged();
 
+            /**
+            @brief
+                Virtual function that gets called when this object collides with another.
+            @param otherObject
+                The object this one has collided into.
+            @pram contactPoint
+                Contact point provided by Bullet. Holds more information and can me modified. See return value.
+            @Return
+                Returning false means that no modification to the contactPoint has been made. Return true otherwise!
+            @Note
+                Condition is that enableCollisionCallback() was called.
+            */
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
                 { return false; } /* With false, Bullet assumes no modification to the collision objects. */
 
+            //! Enables the collidesAgainst(.) function. The object doesn't respond to collision otherwise!
             inline void enableCollisionCallback()
                 { this->bCollisionCallbackActive_ = true; this->collisionCallbackActivityChanged(); }
+            //! Disables the collidesAgainst(.) function. @see enableCollisionCallback()
             inline void disableCollisionCallback()
                 { this->bCollisionCallbackActive_ = false; this->collisionCallbackActivityChanged(); }
+            //! Tells whether there could be a collision response via collidesAgainst(.)
             inline bool isCollisionCallbackActive() const
                 { return this->bCollisionCallbackActive_; }
 
         protected:
+            /**
+            @brief
+                Function checks whether the requested collision type is legal to this object.
+
+                You can override this function in a derived class to constrain the collision to e.g. None or Dynamic.
+                A projectile may not prove very useful if there is no physical body. Simply set the CollisionType
+                in its constructor and override this method. But be careful that a derived classe's virtual functions
+                don't yet exist in the constructor if a base class.
+            */
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
 
-            btRigidBody* physicalBody_;
+            btRigidBody*  physicalBody_; //!< Bullet rigid body. Everything physical is applied to this instance.
 
         private:
             void updateCollisionType();
@@ -276,34 +373,41 @@ namespace orxonox
             void collisionTypeChanged();
             void physicsActivityChanged();
             void collisionCallbackActivityChanged();
+            //! Network callback workaround to call a function when the value changes.
             inline void massChanged()
                 { this->setMass(this->mass_); }
+            //! Network callback workaround to call a function when the value changes.
             inline void restitutionChanged()
                 { this->setRestitution(this->restitution_); }
+            //! Network callback workaround to call a function when the value changes.
             inline void angularFactorChanged()
                 { this->setAngularFactor(this->angularFactor_); }
+            //! Network callback workaround to call a function when the value changes.
             inline void linearDampingChanged()
                 { this->setLinearDamping(this->linearDamping_); }
+            //! Network callback workaround to call a function when the value changes.
             inline void angularDampingChanged()
                 { this->setAngularDamping(this->angularDamping_); }
+            //! Network callback workaround to call a function when the value changes.
             inline void frictionChanged()
                 { this->setFriction(this->friction_); }
 
-            CollisionType                collisionType_;
-            CollisionType                collisionTypeSynchronised_;
-            bool                         bPhysicsActive_;
-            bool                         bPhysicsActiveSynchronised_;
+            CollisionType                collisionType_;                 //!< @see setCollisionType
+            CollisionType                collisionTypeSynchronised_;     //!< Network synchronised variable for collisionType_
+            bool                         bPhysicsActive_;                //!< @see isPhysicsActive
+            bool                         bPhysicsActiveSynchronised_;    //!< Network synchronised variable for bPhysicsActive_
+            //! When attaching objects hierarchically this variable tells this object (as child) whether physics was activated before attaching (because the deactivate physics while being attached).
             bool                         bPhysicsActiveBeforeAttaching_;
-            CompoundCollisionShape       collisionShape_;
-            btScalar                     mass_;
-            btVector3                    localInertia_;
-            btScalar                     restitution_;
-            btScalar                     angularFactor_;
-            btScalar                     linearDamping_;
-            btScalar                     angularDamping_;
-            btScalar                     friction_;
-            btScalar                     childrenMass_;
-            bool                         bCollisionCallbackActive_;
+            CompoundCollisionShape       collisionShape_;                //!< Attached collision shapes go here
+            btScalar                     mass_;                          //!< @see setMass
+            btVector3                    localInertia_;                  //!< @see getLocalInertia
+            btScalar                     restitution_;                   //!< @see setRestitution
+            btScalar                     angularFactor_;                 //!< @see setAngularFactor
+            btScalar                     linearDamping_;                 //!< @see setLinearDamping
+            btScalar                     angularDamping_;                //!< @see setAngularDamping
+            btScalar                     friction_;                      //!< @see setFriction
+            btScalar                     childrenMass_;                  //!< Sum of all the children's masses
+            bool                         bCollisionCallbackActive_;      //!< @see enableCollisionCallback
     };
 
     // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.

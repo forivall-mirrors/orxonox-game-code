@@ -120,7 +120,7 @@ namespace orxonox
       objectMap_.erase(it);
 
     //HACK HACK HACK HACK HACK HACK
-    // this hack ensures that childs of this object also get destroyed
+    // this hack ensures that children of this object also get destroyed
 //     ObjectList<Synchronisable>::iterator it2, it3;
 //     // get total size of gamestate
 //     for(it2 = ObjectList<Synchronisable>::begin(); it2; ++it2)

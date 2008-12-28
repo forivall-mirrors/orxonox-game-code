@@ -89,7 +89,7 @@ namespace orxonox
 
     private:
         std::map<std::string, OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
-        Vector2 scale_;                                         //!< Current scale (independant of the elements).
+        Vector2 scale_;                                         //!< Current scale (independent of the elements).
         Vector2 scroll_;                                        //!< Current scrolling offset.
         ControllableEntity* owner_;                             //!< The owner of this OverlayGroup
     };

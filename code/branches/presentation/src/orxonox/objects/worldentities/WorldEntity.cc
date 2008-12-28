@@ -51,8 +51,12 @@ namespace orxonox
     const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
     const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
 
+    /**
+    @brief
+        Creates a new WorldEntity that may immediately be used.
+        All the default values are being set here.
+    */
     WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), collisionShape_(0)
-
     {
         RegisterObject(WorldEntity);
 
@@ -91,6 +95,10 @@ namespace orxonox
         this->registerVariables();
     }
 
+    /**
+    @brief
+        Destroys the WorldEntity AND ALL its children with it.
+    */
     WorldEntity::~WorldEntity()
     {
         if (this->isInitialized())
@@ -171,6 +179,10 @@ namespace orxonox
         registerVariable(this->parentID_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::parentChanged));
     }
 
+    /**
+    @brief
+        Network function that object this instance to its correct parent.
+    */
     void WorldEntity::parentChanged()
     {
         if (this->parentID_ != OBJECTID_UNKNOWN)
@@ -181,6 +193,13 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Attaches this object to a parent SceneNode.
+    @Remarks
+        Only use this method if you know exactly what you're doing!
+        Normally, attaching works internally by attaching WE's.
+    */
     void WorldEntity::attachToNode(Ogre::SceneNode* node)
     {
         Ogre::Node* parent = this->node_->getParent();
@@ -189,12 +208,23 @@ namespace orxonox
         node->addChild(this->node_);
     }
 
+    /**
+    @brief
+        Detaches this object from a parent SceneNode.
+    @Remarks
+        Only use this method if you know exactly what you're doing!
+        Normally, attaching works internally by attaching WE's.
+    */
     void WorldEntity::detachFromNode(Ogre::SceneNode* node)
     {
         node->removeChild(this->node_);
 //        this->getScene()->getRootSceneNode()->addChild(this->node_);
     }
 
+    /**
+    @brief
+        Network callback for the collision type. Only change the type if it was valid.
+    */
     void WorldEntity::collisionTypeChanged()
     {
         if (this->collisionTypeSynchronised_ != Dynamic &&
@@ -213,6 +243,7 @@ namespace orxonox
         }
     }
 
+    //! Network callback for this->bPhysicsActive_
     void WorldEntity::physicsActivityChanged()
     {
         if (this->bPhysicsActiveSynchronised_)
@@ -221,6 +252,7 @@ namespace orxonox
             this->deactivatePhysics();
     }
 
+    //! Function is called to set the right flags in Bullet (if there is physics at all)
     void WorldEntity::collisionCallbackActivityChanged()
     {
         if (this->hasPhysics())
@@ -234,6 +266,16 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Attaches a child WorldEntity to this object. This calls notifyBeingAttached()
+        of the child WE.
+    @Note
+        The collision shape of the child object gets attached nevertheless. That also means
+        that you can change the collision shape of the child and it correctly cascadeds the changes to this instance.
+        Be aware of this implication: When implementing attaching of kinematic objects to others, you have to change
+        this behaviour because you then might not want to merge the collision shapes.
+    */
     void WorldEntity::attach(WorldEntity* object)
     {
         if (object == this)
@@ -254,6 +296,16 @@ namespace orxonox
         recalculateMassProps();
     }
 
+    /**
+    @brief
+        Function gets called when this object is being attached to a new parent.
+
+        This operation is only allowed if the collision types "like" each other.
+        - You cannot a attach a non physical object to a physical one.
+        - Dynamic object can NOT be attached at all.
+        - It is also not possible to attach a kinematic to a dynamic one.
+        - Attaching of kinematic objects otherwise is not yet supported.
+    */
     bool WorldEntity::notifyBeingAttached(WorldEntity* newParent)
     {
         // check first whether attaching is even allowed
@@ -299,6 +351,10 @@ namespace orxonox
         return true;
     }
 
+    /**
+    @brief
+        Detaches a child WorldEntity from this instance.
+    */
     void WorldEntity::detach(WorldEntity* object)
     {
         if (this->children_.find(object) == this->children_.end())
@@ -323,6 +379,10 @@ namespace orxonox
         object->notifyDetached();
     }
 
+    /**
+    @brief
+        Function gets called when the object has been detached from its parent.
+    */
     void WorldEntity::notifyDetached()
     {
         this->parent_ = 0;
@@ -340,6 +400,7 @@ namespace orxonox
         }
     }
 
+    //! Returns an attached object (merely for XMLPort).
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index)
     {
         unsigned int i = 0;
@@ -352,6 +413,7 @@ namespace orxonox
         return 0;
     }
 
+    //! Attaches an Ogre::SceneNode to this WorldEntity.
     void WorldEntity::attachNode(Ogre::SceneNode* node)
     {
         Ogre::Node* parent = node->getParent();
@@ -360,40 +422,47 @@ namespace orxonox
         this->node_->addChild(node);
     }
 
+    //! Detaches an Ogre::SceneNode from this WorldEntity.
     void WorldEntity::detachNode(Ogre::SceneNode* node)
     {
         this->node_->removeChild(node);
 //        this->getScene()->getRootSceneNode()->addChild(node);
     }
 
+    //! Attaches an Ogre::MovableObject to this WorldEntity.
     void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
     {
         this->node_->attachObject(object);
     }
 
+    //! Detaches an Ogre::MovableObject from this WorldEntity.
     void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
     {
         this->node_->detachObject(object);
     }
 
+    //! Detaches an Ogre::MovableObject (by string) from this WorldEntity.
     Ogre::MovableObject* WorldEntity::detachOgreObject(const Ogre::String& name)
     {
         return this->node_->detachObject(name);
     }
 
+    //! Attaches a collision Shape to this object (delegated to the internal CompoundCollisionShape)
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
         this->collisionShape_.attach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
+    //! Detaches a collision Shape from this object (delegated to the internal CompoundCollisionShape)
     void WorldEntity::detachCollisionShape(CollisionShape* shape)
     {
         this->collisionShape_.detach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
-    CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
+    //! Returns an attached collision Shape of this object (delegated to the internal CompoundCollisionShape)
+    CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index)
     {
         return this->collisionShape_.getAttachedShape(index);
     }
@@ -416,27 +485,42 @@ namespace orxonox
     }
 #endif
 
+    //! Returns the position relative to the root space
     const Vector3& WorldEntity::getWorldPosition() const
     {
         return this->node_->_getDerivedPosition();
     }
 
+    //! Returns the orientation relative to the root space
     const Quaternion& WorldEntity::getWorldOrientation() const
     {
         return this->node_->_getDerivedOrientation();
     }
 
+    //! Returns the scaling applied relative to the root space in 3 coordinates
     const Vector3& WorldEntity::getWorldScale3D() const
     {
         return this->node_->_getDerivedScale();
     }
 
+    /**
+    @brief
+        Returns the scaling applied relative to the root space in 3 coordinates
+    @return
+        Returns the scaling if it is uniform, 1.0f otherwise.
+    */
     float WorldEntity::getWorldScale() const
     {
         Vector3 scale = this->getWorldScale3D();
         return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1;
     }
 
+    /**
+    @brief
+        Sets the three dimensional scaling of this object.
+    @Note
+        Scaling physical objects has not yet been implemented and is therefore forbidden.
+    */
     void WorldEntity::setScale3D(const Vector3& scale)
     {
 /*
@@ -453,6 +537,12 @@ HACK HACK HACK
         this->changedScale();
     }
 
+    /**
+    @brief
+        Translates this WorldEntity by a vector.
+    @param relativeTo
+        @see TransformSpace::Enum
+    */
     void WorldEntity::translate(const Vector3& distance, TransformSpace::Enum relativeTo)
     {
         switch (relativeTo)
@@ -475,7 +565,12 @@ HACK HACK HACK
         }
     }
 
-    void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Space relativeTo)
+    /**
+    @brief
+        Rotates this WorldEntity by a quaternion.
+    @param relativeTo
+        @see TransformSpace::Enum
+    */
     void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Enum relativeTo)
     {
         switch(relativeTo)
@@ -495,7 +590,14 @@ HACK HACK HACK
         }
     }
 
-    void WorldEntity::lookAt(const Vector3& target, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    /**
+    @brief
+        Makes this WorldEntity look a specific target location.
+    @param relativeTo
+        @see TransformSpace::Enum
+    @param localDirectionVector
+        The vector which normally describes the natural direction of the object, usually -Z.
+    */
     void WorldEntity::lookAt(const Vector3& target, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
     {
         Vector3 origin;
@@ -514,7 +616,14 @@ HACK HACK HACK
         this->setDirection(target - origin, relativeTo, localDirectionVector);
     }
 
-    void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    /**
+    @brief
+        Makes this WorldEntity look in specific direction.
+    @param relativeTo
+        @see TransformSpace::Enum
+    @param localDirectionVector
+        The vector which normally describes the natural direction of the object, usually -Z.
+    */
     void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
     {
         Quaternion savedOrientation(this->getOrientation());
@@ -534,6 +643,7 @@ HACK HACK HACK
         this->setOrientation(newOrientation);
     }
 
+    //! Activates physics if the CollisionType is not None.
     void WorldEntity::activatePhysics()
     {
         if (this->isActive() && this->hasPhysics() && !this->isPhysicsActive() && !this->parent_)
@@ -543,6 +653,7 @@ HACK HACK HACK
         }
     }
 
+    //! Deactivates physics but the CollisionType does not change.
     void WorldEntity::deactivatePhysics()
     {
         if (this->isPhysicsActive())
@@ -552,11 +663,18 @@ HACK HACK HACK
         }
     }
 
+    //! Tells whether the object has already been added to the Bullet physics World.
     bool WorldEntity::addedToPhysicalWorld() const
     {
         return this->physicalBody_ && this->physicalBody_->isInWorld();
     }
 
+    /**
+    @brief
+        Sets the CollisionType. This alters the object significantly! @see CollisionType.
+    @Note
+        Operation does not work on attached WorldEntities.
+    */
     void WorldEntity::setCollisionType(CollisionType type)
     {
         if (this->collisionType_ == type)
@@ -646,6 +764,7 @@ HACK HACK HACK
             activatePhysics();
     }
 
+    //! Sets the CollisionType by string (used for the XMLPort)
     void WorldEntity::setCollisionTypeStr(const std::string& typeStr)
     {
         std::string typeStrLower = getLowercase(typeStr);
@@ -663,6 +782,7 @@ HACK HACK HACK
         this->setCollisionType(type);
     }
 
+    //! Gets the CollisionType by string (used for the XMLPort)
     std::string WorldEntity::getCollisionTypeStr() const
     {
         switch (this->getCollisionType())
@@ -694,6 +814,13 @@ HACK HACK HACK
         this->collisionTypeSynchronised_ = this->collisionType_;
     }
 
+    /**
+    @brief
+        Recalculates the accumulated child mass and calls recalculateMassProps()
+        and notifies the parent of the change.
+    @Note
+        Called by a child WE
+    */
     void WorldEntity::notifyChildMassChanged()
     {
         // Note: CollisionShape changes of a child get handled over the internal CompoundCollisionShape already
@@ -707,6 +834,14 @@ HACK HACK HACK
             parent_->notifyChildMassChanged();
     }
 
+    /**
+    @brief
+        Undertakes the necessary steps to change the collision shape in Bullet, even at runtime.
+    @Note
+        - called by this->collisionShape_
+        - May have a REALLY big overhead when called continuously at runtime, because then we need
+          to remove the physical body from Bullet and add it again.
+    */
     void WorldEntity::notifyCollisionShapeChanged()
     {
         if (hasPhysics())
@@ -724,6 +859,7 @@ HACK HACK HACK
         recalculateMassProps();
     }
 
+    //! Updates all mass dependent parameters (mass, inertia tensor and child mass)
     void WorldEntity::recalculateMassProps()
     {
         // Store local inertia for faster access. Evaluates to (0,0,0) if there is no collision shape.
@@ -739,7 +875,7 @@ HACK HACK HACK
             else if ((this->mass_ + this->childrenMass_) == 0.0f)
             {
                 // Use default values to avoid very large or very small values
-                CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0." << std::endl;
+                CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0" << std::endl;
                 btVector3 inertia(0, 0, 0);
                 this->collisionShape_.calculateLocalInertia(1.0f, inertia);
                 this->physicalBody_->setMassProps(1.0f, inertia);
@@ -751,6 +887,7 @@ HACK HACK HACK
         }
     }
 
+    //! Copies our own parameters for restitution, angular factor, dampings and friction to the bullet rigid body.
     void WorldEntity::internalSetPhysicsProps()
     {
         if (this->hasPhysics())
