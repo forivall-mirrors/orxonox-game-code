@@ -172,6 +172,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\OrxEnum.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\OutputBuffer.cc"
 				>
 			</File>
@@ -243,6 +247,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\MultiTypeValue.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\OrxEnum.h"
 				>
 			</File>
 			<File
