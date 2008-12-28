@@ -30,6 +30,8 @@
 #include "GSGraphics.h"
 
 #include <fstream>
+#include <boost/filesystem.hpp>
+
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -370,16 +372,11 @@ namespace orxonox
         if (ogrePluginsFolder_ == "")
             ogrePluginsFolder_ = ".";
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-        convertToWindowsPath(&ogrePluginsFolder_);
-#else
-        convertToUnixPath(&ogrePluginsFolder_);
-#endif
-
+        boost::filesystem::path folder(ogrePluginsFolder_);
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
         for (unsigned int i = 0; i < plugins.size(); ++i)
-            ogreRoot_->loadPlugin(ogrePluginsFolder_ + plugins[i]);
+            ogreRoot_->loadPlugin((folder / plugins[i]).native_file_string());
     }
 
     void GSGraphics::declareResources()

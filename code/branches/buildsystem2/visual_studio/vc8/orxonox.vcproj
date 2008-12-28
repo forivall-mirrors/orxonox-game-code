@@ -842,10 +842,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\tolua_bind.h"
-				>
-			</File>
-			<File
 				RelativePath="$(IntDir)\ToluaBindOrxonox.h"
 				>
 			</File>

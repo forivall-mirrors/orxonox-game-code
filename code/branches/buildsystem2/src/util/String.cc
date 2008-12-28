@@ -492,39 +492,3 @@ namespace orxonox
         return std::string::npos;
     }
 }
-
-/**
-    @brief Converts a path string to windows with "\" instead of "/".
-    @param str String pointer to be manipulated
-*/
-void convertToWindowsPath(std::string* str)
-{
-    std::string& path = *str;
-    // replace all occurences of "/" with "\"
-    for (unsigned int i = 0; i < path.length(); ++i)
-    {
-        if (path[i] == '/')
-            path[i] = '\\';
-    }
-    // add an extra '\\' at the end to make it a complete path
-    if (path != "" && path[path.length() - 1] != '\\')
-        path.append("\\");
-}
-
-/**
-    @brief Converts a path string to unix with "/" instead of "\".
-    @param str String pointer to be manipulated
-*/
-void convertToUnixPath(std::string* str)
-{
-    std::string& path = *str;
-    // replace all occurences of "\" with "/"
-    for (unsigned int i = 0; i < path.length(); ++i)
-    {
-        if (path[i] == '\\')
-            path[i] = '/';
-    }
-    // add an extra '\\' at the end to make it a complete path
-    if (path != "" && path[path.length() - 1] != '/')
-        path.append("/");
-}

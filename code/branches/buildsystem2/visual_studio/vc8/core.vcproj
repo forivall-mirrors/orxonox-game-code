@@ -440,10 +440,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\tolua_bind.h"
-				>
-			</File>
-			<File
 				RelativePath="$(IntDir)\ToluaBindCore.h"
 				>
 			</File>
