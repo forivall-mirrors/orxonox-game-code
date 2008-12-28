@@ -79,13 +79,13 @@ namespace orxonox
         @brief
             Enumeration denoting the spaces which a transform can be relative to.
         */
-        enum Space
+        enum Enum
         {
-            /// Transform is relative to the local space
+            //! Transform is relative to the local space
             Local,
-            /// Transform is relative to the space of the parent node
+            //! Transform is relative to the space of the parent node
             Parent,
-            /// Transform is relative to world space
+            //! Transform is relative to world space
             World
         };
     }

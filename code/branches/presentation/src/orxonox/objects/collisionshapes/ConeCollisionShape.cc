@@ -72,6 +72,6 @@ namespace orxonox
 
     btCollisionShape* ConeCollisionShape::createNewShape() const
     {
-        return  new btConeShape(this->radius_, this->height_);
+        return new btConeShape(this->radius_, this->height_);
     }
 }

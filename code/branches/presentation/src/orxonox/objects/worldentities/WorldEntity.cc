@@ -41,7 +41,6 @@
 #include "core/XMLPort.h"
 
 #include "objects/Scene.h"
-#include "objects/collisionshapes/CompoundCollisionShape.h"
 
 namespace orxonox
 {
@@ -52,7 +51,8 @@ namespace orxonox
     const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
     const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
 
-    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), collisionShape_(0)
+
     {
         RegisterObject(WorldEntity);
 
@@ -67,20 +67,20 @@ namespace orxonox
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
 
+
         // Default behaviour does not include physics
-        this->physicalBody_ = 0;
-        this->bPhysicsActive_ = false;
-        this->bPhysicsActiveSynchronised_ = false;
-        this->bPhysicsActiveBeforeAttaching_ = false;
-        this->collisionShape_ = new CompoundCollisionShape(this);
         // Note: CompoundCollisionShape is a Synchronisable, but must not be synchronised.
         //       All objects will get attached on the client anyway, so we don't need synchronisation.
-        this->collisionShape_->setWorldEntityParent(this);
-        this->collisionType_ = None;
+        this->collisionShape_.setWorldEntityParent(this);
+        this->physicalBody_   = 0;
+        this->bPhysicsActive_ = false;
+        this->bPhysicsActiveSynchronised_    = false;
+        this->bPhysicsActiveBeforeAttaching_ = false;
+        this->collisionType_             = None;
         this->collisionTypeSynchronised_ = None;
         this->mass_           = 0;
         this->childrenMass_   = 0;
-        // Use bullet default values
+        // Using bullet default values
         this->restitution_    = 0;
         this->angularFactor_  = 1;
         this->linearDamping_  = 0;
@@ -95,25 +95,23 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            this->node_->detachAllObjects();
-
-            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
-                delete (*(it++));
-
             if (this->parent_)
                 this->detachFromParent();
 
-            this->node_->removeAllChildren();
+            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
+                delete (*(it++));
 
             if (this->physicalBody_)
             {
                 this->deactivatePhysics();
                 delete this->physicalBody_;
             }
-            delete this->collisionShape_;
 
-            if (this->getScene()->getSceneManager())
-                this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
+            this->node_->detachAllObjects();
+            this->node_->removeAllChildren();
+
+            OrxAssert(this->getScene()->getSceneManager(), "No SceneManager defined in a WorldEntity.");
+            this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
         }
     }
 
@@ -183,6 +181,20 @@ namespace orxonox
         }
     }
 
+    void WorldEntity::attachToNode(Ogre::SceneNode* node)
+    {
+        Ogre::Node* parent = this->node_->getParent();
+        if (parent)
+            parent->removeChild(this->node_);
+        node->addChild(this->node_);
+    }
+
+    void WorldEntity::detachFromNode(Ogre::SceneNode* node)
+    {
+        node->removeChild(this->node_);
+//        this->getScene()->getRootSceneNode()->addChild(this->node_);
+    }
+
     void WorldEntity::collisionTypeChanged()
     {
         if (this->collisionTypeSynchronised_ != Dynamic &&
@@ -222,34 +234,6 @@ namespace orxonox
         }
     }
 
-    void WorldEntity::attachNode(Ogre::SceneNode* node)
-    {
-        Ogre::Node* parent = node->getParent();
-        if (parent)
-            parent->removeChild(node);
-        this->node_->addChild(node);
-    }
-
-    void WorldEntity::detachNode(Ogre::SceneNode* node)
-    {
-        this->node_->removeChild(node);
-//        this->getScene()->getRootSceneNode()->addChild(node);
-    }
-
-    void WorldEntity::attachToNode(Ogre::SceneNode* node)
-    {
-        Ogre::Node* parent = this->node_->getParent();
-        if (parent)
-            parent->removeChild(this->node_);
-        node->addChild(this->node_);
-    }
-
-    void WorldEntity::detachFromNode(Ogre::SceneNode* node)
-    {
-        node->removeChild(this->node_);
-//        this->getScene()->getRootSceneNode()->addChild(this->node_);
-    }
-
     void WorldEntity::attach(WorldEntity* object)
     {
         if (object == this)
@@ -264,7 +248,7 @@ namespace orxonox
         this->attachNode(object->node_);
         this->children_.insert(object);
 
-        this->attachCollisionShape(object->getCollisionShape());
+        this->attachCollisionShape(&object->collisionShape_);
         // mass
         this->childrenMass_ += object->getMass();
         recalculateMassProps();
@@ -308,8 +292,8 @@ namespace orxonox
         this->parentID_ = newParent->getObjectID();
 
         // apply transform to collision shape
-        this->collisionShape_->setPosition(this->getPosition());
-        this->collisionShape_->setOrientation(this->getOrientation());
+        this->collisionShape_.setPosition(this->getPosition());
+        this->collisionShape_.setOrientation(this->getOrientation());
         // TODO: Scale
         
         return true;
@@ -324,7 +308,7 @@ namespace orxonox
         }
 
         // collision shapes
-        this->detachCollisionShape(object->getCollisionShape());
+        this->detachCollisionShape(&object->collisionShape_);
 
         // mass
         if (object->getMass() > 0.0f)
@@ -345,8 +329,8 @@ namespace orxonox
         this->parentID_ = OBJECTID_UNKNOWN;
 
         // reset orientation of the collisionShape (cannot be set within a WE usually)
-        this->collisionShape_->setPosition(Vector3::ZERO);
-        this->collisionShape_->setOrientation(Quaternion::IDENTITY);
+        this->collisionShape_.setPosition(Vector3::ZERO);
+        this->collisionShape_.setOrientation(Quaternion::IDENTITY);
         // TODO: Scale
 
         if (this->bPhysicsActiveBeforeAttaching_)
@@ -356,7 +340,7 @@ namespace orxonox
         }
     }
 
-    WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const
+    WorldEntity* WorldEntity::getAttachedObject(unsigned int index)
     {
         unsigned int i = 0;
         for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
@@ -366,6 +350,20 @@ namespace orxonox
             ++i;
         }
         return 0;
+    }
+
+    void WorldEntity::attachNode(Ogre::SceneNode* node)
+    {
+        Ogre::Node* parent = node->getParent();
+        if (parent)
+            parent->removeChild(node);
+        this->node_->addChild(node);
+    }
+
+    void WorldEntity::detachNode(Ogre::SceneNode* node)
+    {
+        this->node_->removeChild(node);
+//        this->getScene()->getRootSceneNode()->addChild(node);
     }
 
     void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
@@ -385,44 +383,22 @@ namespace orxonox
 
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
-        this->collisionShape_->attach(shape);
+        this->collisionShape_.attach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
     void WorldEntity::detachCollisionShape(CollisionShape* shape)
     {
-        this->collisionShape_->detach(shape);
+        this->collisionShape_.detach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
     CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index) const
     {
-        return this->collisionShape_->getAttachedShape(index);
+        return this->collisionShape_.getAttachedShape(index);
     }
 
-    void WorldEntity::activatePhysics()
-    {
-        if (this->isActive() && this->hasPhysics() && !this->isPhysicsActive() && !this->parent_)
-        {
-            this->getScene()->addPhysicalObject(this);
-            this->bPhysicsActive_ = true;
-        }
-    }
-
-    void WorldEntity::deactivatePhysics()
-    {
-        if (this->isPhysicsActive())
-        {
-            this->getScene()->removePhysicalObject(this);
-            this->bPhysicsActive_ = false;
-        }
-    }
-
-    bool WorldEntity::addedToPhysicalWorld() const
-    {
-        return this->physicalBody_ && this->physicalBody_->isInWorld();
-    }
-
+    // Note: These functions are placed in WorldEntity.h as inline functions for the release build.
 #ifndef _NDEBUG
     const Vector3& WorldEntity::getPosition() const
     {
@@ -450,7 +426,34 @@ namespace orxonox
         return this->node_->_getDerivedOrientation();
     }
 
-    void WorldEntity::translate(const Vector3& distance, TransformSpace::Space relativeTo)
+    const Vector3& WorldEntity::getWorldScale3D() const
+    {
+        return this->node_->_getDerivedScale();
+    }
+
+    float WorldEntity::getWorldScale() const
+    {
+        Vector3 scale = this->getWorldScale3D();
+        return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1;
+    }
+
+    void WorldEntity::setScale3D(const Vector3& scale)
+    {
+/*
+HACK HACK HACK
+        if (bScalePhysics && this->hasPhysics() && scale != Vector3::UNIT_SCALE)
+        {
+            CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented. Ignoring scaling." << std::endl;
+            return;
+        }
+HACK HACK HACK
+*/
+        this->node_->setScale(scale);
+
+        this->changedScale();
+    }
+
+    void WorldEntity::translate(const Vector3& distance, TransformSpace::Enum relativeTo)
     {
         switch (relativeTo)
         {
@@ -473,6 +476,7 @@ namespace orxonox
     }
 
     void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Space relativeTo)
+    void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Enum relativeTo)
     {
         switch(relativeTo)
         {
@@ -492,6 +496,7 @@ namespace orxonox
     }
 
     void WorldEntity::lookAt(const Vector3& target, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    void WorldEntity::lookAt(const Vector3& target, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
     {
         Vector3 origin;
         switch (relativeTo)
@@ -510,6 +515,7 @@ namespace orxonox
     }
 
     void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Space relativeTo, const Vector3& localDirectionVector)
+    void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
     {
         Quaternion savedOrientation(this->getOrientation());
         Ogre::Node::TransformSpace ogreRelativeTo;
@@ -528,46 +534,42 @@ namespace orxonox
         this->setOrientation(newOrientation);
     }
 
-    void WorldEntity::setScale3D(const Vector3& scale)
+    void WorldEntity::activatePhysics()
     {
-/*
-        if (this->hasPhysics() && scale != Vector3::UNIT_SCALE)
+        if (this->isActive() && this->hasPhysics() && !this->isPhysicsActive() && !this->parent_)
         {
-            CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented." << std::endl;
-            return;
+            this->getScene()->addPhysicalObject(this);
+            this->bPhysicsActive_ = true;
         }
-*/
-        this->node_->setScale(scale);
-
-        this->changedScale();
     }
 
-    const Vector3& WorldEntity::getWorldScale3D() const
+    void WorldEntity::deactivatePhysics()
     {
-        return this->node_->_getDerivedScale();
+        if (this->isPhysicsActive())
+        {
+            this->getScene()->removePhysicalObject(this);
+            this->bPhysicsActive_ = false;
+        }
     }
 
-    float WorldEntity::getWorldScale() const
+    bool WorldEntity::addedToPhysicalWorld() const
     {
-        Vector3 scale = this->getWorldScale3D();
-        return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1;
+        return this->physicalBody_ && this->physicalBody_->isInWorld();
     }
 
     void WorldEntity::setCollisionType(CollisionType type)
     {
+        if (this->collisionType_ == type)
+            return;
+
         // If we are already attached to a parent, this would be a bad idea..
         if (this->parent_)
         {
             CCOUT(2) << "Warning: Cannot set the collision type of a WorldEntity with a parent." << std::endl;
             return;
         }
-        else if (this->addedToPhysicalWorld())
-        {
-            CCOUT(2) << "Warning: Cannot set the collision type at run time." << std::endl;
-            return;
-        }
 
-        // Check for type legality. Could be StaticEntity or MobileEntity
+        // Check for type legality. Could be StaticEntity or MobileEntity.
         if (!this->isCollisionTypeLegal(type))
             return;
         if (type != None && !this->getScene()->hasPhysics())
@@ -576,19 +578,28 @@ namespace orxonox
             return;
         }
 
+        if (this->isPhysicsActive())
+            this->deactivatePhysics();
+
+        bool bReactivatePhysics = true;
+        if (this->hasPhysics() && !this->isPhysicsActive())
+            bReactivatePhysics = false;
+
         // Check whether we have to create or destroy.
         if (type != None && this->collisionType_ == None)
         {
 /*
+HACK HACK HACK
             // Check whether there was some scaling applied.
             if (!this->node_->getScale().positionEquals(Vector3(1, 1, 1), 0.001))
             {
                 CCOUT(2) << "Warning: Cannot create a physical body if there is scaling applied to the node: Not yet implemented." << std::endl;
                 return;
             }
+HACK HACK HACK
 */
             // Create new rigid body
-            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_->getCollisionShape());
+            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_.getCollisionShape());
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
             this->physicalBody_->setUserPointer(this);
             this->physicalBody_->setActivationState(DISABLE_DEACTIVATION);
@@ -618,19 +629,21 @@ namespace orxonox
             this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
             break;
         case None:
-            return; // this->collisionType_ was None too
+            assert(false); // Doesn't happen
+            return;
         }
 
-        // Only sets this->collisionShape_
+        // Only sets this->collisionType_
         // However the assertion is to ensure that the internal bullet setting is right
         updateCollisionType();
         assert(this->collisionType_ == type);
 
         // update mass and inertia tensor
         recalculateMassProps();
-        resetPhysicsProps();
+        internalSetPhysicsProps();
         collisionCallbackActivityChanged();
-        activatePhysics();
+        if (bReactivatePhysics)
+            activatePhysics();
     }
 
     void WorldEntity::setCollisionTypeStr(const std::string& typeStr)
@@ -681,7 +694,7 @@ namespace orxonox
         this->collisionTypeSynchronised_ = this->collisionType_;
     }
 
-    void WorldEntity::notifyChildMassChanged() // Called by a child WE
+    void WorldEntity::notifyChildMassChanged()
     {
         // Note: CollisionShape changes of a child get handled over the internal CompoundCollisionShape already
         // Recalculate mass
@@ -694,7 +707,7 @@ namespace orxonox
             parent_->notifyChildMassChanged();
     }
 
-    void WorldEntity::notifyCollisionShapeChanged() // called by this->collisionShape_
+    void WorldEntity::notifyCollisionShapeChanged()
     {
         if (hasPhysics())
         {
@@ -702,11 +715,11 @@ namespace orxonox
             if (this->addedToPhysicalWorld())
             {
                 this->deactivatePhysics();
-                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+                this->physicalBody_->setCollisionShape(this->collisionShape_.getCollisionShape());
                 this->activatePhysics();
             }
             else
-                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
+                this->physicalBody_->setCollisionShape(this->collisionShape_.getCollisionShape());
         }
         recalculateMassProps();
     }
@@ -715,7 +728,7 @@ namespace orxonox
     {
         // Store local inertia for faster access. Evaluates to (0,0,0) if there is no collision shape.
         float totalMass = this->mass_ + this->childrenMass_;
-        this->collisionShape_->calculateLocalInertia(totalMass, this->localInertia_);
+        this->collisionShape_.calculateLocalInertia(totalMass, this->localInertia_);
         if (this->hasPhysics())
         {
             if (this->isStatic())
@@ -728,7 +741,7 @@ namespace orxonox
                 // Use default values to avoid very large or very small values
                 CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0." << std::endl;
                 btVector3 inertia(0, 0, 0);
-                this->collisionShape_->calculateLocalInertia(1.0f, inertia);
+                this->collisionShape_.calculateLocalInertia(1.0f, inertia);
                 this->physicalBody_->setMassProps(1.0f, inertia);
             }
             else
@@ -738,7 +751,7 @@ namespace orxonox
         }
     }
 
-    void WorldEntity::resetPhysicsProps()
+    void WorldEntity::internalSetPhysicsProps()
     {
         if (this->hasPhysics())
         {

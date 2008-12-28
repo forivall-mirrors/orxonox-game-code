@@ -207,7 +207,7 @@ namespace orxonox
             for (std::set<WorldEntity*>::const_iterator it = this->physicalObjects_.begin();
                 it != this->physicalObjects_.end(); ++it)
             {
-                this->physicalWorld_->removeRigidBody((*it)->getPhysicalBody());
+                this->physicalWorld_->removeRigidBody((*it)->physicalBody_);
                 this->physicalObjectQueue_.insert(*it);
             }
             this->physicalObjects_.clear();
@@ -242,7 +242,7 @@ namespace orxonox
                 for (std::set<WorldEntity*>::const_iterator it = this->physicalObjectQueue_.begin();
                     it != this->physicalObjectQueue_.end(); ++it)
                 {
-                    this->physicalWorld_->addRigidBody((*it)->getPhysicalBody());
+                    this->physicalWorld_->addRigidBody((*it)->physicalBody_);
                     this->physicalObjects_.insert(*it);
                 }
                 this->physicalObjectQueue_.clear();
@@ -329,7 +329,7 @@ namespace orxonox
         this->physicalObjects_.erase(it);
 
         if (this->hasPhysics())
-            this->physicalWorld_->removeRigidBody(object->getPhysicalBody());
+            this->physicalWorld_->removeRigidBody(object->physicalBody_);
     }
 
     /*static*/ bool Scene::collisionCallback(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0,

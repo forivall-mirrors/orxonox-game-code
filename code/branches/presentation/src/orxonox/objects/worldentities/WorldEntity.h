@@ -39,14 +39,17 @@
 #endif
 #include "LinearMath/btMotionState.h"
 
-#include "network/synchronisable/Synchronisable.h"
-#include "core/BaseObject.h"
 #include "util/Math.h"
+#include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
+#include "objects/collisionshapes/CompoundCollisionShape.h"
 
 namespace orxonox
 {
     class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
+        friend class Scene;
+
         public:
             WorldEntity(BaseObject* creator);
             virtual ~WorldEntity();
@@ -70,8 +73,8 @@ namespace orxonox
             const Vector3& getPosition() const;
             const Vector3& getWorldPosition() const;
 
-            void translate(const Vector3& distance, TransformSpace::Space relativeTo = TransformSpace::Parent);
-            inline void translate(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Parent)
+            void translate(const Vector3& distance, TransformSpace::Enum relativeTo = TransformSpace::Parent);
+            inline void translate(float x, float y, float z, TransformSpace::Enum relativeTo = TransformSpace::Parent)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
             virtual inline const Vector3& getVelocity() const
@@ -87,20 +90,20 @@ namespace orxonox
             const Quaternion& getOrientation() const;
             const Quaternion& getWorldOrientation() const;
 
-            void rotate(const Quaternion& rotation, TransformSpace::Space relativeTo = TransformSpace::Local);
-            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+            void rotate(const Quaternion& rotation, TransformSpace::Enum relativeTo = TransformSpace::Local);
+            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
                 { this->rotate(Quaternion(angle, axis), relativeTo); }
 
-            inline void yaw(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+            inline void yaw(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_Y), relativeTo); }
-            inline void pitch(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+            inline void pitch(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_X), relativeTo); }
-            inline void roll(const Degree& angle, TransformSpace::Space relativeTo = TransformSpace::Local)
+            inline void roll(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_Z), relativeTo); }
 
-            void lookAt(const Vector3& target, TransformSpace::Space relativeTo = TransformSpace::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, TransformSpace::Space relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            inline void setDirection(float x, float y, float z, TransformSpace::Space relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
+            void lookAt(const Vector3& target, TransformSpace::Enum relativeTo = TransformSpace::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            void setDirection(const Vector3& direction, TransformSpace::Enum relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            inline void setDirection(float x, float y, float z, TransformSpace::Enum relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
             virtual void setScale3D(const Vector3& scale);
@@ -126,7 +129,7 @@ namespace orxonox
 
             void attach(WorldEntity* object);
             void detach(WorldEntity* object);
-            WorldEntity* getAttachedObject(unsigned int index) const;
+            WorldEntity* getAttachedObject(unsigned int index);
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
 
@@ -215,38 +218,33 @@ namespace orxonox
                 { return this->localInertia_; }
 
             inline void setRestitution(float restitution)
-                { this->restitution_ = restitution; resetPhysicsProps(); }
+                { this->restitution_ = restitution; internalSetPhysicsProps(); }
             inline float getRestitution() const
                 { return this->restitution_; }
 
             inline void setAngularFactor(float angularFactor)
-                { this->angularFactor_ = angularFactor; resetPhysicsProps(); }
+                { this->angularFactor_ = angularFactor; internalSetPhysicsProps(); }
             inline float getAngularFactor() const
                 { return this->angularFactor_; }
 
             inline void setLinearDamping(float linearDamping)
-                { this->linearDamping_ = linearDamping; resetPhysicsProps(); }
+                { this->linearDamping_ = linearDamping; internalSetPhysicsProps(); }
             inline float getLinearDamping() const
                 { return this->linearDamping_; }
 
             inline void setAngularDamping(float angularDamping)
-                { this->angularDamping_ = angularDamping; resetPhysicsProps(); }
+                { this->angularDamping_ = angularDamping; internalSetPhysicsProps(); }
             inline float getAngularDamping() const
                 { return this->angularDamping_; }
 
             inline void setFriction(float friction)
-                { this->friction_ = friction; resetPhysicsProps(); }
+                { this->friction_ = friction; internalSetPhysicsProps(); }
             inline float getFriction() const
                 { return this->friction_; }
 
             void attachCollisionShape(CollisionShape* shape);
             void detachCollisionShape(CollisionShape* shape);
-            CollisionShape* getAttachedCollisionShape(unsigned int index) const;
-
-            inline CompoundCollisionShape* getCollisionShape() const
-                { return this->collisionShape_; }
-            inline btRigidBody* getPhysicalBody() const
-                { return this->physicalBody_; }
+            CollisionShape* getAttachedCollisionShape(unsigned int index);
 
             void notifyCollisionShapeChanged();
             void notifyChildMassChanged();
@@ -264,12 +262,12 @@ namespace orxonox
         protected:
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
 
-            btRigidBody*  physicalBody_;
+            btRigidBody* physicalBody_;
 
         private:
             void updateCollisionType();
             void recalculateMassProps();
-            void resetPhysicsProps();
+            void internalSetPhysicsProps();
 
             bool notifyBeingAttached(WorldEntity* newParent);
             void notifyDetached();
@@ -296,7 +294,7 @@ namespace orxonox
             bool                         bPhysicsActive_;
             bool                         bPhysicsActiveSynchronised_;
             bool                         bPhysicsActiveBeforeAttaching_;
-            CompoundCollisionShape*      collisionShape_;
+            CompoundCollisionShape       collisionShape_;
             btScalar                     mass_;
             btVector3                    localInertia_;
             btScalar                     restitution_;
