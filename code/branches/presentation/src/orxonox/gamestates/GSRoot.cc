@@ -229,7 +229,7 @@ namespace orxonox
         this->tickChild(time);
 
         // Note: tickInfo.tickLength is modified by GSGraphics or GSDedicated!
-        this->periodTickTime_ += tickInfo.tickLength;
+        this->periodTickTime_ += statisticsTickTimes_.back().tickLength;
         if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
         {
             while (statisticsTickTimes_.front().tickTime < timeAfterTick - statisticsAvgLength_)
