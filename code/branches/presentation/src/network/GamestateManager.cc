@@ -135,7 +135,7 @@ namespace orxonox
   packet::Gamestate *GamestateManager::popGameState(unsigned int clientID) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
-    packet::Gamestate *gs;
+    packet::Gamestate *gs, *tempgs;
     unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
     if(!reference)
       return 0;
@@ -155,11 +155,13 @@ namespace orxonox
     }
     if(client){
 //       COUT(3) << "diffing" << std::endl;
-      gs = gs->diff(client);
+      tempgs = gs->diff(client);
+      delete gs;
+      gs = tempgs;
     }
     else{
 //       COUT(3) << "not diffing" << std::endl;
-      gs = new packet::Gamestate(*gs);
+//       gs = new packet::Gamestate(*gs); //not necessary
     }
     bool b = gs->compressData();
     assert(b);
