@@ -200,7 +200,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\PrecompiledHeaderFiles.cc"
+				RelativePath="..\..\src\orxonox\pch\havepch\PrecompiledHeaderFiles.cc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -830,7 +830,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
+				RelativePath="..\..\src\orxonox\pch\havepch\OrxonoxStableHeaders.h"
 				>
 			</File>
 			<File
