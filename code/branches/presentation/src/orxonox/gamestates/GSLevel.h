@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
-#include "core/GameState.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
