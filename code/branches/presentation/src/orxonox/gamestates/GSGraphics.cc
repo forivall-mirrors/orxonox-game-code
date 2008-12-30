@@ -106,8 +106,10 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(statisticsRefreshCycle_, 200000)
+        SetConfigValue(statisticsRefreshCycle_, 250000)
             .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+        SetConfigValue(statisticsAvgLength_, 1000000)
+            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
         SetConfigValue(defaultMasterKeybindings_, "def_masterKeybindings.ini")
             .description("Filename of default master keybindings.");
     }
@@ -239,7 +241,7 @@ namespace orxonox
     */
     void GSGraphics::ticked(const Clock& time)
     {
-        unsigned long long timeBeforeTick = time.getRealMicroseconds();
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
         float dt = time.getDeltaTime();
 
         this->inputManager_->tick(dt);
@@ -254,16 +256,31 @@ namespace orxonox
             this->bWindowEventListenerUpdateRequired_ = false;
         }
 
-        unsigned long long timeAfterTick = time.getRealMicroseconds();
+        uint64_t timeAfterTick = time.getRealMicroseconds();
 
+        statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick-timeBeforeTick};
+        statisticsTickTimes_.push_front( tickInfo );
         tickTime_ += (unsigned int)(timeAfterTick - timeBeforeTick);
         if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
         {
-            GraphicsEngine::getInstance().setAverageTickTime(
-                (float)tickTime_ * 0.001f / (frameCount_ - statisticsStartCount_));
-            float avgFPS = (float)(frameCount_ - statisticsStartCount_)
-                / (timeAfterTick - statisticsStartTime_) * 1000000.0;
+            while( (statisticsTickTimes_.size()!=0) && (statisticsTickTimes_.back().tickTime < timeAfterTick - statisticsAvgLength_ ) )
+                statisticsTickTimes_.pop_back();
+            std::deque<statisticsTickInfo>::iterator it = statisticsTickTimes_.begin();
+            uint32_t periodTickTime = 0;
+            unsigned int periodNrOfTicks = 0;
+            while ( it!=statisticsTickTimes_.end() )
+            {
+                periodTickTime += it->tickLength;
+                periodNrOfTicks++;
+                ++it;
+            }
+            float avgFPS = (float)periodNrOfTicks/(statisticsTickTimes_.front().tickTime - statisticsTickTimes_.back().tickTime)*1000000.0;
+            float avgTickTime = (float)periodTickTime/periodNrOfTicks/1000.0;
+            //float avgFPS = (float)statisticsTickTimes_.size()/statisticsAvgLength_*1000000.0;
             GraphicsEngine::getInstance().setAverageFramesPerSecond(avgFPS);
+            //GraphicsEngine::getInstance().setAverageTickTime( 
+              //(float)tickTime_ * 0.001f / (frameCount_ - statisticsStartCount_));
+            GraphicsEngine::getInstance().setAverageTickTime( avgTickTime );
 
             tickTime_ = 0;
             statisticsStartCount_ = frameCount_;

@@ -36,8 +36,15 @@
 #include "core/OrxonoxClass.h"
 #include "GSRoot.h"
 
+#include <deque>
+
 namespace orxonox
 {
+    struct statisticsTickInfo{
+        uint64_t    tickTime;
+        uint32_t    tickLength;
+    };
+    
     class _OrxonoxExport GSGraphics : public GameState<GSRoot>, public OrxonoxClass,
                                       public Ogre::WindowEventListener, public Ogre::LogListener
     {
@@ -96,8 +103,11 @@ namespace orxonox
         // variables for time statistics
         unsigned long         frameCount_;
         unsigned int          statisticsRefreshCycle_;
+        unsigned int          statisticsAvgLength_;
         unsigned long long    statisticsStartTime_;
         unsigned long         statisticsStartCount_;
+        std::deque<statisticsTickInfo>
+            statisticsTickTimes_;
         unsigned int          tickTime_;
         XMLFile*              debugOverlay_;
 
