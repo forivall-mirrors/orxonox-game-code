@@ -234,16 +234,16 @@ namespace orxonox
         {
             std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
             assert(it != this->statisticsTickTimes_.end());
-            uint64_t lastTime = timeAfterTick - statisticsAvgLength_;
-            if (it->tickTime < lastTime)
+            int64_t lastTime = timeAfterTick - statisticsAvgLength_;
+            if ((int64_t)it->tickTime < lastTime)
             {
                 do
                 {
                     this->periodTickTime_ -= it->tickLength;
                     ++it;
                     assert(it != this->statisticsTickTimes_.end());
-                } while (it->tickTime < lastTime);
-                this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), --it);
+                } while ((int64_t)it->tickTime < lastTime);
+                this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), it);
             }
 
             uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
