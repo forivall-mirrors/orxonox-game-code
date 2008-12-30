@@ -222,7 +222,8 @@ namespace orxonox
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
         // STATISTICS
-        statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick - timeBeforeTick};
+        uint32_t currentTickTime = timeAfterTick - timeBeforeTick;
+        statisticsTickInfo tickInfo = {timeAfterTick, currentTickTime};
         statisticsTickTimes_.push_back(tickInfo);
 
         // Ticks GSGraphics or GSDedicated
@@ -232,14 +233,22 @@ namespace orxonox
         this->periodTickTime_ += statisticsTickTimes_.back().tickLength;
         if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
         {
-            while (statisticsTickTimes_.front().tickTime < timeAfterTick - statisticsAvgLength_)
+            std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
+            assert(it != this->statisticsTickTimes_.end());
+            uint64_t lastTime = timeAfterTick - statisticsAvgLength_;
+            if (it->tickTime < lastTime)
             {
-                this->periodTickTime_ -= this->statisticsTickTimes_.front().tickLength;
-                this->statisticsTickTimes_.pop_front();
+                do
+                {
+                    this->periodTickTime_ -= it->tickLength;
+                    ++it;
+                    assert(it != this->statisticsTickTimes_.end());
+                } while (it->tickTime < lastTime);
+                this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), --it);
             }
 
             uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-            this->avgFPS_ = (float)framesPerPeriod / (tickInfo.tickTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
+            this->avgFPS_ = (float)framesPerPeriod / (currentTickTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
             this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
 
             statisticsStartTime_ = timeAfterTick;
