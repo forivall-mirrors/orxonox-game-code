@@ -222,8 +222,7 @@ namespace orxonox
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
         // STATISTICS
-        uint32_t currentTickTime = timeAfterTick - timeBeforeTick;
-        statisticsTickInfo tickInfo = {timeAfterTick, currentTickTime};
+        statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick - timeBeforeTick};
         statisticsTickTimes_.push_back(tickInfo);
 
         // Ticks GSGraphics or GSDedicated
@@ -248,7 +247,7 @@ namespace orxonox
             }
 
             uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-            this->avgFPS_ = (float)framesPerPeriod / (currentTickTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
+            this->avgFPS_ = (float)framesPerPeriod / (timeAfterTick - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
             this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
 
             statisticsStartTime_ = timeAfterTick;
