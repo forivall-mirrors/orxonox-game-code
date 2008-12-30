@@ -75,11 +75,6 @@ namespace orxonox
         , ogreLogger_(0)
         , graphicsEngine_(0)
         , masterKeyBinder_(0)
-        , frameCount_(0)
-        , statisticsRefreshCycle_(0)
-        , statisticsStartTime_(0)
-        , statisticsStartCount_(0)
-        , tickTime_(0)
         , debugOverlay_(0)
     {
         RegisterRootObject(GSGraphics);
@@ -106,10 +101,6 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(statisticsRefreshCycle_, 250000)
-            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
-        SetConfigValue(statisticsAvgLength_, 1000000)
-            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
         SetConfigValue(defaultMasterKeybindings_, "def_masterKeybindings.ini")
             .description("Filename of default master keybindings.");
     }
@@ -156,12 +147,6 @@ namespace orxonox
         // load the CEGUI interface
         guiManager_ = new GUIManager();
         guiManager_->initialise(this->renderWindow_);
-
-        // reset frame counter
-        this->frameCount_ = 0;
-        this->tickTime_ = 0;
-        statisticsStartTime_ = 0;
-        statisticsStartCount_ = 0;
 
         // add console commands
         FunctorMember<GSGraphics>* functor1 = createFunctor(&GSGraphics::printScreen);
@@ -227,12 +212,7 @@ namespace orxonox
     }
 
     /**
-        Main loop of the orxonox game.
-        We use the Ogre::Timer to measure time since it uses the most precise
-        method an a platform (however the windows timer lacks time when under
-        heavy kernel load!).
-        There is a simple mechanism to measure the average time spent in our
-        ticks as it may indicate performance issues.
+    @note
         A note about the Ogre::FrameListener: Even though we don't use them,
         they still get called. However, the delta times are not correct (except
         for timeSinceLastFrame, which is the most important). A little research
@@ -242,6 +222,7 @@ namespace orxonox
     void GSGraphics::ticked(const Clock& time)
     {
         uint64_t timeBeforeTick = time.getRealMicroseconds();
+
         float dt = time.getDeltaTime();
 
         this->inputManager_->tick(dt);
@@ -258,34 +239,12 @@ namespace orxonox
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
-        statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick-timeBeforeTick};
-        statisticsTickTimes_.push_front( tickInfo );
-        tickTime_ += (unsigned int)(timeAfterTick - timeBeforeTick);
-        if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
-        {
-            while( (statisticsTickTimes_.size()!=0) && (statisticsTickTimes_.back().tickTime < timeAfterTick - statisticsAvgLength_ ) )
-                statisticsTickTimes_.pop_back();
-            std::deque<statisticsTickInfo>::iterator it = statisticsTickTimes_.begin();
-            uint32_t periodTickTime = 0;
-            unsigned int periodNrOfTicks = 0;
-            while ( it!=statisticsTickTimes_.end() )
-            {
-                periodTickTime += it->tickLength;
-                periodNrOfTicks++;
-                ++it;
-            }
-            float avgFPS = (float)periodNrOfTicks/(statisticsTickTimes_.front().tickTime - statisticsTickTimes_.back().tickTime)*1000000.0;
-            float avgTickTime = (float)periodTickTime/periodNrOfTicks/1000.0;
-            //float avgFPS = (float)statisticsTickTimes_.size()/statisticsAvgLength_*1000000.0;
-            GraphicsEngine::getInstance().setAverageFramesPerSecond(avgFPS);
-            //GraphicsEngine::getInstance().setAverageTickTime( 
-              //(float)tickTime_ * 0.001f / (frameCount_ - statisticsStartCount_));
-            GraphicsEngine::getInstance().setAverageTickTime( avgTickTime );
+        // Also add our tick time to the list in GSRoot
+        this->getParent()->addTickTime(timeAfterTick - timeBeforeTick);
 
-            tickTime_ = 0;
-            statisticsStartCount_ = frameCount_;
-            statisticsStartTime_  = timeAfterTick;
-        }
+        // Update statistics overlay. Note that the values only change periodically in GSRoot.
+        GraphicsEngine::getInstance().setAverageFramesPerSecond(this->getParent()->getAvgFPS());
+        GraphicsEngine::getInstance().setAverageTickTime(this->getParent()->getAvgTickTime());
 
         // don't forget to call _fireFrameStarted in ogre to make sure
         // everything goes smoothly
@@ -306,8 +265,6 @@ namespace orxonox
 
         // again, just to be sure ogre works fine
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
-
-        ++frameCount_;
     }
 
     /**

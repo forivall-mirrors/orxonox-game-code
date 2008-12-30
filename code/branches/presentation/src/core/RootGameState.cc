@@ -121,10 +121,15 @@ namespace orxonox
 
     /**
     @brief
+        Main loop of the orxonox game.
         Starts the game. The little 'while' denotes the main loop.
         Whenever the root state is selected, the game ends.
     @param name
         State to start with (usually main menu or specified by command line)
+    @note
+        We use the Ogre::Timer to measure time since it uses the most precise
+        method an a platform (however the windows timer lacks time when under
+        heavy kernel load!).
     */
     void RootGameState::start()
     {

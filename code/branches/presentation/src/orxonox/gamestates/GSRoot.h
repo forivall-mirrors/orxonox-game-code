@@ -30,6 +30,8 @@
 #define _GSRoot_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <list>
 #include <OgreLog.h>
 #include "core/RootGameState.h"
 #include "core/OrxonoxClass.h"
@@ -39,6 +41,14 @@ namespace orxonox
     class _OrxonoxExport GSRoot : public RootGameState, public OrxonoxClass
     {
         friend class ClassIdentifier<GSRoot>;
+
+    public:
+        struct statisticsTickInfo
+        {
+            uint64_t    tickTime;
+            uint32_t    tickLength;
+        };
+    
     public:
         GSRoot();
         ~GSRoot();
@@ -51,6 +61,12 @@ namespace orxonox
         void setTimeFactor(float factor);
         void pause();
         float getTimeFactor() { return this->timeFactor_; }
+
+        float getAvgTickTime() { return this->avgTickTime_; }
+        float getAvgFPS()      { return this->avgFPS_; }
+
+        inline void addTickTime(uint32_t length)
+            { assert(!this->statisticsTickTimes_.empty()); this->statisticsTickTimes_.back().tickLength += length; }
 
     private:
         void enter();
@@ -68,6 +84,19 @@ namespace orxonox
         TclThreadManager*     tclThreadManager_;
         Shell*                shell_;
         LuaBind*              luaBind_;
+
+        // variables for time statistics
+        uint32_t              frameCount_;
+        uint64_t              statisticsStartTime_;
+        std::list<statisticsTickInfo>
+                              statisticsTickTimes_;
+        uint32_t              periodTickTime_;
+        float                 avgFPS_;
+        float                 avgTickTime_;
+
+        // config values
+        unsigned int          statisticsRefreshCycle_;
+        unsigned int          statisticsAvgLength_;
 
         // console commands
         ConsoleCommand*       ccExit_;

@@ -73,21 +73,22 @@ namespace orxonox
 
     void GSDedicated::ticked(const Clock& time)
     {
-//         static float startTime = time.getSecondsPrecise();
-//         static int nrOfTicks = 0;
-        timeSinceLastUpdate_+=time.getDeltaTime();
-        if(timeSinceLastUpdate_>=NETWORK_PERIOD){
-//             ++nrOfTicks;
-//             COUT(0) << "estimated ticks/sec: " << nrOfTicks/(time.getSecondsPrecise()-startTime) << endl;
-            timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
+//        static float startTime = time.getSecondsPrecise();
+//        static int nrOfTicks = 0;
+        timeSinceLastUpdate_ += time.getDeltaTime();
+        if (timeSinceLastUpdate_ >= NETWORK_PERIOD)
+        {
+//            ++nrOfTicks;
+//            COUT(0) << "estimated ticks/sec: " << nrOfTicks/(time.getSecondsPrecise()-startTime) << endl;
+            timeSinceLastUpdate_ -= static_cast<unsigned int>(timeSinceLastUpdate_ / NETWORK_PERIOD) * NETWORK_PERIOD;
             GSLevel::ticked(time);
             server_->tick(time.getDeltaTime());
             this->tickChild(time);
         }
         else
         {
-            usleep( (int)( (NETWORK_PERIOD - timeSinceLastUpdate_)*1000*1000 ) );
-//             COUT(0) << "sleeping for " << (int)( (NETWORK_PERIOD - timeSinceLastUpdate_)*1000*1000 ) << " usec" << endl;
+            usleep((int)((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000));
+//            COUT(0) << "sleeping for " << (int)((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000) << " usec" << endl;
         }
     }
 }

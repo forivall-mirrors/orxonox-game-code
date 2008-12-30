@@ -88,6 +88,10 @@ namespace orxonox
 
     void GSRoot::setConfigValues()
     {
+        SetConfigValue(statisticsRefreshCycle_, 250000)
+            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+        SetConfigValue(statisticsAvgLength_, 1000000)
+            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
     }
 
     void GSRoot::enter()
@@ -97,6 +101,14 @@ namespace orxonox
 
         // reset game speed to normal
         timeFactor_ = 1.0f;
+
+        // reset frame counter
+        this->frameCount_ = 0;
+        this->statisticsStartTime_ = 0;
+        this->statisticsTickTimes_.clear();
+        this->periodTickTime_ = 0;
+        this->avgFPS_ = 0.0f;
+        this->avgTickTime_ = 0.0f;
 
         // Create the lua interface
         this->luaBind_ = new LuaBind();
@@ -188,6 +200,8 @@ namespace orxonox
 
     void GSRoot::ticked(const Clock& time)
     {
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
+
         TclThreadManager::getInstance().tick(time.getDeltaTime());
 
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
@@ -205,7 +219,33 @@ namespace orxonox
             it->tick(leveldt * this->timeFactor_);
         /*** HACK *** HACK ***/
 
+        uint64_t timeAfterTick = time.getRealMicroseconds();
+
+        // STATISTICS
+        statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick - timeBeforeTick};
+        statisticsTickTimes_.push_back(tickInfo);
+
+        // Ticks GSGraphics or GSDedicated
         this->tickChild(time);
+
+        // Note: tickInfo.tickLength is modified by GSGraphics or GSDedicated!
+        this->periodTickTime_ += tickInfo.tickLength;
+        if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
+        {
+            while (statisticsTickTimes_.front().tickTime < timeAfterTick - statisticsAvgLength_)
+            {
+                this->periodTickTime_ -= this->statisticsTickTimes_.front().tickLength;
+                this->statisticsTickTimes_.pop_front();
+            }
+
+            uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
+            this->avgFPS_ = (float)framesPerPeriod / (tickInfo.tickTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
+            this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
+
+            statisticsStartTime_ = timeAfterTick;
+        }
+
+        ++this->frameCount_;
     }
 
     /**
