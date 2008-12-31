@@ -225,12 +225,11 @@ namespace orxonox
         statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick - timeBeforeTick};
         statisticsTickTimes_.push_back(tickInfo);
         assert(statisticsTickTimes_.back().tickLength==tickInfo.tickLength);
+        this->periodTickTime_ += tickInfo.tickLength;
 
         // Ticks GSGraphics or GSDedicated
         this->tickChild(time);
 
-        // Note: tickInfo.tickLength is modified by GSGraphics or GSDedicated!
-        this->periodTickTime_ += tickInfo.tickLength;
         if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
         {
             std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
