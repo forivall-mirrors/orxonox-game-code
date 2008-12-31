@@ -54,12 +54,14 @@
 
 namespace orxonox
 {
-  GamestateManager::GamestateManager() {
-    id_=0;
+  GamestateManager::GamestateManager() :
+  reference(0), id_(0)
+  {
     trafficControl_ = new TrafficControl();
   }
 
-  GamestateManager::~GamestateManager() {
+  GamestateManager::~GamestateManager()
+  {
     delete trafficControl_;
   }
 
@@ -96,6 +98,8 @@ namespace orxonox
 
 
   bool GamestateManager::getSnapshot(){
+    if ( reference != 0 )
+      delete reference;
     reference = new packet::Gamestate();
     if(!reference->collectData(++id_)){ //we have no data to send
       delete reference;
