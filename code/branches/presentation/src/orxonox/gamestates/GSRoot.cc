@@ -103,7 +103,6 @@ namespace orxonox
         timeFactor_ = 1.0f;
 
         // reset frame counter
-        this->frameCount_ = 0;
         this->statisticsStartTime_ = 0;
         this->statisticsTickTimes_.clear();
         this->periodTickTime_ = 0;
@@ -222,14 +221,16 @@ namespace orxonox
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
         // STATISTICS
+        assert(timeAfterTick - timeBeforeTick >= 0 );
         statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick - timeBeforeTick};
         statisticsTickTimes_.push_back(tickInfo);
+        assert(statisticsTickTimes_.back().tickLength==tickInfo.tickLength);
 
         // Ticks GSGraphics or GSDedicated
         this->tickChild(time);
 
         // Note: tickInfo.tickLength is modified by GSGraphics or GSDedicated!
-        this->periodTickTime_ += statisticsTickTimes_.back().tickLength;
+        this->periodTickTime_ += tickInfo.tickLength;
         if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
         {
             std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
@@ -239,6 +240,7 @@ namespace orxonox
             {
                 do
                 {
+                    assert(this->periodTickTime_ > it->tickLength);
                     this->periodTickTime_ -= it->tickLength;
                     ++it;
                     assert(it != this->statisticsTickTimes_.end());
@@ -253,7 +255,6 @@ namespace orxonox
             statisticsStartTime_ = timeAfterTick;
         }
 
-        ++this->frameCount_;
     }
 
     /**

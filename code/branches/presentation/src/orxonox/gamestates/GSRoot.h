@@ -66,7 +66,8 @@ namespace orxonox
         float getAvgFPS()      { return this->avgFPS_; }
 
         inline void addTickTime(uint32_t length)
-            { assert(!this->statisticsTickTimes_.empty()); this->statisticsTickTimes_.back().tickLength += length; }
+            { assert(!this->statisticsTickTimes_.empty()); this->statisticsTickTimes_.back().tickLength += length;
+              this->periodTickTime_+=length; }
 
     private:
         void enter();
@@ -86,7 +87,6 @@ namespace orxonox
         LuaBind*              luaBind_;
 
         // variables for time statistics
-        uint32_t              frameCount_;
         uint64_t              statisticsStartTime_;
         std::list<statisticsTickInfo>
                               statisticsTickTimes_;
