@@ -231,7 +231,7 @@ namespace orxonox
             // Check if the line is empty
             if ((lineString != "") && (lineString.size() > 0))
             {
-                unsigned int pos = lineString.find('=');
+                size_t pos = lineString.find('=');
 
                 // Check if the length is at least 3 and if there's an entry before and behind the =
                 if (pos > 0 && pos < (lineString.size() - 1) && lineString.size() >= 3)
@@ -277,7 +277,7 @@ namespace orxonox
             // Check if the line is empty
             if ((lineString != "") && (lineString.size() > 0))
             {
-                unsigned int pos = lineString.find('=');
+                size_t pos = lineString.find('=');
 
                 // Check if the length is at least 3 and if there's an entry before and behind the =
                 if (pos > 0 && pos < (lineString.size() - 1) && lineString.size() >= 3)
