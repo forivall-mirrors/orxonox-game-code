@@ -35,7 +35,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
-#include "objects/worldentities/WorldEntity.h"
 
 namespace orxonox
 {
@@ -46,7 +45,6 @@ namespace orxonox
         RegisterObject(CompoundCollisionShape);
 
         this->compoundShape_  = new btCompoundShape();
-        this->worldEntityParent_ = 0;
     }
 
     CompoundCollisionShape::~CompoundCollisionShape()
@@ -58,7 +56,7 @@ namespace orxonox
                 it != this->attachedShapes_.end(); ++it)
             {
                 // make sure that the child doesn't want to detach itself --> speedup because of the missing update
-                it->first->setParent(0, OBJECTID_UNKNOWN);
+                it->first->notifyDetached();
                 delete it->first;
             }
 
@@ -73,14 +71,6 @@ namespace orxonox
         XMLPortObject(CompoundCollisionShape, CollisionShape, "", attach, detach, xmlelement, mode);
     }
 
-    void CompoundCollisionShape::setWorldEntityParent(WorldEntity* parent)
-    {
-        // suppress synchronisation
-        this->setObjectMode(0x0);
-
-        this->worldEntityParent_ = parent;
-    }
-
     void CompoundCollisionShape::attach(CollisionShape* shape)
     {
         if (!shape || static_cast<CollisionShape*>(this) == shape)
@@ -90,6 +80,10 @@ namespace orxonox
             CCOUT(2) << "Warning: Attaching a CollisionShape twice is not yet supported." << std::endl;
             return;
         }
+
+        if (!shape->notifyBeingAttached(this))
+            return;
+
         this->attachedShapes_[shape] = shape->getCollisionShape();
 
         if (shape->getCollisionShape())
@@ -100,26 +94,16 @@ namespace orxonox
 
             this->updatePublicShape();
         }
-
-        // network synchro
-        if (this->worldEntityParent_)
-        {
-            // This compound collision shape belongs to a WE and doesn't get synchronised
-            // So set our parent to be the WE
-            shape->setParent(this, this->worldEntityParent_->getObjectID());
-        }
-        else
-            shape->setParent(this, this->getObjectID());
     }
 
     void CompoundCollisionShape::detach(CollisionShape* shape)
     {
         if (this->attachedShapes_.find(shape) != this->attachedShapes_.end())
         {
-            shape->setParent(0, OBJECTID_UNKNOWN);
             this->attachedShapes_.erase(shape);
             if (shape->getCollisionShape())
                 this->compoundShape_->removeChildShape(shape->getCollisionShape());
+            shape->notifyDetached();
 
             this->updatePublicShape();
         }
@@ -194,20 +178,6 @@ namespace orxonox
             this->collisionShape_ = this->compoundShape_;
         }
         this->updateParent();
-    }
-
-    void CompoundCollisionShape::updateParent()
-    {
-        if (this->parent_)
-            this->parent_->updateAttachedShape(this);
-        if (this->worldEntityParent_)
-            this->worldEntityParent_->notifyCollisionShapeChanged();
-    }
-
-    void CompoundCollisionShape::parentChanged()
-    {
-        if (!this->worldEntityParent_)
-            CollisionShape::parentChanged();
     }
 
     CollisionShape* CompoundCollisionShape::getAttachedShape(unsigned int index) const

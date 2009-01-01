@@ -41,6 +41,7 @@
 #include "core/XMLPort.h"
 
 #include "objects/Scene.h"
+#include "objects/collisionshapes/WorldEntityCollisionShape.h"
 
 namespace orxonox
 {
@@ -56,7 +57,7 @@ namespace orxonox
         Creates a new WorldEntity that may immediately be used.
         All the default values are being set here.
     */
-    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), collisionShape_(0)
+    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(WorldEntity);
 
@@ -73,13 +74,11 @@ namespace orxonox
 
 
         // Default behaviour does not include physics
-        // Note: CompoundCollisionShape is a Synchronisable, but must not be synchronised.
-        //       All objects will get attached on the client anyway, so we don't need synchronisation.
-        this->collisionShape_.setWorldEntityParent(this);
         this->physicalBody_   = 0;
         this->bPhysicsActive_ = false;
         this->bPhysicsActiveSynchronised_    = false;
         this->bPhysicsActiveBeforeAttaching_ = false;
+        this->collisionShape_ = new WorldEntityCollisionShape(this);
         this->collisionType_             = None;
         this->collisionTypeSynchronised_ = None;
         this->mass_           = 0;
@@ -114,6 +113,7 @@ namespace orxonox
                 this->deactivatePhysics();
                 delete this->physicalBody_;
             }
+            delete this->collisionShape_;
 
             this->node_->detachAllObjects();
             this->node_->removeAllChildren();
@@ -290,7 +290,7 @@ namespace orxonox
         this->attachNode(object->node_);
         this->children_.insert(object);
 
-        this->attachCollisionShape(&object->collisionShape_);
+        this->attachCollisionShape(object->collisionShape_);
         // mass
         this->childrenMass_ += object->getMass();
         recalculateMassProps();
@@ -344,8 +344,8 @@ namespace orxonox
         this->parentID_ = newParent->getObjectID();
 
         // apply transform to collision shape
-        this->collisionShape_.setPosition(this->getPosition());
-        this->collisionShape_.setOrientation(this->getOrientation());
+        this->collisionShape_->setPosition(this->getPosition());
+        this->collisionShape_->setOrientation(this->getOrientation());
         // TODO: Scale
         
         return true;
@@ -364,7 +364,7 @@ namespace orxonox
         }
 
         // collision shapes
-        this->detachCollisionShape(&object->collisionShape_);
+        this->detachCollisionShape(object->collisionShape_);
 
         // mass
         if (object->getMass() > 0.0f)
@@ -389,8 +389,8 @@ namespace orxonox
         this->parentID_ = OBJECTID_UNKNOWN;
 
         // reset orientation of the collisionShape (cannot be set within a WE usually)
-        this->collisionShape_.setPosition(Vector3::ZERO);
-        this->collisionShape_.setOrientation(Quaternion::IDENTITY);
+        this->collisionShape_->setPosition(Vector3::ZERO);
+        this->collisionShape_->setOrientation(Quaternion::IDENTITY);
         // TODO: Scale
 
         if (this->bPhysicsActiveBeforeAttaching_)
@@ -450,21 +450,22 @@ namespace orxonox
     //! Attaches a collision Shape to this object (delegated to the internal CompoundCollisionShape)
     void WorldEntity::attachCollisionShape(CollisionShape* shape)
     {
-        this->collisionShape_.attach(shape);
+        this->collisionShape_->attach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
     //! Detaches a collision Shape from this object (delegated to the internal CompoundCollisionShape)
     void WorldEntity::detachCollisionShape(CollisionShape* shape)
     {
-        this->collisionShape_.detach(shape);
+        // Note: The collision shapes may not be detached with this function!
+        this->collisionShape_->detach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }
 
     //! Returns an attached collision Shape of this object (delegated to the internal CompoundCollisionShape)
     CollisionShape* WorldEntity::getAttachedCollisionShape(unsigned int index)
     {
-        return this->collisionShape_.getAttachedShape(index);
+        return this->collisionShape_->getAttachedShape(index);
     }
 
     // Note: These functions are placed in WorldEntity.h as inline functions for the release build.
@@ -717,7 +718,7 @@ HACK HACK HACK
 HACK HACK HACK
 */
             // Create new rigid body
-            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_.getCollisionShape());
+            btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(0, this, this->collisionShape_->getCollisionShape());
             this->physicalBody_ = new btRigidBody(bodyConstructionInfo);
             this->physicalBody_->setUserPointer(this);
             this->physicalBody_->setActivationState(DISABLE_DEACTIVATION);
@@ -850,11 +851,11 @@ HACK HACK HACK
             if (this->addedToPhysicalWorld())
             {
                 this->deactivatePhysics();
-                this->physicalBody_->setCollisionShape(this->collisionShape_.getCollisionShape());
+                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
                 this->activatePhysics();
             }
             else
-                this->physicalBody_->setCollisionShape(this->collisionShape_.getCollisionShape());
+                this->physicalBody_->setCollisionShape(this->collisionShape_->getCollisionShape());
         }
         recalculateMassProps();
     }
@@ -864,7 +865,7 @@ HACK HACK HACK
     {
         // Store local inertia for faster access. Evaluates to (0,0,0) if there is no collision shape.
         float totalMass = this->mass_ + this->childrenMass_;
-        this->collisionShape_.calculateLocalInertia(totalMass, this->localInertia_);
+        this->collisionShape_->calculateLocalInertia(totalMass, this->localInertia_);
         if (this->hasPhysics())
         {
             if (this->isStatic())
@@ -877,7 +878,7 @@ HACK HACK HACK
                 // Use default values to avoid very large or very small values
                 CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0" << std::endl;
                 btVector3 inertia(0, 0, 0);
-                this->collisionShape_.calculateLocalInertia(1.0f, inertia);
+                this->collisionShape_->calculateLocalInertia(1.0f, inertia);
                 this->physicalBody_->setMassProps(1.0f, inertia);
             }
             else

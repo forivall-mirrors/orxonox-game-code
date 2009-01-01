@@ -36,8 +36,9 @@
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
 
-#include "CompoundCollisionShape.h"
 #include "objects/worldentities/WorldEntity.h"
+#include "CompoundCollisionShape.h"
+#include "WorldEntityCollisionShape.h"
 
 namespace orxonox
 {
@@ -84,9 +85,40 @@ namespace orxonox
 
     void CollisionShape::parentChanged()
     {
-        CompoundCollisionShape* parent = dynamic_cast<CompoundCollisionShape*>(Synchronisable::getSynchronisable(this->parentID_));
-        if (parent)
-            parent->attach(this);
+        Synchronisable* parent = Synchronisable::getSynchronisable(this->parentID_);
+        // Parent can either be a WorldEntity or a CompoundCollisionShape. The reason is that the
+        // internal collision shape (which is compound) of a WE doesn't get synchronised.
+        CompoundCollisionShape* parentCCS = dynamic_cast<CompoundCollisionShape*>(parent);
+        if (parentCCS)
+            parentCCS->attach(this);
+        else
+        {
+            WorldEntity* parentWE = dynamic_cast<WorldEntity*>(parent);
+            if (parentWE)
+                parentWE->attachCollisionShape(this);
+        }
+    }
+
+    bool CollisionShape::notifyBeingAttached(CompoundCollisionShape* newParent)
+    {
+        if (this->parent_)
+            this->parent_->detach(this);
+
+        this->parent_ = newParent;
+
+        WorldEntityCollisionShape* parentWECCS = dynamic_cast<WorldEntityCollisionShape*>(newParent);
+        if (parentWECCS)
+            this->parentID_ = parentWECCS->getWorldEntityOwner()->getObjectID();
+        else
+            this->parentID_ = newParent->getObjectID();
+
+        return true;
+    }
+
+    void CollisionShape::notifyDetached()
+    {
+        this->parent_ = 0;
+        this->parentID_ = OBJECTID_UNKNOWN;
     }
 
     void CollisionShape::updateParent()

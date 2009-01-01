@@ -523,6 +523,10 @@
 						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.cc"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\WorldEntityCollisionShape.cc"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="items"
@@ -1293,6 +1297,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\WorldEntityCollisionShape.h"
 						>
 					</File>
 				</Filter>

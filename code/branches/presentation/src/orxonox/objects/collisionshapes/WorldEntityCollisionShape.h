@@ -26,40 +26,32 @@
  *
  */
 
-#ifndef _CompoundCollisionShape_H__
-#define _CompoundCollisionShape_H__
+#ifndef _WorldEntityCollisionShape_H__
+#define _WorldEntityCollisionShape_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
-#include <cassert>
-#include "CollisionShape.h"
+#include "CompoundCollisionShape.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CompoundCollisionShape : public CollisionShape
+    class _OrxonoxExport WorldEntityCollisionShape : public CompoundCollisionShape
     {
         public:
-            CompoundCollisionShape(BaseObject* creator);
-            virtual ~CompoundCollisionShape();
+            WorldEntityCollisionShape(WorldEntity* creator);
+            virtual ~WorldEntityCollisionShape();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            inline WorldEntity* getWorldEntityOwner()
+                { return this->worldEntityOwner_; }
 
-            void attach(CollisionShape* shape);
-            void detach(CollisionShape* shape);
-            void detachAll();
-            CollisionShape* getAttachedShape(unsigned int index) const;
-
-            void updateAttachedShape(CollisionShape* shape);
+        protected:
+            virtual void updateParent();
 
         private:
-            void updatePublicShape();
-            inline virtual btCollisionShape* createNewShape() const
-                { assert(false); return 0; }
+            void parentChanged();
 
-            btCompoundShape* compoundShape_;
-            std::map<CollisionShape*, btCollisionShape*> attachedShapes_;
+            WorldEntity* worldEntityOwner_;
     };
 }
 
-#endif /* _CompoundCollisionShape_H__ */
+#endif /* _WorldEntityCollisionShape_H__ */

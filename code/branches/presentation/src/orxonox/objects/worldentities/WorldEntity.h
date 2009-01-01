@@ -42,7 +42,6 @@
 #include "util/Math.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
-#include "objects/collisionshapes/CompoundCollisionShape.h"
 
 namespace orxonox
 {
@@ -68,7 +67,7 @@ namespace orxonox
         - Restitution, angular factor, linear damping, angular damping, fricition, mass and collision shape.
         You can get more information at the corresponding set function.
 
-        Collision shapes: These are controlled by the internal CompoundCollisionShape. @see CompoundCollisionShape.
+        Collision shapes: These are controlled by the internal WorldEntityCollisionShape. @see WorldEntityCollisionShape.
     */
     class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
@@ -398,7 +397,7 @@ namespace orxonox
             bool                         bPhysicsActiveSynchronised_;    //!< Network synchronised variable for bPhysicsActive_
             //! When attaching objects hierarchically this variable tells this object (as child) whether physics was activated before attaching (because the deactivate physics while being attached).
             bool                         bPhysicsActiveBeforeAttaching_;
-            CompoundCollisionShape       collisionShape_;                //!< Attached collision shapes go here
+            WorldEntityCollisionShape*   collisionShape_;                //!< Attached collision shapes go here
             btScalar                     mass_;                          //!< @see setMass
             btVector3                    localInertia_;                  //!< @see getLocalInertia
             btScalar                     restitution_;                   //!< @see setRestitution

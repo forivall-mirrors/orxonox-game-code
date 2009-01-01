@@ -202,6 +202,7 @@ namespace orxonox
     class SphereCollisionShape;
     class CompoundCollisionShape;
     class PlaneCollisionShape;
+    class WorldEntityCollisionShape;
 
     // tools
     class BillboardSet;

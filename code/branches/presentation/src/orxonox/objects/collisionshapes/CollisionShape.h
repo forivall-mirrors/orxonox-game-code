@@ -74,8 +74,8 @@ namespace orxonox
 
             bool hasTransform() const;
 
-            inline void setParent(CompoundCollisionShape* shape, unsigned int ID)
-                { this->parent_ = shape; this->parentID_ = ID; }
+            bool notifyBeingAttached(CompoundCollisionShape* newParent);
+            void notifyDetached();
 
         protected:
             virtual void updateParent();
@@ -84,12 +84,12 @@ namespace orxonox
 
             btCollisionShape*       collisionShape_;
             CompoundCollisionShape* parent_;
+            unsigned int            parentID_;
 
         private:
             Vector3                 position_;
             Quaternion              orientation_;
             Vector3                 scale_;
-            unsigned int            parentID_;
     };
 }
 

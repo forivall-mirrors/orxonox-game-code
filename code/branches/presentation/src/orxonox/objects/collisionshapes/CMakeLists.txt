@@ -5,6 +5,7 @@ SET( SRC_FILES
   ConeCollisionShape.cc
   PlaneCollisionShape.cc
   SphereCollisionShape.cc
+  WorldEntityCollisionShape.cc
 )
 
 ADD_SOURCE_FILES(SRC_FILES)
