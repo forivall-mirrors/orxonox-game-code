@@ -7,7 +7,6 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalOptions="/MP2"
 		PreprocessorDefinitions="NETWORK_SHARED_BUILD"
 	/>
 	<Tool

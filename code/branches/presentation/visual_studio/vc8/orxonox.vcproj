@@ -101,6 +101,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
