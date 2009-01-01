@@ -651,6 +651,7 @@ HACK HACK HACK
         {
             this->getScene()->addPhysicalObject(this);
             this->bPhysicsActive_ = true;
+            this->bPhysicsActiveSynchronised_ = true;
         }
     }
 
@@ -661,6 +662,7 @@ HACK HACK HACK
         {
             this->getScene()->removePhysicalObject(this);
             this->bPhysicsActive_ = false;
+            this->bPhysicsActiveSynchronised_ = false;
         }
     }
 
@@ -691,11 +693,6 @@ HACK HACK HACK
         // Check for type legality. Could be StaticEntity or MobileEntity.
         if (!this->isCollisionTypeLegal(type))
             return;
-        if (type != None && !this->getScene()->hasPhysics())
-        {
-            CCOUT(2) << "Warning: Cannot have physical bodies in a non physical scene." << std::endl;
-            return;
-        }
 
         if (this->isPhysicsActive())
             this->deactivatePhysics();
