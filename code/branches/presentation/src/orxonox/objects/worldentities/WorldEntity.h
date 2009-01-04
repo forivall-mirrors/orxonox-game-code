@@ -342,9 +342,16 @@ namespace orxonox
             //! Disables the collidesAgainst(.) function. @see enableCollisionCallback()
             inline void disableCollisionCallback()
                 { this->bCollisionCallbackActive_ = false; this->collisionCallbackActivityChanged(); }
-            //! Tells whether there could be a collision response via collidesAgainst(.)
+            //! Tells whether there could be a collision callback via collidesAgainst(.)
             inline bool isCollisionCallbackActive() const
                 { return this->bCollisionCallbackActive_; }
+
+            //! Enables or disables collision response (default is of course on)
+            inline void setCollisionResponse(bool value)
+                { this->bCollisionResponseActive_ = value; this->collisionResponseActivityChanged(); }
+            //! Tells whether there could be a collision response
+            inline bool hasCollisionResponse()
+                { return this->bCollisionResponseActive_; }
 
         protected:
             /**
@@ -372,6 +379,7 @@ namespace orxonox
             void collisionTypeChanged();
             void physicsActivityChanged();
             void collisionCallbackActivityChanged();
+            void collisionResponseActivityChanged();
             //! Network callback workaround to call a function when the value changes.
             inline void massChanged()
                 { this->setMass(this->mass_); }
@@ -407,6 +415,7 @@ namespace orxonox
             btScalar                     friction_;                      //!< @see setFriction
             btScalar                     childrenMass_;                  //!< Sum of all the children's masses
             bool                         bCollisionCallbackActive_;      //!< @see enableCollisionCallback
+            bool                         bCollisionResponseActive_;      //!< Tells whether the object should respond to collisions
     };
 
     // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.

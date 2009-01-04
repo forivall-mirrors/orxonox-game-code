@@ -90,6 +90,7 @@ namespace orxonox
         this->angularDamping_ = 0;
         this->friction_       = 0.5;
         this->bCollisionCallbackActive_ = false;
+        this->bCollisionResponseActive_ = true;
 
         this->registerVariables();
     }
@@ -138,13 +139,14 @@ namespace orxonox
         XMLPortParamLoadOnly(WorldEntity, "roll",        roll_xmlport,         xmlelement, mode);
 
         // Physics
-        XMLPortParam(WorldEntity, "collisionType",  setCollisionTypeStr, getCollisionTypeStr, xmlelement, mode);
-        XMLPortParam(WorldEntity, "mass",           setMass,             getMass,             xmlelement, mode);
-        XMLPortParam(WorldEntity, "restitution",    setRestitution,      getRestitution,      xmlelement, mode);
-        XMLPortParam(WorldEntity, "angularFactor",  setAngularFactor,    getAngularFactor,    xmlelement, mode);
-        XMLPortParam(WorldEntity, "linearDamping",  setLinearDamping,    getLinearDamping,    xmlelement, mode);
-        XMLPortParam(WorldEntity, "angularDamping", setAngularDamping,   getAngularDamping,   xmlelement, mode);
-        XMLPortParam(WorldEntity, "friction",       setFriction,         getFriction,         xmlelement, mode);
+        XMLPortParam(WorldEntity, "collisionType",     setCollisionTypeStr,  getCollisionTypeStr,  xmlelement, mode);
+        XMLPortParam(WorldEntity, "collisionResponse", setCollisionResponse, hasCollisionResponse, xmlelement, mode);
+        XMLPortParam(WorldEntity, "mass",              setMass,              getMass,              xmlelement, mode);
+        XMLPortParam(WorldEntity, "restitution",       setRestitution,       getRestitution,       xmlelement, mode);
+        XMLPortParam(WorldEntity, "angularFactor",     setAngularFactor,     getAngularFactor,     xmlelement, mode);
+        XMLPortParam(WorldEntity, "linearDamping",     setLinearDamping,     getLinearDamping,     xmlelement, mode);
+        XMLPortParam(WorldEntity, "angularDamping",    setAngularDamping,    getAngularDamping,    xmlelement, mode);
+        XMLPortParam(WorldEntity, "friction",          setFriction,          getFriction,          xmlelement, mode);
 
         // Other attached WorldEntities
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
@@ -170,6 +172,8 @@ namespace orxonox
         registerVariable(this->friction_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
         registerVariable(this->bCollisionCallbackActive_,
                                                 variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionCallbackActivityChanged));
+        registerVariable(this->bCollisionResponseActive_,
+                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionResponseActivityChanged));
         registerVariable((int&)this->collisionTypeSynchronised_,
                                                 variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
         registerVariable(this->bPhysicsActiveSynchronised_,
@@ -252,17 +256,31 @@ namespace orxonox
             this->deactivatePhysics();
     }
 
-    //! Function is called to set the right flags in Bullet (if there is physics at all)
+    //! Function sets whether Bullet should issue a callback on collisions
     void WorldEntity::collisionCallbackActivityChanged()
     {
         if (this->hasPhysics())
         {
-            if (bCollisionCallbackActive_)
+            if (this->bCollisionCallbackActive_)
                 this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() |
                     btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
             else
                 this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() &
                     ~btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+        }
+    }
+
+    //! Function sets whether Bullet should react itself to a collision
+    void WorldEntity::collisionResponseActivityChanged()
+    {
+        if (this->hasPhysics())
+        {
+            if (this->bCollisionResponseActive_)
+                this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() &
+                    ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+            else
+                this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() |
+                    btCollisionObject::CF_NO_CONTACT_RESPONSE);
         }
     }
 
@@ -758,6 +776,7 @@ HACK HACK HACK
         recalculateMassProps();
         internalSetPhysicsProps();
         collisionCallbackActivityChanged();
+        collisionResponseActivityChanged();
         if (bReactivatePhysics)
             activatePhysics();
     }
