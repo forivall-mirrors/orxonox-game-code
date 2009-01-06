@@ -199,12 +199,12 @@ namespace orxonox
 
         delete this->ogreRoot_;
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // delete the ogre log and the logManager (since we have created it).
         this->ogreLogger_->getDefaultLog()->removeListener(this);
         this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
         delete this->ogreLogger_;
-#endif
+//#endif
 
         delete graphicsEngine_;
 
@@ -276,7 +276,7 @@ namespace orxonox
         COUT(3) << "Setting up Ogre..." << std::endl;
 
         // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // create a new logManager
         ogreLogger_ = new Ogre::LogManager();
         COUT(4) << "Ogre LogManager created" << std::endl;
@@ -291,7 +291,7 @@ namespace orxonox
 
         myLog->setLogDetail(Ogre::LL_BOREME);
         myLog->addListener(this);
-#endif
+//#endif
 
         // Root will detect that we've already created a Log
         COUT(4) << "Creating Ogre Root..." << std::endl;
