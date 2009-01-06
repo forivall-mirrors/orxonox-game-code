@@ -74,9 +74,9 @@ namespace orxonox{
       virtual ~SynchronisableVariable();
 
       virtual inline uint8_t getMode(){ return mode_; }
-      virtual void getData(uint8_t*& mem, uint8_t mode);
+      virtual inline void getData(uint8_t*& mem, uint8_t mode);
       virtual inline void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false);
-      virtual uint32_t getSize(uint8_t mode);
+      virtual inline uint32_t getSize(uint8_t mode);
       virtual inline void* getReference(){ return (void *)&this->variable_; }
     protected:
       bool checkEquality(uint8_t* mem);

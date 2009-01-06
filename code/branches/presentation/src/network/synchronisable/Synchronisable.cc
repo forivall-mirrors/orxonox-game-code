@@ -421,11 +421,6 @@ namespace orxonox
     return ( (objectMode_&mode)!=0 && (!syncList.empty() ) );
   }
 
-  bool Synchronisable::doSelection(int32_t id){
-    return true; //TODO: change this
-    //return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
-  }
-
   /**
    * This function looks at the header located in the bytestream and checks wheter objectID and classID match with the Synchronisables ones
    * @param mem pointer to the bytestream

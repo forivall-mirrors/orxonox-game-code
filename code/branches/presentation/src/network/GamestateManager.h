@@ -81,7 +81,6 @@ namespace orxonox
     bool ack(unsigned int gamestateID, unsigned int clientID);
     void removeClient(ClientInformation *client);
     private:
-//     void cleanup(); // "garbage handler"
     bool processGamestate(packet::Gamestate *gs);
 
     std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> > gamestateMap_;

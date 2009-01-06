@@ -45,6 +45,10 @@ namespace orxonox {
 
 namespace packet {
 
+#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
+#define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
+#define HEADER GAMESTATE_HEADER(data_)
+
 struct _NetworkExport GamestateHeader{
   ENUM::Type packetType;
   int32_t id; // id of the gamestate
@@ -54,9 +58,6 @@ struct _NetworkExport GamestateHeader{
   bool diffed:1; // wheter diffed or not
   bool complete:1; // wheter it is a complete gamestate or only partial
   bool compressed:1;
-#ifndef NDEBUG
-  uint32_t crc32;
-#endif
 };
 
 /**
@@ -72,14 +73,12 @@ class _NetworkExport Gamestate: public Packet{
 
     bool collectData(int id, uint8_t mode=0x0);
     bool spreadData( uint8_t mode=0x0);
-    int getID();
-    bool isDiffed();
-    bool isCompressed();
-    int getBaseID();
+    inline int32_t getID() const { return HEADER->id; }
+    inline bool isDiffed() const { return HEADER->diffed; }
+    inline bool isCompressed() const { return HEADER->compressed; }
+    inline int32_t getBaseID() const { return HEADER->base_id; }
     Gamestate *diff(Gamestate *base);
-    Gamestate* intelligentDiff(Gamestate *base, unsigned int clientID);
     Gamestate *undiff(Gamestate *base);
-    Gamestate* intelligentUnDiff(Gamestate *base);
     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
@@ -87,14 +86,12 @@ class _NetworkExport Gamestate: public Packet{
     // Packet functions
   private:
     virtual uint32_t getSize() const;
-    virtual bool process();
+    virtual inline bool process();
 
     bool operator ==(packet::Gamestate gs);
   private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
-    void removeObject(ObjectListIterator<Synchronisable> &it);
     std::list<obj> dataMap_;
-//     static TrafficControl *trafficControl_;
 };
 
 }
