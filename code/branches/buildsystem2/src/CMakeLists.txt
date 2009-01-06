@@ -2,7 +2,6 @@
 INCLUDE_DIRECTORIES(
   ${OGRE_INCLUDE_DIR}
   ${CEGUI_INCLUDE_DIR}
-#  ${CEGUI_OGRE_INCLUDE_DIR}
   ${ENet_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${OPENAL_INCLUDE_DIR}
@@ -15,7 +14,13 @@ INCLUDE_DIRECTORIES(
   ${ZLIB_INCLUDE_DIR}
 )
 
+# Check whether the required CEGUILua version is even available
+IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua-${CEGUI_VERSION})
+  MESSAGE(FATAL_ERROR "Your CEGUI version is not supported (${CEGUI_VERSION})")
+ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua-${CEGUI_VERSION})
+
 INCLUDE_DIRECTORIES(
+  ceguilua-${CEGUI_VERSION}/ceguilua
   cpptcl
   ois
   tinyxml
@@ -33,31 +38,12 @@ INCLUDE_DIRECTORIES(
 # Set special macro symbols across all libraries
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIXML_USE_TICPP")
 
+ADD_SUBDIRECTORY(ceguilua-${CEGUI_VERSION}/ceguilua)
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ogreceguirenderer)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
 ADD_SUBDIRECTORY(tolua)
-
-# TODO: FIXME
-# Some people may not have CEGUILua installed, espc. with version 0.5
-# And we don't know what lua version it was linked against, so we compile
-# it ourselves.
-# So first, find out what CEGUI version we have.
-
-IF (WIN32)
-    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-    INCLUDE_DIRECTORIES(ceguilua-0.6.1/ceguilua)
-ELSE (WIN32)
-    # FIXME
-    #IF (${CEGUI_VERSION} LESS 0.6.0)
-        ADD_SUBDIRECTORY(ceguilua-0.5.0/ceguilua)
-        INCLUDE_DIRECTORIES(ceguilua-0.5.0/ceguilua)
-    #ELSE (${CEGUI_VERSION} LESS 0.6.0)
-    #    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-    #    INCLUDE_DIRECTORIES(ceguilua-0.6.1/ceguilua)
-    #ENDIF (${CEGUI_VERSION} LESS 0.6.0)
-ENDIF (WIN32)
 
 # Include macros
 INCLUDE(AddSourceFiles)

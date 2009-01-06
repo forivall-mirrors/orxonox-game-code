@@ -2,6 +2,11 @@ PROJECT(Orxonox)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 
+# Also forbid to use the root directory as binary directory
+IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+  MESSAGE(FATAL_ERROR "Do not use the root directory as CMake output directory! Mkdir a new subdir and invoke cmake ..")
+ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+
 # This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -53,8 +58,6 @@ SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 # Performs the search and sets the variables
 FIND_PACKAGE(OGRE REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED)
-# CEGUI_OGRE is already included in source
-#FIND_PACKAGE(CEGUI_OGRE REQUIRED)
 FIND_PACKAGE(ENet REQUIRED)
 FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem)
 FIND_PACKAGE(OpenAL REQUIRED)

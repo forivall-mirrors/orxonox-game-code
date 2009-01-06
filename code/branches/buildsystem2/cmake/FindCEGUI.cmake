@@ -62,11 +62,11 @@ ENDIF(WIN32)
 INCLUDE(DetermineVersion)
 DetermineVersion(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h _CEGUI_VERSION_temp)
 SET(CEGUI_VERSION "${_CEGUI_VERSION_temp}" CACHE STRING "")
-# LESS can be dangerous since it only compares strings.
+# STRLESS can be dangerous since it only compares strings.
 # Howerver VERSION_LESS seems to be having serious issues.
-IF(${CEGUI_VERSION} LESS "0.5.0")
+IF(${CEGUI_VERSION} STRLESS "0.5.0")
   MESSAGE(FATAL_ERROR "Minimum CEGUI version required is 0.5.0")
-ENDIF(${CEGUI_VERSION} LESS "0.5.0")
+ENDIF(${CEGUI_VERSION} STRLESS "0.5.0")
 
 
 #    IF (NOT CEGUI_SCRIPT_LIBDIR)
