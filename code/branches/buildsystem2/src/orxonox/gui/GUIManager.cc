@@ -45,11 +45,11 @@
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "core/ToluaBindCore.h"
-#include "orxonox/ToluaBindOrxonox.h"
+#include "ToluaBindOrxonox.h"
 #include "OgreCEGUIRenderer.h"
 
 extern "C" {
-#include "lua.h"
+#include <lua.h>
 }
 
 namespace orxonox

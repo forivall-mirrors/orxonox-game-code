@@ -17,6 +17,7 @@
 FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
     PATHS
     $ENV{OGREDIR}
+    $ENV{OGRE_HOME}
     /usr/local
     /usr
     PATH_SUFFIXES include include/OGRE
@@ -27,12 +28,14 @@ IF(WIN32)
         NAMES OgreMain
         PATHS
         $ENV{OGREDIR}
+        $ENV{OGRE_HOME}
         PATH_SUFFIXES lib
     )
     FIND_LIBRARY(OGRE_LIBRARY_d
         NAMES OgreMain_d
         PATHS
         $ENV{OGREDIR}
+        $ENV{OGRE_HOME}
         PATH_SUFFIXES lib
     )
     IF(OGRE_LIBRARY_)
@@ -47,6 +50,7 @@ ELSE(WIN32)
         NAMES OgreMain
         PATHS
         $ENV{OGREDIR}
+        $ENV{OGRE_HOME}
         /usr/local
         /usr
         PATH_SUFFIXES lib
