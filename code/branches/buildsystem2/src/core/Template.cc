@@ -28,10 +28,11 @@
 
 #include "Template.h"
 
+#include <ticpp.h>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Debug.h"
-#include "tinyxml/ticpp.h"
 
 namespace orxonox
 {

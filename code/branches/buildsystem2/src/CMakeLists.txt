@@ -16,12 +16,18 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(
-  .
+  cpptcl
   ois
-  orxonox
+  tinyxml
   tolua
+)
+
+INCLUDE_DIRECTORIES(
+  .
+  orxonox
   # Required for tolua bind files that are in the build folder
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/orxonox
 )
 
 # Set special macro symbols across all libraries

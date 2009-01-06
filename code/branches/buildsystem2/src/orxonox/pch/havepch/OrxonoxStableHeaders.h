@@ -52,9 +52,8 @@
 //#include <boost/thread/condition.hpp>
 //#include <boost/thread/thread.hpp>
 #include <boost/static_assert.hpp>
-#include "tinyxml/ticpp.h"
-#include "tinyxml/tinyxml.h"
-#include "tolua/tolua++.h"
+#include <ticpp.h>
+#include <tolua++.h>
 
 //Get around Windows hackery (windows.h is included by Ogre.h)
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 

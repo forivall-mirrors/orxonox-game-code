@@ -32,10 +32,11 @@
 #include <map>
 
 extern "C" {
-#include "lua.h"
-#include "lualib.h"
+#include <lua.h>
+#include <lualib.h>
 }
-#include "tolua++.h"
+#include <tolua++.h>
+
 #include "core/ToluaBindCore.h"
 #include "util/String.h"
 #include "CoreIncludes.h"
