@@ -1,4 +1,4 @@
-ADD_LIBRARY(tolualib_orxonox STATIC
+ADD_LIBRARY(tolualib_orxonox SHARED
   tolua_event.c
   tolua_is.c
   tolua_map.c
