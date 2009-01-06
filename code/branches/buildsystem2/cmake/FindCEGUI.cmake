@@ -16,9 +16,8 @@
 #
 # Several changes and additions by Fabian 'x3n' Landau
 # Lots of simplifications by Adrian Friedli
+# Version detection by Reto Grieder
 #                 > www.orxonox.net <
-
-# TODO: Determine CEGUI version
 
 FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
     PATHS
@@ -59,6 +58,17 @@ ELSE(WIN32)
     )
 ENDIF(WIN32)
 
+# Look in CEGUIVersion.h for the version number
+INCLUDE(DetermineVersion)
+DetermineVersion(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h _CEGUI_VERSION_temp)
+SET(CEGUI_VERSION "${_CEGUI_VERSION_temp}" CACHE STRING "")
+# LESS can be dangerous since it only compares strings.
+# Howerver VERSION_LESS seems to be having serious issues.
+IF(${CEGUI_VERSION} LESS "0.5.0")
+  MESSAGE(FATAL_ERROR "Minimum CEGUI version required is 0.5.0")
+ENDIF(${CEGUI_VERSION} LESS "0.5.0")
+
+
 #    IF (NOT CEGUI_SCRIPT_LIBDIR)
 #        # Search Lua script module
 #        SET(CEGUI_SCRIPT_LIBRARIES "CEGUILuaScriptModule")
@@ -88,5 +98,6 @@ MARK_AS_ADVANCED(
     CEGUI_LIBRARY_
     CEGUI_LIBRARY_d
     CEGUI_INCLUDE_DIR
+	CEGUI_VERSION
     #CEGUI_SCRIPT_LIBRARIES
 )
