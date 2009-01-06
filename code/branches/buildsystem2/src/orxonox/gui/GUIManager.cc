@@ -39,7 +39,7 @@
 #include <OgreRoot.h>
 #include <CEGUI.h>
 #include <CEGUILua.h>
-#include <OgreCEGUIRenderer.h>
+#include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "util/Exception.h"
 #include "core/input/InputManager.h"

@@ -17,7 +17,6 @@ INCLUDE_DIRECTORIES(
 
 INCLUDE_DIRECTORIES(
   cpptcl
-  ogreceguirenderer
   ois
   tinyxml
   tolua
