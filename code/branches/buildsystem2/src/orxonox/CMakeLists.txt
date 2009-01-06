@@ -39,6 +39,7 @@ TARGET_LINK_LIBRARIES( orxonox
   ${LUA_LIBRARIES}
   #${CEGUI_SCRIPT_LIBRARIES}
   ceguilua_orxonox
+  ogreceguirenderer_orxonox
   tinyxml_orxonox
   tolualib_orxonox
   util

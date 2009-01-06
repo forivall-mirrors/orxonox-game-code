@@ -39,6 +39,8 @@
 #include <OgreRoot.h>
 #include <CEGUI.h>
 #include <CEGUILua.h>
+#include <OgreCEGUIRenderer.h>
+
 #include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
@@ -46,7 +48,6 @@
 #include "core/Core.h"
 #include "core/ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
-#include "OgreCEGUIRenderer.h"
 
 extern "C" {
 #include <lua.h>

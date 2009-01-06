@@ -26,8 +26,8 @@
 /*************************************************************************
     This file contains code that is specific to Ogre (http://www.ogre3d.org)
 *************************************************************************/
-#ifndef _OgreCEGUIRenderer_H__
-#define _OgreCEGUIRenderer_H__
+#ifndef _OgreCEGUIRenderer_h_
+#define _OgreCEGUIRenderer_h_
 
 #include <CEGUIBase.h>
 #include <CEGUIRenderer.h>
@@ -37,9 +37,8 @@
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreTextureUnitState.h>
 
-/** CHANGES MADE BY ORXONOX TO FIT DLL IMPORT/EXPORT **/
-#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !(defined(ORXONOX_STATIC_BUILD) || defined(ORXONOX_NO_EXPORTS))
-#   ifdef ORXONOX_SHARED_BUILD
+#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_STATIC_LIB)
+#   ifdef OGRE_GUIRENDERER_EXPORTS
 #       define OGRE_GUIRENDERER_API __declspec(dllexport)
 #   else
 #       if defined(__MINGW32__)
@@ -462,4 +461,4 @@ private:
 } // End of  CEGUI namespace section
 
 
-#endif	// end of guard _OgreCEGUIRenderer_H__
+#endif	// end of guard _OgreCEGUIRenderer_h_

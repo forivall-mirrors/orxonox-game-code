@@ -754,18 +754,6 @@
 					RelativePath="..\..\src\orxonox\gui\GUIManager.cc"
 					>
 				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gui\OgreCEGUIRenderer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gui\OgreCEGUIResourceProvider.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gui\OgreCEGUITexture.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="gamestates"
@@ -1238,18 +1226,6 @@
 				>
 				<File
 					RelativePath="..\..\src\orxonox\gui\GUIManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gui\OgreCEGUIRenderer.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gui\OgreCEGUIResourceProvider.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gui\OgreCEGUITexture.h"
 					>
 				</File>
 			</Filter>

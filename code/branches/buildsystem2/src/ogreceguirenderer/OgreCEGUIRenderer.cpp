@@ -24,7 +24,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *************************************************************************/
 
-#include "OrxonoxStableHeaders.h"
 #include <CEGUIImagesetManager.h>
 #include <CEGUIImageset.h>
 #include <CEGUIImage.h>
