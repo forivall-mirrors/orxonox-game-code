@@ -25,7 +25,7 @@
  #      ...
  #
  
-################# Win check ##################
+############## MinGW config ###############
 # Set the library directory when using precompiled tarballs for
 # the dependencies under windows
 ###########################################

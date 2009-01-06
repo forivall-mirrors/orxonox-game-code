@@ -1,4 +1,4 @@
-################# Tardis check ##################
+################# Tardis config #################
 # This code checks whether the current machine  #
 # is an ETH tardis box.                         #
 #################################################

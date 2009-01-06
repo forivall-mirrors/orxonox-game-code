@@ -6,8 +6,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # Check for special include paths
-INCLUDE(CheckTardis)
-INCLUDE(CheckOrxonoxWinDeps)
+INCLUDE(ConfigTardis)
+INCLUDE(ConfigMinGW)
 
 ################ Test options ###################
 
