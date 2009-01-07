@@ -766,11 +766,8 @@ HACK HACK HACK
             assert(false); // Doesn't happen
             return;
         }
-
-        // Only sets this->collisionType_
-        // However the assertion is to ensure that the internal bullet setting is right
-        updateCollisionType();
-        assert(this->collisionType_ == type);
+        this->collisionType_ = type;
+        this->collisionTypeSynchronised_ = type;
 
         // update mass and inertia tensor
         recalculateMassProps();
@@ -816,19 +813,6 @@ HACK HACK HACK
                 assert(false);
                 return "";
         }
-    }
-
-    void WorldEntity::updateCollisionType()
-    {
-        if (!this->physicalBody_)
-            this->collisionType_ = None;
-        else if (this->physicalBody_->isKinematicObject())
-            this->collisionType_ = Kinematic;
-        else if (this->physicalBody_->isStaticObject())
-            this->collisionType_ = Static;
-        else
-            this->collisionType_ = Dynamic;
-        this->collisionTypeSynchronised_ = this->collisionType_;
     }
 
     /**

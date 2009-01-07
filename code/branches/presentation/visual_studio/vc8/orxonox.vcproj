@@ -456,6 +456,10 @@
 						Name="weapons"
 						>
 						<File
+							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\Fusion.cc"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\LaserGun.cc"
 							>
 						</File>
@@ -1239,6 +1243,10 @@
 					<Filter
 						Name="weapons"
 						>
+						<File
+							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\Fusion.h"
+							>
+						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\LaserGun.h"
 							>

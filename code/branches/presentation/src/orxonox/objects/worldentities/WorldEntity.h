@@ -368,7 +368,6 @@ namespace orxonox
             btRigidBody*  physicalBody_; //!< Bullet rigid body. Everything physical is applied to this instance.
 
         private:
-            void updateCollisionType();
             void recalculateMassProps();
             void internalSetPhysicsProps();
 
