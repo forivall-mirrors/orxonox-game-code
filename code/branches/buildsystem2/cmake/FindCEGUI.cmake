@@ -16,7 +16,6 @@
 #
 # Several changes and additions by Fabian 'x3n' Landau
 # Lots of simplifications by Adrian Friedli
-# Version detection by Reto Grieder
 #                 > www.orxonox.net <
 
 FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
@@ -65,7 +64,7 @@ SET(CEGUI_VERSION "${_CEGUI_VERSION_temp}" CACHE STRING "")
 # STRLESS can be dangerous since it only compares strings.
 # Howerver VERSION_LESS seems to be having serious issues.
 IF(${CEGUI_VERSION} STRLESS "0.5.0")
-  MESSAGE(FATAL_ERROR "Minimum CEGUI version required is 0.5.0")
+   MESSAGE(FATAL_ERROR "Minimum CEGUI version required is 0.5.0")
 ENDIF(${CEGUI_VERSION} STRLESS "0.5.0")
 
 
@@ -75,7 +74,7 @@ ENDIF(${CEGUI_VERSION} STRLESS "0.5.0")
 #        FIND_LIBRARY(CEGUI_SCRIPT_LIBDIR NAMES ${CEGUI_SCRIPT_LIBRARIES} PATHS
 #            ../libs/cegui-0.6.1/bin
 #        )
-#	IF (NOT CEGUI_SCRIPT_LIBDIR)
+#    IF (NOT CEGUI_SCRIPT_LIBDIR)
 #            SET(CEGUI_SCRIPT_LIBRARIES "CEGUILua")
 #            FIND_LIBRARY(CEGUI_SCRIPT_LIBDIR NAMES ${CEGUI_SCRIPT_LIBRARIES} PATHS
 #                ../libs/cegui-0.6.1/bin
@@ -98,6 +97,6 @@ MARK_AS_ADVANCED(
     CEGUI_LIBRARY_
     CEGUI_LIBRARY_d
     CEGUI_INCLUDE_DIR
-	CEGUI_VERSION
+    CEGUI_VERSION
     #CEGUI_SCRIPT_LIBRARIES
 )
