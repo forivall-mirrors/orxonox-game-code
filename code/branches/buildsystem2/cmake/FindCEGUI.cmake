@@ -59,10 +59,9 @@ ENDIF(WIN32)
 
 # Look in CEGUIVersion.h for the version number
 INCLUDE(DetermineVersion)
-DetermineVersion(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h _CEGUI_VERSION_temp)
-SET(CEGUI_VERSION "${_CEGUI_VERSION_temp}" CACHE STRING "")
+DetermineVersion(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
 # STRLESS can be dangerous since it only compares strings.
-# Howerver VERSION_LESS seems to be having serious issues.
+# Unfortunately VERSION_LESS is only provided since CMake v2.6.2
 IF(${CEGUI_VERSION} STRLESS "0.5.0")
    MESSAGE(FATAL_ERROR "Minimum CEGUI version required is 0.5.0")
 ENDIF(${CEGUI_VERSION} STRLESS "0.5.0")
