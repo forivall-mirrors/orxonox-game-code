@@ -6,7 +6,9 @@ ADD_LIBRARY(tolualib_orxonox SHARED
   tolua_to.c
 )
 
-#INSTALL(TARGETS tolualib_orxonox LIBRARY DESTINATION lib)
+IF (NOT WIN32)
+#  INSTALL(TARGETS tolualib_orxonox LIBRARY DESTINATION lib)
+ENDIF (NOT WIN32)
 
 SET(TOLUAGEN_SRC_FILES
   tolua.c

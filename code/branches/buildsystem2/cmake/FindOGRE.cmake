@@ -16,56 +16,39 @@
 
 FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
     PATHS
-    $ENV{OGREDIR}
     $ENV{OGRE_HOME}
     /usr/local
     /usr
     PATH_SUFFIXES include include/OGRE
 )
+FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
+    NAMES OgreMain
+    PATHS
+    $ENV{OGRE_HOME}
+    /usr/local
+    /usr
+    PATH_SUFFIXES lib
+)
+FIND_LIBRARY(OGRE_LIBRARY_DEBUG
+    NAMES OgreMain_${LIBRARY_DEBUG_POSTFIX}
+    PATHS
+    $ENV{OGRE_HOME}
+    /usr/local
+    /usr
+    PATH_SUFFIXES lib
+)
 
-IF(WIN32)
-    FIND_LIBRARY(OGRE_LIBRARY_
-        NAMES OgreMain
-        PATHS
-        $ENV{OGREDIR}
-        $ENV{OGRE_HOME}
-        PATH_SUFFIXES lib
-    )
-    FIND_LIBRARY(OGRE_LIBRARY_d
-        NAMES OgreMain_d
-        PATHS
-        $ENV{OGREDIR}
-        $ENV{OGRE_HOME}
-        PATH_SUFFIXES lib
-    )
-    IF(OGRE_LIBRARY_)
-        IF(OGRE_LIBRARY_d)
-            SET(OGRE_LIBRARY optimized ${OGRE_LIBRARY_} debug ${OGRE_LIBRARY_d})
-        ELSE(OGRE_LIBRARY_d)
-            SET(OGRE_LIBRARY ${OGRE_LIBRARY_})
-        ENDIF(OGRE_LIBRARY_d)
-    ENDIF(OGRE_LIBRARY_)
-ELSE(WIN32)
-    FIND_LIBRARY(OGRE_LIBRARY
-        NAMES OgreMain
-        PATHS
-        $ENV{OGREDIR}
-        $ENV{OGRE_HOME}
-        /usr/local
-        /usr
-        PATH_SUFFIXES lib
-    )
-ENDIF(WIN32)
-
-INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(OGRE DEFAULT_MSG
-    OGRE_LIBRARY
+    OGRE_LIBRARY_OPTIMIZED
     OGRE_INCLUDE_DIR
 )
 
+# Set optimized and debug libraries
+HandleLibraryTypes(OGRE)
+
 MARK_AS_ADVANCED(
     OGRE_LIBRARY
-    OGRE_LIBRARY_
-    OGRE_LIBRARY_d
+    OGRE_LIBRARY_OPTIMIZED
+    OGRE_LIBRARY_DEBUG
     OGRE_INCLUDE_DIR
 )

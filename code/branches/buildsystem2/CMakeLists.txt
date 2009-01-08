@@ -10,9 +10,8 @@ ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 # This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Check for special include paths
-INCLUDE(ConfigTardis)
-INCLUDE(ConfigMinGW)
+# Configre special platforms if required
+INCLUDE(ConfigPlatforms)
 
 ################ Test options ###################
 
@@ -55,6 +54,9 @@ SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
 ############### Library finding #################
 
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
 # Performs the search and sets the variables
 FIND_PACKAGE(OGRE REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED)
@@ -80,11 +82,19 @@ ENDIF(NOT LUA50_FOUND)
 FILE(STRINGS "${LUA_INCLUDE_DIR}/lua.h" LUA_VERSION REGEX "LUA_VERSION")
 STRING(REGEX REPLACE "^.*\"Lua (.*)\".*$" "\\1" LUA_VERSION "${LUA_VERSION}")
 
-# Don't require the whole tcl rat tail
+# QUIET: Don't require the whole tcl rat tail
 FIND_PACKAGE(TCL QUIET)
 IF(NOT TCL_FOUND)
-    MESSAGE(FATAL_ERROR "Tcl not found.")
+    MESSAGE(FATAL_ERROR "Tcl was not found.")
 ENDIF(NOT TCL_FOUND)
+
+# Hide variables created by CMake FindXX scripts
+MARK_AS_ADVANCED(
+    LUA_LIBRARY_lua
+    LUA_LIBRARY_lualib
+    OPENAL_INCLUDE_DIR
+    OPENAL_LIBRARY
+)
 
 # Add main source dir
 ADD_SUBDIRECTORY(src)

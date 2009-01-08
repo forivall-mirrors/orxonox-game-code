@@ -30,7 +30,9 @@ TARGET_LINK_LIBRARIES( network
   core
 )
 
-INSTALL(TARGETS network LIBRARY DESTINATION lib)
+IF (NOT WIN32)
+  INSTALL(TARGETS network LIBRARY DESTINATION lib)
+ENDIF (NOT WIN32)
 
 # build those parts only on request.
 IF(NETWORK_TESTING_ENABLED)
@@ -42,7 +44,7 @@ IF(NETWORK_TESTING_ENABLED)
   TARGET_LINK_LIBRARIES( networktest
     ${OGRE_LIBRARY}
     network
-    ${ENet_LIBRARIES}
+    ${ENet_LIBRARY}
     ${ZLIB_LIBRARY}
   )
   ##### end test for gamestate stuff #####

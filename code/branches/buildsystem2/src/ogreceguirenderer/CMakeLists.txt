@@ -5,4 +5,7 @@ SET( SRC_FILES
 )
 
 ADD_LIBRARY(ogreceguirenderer_orxonox SHARED ${SRC_FILES})
-INSTALL(TARGETS ogreceguirenderer_orxonox LIBRARY DESTINATION lib)
+
+IF (NOT WIN32)
+  INSTALL(TARGETS ogreceguirenderer_orxonox LIBRARY DESTINATION lib)
+ENDIF (NOT WIN32)

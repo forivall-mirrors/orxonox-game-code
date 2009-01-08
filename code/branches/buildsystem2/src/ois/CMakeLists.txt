@@ -1,3 +1,5 @@
+INCLUDE_DIRECTORIES(.)
+
 SET( OIS_SRC_FILES
   OISEffect.cpp
   OISException.cpp
@@ -38,11 +40,6 @@ ENDIF (WIN32)
 ADD_LIBRARY( ois_orxonox SHARED ${OIS_SRC_FILES} )
 
 IF(WIN32)
-  LINK_DIRECTORIES(${DirectX_LIB_DIR})
-  TARGET_LINK_LIBRARIES( ois_orxonox
-    dxguid
-    dinput8
-  )
+  TARGET_LINK_LIBRARIES( ois_orxonox ${DirectX_LIBRARIES} )
 ENDIF(WIN32)
 
-INSTALL(TARGETS ois_orxonox LIBRARY DESTINATION lib)
