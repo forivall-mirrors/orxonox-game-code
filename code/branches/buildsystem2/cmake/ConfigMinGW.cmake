@@ -41,7 +41,7 @@ IF (MINGW)
   SET(ENV{CEGUIDIR}    ${MINGW_LIBRARY_DIR}/cegui-0.6.1)
   SET(ENV{ENETDIR}     ${MINGW_LIBRARY_DIR}/enet-1.1)
   # ENet is linked statically, hence we need to add some windows dependencies
-  SET(ENet_ADDITIONAL_LIBRARIES ws2_32 winmm)
+  SET(ENET_ADDITIONAL_LIBRARIES ws2_32 winmm)
   SET(ENV{ALUTDIR}     ${MINGW_LIBRARY_DIR}/freealut-1.1.0)
   SET(ENV{OGGSDIR}     ${MINGW_LIBRARY_DIR}/libogg-1.1.3
                        ${MINGW_LIBRARY_DIR}/libogg-1.1.3/src/.libs)

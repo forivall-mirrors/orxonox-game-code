@@ -30,11 +30,11 @@
 ###############################################
 
 # Set some variables to default values that may be configured below
-SET(ENet_ADDITIONAL_LIBRARIES "")
+SET(ENET_ADDITIONAL_LIBRARIES "")
 SET(ORXONOX_FPIC_FLAG "-fPIC")
 SET(LIBRARY_DEBUG_POSTFIX "_d")
 MARK_AS_ADVANCED(
-  ENet_ADDITIONAL_LIBRARIES
+  ENET_ADDITIONAL_LIBRARIES
   ORXONOX_FPIC_FLAG
   LIBRARY_DEBUG_POSTFIX
 )
