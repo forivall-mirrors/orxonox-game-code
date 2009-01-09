@@ -2,15 +2,29 @@ PROJECT(Orxonox)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 
-# Also forbid to use the root directory as binary directory
+############### Various Options #################
+
+# Keep devs from using the root directory as binary directory (messes up the source tree)
 IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-  MESSAGE(FATAL_ERROR "Do not use the root directory as CMake output directory! Mkdir a new subdir and invoke cmake ..")
+  MESSAGE(FATAL_ERROR "Do not use the root directory as CMake output directory! mkdir build; cd build; cmake ..")
 ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 
 # This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Configre special platforms if required
+# Set binary output directories
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin)
+MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
+
+# Set Debug build to default when not having multi-config generator like msvc
+IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  SET(CMAKE_BUILD_TYPE "Debug")
+ENDIF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+
+############## Platform Config ##################
+
+# Configre platform specific options
 INCLUDE(ConfigPlatforms)
 
 ################ Test options ###################
@@ -22,35 +36,6 @@ ENDIF(ENABLE_TESTS)
 
 OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient chatserver and alike.")
 OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
-
-########## Compiler/Linker options ##############
-
-# Set binary output directories
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin)
-MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
-
-# Compiler/Linker flags.
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE "Debug")
-ENDIF(NOT CMAKE_BUILD_TYPE)
-#SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   -Wall -Wextra -Wno-unused-parameter")
-SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   -Wall ${ORXONOX_FPIC_FLAG}")
-#SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -Wall -Wextra -Wno-unused-parameter")
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -Wall ${ORXONOX_FPIC_FLAG}")
-SET(CMAKE_C_FLAGS_DEBUG            "-g -ggdb")
-SET(CMAKE_CXX_FLAGS_DEBUG          "-g -ggdb")
-SET(CMAKE_C_FLAGS_RELEASE          "-O3 -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG")
-SET(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -DNDEBUG -g -ggdb")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG -g -ggdb")
-SET(CMAKE_C_FLAGS_MINSIZEREL       "-Os -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-
-SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
-SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
-SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
-SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
 ############### Library finding #################
 
@@ -96,6 +81,7 @@ MARK_AS_ADVANCED(
     OPENAL_LIBRARY
 )
 
-# Add main source dir
+############### Orxonox Source ##################
+
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(bin)

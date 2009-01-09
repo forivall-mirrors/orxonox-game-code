@@ -31,8 +31,16 @@
 ###################################################
 
 IF (MINGW)
-  MESSAGE(STATUS "Running on MinGW. Using customized paths.")
-  SET(MINGW_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../libs")
+  MESSAGE(STATUS "Running on MinGW. Using customized paths and options.")
+
+  # Determine library directory
+  IF(EXISTS ${CMAKE_SOURCE_DIR}/libs)
+    SET(MINGW_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/libs")
+  ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../lis)
+    SET(MINGW_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../libs")
+  ELSE(EXISTS ${CMAKE_SOURCE_DIR}/libs)
+    MESSAGE(FATAL_ERROR "Could not find dependency directory for the MinGW libraries")
+  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/libs)
   MARK_AS_ADVANCED(MING_LIBRARY_DIR)
 
   #SET(Boost_ADDITIONAL_VERSIONS "1.36")
@@ -40,8 +48,6 @@ IF (MINGW)
   SET(BOOST_LIBRARYDIR ${MINGW_LIBRARY_DIR}/boost_1_34_1/stage/lib)
   SET(ENV{CEGUIDIR}    ${MINGW_LIBRARY_DIR}/cegui-0.6.1)
   SET(ENV{ENETDIR}     ${MINGW_LIBRARY_DIR}/enet-1.1)
-  # ENet is linked statically, hence we need to add some windows dependencies
-  SET(ENET_ADDITIONAL_LIBRARIES ws2_32 winmm)
   SET(ENV{ALUTDIR}     ${MINGW_LIBRARY_DIR}/freealut-1.1.0)
   SET(ENV{OGGSDIR}     ${MINGW_LIBRARY_DIR}/libogg-1.1.3
                        ${MINGW_LIBRARY_DIR}/libogg-1.1.3/src/.libs)
@@ -60,8 +66,7 @@ IF (MINGW)
     SET(ENV{DXSDK_DIR} ${MINGW_LIBRARY_DIR}/DXSDK)
   ENDIF (NOT ENV{DXSDK_DIR})
 
-  # MINGW doesn't like the -fPIC flag very much
-  SET(ORXONOX_FPIC_FLAG "")
+  # MINGW doesn't like the -fPIC flag, reconfigure flags
+  SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   ${ORXONOX_WARNING_FLAGS)")
+  SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} ${ORXONOX_WARNING_FLAGS)")
 ENDIF (MINGW)
-
-#MARK_AS_ADVANCED(MINGW_LIBRARY_DIR)
