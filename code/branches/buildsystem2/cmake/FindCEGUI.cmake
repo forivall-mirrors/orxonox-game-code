@@ -18,6 +18,9 @@
 # Lots of simplifications by Adrian Friedli
 #                 > www.orxonox.net <
 
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
 FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
     PATHS
     $ENV{CEGUIDIR}
@@ -34,7 +37,7 @@ FIND_LIBRARY(CEGUI_LIBRARY_OPTIMIZED
     PATH_SUFFIXES lib
 )
 FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
-    NAMES CEGUIBase_${LIBRARY_DEBUG_POSTFIX}
+    NAMES CEGUIBase${LIBRARY_DEBUG_POSTFIX}
     PATHS
     $ENV{CEGUIDIR}
     /usr/local
@@ -44,7 +47,7 @@ FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
 
 # Look in CEGUIVersion.h for the version number
 INCLUDE(DetermineVersion)
-DetermineVersion(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
+DETERMINE_VERSION(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
 # STRLESS can be dangerous since it only compares strings.
 # Unfortunately VERSION_LESS is only provided since CMake v2.6.2
 IF(${CEGUI_VERSION} STRLESS "0.5.0")

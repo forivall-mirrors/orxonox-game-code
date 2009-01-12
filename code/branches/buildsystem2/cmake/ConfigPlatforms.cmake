@@ -31,19 +31,17 @@
 
 ############ Misc Default Options ###############
 
+# When searching for debug libraries, this is appended to the libarary name
 SET(LIBRARY_DEBUG_POSTFIX "_d")
+# Working directory for the tolua parser. Adjust for windows because lua.dll has to be there!
+SET(TOLUA_PARSER_WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-OPTION(EXTRA_WARNINGS "Enable some extra warnings (pollutes the output heavily)")
+OPTION(EXTRA_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
 IF(EXTRA_WARNINGS)
   SET(ORXONOX_WARNING_FLAGS "-Wextra --Wno-unsued-parameter")
 ELSE(EXTRA_WARNINGS)
   SET(ORXONOX_WARNING_FLAGS "-Wall")
 ENDIF(EXTRA_WARNINGS)
-
-MARK_AS_ADVANCED(
-  LIBRARY_DEBUG_POSTFIX
-  ORXONOX_WARNINGS_FLAGS
-)
 
 ###### Default Compiler/Linker Options ##########
 # Most people use GCC to compile orxonox, so use that as default

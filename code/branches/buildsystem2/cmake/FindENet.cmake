@@ -14,6 +14,9 @@
 # Lots of simplifications by Adrian Friedli
 #                 > www.orxonox.net <
 
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
 FIND_PATH(ENET_INCLUDE_DIR enet/enet.h
     PATHS
     $ENV{ENETDIR}
@@ -30,7 +33,7 @@ FIND_LIBRARY(ENET_LIBRARY_OPTIMIZED
     PATH_SUFFIXES lib
 )
 FIND_LIBRARY(ENET_LIBRARY_DEBUG
-    NAMES enet_${LIBRARY_DEBUG_POSTFIX}
+    NAMES enet${LIBRARY_DEBUG_POSTFIX}
     PATHS
     $ENV{ENETDIR}
     /usr/local

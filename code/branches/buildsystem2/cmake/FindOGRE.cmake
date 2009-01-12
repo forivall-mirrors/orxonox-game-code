@@ -14,28 +14,22 @@
 # Lots of simplifications by Adrian Friedli
 #                 > www.orxonox.net <
 
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
 FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
-    PATHS
-    $ENV{OGRE_HOME}
-    /usr/local
-    /usr
+    PATHS $ENV{OGRE_HOME} /usr/local /usr
     PATH_SUFFIXES include include/OGRE
 )
 FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
     NAMES OgreMain
-    PATHS
-    $ENV{OGRE_HOME}
-    /usr/local
-    /usr
-    PATH_SUFFIXES lib
+    PATHS $ENV{OGRE_HOME} /usr/local /usr
+    PATH_SUFFIXES lib bin/Release bin/release
 )
 FIND_LIBRARY(OGRE_LIBRARY_DEBUG
-    NAMES OgreMain_${LIBRARY_DEBUG_POSTFIX}
-    PATHS
-    $ENV{OGRE_HOME}
-    /usr/local
-    /usr
-    PATH_SUFFIXES lib
+    NAMES OgreMain${LIBRARY_DEBUG_POSTFIX}
+    PATHS $ENV{OGRE_HOME} /usr/local /usr
+    PATH_SUFFIXES lib bin/Debug bin/debug
 )
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(OGRE DEFAULT_MSG

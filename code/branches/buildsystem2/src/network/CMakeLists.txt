@@ -27,6 +27,7 @@ TARGET_LINK_LIBRARIES( network
   ${ZLIB_LIBRARY}
   ${ENET_LIBRARY}
   ${Boost_THREAD_LIBRARY}
+  util
   core
 )
 

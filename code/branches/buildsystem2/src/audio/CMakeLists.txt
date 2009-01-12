@@ -18,6 +18,7 @@ TARGET_LINK_LIBRARIES( audio
   ${VORBIS_LIBRARY}
   ${OGG_LIBRARY}
   core
+  util
 )
 
 IF (NOT WIN32)

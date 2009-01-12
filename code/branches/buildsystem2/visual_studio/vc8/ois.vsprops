@@ -8,7 +8,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2"
-		PreprocessorDefinitions="OIS_NONCLIENT_BUILD;OIS_DYNAMIC_LIB"
+		PreprocessorDefinitions="OIS_NONCLIENT_BUILD"
 	/>
 	<Tool
 		Name="VCLinkerTool"

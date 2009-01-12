@@ -20,6 +20,9 @@
 # Some simplifications by Adrian Friedli
 #                 > www.orxonox.net <
 
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
 SET(ALUT_PATHS
   $ENV{ALUTDIR}
   /usr/local
@@ -69,7 +72,7 @@ ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
     PATH_SUFFIXES lib libs
   )
   FIND_LIBRARY(ALUT_LIBRARY_DEBUG
-    NAMES alut_${LIBRARY_DEBUG_POSTFIX}
+    NAMES alut${LIBRARY_DEBUG_POSTFIX}
     PATHS ${ALUT_PATHS}
     PATH_SUFFIXES lib libs
   )

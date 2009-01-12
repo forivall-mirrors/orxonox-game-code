@@ -2,7 +2,7 @@
 INCLUDE_DIRECTORIES(
   ${OGRE_INCLUDE_DIR}
   ${CEGUI_INCLUDE_DIR}
-  ${ENet_INCLUDE_DIR}
+  ${ENET_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${OPENAL_INCLUDE_DIR}
   ${ALUT_INCLUDE_DIR}
@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(
 
 # Check whether the required CEGUILua version is even available
 IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua-${CEGUI_VERSION})
-  MESSAGE(FATAL_ERROR "Your CEGUI version is not supported (${CEGUI_VERSION})")
+  MESSAGE(FATAL_ERROR "No matching CEGUILua version shipped with Orxonox (${CEGUI_VERSION})")
 ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua-${CEGUI_VERSION})
 
 INCLUDE_DIRECTORIES(
@@ -38,16 +38,17 @@ INCLUDE_DIRECTORIES(
 # Set special macro symbols across all libraries
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIXML_USE_TICPP")
 
+# Include macros
+INCLUDE(AddSourceFiles)
+INCLUDE(UseTolua)
+
+# External libraries, but copied into the repository
 ADD_SUBDIRECTORY(ceguilua-${CEGUI_VERSION}/ceguilua)
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ogreceguirenderer)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
 ADD_SUBDIRECTORY(tolua)
-
-# Include macros
-INCLUDE(AddSourceFiles)
-INCLUDE(UseTolua)
 
 # Our own libraries
 ADD_SUBDIRECTORY(util)

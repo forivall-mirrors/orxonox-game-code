@@ -16,7 +16,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-MACRO(DetermineVersion _name _file)
+MACRO(DETERMINE_VERSION _name _file)
   FILE(READ ${_file} _file_content)
   IF(_file_content)
     SET(_parts ${ARGN})
@@ -41,4 +41,4 @@ MACRO(DetermineVersion _name _file)
     ENDFOREACH(_part)
     MARK_AS_ADVANCED(${_name}_VERSION)
   ENDIF(_file_content)
-ENDMACRO(DetermineVersion)
+ENDMACRO(DETERMINE_VERSION)

@@ -7,9 +7,9 @@ SET(CONFIG_FILES
   telnet_server.tcl
 )
 
-IF(IS_TARDIS)
+IF(TARDIS)
   # OGRE can't find fonts to display config screen on Tardis,
-  # so providing default config file here.
+  # so providing default config file here (bug).
   SET(CONFIG_FILES ${CONFIG_FILES}
     linux/run-script
     tardis/orxonox.ini
@@ -21,7 +21,7 @@ ELSEIF(UNIX)
     linux/run-script
     linux/orxonox.ini
   )
-ENDIF(IS_TARDIS)
+ENDIF(TARDIS)
 
 IF(MINGW)
   SET(CONFIG_FILES ${CONFIG_FILES}

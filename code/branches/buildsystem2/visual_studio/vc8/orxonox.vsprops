@@ -9,7 +9,7 @@
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2 /Zm200"
 		AdditionalIncludeDirectories="&quot;$(RootDir)\src\orxonox\pch\havepch&quot;"
-		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;ORXONOX_ENABLE_PCH;LUA_BUILD_AS_DLL"
+		PreprocessorDefinitions="ORXONOX_ENABLE_PCH"
 		UsePrecompiledHeader="2"
 		PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 	/>

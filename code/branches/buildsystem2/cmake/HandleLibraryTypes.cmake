@@ -30,8 +30,8 @@ MACRO(HandleLibraryTypes _name)
   IF(${_name}_FOUND)
     IF(${_name}_LIBRARY_DEBUG)
       SET(${_name}_LIBRARY
-          OPTIMIZED ${${_name}_LIBRARY_OPTIMIZED} ${ARGN}
-          DEBUG     ${${_name}_LIBRARY_DEBUG}     ${ARGN}
+          optimized ${${_name}_LIBRARY_OPTIMIZED} ${ARGN}
+          debug     ${${_name}_LIBRARY_DEBUG}     ${ARGN}
           CACHE STRING "${_name} library file(s)" FORCE
       )
     ELSE(${_name}_LIBRARY_DEBUG)

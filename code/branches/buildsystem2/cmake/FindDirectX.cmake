@@ -1,3 +1,6 @@
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
 IF(WIN32)
   # Find script for DirectX on Windows
   # Once loaded this will define

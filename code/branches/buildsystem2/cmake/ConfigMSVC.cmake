@@ -41,11 +41,11 @@ IF (MSVC)
   ELSE(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the Visual Studio libraries")
   ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
-  MARK_AS_ADVANCED(MSVC_LIBRARY_DIR)
 
   # Set variables for the include directories and the libraries
-  SET(BOOST_INCLUDEDIR       ${MSVC_LIBRARY_DIR}/boost-1.35.0/include)
-  SET(BOOST_LIBRARYDIR       ${MSVC_LIBRARY_DIR}/boost-1.35.0/lib)
+  # Note: When setting ENV${} variables, make sure to use quotes when
+  #       having multiple directories.
+  SET(ENV{BOOST_ROOT}        ${MSVC_LIBRARY_DIR}/boost-1.35.0)
   SET(ENV{CEGUIDIR}          ${MSVC_LIBRARY_DIR}/cegui-0.6.1)
   SET(ENV{ENETDIR}           ${MSVC_LIBRARY_DIR}/enet-1.2)
   SET(ENV{ALUTDIR}           ${MSVC_LIBRARY_DIR}/freealut-1.1.0)
@@ -61,8 +61,8 @@ IF (MSVC)
   SET(TCL_TCLSH              ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
   SET(TCL_TCLSH_FOUND TRUE)
   SET(ZLIB_INCLUDE_DIR       ${MSVC_LIBRARY_DIR}/zlib-1.2.3/include)
-  SET(ZLIB_LIBRARY OPTIMIZED ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib.lib
-                   DEBUG     ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib_d.lib)
+  SET(ZLIB_LIBRARY optimized ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib.lib
+                   debug     ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib_d.lib)
   SET(ZLIB_FOUND TRUE)
 
 
@@ -84,4 +84,9 @@ IF (MSVC)
   SET(CMAKE_EXE_LINKER_FLAGS    " --no-undefined")
   SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
   SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
+
+  ######################### Misc ##########################
+
+  # Set tolua working directory because lua.dll is not where tolua is
+  SET(TOLUA_PARSER_WORKING_DIRECTORY ${MSVC_LIBRARY_DIR}/bin)
 ENDIF (MSVC)

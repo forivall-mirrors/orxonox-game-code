@@ -15,12 +15,6 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-IF(MINGW_LIBRARY_DIR)
-  SET(_tolua_command_wd "WORKING_DIRECTORY;${MINGW_LIBRARY_DIR}/lua-5.1.3/lib")
-ELSE(MINGW_LIBRARY_DIR)
-  SET(_tolua_command_wd)
-ENDIF(MINGW_LIBRARY_DIR)
-
 MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
   # TODO: cleaner arguments handling
   SET(_tolua_inputfiles ${ARGN})
@@ -38,16 +32,18 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
   ENDFOREACH(_tolua_inputfile)
 
   # Note: Some of the variables are already defined in src/tolua/CMakeLists.txt
+  #       or in the platform config
   ADD_CUSTOM_COMMAND(
     OUTPUT ${_tolua_cxxfile} ${_tolua_hfile}
-    COMMAND ${TOLUA_PARSER_EXECUTABLE} -n ${_tolua_package}
-                                       -w ${CMAKE_CURRENT_SOURCE_DIR}
-                                       -o ${_tolua_cxxfile}
-                                       -H ${_tolua_hfile}
-                                       -s ${TOLUA_PARSER_SOURCE}
-                                          ${_tolua_pkgfile}
-    DEPENDS ${TOLUA_PARSER_DEPENDENCIES}
+    COMMAND toluaexe_orxonox -n ${_tolua_package}
+                             -w ${CMAKE_CURRENT_SOURCE_DIR}
+                             -o ${_tolua_cxxfile}
+                             -H ${_tolua_hfile}
+                             -s ${TOLUA_PARSER_SOURCE}
+                                ${_tolua_pkgfile}
+    DEPENDS              ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS CXX ${_tolua_inputfiles}
-    ${_tolua_command_wd}
+    WORKING_DIRECTORY    ${TOLUA_PARSER_WORKING_DIRECTORY}
+    COMMENT "Generating tolua bind files for package ${_tolua_package}"
   )
 ENDMACRO(TOLUA)

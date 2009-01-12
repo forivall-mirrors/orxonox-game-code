@@ -20,7 +20,7 @@
  #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
  #   Author:
- #      ...
+ #      Reto Grieder
  #   Co-authors:
  #      ...
  #
@@ -41,32 +41,32 @@ IF (MINGW)
   ELSE(EXISTS ${CMAKE_SOURCE_DIR}/libs)
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the MinGW libraries")
   ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/libs)
-  MARK_AS_ADVANCED(MING_LIBRARY_DIR)
 
-  #SET(Boost_ADDITIONAL_VERSIONS "1.36")
-  SET(BOOST_INCLUDEDIR ${MINGW_LIBRARY_DIR}/boost_1_34_1)
-  SET(BOOST_LIBRARYDIR ${MINGW_LIBRARY_DIR}/boost_1_34_1/stage/lib)
-  SET(ENV{CEGUIDIR}    ${MINGW_LIBRARY_DIR}/cegui-0.6.1)
-  SET(ENV{ENETDIR}     ${MINGW_LIBRARY_DIR}/enet-1.1)
-  SET(ENV{ALUTDIR}     ${MINGW_LIBRARY_DIR}/freealut-1.1.0)
-  SET(ENV{OGGSDIR}     ${MINGW_LIBRARY_DIR}/libogg-1.1.3
-                       ${MINGW_LIBRARY_DIR}/libogg-1.1.3/src/.libs)
-  SET(ENV{VORBISDIR}   ${MINGW_LIBRARY_DIR}/libogg-1.1.3
-                       ${MINGW_LIBRARY_DIR}/libvorbis-1.2.0/src/.libs)
-  SET(ENV{OPENALDIR}   ${MINGW_LIBRARY_DIR}/openal-0.0.8/common
-                       ${MINGW_LIBRARY_DIR}/openal-0.0.8/src/.libs)
-  SET(ENV{LUA_DIR}     ${MINGW_LIBRARY_DIR}/lua-5.1.3)
-  SET(ENV{OGRE_HOME}   ${MINGW_LIBRARY_DIR}/ogre/OgreMain
-                       ${MINGW_LIBRARY_DIR}/ogre/Samples/Common/bin/Release)
-  SET(TCL_INCLUDE_PATH ${MINGW_LIBRARY_DIR}/tcl8.5.2/generic)
-  SET(TCL_LIBRARY_PATH ${MINGW_LIBRARY_DIR}/tcl8.5.2/win/tcl85.dll)
-  SET(ZLIB_INCLUDE_DIR ${MINGW_LIBRARY_DIR}/zlib/include)
-  SET(ZLIB_LIBRARY     ${MINGW_LIBRARY_DIR}/zlib/libzlib.a)
+
+  # Note: When setting ENV${} variables, make sure to use quotes when
+  #       having multiple directories.
+  SET(ENV{BOOST_ROOT}    "${MINGW_LIBRARY_DIR}/boost_1_34_1")
+  SET(ENV{CEGUIDIR}      "${MINGW_LIBRARY_DIR}/cegui-0.6.1")
+  SET(ENV{ENETDIR}       "${MINGW_LIBRARY_DIR}/enet-1.1")
+  SET(ENV{ALUTDIR}       "${MINGW_LIBRARY_DIR}/freealut-1.1.0")
+  SET(ENV{OGGDIR}        "${MINGW_LIBRARY_DIR}/libogg-1.1.3;${MINGW_LIBRARY_DIR}/libogg-1.1.3/src/.libs")
+  SET(ENV{VORBISDIR}     "${MINGW_LIBRARY_DIR}/libogg-1.1.3;${MINGW_LIBRARY_DIR}/libvorbis-1.2.0/src/.libs")
+  SET(ENV{OPENALDIR}     "${MINGW_LIBRARY_DIR}/openal-0.0.8/common;${MINGW_LIBRARY_DIR}/openal-0.0.8/src/.libs")
+  SET(ENV{LUA_DIR}       "${MINGW_LIBRARY_DIR}/lua-5.1.3")
+  SET(ENV{OGRE_HOME}     "${MINGW_LIBRARY_DIR}/ogre/OgreMain;${MINGW_LIBRARY_DIR}/ogre/Samples/Common")
+  SET(TCL_INCLUDE_PATH   "${MINGW_LIBRARY_DIR}/tcl8.5.2/generic")
+  SET(TCL_LIBRARY_PATH   "${MINGW_LIBRARY_DIR}/tcl8.5.2/win/tcl85.dll")
+  SET(ZLIB_INCLUDE_DIR   "${MINGW_LIBRARY_DIR}/zlib/include")
+  SET(ZLIB_LIBRARY       "${MINGW_LIBRARY_DIR}/zlib/libzlib.a")
   IF (NOT ENV{DXSDK_DIR})
-    SET(ENV{DXSDK_DIR} ${MINGW_LIBRARY_DIR}/DXSDK)
+    SET(ENV{DXSDK_DIR} "${MINGW_LIBRARY_DIR}/DXSDK")
   ENDIF (NOT ENV{DXSDK_DIR})
 
   # MINGW doesn't like the -fPIC flag, reconfigure flags
   SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   ${ORXONOX_WARNING_FLAGS)")
   SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} ${ORXONOX_WARNING_FLAGS)")
+
+  # Also set the tolua working directory because lua.dll is not where tolua ia
+  SET(TOLUA_PARSER_WORKING_DIRECTORY "${MNGW_LIBRARY_DIR}/lua-5.1.3/lib")
+
 ENDIF (MINGW)
