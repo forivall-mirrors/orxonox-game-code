@@ -43,6 +43,12 @@ ELSE(EXTRA_WARNINGS)
   SET(ORXONOX_WARNING_FLAGS "-Wall")
 ENDIF(EXTRA_WARNINGS)
 
+SET(ORXONOX_MEDIA_DIRECTORY "${CMAKE_SOURCE_DIR}/../media")
+# More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
+# Render systems may be optional, but at least one has to be found in FindOgre
+SET(OGRE_PLUGINS RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX Plugin_CgProgramManager)
+
+
 ###### Default Compiler/Linker Options ##########
 # Most people use GCC to compile orxonox, so use that as default
 
