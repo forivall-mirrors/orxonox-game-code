@@ -11,7 +11,7 @@ SET(COMMON_CONFIG_FILES
 IF(TARDIS)
   # OGRE can't find fonts to display config screen on Tardis,
   # so providing default config file here (bug).
-  SET(ADDITIONAL_CONFIG_FILES "ogre.cfg")
+  SET(ADDITIONAL_CONFIG_FILES ogre.cfg)
 ENDIF(TARDIS)
 
 SET(CONFIG_FILES ${COMMON_CONFIG_FILES} ${ADDITIONAL_CONFIG_FILES})
@@ -56,9 +56,9 @@ ENDFOREACH(_build_config)
 # CMake is not used to create multi-configuration project files
 IF(NOT CMAKE_CONFIGURATION_TYPES)
   IF(WIN32)
-    SET(RUN_SCRIPT ${ADDITIONAL_CONFIG_FILES} "run.bat")
+    SET(RUN_SCRIPT run.bat)
   ELSE(UNIX)
-    SET(RUN_SCRIPT ${ADDITIONAL_CONFIG_FILES} "run")
+    SET(RUN_SCRIPT run)
   ENDIF(WIN32)
   IF (NOT EXISTS ${CMAKE_SOURCE_DIR}/${RUN_SCRIPT})
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${RUN_SCRIPT} ${CMAKE_SOURCE_DIR}/${RUN_SCRIPT} @ONLY)
