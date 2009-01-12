@@ -77,7 +77,7 @@ FOREACH(_plugin ${OGRE_PLUGINS})
     IF(OGRE_PLUGIN_${_plugin}_OPTIMIZED)
         # If debug version is not available, release will do as well
         IF(NOT OGRE_PLUGIN_${_plugin}_DEBUG)
-            SET(OGRE_PLUGIN_${_plugin}_DEBUG ${OGRE_PLUGIN_${_plugin}_OPTIMIZED} CACHE STRING "")
+            SET(OGRE_PLUGIN_${_plugin}_DEBUG ${OGRE_PLUGIN_${_plugin}_OPTIMIZED} CACHE STRING "" FORCE)
         ENDIF(NOT OGRE_PLUGIN_${_plugin}_DEBUG)
         MARK_AS_ADVANCED(OGRE_PLUGIN_${_plugin}_OPTIMIZED OGRE_PLUGIN_${_plugin}_DEBUG)
 
