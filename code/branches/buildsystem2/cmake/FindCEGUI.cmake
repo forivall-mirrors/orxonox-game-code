@@ -34,7 +34,7 @@ FIND_LIBRARY(CEGUI_LIBRARY_OPTIMIZED
     $ENV{CEGUIDIR}
     /usr/local
     /usr
-    PATH_SUFFIXES lib
+    PATH_SUFFIXES lib bin
 )
 FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
     NAMES CEGUIBase${LIBRARY_DEBUG_POSTFIX}
@@ -42,7 +42,7 @@ FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
     $ENV{CEGUIDIR}
     /usr/local
     /usr
-    PATH_SUFFIXES lib
+    PATH_SUFFIXES lib bin
 )
 
 # Look in CEGUIVersion.h for the version number

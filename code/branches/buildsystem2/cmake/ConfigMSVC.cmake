@@ -59,10 +59,8 @@ IF (MSVC)
   SET(ENV{OGRE_HOME}        "${MSVC_LIBRARY_DIR}/ogre-1.4.9;${ORXONOX_LIBRARY_BIN_DIR}")
   SET(TCL_INCLUDE_PATH       ${MSVC_LIBRARY_DIR}/tcl-8.5.2/include)
   SET(TCL_LIBRARY            ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
-  SET(TCL_FOUND TRUE)
   # Do some hacking to avoid "Tclsh not found" message
   SET(TCL_TCLSH              ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
-  SET(TCL_TCLSH_FOUND TRUE)
   SET(ZLIB_INCLUDE_DIR       ${MSVC_LIBRARY_DIR}/zlib-1.2.3/include)
   SET(ZLIB_LIBRARY optimized ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib.lib
                    debug     ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib_d.lib)

@@ -1,5 +1,3 @@
-INCLUDE_DIRECTORIES(.)
-
 SET( OIS_SRC_FILES
   OISEffect.cpp
   OISException.cpp
