@@ -76,7 +76,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying default configuration files..."
-				CommandLine="for %%a in ($(RootDir)\bin\msvc\$(SolutionName)\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\bin\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
+				CommandLine="for %%a in ($(SolutionDir)\bin\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\bin\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -141,7 +141,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying default configuration files..."
-				CommandLine="for %%a in ($(RootDir)\bin\msvc\$(SolutionName)\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\bin\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
+				CommandLine="for %%a in ($(SolutionDir)\bin\$(ConfigurationName)\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;for %%a in ($(RootDir)\bin\*) do replace %%a $(OutDir). /A &gt;nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

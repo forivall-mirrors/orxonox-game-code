@@ -33,6 +33,8 @@
 
 # When searching for debug libraries, this is appended to the libarary name
 SET(LIBRARY_DEBUG_POSTFIX "_d")
+# Sets where to find the binary directory of external libraries
+SET(ORXONOX_LIBRARY_BIN_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 # Working directory for the tolua parser. Adjust for windows because lua.dll has to be there!
 SET(TOLUA_PARSER_WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 

@@ -43,6 +43,7 @@ IF (MSVC)
   ELSE(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the Visual Studio libraries")
   ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
+  SET(ORXONOX_LIBRARY_BIN_DIR ${MSVC_LIBRARY_DIR}/bin)
 
   # Set variables for the include directories and the libraries
   # Note: When setting ENV${} variables, make sure to use quotes when
@@ -55,7 +56,7 @@ IF (MSVC)
   SET(ENV{VORBISDIR}         ${MSVC_LIBRARY_DIR}/libvorbis-1.2.0)
   SET(ENV{OPENALDIR}         ${MSVC_LIBRARY_DIR}/openal-1.1)
   SET(ENV{LUA_DIR}           ${MSVC_LIBRARY_DIR}/lua-5.1.3)
-  SET(ENV{OGRE_HOME}        "${MSVC_LIBRARY_DIR}/ogre-1.4.9;${MSVC_LIBRARY_DIR}/bin")
+  SET(ENV{OGRE_HOME}        "${MSVC_LIBRARY_DIR}/ogre-1.4.9;${ORXONOX_LIBRARY_BIN_DIR}")
   SET(TCL_INCLUDE_PATH       ${MSVC_LIBRARY_DIR}/tcl-8.5.2/include)
   SET(TCL_LIBRARY            ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
   SET(TCL_FOUND TRUE)
@@ -125,5 +126,5 @@ IF (MSVC)
   ######################### Misc ##########################
 
   # Set tolua working directory because lua.dll is not where tolua is
-  SET(TOLUA_PARSER_WORKING_DIRECTORY ${MSVC_LIBRARY_DIR}/bin)
+  SET(TOLUA_PARSER_WORKING_DIRECTORY ${ORXONOX_LIBRARY_BIN_DIR})
 ENDIF (MSVC)
