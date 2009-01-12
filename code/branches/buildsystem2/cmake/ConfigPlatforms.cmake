@@ -48,7 +48,11 @@ ENDIF(EXTRA_WARNINGS)
 SET(ORXONOX_MEDIA_DIRECTORY "${CMAKE_SOURCE_DIR}/../media")
 # More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
 # Render systems may be optional, but at least one has to be found in FindOgre
-SET(OGRE_PLUGINS RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX Plugin_CgProgramManager)
+SET(OGRE_PLUGINS RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX)
+IF(WIN32)
+  # CG program manager is probably DirectX related (not available under unix)
+  LIST(APPEND OGRE_PLUGINS Plugin_CgProgramManager)
+ENDIF(WIN32)
 
 
 ###### Default Compiler/Linker Options ##########
