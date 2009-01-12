@@ -20,6 +20,9 @@ TOLUA(Orxonox ORXONOX_SRC_FILES INPUTFILES gui/GUIManager.h)
 # Not using precompiled header files: Avoid dependencies
 INCLUDE_DIRECTORIES(pch/nopch)
 
+# Enlarge heap size for precompiled header files
+ADD_CXX_FLAGS("-Zm200" MSVC)
+
 ADD_EXECUTABLE(orxonox ${ORXONOX_SRC_FILES})
 
 IF(NETWORKTRAFFIC_TESTING_ENABLED)

@@ -69,6 +69,19 @@ SET(CMAKE_EXE_LINKER_FLAGS    " --no-undefined")
 SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
+# Also define macros to easily extend the compiler flags
+# Additional argument is a condition
+MACRO(ADD_CXX_FLAGS _flag _cond)
+  IF(${_cond})
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_flag}")
+  ENDIF(${_cond})
+ENDMACRO(ADD_CXX_FLAGS _flag)
+MACRO(ADD_C_FLAGS _flag)
+  IF(${_cond})
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_flag}")
+  ENDIF(${_cond})
+ENDMACRO(ADD_C_FLAGS _flag)
+
 ########## Plaform Specific Config ##############
 
 # Set the platform specific options and paths

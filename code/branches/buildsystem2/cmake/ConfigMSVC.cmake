@@ -25,13 +25,15 @@
  #      ...
  #
  
-############## MSVC config ################
-# Set the library directory when using precompiled tarballs for
-# the dependencies under windows (MSVC)
-###########################################
+###################### MSVC config ########################
+# Set the library directories and special options when
+# using Visual Studio.
+###########################################################
 
 IF (MSVC)
   MESSAGE(STATUS "Running on MSVC. Using customized paths and options.")
+
+  ###################### Libraries ########################
 
   # Determine library directory
   IF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
@@ -53,7 +55,7 @@ IF (MSVC)
   SET(ENV{VORBISDIR}         ${MSVC_LIBRARY_DIR}/libvorbis-1.2.0)
   SET(ENV{OPENALDIR}         ${MSVC_LIBRARY_DIR}/openal-1.1)
   SET(ENV{LUA_DIR}           ${MSVC_LIBRARY_DIR}/lua-5.1.3)
-  SET(ENV{OGRE_HOME}        "${MSVC_LIBRARY_DIR}/ogre-1.4.9;${ORXONOX_LIBRARY_BIN_DIR}")
+  SET(ENV{OGRE_HOME}        "${MSVC_LIBRARY_DIR}/ogre-1.4.9;${MSVC_LIBRARY_DIR}/bin")
   SET(TCL_INCLUDE_PATH       ${MSVC_LIBRARY_DIR}/tcl-8.5.2/include)
   SET(TCL_LIBRARY            ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
   SET(TCL_FOUND TRUE)
@@ -65,25 +67,60 @@ IF (MSVC)
                    debug     ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib_d.lib)
   SET(ZLIB_FOUND TRUE)
 
+  #################### Compiler Flags #####################
 
-  # Set standard compiler flags
-  SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   ${ORXONOX_WARNING_FLAGS} -fPIC")
-  SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} ${ORXONOX_WARNING_FLAGS} -fPIC")
-  # These flags are added to the flags above
-  SET(CMAKE_C_FLAGS_DEBUG            "    -g -ggdb")
-  SET(CMAKE_CXX_FLAGS_DEBUG          "    -g -ggdb")
-  SET(CMAKE_C_FLAGS_RELEASE          "-O3          -DNDEBUG")
-  SET(CMAKE_CXX_FLAGS_RELEASE        "-O3          -DNDEBUG")
-  SET(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -g -ggdb -DNDEBUG")
-  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -ggdb -DNDEBUG")
-  SET(CMAKE_C_FLAGS_MINSIZEREL       "-Os          -DNDEBUG")
-  SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os          -DNDEBUG")
+  # /MD    Minimal Rebuild
+  # /RTC1  Both basic runtime checks
+  # /MD[d] Multithreaded [debug] DLL
+  # /Zi    Program Database
+  # /ZI    Program Database for Edit & Continue
+  # /WX    Warning Level X
+  # /wdX   Disable specific warning X
+  SET(MSVC_CL_FLAGS "
+    /D WIN32 /D __WIN32__ /D _WIN32 /D _WINDOWS
+    /D BOOST_ALL_DYN_LINK
+    /D OIS_DYNAMIC_LIB
+    /D ZLIB_WINAPI
+    /D LUA_BUILD_AS_DLL
+    /D _CRT_SECURE_NO_WARNINGS
+    /W3
+    /EHsc
+    /wd4522
+    /wd4251
+    /wd4800
+  ")
+  SET(CMAKE_C_FLAGS                  "${MSVC_CL_FLAGS}")
+  SET(CMAKE_CXX_FLAGS                "${MSVC_CL_FLAGS}")
 
-  # Linker flags
-  SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
-  SET(CMAKE_EXE_LINKER_FLAGS    " --no-undefined")
-  SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
-  SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
+  # Note: ${CMAKE_C_FLAGS} get added to the specific ones
+  SET(MSVC_CL_FLAGS_DEBUG            "/MDd /Od  /Zi /Gm /RTC1")
+  SET(MSVC_CL_FLAGS_RELEASE          "/MD  /MP2 /D TOLUA_RELEASE")
+  SET(CMAKE_C_FLAGS_DEBUG            "${MSVC_CL_FLAGS_DEBUG}")
+  SET(CMAKE_CXX_FLAGS_DEBUG          "${MSVC_CL_FLAGS_DEBUG}")
+  SET(CMAKE_C_FLAGS_RELEASE          "${MSVC_CL_FLAGS_RELEASE} /O2")
+  SET(CMAKE_CXX_FLAGS_RELEASE        "${MSVC_CL_FLAGS_RELEASE} /O2")
+  SET(CMAKE_C_FLAGS_RELWITHDEBINFO   "${MSVC_CL_FLAGS_RELEASE} /O2 /Zi")
+  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${MSVC_CL_FLAGS_RELEASE} /O2 /Zi")
+  SET(CMAKE_C_FLAGS_MINSIZEREL       "${MSVC_CL_FLAGS_RELEASE} /O1")
+  SET(CMAKE_CXX_FLAGS_MINSIZEREL     "${MSVC_CL_FLAGS_RELEASE} /O1")
+
+  ##################### Linker Flags ######################
+
+  SET(MSVC_LINKER_FLAGS                        "")
+  SET(CMAKE_EXE_LINKER_FLAGS                   "${MSVC_LINKER_FLAGS}")
+  SET(CMAKE_SHARED_LINKER_FLAGS                "${MSVC_LINKER_FLAGS}")
+
+  # Note: ${CMAKE_EXE_LINKER_FLAGS} get added to the specific ones
+  SET(MSVC_LINKER_FLAGS_DEBUG                  "/INCREMENTAL:YES")
+  SET(MSVC_LINKER_FLAGS_RELEASE                "/INCREMENTAL:NO /OPT:REF /OPT:ICF")
+  SET(CMAKE_EXE_LINKER_FLAGS_DEBUG             "${MSVC_LINKER_FLAGS_DEBUG}")
+  SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG          "${MSVC_LINKER_FLAGS_DEBUG}")
+  SET(CMAKE_EXE_LINKER_FLAGS_RELEASE           "${MSVC_LINKER_FLAGS_RELEASE}")
+  SET(CMAKE_SHARED_LINKER_FLAGS_RELEASE        "${MSVC_LINKER_FLAGS_RELEASE}")
+  SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO    "${MSVC_LINKER_FLAGS_RELEASE}")
+  SET(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${MSVC_LINKER_FLAGS_RELEASE}")
+  SET(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL        "${MSVC_LINKER_FLAGS_RELEASE}")
+  SET(CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL     "${MSVC_LINKER_FLAGS_RELEASE}")
 
   ######################### Misc ##########################
 

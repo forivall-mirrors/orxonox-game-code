@@ -1,3 +1,5 @@
+ADD_C_FLAGS("-wd4996" MSVC)
+
 ADD_LIBRARY(tolualib_orxonox SHARED
   tolua_event.c
   tolua_is.c
@@ -5,6 +7,7 @@ ADD_LIBRARY(tolualib_orxonox SHARED
   tolua_push.c
   tolua_to.c
 )
+SET_TARGET_PROPERTIES(tolualib_orxonox PROPERTIES DEFINE_SYMBOL "TOLUA_SHARED_BUILD")
 TARGET_LINK_LIBRARIES(tolualib_orxonox ${LUA_LIBRARY})
 
 IF (NOT WIN32)

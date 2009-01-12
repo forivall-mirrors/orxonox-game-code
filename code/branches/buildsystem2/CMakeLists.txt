@@ -44,6 +44,12 @@ OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
 # Expand the next statement if newer boost versions than 1.36.1 are released
 SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 CACHE STRING "")
 FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem)
+# With MSVC, automatic linking is performed for boost. So wee need to tell
+# the linker where to find them. Also note that when running FindBoost for the
+# first time, it will set ${Boost_LIBRARIES} to "" but afterwards to the libs.
+IF (MSVC)
+  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+ENDIF (MSVC)
 FIND_PACKAGE(OGRE REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED)
 FIND_PACKAGE(ENet REQUIRED)

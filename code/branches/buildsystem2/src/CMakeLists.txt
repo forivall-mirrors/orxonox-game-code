@@ -36,7 +36,8 @@ INCLUDE_DIRECTORIES(
 )
 
 # Set special macro symbols across all libraries
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIXML_USE_TICPP")
+ADD_CXX_FLAGS("-DTIXML_USE_TICPP" TRUE)
+ADD_C_FLAGS("-DTIXML_USE_TICPP" TRUE)
 
 # Include macros
 INCLUDE(AddSourceFiles)

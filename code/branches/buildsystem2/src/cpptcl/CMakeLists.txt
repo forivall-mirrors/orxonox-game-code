@@ -1,4 +1,8 @@
-ADD_LIBRARY(cpptcl_orxonox SHARED CppTcl.cc)
+IF(MSVC)
+  ADD_LIBRARY(cpptcl_orxonox STATIC CppTcl.cc)
+ELSE(MSVC)
+  ADD_LIBRARY(cpptcl_orxonox SHARED CppTcl.cc)
+ENDIF(MSVC)
 
 TARGET_LINK_LIBRARIES(cpptcl_orxonox
   ${TCL_LIBRARY}

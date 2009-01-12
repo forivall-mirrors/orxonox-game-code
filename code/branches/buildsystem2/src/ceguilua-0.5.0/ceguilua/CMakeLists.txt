@@ -5,8 +5,11 @@ SET( CEGUILUA_SRC_FILES
   required.cpp
 )
 
+ADD_CXX_FLAGS("-wd4996" MSVC)
+
 ADD_LIBRARY( ceguilua_orxonox SHARED ${CEGUILUA_SRC_FILES} )
 
+SET_TARGET_PROPERTIES(ceguilua_orxonox PROPERTIES DEFINE_SYMBOL "CEGUILUA_EXPORTS")
 TARGET_LINK_LIBRARIES(ceguilua_orxonox
   tolualib_orxonox
   ${LUA_LIBRARIES}
