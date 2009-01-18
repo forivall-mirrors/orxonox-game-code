@@ -44,7 +44,7 @@ namespace orxonox
     SignalHandler * SignalHandler::singletonRef = NULL;
 }
 
-#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX
 
 #include <wait.h>
 #include <X11/Xlib.h>
@@ -357,4 +357,4 @@ namespace orxonox
     }
 }
 
-#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
+#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX */
