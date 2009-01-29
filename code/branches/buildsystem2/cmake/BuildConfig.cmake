@@ -24,12 +24,18 @@
  #   Co-authors:
  #      ...
  #
- 
-# If you want to set specific options for your platform, simply
-# create a file called "ConfigUser.cmake" in the binary folder
-# (see at the bottom of the file)
 
-############ Misc Default Options ###############
+################ Misc Options ###################
+
+# Set binary output directories
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Set Debug build to default when not having multi-config generator like msvc
+IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  SET(CMAKE_BUILD_TYPE "Debug")
+ENDIF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 
 # When searching for debug libraries, this is appended to the libarary name
 SET(LIBRARY_DEBUG_POSTFIX "_d")
@@ -54,26 +60,32 @@ IF(WIN32)
   LIST(APPEND OGRE_PLUGINS Plugin_CgProgramManager)
 ENDIF(WIN32)
 
+# Check the plugins and determine the plugin folder
+# You can give a hint by setting the environment variable ENV{OGRE_PLUGIN_DIR}
+INCLUDE(CheckOGREPlugins)
 
-###### Default Compiler/Linker Options ##########
-# Most people use GCC to compile orxonox, so use that as default
 
-SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   ${ORXONOX_WARNING_FLAGS} -fPIC")
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} ${ORXONOX_WARNING_FLAGS} -fPIC")
-# These flags are added to the flags above
-SET(CMAKE_C_FLAGS_DEBUG            "    -g -ggdb")
-SET(CMAKE_CXX_FLAGS_DEBUG          "    -g -ggdb")
-SET(CMAKE_C_FLAGS_RELEASE          "-O3          -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_RELEASE        "-O3          -DNDEBUG")
-SET(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -g -ggdb -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -ggdb -DNDEBUG")
-SET(CMAKE_C_FLAGS_MINSIZEREL       "-Os          -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os          -DNDEBUG")
+############## Compiler Config ##################
+INCLUDE(BuildConfigGCC)
+INCLUDE(BuildConfigMSVC)
+# User can create his own file if required
+IF(EXISTS ${CMAKE_BINARY_DIR}/BuildConfigUser.cmake)
+  INCLUDE(${CMAKE_BINARY_DIR}/BuildConfigUser)
+ENDIF(EXISTS ${CMAKE_BINARY_DIR}/BuildConfigUser.cmake)
 
-SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
-SET(CMAKE_EXE_LINKER_FLAGS    " --no-undefined")
-SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
-SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
+
+################ Test options ###################
+
+OPTION(ENABLE_TESTS "Enable build tests.")
+IF(ENABLE_TESTS)
+  ENABLE_TESTING()
+ENDIF(ENABLE_TESTS)
+
+OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient chatserver and alike.")
+OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
+
+
+################### Macros ######################
 
 # Also define macros to easily extend the compiler flags
 # Additional argument is a condition
@@ -87,14 +99,3 @@ MACRO(ADD_C_FLAGS _flag)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_flag}")
   ENDIF(${_cond})
 ENDMACRO(ADD_C_FLAGS _flag)
-
-########## Plaform Specific Config ##############
-
-# Set the platform specific options and paths
-INCLUDE(ConfigTardis)
-INCLUDE(ConfigMSVC)
-INCLUDE(ConfigMinGW)
-# User can create his own file if required
-IF(EXISTS ${CMAKE_BINARY_DIR}/ConfigUser.cmake)
-  INCLUDE(${CMAKE_BINARY_DIR}/ConfigUser)
-ENDIF(EXISTS ${CMAKE_BINARY_DIR}/ConfigUser.cmake)
