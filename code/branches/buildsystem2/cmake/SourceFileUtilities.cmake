@@ -1,0 +1,61 @@
+#    AddSourceFiles.cmake - CMake Module to include source files in subdirectories.
+#    Author: Reto '1337' Grieder (2008)
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+
+# Adds source files with the full path to a list
+FUNCTION(ADD_SOURCE_FILES _varname)
+  # Prefix the full path
+  SET(_fullpath_sources)
+  FOREACH(_file ${ARGN})
+    GET_SOURCE_FILE_PROPERTY(_filepath ${_file} LOCATION)
+    LIST(APPEND _fullpath_sources ${_filepath})
+  ENDFOREACH(_file)
+  # Write into the cache to avoid variable scoping in subdirs
+  SET(${_varname} ${${_varname}} ${_fullpath_sources} CACHE INTERNAL "Do not edit")
+ENDFUNCTION(ADD_SOURCE_FILES)
+
+
+# Sets source files with the full path
+FUNCTION(SET_SOURCE_FILES _varname)
+  # Prefix the full path
+  SET(_fullpath_sources)
+  FOREACH(_file ${ARGN})
+    GET_SOURCE_FILE_PROPERTY(_filepath ${_file} LOCATION)
+    LIST(APPEND _fullpath_sources ${_filepath})
+  ENDFOREACH(_file)
+  # Write into the cache to avoid variable scoping in subdirs
+  SET(${_varname} ${_fullpath_sources} CACHE INTERNAL "Do not edit")
+ENDFUNCTION(SET_SOURCE_FILES)
+
+
+# Search the entire directory tree for header files and add them to a variable
+MACRO(GET_ALL_HEADER_FILES _target_varname)
+  FILE(GLOB_RECURSE ${_target_varname} ${CMAKE_CURRENT_SOURCE_DIR} "*.h")
+ENDMACRO(GET_ALL_HEADER_FILES)
+
+
+# Generate source groups according to the directory structure
+FUNCTION(GENERATE_SOURCE_GROUPS)
+
+  FOREACH(_file ${ARGN})
+    GET_SOURCE_FILE_PROPERTY(_full_filepath ${_file} LOCATION)
+    FILE(RELATIVE_PATH _relative_path ${CMAKE_CURRENT_SOURCE_DIR} ${_full_filepath})
+    GET_FILENAME_COMPONENT(_relative_path ${_relative_path} PATH)
+    STRING(REPLACE "/" "\\\\" _group_path "${_relative_path}")
+    SOURCE_GROUP("Source\\${_group_path}" FILES ${_file})
+  ENDFOREACH(_file)
+
+ENDFUNCTION(GENERATE_SOURCE_GROUPS)
