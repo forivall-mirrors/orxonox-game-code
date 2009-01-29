@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   HUDBar.cc
   HUDNavigation.cc
   HUDRadar.cc

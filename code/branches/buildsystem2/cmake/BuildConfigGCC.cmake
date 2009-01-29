@@ -25,22 +25,30 @@
  #      ...
  #
 
-###### Default Compiler/Linker Options ##########
-# Most people use GCC to compile orxonox, so use that as default
+# Also include environment flags. Could cause conflicts though
+SET_COMPILER_FLAGS("$ENV{CXXFLAGS}" CXX CACHE)
+SET_COMPILER_FLAGS("$ENV{CFLAGS}"   C   CACHE)
 
-SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   ${ORXONOX_WARNING_FLAGS} -fPIC")
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} ${ORXONOX_WARNING_FLAGS} -fPIC")
-# These flags are added to the flags above
-SET(CMAKE_C_FLAGS_DEBUG            "    -g -ggdb")
-SET(CMAKE_CXX_FLAGS_DEBUG          "    -g -ggdb")
-SET(CMAKE_C_FLAGS_RELEASE          "-O3          -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_RELEASE        "-O3          -DNDEBUG")
-SET(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -g -ggdb -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -ggdb -DNDEBUG")
-SET(CMAKE_C_FLAGS_MINSIZEREL       "-Os          -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os          -DNDEBUG")
+# These flags get added to the flags above
+SET_COMPILER_FLAGS("    -g -ggdb -D_DEBUG" Debug          CACHE)
+SET_COMPILER_FLAGS("             -DNDEBUG" ReleaseAll     CACHE)
+ADD_COMPILER_FLAGS("-O3"                   Release        CACHE)
+ADD_COMPILER_FLAGS("-O2 -g -ggdb"          RelWithDebInfo CACHE)
+ADD_COMPILER_FLAGS("-Os"                   MinSizeRel     CACHE)
 
-SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
-SET(CMAKE_EXE_LINKER_FLAGS    " --no-undefined")
-SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
-SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
+# CMake doesn't seem to set the PIC flags right on certain 64 bit systems
+IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+  ADD_COMPILER_FLAGS("-fPIC" CACHE)
+ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+
+# Increase warning level if requested
+IF(EXTRA_WARNINGS)
+  REMOVE_COMPILER_FLAGS("-Wall" CACHE)
+  ADD_COMPILER_FLAGS("-Wextra --Wno-unused-parameter" CACHE)
+ELSE(EXTRA_WARNINGS)
+  REMOVE_COMPILER_FLAGS("-Wextra --Wno-unused-parameter" CACHE)
+  ADD_COMPILER_FLAGS("-Wall" CACHE)
+ENDIF(EXTRA_WARNINGS) 
+
+# General linker flags
+SET_LINKER_FLAGS("--no-undefined" CACHE)

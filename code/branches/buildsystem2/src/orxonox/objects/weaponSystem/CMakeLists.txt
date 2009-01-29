@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Munition.cc
   Weapon.cc
   WeaponSet.cc
@@ -6,6 +6,6 @@ ADD_SOURCE_FILES(
   WeaponSystem.cc
 )
 
-#ADD_SOURCE_DIRECTORY(munitions)
-#ADD_SOURCE_DIRECTORY(projectiles)
-#ADD_SOURCE_DIRECTORY(weapons)
+#ADD_SUBDIRECTORY(munitions)
+#ADD_SUBDIRECTORY(projectiles)
+#ADD_SUBDIRECTORY(weapons)

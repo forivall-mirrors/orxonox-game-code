@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+SET_SOURCE_FILES(CORE_SRC_FILES
   Clock.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
@@ -41,14 +41,14 @@ ADD_SOURCE_FILES(
   TclBind.cc
   TclThreadManager.cc
 )
+ADD_SUBDIRECTORY(input)
+GET_ALL_HEADER_FILES(CORE_HDR_FILES)
+SET(CORE_FILES ${CORE_SRC_FILES} ${CORE_HDR_FILES})
 
-ADD_SOURCE_DIRECTORY(input)
+GENERATE_SOURCE_GROUPS(${CORE_FILES})
+GENERATE_TOLUA_BINDINGS(Core CORE_FILES INPUTFILES LuaBind.h CommandExecutor.h)
 
-WRITE_SOURCE_FILES(CORE_SRC_FILES)
-
-TOLUA(Core CORE_SRC_FILES INPUTFILES LuaBind.h CommandExecutor.h)
-
-ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
+ADD_LIBRARY(core SHARED ${CORE_FILES})
 
 SET_TARGET_PROPERTIES(core PROPERTIES DEFINE_SYMBOL "CORE_SHARED_BUILD")
 TARGET_LINK_LIBRARIES(core
@@ -58,8 +58,8 @@ TARGET_LINK_LIBRARIES(core
   ${LUA_LIBRARIES}
   cpptcl_orxonox
   ois_orxonox
-  tinyxml_orxonox
-  tolualib_orxonox
+  tinyxml++_orxonox
+  tolua++_orxonox
   util
 )
 

@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   WorldEntity.cc
   PositionableEntity.cc
   MovableEntity.cc
@@ -15,5 +15,5 @@ ADD_SOURCE_FILES(
 #  Backlight.cc
 )
 
-ADD_SOURCE_DIRECTORY(pawns)
-ADD_SOURCE_DIRECTORY(triggers)
+ADD_SUBDIRECTORY(pawns)
+ADD_SUBDIRECTORY(triggers)

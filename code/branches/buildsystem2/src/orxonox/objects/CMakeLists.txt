@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   EventListener.cc
   EventDispatcher.cc
   EventTarget.cc
@@ -12,10 +12,10 @@ ADD_SOURCE_FILES(
   Script.cc
 )
 
-ADD_SOURCE_DIRECTORY(controllers)
-ADD_SOURCE_DIRECTORY(gametypes)
-ADD_SOURCE_DIRECTORY(infos)
-#ADD_SOURCE_DIRECTORY(pickup)
-ADD_SOURCE_DIRECTORY(quest)
-ADD_SOURCE_DIRECTORY(weaponSystem)
-ADD_SOURCE_DIRECTORY(worldentities)
+ADD_SUBDIRECTORY(controllers)
+ADD_SUBDIRECTORY(gametypes)
+ADD_SUBDIRECTORY(infos)
+#ADD_SUBDIRECTORY(pickup)
+ADD_SUBDIRECTORY(quest)
+ADD_SUBDIRECTORY(weaponSystem)
+ADD_SUBDIRECTORY(worldentities)

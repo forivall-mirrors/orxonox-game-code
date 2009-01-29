@@ -24,67 +24,44 @@
  #   Co-authors:
  #      ...
  #
- 
-###################### MSVC config ########################
-# Set the library directories and special options when
-# using Visual Studio.
-###########################################################
 
-IF (MSVC)
+#################### Compiler Flags #####################
 
-  #################### Compiler Flags #####################
+# -MD    Minimal Rebuild
+# -RTC1  Both basic runtime checks
+# -MD[d] Multithreaded [debug] DLL
+# -Zi    Program Database
+# -ZI    Program Database for Edit & Continue
+# -WX    General warning Level X
+# -wdX   Disable specific warning X
+# -wnX   Set warning level of specific warning X to level n
 
-  # /MD    Minimal Rebuild
-  # /RTC1  Both basic runtime checks
-  # /MD[d] Multithreaded [debug] DLL
-  # /Zi    Program Database
-  # /ZI    Program Database for Edit & Continue
-  # /WX    Warning Level X
-  # /wdX   Disable specific warning X
-  SET(MSVC_CL_FLAGS "
-    /D WIN32 /D __WIN32__ /D _WIN32 /D _WINDOWS
-    /D BOOST_ALL_DYN_LINK
-    /D OIS_DYNAMIC_LIB
-    /D ZLIB_WINAPI
-    /D LUA_BUILD_AS_DLL
-    /D _CRT_SECURE_NO_WARNINGS
-    /W3
-    /EHsc
-    /wd4522
-    /wd4251
-    /wd4800
-  ")
-  SET(CMAKE_C_FLAGS                  "${MSVC_CL_FLAGS}")
-  SET(CMAKE_CXX_FLAGS                "${MSVC_CL_FLAGS}")
+# Overwrite CMake default flags first. Be careful with this
+# Only add (not set) the general compiler flags.
+# CMake default flags : -DWIN32 -D_WINDOWS -W3 -Zm1000
+# additionally for CXX: -EHsc -GR
+ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"      CACHE)
+ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
+ADD_COMPILER_FLAGS("-DUNICODE -D_UNICODE"      CACHE)
+ADD_COMPILER_FLAGS("-w44522 -w44251 -w44800"   CACHE)
 
-  # Note: ${CMAKE_C_FLAGS} get added to the specific ones
-  SET(MSVC_CL_FLAGS_DEBUG            "/MDd /Od  /Zi /Gm /RTC1")
-  SET(MSVC_CL_FLAGS_RELEASE          "/MD  /MP2 /D TOLUA_RELEASE")
-  SET(CMAKE_C_FLAGS_DEBUG            "${MSVC_CL_FLAGS_DEBUG}")
-  SET(CMAKE_CXX_FLAGS_DEBUG          "${MSVC_CL_FLAGS_DEBUG}")
-  SET(CMAKE_C_FLAGS_RELEASE          "${MSVC_CL_FLAGS_RELEASE} /O2")
-  SET(CMAKE_CXX_FLAGS_RELEASE        "${MSVC_CL_FLAGS_RELEASE} /O2")
-  SET(CMAKE_C_FLAGS_RELWITHDEBINFO   "${MSVC_CL_FLAGS_RELEASE} /O2 /Zi")
-  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${MSVC_CL_FLAGS_RELEASE} /O2 /Zi")
-  SET(CMAKE_C_FLAGS_MINSIZEREL       "${MSVC_CL_FLAGS_RELEASE} /O1")
-  SET(CMAKE_CXX_FLAGS_MINSIZEREL     "${MSVC_CL_FLAGS_RELEASE} /O1")
+# Increase warning level if requested
+IF(EXTRA_WARNINGS)
+  REMOVE_COMPILER_FLAGS("-W1 -W2 -W3" CACHE)
+  ADD_COMPILER_FLAGS   ("-W4" CACHE)
+ELSE(EXTRA_WARNINGS)
+  REMOVE_COMPILER_FLAGS("-W1 -W2 -W4" CACHE)
+  ADD_COMPILER_FLAGS   ("-W3" CACHE)
+ENDIF(EXTRA_WARNINGS) 
 
-  ##################### Linker Flags ######################
+# Overwrite CMake default flags here.
+SET_COMPILER_FLAGS("-MDd -Od -ZI -D_DEBUG -Gm -RTC1" Debug          CACHE)
+SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"      Release        CACHE)
+SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"           RelWithDebInfo CACHE)
+SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"      MinSizeRel     CACHE)
 
-  SET(MSVC_LINKER_FLAGS                        "")
-  SET(CMAKE_EXE_LINKER_FLAGS                   "${MSVC_LINKER_FLAGS}")
-  SET(CMAKE_SHARED_LINKER_FLAGS                "${MSVC_LINKER_FLAGS}")
+##################### Linker Flags ######################
 
-  # Note: ${CMAKE_EXE_LINKER_FLAGS} get added to the specific ones
-  SET(MSVC_LINKER_FLAGS_DEBUG                  "/INCREMENTAL:YES")
-  SET(MSVC_LINKER_FLAGS_RELEASE                "/INCREMENTAL:NO /OPT:REF /OPT:ICF")
-  SET(CMAKE_EXE_LINKER_FLAGS_DEBUG             "${MSVC_LINKER_FLAGS_DEBUG}")
-  SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG          "${MSVC_LINKER_FLAGS_DEBUG}")
-  SET(CMAKE_EXE_LINKER_FLAGS_RELEASE           "${MSVC_LINKER_FLAGS_RELEASE}")
-  SET(CMAKE_SHARED_LINKER_FLAGS_RELEASE        "${MSVC_LINKER_FLAGS_RELEASE}")
-  SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO    "${MSVC_LINKER_FLAGS_RELEASE}")
-  SET(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${MSVC_LINKER_FLAGS_RELEASE}")
-  SET(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL        "${MSVC_LINKER_FLAGS_RELEASE}")
-  SET(CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL     "${MSVC_LINKER_FLAGS_RELEASE}")
-
-ENDIF (MSVC)
+# CMake default flags: -MANIFEST -STACK:10000000 -machine:I386
+# and INCREMENTAL and DEBUG for debug versions
+ADD_LINKER_FLAGS("-OPT:REF -OPT:ICF -OPT:NOWIN98" Release MinSizeRel CACHE)

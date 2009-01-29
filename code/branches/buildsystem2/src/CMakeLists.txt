@@ -1,10 +1,27 @@
+# various macro includes
+INCLUDE(FlagUtilities)
+INCLUDE(SourceFileUtilities)
+INCLUDE(GenerateToluaBindings)
+
+# Use TinyXML++
+ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
+# OIS dynamic linking requires macro definition, at least for Windows
+ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
+
+OPTION(TOLUA_PARSER_RELEASE "Disable all debug messages from tolua bind files for Release and MinSizeRel build types." FALSE)
+ADD_COMPILER_FLAGS("-DTOLUA_RELEASE" Release MinSizeRel TOLUA_PARSER_RELEASE)
+
 ################ OrxonoxConfig.h ################
 
 # Copy and configure OrxonoxConfig which gets included in every file
 CONFIGURE_FILE(OrxonoxConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h)
 
+
+############## Include Directories ##############
+
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
+  # External
   ${OGRE_INCLUDE_DIR}
   ${CEGUI_INCLUDE_DIR}
   ${ENET_INCLUDE_DIR}
@@ -15,46 +32,41 @@ INCLUDE_DIRECTORIES(
   ${OGG_INCLUDE_DIR}
   ${LUA_INCLUDE_DIR}
   ${TCL_INCLUDE_PATH}
-  ${DirectX_INCLUDE_DIR}
+  ${DIRECTX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
-)
 
-# Check whether the required CEGUILua version is even available
-IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-  MESSAGE(FATAL_ERROR "No matching CEGUILua version shipped with Orxonox (${CEGUI_VERSION})")
-ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-
-INCLUDE_DIRECTORIES(
-  ceguilua/ceguilua-${CEGUI_VERSION}
-)
-
-INCLUDE_DIRECTORIES(
+  # Internal
   .
   orxonox
-  # Required for tolua bind files that are in the build folder
+  # Required for tolua bind and config files that are in the binary folder
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/orxonox
 )
 
-# Set special macro symbols across all libraries
-ADD_CXX_FLAGS("-DTIXML_USE_TICPP" 1)
-ADD_C_FLAGS  ("-DTIXML_USE_TICPP" 1)
 
-# Include macros
-INCLUDE(AddSourceFiles)
-INCLUDE(UseTolua)
+################ Sub Directories ################
 
-# External libraries, but copied into the repository
+# Third party libraries
 ADD_SUBDIRECTORY(tolua)
-ADD_SUBDIRECTORY(ceguilua)
+
+# Include CEGUILua if not requested otherwise
+IF(CEGUILUA_USE_INTERNAL_LIBRARY)
+  IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
+    MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
+  ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
+
+  INCLUDE_DIRECTORIES(ceguilua/ceguilua-${CEGUI_VERSION})
+  ADD_SUBDIRECTORY(ceguilua)
+ENDIF(CEGUILUA_USE_INTERNAL_LIBRARY)
+
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ogreceguirenderer)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
 
-# Our own libraries
+# Orxonox code
 ADD_SUBDIRECTORY(util)
 ADD_SUBDIRECTORY(core)
-#ADD_SUBDIRECTORY(audio)
+ADD_SUBDIRECTORY(audio)
 ADD_SUBDIRECTORY(network)
 ADD_SUBDIRECTORY(orxonox)

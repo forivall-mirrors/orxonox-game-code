@@ -34,6 +34,6 @@
 #ifndef _OrxonoxStableHeaders_H__
 #define _OrxonoxStableHeaders_H__
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 
 #endif /* _OrxonoxStableHeaders_H__ */

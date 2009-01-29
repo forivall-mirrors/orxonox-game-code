@@ -41,7 +41,7 @@ IF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   ELSE(EXISTS ${CMAKE_SOURCE_DIR}/libs)
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the MinGW libraries")
   ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/libs)
-  SET(ORXONOX_LIBRARY_BIN_DIR ${MINGW_LIBRARY_DIR})
+  SET(ORXONOX_RUNTIME_LIBRARY_DIRECTORY ${MINGW_LIBRARY_DIR})
 
   # Note: When setting ENV${} variables, make sure to use quotes when
   #       having multiple directories.

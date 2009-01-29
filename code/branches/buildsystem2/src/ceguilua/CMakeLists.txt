@@ -27,23 +27,27 @@ ENDFOREACH(_version)
 # Create the tolua bind file. We could use the orignal file though, but it is 1.6MB...
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CEGUILUA_BINARY_DIR}/lua_CEGUI.cpp
-  COMMAND toluaexe_orxonox -n CEGUI
+  COMMAND tolua++gen_orxonox -n CEGUI
                              -w ${CEGUILUA_BINARY_DIR}
                              -o lua_CEGUI.cpp
                              -L exceptions.lua
                              -s ${TOLUA_PARSER_SOURCE}
                                 CEGUI.pkg
   DEPENDS              ${TOLUA_PARSER_DEPENDENCIES}
-  WORKING_DIRECTORY    ${ORXONOX_LIBRARY_BIN_DIR}
+  WORKING_DIRECTORY    ${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}
   COMMENT "Generating tolua bind files for package CEGUILua"
 )
 
-ADD_CXX_FLAGS("-w44996" MSVC)
+ADD_COMPILER_FLAGS("-w44996" MSVC)
 
-ADD_LIBRARY(ceguilua_orxonox SHARED ${CEGUILUA_FILES})
-SET_TARGET_PROPERTIES(ceguilua_orxonox PROPERTIES DEFINE_SYMBOL "CEGUILUA_EXPORTS")
-TARGET_LINK_LIBRARIES(ceguilua_orxonox
-  tolualib_orxonox
+SOURCE_GROUP("Source" FILES ${CEGUILUA_FILES})
+
+SET(CEGUILUA_LIBRARY ceguilua_orxonox)
+SET(CEGUILUA_LIBRARY ${CEGUILUA_LIBRARY} PARENT_SCOPE)
+ADD_LIBRARY(${CEGUILUA_LIBRARY} SHARED ${CEGUILUA_FILES})
+SET_TARGET_PROPERTIES(${CEGUILUA_LIBRARY} PROPERTIES DEFINE_SYMBOL "CEGUILUA_EXPORTS")
+TARGET_LINK_LIBRARIES(${CEGUILUA_LIBRARY}
+  tolua++_orxonox
   ${LUA_LIBRARIES}
   ${CEGUI_LIBRARY}
 )

@@ -1,7 +1,22 @@
+SET(CPPTCL_FILES
+  CppTcl.h
+  CppTcl.cc
+
+  details/callbacks.h
+  details/callbacks_v.h
+  details/constructors.h
+  details/conversions.h
+  details/dispatchers.h
+  details/metahelpers.h
+  details/methods.h
+  details/methods_v.h
+)
+GENERATE_SOURCE_GROUPS(${CPPTCL_FILES})
+
 IF(MSVC)
-  ADD_LIBRARY(cpptcl_orxonox STATIC cpptcl.cc)
+  ADD_LIBRARY(cpptcl_orxonox STATIC ${CPPTCL_FILES})
 ELSE(MSVC)
-  ADD_LIBRARY(cpptcl_orxonox SHARED cpptcl.cc)
+  ADD_LIBRARY(cpptcl_orxonox SHARED ${CPPTCL_FILES})
 ENDIF(MSVC)
 
 TARGET_LINK_LIBRARIES(cpptcl_orxonox

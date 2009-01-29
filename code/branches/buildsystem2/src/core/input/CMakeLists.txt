@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+ADD_SOURCE_FILES(CORE_SRC_FILES
   Button.cc
   CalibratorCallback.cc
   ExtendedInputState.cc

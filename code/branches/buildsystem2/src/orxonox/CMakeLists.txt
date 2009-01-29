@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+SET_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraManager.cc
   GraphicsEngine.cc
   LevelManager.cc
@@ -6,24 +6,21 @@ ADD_SOURCE_FILES(
   PlayerManager.cc
   Settings.cc
 )
+ADD_SUBDIRECTORY(gamestates)
+ADD_SUBDIRECTORY(gui)
+ADD_SUBDIRECTORY(objects)
+ADD_SUBDIRECTORY(overlays)
+ADD_SUBDIRECTORY(tools)
+GET_ALL_HEADER_FILES(ORXONOX_HDR_FILES)
+SET(ORXONOX_FILES ${ORXONOX_SRC_FILES} ${ORXONOX_HDR_FILES})
 
-ADD_SOURCE_DIRECTORY(gamestates)
-ADD_SOURCE_DIRECTORY(gui)
-ADD_SOURCE_DIRECTORY(objects)
-ADD_SOURCE_DIRECTORY(overlays)
-ADD_SOURCE_DIRECTORY(tools)
-
-WRITE_SOURCE_FILES(ORXONOX_SRC_FILES)
-
-TOLUA(Orxonox ORXONOX_SRC_FILES INPUTFILES gui/GUIManager.h)
+GENERATE_SOURCE_GROUPS(${ORXONOX_FILES})
+GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h)
 
 # Not using precompiled header files: Avoid dependencies
 INCLUDE_DIRECTORIES(pch/nopch)
 
-# Enlarge heap size for precompiled header files
-ADD_CXX_FLAGS("-Zm200" MSVC)
-
-ADD_EXECUTABLE(orxonox ${ORXONOX_SRC_FILES})
+ADD_EXECUTABLE(orxonox ${ORXONOX_FILES})
 GET_TARGET_PROPERTY(_exec_loc orxonox LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
 SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
@@ -43,11 +40,10 @@ TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARY}
   ${CEGUI_LIBRARY}
   ${LUA_LIBRARIES}
-  #${CEGUI_SCRIPT_LIBRARIES}
-  ceguilua_orxonox
+  ${CEGUILUA_LIBRARY}
   ogreceguirenderer_orxonox
-  tinyxml_orxonox
-  tolualib_orxonox
+  tinyxml++_orxonox
+  tolua++_orxonox
   util
   core
   #audio

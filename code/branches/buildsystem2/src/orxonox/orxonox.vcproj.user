@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				WorkingDirectory="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(OutDir)"
-				Environment="Path=${ORXONOX_LIBRARY_BIN_DIR}"
+				Environment="Path=${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}"
 				EnvironmentMerge="true"
 			/>
 		</Configuration>
@@ -19,7 +19,7 @@
 			>
 			<DebugSettings
 				WorkingDirectory="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(OutDir)"
-				Environment="Path=${ORXONOX_LIBRARY_BIN_DIR}"
+				Environment="Path=${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}"
 				EnvironmentMerge="true"
 			/>
 		</Configuration>
@@ -28,7 +28,7 @@
 			>
 			<DebugSettings
 				WorkingDirectory="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(OutDir)"
-				Environment="Path=${ORXONOX_LIBRARY_BIN_DIR}"
+				Environment="Path=${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}"
 				EnvironmentMerge="true"
 			/>
 		</Configuration>
@@ -37,7 +37,7 @@
 			>
 			<DebugSettings
 				WorkingDirectory="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(OutDir)"
-				Environment="Path=${ORXONOX_LIBRARY_BIN_DIR}"
+				Environment="Path=${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}"
 				EnvironmentMerge="true"
 			/>
 		</Configuration>

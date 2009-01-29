@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(
+ADD_SOURCE_FILES(NETWORK_SRC_FILES
   Packet.cc
   Chat.cc
   ClassID.cc

@@ -39,7 +39,7 @@ IF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   ELSE(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the Visual Studio libraries")
   ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
-  SET(ORXONOX_LIBRARY_BIN_DIR ${MSVC_LIBRARY_DIR}/bin)
+  SET(ORXONOX_RUNTIME_LIBRARY_DIRECTORY ${MSVC_LIBRARY_DIR}/bin)
 
   # Set variables for the include directories and the libraries
   # Note: When setting ENV${} variables, make sure to use quotes when
