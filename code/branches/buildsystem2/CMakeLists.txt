@@ -90,4 +90,4 @@ MARK_AS_ADVANCED(
 ############### Orxonox Source ##################
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(bin)
+ADD_SUBDIRECTORY(bin-config)
