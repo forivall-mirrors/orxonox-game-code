@@ -15,12 +15,12 @@ INCLUDE_DIRECTORIES(
 )
 
 # Check whether the required CEGUILua version is even available
-IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua-${CEGUI_VERSION})
+IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
   MESSAGE(FATAL_ERROR "No matching CEGUILua version shipped with Orxonox (${CEGUI_VERSION})")
-ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua-${CEGUI_VERSION})
+ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
 
 INCLUDE_DIRECTORIES(
-  ceguilua-${CEGUI_VERSION}/ceguilua
+  ceguilua/ceguilua-${CEGUI_VERSION}/ceguilua
   cpptcl
   ois
   tinyxml
@@ -44,7 +44,7 @@ INCLUDE(AddSourceFiles)
 INCLUDE(UseTolua)
 
 # External libraries, but copied into the repository
-ADD_SUBDIRECTORY(ceguilua-${CEGUI_VERSION}/ceguilua)
+ADD_SUBDIRECTORY(ceguilua)
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ogreceguirenderer)
 ADD_SUBDIRECTORY(ois)
