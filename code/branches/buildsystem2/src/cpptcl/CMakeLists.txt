@@ -1,6 +1,6 @@
 SET(CPPTCL_FILES
-  CppTcl.h
-  CppTcl.cc
+  cpptcl.h
+  cpptcl.cc
 
   details/callbacks.h
   details/callbacks_v.h
