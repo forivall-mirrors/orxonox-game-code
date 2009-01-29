@@ -51,9 +51,9 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(ENET DEFAULT_MSG
 # Set optimized and debug libraries
 IF(MINGW)
   # ENet is linked statically, hence we need to add some windows dependencies
-  HandleLibraryTypes(ENET ws2_32 winmm)
+  HANDLE_LIBRARY_TYPES(ENET ws2_32 winmm)
 ELSE(MINGW)
-  HandleLibraryTypes(ENET)
+  HANDLE_LIBRARY_TYPES(ENET)
 ENDIF(MINGW)
 
 MARK_AS_ADVANCED(
