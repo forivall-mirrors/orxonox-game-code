@@ -23,19 +23,9 @@
 INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(HandleLibraryTypes)
 
-SET(ALUT_PATHS
-  $ENV{ALUTDIR}
-  /usr/local
-  /usr
-  /sw        # Fink
-  /opt/local # DarwinPorts
-  /opt/csw   # Blastwave
-  /opt
-)
-
 FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
   PATHS
-  ${ALUT_PATHS}
+  $ENV{ALUTDIR}
   ~/Library/Frameworks/OpenAL.framework
   /Library/Frameworks/OpenAL.framework
   /System/Library/Frameworks/OpenAL.framework # Tiger
@@ -68,29 +58,27 @@ IF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
 ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
   FIND_LIBRARY(ALUT_LIBRARY_OPTIMIZED
     NAMES alut
-    PATHS ${ALUT_PATHS}
+    PATHS $ENV{ALUTDIR}
     PATH_SUFFIXES lib libs
   )
   FIND_LIBRARY(ALUT_LIBRARY_DEBUG
-    NAMES alut${LIBRARY_DEBUG_POSTFIX}
-    PATHS ${ALUT_PATHS}
+    NAMES alutd alut_d
+    PATHS $ENV{ALUTDIR}
     PATH_SUFFIXES lib libs
   )
 ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
 
-# handle the QUIETLY and REQUIRED arguments and set ALUT_FOUND to TRUE if
-# all listed variables are TRUE
+# Handle the REQUIRED argument and set ALUT_FOUND
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(ALUT DEFAULT_MSG
-    ALUT_LIBRARY_OPTIMIZED
     ALUT_INCLUDE_DIR
+    ALUT_LIBRARY_OPTIMIZED
 )
 
-# Set optimized and debug libraries
+# Collect optimized and debug libraries
 HANDLE_LIBRARY_TYPES(ALUT)
 
 MARK_AS_ADVANCED(
-    ALUT_LIBRARY
+    ALUT_INCLUDE_DIR
     ALUT_LIBRARY_OPTIMIZED
     ALUT_LIBRARY_DEBUG
-    ALUT_INCLUDE_DIR
 )

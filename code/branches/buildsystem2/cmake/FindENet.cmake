@@ -14,51 +14,57 @@
 # Lots of simplifications by Adrian Friedli
 #                 > www.orxonox.net <
 
-INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(FindPackageHandleAdvancedArgs)
 INCLUDE(HandleLibraryTypes)
 
 FIND_PATH(ENET_INCLUDE_DIR enet/enet.h
-    PATHS
-    $ENV{ENETDIR}
-    /usr/local
-    /usr
-    PATH_SUFFIXES include
+  PATHS $ENV{ENETDIR}
+  PATH_SUFFIXES include
 )
 FIND_LIBRARY(ENET_LIBRARY_OPTIMIZED
-    NAMES enet
-    PATHS
-    $ENV{ENETDIR}
-    /usr/local
-    /usr
-    PATH_SUFFIXES lib
+  NAMES enet
+  PATHS $ENV{ENETDIR}
+  PATH_SUFFIXES lib
 )
 FIND_LIBRARY(ENET_LIBRARY_DEBUG
-    NAMES enet${LIBRARY_DEBUG_POSTFIX}
-    PATHS
-    $ENV{ENETDIR}
-    /usr/local
-    /usr
-    PATH_SUFFIXES lib
+  NAMES enetd enet_d
+  PATHS $ENV{ENETDIR}
+  PATH_SUFFIXES lib
 )
 
-# handle the QUIETLY and REQUIRED arguments and set ENET_FOUND to TRUE if
-# all listed variables are TRUE
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(ENET DEFAULT_MSG
-    ENET_LIBRARY_OPTIMIZED
-    ENET_INCLUDE_DIR
+# Try to determine the version. Note that enet only stores the major
+# version in the header file. So we check for existing functions.
+# Hence the this script only distinguishes between 1.0, 1.1 and 1.2
+FILE(STRINGS ${ENET_INCLUDE_DIR}/enet/enet.h _enet_header REGEX "ENET_")
+IF(_enet_header MATCHES "ENET_VERSION[ \t]*=[ \t]*1")
+  IF(_enet_header MATCHES "enet_socket_set_option")
+    SET(ENET_VERSION 1.2)
+  ELSEIF(_enet_header MATCHES "enet_peer_disconnect_later")
+    SET(ENET_VERSION 1.1)
+  ELSE(_enet_header MATCHES "enet_socket_set_option")
+    SET(ENET_VERSION 1.0)
+  ENDIF(_enet_header MATCHES "enet_socket_set_option")
+ELSE(_enet_header MATCHES "ENET_VERSION[ \t]*=[ \t]*1")
+  SET(ENET_VERSION 0) # Script doesn't support versions below 1.0
+ENDIF(_enet_header MATCHES "ENET_VERSION[ \t]*=[ \t]*1")
+
+# Handle the REQUIRED argument and set ENET_FOUND
+# Also check the the version requirements
+FIND_PACKAGE_HANDLE_ADVANCED_ARGS(ENet DEFAULT_MSG ${ENET_VERSION}
+  ENET_INCLUDE_DIR
+  ENET_LIBRARY_OPTIMIZED
 )
 
-# Set optimized and debug libraries
-IF(MINGW)
+# Collect optimized and debug libraries
+IF(NOT LINK_ENET_DYNAMIC AND WIN32)
   # ENet is linked statically, hence we need to add some windows dependencies
   HANDLE_LIBRARY_TYPES(ENET ws2_32 winmm)
-ELSE(MINGW)
+ELSE(NOT LINK_ENET_DYNAMIC AND WIN32)
   HANDLE_LIBRARY_TYPES(ENET)
-ENDIF(MINGW)
+ENDIF(NOT LINK_ENET_DYNAMIC AND WIN32)
 
 MARK_AS_ADVANCED(
-    ENET_LIBRARY
-    ENET_LIBRARY_OPTIMIZED
-    ENET_LIBRARY_DEBUG
-    ENET_INCLUDE_DIR
+  ENET_INCLUDE_DIR
+  ENET_LIBRARY_OPTIMIZED
+  ENET_LIBRARY_DEBUG
 )

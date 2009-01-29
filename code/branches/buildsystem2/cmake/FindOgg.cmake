@@ -1,0 +1,50 @@
+# - Try to find ogg/vorbis
+# Once done this will define
+#
+#  OGG_FOUND - system has ogg
+#  OGG_INCLUDE_DIR
+#  OGG_LIBRARY
+#
+# $OGGDIR is an environment variable used
+# for finding ogg.
+#
+# Several changes and additions by Fabian 'x3n' Landau
+# Most of all rewritten by Adrian Friedli
+#                 > www.orxonox.net <
+
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
+
+FIND_PATH(OGG_INCLUDE_DIR ogg/ogg.h
+  PATHS $ENV{OGGDIR}
+  PATH_SUFFIXES include
+)
+FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
+  PATHS $ENV{OGGDIR}
+  PATH_SUFFIXES include
+)
+FIND_LIBRARY(OGG_LIBRARY_OPTIMIZED
+  NAMES ogg
+  PATHS $ENV{OGGDIR}
+  PATH_SUFFIXES lib
+)
+FIND_LIBRARY(OGG_LIBRARY_DEBUG
+  NAMES oggd ogg_d
+  PATHS $ENV{VORBISDIR}
+  PATH_SUFFIXES lib
+)
+
+# Handle the REQUIRED argument and set OGG_FOUND
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ogg DEFAULT_MSG
+  OGG_INCLUDE_DIR
+  OGG_LIBRARY_OPTIMIZED
+)
+
+# Collect optimized and debug libraries
+HANDLE_LIBRARY_TYPES(OGG)
+
+MARK_AS_ADVANCED(
+  OGG_INCLUDE_DIR
+  OGG_LIBRARY_OPTIMIZED
+  OGG_LIBRARY_DEBUG
+)
