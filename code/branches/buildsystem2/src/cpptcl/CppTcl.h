@@ -69,7 +69,7 @@ class result
 {
 public:
      result(Tcl_Interp *interp);
-
+     
      operator bool() const;
      operator double() const;
      operator int() const;
@@ -170,7 +170,7 @@ public:
           {
                throw tcl_error("Too few arguments.");
           }
-
+          
           std::string methodName(Tcl_GetString(objv[1]));
 
           if (methodName == "-delete")
@@ -470,13 +470,13 @@ public:
      interpreter(std::string const &libpath);
      interpreter(Tcl_Interp *, bool owner = true);
      ~interpreter();
-
+     
      void make_safe();
-
+     
      Tcl_Interp * get() const { return interp_; }
 
-     // free function definitions
-
+     // free function definitions     
+     
      template <typename R>
      void def(std::string const &name, R (*f)(),
           policies const &p = policies())
@@ -633,7 +633,7 @@ public:
           return details::class_definer<C>(ch);
      }
 
-     // free script evaluation
+     // free script evaluation     
      details::result eval(std::string const &script);
      details::result eval(std::istream &s);
 
@@ -837,7 +837,7 @@ details::result interpreter::eval(InputIterator first, InputIterator last)
      {
           throw tcl_error(interp_);
      }
-
+ 
      return details::result(interp_);
 }
 

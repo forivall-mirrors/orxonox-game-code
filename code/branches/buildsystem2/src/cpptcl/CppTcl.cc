@@ -24,49 +24,49 @@ result::result(Tcl_Interp *interp) : interp_(interp) {}
 result::operator bool() const
 {
      Tcl_Obj *obj = Tcl_GetObjResult(interp_);
-
+     
      int val, cc;
      cc = Tcl_GetBooleanFromObj(interp_, obj, &val);
      if (cc != TCL_OK)
      {
           throw tcl_error(interp_);
      }
-
+     
      return static_cast<bool>(val);
 }
 
 result::operator double() const
 {
      Tcl_Obj *obj = Tcl_GetObjResult(interp_);
-
+     
      double val;
      int cc = Tcl_GetDoubleFromObj(interp_, obj, &val);
      if (cc != TCL_OK)
      {
           throw tcl_error(interp_);
      }
-
+     
      return val;
 }
 
 result::operator int() const
 {
      Tcl_Obj *obj = Tcl_GetObjResult(interp_);
-
+     
      int val, cc;
      cc = Tcl_GetIntFromObj(interp_, obj, &val);
      if (cc != TCL_OK)
      {
           throw tcl_error(interp_);
      }
-
+     
      return val;
 }
 
 result::operator long() const
 {
      Tcl_Obj *obj = Tcl_GetObjResult(interp_);
-
+     
      long val;
      int cc;
      cc = Tcl_GetLongFromObj(interp_, obj, &val);
@@ -74,7 +74,7 @@ result::operator long() const
      {
           throw tcl_error(interp_);
      }
-
+     
      return val;
 }
 
@@ -194,7 +194,7 @@ bool find_policies(Tcl_Interp *interp, string const &cmdName,
      {
           return false;
      }
-
+     
      piti = pit->second.find(cmdName);
      return piti != pit->second.end();
 }
@@ -283,7 +283,7 @@ int callback_handler(ClientData, Tcl_Interp *interp,
                TCL_STATIC);
           return TCL_ERROR;
      }
-
+     
      string cmdName(Tcl_GetString(objv[0]));
      callback_interp_map::iterator iti = it->second.find(cmdName);
      if (iti == it->second.end())
@@ -293,7 +293,7 @@ int callback_handler(ClientData, Tcl_Interp *interp,
                TCL_STATIC);
           return TCL_ERROR;
      }
-
+     
      policies_map::iterator pit = call_policies.find(interp);
      if (pit == call_policies.end())
      {
@@ -302,7 +302,7 @@ int callback_handler(ClientData, Tcl_Interp *interp,
                TCL_STATIC);
           return TCL_ERROR;
      }
-
+     
      policies_interp_map::iterator piti;
      if (find_policies(interp, cmdName, piti) == false)
      {
@@ -313,7 +313,7 @@ int callback_handler(ClientData, Tcl_Interp *interp,
      }
 
      policies &pol = piti->second;
-
+     
      try
      {
           iti->second->invoke(interp, objc, objv, pol);
@@ -330,7 +330,7 @@ int callback_handler(ClientData, Tcl_Interp *interp,
           Tcl_SetResult(interp, "Unknown error.", TCL_STATIC);
           return TCL_ERROR;
      }
-
+     
      return TCL_OK;
 }
 
@@ -396,7 +396,7 @@ int constructor_handler(ClientData cd, Tcl_Interp *interp,
                TCL_STATIC);
           return TCL_ERROR;
      }
-
+     
      string className(Tcl_GetString(objv[0]));
      callback_interp_map::iterator iti = it->second.find(className);
      if (iti == it->second.end())
@@ -406,7 +406,7 @@ int constructor_handler(ClientData cd, Tcl_Interp *interp,
                TCL_STATIC);
           return TCL_ERROR;
      }
-
+     
      policies_interp_map::iterator piti;
      if (find_policies(interp, className, piti) == false)
      {
@@ -903,7 +903,7 @@ result interpreter::eval(string const &script)
      {
           throw tcl_error(interp_);
      }
-
+ 
      return result(interp_);
 }
 
@@ -923,7 +923,7 @@ result interpreter::eval(object const &o)
      {
           throw tcl_error(interp_);
      }
-
+ 
      return result(interp_);
 }
 
@@ -1009,7 +1009,7 @@ void interpreter::add_function(string const &name,
 {
      Tcl_CreateObjCommand(interp_, name.c_str(),
           callback_handler, 0, 0);
-
+     
      callbacks[interp_][name] = cb;
      call_policies[interp_][name] = p;
 }
@@ -1040,7 +1040,7 @@ int tcl_cast<int>::from(Tcl_Interp *interp, Tcl_Obj *obj)
      {
           throw tcl_error(interp);
      }
-
+     
      return res;
 }
 
@@ -1052,7 +1052,7 @@ long tcl_cast<long>::from(Tcl_Interp *interp, Tcl_Obj *obj)
      {
           throw tcl_error(interp);
      }
-
+     
      return res;
 }
 
@@ -1064,7 +1064,7 @@ bool tcl_cast<bool>::from(Tcl_Interp *interp, Tcl_Obj *obj)
      {
           throw tcl_error(interp);
      }
-
+     
      return res != 0;
 }
 
@@ -1076,7 +1076,7 @@ double tcl_cast<double>::from(Tcl_Interp *interp, Tcl_Obj *obj)
      {
           throw tcl_error(interp);
      }
-
+     
      return res;
 }
 
