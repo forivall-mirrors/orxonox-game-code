@@ -1,5 +1,4 @@
-SET(COMMON_CONFIG_FILES
-  orxonox.ini
+SET(READ_ONLY_CONFIG_FILES
   def_keybindings.ini
   def_masterKeybindings.ini
   disco.txt
@@ -8,24 +7,20 @@ SET(COMMON_CONFIG_FILES
   telnet_server.tcl
 )
 
+SET(WRITABLE_CONFIG_FILES
+  orxonox.ini
+)
+
 IF(TARDIS)
   # OGRE can't find fonts to display config screen on Tardis,
   # so providing default config file here (bug).
-  SET(ADDITIONAL_CONFIG_FILES ogre.cfg)
+  LIST(APPEND WRITABLE_CONFIG_FILES ogre.cfg)
 ENDIF(TARDIS)
 
-SET(CONFIG_FILES ${COMMON_CONFIG_FILES} ${ADDITIONAL_CONFIG_FILES})
-
-# Copy config files to all Visual Studio output directories
-IF(CMAKE_CONFIGURATION_TYPES)
-  SET(BUILD_CONFIGS ${CMAKE_CONFIGURATION_TYPES})
-ELSE(CMAKE_CONFIGURATION_TYPES)
-  SET(CONFIG_OUT_PATHS_REL ".")
-  SET(BUILD_CONFIGS ${CMAKE_BUILD_TYPE})
-ENDIF(CMAKE_CONFIGURATION_TYPES)
-
-FOREACH(_build_config ${BUILD_CONFIGS})
-  FOREACH(_file_name ${CONFIG_FILES})
+# We need the same code for both READ_ONLY and WRITABLE config files
+MACRO(CONFIGURE_FILES _file_name _build_configs _read_only_arg)
+  SET(_read_only ${_read_only_arg})
+  FOREACH(_build_config ${_build_configs})
     # Is there an extra file in bin/Debug or bin/Release?
     IF(${_build_config} MATCHES "Rel")
       SET(_build_config_short "Release")
@@ -45,18 +40,36 @@ FOREACH(_build_config ${BUILD_CONFIGS})
       SET(_out_file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_file_name})
     ENDIF(CMAKE_CONFIGURATION_TYPES)
     # Only copy if target file doesn't exist. This may result in problems but
-    # otherwise we might delete the a user's config
-    IF (NOT EXISTS ${_out_file})
+    # otherwise we might delete a user's config
+    IF (NOT EXISTS ${_out_file} OR _read_only)
       CONFIGURE_FILE(${_in_file} ${_out_file} @ONLY)
-    ENDIF (NOT EXISTS ${_out_file})
-  ENDFOREACH(_file_name)
-ENDFOREACH(_build_config)
+    ENDIF (NOT EXISTS ${_out_file} OR _read_only)
+  ENDFOREACH(_build_config)
+ENDMACRO(CONFIGURE_FILES)
+
+# Copy config files to all Visual Studio output directories
+IF(CMAKE_CONFIGURATION_TYPES)
+  SET(BUILD_CONFIGS ${CMAKE_CONFIGURATION_TYPES})
+ELSE(CMAKE_CONFIGURATION_TYPES)
+  SET(CONFIG_OUT_PATHS_REL ".")
+  SET(BUILD_CONFIGS ${CMAKE_BUILD_TYPE})
+ENDIF(CMAKE_CONFIGURATION_TYPES)
+
+FOREACH(_file_name ${READ_ONLY_CONFIG_FILES})
+  CONFIGURE_FILES("${_file_name}" "${BUILD_CONFIGS}" TRUE)
+ENDFOREACH(_file_name)
+FOREACH(_file_name ${WRITABLE_CONFIG_FILES})
+  CONFIGURE_FILES("${_file_name}" "${BUILD_CONFIGS}" FALSE)
+ENDFOREACH(_file_name)
+
+################ Run Scripts ##################
 
 # Create a run script for both Windows and Linux in the source root path if
 # CMake is not used to create multi-configuration project files
 IF(NOT CMAKE_CONFIGURATION_TYPES)
   IF(WIN32)
     SET(RUN_SCRIPT run.bat)
+    # Note: Do not use FILE(TO_NATIVE_PATH) because it doesn't work for MinGW
     STRING(REGEX REPLACE "^([A-Z]\\:)\\/.*$" "\\1" WINDOWS_DRIVE_CHANGE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     STRING(REPLACE "/" "\\" CMAKE_RUNTIME_OUTPUT_DIRECTORY_WINDOWS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
   ELSE(UNIX)
