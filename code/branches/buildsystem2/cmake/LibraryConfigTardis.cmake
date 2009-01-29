@@ -12,6 +12,8 @@ ENDIF (UNIX)
 
 IF (TARDIS)
   MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
+
+  # We cannot use the default compiler (why?)
   SET(CMAKE_C_COMPILER "gcc-4.1")
   SET(CMAKE_CXX_COMPILER "g++-4.1")
 

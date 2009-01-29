@@ -43,7 +43,7 @@ MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
                                 ${_tolua_pkgfile}
     DEPENDS              ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS CXX ${_tolua_inputfiles}
-    WORKING_DIRECTORY    ${TOLUA_PARSER_WORKING_DIRECTORY}
+    WORKING_DIRECTORY    ${ORXONOX_LIBRARY_BIN_DIR}
     COMMENT "Generating tolua bind files for package ${_tolua_package}"
   )
 ENDMACRO(TOLUA)

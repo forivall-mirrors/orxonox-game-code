@@ -32,17 +32,25 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Set Debug build to default when not having multi-config generator like msvc
-IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  SET(CMAKE_BUILD_TYPE "Debug")
-ENDIF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+# Sets where to find the external libraries like OgreMain.dll at runtime
+# On Unix you should not have to change this at all.
+IF(NOT ORXONOX_LIBRARY_BIN_DIR)
+  SET(ORXONOX_LIBRARY_BIN_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+ENDIF(NOT ORXONOX_LIBRARY_BIN_DIR)
 
-# When searching for debug libraries, this is appended to the libarary name
-SET(LIBRARY_DEBUG_POSTFIX "_d")
-# Sets where to find the binary directory of external libraries
-SET(ORXONOX_LIBRARY_BIN_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-# Working directory for the tolua parser. Adjust for windows because lua.dll has to be there!
-SET(TOLUA_PARSER_WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+# Set Debug build to default when not having multi-config generator like msvc
+IF(NOT CMAKE_CONFIGURATION_TYPES)
+  IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Debug CACHE STRING
+        "Build types are: Debug, Release, MinSizeRel, RelWithDebInfo" FORCE)
+  ENDIF(NOT CMAKE_BUILD_TYPE)
+  MARK_AS_ADVANCED(CLEAR CMAKE_BUILD_TYPE)
+ELSE(NOT CMAKE_CONFIGURATION_TYPES)
+  IF(CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE CACHE STRING FORCE)
+  ENDIF(CMAKE_BUILD_TYPE)
+  MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
+ENDIF(NOT CMAKE_CONFIGURATION_TYPES)
 
 OPTION(EXTRA_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
 IF(EXTRA_WARNINGS)
@@ -54,15 +62,18 @@ ENDIF(EXTRA_WARNINGS)
 SET(ORXONOX_MEDIA_DIRECTORY "${CMAKE_SOURCE_DIR}/../media")
 # More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
 # Render systems may be optional, but at least one has to be found in FindOgre
-SET(OGRE_PLUGINS RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX)
+SET(OGRE_PLUGINS_INT RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX)
 IF(WIN32)
   # CG program manager is probably DirectX related (not available under unix)
-  LIST(APPEND OGRE_PLUGINS Plugin_CgProgramManager)
+  LIST(APPEND OGRE_PLUGINS_INT Plugin_CgProgramManager)
 ENDIF(WIN32)
+SET(OGRE_PLUGINS ${OGRE_PLUGINS_INT} CACHE STRING
+   "Specify which OGRE plugins to load. Existance check is performed.")
 
 # Check the plugins and determine the plugin folder
 # You can give a hint by setting the environment variable ENV{OGRE_PLUGIN_DIR}
 INCLUDE(CheckOGREPlugins)
+CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
 
 
 ############## Compiler Config ##################

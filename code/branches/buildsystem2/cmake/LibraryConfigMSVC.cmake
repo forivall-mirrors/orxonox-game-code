@@ -26,14 +26,10 @@
  #
  
 ###################### MSVC config ########################
-# Set the library directories and special options when
-# using Visual Studio.
-###########################################################
+# Set the library directories when using Visual Studio.   #
 
-IF (MSVC)
+IF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   MESSAGE(STATUS "Running on MSVC. Using customized paths and options.")
-
-  ###################### Libraries ########################
 
   # Determine library directory
   IF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
@@ -48,7 +44,8 @@ IF (MSVC)
   # Set variables for the include directories and the libraries
   # Note: When setting ENV${} variables, make sure to use quotes when
   #       having multiple directories.
-  SET(ENV{BOOST_ROOT}        ${MSVC_LIBRARY_DIR}/boost-1.35.0)
+  SET(BOOST_ROOT             ${MSVC_LIBRARY_DIR}/boost-1.35.0)
+  SET(BOOST_LIBRARYDIR       ${MSVC_LIBRARY_DIR}/boost-1.35.0/lib)
   SET(ENV{CEGUIDIR}          ${MSVC_LIBRARY_DIR}/cegui-0.6.1)
   SET(ENV{ENETDIR}           ${MSVC_LIBRARY_DIR}/enet-1.2)
   SET(ENV{ALUTDIR}           ${MSVC_LIBRARY_DIR}/freealut-1.1.0)
@@ -56,18 +53,15 @@ IF (MSVC)
   SET(ENV{VORBISDIR}         ${MSVC_LIBRARY_DIR}/libvorbis-1.2.0)
   SET(ENV{OPENALDIR}         ${MSVC_LIBRARY_DIR}/openal-1.1)
   SET(ENV{LUA_DIR}           ${MSVC_LIBRARY_DIR}/lua-5.1.3)
-  SET(ENV{OGRE_HOME}        "${MSVC_LIBRARY_DIR}/ogre-1.4.9;${ORXONOX_LIBRARY_BIN_DIR}")
-  SET(TCL_INCLUDE_PATH       ${MSVC_LIBRARY_DIR}/tcl-8.5.2/include)
-  SET(TCL_LIBRARY            ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
-  # Do some hacking to avoid "Tclsh not found" message
-  SET(TCL_TCLSH              ${MSVC_LIBRARY_DIR}/tcl-8.5.2/lib/tcl85t.lib)
+  SET(ENV{OGRE_HOME}         ${MSVC_LIBRARY_DIR}/ogre-1.4.9)
+  SET(ENV{OGRE_PLUGIN_DIR}   ${MSVC_LIBRARY_DIR}/bin)
+  SET(TCL_INCLUDE_PATH       ${MSVC_LIBRARY_DIR}/tcl-8.5.5/include)
+  SET(TCL_LIBRARY            ${MSVC_LIBRARY_DIR}/tcl-8.5.5/lib/tcl85.lib)
   SET(ZLIB_INCLUDE_DIR       ${MSVC_LIBRARY_DIR}/zlib-1.2.3/include)
   SET(ZLIB_LIBRARY optimized ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib.lib
                    debug     ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib_d.lib)
-  SET(ZLIB_FOUND TRUE)
+  IF ($ENV{DXSDK_DIR} STREQUAL "")
+    SET(ENV{DXSDK_DIR}       ${MSVC_LIBRARY_DIR}/directx-sdk-aug-2007)
+  ENDIF ($ENV{DXSDK_DIR} STREQUAL "")
 
-  ######################### Misc ##########################
-
-  # Set tolua working directory because lua.dll is not where tolua is
-  SET(TOLUA_PARSER_WORKING_DIRECTORY ${ORXONOX_LIBRARY_BIN_DIR})
-ENDIF (MSVC)
+ENDIF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)

@@ -30,7 +30,7 @@
 # tarballs for the dependencies under windows
 ###################################################
 
-IF (MINGW)
+IF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   MESSAGE(STATUS "Running on MinGW. Using customized paths and options.")
 
   # Determine library directory
@@ -45,30 +45,25 @@ IF (MINGW)
 
   # Note: When setting ENV${} variables, make sure to use quotes when
   #       having multiple directories.
-  SET(ENV{BOOST_ROOT}    "${MINGW_LIBRARY_DIR}/boost_1_34_1")
-  SET(ENV{CEGUIDIR}      "${MINGW_LIBRARY_DIR}/cegui-0.6.1")
-  SET(ENV{ENETDIR}       "${MINGW_LIBRARY_DIR}/enet-1.1")
-  SET(ENV{ALUTDIR}       "${MINGW_LIBRARY_DIR}/freealut-1.1.0")
-  SET(ENV{OGGDIR}        "${MINGW_LIBRARY_DIR}/libogg-1.1.3;${MINGW_LIBRARY_DIR}/libogg-1.1.3/src/.libs")
-  SET(ENV{VORBISDIR}     "${MINGW_LIBRARY_DIR}/libvorbis-1.2.0;${MINGW_LIBRARY_DIR}/libvorbis-1.2.0/lib/.libs")
-  SET(ENV{OPENALDIR}     "${MINGW_LIBRARY_DIR}/openal-0.0.8/common;${MINGW_LIBRARY_DIR}/openal-0.0.8/src/.libs")
-  SET(ENV{LUA_DIR}       "${MINGW_LIBRARY_DIR}/lua-5.1.3")
-  SET(ENV{OGRE_HOME}     "${MINGW_LIBRARY_DIR}/ogre/OgreMain;${MINGW_LIBRARY_DIR}/ogre/Samples/Common")
-  SET(TCL_INCLUDE_PATH   "${MINGW_LIBRARY_DIR}/tcl8.5.2/generic")
-  SET(TCL_LIBRARY        "${MINGW_LIBRARY_DIR}/tcl8.5.2/win/tcl85.dll")
-  # Do some hacking to avoid "Tclsh not found" message
-  SET(TCL_TCLSH          "${MINGW_LIBRARY_DIR}/tcl8.5.2/win/tcl85.dll")
-  SET(ZLIB_INCLUDE_DIR   "${MINGW_LIBRARY_DIR}/zlib/include")
-  SET(ZLIB_LIBRARY       "${MINGW_LIBRARY_DIR}/zlib/libzlib.a")
+  # Using BOOST_ROOT only does not work with CMake 2.6.0 (2.6.2 works though)
+  SET(BOOST_INCLUDEDIR      "${MINGW_LIBRARY_DIR}/boost_1_34_1")
+  SET(BOOST_LIBRARYDIR      "${MINGW_LIBRARY_DIR}/boost_1_34_1/stage/lib")
+  SET(ENV{CEGUIDIR}         "${MINGW_LIBRARY_DIR}/cegui-0.6.1")
+  SET(ENV{ENETDIR}          "${MINGW_LIBRARY_DIR}/enet-1.1")
+  SET(LINK_ENET_DYNAMIC     FALSE)
+  SET(ENV{ALUTDIR}          "${MINGW_LIBRARY_DIR}/freealut-1.1.0")
+  SET(ENV{OGGDIR}           "${MINGW_LIBRARY_DIR}/libogg-1.1.3;${MINGW_LIBRARY_DIR}/libogg-1.1.3/src/.libs")
+  SET(ENV{VORBISDIR}        "${MINGW_LIBRARY_DIR}/libvorbis-1.2.0;${MINGW_LIBRARY_DIR}/libvorbis-1.2.0/lib/.libs")
+  SET(ENV{OPENALDIR}        "${MINGW_LIBRARY_DIR}/openal-0.0.8/common;${MINGW_LIBRARY_DIR}/openal-0.0.8/src/.libs")
+  SET(ENV{LUA_DIR}          "${MINGW_LIBRARY_DIR}/lua-5.1.3")
+  SET(ENV{OGRE_HOME}        "${MINGW_LIBRARY_DIR}/ogre/OgreMain;${MINGW_LIBRARY_DIR}")
+  SET(ENV{OGRE_PLUGIN_DIR}  "${MINGW_LIBRARY_DIR}/ogre/Samples/Common")
+  SET(TCL_INCLUDE_PATH      "${MINGW_LIBRARY_DIR}/tcl8.5.2/generic")
+  SET(TCL_LIBRARY           "${MINGW_LIBRARY_DIR}/tcl8.5.2/win/tcl85.dll")
+  SET(ZLIB_INCLUDE_DIR      "${MINGW_LIBRARY_DIR}/zlib/include")
+  SET(ZLIB_LIBRARY          "${MINGW_LIBRARY_DIR}/zlib/libzlib.a")
+  SET(LINK_ZLIB_DYNAMIC    FALSE)
   IF ($ENV{DXSDK_DIR} STREQUAL "")
-    SET(ENV{DXSDK_DIR} "${MINGW_LIBRARY_DIR}/DXSDK")
+    SET(ENV{DXSDK_DIR}      "${MINGW_LIBRARY_DIR}/DXSDK")
   ENDIF ($ENV{DXSDK_DIR} STREQUAL "")
-
-  # MINGW doesn't like the -fPIC flag, reconfigure flags
-  SET(CMAKE_C_FLAGS   "$ENV{CFLAGS}   ${ORXONOX_WARNING_FLAGS}")
-  SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} ${ORXONOX_WARNING_FLAGS}")
-
-  # Also set the tolua working directory because lua.dll is not where tolua ia
-  SET(TOLUA_PARSER_WORKING_DIRECTORY "${MNGW_LIBRARY_DIR}/lua-5.1.3/lib")
-
-ENDIF (MINGW)
+ENDIF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)

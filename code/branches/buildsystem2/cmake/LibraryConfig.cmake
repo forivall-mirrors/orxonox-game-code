@@ -1,6 +1,34 @@
-INCLUDE(LibraryConfigMinGW)
-INCLUDE(LibraryConfigMSVC)
+INCLUDE(CompareVersionStrings)
+INCLUDE(FindPackageHandleStandardArgs)
+
+################ Misc Options ###################
+
+OPTION(LIBRARY_USE_PACKAGE_IF_SUPPORTED
+       "When set to false CMake will only look in the standard paths for libraries" ON)
+
+
+############## Platform Scripts #################
+
+# Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
+INCLUDE(LibraryConfigApple)
+INCLUDE(LibraryConfigMSVC)
+INCLUDE(LibraryConfigMinGW)
+
+# User script
+SET(LIBRARY_CONFIG_USER_SCRIPT "" CACHE FILEPATH
+    "Specify a CMake script if you wish to write your own library path config.
+     See LibraryConfigTardis.cmake or LibraryConfigMinGW.cmake for examples.")
+IF(LIBRARY_CONFIG_USER_SCRIPT)
+  IF(EXISTS ${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT}.cmake)
+    INCLUDE(${LIBRARY_CONFIG_USER_SCRIPT})
+  ELSEIF(EXISTS ${LIBRARY_CONFIG_USER_SCRIPT})
+    INCLUDE(${LIBRARY_CONFIG_USER_SCRIPT})
+  ELSEIF(EXISTS ${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT})
+    INCLUDE(${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT})
+  ENDIF(EXISTS ${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT}.cmake)
+ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
+
 
 ############### Library finding #################
 # Performs the search and sets the variables    #
@@ -91,3 +119,24 @@ IF (MSVC)
   GET_FILENAME_COMPONENT(BOOST_LINK_DIR "${Boost_THREAD_LIBRARY_RELEASE}" PATH)
   LINK_DIRECTORIES(${BOOST_LINK_DIR})
 ENDIF (MSVC)
+
+
+####### Static/Dynamic linking options ##########
+
+# On Windows dynamically linked libraries need some special treatment
+# You may want to edit these settings if you provide your own libraries
+# Note: Default option in the libraries vary, but our default option is dynamic
+IF(WIN32)
+  OPTION(LINK_BOOST_DYNAMIC "Link Boost dynamically on Windows" TRUE)
+  OPTION(LINK_CEGUI_DYNAMIC "Link CEGUI dynamicylly on Windows" TRUE)
+  OPTION(LINK_ENET_DYNAMIC  "Link ENet dynamically on Windows" TRUE)
+  OPTION(LINK_OGRE_DYNAMIC  "Link OGRE dynamically on Windows" TRUE)
+  OPTION(LINK_TCL_DYNAMIC   "Link TCL dynamically on Windows" TRUE)
+  OPTION(LINK_ZLIB_DYNAMIC  "Link ZLib dynamically on Windows" TRUE)
+  COMPARE_VERSION_STRINGS("${LUA_VERSION}" "5.1" _version_comparison)
+  IF(_version_comparison LESS 0)
+    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" FALSE)
+  ELSE(_version_comparison LESS 0)
+    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" TRUE)
+  ENDIF(_version_comparison LESS 0)
+ENDIF(WIN32)
