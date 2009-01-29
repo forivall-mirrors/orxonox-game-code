@@ -25,20 +25,18 @@
  #      ...
  #
 
-MACRO(HandleLibraryTypes _name)
+FUNCTION(HANDLE_LIBRARY_TYPES _name)
   # Additional libraries can be added as additional arguments
-  IF(${_name}_FOUND)
-    IF(${_name}_LIBRARY_DEBUG)
-      SET(${_name}_LIBRARY
-          optimized ${${_name}_LIBRARY_OPTIMIZED} ${ARGN}
-          debug     ${${_name}_LIBRARY_DEBUG}     ${ARGN}
-          CACHE STRING "${_name} library file(s)" FORCE
-      )
-    ELSE(${_name}_LIBRARY_DEBUG)
-      SET(${_name}_LIBRARY
-          ${${_name}_LIBRARY_OPTIMIZED} ${ARGN}
-          CACHE STRING "${_name} library file(s)" FORCE
-      )
-    ENDIF(${_name}_LIBRARY_DEBUG)
-  ENDIF(${_name}_FOUND)
-ENDMACRO(HandleLibraryTypes)
+  IF(${_name}_LIBRARY_DEBUG AND ${_name}_LIBRARY_OPTIMIZED)
+    SET(${_name}_LIBRARY
+      optimized ${${_name}_LIBRARY_OPTIMIZED} ${ARGN}
+      debug     ${${_name}_LIBRARY_DEBUG}     ${ARGN}
+      PARENT_SCOPE
+    )
+  ELSE(${_name}_LIBRARY_DEBUG AND ${_name}_LIBRARY_OPTIMIZED)
+    SET(${_name}_LIBRARY
+      ${${_name}_LIBRARY_OPTIMIZED} ${ARGN}
+      PARENT_SCOPE
+     )
+  ENDIF(${_name}_LIBRARY_DEBUG AND ${_name}_LIBRARY_OPTIMIZED)
+ENDFUNCTION(HANDLE_LIBRARY_TYPES)
