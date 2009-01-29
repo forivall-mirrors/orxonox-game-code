@@ -136,6 +136,9 @@ namespace orxonox
 #endif
 }
 
+/* Set whether we must suffix "ceguilua/" for the CEGUILua.h include */
+#cmakedefine CEGUILUA_USE_INTERNAL_LIBRARY
+
 //-----------------------------------------------------------------------
 // Version Information
 //-----------------------------------------------------------------------

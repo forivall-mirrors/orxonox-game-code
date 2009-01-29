@@ -35,7 +35,7 @@
 #ifndef _Integers_H__
 #define _Integers_H__
 
-#include "OrxonoxPlatform.h"
+#include "UtilPrereqs.h"
 
 /* Define fixed with integers
  * Note: This is not in a namespace to make it available everywhere!*/

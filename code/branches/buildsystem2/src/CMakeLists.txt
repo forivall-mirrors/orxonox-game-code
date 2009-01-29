@@ -1,3 +1,8 @@
+################ OrxonoxConfig.h ################
+
+# Copy and configure OrxonoxConfig which gets included in every file
+CONFIGURE_FILE(OrxonoxConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h)
+
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
   ${OGRE_INCLUDE_DIR}

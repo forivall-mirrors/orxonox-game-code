@@ -34,7 +34,7 @@
 #ifndef _NetworkPrereqs_H__
 #define _NetworkPrereqs_H__
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings

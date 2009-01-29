@@ -37,7 +37,7 @@
 #include <exception>
 #include <cassert>
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 #include "util/Debug.h"
 #include "util/SignalHandler.h"
 #include "core/ConfigFileManager.h"

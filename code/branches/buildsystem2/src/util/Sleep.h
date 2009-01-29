@@ -35,7 +35,7 @@
 #ifndef _Sleep_H__
 #define _Sleep_H__
 
-#include "OrxonoxPlatform.h"
+#include "UtilPrereqs.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
 #include <winbase.h>
