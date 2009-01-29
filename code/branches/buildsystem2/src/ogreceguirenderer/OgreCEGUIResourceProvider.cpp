@@ -1,9 +1,9 @@
 /************************************************************************
-    filename: 	OgreCEGUIResourceProvider.cpp
-    created:	8/7/2004
-    author:		James '_mental_' O'Sullivan
+	filename: 	OgreCEGUIResourceProvider.cpp
+	created:	8/7/2004
+	author:		James '_mental_' O'Sullivan
 
-    purpose:	Implements the Resource Provider common functionality
+	purpose:	Implements the Resource Provider common functionality
 *************************************************************************/
 /*************************************************************************
     Crazy Eddie's GUI System (http://www.cegui.org.uk)
@@ -69,14 +69,14 @@ namespace CEGUI
         Ogre::DataStreamPtr input =
             Ogre::ResourceGroupManager::getSingleton().openResource(filename.c_str(), orpGroup.c_str());
 
-        if (input.isNull())
-        {
+		if (input.isNull())
+		{
             throw InvalidRequestException((utf8*)
                 "OgreCEGUIResourceProvider::loadRawDataContainer - Unable to open resource file '" + filename + (utf8*)"' in resource group '" + orpGroup + (utf8*)"'.");
         }
 
-        Ogre::String buf = input->getAsString();
-        const size_t memBuffSize = buf.length();
+		Ogre::String buf = input->getAsString();
+		const size_t memBuffSize = buf.length();
 
         unsigned char* mem = new unsigned char[memBuffSize];
         memcpy(mem, buf.c_str(), memBuffSize);
@@ -85,13 +85,13 @@ namespace CEGUI
         output.setSize(memBuffSize);
     }
 
-    void OgreCEGUIResourceProvider::unloadRawDataContainer(RawDataContainer& data)
-    {
-        if (data.getDataPtr())
-        {
-            delete[] data.getDataPtr();
-            data.setData(0);
-            data.setSize(0);
-        }
-    }
+	void OgreCEGUIResourceProvider::unloadRawDataContainer(RawDataContainer& data)
+	{
+		if (data.getDataPtr())
+		{
+			delete[] data.getDataPtr();
+			data.setData(0);
+			data.setSize(0);
+		}
+	}
 } // End of  CEGUI namespace section

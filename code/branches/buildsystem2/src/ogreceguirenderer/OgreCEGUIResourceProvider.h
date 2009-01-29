@@ -1,9 +1,9 @@
 /************************************************************************
-    filename: 	CEGUIOgreResourceProvider.h
-    created:	8/7/2004
-    author:		James '_mental_' O'Sullivan
-    
-    purpose:	Defines abstract base class for CEGUIData objects
+	filename: 	CEGUIOgreResourceProvider.h
+	created:	8/7/2004
+	author:		James '_mental_' O'Sullivan
+	
+	purpose:	Defines abstract base class for CEGUIData objects
 *************************************************************************/
 /*************************************************************************
     Crazy Eddie's GUI System (http://www.cegui.org.uk)
@@ -35,12 +35,12 @@ namespace CEGUI
 class _OgrePrivate OgreCEGUIResourceProvider : public ResourceProvider
 {
 public:
-    /*************************************************************************
-        Construction and Destruction
-    *************************************************************************/
-    OgreCEGUIResourceProvider();
+	/*************************************************************************
+		Construction and Destruction
+	*************************************************************************/
+	OgreCEGUIResourceProvider();
 
-    ~OgreCEGUIResourceProvider(void) {}
+	~OgreCEGUIResourceProvider(void) {}
 
 //    void loadInputSourceContainer(const String& filename, InputSourceContainer& output);
     void loadRawDataContainer(const String& filename, RawDataContainer& output, const String& resourceGroup);
