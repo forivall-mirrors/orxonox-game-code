@@ -1,7 +1,7 @@
 IF(MSVC)
-  ADD_LIBRARY(cpptcl_orxonox STATIC CppTcl.cc)
+  ADD_LIBRARY(cpptcl_orxonox STATIC cpptcl.cc)
 ELSE(MSVC)
-  ADD_LIBRARY(cpptcl_orxonox SHARED CppTcl.cc)
+  ADD_LIBRARY(cpptcl_orxonox SHARED cpptcl.cc)
 ENDIF(MSVC)
 
 TARGET_LINK_LIBRARIES(cpptcl_orxonox
