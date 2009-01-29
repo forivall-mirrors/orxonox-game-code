@@ -35,7 +35,7 @@ extern "C" {
 #include <lua.h>
 #include <lualib.h>
 }
-#include <tolua++.h>
+#include <tolua/tolua++.h>
 
 #include "core/ToluaBindCore.h"
 #include "util/String.h"

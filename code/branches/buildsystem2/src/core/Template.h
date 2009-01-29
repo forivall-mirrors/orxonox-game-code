@@ -33,7 +33,7 @@
 
 #include "CorePrereqs.h"
 
-#include <tinyxml.h>
+#include <tinyxml/tinyxml.h>
 #include "BaseObject.h"
 
 namespace orxonox

@@ -120,10 +120,10 @@ function classPackage:preamble ()
     output('*/\n\n')
 
     output('#ifndef __cplusplus\n')
-    output('#include "stdlib.h"\n')
+    output('#include <stdlib.h>\n')
     output('#endif\n')
-    output('#include "string.h"\n\n')
-    output('#include "tolua++.h"\n\n')
+    output('#include <string.h>\n\n')
+    output('#include <tolua/tolua++.h>\n\n')
 
     if flags.H then
         local header = gsub(flags.H, '^.-([%w_]*%.[%w_]*)$', '%1')

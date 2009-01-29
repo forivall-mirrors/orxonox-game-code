@@ -28,7 +28,7 @@
 
 #include "Loader.h"
 
-#include <ticpp.h>
+#include <tinyxml/ticpp.h>
 
 #include "XMLFile.h"
 #include "BaseObject.h"

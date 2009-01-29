@@ -31,7 +31,7 @@
 
 #include "CorePrereqs.h"
 
-#include <cpptcl.h>
+#include <cpptcl/CppTcl.h>
 
 namespace orxonox
 {

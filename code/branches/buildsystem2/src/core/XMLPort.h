@@ -42,7 +42,7 @@
 
 #include "CorePrereqs.h"
 
-#include <ticpp.h>
+#include <tinyxml/ticpp.h>
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/MultiType.h"

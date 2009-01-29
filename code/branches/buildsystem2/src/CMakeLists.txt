@@ -20,11 +20,7 @@ IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSIO
 ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
 
 INCLUDE_DIRECTORIES(
-  ceguilua/ceguilua-${CEGUI_VERSION}/ceguilua
-  cpptcl
-  ois
-  tinyxml
-  tolua
+  ceguilua/ceguilua-${CEGUI_VERSION}
 )
 
 INCLUDE_DIRECTORIES(
@@ -44,12 +40,12 @@ INCLUDE(AddSourceFiles)
 INCLUDE(UseTolua)
 
 # External libraries, but copied into the repository
+ADD_SUBDIRECTORY(tolua)
 ADD_SUBDIRECTORY(ceguilua)
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ogreceguirenderer)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
-ADD_SUBDIRECTORY(tolua)
 
 # Our own libraries
 ADD_SUBDIRECTORY(util)

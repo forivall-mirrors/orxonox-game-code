@@ -28,7 +28,7 @@
 
 #include "Template.h"
 
-#include <ticpp.h>
+#include <tinyxml/ticpp.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

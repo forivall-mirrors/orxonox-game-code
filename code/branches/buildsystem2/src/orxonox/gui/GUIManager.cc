@@ -38,7 +38,7 @@
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <CEGUI.h>
-#include <CEGUILua.h>
+#include <ceguilua/CEGUILua.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "util/Exception.h"
