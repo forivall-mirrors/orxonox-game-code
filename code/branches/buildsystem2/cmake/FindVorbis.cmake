@@ -3,15 +3,14 @@
 #
 #  VORBIS_FOUND - system has vorbis
 #  VORBIS_INCLUDE_DIR
-#  VORBIS_LIBRARY
-#  VORBISENC_LIBRARY
-#  VORBISFILE_LIBRARY
+#  VORBIS_LIBRARIES - vorbis and vorbisfile libraries
 #
 # $VORBISDIR is an environment variable used
 # for finding vorbis.
 #
 # Several changes and additions by Fabian 'x3n' Landau
 # Most of all rewritten by Adrian Friedli
+# Debug versions and simplifications by Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(FindPackageHandleStandardArgs)

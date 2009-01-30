@@ -6,12 +6,14 @@
 #  OGRE_FOUND, If false, do not try to use OGRE
 #
 # Copyright © 2007, Matt Williams
-# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture of the ETH Zurich
+# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture
+# of the ETH Zurich (removed later on)
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 #
 # Several changes and additions by Fabian 'x3n' Landau
 # Lots of simplifications by Adrian Friedli
+# Version checking by Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(DetermineVersion)

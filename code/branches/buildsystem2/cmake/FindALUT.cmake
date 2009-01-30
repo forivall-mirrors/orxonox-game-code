@@ -1,7 +1,7 @@
 # - Locate FreeAlut
 # This module defines
 #  ALUT_LIBRARY
-#  ALUT_FOUND, if false, do not try to link to Alut
+#  ALUT_FOUND, if false, do not try to link against Alut
 #  ALUT_INCLUDE_DIR, where to find the headers
 #
 # $ALUTDIR is an environment variable that would
@@ -17,7 +17,7 @@
 # Other (Unix) systems should be able to utilize the non-framework paths.
 #
 # Several changes and additions by Fabian 'x3n' Landau
-# Some simplifications by Adrian Friedli
+# Some simplifications by Adrian Friedli and Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(FindPackageHandleStandardArgs)

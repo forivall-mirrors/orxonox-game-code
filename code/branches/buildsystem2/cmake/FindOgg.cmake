@@ -1,4 +1,4 @@
-# - Try to find ogg/vorbis
+# - Try to find ogg
 # Once done this will define
 #
 #  OGG_FOUND - system has ogg
@@ -10,6 +10,7 @@
 #
 # Several changes and additions by Fabian 'x3n' Landau
 # Most of all rewritten by Adrian Friedli
+# Debug versions and simplifications by Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(FindPackageHandleStandardArgs)

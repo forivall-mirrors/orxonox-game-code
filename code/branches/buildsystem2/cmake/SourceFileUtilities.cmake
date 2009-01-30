@@ -1,19 +1,31 @@
-#    AddSourceFiles.cmake - CMake Module to include source files in subdirectories.
-#    Author: Reto '1337' Grieder (2008)
-#
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+ #
+ #             ORXONOX - the hottest 3D action shooter ever to exist
+ #                             > www.orxonox.net <
+ #
+ #        This program is free software; you can redistribute it and/or
+ #         modify it under the terms of the GNU General Public License
+ #        as published by the Free Software Foundation; either version 2
+ #            of the License, or (at your option) any later version.
+ #
+ #       This program is distributed in the hope that it will be useful,
+ #        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #                 GNU General Public License for more details.
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #      with this program; if not, write to the Free Software Foundation,
+ #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ #
+ #
+ #  Author:
+ #    Reto Grieder
+ #  Description:
+ #    Several functions that help organising the source tree.
+ #    [ADD/SET]_SOURCE_FILES - Writes source files to the cache by force and
+ #                             adds the current directory.
+ #    GET_ALL_HEADER_FILES - Finds all header files recursively.
+ #    GENERATE_SOURCE_GROUPS - Set Visual Studio source groups.
+ #
 
 # Adds source files with the full path to a list
 FUNCTION(ADD_SOURCE_FILES _varname)

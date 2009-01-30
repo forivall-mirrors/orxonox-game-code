@@ -4,6 +4,15 @@
 #  CEGUI_INCLUDE_DIR
 #  CEGUI_LIBRARY, the library to link against to use CEGUI.
 #  CEGUI_FOUND, If false, do not try to use CEGUI
+#  CEGUI_VERSION, the version as string "x.y.z"
+#  CEGUILUA_LIBRARY, Script module library
+#  CEGUILUA_USE_INTERNAL_LIBRARY, True if CEGUILUA_LIBRARY was not defined here
+#
+# Input:
+#  ENV{CEGUIDIR}, CEGUI path, optional
+#  FIND CEGUILUA_INTERNAL_SUPPORT, List of all CEGUILua version supported
+#                                  in the source repository
+#  CEGUILUA_USE_EXTERNAL_LIBRARY, Force finding of CEGUILua
 #
 # Created by Matt Williams to find OGRE libraries
 # Copyright © 2007, Matt Williams
@@ -15,7 +24,8 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 #
 # Several changes and additions by Fabian 'x3n' Landau
-# Lots of simplifications by Adrian Friedli
+# Lots of simplifications by Adrian Friedli and Reto Grieder
+# Version checking and CEGUILua finding by Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(DetermineVersion)

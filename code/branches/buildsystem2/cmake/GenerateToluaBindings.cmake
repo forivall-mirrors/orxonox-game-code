@@ -1,19 +1,36 @@
-#    UseTolua.cmake - CMake Module to generate LUA Bindings with tolua
-#    Copyright (C) 2008  Adrian Friedli
-#
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+ #
+ #             ORXONOX - the hottest 3D action shooter ever to exist
+ #                             > www.orxonox.net <
+ #
+ #        This program is free software; you can redistribute it and/or
+ #         modify it under the terms of the GNU General Public License
+ #        as published by the Free Software Foundation; either version 2
+ #            of the License, or (at your option) any later version.
+ #
+ #       This program is distributed in the hope that it will be useful,
+ #        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #                 GNU General Public License for more details.
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #      with this program; if not, write to the Free Software Foundation,
+ #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ #
+ #
+ #  Author:
+ #    Adrian Friedli
+ #  Description:
+ #    Sets the CMake options that will generate Tolua++ bindings.
+ #  Parameters:
+ #    _tolua_package - Name of the package, e.g. "Core"
+ #    _target_source_files - Variable name of the target source files, the
+ #                           script will add the generated files to this list.
+ #    ARGN - The header files in the style "INTPUTFILES Foo.h Bar.h"
+ #  Global Variables: (need to be set before)
+ #    TOLUA_PARSER_SOURCE - Lua file with the parser source code
+ #    TOLUA_PARSER_DEPENDENCIES - All the dependent lua files
+ #    ORXONOX_RUNTIME_LIBRARY_DIRECTORY - Working directory
+ #
 
 FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
   SET(_tolua_inputfiles ${ARGN})

@@ -3,7 +3,7 @@
 #
 #  ENET_FOUND - system has enet
 #  ENet_INCLUDE_DIR - the enet include directory
-#  ENet_LIBRARIES - the libraries needed to use enet
+#  ENet_LIBRARY - the library needed to link against enet
 #
 # $ENETDIR is an environment variable used for finding enet.
 #
@@ -11,7 +11,8 @@
 #  http://themanaworld.org/
 #
 # Several changes and additions by Fabian 'x3n' Landau
-# Lots of simplifications by Adrian Friedli
+# Lots of simplifications by Adrian Friedli and Reto Grieder
+# Version checking by Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(FindPackageHandleAdvancedArgs)

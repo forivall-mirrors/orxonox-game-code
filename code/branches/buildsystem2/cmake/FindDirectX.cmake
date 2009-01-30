@@ -1,10 +1,14 @@
 # Find script for DirectX on Windows
+# Specifically designed to find dxguid and dinput8 for OIS
 # Once loaded this will define
-#   DirectX_FOUND        - system has DirectX
-#   DirectX_INCLUDE_DIR  - include directory for DirectX
-#   DirectX_LIBRARY      - library for DirectX
+#   DIRECTX_FOUND        - system has DirectX
+#   DIRECTX_INCLUDE_DIR  - include directory for DirectX
+#   DIRECTX_LIBRARIES    - libraries for DirectX
+#
+# Set ENV{DXSD_DIR} if that has not been done the SDK installation.
 #
 # Several changes and additions by Fabian 'x3n' Landau
+# Simplifications and CMake 2.6.0 bugfix by Reto Grieder
 #                 > www.orxonox.net <
 
 INCLUDE(FindPackageHandleStandardArgs)
