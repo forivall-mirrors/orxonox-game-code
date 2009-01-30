@@ -17,7 +17,27 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET_SOURCE_FILES(UTIL_SRC_FILES
+SET_SOURCE_FILES(UTIL_FILES
+  CRC32.h
+  Clipboard.h
+  Convert.h
+  Debug.h
+  Exception.h
+  ExprParser.h
+  Integers.h
+  Math.h
+  MathConvert.h
+  MultiType.h
+  MultiTypeValue.h
+  OutputBuffer.h
+  OutputHandler.h
+  SignalHandler.h
+  Sleep.h
+  String.h
+  SubString.h
+  UtilPrereqs.h
+  mbool.h
+
   Clipboard.cc
   CRC32.cc
   Exception.cc
@@ -30,8 +50,8 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
   String.cc
   SubString.cc
 )
-GET_ALL_HEADER_FILES(UTIL_HDR_FILES)
-SET(UTIL_FILES ${UTIL_SRC_FILES} ${UTIL_HDR_FILES})
+#GET_ALL_HEADER_FILES(UTIL_HDR_FILES)
+#SET(UTIL_FILES ${UTIL_SRC_FILES} ${UTIL_HDR_FILES})
 GENERATE_SOURCE_GROUPS(${UTIL_FILES})
 # Also add OrxonoxConfig.h to have it least somewhere in the IDE
 LIST(APPEND UTIL_FILES ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h)

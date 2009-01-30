@@ -40,7 +40,11 @@ FOREACH(_version ${CEGUILUA_VERSIONS})
   IF(_compare_result EQUAL 1)
     BREAK() # _version > CEGUI_VERSION
   ENDIF()
-  ADD_SUBDIRECTORY(ceguilua-${_version})
+  
+  ADD_SUBDIRECTORY(ceguilua-${_version}) # Sets parent scope variable
+  FOREACH(_file ${_package_files})
+    CONFIGURE_FILE(ceguilua-${_version}/package/${_file} ${CEGUILUA_BINARY_DIR}/${_file} COPYONLY)
+  ENDFOREACH(_file)
 ENDFOREACH(_version)
 
 # Create the tolua bind file. We could use the orignal file though, but it is 1.6MB...

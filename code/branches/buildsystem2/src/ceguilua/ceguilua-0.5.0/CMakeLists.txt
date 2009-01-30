@@ -1,32 +1,34 @@
- #
- #             ORXONOX - the hottest 3D action shooter ever to exist
- #                             > www.orxonox.net <
- #
- #        This program is free software; you can redistribute it and/or
- #         modify it under the terms of the GNU General Public License
- #        as published by the Free Software Foundation; either version 2
- #            of the License, or (at your option) any later version.
- #
- #       This program is distributed in the hope that it will be useful,
- #        but WITHOUT ANY WARRANTY; without even the implied warranty of
- #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- #                 GNU General Public License for more details.
- #
- #   You should have received a copy of the GNU General Public License along
- #      with this program; if not, write to the Free Software Foundation,
- #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- #
+SET(_package_files
+  exceptions.lua Basic.pkg FontManager.pkg InputEvent.pkg OutStream.pkg
+  System.pkg WindowManager.pkg CEGUI.pkg HelperFunctions.pkg Iterators.pkg
+  PropertyHelper.pkg Texture.pkg CoordConverter.pkg Image.pkg Key.pkg
+  Renderer.pkg UnifiedCoordSystem.pkg EventSet.pkg Imageset.pkg Logger.pkg
+  Scheme.pkg Window.pkg Font.pkg ImagesetManager.pkg MouseCursor.pkg
+  SchemeManager.pkg WindowFactoryManager.pkg
 
-# Copy all files from the package folder to the binary directory
+  elements/ButtonBase.pkg elements/Checkbox.pkg elements/ComboDropList.pkg
+  elements/Combobox.pkg elements/DragContainer.pkg elements/Editbox.pkg
+  elements/FrameWindow.pkg elements/GUISheet.pkg elements/ItemEntry.pkg
+  elements/ItemListBase.pkg elements/ItemListbox.pkg elements/ListHeader.pkg
+  elements/ListHeaderSegment.pkg elements/Listbox.pkg elements/ListboxItem.pkg
+  elements/ListboxTextItem.pkg elements/MenuBase.pkg elements/MenuItem.pkg
+  elements/Menubar.pkg elements/MultiColumnList.pkg
+  elements/MultiLineEditbox.pkg elements/PopupMenu.pkg elements/ProgressBar.pkg
+  elements/PushButton.pkg elements/RadioButton.pkg elements/ScrollablePane.pkg
+  elements/Scrollbar.pkg elements/ScrolledContainer.pkg
+  elements/ScrolledItemListBase.pkg elements/Slider.pkg elements/Spinner.pkg
+  elements/TabButton.pkg elements/TabControl.pkg elements/Thumb.pkg
+  elements/Titlebar.pkg elements/Tooltip.pkg
+  
+  falagard/Dimension.pkg falagard/Enums.pkg falagard/FalagardComponentBase.pkg
+  falagard/FrameComponent.pkg falagard/ImageryComponent.pkg
+  falagard/ImagerySection.pkg falagard/LayerSpecification.pkg
+  falagard/NamedArea.pkg falagard/PropertyDefinition.pkg
+  falagard/PropertyDefinitionBase.pkg falagard/PropertyInitialiser.pkg
+  falagard/PropertyLinkDefinition.pkg falagard/SectionSpecification.pkg
+  falagard/StateImagery.pkg falagard/TextComponent.pkg
+  falagard/WidgetComponent.pkg falagard/WidgetLookFeel.pkg
+  falagard/WidgetLookManager.pkg
 
-# Only do this once since GLOB_RECURSE is quite slow
-# No, don't. When switch back from 0.6 to 0.5 and keeping the binary dir
-# This will cause problems.
-#IF(EXISTS ${CEGUILUA_BINARY_DIR}/exceptions.lua)
-#  RETURN()
-#ENDIF(EXISTS ${CEGUILUA_BINARY_DIR}/exceptions.lua)
-
-FILE(GLOB_RECURSE _package_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/package "*.pkg")
-FOREACH(_file ${_package_files} "exceptions.lua")
-  CONFIGURE_FILE(package/${_file} ${CEGUILUA_BINARY_DIR}/${_file} COPYONLY)
-ENDFOREACH(_file)
+  PARENT_SCOPE
+)

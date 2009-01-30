@@ -17,14 +17,21 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET_SOURCE_FILES(AUDIO_SRC_FILES
+SET_SOURCE_FILES(AUDIO_FILES
+  AudioBuffer.h
+  AudioIncludes.h
+  AudioManager.h
+  AudioPrereqs.h
+  AudioSource.h
+  AudioStream.h
+
   AudioBuffer.cc
   AudioManager.cc
   AudioSource.cc
   AudioStream.cc
 )
-GET_ALL_HEADER_FILES(AUDIO_HDR_FILES)
-SET(AUDIO_FILES ${AUDIO_SRC_FILES} ${AUDIO_HDR_FILES})
+#GET_ALL_HEADER_FILES(AUDIO_HDR_FILES)
+#SET(AUDIO_FILES ${AUDIO_SRC_FILES} ${AUDIO_HDR_FILES})
 GENERATE_SOURCE_GROUPS(${AUDIO_FILES})
 
 ADD_COMPILER_FLAGS("-w44244" MSVC)
