@@ -27,7 +27,7 @@ ENDFOREACH(_version)
 # Create the tolua bind file. We could use the orignal file though, but it is 1.6MB...
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CEGUILUA_BINARY_DIR}/lua_CEGUI.cpp
-  COMMAND tolua++gen_orxonox -n CEGUI
+  COMMAND tolua++app_orxonox -n CEGUI
                              -w ${CEGUILUA_BINARY_DIR}
                              -o lua_CEGUI.cpp
                              -L exceptions.lua

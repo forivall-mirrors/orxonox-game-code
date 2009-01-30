@@ -44,8 +44,7 @@ IF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   # Set variables for the include directories and the libraries
   # Note: When setting ENV${} variables, make sure to use quotes when
   #       having multiple directories.
-  SET(BOOST_ROOT             ${MSVC_LIBRARY_DIR}/boost-1.35.0)
-  SET(BOOST_LIBRARYDIR       ${MSVC_LIBRARY_DIR}/boost-1.35.0/lib)
+  SET(ENV{BOOST_ROOT}        ${MSVC_LIBRARY_DIR}/boost-1.35.0)
   SET(ENV{CEGUIDIR}          ${MSVC_LIBRARY_DIR}/cegui-0.6.1)
   SET(ENV{ENETDIR}           ${MSVC_LIBRARY_DIR}/enet-1.2)
   SET(ENV{ALUTDIR}           ${MSVC_LIBRARY_DIR}/freealut-1.1.0)

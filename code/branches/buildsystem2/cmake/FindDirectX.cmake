@@ -11,18 +11,25 @@ INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(HandleLibraryTypes)
 
 FIND_PATH(DIRECTX_INCLUDE_DIR dinput.h
-  PATHS
-  $ENV{DXSDK_DIR}
+  PATHS $ENV{DXSDK_DIR}
   PATH_SUFFIXES include
 )
 FIND_LIBRARY(DIRECTX_LIBRARY_input dinput8
-  PATHS
-  $ENV{DXSDK_DIR}
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES lib Lib lib/x86 Lib/x86
+  NO_DEFAULT_PATH # Or else CMake 2.6.0 will find the dll in system32 on windows
+)
+FIND_LIBRARY(DIRECTX_LIBRARY_input dinput8
+  PATHS $ENV{DXSDK_DIR}
   PATH_SUFFIXES lib Lib lib/x86 Lib/x86
 )
 FIND_LIBRARY(DIRECTX_LIBRARY_guid dxguid
-  PATHS
-  $ENV{DXSDK_DIR}
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES lib Lib lib/x86 Lib/x86
+  NO_DEFAULT_PATH # Or else CMake 2.6.0 will find the dll in system32 on windows
+)
+FIND_LIBRARY(DIRECTX_LIBRARY_guid dxguid
+  PATHS $ENV{DXSDK_DIR}
   PATH_SUFFIXES lib Lib lib/x86 Lib/x86
 )
 
