@@ -6,21 +6,21 @@ INCLUDE(HandleLibraryTypes)
 FUNCTION(DETERMINE_LUA_VERSION _file _varname)
   IF(EXISTS ${_file})
     FILE(STRINGS ${_file} _file_content REGEX "LUA_VERSION|LUA_RELEASE")
-  ELSE(EXISTS ${_file})
+  ELSE()
     SET(${_varname} "0" PARENT_SCOPE)
     RETURN()
-  ENDIF(EXISTS ${_file})
+  ENDIF()
   STRING(REGEX REPLACE "^.*LUA_RELEASE[ \t]+\"Lua[ \t]+([.0-9]+)\".*$" "\\1" ${_varname} "${_file_content}")
   IF(${_varname} STREQUAL "${_file_content}")
     # At most version 5.1.0
     STRING(REGEX REPLACE "^.*LUA_VERSION[ \t]+\"Lua[ \t]+([.0-9]+)\".*$" "\\1" ${_varname} "${_file_content}")
     IF(${_varname} STREQUAL "${_file_content}")
       MESSAGE(FATAL_ERROR "Could not determine Lua version which means this script has a bug")
-    ENDIF(${_varname} STREQUAL "${_file_content}")
+    ENDIF()
     IF(${_varname} MATCHES "^[0-9]+\\.[0-9]+$")
       SET(${_varname} "${${_varname}}.0") # E.g. "3.2" is "3.2.0" actually
-    ENDIF(${_varname} MATCHES "^[0-9]+\\.[0-9]+$")
-  ENDIF(${_varname} STREQUAL "${_file_content}")
+    ENDIF()
+  ENDIF()
   SET(${_varname} "${${_varname}}" PARENT_SCOPE)
 ENDFUNCTION(DETERMINE_LUA_VERSION)
 
@@ -36,7 +36,7 @@ IF(LUA_5.1_INCLUDE_DIR)
   IF(NOT _version_compare EQUAL 0)
     # Incorrect version found, abort search
     SET(LUA_5.1_INCLUDE_DIR "LUA_5.1_INCLUDE_DIR-NOTFOUND" CACHE PATH "" FORCE)
-  ELSE(NOT _version_compare EQUAL 0)
+  ELSE()
     FIND_LIBRARY(LUA_5.1_LIBRARY_OPTIMIZED
       NAMES lua51 lua5.1 lua
       PATHS $ENV{LUA_DIR}
@@ -51,7 +51,7 @@ IF(LUA_5.1_INCLUDE_DIR)
     SET(LUA_5.1_LIBRARIES ${LUA_5.1_LIBRARY})
     IF(LUA_5.1_LIBRARIES)
       SET(LUA_5.1_FOUND TRUE)
-    ENDIF(LUA_5.1_LIBRARIES)
+    ENDIF()
   ENDIF(NOT _version_compare EQUAL 0)
 ENDIF(LUA_5.1_INCLUDE_DIR)
 
@@ -67,7 +67,7 @@ IF(LUA_5.0_INCLUDE_DIR)
   IF(NOT _version_compare EQUAL 0)
     # Incorrect version found, abourt search
     SET(LUA_5.0_INCLUDE_DIR "LUA_5.0_INCLUDE_DIR-NOTFOUND" CACHE PATH "" FORCE)
-  ELSE(NOT _version_compare EQUAL 0)
+  ELSE()
     FIND_LIBRARY(LUA_5.0_LUA_LIBRARY_OPTIMIZED
       NAMES lua50 lua5.0 lua5 lua
       PATHS $ENV{LUA_DIR}
@@ -84,7 +84,7 @@ IF(LUA_5.0_INCLUDE_DIR)
     # (like GLU in OpenGL.framework)
     IF(${LUA_5.0_LUA_LIBRARY} MATCHES "framework")
       SET(LUA_5.0_LIBRARIES ${LUA_5.0_LUA_LIBRARY})
-    ELSE(${LUA_5.0_LUA_LIBRARY} MATCHES "framework")
+    ELSE()
       FIND_LIBRARY(LUA_5.0_LUALIB_LIBRARY_OPTIMIZED
         NAMES lualib50 lualib5.0 lualib5 lualib
         PATHS $ENV{LUALIB_DIR} $ENV{LUA_DIR}
@@ -100,25 +100,25 @@ IF(LUA_5.0_INCLUDE_DIR)
       # Both libraries are required for Lua 5.0 to be found
       IF(LUA_5.0_LUA_LIBRARY AND LUA_5.0_LUALIB_LIBRARY)
         SET(LUA_5.0_LIBRARIES ${LUA_5.0_LUA_LIBRARY} ${LUA_5.0_LUALIB_LIBRARY})
-      ENDIF(LUA_5.0_LUA_LIBRARY AND LUA_5.0_LUALIB_LIBRARY)
+      ENDIF()
     ENDIF(${LUA_5.0_LUA_LIBRARY} MATCHES "framework")
     
     IF(LUA_5.0_LIBRARIES)
       SET(LUA_5.0_FOUND TRUE)
-    ENDIF(LUA_5.0_LIBRARIES)
+    ENDIF()
   ENDIF(NOT _version_compare EQUAL 0)
 ENDIF(LUA_5.0_INCLUDE_DIR)
 
 # Pick the right version
 IF(Lua_FIND_VERSION_EXACT AND NOT Lua_FIND_VERSION MATCHES "^[0-9]*$")
   STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+)(\\..*)?$" "\\1" LUA_VERSION_SELECTION ${Lua_FIND_VERSION})
-ELSE(Lua_FIND_VERSION_EXACT AND NOT Lua_FIND_VERSION MATCHES "^[0-9]*$")
+ELSE()
   IF(LUA_5.1_FOUND) # Prefer version 5.1 if found
     SET(LUA_VERSION_SELECTION "5.1")
   ELSEIF(LUA_5.0_FOUND)
     SET(LUA_VERSION_SELECTION "5.0")
-  ENDIF(LUA_5.1_FOUND)
-ENDIF(Lua_FIND_VERSION_EXACT AND NOT Lua_FIND_VERSION MATCHES "^[0-9]*$")
+  ENDIF()
+ENDIF()
 
 SET(LUA_INCLUDE_DIR "${LUA_${LUA_VERSION_SELECTION}_INCLUDE_DIR}")
 SET(LUA_LIBRARIES "${LUA_${LUA_VERSION_SELECTION}_LIBRARIES}")
@@ -135,7 +135,7 @@ IF(LUA_FOUND)
   IF(UNIX AND NOT APPLE)
     FIND_LIBRARY(UNIX_MATH_LIBRARY m)
     SET(LUA_LIBRARIES ${LUA_LIBRARIES} ${UNIX_MATH_LIBRARY})
-  ENDIF(UNIX AND NOT APPLE)
+  ENDIF()
 ENDIF(LUA_FOUND)
 
 MARK_AS_ADVANCED(

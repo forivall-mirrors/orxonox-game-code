@@ -3,14 +3,14 @@
 # is an ETH tardis box.                         #
 #################################################
 
-IF (UNIX)
+IF(UNIX)
   FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
-  IF (${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
+  IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
     SET (TARDIS ON)
-  ENDIF (${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
-ENDIF (UNIX)
+  ENDIF()
+ENDIF(UNIX)
 
-IF (TARDIS)
+IF(TARDIS)
   MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
 
   # We cannot use the default compiler (why?)
@@ -30,4 +30,4 @@ IF (TARDIS)
   SET(ENV{OGRE_HOME}   "/usr/pack/ogre-1.4.5-sd;/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1")
   SET(ENV{OPENALDIR}   "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
   #SET(TCL_INCLUDE_PATH "/usr/pack/tcltk-8.4.9.linux-mo/include")
-ENDIF (TARDIS)
+ENDIF(TARDIS)

@@ -41,12 +41,12 @@ IF(_enet_header MATCHES "ENET_VERSION[ \t]*=[ \t]*1")
     SET(ENET_VERSION 1.2)
   ELSEIF(_enet_header MATCHES "enet_peer_disconnect_later")
     SET(ENET_VERSION 1.1)
-  ELSE(_enet_header MATCHES "enet_socket_set_option")
+  ELSE()
     SET(ENET_VERSION 1.0)
-  ENDIF(_enet_header MATCHES "enet_socket_set_option")
-ELSE(_enet_header MATCHES "ENET_VERSION[ \t]*=[ \t]*1")
+  ENDIF()
+ELSE()
   SET(ENET_VERSION 0) # Script doesn't support versions below 1.0
-ENDIF(_enet_header MATCHES "ENET_VERSION[ \t]*=[ \t]*1")
+ENDIF()
 
 # Handle the REQUIRED argument and set ENET_FOUND
 # Also check the the version requirements
@@ -59,9 +59,9 @@ FIND_PACKAGE_HANDLE_ADVANCED_ARGS(ENet DEFAULT_MSG ${ENET_VERSION}
 IF(NOT LINK_ENET_DYNAMIC AND WIN32)
   # ENet is linked statically, hence we need to add some windows dependencies
   HANDLE_LIBRARY_TYPES(ENET ws2_32 winmm)
-ELSE(NOT LINK_ENET_DYNAMIC AND WIN32)
+ELSE()
   HANDLE_LIBRARY_TYPES(ENET)
-ENDIF(NOT LINK_ENET_DYNAMIC AND WIN32)
+ENDIF()
 
 MARK_AS_ADVANCED(
   ENET_INCLUDE_DIR

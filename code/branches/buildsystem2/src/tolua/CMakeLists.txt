@@ -18,9 +18,9 @@ ADD_LIBRARY(tolua++_orxonox SHARED ${TOLUA++_FILES})
 SET_TARGET_PROPERTIES(tolua++_orxonox PROPERTIES DEFINE_SYMBOL "TOLUA_SHARED_BUILD")
 TARGET_LINK_LIBRARIES(tolua++_orxonox ${LUA_LIBRARIES})
 
-IF (NOT WIN32)
+IF(NOT WIN32)
 #  INSTALL(TARGETS tolualib_orxonox LIBRARY DESTINATION lib)
-ENDIF (NOT WIN32)
+ENDIF()
 
 
 ################## Tolua++ generator ##################

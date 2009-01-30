@@ -28,7 +28,7 @@
 ###################### MSVC config ########################
 # Set the library directories when using Visual Studio.   #
 
-IF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
+IF(MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   MESSAGE(STATUS "Running on MSVC. Using customized paths and options.")
 
   # Determine library directory
@@ -36,9 +36,9 @@ IF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
     SET(MSVC_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8")
   ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../lib_dist/vc8/dependencies/orxonox_vc8)
     SET(MSVC_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../lib_dist/vc8/dependencies/orxonox_vc8")
-  ELSE(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
+  ELSE()
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the Visual Studio libraries")
-  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/orxonox_vc8)
+  ENDIF()
   SET(ORXONOX_RUNTIME_LIBRARY_DIRECTORY ${MSVC_LIBRARY_DIR}/bin)
 
   # Set variables for the include directories and the libraries
@@ -59,8 +59,8 @@ IF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   SET(ZLIB_INCLUDE_DIR       ${MSVC_LIBRARY_DIR}/zlib-1.2.3/include)
   SET(ZLIB_LIBRARY optimized ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib.lib
                    debug     ${MSVC_LIBRARY_DIR}/zlib-1.2.3/lib/zlib_d.lib)
-  IF ($ENV{DXSDK_DIR} STREQUAL "")
+  IF($ENV{DXSDK_DIR} STREQUAL "")
     SET(ENV{DXSDK_DIR}       ${MSVC_LIBRARY_DIR}/directx-sdk-aug-2007)
-  ENDIF ($ENV{DXSDK_DIR} STREQUAL "")
+  ENDIF()
 
-ENDIF (MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
+ENDIF(MSVC AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)

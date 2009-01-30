@@ -30,7 +30,7 @@
 # tarballs for the dependencies under windows
 ###################################################
 
-IF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
+IF(MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   MESSAGE(STATUS "Running on MinGW. Using customized paths and options.")
 
   # Determine library directory
@@ -38,9 +38,9 @@ IF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
     SET(MINGW_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/libs")
   ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../lis)
     SET(MINGW_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../libs")
-  ELSE(EXISTS ${CMAKE_SOURCE_DIR}/libs)
+  ELSE()
     MESSAGE(FATAL_ERROR "Could not find dependency directory for the MinGW libraries")
-  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/libs)
+  ENDIF()
   SET(ORXONOX_RUNTIME_LIBRARY_DIRECTORY ${MINGW_LIBRARY_DIR})
 
   # Note: When setting ENV${} variables, make sure to use quotes when
@@ -63,7 +63,7 @@ IF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
   SET(ZLIB_INCLUDE_DIR      "${MINGW_LIBRARY_DIR}/zlib/include")
   SET(ZLIB_LIBRARY          "${MINGW_LIBRARY_DIR}/zlib/libzlib.a")
   SET(LINK_ZLIB_DYNAMIC    FALSE)
-  IF ($ENV{DXSDK_DIR} STREQUAL "")
+  IF($ENV{DXSDK_DIR} STREQUAL "")
     SET(ENV{DXSDK_DIR}      "${MINGW_LIBRARY_DIR}/DXSDK")
-  ENDIF ($ENV{DXSDK_DIR} STREQUAL "")
-ENDIF (MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)
+  ENDIF()
+ENDIF(MINGW AND LIBRARY_USE_PACKAGE_IF_SUPPORTED)

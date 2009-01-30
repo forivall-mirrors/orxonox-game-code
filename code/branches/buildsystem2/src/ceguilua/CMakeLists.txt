@@ -20,7 +20,7 @@ FOREACH(_version ${CEGUILUA_VERSIONS})
   COMPARE_VERSION_STRINGS(${_version} ${CEGUI_VERSION} _compare_result)
   IF(_compare_result EQUAL 1)
     BREAK() # _version > CEGUI_VERSION
-  ENDIF(_compare_result EQUAL 1)
+  ENDIF()
   ADD_SUBDIRECTORY(ceguilua-${_version})
 ENDFOREACH(_version)
 
@@ -52,6 +52,6 @@ TARGET_LINK_LIBRARIES(${CEGUILUA_LIBRARY}
   ${CEGUI_LIBRARY}
 )
 
-IF (NOT WIN32)
+IF(NOT WIN32)
   INSTALL(TARGETS ceguilua_orxonox LIBRARY DESTINATION lib)
-ENDIF (NOT WIN32)
+ENDIF()

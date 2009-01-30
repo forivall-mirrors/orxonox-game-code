@@ -44,18 +44,14 @@ IF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
       )
     # String is in default search path, don't need to use -F
     SET (ALUT_LIBRARY_OPTIMIZED "-framework OpenAL" CACHE STRING "OpenAL framework for OSX")
-  ELSE("${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/Library/Frameworks"
-      OR "${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/System/Library/Frameworks"
-      )
+  ELSE()
     # String is not /Library/Frameworks, need to use -F
     SET(ALUT_LIBRARY_OPTIMIZED "-F${ALUT_FRAMEWORK_PATH_TMP} -framework OpenAL" CACHE STRING "OpenAL framework for OSX")
-  ENDIF("${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/Library/Frameworks"
-    OR "${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/System/Library/Frameworks"
-    )
+  ENDIF()
   # Clear the temp variable so nobody can see it
   SET(ALUT_FRAMEWORK_PATH_TMP "" CACHE INTERNAL "")
 
-ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
+ELSE()
   FIND_LIBRARY(ALUT_LIBRARY_OPTIMIZED
     NAMES alut
     PATHS $ENV{ALUTDIR}
@@ -66,7 +62,7 @@ ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
     PATHS $ENV{ALUTDIR}
     PATH_SUFFIXES lib libs
   )
-ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
+ENDIF()
 
 # Handle the REQUIRED argument and set ALUT_FOUND
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(ALUT DEFAULT_MSG

@@ -53,11 +53,11 @@ ADD_SUBDIRECTORY(tolua)
 IF(CEGUILUA_USE_INTERNAL_LIBRARY)
   IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
     MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
-  ENDIF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
+  ENDIF()
 
   INCLUDE_DIRECTORIES(ceguilua/ceguilua-${CEGUI_VERSION})
   ADD_SUBDIRECTORY(ceguilua)
-ENDIF(CEGUILUA_USE_INTERNAL_LIBRARY)
+ENDIF()
 
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ogreceguirenderer)
