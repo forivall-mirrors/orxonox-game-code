@@ -28,6 +28,8 @@ ENDIF()
 ADD_EXECUTABLE(tolua++app_orxonox tolua.c)
 TARGET_LINK_LIBRARIES(tolua++app_orxonox tolua++_orxonox ${LUA_LIBRARIES})
 
+OPTION(TOLUA_PARSER_RELEASE "Disable all debug messages from tolua bind files for Release and MinSizeRel build types." FALSE)
+
 # Set some variables to the cache in order to use them in the TOLUA macro
 SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/all-${LUA_VERSION}.lua" CACHE INTERNAL "")
 SET(TOLUA_PARSER_DEPENDENCIES

@@ -7,8 +7,7 @@ INCLUDE(GenerateToluaBindings)
 ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 # OIS dynamic linking requires macro definition, at least for Windows
 ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
-
-OPTION(TOLUA_PARSER_RELEASE "Disable all debug messages from tolua bind files for Release and MinSizeRel build types." FALSE)
+# Tolua binding speedup if required
 ADD_COMPILER_FLAGS("-DTOLUA_RELEASE" Release MinSizeRel TOLUA_PARSER_RELEASE)
 
 ################ OrxonoxConfig.h ################
