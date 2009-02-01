@@ -102,18 +102,11 @@ FIND_PACKAGE(Lua ${LUA_VERSION_REQUEST} EXACT REQUIRED)
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)
-# ALUT's headers include openal headers, but like <AL/al.h>, not <al.h>
-# Unfortunately this is not the case on all systems, so FindOpenAL.cmake
-# specifies the directory/AL, which now causes problems with ALUT.
-IF(DEFINED OPENAL_FOUND_FIRST_TIME)
-  SET(OPENAL_FOUND_FIRST_TIME FALSE CACHE INTERNAL "")
-ELSE()
-  SET(OPENAL_FOUND_FIRST_TIME TRUE CACHE INTERNAL "")
-  STRING(REGEX REPLACE "^(.*)/AL$" "\\1" _openal_dir_2 ${OPENAL_INCLUDE_DIR})
-  IF(_openal_dir_2)
-    SET(OPENAL_INCLUDE_DIR ${OPENAL_INCLUDE_DIR} ${_openal_dir_2} CACHE STRING "" FORCE)
-  ENDIF()
+# Also use parent include dir (without AL/) for ALUT
+IF(OPENAL_INCLUDE_DIR MATCHES "/AL$")
+  GET_FILENAME_COMPONENT(ALT_OPENAL_INCLUDE_DIR ${OPENAL_INCLUDE_DIR} PATH)
 ENDIF()
+SET(OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR} ${ALT_OPENAL_INCLUDE_DIR})
 # Notfiy user
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(OpenAL DEFAULT_MSG OPENAL_LIBRARY OPENAL_INCLUDE_DIR)
 # Hide variables created by the script
@@ -131,17 +124,12 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 ##### Boost #####
 # Expand the next statement if newer boost versions than 1.36.1 are released
 SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0)
-FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem)
-# With MSVC, automatic linking is performed for boost. So wee need to tell
-# the linker where to find them. Also note that when running FindBoost for the
-# first time, it will set ${Boost_LIBRARIES} to "" but afterwards to the libs.
-IF (MSVC)
-  # Little bit hacky, but Boost_LIBRARY_DIRS doesn't get set right when having
-  # debug and optimized libraries.
-  GET_FILENAME_COMPONENT(BOOST_LINK_DIR "${Boost_THREAD_LIBRARY_RELEASE}" PATH)
-  LINK_DIRECTORIES(${BOOST_LINK_DIR})
-ENDIF (MSVC)
-
+# MSVC seems to be the only compiler requiring system and date_time
+IF(MSVC)
+  FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem date_time system)
+ELSE(MSVC)
+  FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem)
+ENDIF(MSVC)
 
 ####### Static/Dynamic linking options ##########
 

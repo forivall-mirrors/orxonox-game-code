@@ -117,6 +117,9 @@ OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
 
 ####### Static/Dynamic linking defines ##########
 
+# Disable Boost auto linking completely
+ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
+
 # If no defines are specified, these libs get linked statically
 ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)
 ADD_COMPILER_FLAGS("-DENET_DLL"           WIN32 LINK_ENET_DYNAMIC)
