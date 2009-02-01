@@ -66,8 +66,8 @@ ENDIF()
 
 # Handle the REQUIRED argument and set ALUT_FOUND
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(ALUT DEFAULT_MSG
-    ALUT_INCLUDE_DIR
     ALUT_LIBRARY_OPTIMIZED
+    ALUT_INCLUDE_DIR
 )
 
 # Collect optimized and debug libraries

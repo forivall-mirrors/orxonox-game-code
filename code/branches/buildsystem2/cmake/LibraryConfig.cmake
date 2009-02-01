@@ -114,11 +114,10 @@ ELSE()
     SET(OPENAL_INCLUDE_DIR ${OPENAL_INCLUDE_DIR} ${_openal_dir_2} CACHE STRING "" FORCE)
   ENDIF()
 ENDIF()
+# Notfiy user
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(OpenAL DEFAULT_MSG OPENAL_LIBRARY OPENAL_INCLUDE_DIR)
 # Hide variables created by the script
-MARK_AS_ADVANCED(
-  OPENAL_INCLUDE_DIR
-  OPENAL_LIBRARY
-)
+MARK_AS_ADVANCED(OPENAL_INCLUDE_DIR OPENAL_LIBRARY)
 
 ##### TCL #####
 # We only require TCL, so avoid confusing user about other TCL stuff by
@@ -128,10 +127,6 @@ FIND_PACKAGE(TCL 8.4 REQUIRED QUIET)
 # Display messages separately
 SET(TCL_FIND_QUIETLY FALSE)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
-# Workaround a CMake bug that doesn't set the variables to the cache
-# Occurs at least on CMake 2.6.2 and 2.6.0 under Windows
-SET(TCL_LIBRARY ${TCL_LIBRARY} CACHE FILEPATH "")
-SET(TCL_INCLUDE_PATH ${TCL_INCLUDE_PATH} CACHE PATH "")
 
 ##### Boost #####
 # Expand the next statement if newer boost versions than 1.36.1 are released

@@ -52,8 +52,8 @@ ENDIF()
 # Handle the REQUIRED argument and set ENET_FOUND
 # Also check the the version requirements
 FIND_PACKAGE_HANDLE_ADVANCED_ARGS(ENet DEFAULT_MSG ${ENET_VERSION}
-  ENET_INCLUDE_DIR
   ENET_LIBRARY_OPTIMIZED
+  ENET_INCLUDE_DIR
 )
 
 # Collect optimized and debug libraries

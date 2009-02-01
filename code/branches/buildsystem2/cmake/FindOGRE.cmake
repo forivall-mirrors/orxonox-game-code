@@ -41,8 +41,8 @@ DETERMINE_VERSION(OGRE ${OGRE_INCLUDE_DIR}/OgrePrerequisites.h)
 # Handle the REQUIRED argument and set OGRE_FOUND
 # Also check the version requirements
 FIND_PACKAGE_HANDLE_ADVANCED_ARGS(OGRE DEFAULT_MSG ${OGRE_VERSION}
-  OGRE_INCLUDE_DIR
   OGRE_LIBRARY_OPTIMIZED
+  OGRE_INCLUDE_DIR
 )
 
 # Collect optimized and debug libraries

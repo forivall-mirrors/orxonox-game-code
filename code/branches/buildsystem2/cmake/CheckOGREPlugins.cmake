@@ -48,12 +48,12 @@ FUNCTION(CHECK_OGRE_PLUGINS)
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_OPTIMIZED
       NAMES ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}
-      PATH_SUFFIXES lib lib/OGRE bin bin/Release bin/release Release release
+      PATH_SUFFIXES bin/Release bin/release Release release lib lib/OGRE bin
     )
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_DEBUG
-      NAMES ${_plugin}d ${_plugin}_d
+      NAMES ${_plugin}d ${_plugin}_d ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}
-      PATH_SUFFIXES lib lib/OGRE bin bin/Debug bin/debug Debug debug
+      PATH_SUFFIXES bin/Debug bin/debug Debug debug lib lib/OGRE bin
     )
     # We only need at least one render system. Check at the end.
     IF(NOT ${_plugin} MATCHES "RenderSystem")
@@ -66,35 +66,36 @@ FUNCTION(CHECK_OGRE_PLUGINS)
 
     IF(OGRE_PLUGIN_${_plugin}_OPTIMIZED)
       # If debug version is not available, release will do as well
-      IF(NOT OGRE_PLUGIN_${_plugin}_DEBUG)
-        SET(OGRE_PLUGIN_${_plugin}_DEBUG ${OGRE_PLUGIN_${_plugin}_OPTIMIZED} CACHE STRING "" FORCE)
+      IF(OGRE_PLUGIN_${_plugin}_DEBUG STREQUAL OGRE_PLUGIN_${_plugin}_OPTIMIZED)
+        # In this case the library finder didn't find real debug versions
+        SET(OGRE_PLUGIN_${_plugin}_DEBUG "OGRE_PLUGIN_${_plugin}_DEBUG-NOTFOUND" CACHE STRING "" FORCE)
       ENDIF()
       MARK_AS_ADVANCED(OGRE_PLUGIN_${_plugin}_OPTIMIZED OGRE_PLUGIN_${_plugin}_DEBUG)
 
       ### Set variables to configure orxonox.ini correctly afterwards in bin/ ###
       # Check and set the folders
-      GET_FILENAME_COMPONENT(_release_folder ${OGRE_PLUGIN_${_plugin}_OPTIMIZED} PATH)
-      IF(OGRE_PLUGINS_FOLDER_RELEASE AND NOT OGRE_PLUGINS_FOLDER_RELEASE STREQUAL _release_folder)
+      GET_FILENAME_COMPONENT(_plugins_folder ${OGRE_PLUGIN_${_plugin}_OPTIMIZED} PATH)
+      IF(OGRE_PLUGINS_FOLDER_RELEASE AND NOT OGRE_PLUGINS_FOLDER_RELEASE STREQUAL _plugins_folder)
         MESSAGE(FATAL_ERROR "Ogre release plugins have to be in the same folder!")
       ENDIF()
-      SET(OGRE_PLUGINS_FOLDER_RELEASE ${_release_folder})
-      GET_FILENAME_COMPONENT(_debug_folder ${OGRE_PLUGIN_${_plugin}_DEBUG} PATH)
-      IF(OGRE_PLUGINS_FOLDER_DEBUG AND NOT OGRE_PLUGINS_FOLDER_DEBUG STREQUAL _debug_folder)
+      SET(OGRE_PLUGINS_FOLDER_RELEASE ${_plugins_folder})
+      IF(OGRE_PLUGIN_${_plugin}_DEBUG)
+        GET_FILENAME_COMPONENT(_plugins_folder ${OGRE_PLUGIN_${_plugin}_DEBUG} PATH)
+      ENDIF()
+      IF(OGRE_PLUGINS_FOLDER_DEBUG AND NOT OGRE_PLUGINS_FOLDER_DEBUG STREQUAL _plugins_folder)
         MESSAGE(FATAL_ERROR "Ogre debug plugins have to be in the same folder!")
       ENDIF()
-      SET(OGRE_PLUGINS_FOLDER_DEBUG ${_debug_folder})
+      SET(OGRE_PLUGINS_FOLDER_DEBUG ${_plugins_folder})
 
-      # Create a list with the plugins for relase and debug configurations
+      # Create a list with the plugins for release and debug configurations
       LIST(APPEND OGRE_PLUGINS_RELEASE ${_plugin})
-      IF(OGRE_PLUGIN_${_plugin}_DEBUG)
-        # Determine debug postfix ("d" or "_d")
-        IF(OGRE_PLUGIN_${_plugin}_DEBUG MATCHES "_d\\.|_d$")
-          LIST(APPEND OGRE_PLUGINS_DEBUG "${_plugin}_d")
-        ELSE()
-          LIST(APPEND OGRE_PLUGINS_DEBUG "${_plugin}d")
-        ENDIF()
+      # Determine debug postfix ("d" or "_d" or none)
+      IF(OGRE_PLUGIN_${_plugin}_DEBUG MATCHES "_d\\.|_d$")
+        LIST(APPEND OGRE_PLUGINS_DEBUG "${_plugin}_d")
+      ELSEIF(OGRE_PLUGIN_${_plugin}_DEBUG MATCHES "d\\.|d$")
+        LIST(APPEND OGRE_PLUGINS_DEBUG "${_plugin}d")
       ELSE()
-        LIST(APPEND OGRE_PLUGINS_DEBUG ${_plugin})
+        LIST(APPEND OGRE_PLUGINS_DEBUG "${_plugin}")
       ENDIF()
     ENDIF(OGRE_PLUGIN_${_plugin}_OPTIMIZED)
   ENDFOREACH(_plugin)

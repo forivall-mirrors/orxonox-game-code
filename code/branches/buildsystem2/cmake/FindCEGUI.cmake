@@ -53,8 +53,8 @@ DETERMINE_VERSION(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
 # Handle the REQUIRED argument and set CEGUI_FOUND
 # Also checks the version requirements if given
 FIND_PACKAGE_HANDLE_ADVANCED_ARGS(CEGUI DEFAULT_MSG "${CEGUI_VERSION}"
-  CEGUI_INCLUDE_DIR
   CEGUI_LIBRARY_OPTIMIZED
+  CEGUI_INCLUDE_DIR
 )
 
 # Collect optimized and debug libraries
