@@ -45,3 +45,6 @@ ADD_SUBDIRECTORY(src)
 
 # Configure the binary output directory
 ADD_SUBDIRECTORY(bin-config)
+
+# Last but not least: Try to make doxygen target
+INCLUDE(DocumentationTarget)
