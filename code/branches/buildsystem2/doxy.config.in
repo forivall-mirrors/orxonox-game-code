@@ -449,7 +449,7 @@ WARN_FORMAT            = @DOXY_WARN_FORMAT@
 # and error messages should be written. If left blank the output is written 
 # to stderr.
 
-WARN_LOGFILE           = Doc/doxy.log
+WARN_LOGFILE           = doc/doxy.log
 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -521,7 +521,7 @@ EXAMPLE_PATH           = @CMAKE_CURRENT_SOURCE_DIR@/Base/Common/Examples \
                          @CMAKE_CURRENT_SOURCE_DIR@/Utils/Examples \
                          @CMAKE_CURRENT_SOURCE_DIR@/Gui/Examples \
                          @CMAKE_CURRENT_SOURCE_DIR@/FeatureDetector/Examples \
-                         @CMAKE_CURRENT_SOURCE_DIR@/Doc \
+                         @CMAKE_CURRENT_SOURCE_DIR@/doc \
                          @CMAKE_CURRENT_SOURCE_DIR@ 
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
@@ -546,7 +546,7 @@ EXAMPLE_RECURSIVE      = YES
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@/Doc \
+IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@/doc \
 						 @CMAKE_CURRENT_SOURCE_DIR@/Tests/data \
 						 @CMAKE_CURRENT_SOURCE_DIR@ 
 
@@ -1077,7 +1077,7 @@ TAGFILES               =
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create 
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       = Doc/html/@PROJECT_NAME@.TAGFILE
+GENERATE_TAGFILE       = doc/html/@PROJECT_NAME@.TAGFILE
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed 
 # in the class index. If set to NO only the inherited external classes 

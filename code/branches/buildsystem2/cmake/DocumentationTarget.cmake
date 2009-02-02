@@ -78,7 +78,7 @@ IF (DOXYGEN_FOUND)
   IF    (WIN32)
     FIND_PACKAGE(HTMLHelp)
     IF   (HTML_HELP_COMPILER)      
-      SET (TMP "${CMAKE_CURRENT_BINARY_DIR}\\Doc\\html\\index.hhp")
+      SET (TMP "${CMAKE_CURRENT_BINARY_DIR}\\doc\\html\\index.hhp")
       STRING(REGEX REPLACE "[/]" "\\\\" HHP_FILE ${TMP} )
       # MESSAGE(SEND_ERROR "DBG  HHP_FILE=${HHP_FILE}")
       ADD_CUSTOM_TARGET(winhelp ${HTML_HELP_COMPILER} ${HHP_FILE})
@@ -89,7 +89,7 @@ IF (DOXYGEN_FOUND)
       # determine useful name for output file 
       # should be project and version unique to allow installing 
       # multiple projects into one global directory      
-      IF   (EXISTS "${PROJECT_BINARY_DIR}/Doc/html/index.chm")
+      IF   (EXISTS "${PROJECT_BINARY_DIR}/doc/html/index.chm")
         IF   (PROJECT_NAME)
           SET(OUT "${PROJECT_NAME}")
         ELSE (PROJECT_NAME)
@@ -107,13 +107,13 @@ IF (DOXYGEN_FOUND)
         # keep suffix
         SET(OUT  "${OUT}.chm")
         
-        #MESSAGE("DBG ${PROJECT_BINARY_DIR}/Doc/html/index.chm \n${OUT}")
+        #MESSAGE("DBG ${PROJECT_BINARY_DIR}/doc/html/index.chm \n${OUT}")
         # create target used by install and package commands 
-        INSTALL(FILES "${PROJECT_BINARY_DIR}/Doc/html/index.chm"
+        INSTALL(FILES "${PROJECT_BINARY_DIR}/doc/html/index.chm"
           DESTINATION "doc"
           RENAME "${OUT}"
         )
-      ENDIF(EXISTS "${PROJECT_BINARY_DIR}/Doc/html/index.chm")
+      ENDIF(EXISTS "${PROJECT_BINARY_DIR}/doc/html/index.chm")
       ENDIF(NOT TARGET_DOC_SKIP_INSTALL)
 
     ENDIF(HTML_HELP_COMPILER)
