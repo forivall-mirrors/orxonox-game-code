@@ -131,8 +131,8 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(OpenAL DEFAULT_MSG OPENAL_LIBRARY OPENAL_INCLU
 # Hide variables created by the script
 MARK_AS_ADVANCED(OPENAL_INCLUDE_DIR OPENAL_LIBRARY)
 
-##### TCL #####
-# We only require TCL, so avoid confusing user about other TCL stuff by
+##### Tcl #####
+# We only require Tcl, so avoid confusing user about other Tcl stuff by
 # applying a little workaround
 SET(Tclsh_FIND_QUIETLY TRUE)
 FIND_PACKAGE(TCL 8.4 REQUIRED QUIET)
