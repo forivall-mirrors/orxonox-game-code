@@ -48,9 +48,7 @@ TARGET_LINK_LIBRARIES(network
   core
 )
 
-IF(NOT WIN32)
-  INSTALL(TARGETS network LIBRARY DESTINATION lib)
-ENDIF()
+ORXONOX_INSTALL(network)
 
 # build those parts only on request.
 IF(NETWORK_TESTING_ENABLED)

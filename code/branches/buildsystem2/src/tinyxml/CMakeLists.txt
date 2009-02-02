@@ -37,6 +37,4 @@ ELSE()
   ADD_LIBRARY(tinyxml++_orxonox SHARED ${TINYXML++_FILES})
 ENDIF()
 
-IF(NOT WIN32)
-  INSTALL(TARGETS tinyxml++_orxonox LIBRARY DESTINATION lib)
-ENDIF()
+ORXONOX_INSTALL(tinyxml++_orxonox)

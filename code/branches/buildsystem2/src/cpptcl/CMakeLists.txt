@@ -42,6 +42,4 @@ TARGET_LINK_LIBRARIES(cpptcl_orxonox
   ${TCL_LIBRARY}
 )
 
-IF(NOT WIN32)
-  INSTALL(TARGETS cpptcl_orxonox LIBRARY DESTINATION lib)
-ENDIF()
+ORXONOX_INSTALL(cpptcl_orxonox)

@@ -16,49 +16,19 @@
  #      with this program; if not, write to the Free Software Foundation,
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
+ #
+ #  Author:
+ #    Reto Grieder
+ #  Description:
+ #    Helps configuring the INSTALL command in more global way.
+ #  Parameters:
+ #    Specifiy the targets as additional parameter.
+ #
 
-SET_SOURCE_FILES(OIS_FILES
-  OIS.h
-  OISConfig.h
-  OISEffect.h
-  OISEvents.h
-  OISException.h
-  OISFactoryCreator.h
-  OISForceFeedback.h
-  OISInputManager.h
-  OISInterface.h
-  OISJoyStick.h
-  OISKeyboard.h
-  OISMouse.h
-  OISObject.h
-  OISPrereqs.h
-
-  OISEffect.cpp
-  OISException.cpp
-  OISForceFeedback.cpp
-  OISInputManager.cpp
-  OISJoyStick.cpp
-  OISKeyboard.cpp
-  OISObject.cpp
-)
-IF(WIN32)
-  ADD_SUBDIRECTORY(win32)
-ELSEIF(APPLE)
-  ADD_SUBDIRECTORY(mac)
-ELSEIF(UNIX)
-  ADD_SUBDIRECTORY(linux)
-ENDIF()
-
-GENERATE_SOURCE_GROUPS(${OIS_FILES})
-
-REMOVE_COMPILER_FLAGS("-DUNICODE -D_UNICODE" MSVC)
-INCLUDE_DIRECTORIES(.)
-
-ADD_LIBRARY(ois_orxonox SHARED ${OIS_FILES})
-SET_TARGET_PROPERTIES(ois_orxonox PROPERTIES DEFINE_SYMBOL "OIS_NONCLIENT_BUILD")
-
-IF(WIN32)
-  TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES})
-ENDIF()
-
-ORXONOX_INSTALL(ois_orxonox)
+FUNCTION(ORXONOX_INSTALL)
+  INSTALL(TARGETS ${ARGN}
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+  )
+ENDFUNCTION(ORXONOX_INSTALL)

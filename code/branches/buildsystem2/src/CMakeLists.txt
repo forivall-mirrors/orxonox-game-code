@@ -21,8 +21,9 @@
 
 # various macro includes
 INCLUDE(FlagUtilities)
-INCLUDE(SourceFileUtilities)
 INCLUDE(GenerateToluaBindings)
+INCLUDE(InstallUtilities)
+INCLUDE(SourceFileUtilities)
 
 # Use TinyXML++
 ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
