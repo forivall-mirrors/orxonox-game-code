@@ -28,19 +28,38 @@
 INCLUDE(CompareVersionStrings)
 INCLUDE(FindPackageHandleStandardArgs)
 
-################ Misc Options ###################
-
-OPTION(LIBRARY_USE_PACKAGE_IF_SUPPORTED
-       "When set to false CMake will only look in the standard paths for libraries" ON)
-
-
 ############## Platform Scripts #################
+
+# On Windows using a package causes way less problems
+SET(_option_msg "Set this to true to use precompiled dependecy archives")
+IF(WIN32)
+  OPTION(USE_DEPENDENCY_PACKAGE "${_option_msg}" ON)
+ELSE(WIN32)
+  OPTION(USE_DEPENDENCY_PACKAGE "${_option_msg}" FALSE)
+ENDIF(WIN32)
 
 # Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
 INCLUDE(LibraryConfigApple)
-INCLUDE(LibraryConfigMSVC)
-INCLUDE(LibraryConfigMinGW)
+
+IF(USE_DEPENDENCY_PACKAGE)
+  IF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/include)
+    SET(DEPENDENCY_DIR "${CMAKE_SOURCE_DIR}/dependencies" CACHE PATH "")
+  ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../dependencies/include)
+    SET(DEPENDENCY_DIR "${CMAKE_SOURCE_DIR}/../dependencies" CACHE PATH "")
+  ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies/include)
+    SET(DEPENDENCY_DIR "${CMAKE_SOURCE_DIR}/../lib_dist/dependencies" CACHE PATH "")
+  ELSE()
+    MESSAGE(STATUS "Warning: Could not find dependency directory."
+                   "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
+  ENDIF()
+  IF(DEPENDENCY_DIR)
+    FILE(GLOB _package_config_files dependencies/PackageConfig*.cmake)
+    FOREACH(_file ${_package_config_files})
+      INCLUDE(${_file})
+    ENDFOREACH(_file)
+  ENDIF()
+ENDIF(USE_DEPENDENCY_PACKAGE)
 
 # User script
 SET(LIBRARY_CONFIG_USER_SCRIPT "" CACHE FILEPATH
