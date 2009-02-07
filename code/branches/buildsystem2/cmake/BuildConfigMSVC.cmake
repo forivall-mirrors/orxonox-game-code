@@ -23,6 +23,10 @@
  #    Sets the right compiler and linker flags for the Microsoft Compiler.
  #
 
+######################## Options ########################
+
+OPTION(ACTIVATE_VISUAL_LEAK_DETECTOR "Memory leak detector" FALSE)
+
 #################### Compiler Flags #####################
 
 # -MD    Minimal Rebuild
@@ -41,7 +45,15 @@
 ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"      CACHE)
 ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 ADD_COMPILER_FLAGS("-DUNICODE -D_UNICODE"      CACHE)
-ADD_COMPILER_FLAGS("-w44522 -w44251 -w44800"   CACHE)
+
+# Overwrite CMake default flags here.
+SET_COMPILER_FLAGS("-MDd -Od -ZI -D_DEBUG -Gm -RTC1" Debug          CACHE)
+SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"      Release        CACHE)
+SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"           RelWithDebInfo CACHE)
+SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"      MinSizeRel     CACHE)
+
+
+####################### Warnings ########################
 
 # Increase warning level if requested
 IF(EXTRA_WARNINGS)
@@ -52,11 +64,51 @@ ELSE()
   ADD_COMPILER_FLAGS   ("-W3" CACHE)
 ENDIF()
 
-# Overwrite CMake default flags here.
-SET_COMPILER_FLAGS("-MDd -Od -ZI -D_DEBUG -Gm -RTC1" Debug          CACHE)
-SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"      Release        CACHE)
-SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"           RelWithDebInfo CACHE)
-SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"      MinSizeRel     CACHE)
+# "<type> needs to have dll-interface to be used by clients'
+# Happens on STL member variables which are not public
+ADD_COMPILER_FLAGS("-w44251" CACHE)
+
+# Multiple assignment operators specified
+ADD_COMPILER_FLAGS("-w44522" CACHE)
+
+# Forcing values to bool
+ADD_COMPILER_FLAGS("-w44800" CACHE)
+
+# This warns about truncation to 255 characters in debug/browse info
+# ADD_COMPILER_FLAGS("-w44786 -w44503" CACHE)
+
+# conversion from 'double' to 'float', possible loss of data
+# conversion from 'ogg_int64_t' to 'long', possible loss of data
+# ADD_COMPILER_FLAGS("-w44244" CACHE)
+
+# "conversion from 'size_t' to 'unsigned int', possible loss of data
+# ADD_COMPILER_FLAGS("-w44267" CACHE)
+
+# "truncation from 'double' to 'float'
+# ADD_COMPILER_FLAGS("-w44305" CACHE)
+
+# "non dll-interface class used as base for dll-interface class"
+# ADD_COMPILER_FLAGS("-w44275" CACHE)
+
+# "C++ Exception Specification ignored"
+# This is because MSVC 6 did not implement all the C++ exception
+# specifications in the ANSI C++ draft.
+# ADD_COMPILER_FLAGS("-w44290" CACHE)
+
+# "no suitable definition provided for explicit template
+# instantiation request" Occurs in VC7 for no justifiable reason.
+# ADD_COMPILER_FLAGS("-w44661" CACHE)
+
+# Deprecation warnings when using CRT calls in VC8
+# These show up on all C runtime lib code in VC8, disable since they clutter
+# the warnings with things we may not be able to do anything about (e.g.
+# generated code from nvparse etc). I doubt very much that these calls
+# will ever be actually removed from VC anyway, it would break too much code.
+# Note: Probably handled by "-DCRT_SECURE_NO_WARNINGS"
+# ADD_COMPILER_FLAGS("-w44996" CACHE)
+
+# "conditional expression constant"
+# ADD_COMPILER_FLAGS("-w4201" CACHE)
 
 
 ##################### Linker Flags ######################

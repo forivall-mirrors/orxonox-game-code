@@ -62,7 +62,7 @@ namespace orxonox
                 {
                     startdirectory = ".";
                 }
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
                 else
                 {
                     std::string dir = startdirectory.string();

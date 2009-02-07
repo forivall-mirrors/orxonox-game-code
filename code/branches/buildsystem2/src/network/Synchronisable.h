@@ -34,11 +34,9 @@
 #include <list>
 #include <map>
 #include <queue>
-#include "util/Integers.h"
 #include "core/OrxonoxClass.h"
 #include "core/XMLIncludes.h"
 #include "NetworkCallback.h"
-#include "util/Integers.h"
 
 #define REGISTERDATA(varname, ...) \
     registerVariable((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)

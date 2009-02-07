@@ -56,7 +56,7 @@
 #include <tolua++.h>
 
 //Get around Windows hackery (windows.h is included by Ogre.h)
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#ifdef ORXONOX_PLATFORM_WINDOWS 
 #  ifdef max
 #    undef max
 #  endif
@@ -99,6 +99,6 @@
 
 //#endif /* ifdef NDEBUG */
 
-#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
+#endif /* defined(ORXONOX_ENABLE_PCH) */
 
 #endif /* _OrxonoxStableHeaders_H__ */

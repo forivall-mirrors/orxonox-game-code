@@ -43,7 +43,7 @@
 #include "objects/Tickable.h"
 #include "Settings.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#ifdef ORXONOX_PLATFORM_WINDOWS 
 #  ifndef WIN32_LEAN_AND_MEAN
 #    define WIN32_LEAN_AND_MEAN
 #  endif
@@ -164,7 +164,7 @@ namespace orxonox
     */
     void GSRoot::setThreadAffinity(unsigned int limitToCPU)
     {
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // Get the current process core mask
 	    DWORD procMask;
 	    DWORD sysMask;

@@ -52,7 +52,7 @@
 #include "gamestates/GSGUI.h"
 #include "gamestates/GSIOConsole.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
+#ifdef ORXONOX_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
 // This function will locate the path to our application on OS X,

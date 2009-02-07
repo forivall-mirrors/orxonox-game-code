@@ -24,7 +24,6 @@ SET_SOURCE_FILES(UTIL_FILES
   Debug.h
   Exception.h
   ExprParser.h
-  Integers.h
   Math.h
   MathConvert.h
   MultiType.h
@@ -53,9 +52,15 @@ SET_SOURCE_FILES(UTIL_FILES
 #GET_ALL_HEADER_FILES(UTIL_HDR_FILES)
 #SET(UTIL_FILES ${UTIL_SRC_FILES} ${UTIL_HDR_FILES})
 GENERATE_SOURCE_GROUPS(${UTIL_FILES})
-# Also add OrxonoxConfig.h to have it least somewhere in the IDE
-LIST(APPEND UTIL_FILES ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h)
-SOURCE_GROUP("" FILES ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h)
+# Also add OrxonoxConfig to have it least somewhere in the IDE
+LIST(APPEND UTIL_FILES
+  ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h
+  ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
+)
+SOURCE_GROUP("" FILES
+  ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h
+  ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
+)
 
 IF(NOT GCC_SYSTEM_HEADER_SUPPORT)
   # Get around displaying a few hundred lines of warning code

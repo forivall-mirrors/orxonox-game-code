@@ -39,7 +39,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( UTIL_STATIC_BUILD )
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( UTIL_STATIC_BUILD )
 #  ifdef UTIL_SHARED_BUILD
 #    define _UtilExport __declspec(dllexport)
 #  else

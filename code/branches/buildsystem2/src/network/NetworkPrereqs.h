@@ -39,7 +39,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( NETWORK_STATIC_BUILD )
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( NETWORK_STATIC_BUILD )
 #  ifdef NETWORK_SHARED_BUILD
 #    define _NetworkExport __declspec(dllexport)
 #  else

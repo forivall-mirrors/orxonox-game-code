@@ -216,7 +216,7 @@ namespace orxonox
 
         delete this->ogreRoot_;
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // delete the ogre log and the logManager (since we have created it).
         this->ogreLogger_->getDefaultLog()->removeListener(this);
         this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
@@ -306,7 +306,7 @@ namespace orxonox
         COUT(3) << "Setting up Ogre..." << std::endl;
 
         // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // create a new logManager
         ogreLogger_ = new Ogre::LogManager();
         COUT(4) << "Ogre LogManager created" << std::endl;
@@ -354,7 +354,7 @@ namespace orxonox
         ogreRoot_ = new Ogre::Root("", ogreConfigFile_, ogreLogFile_);
 
 #if 0 // Ogre 1.4.3 doesn't yet support setDebugOutputEnabled(.)
-#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+#ifndef ORXONOX_PLATFORM_WINDOWS
         // tame the ogre ouput so we don't get all the mess in the console
         Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
         defaultLog->setDebugOutputEnabled(false);

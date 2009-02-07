@@ -44,7 +44,7 @@ namespace orxonox
     typedef int (*SignalCallback)( void * someData );
 }
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX
+#ifdef ORXONOX_PLATFORM_LINUX
 #include <signal.h>
 
 namespace orxonox
@@ -96,7 +96,7 @@ namespace orxonox
     };
 }
 
-#else /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX */
+#else /* ORXONOX_PLATFORM_LINUX */
 
 namespace orxonox
 {
@@ -113,6 +113,6 @@ namespace orxonox
     };
 }
 
-#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX */
+#endif /* ORXONOX_PLATFORM_LINUX */
 
 #endif /* _SignalHandler_H__ */

@@ -435,7 +435,7 @@ namespace orxonox
 
 
 // disable annoying warning about forcing value to boolean
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#ifdef ORXONOX_COMPILER_MSVC
 #pragma warning(push)
 #pragma warning(disable:4100 4800)
 #endif
@@ -474,7 +474,7 @@ namespace orxonox
     CREATE_ALL_MEMBER_FUNCTORS();
 }
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#ifdef ORXONOX_COMPILER_MSVC
 #pragma warning(pop)
 #endif
 
