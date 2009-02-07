@@ -39,6 +39,11 @@ GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h)
 # Not using precompiled header files: Avoid dependencies
 INCLUDE_DIRECTORIES(pch/nopch)
 
+IF(NOT GCC_SYSTEM_HEADER_SUPPORT)
+  # Get around displaying a few hundred lines of warning code
+  SET_SOURCE_FILES_PROPERTIES(gamestates/GSGraphics.cc PROPERTIES COMPILE_FLAGS "-w")
+ENDIF()
+
 ADD_EXECUTABLE(orxonox ${ORXONOX_FILES})
 GET_TARGET_PROPERTY(_exec_loc orxonox LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)

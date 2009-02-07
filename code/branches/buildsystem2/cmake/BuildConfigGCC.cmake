@@ -23,6 +23,22 @@
  #    Sets the right compiler and linker flags for GCC.
  #
 
+# Determine compiler version
+EXEC_PROGRAM(
+  ${CMAKE_CXX_COMPILER}
+  ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion
+  OUTPUT_VARIABLE GCC_VERSION
+)
+
+# GCC may not support #pragma GCC system_header correctly when using
+# templates. According to Bugzilla, it was fixed March 07 but tests
+# have confirmed that GCC 4.0.0 does not pose a problem for our cases.
+INCLUDE(CompareVersionStrings)
+COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.0.0" _compare_result)
+IF(NOT _compare_result LESS 0)
+  SET(GCC_SYSTEM_HEADER_SUPPORT TRUE)
+ENDIF()
+
 # Also include environment flags. Could cause conflicts though
 SET_COMPILER_FLAGS("$ENV{CXXFLAGS}" CXX CACHE)
 SET_COMPILER_FLAGS("$ENV{CFLAGS}"   C   CACHE)
