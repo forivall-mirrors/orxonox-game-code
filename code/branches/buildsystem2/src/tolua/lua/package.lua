@@ -128,7 +128,7 @@ function classPackage:preamble ()
     if flags.H then
         local header = gsub(flags.H, '^.-([%w_]*%.[%w_]*)$', '%1')
         local package_lower = string.lower(self.name)
-        output('#include "'..package_lower..'/'..header..'"\n')
+        output('#include "'..header..'"\n')
     end
 
     local i=1

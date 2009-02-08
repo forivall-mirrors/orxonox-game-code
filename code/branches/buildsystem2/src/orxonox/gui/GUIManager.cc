@@ -50,7 +50,7 @@
 #include "core/input/SimpleInputState.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
-#include "core/ToluaBindCore.h"
+#include "ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
 
 extern "C" {

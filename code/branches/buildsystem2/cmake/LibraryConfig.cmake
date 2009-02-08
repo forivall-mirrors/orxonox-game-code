@@ -147,7 +147,7 @@ SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0)
 IF(MSVC)
   FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem date_time system)
 ELSE(MSVC)
-  FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem)
+  FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem system)
 ENDIF(MSVC)
 
 ####### Static/Dynamic linking options ##########

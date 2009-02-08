@@ -79,7 +79,7 @@ TARGET_LINK_LIBRARIES(core
   ${OGRE_LIBRARY}
   ${Boost_THREAD_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}
-  ${Boost_SYSTEM_LIBRARY}    # MSVC only
+  ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY} # MSVC only
   ${LUA_LIBRARIES}
   cpptcl_orxonox

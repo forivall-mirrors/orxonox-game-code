@@ -36,7 +36,7 @@ EXEC_PROGRAM(
 INCLUDE(CompareVersionStrings)
 COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.0.0" _compare_result)
 IF(_compare_result LESS 0)
-  SET(GCC_NO_SYSTEM_HEADER_SUPPORT)
+  SET(GCC_NO_SYSTEM_HEADER_SUPPORT TRUE)
 ENDIF()
 
 # Also include environment flags. Could cause conflicts though

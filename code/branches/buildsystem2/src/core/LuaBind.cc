@@ -37,7 +37,7 @@ extern "C" {
 }
 #include <tolua/tolua++.h>
 
-#include "core/ToluaBindCore.h"
+#include "ToluaBindCore.h"
 #include "util/String.h"
 #include "CoreIncludes.h"
 

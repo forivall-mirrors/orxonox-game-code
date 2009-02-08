@@ -320,7 +320,7 @@ int callback_handler(ClientData, Tcl_Interp *interp,
 
           post_process_policies(interp, pol, objv, false);
      }
-     catch (exception const &e)
+     catch (std::exception const &e)
      {
           Tcl_SetResult(interp, const_cast<char*>(e.what()), TCL_VOLATILE);
           return TCL_ERROR;
@@ -363,7 +363,7 @@ int object_handler(ClientData cd, Tcl_Interp *interp,
 
           post_process_policies(interp, pol, objv, true);
      }
-     catch (exception const &e)
+     catch (std::exception const &e)
      {
           Tcl_SetResult(interp, const_cast<char*>(e.what()), TCL_VOLATILE);
           return TCL_ERROR;
@@ -430,7 +430,7 @@ int constructor_handler(ClientData cd, Tcl_Interp *interp,
                Tcl_GetString(Tcl_GetObjResult(interp)),
                object_handler, static_cast<ClientData>(chb), 0);
      }
-     catch (exception const &e)
+     catch (std::exception const &e)
      {
           Tcl_SetResult(interp, const_cast<char*>(e.what()), TCL_VOLATILE);
           return TCL_ERROR;
