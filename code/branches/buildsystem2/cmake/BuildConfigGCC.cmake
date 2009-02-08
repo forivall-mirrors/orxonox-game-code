@@ -35,8 +35,8 @@ EXEC_PROGRAM(
 # have confirmed that GCC 4.0.0 does not pose a problem for our cases.
 INCLUDE(CompareVersionStrings)
 COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.0.0" _compare_result)
-IF(NOT _compare_result LESS 0)
-  SET(GCC_SYSTEM_HEADER_SUPPORT TRUE)
+IF(_compare_result LESS 0)
+  SET(GCC_NO_SYSTEM_HEADER_SUPPORT)
 ENDIF()
 
 # Also include environment flags. Could cause conflicts though

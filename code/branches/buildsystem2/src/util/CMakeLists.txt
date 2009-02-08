@@ -62,7 +62,7 @@ SOURCE_GROUP("" FILES
   ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
 )
 
-IF(NOT GCC_SYSTEM_HEADER_SUPPORT)
+IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
   # Get around displaying a few hundred lines of warning code
   SET_SOURCE_FILES_PROPERTIES(MultiType.cc PROPERTIES COMPILE_FLAGS "-w")
 ENDIF()

@@ -92,12 +92,16 @@ INCLUDE_DIRECTORIES(
   ${DIRECTX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
 
-  # Internal
-  .
-  orxonox
-  # Required for tolua bind and config files that are in the binary folder
+  # All library includes are prefixed with the path to avoid conflicts
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  # Convenience directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
+  # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/orxonox
+  # Tolua bind files for Core
+  ${CMAKE_CURRENT_BINARY_DIR}/core/${CMAKE_CFG_INTDIR}
+  # Tolua bind files for Orxonox
+  ${CMAKE_CURRENT_BINARY_DIR}/orxonox/${CMAKE_CFG_INTDIR}
 )
 
 

@@ -37,8 +37,8 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
   LIST(REMOVE_ITEM _tolua_inputfiles "INPUTFILES")
 
   SET(_tolua_pkgfile "${CMAKE_CURRENT_BINARY_DIR}/tolua.pkg")
-  SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/ToluaBind${_tolua_package}.cc")
-  SET(_tolua_hfile   "${CMAKE_CURRENT_BINARY_DIR}/ToluaBind${_tolua_package}.h")
+  SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/ToluaBind${_tolua_package}.cc")
+  SET(_tolua_hfile   "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/ToluaBind${_tolua_package}.h")
 
   SET(${_target_source_files}
     ${${_target_source_files}}
