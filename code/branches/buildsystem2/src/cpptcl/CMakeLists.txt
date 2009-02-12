@@ -36,10 +36,9 @@ IF(MSVC)
   ADD_LIBRARY(cpptcl_orxonox STATIC ${CPPTCL_FILES})
 ELSE()
   ADD_LIBRARY(cpptcl_orxonox SHARED ${CPPTCL_FILES})
+  ORXONOX_INSTALL(cpptcl_orxonox)
 ENDIF()
 
 TARGET_LINK_LIBRARIES(cpptcl_orxonox
   ${TCL_LIBRARY}
 )
-
-ORXONOX_INSTALL(cpptcl_orxonox)

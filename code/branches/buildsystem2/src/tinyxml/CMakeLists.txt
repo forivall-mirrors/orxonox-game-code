@@ -35,6 +35,5 @@ IF(MSVC)
   ADD_LIBRARY(tinyxml++_orxonox STATIC ${TINYXML++_FILES})
 ELSE()
   ADD_LIBRARY(tinyxml++_orxonox SHARED ${TINYXML++_FILES})
+  ORXONOX_INSTALL(tinyxml++_orxonox)
 ENDIF()
-
-ORXONOX_INSTALL(tinyxml++_orxonox)

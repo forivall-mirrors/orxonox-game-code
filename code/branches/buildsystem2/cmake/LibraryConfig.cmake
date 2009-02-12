@@ -31,6 +31,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 # Prevent CMake from finding libraries in the installation folder on windows
 # There might already be an installation from another compiler
 LIST(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
+LIST(REMOVE_ITEM CMAKE_SYSTEM_LIBRARY_PATH "${CMAKE_INSTALL_PREFIX}/bin")
 
 ############## Platform Scripts #################
 
@@ -47,40 +48,40 @@ INCLUDE(LibraryConfigTardis)
 INCLUDE(LibraryConfigApple)
 
 IF(USE_DEPENDENCY_PACKAGE)
-  IF(EXISTS ${CMAKE_SOURCE_DIR}/dependencies/include)
-    SET(DEPENDENCY_DIR "${CMAKE_SOURCE_DIR}/dependencies" CACHE PATH "")
-  ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../dependencies/include)
-    SET(DEPENDENCY_DIR "${CMAKE_SOURCE_DIR}/../dependencies" CACHE PATH "")
-  ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies/include)
-    SET(DEPENDENCY_DIR "${CMAKE_SOURCE_DIR}/../lib_dist/dependencies" CACHE PATH "")
-  ELSE()
+  FIND_PATH(DEPENDENCY_DIR
+    NAMES PackageConfigMSVC.cmake PackageConfigMinGW.cmake
+    PATHS
+      ${CMAKE_SOURCE_DIR}/dependencies
+      ${CMAKE_SOURCE_DIR}/../dependencies
+      ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies
+  )
+  IF(NOT DEPENDENCY_DIR)
     MESSAGE(STATUS "Warning: Could not find dependency directory."
                    "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
-  ENDIF()
-  IF(DEPENDENCY_DIR)
-    FILE(GLOB _package_config_files dependencies/PackageConfig*.cmake)
+  ELSE()
+    FILE(GLOB _package_config_files "${DEPENDENCY_DIR}/PackageConfig*.cmake")
     FOREACH(_file ${_package_config_files})
       INCLUDE(${_file})
     ENDFOREACH(_file)
-  ENDIF()
 
-  # On Windows, DLLs have to be in the executable folder
-  IF(WIN32)
-    # When installing a debug version, we really can't know which libraries
-    # are used in released mode because there might be deps of deps.
-    INSTALL(DIRECTORY ${DEP_BINARY_DIR}/ DESTINATION bin CONFIGURATIONS Debug)
+    # On Windows, DLLs have to be in the executable folder
+    IF(DEP_BINARY_DIR AND WIN32)
+      # When installing a debug version, we really can't know which libraries
+      # are used in released mode because there might be deps of deps.
+      INSTALL(DIRECTORY ${DEP_BINARY_DIR}/ DESTINATION bin CONFIGURATIONS Debug)
 
-    # Try to filter out all the debug libraries. If the regex doesn't do the
-    # job anymore, simply adjust it.
-    FILE(GLOB _dependencies_all "${DEP_BINARY_DIR}/*")
-    FOREACH(_dep ${_dependencies_all})
-      IF(NOT _dep MATCHES "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$")
-        LIST(APPEND _dependencies_release "${_dep}")
-      ENDIF()
-    ENDFOREACH(_dep)
-    INSTALL(FILES ${_dependencies_release} DESTINATION bin
-            CONFIGURATIONS Release RelWithDebInfo MinSizeRel)
-  ENDIF(WIN32)
+      # Try to filter out all the debug libraries. If the regex doesn't do the
+      # job anymore, simply adjust it.
+      FILE(GLOB _dependencies_all "${DEP_BINARY_DIR}/*")
+      FOREACH(_dep ${_dependencies_all})
+        IF(NOT _dep MATCHES "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$")
+          LIST(APPEND _dependencies_release "${_dep}")
+        ENDIF()
+      ENDFOREACH(_dep)
+      INSTALL(FILES ${_dependencies_release} DESTINATION bin
+              CONFIGURATIONS Release RelWithDebInfo MinSizeRel)
+    ENDIF(DEP_BINARY_DIR AND WIN32)
+  ENDIF(NOT DEPENDENCY_DIR)
 ENDIF(USE_DEPENDENCY_PACKAGE)
 
 # User script
