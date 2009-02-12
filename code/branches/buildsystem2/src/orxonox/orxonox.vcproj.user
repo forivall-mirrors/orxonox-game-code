@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioUserFile
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="${VISUAL_STUDIO_VERSION_SIMPLE}.00"
 	ShowAllFiles="false"
 	>
 	<Configurations>

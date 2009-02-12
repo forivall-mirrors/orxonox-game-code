@@ -99,9 +99,9 @@ namespace orxonox
             .description("Location of the resources file in the data path.");
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsFolder_, ".")
+        SetConfigValue(ogrePluginsFolder_, ORXONOX_OGRE_PLUGINS_FOLDER)
             .description("Folder where the Ogre plugins are located.");
-        SetConfigValue(ogrePlugins_, "RenderSystem_GL, Plugin_ParticleFX")
+        SetConfigValue(ogrePlugins_, ORXONOX_OGRE_PLUGINS)
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
             .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");

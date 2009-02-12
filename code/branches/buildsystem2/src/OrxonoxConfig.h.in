@@ -27,6 +27,9 @@
  *   Original code: OgrePlatform.h, licensed under the LGPL. The code
  *   has changed almost completely though.
  *
+ *   Caution: Do not configure this file CMake configuration (Debug, Release, etc.)
+ *            dependent! XCode and Visual Studio have the same file for all.
+ *
  */
 
 /**
@@ -138,9 +141,6 @@
 /*---------------------------------
  * Includes
  *-------------------------------*/
-/* Set whether we must suffix "ceguilua/" for the CEGUILua.h include */
-#cmakedefine CEGUILUA_USE_INTERNAL_LIBRARY
-
 /* Define the english written operators like and, or, xor
  * This is C++ standard, but the Microsoft compiler doesn't define them. */
 #cmakedefine HAVE_CISO646
@@ -172,5 +172,39 @@ typedef unsigned __int64  uint64_t;
 #ifdef ACTIVATE_VISUAL_LEAK_DETECTOR
 #  include <vld.h>
 #endif
+
+
+/*---------------------------------
+ * Various Settings
+ *-------------------------------*/
+/* Set whether we must suffix "ceguilua/" for the CEGUILua.h include */
+#cmakedefine CEGUILUA_USE_INTERNAL_LIBRARY
+
+/* Defined if a precompiled depdency package was used. We then copy all libraries
+   too when installing. */
+#cmakedefine USE_DEPENDENCY_PACKAGE
+
+/* Handle default ConfigValues */
+namespace orxonox
+{
+    const char* const ORXONOX_MEDIA_PATH("@ORXONOX_MEDIA_DIRECTORY@");
+    
+#ifdef NDEBUG
+    const char* const ORXONOX_OGRE_PLUGINS("@OGRE_PLUGINS_RELEASE@");
+#  ifdef USE_DEPENDENCY_PACKAGE
+    const char* const ORXONOX_OGRE_PLUGINS_FOLDER(".");
+#  elif
+    const char* const ORXONOX_OGRE_PLUGINS_FOLDER("@OGRE_PLUGINS_FOLDER_RELEASE@");
+#  endif
+#else
+    const char* const ORXONOX_OGRE_PLUGINS("@OGRE_PLUGINS_DEBUG@");
+#  ifdef USE_DEPENDENCY_PACKAGE
+    const char* const ORXONOX_OGRE_PLUGINS_FOLDER(".");
+#  elif
+    const char* const ORXONOX_OGRE_PLUGINS_FOLDER("@OGRE_PLUGINS_FOLDER_DEBUG@");
+#  endif
+#endif
+}
+
 
 #endif /* _OrxonoxConfig_H__ */

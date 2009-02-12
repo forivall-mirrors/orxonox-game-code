@@ -49,8 +49,8 @@ MACRO(SET_CACHE _varname _type _docstring)
 
   IF(NOT DEFINED _INTERNAL_${_varname} OR "${_INTERNAL_${_varname}}" STREQUAL "${${_varname}}")
     SET(${_varname} "${_value}" CACHE ${_type} "${_docstring}" FORCE)
+    SET(_INTERNAL_${_varname} "${_value}" CACHE INTERNAL "Do not edit in any case!")
   ENDIF()
-  SET(_INTERNAL_${_varname} "${_value}" CACHE INTERNAL "Do not edit in any case!")
 ENDMACRO(SET_CACHE)
 
 # Separates a string of flags. " -" or " /" denotes the start of a flag.
