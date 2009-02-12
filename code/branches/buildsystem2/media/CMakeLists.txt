@@ -25,7 +25,10 @@
 
 # Specify media directory
 FIND_PATH(ORXONOX_MEDIA_DIRECTORY resources.cfg
-  PATHS . ../../media $ENV{ORXONOX_MEDIA_DIR}
+  PATHS
+    ${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR}/../media
+	$ENV{ORXONOX_MEDIA_DIR}
 )
 IF(NOT ORXONOX_MEDIA_DIRECTORY)
   MESSAGE(STATUS "Warning: Media directory not found. If you want to compile while downloading the media files, you must specify the directory by Hand BEFORE compiling! Default location is orxonox_root/media")
