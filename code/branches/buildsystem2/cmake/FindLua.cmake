@@ -73,6 +73,7 @@ IF(LUA_5.1_INCLUDE_DIR)
     )
     FIND_LIBRARY(LUA_5.1_LIBRARY_DEBUG
       NAMES lua51d lua51_d lua5.1d lua5.1_d luad lua_d
+            lua51D lua51_D lua5.1D lua5.1_D luad lua_D
       PATHS $ENV{LUA_DIR}
       PATH_SUFFIXES lib64 lib
     )
@@ -104,6 +105,7 @@ IF(LUA_5.0_INCLUDE_DIR)
     )
     FIND_LIBRARY(LUA_5.0_LUA_LIBRARY_DEBUG
       NAMES lua50d lua50_d lua5.0d lua5.0_d lua5d lua5_d luad lua_d
+            lua50D lua50_D lua5.0D lua5.0_D lua5d lua5_D luaD lua_D
       PATHS $ENV{LUA_DIR}
       PATH_SUFFIXES lib64 lib
     )
@@ -122,6 +124,8 @@ IF(LUA_5.0_INCLUDE_DIR)
       FIND_LIBRARY(LUA_5.0_LUALIB_LIBRARY_DEBUG
         NAMES lualib50d lualib50_d lualib5.0d lualib5.0_d
 	      lualib5d lualib5_d lualibd lualib_d
+              lualib50D lualib50_D lualib5.0D lualib5.0_D
+	      lualib5D lualib5_D lualibD lualib_D
         PATHS $ENV{LUALIB_DIR} $ENV{LUA_DIR}
         PATH_SUFFIXES lib64 lib
       )

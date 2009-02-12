@@ -58,7 +58,7 @@ ELSE()
     PATH_SUFFIXES lib libs
   )
   FIND_LIBRARY(ALUT_LIBRARY_DEBUG
-    NAMES alutd alut_d
+    NAMES alutd alut_d alutD alut_D
     PATHS $ENV{ALUTDIR}
     PATH_SUFFIXES lib libs
   )

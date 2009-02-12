@@ -30,7 +30,7 @@ FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
   PATH_SUFFIXES lib bin/Release bin/release Release release
 )
 FIND_LIBRARY(OGRE_LIBRARY_DEBUG
-  NAMES OgreMaind OgreMain_d Ogred Ogre_d
+  NAMES OgreMaind OgreMain_d OgreMainD OgreMain_D Ogred Ogre_d OgreD Ogre_d
   PATHS $ENV{OGRE_HOME}
   PATH_SUFFIXES lib bin/Debug bin/debug Debug debug Versions/A
 )
