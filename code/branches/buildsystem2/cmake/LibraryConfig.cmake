@@ -28,6 +28,10 @@
 INCLUDE(CompareVersionStrings)
 INCLUDE(FindPackageHandleStandardArgs)
 
+# Prevent CMake from finding libraries in the installation folder on windows
+# There might already be an installation from another compiler
+LIST(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
+
 ############## Platform Scripts #################
 
 # On Windows using a package causes way less problems

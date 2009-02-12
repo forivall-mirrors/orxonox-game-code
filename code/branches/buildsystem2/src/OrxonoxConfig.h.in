@@ -187,7 +187,14 @@ typedef unsigned __int64  uint64_t;
 /* Handle default ConfigValues */
 namespace orxonox
 {
-    const char* const ORXONOX_MEDIA_PATH("@ORXONOX_MEDIA_DIRECTORY@");
+#ifdef ORXONOX_PLATFORM_WINDOWS
+    const char* const ORXONOX_MEDIA_PATH("../media");
+#elif defined(ORXONOX_PLATFORM_LINUX)
+    const char* const ORXONOX_MEDIA_PATH("../share/orxonox");
+#else
+    /* TODO: Apple? */
+    const char* const ORXONOX_MEDIA_PATH("../share/orxonox");
+#endif
     
 #ifdef NDEBUG
     const char* const ORXONOX_OGRE_PLUGINS("@OGRE_PLUGINS_RELEASE@");
