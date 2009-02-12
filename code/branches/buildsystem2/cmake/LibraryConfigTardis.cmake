@@ -24,12 +24,12 @@
  #    Also sets the TARDIS variable.
  #
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE)
   FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
   IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
     SET (TARDIS ON)
   ENDIF()
-ENDIF(UNIX)
+ENDIF()
 
 IF(TARDIS)
   MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
