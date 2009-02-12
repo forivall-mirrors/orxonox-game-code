@@ -35,8 +35,10 @@ SET(READ_ONLY_CONFIG_FILES
 )
 
 SET(WRITABLE_CONFIG_FILES
-  orxonox.ini
 )
+
+# Not getting installed
+SET(ORXONOX_INI orxonox.ini)
 
 IF(TARDIS)
   # OGRE can't find fonts to display config screen on Tardis,
@@ -85,9 +87,25 @@ ENDIF()
 FOREACH(_file_name ${READ_ONLY_CONFIG_FILES})
   CONFIGURE_FILES("${_file_name}" "${BUILD_CONFIGS}" TRUE)
 ENDFOREACH(_file_name)
-FOREACH(_file_name ${WRITABLE_CONFIG_FILES})
+FOREACH(_file_name ${WRITABLE_CONFIG_FILES} ${ORXONOX_INI})
   CONFIGURE_FILES("${_file_name}" "${BUILD_CONFIGS}" FALSE)
 ENDFOREACH(_file_name)
+
+
+################ Installation #################
+
+# Not using collective call to allow configuration with CMake.
+FOREACH(_file ${READ_ONLY_CONFIG_FILES} ${WRITABLE_CONFIG_FILES})
+  IF(CMAKE_CONFIGURATION_TYPES)
+    FOREACH(_configuration ${CMAKE_CONFIGURATION_TYPES})
+      INSTALL(FILES ${CMAKE_BINARY_DIR}/bin/${_configuration}/${_file}
+              DESTINATION bin CONFIGURATIONS ${_configuration})
+    ENDFOREACH(_configuration)
+  ELSE()
+    INSTALL(FILES ${CMAKE_BINARY_DIR}/bin/${_file} DESTINATION bin)
+  ENDIF()
+ENDFOREACH(_file)
+
 
 ################ Run Scripts ##################
 

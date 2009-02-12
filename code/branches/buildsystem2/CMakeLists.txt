@@ -41,11 +41,14 @@ INCLUDE(LibraryConfig)
 # Build Config
 INCLUDE(BuildConfig)
 
+# Configure media directory location and installation
+ADD_SUBDIRECTORY(media)
+
 # Creates the actual project
 ADD_SUBDIRECTORY(src)
 
 # Configure the binary output directory
-ADD_SUBDIRECTORY(bin-config)
+ADD_SUBDIRECTORY(bin)
 
 # Last but not least: Try to make doxygen target
 INCLUDE(DocumentationTarget)

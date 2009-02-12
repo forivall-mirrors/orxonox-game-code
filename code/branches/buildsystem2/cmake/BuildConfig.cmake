@@ -55,14 +55,6 @@ ENDIF()
 
 OPTION(EXTRA_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
 
-# Specify media directory
-GET_FILENAME_COMPONENT(_media_path "${CMAKE_SOURCE_DIR}/../media" ABSOLUTE)
-SET(ORXONOX_MEDIA_DIRECTORY ${_media_path} CACHE PATH
-    "Location of the media directory.")
-IF(NOT EXISTS ${ORXONOX_MEDIA_DIRECTORY})
-  MESSAGE(STATUS "Warning: The media directory does not exist ${ORXONOX_MEDIA_DIRECTORY}")
-ENDIF()
-
 # More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
 # Render systems may be optional, but at least one has to be found in FindOgre
 SET(OGRE_PLUGINS_INT RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX)

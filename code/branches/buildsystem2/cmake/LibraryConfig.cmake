@@ -59,6 +59,24 @@ IF(USE_DEPENDENCY_PACKAGE)
       INCLUDE(${_file})
     ENDFOREACH(_file)
   ENDIF()
+
+  # On Windows, DLLs have to be in the executable folder
+  IF(WIN32)
+    # When installing a debug version, we really can't know which libraries
+    # are used in released mode because there might be deps of deps.
+    INSTALL(DIRECTORY ${DEP_BINARY_DIR}/ DESTINATION bin CONFIGURATIONS Debug)
+
+    # Try to filter out all the debug libraries. If the regex doesn't do the
+    # job anymore, simply adjust it.
+    FILE(GLOB _dependencies_all "${DEP_BINARY_DIR}/*")
+    FOREACH(_dep ${_dependencies_all})
+      IF(NOT _dep MATCHES "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$")
+        LIST(APPEND _dependencies_release "${_dep}")
+      ENDIF()
+    ENDFOREACH(_dep)
+    INSTALL(FILES ${_dependencies_release} DESTINATION bin
+            CONFIGURATIONS Release RelWithDebInfo MinSizeRel)
+  ENDIF(WIN32)
 ENDIF(USE_DEPENDENCY_PACKAGE)
 
 # User script
