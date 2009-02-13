@@ -27,16 +27,6 @@
  *
  */
 
-//
-// C++ Implementation: synchronisable
-//
-// Description:
-//
-//
-// Author:  Dumeni, Oliver Scheuss, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
 
 #include "Synchronisable.h"
 
@@ -154,17 +144,17 @@ namespace orxonox
    */
   Synchronisable *Synchronisable::fabricate(uint8_t*& mem, uint8_t mode)
   {
-    synchronisableHeader *header = (synchronisableHeader *)mem;
+    SynchronisableHeader header(mem);
 
-    if(!header->dataAvailable)
+    if(!header.isDataAvailable())
     {
-      mem += header->size;
+      mem += header.getDataSize();
       return 0;
     }
 
-    COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
+    COUT(4) << "fabricating object with id: " << header.getObjectID() << std::endl;
 
-    Identifier* id = ClassByID(header->classID);
+    Identifier* id = ClassByID(header.getClassID());
     if (!id)
     {
         COUT(0) << "Assertion failed: id" << std::endl;
@@ -173,26 +163,26 @@ namespace orxonox
     }
     assert(id);
     BaseObject* creator = 0;
-    if (header->creatorID != OBJECTID_UNKNOWN)
+    if (header.getCreatorID() != OBJECTID_UNKNOWN)
     {
-      Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header->creatorID);
+      Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header.getCreatorID());
       if (!synchronisable_creator)
       {
-        mem += header->size; //.TODO: this suckz.... remove size from header
-//         assert(0); // TODO: uncomment this if we have a clean objecthierarchy (with destruction of children of objects) ^^
+        mem += header.getDataSize(); //.TODO: this suckz.... remove size from header
+        assert(0); // TODO: uncomment this if we have a clean objecthierarchy (with destruction of children of objects) ^^
         return 0;
       }
       else
         creator = dynamic_cast<BaseObject*>(synchronisable_creator);
     }
-    assert(getSynchronisable(header->objectID)==0);   //make sure no object with this id exists
+    assert(getSynchronisable(header.getObjectID())==0);   //make sure no object with this id exists
     BaseObject *bo = id->fabricate(creator);
     assert(bo);
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
-    no->objectID=header->objectID;
-    no->creatorID=header->creatorID; //TODO: remove this
-    no->classID=header->classID;
+    no->objectID=header.getObjectID();
+    no->creatorID=header.getCreatorID(); //TODO: remove this
+    no->classID=header.getClassID();
     COUT(4) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     bool b = no->updateData(mem, mode, true);
@@ -328,14 +318,14 @@ namespace orxonox
     size=getSize(id, mode);
 
     // start copy header
-    synchronisableHeader *header = (synchronisableHeader *)mem;
-    header->size = size;
-    header->objectID = this->objectID;
-    header->creatorID = this->creatorID;
-    header->classID = this->classID;
-    header->dataAvailable = true;
-    tempsize += sizeof(synchronisableHeader);
-    mem += sizeof(synchronisableHeader);
+    SynchronisableHeader header(mem);
+    header.setDataSize( size );
+    header.setObjectID( this->objectID );
+    header.setCreatorID( this->creatorID );
+    header.setClassID( this->classID );
+    header.setDataAvailable( true );
+    tempsize += SynchronisableHeader::getSize();
+    mem += SynchronisableHeader::getSize();
     // end copy header
 
 
@@ -370,24 +360,25 @@ namespace orxonox
 
     uint8_t* data=mem;
     // start extract header
-    synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
-    assert(syncHeader->objectID==this->objectID);
-    assert(syncHeader->creatorID==this->creatorID);
-    assert(this->classID==syncHeader->classID); //TODO: fix this!!! maybe a problem with the identifier ?
-    if(syncHeader->dataAvailable==false){
-      mem += syncHeader->size;
+    SynchronisableHeader syncHeader(mem);
+    assert(syncHeader.getObjectID()==this->objectID);
+    assert(syncHeader.getCreatorID()==this->creatorID);
+    assert(syncHeader.getClassID()==this->classID);
+    if(syncHeader.isDataAvailable()==false){
+      mem += syncHeader.getDataSize();
       return true;
     }
 
-    mem += sizeof(synchronisableHeader);
+    mem += SynchronisableHeader::getSize();
     // stop extract header
 
-    COUT(5) << "Synchronisable: objectID " << syncHeader->objectID << ", classID " << syncHeader->classID << " size: " << syncHeader->size << " synchronising data" << std::endl;
-    for(i=syncList.begin(); i!=syncList.end() && mem <= data+syncHeader->size; i++)
+    //COUT(5) << "Synchronisable: objectID " << syncHeader.getObjectID() << ", classID " << syncHeader.getClassID() << " size: " << syncHeader.getDataSize() << " synchronising data" << std::endl;
+    for(i=syncList.begin(); i!=syncList.end(); i++)
     {
+      assert( mem <= data+syncHeader.getDataSize() ); // always make sure we don't exceed the datasize in our stream
       (*i)->putData( mem, mode, forceCallback );
     }
-    assert(mem == data+syncHeader->size);
+    assert(mem == data+syncHeader.getDataSize());
     return true;
   }
 
@@ -398,7 +389,7 @@ namespace orxonox
   * @return amount of bytes
   */
   uint32_t Synchronisable::getSize(int32_t id, uint8_t mode){
-    int tsize=sizeof(synchronisableHeader);
+    int tsize=SynchronisableHeader::getSize();
     if(mode==0x0)
       mode=state_;
     if(!doSync(id, mode))
@@ -427,9 +418,9 @@ namespace orxonox
    */
   bool Synchronisable::isMyData(uint8_t* mem)
   {
-    synchronisableHeader *header = (synchronisableHeader *)mem;
-    assert(header->objectID==this->objectID);
-    return header->dataAvailable;
+    SynchronisableHeader header(mem);
+    assert(header.getObjectID()==this->objectID);
+    return header.isDataAvailable();
   }
 
   /**

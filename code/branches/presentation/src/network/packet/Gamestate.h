@@ -45,19 +45,57 @@ namespace orxonox {
 
 namespace packet {
 
-#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
-#define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
-#define HEADER GAMESTATE_HEADER(data_)
+class _NetworkExport GamestateHeader{
+  public:
+    GamestateHeader(uint8_t *data){ data_ = data; *(uint32_t*)data_ = ENUM::Gamestate; }
+    GamestateHeader(uint8_t *data, GamestateHeader* h)
+      { data_=data; memcpy(data_, h->data_, getSize()); }
+    static inline uint32_t getSize()
+      { return 21; }
 
-struct _NetworkExport GamestateHeader{
-  ENUM::Type packetType;
-  int32_t id; // id of the gamestate
-  uint32_t compsize;
-  uint32_t datasize;
-  int32_t base_id; // id of the base-gamestate diffed from
-  bool diffed:1; // wheter diffed or not
-  bool complete:1; // wheter it is a complete gamestate or only partial
-  bool compressed:1;
+    inline int32_t getID() const
+      { return *(int32_t*)(data_+4); }
+    inline void setID(int32_t id)
+      { *(int32_t*)(data_+4) = id; }
+
+    inline int32_t getBaseID() const
+      { return *(int32_t*)(data_+8); }
+    inline void setBaseID(int32_t id)
+      { *(int32_t*)(data_+8) = id; }
+
+    inline uint32_t getDataSize() const
+      { return *(uint32_t*)(data_+12); }
+    inline void setDataSize(uint32_t size)
+      { *(uint32_t*)(data_+12) = size; }
+
+    inline uint32_t getCompSize() const
+      { return *(uint32_t*)(data_+16); }
+    inline void setCompSize(uint32_t size)
+      { *(uint32_t*)(data_+16) = size; }
+
+    inline bool isDiffed() const
+      { return *(int8_t*)(data_+20) & 0x1; }
+    inline void setDiffed(bool b)
+      { *(int8_t*)(data_+20) = (b<<0) | (*(int8_t*)(data_+20) & 0x6 ); }
+
+    inline bool isComplete() const
+      { return *(int8_t*)(data_+20) & 0x2; }
+    inline void setComplete(bool b)
+      { *(int8_t*)(data_+20) = (b<<1) | (*(int8_t*)(data_+20) & 0x5 ); }
+
+    inline bool isCompressed() const
+      { return *(int8_t*)(data_+20) & 0x4; }
+    inline void setCompressed(bool b)
+      { *(int8_t*)(data_+20) = (b<<2) | (*(int8_t*)(data_+20) & 0x3 ); }
+
+    inline void operator=(GamestateHeader& h)
+      { memcpy( data_, h.data_, getSize()); }
+  private:
+    uint8_t *data_;
+//#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
+//#define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
+//#define HEADER GAMESTATE_HEADER(data_)
+
 };
 
 /**
@@ -73,10 +111,10 @@ class _NetworkExport Gamestate: public Packet{
 
     bool collectData(int id, uint8_t mode=0x0);
     bool spreadData( uint8_t mode=0x0);
-    inline int32_t getID() const { return HEADER->id; }
-    inline bool isDiffed() const { return HEADER->diffed; }
-    inline bool isCompressed() const { return HEADER->compressed; }
-    inline int32_t getBaseID() const { return HEADER->base_id; }
+    inline int32_t getID() const { return header_->getID(); }
+    inline bool isDiffed() const { return header_->isDiffed(); }
+    inline bool isCompressed() const { return header_->isCompressed(); }
+    inline int32_t getBaseID() const { return header_->getBaseID(); }
     Gamestate *diff(Gamestate *base);
     Gamestate *undiff(Gamestate *base);
     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
@@ -92,6 +130,7 @@ class _NetworkExport Gamestate: public Packet{
   private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
     std::list<obj> dataMap_;
+    GamestateHeader* header_;
 };
 
 }

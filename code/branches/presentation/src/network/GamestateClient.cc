@@ -76,13 +76,13 @@ namespace orxonox
       return false;
     int id = GAMESTATEID_INITIAL;
     packet::Gamestate *processed = processGamestate(tempGamestate_);
-//    assert(processed);
+    assert(processed);
     
     //now call the queued callbacks
     NetworkCallbackManager::callCallbacks();
     
     if (!processed){
-      sendAck(0);
+//      sendAck(0);
       return false;
     }
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
@@ -90,7 +90,7 @@ namespace orxonox
     gamestateMap_[processed->getID()]=processed;
     last_diff_ = processed->getID();
     id = processed->getID();
-    sendAck(id);
+//     sendAck(id);
     return true;
   }
 
@@ -159,6 +159,7 @@ namespace orxonox
     if(gs->isDiffed()){
       packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
       if(!base){
+COUT(0) << "could not find base gamestate id: " << gs->getBaseID() << endl;
         delete gs;
         return 0;
       }
@@ -171,6 +172,7 @@ namespace orxonox
     if(gs->spreadData())
       return gs;
     else
+COUT(0) << "could not spread gamestate" << endl;
       return NULL;
   }
 

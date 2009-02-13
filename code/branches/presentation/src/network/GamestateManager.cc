@@ -133,6 +133,7 @@ namespace orxonox
     if(client){
 //       COUT(3) << "diffing" << std::endl;
       gs = gs->diff(client);
+//       gs = new packet::Gamestate(*gs);
     }
     else{
 //       COUT(3) << "not diffing" << std::endl;

@@ -71,18 +71,53 @@ namespace orxonox
     };
   }
 
-  struct _NetworkExport synchronisableHeader{
-    uint32_t size:31;
-    bool dataAvailable:1;
-    uint32_t objectID;
-    uint32_t creatorID;
-    uint32_t classID;
+  /**
+   * @brief: stores information about a Synchronisable 
+   * 
+   * This class stores the information about a Synchronisable (objectID, classID, creatorID, dataSize)
+   * in an emulated bitset.
+   * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream
+   * Bit 32 is a bool and defines whether the data is actually stored or is just filled up with 0
+   * Byte 5 to 8: objectID
+   * Byte 9 to 12: classID
+   * Byte 13 to 16: creatorID
+   */
+  class _NetworkExport SynchronisableHeader{
+    private:
+      uint8_t *data_;
+    public:
+      SynchronisableHeader(uint8_t* data)
+        { data_ = data; }
+      inline static uint32_t getSize()
+        { return 16; }
+      inline uint32_t getDataSize() const
+        { return (*(uint32_t*)data_) & 0x7FFFFFFF; } //only use the first 31 bits
+      inline void setDataSize(uint32_t size)
+        { *(uint32_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint32_t*)(data_) & 0x80000000 ); }
+      inline bool isDataAvailable() const
+        { return ( (*(uint32_t*)data_) & 0x80000000 ) == 0x80000000; }
+      inline void setDataAvailable( bool b)
+        { *(uint32_t*)(data_) = (b << 31) | (*(uint32_t*)(data_) & 0x7FFFFFFF ); }
+      inline uint32_t getObjectID() const
+        { return *(uint32_t*)(data_+4); }
+      inline void setObjectID(uint32_t objectID)
+        { *(uint32_t*)(data_+4) = objectID; }
+      inline uint32_t getClassID() const
+        { return *(uint32_t*)(data_+8); }
+      inline void setClassID(uint32_t classID)
+        { *(uint32_t*)(data_+8) = classID; }
+      inline uint32_t getCreatorID() const
+        { return *(uint32_t*)(data_+12); }
+      inline void setCreatorID(uint32_t creatorID)
+        { *(uint32_t*)(data_+12) = creatorID; }
+      inline void operator=(SynchronisableHeader& h)
+        { memcpy(data_, h.data_, getSize()); }
   };
 
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
-   * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
+  * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
   * @author Oliver Scheuss
   */
   class _NetworkExport Synchronisable : virtual public OrxonoxClass{
