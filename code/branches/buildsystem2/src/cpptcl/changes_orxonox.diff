@@ -46,17 +46,6 @@
  interpreter::interpreter(Tcl_Interp *interp, bool owner)
  {
       interp_ =  interp;
-@@ -940,6 +952,10 @@
-      // delete all callbacks that were registered for given interpreter
- 
-      {
-+          // TODO: why could this probably be necessary? map::find of empty map
-+          // shouldn't be a problem.
-+          if (callbacks.size() == 0)
-+            return;
-           callback_map::iterator it = callbacks.find(interp);
-           if (it == callbacks.end())
-           {
 --- cpptcl.h	Wed Jan 28 20:56:11 2009
 +++ cpptcl.h	Sat Jan 24 12:52:54 2009
 @@ -467,6 +467,7 @@

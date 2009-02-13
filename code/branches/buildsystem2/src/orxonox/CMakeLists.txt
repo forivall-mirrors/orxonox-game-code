@@ -58,18 +58,19 @@ IF(NETWORKTRAFFIC_TESTING_ENABLED)
   ADD_LIBRARY(orxonoxs SHARED ${ORXONOXS_SRC_FILES})
 ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
 
-TARGET_LINK_LIBRARIES( orxonox
+TARGET_LINK_LIBRARIES(orxonox
   ${OGRE_LIBRARY}
   ${CEGUI_LIBRARY}
   ${LUA_LIBRARIES}
   ${CEGUILUA_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
   ogreceguirenderer_orxonox
   tinyxml++_orxonox
   tolua++_orxonox
   util
   core
-  #audio
   network
+  #audio
 )
 
 # When using Visual Studio we want to use the output directory as working

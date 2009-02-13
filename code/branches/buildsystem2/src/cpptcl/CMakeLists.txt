@@ -39,6 +39,4 @@ ELSE()
   ORXONOX_INSTALL(cpptcl_orxonox)
 ENDIF()
 
-TARGET_LINK_LIBRARIES(cpptcl_orxonox
-  ${TCL_LIBRARY}
-)
+TARGET_LINK_LIBRARIES(cpptcl_orxonox ${TCL_LIBRARY})
