@@ -123,9 +123,9 @@ IF(LUA_5.0_INCLUDE_DIR)
       )
       FIND_LIBRARY(LUA_5.0_LUALIB_LIBRARY_DEBUG
         NAMES lualib50d lualib50_d lualib5.0d lualib5.0_d
-	      lualib5d lualib5_d lualibd lualib_d
+              lualib5d lualib5_d lualibd lualib_d
               lualib50D lualib50_D lualib5.0D lualib5.0_D
-	      lualib5D lualib5_D lualibD lualib_D
+              lualib5D lualib5_D lualibD lualib_D
         PATHS $ENV{LUALIB_DIR} $ENV{LUA_DIR}
         PATH_SUFFIXES lib64 lib
       )
