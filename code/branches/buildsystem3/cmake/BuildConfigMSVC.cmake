@@ -49,8 +49,16 @@ ADD_COMPILER_FLAGS("-DUNICODE -D_UNICODE"      CACHE)
 # Overwrite CMake default flags here.
 SET_COMPILER_FLAGS("-MDd -Od -ZI -D_DEBUG -Gm -RTC1" Debug          CACHE)
 SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"      Release        CACHE)
-SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"           RelWithDebInfo CACHE)
+SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP2"      RelWithDebInfo CACHE)
 SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"      MinSizeRel     CACHE)
+
+# Microsoft unfortunately couldn't integrate a fix issued while VS 2008 beta 2
+# was being tested into the final release even though a fix existed...
+# And it's actually quite a big issue, you simple can't compile anything.
+# Fortunately for us, disabling Minimal Rebuild solves the problem.
+REMOVE_COMPILER_FLAGS("-Gm" Debug MSVC09 CACHE)
+# And since we have to remove /Gm, let's add /MP2 to speed things up
+ADD_COMPILER_FLAGS("-MP2" Debug MSVC09 CACHE)
 
 
 ####################### Warnings ########################
