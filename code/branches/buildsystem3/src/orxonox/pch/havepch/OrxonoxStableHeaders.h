@@ -46,13 +46,15 @@
 #endif
 #include <Ogre.h>
 #include <CEGUI.h>
-#include "ois/OIS.h"
 #include <boost/thread/recursive_mutex.hpp>
 //#include <boost/thread/mutex.hpp>
 //#include <boost/thread/condition.hpp>
 //#include <boost/thread/thread.hpp>
 #include <boost/static_assert.hpp>
-#include <ticpp.h>
+
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include <ois/OIS.h>
+#include <tinyxml/ticpp.h>
 #include <tolua++.h>
 
 //Get around Windows hackery (windows.h is included by Ogre.h)
@@ -93,9 +95,9 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/InputManager.h"
 
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 
-#include "Settings.h"
+//#include "Settings.h"
 
 //#endif /* ifdef NDEBUG */
 
