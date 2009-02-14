@@ -109,6 +109,46 @@ OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient cha
 OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
 
 
+############ Installation Settings ##############
+
+IF(UNIX)
+  SET(ORXONOX_RUNTIME_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/bin/orxonox)
+  SET(ORXONOX_LIBRARY_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/orxonox)
+  SET(ORXONOX_ARCHIVE_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/orxonox/static)
+  SET(ORXONOX_MEDIA_INSTALL_PATH   ${CMAKE_INSTALL_PREFIX}/share/orxonox)
+  SET(ORXONOX_DOC_INSTALL_PATH     ${CMAKE_INSTALL_PREFIX}/share/doc/orxonox)
+  # Not yet used
+  SET(ORXONOX_LOG_INSTALL_PATH     ~/.orxonox/log)
+  SET(ORXONOX_CONFIG_INSTALL_PATH  ~/.orxonox/config)
+ELSEIF(WIN32)
+  SET(ORXONOX_RUNTIME_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/bin)
+  SET(ORXONOX_LIBRARY_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib)
+  SET(ORXONOX_ARCHIVE_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/static)
+  SET(ORXONOX_MEDIA_INSTALL_PATH   ${CMAKE_INSTALL_PREFIX}/media)
+  SET(ORXONOX_DOC_INSTALL_PATH     ${CMAKE_INSTALL_PREFIX}/doc)
+  # Not yet used
+  SET(ORXONOX_LOG_INSTALL_PATH     ${CMAKE_INSTALL_PREFIX}/log)
+  SET(ORXONOX_CONFIG_INSTALL_PATH  ${CMAKE_INSTALL_PREFIX}/config)
+ENDIF()
+
+
+################# Unix RPath ####################
+
+# use, i.e. don't skip the full RPATH for the build tree
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+
+# when building, don't use the install RPATH already
+# (but later on when installing)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+
+# the RPATH to be used when installing
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
+# add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
 ####### Static/Dynamic linking defines ##########
 
 # Disable Boost auto linking completely

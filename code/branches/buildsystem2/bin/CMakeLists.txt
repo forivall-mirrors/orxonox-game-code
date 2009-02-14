@@ -98,8 +98,11 @@ ENDFOREACH(_file_name)
 FOREACH(_file ${READ_ONLY_CONFIG_FILES} ${WRITABLE_CONFIG_FILES})
   IF(CMAKE_CONFIGURATION_TYPES)
     FOREACH(_configuration ${CMAKE_CONFIGURATION_TYPES})
-      INSTALL(FILES ${CMAKE_BINARY_DIR}/bin/${_configuration}/${_file}
-              DESTINATION bin CONFIGURATIONS ${_configuration})
+      INSTALL(
+        FILES ${CMAKE_BINARY_DIR}/bin/${_configuration}/${_file}
+        DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
+        CONFIGURATIONS ${_configuration}
+      )
     ENDFOREACH(_configuration)
   ELSE()
     INSTALL(FILES ${CMAKE_BINARY_DIR}/bin/${_file} DESTINATION bin)

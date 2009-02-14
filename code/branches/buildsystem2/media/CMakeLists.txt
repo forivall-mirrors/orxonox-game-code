@@ -39,13 +39,8 @@ ENDIF()
 
 ################ Installation #################
 
-IF(UNIX)
-  SET(MEDIA_INSTALL_SUFFIX "share/orxonox")
-ELSEIF(WIN32)
-  SET(MEDIA_INSTALL_SUFFIX "media")
-ELSE()
-  MESSAGE(FATAL_ERROR "Install location for media files not yet specified for this platform. Please Adjust root/media/CMakeLists.txt")
-ENDIF()
-
-INSTALL(DIRECTORY ${ORXONOX_MEDIA_DIRECTORY}/ DESTINATION
-        ${MEDIA_INSTALL_SUFFIX} REGEX "\\.svn$|_svn$" EXCLUDE)
+INSTALL(
+  DIRECTORY ${ORXONOX_MEDIA_DIRECTORY}/
+  DESTINATION ${ORXONOX_MEDIA_INSTALL_PATH}
+  REGEX "\\.svn$|_svn$" EXCLUDE
+)
