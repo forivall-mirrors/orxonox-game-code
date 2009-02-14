@@ -48,7 +48,6 @@
 
 #include <map>
 #include <string>
-#include "util/Integers.h"
 
 namespace orxonox
 {

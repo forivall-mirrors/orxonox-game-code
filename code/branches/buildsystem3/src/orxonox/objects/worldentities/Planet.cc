@@ -73,12 +73,12 @@ namespace orxonox
         Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
         if(activeCamera)
         {
-            Real distance = this->getPosition().distance( activeCamera->getWorldPosition() );
+            float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
             //             COUT(2) << distance << std::endl;
-            Real planetRadius = this->getScale();
+            float planetRadius = this->getScale();
 
-            Real newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
-            Real tempTest = newScale*(1+Real(this->atmosphereSize)/Real(this->imageSize));
+            float newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
+            float tempTest = newScale*(1+float(this->atmosphereSize)/float(this->imageSize));
             newScale = tempTest;
 
             this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
@@ -89,7 +89,7 @@ namespace orxonox
 
     void Planet::init()
     {
-        Real scaleFactor = this->getScale();
+        float scaleFactor = this->getScale();
 
         this->distList.push_back(10.0*scaleFactor);
         this->distList.push_back(19.0*scaleFactor);
@@ -102,7 +102,7 @@ namespace orxonox
         this->distList.push_back(54.0*scaleFactor);
         this->distList.push_back(55.0*scaleFactor);
 
-        Real reductionValue = 0.2;
+        float reductionValue = 0.2;
 
         this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
         billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));

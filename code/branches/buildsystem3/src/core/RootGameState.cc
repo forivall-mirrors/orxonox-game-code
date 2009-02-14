@@ -134,7 +134,7 @@ namespace orxonox
     void RootGameState::start()
     {
         // Don't catch errors when having a debugger in msvc
-#if ORXONOX_COMPILER != ORXONOX_COMPILER_MSVC || defined(NDEBUG)
+#if !defined(ORXONOX_COMPILER_MSVC) || defined(NDEBUG)
         try
         {
 #endif
@@ -157,7 +157,7 @@ namespace orxonox
             }
 
             this->deactivate();
-#if ORXONOX_COMPILER != ORXONOX_COMPILER_MSVC || defined(NDEBUG)
+#if !defined(ORXONOX_COMPILER_MSVC) || defined(NDEBUG)
         }
         // Note: These are all unhandled exceptions that should not have made its way here!
         // almost complete game catch block to display the messages appropriately.

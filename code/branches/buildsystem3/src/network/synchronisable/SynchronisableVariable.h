@@ -34,7 +34,6 @@
 
 #include <string>
 #include <cassert>
-#include "util/Integers.h"
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "network/synchronisable/NetworkCallback.h"
