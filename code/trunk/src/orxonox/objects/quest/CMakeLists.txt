@@ -13,6 +13,7 @@ SET( SRC_FILES
   QuestEffectBeacon.cc
   QuestHint.cc
   QuestItem.cc
+  QuestListener.cc
   QuestManager.cc
   Rewardable.cc
 )

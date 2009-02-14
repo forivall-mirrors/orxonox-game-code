@@ -41,8 +41,8 @@ namespace packet {
 class _NetworkExport Welcome : public Packet
 {
 public:
-  Welcome( unsigned int clientID, unsigned int shipID );
-  Welcome( uint8_t* data, unsigned int clientID );
+  Welcome( uint32_t clientID, uint32_t shipID );
+  Welcome( uint8_t* data, uint32_t clientID );
   virtual ~Welcome();
 
   uint8_t *getData();

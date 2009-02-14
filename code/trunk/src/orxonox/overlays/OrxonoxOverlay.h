@@ -124,7 +124,7 @@ namespace orxonox
         void setRotation(const Degree& angle)     { this->angle_ = angle; this->angleChanged(); }
 
         //! Gets the rotation angle applied to this overlay in degrees.
-        const Radian& getRotation() const         { return this->angle_; }
+        const Degree& getRotation() const         { return this->angle_; }
 
         //! Rotates the overlay by angle degrees.
         void rotate(const Degree& angle)          { this->angle_ += angle; this->angleChanged(); }
@@ -153,6 +153,30 @@ namespace orxonox
 
         virtual void changedVisibility();
 
+        inline void setOwner(ControllableEntity* owner)
+        {
+            if (this->owner_ != owner)
+            {
+                this->owner_ = owner;
+                this->changedOwner();
+            }
+        }
+        inline ControllableEntity* getOwner() const
+            { return this->owner_; }
+        virtual void changedOwner() {}
+
+        inline void setOverlayGroup(OverlayGroup* group)
+        {
+            if (group != this->group_)
+            {
+                this->group_ = group;
+                this->changedOverlayGroup();
+            }
+        }
+        inline OverlayGroup* getOverlayGroup() const
+            { return this->group_; }
+        virtual void changedOverlayGroup() {}
+
     protected:
         virtual void angleChanged();
         virtual void sizeCorrectionChanged();
@@ -171,7 +195,7 @@ namespace orxonox
         Vector2 sizeCorrection_;                   //!< Value to correct the size because of the window aspect.
         Vector2 position_;                         //!< Position of the pickPoint on the screen.
         Vector2 pickPoint_;                        //!< Point on the overlay to pick when translating
-        Radian angle_;                             //!< Rotation angle of the overlay
+        Degree angle_;                             //!< Rotation angle of the overlay
         RotationState rotState_;             //!< horizontal, vertical or inbetween
 
     private:
@@ -181,7 +205,12 @@ namespace orxonox
         /** Contains all the overlays in a map for quick access via console commands.
             We could also use the ObjectList, but that doesn't guarantee XMLPort(.) was called and is slower. */
         static std::map<std::string, OrxonoxOverlay*> overlays_s;
+        ControllableEntity* owner_;
+        OverlayGroup* group_;
   };
+
+  SUPER_FUNCTION(7, OrxonoxOverlay, changedOwner, false);
+  SUPER_FUNCTION(8, OrxonoxOverlay, changedOverlayGroup, false);
 }
 
 #endif /* _OrxonoxOverlay_H__ */

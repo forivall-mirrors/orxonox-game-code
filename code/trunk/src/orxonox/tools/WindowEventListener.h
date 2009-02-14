@@ -40,9 +40,9 @@ namespace orxonox
     */
     class _OrxonoxExport WindowEventListener : virtual public OrxonoxClass
     {
-    public:
-        WindowEventListener();
-        virtual ~WindowEventListener() { }
+        public:
+            WindowEventListener();
+            virtual ~WindowEventListener() { }
 
             /** Window has moved position */
             virtual void windowMoved() { }

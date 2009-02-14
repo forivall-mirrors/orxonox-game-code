@@ -28,11 +28,18 @@
 #include "OrxonoxStableHeaders.h"
 #include "CameraManager.h"
 
+#include <OgreSceneManager.h>
 #include <OgreViewport.h>
+#include <OgreCamera.h>
+#include <OgreCompositorManager.h>
+#include <OgreResource.h>
 
 #include "core/Core.h"
+#include "core/Iterator.h"
 #include "objects/worldentities/Camera.h"
-
+#include "objects/Scene.h"
+#include "tools/Shader.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -43,12 +50,17 @@ namespace orxonox
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
+
+        this->fallbackCamera_ = 0;
     }
 
     CameraManager::~CameraManager()
     {
         assert(singletonRef_s != 0);
         singletonRef_s = 0;
+
+        if (this->fallbackCamera_)
+            this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
     }
 
     Camera* CameraManager::getActiveCamera() const
@@ -67,16 +79,20 @@ namespace orxonox
         // notify old camera (if it exists)
         if (this->cameraList_.size() > 0)
             this->cameraList_.front()->removeFocus();
+        else if (this->fallbackCamera_)
+        {
+            this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
+            this->fallbackCamera_ = 0;
+        }
 
-        camera->setFocus(this->viewport_);
+        camera->setFocus();
+
+        // make sure we don't add it twice
+        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
+            if ((*it) == camera)
+                return;
 
         // add to list
-        std::list<Camera*>::iterator it;
-        for (it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
-        {
-            if ((*it) == camera)
-                return; // make sure we don't add it twice
-        }
         this->cameraList_.push_front(camera);
     }
 
@@ -91,13 +107,44 @@ namespace orxonox
             camera->removeFocus();
             this->cameraList_.pop_front();
 
-            // set new focus if necessary
-            if (cameraList_.size() > 0)
-                cameraList_.front()->setFocus(this->viewport_);
+            // set new focus if possible
+            if (this->cameraList_.size() > 0)
+                this->cameraList_.front()->setFocus();
+            else
+            {
+                // there are no more cameras, create a fallback
+                if (!this->fallbackCamera_)
+                    this->fallbackCamera_ = camera->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
+                this->useCamera(this->fallbackCamera_);
+            }
         }
         else
         {
             this->cameraList_.remove(camera);
+        }
+    }
+
+    void CameraManager::useCamera(Ogre::Camera* camera)
+    {
+        // This workaround is needed to avoid weird behaviour with active compositors while
+        // switching the camera (like freezing the image)
+        //
+        // Last known Ogre version needing this workaround:
+        // 1.4.8
+
+        // deactivate all compositors
+        {
+            Ogre::ResourceManager::ResourceMapIterator iterator = Ogre::CompositorManager::getSingleton().getResourceIterator();
+            while (iterator.hasMoreElements())
+                Ogre::CompositorManager::getSingleton().setCompositorEnabled(this->viewport_, iterator.getNext()->getName(), false);
+        }
+
+        this->viewport_->setCamera(camera);
+
+        // reactivate all visible compositors
+        {
+            for (ObjectList<Shader>::iterator it = ObjectList<Shader>::begin(); it != ObjectList<Shader>::end(); ++it)
+                it->updateVisibility();
         }
     }
 }

@@ -32,11 +32,18 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
+#include "tools/BillboardSet.h"
+#include "tools/Timer.h"
+#include "core/Identifier.h"
 
+#include "WeaponSystem.h"
+#include "Munition.h"
+
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Weapon : public BaseObject
+    class _OrxonoxExport Weapon : public StaticEntity
     {
         public:
             Weapon(BaseObject* creator);
@@ -44,15 +51,57 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void addMunition();
             virtual void fire();
+            void attachNeededMunition(std::string munitionType);
+            Munition * getAttachedMunition(std::string munitiontype);
+
+            //reloading
+            void bulletTimer(float bulletLoadingTime);
+            void magazineTimer(float magazineLoadingTime);
+            void bulletReloaded();
+            void magazineReloaded();
+
+            virtual void setMunitionType(std::string munitionType);
+            virtual const std::string getMunitionType();
+            virtual void setBulletLoadingTime(float loadingTime);
+            virtual const float getBulletLoadingTime();
+            virtual void setMagazineLoadingTime(float loadingTime);
+            virtual const float getMagazineLoadingTime();
+
+            virtual void takeBullets();
+            virtual void takeMagazines();
+            virtual void createProjectile();
+
+            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
+                { this->parentWeaponSystem_=parentWeaponSystem; };
+            inline WeaponSystem * getParentWeaponSystem()
+                { return this->parentWeaponSystem_; };
+
+            inline void setAttachedToWeaponSlot(WeaponSlot * wSlot)
+                { this->attachedToWeaponSlot_ = wSlot; }
+            inline WeaponSlot * getAttachedToWeaponSlot()
+                { return this->attachedToWeaponSlot_; }
+
+            virtual void setWeapon();
 
         private:
-            int loadingTime_;
-            Munition *munition_;
 
+        protected:
+            bool bReloading_;
+            bool bulletReadyToShoot_;
+            bool magazineReadyToShoot_;
+            float bulletLoadingTime_;
+            float magazineLoadingTime_;
+            std::string munitionType_;
 
+            WeaponSlot * attachedToWeaponSlot_;
+            Munition * munition_;
+            WeaponSystem * parentWeaponSystem_;
 
+            SubclassIdentifier<Munition> munitionIdentifier_;
+
+            Timer<Weapon> bulletReloadTimer_;
+            Timer<Weapon> magazineReloadTimer_;
     };
 }
 

@@ -32,8 +32,10 @@
  */
 
 #include "KeyBinder.h"
+
 #include <fstream>
 #include <string>
+
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
@@ -65,18 +67,9 @@ namespace orxonox
         {
             std::string keyname = KeyCode::ByString[i];
             if (!keyname.empty())
-            {
                 keys_[i].name_ = std::string("Key") + keyname;
-            }
             else
-            {
-                // some keys have name "" because the code is not occupied by OIS
-                // Use "Key_" plus the number as name to put it at the end of the config file section
-                std::string number = convertToString(i);
-                if (i < 100)
-                    number.insert(0, "0");
-                keys_[i].name_ = std::string("Key_") + number;
-            }
+                keys_[i].name_ = "";
             keys_[i].paramCommandBuffer_ = &paramCommandBuffer_;
             keys_[i].groupName_ = "Keys";
         }
@@ -96,7 +89,7 @@ namespace orxonox
         // mouse axes
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
         {
-            mouseAxes_[i].name_ = std::string("Mouse") + MouseAxisCode::ByString[i >> 1];
+            mouseAxes_[i].name_ = std::string("Mouse") + MouseAxisCode::ByString[i / 2];
             if (i & 1)
                 mouseAxes_[i].name_ += "Pos";
             else
@@ -223,8 +216,10 @@ namespace orxonox
         allButtons_.clear();
         allHalfAxes_.clear();
 
+        // Note: Don't include the dummy keys which don't actually exist in OIS but have a number
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
-            allButtons_[keys_[i].name_] = keys_ + i;
+            if (!keys_[i].name_.empty())
+                allButtons_[keys_[i].name_] = keys_ + i;
         for (unsigned int i = 0; i < numberOfMouseButtons_; i++)
             allButtons_[mouseButtons_[i].name_] = mouseButtons_ + i;
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
@@ -326,22 +321,22 @@ namespace orxonox
     {
         if (bDeriveMouseInput_)
         {
-            // only update when derive dt has passed
+            // only update when derivation dt has passed
             if (deriveTime_ > derivePeriod_)
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    if (mouseRelative_[i] > 0)
+                    if (mouseRelative_[i] < 0)
                     {
                         mouseAxes_[2*i + 0].absVal_
-                            =  mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+                            = -mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
                         mouseAxes_[2*i + 1].absVal_ = 0.0f;
                     }
-                    else if (mouseRelative_[i] < 0)
+                    else if (mouseRelative_[i] > 0)
                     {
                         mouseAxes_[2*i + 0].absVal_ = 0.0f;
                         mouseAxes_[2*i + 1].absVal_
-                            = -mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+                            =  mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
                     }
                     else
                     {
@@ -362,7 +357,7 @@ namespace orxonox
         {
             // Why dividing relative value by dt? The reason lies in the simple fact, that when you
             // press a button that has relative movement, that value has to be multiplied by dt to be
-            // frame rate independant. This can easily (and only) be done in tickInput(float).
+            // frame rate independent. This can easily (and only) be done in tickInput(float).
             // Hence we need to divide by dt here for the mouse to compensate, because the relative
             // move movements have nothing to do with dt.
             if (dt != 0.0f)
@@ -440,7 +435,7 @@ namespace orxonox
         {
             for (int i = 0; i < 2; i++)
             {
-                if (rel[i]) // performance opt. if rel[i] == 0
+                if (rel[i]) // performance opt. for the case that rel[i] == 0
                 {
                     // write absolute values
                     mouseAxes_[2*i + 0].hasChanged_ = true;
@@ -453,15 +448,15 @@ namespace orxonox
                     if (mousePosition_[i] < -mouseClippingSize_)
                         mousePosition_[i] = -mouseClippingSize_;
 
-                    if (mousePosition_[i] >= 0)
+                    if (mousePosition_[i] < 0)
                     {
-                        mouseAxes_[2*i + 0].absVal_ =   mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
+                        mouseAxes_[2*i + 0].absVal_ =  -mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
                         mouseAxes_[2*i + 1].absVal_ =  0.0f;
                     }
                     else
                     {
                         mouseAxes_[2*i + 0].absVal_ =  0.0f;
-                        mouseAxes_[2*i + 1].absVal_ =  -mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
+                        mouseAxes_[2*i + 1].absVal_ =   mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
                     }
                 }
             }
@@ -470,10 +465,10 @@ namespace orxonox
         // relative
         for (int i = 0; i < 2; i++)
         {
-            if (rel[i] > 0)
-                mouseAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
+            if (rel[i] < 0)
+                mouseAxes_[0 + 2*i].relVal_ = -((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
             else
-                mouseAxes_[1 + 2*i].relVal_ = -((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
+                mouseAxes_[1 + 2*i].relVal_ =  ((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
         }
     }
 
@@ -483,21 +478,21 @@ namespace orxonox
     */
     void KeyBinder::mouseScrolled(int abs, int rel)
     {
-        if (rel > 0)
-            for (int i = 0; i < rel/mouseWheelStepSize_; i++)
+        if (rel < 0)
+            for (int i = 0; i < -rel/mouseWheelStepSize_; i++)
                 mouseButtons_[8].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
         else
-            for (int i = 0; i < -rel/mouseWheelStepSize_; i++)
+            for (int i = 0; i < rel/mouseWheelStepSize_; i++)
                 mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
     }
 
     void KeyBinder::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)
     {
         int i = axis * 2;
-        if (value >= 0)
+        if (value < 0)
         {
-            joyStickAxes_[joyStickID][i].absVal_ = value;
-            joyStickAxes_[joyStickID][i].relVal_ = value;
+            joyStickAxes_[joyStickID][i].absVal_ = -value;
+            joyStickAxes_[joyStickID][i].relVal_ = -value;
             joyStickAxes_[joyStickID][i].hasChanged_ = true;
             if (joyStickAxes_[joyStickID][i + 1].absVal_ > 0.0f)
             {
@@ -508,8 +503,8 @@ namespace orxonox
         }
         else
         {
-            joyStickAxes_[joyStickID][i + 1].absVal_ = -value;
-            joyStickAxes_[joyStickID][i + 1].relVal_ = -value;
+            joyStickAxes_[joyStickID][i + 1].absVal_ = value;
+            joyStickAxes_[joyStickID][i + 1].relVal_ = value;
             joyStickAxes_[joyStickID][i + 1].hasChanged_ = true;
             if (joyStickAxes_[joyStickID][i].absVal_ > 0.0f)
             {

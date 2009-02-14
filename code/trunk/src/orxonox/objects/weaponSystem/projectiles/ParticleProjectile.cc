@@ -29,53 +29,48 @@
 #include "OrxonoxStableHeaders.h"
 #include "ParticleProjectile.h"
 
-#include "SpaceShip.h"
+#include <OgreParticleSystem.h>
+#include <OgreParticleEmitter.h>
+
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
     CreateFactory(ParticleProjectile);
 
-    ParticleProjectile::ParticleProjectile(BaseObject* creator, Weapon* owner) : BillboardProjectile(creator, owner)
+    ParticleProjectile::ParticleProjectile(BaseObject* creator) : BillboardProjectile(creator)
     {
         RegisterObject(ParticleProjectile);
 
-        this->particles_ = new ParticleInterface("Orxonox/shot2", LODParticle::normal);
-        this->particles_->addToSceneNode(this->getNode());
-        this->particles_->setKeepParticlesInLocalSpace(true);
-        if (this->owner_)
+        if (Core::showsGraphics())
         {
-        }
-//        else
-//        {
-//            this->particles_ = 0;
-//        }
+            this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::normal);
+            this->attachOgreObject(this->particles_->getParticleSystem());
+            this->particles_->setKeepParticlesInLocalSpace(0);
 
-        this->setConfigValues();
+            this->particles_->getAllEmitters()->setDirection(-WorldEntity::FRONT);
+        }
+        else
+            this->particles_ = 0;
     }
 
     ParticleProjectile::~ParticleProjectile()
     {
         if (this->isInitialized() && this->particles_)
+        {
+            this->detachOgreObject(this->particles_->getParticleSystem());
             delete this->particles_;
-    }
-
-    void ParticleProjectile::setConfigValues()
-    {
-        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback((Projectile*)this, &ParticleProjectile::speedChanged);
+        }
     }
 
     void ParticleProjectile::changedVisibility()
     {
         SUPER(ParticleProjectile, changedVisibility);
-        this->particles_->setEnabled(this->isVisible());
-    }
 
-    bool ParticleProjectile::create(){
-      if(!Projectile::create())
-        return false;
-      this->particles_->getAllEmitters()->setDirection(-this->getOrientation()*Vector3(1,0,0));
-      return true;
+        if (this->particles_)
+            this->particles_->setEnabled(this->isVisible());
     }
 }

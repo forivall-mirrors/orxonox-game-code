@@ -171,9 +171,9 @@ namespace orxonox
       case ENET_EVENT_TYPE_CONNECT:
         break;
       case ENET_EVENT_TYPE_RECEIVE:
-        COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
+        //COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
         if ( !processData(event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
-        COUT(5) << "Cl.Con: processed Data in receiver-thread while loop" << std::endl;
+        //COUT(5) << "Cl.Con: processed Data in receiver-thread while loop" << std::endl;
         event = new ENetEvent;
         break;
       case ENET_EVENT_TYPE_DISCONNECT:

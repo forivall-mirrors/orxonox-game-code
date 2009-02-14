@@ -39,10 +39,13 @@
 
 namespace orxonox
 {
-  LuaBind* LuaBind::singletonRef = NULL;
+  LuaBind* LuaBind::singletonRef_s = NULL;
 
   LuaBind::LuaBind()
   {
+    assert(LuaBind::singletonRef_s == 0);
+    LuaBind::singletonRef_s = this;
+
     luaState_ = lua_open();
     luaSource_ = "";
 #if LUA_VERSION_NUM == 501

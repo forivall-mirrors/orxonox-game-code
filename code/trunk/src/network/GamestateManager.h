@@ -42,6 +42,7 @@
 
 #include "NetworkPrereqs.h"
 #include "GamestateHandler.h"
+#include "TrafficControl.h"
 #include <map>
 
 #include "packet/Gamestate.h"
@@ -80,7 +81,6 @@ namespace orxonox
     bool ack(unsigned int gamestateID, unsigned int clientID);
     void removeClient(ClientInformation *client);
     private:
-//     void cleanup(); // "garbage handler"
     bool processGamestate(packet::Gamestate *gs);
 
     std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> > gamestateMap_;
@@ -88,6 +88,7 @@ namespace orxonox
     //std::map<int, int> gamestateUsed; // save the number of clients, that use the specific gamestate
     std::map<unsigned int, packet::Gamestate*> gamestateQueue;
     packet::Gamestate *reference;
+    TrafficControl *trafficControl_;
     unsigned int id_;
   };
 

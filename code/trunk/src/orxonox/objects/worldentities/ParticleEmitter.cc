@@ -32,8 +32,9 @@
 */
 
 #include "OrxonoxStableHeaders.h"
-
 #include "ParticleEmitter.h"
+
+#include <OgreParticleSystem.h>
 
 #include "tools/ParticleInterface.h"
 #include "util/Exception.h"
@@ -45,12 +46,12 @@ namespace orxonox
 {
     CreateFactory(ParticleEmitter);
 
-    ParticleEmitter::ParticleEmitter(BaseObject* creator) : PositionableEntity(creator)
+    ParticleEmitter::ParticleEmitter(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(ParticleEmitter);
 
-        if (!this->getScene() || !this->getScene()->getSceneManager())
-            ThrowException(AbortLoading, "Can't create Camera, no scene or no scene manager given.");
+        if (Core::showsGraphics() && (!this->getScene() || !this->getScene()->getSceneManager()))
+            ThrowException(AbortLoading, "Can't create ParticleEmitter, no scene or no scene manager given.");
 
         this->particles_ = 0;
         this->LOD_ = LODParticle::normal;
@@ -61,7 +62,10 @@ namespace orxonox
     ParticleEmitter::~ParticleEmitter()
     {
         if (this->isInitialized() && this->particles_)
+        {
+            this->detachOgreObject(this->particles_->getParticleSystem());
             delete this->particles_;
+        }
     }
 
     void ParticleEmitter::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -74,8 +78,8 @@ namespace orxonox
 
     void ParticleEmitter::registerVariables()
     {
-        REGISTERSTRING(this->source_, direction::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
-        REGISTERDATA  (this->LOD_,    direction::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
+        registerVariable(this->source_, variableDirection::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
+        registerVariable((int&)(this->LOD_),    variableDirection::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
     }
 
     void ParticleEmitter::changedVisibility()
@@ -97,14 +101,17 @@ namespace orxonox
     void ParticleEmitter::sourceChanged()
     {
         if (this->particles_)
+        {
             delete this->particles_;
+            this->particles_ = 0;
+        }
 
-        if (this->getScene() && this->getScene()->getSceneManager())
+        if (Core::showsGraphics() && this->getScene() && this->getScene()->getSceneManager())
         {
             try
             {
                 this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), this->source_, this->LOD_);
-                this->particles_->addToSceneNode(this->getNode());
+                this->attachOgreObject(this->particles_->getParticleSystem());
                 this->particles_->setVisible(this->isVisible());
                 this->particles_->setEnabled(this->isActive());
             }
@@ -114,8 +121,6 @@ namespace orxonox
                 this->particles_ = 0;
             }
         }
-        else
-            this->particles_ = 0;
     }
 
     void ParticleEmitter::LODchanged()

@@ -100,6 +100,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -152,6 +153,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\CommandLine.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\ConfigFileManager.cc"
 				>
 			</File>
@@ -168,6 +173,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Executor.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\GameState.cc"
 				>
 			</File>
@@ -180,19 +189,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\OrxonoxClass.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\RootGameState.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Template.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\XMLNameListener.cc"
 				>
 			</File>
 			<Filter
@@ -230,7 +227,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="command"
+				Name="commands"
 				>
 				<File
 					RelativePath="..\..\src\core\ArgumentCompletionFunctions.cc"
@@ -245,10 +242,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\CommandLine.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\ConsoleCommand.cc"
 					>
 				</File>
@@ -256,14 +249,14 @@
 					RelativePath="..\..\src\core\ConsoleCommandCompilation.cc"
 					>
 				</File>
-				<File
-					RelativePath="..\..\src\core\Executor.cc"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="hierarchy"
 				>
+				<File
+					RelativePath="..\..\src\core\BaseObject.cc"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\core\Factory.cc"
 					>
@@ -280,14 +273,14 @@
 					RelativePath="..\..\src\core\ObjectListBase.cc"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="level"
-				>
 				<File
-					RelativePath="..\..\src\core\BaseObject.cc"
+					RelativePath="..\..\src\core\OrxonoxClass.cc"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="loading"
+				>
 				<File
 					RelativePath="..\..\src\core\ClassTreeMask.cc"
 					>
@@ -302,6 +295,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\NamespaceNode.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Template.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLNameListener.cc"
 					>
 				</File>
 				<File
@@ -388,6 +389,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\CommandLine.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\ConfigFileManager.h"
 				>
 			</File>
@@ -416,6 +421,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Executor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Functor.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\GameState.h"
 				>
 			</File>
@@ -428,27 +441,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\OrxonoxClass.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\RootGameState.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\Super.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Template.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\XMLIncludes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\XMLNameListener.h"
 				>
 			</File>
 			<Filter
@@ -508,7 +505,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="command"
+				Name="commands"
 				>
 				<File
 					RelativePath="..\..\src\core\ArgumentCompleter.h"
@@ -531,23 +528,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\CommandLine.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\ConsoleCommand.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\core\ConsoleCommandCompilation.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Executor.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Functor.h"
 					>
 				</File>
 			</Filter>
@@ -574,6 +559,10 @@
 			<Filter
 				Name="hierarchy"
 				>
+				<File
+					RelativePath="..\..\src\core\BaseObject.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\core\ClassFactory.h"
 					>
@@ -610,14 +599,14 @@
 					RelativePath="..\..\src\core\ObjectListBase.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="level"
-				>
 				<File
-					RelativePath="..\..\src\core\BaseObject.h"
+					RelativePath="..\..\src\core\OrxonoxClass.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="loading"
+				>
 				<File
 					RelativePath="..\..\src\core\ClassTreeMask.h"
 					>
@@ -635,7 +624,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Template.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\XMLFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLIncludes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLNameListener.h"
 					>
 				</File>
 				<File

@@ -27,9 +27,8 @@
  */
  
 /**
-    @file QuestHint.h
-    @brief
-    Definition of the QuestHint class.
+    @file
+    @brief Definition of the QuestHint class.
 */
 
 #ifndef _QuestHint_H__
@@ -43,20 +42,19 @@
 #include "core/XMLPort.h"
 #include "QuestItem.h"
 
-namespace questHintStatus
-{
-
-    //! The status of the hint.
-    enum Enum
-    {
-        inactive,
-        active
-    };
-
-}
-
 namespace orxonox
 {
+    namespace questHintStatus
+    {
+
+        //! The state of the hint.
+        enum Enum
+        {
+            inactive,
+            active
+        };
+
+    }
 
     /**
     @brief
@@ -95,7 +93,7 @@ namespace orxonox
 
         private:
             Quest* quest_; //!< The Quest the QuestHint belongs to.
-            std::map<const PlayerInfo*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
+            std::map<const PlayerInfo*, questHintStatus::Enum> playerStatus_; //!< List of the states for each player, with the Player-pointer as key.
 
     };
 

@@ -39,6 +39,8 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Radar.h"
+#include "objects/worldentities/WorldEntity.h"
+#include "objects/worldentities/pawns/Pawn.h"
 #include "tools/TextureGenerator.h"
 
 namespace orxonox
@@ -50,19 +52,21 @@ namespace orxonox
     {
         RegisterObject(HUDRadar);
 
-        marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+        this->marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
             .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberString()));
-        marker_->setMaterialName("Orxonox/RadarMarker");
-        overlay_->add2D(marker_);
-        marker_->hide();
+        this->marker_->setMaterialName("Orxonox/RadarMarker");
+        this->overlay_->add2D(this->marker_);
+        this->marker_->hide();
 
-        setRadarSensitivity(1.0f);
-        setHalfDotSizeDistance(3000.0f);
-        setMaximumDotSize(0.1f);
+        this->setRadarSensitivity(1.0f);
+        this->setHalfDotSizeDistance(3000.0f);
+        this->setMaximumDotSize(0.1f);
 
-        shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
-        shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
-        shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
+        this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.tga";
+        this->shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
+        this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
+
+        this->owner_ = 0;
     }
 
     HUDRadar::~HUDRadar()
@@ -89,17 +93,22 @@ namespace orxonox
 
     void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)
     {
-/*
+        if (object == (RadarViewable*)this->owner_)
+            return;
+
         const WorldEntity* wePointer = object->getWorldEntity();
 
         // Just to be sure that we actually have a WorldEntity.
         // We could do a dynamic_cast, but that would be a lot slower.
-        if (!wePointer)
+        if (!wePointer || !this->owner_)
         {
-            CCOUT(4) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
+            if (!wePointer)
+                CCOUT(2) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
+            if (!this->owner_)
+                CCOUT(2) << "No owner defined" << std::endl;
             return;
         }
-*/
+
         // try to find a panel already created
         Ogre::PanelOverlayElement* panel;
         //std::map<RadarViewable*, Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.find(object);
@@ -111,7 +120,7 @@ namespace orxonox
             radarDots_.push_back(panel);
             // get right material
             panel->setMaterialName(TextureGenerator::getMaterialName(
-                shapeMaterials_[object->getRadarObjectType()], object->getRadarObjectColour()));
+                shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour()));
             this->overlay_->add2D(panel);
             this->itRadarDots_ = this->radarDots_.end();
         }
@@ -120,20 +129,20 @@ namespace orxonox
             panel = *itRadarDots_;
             ++itRadarDots_;
             std::string materialName = TextureGenerator::getMaterialName(
-                shapeMaterials_[object->getRadarObjectType()], object->getRadarObjectColour());
+                shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour());
             if (materialName != panel->getMaterialName())
                 panel->setMaterialName(materialName);
         }
         panel->show();
-/*
+
         // set size to fit distance...
-        float distance = (wePointer->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
+        float distance = (wePointer->getWorldPosition() - this->owner_->getPosition()).length();
         // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
         float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance);
         panel->setDimensions(size, size);
 
         // calc position on radar...
-        Vector2 coord = get2DViewcoordinates(SpaceShip::getLocalShip()->getPosition(), SpaceShip::getLocalShip()->getDir(), SpaceShip::getLocalShip()->getOrth(), wePointer->getWorldPosition());
+        Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
         coord *= Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
         panel->setPosition((1.0 + coord.x - size) * 0.5, (1.0 - coord.y - size) * 0.5);
 
@@ -143,7 +152,6 @@ namespace orxonox
             this->marker_->setDimensions(size * 1.5, size * 1.5);
             this->marker_->setPosition((1.0 + coord.x - size * 1.5) * 0.5, (1.0 - coord.y - size * 1.5) * 0.5);
         }
-*/
     }
 
     void HUDRadar::radarTick(float dt)
@@ -152,5 +160,12 @@ namespace orxonox
             (*itRadarDots_)->hide();
         this->itRadarDots_ = this->radarDots_.begin();
         this->marker_->hide();
+    }
+
+    void HUDRadar::changedOwner()
+    {
+        SUPER(HUDRadar, changedOwner);
+
+        this->owner_ = dynamic_cast<Pawn*>(this->getOwner());
     }
 }

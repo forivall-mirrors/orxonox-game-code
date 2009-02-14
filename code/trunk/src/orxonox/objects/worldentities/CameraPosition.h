@@ -31,11 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/worldentities/PositionableEntity.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraPosition : public PositionableEntity
+    class _OrxonoxExport CameraPosition : public StaticEntity
     {
         public:
             CameraPosition(BaseObject* creator);
@@ -48,10 +48,16 @@ namespace orxonox
             inline bool getDrag() const
                 { return this->bDrag_; }
 
+            inline void setAllowMouseLook(bool bAllow)
+                { this->bAllowMouseLook_ = bAllow; }
+            inline bool getAllowMouseLook() const
+                { return this->bAllowMouseLook_; }
+
             void attachCamera(Camera* camera);
 
         private:
             bool bDrag_;
+            bool bAllowMouseLook_;
     };
 }
 

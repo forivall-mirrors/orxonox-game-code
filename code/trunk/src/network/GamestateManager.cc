@@ -48,15 +48,21 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "ClientInformation.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
+#include "synchronisable/NetworkCallbackManager.h"
+#include "packet/Acknowledgement.h"
 
 namespace orxonox
 {
-  GamestateManager::GamestateManager() {
-    id_=0;
+  GamestateManager::GamestateManager() :
+  reference(0), id_(0)
+  {
+    trafficControl_ = new TrafficControl();
   }
 
-  GamestateManager::~GamestateManager() {
+  GamestateManager::~GamestateManager()
+  {
+    delete trafficControl_;
   }
 
   bool GamestateManager::update(){
@@ -85,11 +91,15 @@ namespace orxonox
     }
     // now clear the queue
     gamestateQueue.clear();
+    //and call all queued callbacks
+    NetworkCallbackManager::callCallbacks();
     return true;
   }
 
 
   bool GamestateManager::getSnapshot(){
+    if ( reference != 0 )
+      delete reference;
     reference = new packet::Gamestate();
     if(!reference->collectData(++id_)){ //we have no data to send
       delete reference;
@@ -98,33 +108,6 @@ namespace orxonox
     return true;
   }
 
-  /**
-   * this function is used to keep the memory usage low
-   * it tries to delete all the unused gamestates
-   *
-   *
-   */
-/*  void GamestateManager::cleanup(){
-    std::map<int,int>::iterator it = gamestateUsed.begin();
-    while(it!=gamestateUsed.end()){
-      if((id_-(*it).first)<KEEP_GAMESTATES)
-        break;
-      if( (*it).second <= 0 ){
-        COUT(5) << "GameStateManager: deleting gamestate with id: " << (*it).first << ", uses: " << (*it).second << std::endl;
-        std::map<int, packet::Gamestate *>::iterator tempit = gamestateMap.find((*it).first);
-        if( tempit != gamestateMap.end() ){
-          packet::Gamestate *temp = tempit->second;
-          if(temp){
-            delete gamestateMap[(*it).first];
-            gamestateMap.erase((*it).first);
-          }
-        }
-        gamestateUsed.erase(it++);
-        continue;
-      }
-      it++;
-    }
-  }*/
 
   packet::Gamestate *GamestateManager::popGameState(unsigned int clientID) {
     //why are we searching the same client's gamestate id as we searched in
@@ -133,24 +116,24 @@ namespace orxonox
     unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
     if(!reference)
       return 0;
-    gs = reference->doSelection(clientID);
-//     gs = new packet::Gamestate(*reference);
+    gs = reference->doSelection(clientID, 10000);
 //     gs = new packet::Gamestate(*reference);
     // save the (undiffed) gamestate in the clients gamestate map
-    gamestateMap_[clientID].insert(std::pair<int, packet::Gamestate*>(gs->getID(), gs));
+    gamestateMap_[clientID][gs->getID()]=gs;
     //chose wheather the next gamestate is the first or not
-    packet::Gamestate *client=NULL;
+    packet::Gamestate *client=0;
     if(gID != GAMESTATEID_INITIAL){
-      std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(clientID);
-      if(clientMap!=gamestateMap_.end()){
-        std::map<unsigned int, packet::Gamestate*>::iterator it = clientMap->second.find(gID);
-        if(it!=clientMap->second.end())
-          client = it->second;
+      assert(gamestateMap_.find(clientID)!=gamestateMap_.end());
+      std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateMap_[clientID].find(gID);
+      if(it!=gamestateMap_[clientID].end())
+      {
+        client = it->second;
       }
     }
     if(client){
 //       COUT(3) << "diffing" << std::endl;
       gs = gs->diff(client);
+//       gs = new packet::Gamestate(*gs);
     }
     else{
 //       COUT(3) << "not diffing" << std::endl;
@@ -158,6 +141,11 @@ namespace orxonox
     }
     bool b = gs->compressData();
     assert(b);
+    COUT(4) << "sending gamestate with id " << gs->getID();
+    if(gs->isDiffed())
+    COUT(4) << " and baseid " << gs->getBaseID() << endl;
+    else
+    COUT(4) << endl;
     return gs;
   }
 
@@ -167,20 +155,26 @@ namespace orxonox
     assert(temp);
     unsigned int curid = temp->getGamestateID();
 
-    if(gamestateID == 0){
+    if(gamestateID == ACKID_NACK){
       temp->setGamestateID(GAMESTATEID_INITIAL);
+      // now delete all saved gamestates for this client
+      std::map<unsigned int, packet::Gamestate*>::iterator it;
+      for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end(); ){
+        delete it->second;
+        gamestateMap_[clientID].erase(it++);
+      }
       return true;
     }
 
     assert(curid==(unsigned int)GAMESTATEID_INITIAL || curid<gamestateID);
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
-    std::map<unsigned int, packet::Gamestate*>::iterator it, tempit;
-    for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; it++){
+    std::map<unsigned int, packet::Gamestate*>::iterator it;
+    for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; ){
       delete it->second;
-      tempit=it++;
-      gamestateMap_[clientID].erase(tempit);
+      gamestateMap_[clientID].erase(it++);
     }
     temp->setGamestateID(gamestateID);
+    TrafficControl::processAck(clientID, gamestateID);
     return true;
   }
 

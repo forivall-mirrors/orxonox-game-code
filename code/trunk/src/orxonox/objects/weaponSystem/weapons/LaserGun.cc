@@ -33,45 +33,45 @@
 #include "core/XMLPort.h"
 #include "util/Debug.h"
 
+#include "LaserGun.h"
+
 
 namespace orxonox
 {
+    CreateFactory(LaserGun);
+
     LaserGun::LaserGun(BaseObject* creator) : Weapon(creator)
     {
         RegisterObject(LaserGun);
 
-        projectileColor_ = ColourValue(1.0, 1.0, 0.5)
+        this->speed_ = 1250;
+
     }
 
     LaserGun::~LaserGun()
     {
     }
 
-    LaserGun::fire()
+    void LaserGun::takeBullets()
     {
-            BillboardProjectile* projectile = new ParticleProjectile(this);
-            projectile->setColour(this->projectileColor_);
-            projectile->create();
-            if (projectile->getClassID() == 0)
-            {
-              COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
-            }
-
-            projectile->setObjectMode(0x3);
+//COUT(0) << "LaserGun::takeBullets" << std::endl;
+        this->munition_->removeBullets(1);
+        this->bulletTimer(this->bulletLoadingTime_);
     }
 
-    LaserGun::addMunition()
+    void LaserGun::takeMagazines()
     {
-        //this->munition_ = ;
+        this->munition_->removeMagazines(1);
+        this->magazineTimer(this->magazineLoadingTime_);
     }
 
-    void LaserGun::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void LaserGun::createProjectile()
     {
-
-    }
-
-    ColorValue LaserGun::getProjectileColor()
-    {
-        return projectileColor_;
+//COUT(0) << "LaserGun::createProjectile" << std::endl;
+        BillboardProjectile* projectile = new ParticleProjectile(this);
+        projectile->setOrientation(this->getWorldOrientation());
+        projectile->setPosition(this->getWorldPosition());
+        projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
+        projectile->setOwner(this->getParentWeaponSystem()->getParentPawn());
     }
 }

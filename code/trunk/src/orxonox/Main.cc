@@ -42,6 +42,10 @@
 #include "util/SignalHandler.h"
 #include "core/ConfigFileManager.h"
 #include "core/CommandLine.h"
+#include "core/CommandExecutor.h"
+#include "core/Identifier.h"
+#include "core/Core.h"
+#include "core/Language.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -91,7 +95,8 @@ int main(int argc, char** argv)
     using namespace orxonox;
 
     // create a signal handler (only works for linux)
-    SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
+    SignalHandler signalHandler;
+    signalHandler.doCatch(argv[0], "orxonox.log");
 
     // Parse command line arguments
     try
@@ -108,31 +113,46 @@ int main(int argc, char** argv)
     // setConfigValues() in the constructor (required).
     ConfigFileManager* configFileManager = new ConfigFileManager();
     configFileManager->setFilename(ConfigFileType::Settings, CommandLine::getValue("settingsFile").getString());
+    // create the Core settings to configure the output level
+    Language* language = new Language();
+    Core*     core     = new Core();
 
-    // create the gamestates
-    GSRoot root;
-    GSGraphics graphics;
-    GSStandalone standalone;
-    GSServer server;
-    GSClient client;
-    GSDedicated dedicated;
-    GSGUI gui;
-    GSIOConsole ioConsole;
+    // put GameStates in its own scope so we can destroy the identifiers at the end of main().
+    {
+        // create the gamestates
+        GSRoot root;
+        GSGraphics graphics;
+        GSStandalone standalone;
+        GSServer server;
+        GSClient client;
+        GSDedicated dedicated;
+        GSGUI gui;
+        GSIOConsole ioConsole;
 
-    // make the hierarchy
-    root.addChild(&graphics);
-    graphics.addChild(&standalone);
-    graphics.addChild(&server);
-    graphics.addChild(&client);
-    graphics.addChild(&gui);
-    root.addChild(&ioConsole);
-    root.addChild(&dedicated);
+        // make the hierarchy
+        root.addChild(&graphics);
+        graphics.addChild(&standalone);
+        graphics.addChild(&server);
+        graphics.addChild(&client);
+        graphics.addChild(&gui);
+        root.addChild(&ioConsole);
+        root.addChild(&dedicated);
 
-    // Here happens the game
-    root.start();
+        // Here happens the game
+        root.start();
+    }
 
-    // Destroy ConfigFileManager again.
+    // destroy singletons
+    delete core;
+    delete language;
     delete configFileManager;
+
+    // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
+    Identifier::destroyAllIdentifiers();
+    // destroy command line arguments
+    CommandLine::destroyAllArguments();
+    // Also delete external console command that don't belong to an Identifier
+    CommandExecutor::destroyExternalCommands();
 
     return 0;
 }

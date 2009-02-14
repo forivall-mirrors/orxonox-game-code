@@ -36,9 +36,14 @@
 
 namespace orxonox
 {
-    LaserGunMunition::LaserGunMunition(BaseObject* creator) : BaseObject(creator)
+    CreateFactory(LaserGunMunition);
+
+    LaserGunMunition::LaserGunMunition(BaseObject* creator) : Munition(creator)
     {
         RegisterObject(LaserGunMunition);
+
+        this->maxBullets_ = 40;
+        this->maxMagazines_ = 100;
     }
 
     LaserGunMunition::~LaserGunMunition()

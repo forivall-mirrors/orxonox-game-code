@@ -3,6 +3,7 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
+  PawnManager.cc
   PlayerManager.cc
   Settings.cc
   
@@ -47,6 +48,9 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
+  BulletDynamics
+  BulletCollision
+  LinearMath
   util
   core
   audio

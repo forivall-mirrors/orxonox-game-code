@@ -30,13 +30,13 @@
 #define _Billboard_H__
 
 #include "OrxonoxPrereqs.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Billboard : public PositionableEntity
+    class _OrxonoxExport Billboard : public StaticEntity
     {
         public:
             Billboard(BaseObject* creator);
@@ -60,9 +60,14 @@ namespace orxonox
             inline const ColourValue& getColour() const
                 { return this->colour_; }
 
+        protected:
+            inline BillboardSet& getBillboardSet()
+                { return this->billboard_; }
+
+            virtual void changedColour();
+
         private:
             void changedMaterial();
-            void changedColour();
 
             BillboardSet billboard_;
             std::string material_;

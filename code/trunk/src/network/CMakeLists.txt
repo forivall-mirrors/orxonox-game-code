@@ -10,11 +10,13 @@ SET( NETWORK_SRC_FILES
   GamestateHandler.cc
   PacketBuffer.cc
   Server.cc
-  Synchronisable.cc
+  TrafficControl.cc
   Host.cc
 )
 
 ADD_SOURCE_DIRECTORY(NETWORK_SRC_FILES packet)
+ADD_SOURCE_DIRECTORY(NETWORK_SRC_FILES synchronisable)
+
 
 IF(WIN32)
   ADD_LIBRARY( network ${NETWORK_SRC_FILES} )

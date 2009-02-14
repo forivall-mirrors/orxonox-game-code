@@ -48,8 +48,8 @@ typedef unsigned __int8   uint8_t;
 typedef unsigned __int16  uint16_t;
 typedef unsigned __int32  uint32_t;
 typedef unsigned __int64  uint64_t;
-#elif ORXONOX_COMPILER == ORXONOX_COMPILER_GCC
-# include "inttypes.h"
+#else
+# include <inttypes.h>
 #endif
 
 #endif /* _Integers_H__ */

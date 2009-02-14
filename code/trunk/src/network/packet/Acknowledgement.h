@@ -31,6 +31,7 @@
 #include "../NetworkPrereqs.h"
 #include "Packet.h"
 
+const unsigned int ACKID_NACK = 0;
 
 namespace orxonox {
 namespace packet {

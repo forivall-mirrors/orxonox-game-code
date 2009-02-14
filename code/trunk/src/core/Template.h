@@ -52,6 +52,11 @@ namespace orxonox
             inline const std::string& getLink() const
                 { return this->link_; }
 
+            inline void setLoadDefaults(bool bLoadDefaults)
+                { this->bLoadDefaults_ = bLoadDefaults; }
+            inline bool getLoadDefaults() const
+                { return this->bLoadDefaults_; }
+
             inline void setXMLElement(const TiXmlElement& xmlelement)
                 { this->xmlelement_ = xmlelement; }
             const TiXmlElement& getXMLElement() const;
@@ -74,6 +79,7 @@ namespace orxonox
             std::string baseclass_;
             Identifier* baseclassIdentifier_;
             bool bIsLink_;
+            bool bLoadDefaults_;
             mutable bool bIsReturningXMLElement_;
     };
 }

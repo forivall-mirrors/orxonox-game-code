@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -31,12 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
-#include "objects/Tickable.h"
+#include "MobileEntity.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ControllableEntity : public WorldEntity, public Tickable
+    class _OrxonoxExport ControllableEntity : public MobileEntity
     {
         public:
             ControllableEntity(BaseObject* creator);
@@ -45,6 +45,9 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
             void registerVariables();
+            void setConfigValues();
+
+            virtual void changedGametype();
 
             virtual void setPlayer(PlayerInfo* player);
             virtual void removePlayer();
@@ -60,52 +63,36 @@ namespace orxonox
             virtual void moveRightLeft(const Vector2& value) {}
             virtual void moveUpDown(const Vector2& value) {}
 
-            virtual void rotateYaw(const Vector2& value) {}
-            virtual void rotatePitch(const Vector2& value) {}
-            virtual void rotateRoll(const Vector2& value) {}
+            virtual void rotateYaw(const Vector2& value);
+            virtual void rotatePitch(const Vector2& value);
+            virtual void rotateRoll(const Vector2& value);
 
-            virtual void fire() {}
-            virtual void altFire() {}
+            inline void moveFrontBack(float value)
+                { this->moveFrontBack(Vector2(value, 0)); }
+            inline void moveRightLeft(float value)
+                { this->moveRightLeft(Vector2(value, 0)); }
+            inline void moveUpDown(float value)
+                { this->moveUpDown(Vector2(value, 0)); }
 
+            inline void rotateYaw(float value)
+                { this->rotateYaw(Vector2(value, 0)); }
+            inline void rotatePitch(float value)
+                { this->rotatePitch(Vector2(value, 0)); }
+            inline void rotateRoll(float value)
+                { this->rotateRoll(Vector2(value, 0)); }
+
+            virtual void fire(WeaponMode::Enum fireMode) {}
+            virtual void altFire(WeaponMode::Enum fireMode) {}
+
+            virtual void boost() {}
             virtual void greet() {}
             virtual void use() {}
+            virtual void dropItems() {}
             virtual void switchCamera();
+            virtual void mouseLook();
 
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
-
-            using WorldEntity::setPosition;
-            using WorldEntity::translate;
-            using WorldEntity::setOrientation;
-            using WorldEntity::rotate;
-            using WorldEntity::yaw;
-            using WorldEntity::pitch;
-            using WorldEntity::roll;
-            using WorldEntity::lookAt;
-            using WorldEntity::setDirection;
-
-            void setPosition(const Vector3& position);
-            void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void setOrientation(const Quaternion& orientation);
-            void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL);
-            void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-
-            void setVelocity(const Vector3& velocity);
-            inline void setVelocity(float x, float y, float z)
-                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
-
-            inline void setAcceleration(const Vector3& acceleration)
-                { this->acceleration_ = acceleration; }
-            inline void setAcceleration(float x, float y, float z)
-                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
 
             inline Camera* getCamera() const
                 { return this->camera_; }
@@ -122,54 +109,87 @@ namespace orxonox
             inline const std::string& getCameraPositionTemkplate() const
                 { return this->cameraPositionTemplate_; }
 
+            using WorldEntity::setPosition;
+            using WorldEntity::setOrientation;
+            using MobileEntity::setVelocity;
+            using MobileEntity::setAngularVelocity;
+
+            void setPosition(const Vector3& position);
+            void setOrientation(const Quaternion& orientation);
+            void setVelocity(const Vector3& velocity);
+            void setAngularVelocity(const Vector3& velocity);
+
+            inline bool hasLocalController() const
+                { return this->bHasLocalController_; }
+            inline bool hasHumanController() const
+                { return this->bHasHumanController_; }
+
+            inline const GametypeInfo* getGametypeInfo() const
+                { return this->gtinfo_; }
+
+            inline bool isInMouseLook() const
+                { return this->bMouseLook_; }
+            inline float getMouseLookSpeed() const
+                { return this->mouseLookSpeed_; }
+
         protected:
-            virtual void startLocalControl();
-            virtual void stopLocalControl();
+            virtual void startLocalHumanControl();
+            virtual void stopLocalHumanControl();
 
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
-
-            inline bool isLocallyControlled() const
-                { return this->bControlled_; }
-
-            Vector3 acceleration_;
 
         private:
             void overwrite();
             void processOverwrite();
 
             void processServerPosition();
-            void processServerVelocity();
+            void processServerLinearVelocity();
             void processServerOrientation();
+            void processServerAngularVelocity();
 
             void processClientPosition();
-            void processClientVelocity();
+            void processClientLinearVelocity();
             void processClientOrientation();
+            void processClientAngularVelocity();
 
             void networkcallback_changedplayerID();
+            void networkcallback_changedgtinfoID();
+
+            // Bullet btMotionState related
+            void setWorldTransform(const btTransform& worldTrans);
 
             unsigned int server_overwrite_;
             unsigned int client_overwrite_;
 
-            Vector3 velocity_;
+            bool bHasLocalController_;
+            bool bHasHumanController_;
+            bool bDestroyWhenPlayerLeft_;
 
-            bool bControlled_;
             Vector3 server_position_;
             Vector3 client_position_;
-            Vector3 server_velocity_;
-            Vector3 client_velocity_;
+            Vector3 server_linear_velocity_;
+            Vector3 client_linear_velocity_;
             Quaternion server_orientation_;
             Quaternion client_orientation_;
+            Vector3 server_angular_velocity_;
+            Vector3 client_angular_velocity_;
 
             PlayerInfo* player_;
             unsigned int playerID_;
+
             std::string hudtemplate_;
             OverlayGroup* hud_;
-            Camera* camera_;
-            bool bDestroyWhenPlayerLeft_;
 
+            Camera* camera_;
+            bool bMouseLook_;
+            float mouseLookSpeed_;
+            Ogre::SceneNode* cameraPositionRootNode_;
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
+
+            const GametypeInfo* gtinfo_;
+            unsigned int gtinfoID_;
     };
 }
 

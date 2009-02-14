@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreBillboardSet.h>
+#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
 
@@ -51,6 +51,8 @@ namespace orxonox
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
+            inline Ogre::SceneManager* getSceneManager()
+                { return this->scenemanager_; }
 
             const std::string& getName() const;
 

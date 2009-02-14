@@ -29,12 +29,15 @@
 #include "OrxonoxStableHeaders.h"
 #include "Pawn.h"
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
+#include "PawnManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
-#include "objects/weaponSystem/WeaponSystem.h"
+#include "objects/worldentities/ParticleSpawner.h"
+#include "objects/worldentities/ExplosionChunk.h"
 
 namespace orxonox
 {
@@ -44,48 +47,86 @@ namespace orxonox
     {
         RegisterObject(Pawn);
 
-        this->bAlive_ = false;
+        PawnManager::touch();
+        this->bAlive_ = true;
+        this->fire_ = 0x0;
+        this->firehack_ = 0x0;
 
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
 
         this->lastHitOriginator_ = 0;
-        this->weaponSystem_ = 0;
 
-        /*
-        //WeaponSystem
-        weaponSystem_ = new WeaponSystem();
-        WeaponSet * weaponSet1 = new WeaponSet(1);
-        this->weaponSystem_->attachWeaponSet(weaponSet1);
-        this->weaponSystem_->getWeaponSetPointer(0)->getWeaponSlotPointer(0)->setAmmoType(true);
-        */
+        this->spawnparticleduration_ = 3.0f;
+
+        this->getPickUp().setPlayer(this);
+
+        if (Core::isMaster())
+        {
+            this->weaponSystem_ = new WeaponSystem(this);
+            this->weaponSystem_->setParentPawn(this);
+        }
+        else
+            this->weaponSystem_ = 0;
+
+        this->setRadarObjectColour(ColourValue::Red);
+        this->setRadarObjectShape(RadarViewable::Dot);
 
         this->registerVariables();
     }
 
     Pawn::~Pawn()
     {
+        if (this->isInitialized())
+        {
+            for (ObjectList<PawnListener>::iterator it = ObjectList<PawnListener>::begin(); it != ObjectList<PawnListener>::end(); ++it)
+                it->destroyedPawn(this);
+
+            if (this->weaponSystem_)
+                delete this->weaponSystem_;
+        }
     }
 
     void Pawn::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Pawn, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Pawn, "health", setHealth, getHealht, xmlelement, mode).defaultValues(100);
+        XMLPortParam(Pawn, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
+        XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
+        XMLPortParam(Pawn, "spawnparticleduration", setSpawnParticleDuration, getSpawnParticleDuration, xmlelement, mode).defaultValues(3.0f);
+        XMLPortParam(Pawn, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
+
+        XMLPortObject(Pawn, WeaponSlot, "weaponslots", setWeaponSlot, getWeaponSlot, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponSet, "weaponsets", setWeaponSet, getWeaponSet, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", setWeaponPack, getWeaponPack, xmlelement, mode);
     }
 
     void Pawn::registerVariables()
     {
-        REGISTERDATA(this->bAlive_, direction::toclient);
-        REGISTERDATA(this->health_, direction::toclient);
+        registerVariable(this->bAlive_,        variableDirection::toclient);
+        registerVariable(this->health_,        variableDirection::toclient);
+        registerVariable(this->initialHealth_, variableDirection::toclient);
+        registerVariable(this->fire_,          variableDirection::toserver);
     }
 
     void Pawn::tick(float dt)
     {
         SUPER(Pawn, tick, dt);
+
+        if (this->weaponSystem_)
+        {
+            if (this->fire_ & WeaponMode::fire)
+                this->weaponSystem_->fire(WeaponMode::fire);
+            if (this->fire_ & WeaponMode::altFire)
+                this->weaponSystem_->fire(WeaponMode::altFire);
+            if (this->fire_ & WeaponMode::altFire2)
+                this->weaponSystem_->fire(WeaponMode::altFire2);
+        }
+        this->fire_ = this->firehack_;
+        this->firehack_ = 0x0;
 
         if (this->health_ <= 0)
             this->death();
@@ -118,33 +159,143 @@ namespace orxonox
         this->death();
     }
 
-    void Pawn::spawn()
+    void Pawn::spawneffect()
     {
         // play spawn effect
+        if (this->spawnparticlesource_ != "")
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource(this->spawnparticlesource_);
+            effect->setLifetime(this->spawnparticleduration_);
+        }
     }
 
     void Pawn::death()
     {
+        // Set bAlive_ to false and wait for PawnManager to do the destruction
         this->bAlive_ = false;
+
+        this->setDestroyWhenPlayerLeft(false);
+
         if (this->getGametype())
             this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
+
         if (this->getPlayer())
             this->getPlayer()->stopControl(this);
 
-        delete this;
-
-        // play death effect
+        if (Core::isMaster())
+            this->deatheffect();
     }
 
-    void Pawn::fire()
+    void Pawn::deatheffect()
     {
-        if (this->weaponSystem_)
-            this->weaponSystem_->fire();
+        // play death effect
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("Orxonox/explosion2b");
+            effect->setLifetime(4.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("Orxonox/smoke6");
+            effect->setLifetime(4.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("Orxonox/sparks");
+            effect->setLifetime(4.0f);
+        }
+        for (unsigned int i = 0; i < this->numexplosionchunks_; ++i)
+        {
+            ExplosionChunk* chunk = new ExplosionChunk(this->getCreator());
+            chunk->setPosition(this->getPosition());
+
+        }
+    }
+
+    void Pawn::fire(WeaponMode::Enum fireMode)
+    {
+        this->firehack_ |= fireMode;
     }
 
     void Pawn::postSpawn()
     {
         this->setHealth(this->initialHealth_);
-        this->spawn();
+        if (Core::isMaster())
+            this->spawneffect();
+    }
+
+    void Pawn::dropItems()
+    {
+	pickUp.eraseAll();
+    }
+
+    void Pawn::setWeaponSlot(WeaponSlot * wSlot)
+    {
+        this->attach(wSlot);
+        if (this->weaponSystem_)
+            this->weaponSystem_->attachWeaponSlot(wSlot);
+    }
+
+    WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponSlotPointer(index);
+        else
+            return 0;
+    }
+
+    void Pawn::setWeaponPack(WeaponPack * wPack)
+    {
+        if (this->weaponSystem_)
+        {
+            wPack->setParentWeaponSystem(this->weaponSystem_);
+            wPack->setParentWeaponSystemToAllWeapons(this->weaponSystem_);
+            this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );
+            wPack->attachNeededMunitionToAllWeapons();
+        }
+    }
+
+    WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponPackPointer(firemode);
+        else
+            return 0;
+    }
+
+    void Pawn::setWeaponSet(WeaponSet * wSet)
+    {
+        if (this->weaponSystem_)
+            this->weaponSystem_->attachWeaponSet(wSet);
+    }
+
+    WeaponSet * Pawn::getWeaponSet(unsigned int index) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponSetPointer(index);
+        else
+            return 0;
+    }
+
+
+    ///////////////////
+    // Pawn Listener //
+    ///////////////////
+    PawnListener::PawnListener()
+    {
+        RegisterRootObject(PawnListener);
     }
 }

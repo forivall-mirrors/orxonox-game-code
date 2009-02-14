@@ -30,6 +30,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "HUDSpeedBar.h"
 #include "core/CoreIncludes.h"
+#include "objects/worldentities/pawns/SpaceShip.h"
+#include "objects/items/Engine.h"
 
 namespace orxonox
 {
@@ -40,6 +42,7 @@ namespace orxonox
     {
         RegisterObject(HUDSpeedBar);
 
+        this->owner_ = 0;
     }
 
     HUDSpeedBar::~HUDSpeedBar()
@@ -48,15 +51,19 @@ namespace orxonox
 
     void HUDSpeedBar::tick(float dt)
     {
-/*
-        SpaceShip* ship = SpaceShip::getLocalShip();
-        if (ship)
+        SUPER(HUDSpeedBar, tick, dt);
+
+        if (this->owner_ && this->owner_->getEngine())
         {
-            float v = ship->getVelocity().length();
-            float value = v / ship->getMaxSpeed();
-            if (value != this->getValue())
-                this->setValue(value);
+            float value = this->owner_->getVelocity().length() / (this->owner_->getEngine()->getMaxSpeedFront() * this->owner_->getEngine()->getSpeedFactor() * this->owner_->getEngine()->getBoostFactor());
+            this->setValue(value);
         }
-*/
+    }
+
+    void HUDSpeedBar::changedOwner()
+    {
+        SUPER(HUDSpeedBar, changedOwner);
+
+        this->owner_ = dynamic_cast<SpaceShip*>(this->getOwner());
     }
 }

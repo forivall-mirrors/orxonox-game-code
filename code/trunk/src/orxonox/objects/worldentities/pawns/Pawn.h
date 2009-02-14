@@ -30,12 +30,14 @@
 #define _Pawn_H__
 
 #include "OrxonoxPrereqs.h"
-
+#include "objects/pickup/ShipEquipment.h"
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/RadarViewable.h"
+#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Pawn : public ControllableEntity
+    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable
     {
         public:
             Pawn(BaseObject* creator);
@@ -53,7 +55,7 @@ namespace orxonox
                 { this->setHealth(this->health_ + health); }
             inline void removeHealth(float health)
                 { this->setHealth(this->health_ - health); }
-            inline float getHealht() const
+            inline float getHealth() const
                 { return this->health_; }
 
             inline void setMaxHealth(float maxhealth)
@@ -73,15 +75,47 @@ namespace orxonox
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void kill();
 
-            virtual void fire();
-
+            virtual void fire(WeaponMode::Enum fireMode);
             virtual void postSpawn();
 
-        protected:
-            virtual void spawn();
-            virtual void death();
+            void setWeaponSlot(WeaponSlot * wSlot);
+            WeaponSlot * getWeaponSlot(unsigned int index) const;
+            void setWeaponPack(WeaponPack * wPack);
+            WeaponPack * getWeaponPack(unsigned int firemode) const;
+            void setWeaponSet(WeaponSet * wSet);
+            WeaponSet * getWeaponSet(unsigned int index) const;
 
+            inline const WorldEntity* getWorldEntity() const
+                { return const_cast<Pawn*>(this); }
+
+            inline void setSpawnParticleSource(const std::string& source)
+                { this->spawnparticlesource_ = source; }
+            inline const std::string& getSpawnParticleSource() const
+                { return this->spawnparticlesource_; }
+
+            inline void setSpawnParticleDuration(float duration)
+                { this->spawnparticleduration_ = duration; }
+            inline float getSpawnParticleDuration() const
+                { return this->spawnparticleduration_; }
+
+            inline void setExplosionChunks(unsigned int chunks)
+                { this->numexplosionchunks_ = chunks; }
+            inline unsigned int getExplosionChunks() const
+                { return this->numexplosionchunks_; }
+
+            inline ShipEquipment& getPickUp()
+                {return this->pickUp;}
+
+            virtual void dropItems();
+
+        protected:
+            virtual void death();
+            virtual void deatheffect();
+            virtual void spawneffect();
+
+            ShipEquipment pickUp;
             bool bAlive_;
+
 
             float health_;
             float maxHealth_;
@@ -90,6 +124,24 @@ namespace orxonox
             Pawn* lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
+            unsigned int fire_;
+            unsigned int firehack_;
+
+            std::string spawnparticlesource_;
+            float spawnparticleduration_;
+            unsigned int numexplosionchunks_;
+    };
+
+    class _OrxonoxExport PawnListener : virtual public OrxonoxClass
+    {
+        friend class Pawn;
+
+        public:
+            PawnListener();
+            virtual ~PawnListener() {}
+
+        protected:
+            virtual void destroyedPawn(Pawn* pawn) = 0;
     };
 }
 

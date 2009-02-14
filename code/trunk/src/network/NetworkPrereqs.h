@@ -56,6 +56,21 @@
 #endif
 
 //-----------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------
+#include "util/Integers.h"
+
+//-----------------------------------------------------------------------
+// Library global contants
+//-----------------------------------------------------------------------
+namespace orxonox
+{
+  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
+  static const unsigned int CLIENTID_UNKNOWN    = (unsigned int)-2;
+  static const uint32_t     OBJECTID_UNKNOWN    = (uint32_t)(-1);
+}
+
+//-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
 namespace orxonox
@@ -69,16 +84,25 @@ namespace orxonox
   class GamestateClient;
   class GamestateManager;
   class GamestateHandler;
+  class NetworkCallbackBase;
+  template <class T> class NetworkCallback;
+  class NetworkCallbackManager;
   class PacketBuffer;
   class Server;
   class ServerFrameListener;
   class Synchronisable;
+  class SynchronisableVariableBase;
+  template <class T> class SynchronisableVariable;
+  template <class T> class SynchronisableVariableBidirectional;
   struct ClientList;
   struct PacketEnvelope;
   struct QueueItem;
   struct syncData;
-  struct synchronisableVariable;
-  namespace packet{
+  class obj;
+  class objInfo;
+
+  namespace packet
+  {
     class Gamestate;
     class Packet;
     class Acknowledgement;

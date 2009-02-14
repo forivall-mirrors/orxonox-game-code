@@ -27,9 +27,9 @@
  */
 
 /**
-    @file PlayerTrigger.h
+    @file
     @brief
-	Definition of the PlayerTrigger class.
+    Definition of the PlayerTrigger class.
 */
 
 #ifndef _PlayerTrigger_H__
@@ -39,8 +39,8 @@
 
 #include "Trigger.h"
 
-namespace orxonox {
-    
+namespace orxonox
+{
     /**
     @brief
         A PlayerTrigger is a trigger which is normally triggered by ControllableEntities and can as such return a pointer to the ControllableEntity which triggered it.
@@ -49,47 +49,47 @@ namespace orxonox {
     */
     class _OrxonoxExport PlayerTrigger : public Trigger
     {
-	public:
-	    PlayerTrigger(BaseObject* creator);
-	    virtual ~PlayerTrigger();
-	    
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PlayerTrigger object through XML.
+    public:
+        PlayerTrigger(BaseObject* creator);
+        virtual ~PlayerTrigger();
+        
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PlayerTrigger object through XML.
+        
+        /**
+        @brief Returns the player that triggered the PlayerTrigger.
+        @return Returns a pointer to the ControllableEntity that triggered the PlayerTrigger.
+        */
+        inline ControllableEntity* getTriggeringPlayer(void) const
+            { return this->player_; }
+        
+        /**
+        @brief Checks whether the PlayerTrigger normally returns a ControllableEntity.
+        @return Returns true if the PlayerTrigger normally returns a ControllableEntity.
+        */
+        inline bool isForPlayer(void) const
+           { return this->isForPlayer_; }
             
-            /**
-            @brief Returns the player that triggered the PlayerTrigger.
-            @return Returns a pointer to the ControllableEntity that triggered the PlayerTrigger.
-            */
-            inline ControllableEntity* getTriggeringPlayer(void) const
-                { return this->player_; }
-	    
-	    /**
-	    @brief Checks whether the PlayerTrigger normally returns a ControllableEntity.
-	    @return Returns true if the PlayerTrigger normally returns a ControllableEntity.
-	    */
-	    inline bool isForPlayer(void) const
-	       { return this->isForPlayer_; }
-            
-	protected:
-	    virtual bool isTriggered(TriggerMode mode) = 0;
-	    
-	    /**
-	    @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
-	    @param player A pointer to the ControllableEntity that triggered the PlayerTrigger.
-	    */
-	    inline void setTriggeringPlayer(ControllableEntity* player)
-	       { this->player_ = player; }
+    protected:
+        virtual bool isTriggered(TriggerMode mode) = 0;
+        
+        /**
+        @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
+        @param player A pointer to the ControllableEntity that triggered the PlayerTrigger.
+        */
+        inline void setTriggeringPlayer(ControllableEntity* player)
+           { this->player_ = player; }
 
             /**
             @brief Set whether the PlayerTrigger normally is triggered by ControllableEntities.
             @param isForPlayer Should be true when the PlayerTrigger schould be set to normally be triggered by ControllableEntities, false if not.
             */
-	    inline void setForPlayer(bool isForPlayer)
-	       { this->isForPlayer_ = isForPlayer; }
-	    
-	private:
-	    ControllableEntity* player_; //!< The player that triggered the PlayerTrigger.
-	    bool isForPlayer_; //!< Is true when the PlayerTrigger schould be set to normally be triggered by ControllableEntities.
-	
+        inline void setForPlayer(bool isForPlayer)
+           { this->isForPlayer_ = isForPlayer; }
+        
+    private:
+        ControllableEntity* player_; //!< The player that triggered the PlayerTrigger.
+        bool isForPlayer_; //!< Is true when the PlayerTrigger schould be set to normally be triggered by ControllableEntities.
+    
     };
 
 }

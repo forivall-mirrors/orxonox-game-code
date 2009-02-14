@@ -72,6 +72,29 @@ namespace orxonox
         };
     }
 
+    //put here all existing munitionTypes
+    namespace MunitionType
+    {
+
+
+
+        enum Enum
+        { laserGunMunition };
+    }
+
+    //put here all weapon fire modes.
+    //they have to be added to Pawn and HumanController, too.
+    namespace WeaponMode
+    {
+        enum Enum
+        {
+            fire     = 0x1,
+            altFire  = 0x2,
+            altFire2 = 0x4
+        };
+    }
+
+
     class GraphicsEngine;
     class Settings;
 
@@ -81,6 +104,7 @@ namespace orxonox
 
     class CameraManager;
     class LevelManager;
+    class PawnManager;
     class PlayerManager;
 
     // objects
@@ -101,18 +125,23 @@ namespace orxonox
     class QuestEffectBeacon;
     class QuestHint;
     class QuestItem;
+    class QuestListener;
     class QuestManager;
     class Rewardable;
 
     class WorldEntity;
-    class PositionableEntity;
-    class MovableEntity;
+    class StaticEntity;
+    class MobileEntity;
     class ControllableEntity;
+    class MovableEntity;
     class Sublevel;
 
     class Model;
     class Billboard;
     class BlinkingBillboard;
+    class ExplosionChunk;
+    class FadingBillboard;
+    class GlobalShader;
     class Light;
     class Backlight;
     class ParticleEmitter;
@@ -126,6 +155,11 @@ namespace orxonox
     class Pawn;
     class SpaceShip;
 
+    class Item;
+    class Engine;
+    class MultiStateEngine;
+    class RotatingEngine;
+
     class Trigger;
     class DistanceTrigger;
     class EventTrigger;
@@ -134,8 +168,11 @@ namespace orxonox
     class WeaponSystem;
     class WeaponSet;
     class WeaponSlot;
+    class WeaponPack;
     class Weapon;
     class Munition;
+    class LaserGun;
+    class LaserGunMunition;
 
     class EventListener;
     class EventDispatcher;
@@ -143,20 +180,36 @@ namespace orxonox
 
     class Controller;
     class HumanController;
+    class ArtificialController;
+    class AIController;
+    class ScriptController;
 
     class Info;
     class PlayerInfo;
     class HumanPlayer;
+    class Bot;
+    class GametypeInfo;
 
     class Gametype;
 
     class Scores;
+    class CreateLines;
+    class Scoreboard;
+    class Stats;
+
+    // collision
+    class CollisionShape;
+    class SphereCollisionShape;
+    class CompoundCollisionShape;
+    class PlaneCollisionShape;
+    class WorldEntityCollisionShape;
 
     // tools
     class BillboardSet;
     class Light;
     class Mesh;
     class ParticleInterface;
+    class Shader;
     template <class T>
     class Timer;
 
@@ -168,10 +221,17 @@ namespace orxonox
     class HUDNavigation;
     class HUDRadar;
     class HUDSpeedBar;
+    class HUDHealthBar;
     class InGameConsole;
+    class Notification;
+    class NotificationManager;
+    class NotificationQueue;
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+    class GametypeStatus;
+    class CreateLines;
+    class Scoreboard;
 
     //gui
     class GUIManager;
@@ -205,6 +265,28 @@ namespace CEGUI
     class OgreCEGUITexture;
 }
 
+// Bullet Physics Engine
+
+class btTransform;
+class btVector3;
+
+class btRigidBody;
+class btCollisionObject;
+class btGhostObject;
+class btManifoldPoint;
+
+class btCollisionShape;
+class btSphereShape;
+class btCompoundShape;
+class btStaticPlaneShape;
+
+class btDiscreteDynamicsWorld;
+class bt32BitAxisSweep3;
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btSequentialImpulseConstraintSolver;
+
+// lua
 struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

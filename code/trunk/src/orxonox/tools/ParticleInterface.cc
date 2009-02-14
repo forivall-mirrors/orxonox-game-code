@@ -51,25 +51,24 @@ namespace orxonox
 
     ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel)
     {
-        RegisterRootObject(ParticleInterface);
+        RegisterObject(ParticleInterface);
 
         assert(scenemanager);
 
         this->scenemanager_ = scenemanager;
-        this->sceneNode_ = 0;
         this->particleSystem_ = 0;
 
         this->bEnabled_ = true;
         this->bVisible_ = true;
         this->bAllowedByLOD_ = true;
+        this->speedFactor_ = 1.0f;
 
         if (Core::showsGraphics())
         {
             try
             {
                 this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
-                this->particleSystem_->setSpeedFactor(1.0f);
-//                this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor());
+                this->setSpeedFactor(1.0f);
             }
             catch (...)
             {
@@ -86,30 +85,7 @@ namespace orxonox
         if (this->particleSystem_)
         {
             this->particleSystem_->removeAllEmitters();
-            this->detachFromSceneNode();
             this->scenemanager_->destroyParticleSystem(this->particleSystem_);
-        }
-    }
-
-    void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)
-    {
-        if (this->sceneNode_)
-            this->detachFromSceneNode();
-
-        if (this->particleSystem_)
-        {
-            this->sceneNode_ = sceneNode;
-            this->sceneNode_->attachObject(this->particleSystem_);
-        }
-    }
-
-    void ParticleInterface::detachFromSceneNode()
-    {
-        if (this->sceneNode_)
-        {
-            if (this->particleSystem_)
-                this->sceneNode_->detachObject(this->particleSystem_);
-            this->sceneNode_ = 0;
         }
     }
 
@@ -223,21 +199,14 @@ namespace orxonox
 
     void ParticleInterface::setSpeedFactor(float factor)
     {
+        this->speedFactor_ = factor;
+
         if (this->particleSystem_)
-        {
-//            this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor() * factor);
-            this->particleSystem_->setSpeedFactor(1.0f * factor);
-        }
+            this->particleSystem_->setSpeedFactor(factor * this->getTimeFactor());
     }
-    float ParticleInterface::getSpeedFactor() const
+    void ParticleInterface::changedTimeFactor(float factor_new, float factor_old)
     {
-        if (this->particleSystem_)
-        {
-//            return (this->particleSystem_->getSpeedFactor() / Orxonox::getInstance().getTimeFactor());
-            return (this->particleSystem_->getSpeedFactor() / 1.0f);
-        }
-        else
-            return 1.0f;
+        this->setSpeedFactor(this->speedFactor_);
     }
 
     bool ParticleInterface::getKeepParticlesInLocalSpace() const

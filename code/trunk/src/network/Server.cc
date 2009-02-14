@@ -62,8 +62,6 @@
 namespace orxonox
 {
   const unsigned int MAX_FAILURES = 20;
-  const unsigned int NETWORK_FREQUENCY = 25;
-  const float NETWORK_PERIOD = (float)1/NETWORK_FREQUENCY;
 
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
@@ -217,6 +215,9 @@ namespace orxonox
   * takes a new snapshot of the gamestate and sends it to the clients
   */
   void Server::updateGamestate() {
+//     if( ClientInformation::getBegin()==NULL )
+      //no client connected
+//       return;
     gamestates_->update();
     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
@@ -275,6 +276,9 @@ namespace orxonox
 
   bool Server::sendObjectDeletes(){
     ClientInformation *temp = ClientInformation::getBegin();
+    if( temp == NULL )
+      //no client connected
+      return true;
     packet::DeleteObjects *del = new packet::DeleteObjects();
     if(!del->fetchIDs())
       return true;  //everything ok (no deletes this tick)

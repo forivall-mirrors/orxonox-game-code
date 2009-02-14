@@ -86,11 +86,17 @@ namespace orxonox
     // ###############################
     // ###        Language         ###
     // ###############################
+
+    Language* Language::singletonRef_s = 0;
+
     /**
         @brief Constructor: Reads the default language file and sets some values.
     */
     Language::Language()
     {
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
+
         this->defaultLanguage_ = "default";
         this->defaultLocalisation_ = "ERROR: LANGUAGE ENTRY DOESN'T EXIST!";
 
@@ -105,16 +111,9 @@ namespace orxonox
     {
         for (std::map<std::string, LanguageEntry*>::iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
             delete (it->second);
-    }
 
-    /**
-        @brief Returns a reference to the only existing instance of the Language class and calls the setConfigValues() function.
-        @return The reference to the only existing instance
-    */
-    Language& Language::getLanguage()
-    {
-        static Language instance = Language();
-        return instance;
+        assert(singletonRef_s);
+        singletonRef_s = 0;
     }
 
     /**
@@ -232,7 +231,7 @@ namespace orxonox
             // Check if the line is empty
             if ((lineString != "") && (lineString.size() > 0))
             {
-                unsigned int pos = lineString.find('=');
+                size_t pos = lineString.find('=');
 
                 // Check if the length is at least 3 and if there's an entry before and behind the =
                 if (pos > 0 && pos < (lineString.size() - 1) && lineString.size() >= 3)
@@ -278,7 +277,7 @@ namespace orxonox
             // Check if the line is empty
             if ((lineString != "") && (lineString.size() > 0))
             {
-                unsigned int pos = lineString.find('=');
+                size_t pos = lineString.find('=');
 
                 // Check if the length is at least 3 and if there's an entry before and behind the =
                 if (pos > 0 && pos < (lineString.size() - 1) && lineString.size() >= 3)

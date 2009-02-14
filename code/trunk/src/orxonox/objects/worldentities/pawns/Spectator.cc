@@ -29,7 +29,10 @@
 #include "OrxonoxStableHeaders.h"
 #include "Spectator.h"
 
+#include <OgreBillboardSet.h>
+
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Core.h"
 #include "objects/worldentities/Model.h"
 #include "objects/Scene.h"
@@ -48,25 +51,30 @@ namespace orxonox
     {
         RegisterObject(Spectator);
 
-        this->speed_ = 100;
-        this->rotationSpeed_ = 3;
+        this->speed_ = 200;
 
         this->yaw_ = 0;
         this->pitch_ = 0;
         this->roll_ = 0;
+        this->localVelocity_ = Vector3::ZERO;
         this->setHudTemplate("spectatorhud");
-        this->hudmode_ = 0;
+        this->greetingFlare_ = 0;
 
         this->setDestroyWhenPlayerLeft(true);
 
-        this->greetingFlare_ = new BillboardSet();
-        this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
-        if (this->greetingFlare_->getBillboardSet())
-            this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
-        this->greetingFlare_->setVisible(false);
+        if (Core::showsGraphics())
+        {
+            this->greetingFlare_ = new BillboardSet();
+            this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
+            if (this->greetingFlare_->getBillboardSet())
+                this->attachOgreObject(this->greetingFlare_->getBillboardSet());
+            this->greetingFlare_->setVisible(false);
+        }
+
         this->bGreetingFlareVisible_ = false;
         this->bGreeting_ = false;
 
+        this->setConfigValues();
         this->registerVariables();
     }
 
@@ -77,17 +85,22 @@ namespace orxonox
             if (this->greetingFlare_)
             {
                 if (this->greetingFlare_->getBillboardSet())
-                    this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
+                    this->detachOgreObject(this->greetingFlare_->getBillboardSet());
+
                 delete this->greetingFlare_;
             }
         }
     }
 
+    void Spectator::setConfigValues()
+    {
+        SetConfigValue(speed_, 200.0f);
+    }
+
     void Spectator::registerVariables()
     {
-        REGISTERDATA(this->bGreetingFlareVisible_, direction::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
-        REGISTERDATA(this->bGreeting_,             direction::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
-        REGISTERDATA(this->hudmode_,               direction::toclient);
+        registerVariable(this->bGreetingFlareVisible_, variableDirection::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
+        registerVariable(this->bGreeting_,             variableDirection::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
     }
 
     void Spectator::changedGreeting()
@@ -98,79 +111,91 @@ namespace orxonox
 
     void Spectator::changedFlareVisibility()
     {
-        this->greetingFlare_->setVisible(this->bGreetingFlareVisible_);
+	if ( this->greetingFlare_ )
+            this->greetingFlare_->setVisible(this->bGreetingFlareVisible_);
     }
 
     void Spectator::tick(float dt)
     {
-        this->updateHUD();
-
-        if (this->isLocallyControlled())
+        if (this->hasLocalController())
         {
-            Vector3 velocity = this->getVelocity();
-            velocity.normalise();
-            this->setVelocity(velocity * this->speed_);
+            float localSpeedSquared = this->localVelocity_.squaredLength();
+            float localSpeed;
+            if (localSpeedSquared > 1.0)
+                localSpeed = this->speed_ / sqrtf(localSpeedSquared);
+            else
+                localSpeed = this->speed_;
 
-            this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
-            this->pitch(Radian(this->pitch_ * this->rotationSpeed_));
-            this->roll(Radian(this->roll_ * this->rotationSpeed_));
+            this->localVelocity_.x *= localSpeed;
+            this->localVelocity_.y *= localSpeed;
+            this->localVelocity_.z *= localSpeed;
+            this->setVelocity(this->getOrientation() * this->localVelocity_);
+            this->localVelocity_.x = 0;
+            this->localVelocity_.y = 0;
+            this->localVelocity_.z = 0;
+
+            if (!this->isInMouseLook())
+            {
+                this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()));
+                this->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+                this->roll(Radian(this->roll_ * this->getMouseLookSpeed()));
+            }
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
         }
 
         SUPER(Spectator, tick, dt);
-
-        if (this->isLocallyControlled())
-        {
-            this->setVelocity(Vector3::ZERO);
-        }
     }
 
     void Spectator::setPlayer(PlayerInfo* player)
     {
         ControllableEntity::setPlayer(player);
 
-//        this->setObjectMode(direction::toclient);
+//        this->setObjectMode(objectDirection::toclient);
     }
 
-    void Spectator::startLocalControl()
+    void Spectator::startLocalHumanControl()
     {
-        ControllableEntity::startLocalControl();
-//        if (this->isLocallyControlled())
-//            this->testmesh_->setVisible(false);
+        ControllableEntity::startLocalHumanControl();
     }
 
     void Spectator::moveFrontBack(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::FRONT);
+        this->localVelocity_.z -= value.x;
     }
 
     void Spectator::moveRightLeft(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::RIGHT);
+        this->localVelocity_.x += value.x;
     }
 
     void Spectator::moveUpDown(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::UP);
+        this->localVelocity_.y += value.x;
     }
 
     void Spectator::rotateYaw(const Vector2& value)
     {
-        this->yaw_ = value.y;
+        this->yaw_ -= value.y;
+
+        ControllableEntity::rotateYaw(value);
     }
 
     void Spectator::rotatePitch(const Vector2& value)
     {
-        this->pitch_ = value.y;
+        this->pitch_ += value.y;
+
+        ControllableEntity::rotatePitch(value);
     }
 
     void Spectator::rotateRoll(const Vector2& value)
     {
-        this->roll_ = value.y;
+        this->roll_ += value.y;
+
+        ControllableEntity::rotateRoll(value);
     }
 
-    void Spectator::fire()
+    void Spectator::fire(WeaponMode::Enum fireMode)
     {
         if (this->getPlayer())
             this->getPlayer()->setReadyToSpawn(true);
@@ -185,73 +210,5 @@ namespace orxonox
             this->bGreetingFlareVisible_ = this->bGreeting_;
             this->changedFlareVisibility();
         }
-    }
-
-    void Spectator::updateHUD()
-    {
-        // <hack>
-        if (Core::isMaster())
-        {
-            if (this->getPlayer() && this->getGametype())
-            {
-                if (!this->getGametype()->hasStarted() && !this->getGametype()->isStartCountdownRunning())
-                {
-                    if (!this->getPlayer()->isReadyToSpawn())
-                        this->hudmode_ = 0;
-                    else
-                        this->hudmode_ = 1;
-                }
-                else if (!this->getGametype()->hasEnded())
-                {
-                    if (this->getGametype()->isStartCountdownRunning())
-                        this->hudmode_ = 2 + 10*(int)ceil(this->getGametype()->getStartCountdown());
-                    else
-                        this->hudmode_ = 3;
-                }
-                else
-                    this->hudmode_ = 4;
-            }
-            else
-                return;
-        }
-
-        if (this->getHUD())
-        {
-            std::string text;
-            int hudmode = this->hudmode_ % 10;
-
-            switch (hudmode)
-            {
-                case 0:
-                    text = "Press [Fire] to start the match";
-                    break;
-                case 1:
-                    text = "Waiting for other players";
-                    break;
-                case 2:
-                    text = convertToString((this->hudmode_ - 2) / 10);
-                    break;
-                case 3:
-                    text = "Press [Fire] to respawn";
-                    break;
-                case 4:
-                    text = "Game has ended";
-                    break;
-                default:;
-            }
-
-            std::map<std::string, OrxonoxOverlay*>::const_iterator it = this->getHUD()->getOverlays().begin();
-            for (; it != this->getHUD()->getOverlays().end(); ++it)
-            {
-                if (it->second->isA(Class(OverlayText)) && it->second->getName() == "state")
-                {
-                    OverlayText* overlay = dynamic_cast<OverlayText*>(it->second);
-                    if (overlay)
-                        overlay->setCaption(text);
-                    break;
-                }
-            }
-        }
-        // </hack>
     }
 }

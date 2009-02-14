@@ -27,9 +27,8 @@
  */
  
 /**
-    @file Quest.cc
-    @brief
-    Implementation of the Quest class.
+    @file
+    @brief Implementation of the Quest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -42,9 +41,10 @@
 #include "QuestDescription.h"
 #include "QuestHint.h"
 #include "QuestEffect.h"
+#include "QuestListener.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers and initializes object.
@@ -362,6 +362,44 @@ namespace orxonox {
     {
         return this->getStatus(player) == questStatus::completed;
     }
+    
+    /**
+    @brief
+        Fails the Quest for an input player.
+    @param player
+        The player.
+    @return
+        Returns true if the Quest could be failed, false if not.
+    */
+    bool Quest::fail(PlayerInfo* player)
+    {
+        QuestListener::advertiseStatusChange(this->listeners_, "fail"); //!< Tells the QuestListeners, that the status has changed to failed.
+        this->setStatus(player, questStatus::failed);
+        
+        COUT(4) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." <<std::endl;
+        
+        this->getDescription()->sendFailQuestNotification();
+        return true;
+    }
+    
+    /**
+    @brief
+        Completes the Quest for an input player.
+    @param player
+        The player.
+    @return
+        Returns true if the Quest could be completed, false if not.
+    */
+    bool Quest::complete(PlayerInfo* player)
+    {
+        QuestListener::advertiseStatusChange(this->listeners_, "complete"); //!< Tells the QuestListeners, that the status has changed to completed.
+        this->setStatus(player, questStatus::completed);
+        
+        COUT(4) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." <<std::endl;
+        
+        this->getDescription()->sendCompleteQuestNotification();
+        return true;
+    }
 
     /**
     @brief
@@ -373,14 +411,40 @@ namespace orxonox {
     */
     bool Quest::start(PlayerInfo* player)
     {
-        if(this->isStartable(player)) //!< Checks whether the quest can be started.
+        if(!this->isStartable(player)) //!< Checks whether the quest can be started.
         {
-            this->setStatus(player, questStatus::active);
-            return true;
+            COUT(4) << "A non-startable quest was trying to be started." << std::endl;
+            return false;
         }
         
-        COUT(4) << "A non-startable quest was trying to be started." << std::endl;
-        return false;
+        COUT(4) << "Quest {" << this->getId() << "} is started for player: " << player << " ." <<std::endl;
+        
+        QuestListener::advertiseStatusChange(this->listeners_, "start"); //!< Tells the QuestListeners, that the status has changed to active.
+        
+        this->setStatus(player, questStatus::active);
+        
+        this->getDescription()->sendAddQuestNotification();
+        return true;
+    }
+    
+    /**
+    @brief
+        Adds a QuestListener to the list of QuestListeners listening to this Quest.
+    @param listener
+        The QuestListener to be added.
+    @return
+        Returns true if successful, false if not.
+    */
+    bool Quest::addListener(QuestListener* listener)
+    {
+        if(listener == NULL)
+        {
+            COUT(2) << "A NULL-QuestListener was trying to be added to a Quests listeners." << std::endl;
+            return false;
+        }
+        
+        this->listeners_.push_back(listener);
+        return true;
     }
 
 }

@@ -36,6 +36,13 @@
 #ifndef _BaseObject_H__
 #define _BaseObject_H__
 
+#define SetMainState(classname, statename, setfunction, getfunction) \
+    if (this->getMainStateName() == statename) \
+    { \
+        this->functorSetMainState_ = createFunctor(&classname::setfunction)->setObject(this); \
+        this->functorGetMainState_ = createFunctor(&classname::getfunction)->setObject(this); \
+    }
+
 #include <map>
 
 #include "CorePrereqs.h"
@@ -54,6 +61,8 @@ namespace orxonox
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
+        template <class T> friend class XMLPortClassParamContainer;
+
         public:
             BaseObject(BaseObject* creator);
             virtual ~BaseObject();
@@ -99,6 +108,13 @@ namespace orxonox
             /** @brief This function gets called if the visibility of the object changes. */
             virtual void changedVisibility() {}
 
+            void setMainState(bool state);
+            bool getMainState() const;
+
+            void setMainStateName(const std::string& name);
+            inline const std::string& getMainStateName() const { return this->mainStateName_; }
+            virtual void changedMainState();
+
             /** @brief Sets a pointer to the xml file that loaded this object. @param file The pointer to the XMLFile */
             inline void setFile(const XMLFile* file) { this->file_ = file; }
             /** @brief Returns a pointer to the XMLFile that loaded this object. @return The XMLFile */
@@ -120,10 +136,18 @@ namespace orxonox
             inline void setScene(Scene* scene) { this->scene_ = scene; }
             inline Scene* getScene() const { return this->scene_; }
 
-            inline void setGametype(Gametype* gametype) { this->oldGametype_ = this->gametype_; this->gametype_ = gametype; this->changedGametype(); }
+            inline void setGametype(Gametype* gametype)
+            {
+                if (gametype != this->gametype_)
+                {
+                    this->oldGametype_ = this->gametype_;
+                    this->gametype_ = gametype;
+                    this->changedGametype();
+                }
+            }
             inline Gametype* getGametype() const { return this->gametype_; }
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
-            virtual inline void changedGametype() {}
+            virtual void changedGametype() {}
 
             void fireEvent();
             void fireEvent(bool activate);
@@ -150,25 +174,30 @@ namespace orxonox
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
 
         protected:
-            std::string name_;                          //!< The name of the object
-            std::string oldName_;                       //!< The old name of the object
-            mbool bActive_;                             //!< True = the object is active
-            mbool bVisible_;                            //!< True = the object is visible
+            std::string name_;                                 //!< The name of the object
+            std::string oldName_;                              //!< The old name of the object
+            mbool       bActive_;                              //!< True = the object is active
+            mbool       bVisible_;                             //!< True = the object is visible
+            std::string mainStateName_;
+            Functor*    functorSetMainState_;
+            Functor*    functorGetMainState_;
 
         private:
             void setXMLName(const std::string& name);
             Template* getTemplate(unsigned int index) const;
 
-            bool                  bInitialized_;         //!< True if the object was initialized (passed the object registration)
-            const XMLFile*        file_;                 //!< The XMLFile that loaded this object
-            std::string           loaderIndentation_;    //!< Indentation of the debug output in the Loader
-            Namespace*            namespace_;
-            BaseObject*           creator_;
-            Scene*                scene_;
-            Gametype*             gametype_;
-            Gametype*             oldGametype_;
-            std::set<Template*>   templates_;
-            std::map<BaseObject*, std::string> eventListeners_;
+            bool                   bInitialized_;              //!< True if the object was initialized (passed the object registration)
+            const XMLFile*         file_;                      //!< The XMLFile that loaded this object
+            Element*               lastLoadedXMLElement_;      //!< Non 0 if the TinyXML attributes have already been copied to our own lowercase map
+            std::map<std::string, std::string> xmlAttributes_; //!< Lowercase XML attributes
+            std::string            loaderIndentation_;         //!< Indentation of the debug output in the Loader
+            Namespace*             namespace_;
+            BaseObject*            creator_;
+            Scene*                 scene_;
+            Gametype*              gametype_;
+            Gametype*              oldGametype_;
+            std::set<Template*>    templates_;
+            std::map<BaseObject*,  std::string> eventListeners_;
             std::list<BaseObject*> events_;
             std::map<std::string, EventContainer*> eventContainers_;
     };
@@ -177,6 +206,9 @@ namespace orxonox
     SUPER_FUNCTION(2, BaseObject, changedActivity, false);
     SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
     SUPER_FUNCTION(4, BaseObject, processEvent, false);
+    SUPER_FUNCTION(6, BaseObject, changedMainState, false);
+    SUPER_FUNCTION(9, BaseObject, changedName, false);
+    SUPER_FUNCTION(10, BaseObject, changedGametype, false);
 }
 
 #endif /* _BaseObject_H__ */

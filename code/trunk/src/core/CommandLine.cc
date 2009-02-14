@@ -82,11 +82,7 @@ namespace orxonox
     */
     CommandLine::~CommandLine()
     {
-        for (std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
-            it != cmdLineArgs_.end(); ++it)
-        {
-            delete it->second;
-        }
+        CommandLine::destroyAllArguments();
     }
 
     /**
@@ -97,6 +93,19 @@ namespace orxonox
     {
         static CommandLine instance;
         return instance;
+    }
+
+    /**
+    @brief
+        Destroys all command line arguments. This should be called at the end
+        of main. Do not use before that.
+    */
+    void CommandLine::destroyAllArguments()
+    {
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.begin();
+            it != _getInstance().cmdLineArgs_.end(); ++it)
+            delete it->second;
+        _getInstance().cmdLineArgs_.clear();
     }
 
     /**

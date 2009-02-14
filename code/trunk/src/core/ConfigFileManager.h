@@ -37,30 +37,20 @@
 #include <map>
 
 #include "util/Math.h"
+#include "util/OrxEnum.h"
 
 namespace orxonox
 {
-    // Use unsigned int as config file type to have an arbitrary number of files
-    class ConfigFileType
+    // Use int as config file type to have an arbitrary number of files
+    struct ConfigFileType : OrxEnum<ConfigFileType>
     {
-    public:
-        ConfigFileType() { }
-        ConfigFileType(unsigned int type)              { type_ = type; }
-        ConfigFileType(const ConfigFileType& instance) { type_ = instance.type_; }
+        OrxEnumConstructors(ConfigFileType);
 
-        operator unsigned int() { return type_; }
-        ConfigFileType& operator =(unsigned int type) { type_ = type; return *this; }
-        bool operator <(const ConfigFileType& right) const   { return (type_ < right.type_); }
+        static const int NoType              = 0;
+        static const int Settings            = 1;
+        static const int JoyStickCalibration = 2;
 
-        /* *** Put the different config file types here *** */
-        static const unsigned int NoType              = 0;
-        static const unsigned int Settings            = 1;
-        static const unsigned int JoyStickCalibration = 2;
-
-        static const unsigned int numberOfReservedTypes = 1024;
-
-    private:
-        unsigned int type_;
+        static const int numberOfReservedTypes = 1024;
     };
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value);

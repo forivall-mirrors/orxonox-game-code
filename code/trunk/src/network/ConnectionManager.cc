@@ -51,7 +51,7 @@
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
 #include "packet/ClassID.h"
 
 namespace std
@@ -205,7 +205,7 @@ namespace orxonox
       switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          COUT(3) << "adding event_type_connect to queue" << std::endl;
+          //COUT(3) << "adding event_type_connect to queue" << std::endl;
         case ENET_EVENT_TYPE_DISCONNECT:
           //addClient(event);
           //this is a workaround to ensure thread safety
@@ -213,7 +213,7 @@ namespace orxonox
           //break;
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
-          COUT(5) << "Con.Man: receive event has occured" << std::endl;
+          //COUT(5) << "Con.Man: receive event has occured" << std::endl;
           // only add, if client has connected yet and not been disconnected
           //if(head_->findClient(&event->peer->address))
             processData(event);

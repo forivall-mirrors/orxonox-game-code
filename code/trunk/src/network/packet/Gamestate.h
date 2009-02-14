@@ -30,11 +30,13 @@
 #ifndef NETWORK_PACKETGAMESTATE_H
 #define NETWORK_PACKETGAMESTATE_H
 
-#include "../NetworkPrereqs.h"
+#include "network/NetworkPrereqs.h"
 
 #include "Packet.h"
-#include "network/Synchronisable.h"
+#include "network/TrafficControl.h"
+#include "core/CoreIncludes.h"
 #include <map>
+#include <list>
 #ifndef NDEBUG
 #include "util/CRC32.h"
 #endif
@@ -43,18 +45,57 @@ namespace orxonox {
 
 namespace packet {
 
-struct _NetworkExport GamestateHeader{
-  ENUM::Type packetType;
-  int32_t id; // id of the gamestate
-  uint32_t compsize;
-  uint32_t datasize;
-  int32_t base_id; // id of the base-gamestate diffed from
-  bool diffed:1; // wheter diffed or not
-  bool complete:1; // wheter it is a complete gamestate or only partial
-  bool compressed:1;
-#ifndef NDEBUG
-  uint32_t crc32;
-#endif
+class _NetworkExport GamestateHeader{
+  public:
+    GamestateHeader(uint8_t *data){ assert(data); data_ = data; *(uint32_t*)data_ = ENUM::Gamestate; }
+    GamestateHeader(uint8_t *data, GamestateHeader* h)
+    { assert(data); data_=data; memcpy(data_, h->data_, getSize()); }
+    static inline uint32_t getSize()
+    { return 21; }
+
+    inline int32_t getID() const
+    { assert(data_); return *(int32_t*)(data_+4); }
+    inline void setID(int32_t id)
+    { assert(data_); *(int32_t*)(data_+4) = id; }
+
+    inline int32_t getBaseID() const
+    { assert(data_); return *(int32_t*)(data_+8); }
+    inline void setBaseID(int32_t id)
+    { assert(data_); *(int32_t*)(data_+8) = id; }
+
+    inline uint32_t getDataSize() const
+    { assert(data_); return *(uint32_t*)(data_+12); }
+    inline void setDataSize(uint32_t size)
+    { assert(data_); *(uint32_t*)(data_+12) = size; }
+
+    inline uint32_t getCompSize() const
+    { assert(data_); return *(uint32_t*)(data_+16); }
+    inline void setCompSize(uint32_t size)
+    { assert(data_); *(uint32_t*)(data_+16) = size; }
+
+    inline bool isDiffed() const
+    { assert(data_); return *(int8_t*)(data_+20) & 0x1; }
+    inline void setDiffed(bool b)
+    { assert(data_); *(int8_t*)(data_+20) = (b<<0) | (*(int8_t*)(data_+20) & 0x6 ); }
+
+    inline bool isComplete() const
+    { assert(data_); return *(int8_t*)(data_+20) & 0x2; }
+    inline void setComplete(bool b)
+    { assert(data_); *(int8_t*)(data_+20) = (b<<1) | (*(int8_t*)(data_+20) & 0x5 ); }
+
+    inline bool isCompressed() const
+    { assert(data_); return *(int8_t*)(data_+20) & 0x4; }
+    inline void setCompressed(bool b)
+    { assert(data_); *(int8_t*)(data_+20) = (b<<2) | (*(int8_t*)(data_+20) & 0x3 ); }
+
+    inline void operator=(GamestateHeader& h)
+    { assert(data_); assert(h.data_); memcpy( data_, h.data_, getSize()); }
+  private:
+    uint8_t *data_;
+//#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
+//#define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
+//#define HEADER GAMESTATE_HEADER(data_)
+
 };
 
 /**
@@ -65,33 +106,32 @@ class _NetworkExport Gamestate: public Packet{
     Gamestate();
     Gamestate(uint8_t *data, unsigned int clientID);
     Gamestate(uint8_t *data);
+    Gamestate(const Gamestate& g);
 
     ~Gamestate();
 
     bool collectData(int id, uint8_t mode=0x0);
     bool spreadData( uint8_t mode=0x0);
-    int getID();
-    bool isDiffed();
-    bool isCompressed();
-    int getBaseID();
+    inline int32_t getID() const { return header_->getID(); }
+    inline bool isDiffed() const { return header_->isDiffed(); }
+    inline bool isCompressed() const { return header_->isCompressed(); }
+    inline int32_t getBaseID() const { return header_->getBaseID(); }
     Gamestate *diff(Gamestate *base);
-    Gamestate* intelligentDiff(Gamestate *base, unsigned int clientID);
     Gamestate *undiff(Gamestate *base);
-    Gamestate* intelligentUnDiff(Gamestate *base);
-    Gamestate* doSelection(unsigned int clientID);
+    Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
 
     // Packet functions
   private:
-    virtual unsigned int getSize() const;
-    virtual bool process();
+    virtual uint32_t getSize() const;
+    virtual inline bool process();
 
     bool operator ==(packet::Gamestate gs);
   private:
-    unsigned int calcGamestateSize(unsigned int id, uint8_t mode=0x0);
-    void removeObject(ObjectListIterator<Synchronisable> &it);
-    std::map<unsigned int, Synchronisable*> dataMap_;
+    uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
+    std::list<obj> dataMap_;
+    GamestateHeader* header_;
 };
 
 }

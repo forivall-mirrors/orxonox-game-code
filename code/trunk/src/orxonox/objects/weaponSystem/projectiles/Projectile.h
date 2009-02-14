@@ -32,37 +32,34 @@
 #include "OrxonoxPrereqs.h"
 
 #include "objects/worldentities/MovableEntity.h"
+#include "objects/worldentities/pawns/Pawn.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public MovableEntity
+    class _OrxonoxExport Projectile : public MovableEntity, public PawnListener
     {
         public:
+            Projectile(BaseObject* creator);
             virtual ~Projectile();
+
             void setConfigValues();
-            void speedChanged();
             void destroyObject();
+
             virtual void tick(float dt);
+            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            virtual void destroyedPawn(Pawn* pawn);
 
-            virtual bool create();
-
-            static float getSpeed()
-                { return Projectile::speed_s; }
-
-        protected:
-            Projectile(BaseObject* creator, Weapon* owner = 0);
-            SpaceShip* owner_;
+            inline void setOwner(Pawn* owner)
+                { this->owner_ = owner; }
+            inline Pawn* getOwner() const
+                { return this->owner_; }
 
         private:
-            std::string explosionTemplateName_;
-            std::string smokeTemplateName_;
-        protected:
-            static float speed_s;
-            float speed_;
-        private:
+            Pawn* owner_;
             float lifetime_;
             float damage_;
+            bool bDestroy_;
             Timer<Projectile> destroyTimer_;
     };
 }

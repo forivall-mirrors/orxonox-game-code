@@ -27,9 +27,8 @@
  */
  
 /**
-    @file FailQuest.cc
-    @brief
-    Implementation of the FailQuest class.
+    @file
+    @brief Implementation of the FailQuest class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -42,8 +41,8 @@
 #include "QuestManager.h"
 #include "Quest.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(FailQuest);
 
     /**

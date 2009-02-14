@@ -34,14 +34,13 @@
 #include "SignalHandler.h"
 #include "Debug.h"
 
-#include <cassert>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
 
 namespace orxonox
 {
-    SignalHandler * SignalHandler::singletonRef = NULL;
+    SignalHandler* SignalHandler::singletonRef_s = NULL;
 }
 
 #if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
@@ -54,10 +53,6 @@ namespace orxonox
 namespace orxonox
 {
     bool SignalHandler::bXAutoKeyRepeatOn_ = false;
-
-    SignalHandler::SignalHandler()
-    {
-    }
 
     /**
      * register signal handlers for SIGSEGV and SIGABRT
@@ -132,7 +127,7 @@ namespace orxonox
      */
     void SignalHandler::sigHandler( int sig )
     {
-      for ( SignalCallbackList::iterator it = SignalHandler::getInstance()->callbackList.begin(); it != SignalHandler::getInstance()->callbackList.end(); it++  )
+      for ( SignalCallbackList::iterator it = SignalHandler::getInstance().callbackList.begin(); it != SignalHandler::getInstance().callbackList.end(); it++  )
       {
         (*(it->cb))( it->someData );
       }
@@ -183,7 +178,7 @@ namespace orxonox
       // gdb will be attached to this process
       if ( sigPid == 0 )
       {
-        getInstance()->dontCatch();
+        getInstance().dontCatch();
         // wait for message from parent when it has attached gdb
         int someData;
 
@@ -236,7 +231,7 @@ namespace orxonox
       }
 
       char cmd[256];
-      snprintf( cmd, 256, "file %s\nattach %d\nc\n", getInstance()->appName.c_str(), sigPid );
+      snprintf( cmd, 256, "file %s\nattach %d\nc\n", getInstance().appName.c_str(), sigPid );
       write( gdbIn[1], cmd, strlen(cmd) );
 
       int charsFound = 0;
@@ -330,17 +325,17 @@ namespace orxonox
              "=======================================================\n";
       bt.insert(0, timeString);
 
-      FILE * f = fopen( getInstance()->filename.c_str(), "a" );
+      FILE * f = fopen( getInstance().filename.c_str(), "a" );
 
       if ( !f )
       {
-        perror( ( std::string( "could not append to " ) + getInstance()->filename ).c_str() );
+        perror( ( std::string( "could not append to " ) + getInstance().filename ).c_str() );
         exit(EXIT_FAILURE);
       }
 
       if ( fwrite( bt.c_str(), 1, bt.length(), f ) != bt.length() )
       {
-        COUT(0) << "could not write " << bt.length() << " byte to " << getInstance()->filename << std::endl;
+        COUT(0) << "could not write " << bt.length() << " byte to " << getInstance().filename << std::endl;
         exit(EXIT_FAILURE);
       }
 
