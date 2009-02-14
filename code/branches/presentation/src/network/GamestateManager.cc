@@ -112,12 +112,11 @@ namespace orxonox
   packet::Gamestate *GamestateManager::popGameState(unsigned int clientID) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
-    packet::Gamestate *gs, *temp;
+    packet::Gamestate *gs;
     unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
     if(!reference)
       return 0;
     gs = reference->doSelection(clientID, 10000);
-    temp = gs;
 //     gs = new packet::Gamestate(*reference);
     // save the (undiffed) gamestate in the clients gamestate map
     gamestateMap_[clientID][gs->getID()]=gs;
