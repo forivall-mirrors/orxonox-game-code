@@ -51,7 +51,7 @@
 #include <OgreColourValue.h>
 
 //Get around Windows hackery
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
 #  ifdef max
 #    undef max
 #  endif

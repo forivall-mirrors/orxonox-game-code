@@ -57,8 +57,9 @@ namespace OIS
 		Exception( OIS_ERROR err, const char* str, int line, const char *file )
 			: eType(err), eLine(line), eFile(file), eText(str) {}
 
-		virtual const char* what() const throw()
-            { return eText; }
+		~Exception() throw() {}
+
+		virtual const char* what() const throw();
 
 		//! The type of exception raised
 		const OIS_ERROR eType;

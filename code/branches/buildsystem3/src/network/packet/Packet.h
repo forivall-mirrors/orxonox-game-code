@@ -34,8 +34,6 @@
 #include <enet/enet.h>
 #include <boost/thread/recursive_mutex.hpp>
 
-#include "util/Integers.h"
-
 namespace orxonox {
 
 namespace packet{

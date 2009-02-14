@@ -33,7 +33,7 @@
 
 #include <string>
 #include <iostream>
-#include <AL/al.h>
+#include <al.h>
 #include <vorbis/vorbisfile.h>
 #include <vorbis/codec.h>
 

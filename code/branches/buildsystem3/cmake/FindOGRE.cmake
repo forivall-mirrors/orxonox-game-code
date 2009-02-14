@@ -2,76 +2,54 @@
 #
 # This module defines
 #  OGRE_INCLUDE_DIR
-#  OGRE_LIBRARIES, the libraries to link against to use OGRE.
-#  OGRE_LIB_DIR, the location of the libraries
+#  OGRE_LIBRARY, the library to link against to use OGRE.
 #  OGRE_FOUND, If false, do not try to use OGRE
 #
 # Copyright © 2007, Matt Williams
-# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture of the ETH Zurich
+# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture
+# of the ETH Zurich (removed later on)
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 #
 # Several changes and additions by Fabian 'x3n' Landau
+# Lots of simplifications by Adrian Friedli
+# Version checking by Reto Grieder
 #                 > www.orxonox.net <
 
-IF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR AND OGRE_LIB_DIR)
-    SET (OGRE_FIND_QUIETLY TRUE) # Already in cache, be silent
-ENDIF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR AND OGRE_LIB_DIR)
+INCLUDE(DetermineVersion)
+INCLUDE(FindPackageHandleAdvancedArgs)
+INCLUDE(HandleLibraryTypes)
 
-IF (WIN32) #Windows
-    FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
-        ../libs/ogre/OgreMain/include
-        ${DEPENDENCY_DIR}/ogre-1.4.9/include
-    )
+FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
+  PATHS $ENV{OGRE_HOME}
+  PATH_SUFFIXES include include/OGRE Ogre.framework/Headers
+)
+FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
+  NAMES OgreMain Ogre
+  PATHS $ENV{OGRE_HOME}
+  PATH_SUFFIXES lib bin/Release bin/release Release release
+)
+FIND_LIBRARY(OGRE_LIBRARY_DEBUG
+  NAMES OgreMaind OgreMain_d OgreMainD OgreMain_D Ogred Ogre_d OgreD Ogre_d
+  PATHS $ENV{OGRE_HOME}
+  PATH_SUFFIXES lib bin/Debug bin/debug Debug debug Versions/A
+)
 
-    SET(OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
-    FIND_LIBRARY(OGRE_LIBDIR NAMES ${OGRE_LIBRARIES} PATHS
-        ../libs/ogre/Samples/Common/bin/Release
-        ${DEPENDENCY_DIR}/ogre-1.4.9/lib
-    )
+# Inspect OgrePrerquisites.h for the version number
+DETERMINE_VERSION(OGRE ${OGRE_INCLUDE_DIR}/OgrePrerequisites.h)
 
-    # Strip the filename from the path
-    IF (OGRE_LIBDIR)
-        GET_FILENAME_COMPONENT(OGRE_LIBDIR ${OGRE_LIBDIR} PATH)
-        SET (OGRE_LIB_DIR ${OGRE_LIBDIR} CACHE FILEPATH "")
-    ENDIF (OGRE_LIBDIR)
-ELSE (WIN32) #Unix
-    FIND_PACKAGE(PkgConfig)
-    PKG_SEARCH_MODULE(OGRE OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc) # tardis specific hack
-    SET(OGRE_INCLUDE_DIR ${OGRE_INCLUDE_DIRS})
-    SET(OGRE_LIB_DIR ${OGRE_LIBDIR})
-    SET(OGRE_LIBRARIES ${OGRE_LIBRARIES})
-ENDIF (WIN32)
+# Handle the REQUIRED argument and set OGRE_FOUND
+# Also check the version requirements
+FIND_PACKAGE_HANDLE_ADVANCED_ARGS(OGRE DEFAULT_MSG ${OGRE_VERSION}
+  OGRE_LIBRARY_OPTIMIZED
+  OGRE_INCLUDE_DIR
+)
 
-#Do some preparation
-SEPARATE_ARGUMENTS(OGRE_INCLUDE_DIR)
-SEPARATE_ARGUMENTS(OGRE_LIBRARIES)
+# Collect optimized and debug libraries
+HANDLE_LIBRARY_TYPES(OGRE)
 
-SET (OGRE_INCLUDE_DIR ${OGRE_INCLUDE_DIR} CACHE PATH "")
-SET (OGRE_LIBRARIES ${OGRE_LIBRARIES} CACHE STRING "")
-SET (OGRE_LIB_DIR ${OGRE_LIB_DIR} CACHE PATH "")
-
-IF (OGRE_INCLUDE_DIR AND OGRE_LIBRARIES AND OGRE_LIB_DIR)
-    SET(OGRE_FOUND TRUE)
-ENDIF (OGRE_INCLUDE_DIR AND OGRE_LIBRARIES AND OGRE_LIB_DIR)
-
-IF (OGRE_FOUND)
-    IF (NOT OGRE_FIND_QUIETLY)
-        MESSAGE(STATUS "Ogre was found.")
-        IF (VERBOSE_FIND)
-            MESSAGE (STATUS "  include path: ${OGRE_INCLUDE_DIR}")
-            MESSAGE (STATUS "  library path: ${OGRE_LIB_DIR}")
-            MESSAGE (STATUS "  libraries:    ${OGRE_LIBRARIES}")
-        ENDIF (VERBOSE_FIND)
-    ENDIF (NOT OGRE_FIND_QUIETLY)
-ELSE (OGRE_FOUND)
-    IF (NOT OGRE_INCLUDE_DIR)
-        MESSAGE(SEND_ERROR "Ogre include path was not found.")
-    ENDIF (NOT OGRE_INCLUDE_DIR)
-    IF (NOT OGRE_LIB_DIR)
-        MESSAGE(SEND_ERROR "Ogre library was not found.")
-    ENDIF (NOT OGRE_LIB_DIR)
-    IF (NOT OGRE_LIBRARIES)
-        MESSAGE(SEND_ERROR "Ogre libraries not known.")
-    ENDIF (NOT OGRE_LIBRARIES)
-ENDIF (OGRE_FOUND)
+MARK_AS_ADVANCED(
+  OGRE_INCLUDE_DIR
+  OGRE_LIBRARY_OPTIMIZED
+  OGRE_LIBRARY_DEBUG
+)

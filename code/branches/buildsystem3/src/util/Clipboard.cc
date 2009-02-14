@@ -35,7 +35,7 @@
 
 #include "Clipboard.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
 
 /////////////
 // Windows //
@@ -103,7 +103,7 @@ namespace orxonox
     }
 }
 
-#else /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
+#else /* ORXONOX_PLATFORM_WINDOWS */
 
 /////////////
 // Default //
@@ -134,4 +134,4 @@ namespace orxonox
     }
 }
 
-#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
+#endif /* ORXONOX_PLATFORM_WINDOWS */

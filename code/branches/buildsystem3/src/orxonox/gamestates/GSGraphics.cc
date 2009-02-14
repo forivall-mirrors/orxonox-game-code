@@ -30,6 +30,8 @@
 #include "GSGraphics.h"
 
 #include <fstream>
+#include <boost/filesystem.hpp>
+
 #include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
@@ -44,6 +46,8 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/String.h"
+#include "util/SubString.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -91,8 +95,10 @@ namespace orxonox
             .description("Location of the resources file in the data path.");
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsFile_, "plugins.cfg")
-            .description("Location of the Ogre plugins file");
+        SetConfigValue(ogrePluginsFolder_, ORXONOX_OGRE_PLUGINS_FOLDER)
+            .description("Folder where the Ogre plugins are located.");
+        SetConfigValue(ogrePlugins_, ORXONOX_OGRE_PLUGINS)
+            .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
             .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
         SetConfigValue(ogreLogLevelTrivial_ , 5)
@@ -114,8 +120,13 @@ namespace orxonox
 
         // Ogre setup procedure
         setupOgre();
+        // load all the required plugins for Ogre
+        loadOgrePlugins();
+        // read resource declaration file
         this->declareResources();
-        this->loadRenderer();    // creates the render window
+        // Reads ogre config and creates the render window
+        this->loadRenderer();
+
         // TODO: Spread this so that this call only initialises things needed for the Console and GUI
         this->initialiseResources();
 
@@ -199,7 +210,7 @@ namespace orxonox
 
         delete this->ogreRoot_;
 
-//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+//#ifdef ORXONOX_PLATFORM_WINDOWS
         // delete the ogre log and the logManager (since we have created it).
         this->ogreLogger_->getDefaultLog()->removeListener(this);
         this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
@@ -276,7 +287,7 @@ namespace orxonox
         COUT(3) << "Setting up Ogre..." << std::endl;
 
         // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
-//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+//#ifdef ORXONOX_PLATFORM_WINDOWS
         // create a new logManager
         ogreLogger_ = new Ogre::LogManager();
         COUT(4) << "Ogre LogManager created" << std::endl;
@@ -296,11 +307,6 @@ namespace orxonox
         // Root will detect that we've already created a Log
         COUT(4) << "Creating Ogre Root..." << std::endl;
 
-        if (ogrePluginsFile_ == "")
-        {
-            COUT(2) << "Warning: Ogre plugins file set to \"\". Defaulting to plugins.cfg" << std::endl;
-            ModifyConfigValue(ogrePluginsFile_, tset, "plugins.cfg");
-        }
         if (ogreConfigFile_ == "")
         {
             COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
@@ -325,10 +331,11 @@ namespace orxonox
         else
             probe.close();
 
-        ogreRoot_ = new Ogre::Root(ogrePluginsFile_, ogreConfigFile_, ogreLogFile_);
+        // Leave plugins file empty. We're going to do that part manually later
+        ogreRoot_ = new Ogre::Root("", ogreConfigFile_, ogreLogFile_);
 
 #if 0 // Ogre 1.4.3 doesn't yet support setDebugOutputEnabled(.)
-#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+#ifndef ORXONOX_PLATFORM_WINDOWS
         // tame the ogre ouput so we don't get all the mess in the console
         Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
         defaultLog->setDebugOutputEnabled(false);
@@ -338,6 +345,19 @@ namespace orxonox
 #endif
 
         COUT(3) << "Ogre set up done." << std::endl;
+    }
+
+    void GSGraphics::loadOgrePlugins()
+    {
+        // just to make sure the next statement doesn't segfault
+        if (ogrePluginsFolder_ == "")
+            ogrePluginsFolder_ = ".";
+
+        boost::filesystem::path folder(ogrePluginsFolder_);
+        // Do some SubString magic to get the comma separated list of plugins
+        SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
+        for (unsigned int i = 0; i < plugins.size(); ++i)
+            ogreRoot_->loadPlugin((folder / plugins[i]).native_file_string());
     }
 
     void GSGraphics::declareResources()

@@ -43,10 +43,10 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include <tinyxml/ticpp.h>
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/MultiType.h"
-#include "tinyxml/ticpp.h"
 #include "XMLIncludes.h"
 #include "Executor.h"
 #include "CoreIncludes.h"

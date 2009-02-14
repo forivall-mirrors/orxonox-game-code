@@ -38,17 +38,24 @@
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <CEGUI.h>
-#include "ceguilua/CEGUILua.h"
+#include <ogreceguirenderer/OgreCEGUIRenderer.h>
+#ifdef CEGUILUA_USE_INTERNAL_LIBRARY
+#   include <ceguilua/CEGUILua.h>
+#else
+#   include <CEGUILua.h>
+#endif
+
 #include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
-#include "core/tolua/tolua_bind.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
-#include "tolua/tolua_bind.h"
-#include "OgreCEGUIRenderer.h"
+#include "ToluaBindCore.h"
+#include "ToluaBindOrxonox.h"
 
-#include "lua/lua.hpp"
+extern "C" {
+#include <lua.h>
+}
 
 namespace orxonox
 {
@@ -99,7 +106,7 @@ namespace orxonox
 	        lua_setglobal(luaState_, "Orxonox");
 	        lua_pushnil(luaState_);
 	        lua_setglobal(luaState_, "Core");
-            // TODO: deleting the script module fails an assertation.
+            // TODO: deleting the script module fails an assertion.
             // However there is not much we can do about it since it occurs too when
             // we don't open Core or Orxonox. Might be a CEGUI issue.
             // The memory leak is not a problem anyway..

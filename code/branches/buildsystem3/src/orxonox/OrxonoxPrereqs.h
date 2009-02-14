@@ -34,12 +34,13 @@
 #ifndef _OrxonoxPrereqs_H__
 #define _OrxonoxPrereqs_H__
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !(defined(ORXONOX_STATIC_BUILD) || defined(ORXONOX_NO_EXPORTS))
+#define ORXONOX_NO_EXPORTS // This is an executable that needs no exports
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !(defined(ORXONOX_STATIC_BUILD) || defined(ORXONOX_NO_EXPORTS))
 #  ifdef ORXONOX_SHARED_BUILD
 #    define _OrxonoxExport __declspec(dllexport)
 #  else

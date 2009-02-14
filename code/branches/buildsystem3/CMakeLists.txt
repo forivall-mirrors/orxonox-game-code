@@ -1,131 +1,54 @@
-PROJECT(Orxonox)
+ #
+ #             ORXONOX - the hottest 3D action shooter ever to exist
+ #                             > www.orxonox.net <
+ #
+ #        This program is free software; you can redistribute it and/or
+ #         modify it under the terms of the GNU General Public License
+ #        as published by the Free Software Foundation; either version 2
+ #            of the License, or (at your option) any later version.
+ #
+ #       This program is distributed in the hope that it will be useful,
+ #        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #                 GNU General Public License for more details.
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #      with this program; if not, write to the Free Software Foundation,
+ #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ #
+ 
+PROJECT(Orxonox C CXX)
 
-cmake_minimum_required(VERSION 2.4)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 
-IF (COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-ENDIF (COMMAND cmake_policy)
+SET(ORXONOX_VERSION_MAJOR 0)
+SET(ORXONOX_VERSION_MINOR 0)
+SET(ORXONOX_VERSION_PATCH 3)
+SET(ORXONOX_VERSION 0.0.3)
+SET(ORXONOX_VERSION_NAME "Castor")
 
-# Allow for simple IF constructs (makes code a lot more readable)
-#SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
+# Keep devs from using the root directory as binary directory (messes up the source tree)
+IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+  MESSAGE(FATAL_ERROR "Do not use the root directory as CMake output directory! mkdir build; cd build; cmake ..")
+ENDIF()
 
 # This sets where to look for modules (e.g. "Find*.cmake" files)
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-# Check whether we are on a tardis box
-INCLUDE(CheckTardis)
+# Library Config
+INCLUDE(LibraryConfig)
 
+# Build Config
+INCLUDE(BuildConfig)
 
-############## Testing options ##################
+# Configure media directory location and installation
+ADD_SUBDIRECTORY(media)
 
-OPTION(TESTING_ENABLED "Do you want to enable Testing")
-IF (TESTING_ENABLED)
-  ENABLE_TESTING()
-ENDIF(TESTING_ENABLED)
-
-OPTION (NETWORK_TESTING_ENABLED "Do you want to build network testing tools: i.e. chatclient chatserver and alike")
-OPTION (NETWORKTRAFFIC_TESTING_ENABLED "Do you want to build dummyserver4 and dummyclient4")
-
-
-########## Compiler/Linker options ##############
-
-# if on tardis change compiler and reset boost include directory
-IF(IS_TARDIS)
-  MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
-  # Force-set the compiler on tardis machines, as default points to g++-3.3
-  SET(CMAKE_CXX_COMPILER "g++-4.1.1")
-  # Reset Boost serach path
-  SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include")
-ELSE (IS_TARDIS)
-  IF (NOT WIN32)
-    SET(Boost_INCLUDE_DIR "/usr/include/boost")
-  ENDIF (NOT WIN32)
-ENDIF(IS_TARDIS)
-
-# Set binary output directories
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/bin/lib)
-
-# Global compiler/linker flags. force -O2!
-SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
-#SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O3 -s")
-#SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -s")
-
-SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
-SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
-SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
-SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
-
-# Use 'cmake -D make_verb:1 path' to get verbose make output when compiling
-IF (MAKE_VERB)
- SET(CMAKE_VERBOSE_MAKEFILE TRUE)
-ENDIF (MAKE_VERB)
-
-
-############### Library finding #################
-
-# Uncomment the following line if you want the include and library paths to be shown
-# Alternatively use the "-D VERBOSE_FIND:BOOL=true" option when executing cmake
-
-# SET (VERBOSE_FIND true)
-
-# Set the library directory when using precompiled tarballs for the dependencies under windows
-IF (WIN32)
-  IF (MSVC)
-    IF ($ENV{ORXONOX_DEV})
-      SET (DEPENDENCY_DIR ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies/)
-    ELSE ($ENV{ORXONOX_DEV})
-      SET (DEPENDENCY_DIR ${CMAKE_SOURCE_DIR}/dependencies/)
-    ENDIF ($ENV{ORXONOX_DEV})
-    SET(Boost_LIB_SUFFIX_DEBUG vc80-mt-gd-1_35)
-  ENDIF (MSVC)
-ENDIF (WIN32)
-MESSAGE(STATUS ${DEPENDENCY_DIR})
-
-# Performs the search and sets the variables
-FIND_PACKAGE(OGRE)
-FIND_PACKAGE(CEGUI)
-# FIND_PACKAGE(CEGUI_OGRE)
-FIND_PACKAGE(ENet)
-FIND_PACKAGE(Boost REQUIRED thread filesystem)
-FIND_PACKAGE(OpenAL)
-FIND_PACKAGE(ALUT)
-FIND_PACKAGE(OggVorbis)
-FIND_PACKAGE(ZLIB)
-#FIND_PACKAGE(Lua)
-FIND_PACKAGE(TCL)
-FIND_PACKAGE(DirectX)
-
-# Set the search paths for the linking
-LINK_DIRECTORIES(
-  ${OGRE_LIB_DIR}
-  ${CEGUI_LIB_DIR}
-#  ${CEGUI_SCRIPT_LIB_DIR}
-#  ${CEGUI_OGRE_LIB_DIR}
-  ${ENet_LIBRARY}
-  ${Boost_LIBRARY_DIRS}
-  ${Zlib_LIBRARY_DIR}
-  ${TCL_LIBRARY}
-)
-
-# Set the search paths for include files
-INCLUDE_DIRECTORIES(
-  ${OGRE_INCLUDE_DIR}
-  ${CEGUI_INCLUDE_DIR}
-#  ${CEGUI_OGRE_INCLUDE_DIR}
-  ${ENet_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIRS}
-  ${OPENAL_INCLUDE_DIR}
-  ${ALUT_INCLUDE_DIR}
-  ${VORBIS_INCLUDE_DIR}
-  ${OGG_INCLUDE_DIR}
-#  ${Lua_INCLUDE_DIR}
-  ${TCL_INCLUDE_PATH}
-  ${DirectX_INCLUDE_DIR}
-  ${ZLIB_INCLUDE_DIR}
-)
-
-# Add main source dir
+# Creates the actual project
 ADD_SUBDIRECTORY(src)
 
+# Configure the binary output directory
+ADD_SUBDIRECTORY(bin)
+
+# Last but not least: Try to make doxygen target
+ADD_SUBDIRECTORY(doc)
