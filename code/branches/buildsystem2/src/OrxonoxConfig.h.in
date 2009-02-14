@@ -190,10 +190,10 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
     const char* const ORXONOX_MEDIA_PATH("../media");
 #elif defined(ORXONOX_PLATFORM_LINUX)
-    const char* const ORXONOX_MEDIA_PATH("../share/orxonox");
+    const char* const ORXONOX_MEDIA_PATH("../../share/orxonox");
 #else
     /* TODO: Apple? */
-    const char* const ORXONOX_MEDIA_PATH("../share/orxonox");
+    const char* const ORXONOX_MEDIA_PATH("../../share/orxonox");
 #endif
     
 #ifdef NDEBUG
