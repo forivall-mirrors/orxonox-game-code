@@ -51,4 +51,4 @@ ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(bin)
 
 # Last but not least: Try to make doxygen target
-INCLUDE(DocumentationTarget)
+ADD_SUBDIRECTORY(doc)

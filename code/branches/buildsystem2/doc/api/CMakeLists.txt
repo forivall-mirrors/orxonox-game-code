@@ -1,5 +1,5 @@
-# -helper macro to add a "doc" target with CMake build system. 
-# and configure doxy.config.in to doxy.config
+# Add a "doc" target with CMake build system. 
+# And configure doxy.config.in to doxy.config
 #
 # target "doc" allows building the documentation with doxygen/dot on WIN32 and Linux
 # Creates .chm windows help file if MS HTML help workshop 
@@ -28,6 +28,9 @@ IF (DOXYGEN_FOUND)
   ELSE()
     SET(DOXY_WARN_FORMAT "\"$file:$line: $text \"")
   ENDIF()
+
+  SET(DOXY_INPUT_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
+  SET(DOXY_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
   
   # we need latex for doxygen because of the formulas
   # Orxonox doesn't
@@ -42,10 +45,10 @@ IF (DOXYGEN_FOUND)
   #  MESSAGE(STATUS "dvips command DVIPS_CONVERTER not found but usually required.")
   #ENDIF (NOT DVIPS_CONVERTER)
   
-  IF(EXISTS ${CMAKE_SOURCE_DIR}/doxy.config.in)
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/doxy.config.in ${CMAKE_BINARY_DIR}/doxy.config @ONLY)
+  IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/doxy.config @ONLY)
     # use (configured) doxy.config from (out of place) BUILD tree:
-    SET(DOXY_CONFIG ${CMAKE_BINARY_DIR}/doxy.config)
+    SET(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/doxy.config)
   ELSE()
     MESSAGE(STATUS "Warning: Could not find dox.config.in in the root directory.")
   ENDIF()
@@ -58,7 +61,7 @@ IF (DOXYGEN_FOUND)
   IF(WIN32)
     FIND_PACKAGE(HTMLHelp)
     IF(HTML_HELP_COMPILER)      
-      SET(TMP ${CMAKE_CURRENT_BINARY_DIR}/doc/html/index.hhp)
+      SET(TMP ${DOXY_OUTPUT_DIR}/html/index.hhp)
       STRING(REGEX REPLACE "/" "\\\\" HHP_FILE ${TMP})
       ADD_CUSTOM_TARGET(chmdoc ${HTML_HELP_COMPILER} ${HHP_FILE})
       IF(NOT MSVC)
