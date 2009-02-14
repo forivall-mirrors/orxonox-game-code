@@ -63,7 +63,7 @@
     SetConsoleCommandShortcutGeneric(function##consolecommand__##number, orxonox::createConsoleCommand(orxonox::createFunctor(&function), name))
 
 #define SetConsoleCommandShortcutGeneric(fakevariable, command) \
-    orxonox::ConsoleCommand& fakevariable = orxonox::CommandExecutor::addConsoleCommandShortcut(command)
+    orxonox::ConsoleCommand& fakevariable = orxonox::CommandExecutor::addConsoleCommandShortcut(command, true)
 
 
 namespace orxonox

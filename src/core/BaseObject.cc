@@ -35,6 +35,7 @@
 #include "tinyxml/tinyxml.h"
 #include "CoreIncludes.h"
 #include "EventIncludes.h"
+#include "Functor.h"
 #include "XMLPort.h"
 #include "XMLFile.h"
 #include "XMLNameListener.h"
@@ -59,6 +60,11 @@ namespace orxonox
         this->bVisible_ = true;
         this->oldGametype_ = 0;
 
+        this->lastLoadedXMLElement_ = 0;
+
+        this->functorSetMainState_ = 0;
+        this->functorGetMainState_ = 0;
+
         this->setCreator(creator);
         if (this->creator_)
         {
@@ -81,11 +87,19 @@ namespace orxonox
     */
     BaseObject::~BaseObject()
     {
-        for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
-            (*it)->unregisterEventListener(this);
+        if (this->isInitialized())
+        {
+            for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
+                (*it)->unregisterEventListener(this);
 
-        for (std::map<BaseObject*, std::string>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
-            it->first->removeEvent(this);
+            for (std::map<BaseObject*, std::string>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+                it->first->removeEvent(this);
+
+            if (this->functorSetMainState_)
+                delete this->functorSetMainState_;
+            if (this->functorGetMainState_)
+                delete this->functorGetMainState_;
+        }
     }
 
     /**
@@ -99,6 +113,7 @@ namespace orxonox
         XMLPortParam(BaseObject, "name", setXMLName, getName, xmlelement, mode);
         XMLPortParam(BaseObject, "visible", setVisible, isVisible, xmlelement, mode);
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
+        XMLPortParam(BaseObject, "mainstate", setMainStateName, getMainStateName, xmlelement, mode);
 
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
 
@@ -108,7 +123,7 @@ namespace orxonox
         {
             std::list<std::string> eventnames;
 
-            if (mode == XMLPort::LoadObject)
+            if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
             {
                 for (ticpp::Iterator<ticpp::Element> child = events->FirstChildElement(false); child != child.end(); child++)
                     eventnames.push_back(child->Value());
@@ -277,5 +292,48 @@ namespace orxonox
     {
         SetEvent(BaseObject, "activity", setActive, event);
         SetEvent(BaseObject, "visibility", setVisible, event);
+    }
+
+    void BaseObject::setMainStateName(const std::string& name)
+    {
+        if (this->mainStateName_ != name)
+        {
+            this->mainStateName_ = name;
+            if (this->functorSetMainState_)
+                delete this->functorSetMainState_;
+            if (this->functorGetMainState_)
+                delete this->functorGetMainState_;
+            this->changedMainState();
+            if (!this->functorSetMainState_)
+                COUT(2) << "Warning: \"" << name << "\" is not a valid MainState." << std::endl;
+        }
+    }
+
+    void BaseObject::setMainState(bool state)
+    {
+        if (this->functorSetMainState_)
+            (*this->functorSetMainState_)(state);
+        else
+            COUT(2) << "Warning: No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << std::endl;
+    }
+
+    bool BaseObject::getMainState() const
+    {
+        if (this->functorGetMainState_)
+        {
+            (*this->functorGetMainState_)();
+            return this->functorGetMainState_->getReturnvalue();
+        }
+        else
+        {
+            COUT(2) << "Warning: No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << std::endl;
+            return false;
+        }
+    }
+
+    void BaseObject::changedMainState()
+    {
+        SetMainState(BaseObject, "activity",   setActive,  isActive);
+        SetMainState(BaseObject, "visibility", setVisible, isVisible);
     }
 }

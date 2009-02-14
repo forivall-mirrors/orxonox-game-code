@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder (physics)
  *   Co-authors:
  *      ...
  *
@@ -31,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 #include "core/BaseObject.h"
 #include "util/Math.h"
 #include "objects/Tickable.h"
@@ -74,13 +75,69 @@ namespace orxonox
                 { this->setSkybox(this->skybox_); }
             void networkcallback_applyAmbientLight()
                 { this->setAmbientLight(this->ambientLight_); }
+            void networkcallback_applyShadows()
+                { this->setShadow(this->bShadows_); }
 
-            Ogre::SceneManager*    sceneManager_;
-            Ogre::SceneNode*       rootSceneNode_;
-            std::string            skybox_;
-            ColourValue            ambientLight_;
-            std::list<BaseObject*> objects_;
-            bool                   bShadows_;
+            Ogre::SceneManager*      sceneManager_;
+            Ogre::SceneNode*         rootSceneNode_;
+
+            std::string              skybox_;
+            ColourValue              ambientLight_;
+            std::list<BaseObject*>   objects_;
+            bool                     bShadows_;
+
+
+        /////////////
+        // Physics //
+        /////////////
+
+        public:
+            inline bool hasPhysics()
+                { return this->physicalWorld_ != 0; }
+            void setPhysicalWorld(bool wantsPhysics);
+
+            void setNegativeWorldRange(const Vector3& range);
+            inline const Vector3& getNegativeWorldRange() const
+                { return this->negativeWorldRange_; }
+
+            void setPositiveWorldRange(const Vector3& range);
+            inline const Vector3& getPositiveWorldRange() const
+                { return this->positiveWorldRange_; }
+
+            void setGravity(const Vector3& gravity);
+            inline const Vector3& getGravity() const
+                { return this->gravity_; }
+
+            void addPhysicalObject(WorldEntity* object);
+            void removePhysicalObject(WorldEntity* object);
+
+        private:
+            inline void networkcallback_hasPhysics()
+                { this->setPhysicalWorld(this->bHasPhysics_); }
+            inline void networkcallback_negativeWorldRange()
+                { this->setNegativeWorldRange(this->negativeWorldRange_); }
+            inline void networkcallback_positiveWorldRange()
+                { this->setPositiveWorldRange(this->positiveWorldRange_); }
+            inline void networkcallback_gravity()
+                { this->setGravity(this->gravity_); }
+
+            // collision callback from bullet
+            static bool collisionCallback(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0,
+                                          int index0, const btCollisionObject* colObj1, int partId1, int index1);
+
+            // Bullet objects
+            btDiscreteDynamicsWorld*             physicalWorld_;
+            bt32BitAxisSweep3*                   broadphase_;
+            btDefaultCollisionConfiguration*     collisionConfig_;
+            btCollisionDispatcher*               dispatcher_;
+            btSequentialImpulseConstraintSolver* solver_;
+
+            std::set<WorldEntity*>               physicalObjectQueue_;
+            std::set<WorldEntity*>               physicalObjects_;
+            bool                                 bHasPhysics_;
+            Vector3                              negativeWorldRange_;
+            Vector3                              positiveWorldRange_;
+            Vector3                              gravity_;
     };
 }
 

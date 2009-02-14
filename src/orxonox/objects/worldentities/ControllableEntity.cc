@@ -22,32 +22,39 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
 #include "OrxonoxStableHeaders.h"
 #include "ControllableEntity.h"
 
+#include <OgreSceneManager.h>
+
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Core.h"
 #include "core/XMLPort.h"
 #include "core/Template.h"
 
+#include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/worldentities/CameraPosition.h"
+#include "objects/gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
     CreateFactory(ControllableEntity);
 
-    ControllableEntity::ControllableEntity(BaseObject* creator) : WorldEntity(creator)
+    ControllableEntity::ControllableEntity(BaseObject* creator) : MobileEntity(creator)
     {
         RegisterObject(ControllableEntity);
 
-        this->bControlled_ = false;
+        this->bHasLocalController_ = false;
+        this->bHasHumanController_ = false;
+
         this->server_overwrite_ = 0;
         this->client_overwrite_ = 0;
         this->player_ = 0;
@@ -55,17 +62,26 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
+        this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
+        this->bMouseLook_ = false;
+        this->mouseLookSpeed_ = 200;
 
-        this->velocity_ = Vector3::ZERO;
-        this->acceleration_ = Vector3::ZERO;
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+        this->changedGametype();
 
-        this->server_position_ = Vector3::ZERO;
-        this->client_position_ = Vector3::ZERO;
-        this->server_velocity_ = Vector3::ZERO;
-        this->client_velocity_ = Vector3::ZERO;
-        this->server_orientation_ = Quaternion::IDENTITY;
-        this->client_orientation_ = Quaternion::IDENTITY;
+        this->server_position_         = Vector3::ZERO;
+        this->client_position_         = Vector3::ZERO;
+        this->server_linear_velocity_  = Vector3::ZERO;
+        this->client_linear_velocity_  = Vector3::ZERO;
+        this->server_orientation_      = Quaternion::IDENTITY;
+        this->client_orientation_      = Quaternion::IDENTITY;
+        this->server_angular_velocity_ = Vector3::ZERO;
+        this->client_angular_velocity_ = Vector3::ZERO;
 
+
+        this->setConfigValues();
+        this->setPriority( priority::very_high );
         this->registerVariables();
     }
 
@@ -73,8 +89,13 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (this->bControlled_)
-                this->stopLocalControl();
+            this->bDestroyWhenPlayerLeft_ = false;
+
+            if (this->bHasLocalController_ && this->bHasHumanController_)
+                this->stopLocalHumanControl();
+
+            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
+                this->getPlayer()->stopControl(this, false);
 
             if (this->hud_)
                 delete this->hud_;
@@ -82,8 +103,11 @@ namespace orxonox
             if (this->camera_)
                 delete this->camera_;
 
-            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
-                this->getPlayer()->stopControl(this, false);
+            for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                delete (*it);
+
+            if (this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->cameraPositionRootNode_->getName());
         }
     }
 
@@ -97,9 +121,32 @@ namespace orxonox
         XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
     }
 
+    void ControllableEntity::setConfigValues()
+    {
+        SetConfigValue(mouseLookSpeed_, 3.0f);
+    }
+
+    void ControllableEntity::changedGametype()
+    {
+        //SUPER(ControllableEntity, changedGametype);
+        WorldEntity::changedGametype();
+
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+
+        if (this->getGametype() && this->getGametype()->getGametypeInfo())
+        {
+            this->gtinfo_ = this->getGametype()->getGametypeInfo();
+            this->gtinfoID_ = this->gtinfo_->getObjectID();
+        }
+    }
+
     void ControllableEntity::addCameraPosition(CameraPosition* position)
     {
-        this->attach(position);
+        if (position->getAllowMouseLook())
+            position->attachToNode(this->cameraPositionRootNode_);
+        else
+            this->attach(position);
         this->cameraPositions_.push_back(position);
     }
 
@@ -140,9 +187,35 @@ namespace orxonox
             }
             else
             {
-                this->attach(this->camera_);
+                this->camera_->attachToNode(this->cameraPositionRootNode_);
             }
         }
+    }
+
+    void ControllableEntity::mouseLook()
+    {
+        this->bMouseLook_ = !this->bMouseLook_;
+
+        if (!this->bMouseLook_)
+            this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
+    }
+
+    void ControllableEntity::rotateYaw(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->yaw(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::rotatePitch(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->pitch(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::rotateRoll(const Vector2& value)
+    {
+        if (this->bMouseLook_)
+            this->cameraPositionRootNode_->roll(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)
@@ -155,29 +228,31 @@ namespace orxonox
 
         this->player_ = player;
         this->playerID_ = player->getObjectID();
-        this->bControlled_ = (player->isLocalPlayer() && player->isHumanPlayer());
-        if (this->bControlled_)
+        this->bHasLocalController_ = player->isLocalPlayer();
+        this->bHasHumanController_ = player->isHumanPlayer();
+
+        if (this->bHasLocalController_ && this->bHasHumanController_)
         {
-            this->startLocalControl();
+            this->startLocalHumanControl();
 
             if (!Core::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
-COUT(0) << "CE: bidirectional synchronization" << std::endl;
-                this->setObjectMode(direction::bidirectional);
+                this->setObjectMode(objectDirection::bidirectional);
             }
         }
     }
 
     void ControllableEntity::removePlayer()
     {
-        if (this->bControlled_)
-            this->stopLocalControl();
+        if (this->bHasLocalController_ && this->bHasHumanController_)
+            this->stopLocalHumanControl();
 
         this->player_ = 0;
         this->playerID_ = OBJECTID_UNKNOWN;
-        this->bControlled_ = false;
-        this->setObjectMode(direction::toclient);
+        this->bHasLocalController_ = false;
+        this->bHasHumanController_ = false;
+        this->setObjectMode(objectDirection::toclient);
 
         if (this->bDestroyWhenPlayerLeft_)
             delete this;
@@ -194,101 +269,139 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
     }
 
-    void ControllableEntity::startLocalControl()
+    void ControllableEntity::networkcallback_changedgtinfoID()
     {
-//        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
-        this->camera_ = new Camera(this);
-        this->camera_->requestFocus();
-        if (this->cameraPositionTemplate_ != "")
-            this->addTemplate(this->cameraPositionTemplate_);
-        if (this->cameraPositions_.size() > 0)
-            this->cameraPositions_.front()->attachCamera(this->camera_);
-        else
-            this->attach(this->camera_);
-
-        if (this->hudtemplate_ != "")
+        if (this->gtinfoID_ != OBJECTID_UNKNOWN)
         {
-            this->hud_ = new OverlayGroup(this);
-            this->hud_->addTemplate(this->hudtemplate_);
+            this->gtinfo_ = dynamic_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
+
+            if (!this->gtinfo_)
+                this->gtinfoID_ = OBJECTID_UNKNOWN;
         }
     }
 
-    void ControllableEntity::stopLocalControl()
+    void ControllableEntity::startLocalHumanControl()
     {
-//        std::cout << "###### stop local control" << std::endl;
-        this->camera_->detachFromParent();
-        delete this->camera_;
-        this->camera_ = 0;
+        if (!this->camera_)
+        {
+            this->camera_ = new Camera(this);
+            this->camera_->requestFocus();
+            if (this->cameraPositionTemplate_ != "")
+                this->addTemplate(this->cameraPositionTemplate_);
+            if (this->cameraPositions_.size() > 0)
+                this->cameraPositions_.front()->attachCamera(this->camera_);
+            else
+                this->camera_->attachToNode(this->cameraPositionRootNode_);
+        }
 
-        delete this->hud_;
-        this->hud_ = 0;
+        if (!this->hud_)
+        {
+            if (this->hudtemplate_ != "")
+            {
+                this->hud_ = new OverlayGroup(this);
+                this->hud_->addTemplate(this->hudtemplate_);
+                this->hud_->setOwner(this);
+            }
+        }
+    }
+
+    void ControllableEntity::stopLocalHumanControl()
+    {
+        if (this->camera_)
+        {
+            this->camera_->detachFromParent();
+            delete this->camera_;
+            this->camera_ = 0;
+        }
+
+        if (this->hud_)
+        {
+            delete this->hud_;
+            this->hud_ = 0;
+        }
     }
 
     void ControllableEntity::tick(float dt)
     {
+        MobileEntity::tick(dt);
+
         if (this->isActive())
         {
-            this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
-
-            if (Core::isMaster())
+            // Check whether Bullet doesn't do the physics for us
+            if (!this->isDynamic())
             {
-                this->server_velocity_ = this->velocity_;
-                this->server_position_ = this->node_->getPosition();
-            }
-            else if (this->bControlled_)
-            {
-//                COUT(2) << "setting client position" << endl;
-                this->client_velocity_ = this->velocity_;
-                this->client_position_ = this->node_->getPosition();
+                if (Core::isMaster())
+                {
+                    this->server_position_ = this->getPosition();
+                    this->server_orientation_ = this->getOrientation();
+                    this->server_linear_velocity_ = this->getVelocity();
+                    this->server_angular_velocity_ = this->getAngularVelocity();
+                }
+                else if (this->bHasLocalController_)
+                {
+                    this->client_position_ = this->getPosition();
+                    this->client_orientation_ = this->getOrientation();
+                    this->client_linear_velocity_ = this->getVelocity();
+                    this->client_angular_velocity_ = this->getAngularVelocity();
+                }
             }
         }
     }
 
     void ControllableEntity::registerVariables()
     {
-        REGISTERSTRING(this->cameraPositionTemplate_, direction::toclient);
+        registerVariable(this->cameraPositionTemplate_,  variableDirection::toclient);
+        registerVariable(this->hudtemplate_,             variableDirection::toclient);
 
-        REGISTERDATA(this->client_overwrite_,   direction::toserver);
-        
-        REGISTERDATA(this->server_position_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
-        REGISTERDATA(this->server_velocity_,    direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
-        REGISTERDATA(this->server_orientation_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
-        REGISTERDATA(this->server_overwrite_,   direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
+        registerVariable(this->server_position_,         variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
+        registerVariable(this->server_linear_velocity_,  variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity));
+        registerVariable(this->server_orientation_,      variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
+        registerVariable(this->server_angular_velocity_, variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity));
 
-        REGISTERDATA(this->client_position_,    direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
-        REGISTERDATA(this->client_velocity_,    direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientVelocity));
-        REGISTERDATA(this->client_orientation_, direction::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
+        registerVariable(this->server_overwrite_,        variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
+        registerVariable(this->client_overwrite_,        variableDirection::toserver);
 
+        registerVariable(this->client_position_,         variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
+        registerVariable(this->client_linear_velocity_,  variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientLinearVelocity));
+        registerVariable(this->client_orientation_,      variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
+        registerVariable(this->client_angular_velocity_, variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
 
-        REGISTERDATA(this->playerID_, direction::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
+        registerVariable(this->playerID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
+        registerVariable(this->gtinfoID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedgtinfoID));
     }
 
     void ControllableEntity::processServerPosition()
     {
-        if (!this->bControlled_)
-            this->node_->setPosition(this->server_position_);
+        if (!this->bHasLocalController_)
+            MobileEntity::setPosition(this->server_position_);
     }
 
-    void ControllableEntity::processServerVelocity()
+    void ControllableEntity::processServerLinearVelocity()
     {
-        if (!this->bControlled_)
-            this->velocity_ = this->server_velocity_;
+        if (!this->bHasLocalController_)
+            MobileEntity::setVelocity(this->server_linear_velocity_);
     }
 
     void ControllableEntity::processServerOrientation()
     {
-        if (!this->bControlled_)
-            this->node_->setOrientation(this->server_orientation_);
+        if (!this->bHasLocalController_)
+            MobileEntity::setOrientation(this->server_orientation_);
+    }
+
+    void ControllableEntity::processServerAngularVelocity()
+    {
+        if (!this->bHasLocalController_)
+            MobileEntity::setAngularVelocity(this->server_angular_velocity_);
     }
 
     void ControllableEntity::processOverwrite()
     {
-        if (this->bControlled_)
+        if (this->bHasLocalController_)
         {
             this->setPosition(this->server_position_);
-            this->setVelocity(this->server_velocity_);
             this->setOrientation(this->server_orientation_);
+            this->setVelocity(this->server_linear_velocity_);
+            this->setAngularVelocity(this->server_angular_velocity_);
 
             this->client_overwrite_ = this->server_overwrite_;
         }
@@ -298,20 +411,17 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-//            COUT(2) << "callback: setting client position" << endl;
-            this->node_->setPosition(this->client_position_);
-            this->server_position_ = this->client_position_;
+            MobileEntity::setPosition(this->client_position_);
+            this->server_position_ = this->getPosition();
         }
-//        else
-//          COUT(2) << "callback: not setting client position" << endl;
     }
 
-    void ControllableEntity::processClientVelocity()
+    void ControllableEntity::processClientLinearVelocity()
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            this->velocity_ = this->client_velocity_;
-            this->server_velocity_ = this->client_velocity_;
+            MobileEntity::setVelocity(this->client_linear_velocity_);
+            this->server_linear_velocity_ = this->getVelocity();
         }
     }
 
@@ -319,54 +429,32 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            this->node_->setOrientation(this->client_orientation_);
-            this->server_orientation_ = this->client_orientation_;
+            MobileEntity::setOrientation(this->client_orientation_);
+            this->server_orientation_ = this->getOrientation();
         }
     }
 
+    void ControllableEntity::processClientAngularVelocity()
+    {
+        if (this->server_overwrite_ == this->client_overwrite_)
+        {
+            MobileEntity::setAngularVelocity(this->client_angular_velocity_);
+            this->server_angular_velocity_ = this->getAngularVelocity();
+        }
+    }
 
     void ControllableEntity::setPosition(const Vector3& position)
     {
         if (Core::isMaster())
         {
-            this->node_->setPosition(position);
-            this->server_position_ = position;
+            MobileEntity::setPosition(position);
+            this->server_position_ = this->getPosition();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
-            this->node_->setPosition(position);
-            this->client_position_ = position;
-        }
-    }
-
-    void ControllableEntity::setVelocity(const Vector3& velocity)
-    {
-        if (Core::isMaster())
-        {
-            this->velocity_ = velocity;
-            this->server_velocity_ = velocity;
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->velocity_ = velocity;
-            this->client_velocity_ = velocity;
-        }
-    }
-
-    void ControllableEntity::translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->translate(distance, relativeTo);
-            this->server_position_ = this->node_->getPosition();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->translate(distance, relativeTo);
-            this->client_position_ = this->node_->getPosition();
+            MobileEntity::setPosition(position);
+            this->client_position_ = this->getPosition();
         }
     }
 
@@ -374,104 +462,63 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (Core::isMaster())
         {
-            this->node_->setOrientation(orientation);
-            this->server_orientation_ = orientation;
+            MobileEntity::setOrientation(orientation);
+            this->server_orientation_ = this->getOrientation();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
-            this->node_->setOrientation(orientation);
-            this->client_orientation_ = orientation;
+            MobileEntity::setOrientation(orientation);
+            this->client_orientation_ = this->getOrientation();
         }
     }
 
-    void ControllableEntity::rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo)
+    void ControllableEntity::setVelocity(const Vector3& velocity)
     {
         if (Core::isMaster())
         {
-            this->node_->rotate(rotation, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
+            MobileEntity::setVelocity(velocity);
+            this->server_linear_velocity_ = this->getVelocity();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
-            this->node_->rotate(rotation, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
+            MobileEntity::setVelocity(velocity);
+            this->client_linear_velocity_ = this->getVelocity();
         }
     }
 
-    void ControllableEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    void ControllableEntity::setAngularVelocity(const Vector3& velocity)
     {
         if (Core::isMaster())
         {
-            this->node_->yaw(angle, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
+            MobileEntity::setAngularVelocity(velocity);
+            this->server_angular_velocity_ = this->getAngularVelocity();
             ++this->server_overwrite_;
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
-            this->node_->yaw(angle, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
+            MobileEntity::setAngularVelocity(velocity);
+            this->client_angular_velocity_ = this->getAngularVelocity();
         }
     }
 
-    void ControllableEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
+    void ControllableEntity::setWorldTransform(const btTransform& worldTrans)
     {
+        MobileEntity::setWorldTransform(worldTrans);
         if (Core::isMaster())
         {
-            this->node_->pitch(angle, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
+            this->server_position_ = this->getPosition();
+            this->server_orientation_ = this->getOrientation();
+            this->server_linear_velocity_ = this->getVelocity();
+            this->server_angular_velocity_ = this->getAngularVelocity();
         }
-        else if (this->bControlled_)
+        else if (this->bHasLocalController_)
         {
-            this->node_->pitch(angle, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
-        }
-    }
-
-    void ControllableEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->roll(angle, relativeTo);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->roll(angle, relativeTo);
-            this->client_orientation_ = this->node_->getOrientation();
-        }
-    }
-
-    void ControllableEntity::lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->lookAt(target, relativeTo, localDirectionVector);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->lookAt(target, relativeTo, localDirectionVector);
-            this->client_orientation_ = this->node_->getOrientation();
-        }
-    }
-
-    void ControllableEntity::setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector)
-    {
-        if (Core::isMaster())
-        {
-            this->node_->setDirection(direction, relativeTo, localDirectionVector);
-            this->server_orientation_ = this->node_->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bControlled_)
-        {
-            this->node_->setDirection(direction, relativeTo, localDirectionVector);
-            this->client_orientation_ = this->node_->getOrientation();
+            this->client_position_ = this->getPosition();
+            this->client_orientation_ = this->getOrientation();
+            this->client_linear_velocity_ = this->getVelocity();
+            this->client_angular_velocity_ = this->getAngularVelocity();
         }
     }
 }

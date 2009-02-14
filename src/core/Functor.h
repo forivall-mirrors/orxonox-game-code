@@ -166,14 +166,14 @@ namespace orxonox
                 }
             }
 
-            FunctorMember* setObject(T* object)
+            FunctorMember<T>* setObject(T* object)
             {
                 this->bConstObject_ = false;
                 this->object_ = object;
                 return this;
             }
 
-            FunctorMember* setObject(const T* object)
+            FunctorMember<T>* setObject(const T* object)
             {
                 this->bConstObject_ = true;
                 this->constObject_ = object;

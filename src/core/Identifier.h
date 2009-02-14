@@ -67,6 +67,7 @@
 #include "Iterator.h"
 #include "Super.h"
 #include "Functor.h"
+#include "util/Integers.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
@@ -229,10 +230,10 @@ namespace orxonox
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
             /** @brief Returns the network ID to identify a class through the network. @return the network ID */
-            inline const unsigned int getNetworkID() const { return this->classID_; }
+            inline const uint32_t getNetworkID() const { return this->classID_; }
 
             /** @brief Sets the network ID to a new value. @param id The new value */
-            void setNetworkID(unsigned int id);
+            void setNetworkID(uint32_t id);
 
             void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
@@ -255,6 +256,8 @@ namespace orxonox
             void removeConstructionCallback(Functor* functor);
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
+
+            static void destroyAllIdentifiers();
 
         protected:
             Identifier();
@@ -298,9 +301,9 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            void initialize(std::set<const Identifier*>* parents);
+            static std::map<std::string, Identifier*>& getTypeIDIdentifierMap();
 
-            static void destroyAllIdentifiers();
+            void initialize(std::set<const Identifier*>* parents);
 
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
             std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to
@@ -314,7 +317,7 @@ namespace orxonox
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            unsigned int classID_;                                         //!< The network ID to identify a class through the network
+            uint32_t classID_;                                             //!< The network ID to identify a class through the network
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer

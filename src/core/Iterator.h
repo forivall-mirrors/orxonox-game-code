@@ -95,7 +95,7 @@ namespace orxonox
             template <class O>
             inline Iterator(ObjectListElement<O>* element)
             {
-                this->element_ = (element) ? (ObjectListBaseElement*)element : 0;
+                this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->iterator_ = this->list_->registerIterator(this);
             }
@@ -107,7 +107,7 @@ namespace orxonox
             template <class O>
             inline Iterator(const ObjectListIterator<O>& other)
             {
-                this->element_ = (other.element_) ? (ObjectListBaseElement*)other.element_ : 0;
+                this->element_ = (other.element_) ? static_cast<ObjectListBaseElement*>(other.element_) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->iterator_ = this->list_->registerIterator(this);
             }
@@ -162,7 +162,7 @@ namespace orxonox
                 if (this->list_)
                     this->list_->unregisterIterator(this->iterator_);
 
-                this->element_ = (element) ? (ObjectListBaseElement*)element : 0;
+                this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->iterator_ = this->list_->registerIterator(this);
 

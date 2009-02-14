@@ -38,12 +38,13 @@
 #include "core/CorePrereqs.h"
 
 #include <vector>
+#include <cassert>
+
 #include "InputInterfaces.h"
 #include "Button.h"
 #include "HalfAxis.h"
 #include "InputCommands.h"
 #include "JoyStickDeviceNumberListener.h"
-#include "core/ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -170,13 +171,13 @@ namespace orxonox
     };
 
     inline void KeyBinder::keyPressed (const KeyEvent& evt)
-    { keys_[evt.key].execute(KeybindMode::OnPress); }
+    { assert(!keys_[evt.key].name_.empty()); keys_[evt.key].execute(KeybindMode::OnPress); }
 
     inline void KeyBinder::keyReleased(const KeyEvent& evt)
-    { keys_[evt.key].execute(KeybindMode::OnRelease); }
+    { assert(!keys_[evt.key].name_.empty()); keys_[evt.key].execute(KeybindMode::OnRelease); }
 
     inline void KeyBinder::keyHeld    (const KeyEvent& evt)
-    { keys_[evt.key].execute(KeybindMode::OnHold); }
+    { assert(!keys_[evt.key].name_.empty()); keys_[evt.key].execute(KeybindMode::OnHold); }
 
 
     inline void KeyBinder::mouseButtonPressed (MouseButtonCode::ByEnum id)

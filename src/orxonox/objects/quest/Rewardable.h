@@ -27,9 +27,8 @@
  */
 
 /**
-    @file Rewardable.h
-    @brief
-    Definition of the Rewardable class.
+    @file
+    @brief Definition of the Rewardable class.
 */
 
 #ifndef _Rewardable_H__
@@ -39,8 +38,8 @@
 
 #include "core/BaseObject.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects. (With the AddReward effect.)
@@ -51,7 +50,6 @@ namespace orxonox {
     */
     class _OrxonoxExport Rewardable : public BaseObject
     {
-
         public:
             Rewardable(BaseObject* creator);
             virtual ~Rewardable();
@@ -60,12 +58,12 @@ namespace orxonox {
             @brief
                 Method to transcribe a rewardable object to the player.
                 Must be implemented by every class inheriting from Rewardable.
-        @param player
+            @param player
                 A pointer to the ControllableEntity, do whatever you want with it.
-        @return
+            @return
                 Return true if successful.
             */
-            virtual bool reward(PlayerInfo* player) = 0; //!<
+            virtual bool reward(PlayerInfo* player) = 0;
 
     };
 

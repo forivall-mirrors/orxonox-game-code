@@ -70,7 +70,7 @@ namespace orxonox
 
     struct JoyStickCalibration
     {
-        int zeroStates[24];
+        int middleValue[24];
         float positiveCoeff[24];
         float negativeCoeff[24];
     };
@@ -135,6 +135,7 @@ namespace orxonox
 
     public: // variables
         static EmptyHandler                 EMPTY_HANDLER;
+        static const unsigned int           sliderAxes = 8;
 
     private: // functions
         // don't mess with a Singleton
@@ -144,7 +145,12 @@ namespace orxonox
         void _initialiseKeyboard();
         void _initialiseMouse();
         void _initialiseJoySticks();
-        void _configureNumberOfJoySticks();
+        void _configureJoySticks();
+
+        void _loadCalibration();
+        void _startCalibration();
+        void _completeCalibration();
+        void _evaluateCalibration();
 
         void _destroyKeyboard();
         void _destroyMouse();
@@ -153,8 +159,6 @@ namespace orxonox
         void _clearBuffers();
 
         void _reload(bool joyStickSupport);
-
-        void _completeCalibration();
 
         void _fireAxis(unsigned int iJoyStick, int axis, int value);
         unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
@@ -177,6 +181,7 @@ namespace orxonox
         bool vector3Moved  (const OIS::JoyStickEvent &arg, int id) { return true; }
 
         void setConfigValues();
+        void _calibrationFileCallback();
 
     private: // variables
         OIS::InputManager*                  inputSystem_;          //!< OIS input manager
@@ -184,6 +189,7 @@ namespace orxonox
         OIS::Mouse*                         mouse_;                //!< OIS keyboard
         std::vector<OIS::JoyStick*>         joySticks_;            //!< OIS joy sticks
         unsigned int                        joySticksSize_;
+        std::vector<std::string>            joyStickIDs_;          //!< Execution unique identification strings for the joy sticks
         unsigned int                        devicesNum_;
         size_t                              windowHnd_;            //!< Render window handle
         InputManagerState                   internalState_;        //!< Current internal state
@@ -191,7 +197,7 @@ namespace orxonox
         // some internally handled states and handlers
         SimpleInputState*                   stateEmpty_;
         ExtendedInputState*                 stateMaster_;          //!< Always active master input state
-        KeyDetector*                        keyDetector_;        //!< KeyDetector instance
+        KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         InputBuffer*                        calibratorCallbackBuffer_;
 
         std::map<std::string, InputState*>  inputStatesByName_;
@@ -206,23 +212,23 @@ namespace orxonox
         std::vector<InputState*>            activeStatesTicked_;   //!< Current input states for joy stick events.
 
         // joystick calibration
-        //std::vector<int> marginalsMaxConfig_;
-        //std::vector<int> marginalsMinConfig_;
-        int                                 marginalsMax_[24];
-        int                                 marginalsMin_[24];
-        bool                                bCalibrated_;
-        bool                                bCalibrating_;
+        std::vector<std::vector<int> >      joyStickMinValues_;
+        std::vector<std::vector<int> >      joyStickMaxValues_;
+        std::vector<std::vector<int> >      joyStickMiddleValues_;
+        std::vector<ConfigValueContainer*>  calibrationConfigValueContainers_;
+        std::vector<JoyStickCalibration>    joyStickCalibrations_; 
 
         unsigned int                        keyboardModifiers_;    //!< Bit mask representing keyboard modifiers.
         std::vector<POVStates>              povStates_;            //!< Keeps track of the joy stick POV states.
         std::vector<SliderStates>           sliderStates_;         //!< Keeps track of the possibly two slider axes.
-        std::vector<JoyStickCalibration>    joySticksCalibration_; 
 
         std::vector<Key>                    keysDown_;
         std::vector<MouseButtonCode::ByEnum>      mouseButtonsDown_;
         std::vector<std::vector<JoyStickButtonCode::ByEnum> >  joyStickButtonsDown_;
 
-        static std::string                  bindingCommmandString_s;
+        // ConfigValues
+        std::string                         calibrationFilename_;  //!< Joy stick calibration ini filename
+
         static InputManager*                singletonRef_s;
     };
 

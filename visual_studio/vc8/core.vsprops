@@ -7,7 +7,6 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalOptions="/MP2"
 		PreprocessorDefinitions="CORE_SHARED_BUILD;LUA_BUILD_AS_DLL"
 	/>
 	<Tool

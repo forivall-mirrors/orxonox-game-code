@@ -32,8 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include "PlayerInfo.h"
-#include "core/Identifier.h"
-#include "objects/controllers/Controller.h"
 
 namespace orxonox
 {
@@ -52,8 +50,11 @@ namespace orxonox
 
             void setClientID(unsigned int clientID);
 
+            virtual void changedController();
+
         protected:
             void configvaluecallback_changednick();
+            void configvaluecallback_changedHUDTemplate();
             void networkcallback_changednick();
             void networkcallback_clientIDchanged();
             void networkcallback_server_initialized();
@@ -61,6 +62,7 @@ namespace orxonox
 
             std::string nick_;
             std::string synchronize_nick_;
+            std::string hudtemplate_;
             bool server_initialized_;
             bool client_initialized_;
     };

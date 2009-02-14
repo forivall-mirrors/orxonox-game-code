@@ -52,7 +52,7 @@ namespace orxonox
         return CommandExecutor::getInstance().evaluation_;
     }
 
-    ConsoleCommand& CommandExecutor::addConsoleCommandShortcut(ConsoleCommand* command)
+    ConsoleCommand& CommandExecutor::addConsoleCommandShortcut(ConsoleCommand* command, bool bDeleteAtExit)
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_.find(command->getName());
         if (it != CommandExecutor::getInstance().consoleCommandShortcuts_.end())
@@ -60,6 +60,11 @@ namespace orxonox
             COUT(2) << "Warning: Overwriting console-command shortcut with name " << command->getName() << "." << std::endl;
         }
 
+        // Make sure we can also delete the external ConsoleCommands that don't belong to an Identifier
+        if (command && bDeleteAtExit)
+        {
+            CommandExecutor::getInstance().consoleCommandExternals_.insert(command);
+        }
 
         CommandExecutor::getInstance().consoleCommandShortcuts_[command->getName()] = command;
         CommandExecutor::getInstance().consoleCommandShortcuts_LC_[getLowercase(command->getName())] = command;
@@ -645,5 +650,12 @@ namespace orxonox
             }
             return output;
         }
+    }
+
+    void CommandExecutor::destroyExternalCommands()
+    {
+        for (std::set<ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandExternals_.begin();
+            it != CommandExecutor::getInstance().consoleCommandExternals_.end(); ++it)
+            delete *it;
     }
 }

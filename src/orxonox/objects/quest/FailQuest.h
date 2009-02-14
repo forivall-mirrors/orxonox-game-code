@@ -27,9 +27,8 @@
  */
 
 /**
-    @file FailQuest.h
-    @brief
-    Definition of the FailQuest class.
+    @file
+    @brief Definition of the FailQuest class.
 */
 
 #ifndef _FailQuest_H__
@@ -42,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Fails a quest (with a specified id) for the player invoking the QuestEffect.

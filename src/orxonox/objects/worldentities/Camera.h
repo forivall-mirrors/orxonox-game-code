@@ -32,12 +32,12 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
-#include "objects/worldentities/PositionableEntity.h"
+#include "objects/worldentities/StaticEntity.h"
 #include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public PositionableEntity, public Tickable
+    class _OrxonoxExport Camera : public StaticEntity, public Tickable
     {
         friend class CameraManager;
 
@@ -54,20 +54,20 @@ namespace orxonox
             inline bool hasFocus()
                 { return this->bHasFocus_; }
 
-            inline void setDrag(bool bDrag)
-                { this->bDrag_ = bDrag; }
+            void setDrag(bool bDrag);
             inline bool getDrag() const
                 { return this->bDrag_; }
 
         private:
             void removeFocus();
-            void setFocus(Ogre::Viewport* viewport);
+            void setFocus();
             void configvaluecallback_changedNearClipDistance();
 
-            Ogre::Camera*   camera_;
-            float           nearClipDistance_;
-            bool            bHasFocus_;
-            bool            bDrag_;
+            Ogre::Camera*    camera_;
+            Ogre::SceneNode* cameraNode_;
+            float            nearClipDistance_;
+            bool             bHasFocus_;
+            bool             bDrag_;
     };
 }
 

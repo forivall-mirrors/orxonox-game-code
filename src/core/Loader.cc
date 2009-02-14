@@ -119,10 +119,10 @@ namespace orxonox
         Loader::currentMask_s = file->getMask() * mask;
 
         // let Lua work this out:
-        LuaBind* lua = LuaBind::getInstance();
-        lua->clearLuaOutput();
-        lua->loadFile(file->getFilename(), true);
-        lua->run();
+        LuaBind& lua = LuaBind::getInstance();
+        lua.clearLuaOutput();
+        lua.loadFile(file->getFilename(), true);
+        lua.run();
 
         try
         {
@@ -134,7 +134,7 @@ namespace orxonox
             //ticpp::Element myelement(*Script::getFileString());
             ticpp::Document xmlfile;
             //xmlfile.ToDocument();
-            xmlfile.Parse(lua->getLuaOutput(), true);
+            xmlfile.Parse(lua.getLuaOutput(), true);
 
             ticpp::Element rootElement;
             rootElement.SetAttribute("name", "root");

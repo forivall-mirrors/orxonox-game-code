@@ -27,9 +27,8 @@
  */
 
 /**
-    @file AddQuestHint.h
-    @brief
-    Definition of the AddQuestHint class.
+    @file
+    @brief Definition of the AddQuestHint class.
 */
 
 #ifndef _AddQuestHint_H__
@@ -41,8 +40,8 @@
 
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.
@@ -72,6 +71,7 @@ namespace orxonox {
             */
             inline const std::string & getHintId(void) const
                 { return this->hintId_; }
+            
             bool setHintId(const std::string & id); //!< Sets the id of the QuestHint.
 
     };

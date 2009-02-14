@@ -78,6 +78,7 @@ namespace orxonox
     {
         public:
             InputBuffer();
+            ~InputBuffer();
             InputBuffer(const std::string allowedChars);
 
             void setConfigValues();

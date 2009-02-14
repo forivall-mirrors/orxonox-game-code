@@ -42,7 +42,7 @@
 
 #include "Client.h"
 #include "Host.h"
-#include "Synchronisable.h"
+#include "synchronisable/Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include "packet/Packet.h"
 

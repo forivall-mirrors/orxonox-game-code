@@ -27,9 +27,9 @@
  */
 
 /**
-    @file PlayerTrigger.cc
+    @file
     @brief
-	Implementation of the PlayerTrigger class.
+    Implementation of the PlayerTrigger class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -37,8 +37,8 @@
 
 #include "core/CoreIncludes.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         Constructor. Registers the object and initializes defaults.
@@ -46,11 +46,11 @@ namespace orxonox {
     PlayerTrigger::PlayerTrigger(BaseObject* creator) : Trigger(creator)
     {
         RegisterObject(PlayerTrigger);
-        
+
         this->player_ = NULL;
         this->isForPlayer_ = true;
     }
-    
+
     /**
     @brief
         Destructor.
@@ -65,7 +65,6 @@ namespace orxonox {
     */
     void PlayerTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-	SUPER(PlayerTrigger, XMLPort, xmlelement, mode);
+        SUPER(PlayerTrigger, XMLPort, xmlelement, mode);
     }
-
 }

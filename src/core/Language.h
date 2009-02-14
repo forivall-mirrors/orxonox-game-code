@@ -49,6 +49,7 @@
 
 #include <map>
 #include <string>
+#include <cassert>
 
 #define AddLanguageEntry(label, fallbackstring) \
     orxonox::Language::getLanguage().addEntry(label, fallbackstring)
@@ -115,14 +116,15 @@ namespace orxonox
         friend class Core;
 
         public:
-            static Language& getLanguage();
+            Language();
+            ~Language();
+
+            static Language& getLanguage() { assert(singletonRef_s); return *singletonRef_s; }
             void addEntry(const LanguageEntryLabel& label, const std::string& entry);
             const std::string& getLocalisation(const LanguageEntryLabel& label) const;
 
         private:
-            Language();
-            Language(const Language& language);     // don't copy
-            virtual ~Language();
+            Language(const Language&);
 
             void readDefaultLanguageFile();
             void readTranslatedLanguageFile();
@@ -133,6 +135,8 @@ namespace orxonox
             std::string defaultLanguage_;                           //!< The default language
             std::string defaultLocalisation_;                       //!< The returned string, if an entry unavailable entry is requested
             std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their labels
+
+            static Language* singletonRef_s;
     };
 }
 

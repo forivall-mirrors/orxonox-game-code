@@ -95,15 +95,15 @@ namespace orxonox
         if (scriptModule_)
         {
             // destroy our own tolua interfaces
-	        //lua_pushnil(luaState_);
-	        //lua_setglobal(luaState_, "Orxonox");
-	        //lua_pushnil(luaState_);
-	        //lua_setglobal(luaState_, "Core");
+	        lua_pushnil(luaState_);
+	        lua_setglobal(luaState_, "Orxonox");
+	        lua_pushnil(luaState_);
+	        lua_setglobal(luaState_, "Core");
             // TODO: deleting the script module fails an assertation.
             // However there is not much we can do about it since it occurs too when
             // we don't open Core or Orxonox. Might be a CEGUI issue.
             // The memory leak is not a problem anyway..
-            //delete scriptModule_;
+            delete scriptModule_;
         }
 
         if (guiRenderer_)

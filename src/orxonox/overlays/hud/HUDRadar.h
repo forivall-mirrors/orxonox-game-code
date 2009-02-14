@@ -48,6 +48,7 @@ namespace orxonox
         ~HUDRadar();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void changedOwner();
 
     private:
         // XML accessors
@@ -75,6 +76,8 @@ namespace orxonox
         float maximumDotSize_;
 
         float sensitivity_;
+
+        Pawn* owner_;
     };
 }
 

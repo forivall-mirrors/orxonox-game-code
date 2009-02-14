@@ -108,7 +108,7 @@ namespace orxonox
             ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const D& defvalue, const V& value)
             {
                 this->init(type, identifier, sectionname, varname);
-                this->initValue((V)defvalue);
+                this->initValue(static_cast<V>(defvalue));
             }
 
             /**
@@ -216,6 +216,9 @@ namespace orxonox
             /** @brief Returns the name of this container. */
             inline const std::string& getName() const
                 { return this->varname_; }
+            /** @brief Retuns the name of the section this config value is in. */
+            inline const std::string& getSectionName() const
+                { return this->sectionname_; }
             /** @brief Returns true if this config-value is a vector */
             inline bool isVector() const
                 { return this->bIsVector_; }

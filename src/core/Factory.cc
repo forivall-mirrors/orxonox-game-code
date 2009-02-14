@@ -57,9 +57,9 @@ namespace orxonox
         @param id The network ID of the wanted Identifier
         @return The Identifier
     */
-    Identifier* Factory::getIdentifier(const unsigned int id)
+    Identifier* Factory::getIdentifier(const uint32_t id)
     {
-        std::map<unsigned int, Identifier*>::const_iterator it = getFactoryPointer()->identifierNetworkIDMap_.find(id);
+        std::map<uint32_t, Identifier*>::const_iterator it = getFactoryPointer()->identifierNetworkIDMap_.find(id);
         if (it != getFactoryPointer()->identifierNetworkIDMap_.end())
             return it->second;
         else
@@ -84,7 +84,7 @@ namespace orxonox
         @param oldID The old networkID
         @param newID The new networkID
     */
-    void Factory::changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID)
+    void Factory::changeNetworkID(Identifier* identifier, const uint32_t oldID, const uint32_t newID)
     {
         getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
         getFactoryPointer()->identifierNetworkIDMap_[newID] = identifier;

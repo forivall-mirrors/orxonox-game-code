@@ -28,6 +28,7 @@
 
 #include "OrxonoxStableHeaders.h"
 
+#include <OgreEntity.h>
 #include "Model.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -37,9 +38,11 @@ namespace orxonox
 {
     CreateFactory(Model);
 
-    Model::Model(BaseObject* creator) : PositionableEntity(creator)
+    Model::Model(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Model);
+
+        this->bCastShadows_ = true;
 
         this->registerVariables();
     }
@@ -47,7 +50,7 @@ namespace orxonox
     Model::~Model()
     {
         if (this->isInitialized() && this->mesh_.getEntity())
-            this->getNode()->detachObject(this->mesh_.getEntity());
+            this->detachOgreObject(this->mesh_.getEntity());
     }
 
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -60,22 +63,25 @@ namespace orxonox
 
     void Model::registerVariables()
     {
-        REGISTERSTRING(this->meshSrc_,    direction::toclient, new NetworkCallback<Model>(this, &Model::changedMesh));
-        REGISTERDATA(this->bCastShadows_, direction::toclient, new NetworkCallback<Model>(this, &Model::changedShadows));
+        registerVariable(this->meshSrc_,    variableDirection::toclient, new NetworkCallback<Model>(this, &Model::changedMesh));
+        registerVariable(this->bCastShadows_, variableDirection::toclient, new NetworkCallback<Model>(this, &Model::changedShadows));
     }
 
     void Model::changedMesh()
     {
-        if (this->mesh_.getEntity())
-            this->getNode()->detachObject(this->mesh_.getEntity());
-
-        this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
-
-        if (this->mesh_.getEntity())
+        if (Core::showsGraphics())
         {
-            this->getNode()->attachObject(this->mesh_.getEntity());
-            this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
-            this->mesh_.setVisible(this->isVisible());
+            if (this->mesh_.getEntity())
+                this->detachOgreObject(this->mesh_.getEntity());
+
+            this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
+
+            if (this->mesh_.getEntity())
+            {
+                this->attachOgreObject(this->mesh_.getEntity());
+                this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
+                this->mesh_.setVisible(this->isVisible());
+            }
         }
     }
 

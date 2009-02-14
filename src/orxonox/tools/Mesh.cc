@@ -30,6 +30,7 @@
 #include "Mesh.h"
 
 #include <sstream>
+#include <OgreEntity.h>
 #include <OgreSceneManager.h>
 #include <cassert>
 

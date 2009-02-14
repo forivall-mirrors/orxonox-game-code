@@ -47,6 +47,8 @@ namespace orxonox
 
     void EventTarget::changedName()
     {
+        SUPER(EventTarget, changedName);
+
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             if (it->getName() == this->getName())
                 this->addAsEvent(*it);

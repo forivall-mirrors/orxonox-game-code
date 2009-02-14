@@ -43,8 +43,6 @@ namespace orxonox
     */
     class _OrxonoxExport RadarViewable : virtual public OrxonoxClass
     {
-    class WorldEntity;
-
     public:
         enum Shape
         {
@@ -57,30 +55,42 @@ namespace orxonox
         RadarViewable();
         virtual ~RadarViewable() { }
 
-        float getRadarObjectCamouflage() const { return this->radarObjectCamouflage_; }
-        void setRadarObjectCamouflage(float camouflage) { this->radarObjectCamouflage_ = camouflage; }
+        inline void setRadarObjectCamouflage(float camouflage)
+            { this->radarObjectCamouflage_ = camouflage; }
+        inline float getRadarObjectCamouflage() const
+            { return this->radarObjectCamouflage_; }
 
-        const ColourValue& getRadarObjectColour() const { return this->radarObjectColour_; }
-        void setRadarObjectColour(const ColourValue& colour) { this->radarObjectColour_ = colour; }
+        inline void setRadarObjectColour(const ColourValue& colour)
+            { this->radarObjectColour_ = colour; }
+        inline const ColourValue& getRadarObjectColour() const
+            { return this->radarObjectColour_; }
 
-        const std::string& getRadarObjectDescription() const { return this->radarObjectDescription_; }
         void setRadarObjectDescription(const std::string& str);
+        inline const std::string& getRadarObjectDescription() const
+            { return this->radarObjectDescription_; }
 
-        const WorldEntity* getWorldEntity() const { return this->radarObject_; }
-        const Vector3& getWorldPosition() const;
-        Vector3 getOrientedVelocity() const;
+        virtual const WorldEntity* getWorldEntity() const = 0;
 
-        Shape getRadarObjectType() const { return this->radarObjectType_; }
+        const Vector3& getRVWorldPosition() const;
+        Vector3 getRVOrientedVelocity() const;
 
-    protected:
-        WorldEntity* radarObject_;
+        inline void setRadarObjectShape(Shape shape)
+            { this->radarObjectShape_ = shape; }
+        inline Shape getRadarObjectShape() const
+            { return this->radarObjectShape_; }
 
     private:
-        void validate() const { if (!this->radarObject_)
-        { COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl; assert(0); } }
+        void validate(const WorldEntity* object) const
+        {
+            if (!object)
+            {
+                COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
+                assert(0);
+            }
+        }
 
         float radarObjectCamouflage_;
-        Shape radarObjectType_;
+        Shape radarObjectShape_;
         std::string radarObjectDescription_;
         ColourValue radarObjectColour_;
     };

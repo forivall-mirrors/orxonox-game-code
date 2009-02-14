@@ -63,8 +63,8 @@ namespace orxonox
 
   void Script::execute()
   {
-    LuaBind* lua = LuaBind::getInstance();
-    lua->loadString(this->code_);
-    lua->run();
+    LuaBind& lua = LuaBind::getInstance();
+    lua.loadString(this->code_);
+    lua.run();
   }
 }

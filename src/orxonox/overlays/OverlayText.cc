@@ -49,11 +49,11 @@ namespace orxonox
             .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberString()));
         this->text_->setCharHeight(1.0);
 
-        setFont("Monofur");
-        setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
-        setCaption("");
-        setTextSize(1.0f);
-        setAlignmentString("left");
+        this->setFont("Monofur");
+        this->setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
+        this->setCaption("");
+        this->setTextSize(1.0f);
+        this->setAlignmentString("left");
 
         this->background_->addChild(this->text_);
     }
@@ -68,11 +68,12 @@ namespace orxonox
     {
         SUPER(OverlayText, XMLPort, xmlElement, mode);
 
-        XMLPortParam(OverlayText, "font",     setFont,            getFont,            xmlElement, mode);
-        XMLPortParam(OverlayText, "colour",   setColour,          getColour,          xmlElement, mode);
-        XMLPortParam(OverlayText, "caption",  setCaption,         getCaption,         xmlElement, mode);
-        XMLPortParam(OverlayText, "textSize", setTextSize,        getTextSize,        xmlElement, mode);
-        XMLPortParam(OverlayText, "align",    setAlignmentString, getAlignmentString, xmlElement, mode);
+        XMLPortParam(OverlayText, "font",       setFont,            getFont,            xmlElement, mode);
+        XMLPortParam(OverlayText, "colour",     setColour,          getColour,          xmlElement, mode);
+        XMLPortParam(OverlayText, "caption",    setCaption,         getCaption,         xmlElement, mode);
+        XMLPortParam(OverlayText, "textsize",   setTextSize,        getTextSize,        xmlElement, mode);
+        XMLPortParam(OverlayText, "align",      setAlignmentString, getAlignmentString, xmlElement, mode);
+        XMLPortParam(OverlayText, "spacewidth", setSpaceWidth,      getSpaceWidth,      xmlElement, mode);
     }
 
     void OverlayText::setFont(const std::string& font)

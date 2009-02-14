@@ -48,6 +48,7 @@
 
 #include <map>
 #include <string>
+#include "util/Integers.h"
 
 namespace orxonox
 {
@@ -59,9 +60,9 @@ namespace orxonox
     {
         public:
             static Identifier* getIdentifier(const std::string& name);
-            static Identifier* getIdentifier(const unsigned int id);
+            static Identifier* getIdentifier(const uint32_t id);
             static void add(const std::string& name, Identifier* identifier);
-            static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
+            static void changeNetworkID(Identifier* identifier, const uint32_t oldID, const uint32_t newID);
             static void createClassHierarchy();
 
             static Factory* getFactoryPointer();    // avoid overriding order problem in the static intialisation process
@@ -82,7 +83,7 @@ namespace orxonox
             ~Factory() {}                           // don't delete
 
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
-            std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
+            std::map<uint32_t, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
     };
 
     // ###############################

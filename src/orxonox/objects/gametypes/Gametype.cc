@@ -33,9 +33,16 @@
 #include <ctime>
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/Template.h"
+#include "core/Core.h"
+#include "overlays/OverlayGroup.h"
 #include "objects/infos/PlayerInfo.h"
+#include "objects/infos/Bot.h"
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
+#include "objects/worldentities/Camera.h"
+#include "Settings.h"
 
 #include "network/Host.h"
 
@@ -43,28 +50,52 @@ namespace orxonox
 {
     CreateUnloadableFactory(Gametype);
 
-    Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
+    Gametype::Gametype(BaseObject* creator) : BaseObject(creator), gtinfo_(creator)
     {
         RegisterObject(Gametype);
 
+        this->setGametype(this);
+
         this->defaultControllableEntity_ = Class(Spectator);
 
-        this->bStarted_ = false;
-        this->bEnded_ = false;
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
+        this->numberOfBots_ = 0;
 
         this->initialStartCountdown_ = 3;
-        this->startCountdown_ = 0;
-        this->bStartCountdownRunning_ = false;
+
+        this->setConfigValues();
+
+        this->addBots(this->numberOfBots_);
+
+        // load the corresponding score board
+        if (Core::showsGraphics() && this->scoreboardTemplate_ != "")
+        {
+            this->scoreboard_ = new OverlayGroup(this);
+            this->scoreboard_->addTemplate(this->scoreboardTemplate_);
+            this->scoreboard_->setGametype(this);
+        }
+        else
+            this->scoreboard_ = 0;
+    }
+
+    void Gametype::setConfigValues()
+    {
+        SetConfigValue(initialStartCountdown_, 3.0f);
+        SetConfigValue(bAutoStart_, false);
+        SetConfigValue(bForceSpawn_, false);
+        SetConfigValue(numberOfBots_, 0);
+        SetConfigValue(scoreboardTemplate_, "defaultScoreboard");
     }
 
     void Gametype::tick(float dt)
     {
-        if (this->bStartCountdownRunning_ && !this->bStarted_)
-            this->startCountdown_ -= dt;
+        SUPER(Gametype, tick, dt);
 
-        if (!this->bStarted_)
+        if (this->gtinfo_.bStartCountdownRunning_ && !this->gtinfo_.bStarted_)
+            this->gtinfo_.startCountdown_ -= dt;
+
+        if (!this->gtinfo_.bStarted_)
             this->checkStart();
         else
             this->spawnDeadPlayersIfRequested();
@@ -75,7 +106,7 @@ namespace orxonox
     void Gametype::start()
     {
         COUT(0) << "game started" << std::endl;
-        this->bStarted_ = true;
+        this->gtinfo_.bStarted_ = true;
 
         this->spawnPlayersIfRequested();
     }
@@ -83,12 +114,12 @@ namespace orxonox
     void Gametype::end()
     {
         COUT(0) << "game ended" << std::endl;
-        this->bEnded_ = true;
+        this->gtinfo_.bEnded_ = true;
     }
 
     void Gametype::playerEntered(PlayerInfo* player)
     {
-        this->players_[player] = PlayerState::Joined;
+        this->players_[player].state_ = PlayerState::Joined;
 
         std::string message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
@@ -97,7 +128,7 @@ namespace orxonox
 
     void Gametype::playerLeft(PlayerInfo* player)
     {
-        std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.find(player);
+        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
             this->players_.erase(it);
@@ -139,19 +170,70 @@ namespace orxonox
 
     void Gametype::pawnKilled(Pawn* victim, Pawn* killer)
     {
+        if (victim && victim->getPlayer())
+        {
+            std::string message;
+            if (killer)
+            {
+                if (killer->getPlayer())
+                    message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
+                else
+                    message = victim->getPlayer()->getName() + " was killed";
+            }
+            else
+                message = victim->getPlayer()->getName() + " died";
+
+            COUT(0) << message << std::endl;
+            Host::Broadcast(message);
+        }
+
+        if (victim && victim->getPlayer())
+        {
+            std::map<PlayerInfo*, Player>::iterator it = this->players_.find(victim->getPlayer());
+            if (it != this->players_.end())
+            {
+                it->second.state_ = PlayerState::Dead;
+                it->second.killed_++;
+
+                // Reward killer
+                if (killer)
+                {
+                    std::map<PlayerInfo*, Player>::iterator itKiller = this->players_.find(killer->getPlayer());
+                    if (itKiller != this->players_.end())
+                    {
+                        this->playerScored(itKiller->second);
+                    }
+                    else
+                        COUT(2) << "Warning: Killing Pawn was not in the playerlist" << std::endl;
+                }
+
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
+                if (victim->getCamera())
+                {
+                    entity->setPosition(victim->getCamera()->getWorldPosition());
+                    entity->setOrientation(victim->getCamera()->getWorldOrientation());
+                }
+                else
+                {
+                    entity->setPosition(victim->getWorldPosition());
+                    entity->setOrientation(victim->getWorldOrientation());
+                }
+                it->first->startControl(entity);
+            }
+            else
+                COUT(2) << "Warning: Killed Pawn was not in the playerlist" << std::endl;
+        }
     }
 
-    void Gametype::playerScored(PlayerInfo* player)
+    void Gametype::playerScored(Player& player)
     {
+        player.frags_++;
     }
 
     SpawnPoint* Gametype::getBestSpawnPoint(PlayerInfo* player) const
     {
         if (this->spawnpoints_.size() > 0)
         {
-            srand(time(0));
-            rnd();
-
             unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
@@ -167,23 +249,28 @@ namespace orxonox
 
     void Gametype::assignDefaultPawnsIfNeeded()
     {
-        for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
-            if (!it->first->getControllableEntity() && (!it->first->isReadyToSpawn() || !this->bStarted_))
+            if (!it->first->getControllableEntity())
             {
-                SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
-                if (spawn)
+                it->second.state_ = PlayerState::Dead;
+
+                if (!it->first->isReadyToSpawn() || !this->gtinfo_.bStarted_)
                 {
-                    // force spawn at spawnpoint with default pawn
-                    ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
-                    spawn->spawn(entity);
-                    it->first->startControl(entity);
-                    it->second = PlayerState::Dead;
-                }
-                else
-                {
-                    COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
-                    abort();
+                    SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
+                    if (spawn)
+                    {
+                        // force spawn at spawnpoint with default pawn
+                        ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
+                        spawn->spawn(entity);
+                        it->first->startControl(entity);
+                        it->second.state_ = PlayerState::Dead;
+                    }
+                    else
+                    {
+                        COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+                        abort();
+                    }
                 }
             }
         }
@@ -191,14 +278,14 @@ namespace orxonox
 
     void Gametype::checkStart()
     {
-        if (!this->bStarted_)
+        if (!this->gtinfo_.bStarted_)
         {
-            if (this->bStartCountdownRunning_)
+            if (this->gtinfo_.bStartCountdownRunning_)
             {
-                if (this->startCountdown_ <= 0)
+                if (this->gtinfo_.startCountdown_ <= 0)
                 {
-                    this->bStartCountdownRunning_ = false;
-                    this->startCountdown_ = 0;
+                    this->gtinfo_.bStartCountdownRunning_ = false;
+                    this->gtinfo_.startCountdown_ = 0;
                     this->start();
                 }
             }
@@ -211,15 +298,18 @@ namespace orxonox
                 else
                 {
                     bool allplayersready = true;
-                    for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+                    bool hashumanplayers = false;
+                    for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
                     {
                         if (!it->first->isReadyToSpawn())
                             allplayersready = false;
+                        if (it->first->isHumanPlayer())
+                            hashumanplayers = true;
                     }
-                    if (allplayersready)
+                    if (allplayersready && hashumanplayers)
                     {
-                        this->startCountdown_ = this->initialStartCountdown_;
-                        this->bStartCountdownRunning_ = true;
+                        this->gtinfo_.startCountdown_ = this->initialStartCountdown_;
+                        this->gtinfo_.bStartCountdownRunning_ = true;
                     }
                 }
             }
@@ -228,15 +318,15 @@ namespace orxonox
 
     void Gametype::spawnPlayersIfRequested()
     {
-        for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
             if (it->first->isReadyToSpawn() || this->bForceSpawn_)
                 this->spawnPlayer(it->first);
     }
 
     void Gametype::spawnDeadPlayersIfRequested()
     {
-        for (std::map<PlayerInfo*, PlayerState::Enum>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-            if (it->second == PlayerState::Dead)
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->second.state_ == PlayerState::Dead)
                 if (it->first->isReadyToSpawn() || this->bForceSpawn_)
                     this->spawnPlayer(it->first);
     }
@@ -247,12 +337,31 @@ namespace orxonox
         if (spawnpoint)
         {
             player->startControl(spawnpoint->spawn());
-            this->players_[player] = PlayerState::Alive;
+            this->players_[player].state_ = PlayerState::Alive;
         }
         else
         {
             COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
             abort();
+        }
+    }
+
+    void Gametype::addBots(unsigned int amount)
+    {
+        for (unsigned int i = 0; i < amount; ++i)
+            new Bot(this);
+    }
+
+    void Gametype::killBots(unsigned int amount)
+    {
+        unsigned int i = 0;
+        for (ObjectList<Bot>::iterator it = ObjectList<Bot>::begin(); (it != ObjectList<Bot>::end()) && ((amount == 0) || (i < amount)); )
+        {
+            if (it->getGametype() == this)
+            {
+                delete (*(it++));
+                ++i;
+            }
         }
     }
 }

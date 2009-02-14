@@ -92,13 +92,6 @@ namespace orxonox
         GraphicsEngine*       graphicsEngine_;   //!< Interface to Ogre
 
         KeyBinder*            masterKeyBinder_;
-
-        // variables for time statistics
-        unsigned long         frameCount_;
-        unsigned int          statisticsRefreshCycle_;
-        unsigned long long    statisticsStartTime_;
-        unsigned long         statisticsStartCount_;
-        unsigned int          tickTime_;
         XMLFile*              debugOverlay_;
 
         // config values
@@ -109,8 +102,10 @@ namespace orxonox
         int                   ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL
         int                   ogreLogLevelNormal_;       //!< Corresponding Orxonx debug level for LL_NORMAL
         int                   ogreLogLevelCritical_;     //!< Corresponding Orxonx debug level for LL_CRITICAL
-        unsigned int          detailLevelParticle_;      //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
         std::string           defaultMasterKeybindings_; //!< Filename of default master keybindings.
+
+        // console commands
+        ConsoleCommand*       ccPrintScreen_;
     };
 }
 

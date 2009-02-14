@@ -35,27 +35,23 @@
 #include "WeaponSlot.h"
 
 
-
 namespace orxonox
 {
-    WeaponSlot::WeaponSlot(BaseObject* creator) : BaseObject(creator)
+    CreateFactory(WeaponSlot);
+
+    WeaponSlot::WeaponSlot(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(WeaponSlot);
 
         this->unlimitedAmmo_ = false;
-
         this->attachedWeapon_ = 0;
-        this->parentWeaponSet_ = 0;
+        this->setObjectMode(0x0);
     }
 
     WeaponSlot::~WeaponSlot()
     {
     }
 
-    void WeaponSlot::attachWeapon(Weapon *weaponName)
-    {
-
-    }
 
     /*sets the munition type
      *unlimited: true
@@ -66,13 +62,30 @@ namespace orxonox
         unlimitedAmmo_ = isUnlimited;
     }
 
+
     void WeaponSlot::fire()
     {
-
+        if ( this->attachedWeapon_ )
+//COUT(0) << "WeaponSlot::fire" << std::endl;
+        this->attachedWeapon_->fire();
     }
+
 
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
+        SUPER(WeaponSlot, XMLPort, xmlelement, mode);
+    }
 
+    void WeaponSlot::attachWeapon(Weapon *weapon)
+    {
+        this->attachedWeapon_ = weapon;
+        weapon->setAttachedToWeaponSlot(this);
+//COUT(0) << "WeaponSlot::attachWeapon position=" << this->getWorldPosition() << std::endl;
+        weapon->setPosition(this->getPosition());
+    }
+
+    Weapon * WeaponSlot::getAttachedWeapon() const
+    {
+        return this->attachedWeapon_;
     }
 }

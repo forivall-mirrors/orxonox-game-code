@@ -70,14 +70,48 @@ namespace orxonox
 
         void clearColours();
 
-        void setRightToLeft(bool r2l) { this->right2Left_ = r2l; this->valueChanged(); }
-        bool getRightToLeft() const   { return this->right2Left_; }
+        inline void setRightToLeft(bool r2l)
+        {
+            if (r2l != this->right2Left_)
+            {
+                this->right2Left_ = r2l;
+                this->valueChanged();
+            }
+        }
+        inline bool getRightToLeft() const
+            { return this->right2Left_; }
 
-        void setValue(float value)    { this->value_ = clamp(value, 0.0f, 1.0f); this->valueChanged(); }
-        float getValue() const        { return this->value_; }
+        inline void setValue(float value)
+        {
+            float temp = clamp(value, 0.0f, 1.0f);
+            if (temp != this->value_)
+            {
+                this->value_ = temp;
+                this->valueChanged();
+            }
+        }
+        inline float getValue() const
+            { return this->value_; }
 
-        void setAutoColour(bool val)  { this->autoColour_ = val; this->valueChanged(); }
-        bool getAutoColour() const    { return this->autoColour_; }
+        inline void setAutoColour(bool val)
+        {
+            if (val != this->autoColour_)
+            {
+                this->autoColour_ = val;
+                this->valueChanged();
+
+                if (!val)
+                    this->currentColour_ = ColourValue::White;
+            }
+        }
+        inline bool getAutoColour() const
+            { return this->autoColour_; }
+
+        void setBarTexture(const std::string& texture);
+        const std::string& getBarTexture() const;
+
+        inline const ColourValue& getCurrentBarColour() const
+            { return this->currentColour_; }
 
     protected:
         virtual void valueChanged();
@@ -89,6 +123,7 @@ namespace orxonox
         bool right2Left_;
         bool autoColour_;                   //!< whether bar changes colour automatically
         float value_;                       //!< progress of bar
+        ColourValue currentColour_;
 
         Ogre::PanelOverlayElement* bar_;
         Ogre::TextureUnitState* textureUnitState_;

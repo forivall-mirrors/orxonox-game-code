@@ -82,7 +82,7 @@ namespace orxonox
             COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
         }
 
-        LuaBind::getInstance()->setIncludePath(this->dataPath_);
+        LuaBind::getInstance().setIncludePath(this->dataPath_);
     }
 
     /**

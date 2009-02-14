@@ -53,9 +53,17 @@ namespace orxonox
             static void fire();
             static void altFire();
 
+            static void boost();
             static void greet();
             static void use();
             static void switchCamera();
+            static void mouseLook();
+            static void dropItems();
+
+            static void suicide();
+
+            static void addBots(unsigned int amount);
+            static void killBots(unsigned int amount = 0);
 
         private:
             static HumanController* localController_s;

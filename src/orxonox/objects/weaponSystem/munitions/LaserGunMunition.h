@@ -32,11 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
-
+#include "../Munition.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGunMunition : public BaseObject
+    class _OrxonoxExport LaserGunMunition : public Munition
     {
         public:
             LaserGunMunition(BaseObject* creator);
@@ -46,10 +46,6 @@ namespace orxonox
 
 
         private:
-            int bullets_;
-            int magazines_;
-            int maxBullets_;
-            int maxMagazines_;
 
 
     };

@@ -27,9 +27,8 @@
  */
 
 /**
-    @file AddQuestHint.cc
-    @brief
-    Implementation of the AddQuestHint class.
+    @file
+    @brief Implementation of the AddQuestHint class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -43,8 +42,8 @@
 #include "QuestItem.h"
 #include "QuestHint.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     CreateFactory(AddQuestHint);
 
     /**
@@ -129,7 +128,7 @@ namespace orxonox {
            return false;
         }
 
-        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player." << std::endl;
+        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." << std::endl;
         return true;
 
     }

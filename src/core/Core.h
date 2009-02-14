@@ -39,6 +39,7 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
@@ -48,16 +49,18 @@ namespace orxonox
     class _CoreExport Core : public OrxonoxClass
     {
         public:
-            static Core& getInstance();
-            static bool& isCreatingCoreSettings();
+            Core();
+            ~Core();
             void setConfigValues();
             void debugLevelChanged();
             void languageChanged();
 
-            static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
-            static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
+            static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
+
+            static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
+            static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
-            static void resetLanguage();
+            static void  resetLanguage();
 
             // fast access global variables.
             static bool showsGraphics() { return bShowsGraphics_s; }
@@ -72,23 +75,24 @@ namespace orxonox
             static void updateIsMaster  ()         { bIsMaster_s      = (bHasServer_s || bIsStandalone_s); }
 
         private:
+            Core(const Core&);
             void resetLanguageIntern();
-
-            Core();
-            Core(const Core& other);
-            virtual ~Core();
+            void initializeRandomNumberGenerator();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
             int softDebugLevelLogfile_;                     //!< The debug level for the logfile
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             std::string language_;                          //!< The language
+            bool bInitializeRandomNumberGenerator_;          //!< If true, srand(time(0)) is called
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server
             static bool bIsClient_s;
             static bool bIsStandalone_s;
             static bool bIsMaster_s;
+
+            static Core* singletonRef_s;
     };
 }
 

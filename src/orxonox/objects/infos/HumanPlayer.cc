@@ -36,6 +36,7 @@
 #include "network/Host.h"
 #include "objects/controllers/HumanController.h"
 #include "objects/gametypes/Gametype.h"
+#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
@@ -62,15 +63,16 @@ namespace orxonox
     void HumanPlayer::setConfigValues()
     {
         SetConfigValue(nick_, "Player").callback(this, &HumanPlayer::configvaluecallback_changednick);
+        SetConfigValue(hudtemplate_, "defaultHUD").callback(this, &HumanPlayer::configvaluecallback_changedHUDTemplate);
     }
 
     void HumanPlayer::registerVariables()
     {
-        REGISTERSTRING(this->synchronize_nick_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
+        registerVariable(this->synchronize_nick_, variableDirection::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
 
-        REGISTERDATA(this->clientID_,     direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
-        REGISTERDATA(this->server_initialized_, direction::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_initialized));
-        REGISTERDATA(this->client_initialized_, direction::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_initialized));
+        registerVariable(this->clientID_,           variableDirection::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
+        registerVariable(this->server_initialized_, variableDirection::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_initialized));
+        registerVariable(this->client_initialized_, variableDirection::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_initialized));
     }
 
     void HumanPlayer::configvaluecallback_changednick()
@@ -82,6 +84,11 @@ namespace orxonox
             if (Core::isMaster())
                 this->setName(this->nick_);
         }
+    }
+
+    void HumanPlayer::configvaluecallback_changedHUDTemplate()
+    {
+        this->changedController();
     }
 
     void HumanPlayer::networkcallback_changednick()
@@ -98,7 +105,7 @@ namespace orxonox
             this->client_initialized_ = true;
 
             if (!Core::isMaster())
-                this->setObjectMode(direction::bidirectional);
+                this->setObjectMode(objectDirection::bidirectional);
             else
                 this->setName(this->nick_);
 
@@ -136,5 +143,16 @@ namespace orxonox
     {
         this->clientID_ = clientID;
         this->networkcallback_clientIDchanged();
+    }
+
+    void HumanPlayer::changedController()
+    {
+        if (this->getController())
+        {
+            this->getController()->setHUDTemplate(this->hudtemplate_);
+
+            if (this->getController() && this->getController()->getHUD())
+                this->getController()->getHUD()->setOwner(this->getControllableEntity());
+        }
     }
 }

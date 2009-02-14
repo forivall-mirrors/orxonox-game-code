@@ -30,10 +30,12 @@
 #include "Trigger.h"
 
 #include <OgreBillboard.h>
+#include <OgreBillboardSet.h>
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
+#include "core/Core.h"
 #include "objects/Scene.h"
 
 namespace orxonox
@@ -43,7 +45,7 @@ namespace orxonox
 
   CreateFactory(Trigger);
 
-  Trigger::Trigger(BaseObject* creator) : PositionableEntity(creator)
+  Trigger::Trigger(BaseObject* creator) : StaticEntity(creator)
   {
     RegisterObject(Trigger);
 
@@ -64,13 +66,13 @@ namespace orxonox
 
 //    this->bUpdating_ = false;
 
-    if (this->getScene() && this->getScene()->getSceneManager())
+    if (this->getScene() && Core::showsGraphics())
     {
       this->debugBillboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
       this->debugBillboard_.setVisible(false);
 
       if (this->debugBillboard_.getBillboardSet())
-        this->getNode()->attachObject(this->debugBillboard_.getBillboardSet());
+          this->attachOgreObject(this->debugBillboard_.getBillboardSet());
     }
 
     this->setObjectMode(0x0);
@@ -105,6 +107,8 @@ namespace orxonox
     // Check if the object is active (this is NOT Trigger::isActive()!)
     if (!this->BaseObject::isActive())
         return;
+
+    SUPER(Trigger, tick, dt);
 
     bool newTriggered = this->isTriggered() ^ this->bInvertMode_;
 

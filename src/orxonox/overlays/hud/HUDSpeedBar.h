@@ -44,6 +44,10 @@ namespace orxonox
         ~HUDSpeedBar();
 
         virtual void tick(float dt);
+        virtual void changedOwner();
+
+    private:
+        SpaceShip* owner_;
     };
 }
 #endif /* _HUDSpeedBar_H__ */

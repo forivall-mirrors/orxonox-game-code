@@ -46,12 +46,14 @@
 #endif
 #include <Ogre.h>
 #include <CEGUI.h>
-#include "ois/OIS.h"
 #include <boost/thread/recursive_mutex.hpp>
 //#include <boost/thread/mutex.hpp>
 //#include <boost/thread/condition.hpp>
 //#include <boost/thread/thread.hpp>
 #include <boost/static_assert.hpp>
+
+#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "ois/OIS.h"
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
 #include "tolua/tolua++.h"
@@ -94,12 +96,12 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/InputManager.h"
 
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 
-#include "Settings.h"
+//#include "Settings.h"
 
 //#endif /* ifdef NDEBUG */
 
-#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
+#endif /* defined(ORXONOX_ENABLE_PCH) */
 
 #endif /* _OrxonoxStableHeaders_H__ */

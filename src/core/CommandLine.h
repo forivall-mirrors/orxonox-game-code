@@ -154,6 +154,7 @@ namespace orxonox
             return !(it == _getInstance().cmdLineArgs_.end());
         }
 
+        static void destroyAllArguments();
 
     private:
         //! Constructor initialises bFirstTimeParse_ with true.
@@ -178,7 +179,7 @@ namespace orxonox
 
         //! Holds all pointers to the arguments and serves as a search map by name.
         std::map<std::string, CommandLineArgument*> cmdLineArgs_;
-        //! Search map by chortcut for the arguments.
+        //! Search map by shortcut for the arguments.
         std::map<std::string, CommandLineArgument*> cmdLineArgsShortcut_;
     };
 

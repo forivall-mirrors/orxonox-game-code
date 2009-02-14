@@ -101,6 +101,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -166,6 +167,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PawnManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\PlayerManager.cc"
 				>
 			</File>
@@ -209,6 +214,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\GlobalShader.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Level.cc"
 					>
 				</File>
@@ -246,22 +255,6 @@
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Backlight.cc"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Billboard.cc"
@@ -284,7 +277,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ExplosionChunk.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\FadingBillboard.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Light.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\MobileEntity.cc"
 						>
 					</File>
 					<File
@@ -304,11 +309,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
+						RelativePath="..\..\src\orxonox\objects\worldentities\Planet.cc"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\StaticEntity.cc"
 						>
 					</File>
 					<File
@@ -343,6 +352,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\PlayerTrigger.cc"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\Trigger.cc"
 							>
 						</File>
@@ -360,6 +373,14 @@
 					Name="infos"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\infos\Bot.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\GametypeInfo.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\infos\HumanPlayer.cc"
 						>
 					</File>
@@ -376,11 +397,23 @@
 					Name="controllers"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\AIController.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ArtificialController.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\Controller.cc"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\HumanController.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ScriptController.cc"
 						>
 					</File>
 				</Filter>
@@ -393,6 +426,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weaponSystem\Weapon.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\weaponSystem\WeaponPack.cc"
 						>
 					</File>
 					<File
@@ -413,46 +450,18 @@
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\munitions\LaserGunMunition.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter
 						Name="weapons"
 						>
 						<File
+							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\Fusion.cc"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\LaserGun.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\Missile.cc"
@@ -481,64 +490,64 @@
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\projectiles\BillboardProjectile.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\projectiles\ParticleProjectile.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\projectiles\Projectile.cc"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="collisionShapes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\BoxCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\ConeCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\PlaneCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\WorldEntityCollisionShape.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="items"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Engine.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Item.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\MultiStateEngine.cc"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="quest"
@@ -588,6 +597,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestEffectBeacon.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestHint.cc"
 						>
 					</File>
@@ -596,11 +609,35 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestListener.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestManager.cc"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\quest\Rewardable.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="pickup"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\BaseItem.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\PickupSpawner.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipEquipment.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\Turbo.cc"
 						>
 					</File>
 				</Filter>
@@ -618,6 +655,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\ParticleInterface.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\Shader.cc"
 					>
 				</File>
 				<File
@@ -714,7 +755,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\GametypeStatus.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDHealthBar.cc"
 						>
 					</File>
 					<File
@@ -739,6 +788,42 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="stats"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\CreateLines.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\Scoreboard.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\Stats.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\StatsTest.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="notifications"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\Notification.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationManager.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationQueue.cc"
 						>
 					</File>
 				</Filter>
@@ -830,6 +915,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PawnManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\PlayerManager.h"
 				>
 			</File>
@@ -850,6 +939,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\EventTarget.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\GlobalShader.h"
 					>
 				</File>
 				<File
@@ -912,7 +1005,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ExplosionChunk.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\FadingBillboard.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Light.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\MobileEntity.h"
 						>
 					</File>
 					<File
@@ -932,11 +1037,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
+						RelativePath="..\..\src\orxonox\objects\worldentities\Planet.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\StaticEntity.h"
 						>
 					</File>
 					<File
@@ -971,6 +1080,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\PlayerTrigger.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\Trigger.h"
 							>
 						</File>
@@ -988,6 +1101,18 @@
 					Name="infos"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\infos\Bot.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\GametypeInfo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\HumanPlayer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Info.h"
 						>
 					</File>
@@ -1000,11 +1125,23 @@
 					Name="controllers"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\AIController.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ArtificialController.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\Controller.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\controllers\HumanController.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\controllers\ScriptController.h"
 						>
 					</File>
 				</Filter>
@@ -1056,11 +1193,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestEffectBeacon.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestHint.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\quest\QuestItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\quest\QuestListener.h"
 						>
 					</File>
 					<File
@@ -1099,6 +1244,10 @@
 						Name="weapons"
 						>
 						<File
+							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\Fusion.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\orxonox\objects\weaponSystem\weapons\LaserGun.h"
 							>
 						</File>
@@ -1132,6 +1281,86 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="collisionShapes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\BoxCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\CompoundCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\ConeCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\PlaneCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\SphereCollisionShape.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\collisionshapes\WorldEntityCollisionShape.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="items"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Engine.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\Item.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\items\MultiStateEngine.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="pickup"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\BaseItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\PickupSpawner.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipEquipment.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipEquipmentClasses.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\ShipItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\Turbo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\pickup\Usable.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -1141,11 +1370,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\tools\BulletConversions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\tools\Mesh.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\ParticleInterface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\Shader.h"
 					>
 				</File>
 				<File
@@ -1192,7 +1429,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\GametypeStatus.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDHealthBar.h"
 						>
 					</File>
 					<File
@@ -1225,6 +1470,42 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="stats"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\CreateLines.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\Scoreboard.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\Stats.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\StatsTest.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="notifications"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\Notification.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationManager.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\notifications\NotificationQueue.h"
 						>
 					</File>
 				</Filter>

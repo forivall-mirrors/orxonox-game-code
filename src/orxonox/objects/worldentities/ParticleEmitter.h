@@ -30,11 +30,11 @@
 #define _ParticleEmitter_H__
 
 #include "OrxonoxPrereqs.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleEmitter : public PositionableEntity
+    class _OrxonoxExport ParticleEmitter : public StaticEntity
     {
         public:
             ParticleEmitter(BaseObject* creator);

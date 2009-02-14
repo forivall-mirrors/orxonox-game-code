@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "LinearMath/btVector3.h"
+
 #include "Pawn.h"
 
 namespace orxonox
@@ -55,48 +57,52 @@ namespace orxonox
             virtual void rotateRoll(const Vector2& value);
 
             virtual void fire();
+            virtual void boost();
 
-            void setMaxSpeed(float value)
-                { this->maxSpeed_ = value; }
-            void setMaxSecondarySpeed(float value)
-                { this->maxSecondarySpeed_ = value; }
-            void setMaxRotation(const Degree& value)
-                { this->maxRotation_ = value; }
-            void setTransAcc(float value)
-                { this->translationAcceleration_ = value; }
-            void setRotAcc(const Degree& value)
-                { this->rotationAcceleration_ = value; }
-            void setTransDamp(float value)
-                { this->translationDamping_ = value; }
+            void setEngine(Engine* engine);
+            inline Engine* getEngine() const
+                { return this->engine_; }
 
-            inline float getMaxSpeed() const
-                { return this->maxSpeed_; }
-            inline float getMaxSecondarySpeed() const
-                { return this->maxSecondarySpeed_; }
-            inline float getMaxRotation() const
-                { return this->maxRotation_.valueDegrees(); }
-            inline float getTransAcc() const
-                { return this->translationAcceleration_; }
-            inline float getRotAcc() const
-                { return this->rotationAcceleration_.valueDegrees(); }
-            inline float getTransDamp() const
-                { return this->translationDamping_; }
+            inline void setSteeringDirection(const Vector3& direction)
+                { this->steering_ = direction; }
+            inline const Vector3& getSteeringDirection() const
+                { return this->steering_; }
+
+            inline void setBoost(bool bBoost)
+                { this->bBoost_ = bBoost; }
+            inline bool getBoost() const
+                { return this->bBoost_; }
+
+            inline void setEngineTemplate(const std::string& temp)
+                { this->enginetemplate_ = temp; this->loadEngineTemplate(); }
+            inline const std::string& getEngineTemplate() const
+                { return this->enginetemplate_; }
+
+            inline void setPermanentBoost(bool bPermanent)
+                { this->bPermanentBoost_ = bPermanent; }
+            inline bool getPermanentBoost() const
+                { return this->bPermanentBoost_; }
 
         protected:
             bool bInvertYAxis_;
 
-            float maxSpeed_;
-            float maxSecondarySpeed_;
-            float translationAcceleration_;
-            float translationDamping_;
+            bool bBoost_;
+            bool bPermanentBoost_;
+            Vector3 steering_;
+            float primaryThrust_;
+            float auxilaryThrust_;
+            float rotationThrust_;
+            btVector3 localLinearAcceleration_;
+            btVector3 localAngularAcceleration_;
 
-            Degree maxRotation_;
-            Degree rotationAcceleration_;
+        private:
+            virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
 
-            Degree zeroDegree_;
-            Degree pitchRotation_;
-            Degree yawRotation_;
-            Degree rollRotation_;
+        private:
+            void loadEngineTemplate();
+
+            std::string enginetemplate_;
+            Engine* engine_;
     };
 }
 

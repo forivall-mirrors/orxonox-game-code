@@ -36,6 +36,7 @@
 
 #include "UtilPrereqs.h"
 
+#include <cassert>
 #include <list>
 #include <string>
 
@@ -67,11 +68,10 @@ namespace orxonox
 
     class SignalHandler
     {
-    private:
-        SignalHandler();
     public:
-        inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; }
-        ~SignalHandler(){ SignalHandler::singletonRef = NULL; }
+        SignalHandler()  { assert(SignalHandler::singletonRef_s == 0); SignalHandler::singletonRef_s = this; }
+        ~SignalHandler() { assert(SignalHandler::singletonRef_s != 0); SignalHandler::singletonRef_s = NULL; }
+        inline static SignalHandler& getInstance() { assert(SignalHandler::singletonRef_s); return *SignalHandler::singletonRef_s; }
 
         void registerCallback( SignalCallback cb, void * someData );
 
@@ -86,7 +86,7 @@ namespace orxonox
 
         SignalCallbackList callbackList;
 
-        static SignalHandler * singletonRef;
+        static SignalHandler* singletonRef_s;
 
         std::string appName;
         std::string filename;
@@ -103,13 +103,15 @@ namespace orxonox
     class _UtilExport SignalHandler
     {
     public:
-        inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
-        void doCatch( const std::string & appName, const std::string & filename ) {};
-        void dontCatch() {};
-        void registerCallback( SignalCallback cb, void * someData ) {};
+        SignalHandler()  { assert(SignalHandler::singletonRef_s == 0); SignalHandler::singletonRef_s = this; }
+        ~SignalHandler() { assert(SignalHandler::singletonRef_s != 0); SignalHandler::singletonRef_s = 0; }
+        inline static SignalHandler& getInstance() { assert(SignalHandler::singletonRef_s); return *SignalHandler::singletonRef_s; }
+        void doCatch( const std::string & appName, const std::string & filename ) {}
+        void dontCatch() {}
+        void registerCallback( SignalCallback cb, void * someData ) {}
 
     private:
-        static SignalHandler * singletonRef;
+        static SignalHandler* singletonRef_s;
     };
 }
 

@@ -82,9 +82,9 @@ namespace orxonox
 
     void Level::registerVariables()
     {
-        REGISTERSTRING(this->xmlfilename_, direction::toclient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
-        REGISTERSTRING(this->name_,        direction::toclient, new NetworkCallback<Level>(this, &Level::changedName));
-        REGISTERSTRING(this->description_, direction::toclient);
+        registerVariable(this->xmlfilename_, variableDirection::toclient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        registerVariable(this->name_,        variableDirection::toclient, new NetworkCallback<Level>(this, &Level::changedName));
+        registerVariable(this->description_, variableDirection::toclient);
     }
 
     void Level::networkcallback_applyXMLFile()
@@ -140,13 +140,13 @@ namespace orxonox
 
     void Level::playerEntered(PlayerInfo* player)
     {
-        COUT(3) << "player entered level" << std::endl;
+        COUT(3) << "player entered level (id: " << player->getClientID() << ", name: " << player->getName() << ")" << std::endl;
         player->setGametype(this->getGametype());
     }
 
     void Level::playerLeft(PlayerInfo* player)
     {
-        COUT(3) << "player left level" << std::endl;
+        COUT(3) << "player left level (id: " << player->getClientID() << ", name: " << player->getName() << ")" << std::endl;
         player->setGametype(0);
     }
 }

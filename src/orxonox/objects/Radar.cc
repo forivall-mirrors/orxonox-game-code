@@ -98,6 +98,8 @@ namespace orxonox
 
     void Radar::tick(float dt)
     {
+        SUPER(Radar, tick, dt);
+
         if (this->focus_ != *(this->itFocus_))
         {
             // focus object was deleted, release focus
@@ -111,10 +113,8 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
             {
-/*
-                if ((*itElement) != SpaceShip::getLocalShip() && (*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
+                if ((*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
                     (*itListener)->displayObject(*itElement, *itElement == this->focus_);
-*/
             }
         }
     }
@@ -127,12 +127,13 @@ namespace orxonox
             this->itFocus_ = 0;
             this->focus_ = 0;
         }
-        else
+/*
+        else if (this->owner_)
         {
-            Vector3 localPosition;// = SpaceShip::getLocalShip()->getPosition();
+            Vector3 localPosition = this->owner_->getPosition();
             Vector3 targetPosition = localPosition;
             if (*(this->itFocus_))
-                targetPosition = this->itFocus_->getWorldPosition();
+                targetPosition = this->itFocus_->getRVWorldPosition();
 
             // find the closed object further away than targetPosition
             float currentDistance = localPosition.squaredDistance(targetPosition);
@@ -142,11 +143,10 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it)
             {
-/*
-                if (*it == SpaceShip::getLocalShip())
+                if (*it == (RadarViewable*)this->owner_)
                     continue;
-*/
-                float targetDistance = localPosition.squaredDistance((*it)->getWorldPosition());
+
+                float targetDistance = localPosition.squaredDistance((*it)->getRVWorldPosition());
                 if (targetDistance > currentDistance && targetDistance < nextDistance)
                 {
                     this->itFocus_ = it;
@@ -170,6 +170,7 @@ namespace orxonox
                 this->focus_ = *(this->itFocus_);
             }
         }
+*/
     }
 
     void Radar::releaseFocus()
@@ -185,7 +186,7 @@ namespace orxonox
         unsigned int i = 0;
         for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it, ++i)
         {
-            COUT(3) << i++ << ": " << (*it)->getWorldPosition() << std::endl;
+            COUT(3) << i++ << ": " << (*it)->getRVWorldPosition() << std::endl;
         }
     }
 

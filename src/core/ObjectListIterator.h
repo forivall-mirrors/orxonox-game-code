@@ -122,7 +122,7 @@ namespace orxonox
             inline const ObjectListIterator<T>& operator++()
             {
                 if (this->element_)
-                    this->element_ = (ObjectListElement<T>*)this->element_->next_;
+                    this->element_ = static_cast<ObjectListElement<T>*>(this->element_->next_);
                 return *this;
             }
 
@@ -134,7 +134,7 @@ namespace orxonox
             {
                 ObjectListIterator<T> copy = *this;
                 if (this->element_)
-                    this->element_ = (ObjectListElement<T>*)this->element_->next_;
+                    this->element_ = static_cast<ObjectListElement<T>*>(this->element_->next_);
                 return copy;
             }
 
@@ -145,7 +145,7 @@ namespace orxonox
             inline const ObjectListIterator<T>& operator--()
             {
                 if (this->element_)
-                    this->element_ = (ObjectListElement<T>*)this->element_->prev_;
+                    this->element_ = static_cast<ObjectListElement<T>*>(this->element_->prev_);
                 return *this;
             }
 
@@ -157,7 +157,7 @@ namespace orxonox
             {
                 ObjectListIterator<T> copy = *this;
                 if (this->element_)
-                    this->element_ = (ObjectListElement<T>*)this->element_->prev_;
+                    this->element_ = static_cast<ObjectListElement<T>*>(this->element_->prev_);
                 return copy;
             }
 

@@ -92,6 +92,17 @@ namespace orxonox
             delete (it->second);
         for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
             delete (it->second);
+        for (std::vector<Functor*>::iterator it = this->constructionCallbacks_.begin(); it != this->constructionCallbacks_.end(); ++it)
+            delete *it;
+    }
+
+    /**
+        @brief Returns the identifier map with the names as received by typeid(). This is only used internally.
+    */
+    std::map<std::string, Identifier*>& Identifier::getTypeIDIdentifierMap()
+    {
+        static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
+        return identifiers;
     }
 
     /**
@@ -102,10 +113,9 @@ namespace orxonox
     */
     Identifier* Identifier::getIdentifierSingleton(const std::string& name, Identifier* proposal)
     {
-        static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
-        std::map<std::string, Identifier*>::const_iterator it = identifiers.find(name);
+        std::map<std::string, Identifier*>::const_iterator it = getTypeIDIdentifierMap().find(name);
 
-        if (it != identifiers.end())
+        if (it != getTypeIDIdentifierMap().end())
         {
             // There is already an entry: return it and delete the proposal
             delete proposal;
@@ -114,7 +124,7 @@ namespace orxonox
         else
         {
             // There is no entry: put the proposal into the map and return it
-            identifiers[name] = proposal;
+            getTypeIDIdentifierMap()[name] = proposal;
             return proposal;
         }
     }
@@ -191,7 +201,7 @@ namespace orxonox
     */
     void Identifier::destroyAllIdentifiers()
     {
-        for (std::map<std::string, Identifier*>::iterator it = Identifier::getIdentifierMapIntern().begin(); it != Identifier::getIdentifierMapIntern().end(); ++it)
+        for (std::map<std::string, Identifier*>::iterator it = Identifier::getTypeIDIdentifierMap().begin(); it != Identifier::getTypeIDIdentifierMap().end(); ++it)
             delete (it->second);
     }
 
@@ -234,7 +244,7 @@ namespace orxonox
         @brief Sets the network ID to a new value and changes the entry in the Factory.
         @param id The new network ID
     */
-    void Identifier::setNetworkID(unsigned int id)
+    void Identifier::setNetworkID(uint32_t id)
     {
         Factory::changeNetworkID(this, this->classID_, id);
         this->classID_ = id;

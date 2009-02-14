@@ -30,12 +30,12 @@
 #define _Model_H__
 
 #include "OrxonoxPrereqs.h"
-#include "PositionableEntity.h"
+#include "StaticEntity.h"
 #include "tools/Mesh.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Model : public PositionableEntity
+    class _OrxonoxExport Model : public StaticEntity
     {
         public:
             Model(BaseObject* creator);
@@ -69,4 +69,4 @@ namespace orxonox
     };
 }
 
-#endif /* _PositionableEntity_H__ */
+#endif /* _Model_H__ */

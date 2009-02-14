@@ -30,6 +30,7 @@
 #include "GSGraphics.h"
 
 #include <fstream>
+#include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -74,11 +75,6 @@ namespace orxonox
         , ogreLogger_(0)
         , graphicsEngine_(0)
         , masterKeyBinder_(0)
-        , frameCount_(0)
-        , statisticsRefreshCycle_(0)
-        , statisticsStartTime_(0)
-        , statisticsStartCount_(0)
-        , tickTime_(0)
         , debugOverlay_(0)
     {
         RegisterRootObject(GSGraphics);
@@ -105,8 +101,6 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(statisticsRefreshCycle_, 200000)
-            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
         SetConfigValue(defaultMasterKeybindings_, "def_masterKeybindings.ini")
             .description("Filename of default master keybindings.");
     }
@@ -154,21 +148,18 @@ namespace orxonox
         guiManager_ = new GUIManager();
         guiManager_->initialise(this->renderWindow_);
 
-        // reset frame counter
-        this->frameCount_ = 0;
-        this->tickTime_ = 0;
-        statisticsStartTime_ = 0;
-        statisticsStartCount_ = 0;
-
         // add console commands
         FunctorMember<GSGraphics>* functor1 = createFunctor(&GSGraphics::printScreen);
         functor1->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "printScreen"));
+        ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
+        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
     void GSGraphics::leave()
     {
         using namespace Ogre;
+
+        delete this->ccPrintScreen_;
 
         // remove our WindowEventListener first to avoid bad calls after the window has been destroyed
         Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
@@ -183,6 +174,9 @@ namespace orxonox
 
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
+
+        // unload all compositors
+        Ogre::CompositorManager::getSingleton().removeAll();
 
         // destroy render window
         RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
@@ -205,12 +199,12 @@ namespace orxonox
 
         delete this->ogreRoot_;
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // delete the ogre log and the logManager (since we have created it).
         this->ogreLogger_->getDefaultLog()->removeListener(this);
         this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
         delete this->ogreLogger_;
-#endif
+//#endif
 
         delete graphicsEngine_;
 
@@ -218,12 +212,7 @@ namespace orxonox
     }
 
     /**
-        Main loop of the orxonox game.
-        We use the Ogre::Timer to measure time since it uses the most precise
-        method an a platform (however the windows timer lacks time when under
-        heavy kernel load!).
-        There is a simple mechanism to measure the average time spent in our
-        ticks as it may indicate performance issues.
+    @note
         A note about the Ogre::FrameListener: Even though we don't use them,
         they still get called. However, the delta times are not correct (except
         for timeSinceLastFrame, which is the most important). A little research
@@ -232,7 +221,8 @@ namespace orxonox
     */
     void GSGraphics::ticked(const Clock& time)
     {
-        unsigned long long timeBeforeTick = time.getRealMicroseconds();
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
+
         float dt = time.getDeltaTime();
 
         this->inputManager_->tick(dt);
@@ -247,21 +237,14 @@ namespace orxonox
             this->bWindowEventListenerUpdateRequired_ = false;
         }
 
-        unsigned long long timeAfterTick = time.getRealMicroseconds();
+        uint64_t timeAfterTick = time.getRealMicroseconds();
 
-        tickTime_ += (unsigned int)(timeAfterTick - timeBeforeTick);
-        if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
-        {
-            GraphicsEngine::getInstance().setAverageTickTime(
-                (float)tickTime_ * 0.001f / (frameCount_ - statisticsStartCount_));
-            float avgFPS = (float)(frameCount_ - statisticsStartCount_)
-                / (timeAfterTick - statisticsStartTime_) * 1000000.0;
-            GraphicsEngine::getInstance().setAverageFramesPerSecond(avgFPS);
+        // Also add our tick time to the list in GSRoot
+        this->getParent()->addTickTime(timeAfterTick - timeBeforeTick);
 
-            tickTime_ = 0;
-            statisticsStartCount_ = frameCount_;
-            statisticsStartTime_  = timeAfterTick;
-        }
+        // Update statistics overlay. Note that the values only change periodically in GSRoot.
+        GraphicsEngine::getInstance().setAverageFramesPerSecond(this->getParent()->getAvgFPS());
+        GraphicsEngine::getInstance().setAverageTickTime(this->getParent()->getAvgTickTime());
 
         // don't forget to call _fireFrameStarted in ogre to make sure
         // everything goes smoothly
@@ -282,8 +265,6 @@ namespace orxonox
 
         // again, just to be sure ogre works fine
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
-
-        ++frameCount_;
     }
 
     /**
@@ -295,7 +276,7 @@ namespace orxonox
         COUT(3) << "Setting up Ogre..." << std::endl;
 
         // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // create a new logManager
         ogreLogger_ = new Ogre::LogManager();
         COUT(4) << "Ogre LogManager created" << std::endl;
@@ -310,7 +291,7 @@ namespace orxonox
 
         myLog->setLogDetail(Ogre::LL_BOREME);
         myLog->addListener(this);
-#endif
+//#endif
 
         // Root will detect that we've already created a Log
         COUT(4) << "Creating Ogre Root..." << std::endl;
@@ -429,6 +410,9 @@ namespace orxonox
 
         // create a full screen default viewport
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
+
+        if (this->graphicsEngine_)
+            this->graphicsEngine_->setViewport(this->viewport_);
     }
 
     void GSGraphics::initialiseResources()

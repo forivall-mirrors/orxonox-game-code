@@ -95,7 +95,7 @@ namespace orxonox
 
         this->time_ = 0;
 
-        RegisterRootObject(TimerBase);
+        RegisterObject(TimerBase);
     }
 
     /**
@@ -136,7 +136,7 @@ namespace orxonox
         if (this->bActive_)
         {
             // If active: Decrease the timer by the duration of the last frame
-            this->time_ -= time.getDeltaTimeMicroseconds();
+            this->time_ -= (long long)(time.getDeltaTimeMicroseconds() * this->getTimeFactor());
 
             if (this->time_ <= 0)
             {

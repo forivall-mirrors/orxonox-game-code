@@ -68,7 +68,8 @@ namespace orxonox
     enum Mode
     {
       LoadObject,
-      SaveObject
+      SaveObject,
+      ExpandObject
     };
   }
 
@@ -131,6 +132,7 @@ namespace orxonox
   class Language;
   class LanguageEntry;
   class Loader;
+  class LuaBind;
   class MetaObjectList;
   class MetaObjectListElement;
   class Namespace;

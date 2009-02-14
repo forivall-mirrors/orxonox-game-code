@@ -246,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\OrxEnum.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\OrxonoxPlatform.h"
 				>
 			</File>

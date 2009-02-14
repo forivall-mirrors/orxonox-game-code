@@ -37,6 +37,7 @@
 #include "core/Identifier.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/Tickable.h"
+#include "objects/infos/GametypeInfo.h"
 
 namespace orxonox
 {
@@ -51,6 +52,14 @@ namespace orxonox
         };
     }
 
+    struct Player
+    {
+        PlayerInfo* info_;
+        PlayerState::Enum state_;
+        int frags_;
+        int killed_;
+    };
+
     class _OrxonoxExport Gametype : public BaseObject, public Tickable
     {
         friend class PlayerInfo;
@@ -59,12 +68,17 @@ namespace orxonox
             Gametype(BaseObject* creator);
             virtual ~Gametype() {}
 
+            void setConfigValues();
+
             virtual void tick(float dt);
 
+            inline const GametypeInfo* getGametypeInfo() const
+                { return &this->gtinfo_; }
+
             inline bool hasStarted() const
-                { return this->bStarted_; }
+                { return this->gtinfo_.bStarted_; }
             inline bool hasEnded() const
-                { return this->bEnded_; }
+                { return this->gtinfo_.bEnded_; }
 
             virtual void start();
             virtual void end();
@@ -74,22 +88,28 @@ namespace orxonox
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
             virtual void playerChangedName(PlayerInfo* player);
 
-            virtual void playerScored(PlayerInfo* player);
+            virtual void playerScored(Player& player);
 
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             virtual void pawnPreSpawn(Pawn* pawn);
             virtual void pawnPostSpawn(Pawn* pawn);
 
-            inline const std::map<PlayerInfo*, PlayerState::Enum>& getPlayers() const
+            inline const std::map<PlayerInfo*, Player>& getPlayers() const
                 { return this->players_; }
 
             inline void registerSpawnPoint(SpawnPoint* spawnpoint)
                 { this->spawnpoints_.insert(spawnpoint); }
 
             inline bool isStartCountdownRunning() const
-                { return this->bStartCountdownRunning_; }
+                { return this->gtinfo_.bStartCountdownRunning_; }
             inline float getStartCountdown() const
-                { return this->startCountdown_; }
+                { return this->gtinfo_.startCountdown_; }
+
+            void addBots(unsigned int amount);
+            void killBots(unsigned int amount = 0);
+
+            inline unsigned int getNumberOfPlayers() const
+                { return this->players_.size(); }
 
         private:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
@@ -103,18 +123,22 @@ namespace orxonox
             void spawnPlayersIfRequested();
             void spawnDeadPlayersIfRequested();
 
-            bool bStarted_;
-            bool bEnded_;
+            GametypeInfo gtinfo_;
+
             bool bAutoStart_;
             bool bForceSpawn_;
 
             float initialStartCountdown_;
-            float startCountdown_;
-            bool bStartCountdownRunning_;
+            unsigned int numberOfBots_;
 
-            std::map<PlayerInfo*, PlayerState::Enum> players_;
+            std::map<PlayerInfo*, Player> players_;
             std::set<SpawnPoint*> spawnpoints_;
             SubclassIdentifier<ControllableEntity> defaultControllableEntity_;
+
+            OverlayGroup* scoreboard_;
+
+            // Config Values
+            std::string scoreboardTemplate_;
     };
 }
 

@@ -47,9 +47,11 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeaponSlot(WeaponSlot *wSlot);
+            void attachWeaponPack(WeaponPack *wPack);
             void fire();
-            WeaponSlot * getWeaponSlotPointer(unsigned int n);
+
+            void setFireMode(const unsigned int firemode);
+            const unsigned int getFireMode() const;
 
             inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }
@@ -57,8 +59,10 @@ namespace orxonox
                 { return parentWeaponSystem_; }
 
         private:
-            std::vector<WeaponSlot *> weaponSlots_;
             WeaponSystem *parentWeaponSystem_;
+            std::vector<WeaponSlot *> setWeaponSlots_;
+            unsigned int firemode_;
+            WeaponPack * attachedWeaponPack_;
     };
 }
 

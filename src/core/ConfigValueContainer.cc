@@ -272,7 +272,8 @@ namespace orxonox
         else
         {
             this->valueVector_.clear();
-            for (unsigned int i = 0; i < ConfigFileManager::getInstance().getVectorSize(this->type_, this->sectionname_, this->varname_); i++)
+            unsigned int vectorSize = ConfigFileManager::getInstance().getVectorSize(this->type_, this->sectionname_, this->varname_);
+            for (unsigned int i = 0; i < vectorSize; i++)
             {
                 if (i < this->defvalueStringVector_.size())
                 {

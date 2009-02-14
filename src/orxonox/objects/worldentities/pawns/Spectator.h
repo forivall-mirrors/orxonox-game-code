@@ -41,11 +41,12 @@ namespace orxonox
             Spectator(BaseObject* creator);
             virtual ~Spectator();
 
+            void setConfigValues();
             void registerVariables();
             virtual void tick(float dt);
 
             virtual void setPlayer(PlayerInfo* player);
-            virtual void startLocalControl();
+            virtual void startLocalHumanControl();
 
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);
@@ -55,26 +56,24 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
 
-            virtual void fire();
+            virtual void fire(WeaponMode::Enum fireMode);
             virtual void greet();
 
         private:
             void changedGreeting();
             void changedFlareVisibility();
-            void updateHUD();
 
             BillboardSet* greetingFlare_;
             bool bGreetingFlareVisible_;
             bool bGreeting_;
 
             float speed_;
-            float rotationSpeed_;
 
             float yaw_;
             float pitch_;
             float roll_;
 
-            int hudmode_;
+            Vector3 localVelocity_;
     };
 }
 

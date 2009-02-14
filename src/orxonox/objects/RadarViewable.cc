@@ -28,10 +28,12 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "RadarViewable.h"
+
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
-//#include "objects/WorldEntity.h"
-#include "Radar.h"
+#include "objects/worldentities/WorldEntity.h"
+#include "objects/Radar.h"
 
 namespace orxonox
 {
@@ -39,9 +41,8 @@ namespace orxonox
         @brief Constructor.
     */
     RadarViewable::RadarViewable()
-        : radarObject_(0)
-        , radarObjectCamouflage_(0.0f)
-        , radarObjectType_(Dot)
+        : radarObjectCamouflage_(0.0f)
+        , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")
     {
         RegisterRootObject(RadarViewable);
@@ -51,7 +52,7 @@ namespace orxonox
     {
         Radar* radar = Radar::getInstancePtr();
         if (radar)
-            this->radarObjectType_ = radar->addObjectDescription(str);
+            this->radarObjectShape_ = radar->addObjectDescription(str);
         else
         {
             CCOUT(2) << "Attempting to access the radar, but the radar is non existent." << std::endl;
@@ -59,15 +60,17 @@ namespace orxonox
         this->radarObjectDescription_ = str;
     }
 
-    const Vector3& RadarViewable::getWorldPosition() const
+    const Vector3& RadarViewable::getRVWorldPosition() const
     {
-        validate();
-        return Vector3::ZERO;//this->radarObject_->getWorldPosition();
+        const WorldEntity* object = this->getWorldEntity();
+        validate(object);
+        return object->getWorldPosition();
     }
 
-    Vector3 RadarViewable::getOrientedVelocity() const
+    Vector3 RadarViewable::getRVOrientedVelocity() const
     {
-        validate();
-        return Vector3::ZERO;//this->radarObject_->getOrientation() * this->radarObject_->getVelocity();
+        const WorldEntity* object = this->getWorldEntity();
+        validate(object);
+        return object->getWorldOrientation() * object->getVelocity();
     }
 }

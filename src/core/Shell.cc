@@ -74,7 +74,7 @@ namespace orxonox
         this->configureInputBuffer();
 
         this->outputBuffer_.registerListener(this);
-        OutputHandler::getOutStream().setOutputBuffer(this->outputBuffer_);
+        OutputHandler::getOutStream().setOutputBuffer(&this->outputBuffer_);
 
         this->setConfigValues();
 
@@ -83,6 +83,7 @@ namespace orxonox
 
     Shell::~Shell()
     {
+        OutputHandler::getOutStream().setOutputBuffer(0);
         if (this->inputBuffer_)
             delete this->inputBuffer_;
         singletonRef_s = 0;

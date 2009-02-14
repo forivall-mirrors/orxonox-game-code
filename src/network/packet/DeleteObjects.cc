@@ -29,7 +29,7 @@
 
 #include "DeleteObjects.h"
 #include <enet/enet.h>
-#include "network/Synchronisable.h"
+#include "network/synchronisable/Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include <assert.h>
 
@@ -60,22 +60,22 @@ bool DeleteObjects::fetchIDs(){
   unsigned int number = Synchronisable::getNumberOfDeletedObject();
   if(number==0)
     return false;
-  COUT(3) << "sending DeleteObjects: ";
+  COUT(4) << "sending DeleteObjects: ";
   unsigned int size = sizeof(ENUM::Type) + sizeof(uint32_t)*(number+1);
   data_ = new uint8_t[size];
   uint8_t *tdata = data_;
-  *(ENUM::Type *)(tdata) = ENUM::DeleteObjects;
+  *reinterpret_cast<ENUM::Type*>(tdata) = ENUM::DeleteObjects;
   tdata += sizeof(ENUM::Type);
   *(uint32_t *)tdata = number;
   tdata += sizeof(uint32_t);
   for(unsigned int i=0; i<number; i++){
     unsigned int temp = Synchronisable::popDeletedObject();
 //     assert(temp<10000); //ugly hack
-    *(uint32_t *)(tdata) = temp;
-    COUT(3) << temp << " ";
+    *reinterpret_cast<uint32_t*>(tdata) = temp;
+    COUT(4) << temp << " ";
     tdata += sizeof(uint32_t);
   }
-  COUT(3) << std::endl;
+  COUT(4) << std::endl;
   return true;
 }
 
@@ -86,7 +86,7 @@ unsigned int DeleteObjects::getSize() const{
 
 bool DeleteObjects::process(){
   for(unsigned int i=0; i<*(unsigned int *)(data_+_QUANTITY); i++){
-    COUT(3) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
+    COUT(4) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
     Synchronisable::deleteObject( *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) );
   }
   return true;

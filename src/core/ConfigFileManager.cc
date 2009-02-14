@@ -159,7 +159,10 @@ namespace orxonox
             if ((*it)->getName() == name)
                 if ((*it)->getIndex() > size)
                     size = (*it)->getIndex();
-        return (size + 1);
+        if (size == 0)
+            return 0;
+        else
+            return (size + 1);
     }
 
     std::string ConfigFileSection::getFileEntry() const

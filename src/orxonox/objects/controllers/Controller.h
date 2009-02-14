@@ -46,14 +46,43 @@ namespace orxonox
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
-            virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
-            virtual inline ControllableEntity* getControllableEntity() const
+            inline void setControllableEntity(ControllableEntity* entity)
+            {
+                if (entity != this->controllableEntity_)
+                {
+                    this->controllableEntity_ = entity;
+                    this->changedControllableEntity();
+                }
+            }
+            inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
+            virtual void changedControllableEntity();
+
+            inline void setHUDTemplate(const std::string& name)
+            {
+                if (name != this->hudtemplate_)
+                {
+                    this->hudtemplate_ = name;
+                    if (this->controllableEntity_)
+                        this->updateHUD();
+                    else
+                        this->bUpdateHUD_ = true;
+                }
+            }
+            inline const std::string& getHUDTemplate() const
+                { return this->hudtemplate_; }
+
+            inline OverlayGroup* getHUD() const
+                { return this->hud_; }
 
         protected:
+            void updateHUD();
+
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;
+            std::string hudtemplate_;
+            OverlayGroup* hud_;
+            bool bUpdateHUD_;
     };
 }
 

@@ -61,7 +61,9 @@
 #define _Timer_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/Executor.h"
 #include "core/OrxonoxClass.h"
+#include "gamestates/GSRoot.h"
 
 namespace orxonox
 {
@@ -71,7 +73,7 @@ namespace orxonox
     void executeDelayedCommand(StaticTimer* timer, const std::string& command);
 
     //! TimerBase is the parent of the Timer class.
-    class _OrxonoxExport TimerBase : public OrxonoxClass
+    class _OrxonoxExport TimerBase : public TimeFactorListener
     {
         public:
             ~TimerBase();
@@ -158,7 +160,7 @@ namespace orxonox
                 this->setInterval(interval);
                 this->bLoop_ = bLoop;
                 executor->setObject(object);
-                this->executor_ = (Executor*)executor;
+                this->executor_ = static_cast<Executor*>(executor);
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;
@@ -196,7 +198,7 @@ namespace orxonox
 
                 this->setInterval(interval);
                 this->bLoop_ = bLoop;
-                this->executor_ = (Executor*)executor;
+                this->executor_ = executor;
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;

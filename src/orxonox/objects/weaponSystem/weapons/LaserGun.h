@@ -33,9 +33,11 @@
 
 #include "core/BaseObject.h"
 
-#include "LaserGunMunition.h"
-#include "tools/BillboardSet.h"
+#include "../munitions/LaserGunMunition.h"
 #include "util/Math.h"
+#include "../Weapon.h"
+#include "../projectiles/BillboardProjectile.h"
+#include "../projectiles/ParticleProjectile.h"
 
 namespace orxonox
 {
@@ -45,14 +47,12 @@ namespace orxonox
             LaserGun(BaseObject* creator);
             virtual ~LaserGun();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
-            ColourValue LaserGun::getProjectileColour();
+            virtual void takeBullets();
+            virtual void takeMagazines();
+            virtual void createProjectile();
 
         private:
-            ColorValue projectileColor_;
-
-
+            float speed_;
 
     };
 }

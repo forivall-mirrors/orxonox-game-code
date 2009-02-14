@@ -128,16 +128,18 @@ bool Packet::send(){
       assert(0);
       return false;
     }
-    // Assures we don't create a packet and destroy it right after in another thread
-    // without having a reference in the packetMap_
-    boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
     // We deliver ENet the data address so that it doesn't memcpy everything again.
     // --> We have to delete data_ ourselves!
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
     enetPacket_->freeCallback = &Packet::deletePacket;
     // Add the packet to a global list so we can access it again once enet calls our
     // deletePacket method. We can of course only give a one argument function to the ENet C library.
-    packetMap_[(size_t)(void*)enetPacket_] = this;
+    {
+      // Assures we don't create a packet and destroy it right after in another thread
+      // without having a reference in the packetMap_
+      boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
+      packetMap_[(size_t)(void*)enetPacket_] = this;
+    }
   }
 #ifndef NDEBUG
   switch( *(ENUM::Type *)(data_ + _PACKETID) )

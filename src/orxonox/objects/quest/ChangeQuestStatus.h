@@ -27,9 +27,8 @@
  */
 
 /**
-    @file ChangeQuestStatus.h
-    @brief
-    Definition of the ChangeQuestStatus class.
+    @file
+    @brief Definition of the ChangeQuestStatus class.
 */
 
 #ifndef _ChangeQuestStatus_H__
@@ -42,8 +41,8 @@
 #include "core/XMLPort.h"
 #include "QuestEffect.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief
         A QuestEffect which changes the status of a specified Quest for the player invoking the QuestEffect.
@@ -62,8 +61,8 @@ namespace orxonox {
 
         protected:
             /**
-                @brief Returns the id of the Quest.
-                @return Returns the id of the Quest.
+            @brief Returns the id of the Quest.
+            @return Returns the id of the Quest.
             */
             inline const std::string & getQuestId(void) const
                 { return this->questId_; }

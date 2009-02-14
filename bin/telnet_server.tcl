@@ -80,8 +80,12 @@
          disconnect $client
          return
      }
-     if {[string equal $line "quit"] || [string equal $line "exit"]} {
+     if {[string equal $line "logout"] || [string equal $line "quit"]} {
          disconnect $client
+         return
+     }
+     if {[string equal $line "exit"]} {
+         set ::termination 1
          return
      }
      if {$auth($client)} {

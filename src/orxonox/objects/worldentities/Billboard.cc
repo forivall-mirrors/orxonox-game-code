@@ -29,17 +29,23 @@
 #include "OrxonoxStableHeaders.h"
 #include "Billboard.h"
 
+#include <OgreBillboardSet.h>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "core/Core.h"
 #include "objects/Scene.h"
 
 namespace orxonox
 {
     CreateFactory(Billboard);
 
-    Billboard::Billboard(BaseObject* creator) : PositionableEntity(creator)
+    Billboard::Billboard(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Billboard);
+
+        this->material_ = "";
+        this->colour_ = ColourValue::White;
 
         this->registerVariables();
     }
@@ -49,7 +55,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (this->isInitialized() && this->billboard_.getBillboardSet())
-                this->getNode()->detachObject(this->billboard_.getName());
+                this->detachOgreObject(this->billboard_.getBillboardSet());
         }
     }
 
@@ -63,19 +69,22 @@ namespace orxonox
 
     void Billboard::registerVariables()
     {
-        REGISTERSTRING(this->material_, direction::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
-        REGISTERDATA  (this->colour_,   direction::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
+        registerVariable(this->material_, variableDirection::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
+        registerVariable(this->colour_,   variableDirection::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
     }
 
     void Billboard::changedMaterial()
     {
+        if (this->material_ == "")
+            return;
+
         if (!this->billboard_.getBillboardSet())
         {
-            if (this->getScene() && this->getScene()->getSceneManager())
+            if (this->getScene() && Core::showsGraphics())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())
-                    this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                     this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
         }
@@ -87,13 +96,15 @@ namespace orxonox
     {
         if (!this->billboard_.getBillboardSet())
         {
-            if (this->getScene() && this->getScene()->getSceneManager())
+/*
+            if (this->getScene() && Core::showsGraphics() && (this->material_ != ""))
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())
-                    this->getNode()->attachObject(this->billboard_.getBillboardSet());
+                    this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
             }
+*/
         }
         else
             this->billboard_.setColour(this->colour_);

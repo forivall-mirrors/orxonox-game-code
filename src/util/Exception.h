@@ -81,16 +81,11 @@ namespace orxonox
         ExceptionName##Exception(const std::string& description, int lineNumber,    \
                   const char* filename, const char* functionName)                   \
                   : Exception(description, lineNumber, filename, functionName)      \
-        {                                                                           \
-            /* Let the catcher decide whether to display the message below level 4  \
-               Note: Don't place this code in Exception c'tor because getTypeName() \
-               is still pure virtual at that time. */                               \
-            COUT(4) << this->getFullDescription() << std::endl;                     \
-        }                                                                           \
+        { }                                                                         \
                                                                                     \
         ExceptionName##Exception(const std::string& description)                    \
                   : Exception(description)                                          \
-        { COUT(4) << this->getFullDescription() << std::endl; }                     \
+        { }                                                                         \
                                                                                     \
         ~ExceptionName##Exception() throw() { }                                     \
                                                                                     \
@@ -102,6 +97,8 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(General);
     CREATE_ORXONOX_EXCEPTION(FileNotFound);
     CREATE_ORXONOX_EXCEPTION(Argument);
+    CREATE_ORXONOX_EXCEPTION(PhysicsViolation);
+    CREATE_ORXONOX_EXCEPTION(ParseError);
     CREATE_ORXONOX_EXCEPTION(PluginsNotFound);
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
@@ -110,8 +107,20 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(AbortLoading);
 }
 
-#define ThrowException(Type, Description) \
-    throw Type##Exception(Description, __LINE__, __FILE__, __FUNCTIONNAME__)
+    /**
+    @brief
+        Helper function that creates an exception, displays the message, but doesn't throw it.
+    */
+    template <class T>
+    inline const T& InternalHandleException(const T& exception)
+    {
+        // let the catcher decide whether to display the message below level 4
+        COUT(4) << exception.getFullDescription() << std::endl;
+        return exception;
+    }
+
+#define ThrowException(type, description) \
+    throw InternalHandleException(type##Exception(description, __LINE__, __FILE__, __FUNCTIONNAME__))
 
     // define an assert macro that can display a message
 #ifndef NDEBUG

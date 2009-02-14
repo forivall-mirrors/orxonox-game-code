@@ -27,9 +27,8 @@
  */
 
 /**
-    @file QuestEffectBeacon.h
-    @brief
-    Definition of the QuestEffectBeacon class.
+    @file
+    @brief Definition of the QuestEffectBeacon class.
 */
 
 #ifndef _QuestEffectBeacon_H__
@@ -37,21 +36,21 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "orxonox/objects/worldentities/PositionableEntity.h"
+#include "orxonox/objects/worldentities/StaticEntity.h"
 
-namespace QuestEffectBeaconStatus
+namespace orxonox
 {
-
-    //! The status of the beacon, can be either active or inactive.
-    enum Enum
+    namespace QuestEffectBeaconStatus
     {
-        inactive,
-        active
-    };
 
-}
+        //! The status of the beacon, can be either active or inactive.
+        enum Enum
+        {
+            inactive,
+            active
+        };
 
-namespace orxonox {
+    }
 
     /**
     @brief
@@ -60,48 +59,48 @@ namespace orxonox {
         A QuestEffectBeacon can be executed a defined number of times.
         A QuestEffectBeacon can be inactive or active.
         
-    Creating a QuestEffectBeacon through XML goes as follows:
-    
-    <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
+        Creating a QuestEffectBeacon through XML goes as follows:
+        
+        <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
             <effects>
                 <QuestEffect /> //A list of QuestEffects, invoked when the QuestEffectBeacon is executed, see QuestEffect for the full XML representation.
                 ...
                 <QuestEffect />
             </effects>
             <events>
-        <execute>
-            <EventListener event=eventIdString />
-        </execute>
-        </events>
-        <attached>
-           <PlayerTrigger name=eventIdString /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
-        </attached>
-    </QuestEffectBeacon>
+                <execute>
+                    <EventListener event=eventIdString />
+                </execute>
+            </events>
+            <attached>
+                <PlayerTrigger name=eventIdString /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
+            </attached>
+        </QuestEffectBeacon>
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestEffectBeacon : public PositionableEntity
+    class _OrxonoxExport QuestEffectBeacon : public StaticEntity
     {
-    public:
-        QuestEffectBeacon(BaseObject* creator);
-        virtual ~QuestEffectBeacon();
-        
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.
-        
-        virtual void processEvent(Event& event); //!< Processes an event for this QuestEffectBeacon.
-        
-        bool execute(bool b, PlayerTrigger* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
-        
-        /**
-        @brief Tests whether the QuestEffectBeacon is active.
-        @return Returns true if the QuestEffectBeacon is active, fals if not.
-        */
-        inline bool isActive(void)
-           { return this->status_ == QuestEffectBeaconStatus::active; }
-        
-        bool setActive(bool activate); //!< Set the status of the QuestEffectBeacon.
-        
-    protected:
+        public:
+            QuestEffectBeacon(BaseObject* creator);
+            virtual ~QuestEffectBeacon();
+            
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.
+            
+            virtual void processEvent(Event& event); //!< Processes an event for this QuestEffectBeacon.
+            
+            bool execute(bool b, PlayerTrigger* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
+            
+            /**
+            @brief Tests whether the QuestEffectBeacon is active.
+            @return Returns true if the QuestEffectBeacon is active, fals if not.
+            */
+            inline bool isActive(void)
+            { return this->status_ == QuestEffectBeaconStatus::active; }
+            
+            bool setActive(bool activate); //!< Set the status of the QuestEffectBeacon.
+            
+        protected:
             bool decrementTimes(void); //!< Decrement the number of times the QuestEffectBeacon can still be executed.
             
             /**
@@ -110,10 +109,10 @@ namespace orxonox {
             */
             inline const int & getTimes(void) const
                 { return this->times_; }
-
+    
         private:
-            static const int INFINITE = -1; //!< Constant to avoid using magic numbers.
-        
+            static const int INFINITE_TIME = -1; //!< Constant to avoid using magic numbers.
+            
             std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
             int times_; //!< Number of times the beacon can be exectued.
             QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.

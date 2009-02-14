@@ -48,6 +48,8 @@ namespace orxonox
 
     void DebugRTRText::tick(float dt)
     {
+        SUPER(DebugRTRText, tick, dt);
+
         float rtr = GraphicsEngine::getInstance().getAverageTickTime();
         this->setCaption(convertToString(rtr));
     }
