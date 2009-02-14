@@ -47,49 +47,49 @@ namespace packet {
 
 class _NetworkExport GamestateHeader{
   public:
-    GamestateHeader(uint8_t *data){ data_ = data; *(uint32_t*)data_ = ENUM::Gamestate; }
+    GamestateHeader(uint8_t *data){ assert(data); data_ = data; *(uint32_t*)data_ = ENUM::Gamestate; }
     GamestateHeader(uint8_t *data, GamestateHeader* h)
-      { data_=data; memcpy(data_, h->data_, getSize()); }
+    { assert(data); data_=data; memcpy(data_, h->data_, getSize()); }
     static inline uint32_t getSize()
-      { return 21; }
+    { return 21; }
 
     inline int32_t getID() const
-      { return *(int32_t*)(data_+4); }
+    { assert(data_); return *(int32_t*)(data_+4); }
     inline void setID(int32_t id)
-      { *(int32_t*)(data_+4) = id; }
+    { assert(data_); *(int32_t*)(data_+4) = id; }
 
     inline int32_t getBaseID() const
-      { return *(int32_t*)(data_+8); }
+    { assert(data_); return *(int32_t*)(data_+8); }
     inline void setBaseID(int32_t id)
-      { *(int32_t*)(data_+8) = id; }
+    { assert(data_); *(int32_t*)(data_+8) = id; }
 
     inline uint32_t getDataSize() const
-      { return *(uint32_t*)(data_+12); }
+    { assert(data_); return *(uint32_t*)(data_+12); }
     inline void setDataSize(uint32_t size)
-      { *(uint32_t*)(data_+12) = size; }
+    { assert(data_); *(uint32_t*)(data_+12) = size; }
 
     inline uint32_t getCompSize() const
-      { return *(uint32_t*)(data_+16); }
+    { assert(data_); return *(uint32_t*)(data_+16); }
     inline void setCompSize(uint32_t size)
-      { *(uint32_t*)(data_+16) = size; }
+    { assert(data_); *(uint32_t*)(data_+16) = size; }
 
     inline bool isDiffed() const
-      { return *(int8_t*)(data_+20) & 0x1; }
+    { assert(data_); return *(int8_t*)(data_+20) & 0x1; }
     inline void setDiffed(bool b)
-      { *(int8_t*)(data_+20) = (b<<0) | (*(int8_t*)(data_+20) & 0x6 ); }
+    { assert(data_); *(int8_t*)(data_+20) = (b<<0) | (*(int8_t*)(data_+20) & 0x6 ); }
 
     inline bool isComplete() const
-      { return *(int8_t*)(data_+20) & 0x2; }
+    { assert(data_); return *(int8_t*)(data_+20) & 0x2; }
     inline void setComplete(bool b)
-      { *(int8_t*)(data_+20) = (b<<1) | (*(int8_t*)(data_+20) & 0x5 ); }
+    { assert(data_); *(int8_t*)(data_+20) = (b<<1) | (*(int8_t*)(data_+20) & 0x5 ); }
 
     inline bool isCompressed() const
-      { return *(int8_t*)(data_+20) & 0x4; }
+    { assert(data_); return *(int8_t*)(data_+20) & 0x4; }
     inline void setCompressed(bool b)
-      { *(int8_t*)(data_+20) = (b<<2) | (*(int8_t*)(data_+20) & 0x3 ); }
+    { assert(data_); *(int8_t*)(data_+20) = (b<<2) | (*(int8_t*)(data_+20) & 0x3 ); }
 
     inline void operator=(GamestateHeader& h)
-      { memcpy( data_, h.data_, getSize()); }
+    { assert(data_); assert(h.data_); memcpy( data_, h.data_, getSize()); }
   private:
     uint8_t *data_;
 //#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
@@ -106,6 +106,7 @@ class _NetworkExport Gamestate: public Packet{
     Gamestate();
     Gamestate(uint8_t *data, unsigned int clientID);
     Gamestate(uint8_t *data);
+    Gamestate(const Gamestate& g);
 
     ~Gamestate();
 

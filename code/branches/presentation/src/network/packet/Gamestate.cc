@@ -72,6 +72,13 @@ Gamestate::Gamestate(uint8_t *data)
   header_ = new GamestateHeader(data_);
 }
 
+Gamestate::Gamestate(const Gamestate& g) :
+    Packet( *(Packet*)&g )
+{
+  flags_ = flags_ | PACKET_FLAG_GAMESTATE;
+  header_ = new GamestateHeader(data_);
+}
+
 
 Gamestate::~Gamestate()
 {
@@ -145,6 +152,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
 
 bool Gamestate::spreadData(uint8_t mode)
 {
+  COUT(4) << "processing gamestate with id " << header_->getID() << endl;
   assert(data_);
   assert(!header_->isCompressed());
   assert(!header_->isDiffed());
