@@ -67,6 +67,7 @@ ADD_CUSTOM_COMMAND(
 )
 
 # No warnings needed from third party libraries
+REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
 
 SOURCE_GROUP("Source" FILES ${CEGUILUA_FILES})

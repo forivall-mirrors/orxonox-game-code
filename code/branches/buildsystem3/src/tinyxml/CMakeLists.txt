@@ -32,6 +32,7 @@ SET(TINYXML++_FILES
 GENERATE_SOURCE_GROUPS(${TINYXML++_FILES})
 
 # No warnings needed from third party libraries
+REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
 
 IF(MSVC)

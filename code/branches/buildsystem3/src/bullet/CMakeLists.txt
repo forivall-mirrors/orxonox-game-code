@@ -29,6 +29,7 @@ ADD_SUBDIRECTORY(LinearMath)
 GENERATE_SOURCE_GROUPS(${BULLET_FILES})
 
 # No warnings needed from third party libraries
+REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
 
 IF(MSVC)
