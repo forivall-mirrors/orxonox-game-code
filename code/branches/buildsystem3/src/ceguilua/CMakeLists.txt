@@ -35,17 +35,22 @@ INCLUDE(CompareVersionStrings)
 
 # Copy package files incrementally until the version is met
 SET(CEGUILUA_VERSIONS 0.5.0 0.6.0 0.6.1 0.6.2)
-FOREACH(_version ${CEGUILUA_VERSIONS})
-  COMPARE_VERSION_STRINGS(${_version} ${CEGUI_VERSION} _compare_result)
-  IF(_compare_result EQUAL 1)
-    BREAK() # _version > CEGUI_VERSION
-  ENDIF()
+# Only copy on version change
+IF(NOT "${_CEGUI_VERSION_REF}" STREQUAL "${CEGUI_VERSION}"
+   OR NOT EXISTS ${CEGUILUA_BINARY_DIR}/exceptions.lua)
+  SET(_CEGUI_VERSION_REF ${CEGUI_VERSION} CACHE INTERNAL "Do not edit")
+  FOREACH(_version ${CEGUILUA_VERSIONS})
+    COMPARE_VERSION_STRINGS(${_version} ${CEGUI_VERSION} _compare_result)
+    IF(_compare_result EQUAL 1)
+      BREAK() # _version > CEGUI_VERSION
+    ENDIF()
   
-  ADD_SUBDIRECTORY(ceguilua-${_version}) # Sets parent scope variable
-  FOREACH(_file ${_package_files})
-    CONFIGURE_FILE(ceguilua-${_version}/package/${_file} ${CEGUILUA_BINARY_DIR}/${_file} COPYONLY)
-  ENDFOREACH(_file)
-ENDFOREACH(_version)
+    ADD_SUBDIRECTORY(ceguilua-${_version}) # Sets parent scope variable _package_files
+    FOREACH(_file ${_package_files})
+      CONFIGURE_FILE(ceguilua-${_version}/package/${_file} ${CEGUILUA_BINARY_DIR}/${_file} COPYONLY)
+    ENDFOREACH(_file)
+  ENDFOREACH(_version)
+ENDIF()
 
 # Create the tolua bind file. We could use the orignal file though, but it is 1.6MB...
 ADD_CUSTOM_COMMAND(
@@ -61,7 +66,8 @@ ADD_CUSTOM_COMMAND(
   COMMENT "Generating tolua bind files for package CEGUILua"
 )
 
-ADD_COMPILER_FLAGS("-w44996" MSVC)
+# No warnings needed from third party libraries
+ADD_COMPILER_FLAGS("-w")
 
 SOURCE_GROUP("Source" FILES ${CEGUILUA_FILES})
 
@@ -74,5 +80,7 @@ TARGET_LINK_LIBRARIES(${CEGUILUA_LIBRARY}
   ${LUA_LIBRARIES}
   ${CEGUI_LIBRARY}
 )
+
+SET_TARGET_PROPERTIES(ceguilua_orxonox PROPERTIES VERSION ${CEGUI_VERSION})
 
 ORXONOX_INSTALL(ceguilua_orxonox)

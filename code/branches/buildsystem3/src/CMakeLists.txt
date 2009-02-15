@@ -132,3 +132,7 @@ ADD_SUBDIRECTORY(core)
 #ADD_SUBDIRECTORY(audio)
 ADD_SUBDIRECTORY(network)
 ADD_SUBDIRECTORY(orxonox)
+
+# Apply version info
+SET_TARGET_PROPERTIES(util core network orxonox
+  PROPERTIES VERSION ${ORXONOX_VERSION})

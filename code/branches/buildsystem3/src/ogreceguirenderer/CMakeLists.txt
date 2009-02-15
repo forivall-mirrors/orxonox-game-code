@@ -28,11 +28,16 @@ SET(OCR_FILES
 )
 GENERATE_SOURCE_GROUPS(${OCR_FILES})
 
+# No warnings needed from third party libraries
+ADD_COMPILER_FLAGS("-w")
+
 ADD_LIBRARY(ogreceguirenderer_orxonox SHARED ${OCR_FILES})
 SET_TARGET_PROPERTIES(ogreceguirenderer_orxonox PROPERTIES DEFINE_SYMBOL "OGRE_GUIRENDERER_EXPORTS")
 TARGET_LINK_LIBRARIES(ogreceguirenderer_orxonox
   ${OGRE_LIBRARY}
   ${CEGUI_LIBRARY}
 )
+
+SET_TARGET_PROPERTIES(ogreceguirenderer_orxonox PROPERTIES VERSION 1.4.9)
 
 ORXONOX_INSTALL(ogreceguirenderer_orxonox)

@@ -64,12 +64,9 @@ IF (DOXYGEN_FOUND)
       SET(TMP ${DOXY_OUTPUT_DIR}/html/index.hhp)
       STRING(REGEX REPLACE "/" "\\\\" HHP_FILE ${TMP})
       ADD_CUSTOM_TARGET(chmdoc ${HTML_HELP_COMPILER} ${HHP_FILE})
-      IF(NOT MSVC)
-        ADD_DEPENDENCIES(chmdoc doc)
-      ELSE(NOT MSVC)
-        # Do not add the dependency because msvc will then always build
-        # Doxygen, which is not very comforting.
-      ENDIF(NOT MSVC)
+      ADD_DEPENDENCIES(chmdoc doc)
+      # Adding a dependency somehow adds doc target as default build target
+      SET_TARGET_PROPERTIES(doc chmdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
     ENDIF(HTML_HELP_COMPILER)
   ENDIF (WIN32) 
 
@@ -80,10 +77,12 @@ IF (DOXYGEN_FOUND)
     DESTINATION ${ORXONOX_DOC_INSTALL_PATH}/api
     OPTIONAL
   )
-  IF(EXISTS ${CMAAKE_CURRENT_BINARY_DIR}/html)
-    INSTALL(
-      DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html
-      DESTINATION ${ORXONOX_DOC_INSTALL_PATH}/api
-    )
+  # Install command always needs the directory to work
+  IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/html)
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html)
   ENDIF()
+  INSTALL(
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html
+    DESTINATION ${ORXONOX_DOC_INSTALL_PATH}/api
+  )
 ENDIF(DOXYGEN_FOUND)

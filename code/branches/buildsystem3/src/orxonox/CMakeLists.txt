@@ -68,9 +68,7 @@ TARGET_LINK_LIBRARIES(orxonox
   ogreceguirenderer_orxonox
   tinyxml++_orxonox
   tolua++_orxonox
-  BulletDynamics
-  BulletCollision
-  LinearMath
+  bullet_orxonox
   util
   core
   network

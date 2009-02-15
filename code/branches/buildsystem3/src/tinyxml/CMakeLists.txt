@@ -31,9 +31,14 @@ SET(TINYXML++_FILES
 )
 GENERATE_SOURCE_GROUPS(${TINYXML++_FILES})
 
+# No warnings needed from third party libraries
+ADD_COMPILER_FLAGS("-w")
+
 IF(MSVC)
   ADD_LIBRARY(tinyxml++_orxonox STATIC ${TINYXML++_FILES})
 ELSE()
   ADD_LIBRARY(tinyxml++_orxonox SHARED ${TINYXML++_FILES})
   ORXONOX_INSTALL(tinyxml++_orxonox)
 ENDIF()
+
+SET_TARGET_PROPERTIES(tinyxml++_orxonox PROPERTIES VERSION 2.5.3)

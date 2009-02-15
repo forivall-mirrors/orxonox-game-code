@@ -32,6 +32,9 @@ SET(CPPTCL_FILES
 )
 GENERATE_SOURCE_GROUPS(${CPPTCL_FILES})
 
+# No warnings needed from third party libraries
+ADD_COMPILER_FLAGS("-w")
+
 IF(MSVC)
   ADD_LIBRARY(cpptcl_orxonox STATIC ${CPPTCL_FILES})
 ELSE()
@@ -40,3 +43,5 @@ ELSE()
 ENDIF()
 
 TARGET_LINK_LIBRARIES(cpptcl_orxonox ${TCL_LIBRARY})
+
+SET_TARGET_PROPERTIES(cpptcl_orxonox PROPERTIES VERSION 1.1.3)
