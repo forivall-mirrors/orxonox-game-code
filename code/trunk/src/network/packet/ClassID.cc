@@ -36,11 +36,7 @@
 namespace orxonox {
 namespace packet {
 
-#define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
-#define _PACKETID             0
-#define _CLASSID              _PACKETID + sizeof(ENUM::Type)
-#define _CLASSNAMELENGTH      _CLASSID + sizeof(uint32_t)
-#define _CLASSNAME            _CLASSNAMELENGTH + sizeof(classNameLength_)
+
 
   ClassID::ClassID( unsigned int classID, std::string className )
  : Packet()
@@ -71,14 +67,15 @@ unsigned int ClassID::getSize() const{
 }
 
 bool ClassID::process(){
-  COUT(3) << "processing classid: " << getClassID() << " name: " << (const char*)(data_+_CLASSNAME) << std::endl;
-  Identifier *id=ClassByID( std::string((const char*)(data_+_CLASSNAME) ));
+  COUT(3) << "processing classid: " << getClassID() << " name: " << getClassName() << std::endl;
+  Identifier *id=ClassByString( std::string(getClassName()) );
   if(id==NULL)
     return false;
   id->setNetworkID( getClassID() );
   delete this;
   return true;
 }
+
 
 unsigned int ClassID::getClassID(){
   return *(uint32_t *)(data_ + _CLASSID);
