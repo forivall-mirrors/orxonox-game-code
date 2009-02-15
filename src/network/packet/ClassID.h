@@ -37,6 +37,12 @@
 namespace orxonox {
 namespace packet {
 
+#define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
+#define _PACKETID             0
+#define _CLASSID              _PACKETID + sizeof(ENUM::Type)
+#define _CLASSNAMELENGTH      _CLASSID + sizeof(uint32_t)
+#define _CLASSNAME            _CLASSNAMELENGTH + sizeof(classNameLength_)
+  
 /**
 	@author
 */
@@ -52,7 +58,7 @@ public:
 
   unsigned int getClassID();
   unsigned int getClassNameLength(){ return classNameLength_; }
-  unsigned char *getClassName();
+  const char *getClassName(){ return (const char*)(data_+_CLASSNAME); }
 private:
   uint32_t classNameLength_;
 };
