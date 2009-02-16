@@ -61,9 +61,9 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     MESSAGE(STATUS "Warning: Could not find dependency directory."
                    "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
   ELSE()
-    FILE(GLOB _package_config_files "${DEPENDENCY_DIR}/PackageConfig*.cmake")
-    FOREACH(_file ${_package_config_files})
-      INCLUDE(${_file})    ENDFOREACH(_file)
+    INCLUDE(PackageConfigMinGW)
+    INCLUDE(PackageConfigMSVC)
+
     # On Windows, DLLs have to be in the executable folder, install them
     IF(DEP_BINARY_DIR AND WIN32)
       # When installing a debug version, we really can't know which libraries
