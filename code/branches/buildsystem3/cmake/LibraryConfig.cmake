@@ -51,7 +51,7 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
   GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
   GET_FILENAME_COMPONENT(_dep_dir_2 ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies ABSOLUTE)
   FIND_PATH(DEPENDENCY_PACKAGE_DIR
-    NAMES PackageConfigMSVC.cmake PackageConfigMinGW.cmake
+    NAMES include
     PATHS
       ${CMAKE_SOURCE_DIR}/dependencies
       ${_dep_dir_1}
