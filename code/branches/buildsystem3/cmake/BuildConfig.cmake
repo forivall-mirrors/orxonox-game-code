@@ -112,6 +112,8 @@ ENDIF(TESTING_ENABLE)
 
 OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient chatserver and alike.")
 OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
+
+
 ############# Installation Settings #############
 
 IF(UNIX)
