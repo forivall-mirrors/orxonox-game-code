@@ -168,8 +168,8 @@ typedef unsigned __int64  uint64_t;
 #endif
 
 /* Visual Leak Detector looks for memory leaks */
-#cmakedefine ACTIVATE_VISUAL_LEAK_DETECTOR
-#ifdef ACTIVATE_VISUAL_LEAK_DETECTOR
+#cmakedefine VISUAL_LEAK_DETECTOR_ENABLE
+#ifdef VISUAL_LEAK_DETECTOR_ENABLE
 #  include <vld.h>
 #endif
 

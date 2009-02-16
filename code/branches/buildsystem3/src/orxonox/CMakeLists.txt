@@ -75,6 +75,9 @@ TARGET_LINK_LIBRARIES(orxonox
   #audio
 )
 
+ORXONOX_INSTALL(orxonox)
+
+
 # When using Visual Studio we want to use the output directory as working
 # directory and we also want to specify where the external dlls
 # (lua, ogre, etc.) are. The problem hereby is that these information cannot
@@ -92,5 +95,3 @@ IF(MSVC)
          VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox.vcproj.user" "${CMAKE_CURRENT_BINARY_DIR}/orxonox.vcproj.user")
 ENDIF(MSVC)
-
-ORXONOX_INSTALL(orxonox)

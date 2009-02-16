@@ -30,6 +30,9 @@
  #    OGRE_PLUGINS_FOLDER_RELEASE Folder with the release plugins
  #    OGRE_PLUGINS_DEBUG          Names of the debug plugins without extension
  #    OGRE_PLUGINS_RELEASE        Names of the release plugins without ext.
+ #  Note:
+ #    You must not specify render systems as input, but the ones found will be
+ #    present in the output variables.
  #
 
 FUNCTION(CHECK_OGRE_PLUGINS)
@@ -43,8 +46,9 @@ FUNCTION(CHECK_OGRE_PLUGINS)
   # Do not prefix "lib" on any platform
   SET(CMAKE_FIND_LIBRARY_PREFIXES "")
 
+  SET(OGRE_RENDER_SYSTEMS RenderSystem_GL RenderSystem_Direct3D9)
   SET(OGRE_RENDER_SYSTEM_FOUND FALSE)
-  FOREACH(_plugin ${OGRE_PLUGINS})
+  FOREACH(_plugin ${OGRE_PLUGINS} ${OGRE_RENDER_SYSTEMS})
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_OPTIMIZED
       NAMES ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}

@@ -24,10 +24,11 @@
  #
 
 # Specify media directory
+GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../media ABSOLUTE)
 FIND_PATH(ORXONOX_MEDIA_DIRECTORY resources.cfg
   PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/../media
+    ${_search_path_1}
     $ENV{ORXONOX_MEDIA_DIR}
 )
 IF(NOT ORXONOX_MEDIA_DIRECTORY)

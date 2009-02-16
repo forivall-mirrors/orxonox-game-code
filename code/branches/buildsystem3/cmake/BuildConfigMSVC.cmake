@@ -25,7 +25,7 @@
 
 ######################## Options ########################
 
-OPTION(ACTIVATE_VISUAL_LEAK_DETECTOR "Memory leak detector" FALSE)
+OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" FALSE)
 
 #################### Compiler Flags #####################
 
@@ -64,7 +64,7 @@ ADD_COMPILER_FLAGS("-MP2" Debug MSVC09 CACHE)
 ####################### Warnings ########################
 
 # Increase warning level if requested
-IF(EXTRA_WARNINGS)
+IF(EXTRA_COMPILER_WARNINGS)
   REMOVE_COMPILER_FLAGS("-W1 -W2 -W3" CACHE)
   ADD_COMPILER_FLAGS   ("-W4" CACHE)
 ELSE()

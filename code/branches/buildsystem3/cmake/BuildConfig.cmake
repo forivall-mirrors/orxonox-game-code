@@ -24,12 +24,15 @@
  #    This also includes handling the OGRE plugins and the media directory.
  #
 
-################ Misc Options ###################
+################# Misc Options ##################
 
 # Set binary output directories
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+# Take care of some CMake 2.6.0 leftovers
+MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 # Sets where to find the external libraries like OgreMain.dll at runtime
 # On Unix you should not have to change this at all.
@@ -53,11 +56,13 @@ ELSE()
   MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 ENDIF()
 
-OPTION(EXTRA_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
+OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
+
+
+################# OGRE Plugins ##################
 
 # More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
-# Render systems may be optional, but at least one has to be found in FindOgre
-SET(OGRE_PLUGINS_INT RenderSystem_GL RenderSystem_Direct3D9 Plugin_ParticleFX)
+SET(OGRE_PLUGINS_INT Plugin_ParticleFX)
 IF(WIN32)
   # CG program manager is probably DirectX related (not available under unix)
   LIST(APPEND OGRE_PLUGINS_INT Plugin_CgProgramManager)
@@ -71,7 +76,7 @@ INCLUDE(CheckOGREPlugins)
 CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
 
 
-############## Compiler Config ##################
+################ Compiler Config ################
 
 INCLUDE(FlagUtilities)
 
@@ -84,32 +89,29 @@ ELSE()
   MESSAGE(STATUS "Warning: Your compiler is not officially supported.")
 ENDIF()
 
-SET(BUILD_CONFIG_USER_SCRIPT "" CACHE FILEPATH
+SET(USER_SCRIPT_BUILD_CONFIG "" CACHE FILEPATH
     "Specify a CMake script if you wish to write your own build config.
      See BuildConfigGCC.cmake or BuildConfigMSVC.cmake for examples.")
-IF(BUILD_CONFIG_USER_SCRIPT)
-  IF(EXISTS ${CMAKE_MODULE_PATH}/${BUILD_CONFIG_USER_SCRIPT}.cmake)
-    INCLUDE(${BUILD_CONFIG_USER_SCRIPT})
-  ELSEIF(EXISTS ${BUILD_CONFIG_USER_SCRIPT})
-    INCLUDE(${BUILD_CONFIG_USER_SCRIPT})
-  ELSEIF(EXISTS ${CMAKE_MODULE_PATH}/${BUILD_CONFIG_USER_SCRIPT})
-    INCLUDE(${CMAKE_MODULE_PATH}/${BUILD_CONFIG_USER_SCRIPT})
+IF(USER_SCRIPT_BUILD_CONFIG)
+  IF(EXISTS ${CMAKE_MODULE_PATH}/${USER_SCRIPT_BUILD_CONFIG}.cmake)
+    INCLUDE(${USER_SCRIPT_BUILD_CONFIG})
+  ELSEIF(EXISTS ${USER_SCRIPT_BUILD_CONFIG})
+    INCLUDE(${USER_SCRIPT_BUILD_CONFIG})
+  ELSEIF(EXISTS ${CMAKE_MODULE_PATH}/${USER_SCRIPT_BUILD_CONFIG})
+    INCLUDE(${CMAKE_MODULE_PATH}/${USER_SCRIPT_BUILD_CONFIG})
   ENDIF()
-ENDIF(BUILD_CONFIG_USER_SCRIPT)
+ENDIF(USER_SCRIPT_BUILD_CONFIG)
 
 
-################ Test options ###################
+################# Test options ##################
 
-OPTION(ENABLE_TESTS "Enable build tests.")
-IF(ENABLE_TESTS)
+OPTION(TESTING_ENABLE "Enable build tests.")
+IF(TESTING_ENABLE)
   ENABLE_TESTING()
-ENDIF(ENABLE_TESTS)
+ENDIF(TESTING_ENABLE)
 
-OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient chatserver and alike.")
-OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
-
-
-############ Installation Settings ##############
+OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient chatserver and alike.")OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
+############# Installation Settings #############
 
 IF(UNIX)
   SET(ORXONOX_RUNTIME_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/bin/orxonox)
@@ -132,7 +134,7 @@ ELSEIF(WIN32)
 ENDIF()
 
 
-################# Unix rpath ####################
+################## Unix rpath ###################
 
 # use, i.e. don't skip the full RPATH for the build tree
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -149,7 +151,7 @@ SET(CMAKE_INSTALL_RPATH ${ORXONOX_LIBRARY_INSTALL_PATH})
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 
-####### Static/Dynamic linking defines ##########
+######## Static/Dynamic linking defines #########
 
 # Disable Boost auto linking completely
 ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")

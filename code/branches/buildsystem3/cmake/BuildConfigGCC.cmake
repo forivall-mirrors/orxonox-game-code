@@ -56,7 +56,7 @@ IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 ENDIF()
 
 # Increase warning level if requested
-IF(EXTRA_WARNINGS)
+IF(EXTRA_COMPILER_WARNINGS)
   REMOVE_COMPILER_FLAGS("-Wall" CACHE)
   ADD_COMPILER_FLAGS("-Wextra --Wno-unused-parameter" CACHE)
 ELSE()

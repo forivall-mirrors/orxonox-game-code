@@ -38,33 +38,33 @@ LIST(REMOVE_ITEM CMAKE_SYSTEM_LIBRARY_PATH "${CMAKE_INSTALL_PREFIX}/bin")
 # On Windows using a package causes way less problems
 SET(_option_msg "Set this to true to use precompiled dependecy archives")
 IF(WIN32)
-  OPTION(USE_DEPENDENCY_PACKAGE "${_option_msg}" ON)
+  OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" ON)
 ELSE(WIN32)
-  OPTION(USE_DEPENDENCY_PACKAGE "${_option_msg}" FALSE)
+  OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" FALSE)
 ENDIF(WIN32)
 
 # Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
 INCLUDE(LibraryConfigApple)
 
-IF(USE_DEPENDENCY_PACKAGE)
-  FIND_PATH(DEPENDENCY_DIR
+IF(DEPENDENCY_PACKAGE_ENABLE)
+  GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
+  GET_FILENAME_COMPONENT(_dep_dir_2 ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies ABSOLUTE)
+  FIND_PATH(DEPENDENCY_PACKAGE_DIR
     NAMES PackageConfigMSVC.cmake PackageConfigMinGW.cmake
     PATHS
       ${CMAKE_SOURCE_DIR}/dependencies
-      ${CMAKE_SOURCE_DIR}/../dependencies
-      ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies
+      ${_dep_dir_1}
+      ${_dep_dir_2}
   )
-  IF(NOT DEPENDENCY_DIR)
+  IF(NOT DEPENDENCY_PACKAGE_DIR)
     MESSAGE(STATUS "Warning: Could not find dependency directory."
                    "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
   ELSE()
     FILE(GLOB _package_config_files "${DEPENDENCY_DIR}/PackageConfig*.cmake")
     FOREACH(_file ${_package_config_files})
-      INCLUDE(${_file})
-    ENDFOREACH(_file)
-
-    # On Windows, DLLs have to be in the executable folder
+      INCLUDE(${_file})    ENDFOREACH(_file)
+    # On Windows, DLLs have to be in the executable folder, install them
     IF(DEP_BINARY_DIR AND WIN32)
       # When installing a debug version, we really can't know which libraries
       # are used in released mode because there might be deps of deps.
@@ -84,22 +84,22 @@ IF(USE_DEPENDENCY_PACKAGE)
         REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
       )
     ENDIF(DEP_BINARY_DIR AND WIN32)
-  ENDIF(NOT DEPENDENCY_DIR)
-ENDIF(USE_DEPENDENCY_PACKAGE)
+  ENDIF(NOT DEPENDENCY_PACKAGE_DIR)
+ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
 # User script
-SET(LIBRARY_CONFIG_USER_SCRIPT "" CACHE FILEPATH
+SET(USER_SCRIPT_LIBRARY_CONFIG "" CACHE FILEPATH
     "Specify a CMake script if you wish to write your own library path config.
      See LibraryConfigTardis.cmake or LibraryConfigMinGW.cmake for examples.")
-IF(LIBRARY_CONFIG_USER_SCRIPT)
-  IF(EXISTS ${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT}.cmake)
-    INCLUDE(${LIBRARY_CONFIG_USER_SCRIPT})
-  ELSEIF(EXISTS ${LIBRARY_CONFIG_USER_SCRIPT})
-    INCLUDE(${LIBRARY_CONFIG_USER_SCRIPT})
-  ELSEIF(EXISTS ${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT})
-    INCLUDE(${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT})
+IF(USER_SCRIPT_LIBRARY_CONFIG)
+  IF(EXISTS ${CMAKE_MODULE_PATH}/${USER_SCRIPT_LIBRARY_CONFIG}.cmake)
+    INCLUDE(${USER_SCRIPT_LIBRARY_CONFIG})
+  ELSEIF(EXISTS ${USER_SCRIPT_LIBRARY_CONFIG})
+    INCLUDE(${USER_SCRIPT_LIBRARY_CONFIG})
+  ELSEIF(EXISTS ${CMAKE_MODULE_PATH}/${USER_SCRIPT_LIBRARY_CONFIG})
+    INCLUDE(${CMAKE_MODULE_PATH}/${USER_SCRIPT_LIBRARY_CONFIG})
   ENDIF()
-ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
+ENDIF(USER_SCRIPT_LIBRARY_CONFIG)
 
 
 ############### Library finding #################
@@ -179,6 +179,8 @@ ENDIF(MSVC)
 IF(NOT Boost_VERSION LESS 103500)
   FIND_PACKAGE(Boost 1.35 REQUIRED system)
 ENDIF()
+# No auto linking, so this option is useless anyway
+MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
 
 ####### Static/Dynamic linking options ##########
 
