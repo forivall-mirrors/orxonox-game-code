@@ -1,1 +1,0 @@
-- Detect ceguilua version other than with the variable from the pkg config file. It might not exist everywhere.
