@@ -17,6 +17,11 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
  
+# Keep devs from using the root directory as binary directory (messes up the source tree)
+IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+  MESSAGE(FATAL_ERROR "Do not use the root directory as CMake output directory! mkdir build; cd build; cmake ..")
+ENDIF()
+
 PROJECT(Orxonox C CXX)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
@@ -26,11 +31,6 @@ SET(ORXONOX_VERSION_MINOR 0)
 SET(ORXONOX_VERSION_PATCH 3)
 SET(ORXONOX_VERSION 0.0.3)
 SET(ORXONOX_VERSION_NAME "Castor")
-
-# Keep devs from using the root directory as binary directory (messes up the source tree)
-IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-  MESSAGE(FATAL_ERROR "Do not use the root directory as CMake output directory! mkdir build; cd build; cmake ..")
-ENDIF()
 
 # This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
