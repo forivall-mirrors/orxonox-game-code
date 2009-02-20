@@ -259,7 +259,7 @@ namespace orxonox
 
         // get bindings from default file if filename doesn't exist.
         std::ifstream infile;
-        infile.open(filepath.native_file_string().c_str());
+        infile.open(filepath.file_string().c_str());
         if (!infile)
         {
             ConfigFileManager::getInstance().setFilename(this->configFile_, defaultFilename);

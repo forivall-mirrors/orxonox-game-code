@@ -89,7 +89,7 @@ namespace orxonox
 
     output_ = "";
     std::ifstream file;
-    file.open(filepath.native_file_string().c_str(), std::fstream::in);
+    file.open(filepath.file_string().c_str(), std::fstream::in);
 
     if (!file.is_open())
     {

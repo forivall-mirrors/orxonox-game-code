@@ -229,12 +229,12 @@ namespace orxonox
 
         // This creates the config file if it's not existing
         std::ofstream createFile;
-        createFile.open(filepath.native_file_string().c_str(), std::fstream::app);
+        createFile.open(filepath.file_string().c_str(), std::fstream::app);
         createFile.close();
 
         // Open the file
         std::ifstream file;
-        file.open(filepath.native_file_string().c_str(), std::fstream::in);
+        file.open(filepath.file_string().c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -344,7 +344,7 @@ namespace orxonox
         boost::filesystem::path filepath(Core::getConfigPath() + "/" + this->filename_);
 
         std::ofstream file;
-        file.open(filepath.native_file_string().c_str(), std::fstream::out);
+        file.open(filepath.file_string().c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 

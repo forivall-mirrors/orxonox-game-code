@@ -197,9 +197,9 @@ typedef unsigned __int64  uint64_t;
 /* Handle default ConfigValues */
 namespace orxonox
 {
-    const char* const ORXONOX_MEDIA_INSTALL_PATH ("@ORXONOX_MEDIA_INSTALL_PATH@/");
-    const char* const ORXONOX_CONFIG_INSTALL_PATH("@ORXONOX_CONFIG_INSTALL_PATH@/");
-    const char* const ORXONOX_LOG_INSTALL_PATH   ("@ORXONOX_LOG_INSTALL_PATH@/");
+    const char* const ORXONOX_MEDIA_INSTALL_PATH ("@ORXONOX_MEDIA_INSTALL_PATH_EXEC@/");
+    const char* const ORXONOX_CONFIG_INSTALL_PATH("@ORXONOX_CONFIG_INSTALL_PATH_EXEC@/");
+    const char* const ORXONOX_LOG_INSTALL_PATH   ("@ORXONOX_LOG_INSTALL_PATH_EXEC@/");
 
     const char* const ORXONOX_MEDIA_DEV_PATH     ("@ORXONOX_MEDIA_DEV_PATH@/");
 #ifdef CMAKE_CONFIGURATION_TYPES

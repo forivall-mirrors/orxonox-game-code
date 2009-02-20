@@ -307,7 +307,7 @@ namespace orxonox
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly
         std::ifstream file;
-        file.open(filepath.native_file_string().c_str());
+        file.open(filepath.file_string().c_str());
         args.clear();
         if (file)
         {

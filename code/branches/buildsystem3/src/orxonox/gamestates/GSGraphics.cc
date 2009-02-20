@@ -304,7 +304,7 @@ namespace orxonox
 
         // create our own log that we can listen to
         Ogre::Log *myLog;
-        myLog = ogreLogger_->createLog(ogreLogFilepath.native_file_string(), true, false, false);
+        myLog = ogreLogger_->createLog(ogreLogFilepath.file_string(), true, false, false);
         COUT(4) << "Ogre Log created" << std::endl;
 
         myLog->setLogDetail(Ogre::LL_BOREME);
@@ -314,19 +314,19 @@ namespace orxonox
 
         // check for config file existence because Ogre displays (caught) exceptions if not
         std::ifstream probe;
-        probe.open(ogreConfigFilepath.native_file_string().c_str());
+        probe.open(ogreConfigFilepath.file_string().c_str());
         if (!probe)
         {
             // create a zero sized file
             std::ofstream creator;
-            creator.open(ogreConfigFilepath.native_file_string().c_str());
+            creator.open(ogreConfigFilepath.file_string().c_str());
             creator.close();
         }
         else
             probe.close();
 
         // Leave plugins file empty. We're going to do that part manually later
-        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.native_file_string(), ogreLogFilepath.native_file_string());
+        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.file_string(), ogreLogFilepath.file_string());
 
         COUT(3) << "Ogre set up done." << std::endl;
     }
@@ -341,7 +341,7 @@ namespace orxonox
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
         for (unsigned int i = 0; i < plugins.size(); ++i)
-            ogreRoot_->loadPlugin((folder / plugins[i]).native_file_string());
+            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
     }
 
     void GSGraphics::declareResources()
