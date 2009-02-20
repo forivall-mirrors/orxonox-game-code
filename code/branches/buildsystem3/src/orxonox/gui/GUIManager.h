@@ -41,6 +41,9 @@
 #include <CEGUISystem.h>
 #include "core/input/InputInterfaces.h"
 
+// Forward declaration
+namespace CEGUI { class DefaultLogger; }
+
 // tolua_begin
 namespace orxonox
 {
@@ -118,6 +121,7 @@ namespace orxonox
         CEGUI::OgreCEGUIRenderer* guiRenderer_;
         CEGUI::ResourceProvider*  resourceProvider_;
         CEGUI::LuaScriptModule*   scriptModule_;
+        CEGUI::DefaultLogger*     ceguiLogger_;
         CEGUI::System*            guiSystem_;
         CEGUI::Imageset*          backgroundImage_;
         lua_State*                luaState_;

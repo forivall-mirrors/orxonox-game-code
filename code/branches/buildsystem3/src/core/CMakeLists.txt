@@ -69,7 +69,14 @@ GENERATE_TOLUA_BINDINGS(Core CORE_FILES INPUTFILES LuaBind.h CommandExecutor.h)
 
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
   # Get around displaying a few hundred lines of warning code
-  SET_SOURCE_FILES_PROPERTIES(ArgumentCompletionFunctions.cc PROPERTIES COMPILE_FLAGS "-w")
+  SET_SOURCE_FILES_PROPERTIES(
+    ArgumentCompletionFunctions.cc
+    CommandLine.cc
+    ConfigFileManager.cc
+    Language.cc
+    LuaBind.cc
+    input/KeyBinder.cc
+    PROPERTIES COMPILE_FLAGS "-Wno-sign-compare")
 ENDIF()
 
 ADD_LIBRARY(core SHARED ${CORE_FILES})

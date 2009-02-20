@@ -35,12 +35,14 @@
 
 #include <fstream>
 #include <string>
+#include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
+#include "core/Core.h"
 #include "InputCommands.h"
 #include "InputManager.h"
 
@@ -252,9 +254,12 @@ namespace orxonox
         if (filename.empty())
             return;
 
+        boost::filesystem::path folder(Core::getConfigPath());
+        boost::filesystem::path filepath(folder/filename);
+
         // get bindings from default file if filename doesn't exist.
         std::ifstream infile;
-        infile.open(filename.c_str());
+        infile.open(filepath.native_file_string().c_str());
         if (!infile)
         {
             ConfigFileManager::getInstance().setFilename(this->configFile_, defaultFilename);

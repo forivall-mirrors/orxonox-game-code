@@ -43,26 +43,13 @@
 #include "core/LuaBind.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
-#include "Settings.h"
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
-#  ifndef WIN32_LEAN_AND_MEAN
-#    define WIN32_LEAN_AND_MEAN
-#  endif
-#  include "windows.h"
-
-   //Get around Windows hackery
-#  ifdef max
-#    undef max
-#  endif
-#  ifdef min
-#    undef min
-#  endif
+#  include <winbase.h>
 #endif
 
 namespace orxonox
 {
-    SetCommandLineArgument(dataPath, "").information("PATH");
     SetCommandLineArgument(limitToCPU, 1).information("0: off | #cpu");
 
     GSRoot::GSRoot()
@@ -70,7 +57,6 @@ namespace orxonox
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
-        , settings_(0)
         , tclBind_(0)
         , tclThreadManager_(0)
         , shell_(0)
@@ -112,20 +98,8 @@ namespace orxonox
         // Create the lua interface
         this->luaBind_ = new LuaBind();
 
-        // instantiate Settings class
-        this->settings_ = new Settings();
-
-        std::string dataPath = CommandLine::getValue("dataPath");
-        if (dataPath != "")
-        {
-            if (*dataPath.end() != '/' && *dataPath.end() != '\\')
-                Settings::tsetDataPath(dataPath + "/");
-            else
-                Settings::tsetDataPath(dataPath);
-        }
-
         // initialise TCL
-        this->tclBind_ = new TclBind(Settings::getDataPath());
+        this->tclBind_ = new TclBind(Core::getMediaPath());
         this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
 
         // create a shell
@@ -181,7 +155,6 @@ namespace orxonox
         delete this->tclThreadManager_;
         delete this->tclBind_;
 
-        delete this->settings_;
         delete this->luaBind_;
 
         if (this->ccSetTimeFactor_)

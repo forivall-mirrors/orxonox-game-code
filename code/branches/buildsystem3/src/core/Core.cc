@@ -36,6 +36,8 @@
 #include "Language.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
+#include "LuaBind.h"
+#include "CommandLine.h"
 
 namespace orxonox
 {
@@ -45,7 +47,13 @@ namespace orxonox
     bool Core::bIsStandalone_s  = false;
     bool Core::bIsMaster_s      = false;
 
+    bool Core::isDevBuild_s     = false;
+    std::string Core::configPath_s(ORXONOX_CONFIG_INSTALL_PATH); // from OrxonoxConfig.h
+    std::string Core::logPath_s   (ORXONOX_LOG_INSTALL_PATH);    // from OrxonoxConfig.h
+
     Core* Core::singletonRef_s = 0;
+
+    SetCommandLineArgument(mediaPath, "").information("PATH");
 
     /**
         @brief Constructor: Registers the object and sets the config-values.
@@ -57,9 +65,19 @@ namespace orxonox
 
         assert(Core::singletonRef_s == 0);
         Core::singletonRef_s = this;
-        this->bInitializeRandomNumberGenerator_ = false;
 
+        this->bInitializeRandomNumberGenerator_ = false;
         this->setConfigValues();
+
+        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
+        OutputHandler::getOutStream().setLogPath(Core::logPath_s);
+
+        // Possible media path override by the command line
+        if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
+        {
+            std::string mediaPath = CommandLine::getValue("mediaPath");
+            Core::tsetMediaPath(mediaPath);
+        }
     }
 
     /**
@@ -76,11 +94,33 @@ namespace orxonox
     */
     void Core::setConfigValues()
     {
-        SetConfigValue(softDebugLevelConsole_, 3).description("The maximal level of debug output shown in the console").callback(this, &Core::debugLevelChanged);
-        SetConfigValue(softDebugLevelLogfile_, 3).description("The maximal level of debug output shown in the logfile").callback(this, &Core::debugLevelChanged);
-        SetConfigValue(softDebugLevelShell_, 1).description("The maximal level of debug output shown in the ingame shell").callback(this, &Core::debugLevelChanged);
+#ifdef NDEBUG
+        const unsigned int defaultLevelConsole = 1;
+        const unsigned int defaultLevelLogfile = 3;
+        const unsigned int defaultLevelShell   = 1;
+#else
+        const unsigned int defaultLevelConsole = 3;
+        const unsigned int defaultLevelLogfile = 4;
+        const unsigned int defaultLevelShell   = 3;
+#endif
+        SetConfigValue(softDebugLevelConsole_, defaultLevelConsole)
+            .description("The maximal level of debug output shown in the console").callback(this, &Core::debugLevelChanged);
+        SetConfigValue(softDebugLevelLogfile_, defaultLevelLogfile)
+            .description("The maximal level of debug output shown in the logfile").callback(this, &Core::debugLevelChanged);
+        SetConfigValue(softDebugLevelShell_, defaultLevelShell)
+            .description("The maximal level of debug output shown in the ingame shell").callback(this, &Core::debugLevelChanged);
+
         SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(this, &Core::languageChanged);
         SetConfigValue(bInitializeRandomNumberGenerator_, true).description("If true, all random actions are different each time you start the game").callback(this, &Core::initializeRandomNumberGenerator);
+
+        // Media path (towards config and log path) is ini-configurable
+        const char* defaultMediaPath = ORXONOX_MEDIA_INSTALL_PATH;
+        if (Core::isDevBuild())
+            defaultMediaPath = ORXONOX_MEDIA_DEV_PATH;
+
+        SetConfigValue(mediaPath_, defaultMediaPath)
+            .description("Relative path to the game data.").callback(this, &Core::mediaPathChanged);
+
     }
 
     /**
@@ -108,6 +148,24 @@ namespace orxonox
     {
         // Read the translation file after the language was configured
         Language::getLanguage().readTranslatedLanguageFile();
+    }
+
+    /**
+    @brief
+        Callback function if the media path has changed.
+    */
+    void Core::mediaPathChanged()
+    {
+        if (mediaPath_ != "" && mediaPath_[mediaPath_.size() - 1] != '/')
+        {
+            ModifyConfigValue(mediaPath_, set, mediaPath_ + "/");
+        }
+
+        if (mediaPath_ == "")
+        {
+            ModifyConfigValue(mediaPath_, set, "/");
+            COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
+        }
     }
 
     /**
@@ -176,6 +234,24 @@ namespace orxonox
         ResetConfigValue(language_);
     }
 
+    /**
+    @brief
+        Temporary sets the media path
+    @param path
+        The new media path
+    */
+    void Core::_tsetMediaPath(const std::string& path)
+    {
+        if (*path.end() != '/' && *path.end() != '\\')
+        {
+            ModifyConfigValue(mediaPath_, tset, path + "/");
+        }
+        else
+        {
+            ModifyConfigValue(mediaPath_, tset, path);
+        }
+    }
+
     void Core::initializeRandomNumberGenerator()
     {
         static bool bInitialized = false;
@@ -185,5 +261,15 @@ namespace orxonox
             rand();
             bInitialized = true;
         }
+    }
+
+    /*static*/ void Core::setDevBuild()
+    {
+        // Be careful never to call this function before main()!
+
+        Core::isDevBuild_s = true;
+        // Constants taken from OrxonoxConfig.h
+        Core::configPath_s = ORXONOX_CONFIG_DEV_PATH;
+        Core::logPath_s    = ORXONOX_LOG_DEV_PATH;
     }
 }

@@ -45,7 +45,6 @@
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
-#include "Settings.h"
 
 namespace orxonox
 {
@@ -204,7 +203,7 @@ namespace orxonox
         COUT(0) << "Loading level..." << std::endl;
         std::string levelName;
         CommandLine::getValue("level", &levelName);
-        startFile_ = new XMLFile(Settings::getDataPath() + std::string("levels/") + levelName);
+        startFile_ = new XMLFile(Core::getMediaPath() + std::string("levels/") + levelName);
         Loader::open(startFile_);
     }
 

@@ -24,7 +24,6 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Main.cc
   PawnManager.cc
   PlayerManager.cc
-  Settings.cc
 )
 ADD_SUBDIRECTORY(gamestates)
 ADD_SUBDIRECTORY(gui)
@@ -42,7 +41,11 @@ INCLUDE_DIRECTORIES(pch/nopch)
 
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
   # Get around displaying a few hundred lines of warning code
-  SET_SOURCE_FILES_PROPERTIES(gamestates/GSGraphics.cc PROPERTIES COMPILE_FLAGS "-w")
+  SET_SOURCE_FILES_PROPERTIES(
+    gamestates/GSGraphics.cc
+    gui/GUIManager.cc
+    PROPERTIES COMPILE_FLAGS "-Wno-sign-compare"
+  )
 ENDIF()
 
 ADD_EXECUTABLE(orxonox ${ORXONOX_FILES})

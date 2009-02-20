@@ -25,17 +25,16 @@
 
 # Specify media directory
 GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../media ABSOLUTE)
-FIND_PATH(ORXONOX_MEDIA_DIRECTORY resources.cfg
+FIND_PATH(ORXONOX_MEDIA_DEV_PATH resources.cfg
   PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${_search_path_1}
-    $ENV{ORXONOX_MEDIA_DIR}
 )
-IF(NOT ORXONOX_MEDIA_DIRECTORY)
+IF(NOT ORXONOX_MEDIA_DEV_PATH)
   MESSAGE(STATUS "Warning: Media directory not found. If you want to compile while downloading the media files, you must specify the directory by Hand BEFORE compiling! Default location is orxonox_root/media")
   # Temporary override to the default location.
-  SET(ORXONOX_MEDIA_DIRECTORY ${CMAKE_SOURCE_DIR}/media)
-  SET(ORXONOX_MEDIA_DIRECTORY ${CMAKE_SOURCE_DIR}/media PARENT_SCOPE)
+  SET(ORXONOX_MEDIA_DEV_PATH ${CMAKE_SOURCE_DIR}/media)
+  SET(ORXONOX_MEDIA_DEV_PATH ${CMAKE_SOURCE_DIR}/media PARENT_SCOPE)
 ENDIF()
 
 
@@ -49,7 +48,7 @@ ELSEIF(TCL_LIBRARY MATCHES "84|8\\.4")
 ENDIF()
 
 INSTALL(
-  DIRECTORY ${ORXONOX_MEDIA_DIRECTORY}/
+  DIRECTORY ${ORXONOX_MEDIA_DEV_PATH}/
   DESTINATION ${ORXONOX_MEDIA_INSTALL_PATH}
   REGEX "\\.svn$|_svn$|backToPNG|${TCL_EXCLUDE_PATTERN}" EXCLUDE
 )

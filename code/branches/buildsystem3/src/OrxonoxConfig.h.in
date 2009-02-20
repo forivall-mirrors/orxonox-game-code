@@ -163,9 +163,11 @@ typedef unsigned __int64  uint64_t;
 #endif
 
 #cmakedefine HAVE_STDDEF_H
+/* Quite large, do not include unless necessary
 #ifdef HAVE_STDDEF_H
 #  include <stddef.h>
 #endif
+*/
 
 /* Visual Leak Detector looks for memory leaks */
 #cmakedefine VISUAL_LEAK_DETECTOR_ENABLE
@@ -184,18 +186,31 @@ typedef unsigned __int64  uint64_t;
    too when installing. */
 #cmakedefine USE_DEPENDENCY_PACKAGE
 
+/* Using MSVC or XCode IDE */
+#cmakedefine CMAKE_CONFIGURATION_TYPES
+
+/* Macros used in the next section */
+#define MACRO_CONCATENATE(str1, str2) str1##str2
+#define MACRO_QUOTEME_AUX(x) #x
+#define MACRO_QUOTEME(x) MACRO_QUOTEME_AUX(x)
+
 /* Handle default ConfigValues */
 namespace orxonox
 {
-#ifdef ORXONOX_PLATFORM_WINDOWS
-    const char* const ORXONOX_MEDIA_PATH("../media");
-#elif defined(ORXONOX_PLATFORM_LINUX)
-    const char* const ORXONOX_MEDIA_PATH("../../share/orxonox");
+    const char* const ORXONOX_MEDIA_INSTALL_PATH ("@ORXONOX_MEDIA_INSTALL_PATH@/");
+    const char* const ORXONOX_CONFIG_INSTALL_PATH("@ORXONOX_CONFIG_INSTALL_PATH@/");
+    const char* const ORXONOX_LOG_INSTALL_PATH   ("@ORXONOX_LOG_INSTALL_PATH@/");
+
+    const char* const ORXONOX_MEDIA_DEV_PATH     ("@ORXONOX_MEDIA_DEV_PATH@/");
+#ifdef CMAKE_CONFIGURATION_TYPES
+    const char* const ORXONOX_CONFIG_DEV_PATH    ("@ORXONOX_CONFIG_DEV_PATH@/" MACRO_QUOTEME(CMAKE_BUILD_TYPE) "/");
+    const char* const ORXONOX_LOG_DEV_PATH       ("@ORXONOX_LOG_DEV_PATH@/"    MACRO_QUOTEME(CMAKE_BUILD_TYPE) "/");
 #else
-    /* TODO: Apple? */
-    const char* const ORXONOX_MEDIA_PATH("../../share/orxonox");
+    const char* const ORXONOX_CONFIG_DEV_PATH    ("@ORXONOX_CONFIG_DEV_PATH@/");
+    const char* const ORXONOX_LOG_DEV_PATH       ("@ORXONOX_LOG_DEV_PATH@/");
 #endif
     
+    /* OGRE Plugins */
 #ifdef NDEBUG
     const char* const ORXONOX_OGRE_PLUGINS("@OGRE_PLUGINS_RELEASE@");
 #  ifdef USE_DEPENDENCY_PACKAGE
@@ -212,6 +227,5 @@ namespace orxonox
 #  endif
 #endif
 }
-
 
 #endif /* _OrxonoxConfig_H__ */

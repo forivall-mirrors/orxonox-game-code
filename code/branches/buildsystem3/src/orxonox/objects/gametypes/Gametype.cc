@@ -42,7 +42,6 @@
 #include "objects/worldentities/pawns/Spectator.h"
 #include "objects/worldentities/SpawnPoint.h"
 #include "objects/worldentities/Camera.h"
-#include "Settings.h"
 
 #include "network/Host.h"
 

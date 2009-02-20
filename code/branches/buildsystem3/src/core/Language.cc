@@ -34,6 +34,7 @@
 #include "Language.h"
 
 #include <fstream>
+#include <boost/filesystem.hpp>
 
 #include "Core.h"
 #include "util/Debug.h"
@@ -204,14 +205,17 @@ namespace orxonox
     {
         COUT(4) << "Read default language file." << std::endl;
 
+        boost::filesystem::path folder(Core::getConfigPath());
+        boost::filesystem::path filepath(folder/getFilename(this->defaultLanguage_));
+
         // This creates the file if it's not existing
         std::ofstream createFile;
-        createFile.open(getFilename(this->defaultLanguage_).c_str(), std::fstream::app);
+        createFile.open(filepath.native_file_string().c_str(), std::fstream::app);
         createFile.close();
 
         // Open the file
         std::ifstream file;
-        file.open(getFilename(this->defaultLanguage_).c_str(), std::fstream::in);
+        file.open(filepath.native_file_string().c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -253,9 +257,12 @@ namespace orxonox
     {
         COUT(4) << "Read translated language file (" << Core::getLanguage() << ")." << std::endl;
 
+        boost::filesystem::path folder(Core::getConfigPath());
+        boost::filesystem::path filepath(folder/getFilename(Core::getLanguage()));
+
         // Open the file
         std::ifstream file;
-        file.open(getFilename(Core::getLanguage()).c_str(), std::fstream::in);
+        file.open(filepath.native_file_string().c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -307,9 +314,12 @@ namespace orxonox
     {
         COUT(4) << "Language: Write default language file." << std::endl;
 
+        boost::filesystem::path folder(Core::getConfigPath());
+        boost::filesystem::path filepath(folder/getFilename(this->defaultLanguage_));
+
         // Open the file
         std::ofstream file;
-        file.open(getFilename(this->defaultLanguage_).c_str(), std::fstream::out);
+        file.open(filepath.native_file_string().c_str(), std::fstream::out);
 
         if (!file.is_open())
         {

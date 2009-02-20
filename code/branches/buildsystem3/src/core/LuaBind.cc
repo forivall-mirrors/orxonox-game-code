@@ -36,10 +36,12 @@ extern "C" {
 #include <lualib.h>
 }
 #include <tolua/tolua++.h>
+#include <boost/filesystem.hpp>
 
-#include "ToluaBindCore.h"
 #include "util/String.h"
-#include "CoreIncludes.h"
+#include "util/Debug.h"
+#include "ToluaBindCore.h"
+#include "Core.h"
 
 namespace orxonox
 {
@@ -49,6 +51,8 @@ namespace orxonox
   {
     assert(LuaBind::singletonRef_s == 0);
     LuaBind::singletonRef_s = this;
+
+    this->includePath_ = Core::getMediaPath();
 
     luaState_ = lua_open();
     luaSource_ = "";
@@ -81,9 +85,11 @@ namespace orxonox
   */
   void LuaBind::loadFile(std::string filename, bool luaTags)
   {
+    boost::filesystem::path filepath(filename);
+
     output_ = "";
     std::ifstream file;
-    file.open(filename.c_str(), std::fstream::in);
+    file.open(filepath.native_file_string().c_str(), std::fstream::in);
 
     if (!file.is_open())
     {

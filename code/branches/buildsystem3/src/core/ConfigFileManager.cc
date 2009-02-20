@@ -29,10 +29,13 @@
 #include "ConfigFileManager.h"
 
 #include <cassert>
+#include <boost/filesystem.hpp>
+
 #include "util/Convert.h"
 #include "util/String.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
+#include "Core.h"
 
 namespace orxonox
 {
@@ -222,14 +225,16 @@ namespace orxonox
         // Be sure we start from new
         this->clear();
 
+        boost::filesystem::path filepath(Core::getConfigPath() + "/" + this->filename_);
+
         // This creates the config file if it's not existing
         std::ofstream createFile;
-        createFile.open(this->filename_.c_str(), std::fstream::app);
+        createFile.open(filepath.native_file_string().c_str(), std::fstream::app);
         createFile.close();
 
         // Open the file
         std::ifstream file;
-        file.open(this->filename_.c_str(), std::fstream::in);
+        file.open(filepath.native_file_string().c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -336,8 +341,10 @@ namespace orxonox
 
     void ConfigFile::save() const
     {
+        boost::filesystem::path filepath(Core::getConfigPath() + "/" + this->filename_);
+
         std::ofstream file;
-        file.open(this->filename_.c_str(), std::fstream::out);
+        file.open(filepath.native_file_string().c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 

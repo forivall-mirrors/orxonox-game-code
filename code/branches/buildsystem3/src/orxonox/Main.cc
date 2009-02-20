@@ -29,13 +29,14 @@
 
  /**
  @file
- @brief Entry point of the program. Platform specific code.
+ @brief Entry point of the program.
   */
 
 #include "OrxonoxStableHeaders.h"
 
 #include <exception>
 #include <cassert>
+#include <fstream>
 
 #include "OrxonoxConfig.h"
 #include "util/Debug.h"
@@ -84,19 +85,26 @@
 #endif
 
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
 SetCommandLineArgument(settingsFile, "orxonox.ini");
+SetCommandLineArgument(configFileDirectory, "");
 
 int main(int argc, char** argv)
 {
     using namespace orxonox;
 
-    // create a signal handler (only works for linux)
+    // First, determine whether we have an installed or a binary dir run
+    // The latter occurs when simply running from the build directory
+    std::ifstream probe;
+    probe.open("orxonox_dev_build.keep_me");
+    if (probe)
+    {
+        Core::setDevBuild();
+        probe.close();
+    }
+
+    // create a signal handler (only active for linux)
     SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], "orxonox.log");
+    signalHandler.doCatch(argv[0], Core::getLogPath() + "orxonox_crash.log");
 
     // Parse command line arguments
     try
@@ -156,7 +164,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-
-//#ifdef __cplusplus
-//}
-//#endif

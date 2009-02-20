@@ -34,8 +34,8 @@
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 #include "core/Template.h"
+#include "core/Core.h"
 
-#include "Settings.h"
 #include "LevelManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
@@ -54,8 +54,8 @@ namespace orxonox
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
 
-        if (this->xmlfilename_.length() >= Settings::getDataPath().length())
-            this->xmlfilename_ = this->xmlfilename_.substr(Settings::getDataPath().length());
+        if (this->xmlfilename_.length() >= Core::getMediaPath().length())
+            this->xmlfilename_ = this->xmlfilename_.substr(Core::getMediaPath().length());
     }
 
     Level::~Level()
@@ -96,7 +96,7 @@ namespace orxonox
         mask.include(Class(Template));
         mask.include(Class(OverlayGroup)); // HACK to include the ChatOverlay
 
-        this->xmlfile_ = new XMLFile(Settings::getDataPath() + this->xmlfilename_, mask);
+        this->xmlfile_ = new XMLFile(Core::getMediaPath() + this->xmlfilename_, mask);
 
         Loader::open(this->xmlfile_);
     }

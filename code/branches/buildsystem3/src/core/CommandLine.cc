@@ -28,8 +28,10 @@
 
 #include "CommandLine.h"
 
+#include <boost/filesystem.hpp>
 #include "util/String.h"
 #include "util/SubString.h"
+#include "Core.h"
 
 namespace orxonox
 {
@@ -298,11 +300,14 @@ namespace orxonox
             args.push_back(argv[i]);
         this->_parse(args);
 
+        std::string filename = CommandLine::getValue("optionsFile").getString();
+        boost::filesystem::path folder(Core::getConfigPath());
+        boost::filesystem::path filepath(folder/filename);
+
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly
         std::ifstream file;
-        std::string filename = CommandLine::getValue("optionsFile").getString();
-        file.open(filename.c_str());
+        file.open(filepath.native_file_string().c_str());
         args.clear();
         if (file)
         {

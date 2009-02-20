@@ -35,9 +35,11 @@
 #include "OrxonoxStableHeaders.h"
 #include "GUIManager.h"
 
+#include <boost/filesystem.hpp>
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <CEGUI.h>
+#include <CEGUIDefaultLogger.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 #ifdef CEGUILUA_USE_INTERNAL_LIBRARY
 #   include <ceguilua/CEGUILua.h>
@@ -147,12 +149,16 @@ namespace orxonox
                 this->scriptModule_ = new LuaScriptModule();
                 this->luaState_ = this->scriptModule_->getLuaState();
 
+                // Create our own logger to specify the filepath
+                boost::filesystem::path ceguiLogFilepath(Core::getLogPath() + "cegui.log");
+                this->ceguiLogger_ = new DefaultLogger();
+                this->ceguiLogger_->setLogFilename(ceguiLogFilepath.native_file_string());
+                // set the log level according to ours (translate by subtracting 1)
+                this->ceguiLogger_->setLoggingLevel(
+                    (LoggingLevel)(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
+
                 // create the CEGUI system singleton
                 this->guiSystem_ = new System(this->guiRenderer_, this->resourceProvider_, 0, this->scriptModule_);
-
-                // set the log level according to ours (translate by subtracting 1)
-                Logger::getSingleton().setLoggingLevel(
-                    (LoggingLevel)(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
 
                 // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
                 tolua_Core_open(this->scriptModule_->getLuaState());

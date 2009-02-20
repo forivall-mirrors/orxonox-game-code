@@ -43,17 +43,20 @@
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
+// Only allow main to access setDevBuild, so we need a forward declaration
+int main(int, char**);
+
 namespace orxonox
 {
     //! The Core class is a singleton, only used to configure some config-values.
     class _CoreExport Core : public OrxonoxClass
     {
+        friend int ::main(int, char**); // sets isDevBuild_s
+
         public:
             Core();
             ~Core();
             void setConfigValues();
-            void debugLevelChanged();
-            void languageChanged();
 
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
@@ -61,6 +64,15 @@ namespace orxonox
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
+
+            static bool isDevBuild() { return Core::isDevBuild_s; }
+
+            static const std::string& getMediaPath()
+            { assert(singletonRef_s); return singletonRef_s->mediaPath_; }
+            static void tsetMediaPath(const std::string& path)
+            { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
+            static const std::string& getConfigPath() { return configPath_s; }
+            static const std::string& getLogPath()    { return logPath_s; }
 
             // fast access global variables.
             static bool showsGraphics() { return bShowsGraphics_s; }
@@ -78,19 +90,30 @@ namespace orxonox
             Core(const Core&);
             void resetLanguageIntern();
             void initializeRandomNumberGenerator();
+            void debugLevelChanged();
+            void languageChanged();
+            void mediaPathChanged();
+            void _tsetMediaPath(const std::string& path);
+
+            static void setDevBuild();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
             int softDebugLevelLogfile_;                     //!< The debug level for the logfile
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             std::string language_;                          //!< The language
-            bool bInitializeRandomNumberGenerator_;          //!< If true, srand(time(0)) is called
+            bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
+            std::string mediaPath_;                         //!< Path to the data/media file folder
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server
             static bool bIsClient_s;
             static bool bIsStandalone_s;
             static bool bIsMaster_s;
+
+            static bool isDevBuild_s;                       //!< True for builds in the build directory (not installed)
+            static std::string configPath_s;                //!< Path to the config file folder
+            static std::string logPath_s;                   //!< Path to the log file folder
 
             static Core* singletonRef_s;
     };
