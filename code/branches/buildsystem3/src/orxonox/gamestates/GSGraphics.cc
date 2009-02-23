@@ -313,7 +313,7 @@ namespace orxonox
         COUT(4) << "Creating Ogre Root..." << std::endl;
 
         // check for config file existence because Ogre displays (caught) exceptions if not
-        if (!boost::filesystem::exits(ogreConfigFilepath))
+        if (!boost::filesystem::exists(ogreConfigFilepath))
         {
             // create a zero sized file
             std::ofstream creator;
