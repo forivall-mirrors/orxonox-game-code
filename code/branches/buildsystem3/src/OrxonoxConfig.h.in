@@ -184,7 +184,7 @@ typedef unsigned __int64  uint64_t;
 
 /* Defined if a precompiled depdency package was used. We then copy all libraries
    too when installing. */
-#cmakedefine USE_DEPENDENCY_PACKAGE
+#cmakedefine DEPENDENCY_PACKAGE_ENABLE
 
 /* Using MSVC or XCode IDE */
 #cmakedefine CMAKE_CONFIGURATION_TYPES
@@ -213,14 +213,14 @@ namespace orxonox
     /* OGRE Plugins */
 #ifdef NDEBUG
     const char* const ORXONOX_OGRE_PLUGINS("@OGRE_PLUGINS_RELEASE@");
-#  ifdef USE_DEPENDENCY_PACKAGE
+#  ifdef DEPENDENCY_PACKAGE_ENABLE
     const char* const ORXONOX_OGRE_PLUGINS_FOLDER(".");
 #  else
     const char* const ORXONOX_OGRE_PLUGINS_FOLDER("@OGRE_PLUGINS_FOLDER_RELEASE@");
 #  endif
 #else
     const char* const ORXONOX_OGRE_PLUGINS("@OGRE_PLUGINS_DEBUG@");
-#  ifdef USE_DEPENDENCY_PACKAGE
+#  ifdef DEPENDENCY_PACKAGE_ENABLE
     const char* const ORXONOX_OGRE_PLUGINS_FOLDER(".");
 #  else
     const char* const ORXONOX_OGRE_PLUGINS_FOLDER("@OGRE_PLUGINS_FOLDER_DEBUG@");
