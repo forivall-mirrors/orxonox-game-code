@@ -117,7 +117,7 @@ OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
 ############# Installation Settings #############
 
 IF(UNIX)
-  SET(ORXONOX_RUNTIME_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/bin/orxonox)
+  SET(ORXONOX_RUNTIME_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/bin)
   SET(ORXONOX_LIBRARY_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/orxonox)
   SET(ORXONOX_ARCHIVE_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/orxonox/static)
   SET(ORXONOX_MEDIA_INSTALL_PATH   ${CMAKE_INSTALL_PREFIX}/share/orxonox)
@@ -128,7 +128,7 @@ IF(UNIX)
 
   # Execution paths, either relative to the binary dir or absolute
   # For Windows copy&paste installs relative paths are much better
-  SET(ORXONOX_MEDIA_INSTALL_PATH_EXEC ../../share/orxonox)
+  SET(ORXONOX_MEDIA_INSTALL_PATH_EXEC ../share/orxonox)
   SET(ORXONOX_CONFIG_INSTALL_PATH_EXEC ${ORXONOX_CONFIG_INSTALL_PATH})
   SET(ORXONOX_LOG_INSTALL_PATH_EXEC    ${ORXONOX_LOG_INSTALL_PATH})
 ELSEIF(WIN32)
