@@ -29,6 +29,10 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSRoot.h"
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
+#  include <winbase.h>
+#endif
+
 #include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Core.h"
@@ -43,10 +47,6 @@
 #include "core/LuaBind.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
-
-#ifdef ORXONOX_PLATFORM_WINDOWS
-#  include <winbase.h>
-#endif
 
 namespace orxonox
 {
