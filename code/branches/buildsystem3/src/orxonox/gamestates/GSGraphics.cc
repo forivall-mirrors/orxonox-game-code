@@ -292,8 +292,10 @@ namespace orxonox
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
-        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() + ogreConfigFile_);
-        boost::filesystem::path ogreLogFilepath(Core::getLogPath() + ogreLogFile_);
+        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath());
+        ogreConfigFilepath /= this->ogreConfigFile_;
+        boost::filesystem::path ogreLogFilepath(Core::getLogPath());
+        ogreLogFilepath /= this->ogreLogFile_;
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
@@ -311,17 +313,13 @@ namespace orxonox
         COUT(4) << "Creating Ogre Root..." << std::endl;
 
         // check for config file existence because Ogre displays (caught) exceptions if not
-        std::ifstream probe;
-        probe.open(ogreConfigFilepath.file_string().c_str());
-        if (!probe)
+        if (!boost::filesystem::exits(ogreConfigFilepath))
         {
             // create a zero sized file
             std::ofstream creator;
             creator.open(ogreConfigFilepath.file_string().c_str());
             creator.close();
         }
-        else
-            probe.close();
 
         // Leave plugins file empty. We're going to do that part manually later
         ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.file_string(), ogreLogFilepath.file_string());
