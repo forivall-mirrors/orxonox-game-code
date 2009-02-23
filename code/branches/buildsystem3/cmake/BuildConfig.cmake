@@ -128,7 +128,7 @@ IF(UNIX)
 
   # Execution paths, either relative to the binary dir or absolute
   # For Windows copy&paste installs relative paths are much better
-  SET(ORXONOX_MEDIA_INSTALL_PATH_EXEC ../share/orxonox)
+  SET(ORXONOX_MEDIA_INSTALL_PATH_EXEC  ${ORXONOX_MEDIA_INSTALL_PATH})
   SET(ORXONOX_CONFIG_INSTALL_PATH_EXEC ${ORXONOX_CONFIG_INSTALL_PATH})
   SET(ORXONOX_LOG_INSTALL_PATH_EXEC    ${ORXONOX_LOG_INSTALL_PATH})
 ELSEIF(WIN32)
@@ -142,9 +142,9 @@ ELSEIF(WIN32)
 
   # Execution paths, either relative to the binary dir or absolute
   # For Windows copy&paste installs relative paths are much better
-  SET(ORXONOX_MEDIA_INSTALL_PATH_EXEC ../media)
+  SET(ORXONOX_MEDIA_INSTALL_PATH_EXEC  ../media)
   SET(ORXONOX_CONFIG_INSTALL_PATH_EXEC ../config)
-  SET(ORXONOX_LOG_INSTALL_PATH_EXEC ../log)
+  SET(ORXONOX_LOG_INSTALL_PATH_EXEC    ../log)
 ENDIF()
 
 
