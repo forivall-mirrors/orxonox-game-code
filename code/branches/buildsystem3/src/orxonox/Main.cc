@@ -36,7 +36,6 @@
 
 #include <exception>
 #include <cassert>
-#include <fstream>
 
 #include "OrxonoxConfig.h"
 #include "util/Debug.h"
@@ -94,13 +93,10 @@ int main(int argc, char** argv)
 
     // First, determine whether we have an installed or a binary dir run
     // The latter occurs when simply running from the build directory
-    std::ifstream probe;
-    probe.open("orxonox_dev_build.keep_me");
-    if (probe)
-    {
-        Core::setDevBuild();
-        probe.close();
-    }
+    Core::checkDevBuild();
+
+    // Make sure the directories we write in exist or else make them
+    Core::createDirectories();
 
     // create a signal handler (only active for linux)
     SignalHandler signalHandler;

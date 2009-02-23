@@ -33,6 +33,10 @@
 
 #include "Core.h"
 #include <cassert>
+#include <fstream>
+#include <boost/filesystem.hpp>
+
+#include "util/Exception.h"
 #include "Language.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
@@ -50,6 +54,7 @@ namespace orxonox
     bool Core::isDevBuild_s     = false;
     std::string Core::configPath_s(ORXONOX_CONFIG_INSTALL_PATH); // from OrxonoxConfig.h
     std::string Core::logPath_s   (ORXONOX_LOG_INSTALL_PATH);    // from OrxonoxConfig.h
+    std::string Core::mediaPath_s (ORXONOX_MEDIA_INSTALL_PATH);  // from OrxonoxConfig.h
 
     Core* Core::singletonRef_s = 0;
 
@@ -118,7 +123,7 @@ namespace orxonox
         if (Core::isDevBuild())
             defaultMediaPath = ORXONOX_MEDIA_DEV_PATH;
 
-        SetConfigValue(mediaPath_, defaultMediaPath)
+        SetConfigValue(mediaPath_s, defaultMediaPath)
             .description("Relative path to the game data.").callback(this, &Core::mediaPathChanged);
 
     }
@@ -156,14 +161,14 @@ namespace orxonox
     */
     void Core::mediaPathChanged()
     {
-        if (mediaPath_ != "" && mediaPath_[mediaPath_.size() - 1] != '/')
+        if (mediaPath_s != "" && mediaPath_s[mediaPath_s.size() - 1] != '/')
         {
-            ModifyConfigValue(mediaPath_, set, mediaPath_ + "/");
+            ModifyConfigValue(mediaPath_s, set, mediaPath_s + "/");
         }
 
-        if (mediaPath_ == "")
+        if (mediaPath_s == "")
         {
-            ModifyConfigValue(mediaPath_, set, "/");
+            ModifyConfigValue(mediaPath_s, set, "/");
             COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
         }
     }
@@ -244,11 +249,11 @@ namespace orxonox
     {
         if (*path.end() != '/' && *path.end() != '\\')
         {
-            ModifyConfigValue(mediaPath_, tset, path + "/");
+            ModifyConfigValue(mediaPath_s, tset, path + "/");
         }
         else
         {
-            ModifyConfigValue(mediaPath_, tset, path);
+            ModifyConfigValue(mediaPath_s, tset, path);
         }
     }
 
@@ -263,13 +268,52 @@ namespace orxonox
         }
     }
 
-    /*static*/ void Core::setDevBuild()
+    /**
+    @brief
+        Checks for "orxonox_dev_build.keep_me" in the working diretory.
+        If found it means that this is not an installed run, hence we
+        don't write the logs and config files to ~/.orxonox
+    */
+    /*static*/ void Core::checkDevBuild()
     {
-        // Be careful never to call this function before main()!
+        std::ifstream probe;
+        probe.open("orxonox_dev_build.keep_me");
+        if (probe)
+        {
+            Core::isDevBuild_s = true;
+            // Constants are taken from OrxonoxConfig.h
+            Core::configPath_s = ORXONOX_CONFIG_DEV_PATH;
+            Core::logPath_s    = ORXONOX_LOG_DEV_PATH;
+            Core::mediaPath_s  = ORXONOX_MEDIA_DEV_PATH;
+            probe.close();
+        }
+    }
 
-        Core::isDevBuild_s = true;
-        // Constants taken from OrxonoxConfig.h
-        Core::configPath_s = ORXONOX_CONFIG_DEV_PATH;
-        Core::logPath_s    = ORXONOX_LOG_DEV_PATH;
+    /*
+    @brief
+        Checks for the log and the config directory and creates them
+        if necessary. Otherwise me might have problems opening those files.
+    */
+    /*static*/ void Core::createDirectories()
+    {
+        std::vector<std::pair<boost::filesystem::path, std::string> > directories;
+        directories.push_back(std::pair<boost::filesystem::path, std::string>
+            (boost::filesystem::path(Core::configPath_s), "config"));
+        directories.push_back(std::pair<boost::filesystem::path, std::string>
+            (boost::filesystem::path(Core::logPath_s),    "log"));
+
+        for (std::vector<std::pair<boost::filesystem::path, std::string> >::iterator it = directories.begin();
+            it != directories.end(); ++it)
+        {
+            if (boost::filesystem::exists(it->first) && !boost::filesystem::is_directory(it->first))
+            {
+                ThrowException(General, std::string("The ") + it->second + " directory has been preoccupied by a file! \
+                                         Please remove " + it->first.file_string());
+            }
+            if (boost::filesystem::create_directory(it->first)) // function may not return true at all (bug?)
+            {
+                COUT(4) << "Created " << it->second << " directory" << std::endl;
+            }
+        }
     }
 }

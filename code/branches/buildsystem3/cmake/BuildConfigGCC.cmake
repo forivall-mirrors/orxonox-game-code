@@ -55,6 +55,10 @@ IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
 ENDIF()
 
+# For GCC older than version 4, do not display sign compare warings
+# because of boost::filesystem (which creates about a hundred per include)
+ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
+
 # Increase warning level if requested
 IF(EXTRA_COMPILER_WARNINGS)
   REMOVE_COMPILER_FLAGS("-Wall" CACHE)

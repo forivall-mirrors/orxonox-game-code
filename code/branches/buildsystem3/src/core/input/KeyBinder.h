@@ -60,7 +60,7 @@ namespace orxonox
         KeyBinder ();
         virtual ~KeyBinder();
 
-        void loadBindings(const std::string& filename, const std::string& defaultFilename);
+        void loadBindings(const std::string& filename);
         void clearBindings();
         bool setBinding(const std::string& binding, const std::string& name, bool bTemporary = false);
         void setConfigValues();

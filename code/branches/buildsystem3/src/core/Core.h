@@ -67,10 +67,9 @@ namespace orxonox
 
             static bool isDevBuild() { return Core::isDevBuild_s; }
 
-            static const std::string& getMediaPath()
-            { assert(singletonRef_s); return singletonRef_s->mediaPath_; }
             static void tsetMediaPath(const std::string& path)
             { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
+            static const std::string& getMediaPath()  { return mediaPath_s; }
             static const std::string& getConfigPath() { return configPath_s; }
             static const std::string& getLogPath()    { return logPath_s; }
 
@@ -95,7 +94,8 @@ namespace orxonox
             void mediaPathChanged();
             void _tsetMediaPath(const std::string& path);
 
-            static void setDevBuild();
+            static void createDirectories();
+            static void checkDevBuild();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
@@ -103,7 +103,6 @@ namespace orxonox
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             std::string language_;                          //!< The language
             bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-            std::string mediaPath_;                         //!< Path to the data/media file folder
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server
@@ -114,6 +113,7 @@ namespace orxonox
             static bool isDevBuild_s;                       //!< True for builds in the build directory (not installed)
             static std::string configPath_s;                //!< Path to the config file folder
             static std::string logPath_s;                   //!< Path to the log file folder
+            static std::string mediaPath_s;                 //!< Path to the data/media file folder
 
             static Core* singletonRef_s;
     };

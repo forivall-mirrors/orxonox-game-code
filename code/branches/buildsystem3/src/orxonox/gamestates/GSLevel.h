@@ -65,8 +65,6 @@ namespace orxonox
 
         //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;
-        //! Filename of default keybindings.
-        std::string           defaultKeybindings_;
 
         // console commands
         ConsoleCommand*       ccKeybind_;

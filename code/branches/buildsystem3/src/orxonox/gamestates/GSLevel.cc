@@ -74,8 +74,6 @@ namespace orxonox
     void GSLevel::setConfigValues()
     {
         SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
-        SetConfigValue(defaultKeybindings_, "def_keybindings.ini")
-            .description("Filename of default keybindings.");
     }
 
     void GSLevel::enter(Ogre::Viewport* viewport)
@@ -84,7 +82,7 @@ namespace orxonox
         {
             inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game", 20);
             keyBinder_ = new KeyBinder();
-            keyBinder_->loadBindings("keybindings.ini", defaultKeybindings_);
+            keyBinder_->loadBindings("keybindings.ini");
             inputState_->setHandler(keyBinder_);
 
             // create the global CameraManager

@@ -18,13 +18,3 @@
  #
  
 SET(ORXONOX_LOG_DEV_PATH ${CMAKE_CURRENT_BINARY_DIR} PARENT_SCOPE)
-
-# Create some directories for the logs or CEGUI crashes when setting up the log
-IF(CMAKE_CONFIGURATION_TYPES)
-  FOREACH(_configuration ${CMAKE_CONFIGURATION_TYPES})
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_configuration})
-  ENDFOREACH(_configuration)
-ENDIF()
-
-# Also create the folder when installing
-INSTALL(CODE "FILE(MAKE_DIRECTORY \"${ORXONOX_LOG_INSTALL_PATH}\")")

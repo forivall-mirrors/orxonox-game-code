@@ -106,8 +106,6 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(defaultMasterKeybindings_, "def_masterKeybindings.ini")
-            .description("Filename of default master keybindings.");
     }
 
     void GSGraphics::enter()
@@ -147,7 +145,7 @@ namespace orxonox
         inputManager_->initialise(windowHnd, renderWindow_->getWidth(), renderWindow_->getHeight(), true);
         // Configure master input state with a KeyBinder
         masterKeyBinder_ = new KeyBinder();
-        masterKeyBinder_->loadBindings("masterKeybindings.ini", defaultMasterKeybindings_);
+        masterKeyBinder_->loadBindings("masterKeybindings.ini");
         inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
 
         // Load the InGameConsole

@@ -222,126 +222,130 @@ namespace orxonox
 
     void ConfigFile::load(bool bCreateIfNotExisting)
     {
-        // Be sure we start from new
+        // Be sure we start from new in the memory
         this->clear();
 
-        boost::filesystem::path filepath(Core::getConfigPath() + "/" + this->filename_);
-
-        // This creates the config file if it's not existing
-        std::ofstream createFile;
-        createFile.open(filepath.file_string().c_str(), std::fstream::app);
-        createFile.close();
+        // Get default file if necessary and available
+        boost::filesystem::path filepath(Core::getConfigPath());
+        filepath /= this->filename_;
+        if (!boost::filesystem::exists(filepath))
+        {
+            // Try to get default one from the media folder
+            boost::filesystem::path defaultFilepath(Core::getMediaPath());
+            defaultFilepath = defaultFilepath / "defaultConfig" / this->filename_;
+            if (boost::filesystem::exists(defaultFilepath))
+            {
+                boost::filesystem::copy_file(defaultFilepath, filepath);
+            }
+        }
 
         // Open the file
         std::ifstream file;
         file.open(filepath.file_string().c_str(), std::fstream::in);
-
-        if (!file.is_open())
+        if (file.is_open())
         {
-            COUT(1) << "An error occurred in ConfigFileManager.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open config-file \"" << this->filename_ << "\"." << std::endl;
-            return;
-        }
 
-        char linearray[CONFIG_FILE_MAX_LINELENGHT];
+            char linearray[CONFIG_FILE_MAX_LINELENGHT];
 
-        ConfigFileSection* newsection = 0;
+            ConfigFileSection* newsection = 0;
 
-        while (file.good() && !file.eof())
-        {
-            file.getline(linearray, CONFIG_FILE_MAX_LINELENGHT);
-
-            std::string line = std::string(linearray);
-
-            std::string temp = getStripped(line);
-            if (!isEmpty(temp) && !isComment(temp))
+            while (file.good() && !file.eof())
             {
-                size_t   pos1 = temp.find('[');
-                if (pos1 == 0) pos1 = line.find('['); else pos1 = std::string::npos;
-                size_t   pos2 = line.find(']');
+                file.getline(linearray, CONFIG_FILE_MAX_LINELENGHT);
 
-                if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1)
-                {
-                    // New section
-                    std::string comment = line.substr(pos2 + 1);
-                    if (isComment(comment))
-                        newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1), comment);
-                    else
-                        newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1));
-                    this->sections_.insert(this->sections_.end(), newsection);
-                    continue;
-                }
-            }
+                std::string line = std::string(linearray);
 
-            if (newsection != 0)
-            {
-                if (isComment(line))
+                std::string temp = getStripped(line);
+                if (!isEmpty(temp) && !isComment(temp))
                 {
-                    // New comment
-                    newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryComment(removeTrailingWhitespaces(line)));
-                    continue;
-                }
-                else
-                {
-                    size_t pos1 = line.find('=');
+                    size_t   pos1 = temp.find('[');
+                    if (pos1 == 0) pos1 = line.find('['); else pos1 = std::string::npos;
+                    size_t   pos2 = line.find(']');
 
-                    if (pos1 != std::string::npos && pos1 > 0)
+                    if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1)
                     {
-                        // New entry
-                        size_t pos2 = line.find('[');
-                        size_t pos3 = line.find(']');
-                        size_t commentposition = getNextCommentPosition(line, pos1 + 1);
-                        while (isBetweenQuotes(line, commentposition))
-                        {
-                            commentposition = getNextCommentPosition(line, commentposition + 1);
-                        }
-                        std::string value = "", comment = "";
-                        if (commentposition == std::string::npos)
-                        {
-                            value = removeTrailingWhitespaces(line.substr(pos1 + 1));
-                        }
+                        // New section
+                        std::string comment = line.substr(pos2 + 1);
+                        if (isComment(comment))
+                            newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1), comment);
                         else
-                        {
-                            value = removeTrailingWhitespaces(line.substr(pos1 + 1, commentposition - pos1 - 1));
-                            comment = removeTrailingWhitespaces(line.substr(commentposition));
-                        }
-
-                        if (pos2 != std::string::npos && pos3 != std::string::npos && pos3 > pos2 + 1)
-                        {
-                            // There might be an array index
-                            unsigned int index = 0;
-                            if (ConvertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
-                            {
-                                // New array
-                                std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value, false);
-                                (*it)->setValue(value);
-                                (*it)->setComment(comment);
-                                continue;
-                            }
-                        }
-
-                        // New value
-                        newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryValue(getStripped(line.substr(0, pos1)), value, false, comment));
+                            newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1));
+                        this->sections_.insert(this->sections_.end(), newsection);
                         continue;
                     }
                 }
+
+                if (newsection != 0)
+                {
+                    if (isComment(line))
+                    {
+                        // New comment
+                        newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryComment(removeTrailingWhitespaces(line)));
+                        continue;
+                    }
+                    else
+                    {
+                        size_t pos1 = line.find('=');
+
+                        if (pos1 != std::string::npos && pos1 > 0)
+                        {
+                            // New entry
+                            size_t pos2 = line.find('[');
+                            size_t pos3 = line.find(']');
+                            size_t commentposition = getNextCommentPosition(line, pos1 + 1);
+                            while (isBetweenQuotes(line, commentposition))
+                            {
+                                commentposition = getNextCommentPosition(line, commentposition + 1);
+                            }
+                            std::string value = "", comment = "";
+                            if (commentposition == std::string::npos)
+                            {
+                                value = removeTrailingWhitespaces(line.substr(pos1 + 1));
+                            }
+                            else
+                            {
+                                value = removeTrailingWhitespaces(line.substr(pos1 + 1, commentposition - pos1 - 1));
+                                comment = removeTrailingWhitespaces(line.substr(commentposition));
+                            }
+
+                            if (pos2 != std::string::npos && pos3 != std::string::npos && pos3 > pos2 + 1)
+                            {
+                                // There might be an array index
+                                unsigned int index = 0;
+                                if (ConvertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
+                                {
+                                    // New array
+                                    std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value, false);
+                                    (*it)->setValue(value);
+                                    (*it)->setComment(comment);
+                                    continue;
+                                }
+                            }
+
+                            // New value
+                            newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryValue(getStripped(line.substr(0, pos1)), value, false, comment));
+                            continue;
+                        }
+                    }
+                }
             }
-        }
 
-        file.close();
+            file.close();
 
-        COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
+            COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
 
-        // Save the file in case something changed (like stripped whitespaces)
-        this->save();
+            // Save the file in case something changed (like stripped whitespaces)
+            this->save();
 
-        // Update all ConfigValueContainers
-        this->updateConfigValues();
+            // Update all ConfigValueContainers
+            this->updateConfigValues();
+        } // end file.is_open()
     }
 
     void ConfigFile::save() const
     {
-        boost::filesystem::path filepath(Core::getConfigPath() + "/" + this->filename_);
+        boost::filesystem::path filepath(Core::getConfigPath());
+        filepath /= this->filename_;
 
         std::ofstream file;
         file.open(filepath.file_string().c_str(), std::fstream::out);

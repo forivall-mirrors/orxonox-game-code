@@ -247,26 +247,13 @@ namespace orxonox
     @return
         True if loading succeeded.
     */
-    void KeyBinder::loadBindings(const std::string& filename, const std::string& defaultFilename)
+    void KeyBinder::loadBindings(const std::string& filename)
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
         if (filename.empty())
             return;
 
-        boost::filesystem::path folder(Core::getConfigPath());
-        boost::filesystem::path filepath(folder/filename);
-
-        // get bindings from default file if filename doesn't exist.
-        std::ifstream infile;
-        infile.open(filepath.file_string().c_str());
-        if (!infile)
-        {
-            ConfigFileManager::getInstance().setFilename(this->configFile_, defaultFilename);
-            ConfigFileManager::getInstance().saveAs(this->configFile_, filename);
-        }
-        else
-            infile.close();
         ConfigFileManager::getInstance().setFilename(this->configFile_, filename);
 
         // Parse bindings and create the ConfigValueContainers if necessary

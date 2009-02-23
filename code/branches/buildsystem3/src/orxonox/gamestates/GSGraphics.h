@@ -104,7 +104,6 @@ namespace orxonox
         int                   ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL
         int                   ogreLogLevelNormal_;       //!< Corresponding Orxonx debug level for LL_NORMAL
         int                   ogreLogLevelCritical_;     //!< Corresponding Orxonx debug level for LL_CRITICAL
-        std::string           defaultMasterKeybindings_; //!< Filename of default master keybindings.
 
         // console commands
         ConsoleCommand*       ccPrintScreen_;
