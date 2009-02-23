@@ -310,7 +310,7 @@ namespace orxonox
                 ThrowException(General, std::string("The ") + it->second + " directory has been preoccupied by a file! \
                                          Please remove " + it->first.file_string());
             }
-            if (boost::filesystem::create_directory(it->first)) // function may not return true at all (bug?)
+            if (boost::filesystem::create_directories(it->first)) // function may not return true at all (bug?)
             {
                 COUT(4) << "Created " << it->second << " directory" << std::endl;
             }
