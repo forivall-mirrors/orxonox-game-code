@@ -865,7 +865,7 @@ interpreter::interpreter(string const &libpath)
 
      try
      {
-        this->eval("set tcl_library " + libpath);
+        this->eval("set tcl_library \"" + libpath + "\"");
         Tcl_Init(this->interp_);
      } catch (...) {}
 }

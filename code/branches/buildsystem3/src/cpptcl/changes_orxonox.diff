@@ -38,7 +38,7 @@
 +
 +     try
 +     {
-+        this->eval("set tcl_library " + libpath);
++        this->eval("set tcl_library \"" + libpath + "\"");
 +        Tcl_Init(this->interp_);
 +     } catch (...) {}
 +}
