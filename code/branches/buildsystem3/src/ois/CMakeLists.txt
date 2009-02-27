@@ -54,8 +54,6 @@ GENERATE_SOURCE_GROUPS(${OIS_FILES})
 # No warnings needed from third party libraries
 REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
-# Multibyte character required for OIS
-REMOVE_COMPILER_FLAGS("-DUNICODE -D_UNICODE" MSVC)
 
 INCLUDE_DIRECTORIES(.)
 
