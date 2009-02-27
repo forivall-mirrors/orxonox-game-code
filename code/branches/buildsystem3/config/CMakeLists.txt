@@ -17,13 +17,11 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
  
-SET(ORXONOX_CONFIG_DEV_PATH ${CMAKE_CURRENT_BINARY_DIR} PARENT_SCOPE)
-
 IF(TARDIS)
   # OGRE can't find fonts to display config screen on Tardis,
   # so providing default config file here (bug).
   # Cause: Ogre 1.4.5 was compiled for an older debian version
-  IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/ogre.cfg)
-    CONFIGURE_FILE(ogre.cfg ${CMAKE_CURRENT_BINARY_DIR}/ogre.cfg COPYONLY)
+  IF(NOT EXISTS ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/ogre.cfg)
+    CONFIGURE_FILE(ogre.cfg ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/ogre.cfg COPYONLY)
   ENDIF()
 ENDIF(TARDIS)

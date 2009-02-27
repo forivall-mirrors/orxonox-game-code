@@ -110,7 +110,7 @@ namespace orxonox
         this->luaBind_ = new LuaBind();
 
         // initialise TCL
-        this->tclBind_ = new TclBind(Core::getMediaPath());
+        this->tclBind_ = new TclBind(Core::getMediaPathPOSIXString());
         this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
 
         // create a shell

@@ -44,6 +44,7 @@
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
+#include "SpecialConfig.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/String.h"
@@ -134,7 +135,7 @@ namespace orxonox
 
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
-        this->debugOverlay_ = new XMLFile(Core::getMediaPath() + "overlay/debug.oxo");
+        this->debugOverlay_ = new XMLFile((Core::getMediaPath() / "overlay" / "debug.oxo").file_string());
         Loader::open(debugOverlay_);
 
         // Calls the InputManager which sets up the input devices.
@@ -292,10 +293,8 @@ namespace orxonox
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
-        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath());
-        ogreConfigFilepath /= this->ogreConfigFile_;
-        boost::filesystem::path ogreLogFilepath(Core::getLogPath());
-        ogreLogFilepath /= this->ogreLogFile_;
+        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() / this->ogreConfigFile_);
+        boost::filesystem::path ogreLogFilepath(Core::getLogPath() / this->ogreLogFile_);
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
@@ -356,7 +355,7 @@ namespace orxonox
         Ogre::ConfigFile cf;
         try
         {
-            cf.load(Core::getMediaPath() + resourceFile_);
+            cf.load((Core::getMediaPath() / resourceFile_).file_string());
         }
         catch (...)
         {
@@ -382,7 +381,7 @@ namespace orxonox
                     archName = i->second; // name (and location) of archive
 
                     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                        std::string(Core::getMediaPath() + archName), typeName, secName);
+                        (Core::getMediaPath() / archName).directory_string(), typeName, secName);
                 }
             }
             catch (Ogre::Exception& ex)

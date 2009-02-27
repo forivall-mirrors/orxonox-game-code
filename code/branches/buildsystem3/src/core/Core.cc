@@ -32,10 +32,24 @@
 */
 
 #include "Core.h"
+
 #include <cassert>
 #include <fstream>
+#include <cstdlib>
+#include <cstdio>
 #include <boost/filesystem.hpp>
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
+#  include <windows.h>
+#elif defined(ORXONOX_PLATFORM_APPLE)
+#  include <sys/param.h>
+#  include <mach-o/dyld.h>
+#else /* Linux */
+#  include <sys/types.h>
+#  include <unistd.h>
+#endif
+
+#include "SpecialConfig.h"
 #include "util/Exception.h"
 #include "Language.h"
 #include "CoreIncludes.h"
@@ -45,6 +59,13 @@
 
 namespace orxonox
 {
+    //! Path to the parent directory of the ones above if program was installed with relativ pahts
+    static boost::filesystem::path rootPath_g;
+    static boost::filesystem::path executablePath_g;            //!< Path to the executable
+    static boost::filesystem::path mediaPath_g;                 //!< Path to the media file folder
+    static boost::filesystem::path configPath_g;                //!< Path to the config file folder
+    static boost::filesystem::path logPath_g;                   //!< Path to the log file folder
+
     bool Core::bShowsGraphics_s = false;
     bool Core::bHasServer_s     = false;
     bool Core::bIsClient_s      = false;
@@ -52,11 +73,7 @@ namespace orxonox
     bool Core::bIsMaster_s      = false;
 
     bool Core::isDevBuild_s     = false;
-    std::string Core::configPath_s(ORXONOX_CONFIG_INSTALL_PATH); // from OrxonoxConfig.h
-    std::string Core::logPath_s   (ORXONOX_LOG_INSTALL_PATH);    // from OrxonoxConfig.h
-    std::string Core::mediaPath_s (ORXONOX_MEDIA_INSTALL_PATH);  // from OrxonoxConfig.h
-
-    Core* Core::singletonRef_s = 0;
+    Core* Core::singletonRef_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("PATH");
 
@@ -75,13 +92,13 @@ namespace orxonox
         this->setConfigValues();
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
-        OutputHandler::getOutStream().setLogPath(Core::logPath_s);
+        OutputHandler::getOutStream().setLogPath(Core::getLogPathString());
 
         // Possible media path override by the command line
         if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
         {
-            std::string mediaPath = CommandLine::getValue("mediaPath");
-            Core::tsetMediaPath(mediaPath);
+            //std::string mediaPath = CommandLine::getValue("mediaPath");
+            Core::tsetMediaPath(CommandLine::getValue("mediaPath"));
         }
     }
 
@@ -118,14 +135,8 @@ namespace orxonox
         SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(this, &Core::languageChanged);
         SetConfigValue(bInitializeRandomNumberGenerator_, true).description("If true, all random actions are different each time you start the game").callback(this, &Core::initializeRandomNumberGenerator);
 
-        // Media path (towards config and log path) is ini-configurable
-        const char* defaultMediaPath = ORXONOX_MEDIA_INSTALL_PATH;
-        if (Core::isDevBuild())
-            defaultMediaPath = ORXONOX_MEDIA_DEV_PATH;
-
-        SetConfigValue(mediaPath_s, defaultMediaPath)
+        SetConfigValue(mediaPathString_, Core::getMediaPathPOSIXString())
             .description("Relative path to the game data.").callback(this, &Core::mediaPathChanged);
-
     }
 
     /**
@@ -161,16 +172,7 @@ namespace orxonox
     */
     void Core::mediaPathChanged()
     {
-        if (mediaPath_s != "" && mediaPath_s[mediaPath_s.size() - 1] != '/')
-        {
-            ModifyConfigValue(mediaPath_s, set, mediaPath_s + "/");
-        }
-
-        if (mediaPath_s == "")
-        {
-            ModifyConfigValue(mediaPath_s, set, "/");
-            COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
-        }
+        mediaPath_g = boost::filesystem::path(this->mediaPathString_);
     }
 
     /**
@@ -247,14 +249,47 @@ namespace orxonox
     */
     void Core::_tsetMediaPath(const std::string& path)
     {
-        if (*path.end() != '/' && *path.end() != '\\')
-        {
-            ModifyConfigValue(mediaPath_s, tset, path + "/");
-        }
-        else
-        {
-            ModifyConfigValue(mediaPath_s, tset, path);
-        }
+        ModifyConfigValue(mediaPathString_, tset, path);
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getMediaPath()
+    {
+        return mediaPath_g;
+    }
+    /*static*/ std::string Core::getMediaPathString()
+    {
+        return mediaPath_g.directory_string() + CP_SLASH;
+    }
+    /*static*/ std::string Core::getMediaPathPOSIXString()
+    {
+        return mediaPath_g.string() + '/';
+        
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getConfigPath()
+    {
+        return configPath_g;
+    }
+    /*static*/ std::string Core::getConfigPathString()
+    {
+        return configPath_g.directory_string() + CP_SLASH;
+    }
+    /*static*/ std::string Core::getConfigPathPOSIXString()
+    {
+        return configPath_g.string() + '/';
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getLogPath()
+    {
+        return logPath_g;
+    }
+    /*static*/ std::string Core::getLogPathString()
+    {
+        return logPath_g.directory_string() + CP_SLASH;
+    }
+    /*static*/ std::string Core::getLogPathPOSIXString()
+    {
+        return logPath_g.string() + '/';
     }
 
     void Core::initializeRandomNumberGenerator()
@@ -270,22 +305,125 @@ namespace orxonox
 
     /**
     @brief
-        Checks for "orxonox_dev_build.keep_me" in the working diretory.
+        Performs the rather lower level operations just after
+        int main() has been called.
+    @remarks
+        This gets called AFTER pre-main stuff like AddFactory,
+        SetConsoleCommand, etc.
+    */
+    /*static*/ void Core::postMainInitialisation()
+    {
+        // set location of the executable
+        Core::setExecutablePath();
+
+        // Determine whether we have an installed or a binary dir run
+        // The latter occurs when simply running from the build directory
+        Core::checkDevBuild();
+
+        // Make sure the directories we write in exist or else make them
+        Core::createDirectories();
+    }
+
+    /**
+    @brief
+        Compares the executable path with the working directory
+    */
+    /*static*/ void Core::setExecutablePath()
+    {
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // get executable module
+        TCHAR buffer[1024];
+        if (GetModuleFileName(NULL, buffer, 1024) == 0)
+            ThrowException(General, "Could not retrieve executable path.");
+
+#elif defined(ORXONOX_PLATFORM_APPLE)
+        char buffer[1024];
+        unsigned long path_len = 1023;
+        if (_NSGetExecutablePath(buffer, &path_len))
+            ThrowException(General, "Could not retrieve executable path.");
+
+#else /* Linux */
+        /* written by Nicolai Haehnle <prefect_@gmx.net> */
+
+        /* Get our PID and build the name of the link in /proc */
+        char linkname[64]; /* /proc/<pid>/exe */
+        if (snprintf(linkname, sizeof(linkname), "/proc/%i/exe", getpid()) < 0)
+        {
+            /* This should only happen on large word systems. I'm not sure
+               what the proper response is here.
+               Since it really is an assert-like condition, aborting the
+               program seems to be in order. */
+            assert(false);
+        }
+
+        /* Now read the symbolic link */
+        char buffer[1024];
+        int ret;
+        ret = readlink(linkname, buffer, 1024);
+        /* In case of an error, leave the handling up to the caller */
+        if (ret == -1)
+            ThrowException(General, "Could not retrieve executable path.");
+
+        /* Ensure proper NUL termination */
+        buf[ret] = 0;
+#endif
+
+        executablePath_g = boost::filesystem::path(buffer);
+#ifndef ORXONOX_PLATFORM_APPLE
+        executablePath_g = executablePath_g.branch_path(); // remove executable name
+#endif
+    }
+
+    /**
+    @brief
+        Checks for "orxonox_dev_build.keep_me" in the executable diretory.
         If found it means that this is not an installed run, hence we
         don't write the logs and config files to ~/.orxonox
     */
     /*static*/ void Core::checkDevBuild()
     {
-        std::ifstream probe;
-        probe.open("orxonox_dev_build.keep_me");
-        if (probe)
+        if (boost::filesystem::exists(executablePath_g / "orxonox_dev_build.keep_me"))
         {
+            COUT(1) << "Running from the build tree." << std::endl;
             Core::isDevBuild_s = true;
-            // Constants are taken from OrxonoxConfig.h
-            Core::configPath_s = ORXONOX_CONFIG_DEV_PATH;
-            Core::logPath_s    = ORXONOX_LOG_DEV_PATH;
-            Core::mediaPath_s  = ORXONOX_MEDIA_DEV_PATH;
-            probe.close();
+            mediaPath_g  = ORXONOX_MEDIA_DEV_PATH;
+            configPath_g = ORXONOX_CONFIG_DEV_PATH;
+            logPath_g    = ORXONOX_LOG_DEV_PATH;
+        }
+        else
+        {
+#ifdef INSTALL_COPYABLE // --> relative paths
+            // Also set the root path
+            boost::filesystem::path relativeExecutablePath(ORXONOX_RUNTIME_INSTALL_PATH);
+            rootPath_g = executablePath_g;
+            while (!boost::filesystem::equivalent(rootPath_g / relativeExecutablePath, executablePath_g) || rootPath_g.empty())
+                rootPath_g = rootPath_g.branch_path();
+            if (rootPath_g.empty())
+                ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
+
+            // Using paths relative to the install prefix, complete them
+            mediaPath_g  = rootPath_g / ORXONOX_MEDIA_INSTALL_PATH;
+            configPath_g = rootPath_g / ORXONOX_CONFIG_INSTALL_PATH;
+            logPath_g    = rootPath_g / ORXONOX_LOG_INSTALL_PATH;
+#else
+            // There is no root path, so don't set it at all
+
+            mediaPath_g  = ORXONOX_MEDIA_INSTALL_PATH;
+
+            // Get user directory
+#  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
+            char* userDataPathPtr(getenv("HOME"));
+#  else
+            char* userDataPathPtr(getenv("APPDATA"));
+#  endif
+            if (userDataPathPtr == NULL)
+                ThrowException(General, "Could not retrieve user data path.");
+            boost::filesystem::path userDataPath(userDataPathPtr);
+            userDataPath /= ".orxonox";
+
+            configPath_g = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
+            logPath_g    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
+#endif
         }
     }
 
@@ -298,9 +436,9 @@ namespace orxonox
     {
         std::vector<std::pair<boost::filesystem::path, std::string> > directories;
         directories.push_back(std::pair<boost::filesystem::path, std::string>
-            (boost::filesystem::path(Core::configPath_s), "config"));
+            (boost::filesystem::path(configPath_g), "config"));
         directories.push_back(std::pair<boost::filesystem::path, std::string>
-            (boost::filesystem::path(Core::logPath_s),    "log"));
+            (boost::filesystem::path(logPath_g),    "log"));
 
         for (std::vector<std::pair<boost::filesystem::path, std::string> >::iterator it = directories.begin();
             it != directories.end(); ++it)

@@ -44,22 +44,22 @@ IF(UNIX AND NOT APPLE)
   SET_CACHE(CMAKE_INSTALL_PREFIX PATH "" /usr) # default: /usr/local
 ENDIF()
 
-# Library Config
+# Library finding
 INCLUDE(LibraryConfig)
 
-# Build Config
+# General build and compiler options and configurations
 INCLUDE(BuildConfig)
 
 # Configure media directory location and installation
 ADD_SUBDIRECTORY(media)
 
+# Remaining tardis hack
 ADD_SUBDIRECTORY(config)
-SET(ORXONOX_LOG_DEV_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
-# Creates the actual project
+# Create the actual project
 ADD_SUBDIRECTORY(src)
 
-# Configure the binary output directory
+# Configure the binary output directory. Do this after src!
 ADD_SUBDIRECTORY(bin)
 
 # Last but not least: Try to make doxygen target

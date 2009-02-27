@@ -52,7 +52,7 @@ namespace orxonox
     assert(LuaBind::singletonRef_s == 0);
     LuaBind::singletonRef_s = this;
 
-    this->includePath_ = Core::getMediaPath();
+    this->includePath_ = Core::getMediaPathPOSIXString();
 
     luaState_ = lua_open();
     luaSource_ = "";

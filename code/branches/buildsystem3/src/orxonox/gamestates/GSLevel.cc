@@ -201,7 +201,7 @@ namespace orxonox
         COUT(0) << "Loading level..." << std::endl;
         std::string levelName;
         CommandLine::getValue("level", &levelName);
-        startFile_ = new XMLFile(Core::getMediaPath() + std::string("levels/") + levelName);
+        startFile_ = new XMLFile(Core::getMediaPathString() + "levels" + CP_SLASH + levelName);
         Loader::open(startFile_);
     }
 

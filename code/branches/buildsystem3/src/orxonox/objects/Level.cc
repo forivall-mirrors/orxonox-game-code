@@ -54,8 +54,8 @@ namespace orxonox
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
 
-        if (this->xmlfilename_.length() >= Core::getMediaPath().length())
-            this->xmlfilename_ = this->xmlfilename_.substr(Core::getMediaPath().length());
+        if (this->xmlfilename_.length() >= Core::getMediaPathString().length())
+            this->xmlfilename_ = this->xmlfilename_.substr(Core::getMediaPathString().length());
     }
 
     Level::~Level()
@@ -96,7 +96,7 @@ namespace orxonox
         mask.include(Class(Template));
         mask.include(Class(OverlayGroup)); // HACK to include the ChatOverlay
 
-        this->xmlfile_ = new XMLFile(Core::getMediaPath() + this->xmlfilename_, mask);
+        this->xmlfile_ = new XMLFile(Core::getMediaPathString() + this->xmlfilename_, mask);
 
         Loader::open(this->xmlfile_);
     }

@@ -226,13 +226,11 @@ namespace orxonox
         this->clear();
 
         // Get default file if necessary and available
-        boost::filesystem::path filepath(Core::getConfigPath());
-        filepath /= this->filename_;
+        boost::filesystem::path filepath(Core::getConfigPath() / this->filename_);
         if (!boost::filesystem::exists(filepath))
         {
             // Try to get default one from the media folder
-            boost::filesystem::path defaultFilepath(Core::getMediaPath());
-            defaultFilepath = defaultFilepath / "defaultConfig" / this->filename_;
+            boost::filesystem::path defaultFilepath(Core::getMediaPath() / "defaultConfig" / this->filename_);
             if (boost::filesystem::exists(defaultFilepath))
             {
                 boost::filesystem::copy_file(defaultFilepath, filepath);
@@ -344,8 +342,7 @@ namespace orxonox
 
     void ConfigFile::save() const
     {
-        boost::filesystem::path filepath(Core::getConfigPath());
-        filepath /= this->filename_;
+        boost::filesystem::path filepath(Core::getConfigPath() / this->filename_);
 
         std::ofstream file;
         file.open(filepath.file_string().c_str(), std::fstream::out);

@@ -91,16 +91,11 @@ int main(int argc, char** argv)
 {
     using namespace orxonox;
 
-    // First, determine whether we have an installed or a binary dir run
-    // The latter occurs when simply running from the build directory
-    Core::checkDevBuild();
-
-    // Make sure the directories we write in exist or else make them
-    Core::createDirectories();
+    Core::postMainInitialisation();
 
     // create a signal handler (only active for linux)
     SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], Core::getLogPath() + "orxonox_crash.log");
+    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
 
     // Parse command line arguments
     try

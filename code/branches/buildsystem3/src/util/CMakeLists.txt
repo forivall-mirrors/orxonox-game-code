@@ -56,10 +56,14 @@ GENERATE_SOURCE_GROUPS(${UTIL_FILES})
 LIST(APPEND UTIL_FILES
   ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h
   ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
+  ${CMAKE_BINARY_DIR}/src/SpecialConfig.h
+  ${CMAKE_SOURCE_DIR}/src/SpecialConfig.h.in
 )
 SOURCE_GROUP("" FILES
   ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h
   ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
+  ${CMAKE_BINARY_DIR}/src/SpecialConfig.h
+  ${CMAKE_SOURCE_DIR}/src/SpecialConfig.h.in
 )
 
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)

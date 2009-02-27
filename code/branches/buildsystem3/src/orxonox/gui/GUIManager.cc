@@ -41,6 +41,7 @@
 #include <CEGUI.h>
 #include <CEGUIDefaultLogger.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
+#include "SpecialConfig.h" // Configures the macro below
 #ifdef CEGUILUA_USE_INTERNAL_LIBRARY
 #   include <ceguilua/CEGUILua.h>
 #else
@@ -150,7 +151,7 @@ namespace orxonox
                 this->luaState_ = this->scriptModule_->getLuaState();
 
                 // Create our own logger to specify the filepath
-                boost::filesystem::path ceguiLogFilepath(Core::getLogPath() + "cegui.log");
+                boost::filesystem::path ceguiLogFilepath(Core::getLogPath() / "cegui.log");
                 this->ceguiLogger_ = new DefaultLogger();
                 this->ceguiLogger_->setLogFilename(ceguiLogFilepath.file_string());
                 // set the log level according to ours (translate by subtracting 1)

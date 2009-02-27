@@ -301,8 +301,7 @@ namespace orxonox
         this->_parse(args);
 
         std::string filename = CommandLine::getValue("optionsFile").getString();
-        boost::filesystem::path folder(Core::getConfigPath());
-        boost::filesystem::path filepath(folder/filename);
+        boost::filesystem::path filepath(Core::getConfigPath() / filename);
 
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly
