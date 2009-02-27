@@ -365,7 +365,7 @@ namespace orxonox
             ThrowException(General, "Could not retrieve executable path.");
 
         /* Ensure proper NUL termination */
-        buf[ret] = 0;
+        buffer[ret] = 0;
 #endif
 
         executablePath_g = boost::filesystem::path(buffer);

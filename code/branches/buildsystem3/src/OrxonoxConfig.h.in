@@ -185,7 +185,7 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
     const char CP_SLASH('\\');
 #else
-    const char CP_SLASH('/')
+    const char CP_SLASH('/');
 #endif
 }
 
