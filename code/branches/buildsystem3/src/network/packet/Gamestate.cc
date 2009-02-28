@@ -183,8 +183,8 @@ bool Gamestate::spreadData(uint8_t mode)
     else
     {
       bool b = s->updateData(mem, mode);
-      if(!b)
-        COUT(0) << "data could not be updated" << endl;
+//      if(!b)
+//        COUT(0) << "data could not be updated" << endl;
       assert(b);
     }
   }

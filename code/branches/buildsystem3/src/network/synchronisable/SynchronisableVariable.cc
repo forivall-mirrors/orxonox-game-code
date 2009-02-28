@@ -362,7 +362,6 @@ template <> void SynchronisableVariable<const long double>::setAndIncrease( uint
 {
   double temp;
   memcpy(&temp, mem, sizeof(uint64_t));
-  //*(uint64_t*)(&temp) = *(uint64_t*)(mem);
   *(long double*)(&this->variable_) = static_cast<const long double>(temp);
   mem += SynchronisableVariable<const long double>::returnSize();
 }
@@ -378,7 +377,6 @@ template <> bool SynchronisableVariable<const long double>::checkEquality( uint8
 {
   double temp = static_cast<double>(this->variable_);
   return memcmp(&temp, mem, sizeof(uint64_t))==0;
-  //return *(uint64_t*)(mem) == *(uint64_t*)(&temp);
 }
 
 // =========== string
