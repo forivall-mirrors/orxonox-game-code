@@ -80,7 +80,6 @@ namespace orxonox
         float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
-        Settings*             settings_;
         TclBind*              tclBind_;
         TclThreadManager*     tclThreadManager_;
         Shell*                shell_;

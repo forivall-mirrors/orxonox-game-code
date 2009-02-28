@@ -29,7 +29,7 @@
 
  /**
  @file
- @brief Entry point of the program. Platform specific code.
+ @brief Entry point of the program.
   */
 
 #include "OrxonoxStableHeaders.h"
@@ -37,7 +37,7 @@
 #include <exception>
 #include <cassert>
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 #include "util/Debug.h"
 #include "util/SignalHandler.h"
 #include "core/ConfigFileManager.h"
@@ -56,7 +56,7 @@
 #include "gamestates/GSGUI.h"
 #include "gamestates/GSIOConsole.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
+#ifdef ORXONOX_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
 // This function will locate the path to our application on OS X,
@@ -84,19 +84,16 @@
 #endif
 
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
 SetCommandLineArgument(settingsFile, "orxonox.ini");
+SetCommandLineArgument(configFileDirectory, "");
 
 int main(int argc, char** argv)
 {
     using namespace orxonox;
 
-    // create a signal handler (only works for linux)
+    // create a signal handler (only active for linux)
     SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], "orxonox.log");
+    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
 
     // Parse command line arguments
     try
@@ -108,6 +105,9 @@ int main(int argc, char** argv)
         COUT(1) << ex.what() << std::endl;
         COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
     }
+
+    // Do this after parsing the command line to allow customisation
+    Core::postMainInitialisation();
 
     // Create the ConfigFileManager before creating the GameStates in order to have
     // setConfigValues() in the constructor (required).
@@ -156,7 +156,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-
-//#ifdef __cplusplus
-//}
-//#endif

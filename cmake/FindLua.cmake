@@ -1,101 +1,184 @@
-#  Find Lua header and library files
-#
-#  When called, this script tries to define:
-#  Lua_INCLUDE_DIR    Header files directory
-#  Lua_LIBRARIES      library files (or file when using lua 5.1)
-#  Lua_FOUND          defined (true) if lua was found
-#  Lua_VERSION        either 5.1 or 5.0 or undefined
-#
-#  authors: Benjamin Knecht, Reto Grieder
-#
-# Several changes and additions by Fabian 'x3n' Landau
-#                 > www.orxonox.net <
+ #
+ #             ORXONOX - the hottest 3D action shooter ever to exist
+ #                             > www.orxonox.net <
+ #
+ #        This program is free software; you can redistribute it and/or
+ #         modify it under the terms of the GNU General Public License
+ #        as published by the Free Software Foundation; either version 2
+ #            of the License, or (at your option) any later version.
+ #
+ #       This program is distributed in the hope that it will be useful,
+ #        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #                 GNU General Public License for more details.
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #      with this program; if not, write to the Free Software Foundation,
+ #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ #
+ #
+ #  Author:
+ #    Reto Grieder
+ #  Description:
+ #    Finds either Lua 5.0 or Lua 5.1 on the system. The script regards the
+ #    VERSION, EXACT, REQUIRED and QUIET arguments. A note about the EXACT
+ #    argument: EXACT 5 will match all Lua 5 versions.
+ #    When the search was successful, the following variables are set:
+ #    LUA_INCLUDE_DIR, LUA_LIBRARIES, LUA_VERSION, LUA_FOUND
+ #
 
-IF (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
+INCLUDE(CompareVersionStrings)
+INCLUDE(FindPackageHandleAdvancedArgs)
+INCLUDE(HandleLibraryTypes)
 
-  # Already in cache, be silent
-  SET(Lua_FOUND TRUE)
-  SET(Lua_FIND_QUIETLY TRUE) 
-#  MESSAGE(STATUS "Lua was found.")
-
-ELSE (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
-
-  FIND_PATH(Lua_INCLUDE_DIR_51 lua.h
-    /usr/include/lua5.1
-    /usr/local/include/lua5.1
-    ../libs/lua-5.1.3/include)
-
-  FIND_PATH(Lua_INCLUDE_DIR_50 lua.h
-    /usr/include/lua50
-    /usr/local/include/lua50
-    /usr/pack/lua-5.0.3-sd/include)
-
-  FIND_LIBRARY(Lua_LIBRARY_51 NAMES lua5.1 lua PATHS
-    /usr/lib
-    /usr/local/lib
-    ../libs/lua-5.1.3/lib)
-
-  FIND_LIBRARY(Lua_LIBRARY_1_50 NAMES lua50 lua PATHS
-    /usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib #tardis
-    /usr/lib
-    /usr/local/lib)
-
-  FIND_LIBRARY(Lua_LIBRARY_2_50 NAMES lualib50 lualib PATHS
-    /usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib #tardis
-    /usr/lib
-    /usr/local/lib)
+# Macro that determines Lua version. Should work for versions 2.2 and above (current release: 5.1.4)
+FUNCTION(DETERMINE_LUA_VERSION _file _varname)
+  IF(EXISTS ${_file})
+    FILE(STRINGS ${_file} _file_content REGEX "LUA_VERSION|LUA_RELEASE")
+  ELSE()
+    SET(${_varname} "0" PARENT_SCOPE)
+    RETURN()
+  ENDIF()
+  STRING(REGEX REPLACE "^.*LUA_RELEASE[ \t]+\"Lua[ \t]+([.0-9]+)\".*$" "\\1" ${_varname} "${_file_content}")
+  IF(${_varname} STREQUAL "${_file_content}")
+    # At most version 5.1.0
+    STRING(REGEX REPLACE "^.*LUA_VERSION[ \t]+\"Lua[ \t]+([.0-9]+)\".*$" "\\1" ${_varname} "${_file_content}")
+    IF(${_varname} STREQUAL "${_file_content}")
+      MESSAGE(FATAL_ERROR "Could not determine Lua version which means this script has a bug")
+    ENDIF()
+    IF(${_varname} MATCHES "^[0-9]+\\.[0-9]+$")
+      SET(${_varname} "${${_varname}}.0") # E.g. "3.2" is "3.2.0" actually
+    ENDIF()
+  ENDIF()
+  SET(${_varname} "${${_varname}}" PARENT_SCOPE)
+ENDFUNCTION(DETERMINE_LUA_VERSION)
 
 
-  IF (Lua_INCLUDE_DIR_51 AND Lua_LIBRARY_51)
+# Find Lua 5.1
+FIND_PATH(LUA_5.1_INCLUDE_DIR lua.h
+  PATHS $ENV{LUA_DIR}
+  PATH_SUFFIXES include/lua51 include/lua5.1 include/lua include
+)
+IF(LUA_5.1_INCLUDE_DIR)
+  DETERMINE_LUA_VERSION(${LUA_5.1_INCLUDE_DIR}/lua.h LUA_5.1_VERSION)
+  COMPARE_VERSION_STRINGS("${LUA_5.1_VERSION}" "5.1" _version_compare TRUE)
+  IF(NOT _version_compare EQUAL 0)
+    # Incorrect version found, abort search
+    SET(LUA_5.1_INCLUDE_DIR "LUA_5.1_INCLUDE_DIR-NOTFOUND" CACHE PATH "" FORCE)
+  ELSE()
+    FIND_LIBRARY(LUA_5.1_LIBRARY_OPTIMIZED
+      NAMES lua51 lua5.1 lua
+      PATHS $ENV{LUA_DIR}
+      PATH_SUFFIXES lib64 lib
+    )
+    FIND_LIBRARY(LUA_5.1_LIBRARY_DEBUG
+      NAMES lua51d lua51_d lua5.1d lua5.1_d luad lua_d
+            lua51D lua51_D lua5.1D lua5.1_D luad lua_D
+      PATHS $ENV{LUA_DIR}
+      PATH_SUFFIXES lib64 lib
+    )
+    HANDLE_LIBRARY_TYPES(LUA_5.1)
+    SET(LUA_5.1_LIBRARIES ${LUA_5.1_LIBRARY})
+    IF(LUA_5.1_LIBRARIES)
+      SET(LUA_5.1_FOUND TRUE)
+    ENDIF()
+  ENDIF(NOT _version_compare EQUAL 0)
+ENDIF(LUA_5.1_INCLUDE_DIR)
 
-    # Found newer lua 5.1 libs
-    SET(Lua_FOUND TRUE)
-    SET(Lua_VERSION "5.1" CACHE STRING "")
-    SET(Lua_INCLUDE_DIR ${Lua_INCLUDE_DIR_51} CACHE PATH "")
-    SET(Lua_LIBRARIES ${Lua_LIBRARY_51} CACHE FILEPATH "")
-    SET(Lua_LIBRARY_NAMES "lua5.1 lua")
 
-  ELSEIF(Lua_INCLUDE_DIR_50 AND Lua_LIBRARY_1_50 AND Lua_LIBRARY_2_50)
+# Find Lua 5.0
+FIND_PATH(LUA_5.0_INCLUDE_DIR lua.h
+  PATHS $ENV{LUA_DIR}
+  PATH_SUFFIXES include/lua50 include/lua5.0 include/lua5 include/lua include
+)
+IF(LUA_5.0_INCLUDE_DIR)
+  DETERMINE_LUA_VERSION(${LUA_5.0_INCLUDE_DIR}/lua.h LUA_5.0_VERSION)
+  COMPARE_VERSION_STRINGS("${LUA_5.0_VERSION}" "5.0" _version_compare TRUE)
+  IF(NOT _version_compare EQUAL 0)
+    # Incorrect version found, abourt search
+    SET(LUA_5.0_INCLUDE_DIR "LUA_5.0_INCLUDE_DIR-NOTFOUND" CACHE PATH "" FORCE)
+  ELSE()
+    FIND_LIBRARY(LUA_5.0_LUA_LIBRARY_OPTIMIZED
+      NAMES lua50 lua5.0 lua5 lua
+      PATHS $ENV{LUA_DIR}
+      PATH_SUFFIXES lib64 lib
+    )
+    FIND_LIBRARY(LUA_5.0_LUA_LIBRARY_DEBUG
+      NAMES lua50d lua50_d lua5.0d lua5.0_d lua5d lua5_d luad lua_d
+            lua50D lua50_D lua5.0D lua5.0_D lua5d lua5_D luaD lua_D
+      PATHS $ENV{LUA_DIR}
+      PATH_SUFFIXES lib64 lib
+    )
+    HANDLE_LIBRARY_TYPES(LUA_5.0_LUA)
 
-    # Found older lua 5.0 libs
-    SET(Lua_FOUND TRUE)
-    SET(Lua_VERSION "5.0" CACHE STRING "")
-    SET(Lua_INCLUDE_DIR ${Lua_INCLUDE_DIR_50} CACHE PATH "")
-    SET(Lua_LIBRARIES ${Lua_LIBRARY_1_50} ${Lua_LIBRARY_2_50} CACHE FILEPATH "")
-    SET(Lua_LIBRARY_NAMES "lua50 lua, lualib50 lualib")
+    # In an OS X framework, lualib is usually included as part of the framework
+    # (like GLU in OpenGL.framework)
+    IF(${LUA_5.0_LUA_LIBRARY} MATCHES "framework")
+      SET(LUA_5.0_LIBRARIES ${LUA_5.0_LUA_LIBRARY})
+    ELSE()
+      FIND_LIBRARY(LUA_5.0_LUALIB_LIBRARY_OPTIMIZED
+        NAMES lualib50 lualib5.0 lualib5 lualib
+        PATHS $ENV{LUALIB_DIR} $ENV{LUA_DIR}
+        PATH_SUFFIXES lib64 lib
+      )
+      FIND_LIBRARY(LUA_5.0_LUALIB_LIBRARY_DEBUG
+        NAMES lualib50d lualib50_d lualib5.0d lualib5.0_d
+              lualib5d lualib5_d lualibd lualib_d
+              lualib50D lualib50_D lualib5.0D lualib5.0_D
+              lualib5D lualib5_D lualibD lualib_D
+        PATHS $ENV{LUALIB_DIR} $ENV{LUA_DIR}
+        PATH_SUFFIXES lib64 lib
+      )
+      HANDLE_LIBRARY_TYPES(LUA_5.0_LUALIB)
+      # Both libraries are required for Lua 5.0 to be found
+      IF(LUA_5.0_LUA_LIBRARY AND LUA_5.0_LUALIB_LIBRARY)
+        SET(LUA_5.0_LIBRARIES ${LUA_5.0_LUA_LIBRARY} ${LUA_5.0_LUALIB_LIBRARY})
+      ENDIF()
+    ENDIF(${LUA_5.0_LUA_LIBRARY} MATCHES "framework")
+    
+    IF(LUA_5.0_LIBRARIES)
+      SET(LUA_5.0_FOUND TRUE)
+    ENDIF()
+  ENDIF(NOT _version_compare EQUAL 0)
+ENDIF(LUA_5.0_INCLUDE_DIR)
 
-  ENDIF (Lua_INCLUDE_DIR_51 AND Lua_LIBRARY_51)
-	
+# Pick the right version
+IF(Lua_FIND_VERSION_EXACT AND NOT Lua_FIND_VERSION MATCHES "^[0-9]*$")
+  STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+)(\\..*)?$" "\\1" LUA_VERSION_SELECTION ${Lua_FIND_VERSION})
+ELSE()
+  IF(LUA_5.1_FOUND) # Prefer version 5.1 if found
+    SET(LUA_VERSION_SELECTION "5.1")
+  ELSEIF(LUA_5.0_FOUND)
+    SET(LUA_VERSION_SELECTION "5.0")
+  ENDIF()
+ENDIF()
 
-  IF (Lua_FOUND)
-    MESSAGE(STATUS "Lua was found.")
-    IF (VERBOSE_FIND)
-      MESSAGE (STATUS "  include path: ${Lua_INCLUDE_DIR}")
-      MESSAGE (STATUS "  library path: ${Lua_LIBRARIES}")
-      MESSAGE (STATUS "  libraries:    ${Lua_LIBRARY_NAMES}")
-    ENDIF (VERBOSE_FIND)
-  ELSE (Lua_FOUND)
-    IF (Lua_INCLUDE_DIR_51 AND NOT Lua_LIBRARY_51)
-      MESSAGE(SEND_ERROR "Lua 5.1 library was not found")
-    ENDIF (Lua_INCLUDE_DIR_51 AND NOT Lua_LIBRARY_51)
-    IF (NOT Lua_INCLUDE_DIR_51 AND Lua_LIBRARY_51)
-      MESSAGE(SEND_ERROR "Lua 5.1 include path was not found")
-    ENDIF (NOT Lua_INCLUDE_DIR_51 AND Lua_LIBRARY_51)
+SET(LUA_INCLUDE_DIR "${LUA_${LUA_VERSION_SELECTION}_INCLUDE_DIR}")
+SET(LUA_LIBRARIES "${LUA_${LUA_VERSION_SELECTION}_LIBRARIES}")
+SET(LUA_VERSION_LONG "${LUA_${LUA_VERSION_SELECTION}_VERSION}")
+SET(LUA_VERSION "${LUA_VERSION_SELECTION}")
 
-    IF (Lua_INCLUDE_DIR_50)
-      IF (NOT Lua_LIBRARY_1_50)
-       MESSAGE(SEND_ERROR "Lua 5.0 library "lua" was not found")
-      ENDIF (NOT Lua_LIBRARY_1_50)
-      IF (NOT Lua_LIBRARY_2_50)
-       MESSAGE(SEND_ERROR "Lua 5.0 library "lualib" was not found")
-      ENDIF (NOT Lua_LIBRARY_2_50)
-    ENDIF (Lua_INCLUDE_DIR_50)
-    IF (NOT Lua_INCLUDE_DIR_50 AND Lua_LIBRARY_1_50 AND Lua_LIBRARY_2_50)
-      MESSAGE(SEND_ERROR "Lua 5.0 include path was not found")
-    ENDIF (NOT Lua_INCLUDE_DIR_50 AND Lua_LIBRARY_1_50 AND Lua_LIBRARY_2_50)
+FIND_PACKAGE_HANDLE_ADVANCED_ARGS(Lua DEFAULT_MSG "${LUA_VERSION_LONG}"
+  LUA_LIBRARIES
+  LUA_INCLUDE_DIR
+)
 
-    MESSAGE(SEND_ERROR "Lua was not found.")
-  ENDIF (Lua_FOUND)
+# Include the math library for Unix only
+IF(LUA_FOUND)
+  IF(UNIX AND NOT APPLE)
+    FIND_LIBRARY(UNIX_MATH_LIBRARY m)
+    SET(LUA_LIBRARIES ${LUA_LIBRARIES} ${UNIX_MATH_LIBRARY})
+  ENDIF()
+ENDIF(LUA_FOUND)
 
-ENDIF (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
-
+MARK_AS_ADVANCED(
+  LUA_5.0_INCLUDE_DIR
+  LUA_5.0_LUA_LIBRARY_OPTIMIZED
+  LUA_5.0_LUA_LIBRARY_DEBUG
+  LUA_5.0_LUALIB_LIBRARY_OPTIMIZED
+  LUA_5.0_LUALIB_LIBRARY_DEBUG
+  LUA_5.1_INCLUDE_DIR
+  LUA_5.1_LIBRARY_OPTIMIZED
+  LUA_5.1_LIBRARY_DEBUG
+  UNIX_MATH_LIBRARY
+)

@@ -63,7 +63,7 @@ unsigned int Acknowledgement::getSize() const{
 }
 
 bool Acknowledgement::process(){
-COUT(0) << "processing ACK with ID: " << getAckID() << endl;
+COUT(6) << "processing ACK with ID: " << getAckID() << endl;
   bool b = GamestateHandler::ackGamestate(getAckID(), clientID_);
   delete this;
   return b;

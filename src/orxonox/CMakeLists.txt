@@ -1,59 +1,91 @@
-SET( ORXONOX_SRC_FILES
+ #
+ #             ORXONOX - the hottest 3D action shooter ever to exist
+ #                             > www.orxonox.net <
+ #
+ #        This program is free software; you can redistribute it and/or
+ #         modify it under the terms of the GNU General Public License
+ #        as published by the Free Software Foundation; either version 2
+ #            of the License, or (at your option) any later version.
+ #
+ #       This program is distributed in the hope that it will be useful,
+ #        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #                 GNU General Public License for more details.
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #      with this program; if not, write to the Free Software Foundation,
+ #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ #
+
+SET_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraManager.cc
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
   PawnManager.cc
   PlayerManager.cc
-  Settings.cc
-  
-  tolua/tolua_bind.cc
 )
+ADD_SUBDIRECTORY(gamestates)
+ADD_SUBDIRECTORY(gui)
+ADD_SUBDIRECTORY(objects)
+ADD_SUBDIRECTORY(overlays)
+ADD_SUBDIRECTORY(tools)
+GET_ALL_HEADER_FILES(ORXONOX_HDR_FILES)
+SET(ORXONOX_FILES ${ORXONOX_SRC_FILES} ${ORXONOX_HDR_FILES})
 
-ADD_SOURCE_DIRECTORY(ORXONOX_SRC_FILES gamestates)
-ADD_SOURCE_DIRECTORY(ORXONOX_SRC_FILES gui)
-ADD_SOURCE_DIRECTORY(ORXONOX_SRC_FILES objects)
-ADD_SOURCE_DIRECTORY(ORXONOX_SRC_FILES overlays)
-ADD_SOURCE_DIRECTORY(ORXONOX_SRC_FILES tools)
+GENERATE_SOURCE_GROUPS(${ORXONOX_FILES})
+GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h)
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.h
-  COMMAND ${TOLUA_EXE} -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
-  DEPENDS
-    tolua_orxonox
-    tolua/tolua.pkg
-    gui/GUIManager.h
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
-)
+# Not using precompiled header files: Avoid dependencies
+INCLUDE_DIRECTORIES(pch/nopch)
 
-
-ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
+ADD_EXECUTABLE(orxonox ${ORXONOX_FILES})
+GET_TARGET_PROPERTY(_exec_loc orxonox LOCATION)
+GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
+SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
 
 IF(NETWORKTRAFFIC_TESTING_ENABLED)
-
-  SET( ORXONOXS_SRC_FILES
+  SET(ORXONOXS_SRC_FILES
     GraphicsEngine.cc
     objects/Camera.cc
     CameraManager.cc
   )
-
-  ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})
+  ADD_LIBRARY(orxonoxs SHARED ${ORXONOXS_SRC_FILES})
 ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
 
-TARGET_LINK_LIBRARIES( orxonox
-  ${OGRE_LIBRARIES}
-  ${CEGUI_LIBRARIES}
-  lua_orxonox
-  ceguilua_orxonox
-  tinyxml_orxonox
-  tolualib_orxonox
-  BulletDynamics
-  BulletCollision
-  LinearMath
+TARGET_LINK_LIBRARIES(orxonox
+  ${OGRE_LIBRARY}
+  ${CEGUI_LIBRARY}
+  ${LUA_LIBRARIES}
+  ${CEGUILUA_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
+  ogreceguirenderer_orxonox
+  tinyxml++_orxonox
+  tolua++_orxonox
+  bullet_orxonox
   util
   core
-  audio
   network
+  #audio
 )
 
+ORXONOX_INSTALL(orxonox)
+
+
+# When using Visual Studio we want to use the output directory as working
+# directory and we also want to specify where the external dlls
+# (lua, ogre, etc.) are. The problem hereby is that these information cannot
+# be specified in CMake because they are not stored in the actual project file.
+# This workaround will create a configured *.vcproj.user file that holds the
+# right values. When starting the solution for the first time,
+# these get written to the *vcproj.yourPCname.yourname.user
+IF(MSVC)
+  IF(CMAKE_CL_64)
+    SET(MSVC_PLATFORM "x64")
+  ELSE()
+    SET(MSVC_PLATFORM "Win32")
+  ENDIF()
+  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
+         VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox.vcproj.user" "${CMAKE_CURRENT_BINARY_DIR}/orxonox.vcproj.user")
+ENDIF(MSVC)

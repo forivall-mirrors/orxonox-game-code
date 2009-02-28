@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   GSDedicated.cc
   GSClient.cc
   GSGraphics.cc
@@ -9,5 +9,3 @@ SET( SRC_FILES
   GSServer.cc
   GSStandalone.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

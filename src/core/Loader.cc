@@ -27,6 +27,9 @@
  */
 
 #include "Loader.h"
+
+#include <tinyxml/ticpp.h>
+
 #include "XMLFile.h"
 #include "BaseObject.h"
 #include "Identifier.h"
@@ -37,8 +40,6 @@
 #include "Namespace.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
-
-#include "tinyxml/ticpp.h"
 
 namespace orxonox
 {

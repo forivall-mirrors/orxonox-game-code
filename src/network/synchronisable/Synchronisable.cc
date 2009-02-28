@@ -238,52 +238,6 @@ namespace orxonox
 
 
   /**
-  * This function is used to register a variable to be synchronized
-  * also counts the total datasize needed to save the variables
-  * @param var pointer to the variable
-  * @param size size of the datatype the variable consists of
-  * @param t the type of the variable (DATA or STRING
-  * @param mode same as in getData
-  * @param cb callback object that should get called, if the value of the variable changes
-  */
-
-/*  void Synchronisable::registerVariable(void *var, int size, variableType t, uint8_t mode, NetworkCallbackBase *cb){
-    assert( mode==variableDirection::toclient || mode==variableDirection::toserver || mode==variableDirection::serverMaster || mode==variableDirection::clientMaster);
-    // create temporary synch.Var struct
-    synchronisableVariable *temp = new synchronisableVariable;
-    temp->size = size;
-    temp->var = var;
-    temp->mode = mode;
-    temp->type = t;
-    temp->callback = cb;
-    if( ( mode & variableDirection::bidirectional ) )
-    {
-      if(t!=STRING)
-      {
-        temp->varBuffer = new uint8_t[size];
-        memcpy(temp->varBuffer, temp->var, size); //now fill the buffer for the first time
-      }
-      else
-      {
-        temp->varBuffer=new std::string( *static_cast<std::string*>(var) );
-      }
-      temp->varReference = 0;
-    }
-    COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl;
-    //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
-    COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
-    syncList->push_back(temp);
-#ifndef NDEBUG
-    std::list<synchronisableVariable *>::iterator it = syncList->begin();
-    while(it!=syncList->end()){
-      assert(*it!=var);
-      it++;
-    }
-#endif
-  }*/
-
-
-  /**
    * This function takes all SynchronisableVariables out of the Synchronisable and saves them together with the size, objectID and classID to the given memory
    * takes a pointer to already allocated memory (must have at least getSize bytes length)
    * structure of the bitstream:

@@ -67,9 +67,9 @@ namespace orxonox
     */
     OutputBuffer& OutputBuffer::operator<<(std::ostream& (*manipulator)(std::ostream&))
     {
-                this->stream_ << manipulator;
-                this->callListeners();
-                return *this;
+        this->stream_ << manipulator;
+        this->callListeners();
+        return *this;
     }
 
     /**
@@ -78,9 +78,9 @@ namespace orxonox
     */
     OutputBuffer& OutputBuffer::operator<<(std::ios& (*manipulator)(std::ios&))
     {
-                this->stream_ << manipulator;
-                this->callListeners();
-                return *this;
+        this->stream_ << manipulator;
+        this->callListeners();
+        return *this;
     }
 
     /**
@@ -89,9 +89,9 @@ namespace orxonox
     */
     OutputBuffer& OutputBuffer::operator<<(std::ios_base& (*manipulator)(std::ios_base&))
     {
-                this->stream_ << manipulator;
-                this->callListeners();
-                return *this;
+        this->stream_ << manipulator;
+        this->callListeners();
+        return *this;
     }
 
     /**

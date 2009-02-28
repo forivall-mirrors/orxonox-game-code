@@ -35,12 +35,14 @@
 
 #include <fstream>
 #include <string>
+#include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
+#include "core/Core.h"
 #include "InputCommands.h"
 #include "InputManager.h"
 
@@ -245,23 +247,13 @@ namespace orxonox
     @return
         True if loading succeeded.
     */
-    void KeyBinder::loadBindings(const std::string& filename, const std::string& defaultFilename)
+    void KeyBinder::loadBindings(const std::string& filename)
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
         if (filename.empty())
             return;
 
-        // get bindings from default file if filename doesn't exist.
-        std::ifstream infile;
-        infile.open(filename.c_str());
-        if (!infile)
-        {
-            ConfigFileManager::getInstance().setFilename(this->configFile_, defaultFilename);
-            ConfigFileManager::getInstance().saveAs(this->configFile_, filename);
-        }
-        else
-            infile.close();
         ConfigFileManager::getInstance().setFilename(this->configFile_, filename);
 
         // Parse bindings and create the ConfigValueContainers if necessary

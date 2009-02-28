@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(CORE_SRC_FILES
   Button.cc
   CalibratorCallback.cc
   ExtendedInputState.cc
@@ -11,5 +11,3 @@ SET( SRC_FILES
   KeyDetector.cc
   SimpleInputState.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

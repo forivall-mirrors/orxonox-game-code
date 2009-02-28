@@ -361,7 +361,7 @@ template <> uint32_t SynchronisableVariable<const long double>::returnSize()
 template <> void SynchronisableVariable<const long double>::setAndIncrease( uint8_t*& mem )
 {
   double temp;
-  *(uint64_t*)(&temp) = *(uint64_t*)(mem);
+  memcpy(&temp, mem, sizeof(uint64_t));
   *(long double*)(&this->variable_) = static_cast<const long double>(temp);
   mem += SynchronisableVariable<const long double>::returnSize();
 }
@@ -369,14 +369,14 @@ template <> void SynchronisableVariable<const long double>::setAndIncrease( uint
 template <> void SynchronisableVariable<const long double>::getAndIncrease( uint8_t*& mem )
 {
   double temp = static_cast<double>(this->variable_);
-  *(uint64_t*)(mem) = *(uint64_t*)(&temp);
+  memcpy(mem, &temp, sizeof(uint64_t));
   mem += SynchronisableVariable<const long double>::returnSize();
 }
 
 template <> bool SynchronisableVariable<const long double>::checkEquality( uint8_t* mem )
 {
   double temp = static_cast<double>(this->variable_);
-  return *(uint64_t*)(mem) == *(uint64_t*)(&temp);
+  return memcmp(&temp, mem, sizeof(uint64_t))==0;
 }
 
 // =========== string

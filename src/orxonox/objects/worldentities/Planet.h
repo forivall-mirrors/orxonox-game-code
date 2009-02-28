@@ -70,11 +70,11 @@ namespace orxonox
                 return this->meshSrc_;
             }
             
-            inline void setAtmosphereSize(Real size){
+            inline void setAtmosphereSize(float size){
                 this->atmosphereSize = size;
             }
             
-            inline Real getAtmosphereSize(){
+            inline float getAtmosphereSize(){
                 return this->atmosphereSize;
             }
             
@@ -86,11 +86,11 @@ namespace orxonox
                 return this->atmosphere_;
             }
             
-            inline void setImageSize(Real size){
+            inline void setImageSize(float size){
                 this->imageSize = size;
             }
             
-            inline Real getImageSize(){
+            inline float getImageSize(){
                 return this->imageSize;
             }
 
@@ -105,8 +105,8 @@ namespace orxonox
             std::string meshSrc_;
             std::string atmosphere_;
             Mesh mesh_;
-            Real atmosphereSize;
-            Real imageSize;
+            float atmosphereSize;
+            float imageSize;
             Ogre::Mesh::LodDistanceList distList;
             BillboardSet billboard_;
             bool bCastShadows_;

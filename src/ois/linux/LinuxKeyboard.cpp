@@ -282,7 +282,7 @@ unsigned int UTF8ToUTF32(unsigned char* buf)
 		val = FirstChar & 0x01;
 	}
 
-	for(unsigned int i = 1; i < len; i++)
+	for(int i = 1; i < len; i++)
 		val = (val << 6) | (buf[i] & 0x3F);
 
 	return val;
@@ -302,10 +302,7 @@ void LinuxKeyboard::capture()
 	LinuxInputManager* linMan = static_cast<LinuxInputManager*>(mCreator);
 
 	while( XPending(display) > 0 )
-	{
-		XNextEvent(display, &event);
-
-		if( KeyPress == event.type )
+	{ 		XNextEvent(display, &event);  		if( KeyPress == event.type )
 		{
 			unsigned int character = 0;
 
@@ -334,8 +331,7 @@ void LinuxKeyboard::capture()
 			//Check for Alt-Tab
 			if( event.xkey.state & Mod1Mask && key == XK_Tab )
 				linMan->_setGrabState(false);
-		}
-		else if( KeyRelease == event.type )
+		} 		else if( KeyRelease == event.type )
 		{
 			//Mask out the modifier states X sets.. or we will get improper values
 			event.xkey.state &= ~ShiftMask;
@@ -343,8 +339,7 @@ void LinuxKeyboard::capture()
 
 			//Else, it is a valid key release
 			XLookupString(&event.xkey,NULL,0,&key,NULL);
-			_injectKeyUp(key);
-		}
+			_injectKeyUp(key); 		}
 	}
 
 	//If grabbing mode is on.. Handle focus lost/gained via Alt-Tab and mouse clicks

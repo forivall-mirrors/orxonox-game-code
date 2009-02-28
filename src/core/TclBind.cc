@@ -61,7 +61,8 @@ namespace orxonox
 
     void TclBind::setDataPath(const std::string& datapath)
     {
-        this->tclLibPath_ = datapath + "/tcl" + TCL_VERSION + "/";
+        // String has POSIX slashes
+        this->tclLibPath_ = datapath + "tcl" + TCL_VERSION + '/';
         this->bSetTclLibPath_ = true;
 
         this->createTclInterpreter();

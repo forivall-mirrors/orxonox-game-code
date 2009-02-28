@@ -4,6 +4,8 @@
 ** TeCGraf/PUC-Rio
 ** Aug 2003
 ** $Id:$
+** Extension by Orxonox (Reto Grieder) to support working directory
+** and direct usage of lua files. (2008)
 */
 
 /* This code is free software; you can redistribute it and/or modify it.
@@ -14,9 +16,9 @@
 
 #include "tolua++.h"
 
-#include "lua/lua.h"
-#include "lua/lualib.h"
-#include "lua/lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +35,8 @@ static void help (void)
          "  -o  file : set output file; default is stdout.\n"
          "  -H  file : create include file.\n"
          "  -n  name : set package name; default is input file root name.\n"
+         "  -w  directory : set working directory; default is location of package file.\n"
+         "  -s  file : specify source lua code for the parser; all.lua is default.\n"
          "  -p       : parse only.\n"
          "  -P       : parse and print structure information (for debug).\n"
          "  -S       : disable support for c++ strings.\n"
@@ -64,12 +68,12 @@ static void setfield (lua_State* L, int table, char* f, char* v)
 }
 
 static void add_extra (lua_State* L, char* value) {
-	int len;
-	lua_getglobal(L, "_extra_parameters");
-	len = luaL_getn(L, -1);
-	lua_pushstring(L, value);
-	lua_rawseti(L, -2, len+1);
-	lua_pop(L, 1);
+ int len;
+ lua_getglobal(L, "_extra_parameters");
+ len = luaL_getn(L, -1);
+ lua_pushstring(L, value);
+ lua_rawseti(L, -2, len+1);
+ lua_pop(L, 1);
 };
 
 static void error (char* o)
@@ -81,6 +85,9 @@ static void error (char* o)
 
 int main (int argc, char* argv[])
 {
+ char* working_directory = "";
+ char* lua_source = "";
+
  #ifdef LUA_VERSION_NUM /* lua 5.1 */
  lua_State* L = luaL_newstate();
  luaL_openlibs(L);
@@ -96,6 +103,7 @@ int main (int argc, char* argv[])
 
  lua_pushstring(L,TOLUA_VERSION); lua_setglobal(L,"TOLUA_VERSION");
  lua_pushstring(L,LUA_VERSION); lua_setglobal(L,"TOLUA_LUA_VERSION");
+
 
  if (argc==1)
  {
@@ -124,6 +132,14 @@ int main (int argc, char* argv[])
      case 'o': setfield(L,t,"o",argv[++i]); break;
      case 'n': setfield(L,t,"n",argv[++i]); break;
      case 'H': setfield(L,t,"H",argv[++i]); break;
+     case 'w':
+      working_directory = argv[++i];
+      setfield(L,t,"w",argv[i]);
+      break;
+     case 's':
+      lua_source = argv[++i];
+      setfield(L,t,"s",argv[i]);
+      break;
      case 'S': setfield(L,t,"S",""); break;
      case '1': setfield(L,t,"1",""); break;
      case 'L': setfield(L,t,"L",argv[++i]); break;
@@ -143,25 +159,53 @@ int main (int argc, char* argv[])
   }
   lua_pop(L,1);
  }
-/* #define TOLUA_SCRIPT_RUN */
-#ifndef TOLUA_SCRIPT_RUN
+
  {
-  int tolua_tolua_open (lua_State* L);
-  tolua_tolua_open(L);
- }
+  char path[BUFSIZ];
+  char file[BUFSIZ];
+  path[0] = '\0';
+  file[0] = '\0';
+
+  if (strlen(lua_source) > 0 &&
+      lua_source[0] != '/' &&
+      lua_source[0] != '\\' &&
+      strlen(lua_source) > 1 &&
+      lua_source[1] != ':')
+  {
+   /* Relative path, prefix working directory */
+   strcpy(path, working_directory);
+   /* Make sure there is '\\' or '/' at the end of the path */
+   if (strlen(path) > 0)
+   {
+    char last = path[strlen(path) - 1];
+    if (last != '\\' && last != '/')
+     strcat(path, "/");
+   }
+  }
+
+  strcat(path, lua_source);
+
+  /* Extract the full path */
+  {
+   char* p;
+   p = strrchr(path, '/');
+   if (p == NULL)
+    p = strrchr(path, '\\');
+   p = (p == NULL) ? path : p + 1;
+   strcpy(file, p);
+   *p = '\0';
+  }
+  if (strlen(file) == 0)
+   strcpy(file, "all.lua");
+
+  lua_pushstring(L, path);
+  lua_setglobal(L, "path");
+  strcat(path, file);
+#ifdef LUA_VERSION_NUM /* lua 5.1 */
+  luaL_dofile(L, path);
 #else
- {
-  char* p;
-  char  path[BUFSIZ];
-  strcpy(path,argv[0]);
-  p = strrchr(path,'/');
-  if (p==NULL) p = strrchr(path,'\\');
-  p = (p==NULL) ? path : p+1;
-  sprintf(p,"%s","../src/bin/lua/");
-  lua_pushstring(L,path); lua_setglobal(L,"path");
-		strcat(path,"all.lua");
-  lua_dofile(L,path);
- }
+  lua_dofile(L, path);
 #endif
+ }
  return 0;
 }

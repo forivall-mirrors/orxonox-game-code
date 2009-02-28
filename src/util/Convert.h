@@ -49,7 +49,7 @@
 // GCC generates warnings when implicitely casting from float to int for instance.
 // This is however exactly what convertValue does, so we need to suppress these warnings.
 // They only occur when using the ImplicitConversion template.
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_GNUC
+#ifdef ORXONOX_COMPILER_GCC
 #  pragma GCC system_header
 #endif
 
@@ -62,7 +62,7 @@
    is described in 'Modern C++ design' by Alexandrescu (2001). */
 
 // disable warnings about possible loss of data
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#ifdef ORXONOX_COMPILER_MSVC
 #  pragma warning(push)
 #  pragma warning(disable:4244)
 #endif
@@ -87,7 +87,7 @@ namespace orxonox
     };
 }
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#ifdef ORXONOX_COMPILER_MSVC
 #  pragma warning(pop)
 #endif
 

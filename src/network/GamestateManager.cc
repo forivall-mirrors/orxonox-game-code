@@ -117,7 +117,6 @@ namespace orxonox
     if(!reference)
       return 0;
     gs = reference->doSelection(clientID, 10000);
-//     gs = new packet::Gamestate(*reference);
     // save the (undiffed) gamestate in the clients gamestate map
     gamestateMap_[clientID][gs->getID()]=gs;
     //chose wheather the next gamestate is the first or not

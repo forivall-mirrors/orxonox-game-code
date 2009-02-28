@@ -100,6 +100,8 @@ namespace orxonox
             static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
 
+            static void setLogPath(const std::string& path);
+
             void setOutputBuffer(OutputBuffer* buffer);
 
             template <class T>
@@ -141,8 +143,8 @@ namespace orxonox
             OutputHandler& operator<<(std::ios_base& (*manipulator)(std::ios_base&));
 
         private:
-            explicit OutputHandler(const std::string& logfilename);
-            OutputHandler(const OutputHandler& oh);  // don't copy
+            explicit OutputHandler();
+            OutputHandler(const OutputHandler& oh);
             virtual ~OutputHandler();
 
             std::ofstream logfile_;              //!< The logfile where the output is logged

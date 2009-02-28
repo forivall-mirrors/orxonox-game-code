@@ -34,12 +34,12 @@
 #ifndef _AudioPrereqs_H__
 #define _AudioPrereqs_H__
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( AUDIO_STATIC_BUILD )
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( AUDIO_STATIC_BUILD )
 #  ifdef AUDIO_SHARED_BUILD
 #    define _AudioExport __declspec(dllexport)
 #  else
@@ -66,16 +66,5 @@ namespace orxonox
   class AudioSource;
   class AudioStream;
 }
-
-//-----------------------------------------------------------------------
-// Warnings
-//-----------------------------------------------------------------------
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-
-// set to 4: conversion from 'ogg_int64_t' to 'long', possible loss of data
-#pragma warning (4 : 4244)
-
-#endif
-
 
 #endif /* _AudioPrereqs_H__ */

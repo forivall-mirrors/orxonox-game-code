@@ -26,12 +26,12 @@
  *
  */
 
+#include "ArgumentCompletionFunctions.h"
+
 #include <iostream>
 #include <map>
-
 #include <boost/filesystem.hpp>
 
-#include "ArgumentCompletionFunctions.h"
 #include "CoreIncludes.h"
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
@@ -62,12 +62,12 @@ namespace orxonox
                 {
                     startdirectory = ".";
                 }
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#ifdef ORXONOX_PLATFORM_WINDOWS
                 else
                 {
                     std::string dir = startdirectory.string();
                     if (dir.size() > 0 && dir[dir.size() - 1] == ':')
-                        startdirectory = dir + "/";
+                        startdirectory = dir + CP_SLASH;
                 }
 #endif
 
@@ -77,7 +77,7 @@ namespace orxonox
                 while (file != end)
                 {
                     if (boost::filesystem::is_directory(*file))
-                        dirlist.push_back(ArgumentCompletionListElement((*file).string() + "/", getLowercase((*file).string()) + "/", (*file).leaf() + "/"));
+                        dirlist.push_back(ArgumentCompletionListElement((*file).string() + CP_SLASH, getLowercase((*file).string()) + "/", (*file).leaf() + "/"));
                     else
                         filelist.push_back(ArgumentCompletionListElement((*file).string(), getLowercase((*file).string()), (*file).leaf()));
                     ++file;

@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(NETWORK_SRC_FILES
   Packet.cc
   Chat.cc
   ClassID.cc
@@ -7,5 +7,3 @@ SET( SRC_FILES
   Welcome.cc
   DeleteObjects.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

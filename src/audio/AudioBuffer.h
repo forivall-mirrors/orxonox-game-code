@@ -32,7 +32,7 @@
 #include "AudioPrereqs.h"
 
 #include <string>
-#include <AL/al.h>
+#include <al.h>
 
 namespace orxonox
 {

@@ -43,17 +43,27 @@
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
+// Only allow main to access postMainInitialisation, so we need a forward declaration
+int main(int, char**);
+// boost::filesystem header has quite a large tail, use forward declaration
+namespace boost { namespace filesystem
+{
+    struct path_traits;
+    template<class String, class Traits> class basic_path;
+    typedef basic_path< std::string, path_traits> path;
+} }
+
 namespace orxonox
 {
     //! The Core class is a singleton, only used to configure some config-values.
     class _CoreExport Core : public OrxonoxClass
     {
+        friend int ::main(int, char**); // sets isDevBuild_s
+
         public:
             Core();
             ~Core();
             void setConfigValues();
-            void debugLevelChanged();
-            void languageChanged();
 
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
@@ -61,6 +71,20 @@ namespace orxonox
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
+
+            static bool isDevBuild() { return Core::isDevBuild_s; }
+
+            static void tsetMediaPath(const std::string& path)
+            { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
+            static const boost::filesystem::path& getMediaPath();
+            static const boost::filesystem::path& getConfigPath();
+            static const boost::filesystem::path& getLogPath();
+            static std::string getMediaPathString();
+            static std::string getConfigPathString();
+            static std::string getLogPathString();
+            static std::string getMediaPathPOSIXString();
+            static std::string getConfigPathPOSIXString();
+            static std::string getLogPathPOSIXString();
 
             // fast access global variables.
             static bool showsGraphics() { return bShowsGraphics_s; }
@@ -78,19 +102,31 @@ namespace orxonox
             Core(const Core&);
             void resetLanguageIntern();
             void initializeRandomNumberGenerator();
+            void debugLevelChanged();
+            void languageChanged();
+            void mediaPathChanged();
+            void _tsetMediaPath(const std::string& path);
+
+            static void postMainInitialisation();
+            static void checkDevBuild();
+            static void setExecutablePath();
+            static void createDirectories();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
             int softDebugLevelLogfile_;                     //!< The debug level for the logfile
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             std::string language_;                          //!< The language
-            bool bInitializeRandomNumberGenerator_;          //!< If true, srand(time(0)) is called
+            bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
+            std::string mediaPathString_;                   //!< Path to the data/media file folder as string
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server
             static bool bIsClient_s;
             static bool bIsStandalone_s;
             static bool bIsMaster_s;
+
+            static bool isDevBuild_s;                       //!< True for builds in the build directory (not installed)
 
             static Core* singletonRef_s;
     };
