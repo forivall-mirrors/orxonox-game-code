@@ -58,6 +58,7 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
       ${CMAKE_SOURCE_DIR}/dependencies
       ${_dep_dir_1}
       ${_dep_dir_2}
+    NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH
   )
   IF(NOT DEPENDENCY_PACKAGE_DIR)
     MESSAGE(STATUS "Warning: Could not find dependency directory."

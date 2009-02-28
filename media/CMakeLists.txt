@@ -34,6 +34,7 @@ FIND_PATH(CMAKE_MEDIA_OUTPUT_DIRECTORY resources.cfg
   PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${_search_path_1}
+  NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH
 )
 IF(NOT CMAKE_MEDIA_OUTPUT_DIRECTORY)
   MESSAGE(STATUS "Warning: Media directory not found. If you want to compile while downloading the media files, you must specify the directory by Hand BEFORE compiling! Default location is orxonox_root/media")
