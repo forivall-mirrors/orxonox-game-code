@@ -60,7 +60,7 @@
 #include <string>
 #include <utility>
 #include <typeinfo>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cassert>
 
 #include "MetaObjectList.h"
