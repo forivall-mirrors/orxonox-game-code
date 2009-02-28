@@ -20,19 +20,15 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    Creates a run-script in the root directory of the build tree.
+ #    Creates run scripts in the root directory of the build tree and
+ #    the runtime output directory.
  #
 
-############ Configure Dev Build ##############
-
-
-################ Run Scripts ##################
-
-# Create a run script for Windows to manually add the DLL path when executing
+# Create run scripts for Windows to manually add the DLL path when executing
 IF(WIN32)
-  SET(RUN_SCRIPT run.bat)
+  SET(RUN_SCRIPTS run.bat client1.bat client2.bat server.bat)
 ELSEIF(UNIX)
-  SET(RUN_SCRIPT run)
+  SET(RUN_SCRIPTS run client1 client1 server)
 ENDIF()
 
 IF(NOT CMAKE_CONFIGURATION_TYPES)
@@ -50,11 +46,13 @@ FOREACH(_subdir ${_subdirs})
   STRING(REGEX REPLACE "^([A-Z]\\:)\\/.*$" "\\1" WINDOWS_DRIVE_CHANGE ${CURRENT_RUNTIME_DIR})
   STRING(REPLACE "/" "\\" CURRENT_RUNTIME_DIR_WINDOWS ${CURRENT_RUNTIME_DIR})
 
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${RUN_SCRIPT}.in ${CURRENT_RUNTIME_DIR}/${RUN_SCRIPT} @ONLY)
-  IF(_subdir STREQUAL _default_subdir)
-    # Convenience script to be used when sitting in the binary directory. Defaults to Debug for msvc.
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${RUN_SCRIPT}.in ${CMAKE_BINARY_DIR}/${RUN_SCRIPT} @ONLY)
-  ENDIF()
+  FOREACH(_script ${RUN_SCRIPTS})
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${_script}.in ${CURRENT_RUNTIME_DIR}/${_script} @ONLY)
+    IF(_subdir STREQUAL _default_subdir)
+      # Convenience script to be used when sitting in the binary directory. Defaults to Debug for msvc.
+      CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${_script}.in ${CMAKE_BINARY_DIR}/${_script} @ONLY)
+    ENDIF()
+  ENDFOREACH(_script)
 
   # In order to evaluate at run time whether it is a dev build in the build tree,
   # we plant a special file

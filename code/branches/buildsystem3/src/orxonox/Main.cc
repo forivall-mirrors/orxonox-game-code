@@ -91,8 +91,6 @@ int main(int argc, char** argv)
 {
     using namespace orxonox;
 
-    Core::postMainInitialisation();
-
     // create a signal handler (only active for linux)
     SignalHandler signalHandler;
     signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
@@ -107,6 +105,9 @@ int main(int argc, char** argv)
         COUT(1) << ex.what() << std::endl;
         COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
     }
+
+    // Do this after parsing the command line to allow customisation
+    Core::postMainInitialisation();
 
     // Create the ConfigFileManager before creating the GameStates in order to have
     // setConfigValues() in the constructor (required).

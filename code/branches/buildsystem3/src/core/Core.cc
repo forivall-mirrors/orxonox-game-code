@@ -76,6 +76,7 @@ namespace orxonox
     Core* Core::singletonRef_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("PATH");
+    SetCommandLineArgument(directory, "").information("DIR");
 
     /**
         @brief Constructor: Registers the object and sets the config-values.
@@ -424,6 +425,14 @@ namespace orxonox
             configPath_g = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
             logPath_g    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
 #endif
+        }
+
+        // Option to put all the config and log files in a separate folder
+        if (!CommandLine::getArgument("directory")->hasDefaultValue())
+        {
+            std::string directory(CommandLine::getValue("directory"));
+            configPath_g = configPath_g / directory;
+            logPath_g    = logPath_g    / directory;
         }
     }
 
