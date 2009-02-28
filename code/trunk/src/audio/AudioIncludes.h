@@ -38,8 +38,8 @@
 #include <vector>
 #include <string>
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <al.h>
+#include <alc.h>
 #include <AL/alut.h>
 #include <ogg/ogg.h>
 #include <vorbis/codec.h>

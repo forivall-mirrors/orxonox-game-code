@@ -1,49 +1,53 @@
-IF(WIN32)
-  # - Test for DirectX
-  # Once loaded this will define
-  #   DirectX_FOUND        - system has DirectX
-  #   DirectX_INCLUDE_DIR  - include directory for DirectX
-  #   DirectX_LIB_DIR      - lib directory for DirectX
-  #
-  # Several changes and additions by Fabian 'x3n' Landau
-  #                 > www.orxonox.net <
+# Find script for DirectX on Windows
+# Specifically designed to find dxguid and dinput8 for OIS
+# Once loaded this will define
+#   DIRECTX_FOUND        - system has DirectX
+#   DIRECTX_INCLUDE_DIR  - include directory for DirectX
+#   DIRECTX_LIBRARIES    - libraries for DirectX
+#
+# Set ENV{DXSD_DIR} if that has not been done the SDK installation.
+#
+# Several changes and additions by Fabian 'x3n' Landau
+# Simplifications and CMake 2.6.0 bugfix by Reto Grieder
+#                 > www.orxonox.net <
 
-  IF (DirectX_INCLUDE_DIR AND DirectX_LIB_DIR)
-    SET(DirectX_FIND_QUIETLY TRUE)
-  ENDIF (DirectX_INCLUDE_DIR AND DirectX_LIB_DIR)
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
 
-  set(DirectX_FOUND "NO")
+FIND_PATH(DIRECTX_INCLUDE_DIR dinput.h
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES include
+)
+FIND_LIBRARY(DIRECTX_LIBRARY_input dinput8
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES lib Lib lib/x86 Lib/x86
+  NO_DEFAULT_PATH # Or else CMake 2.6.0 will find the dll in system32 on windows
+)
+FIND_LIBRARY(DIRECTX_LIBRARY_input dinput8
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES lib Lib lib/x86 Lib/x86
+)
+FIND_LIBRARY(DIRECTX_LIBRARY_guid dxguid
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES lib Lib lib/x86 Lib/x86
+  NO_DEFAULT_PATH # Or else CMake 2.6.0 will find the dll in system32 on windows
+)
+FIND_LIBRARY(DIRECTX_LIBRARY_guid dxguid
+  PATHS $ENV{DXSDK_DIR}
+  PATH_SUFFIXES lib Lib lib/x86 Lib/x86
+)
 
-  FIND_PATH(DirectX_INCLUDE_DIR "dinput.h"
-    ../libs/DXSDK/Include
-    $ENV{DXSDK_DIR}/Include
-  )
+# Handle the REQUIRED argument and set DIRECTX_FOUND
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(DirectX DEFAULT_MSG
+  DIRECTX_LIBRARY_input
+  DIRECTX_LIBRARY_guid
+  DIRECTX_INCLUDE_DIR
+)
 
-  FIND_PATH(DirectX_LIB_DIR "dinput8.lib"
-    ../libs/DXSDK/Lib
-    ../libs/DXSDK/Lib/x86
-    $ENV{DXSDK_DIR}/lib/x86
-  )
+SET(DIRECTX_LIBRARIES ${DIRECTX_LIBRARY_input} ${DIRECTX_LIBRARY_guid})
 
-  IF (DirectX_INCLUDE_DIR AND DirectX_LIB_DIR)
-    SET (DirectX_FOUND "YES")
-  ENDIF (DirectX_INCLUDE_DIR AND DirectX_LIB_DIR)
-
-  IF (DirectX_FOUND)
-    IF (NOT DirectX_FIND_QUIETLY)
-      MESSAGE(STATUS "DirectX was found.")
-      IF (VERBOSE_FIND)
-        MESSAGE (STATUS "  include path: ${DirectX_INCLUDE_DIR}")
-        MESSAGE (STATUS "  library path: ${DirectX_LIB_DIR}")
-        MESSAGE (STATUS "  libraries:    dinput8.lib")
-      ENDIF (VERBOSE_FIND)
-    ENDIF (NOT DirectX_FIND_QUIETLY)
-  ELSE (DirectX_FOUND)
-    IF (NOT DirectX_INCLUDE_DIR)
-      MESSAGE(SEND_ERROR "DirectX include path was not found.")
-    ENDIF (NOT DirectX_INCLUDE_DIR)
-    IF (NOT DirectX_LIB_DIR)
-      MESSAGE(SEND_ERROR "DirectX library was not found.")
-    ENDIF (NOT DirectX_LIB_DIR)
-  ENDIF (DirectX_FOUND)
-ENDIF(WIN32)
+MARK_AS_ADVANCED(
+  DIRECTX_INCLUDE_DIR
+  DIRECTX_LIBRARY_input
+  DIRECTX_LIBRARY_guid
+)

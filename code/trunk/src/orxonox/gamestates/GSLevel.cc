@@ -45,7 +45,6 @@
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
-#include "Settings.h"
 
 namespace orxonox
 {
@@ -75,8 +74,6 @@ namespace orxonox
     void GSLevel::setConfigValues()
     {
         SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
-        SetConfigValue(defaultKeybindings_, "def_keybindings.ini")
-            .description("Filename of default keybindings.");
     }
 
     void GSLevel::enter(Ogre::Viewport* viewport)
@@ -85,7 +82,7 @@ namespace orxonox
         {
             inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game", 20);
             keyBinder_ = new KeyBinder();
-            keyBinder_->loadBindings("keybindings.ini", defaultKeybindings_);
+            keyBinder_->loadBindings("keybindings.ini");
             inputState_->setHandler(keyBinder_);
 
             // create the global CameraManager
@@ -204,7 +201,7 @@ namespace orxonox
         COUT(0) << "Loading level..." << std::endl;
         std::string levelName;
         CommandLine::getValue("level", &levelName);
-        startFile_ = new XMLFile(Settings::getDataPath() + std::string("levels/") + levelName);
+        startFile_ = new XMLFile(Core::getMediaPathString() + "levels" + CP_SLASH + levelName);
         Loader::open(startFile_);
     }
 

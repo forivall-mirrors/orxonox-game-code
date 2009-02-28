@@ -34,14 +34,14 @@
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxConfig.h"
 
 #include <string>
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( CORE_STATIC_BUILD )
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( CORE_STATIC_BUILD )
 #  ifdef CORE_SHARED_BUILD
 #    define _CoreExport __declspec(dllexport)
 #  else

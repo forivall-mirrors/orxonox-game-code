@@ -2,9 +2,17 @@
 #
 # This module defines
 #  CEGUI_INCLUDE_DIR
-#  CEGUI_LIBRARIES, the libraries to link against to use CEGUI.
-#  CEGUI_LIB_DIR, the location of the libraries
+#  CEGUI_LIBRARY, the library to link against to use CEGUI.
 #  CEGUI_FOUND, If false, do not try to use CEGUI
+#  CEGUI_VERSION, the version as string "x.y.z"
+#  CEGUILUA_LIBRARY, Script module library
+#  CEGUILUA_USE_INTERNAL_LIBRARY, True if CEGUILUA_LIBRARY was not defined here
+#
+# Input:
+#  ENV{CEGUIDIR}, CEGUI path, optional
+#  FIND CEGUILUA_INTERNAL_SUPPORT, List of all CEGUILua version supported
+#                                  in the source repository
+#  CEGUILUA_USE_EXTERNAL_LIBRARY, Force finding of CEGUILua
 #
 # Created by Matt Williams to find OGRE libraries
 # Copyright © 2007, Matt Williams
@@ -16,98 +24,80 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 #
 # Several changes and additions by Fabian 'x3n' Landau
+# Lots of simplifications by Adrian Friedli and Reto Grieder
+# Version checking and CEGUILua finding by Reto Grieder
 #                 > www.orxonox.net <
 
-IF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR AND CEGUI_LIB_DIR)# AND CEGUI_SCRIPT_LIBRARIES)
-    SET(CEGUI_FIND_QUIETLY TRUE) # Already in cache, be silent
-ENDIF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR AND CEGUI_LIB_DIR)# AND CEGUI_SCRIPT_LIBRARIES)
+INCLUDE(DetermineVersion)
+INCLUDE(FindPackageHandleAdvancedArgs)
+INCLUDE(HandleLibraryTypes)
 
-IF (WIN32) #Windows
-    FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
-        ../libs/cegui-0.6.1/include
-        ${DEPENDENCY_DIR}/cegui-0.6.1/include
-    )
+FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
+  PATHS $ENV{CEGUIDIR}
+  PATH_SUFFIXES include include/CEGUI CEGUI.framework/Headers
+)
+FIND_LIBRARY(CEGUI_LIBRARY_OPTIMIZED
+  NAMES CEGUIBase CEGUI
+  PATHS $ENV{CEGUIDIR}
+  PATH_SUFFIXES lib bin
+)
+FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
+  NAMES
+    CEGUIBased CEGUIBase_d CEGUIBaseD CEGUIBase_D
+    CEGUId CEGUI_d CEGUID CEGUI_D
+  PATHS $ENV{CEGUIDIR}
+  PATH_SUFFIXES lib bin
+)
 
-    SET(CEGUI_LIBRARIES debug CEGUIBase_d optimized CEGUIBase)
-    FIND_LIBRARY(CEGUI_LIBDIR NAMES ${CEGUI_LIBRARIES} PATHS
-        ../libs/cegui-0.6.1/bin
-        ${DEPENDENCY_DIR}/cegui-0.6.1/lib
-    )
+# Inspect CEGUIVersion.h for the version number
+DETERMINE_VERSION(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
 
-    # Strip the filename from the path
-    IF (CEGUI_LIBDIR)
-        GET_FILENAME_COMPONENT(CEGUI_LIBDIR ${CEGUI_LIBDIR} PATH)
-        SET (CEGUI_LIB_DIR ${CEGUI_LIBDIR} CACHE FILEPATH "")
-    ENDIF (CEGUI_LIBDIR)
+# Handle the REQUIRED argument and set CEGUI_FOUND
+# Also checks the version requirements if given
+FIND_PACKAGE_HANDLE_ADVANCED_ARGS(CEGUI DEFAULT_MSG "${CEGUI_VERSION}"
+  CEGUI_LIBRARY_OPTIMIZED
+  CEGUI_INCLUDE_DIR
+)
 
-#    IF (NOT CEGUI_SCRIPT_LIBDIR)
-#        # Search Lua script module
-#        SET(CEGUI_SCRIPT_LIBRARIES "CEGUILuaScriptModule")
-#        FIND_LIBRARY(CEGUI_SCRIPT_LIBDIR NAMES ${CEGUI_SCRIPT_LIBRARIES} PATHS
-#            ../libs/cegui-0.6.1/bin
-#        )
-#	IF (NOT CEGUI_SCRIPT_LIBDIR)
-#            SET(CEGUI_SCRIPT_LIBRARIES "CEGUILua")
-#            FIND_LIBRARY(CEGUI_SCRIPT_LIBDIR NAMES ${CEGUI_SCRIPT_LIBRARIES} PATHS
-#                ../libs/cegui-0.6.1/bin
-#            )
-#            IF (NOT CEGUI_SCRIPT_LIBDIR)
-#                SET(CEGUI_SCRIPT_LIBRARIES)
-#            ENDIF (NOT CEGUI_SCRIPT_LIBDIR)
-#        ENDIF (NOT CEGUI_SCRIPT_LIBDIR)
-#    ENDIF (NOT CEGUI_SCRIPT_LIBDIR)
+# Collect optimized and debug libraries
+HANDLE_LIBRARY_TYPES(CEGUI)
 
-#    # Strip the filename from the path
-#    IF (CEGUI_SCRIPT_LIBDIR)
-#        GET_FILENAME_COMPONENT(CEGUI_SCRIPT_LIBDIR ${CEGUI_SCRIPT_LIBDIR} PATH)
-#        SET (CEGUI_SCRIPT_LIB_DIR ${CEGUI_SCRIPT_LIBDIR} CACHE FILEPATH "")
-#    ENDIF (CEGUI_SCRIPT_LIBDIR)
+MARK_AS_ADVANCED(
+  CEGUI_INCLUDE_DIR
+  CEGUI_LIBRARY_OPTIMIZED
+  CEGUI_LIBRARY_DEBUG
+)
 
-ELSE (WIN32) #Unix
-    FIND_PACKAGE(PkgConfig)
-    PKG_SEARCH_MODULE(CEGUI CEGUI /usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI.pc) # tardis specific hack
-    SET(CEGUI_INCLUDE_DIR ${CEGUI_INCLUDE_DIRS})
-    SET(CEGUI_LIB_DIR ${CEGUI_LIBDIR})
-    SET(CEGUI_LIBRARIES ${CEGUI_LIBRARIES} CACHE STRING "")
-#    SET(CEGUI_SCRIPT_LIBRARIES "CEGUILuaScriptModule")
-#    SET(CEGUI_SCRIPT_LIB_DIR)
-ENDIF (WIN32)
+LIST(FIND CEGUILUA_INTERNAL_SUPPORT "${CEGUI_VERSION}" _find_result)
+IF(CEGUILUA_USE_EXTERNAL_LIBRARY OR _find_result EQUAL -1)
+  # Also try to find the CEGUILua libraries.
+  # There would already be libraries in src/ for versions 0.5 and 0.6
+  FIND_LIBRARY(CEGUILUA_LIBRARY_OPTIMIZED
+    NAMES CEGUILua
+    PATHS $ENV{CEGUIDIR}
+    PATH_SUFFIXES lib bin
+  )
+  FIND_LIBRARY(CEGUILUA_LIBRARY_DEBUG
+    NAMES CEGUILuad CEGUILua_d
+    PATHS $ENV{CEGUIDIR}
+    PATH_SUFFIXES lib bin
+  )
 
-IF (CEGUI_INCLUDE_DIR AND CEGUI_LIBRARIES AND CEGUI_LIB_DIR)# AND CEGUI_SCRIPT_LIBRARIES)
-    SET(CEGUI_FOUND TRUE)
+  SET(CEGUILua_FIND_REQUIRED ${CEGUI_FIND_REQUIRED})
+  # Handle the REQUIRED argument and set CEGUILUA_FOUND
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS(CEGUILua DEFAULT_MSG
+    CEGUILUA_LIBRARY_OPTIMIZED
+  )
 
-    #Do some preparation
-    SEPARATE_ARGUMENTS(CEGUI_INCLUDE_DIR)
-    SEPARATE_ARGUMENTS(CEGUI_LIBRARIES)
+  # Collect optimized and debug libraries
+  HANDLE_LIBRARY_TYPES(CEGUILUA)
 
-    SET(CEGUI_INCLUDE_DIR ${CEGUI_INCLUDE_DIR} CACHE PATH "")
-    SET(CEGUI_LIBRARIES ${CEGUI_LIBRARIES} CACHE STRING "")
-    SET(CEGUI_LIB_DIR ${CEGUI_LIB_DIR} CACHE PATH "")
-#    SET(CEGUI_SCRIPT_LIBRARIES ${CEGUI_SCRIPT_LIBRARIES} CACHE PATH "")
-ENDIF (CEGUI_INCLUDE_DIR AND CEGUI_LIBRARIES AND CEGUI_LIB_DIR)# AND CEGUI_SCRIPT_LIBRARIES)
+  MARK_AS_ADVANCED(
+    CEGUILUA_LIBRARY_OPTIMIZED
+    CEGUILUA_LIBRARY_DEBUG
+  )
 
-IF (CEGUI_FOUND)
-    IF (NOT CEGUI_FIND_QUIETLY)
-        MESSAGE(STATUS "CEGUI was found.")
-        IF (VERBOSE_FIND)
-            MESSAGE (STATUS "  include path: ${CEGUI_INCLUDE_DIR}")
-            MESSAGE (STATUS "  library path: ${CEGUI_LIB_DIR}")
-            MESSAGE (STATUS "  libraries:    ${CEGUI_LIBRARIES}")
-#            MESSAGE (STATUS "           :    ${CEGUI_SCRIPT_LIBRARIES}")
-        ENDIF (VERBOSE_FIND)
-    ENDIF (NOT CEGUI_FIND_QUIETLY)
-ELSE (CEGUI_FOUND)
-    IF (NOT CEGUI_INCLUDE_DIR)
-        MESSAGE(SEND_ERROR "CEGUI include path was not found.")
-    ENDIF (NOT CEGUI_INCLUDE_DIR)
-    IF (NOT CEGUI_LIB_DIR)
-        MESSAGE(SEND_ERROR "CEGUI library was not found.")
-    ENDIF (NOT CEGUI_LIB_DIR)
-    IF (NOT CEGUI_LIBRARIES)
-        MESSAGE(SEND_ERROR "CEGUI libraries not known.")
-    ENDIF (NOT CEGUI_LIBRARIES)
-#    IF (NOT CEGUI_SCRIPT_LIBRARIES)
-#        MESSAGE(SEND_ERROR "CEGUI Lua script module was not found.")
-#    ENDIF (NOT CEGUI_SCRIPT_LIBRARIES)
-ENDIF (CEGUI_FOUND)
+ELSE(CEGUILUA_USE_EXTERNAL_LIBRARY OR _find_result EQUAL -1)
+  SET(CEGUILUA_USE_INTERNAL_LIBRARY TRUE)
+ENDIF(CEGUILUA_USE_EXTERNAL_LIBRARY OR _find_result EQUAL -1)
 

@@ -39,7 +39,7 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "cpptcl/CppTcl.h"
+#include <cpptcl/cpptcl.h>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

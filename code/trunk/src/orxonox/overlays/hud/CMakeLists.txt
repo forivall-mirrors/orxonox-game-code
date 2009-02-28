@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   HUDBar.cc
   HUDNavigation.cc
   HUDRadar.cc
@@ -7,5 +7,3 @@ SET( SRC_FILES
   ChatOverlay.cc
   GametypeStatus.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

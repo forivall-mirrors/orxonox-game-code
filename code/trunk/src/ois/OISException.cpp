@@ -25,8 +25,8 @@ restrictions:
 using namespace OIS;
 
 //----------------------------------------------------------------------------//
-/*const char* Exception::what() const throw()
+const char* Exception::what() const throw()
 {
 	return eText;
 }
-*/
+

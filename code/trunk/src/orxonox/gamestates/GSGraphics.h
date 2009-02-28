@@ -59,6 +59,7 @@ namespace orxonox
         void setConfigValues();
 
         void setupOgre();
+        void loadOgrePlugins();
         void declareResources();
         void loadRenderer();
         void initialiseResources();
@@ -97,12 +98,12 @@ namespace orxonox
         // config values
         std::string           resourceFile_;             //!< resources file name
         std::string           ogreConfigFile_;           //!< ogre config file name
-        std::string           ogrePluginsFile_;          //!< ogre plugins file name
+        std::string           ogrePluginsFolder_;        //!< Folder where the Ogre plugins are located
+        std::string           ogrePlugins_;              //!< Comma separated list of all plugins to load
         std::string           ogreLogFile_;              //!< log file name for Ogre log messages
         int                   ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL
         int                   ogreLogLevelNormal_;       //!< Corresponding Orxonx debug level for LL_NORMAL
         int                   ogreLogLevelCritical_;     //!< Corresponding Orxonx debug level for LL_CRITICAL
-        std::string           defaultMasterKeybindings_; //!< Filename of default master keybindings.
 
         // console commands
         ConsoleCommand*       ccPrintScreen_;

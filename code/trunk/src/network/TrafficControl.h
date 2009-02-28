@@ -35,7 +35,6 @@
 #include <map>
 #include <utility>
 #include <algorithm>
-#include "util/Integers.h"
 #include "core/OrxonoxClass.h"
 #include "network/ClientConnectionListener.h"
 

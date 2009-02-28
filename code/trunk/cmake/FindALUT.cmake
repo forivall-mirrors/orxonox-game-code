@@ -1,7 +1,7 @@
 # - Locate FreeAlut
 # This module defines
 #  ALUT_LIBRARY
-#  ALUT_FOUND, if false, do not try to link to Alut
+#  ALUT_FOUND, if false, do not try to link against Alut
 #  ALUT_INCLUDE_DIR, where to find the headers
 #
 # $ALUTDIR is an environment variable that would
@@ -17,99 +17,64 @@
 # Other (Unix) systems should be able to utilize the non-framework paths.
 #
 # Several changes and additions by Fabian 'x3n' Landau
+# Some simplifications by Adrian Friedli and Reto Grieder
 #                 > www.orxonox.net <
 
-IF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-  SET (ALUT_FIND_QUIETLY TRUE)
-ENDIF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+INCLUDE(FindPackageHandleStandardArgs)
+INCLUDE(HandleLibraryTypes)
 
 FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
-  $ENV{ALUTDIR}/include
-  ~/Library/Frameworks/OpenAL.framework/Headers
-  /Library/Frameworks/OpenAL.framework/Headers
-  /System/Library/Frameworks/OpenAL.framework/Headers # Tiger
-  /usr/pack/openal-0.0.8-cl/include # Tardis specific hack
-  /usr/local/include/
-  /usr/local/include/OpenAL
-  /usr/local/include
-  /usr/include/
-  /usr/include/OpenAL
-  /usr/include
-  /sw/include/ # Fink
-  /sw/include/OpenAL
-  /sw/include
-  /opt/local/include/AL # DarwinPorts
-  /opt/local/include/OpenAL
-  /opt/local/include
-  /opt/csw/include/ # Blastwave
-  /opt/csw/include/OpenAL
-  /opt/csw/include
-  /opt/include/
-  /opt/include/OpenAL
-  /opt/include
-  ../libs/freealut-1.1.0/include
-  ${DEPENDENCY_DIR}/freealut-1.1.0/include
-  )
+  PATHS
+  $ENV{ALUTDIR}
+  ~/Library/Frameworks/OpenAL.framework
+  /Library/Frameworks/OpenAL.framework
+  /System/Library/Frameworks/OpenAL.framework # Tiger
+  PATH_SUFFIXES include include/OpenAL include/AL Headers
+)
 
 # I'm not sure if I should do a special casing for Apple. It is
 # unlikely that other Unix systems will find the framework path.
 # But if they do ([Next|Open|GNU]Step?),
 # do they want the -framework option also?
 IF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
+
   STRING(REGEX REPLACE "(.*)/.*\\.framework/.*" "\\1" ALUT_FRAMEWORK_PATH_TMP ${ALUT_INCLUDE_DIR})
   IF("${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/Library/Frameworks"
       OR "${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/System/Library/Frameworks"
       )
     # String is in default search path, don't need to use -F
-    SET (ALUT_LIBRARY "-framework OpenAL" CACHE STRING "OpenAL framework for OSX")
-  ELSE("${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/Library/Frameworks"
-      OR "${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/System/Library/Frameworks"
-      )
+    SET (ALUT_LIBRARY_OPTIMIZED "-framework OpenAL" CACHE STRING "OpenAL framework for OSX")
+  ELSE()
     # String is not /Library/Frameworks, need to use -F
-    SET(ALUT_LIBRARY "-F${ALUT_FRAMEWORK_PATH_TMP} -framework OpenAL" CACHE STRING "OpenAL framework for OSX")
-  ENDIF("${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/Library/Frameworks"
-    OR "${ALUT_FRAMEWORK_PATH_TMP}" STREQUAL "/System/Library/Frameworks"
-    )
+    SET(ALUT_LIBRARY_OPTIMIZED "-F${ALUT_FRAMEWORK_PATH_TMP} -framework OpenAL" CACHE STRING "OpenAL framework for OSX")
+  ENDIF()
   # Clear the temp variable so nobody can see it
   SET(ALUT_FRAMEWORK_PATH_TMP "" CACHE INTERNAL "")
 
-ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
-  FIND_LIBRARY(ALUT_LIBRARY
+ELSE()
+  FIND_LIBRARY(ALUT_LIBRARY_OPTIMIZED
     NAMES alut
-    PATHS
-    $ENV{ALUTDIR}/lib
-    $ENV{ALUTDIR}/libs
-    /usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
-    /usr/local/lib
-    /usr/lib
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    ../libs/freealut-1.1.0/src/.libs
-    ../libs/freealut-1.1.0/lib
-    ${DEPENDENCY_DIR}/freealut-1.1.0/lib
-    )
-ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
+    PATHS $ENV{ALUTDIR}
+    PATH_SUFFIXES lib libs
+  )
+  FIND_LIBRARY(ALUT_LIBRARY_DEBUG
+    NAMES alutd alut_d alutD alut_D
+    PATHS $ENV{ALUTDIR}
+    PATH_SUFFIXES lib libs
+  )
+ENDIF()
 
-SET (ALUT_FOUND "NO")
-IF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-  SET (ALUT_FOUND "YES")
-  IF (NOT ALUT_FIND_QUIETLY)
-    MESSAGE (STATUS "FreeAlut was found.")
-    IF (VERBOSE_FIND)
-      MESSAGE (STATUS "  include path: ${ALUT_INCLUDE_DIR}")
-      MESSAGE (STATUS "  library path: ${ALUT_LIBRARY}")
-      MESSAGE (STATUS "  libraries:    alut")
-    ENDIF (VERBOSE_FIND)
-  ENDIF (NOT ALUT_FIND_QUIETLY)
-ELSE (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
-  IF (NOT ALUT_INCLUDE_DIR)
-    MESSAGE (SEND_ERROR "FreeAlut include path was not found.")
-  ENDIF (NOT ALUT_INCLUDE_DIR)
-  IF (NOT ALUT_LIBRARY)
-    MESSAGE (SEND_ERROR "FreeAlut library was not found.")
-  ENDIF (NOT ALUT_LIBRARY)
-ENDIF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+# Handle the REQUIRED argument and set ALUT_FOUND
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(ALUT DEFAULT_MSG
+    ALUT_LIBRARY_OPTIMIZED
+    ALUT_INCLUDE_DIR
+)
 
+# Collect optimized and debug libraries
+HANDLE_LIBRARY_TYPES(ALUT)
 
+MARK_AS_ADVANCED(
+    ALUT_INCLUDE_DIR
+    ALUT_LIBRARY_OPTIMIZED
+    ALUT_LIBRARY_DEBUG
+)

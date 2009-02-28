@@ -109,8 +109,8 @@ bool Gamestate::collectData(int id, uint8_t mode)
   ObjectList<Synchronisable>::iterator it;
   for(it = ObjectList<Synchronisable>::begin(); it; ++it){
     
-#ifndef NDEBUG
     tempsize=it->getSize(id, mode);
+#ifndef NDEBUG
     if(currentsize+tempsize > size){
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
       // start allocate additional memory
@@ -183,6 +183,8 @@ bool Gamestate::spreadData(uint8_t mode)
     else
     {
       bool b = s->updateData(mem, mode);
+//      if(!b)
+//        COUT(0) << "data could not be updated" << endl;
       assert(b);
     }
   }

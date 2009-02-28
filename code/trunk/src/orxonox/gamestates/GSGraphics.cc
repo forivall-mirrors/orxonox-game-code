@@ -30,6 +30,8 @@
 #include "GSGraphics.h"
 
 #include <fstream>
+#include <boost/filesystem.hpp>
+
 #include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
@@ -42,8 +44,11 @@
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
+#include "SpecialConfig.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/String.h"
+#include "util/SubString.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -56,7 +61,6 @@
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "tools/WindowEventListener.h"
-#include "Settings.h"
 
 // for compatibility
 #include "GraphicsEngine.h"
@@ -91,8 +95,10 @@ namespace orxonox
             .description("Location of the resources file in the data path.");
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsFile_, "plugins.cfg")
-            .description("Location of the Ogre plugins file");
+        SetConfigValue(ogrePluginsFolder_, ORXONOX_OGRE_PLUGINS_FOLDER)
+            .description("Folder where the Ogre plugins are located.");
+        SetConfigValue(ogrePlugins_, ORXONOX_OGRE_PLUGINS)
+            .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
             .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
         SetConfigValue(ogreLogLevelTrivial_ , 5)
@@ -101,8 +107,6 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(defaultMasterKeybindings_, "def_masterKeybindings.ini")
-            .description("Filename of default master keybindings.");
     }
 
     void GSGraphics::enter()
@@ -114,8 +118,13 @@ namespace orxonox
 
         // Ogre setup procedure
         setupOgre();
+        // load all the required plugins for Ogre
+        loadOgrePlugins();
+        // read resource declaration file
         this->declareResources();
-        this->loadRenderer();    // creates the render window
+        // Reads ogre config and creates the render window
+        this->loadRenderer();
+
         // TODO: Spread this so that this call only initialises things needed for the Console and GUI
         this->initialiseResources();
 
@@ -126,7 +135,7 @@ namespace orxonox
 
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
-        this->debugOverlay_ = new XMLFile(Settings::getDataPath() + "overlay/debug.oxo");
+        this->debugOverlay_ = new XMLFile((Core::getMediaPath() / "overlay" / "debug.oxo").file_string());
         Loader::open(debugOverlay_);
 
         // Calls the InputManager which sets up the input devices.
@@ -137,7 +146,7 @@ namespace orxonox
         inputManager_->initialise(windowHnd, renderWindow_->getWidth(), renderWindow_->getHeight(), true);
         // Configure master input state with a KeyBinder
         masterKeyBinder_ = new KeyBinder();
-        masterKeyBinder_->loadBindings("masterKeybindings.ini", defaultMasterKeybindings_);
+        masterKeyBinder_->loadBindings("masterKeybindings.ini");
         inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
 
         // Load the InGameConsole
@@ -199,12 +208,10 @@ namespace orxonox
 
         delete this->ogreRoot_;
 
-//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // delete the ogre log and the logManager (since we have created it).
         this->ogreLogger_->getDefaultLog()->removeListener(this);
         this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
         delete this->ogreLogger_;
-//#endif
 
         delete graphicsEngine_;
 
@@ -275,32 +282,6 @@ namespace orxonox
     {
         COUT(3) << "Setting up Ogre..." << std::endl;
 
-        // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
-//#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-        // create a new logManager
-        ogreLogger_ = new Ogre::LogManager();
-        COUT(4) << "Ogre LogManager created" << std::endl;
-
-        // create our own log that we can listen to
-        Ogre::Log *myLog;
-        if (this->ogreLogFile_ == "")
-            myLog = ogreLogger_->createLog("ogre.log", true, false, true);
-        else
-            myLog = ogreLogger_->createLog(this->ogreLogFile_, true, false, false);
-        COUT(4) << "Ogre Log created" << std::endl;
-
-        myLog->setLogDetail(Ogre::LL_BOREME);
-        myLog->addListener(this);
-//#endif
-
-        // Root will detect that we've already created a Log
-        COUT(4) << "Creating Ogre Root..." << std::endl;
-
-        if (ogrePluginsFile_ == "")
-        {
-            COUT(2) << "Warning: Ogre plugins file set to \"\". Defaulting to plugins.cfg" << std::endl;
-            ModifyConfigValue(ogrePluginsFile_, tset, "plugins.cfg");
-        }
         if (ogreConfigFile_ == "")
         {
             COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
@@ -312,32 +293,50 @@ namespace orxonox
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
+        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() / this->ogreConfigFile_);
+        boost::filesystem::path ogreLogFilepath(Core::getLogPath() / this->ogreLogFile_);
+
+        // create a new logManager
+        // Ogre::Root will detect that we've already created a Log
+        ogreLogger_ = new Ogre::LogManager();
+        COUT(4) << "Ogre LogManager created" << std::endl;
+
+        // create our own log that we can listen to
+        Ogre::Log *myLog;
+        myLog = ogreLogger_->createLog(ogreLogFilepath.file_string(), true, false, false);
+        COUT(4) << "Ogre Log created" << std::endl;
+
+        myLog->setLogDetail(Ogre::LL_BOREME);
+        myLog->addListener(this);
+
+        COUT(4) << "Creating Ogre Root..." << std::endl;
+
         // check for config file existence because Ogre displays (caught) exceptions if not
-        std::ifstream probe;
-        probe.open(ogreConfigFile_.c_str());
-        if (!probe)
+        if (!boost::filesystem::exists(ogreConfigFilepath))
         {
             // create a zero sized file
             std::ofstream creator;
-            creator.open(ogreConfigFile_.c_str());
+            creator.open(ogreConfigFilepath.file_string().c_str());
             creator.close();
         }
-        else
-            probe.close();
 
-        ogreRoot_ = new Ogre::Root(ogrePluginsFile_, ogreConfigFile_, ogreLogFile_);
-
-#if 0 // Ogre 1.4.3 doesn't yet support setDebugOutputEnabled(.)
-#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
-        // tame the ogre ouput so we don't get all the mess in the console
-        Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
-        defaultLog->setDebugOutputEnabled(false);
-        defaultLog->setLogDetail(Ogre::LL_BOREME);
-        defaultLog->addListener(this);
-#endif
-#endif
+        // Leave plugins file empty. We're going to do that part manually later
+        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.file_string(), ogreLogFilepath.file_string());
 
         COUT(3) << "Ogre set up done." << std::endl;
+    }
+
+    void GSGraphics::loadOgrePlugins()
+    {
+        // just to make sure the next statement doesn't segfault
+        if (ogrePluginsFolder_ == "")
+            ogrePluginsFolder_ = ".";
+
+        boost::filesystem::path folder(ogrePluginsFolder_);
+        // Do some SubString magic to get the comma separated list of plugins
+        SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
+        for (unsigned int i = 0; i < plugins.size(); ++i)
+            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
     }
 
     void GSGraphics::declareResources()
@@ -356,7 +355,7 @@ namespace orxonox
         Ogre::ConfigFile cf;
         try
         {
-            cf.load(Settings::getDataPath() + resourceFile_);
+            cf.load((Core::getMediaPath() / resourceFile_).file_string());
         }
         catch (...)
         {
@@ -382,7 +381,7 @@ namespace orxonox
                     archName = i->second; // name (and location) of archive
 
                     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                        std::string(Settings::getDataPath() + archName), typeName, secName);
+                        (Core::getMediaPath() / archName).directory_string(), typeName, secName);
                 }
             }
             catch (Ogre::Exception& ex)

@@ -41,17 +41,22 @@
 #include <CEGUISystem.h>
 #include "core/input/InputInterfaces.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+// Forward declaration
+namespace CEGUI { class DefaultLogger; }
+
+// tolua_begin
+namespace orxonox
+{
     /**
     @brief
         Provides a simple interface to CEGUI with tolua methods and console commands
     */
-    class _OrxonoxExport GUIManager : public KeyHandler, public MouseHandler
-    /*
-    class GUIManager { // tolua_export
-    */
+    class _OrxonoxExport GUIManager
+// tolua_end
+        : public KeyHandler, public MouseHandler
+// tolua_begin
     {
+// tolua_end
     public:
         enum State
         {
@@ -116,6 +121,7 @@ namespace orxonox // tolua_export
         CEGUI::OgreCEGUIRenderer* guiRenderer_;
         CEGUI::ResourceProvider*  resourceProvider_;
         CEGUI::LuaScriptModule*   scriptModule_;
+        CEGUI::DefaultLogger*     ceguiLogger_;
         CEGUI::System*            guiSystem_;
         CEGUI::Imageset*          backgroundImage_;
         lua_State*                luaState_;

@@ -32,7 +32,9 @@
 */
 
 #include "BaseObject.h"
-#include "tinyxml/tinyxml.h"
+
+#include <tinyxml/tinyxml.h>
+
 #include "CoreIncludes.h"
 #include "EventIncludes.h"
 #include "Functor.h"

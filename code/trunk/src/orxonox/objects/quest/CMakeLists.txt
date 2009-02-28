@@ -1,4 +1,4 @@
-SET( SRC_FILES
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   AddQuest.cc
   AddQuestHint.cc
   AddReward.cc
@@ -17,5 +17,3 @@ SET( SRC_FILES
   QuestManager.cc
   Rewardable.cc
 )
-
-ADD_SOURCE_FILES(SRC_FILES)

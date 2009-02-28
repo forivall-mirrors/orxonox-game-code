@@ -32,7 +32,9 @@
 */
 
 #include "OutputHandler.h"
-#include <time.h>
+
+#include <ctime>
+#include <cstdlib>
 
 namespace orxonox
 {
@@ -40,11 +42,23 @@ namespace orxonox
         @brief Constructor: Opens the logfile and writes the first line.
         @param logfilename The name of the logfile
     */
-    OutputHandler::OutputHandler(const std::string& logfilename)
+    OutputHandler::OutputHandler()
     {
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        char* pTempDir = getenv("TEMP");
+        this->logfilename_ = std::string(pTempDir) + "/orxonox.log";
+#else
+        this->logfilename_ = "/tmp/orxonox.log";
+#endif
+#ifdef NDEBUG
+        this->softDebugLevel_[LD_All] = this->softDebugLevel_[LD_Logfile] = 2;
+        this->softDebugLevel_[LD_Console] = this->softDebugLevel_[LD_Shell] = 1;
+#else
+        this->softDebugLevel_[LD_All] = this->softDebugLevel_[LD_Logfile] = 3;
+        this->softDebugLevel_[LD_Console] = this->softDebugLevel_[LD_Shell] = 2;
+#endif
+
         this->outputBuffer_ = &this->fallbackBuffer_;
-        this->softDebugLevel_[0] = this->softDebugLevel_[1] = this->softDebugLevel_[2] = this->softDebugLevel_[3] = 2;
-        this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
 
         time_t rawtime;
@@ -52,7 +66,7 @@ namespace orxonox
         time(&rawtime);
         timeinfo = localtime(&rawtime);
 
-        this->logfile_ << "Started log at " << asctime(timeinfo) << std::endl;
+        this->logfile_ << "Started log on " << asctime(timeinfo) << std::endl;
         this->logfile_.flush();
     }
 
@@ -71,7 +85,7 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::getOutStream()
     {
-        static OutputHandler orxout("orxonox.log");
+        static OutputHandler orxout;
         return orxout;
     }
 
@@ -108,6 +122,23 @@ namespace orxonox
             buffer->getStream() >> this->outputBuffer_->getStream().rdbuf();
             this->outputBuffer_ = buffer;
         }
+    }
+
+    /**
+        @brief Sets the path where to create orxonox.log
+        @param Path string with trailing slash
+    */
+    void OutputHandler::setLogPath(const std::string& path)
+    {
+        OutputHandler::getOutStream().logfile_.close();
+        // store old content
+        std::ifstream old;
+        old.open(OutputHandler::getOutStream().logfilename_.c_str());
+        OutputHandler::getOutStream().logfilename_ = path + "orxonox.log";
+        OutputHandler::getOutStream().logfile_.open(OutputHandler::getOutStream().logfilename_.c_str(), std::fstream::out);
+        OutputHandler::getOutStream().logfile_ << old.rdbuf();
+        old.close();
+        OutputHandler::getOutStream().logfile_.flush();
     }
 
     /**

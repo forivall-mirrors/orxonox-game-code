@@ -13,7 +13,7 @@
 */
 
 #include "tolua++.h"
-#include "lua/lauxlib.h"
+#include "lauxlib.h"
 
 #include <stdlib.h>
 

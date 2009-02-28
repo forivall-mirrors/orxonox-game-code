@@ -1,4 +1,23 @@
-SET(CORE_SRC_FILES
+ #
+ #             ORXONOX - the hottest 3D action shooter ever to exist
+ #                             > www.orxonox.net <
+ #
+ #        This program is free software; you can redistribute it and/or
+ #         modify it under the terms of the GNU General Public License
+ #        as published by the Free Software Foundation; either version 2
+ #            of the License, or (at your option) any later version.
+ #
+ #       This program is distributed in the hope that it will be useful,
+ #        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #                 GNU General Public License for more details.
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #      with this program; if not, write to the Free Software Foundation,
+ #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ #
+
+SET_SOURCE_FILES(CORE_SRC_FILES
   Clock.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
@@ -40,34 +59,29 @@ SET(CORE_SRC_FILES
   Shell.cc
   TclBind.cc
   TclThreadManager.cc
-
-  tolua/tolua_bind.cc
 )
+ADD_SUBDIRECTORY(input)
+GET_ALL_HEADER_FILES(CORE_HDR_FILES)
+SET(CORE_FILES ${CORE_SRC_FILES} ${CORE_HDR_FILES})
 
-ADD_SOURCE_DIRECTORY(CORE_SRC_FILES input)
+GENERATE_SOURCE_GROUPS(${CORE_FILES})
+GENERATE_TOLUA_BINDINGS(Core CORE_FILES INPUTFILES LuaBind.h CommandExecutor.h)
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.h
-  COMMAND ${TOLUA_EXE} -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
-  DEPENDS
-    tolua_orxonox
-    tolua/tolua.pkg
-    LuaBind.h
-    CommandExecutor.h
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
-)
+ADD_LIBRARY(core SHARED ${CORE_FILES})
 
-ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
-
+SET_TARGET_PROPERTIES(core PROPERTIES DEFINE_SYMBOL "CORE_SHARED_BUILD")
 TARGET_LINK_LIBRARIES(core
-  ${OGRE_LIBRARIES}
-  ${Boost_thread_LIBRARIES}
-  ${Boost_filesystem_LIBRARIES}
-  lua_orxonox
+  ${OGRE_LIBRARY}
+  ${Boost_THREAD_LIBRARY}
+  ${Boost_FILESYSTEM_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
+  ${Boost_DATE_TIME_LIBRARY} # MSVC only
+  ${LUA_LIBRARIES}
   cpptcl_orxonox
   ois_orxonox
-  tinyxml_orxonox
-  tolualib_orxonox
+  tinyxml++_orxonox
+  tolua++_orxonox
   util
 )
+
+ORXONOX_INSTALL(core)
