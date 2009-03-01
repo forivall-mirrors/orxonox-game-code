@@ -1,68 +1,98 @@
- #
- #             ORXONOX - the hottest 3D action shooter ever to exist
- #                             > www.orxonox.net <
- #
- #        This program is free software; you can redistribute it and/or
- #         modify it under the terms of the GNU General Public License
- #        as published by the Free Software Foundation; either version 2
- #            of the License, or (at your option) any later version.
- #
- #       This program is distributed in the hope that it will be useful,
- #        but WITHOUT ANY WARRANTY; without even the implied warranty of
- #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- #                 GNU General Public License for more details.
- #
- #   You should have received a copy of the GNU General Public License along
- #      with this program; if not, write to the Free Software Foundation,
- #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- #
-
-SET_SOURCE_FILES(NETWORK_SRC_FILES
-  ChatListener.cc
+SET( NETWORK_SRC_FILES
   Client.cc
   ClientConnection.cc
   ClientInformation.cc
-  ClientConnectionListener.cc
   ConnectionManager.cc
-  GamestateManager.cc
-  GamestateClient.cc
-  GamestateHandler.cc
+  GameStateManager.cc
+  GameStateClient.cc
   PacketBuffer.cc
+  PacketDecoder.cc
+  PacketGenerator.cc
   Server.cc
-  TrafficControl.cc
-  Host.cc
+  Synchronisable.cc
+  dummyserver3.cc
 )
-ADD_SUBDIRECTORY(packet)
-ADD_SUBDIRECTORY(synchronisable)
-GET_ALL_HEADER_FILES(NETWORK_HDR_FILES)
-SET(NETWORK_FILES ${NETWORK_SRC_FILES} ${NETWORK_HDR_FILES})
 
-GENERATE_SOURCE_GROUPS(${NETWORK_FILES})
+IF(WIN32)
+  ADD_LIBRARY( network ${NETWORK_SRC_FILES})
+ELSE(WIN32)
+  ADD_LIBRARY( network SHARED ${NETWORK_SRC_FILES})
+ENDIF(WIN32)
 
-ADD_LIBRARY(network SHARED ${NETWORK_FILES})
-SET_TARGET_PROPERTIES(network PROPERTIES DEFINE_SYMBOL "NETWORK_SHARED_BUILD")
-TARGET_LINK_LIBRARIES(network
+SET_TARGET_PROPERTIES( network PROPERTIES LINK_FLAGS "--no-undefined" )
+
+TARGET_LINK_LIBRARIES( network
   ${ZLIB_LIBRARY}
-  ${ENET_LIBRARY}
-  ${Boost_THREAD_LIBRARY}
-  util
+  ${ENet_LIBRARY}
+  ${Boost_thread_LIBRARIES}
   core
 )
 
-ORXONOX_INSTALL(network)
-
 # build those parts only on request.
 IF(NETWORK_TESTING_ENABLED)
-  ##### test for gamestate stuff #####
-  SET(TEST_SRC_FILES
-    ${NETWORK_SRC_FILES}
+  SET( CHATCLIENT_SRC_FILES
+    ClientConnection.cc
+    Client.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
+    PacketGenerator.cc
+    dummyclient3.cc
   )
-  ADD_EXECUTABLE(networktest ${TEST_SRC_FILES})
-  TARGET_LINK_LIBRARIES(networktest
-    ${OGRE_LIBRARY}
+
+  SET( CHATSERVER_SRC_FILES
+    ConnectionManager.cc
+    GameStateManager.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
+    PacketGenerator.cc
+    dummyserver3.cc
+  )
+
+  # chatserver for testing purposes
+  ADD_EXECUTABLE(chatserver ${CHATSERVER_SRC_FILES})
+  TARGET_LINK_LIBRARIES( chatserver
+    ${OGRE_LIBRARIES}
     network
-    ${ENET_LIBRARY}
+    core
+    #objects
+    ${ENet_LIBRARY}
     ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
   )
-  ##### end test for gamestate stuff #####
+
+  # chatclient for testing purpose
+  ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
+  TARGET_LINK_LIBRARIES( chatclient
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
+
+  # client for testing purpose
+  ADD_EXECUTABLE(client dummyclient2.cc)
+  TARGET_LINK_LIBRARIES( client
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
+
+  # server for testing purpose
+  ADD_EXECUTABLE(server dummyserver.cc)
+  TARGET_LINK_LIBRARIES( server
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
 ENDIF(NETWORK_TESTING_ENABLED)

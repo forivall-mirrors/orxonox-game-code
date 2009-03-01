@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -27,27 +26,30 @@
  */
 
 /*!
-    @file
-    @brief Declaration of the Tickable interface.
+    @file Tickable.h
+    @brief Definition of the Tickable interface.
 
     The Tickable interface provides a tick(dt) function, that gets called every frame.
     float dt is the time since the last frame in seconds.
 
     Attention:
     Classes derived from a Tickable that want to have a tick(dt) function on their part, MUST call the
-    parent::tick(dt) function explicitly in their implementation of tick(dt) because it's a virtual function.
+    parent::tick(dt) function explicit in their implementation of tick(dt) because it's a virtual function.
 */
 
 #ifndef _Tickable_H__
 #define _Tickable_H__
 
-#include "OrxonoxPrereqs.h"
+#include <OgreFrameListener.h>
 
-#include "core/OrxonoxClass.h"
-#include "core/Super.h"
+#include "../OrxonoxPrereqs.h"
+
+#include "../core/CoreIncludes.h"
 
 namespace orxonox
 {
+    class TickFrameListener; // Forward declaration
+
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
     class _OrxonoxExport Tickable : virtual public OrxonoxClass
     {
@@ -59,10 +61,27 @@ namespace orxonox
             virtual void tick(float dt) = 0;
 
         protected:
-            Tickable();
+            /**
+                @brief Constructor: Registers the object in the Tickable-list
+            */
+            Tickable() { RegisterRootObject(Tickable); }
     };
+    ExportAbstractClass(Tickable, Orxonox);
 
-    SUPER_FUNCTION(1, Tickable, tick, true);
+    //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.
+    class _OrxonoxExport TickFrameListener : public Ogre::FrameListener
+    {
+        private:
+            /** @brief Gets called before a frame gets rendered. */
+            bool frameStarted(const Ogre::FrameEvent &evt)
+            {
+                // Iterate through all Tickables and call their tick(dt) function
+                for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
+                    (it++)->tick(evt.timeSinceLastFrame);
+
+                return FrameListener::frameStarted(evt);
+            }
+    };
 }
 
 #endif /* _Tickable_H__ */

@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -27,19 +26,19 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
-*/
+ @file  AudioPrereqs.h
+ @brief Contains all the necessary forward declarations for all classes, structs and enums.
+ */
 
 #ifndef _AudioPrereqs_H__
 #define _AudioPrereqs_H__
 
-#include "OrxonoxConfig.h"
+#include "orxonox/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( AUDIO_STATIC_BUILD )
+#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( AUDIO_STATIC_BUILD )
 #  ifdef AUDIO_SHARED_BUILD
 #    define _AudioExport __declspec(dllexport)
 #  else
@@ -59,7 +58,7 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-namespace orxonox
+namespace audio
 {
   class AudioBuffer;
   class AudioManager;

@@ -1,30 +1,29 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver Scheuss, (C) 2007
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      Oliver Scheuss, (C) 2007
+*   Co-authors:
+*      ...
+*
+*/
 
 //
 // C++ Interface: ConnectionManager
@@ -37,22 +36,14 @@
 // Author:  Oliver Scheuss
 //
 
-#include "ConnectionManager.h"
-
 #include <iostream>
-#include <assert.h>
 // boost.thread library for multithreading support
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
 #include "core/CoreIncludes.h"
-#include "core/BaseObject.h"
-#include "core/Iterator.h"
-#include "util/Math.h"
-#include "util/Sleep.h"
 #include "ClientInformation.h"
-#include "synchronisable/Synchronisable.h"
-#include "packet/ClassID.h"
+#include "ConnectionManager.h"
 
 namespace std
 {
@@ -64,57 +55,44 @@ namespace std
   }
 }
 
-namespace orxonox
+namespace network
 {
-  //boost::thread_group network_threads;
+  boost::thread_group network_threads;
 
-  ConnectionManager *ConnectionManager::instance_=0;
-
-  ConnectionManager::ConnectionManager():receiverThread_(0){
-    assert(instance_==0);
-    instance_=this;
+  ConnectionManager::ConnectionManager(ClientInformation *head) {
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
-  }
-  boost::recursive_mutex ConnectionManager::enet_mutex;
-
-  ConnectionManager::ConnectionManager(int port){
-    assert(instance_==0);
-    instance_=this;
-    quit=false;
-    bindAddress.host = ENET_HOST_ANY;
-    bindAddress.port = port;
+    head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, const std::string& address) :receiverThread_(0) {
-    assert(instance_==0);
-    instance_=this;
+  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) {
     quit=false;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
+    head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, const char *address) : receiverThread_(0) {
-    assert(instance_==0);
-    instance_=this;
+  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head) {
     quit=false;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
+    head_ = head;
   }
 
-  ConnectionManager::~ConnectionManager(){
-    if(!quit)
-      quitListener();
-    instance_=0;
-  }
-
-
-  ENetEvent *ConnectionManager::getEvent(){
+  ENetPacket *ConnectionManager::getPacket(ENetAddress &address) {
     if(!buffer.isEmpty())
-      return buffer.pop();
+      return buffer.pop(address);
     else
       return NULL;
+  }
+
+  ENetPacket *ConnectionManager::getPacket(int &clientID) {
+    ENetAddress address;
+    ENetPacket *packet=getPacket(address);
+    ClientInformation *temp =head_->findClient(&address);
+    clientID=temp->getID();
+    return packet;
   }
 
   bool ConnectionManager::queueEmpty() {
@@ -122,155 +100,115 @@ namespace orxonox
   }
 
   void ConnectionManager::createListener() {
-    receiverThread_ = new boost::thread(boost::bind(&ConnectionManager::receiverThread, this));
-    //network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
-         //boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+    network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+    //     boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
     return;
   }
 
   bool ConnectionManager::quitListener() {
     quit=true;
-    //network_threads.join_all();
-    receiverThread_->join();
+    network_threads.join_all();
     return true;
   }
 
-
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
-    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-    if(enet_peer_send(peer, NETWORK_DEFAULT_CHANNEL, packet)!=0)
+    if(enet_peer_send(peer, head_->findClient(&(peer->address))->getID() , packet)!=0)
       return false;
     return true;
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID) {
-    ClientInformation *temp = ClientInformation::findClient(clientID);
-    if(!temp){
-      COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
+    if(enet_peer_send(head_->findClient(clientID)->getPeer(), clientID, packet)!=0)
       return false;
-    }
-    return addPacket(packet, temp->getPeer());
+    return true;
   }
 
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
-    if(!instance_)
-      return false;
-    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-    for(ClientInformation *i=ClientInformation::getBegin()->next(); i!=0; i=i->next()){
-      COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
-      if(enet_peer_send(i->getPeer(), 0, packet)!=0)
+    for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
+      if(enet_peer_send(i->getPeer(), i->getID(), packet)!=0)
         return false;
     }
     return true;
   }
 
-  // we actually dont need that function, because host_service does that for us
-  bool ConnectionManager::sendPackets() {
-    if(server==NULL || !instance_)
+  bool ConnectionManager::sendPackets(ENetEvent *event) {
+    if(server==NULL)
       return false;
-    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-    enet_host_flush(server);
-    lock.unlock();
-    return true;
+    if(enet_host_service(server, event, NETWORK_SEND_WAIT)>=0)
+      return true;
+    else
+      return false;
+  }
+
+  bool ConnectionManager::sendPackets() {
+    ENetEvent event;
+    if(server==NULL)
+      return false;
+    if(enet_host_service(server, &event, NETWORK_SEND_WAIT)>=0)
+      return true;
+    else
+      return false;
   }
 
   void ConnectionManager::receiverThread() {
     // what about some error-handling here ?
-    ENetEvent *event;
+    enet_initialize();
     atexit(enet_deinitialize);
-    { //scope of the mutex
-      boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-      enet_initialize();
-      server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
-      lock.unlock();
-    }
+    ENetEvent event;
+    server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
     if(server==NULL){
       // add some error handling here ==========================
       quit=true;
       return;
     }
 
-    event = new ENetEvent;
     while(!quit){
-      { //mutex scope
-        boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-        if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
-          // we should never reach this point
-          quit=true;
-          continue;
-          // add some error handling here ========================
-        }
-        lock.unlock();
+      if(enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT)<0){
+        // we should never reach this point
+        quit=true;
+        // add some error handling here ========================
       }
-      switch(event->type){
+      switch(event.type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          //COUT(3) << "adding event_type_connect to queue" << std::endl;
-        case ENET_EVENT_TYPE_DISCONNECT:
-          //addClient(event);
-          //this is a workaround to ensure thread safety
-          //COUT(5) << "Con.Man: connection event has occured" << std::endl;
-          //break;
+          addClient(&event);
+          break;
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
-          //COUT(5) << "Con.Man: receive event has occured" << std::endl;
-          // only add, if client has connected yet and not been disconnected
-          //if(head_->findClient(&event->peer->address))
-            processData(event);
-            event = new ENetEvent;
-//           else
-//             COUT(3) << "received a packet from a client we don't know" << std::endl;
+          processData(&event);
           break;
-        //case ENET_EVENT_TYPE_DISCONNECT:
-          //clientDisconnect(event->peer);
-          //break;
+        case ENET_EVENT_TYPE_DISCONNECT:
+          // add some error/log handling here
+          clientDisconnect(event.peer);
+          break;
         case ENET_EVENT_TYPE_NONE:
-          //receiverThread_->yield();
-          msleep(1);
           break;
       }
-//       usleep(100);
-      //receiverThread_->yield(); //TODO: find apropriate
     }
     disconnectClients();
     // if we're finishied, destroy server
-    {
-      boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-      enet_host_destroy(server);
-      lock.unlock();
-    }
+    enet_host_destroy(server);
   }
 
-  //### added some bugfixes here, but we cannot test them because
-  //### the server crashes everytime because of some gamestates
-  //### (trying to resolve that now)
   void ConnectionManager::disconnectClients() {
     ENetEvent event;
-    ClientInformation *temp = ClientInformation::getBegin()->next();
+    ClientInformation *temp = head_->next();
     while(temp!=0){
-      {
-        boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-        enet_peer_disconnect(temp->getPeer(), 0);
-        lock.unlock();
-      }
+      enet_peer_disconnect(temp->getPeer(), 0);
       temp = temp->next();
     }
-    //bugfix: might be the reason why server crashes when clients disconnects
-    temp = ClientInformation::getBegin()->next();
-    boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-    while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) >= 0){
+    temp = temp->next();
+    while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
       switch (event.type)
       {
-      case ENET_EVENT_TYPE_NONE: break;
-      case ENET_EVENT_TYPE_CONNECT: break;
+      case ENET_EVENT_TYPE_NONE:
+      case ENET_EVENT_TYPE_CONNECT:
       case ENET_EVENT_TYPE_RECEIVE:
         enet_packet_destroy(event.packet);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        COUT(4) << "disconnecting all clients" << std::endl;
-        if(ClientInformation::findClient(&(event.peer->address)))
-          delete ClientInformation::findClient(&(event.peer->address));
-        //maybe needs bugfix: might also be a reason for the server to crash
+        std::cout << "disconnecting client" << std::endl;
+        delete head_->findClient(&(event.peer->address));
         temp = temp->next();
         break;
       }
@@ -284,58 +222,62 @@ namespace orxonox
     return buffer.push(event);
   }
 
+  //bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
+  //  return clientDisconnect(*peer);
+  //}
 
+  bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
+    return head_->removeClient(peer);
+  }
+
+  bool ConnectionManager::addClient(ENetEvent *event) {
+    ClientInformation *temp = head_->insertBack(new ClientInformation);
+    if(temp->prev()->head)
+      temp->setID(1);
+    else
+      temp->setID(temp->prev()->getID()+1);
+    temp->setPeer(event->peer);
+    std::cout << "added client id: " << temp->getID() << std::endl;
+    syncClassid(temp->getID());
+    temp->setSynched(true);
+    return true;
+  }
 
   int ConnectionManager::getClientID(ENetPeer peer) {
     return getClientID(peer.address);
   }
 
   int ConnectionManager::getClientID(ENetAddress address) {
-    return ClientInformation::findClient(&address)->getID();
+    return head_->findClient(&address)->getID();
   }
 
   ENetPeer *ConnectionManager::getClientPeer(int clientID) {
-    return ClientInformation::findClient(clientID)->getPeer();
+    return head_->findClient(clientID)->getPeer();
   }
 
-  /**
-   *
-   * @param clientID
-   */
-  void ConnectionManager::syncClassid(unsigned int clientID) {
-    unsigned int network_id=0, failures=0;
+  void ConnectionManager::syncClassid(int clientID) {
+    int i=0;
     std::string classname;
-    Identifier *id;
-    std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
-    while(it != Factory::getFactoryMapEnd()){
-      id = (*it).second;
-      if(id == NULL)
-        continue;
-      classname = id->getName();
-      network_id = id->getNetworkID();
-      if(network_id==0)
-        COUT(3) << "we got a null class id: " << id->getName() << std::endl;
-      COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
-
-      packet::ClassID *classid = new packet::ClassID( network_id, classname );
-      classid->setClientID(clientID);
-      while(!classid->send() && failures < 10){
-        failures++;
+    bool abort=false;
+    orxonox::Identifier *id;
+    while(!abort){
+      id = ID(i);
+      std::cout << "syncid: " << i << ", ID(id): " << id << std::endl;
+      if(id == NULL){
+        if(i!=0)
+          abort=true;
+        else{
+          ++i;
+          continue;
+        }
       }
-      ++it;
+      else{
+        classname = id->getName();
+        addPacket(packet_gen.clid( i, classname ),clientID);
+      }
+      ++i;
     }
-    //sendPackets();
-    COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
+    sendPackets();
   }
-
-
-  void ConnectionManager::disconnectClient(ClientInformation *client){
-    {
-      boost::recursive_mutex::scoped_lock lock(ConnectionManager::enet_mutex);
-      enet_peer_disconnect(client->getPeer(), 0);
-      lock.unlock();
-    }
-  }
-
 
 }

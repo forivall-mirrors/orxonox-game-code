@@ -1,35 +1,7 @@
-/*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      ...
- *   Co-authors:
- *      ...
- *
- */
-
 //
 // C++ Interface: ClientInformation
 //
-// Description:
+// Description: 
 //
 //
 // Author:  <>, (C) 2007
@@ -40,80 +12,56 @@
 #ifndef _ClientInformation_H__
 #define _ClientInformation_H__
 
+#include <enet/enet.h>
+
 #include "NetworkPrereqs.h"
 
-#include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
+#define GAMESTATEID_INITIAL -1
 
-
-// WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
-
-namespace orxonox
+namespace network
 {
-
   /**
   * This class implements a list for client informations
   * @author Oliver Scheuss
   */
-  class _NetworkExport ClientInformation{
+  class ClientInformation{
   public:
     ClientInformation();
+    ClientInformation(bool head);
     //   ClientInformation(ClientInformation *prev, ClientInformation *next);
     //   ClientInformation(ClientInformation *prev);
     ~ClientInformation();
     ClientInformation *next();
     ClientInformation *prev();
-    static ClientInformation *insertBack(ClientInformation *ins);
-
-    // set functions
-    void setID(int clientID);
-    bool setPeer(ENetPeer *peer);
-    bool setGamestateID(int id);
-    bool setPartialGamestateID(int id);
-    inline void setShipID(unsigned int id){ShipID_=id;}
-
-    // get functions
-    inline unsigned int getShipID(){return ShipID_;}
-    unsigned int getID();
-    unsigned int getGamestateID();
-    unsigned int getPartialGamestateID();
-    ENetPeer *getPeer();
-
-    int getFailures();
-    void addFailure();
-    void resetFailures();
-    enet_uint32 getRTT();
-    double getPacketLoss();
-
-    static bool removeClient(unsigned int clientID);
-    static bool removeClient(ENetPeer *peer);
-    static ClientInformation *findClient(unsigned int clientID, bool look_backwards=false);
-    static ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
-    static ClientInformation *getBegin(){return head_;}
-
-    bool setSynched(bool s);
-    bool getSynched();
-
-
-  private:
-    static ClientInformation *head_;
-
     bool setNext(ClientInformation *next);
     bool setPrev(ClientInformation *prev);
     ClientInformation *insertAfter(ClientInformation *ins);
     ClientInformation *insertBefore(ClientInformation *ins);
+    ClientInformation *insertBack(ClientInformation *ins);
+    void setID(int clientID);
+    void setPeer(ENetPeer *peer);
+    void setGamestateID(int id);
+    int getID();
+    ENetPeer *getPeer();
+    int getGamestateID();
+    bool removeClient(int clientID);
+    bool removeClient(ENetPeer *peer);
+    ClientInformation *findClient(int clientID, bool look_backwards=false);
+    ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
 
+    void setSynched(bool s);
+    bool getSynched();
+
+    bool head;
+
+  private:
     ClientInformation *preve;
     ClientInformation *nexte;
     //actual information:
     ENetPeer *peer_;
-    unsigned int clientID_;
-    unsigned int gamestateID_;
-    unsigned int partialGamestateID_;
-    unsigned int ShipID_;   // this is the unique objectID
+    int clientID_;
+    int gamestateID_;
     bool synched_;
-    unsigned short failures_;
-
   };
 
 }

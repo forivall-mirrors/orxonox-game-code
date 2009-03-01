@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -20,126 +19,122 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *      Nicolas Perrenoud <nicolape@ee.ethz.ch>
  *   Co-authors:
  *      ...
  *
  */
 
 #include "AudioManager.h"
+#include "core/Debug.h"
 
-#include <cstdlib>
-#include <AL/alut.h>
-
-#include "util/Debug.h"
-#include "AudioBuffer.h"
-#include "AudioSource.h"
-#include "AudioStream.h"
-
-namespace orxonox
+namespace audio
 {
-    AudioManager::AudioManager()
-    {
-        ambientPath = "audio/ambient";
+	AudioManager::AudioManager()
+	{
+    ambientPath = "audio/ambient";
 
-        alutInit(NULL, 0);
-    }
+    alutInit(NULL, 0);
 
-    AudioManager::~AudioManager()
-    {
-        for (unsigned int i=0;i<bgSounds.size();i++)
-        {
-            bgSounds[i]->release();
-        }
-        alutExit();
-    }
 
-    void AudioManager::ambientStart()
-    {
+	}
+
+	AudioManager::~AudioManager()
+	{
+		for (unsigned int i=0;i<=bgSounds.size();i++)
+		{
+			bgSounds[i].release();
+		}
+		alutExit();
+	}
+
+	void AudioManager::ambientStart()
+	{
 // 		currentBgSound = 0;
-        if (bgSounds.size() > 0)
-        {
-            currentBgSound = rand() % bgSounds.size();
-            if(!bgSounds[currentBgSound]->playback())
-            {
-                COUT(2) << "AudioManager: Ogg refused to play." << std::endl;
-            }
-            else
-            {
-                COUT(3) << "Info: Started playing background sound" << std::endl;
-            }
-        }
-    }
+    currentBgSound = rand() % bgSounds.size();
+		if (bgSounds.size() > 0)
+		{
+			if(!bgSounds[currentBgSound].playback())
+			{
+    		orxonox::Error("Ogg refused to play.");
+			}
+			else
+			{
+				COUT(3) << "Info: Started playing background sound" << std::endl;
+			}
+		}
 
-    void AudioManager::ambientStop()
-    {
-        COUT(3) << "Info: Stopped playing background sound" << std::endl;
-    }
+	}
 
-    void AudioManager::ambientAdd(std::string file)
-    {
-        std::string path = ambientPath + "/" + file + ".ogg";
-        AudioStream* tmp = new AudioStream(path);
-        tmp->open();
-        if (tmp->isLoaded())
-        {
-            bgSounds.push_back(tmp);
-            COUT(3) << "Info: Added background sound " << file << std::endl;
-        }
-    }
+	void AudioManager::ambientStop()
+	{
+		COUT(3) << "Info: Stopped playing background sound" << std::endl;
+	}
 
-    void AudioManager::tick(float dt)
-    {
-        if (bgSounds.size() > 0)
-        {
-            if (bgSounds[currentBgSound]->isLoaded())
-            {
-                bool playing = bgSounds[currentBgSound]->update();
-                if (!bgSounds[currentBgSound]->playing() && playing)
-                {
-                    if (!bgSounds[currentBgSound]->playback())
-                        COUT(2) << "AudioManager: Ogg abruptly stopped." << std::endl;
-                    else
-                        COUT(2) << "AudioManager: Ogg stream was interrupted." << std::endl;
+	void AudioManager::ambientAdd(std::string file)
+	{
+    std::string path = ambientPath + "/" + file + ".ogg";
+		AudioStream tmp(path);
+		tmp.open();
+		if (tmp.isLoaded())
+		{
+			bgSounds.push_back(tmp);
+			COUT(3) << "Info: Added background sound " << file << std::endl;
+		}
+	}
 
-                }
-                if (!playing)
-                {
-//                    if (currentBgSound < bgSounds.size()-1)
-//                    {
-//                        currentBgSound++;
-//                    }
-//                    else
-//                    {
-//                        currentBgSound=0;
-//                    }
-                    // switch to next sound in list/array
-                    currentBgSound = ++currentBgSound % bgSounds.size();
+	void AudioManager::update()
+	{
+		if (bgSounds.size() > 0)
+		{
+			if (bgSounds[currentBgSound].isLoaded())
+			{
+				bool playing = bgSounds[currentBgSound].update();
+		    if(!bgSounds[currentBgSound].playing() && playing)
+		    {
+		        if(!bgSounds[currentBgSound].playback())
+		            orxonox::Error("Ogg abruptly stopped.");
+		        else
+		            orxonox::Error("Ogg stream was interrupted.");
 
-                    if (!bgSounds[currentBgSound]->isLoaded())
-                    {
-                        bgSounds[currentBgSound]->release();
-                        bgSounds[currentBgSound]->open();
-                    }
-                    bgSounds[currentBgSound]->playback();
-                    COUT(3) << "Info: Playing next background sound" << std::endl;
-                }
-            }
-        }
-    }
+		    }
+				if (!playing)
+				{
+// 					if (currentBgSound < bgSounds.size()-1)
+// 					{
+// 						currentBgSound++;
+// 					}
+// 					else
+// 					{
+// 						currentBgSound=0;
+// 					}
+          // switch to next sound in list/array
+          currentBgSound = ++currentBgSound % bgSounds.size();
 
-    void AudioManager::setPos(std::vector<float> newPosition)
-    {
+					if (!bgSounds[currentBgSound].isLoaded())
+					{
+						bgSounds[currentBgSound].release();
+						bgSounds[currentBgSound].open();
+					}
+					bgSounds[currentBgSound].playback();
+					COUT(3) << "Info: Playing next background sound" << std::endl;
+				}
+			}
+		}
+	}
 
-    }
+	void AudioManager::setPos(std::vector<float> newPosition)
+	{
 
-    void AudioManager::setSpeed(std::vector<float> newSpeed)
-    {
+	}
 
-    }
+	void AudioManager::setSpeed(std::vector<float> newSpeed)
+	{
 
-    void AudioManager::setOri(std::vector<float> at, std::vector<float> up)
-    {
+	}
 
-    }
+	void AudioManager::setOri(std::vector<float> at, std::vector<float> up)
+	{
+
+	}
 }

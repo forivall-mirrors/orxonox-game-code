@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -20,7 +19,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *      Nicolas Perrenoud <nicolape@ee.ethz.ch>
  *   Co-authors:
  *      ...
  *
@@ -28,31 +27,31 @@
 
 #include "AudioBuffer.h"
 
-namespace orxonox
+namespace audio
 {
-    AudioBuffer::AudioBuffer(std::string filename)
-    {
-        // Load wav data into buffers.
-        alGenBuffers(1, &buffer);
+	AudioBuffer::AudioBuffer(std::string fileName)
+	{
+		// Load wav data into buffers.
+		alGenBuffers(1, &buffer);
 
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
+		if(alGetError() != AL_NO_ERROR)
+			loaded=AL_FALSE;
 
-        //FIXME deprecated; seems unneeded
-//        alutLoadWAVFile((ALbyte*)filename.c_str(), &format, &data, &size, &freq, &loop);
-        alBufferData(buffer, format, data, size, freq);
-        //FIXME deprecated; seems unneeded
-//        alutUnloadWAV(format, data, size, freq);
+    //FIXME deprecated; seems unneeded
+// 		alutLoadWAVFile((ALbyte*)fileName.c_str(), &format, &data, &size, &freq, &loop);
+		alBufferData(buffer, format, data, size, freq);
+    //FIXME deprecated; seems unneeded
+// 		alutUnloadWAV(format, data, size, freq);
 
-        // Do another error check and return.
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
-        else
-              loaded=AL_TRUE;
-    }
+		// Do another error check and return.
+		if(alGetError() != AL_NO_ERROR)
+			loaded=AL_FALSE;
+    else
+		  loaded=AL_TRUE;
+	}
 
-    AudioBuffer::~AudioBuffer()
-    {
+	AudioBuffer::~AudioBuffer()
+	{
 
-    }
+	}
 }

@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -20,7 +19,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oli Scheuss
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -29,65 +28,149 @@
 #ifndef _Test_H__
 #define _Test_H__
 
-#include "OrxonoxPrereqs.h"
 #include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
-
-
-typedef int TYPE;
-typedef unsigned int UTYPE;
-
+#include "../core/CoreIncludes.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport Test: public BaseObject, public Synchronisable
-  {
-    public:
-      Test(BaseObject* creator);
-      virtual ~Test();
+    class Interface1 : virtual public OrxonoxClass
+    {
+        protected:
+            Interface1() { RegisterRootObject(Interface1); }
+    };
 
-      void setConfigValues();
-      void registerVariables();
+    class Interface2 : virtual public OrxonoxClass
+    {
+        protected:
+            Interface2() { RegisterRootObject(Interface2); }
+    };
 
+    class A1 : public BaseObject
+    {
+        public:
+            A1() { RegisterObject(A1); }
+    };
 
-      //unsigned functions
-      void setU1(UTYPE value){ u1 = value; }
-      void setU2(UTYPE value){ u2 = value; }
-      void setU3(UTYPE value){ u3 = value; }
-      void setU4(UTYPE value){ u4 = value; }
-      void checkU1();
-      void checkU2();
-      void checkU3();
-      void checkU4();
-      
-      //signed functions
-      void setS1(TYPE value){ s1 = value; }
-      void setS2(TYPE value){ s2 = value; }
-      void setS3(TYPE value){ s3 = value; }
-      void setS4(TYPE value){ s4 = value; }
-      void checkS1();
-      void checkS2();
-      void checkS3();
-      void checkS4();
-      
-      static void printV1(){ instance_->checkU1(); }
-      static void printV2(){ instance_->checkU2(); }
-      static void printV3(){ instance_->checkU3(); }
-      static void printV4(){ instance_->checkU4(); }
+    class A2 : public BaseObject
+    {
+        public:
+            A2() { RegisterObject(A2); }
+    };
 
-    private:
-      UTYPE u1;
-      UTYPE u2;
-      UTYPE u3;
-      UTYPE u4;
-      
-      TYPE s1;
-      TYPE s2;
-      TYPE s3;
-      TYPE s4;
-      
-      static Test* instance_;
-  };
+    class A3: public BaseObject, public Interface1
+    {
+        public:
+            A3() { RegisterObject(A3); }
+    };
+
+    class A1B1 : public A1
+    {
+        public:
+            A1B1() { RegisterObject(A1B1); }
+    };
+
+    class A1B2 : public A1
+    {
+        public:
+            A1B2() { RegisterObject(A1B2); }
+    };
+
+    class A2B1 : public A2
+    {
+        public:
+            A2B1() { RegisterObject(A2B1); }
+    };
+
+    class A2B2 : public A2, Interface1
+    {
+        public:
+            A2B2() { RegisterObject(A2B2); }
+    };
+
+    class A3B1 : public A3
+    {
+        public:
+            A3B1() { RegisterObject(A3B1); }
+    };
+
+    class A3B2 : public A3, Interface2
+    {
+        public:
+            A3B2() { RegisterObject(A3B2); }
+    };
+
+    class A1B1C1 : public A1B1
+    {
+        public:
+            A1B1C1() { RegisterObject(A1B1C1); }
+    };
+
+    class A1B1C2 : public A1B1
+    {
+        public:
+            A1B1C2() { RegisterObject(A1B1C2); }
+    };
+
+    class A1B2C1 : public A1B2
+    {
+        public:
+            A1B2C1() { RegisterObject(A1B2C1); }
+    };
+
+    class A2B1C1 : public A2B1, Interface2
+    {
+        public:
+            A2B1C1() { RegisterObject(A2B1C1); }
+    };
+
+    class A2B2C1 : public A2B2
+    {
+        public:
+            A2B2C1() { RegisterObject(A2B2C1); }
+    };
+
+    class A3B1C1 : public A3B1
+    {
+        public:
+            A3B1C1() { RegisterObject(A3B1C1); }
+    };
+
+    class A3B1C2 : public A3B1, Interface2
+    {
+        public:
+            A3B1C2() { RegisterObject(A3B1C2); }
+    };
+
+    class A3B2C1 : public A3B2
+    {
+        public:
+            A3B2C1() { RegisterObject(A3B2C1); }
+    };
+
+    class A3B2C2 : public A3B2
+    {
+        public:
+            A3B2C2() { RegisterObject(A3B2C2); }
+    };
+
+    CreateFactory(A1);
+    CreateFactory(A2);
+    CreateFactory(A3);
+    CreateFactory(A1B1);
+    CreateFactory(A1B2);
+    CreateFactory(A2B1);
+    CreateFactory(A2B2);
+    CreateFactory(A3B1);
+    CreateFactory(A3B2);
+    CreateFactory(A1B1C1);
+    CreateFactory(A1B1C2);
+    CreateFactory(A1B2C1);
+    CreateFactory(A2B1C1);
+    CreateFactory(A2B2C1);
+    CreateFactory(A3B1C1);
+    CreateFactory(A3B1C2);
+    CreateFactory(A3B2C1);
+    CreateFactory(A3B2C2);
 }
 
-#endif /* _Test_H__ */
+#endif

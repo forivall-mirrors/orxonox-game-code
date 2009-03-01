@@ -1,66 +1,82 @@
- #
- #             ORXONOX - the hottest 3D action shooter ever to exist
- #                             > www.orxonox.net <
- #
- #        This program is free software; you can redistribute it and/or
- #         modify it under the terms of the GNU General Public License
- #        as published by the Free Software Foundation; either version 2
- #            of the License, or (at your option) any later version.
- #
- #       This program is distributed in the hope that it will be useful,
- #        but WITHOUT ANY WARRANTY; without even the implied warranty of
- #        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- #                 GNU General Public License for more details.
- #
- #   You should have received a copy of the GNU General Public License along
- #      with this program; if not, write to the Free Software Foundation,
- #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- #
- 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
+PROJECT(Orxonox)
+#set some global variables, which are used throughout the project
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin/lib)
 
-# Keep devs from using the root directory as binary directory (messes up the source tree)
-IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-  MESSAGE(FATAL_ERROR "Please do not use the root directory as CMake output directory!
-  mkdir build; cd build; cmake ..
-  And you will have to clean the source directory by deleting CMakeCache.txt and the folder CMakeFiles")
-ENDIF()
+OPTION(TESTING_ENABLED "Do you want to enable Testing")
+IF (TESTING_ENABLED)
+  ENABLE_TESTING()
+ENDIF(TESTING_ENABLED)
 
+OPTION(NETWORK_TESTING_ENABLED "Do you want to build network testing tools: i.e. chatclient chatserver and alike")
 
-PROJECT(Orxonox C CXX)
+#Create some verbose output
+SET(CMAKE_VERBOSE_MAKEFILE TRUE)
 
-SET(ORXONOX_VERSION_MAJOR 0)
-SET(ORXONOX_VERSION_MINOR 0)
-SET(ORXONOX_VERSION_PATCH 3)
-SET(ORXONOX_VERSION 0.0.3)
-SET(ORXONOX_VERSION_NAME "Castor")
+# set boost search path
+SET(Boost_INCLUDE_DIR "/usr/include/boost/")
 
+# force-set the compile on tardis machines, as default points to g++-3.3
+# only run this test on a lunix/unix machine
+IF (UNIX)
 
-# This sets where to look for modules (e.g. "Find*.cmake" files)
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+  FIND_PROGRAM(UNAME_CMD "uname"
+  PATHS "/usr/bin /bin")
+  IF(NOT UNAME_CMD)
+    MESSAGE(ERROR "Unable to find uname. Tardis-Check cannot be done.")
+  ENDIF(NOT UNAME_CMD)
 
-IF(UNIX AND NOT APPLE)
-  INCLUDE(FlagUtilities)
-  SET_CACHE(CMAKE_INSTALL_PREFIX PATH "" /usr) # default: /usr/local
-ENDIF()
+  # run uname -n to get nodename
+  EXECUTE_PROCESS(
+  COMMAND "${UNAME_CMD}" "-n"
+  RESULT_VARIABLE UNAME_RV
+  ERROR_VARIABLE UNAME_EV
+  OUTPUT_VARIABLE UNAME_OV)
 
-# Library finding
-INCLUDE(LibraryConfig)
+  IF (NOT "${UNAME_RV}" STREQUAL "0")
+    MESSAGE(ERROR "ERROR: uname terminated unclean.")
+  ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
 
-# General build and compiler options and configurations
-INCLUDE(BuildConfig)
+  # check wheter we are on a tardis machine
+  IF ("${UNAME_OV}" MATCHES "tardis")
+    SET (IS_TARDIS ON)
+  ENDIF ("${UNAME_OV}" MATCHES "tardis")
 
-# Configure media directory location and installation
-ADD_SUBDIRECTORY(media)
+  # if on tardis change compiler
+  IF(IS_TARDIS)
+    MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
+    SET(CMAKE_CXX_COMPILER "g++-4.1.1")
+    # reset Boost serach path
+    SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include")
+  ENDIF(IS_TARDIS)
 
-# Remaining tardis hack
-ADD_SUBDIRECTORY(config)
+ENDIF (UNIX)
 
-# Create the actual project
+# pipe $FLAGS to the compiler, and add some local flags. force -O2!
+SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
+SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
+SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
+
+#This sets where to look for "Find*.cmake" files
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+#Performs the search and sets the variables
+FIND_PACKAGE(OGRE)
+FIND_PACKAGE(OIS)
+# FIND_PACKAGE(CEGUI)
+# FIND_PACKAGE(CEGUI_OGRE)
+FIND_PACKAGE(ENet)
+FIND_PACKAGE(Boost REQUIRED thread)
+FIND_PACKAGE(OpenAL)
+FIND_PACKAGE(ALUT)
+FIND_PACKAGE(OggVorbis)
+FIND_PACKAGE(ZLIB)
+
+#Sets the search paths for the linking
+LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${Zlib_LIBRARY_DIR} core objects loader network weapon classHierarchy audio)
+#Sets the search path for include files
+INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR})
+
+#Set the execution directory
+
+#add main source dir
 ADD_SUBDIRECTORY(src)
-
-# Configure the binary output directory. Do this after src!
-ADD_SUBDIRECTORY(bin)
-
-# Last but not least: Try to make doxygen target
-ADD_SUBDIRECTORY(doc)

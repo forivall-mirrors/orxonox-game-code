@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -27,16 +26,14 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "Mesh.h"
 
 #include <sstream>
-#include <OgreEntity.h>
-#include <OgreSceneManager.h>
-#include <cassert>
 
-#include "core/Core.h"
-#include "util/Convert.h"
-#include "util/String.h"
+#include <OgreSceneManager.h>
+
+#include "../Orxonox.h"
+
+#include "Mesh.h"
 
 namespace orxonox
 {
@@ -45,65 +42,18 @@ namespace orxonox
     Mesh::Mesh()
     {
         this->entity_ = 0;
-        this->bCastShadows_ = true;
+    }
+
+    void Mesh::setMesh(const std::string& file)
+    {
+        std::ostringstream name;
+        name << (Mesh::meshCounter_s++);
+        this->entity_ = Orxonox::getSingleton()->getSceneManager()->createEntity("Mesh" + name.str(), file);
     }
 
     Mesh::~Mesh()
     {
-        if (this->entity_ && this->scenemanager_)
-            this->scenemanager_->destroyEntity(this->entity_);
-    }
-
-    void Mesh::setMeshSource(Ogre::SceneManager* scenemanager, const std::string& meshsource)
-    {
-        assert(scenemanager);
-
-        this->scenemanager_ = scenemanager;
-
         if (this->entity_)
-            this->scenemanager_->destroyEntity(this->entity_);
-
-        if (Core::showsGraphics())
-        {
-            try
-            {
-                this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
-                this->entity_->setCastShadows(this->bCastShadows_);
-            }
-            catch (...)
-            {
-                COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
-                this->entity_ = 0;
-            }
-        }
-    }
-
-    void Mesh::setCastShadows(bool bCastShadows)
-    {
-        this->bCastShadows_ = bCastShadows;
-        if (this->entity_)
-            this->entity_->setCastShadows(this->bCastShadows_);
-    }
-
-    const std::string& Mesh::getName() const
-    {
-        if (this->entity_)
-            return this->entity_->getName();
-        else
-            return BLANKSTRING;
-    }
-
-    void Mesh::setVisible(bool bVisible)
-    {
-        if (this->entity_)
-            this->entity_->setVisible(bVisible);
-    }
-
-    bool Mesh::isVisible() const
-    {
-        if (this->entity_)
-            return this->entity_->getVisible();
-        else
-            return false;
+            Orxonox::getSingleton()->getSceneManager()->destroyEntity(this->entity_);
     }
 }

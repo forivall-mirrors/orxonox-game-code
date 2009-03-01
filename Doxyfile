@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Orxonox
-PROJECT_NUMBER         = 0.1.2_Bellatrix
+PROJECT_NUMBER         = 0.1.0 Arcturus
 OUTPUT_DIRECTORY       =
-CREATE_SUBDIRS         = NO
+CREATE_SUBDIRS         = YES
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
@@ -277,4 +277,4 @@ DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to the search engine
 #---------------------------------------------------------------------------
-SEARCHENGINE           = YES
+SEARCHENGINE           = NO

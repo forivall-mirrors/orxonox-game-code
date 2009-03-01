@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -21,42 +20,27 @@
  *
  *   Author:
  *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
- *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
  /**
- @file
- @brief Entry point of the program.
+ @file  Main.cc
+ @brief main file handling most of the machine specific code
   */
 
 #include "OrxonoxStableHeaders.h"
 
-#include <exception>
-#include <cassert>
+#include <OgrePlatform.h>
+#include <OgreException.h>
 
-#include "OrxonoxConfig.h"
-#include "util/Debug.h"
-#include "util/SignalHandler.h"
-#include "core/ConfigFileManager.h"
-#include "core/CommandLine.h"
-#include "core/CommandExecutor.h"
-#include "core/Identifier.h"
-#include "core/Core.h"
-#include "core/Language.h"
 
-#include "gamestates/GSRoot.h"
-#include "gamestates/GSGraphics.h"
-#include "gamestates/GSStandalone.h"
-#include "gamestates/GSServer.h"
-#include "gamestates/GSClient.h"
-#include "gamestates/GSDedicated.h"
-#include "gamestates/GSGUI.h"
-#include "gamestates/GSIOConsole.h"
+#include "core/SignalHandler.h"
+#include "Orxonox.h"
 
-#ifdef ORXONOX_PLATFORM_APPLE
+using namespace orxonox;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
 // This function will locate the path to our application on OS X,
@@ -64,95 +48,162 @@
 // for locating your configuration files and resources.
              std::string macBundlePath()
 {
-    char path[1024];
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    assert(mainBundle);
+  char path[1024];
+  CFBundleRef mainBundle = CFBundleGetMainBundle();
+  assert(mainBundle);
 
-    CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-    assert(mainBundleURL);
+  CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+  assert(mainBundleURL);
 
-    CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
-    assert(cfStringRef);
+  CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
+  assert(cfStringRef);
 
-    CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
+  CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
 
-    CFRelease(mainBundleURL);
-    CFRelease(cfStringRef);
+  CFRelease(mainBundleURL);
+  CFRelease(cfStringRef);
 
-    return std::string(path);
+  return std::string(path);
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 && !defined( __MINGW32__ )
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include "windows.h"
+  INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+  {
+    // something like this would be less hacky
+    // maybe one can work with trailing '\0'
+    // or maybe use string based functions
+    // I was unable to test it without working windows version
+    char* cmd = strCmdLine;
+    int argc = 2;
+    int i;
+    int j;
+    for(i = 0; cmd[i] != NULL; i++)
+    {
+      if(cmd[i] == ' ') argc++;
+    }
+    char **argv = new char*[argc];
+    for (j = 0; j < argc; j++)
+    {
+      argv[j] = new char[i];
+    }
+    j = 1;
+    int k = 0;
+    for(int i = 0; cmd[i] != NULL; i++)
+    {
+      if(cmd[i] != ' ') {
+        argv[j][k] = cmd[i];
+        k++;
+      }
+      else {
+        argv[j][k] = '\0';
+        k = 0;
+        j++;
+      }
+    }
+    argv[j][k] = '\0';
+    argv[0] = "BeniXonox.exe";
+    //char *argv[2];
+    //argv[0] = "asdfProgram";
+    //argv[1] =  strCmdLine;
+    //int argc = 2;
+#else
+  int main(int argc, char **argv)
+  {
+#endif
+    try {
+      srand(time(0));  //initaialize RNG; TODO check if it works on win
+      SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
+      Orxonox* orx = Orxonox::getSingleton();
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+      orx->init(argc, argv, macBundlePath());
+      orx->start();
+#else
+/*
+for (int i = 0; i < 500; i++)
+{
+int x = rand() % 40000 - 20000;
+int y = rand() % 40000 - 20000;
+int z = rand() % 40000 - 20000;
+
+int scale = rand() % 100 + 20;
+
+int version = rand() % 6 + 1;
+
+float rotx = float(rand()) / RAND_MAX;
+float roty = float(rand()) / RAND_MAX;
+float rotz = float(rand()) / RAND_MAX;
+
+int axis = rand() % 3 + 1;
+
+if (axis == 1)
+  rotx = 0;
+if (axis == 2)
+  roty = 0;
+if (axis == 3)
+  rotz = 0;
+
+int rotation = rand() % 40 + 10;
+
+//    <Model position="1000,1500,0" scale="50" mesh="ast1.mesh" rotationAxis="0,1.25,0" rotationRate="70" />
+std::cout << "    <Model position=\"" << x << "," << y << "," << z << "\" scale=\"" << scale << "\" mesh=\"ast" << version << ".mesh\" rotationAxis=\"" << rotx << "," << roty << "," << rotz << "\" rotationRate=\"" << rotation << "\" />" << std::endl;
+
+
+}
+*/
+      orx->init(argc, argv, "");
+      orx->start();
+#endif
+    }
+    catch (Ogre::Exception& e) {
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 && !defined( __MINGW32__ )
+      MessageBoxA(NULL, e.getFullDescription().c_str(),
+            "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+#else
+      std::cerr << "Exception:\n";
+      std::cerr << e.getFullDescription().c_str() << "\n";
+#endif
+      return 1;
+    }
+    return 0;
+  }
+
+#ifdef __cplusplus
 }
 #endif
 
 
-SetCommandLineArgument(settingsFile, "orxonox.ini");
-SetCommandLineArgument(configFileDirectory, "");
-
-int main(int argc, char** argv)
+/*int main(int argc, char **argv)
 {
-    using namespace orxonox;
+  try
+  {
+    SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
+    Orxonox* orx = Orxonox::getSingleton();
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+    orx->init(argc, argv, macBundlePath());
+    orx->start();
+#else
+    orx->init(argc, argv, "");
+    orx->start();
+#endif
 
-    // create a signal handler (only active for linux)
-    SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
+  }
+  catch(Ogre::Exception& e)
+  {
+    fprintf(stderr, "An exception has occurred: %s\n",
+            e.getFullDescription().c_str());
+    return 1;
+  }
 
-    // Parse command line arguments
-    try
-    {
-        CommandLine::parseAll(argc, argv);
-    }
-    catch (ArgumentException& ex)
-    {
-        COUT(1) << ex.what() << std::endl;
-        COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-    }
-
-    // Do this after parsing the command line to allow customisation
-    Core::postMainInitialisation();
-
-    // Create the ConfigFileManager before creating the GameStates in order to have
-    // setConfigValues() in the constructor (required).
-    ConfigFileManager* configFileManager = new ConfigFileManager();
-    configFileManager->setFilename(ConfigFileType::Settings, CommandLine::getValue("settingsFile").getString());
-    // create the Core settings to configure the output level
-    Language* language = new Language();
-    Core*     core     = new Core();
-
-    // put GameStates in its own scope so we can destroy the identifiers at the end of main().
-    {
-        // create the gamestates
-        GSRoot root;
-        GSGraphics graphics;
-        GSStandalone standalone;
-        GSServer server;
-        GSClient client;
-        GSDedicated dedicated;
-        GSGUI gui;
-        GSIOConsole ioConsole;
-
-        // make the hierarchy
-        root.addChild(&graphics);
-        graphics.addChild(&standalone);
-        graphics.addChild(&server);
-        graphics.addChild(&client);
-        graphics.addChild(&gui);
-        root.addChild(&ioConsole);
-        root.addChild(&dedicated);
-
-        // Here happens the game
-        root.start();
-    }
-
-    // destroy singletons
-    delete core;
-    delete language;
-    delete configFileManager;
-
-    // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
-    Identifier::destroyAllIdentifiers();
-    // destroy command line arguments
-    CommandLine::destroyAllArguments();
-    // Also delete external console command that don't belong to an Identifier
-    CommandExecutor::destroyExternalCommands();
-
-    return 0;
+  return 0;
 }
+
+*/

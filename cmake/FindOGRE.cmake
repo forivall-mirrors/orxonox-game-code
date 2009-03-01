@@ -2,54 +2,51 @@
 #
 # This module defines
 #  OGRE_INCLUDE_DIR
-#  OGRE_LIBRARY, the library to link against to use OGRE.
+#  OGRE_LIBRARIES, the libraries to link against to use OGRE.
+#  OGRE_LIB_DIR, the location of the libraries
 #  OGRE_FOUND, If false, do not try to use OGRE
 #
 # Copyright © 2007, Matt Williams
-# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture
-# of the ETH Zurich (removed later on)
+# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture of the ETH Zurich
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
-#
-# Several changes and additions by Fabian 'x3n' Landau
-# Lots of simplifications by Adrian Friedli
-# Version checking by Reto Grieder
-#                 > www.orxonox.net <
 
-INCLUDE(DetermineVersion)
-INCLUDE(FindPackageHandleAdvancedArgs)
-INCLUDE(HandleLibraryTypes)
+IF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR)
+    SET(OGRE_FIND_QUIETLY TRUE) # Already in cache, be silent
+ENDIF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR)
 
-FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
-  PATHS $ENV{OGRE_HOME}
-  PATH_SUFFIXES include include/OGRE Ogre.framework/Headers
-)
-FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
-  NAMES OgreMain Ogre
-  PATHS $ENV{OGRE_HOME}
-  PATH_SUFFIXES lib bin/Release bin/release Release release
-)
-FIND_LIBRARY(OGRE_LIBRARY_DEBUG
-  NAMES OgreMaind OgreMain_d OgreMainD OgreMain_D Ogred Ogre_d OgreD Ogre_d
-  PATHS $ENV{OGRE_HOME}
-  PATH_SUFFIXES lib bin/Debug bin/debug Debug debug Versions/A
-)
+IF (WIN32) #Windows
+    MESSAGE(STATUS "Looking for OGRE")
+    SET(OGRE_INCLUDE_DIR ../libs/ogre/OgreMain/include)
+    SET(OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release)
+    SET(OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
+ELSE (WIN32) #Unix
+    FIND_PACKAGE(PkgConfig)
+    PKG_SEARCH_MODULE(OGRE OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc) # tardis specific hack
+    SET(OGRE_INCLUDE_DIR ${OGRE_INCLUDE_DIRS})
+    SET(OGRE_LIB_DIR ${OGRE_LIBDIR})
+    SET(OGRE_LIBRARIES ${OGRE_LIBRARIES} CACHE STRING "")
+ENDIF (WIN32)
 
-# Inspect OgrePrerquisites.h for the version number
-DETERMINE_VERSION(OGRE ${OGRE_INCLUDE_DIR}/OgrePrerequisites.h)
+#Do some preparation
+SEPARATE_ARGUMENTS(OGRE_INCLUDE_DIR)
+SEPARATE_ARGUMENTS(OGRE_LIBRARIES)
 
-# Handle the REQUIRED argument and set OGRE_FOUND
-# Also check the version requirements
-FIND_PACKAGE_HANDLE_ADVANCED_ARGS(OGRE DEFAULT_MSG ${OGRE_VERSION}
-  OGRE_LIBRARY_OPTIMIZED
-  OGRE_INCLUDE_DIR
-)
+SET(OGRE_INCLUDE_DIR ${OGRE_INCLUDE_DIR} CACHE PATH "")
+SET(OGRE_LIBRARIES ${OGRE_LIBRARIES} CACHE STRING "")
+SET(OGRE_LIB_DIR ${OGRE_LIB_DIR} CACHE PATH "")
 
-# Collect optimized and debug libraries
-HANDLE_LIBRARY_TYPES(OGRE)
+IF (OGRE_INCLUDE_DIR AND OGRE_LIBRARIES)
+    SET(OGRE_FOUND TRUE)
+ENDIF (OGRE_INCLUDE_DIR AND OGRE_LIBRARIES)
 
-MARK_AS_ADVANCED(
-  OGRE_INCLUDE_DIR
-  OGRE_LIBRARY_OPTIMIZED
-  OGRE_LIBRARY_DEBUG
-)
+IF (OGRE_FOUND)
+    IF (NOT OGRE_FIND_QUIETLY)
+        MESSAGE(STATUS "  libraries : ${OGRE_LIBRARIES} from ${OGRE_LIB_DIR}")
+        MESSAGE(STATUS "  includes  : ${OGRE_INCLUDE_DIR}")
+    ENDIF (NOT OGRE_FIND_QUIETLY)
+ELSE (OGRE_FOUND)
+    IF (OGRE_FIND_REQUIRED)
+        MESSAGE(FATAL_ERROR "Could not find OGRE")
+    ENDIF (OGRE_FIND_REQUIRED)
+ENDIF (OGRE_FOUND)

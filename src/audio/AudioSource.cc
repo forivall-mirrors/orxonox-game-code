@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -20,7 +19,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *      ...
  *   Co-authors:
  *      ...
  *
@@ -28,15 +27,15 @@
 
 #include "AudioSource.h"
 
-namespace orxonox
+namespace audio
 {
-    AudioSource::AudioSource()
-    {
+	AudioSource::AudioSource()
+	{
 
-    }
+	}
 
-    AudioSource::~AudioSource()
-    {
+	AudioSource::~AudioSource()
+	{
 
-    }
+	}
 }

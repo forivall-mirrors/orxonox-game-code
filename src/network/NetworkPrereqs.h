@@ -1,6 +1,5 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -27,19 +26,19 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
-*/
+ @file  NetworkPrereqs.h
+ @brief Contains all the necessary forward declarations for all classes, structs and enums.
+ */
 
 #ifndef _NetworkPrereqs_H__
 #define _NetworkPrereqs_H__
 
-#include "OrxonoxConfig.h"
+#include "orxonox/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( NETWORK_STATIC_BUILD )
+#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( NETWORK_STATIC_BUILD )
 #  ifdef NETWORK_SHARED_BUILD
 #    define _NetworkExport __declspec(dllexport)
 #  else
@@ -55,56 +54,37 @@
 #  define _NetworkExport
 #endif
 
-//-----------------------------------------------------------------------
-// Library global contants
-//-----------------------------------------------------------------------
-namespace orxonox
-{
-  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
-  static const unsigned int CLIENTID_UNKNOWN    = (unsigned int)-2;
-  static const uint32_t     OBJECTID_UNKNOWN    = (uint32_t)(-1);
-}
 
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-namespace orxonox
+namespace network
 {
   class Client;
   class ClientConnection;
-  class ClientConnectionListener;
   class ClientFrameListener;
   class ClientInformation;
   class ConnectionManager;
-  class GamestateClient;
-  class GamestateManager;
-  class GamestateHandler;
-  class NetworkCallbackBase;
-  template <class T> class NetworkCallback;
-  class NetworkCallbackManager;
+  class GameStateClient;
+  class GameStateManager;
   class PacketBuffer;
+  class PacketDecoder;
+  class PacketGenerator;
   class Server;
   class ServerFrameListener;
   class Synchronisable;
-  class SynchronisableVariableBase;
-  template <class T> class SynchronisableVariable;
-  template <class T> class SynchronisableVariableBidirectional;
+  struct ack;
+  struct chat;
+  struct classid;
   struct ClientList;
+  struct GameState;
+  struct GameStateCompressed;
+  struct keyboard;
+  struct mouse;
   struct PacketEnvelope;
   struct QueueItem;
-  struct syncData;
-  class obj;
-  class objInfo;
-
-  namespace packet
-  {
-    class Gamestate;
-    class Packet;
-    class Acknowledgement;
-    class ClassID;
-    class Welcome;
-    class Chat;
-  }
+  struct synchData;
+  struct synchronisableVariable;
 }
 
 #endif /* _NetworkPrereqs_H__ */

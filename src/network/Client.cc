@@ -1,30 +1,29 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver Scheuss, (C) 2007
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      Oliver Scheuss, (C) 2007
+*   Co-authors:
+*      ...
+*
+*/
 
 //
 // C++ Implementation: Client
@@ -38,21 +37,11 @@
 //
 //
 
-#include <cassert>
-
-#include "Client.h"
-#include "Host.h"
-#include "synchronisable/Synchronisable.h"
 #include "core/CoreIncludes.h"
-#include "packet/Packet.h"
+#include "Client.h"
 
-// #include "packet/Acknowledgement.h"
-
-namespace orxonox
+namespace network
 {
-//   SetConsoleCommandShortcut(Client, chat);
-
-
   /**
   * Constructor for the Client class
   * initializes the address and the port to default localhost:NETWORK_PORT
@@ -60,8 +49,6 @@ namespace orxonox
   Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
     // set server address to localhost
     isConnected=false;
-    isSynched_=false;
-    gameStateFailure_=false;
   }
 
   /**
@@ -69,10 +56,8 @@ namespace orxonox
   * @param address the server address
   * @param port port of the application on the server
   */
-  Client::Client(const std::string& address, int port) : client_connection(port, address){
+  Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
-    isSynched_=false;
-    gameStateFailure_=false;
   }
 
   /**
@@ -82,13 +67,6 @@ namespace orxonox
   */
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
-    isSynched_=false;
-    gameStateFailure_=false;
-  }
-
-  Client::~Client(){
-    if(isConnected)
-      closeConnection();
   }
 
   /**
@@ -96,10 +74,7 @@ namespace orxonox
   * @return true/false
   */
   bool Client::establishConnection(){
-    Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
-    if(!isConnected)
-      COUT(1) << "could not create connection laber" << std::endl;
     return isConnected;
   }
 
@@ -112,59 +87,126 @@ namespace orxonox
     return client_connection.closeConnection();
   }
 
-  bool Client::queuePacket(ENetPacket *packet, int clientID){
-    return client_connection.addPacket(packet);
-  }
-
-  bool Client::processChat(const std::string& message, unsigned int playerID){
-//    COUT(1) << "Player " << playerID << ": " << message << std::endl;
-    return true;
+  /**
+  * submits a MouseAction to the server
+  * @param x x Coordinate
+  * @param y y Coordinate
+  * @return true/false
+  */
+  bool Client::sendMouse(double x, double y){
+    // generate packet and add it to the queue
+    if(!isConnected)
+      return false;
+    if(!client_connection.addPacket(pck_gen.mousem(x, y)))
+      return false;
+    // send packets
+    return client_connection.sendPackets();
   }
 
   /**
-   * This function implements the method of sending a chat message to the server
-   * @param message message to be sent
-   * @return result(true/false)
-   */
-  bool Client::chat(const std::string& message){
-    packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
-    return m->send();
+  * submits a Keystrike to the server
+  * @param key_code code to submit
+  * @return true/false
+  */
+  bool Client::sendKeyboard(char key_code){
+    // generate packet and add it to queue
+    if(!isConnected)
+      return false;
+    if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
+      return false;
+    // send packets
+    return client_connection.sendPackets();
   }
 
+  /**
+  * submits a chat message to the server
+  * @param message message to send
+  * @return true/false
+  */
+  bool Client::sendChat( std::string message ){
+    // generate packet and add it to queue
+    if(!isConnected)
+      return false;
+    if(client_connection.addPacket(pck_gen.chatMessage( message.c_str() )))
+      return client_connection.sendPackets();
+    // send packets
+    return false;
+  }
 
   /**
-   * Processes incoming packets, sends a gamestate to the server and does the cleanup
-   * @param time
-   */
+  * Adds a MouseAction to the PacketQueue
+  * @param x x Coordinate
+  * @param y y Coordinate
+  * @return true/false
+  */
+  bool Client::addMouse(double x, double y){
+    // generate packet and add it to the queue
+    if(client_connection.addPacket(pck_gen.mousem(x, y)))
+      return true;
+    else
+      return false;
+  }
+
+  /**
+  * Adds a Keystrike to the PacketQueue
+  * @param key_code
+  * @return true/false
+  */
+  bool Client::addKeyboard(char key_code){
+    // generate packet and add it to queue
+    if(client_connection.addPacket(pck_gen.keystrike(key_code)))
+      return true;
+    else
+      return false;
+  }
+
+  /**
+  * Sends out all the packets queued by addXXX
+  */
+  bool Client::sendPackets(){
+    if(!isConnected)
+      return false;
+    ENetEvent event;
+    // send packets
+    client_connection.sendPackets(&event);
+    if(event.type==ENET_EVENT_TYPE_NONE)
+      return true;
+    else
+      return false;
+  }
+
+  /**
+  * Performs a GameState update
+  */
   void Client::tick(float time){
-//     COUT(3) << ".";
-    if(client_connection.isConnected() && isSynched_){
-      COUT(4) << "popping partial gamestate: " << std::endl;
-      packet::Gamestate *gs = gamestate.getGamestate();
-      if(gs){
-        COUT(4) << "client tick: sending gs " << gs << std::endl;
-        if( !gs->send() )
-          COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
-        // gs gets automatically deleted by enet callback
-      }
-    }
-    ENetEvent *event;
+    ENetPacket *packet;
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
-      event = client_connection.getEvent();
-      COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-      packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
-      // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
-      bool b = packet->process();
-      assert(b);
+      packet = client_connection.getPacket();
+      //std::cout << "tick packet size " << packet->dataLength << std::endl;
+      elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
-    if(gamestate.processGamestates())
-    {
-      if(!isSynched_)
-        isSynched_=true;
-    }
-    gamestate.cleanup();
     return;
+  }
+
+  void Client::processGamestate( GameStateCompressed *data){
+    gamestate.pushGameState(data);
+    std::cout << "received gamestate id: " << data->id << std::endl;
+    client_connection.addPacket(pck_gen.acknowledgement(data->id));
+    client_connection.sendPackets();
+    return;
+  }
+
+  void Client::processClassid(classid *clid){
+    orxonox::Identifier *id;
+    id=ID(std::string(clid->message));
+    if(id!=NULL)
+      id->setNetworkID(clid->clid);
+    return;
+  }
+
+  void Client::processChat( chat *data){
+    std::cout << "Server: " << data->message << std::endl;
   }
 
 }

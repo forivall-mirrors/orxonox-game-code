@@ -1,31 +1,3 @@
-/*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver Scheuss, (C) 2007
- *   Co-authors:
- *      ...
- *
- */
-
 //
 // C++ Interface: ClientConnection
 //
@@ -40,31 +12,28 @@
 #ifndef _ClientConnection_H__
 #define _ClientConnection_H__
 
-#include "NetworkPrereqs.h"
-
 #include <string>
 #include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
+
+#include "NetworkPrereqs.h"
 #include "PacketBuffer.h"
 
-namespace boost { class thread; }
-
-namespace orxonox
+namespace network
 {
 
-    const int NETWORK_PORT = 55556;
-    const int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
-    const int NETWORK_CLIENT_WAIT_TIME = 1;
-    const int NETWORK_CLIENT_CONNECT_TIMEOUT = 3000; // miliseconds
-    const int NETWORK_CLIENT_CHANNELS = 2;
+#define NETWORK_PORT 55556
+#define NETWORK_CLIENT_MAX_CONNECTIONS 5
+#define NETWORK_CLIENT_TIMEOUT 10
+#define NETWORK_SEND_WAIT 5
+#define NETWORK_CLIENT_CHANNELS 2
 
 
-  class _NetworkExport ClientConnection{
+  class ClientConnection{
   public:
-    ClientConnection(int port, const std::string& address);
+    ClientConnection(int port, std::string address);
     ClientConnection(int port, const char* address);
-    ~ClientConnection();
-    ENetEvent *getEvent();
+    ENetPacket *getPacket(ENetAddress &address); // thread1
+    ENetPacket *getPacket(); // thread1
     // check wheter the packet queue is empty
     bool queueEmpty();
     // create a new listener thread
@@ -75,9 +44,8 @@ namespace orxonox
     // send out all queued packets
     bool sendPackets();
     // send out all queued packets and save result in event
-    //bool sendPackets(ENetEvent *event);
+    bool sendPackets(ENetEvent *event);
     bool waitEstablished(int milisec);
-    bool isConnected(){return established;}
   private:
     bool processData(ENetEvent *event);
     // implementation of the listener
@@ -94,9 +62,6 @@ namespace orxonox
     bool established;
     // clientlist
     ENetPeer *server;
-    boost::thread *receiverThread_;
-
-    static boost::recursive_mutex enet_mutex_;
   };
 
 

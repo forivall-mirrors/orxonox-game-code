@@ -1,88 +1,69 @@
-/*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
- *   Co-authors:
- *      ...
- *
- */
-
 #ifndef _AudioManager_H__
 #define _AudioManager_H__
 
+#include "AudioIncludes.h"
+
 #include "AudioPrereqs.h"
 
-#include <vector>
-#include <string>
+#include "AudioBuffer.h"
+#include "AudioSource.h"
+#include "AudioStream.h"
 
-namespace orxonox
+namespace audio
 {
-    class _AudioExport AudioManager
-    {
-    public:
-        // Init audio
-        AudioManager();
+	class _AudioExport AudioManager
+	{
+	public:
 
-        // Kill audio and set buffers, sources and memory free
-        ~AudioManager();
+		// Init audio 
+		AudioManager();
 
-        // Set listener position
-        void setPos(std::vector<float> newPosition);
+		// Kill audio and set buffers, sources and memory free
+		~AudioManager();
 
-        // Set listener speed
-        void setSpeed(std::vector<float> newSpeed);
+		// Set listener position
+		void setPos(std::vector<float> newPosition);
 
-        // Set listener orientation (first is direction
-        // the listener looks at, the second is the direction
-        // upwards the listener)
-        void setOri(std::vector<float> at, std::vector<float> up);
+		// Set listener speed
+		void setSpeed(std::vector<float> newSpeed);
 
-        // Update
-        void tick(float dt);
+		// Set listener orientation (first is direction
+		// the listener looks at, the second is the direction
+		// upwards the listener)
+		void setOri(std::vector<float> at, std::vector<float> up);
 
-        void ambientAdd(std::string file);
-        void ambientStart();
-        void ambientStop();
+		// Parses given xml string
+		void loadParams();
 
-    private:
-        // Background sound
-        std::vector<AudioStream*> bgSounds;
-        int currentBgSound;
+		// Update
+		void update();
+
+		void ambientAdd(std::string file);
+		void ambientStart();
+		void ambientStop();
+
+	private:
+
+		// Background sound
+    std::vector<AudioStream> bgSounds;
+		int currentBgSound;
 
 
-        std::string ambientPath;
 
-        // Vector containing all audio files
-        std::vector<AudioBuffer*> buffers;
-        // Vector containing all audio sources which referer to one buffer
-        std::vector<AudioSource*> sources;
-        // The ambient background sound
-        AudioSource* ambient;
-
-        std::vector<float> listenerPosition;
-        std::vector<float> listenerSpeed;
-        std::vector<float> listenerAt;
-        std::vector<float> listenerup;
-    };
+		std::string ambientPath;
+	
+		// Vector containing all audio files
+		std::vector<AudioBuffer> buffers;
+		// Vector containing all audio sources which referer to one buffer
+		std::vector<AudioSource> sources;
+		// The ambient background sound 	
+		AudioSource ambient;
+		
+		std::vector<float> listenerPosition;
+		std::vector<float> listenerSpeed;
+		std::vector<float> listenerAt;
+		std::vector<float> listenerup;		
+	};	
 }
 
 #endif /* _AudioManager_H__ */
