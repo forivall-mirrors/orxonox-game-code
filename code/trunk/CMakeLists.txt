@@ -51,7 +51,7 @@ INCLUDE(LibraryConfig)
 INCLUDE(BuildConfig)
 
 # Configure media directory location and installation
-ADD_SUBDIRECTORY(media)
+INCLUDE(Media)
 
 # Remaining tardis hack
 ADD_SUBDIRECTORY(config)
