@@ -233,7 +233,10 @@ namespace orxonox
             boost::filesystem::path defaultFilepath(Core::getMediaPath() / "defaultConfig" / this->filename_);
             if (boost::filesystem::exists(defaultFilepath))
             {
+                COUT(3) << "Copied " << this->filename_ << " from the defaultConfig folder." << std::endl;
                 boost::filesystem::copy_file(defaultFilepath, filepath);
+                std::string testfilename = std::string("__") + this->filename_;
+                boost::filesystem::copy_file(defaultFilepath, filepath.branch_path() / testfilename);
             }
         }
 
