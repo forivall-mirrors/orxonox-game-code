@@ -35,7 +35,6 @@
 
 #include <fstream>
 #include <string>
-#include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
 #include "util/Debug.h"
