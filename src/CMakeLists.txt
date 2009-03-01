@@ -57,9 +57,11 @@ IF(UNIX AND NOT APPLE)
 ENDIF()
 
 # Check __forceinline
-INCLUDE(CheckCXXSourceCompiles)
-SET(_source "int main() { return 0; } __forceinline void test() { return; }")
-CHECK_CXX_SOURCE_COMPILES("${_source}" HAVE_FORCEINLINE)
+IF(MSVC)
+  INCLUDE(CheckCXXSourceCompiles)
+  SET(_source "int main() { return 0; } __forceinline void test() { return; }")
+  CHECK_CXX_SOURCE_COMPILES("${_source}" HAVE_FORCEINLINE)
+ENDIF(MSVC)
 
 # Check ciso646 include (literal operators)
 INCLUDE(CheckIncludeFileCXX)
