@@ -28,7 +28,7 @@
 IF(WIN32)
   SET(RUN_SCRIPTS run.bat client1.bat client2.bat server.bat)
 ELSEIF(UNIX)
-  SET(RUN_SCRIPTS run client1 client1 server)
+  SET(RUN_SCRIPTS run client1 client2 server)
 ENDIF()
 
 IF(NOT CMAKE_CONFIGURATION_TYPES)
