@@ -58,3 +58,9 @@ FOREACH(_subdir ${_subdirs})
   # we plant a special file
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/orxonox_dev_build.keep_me ${CURRENT_RUNTIME_DIR}/orxonox_dev_build.keep_me)
 ENDFOREACH(_subdir)
+
+
+# Make a symlink to be able to run from the root directory when installing copyable on Unix
+IF(UNIX AND INSTALL_COPYABLE)
+  INSTAll(CODE "EXECUTE_PROCESS(COMMAND ln -sf ${ORXONOX_RUNTIME_INSTALL_PATH}/${ORXONOX_EXECUTABLE_NAME} ${CMAKE_INSTALL_PREFIX}/orxonox)")
+ENDIF()
