@@ -23,24 +23,22 @@
  #    Finds the media directory and configures it's installation.
  #
 
-# This directory has to concur with the name set in BuildConfig.cmake
-IF(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}/${DEFAULT_MEDIA_PATH}")
-  MESSAGE(FATAL_ERROR "Value of DEFAULT_MEDIA_PATH does not concur with the name of the media directory in the source tree")
-ENDIF()
-
 # Specify media directory
-GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../media ABSOLUTE)
-FIND_PATH(CMAKE_MEDIA_OUTPUT_DIRECTORY resources.cfg
+GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../${DEFAULT_MEDIA_PATH} ABSOLUTE)
+FIND_PATH(MEDIA_PATH resources.cfg
   PATHS
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/${DEFAULT_MEDIA_PATH}
     ${_search_path_1}
   NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH
 )
+
+# For consistency with other variables for config, log, bin, etc.
+SET(CMAKE_MEDIA_OUTPUT_DIRECTORY MEDIA_PATH)
+
 IF(NOT CMAKE_MEDIA_OUTPUT_DIRECTORY)
-  MESSAGE(STATUS "Warning: Media directory not found. If you want to compile while downloading the media files, you must specify the directory by Hand BEFORE compiling! Default location is orxonox_root/media")
+  MESSAGE(STATUS "Warning: Media directory not found. If you want to compile while downloading the media files, you will have to recompile about four files afterwards and relink everything. Default location is orxonox_root/media")
   # Temporary override to the default location.
   SET(CMAKE_MEDIA_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/media)
-  SET(CMAKE_MEDIA_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/media PARENT_SCOPE)
 ENDIF()
 
 
