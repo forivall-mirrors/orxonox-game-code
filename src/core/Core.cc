@@ -136,7 +136,7 @@ namespace orxonox
         SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(this, &Core::languageChanged);
         SetConfigValue(bInitializeRandomNumberGenerator_, true).description("If true, all random actions are different each time you start the game").callback(this, &Core::initializeRandomNumberGenerator);
 
-        SetConfigValue(mediaPathString_, Core::getMediaPathPOSIXString())
+        SetConfigValue(mediaPathString_, mediaPath_g.string())
             .description("Relative path to the game data.").callback(this, &Core::mediaPathChanged);
     }
 
