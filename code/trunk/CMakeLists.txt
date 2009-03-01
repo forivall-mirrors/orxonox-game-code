@@ -33,7 +33,7 @@ SET(ORXONOX_VERSION_MAJOR 0)
 SET(ORXONOX_VERSION_MINOR 0)
 SET(ORXONOX_VERSION_PATCH 2)
 SET(ORXONOX_VERSION 0.0.2)
-SET(ORXONOX_VERSION_NAME "Bellatrix")
+SET(ORXONOX_VERSION_NAME "Arcturus")
 
 
 # This sets where to look for modules (e.g. "Find*.cmake" files)
