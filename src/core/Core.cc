@@ -264,7 +264,7 @@ namespace orxonox
     /*static*/ std::string Core::getMediaPathPOSIXString()
     {
         return mediaPath_g.string() + '/';
-        
+
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
@@ -430,7 +430,7 @@ namespace orxonox
         // Option to put all the config and log files in a separate folder
         if (!CommandLine::getArgument("directory")->hasDefaultValue())
         {
-            std::string directory(CommandLine::getValue("directory"));
+            std::string directory(CommandLine::getValue("directory").getString());
             configPath_g = configPath_g / directory;
             logPath_g    = logPath_g    / directory;
         }
