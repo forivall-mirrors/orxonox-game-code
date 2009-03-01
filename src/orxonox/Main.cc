@@ -91,10 +91,6 @@ int main(int argc, char** argv)
 {
     using namespace orxonox;
 
-    // create a signal handler (only active for linux)
-    SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
-
     // Parse command line arguments
     try
     {
@@ -108,6 +104,10 @@ int main(int argc, char** argv)
 
     // Do this after parsing the command line to allow customisation
     Core::postMainInitialisation();
+
+    // create a signal handler (only active for linux)
+    SignalHandler signalHandler;
+    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
 
     // Create the ConfigFileManager before creating the GameStates in order to have
     // setConfigValues() in the constructor (required).
