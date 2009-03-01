@@ -69,8 +69,6 @@ ELSE()
   MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 ENDIF()
 
-OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
-
 
 ################# OGRE Plugins ##################
 
@@ -90,6 +88,8 @@ CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
 
 
 ################ Compiler Config ################
+
+OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
 
 INCLUDE(FlagUtilities)
 
@@ -140,7 +140,8 @@ IF(INSTALL_COPYABLE)
   # Note the relative paths. They will be resolved at runtime.
   # For CMake operations CMAKE_INSTALL_PREFIX is always appended.
   SET(ORXONOX_RUNTIME_INSTALL_PATH ${DEFAULT_RUNTIME_PATH})
-  SET(ORXONOX_LIBRARY_INSTALL_PATH ${DEFAULT_LIBRARY_PATH})
+  # Also use runtime directory to have the libraries found when executing from anywhere
+  SET(ORXONOX_LIBRARY_INSTALL_PATH ${DEFAULT_RUNTIME_PATH})
   SET(ORXONOX_ARCHIVE_INSTALL_PATH ${DEFAULT_ARCHIVE_PATH})
   SET(ORXONOX_DOC_INSTALL_PATH     ${DEFAULT_DOC_PATH})
   SET(ORXONOX_MEDIA_INSTALL_PATH   ${DEFAULT_MEDIA_PATH})
