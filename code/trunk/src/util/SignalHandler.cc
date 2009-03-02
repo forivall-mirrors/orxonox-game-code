@@ -319,10 +319,10 @@ namespace orxonox
 
       time_t now = time(NULL);
 
-      std::string timeString = "\n\n\n\n"
+      std::string timeString =
                          "=======================================================\n"
                          "= time: " + std::string(ctime(&now)) +
-             "=======================================================\n";
+                         "=======================================================\n";
       bt.insert(0, timeString);
 
       FILE * f = fopen( getInstance().filename.c_str(), "a" );
