@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <map>
+#include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 
 #include "CoreIncludes.h"
@@ -38,6 +39,13 @@
 #include "TclThreadManager.h"
 #include "util/Convert.h"
 #include "util/String.h"
+
+// Boost 1.36 has some issues with deprecated functions that have been omitted
+#if (BOOST_VERSION == 103600)
+#  define BOOST_LEAF_FUNCTION filename
+#else
+#  define BOOST_LEAF_FUNCTION leaf
+#endif
 
 namespace orxonox
 {
@@ -77,9 +85,9 @@ namespace orxonox
                 while (file != end)
                 {
                     if (boost::filesystem::is_directory(*file))
-                        dirlist.push_back(ArgumentCompletionListElement((*file).string() + CP_SLASH, getLowercase((*file).string()) + "/", (*file).leaf() + "/"));
+                        dirlist.push_back(ArgumentCompletionListElement((*file).string() + CP_SLASH, getLowercase((*file).string()) + "/", (*file).BOOST_LEAF_FUNCTION() + "/"));
                     else
-                        filelist.push_back(ArgumentCompletionListElement((*file).string(), getLowercase((*file).string()), (*file).leaf()));
+                        filelist.push_back(ArgumentCompletionListElement((*file).string(), getLowercase((*file).string()), (*file).BOOST_LEAF_FUNCTION()));
                     ++file;
                 }
             }
