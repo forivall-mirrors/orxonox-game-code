@@ -1,4 +1,4 @@
 #!/bin/sh
 # convenience script for starting orxonox on Linux
 
-cd @CURRENT_RUNTIME_DIR@ && exec ./@ORXONOX_EXECUTABLE_NAME@ --state client --directory client1 $@
+exec .@CURRENT_RUNTIME_DIR@/@ORXONOX_EXECUTABLE_NAME@ --state client --directory client1 $@
