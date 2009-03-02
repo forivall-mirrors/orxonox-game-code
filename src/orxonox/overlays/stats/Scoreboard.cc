@@ -60,8 +60,6 @@ namespace orxonox
     void Scoreboard::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(Scoreboard, XMLPort, xmlElement, mode);
-
-        COUT(0) << "XMLPort executed." << std::endl;
     }
 
     void Scoreboard::changedVisibility()
