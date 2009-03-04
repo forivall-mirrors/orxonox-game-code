@@ -118,14 +118,6 @@ ENDIF(USER_SCRIPT_BUILD_CONFIG)
 
 ################# Test options ##################
 
-OPTION(TESTING_ENABLE "Enable build tests.")
-IF(TESTING_ENABLE)
-  ENABLE_TESTING()
-ENDIF(TESTING_ENABLE)
-
-OPTION(NETWORK_TESTING_ENABLED "Build network testing tools: i.e. chatclient chatserver and alike.")
-OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Build dummyserver4 and dummyclient4.")
-
 
 ############# Installation Settings #############
 
