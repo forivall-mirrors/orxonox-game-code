@@ -1,6 +1,0 @@
-SET( SRC_FILES
-  DebugFPSText.cc
-  DebugRTRText.cc
-)
-
-ADD_SOURCE_FILES(SRC_FILES)
