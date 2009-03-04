@@ -49,15 +49,15 @@ namespace packet {
 class _NetworkExport ClassID : public Packet
 {
 public:
-  ClassID( unsigned int classID, std::string className );
+  ClassID( uint32_t classID, std::string className );
   ClassID( uint8_t* data, unsigned int clientID );
   ~ClassID();
 
-  inline unsigned int getSize() const;
+  inline uint32_t getSize() const{ return sizeof(packet::ENUM::Type) + 2*sizeof(uint32_t) + classNameLength_; }
   bool process();
 
-  unsigned int getClassID();
-  unsigned int getClassNameLength(){ return classNameLength_; }
+  uint32_t getClassID();
+  uint32_t getClassNameLength(){ return classNameLength_; }
   const char *getClassName(){ return (const char*)(data_+_CLASSNAME); }
 private:
   uint32_t classNameLength_;
