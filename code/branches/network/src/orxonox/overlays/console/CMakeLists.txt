@@ -1,5 +1,0 @@
-SET( SRC_FILES
-  InGameConsole.cc
-)
-
-ADD_SOURCE_FILES(SRC_FILES)
