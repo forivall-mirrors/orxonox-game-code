@@ -45,9 +45,9 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
-#include "core/CoreIncludes.h"
-#include "core/BaseObject.h"
-#include "core/Iterator.h"
+// #include "core/CoreIncludes.h"
+// #include "core/BaseObject.h"
+// #include "core/Iterator.h"
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"
@@ -302,32 +302,43 @@ namespace orxonox
    *
    * @param clientID
    */
-  void ConnectionManager::syncClassid(unsigned int clientID) {
-    unsigned int network_id=0, failures=0;
-    std::string classname;
-    Identifier *id;
-    std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
-    while(it != Factory::getFactoryMapEnd()){
-      id = (*it).second;
-      if(id == NULL)
-        continue;
-      classname = id->getName();
-      network_id = id->getNetworkID();
-      if(network_id==0)
-        COUT(3) << "we got a null class id: " << id->getName() << std::endl;
-      COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
+//   void ConnectionManager::syncClassid(unsigned int clientID) {
+//     unsigned int network_id=0, failures=0;
+//     std::string classname;
+//     Identifier *id;
+//     std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
+//     while(it != Factory::getFactoryMapEnd()){
+//       id = (*it).second;
+//       if(id == NULL)
+//         continue;
+//       classname = id->getName();
+//       network_id = id->getNetworkID();
+//       if(network_id==0)
+//         COUT(3) << "we got a null class id: " << id->getName() << std::endl;
+//       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
+// 
+//       packet::ClassID *classid = new packet::ClassID( network_id, classname );
+//       classid->setClientID(clientID);
+//       while(!classid->send() && failures < 10){
+//         failures++;
+//       }
+//       ++it;
+//     }
+//     //sendPackets();
+//     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
+//   }
 
-      packet::ClassID *classid = new packet::ClassID( network_id, classname );
-      classid->setClientID(clientID);
-      while(!classid->send() && failures < 10){
-        failures++;
-      }
-      ++it;
+  void ConnectionManager::syncClassid(unsigned int clientID) {
+    int failures=0;
+    packet::ClassID *classid = new packet::ClassID();
+    classid->setClientID(clientID);
+    while(!classid->send() && failures < 10){
+      failures++;
     }
-    //sendPackets();
+    assert(failures<10);
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
-
+  
 
   void ConnectionManager::disconnectClient(ClientInformation *client){
     {

@@ -30,55 +30,133 @@
 
 #include "ClassID.h"
 #include "core/CoreIncludes.h"
+#include "core/Factory.h"
 #include <cstring>
+#include <string>
 #include <assert.h>
+#include <map>
+#include <queue>
 
 namespace orxonox {
 namespace packet {
 
 
+#define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
+#define _PACKETID             0
 
-  ClassID::ClassID( uint32_t classID, std::string className )
- : Packet()
-{
+
+ClassID::ClassID( ) : Packet(){
+  Identifier *id;
+  std::string classname;
+  unsigned int nrOfClasses=0; 
+  unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nrofclasses
+  uint32_t network_id;
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
-  classNameLength_=className.length()+1;
-  assert(getSize());
-  data_=new unsigned char[ getSize() ];
-  assert(data_);
-  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::ClassID;
-  *(uint32_t *)(data_ + _CLASSID ) = classID;
-  *(uint32_t *)(data_ + _CLASSNAMELENGTH ) = classNameLength_;
-  memcpy( data_+_CLASSNAME, (void *)className.c_str(), classNameLength_ );
+  std::queue<std::pair<uint32_t, std::string> > tempQueue;
+  
+  //calculate total needed size (for all strings and integers)
+  std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
+  for(;it != Factory::getFactoryMapEnd();++it){
+    id = (*it).second;
+    if(id == NULL)
+      continue;
+    classname = id->getName();
+    network_id = id->getNetworkID();
+    if(network_id==0)
+      COUT(3) << "we got a null class id: " << id->getName() << std::endl;
+    // now push the network id and the classname to the stack
+    tempQueue.push( std::pair<unsigned int, std::string>(network_id, classname) );
+    ++nrOfClasses;
+    packetSize += (classname.size()+1)+sizeof(uint32_t)+sizeof(uint32_t);
+  }
+  
+  this->data_=new uint8_t[ packetSize ];
+  //set the appropriate packet id
+  assert(this->data_);
+  *(ENUM::Type *)(this->data_ + _PACKETID ) = ENUM::ClassID;
+  
+  uint8_t *temp=data_+sizeof(uint32_t);
+  // save the number of all classes
+  *(uint32_t*)temp = nrOfClasses;
+  temp += sizeof(uint32_t);
+  
+  // now save all classids and classnames
+  std::pair<uint32_t, std::string> tempPair;
+  while( !tempQueue.empty() ){
+    tempPair = tempQueue.front();
+    tempQueue.pop();
+    *(uint32_t*)temp = tempPair.first;
+    *(uint32_t*)(temp+sizeof(uint32_t)) = tempPair.second.size()+1;
+    memcpy(temp+2*sizeof(uint32_t), tempPair.second.c_str(), tempPair.second.size()+1);
+    temp+=2*sizeof(uint32_t)+tempPair.second.size()+1;
+  }
+  
+  COUT(0) << "classid packetSize is " << packetSize << endl;
+  
 }
 
 ClassID::ClassID( uint8_t* data, unsigned int clientID )
   : Packet(data, clientID)
 {
-  memcpy( (void *)&classNameLength_, &data[ _CLASSNAMELENGTH ], sizeof(classNameLength_) );
 }
 
 ClassID::~ClassID()
 {
 }
 
+uint32_t ClassID::getSize() const{
+  uint8_t *temp = data_+sizeof(uint32_t); // packet identification
+  uint32_t totalsize = sizeof(uint32_t); // packet identification
+  uint32_t nrOfClasses = *(uint32_t*)temp;
+  temp += sizeof(uint32_t);
+  totalsize += sizeof(uint32_t); // storage size for nr of all classes
+  
+  for(unsigned int i=0; i<nrOfClasses; i++){
+    totalsize += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t));
+  }
+  return totalsize;
+}
+
 
 bool ClassID::process(){
-  COUT(3) << "processing classid: " << getClassID() << " name: " << getClassName() << std::endl;
-  Identifier *id=ClassByString( std::string(getClassName()) );
-  if(id==NULL){
-    COUT(0) << "Recieved a bad classname" << endl;
-    abort();
+  int nrOfClasses;
+  uint8_t *temp = data_+sizeof(uint32_t); //skip the packetid
+  uint32_t networkID;
+  uint32_t stringsize;
+  unsigned char *classname;
+  
+  
+  //clean the map of network ids
+  Factory::cleanNetworkIDs();
+  
+  COUT(4) << "=== processing classids: " << endl;
+  std::pair<uint32_t, std::string> tempPair;
+  Identifier *id;
+  // read the total number of classes
+  nrOfClasses = *(uint32_t*)temp;
+  temp += sizeof(uint32_t);
+  
+  for( int i=0; i<nrOfClasses; i++){
+    networkID = *(uint32_t*)temp;
+    stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
+    classname = temp+2*sizeof(uint32_t);
+    id=ClassByString( std::string((const char*)classname) );
+    COUT(0) << "processing classid: " << networkID << " name: " << classname << " id: " << id << std::endl;
+    if(id==NULL){
+      COUT(0) << "Recieved a bad classname" << endl;
+      abort();
+    }
+    id->setNetworkID( networkID );
+    temp += 2*sizeof(uint32_t) + stringsize;
   }
-  id->setNetworkID( getClassID() );
   delete this;
   return true;
 }
 
 
-uint32_t ClassID::getClassID(){
-  return *(uint32_t *)(data_ + _CLASSID);
-}
+// uint32_t ClassID::getClassID(){
+//   return *(uint32_t *)(data_ + _CLASSID);
+// }
 
 } //namespace packet
 }//namespace orxonox

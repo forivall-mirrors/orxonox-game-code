@@ -157,6 +157,8 @@ namespace orxonox
     Identifier* id = ClassByID(header.getClassID());
     if (!id)
     {
+        for(int i = 0; i<100; i++)
+            COUT(0) << "classid: " << i << " identifier: " << ClassByID(i) << endl;
         COUT(0) << "Assertion failed: id" << std::endl;
         COUT(0) << "Possible reason for this error: Client received a synchronizable object whose class has no factory." << std::endl;
         abort();

@@ -86,9 +86,17 @@ namespace orxonox
     */
     void Factory::changeNetworkID(Identifier* identifier, const uint32_t oldID, const uint32_t newID)
     {
-        getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
+//        getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
         getFactoryPointer()->identifierNetworkIDMap_[newID] = identifier;
 //std::cout << identifier->getName() << ": " << oldID << " -> " << newID << std::endl;
+    }
+
+    /**
+        @brief Cleans the NetworkID map (needed on clients for correct initialization)
+    */
+    void Factory::cleanNetworkIDs()
+    {
+        getFactoryPointer()->identifierNetworkIDMap_.clear();
     }
 
     /**
