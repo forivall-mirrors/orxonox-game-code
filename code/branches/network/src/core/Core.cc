@@ -259,12 +259,7 @@ namespace orxonox
     }
     /*static*/ std::string Core::getMediaPathString()
     {
-        return mediaPath_g.directory_string() + CP_SLASH;
-    }
-    /*static*/ std::string Core::getMediaPathPOSIXString()
-    {
         return mediaPath_g.string() + '/';
-
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
@@ -272,10 +267,6 @@ namespace orxonox
         return configPath_g;
     }
     /*static*/ std::string Core::getConfigPathString()
-    {
-        return configPath_g.directory_string() + CP_SLASH;
-    }
-    /*static*/ std::string Core::getConfigPathPOSIXString()
     {
         return configPath_g.string() + '/';
     }
@@ -285,10 +276,6 @@ namespace orxonox
         return logPath_g;
     }
     /*static*/ std::string Core::getLogPathString()
-    {
-        return logPath_g.directory_string() + CP_SLASH;
-    }
-    /*static*/ std::string Core::getLogPathPOSIXString()
     {
         return logPath_g.string() + '/';
     }
@@ -455,7 +442,7 @@ namespace orxonox
             if (boost::filesystem::exists(it->first) && !boost::filesystem::is_directory(it->first))
             {
                 ThrowException(General, std::string("The ") + it->second + " directory has been preoccupied by a file! \
-                                         Please remove " + it->first.file_string());
+                                         Please remove " + it->first.string());
             }
             if (boost::filesystem::create_directories(it->first)) // function may not return true at all (bug?)
             {
