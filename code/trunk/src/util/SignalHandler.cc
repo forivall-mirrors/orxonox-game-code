@@ -52,8 +52,6 @@ namespace orxonox
 
 namespace orxonox
 {
-    bool SignalHandler::bXAutoKeyRepeatOn_ = false;
-
     /**
      * register signal handlers for SIGSEGV and SIGABRT
      * @param appName path to executable eg argv[0]
@@ -63,25 +61,6 @@ namespace orxonox
     {
       this->appName = appName;
       this->filename = filename;
-
-      // prepare for restoring XAutoKeyRepeat
-      Display* display;
-      if ((display = XOpenDisplay(0)))
-      {
-        XKeyboardState oldState;
-        XGetKeyboardControl(display, &oldState);
-        if (oldState.global_auto_repeat == AutoRepeatModeOn)
-          bXAutoKeyRepeatOn_ = true;
-        else
-          bXAutoKeyRepeatOn_ = false;
-        XCloseDisplay(display);
-      }
-      else
-      {
-        std::cout << "Warning: couldn't open X display to restore XAutoKeyRepeat." << std::endl;
-        bXAutoKeyRepeatOn_ = false;
-      }
-
 
       // make sure doCatch is only called once without calling dontCatch
       assert( sigRecList.size() == 0 );
@@ -145,17 +124,6 @@ namespace orxonox
         case SIGILL:
           sigName = "SIGILL";
           break;
-      }
-
-      if (bXAutoKeyRepeatOn_)
-      {
-        std::cout << "Trying to restore XAutoKeyRepeat" << std::endl;
-        Display* display;
-        if ((display = XOpenDisplay(0)))
-        {
-          XAutoRepeatOn(display);
-          XCloseDisplay(display);
-        }
       }
 
       COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "try to write backtrace to file orxonox_crash.log" << std::endl;
@@ -325,7 +293,7 @@ namespace orxonox
                          "=======================================================\n";
       bt.insert(0, timeString);
 
-      FILE * f = fopen( getInstance().filename.c_str(), "a" );
+      FILE * f = fopen( getInstance().filename.c_str(), "w" );
 
       if ( !f )
       {
