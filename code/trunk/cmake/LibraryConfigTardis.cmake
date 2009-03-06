@@ -25,9 +25,11 @@
  #
 
 IF(UNIX AND NOT APPLE)
-  FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
-  IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
-    SET (TARDIS ON)
+  IF(EXISTS /etc/hostname)
+    FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
+    IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
+      SET (TARDIS ON)
+    ENDIF()
   ENDIF()
 ENDIF()
 
