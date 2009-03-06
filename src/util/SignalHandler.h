@@ -90,9 +90,6 @@ namespace orxonox
 
         std::string appName;
         std::string filename;
-
-        // used to turn on KeyAutoRepeat if OIS crashes
-        static bool bXAutoKeyRepeatOn_;
     };
 }
 
