@@ -325,7 +325,7 @@ namespace orxonox
                          "=======================================================\n";
       bt.insert(0, timeString);
 
-      FILE * f = fopen( getInstance().filename.c_str(), "a" );
+      FILE * f = fopen( getInstance().filename.c_str(), "w" );
 
       if ( !f )
       {
