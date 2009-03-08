@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "DroneController.h"
 #include "objects/worldentities/Drone.h"
+#include "util/Math.h"
 
 
 namespace orxonox
@@ -57,7 +58,10 @@ namespace orxonox
         static float totaltime = 0;
         totaltime += dt;
         Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
-        myDrone->rotateRoll(1000);
-        myDrone->moveFrontBack( 1000 );
+        if(totaltime<1)
+        {
+            myDrone->moveFrontBack( -sqrt(dt) );
+            myDrone->rotatePitch(-dt);
+        }
     }
 }

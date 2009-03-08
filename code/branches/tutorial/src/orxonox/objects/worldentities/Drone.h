@@ -69,11 +69,13 @@ namespace orxonox
             { this->rotateRoll(Vector2(value, 0)); }
             
         private:
-            DroneController *myController;
+            DroneController *myController_;
             
             Vector3 steering_;
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
+            float primaryThrust_;
+            float auxilaryThrust_;
             float rotationThrust_;
     };
 
