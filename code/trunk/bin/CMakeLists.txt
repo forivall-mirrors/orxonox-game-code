@@ -25,7 +25,7 @@
  #
 
 # Create run scripts for Windows to manually add the DLL path when executing
-SET(RUN_SCRIPTS run client1 client2 server dedicated)
+SET(RUN_SCRIPTS run standalone client1 client2 server dedicated)
 IF(WIN32)
   FOREACH(_script ${RUN_SCRIPTS})
     LIST(REMOVE_ITEM RUN_SCRIPTS ${_script})
