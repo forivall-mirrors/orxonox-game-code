@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Oli Scheuss
  *   Co-authors:
  *      ...
  *
@@ -34,17 +34,16 @@
 
 namespace orxonox
 {
-    // put your code in here:
+    // PLACE YOUR CODE HERE
     // create the factory for the drone
     CreateFactory(Drone);
 
     Drone::Drone(BaseObject* creator) : ControllableEntity(creator)
     {
-        //put your code in here:
+        this->myController_ = 0;
+        // PLACE YOUR CODE HERE
         // - register the drone class to the core
         // - create a new controller and pass our this pointer to it as creator
-        this->myController_ = 0;
-        RegisterObject(Drone);
         
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
@@ -69,30 +68,29 @@ namespace orxonox
         // this calls the XMLPort function of the parent class
         SUPER(Drone, XMLPort, xmlelement, mode);
 
-        XMLPortParamVariable(Drone, "primaryThrust",  primaryThrust_,  xmlelement, mode);
-        XMLPortParamVariable(Drone, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
-        XMLPortParamVariable(Drone, "rotationThrust", rotationThrust_, xmlelement, mode);
+        // PLACE YOUR CODE HERE
+        // make sure you add the variables primaryThrust_, auxilaryThrust_ and rotationThrust_ to xmlport
+        // variables can be added by the following command
+        // XMLPortParamVariable(Class, "xml-attribute-name",  variable_name,  xmlelement, mode);
     }
 
     void Drone::tick(float dt)
     {
-        SUPER(Drone, tick, dt);
+        // PLACE YOUR CODE HERE
+        // make sure the tick function of the base class gets called here
         
-        //if (this->hasLocalController())
-        //{
-            this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
-            this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
-            if (this->localLinearAcceleration_.z() > 0)
-              this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
-            else
-              this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
-            this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
-            this->localLinearAcceleration_.setValue(0, 0, 0);
-        
-            this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
-            this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
-            this->localAngularAcceleration_.setValue(0, 0, 0);
-        //}
+        this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
+        this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
+        if (this->localLinearAcceleration_.z() > 0)
+          this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
+        else
+          this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
+        this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
+        this->localLinearAcceleration_.setValue(0, 0, 0);
+    
+        this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
+        this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
+        this->localAngularAcceleration_.setValue(0, 0, 0);
     }
     
     
