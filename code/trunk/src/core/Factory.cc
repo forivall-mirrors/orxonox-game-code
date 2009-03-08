@@ -75,7 +75,6 @@ namespace orxonox
     {
         getFactoryPointer()->identifierStringMap_[name] = identifier;
         getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
-//std::cout << identifier->getName() << ": " << identifier->getNetworkID() << std::endl;
     }
 
     /**
@@ -88,7 +87,6 @@ namespace orxonox
     {
 //        getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
         getFactoryPointer()->identifierNetworkIDMap_[newID] = identifier;
-//std::cout << identifier->getName() << ": " << oldID << " -> " << newID << std::endl;
     }
 
     /**
