@@ -46,22 +46,30 @@ namespace orxonox
     {
         RegisterObject(ExplosionChunk);
 
-        if (!this->getScene() || !Core::showsGraphics() || !this->getScene()->getSceneManager())
+        if ( Core::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
             ThrowException(AbortLoading, "Can't create ExplosionChunk, no scene or no scene manager given.");
 
         this->bStop_ = false;
         this->LOD_ = LODParticle::normal;
 
-        try
+        if ( Core::showsGraphics() )
         {
-            this->fire_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/fire4", this->LOD_);
-            this->attachOgreObject(this->fire_->getParticleSystem());
-            this->smoke_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
-            this->attachOgreObject(this->smoke_->getParticleSystem());
+            try
+            {
+                this->fire_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/fire4", this->LOD_);
+                this->attachOgreObject(this->fire_->getParticleSystem());
+                this->smoke_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
+                this->attachOgreObject(this->smoke_->getParticleSystem());
+            }
+            catch (...)
+            {
+                COUT(1) << "Error: Couln't load particle effect in ExplosionChunk." << std::endl;
+                this->fire_ = 0;
+                this->smoke_ = 0;
+            }
         }
-        catch (...)
+        else
         {
-            COUT(1) << "Error: Couln't load particle effect in ExplosionChunk." << std::endl;
             this->fire_ = 0;
             this->smoke_ = 0;
         }

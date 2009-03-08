@@ -52,7 +52,7 @@ namespace orxonox
     assert(LuaBind::singletonRef_s == 0);
     LuaBind::singletonRef_s = this;
 
-    this->includePath_ = Core::getMediaPathPOSIXString();
+    this->includePath_ = Core::getMediaPathString();
 
     luaState_ = lua_open();
     luaSource_ = "";
@@ -89,7 +89,7 @@ namespace orxonox
 
     output_ = "";
     std::ifstream file;
-    file.open(filepath.file_string().c_str(), std::fstream::in);
+    file.open(filepath.string().c_str(), std::fstream::in);
 
     if (!file.is_open())
     {

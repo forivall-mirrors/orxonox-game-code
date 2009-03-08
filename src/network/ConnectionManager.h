@@ -79,32 +79,23 @@ namespace orxonox
     public:
     static boost::recursive_mutex enet_mutex;
     ConnectionManager();
-    //ConnectionManager(ClientInformation *head);
     ConnectionManager(int port);
     ConnectionManager(int port, const char *address);
     ConnectionManager(int port, const std::string& address);
     ~ConnectionManager();
-    //ENetPacket *getPacket(ENetAddress &address); // thread1
-    //ENetPacket *getPacket(int &clientID);
     ENetEvent *getEvent();
     bool queueEmpty();
     void createListener();
     bool quitListener();
-//     bool addPacket(Packet::Packet *packet);
     static bool addPacket(ENetPacket *packet, ENetPeer *peer);
     static bool addPacket(ENetPacket *packet, int ID);
     static bool addPacketAll(ENetPacket *packet);
-  //  bool sendPackets(ENetEvent *event);
     bool sendPackets();
-    //bool createClient(int clientID);
     void disconnectClient(ClientInformation *client);
     void syncClassid(unsigned int clientID);
 
   private:
-//     bool clientDisconnect(ENetPeer *peer);
-//     bool removeClient(int clientID);
     bool processData(ENetEvent *event);
-    //bool addClient(ENetEvent *event);
     void receiverThread();
     void disconnectClients();
     int getClientID(ENetPeer peer);

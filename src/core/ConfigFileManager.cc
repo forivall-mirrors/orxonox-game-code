@@ -240,7 +240,7 @@ namespace orxonox
 
         // Open the file
         std::ifstream file;
-        file.open(filepath.file_string().c_str(), std::fstream::in);
+        file.open(filepath.string().c_str(), std::fstream::in);
         if (file.is_open())
         {
 
@@ -346,7 +346,7 @@ namespace orxonox
         boost::filesystem::path filepath(Core::getConfigPath() / this->filename_);
 
         std::ofstream file;
-        file.open(filepath.file_string().c_str(), std::fstream::out);
+        file.open(filepath.string().c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 

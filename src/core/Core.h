@@ -82,9 +82,6 @@ namespace orxonox
             static std::string getMediaPathString();
             static std::string getConfigPathString();
             static std::string getLogPathString();
-            static std::string getMediaPathPOSIXString();
-            static std::string getConfigPathPOSIXString();
-            static std::string getLogPathPOSIXString();
 
             // fast access global variables.
             static bool showsGraphics() { return bShowsGraphics_s; }

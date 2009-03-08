@@ -209,12 +209,12 @@ namespace orxonox
 
         // This creates the file if it's not existing
         std::ofstream createFile;
-        createFile.open(filepath.file_string().c_str(), std::fstream::app);
+        createFile.open(filepath.string().c_str(), std::fstream::app);
         createFile.close();
 
         // Open the file
         std::ifstream file;
-        file.open(filepath.file_string().c_str(), std::fstream::in);
+        file.open(filepath.string().c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -260,7 +260,7 @@ namespace orxonox
 
         // Open the file
         std::ifstream file;
-        file.open(filepath.file_string().c_str(), std::fstream::in);
+        file.open(filepath.string().c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -316,7 +316,7 @@ namespace orxonox
 
         // Open the file
         std::ofstream file;
-        file.open(filepath.file_string().c_str(), std::fstream::out);
+        file.open(filepath.string().c_str(), std::fstream::out);
 
         if (!file.is_open())
         {

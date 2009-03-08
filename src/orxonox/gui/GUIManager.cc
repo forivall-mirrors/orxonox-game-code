@@ -153,7 +153,7 @@ namespace orxonox
                 // Create our own logger to specify the filepath
                 boost::filesystem::path ceguiLogFilepath(Core::getLogPath() / "cegui.log");
                 this->ceguiLogger_ = new DefaultLogger();
-                this->ceguiLogger_->setLogFilename(ceguiLogFilepath.file_string());
+                this->ceguiLogger_->setLogFilename(ceguiLogFilepath.string());
                 // set the log level according to ours (translate by subtracting 1)
                 this->ceguiLogger_->setLoggingLevel(
                     (LoggingLevel)(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
