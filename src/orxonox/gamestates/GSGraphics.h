@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
+#define NOMINMAX // required to stop windows.h screwing up std::min definition
 #include <OgreWindowEventUtilities.h>
 #include "core/GameState.h"
 #include "core/OrxonoxClass.h"

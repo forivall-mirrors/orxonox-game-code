@@ -48,15 +48,8 @@
 #  ifndef WIN32_LEAN_AND_MEAN
 #    define WIN32_LEAN_AND_MEAN
 #  endif
+#  define NOMINMAX // required to stop windows.h screwing up std::min definition
 #  include "windows.h"
-
-   //Get around Windows hackery
-#  ifdef max
-#    undef max
-#  endif
-#  ifdef min
-#    undef min
-#  endif
 #endif
 
 namespace orxonox

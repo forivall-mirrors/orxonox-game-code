@@ -44,6 +44,7 @@
 // prevent Ogre from including winsock.h that messes with winsock2.h from enet
 #  define WIN32_LEAN_AND_MEAN
 #endif
+#define NOMINMAX // required to stop windows.h screwing up std::min definition
 #include <Ogre.h>
 #include <CEGUI.h>
 #include <boost/thread/recursive_mutex.hpp>
@@ -56,16 +57,6 @@
 #include <ois/OIS.h>
 #include <tinyxml/ticpp.h>
 #include <tolua++.h>
-
-//Get around Windows hackery (windows.h is included by Ogre.h)
-#ifdef ORXONOX_PLATFORM_WINDOWS 
-#  ifdef max
-#    undef max
-#  endif
-#  ifdef min
-#    undef min
-#  endif
-#endif
 
 //----------- Our files ----------
 //--------------------------------

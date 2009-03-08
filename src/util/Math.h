@@ -50,14 +50,9 @@
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 
-//Get around Windows hackery
-#ifdef ORXONOX_PLATFORM_WINDOWS
-#  ifdef max
-#    undef max
-#  endif
-#  ifdef min
-#    undef min
-#  endif
+// Certain headers might define min and max macros
+#if defined(max) || defined(min) || defined(sgn) || defined(clamp) || defined(square) || defined(mod)
+#  error An inline math function was overridden by a macro
 #endif
 
 namespace orxonox
