@@ -43,6 +43,7 @@ namespace orxonox
         //put your code in here:
         // - register the drone class to the core
         // - create a new controller and pass our this pointer to it as creator
+        this->myController = 0;
         RegisterObject(Drone);
         
         this->localLinearAcceleration_.setValue(0, 0, 0);
