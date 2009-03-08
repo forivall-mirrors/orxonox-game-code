@@ -62,6 +62,7 @@ namespace orxonox
             static Identifier* getIdentifier(const uint32_t id);
             static void add(const std::string& name, Identifier* identifier);
             static void changeNetworkID(Identifier* identifier, const uint32_t oldID, const uint32_t newID);
+	    static void cleanNetworkIDs();
             static void createClassHierarchy();
 
             static Factory* getFactoryPointer();    // avoid overriding order problem in the static intialisation process

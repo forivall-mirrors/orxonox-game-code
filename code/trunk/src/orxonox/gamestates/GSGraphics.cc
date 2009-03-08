@@ -135,7 +135,7 @@ namespace orxonox
 
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
-        this->debugOverlay_ = new XMLFile((Core::getMediaPath() / "overlay" / "debug.oxo").file_string());
+        this->debugOverlay_ = new XMLFile((Core::getMediaPath() / "overlay" / "debug.oxo").string());
         Loader::open(debugOverlay_);
 
         // Calls the InputManager which sets up the input devices.
@@ -303,7 +303,7 @@ namespace orxonox
 
         // create our own log that we can listen to
         Ogre::Log *myLog;
-        myLog = ogreLogger_->createLog(ogreLogFilepath.file_string(), true, false, false);
+        myLog = ogreLogger_->createLog(ogreLogFilepath.string(), true, false, false);
         COUT(4) << "Ogre Log created" << std::endl;
 
         myLog->setLogDetail(Ogre::LL_BOREME);
@@ -316,12 +316,12 @@ namespace orxonox
         {
             // create a zero sized file
             std::ofstream creator;
-            creator.open(ogreConfigFilepath.file_string().c_str());
+            creator.open(ogreConfigFilepath.string().c_str());
             creator.close();
         }
 
         // Leave plugins file empty. We're going to do that part manually later
-        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.file_string(), ogreLogFilepath.file_string());
+        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
 
         COUT(3) << "Ogre set up done." << std::endl;
     }
@@ -335,6 +335,7 @@ namespace orxonox
         boost::filesystem::path folder(ogrePluginsFolder_);
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
+        // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
             ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
     }
@@ -355,7 +356,7 @@ namespace orxonox
         Ogre::ConfigFile cf;
         try
         {
-            cf.load((Core::getMediaPath() / resourceFile_).file_string());
+            cf.load((Core::getMediaPath() / resourceFile_).string());
         }
         catch (...)
         {
@@ -381,7 +382,7 @@ namespace orxonox
                     archName = i->second; // name (and location) of archive
 
                     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                        (Core::getMediaPath() / archName).directory_string(), typeName, secName);
+                        (Core::getMediaPath() / archName).string(), typeName, secName);
                 }
             }
             catch (Ogre::Exception& ex)

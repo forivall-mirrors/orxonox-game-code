@@ -141,7 +141,6 @@ namespace orxonox
 
   protected:
     Synchronisable(BaseObject* creator);
-//     void registerVariable(void *var, int size, variableType t, uint8_t mode=0x1, NetworkCallbackBase *cb=0);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
     template <class T> void unregisterVariable(T& var);
     void setObjectMode(uint8_t mode);
@@ -204,8 +203,6 @@ namespace orxonox
   template <> _NetworkExport void Synchronisable::registerVariable( mbool& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( const Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-//   template <> _NetworkExport void Synchronisable::registerVariable( LODParticle::LOD& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
-//   template <> _NetworkExport void Synchronisable::registerVariable( Ogre::Light::LightTypes& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
 }
 
 #endif /* _Synchronisable_H__ */

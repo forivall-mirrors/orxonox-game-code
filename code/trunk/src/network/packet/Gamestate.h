@@ -92,9 +92,6 @@ class _NetworkExport GamestateHeader{
     { assert(data_); assert(h.data_); memcpy( data_, h.data_, getSize()); }
   private:
     uint8_t *data_;
-//#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
-//#define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
-//#define HEADER GAMESTATE_HEADER(data_)
 
 };
 
