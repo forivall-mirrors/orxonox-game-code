@@ -8,6 +8,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Backlight.cc
   Billboard.cc
   BlinkingBillboard.cc
+  Drone.cc
   ExplosionChunk.cc
   FadingBillboard.cc
   Light.cc
