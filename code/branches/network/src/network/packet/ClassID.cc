@@ -154,9 +154,5 @@ bool ClassID::process(){
 }
 
 
-// uint32_t ClassID::getClassID(){
-//   return *(uint32_t *)(data_ + _CLASSID);
-// }
-
 } //namespace packet
 }//namespace orxonox

@@ -45,9 +45,6 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
-// #include "core/CoreIncludes.h"
-// #include "core/BaseObject.h"
-// #include "core/Iterator.h"
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"
@@ -123,14 +120,11 @@ namespace orxonox
 
   void ConnectionManager::createListener() {
     receiverThread_ = new boost::thread(boost::bind(&ConnectionManager::receiverThread, this));
-    //network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
-         //boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
     return;
   }
 
   bool ConnectionManager::quitListener() {
     quit=true;
-    //network_threads.join_all();
     receiverThread_->join();
     return true;
   }
@@ -205,25 +199,11 @@ namespace orxonox
       switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          //COUT(3) << "adding event_type_connect to queue" << std::endl;
         case ENET_EVENT_TYPE_DISCONNECT:
-          //addClient(event);
-          //this is a workaround to ensure thread safety
-          //COUT(5) << "Con.Man: connection event has occured" << std::endl;
-          //break;
         case ENET_EVENT_TYPE_RECEIVE:
-          //std::cout << "received data" << std::endl;
-          //COUT(5) << "Con.Man: receive event has occured" << std::endl;
-          // only add, if client has connected yet and not been disconnected
-          //if(head_->findClient(&event->peer->address))
             processData(event);
             event = new ENetEvent;
-//           else
-//             COUT(3) << "received a packet from a client we don't know" << std::endl;
           break;
-        //case ENET_EVENT_TYPE_DISCONNECT:
-          //clientDisconnect(event->peer);
-          //break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
           msleep(1);
@@ -298,35 +278,6 @@ namespace orxonox
     return ClientInformation::findClient(clientID)->getPeer();
   }
 
-  /**
-   *
-   * @param clientID
-   */
-//   void ConnectionManager::syncClassid(unsigned int clientID) {
-//     unsigned int network_id=0, failures=0;
-//     std::string classname;
-//     Identifier *id;
-//     std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
-//     while(it != Factory::getFactoryMapEnd()){
-//       id = (*it).second;
-//       if(id == NULL)
-//         continue;
-//       classname = id->getName();
-//       network_id = id->getNetworkID();
-//       if(network_id==0)
-//         COUT(3) << "we got a null class id: " << id->getName() << std::endl;
-//       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
-// 
-//       packet::ClassID *classid = new packet::ClassID( network_id, classname );
-//       classid->setClientID(clientID);
-//       while(!classid->send() && failures < 10){
-//         failures++;
-//       }
-//       ++it;
-//     }
-//     //sendPackets();
-//     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
-//   }
 
   void ConnectionManager::syncClassid(unsigned int clientID) {
     int failures=0;

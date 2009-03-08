@@ -47,10 +47,6 @@ namespace packet {
 
 #define PACKET_FLAG_GAMESTATE  ENET_PACKET_FLAG_RELIABLE
 
-// Gamestate::Gamestate()
-// {
-//   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
-// }
 
 Gamestate::Gamestate()
 {
@@ -126,10 +122,8 @@ bool Gamestate::collectData(int id, uint8_t mode)
     }// stop allocate additional memory
 #endif
 
-    //if(it->doSelection(id))
     if ( it->doSync( id, mode ) )
       dataMap_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
-//     dataMap_[mem-data_]=(*it);  // save the mem location of the synchronisable data
     if(!it->getData(mem, id, mode))
       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
@@ -157,8 +151,6 @@ bool Gamestate::spreadData(uint8_t mode)
   assert(!header_->isCompressed());
   assert(!header_->isDiffed());
   uint8_t *mem=data_+GamestateHeader::getSize();
-    // get the start of the Synchronisable list
-  //ObjectList<Synchronisable>::iterator it=ObjectList<Synchronisable>::begin();
   Synchronisable *s;
 
   // update the data of the objects we received
@@ -176,15 +168,10 @@ bool Gamestate::spreadData(uint8_t mode)
       {
         mem += objectheader.getDataSize();
       }
-//         COUT(0) << "could not fabricate synchronisable: " << objectheader->objectID << " classid: " << objectheader->classID << " creator: " << objectheader->creatorID << endl;
-//       else
-//         COUT(0) << "fabricated: " << objectheader->objectID << " classid: " << objectheader->classID << " creator: "  << objectheader->creatorID << endl;
     }
     else
     {
       bool b = s->updateData(mem, mode);
-//      if(!b)
-//        COUT(0) << "data could not be updated" << endl;
       assert(b);
     }
   }
@@ -261,7 +248,6 @@ bool Gamestate::compressData()
 
   uint8_t *ndata = new uint8_t[buffer+GamestateHeader::getSize()];
   uint8_t *dest = ndata + GamestateHeader::getSize();
-  //unsigned char *dest = new unsigned char[buffer];
   uint8_t *source = data_ + GamestateHeader::getSize();
   int retval;
   retval = compress( dest, &buffer, source, (uLong)(header_->getDataSize()) );
@@ -293,7 +279,6 @@ bool Gamestate::decompressData()
   uint32_t datasize = header_->getDataSize();
   uint32_t compsize = header_->getCompSize();
   uint32_t bufsize;
-//  assert(compsize<=datasize);
   bufsize = datasize;
   assert(bufsize!=0);
   uint8_t *ndata = new uint8_t[bufsize + GamestateHeader::getSize()];
@@ -339,7 +324,6 @@ Gamestate *Gamestate::diff(Gamestate *base)
   assert(!header_->isCompressed());
   assert(!header_->isDiffed());
   GamestateHeader diffHeader(base->data_);
-  //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   uint8_t *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
   uint32_t of=0; // pointers offset
   uint32_t dest_length=0;
@@ -396,10 +380,6 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end();){
-//    if((*it).objSize==0)
-//      continue;
-//    if(it->second->getSize(HEADER->id)==0) // merged from objecthierarchy2, doesn't work anymore; TODO: change this
-//      continue;                            // merged from objecthierarchy2, doesn't work anymore; TODO: change this
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);
     if ( (*it).objSize == 0 )
@@ -407,8 +387,6 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
       ++it;
       continue;
     }
-//     object = Synchronisable::getSynchronisable( (*it).objID );
-//     assert(object->objectID == oldobjectheader->objectID);
     objectsize = oldobjectheader.getDataSize();
     objectOffset=SynchronisableHeader::getSize(); //skip the size and the availableData variables in the objectheader
     if ( (*it).objID == oldobjectheader.getObjectID() ){
@@ -446,7 +424,6 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   assert(this && base);assert(data_);
   assert(header_->isDiffed());
   assert(!header_->isCompressed() && !base->header_->isCompressed());
-  //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   uint8_t *basep = GAMESTATE_START(base->data_);
   uint8_t *gs = GAMESTATE_START(this->data_);
   uint32_t of=0; // pointers offset

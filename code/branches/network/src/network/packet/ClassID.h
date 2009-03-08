@@ -51,12 +51,7 @@ public:
   uint32_t getSize() const;
   bool process();
 
-//   uint32_t getClassID();
-//   uint32_t getClassNameLength(){ return classNameLength_; }
-//   const char *getClassName(){ return (const char*)(data_+_CLASSNAME); }
 private:
-//   uint32_t classNameLength_;
-//   static bool alreadySetOneClassID_;
 };
 
 } //namespace packet

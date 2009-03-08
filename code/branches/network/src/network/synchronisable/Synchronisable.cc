@@ -99,28 +99,12 @@ namespace orxonox
         delete (*it);
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID);
-//       COUT(3) << "destruct synchronisable +++" << objectID << " | " << classID << std::endl;
-//       COUT(3) << " bump ---" << objectID << " | " << &objectMap_ << std::endl;
-//       assert(objectMap_[objectID]->objectID==objectID);
-//       objectMap_.erase(objectID);
     }
     std::map<uint32_t, Synchronisable*>::iterator it;
     it = objectMap_.find(objectID);
     if (it != objectMap_.end())
       objectMap_.erase(it);
 
-    //HACK HACK HACK HACK HACK HACK
-    // this hack ensures that children of this object also get destroyed
-//     ObjectList<Synchronisable>::iterator it2, it3;
-//     // get total size of gamestate
-//     for(it2 = ObjectList<Synchronisable>::begin(); it2; ++it2)
-//     {
-//       if ( it2->getCreatorID() == this->objectID && it2->getCreatorID() != OBJECTID_UNKNOWN )
-//       {
-//         Synchronisable::deleteObject( it2->getObjectID() );
-//       }
-//     }
-    //HACK HACK HACK HACK HACK HACK
   }
 
 
@@ -204,11 +188,9 @@ namespace orxonox
    * @return true/false
    */
   bool Synchronisable::deleteObject(uint32_t objectID){
-//     assert(getSynchronisable(objectID));
     if(!getSynchronisable(objectID))
       return false;
     assert(getSynchronisable(objectID)->objectID==objectID);
-//     delete objectMap_[objectID];
     Synchronisable *s = getSynchronisable(objectID);
     if(s)
       delete s;
@@ -259,7 +241,6 @@ namespace orxonox
     //if this tick is we dont synchronise, then abort now
     if(!doSync(id, mode))
       return true;
-    //std::cout << "inside getData" << std::endl;
     uint32_t tempsize = 0;
     if (this->classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
@@ -268,7 +249,6 @@ namespace orxonox
         this->classID = this->getIdentifier()->getNetworkID();
 
     assert(this->classID==this->getIdentifier()->getNetworkID());
-//     this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<SynchronisableVariableBase*>::iterator i;
     uint32_t size;
     size=getSize(id, mode);
@@ -306,8 +286,6 @@ namespace orxonox
     if(mode==0x0)
       mode=state_;
     std::list<SynchronisableVariableBase *>::iterator i;
-    //assert(objectMode_!=0x0);
-    //assert( (mode ^ objectMode_) != 0);
     if(syncList.empty()){
       assert(0);
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
