@@ -108,10 +108,10 @@ namespace orxonox
             // this stuff here may need some adjustments
             float coeff = min(1.0f, 15.0f * dt);
 
-            Vector3 offset = this->getWorldPosition() - this->cameraNode_->getWorldPosition();
+            Vector3 offset = this->getWorldPosition() - this->cameraNode_->_getDerivedPosition();
             this->cameraNode_->translate(coeff * offset);
 
-            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), true));
+            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
             //this->cameraNode_->setOrientation(this->getWorldOrientation());
         }
     }
