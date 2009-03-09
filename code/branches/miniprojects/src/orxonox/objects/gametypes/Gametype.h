@@ -90,9 +90,15 @@ namespace orxonox
 
             virtual void playerScored(Player& player);
 
+            virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
+            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
+            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
+
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             virtual void pawnPreSpawn(Pawn* pawn);
             virtual void pawnPostSpawn(Pawn* pawn);
+            virtual void playerPreSpawn(PlayerInfo* player);
+            virtual void playerPostSpawn(PlayerInfo* player);
 
             inline const std::map<PlayerInfo*, Player>& getPlayers() const
                 { return this->players_; }
@@ -111,7 +117,7 @@ namespace orxonox
             inline unsigned int getNumberOfPlayers() const
                 { return this->players_.size(); }
 
-        private:
+        protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
             void addPlayer(PlayerInfo* player);

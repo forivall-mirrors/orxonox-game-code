@@ -65,8 +65,6 @@ namespace orxonox
 
         this->setConfigValues();
 
-        this->addBots(this->numberOfBots_);
-
         // load the corresponding score board
         if (Core::showsGraphics() && this->scoreboardTemplate_ != "")
         {
@@ -104,6 +102,8 @@ namespace orxonox
 
     void Gametype::start()
     {
+        this->addBots(this->numberOfBots_);
+
         COUT(0) << "game started" << std::endl;
         this->gtinfo_.bStarted_ = true;
 
@@ -165,6 +165,29 @@ namespace orxonox
 
     void Gametype::pawnPostSpawn(Pawn* pawn)
     {
+    }
+
+    void Gametype::playerPreSpawn(PlayerInfo* player)
+    {
+    }
+
+    void Gametype::playerPostSpawn(PlayerInfo* player)
+    {
+    }
+
+    bool Gametype::allowPawnHit(Pawn* victim, Pawn* originator)
+    {
+        return true;
+    }
+
+    bool Gametype::allowPawnDamage(Pawn* victim, Pawn* originator)
+    {
+        return true;
+    }
+
+    bool Gametype::allowPawnDeath(Pawn* victim, Pawn* originator)
+    {
+        return true;
     }
 
     void Gametype::pawnKilled(Pawn* victim, Pawn* killer)
@@ -335,8 +358,10 @@ namespace orxonox
         SpawnPoint* spawnpoint = this->getBestSpawnPoint(player);
         if (spawnpoint)
         {
+            this->playerPreSpawn(player);
             player->startControl(spawnpoint->spawn());
             this->players_[player].state_ = PlayerState::Alive;
+            this->playerPostSpawn(player);
         }
         else
         {

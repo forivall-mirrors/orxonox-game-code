@@ -7,6 +7,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Radar.cc
   RadarListener.cc
   RadarViewable.cc
+  Teamcolourable.cc
   Tickable.cc
   Test.cc
   Scene.cc
