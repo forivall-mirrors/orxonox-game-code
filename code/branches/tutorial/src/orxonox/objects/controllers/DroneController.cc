@@ -39,7 +39,6 @@ namespace orxonox
         // Place your code here:
         // - make sure to register the object in the factory
         // - do any kind of initialisation
-        RegisterObject(DroneController);
         
         
         
