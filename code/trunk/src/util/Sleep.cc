@@ -62,15 +62,15 @@ namespace orxonox
 
 namespace orxonox
 {
-    inline void usleep(unsigned long usec)
+    void usleep(unsigned long usec)
     {
         ::usleep(usec);
     }
-    inline void msleep(unsigned long msec)
+    void msleep(unsigned long msec)
     {
         ::usleep(msec * 1000);
     }
-    inline void sleep(unsigned long sec)
+    void sleep(unsigned long sec)
     {
         ::usleep(sec * 1000000);
     }
