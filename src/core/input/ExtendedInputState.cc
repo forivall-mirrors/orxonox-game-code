@@ -34,7 +34,7 @@
 
 #include "ExtendedInputState.h"
 
-#include <assert.h>
+#include <cassert>
 #include "util/Debug.h"
 
 namespace orxonox

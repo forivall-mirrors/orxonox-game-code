@@ -43,12 +43,6 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
-#include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
 #include "PacketBuffer.h"
 
 namespace boost { class thread; }
@@ -83,6 +77,7 @@ namespace orxonox
     bool waitEstablished(int milisec);
     bool isConnected(){return established;}
   private:
+    ClientConnection(const ClientConnection& copy); // not used
     bool processData(ENetEvent *event);
     // implementation of the listener
     void receiverThread(); //thread2
@@ -92,16 +87,14 @@ namespace orxonox
     PacketBuffer buffer;
     // enet stuff
     ENetHost *client;
-    ENetAddress serverAddress;
+    ENetAddress *serverAddress;
     // quit-variable (communication with threads)
     bool quit;
     bool established;
     // clientlist
     ENetPeer *server;
     boost::thread *receiverThread_;
-
-    static boost::recursive_mutex enet_mutex_;
-  };
+};
 
 
 

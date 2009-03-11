@@ -68,6 +68,19 @@ namespace orxonox
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
+
+// from ENet
+struct _ENetPeer;
+typedef _ENetPeer ENetPeer;
+struct _ENetPacket;
+typedef _ENetPacket ENetPacket;
+struct _ENetEvent;
+typedef _ENetEvent ENetEvent;
+struct _ENetHost;
+typedef _ENetHost ENetHost;
+struct _ENetAddress;
+typedef _ENetAddress ENetAddress;
+
 namespace orxonox
 {
   class Client;

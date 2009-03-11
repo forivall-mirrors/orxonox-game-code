@@ -38,10 +38,6 @@
 #include "util/Math.h"
 #include "util/mbool.h"
 #include "core/OrxonoxClass.h"
-// TODO: this has to be removed
-// #include <OgreLight.h>
-// #include "OrxonoxPrereqs.h"
-// ============================
 #include "NetworkCallback.h"
 #include "SynchronisableVariable.h"
 

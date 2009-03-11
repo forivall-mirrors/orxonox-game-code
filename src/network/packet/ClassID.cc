@@ -29,11 +29,12 @@
 
 
 #include "ClassID.h"
+#include <enet/enet.h>
 #include "core/CoreIncludes.h"
 #include "core/Factory.h"
 #include <cstring>
 #include <string>
-#include <assert.h>
+#include <cassert>
 #include <map>
 #include <queue>
 

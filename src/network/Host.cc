@@ -26,7 +26,7 @@
  *
  */
 
-#include <assert.h>
+#include <cassert>
 
 #include "Host.h"
 #include "core/ConsoleCommand.h"

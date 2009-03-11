@@ -33,7 +33,7 @@
 #include <cstring>
 #include <string>
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"

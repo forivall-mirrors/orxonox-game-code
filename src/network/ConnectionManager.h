@@ -44,23 +44,11 @@
 
 #include <string>
 #include <map>
-// enet library for networking support
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
-#include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
 
 #include "PacketBuffer.h"
 #include "packet/Packet.h"
 
 namespace boost { class thread; }
-
-namespace std
-{
-  bool operator<(ENetAddress a, ENetAddress b);
-}
 
 namespace orxonox
 {
@@ -77,7 +65,6 @@ namespace orxonox
 
   class _NetworkExport ConnectionManager{
     public:
-    static boost::recursive_mutex enet_mutex;
     ConnectionManager();
     ConnectionManager(int port);
     ConnectionManager(int port, const char *address);
@@ -95,16 +82,17 @@ namespace orxonox
     void syncClassid(unsigned int clientID);
 
   private:
+    ConnectionManager(const ConnectionManager& copy); // not used
     bool processData(ENetEvent *event);
     void receiverThread();
     void disconnectClients();
-    int getClientID(ENetPeer peer);
-    int getClientID(ENetAddress address);
+    int getClientID(ENetPeer* peer);
+    int getClientID(ENetAddress* address);
     ENetPeer *getClientPeer(int clientID);
     PacketBuffer buffer;
 
     ENetHost *server;
-    ENetAddress bindAddress;
+    ENetAddress *bindAddress;
 
     bool quit; // quit-variable (communication with threads)
 

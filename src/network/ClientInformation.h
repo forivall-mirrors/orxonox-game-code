@@ -42,14 +42,6 @@
 
 #include "NetworkPrereqs.h"
 
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
-#include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
-
-
 // WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
 
 namespace orxonox
@@ -86,7 +78,7 @@ namespace orxonox
     int getFailures();
     void addFailure();
     void resetFailures();
-    enet_uint32 getRTT();
+    uint32_t getRTT();
     double getPacketLoss();
 
     static bool removeClient(unsigned int clientID);

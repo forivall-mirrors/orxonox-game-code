@@ -31,12 +31,6 @@
 #include "network/NetworkPrereqs.h"
 
 #include <map>
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
-#include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
 
 namespace orxonox {
 
@@ -71,7 +65,7 @@ class _NetworkExport Packet{
     virtual unsigned char *getData(){ return data_; };
     virtual unsigned int getSize() const =0;
     virtual bool process()=0;
-    enet_uint32 getFlags()
+    uint32_t getFlags()
       { return flags_; }
     int getClientID()
       { return clientID_; }
@@ -83,7 +77,7 @@ class _NetworkExport Packet{
     Packet();
     Packet(uint8_t *data, unsigned int clientID);
 //    Packet(ENetPacket *packet, ENetPeer *peer);
-    enet_uint32 flags_;
+    uint32_t flags_;
     unsigned int clientID_;
     ENUM::Direction packetDirection_;
     /** Pointer to the data. Be careful when deleting it because it might
@@ -95,8 +89,6 @@ class _NetworkExport Packet{
     bool bDataENetAllocated_;
   private:
     static std::map<size_t, Packet *> packetMap_;
-    //! Static mutex for any packetMap_ access
-    static boost::recursive_mutex packetMap_mutex;
     ENetPacket *enetPacket_;
 };
 
