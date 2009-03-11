@@ -27,6 +27,9 @@
  */
 
 #include "Gamestate.h"
+#include <enet/enet.h>
+#include <zlib.h>
+#include <cassert>
 #include "../GamestateHandler.h"
 #include "../synchronisable/Synchronisable.h"
 #include "../TrafficControl.h"
@@ -34,8 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 
-#include <zlib.h>
-#include <cassert>
 
 
 

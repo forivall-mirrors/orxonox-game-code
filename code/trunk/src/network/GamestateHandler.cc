@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 
 #include "GamestateHandler.h"
 #include "packet/Packet.h"

@@ -27,21 +27,53 @@
  */
 
 /**
- @file
- @brief
-    Functions for using sleep() and usleep() on windows.
- */
+    @file
+    @brief Implementation of three sleep functions.
+*/
 
-#ifndef _Sleep_H__
-#define _Sleep_H__
+#include "Sleep.h"
+#include "Debug.h"
 
-#include "UtilPrereqs.h"
+#ifdef ORXONOX_PLATFORM_WINDOWS
+#include <windows.h>
 
 namespace orxonox
 {
-    _UtilExport void usleep(unsigned long microseconds);
-    _UtilExport void msleep(unsigned long milliseconds);
-    _UtilExport void sleep (unsigned long seconds);
+    void usleep(unsigned long microseconds)
+    {
+        if (microseconds < 1000)
+            COUT(2) << "Warning: Windows can not sleep less than 1ms, ignoring" << std::endl;
+        Sleep(microseconds / 1000);
+    }
+
+    void msleep(unsigned long milliseconds)
+    {
+        Sleep(milliseconds);
+    }
+
+    void sleep(unsigned long seconds)
+    {
+        Sleep(seconds * 1000);
+    }
 }
 
-#endif /* _Sleep_H__ */
+#else /* Linux/Apple */
+#include <unistd.h>
+
+namespace orxonox
+{
+    inline void usleep(unsigned long usec)
+    {
+        ::usleep(usec);
+    }
+    inline void msleep(unsigned long msec)
+    {
+        ::usleep(msec * 1000);
+    }
+    inline void sleep(unsigned long sec)
+    {
+        ::usleep(sec * 1000000);
+    }
+}
+
+#endif

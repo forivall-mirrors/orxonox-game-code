@@ -30,10 +30,11 @@
 
 
 #include "Welcome.h"
+#include <enet/enet.h>
+#include <cassert>
 #include "network/Host.h"
 #include "network/synchronisable/Synchronisable.h"
 #include "core/CoreIncludes.h"
-#include <assert.h>
 
 namespace orxonox {
 namespace packet {

@@ -46,6 +46,7 @@ SET_SOURCE_FILES(UTIL_FILES
   OutputBuffer.cc
   OutputHandler.cc
   SignalHandler.cc
+  Sleep.cc
   String.cc
   SubString.cc
 )

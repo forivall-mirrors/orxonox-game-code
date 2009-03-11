@@ -39,6 +39,7 @@
 //
 
 #include <cassert>
+#include <enet/enet.h>
 
 #include "Client.h"
 #include "Host.h"

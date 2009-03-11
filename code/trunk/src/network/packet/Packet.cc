@@ -30,12 +30,9 @@
 #include "Packet.h"
 
 #include <cassert>
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
 #include <enet/enet.h>
 #include <boost/bind.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 #include "network/ConnectionManager.h"
 #include "network/ClientInformation.h"
@@ -57,7 +54,8 @@ namespace packet{
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
-boost::recursive_mutex Packet::packetMap_mutex;
+//! Static mutex for any packetMap_ access
+static boost::recursive_mutex packetMap_mutex_g;
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
@@ -141,7 +139,7 @@ bool Packet::send(){
     {
       // Assures we don't create a packet and destroy it right after in another thread
       // without having a reference in the packetMap_
-      boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
+      boost::recursive_mutex::scoped_lock lock(packetMap_mutex_g);
       packetMap_[(size_t)(void*)enetPacket_] = this;
     }
   }
@@ -216,7 +214,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     data we allocated ourselves.
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
-  boost::recursive_mutex::scoped_lock lock(Packet::packetMap_mutex);
+  boost::recursive_mutex::scoped_lock lock(packetMap_mutex_g);
   // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
   std::map<size_t, Packet*>::iterator it = packetMap_.find((size_t)enetPacket);
   assert(it != packetMap_.end());

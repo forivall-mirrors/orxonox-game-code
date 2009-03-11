@@ -40,6 +40,7 @@
 
 #include "ClientInformation.h"
 
+#include <enet/enet.h>
 #include <iostream> //debug
 
 namespace orxonox
@@ -161,7 +162,7 @@ namespace orxonox
     failures_=0;
   }
 
-  enet_uint32 ClientInformation::getRTT(){
+  uint32_t ClientInformation::getRTT(){
     return this->peer_->roundTripTime;
   }
 

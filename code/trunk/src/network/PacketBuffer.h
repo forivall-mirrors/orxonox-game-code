@@ -43,13 +43,6 @@
 
 #include "NetworkPrereqs.h"
 
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
-#include <enet/enet.h>
-#include <boost/thread/recursive_mutex.hpp>
-
 namespace orxonox
 {
   struct _NetworkExport PacketEnvelope{
@@ -81,7 +74,6 @@ namespace orxonox
     QueueItem *first;
     QueueItem *last;
     bool closed;
-    static boost::recursive_mutex mutex_;
   };
 
 } //namespace

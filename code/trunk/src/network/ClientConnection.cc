@@ -39,10 +39,12 @@
 
 #include "ClientConnection.h"
 
+#include <enet/enet.h>
 #include <iostream>
 // boost.thread library for multithreading support
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 #include "util/Sleep.h"
 #include "util/Debug.h"
@@ -51,21 +53,23 @@ namespace orxonox
 {
   //static boost::thread_group network_threads;
 
-  boost::recursive_mutex ClientConnection::enet_mutex_;
+  static boost::recursive_mutex enet_mutex_g;
 
   ClientConnection::ClientConnection(int port, const std::string& address) {
     quit=false;
     server=NULL;
-    enet_address_set_host(&serverAddress, address.c_str());
-    serverAddress.port = port;
+    serverAddress = new ENetAddress();
+    enet_address_set_host(serverAddress, address.c_str());
+    serverAddress->port = port;
     established=false;
   }
 
   ClientConnection::ClientConnection(int port, const char *address) {
     quit=false;
     server=NULL;
-    enet_address_set_host(&serverAddress, address);
-    serverAddress.port = port;
+    serverAddress = new ENetAddress();
+    enet_address_set_host(serverAddress, address);
+    serverAddress->port = port;
     established=false;
   }
 
@@ -79,6 +83,7 @@ namespace orxonox
   ClientConnection::~ClientConnection(){
     if(established)
       closeConnection();
+    delete serverAddress; // surely was created
   }
 
   ENetEvent *ClientConnection::getEvent(){
@@ -115,7 +120,7 @@ namespace orxonox
       COUT(3) << "Cl.con: addpacket: invalid packet" << std::endl;
       return false;
     }
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
     if(enet_peer_send(server, 0, packet)<0)
       return false;
     else
@@ -125,7 +130,7 @@ namespace orxonox
   bool ClientConnection::sendPackets() {
     if(server==NULL)
       return false;
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
     enet_host_flush(client);
     lock.unlock();
     return true;
@@ -136,7 +141,7 @@ namespace orxonox
     atexit(enet_deinitialize);
     ENetEvent *event;
     {
-      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
       enet_initialize();
       client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
       lock.unlock();
@@ -157,7 +162,7 @@ namespace orxonox
     while(!quit){
       //std::cout << "connection loop" << std::endl;
       {
-        boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+        boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
         if(enet_host_service(client, event, NETWORK_CLIENT_WAIT_TIME)<0){
           // we should never reach this point
           quit=true;
@@ -191,14 +196,14 @@ namespace orxonox
 
     if(!disconnectConnection())
       // if disconnecting failed destroy conn.
-      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
       enet_peer_reset(server);
     return;
   }
 
   bool ClientConnection::disconnectConnection() {
     ENetEvent event;
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
     enet_peer_disconnect(server, 0);
     while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME) > 0){
       switch (event.type)
@@ -219,8 +224,8 @@ namespace orxonox
   bool ClientConnection::establishConnection() {
     ENetEvent event;
     // connect to peer (server is type ENetPeer*)
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
-    server = enet_host_connect(client, &serverAddress, NETWORK_CLIENT_CHANNELS);
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+    server = enet_host_connect(client, serverAddress, NETWORK_CLIENT_CHANNELS);
     if(server==NULL) {
       COUT(2) << "ClientConnection: server == NULL" << std::endl;
       // error handling

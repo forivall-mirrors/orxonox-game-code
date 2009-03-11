@@ -32,15 +32,17 @@
 
 #include "PacketBuffer.h"
 
+#include <enet/enet.h>
 #include <iostream>
 #include <queue>
 #include <string>
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 namespace orxonox
 {
-   boost::recursive_mutex PacketBuffer::mutex_;
+  static boost::recursive_mutex packetBuffer_mutex_g;
 
   PacketBuffer::PacketBuffer() {
     closed=false;
@@ -51,7 +53,7 @@ namespace orxonox
 
 
   bool PacketBuffer::push(ENetEvent *ev) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
+    boost::recursive_mutex::scoped_lock lock(packetBuffer_mutex_g);
     //std::cout << "event size inside packetbuffer " << ev->packet->dataLength << std::endl;
     //   if(closed)
     //     return false;
@@ -85,7 +87,7 @@ namespace orxonox
   }*/
   
   ENetEvent *PacketBuffer::pop(){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
+    boost::recursive_mutex::scoped_lock lock(packetBuffer_mutex_g);
     //std::cout << "packetbuffer pop(address)" << std::endl;
     if(first!=NULL /*&& !closed*/){
       QueueItem *temp = first;
@@ -105,7 +107,7 @@ namespace orxonox
   }
 
   /*ENetPacket *PacketBuffer::pop(ENetAddress &address) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
+    boost::recursive_mutex::scoped_lock lock(packetBuffer_mutex_g);
     //std::cout << "packetbuffer pop(address)" << std::endl;
     if(first!=NULL ){
       QueueItem *temp = first;

@@ -27,7 +27,9 @@
  */
 
 #include "Chat.h"
-#include <assert.h>
+
+#include <enet/enet.h>
+#include <cassert>
 #include "network/Host.h"
 
 namespace orxonox {

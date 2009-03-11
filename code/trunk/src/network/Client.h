@@ -49,8 +49,6 @@
 #include "packet/Chat.h"
 #include "ClientConnection.h"
 #include "GamestateClient.h"
-//#include "NetworkFrameListener.h"
-
 
 
 namespace orxonox
@@ -80,6 +78,7 @@ namespace orxonox
     void tick(float time);
 
   private:
+    Client(const Client& copy); // not used
     virtual bool isServer_(){return false;}
 
     ClientConnection client_connection;

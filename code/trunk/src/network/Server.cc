@@ -40,6 +40,7 @@
 
 #include "Server.h"
 
+#include <enet/enet.h>
 #include <iostream>
 #include <cassert>
 
@@ -56,7 +57,7 @@
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
 #include "packet/DeleteObjects.h"
-#include <util/Convert.h>
+#include "util/Convert.h"
 #include "ChatListener.h"
 
 namespace orxonox
