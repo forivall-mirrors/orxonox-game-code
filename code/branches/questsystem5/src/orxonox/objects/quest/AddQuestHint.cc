@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddQuestHint.cc
     @brief Implementation of the AddQuestHint class.
 */
 

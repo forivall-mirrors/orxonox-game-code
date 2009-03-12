@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestManager.h
     @brief Definition of the QuestManager class.
 */
 

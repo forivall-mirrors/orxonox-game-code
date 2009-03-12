@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file QuestHint.cc
     @brief Implementation of the QuestHint class.
 */
 

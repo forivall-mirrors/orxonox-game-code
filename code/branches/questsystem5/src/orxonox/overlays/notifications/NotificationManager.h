@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file NotificationManager.h
+    @brief Definition of the NotificationManager class.
+*/
+
 #ifndef _NotificationManager_H__
 #define _NotificationManager_H__
 
@@ -33,39 +38,61 @@
 
 #include "core/BaseObject.h"
 
-#include <list>
+#include <map>
 #include <string>
+#include <ctime>
+
+#include "NotificationOverlay.h"
 
 namespace orxonox
 {
-    struct NotificationContainer
-    {
-        Notification* notification;
-        float remainingTime;
-    };
 
     /**
     @brief
-        
+        The NotificationManager functions as a gateway between Notifications and NotificationQueues.
+        It receives, organizes Notifications and the redistributes them to the specific NotificationQueues.
     @author
         Damian 'Mozork' Frick
     */
     class _OrxonoxExport NotificationManager : public BaseObject
     {
-    
-    public:
-        NotificationManager(BaseObject* creator);
-        virtual ~NotificationManager();
+        public:
+            NotificationManager(BaseObject* creator);
+            virtual ~NotificationManager();
+	        
+            static const std::string ALL;
+            static const std::string NONE;
+         
+            //TDO: Visibility?
+            static bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
+            static bool registerQueue(NotificationQueue* queue); //!< Registers a NotificationQueue within the NotificationManager.
+            
+            static std::multimap<std::time_t,Notification*>* getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationQueue in a specified timeframe.
+            
+            /**
+            @brief Fetches the Notifications for a specific NotificationQueue starting at a specified time.
+            @param queue The NotificationQueue the Notifications are fetched for.
+            @param timeFrameStart The start time the Notifications are fetched from.
+            @return Returns a time-ordered list of Notifications.
+            */
+            static std::multimap<std::time_t,Notification*>* getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart)
+                { return NotificationManager::getNotifications(queue, timeFrameStart, std::time(0)); }
+            /**
+            @brief Fetches the Notifications for a specific NotificationQueue starting at a specified timespan before now.
+            @param queue The NotificationQueue the Notifications are fetched for.
+            @param timeDelay The timespan.
+            @return Returns a time-ordered list of Notifications.
+            */
+            static std::multimap<std::time_t,Notification*>* getNotifications(NotificationQueue* queue, int timeDelay)
+                { return NotificationManager::getNotifications(queue, std::time(0)-timeDelay, std::time(0)); }
+     
+	       private:
+            static int highestIndex_s; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that  no key appears twice.
         
-        static bool insertNotification(Notification* notification);
-        
-        static void tick(float dt);
-        
-    private:
-        static std::list<NotificationContainer*> notifications_s;
-        
-        static void updateQueue(void);
-        static const std::string clipMessage(const std::string & message);
+            static std::multimap<std::time_t,Notification*> allNotificationsList_s; //!< Container where all notifications are stored (together with their respecive timestamps).
+            static std::map<NotificationQueue*,int> queueList_s; //!< Container where all NotificationQueues are stored with a number as identifier.
+            static std::map<int,std::multimap<std::time_t,Notification*>*> notificationLists_s; //!< Container where all Notifications, for each identifier (associated with a NotificationQueue), are stored.
+            
 
     };
 

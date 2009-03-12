@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file CompleteQuest.cc
     @brief Implementation of the CompleteQuest class.
 */
 

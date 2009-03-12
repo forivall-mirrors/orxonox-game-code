@@ -26,149 +26,175 @@
  *
  */
 
+/**
+    @file NotificationManager.cc
+    @brief Implementation of the NotificationManager class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "NotificationManager.h"
 
 #include "core/CoreIncludes.h"
 
-#include "Notification.h"
+#include <set>
 
+#include "Notification.h"
 #include "NotificationQueue.h"
 
 namespace orxonox
 {
-    std::list<NotificationContainer*> NotificationManager::notifications_s;
 
+    const std::string NotificationManager::ALL = "all";
+    const std::string NotificationManager::NONE = "none";
+
+    std::multimap<std::time_t,Notification*> NotificationManager::allNotificationsList_s;
+    std::map<int,std::multimap<std::time_t,Notification*>*> NotificationManager::notificationLists_s;
+    std::map<NotificationQueue*,int> NotificationManager::queueList_s;
+    
+    int NotificationManager::highestIndex_s = 0;
+
+    /**
+    @brief
+        Constructor. Registers the Object.
+    */
     NotificationManager::NotificationManager(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(NotificationManager);
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     NotificationManager::~NotificationManager()
     {
-        //TDO: Destroy the containers
     }
-
-    void NotificationManager::tick(float dt)
+    
+    /**
+    @brief
+        Registers a Notification within the NotificationManager and makes sure that the Notification is displayed in all the NotificationQueues associated with its sender.
+    @param notification
+        The Notification to be registered.
+    @return
+        Returns true if successful.
+    */
+    /*static*/ bool NotificationManager::registerNotification(Notification* notification)
     {
-        bool update = false;
-
-        for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end(); ++notification)
+    
+        if(notification == NULL) //!< A NULL-Notification cannot be registered.
+            return false;
+        
+        std::time_t time = std::time(0); //TDO: Doesn't this expire? //!< Get current time.
+        
+        allNotificationsList_s.insert(std::pair<std::time_t,Notification*>(time,notification));
+        
+        if(notification->getSender() == NONE) //!< If the sender has no specific name, then the Notification is only added to the list of all Notifications.
+            return true;
+        
+        bool all = false;
+        if(notification->getSender() == ALL) //!< If all are the sender, then the Notifications is added to every NotificationQueue.
+            all = true;
+        
+        //!< Insert the notification in all queues that have its sender as target.
+        for(std::map<NotificationQueue*,int>::iterator it = queueList_s.begin(); it != queueList_s.end(); it++)
         {
-            NotificationContainer* container = *notification;
-            if(container->remainingTime == 0)
+            std::set<std::string> set = it->first->getTargetsSet();
+            if(all || set.find(notification->getSender()) != set.end() || set.find(ALL) != set.end()) //TDO: Make sure this works.
             {
-                continue;
-            }
-            else if(container->remainingTime - dt <= 0)
-            {
-                container->remainingTime = 0;
-                update = true;
-            }
-            else
-            {
-                container->remainingTime = container->remainingTime -dt;
+                notificationLists_s[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); //!< Insert the Notification in the Notifications list of the current NotificationQueue.
+                it->first->update(notification, time); //!< Update the queue.
             }
         }
-
-        if(update)
-            updateQueue();
-    }
-
-    bool NotificationManager::insertNotification(Notification* notification)
-    {
-        if(notification == NULL)
-            return false;
-
-        NotificationContainer* container = new NotificationContainer;
-        container->notification = notification;
-        container->remainingTime = notification->getDisplayTime();
-        notifications_s.push_front(container);
-
-        updateQueue();
-
-        COUT(4) << "Notification inserted. Title: " << notification->getTitle() << std::endl;
-
+        
+        COUT(3) << "NotificationQueue registered with the NotificationManager." << std::endl;
+        
         return true;
     }
-
-    void NotificationManager::updateQueue(void)
+    
+    /**
+    @brief
+        Registers a NotificationQueue within the NotificationManager.
+    @param queue
+        The NotificationQueue to be registered.
+    @return
+        Returns true if successful.
+    */
+    /*static*/ bool NotificationManager::registerQueue(NotificationQueue* queue)
     {
-        std::string text = "";
-
-        if (!NotificationQueue::queue_s)
-            return;
-
-        int i = NotificationQueue::queue_s->getLength();
-        for (std::list<NotificationContainer*>::iterator notification = notifications_s.begin(); notification != notifications_s.end() && i > 0; ++notification)
+        NotificationManager::highestIndex_s += 1;
+        int index = NotificationManager::highestIndex_s;
+        
+        queueList_s[queue] = index; //!< Add the NotificationQueue to the list of queues.
+        
+        std::set<std::string> set = queue->getTargetsSet(); //TDO: Works this?
+        
+        //! If all senders are the target of the queue, then the list of notification for that specific queue is te same as the list of all Notifications.
+        if(set.find(ALL) != set.end())
         {
-            i--;
-            NotificationContainer* container = *notification;
-            if(container->remainingTime == 0.0)
-                continue;
-
-            text = text + "\n\n\n------------\n\n" + clipMessage(container->notification->getTitle()) + "\n\n" + clipMessage(container->notification->getMessage());
+            notificationLists_s[index] = &allNotificationsList_s;
+            return true;
         }
-
-        NotificationQueue::queue_s->setQueueText(text);
+        
+        notificationLists_s[index] = new std::multimap<std::time_t,Notification*>;
+        std::multimap<std::time_t,Notification*> map = *notificationLists_s[index];
+        
+        //! Iterate through all Notifications to determine whether any of them should belong to the newly registered NotificationQueue.
+        for(std::multimap<std::time_t,Notification*>::iterator it = allNotificationsList_s.begin(); it != allNotificationsList_s.end(); it++)
+        {
+            if(set.find(it->second->getSender()) != set.end()) //!< Checks whether the overlay has the sender of the current notification as target.
+            {
+                map.insert(std::pair<std::time_t,Notification*>(it->first, it->second));
+            }
+        }
+        
+        COUT(3) << "Notification registered with the NotificationManager." << std::endl;
+        
+        queue->update(); //!< Update the queue.
+        
+        return true;
     }
-
-    const std::string NotificationManager::clipMessage(const std::string & str)
+    
+    /**
+    @brief
+        Fetches the Notifications for a specific NotificationQueue in a specified timeframe.
+    @param queue
+        The NotificationQueue the Notifications are fetched for.
+    @param timeFrameStart
+        The start time of the timeframe.
+    @param timeFrameEnd
+        The end time of the timeframe.
+    @return
+        Returns a time-ordered list of Notifications.
+    @todo
+        Make sure the map is deleted.
+    */
+    /*static*/ std::multimap<std::time_t,Notification*>* NotificationManager::getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd)
     {
-
-        std::string message = str;
-        unsigned int i = 0;
-
-        unsigned int found = message.find("\\n", i);
-        while(found != std::string::npos)
+        COUT(1) << "Queue: " << queue << ", timeFrameStart: " << timeFrameStart << ", timeFrameEnd: " << timeFrameEnd << std::endl;
+    
+        std::multimap<std::time_t,Notification*>* notifications = NotificationManager::notificationLists_s[NotificationManager::queueList_s[queue]];
+        
+        if(notifications == NULL)
+            return NULL;
+    
+        std::multimap<std::time_t,Notification*>::iterator it, itLowest, itHighest;
+        itLowest = notifications->lower_bound(timeFrameStart);
+        itHighest = notifications->upper_bound(timeFrameStart);
+        
+        std::multimap<std::time_t,Notification*>* map = new std::multimap<std::time_t,Notification*>();
+        
+        for(it = itLowest; it != itHighest; it++)
         {
-            message.replace(found, 2, "\n");
-            i = found+2;
-            found = message.find("\\n", i);
+            map->insert(std::pair<std::time_t,Notification*>(it->first,it->second));
         }
-
-        std::string clippedMessage = "";
-        int wordLength = 0;
-        i = 0;
-        int widthLeft = NotificationQueue::queue_s->getWidth();
-        while(i < message.length())
+        
+        if(map->size() == 0)
         {
-            while(i < message.length() && message[i] != ' ' && message[i] != '\n')
-            {
-                i++;
-                wordLength++;
-            }
-
-            if(wordLength <= widthLeft)
-            {
-                clippedMessage = clippedMessage + message.substr(i-wordLength, wordLength);
-                if(i < message.length())
-                {
-                    clippedMessage = clippedMessage + message.substr(i,1);
-                }
-                widthLeft -= (wordLength+1);
-                if(message[i] == '\n')
-                {
-                    widthLeft = NotificationQueue::queue_s->getWidth() - (wordLength+1);
-                }
-                wordLength = 0;
-                i++;
-            }
-            else
-            {
-                clippedMessage.push_back('\n');
-                clippedMessage = clippedMessage + message.substr(i-wordLength, wordLength);
-                if(i < message.length())
-                {
-                    clippedMessage = clippedMessage + message.substr(i,1);
-                }
-                widthLeft = NotificationQueue::queue_s->getWidth() - (wordLength+1);
-                i++;
-                wordLength = 0;
-            }
+            delete map;
+            return NULL;
         }
-
-        return clippedMessage;
+        
+        return map;
     }
 
 }

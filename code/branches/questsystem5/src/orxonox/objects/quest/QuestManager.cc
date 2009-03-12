@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestManager.cc
     @brief Implementation of the QuestManager class.
 */
 

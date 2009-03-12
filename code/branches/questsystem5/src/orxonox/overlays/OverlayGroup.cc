@@ -106,17 +106,48 @@ namespace orxonox
     */
     void OverlayGroup::addElement(OrxonoxOverlay* element)
     {
-        if (hudElements_.find(element->getName()) != hudElements_.end())
+        this->insertElement(element, element->getName());
+    }
+
+	/**
+    @brief
+        Adds an element to the map.
+    @param element
+        The element to be added.
+    @param name
+        The name of the element.
+    @remarks
+        The names of the OrxonoxOverlays have to be unique!
+    */
+    void OverlayGroup::insertElement(OrxonoxOverlay* element, const std::string & name)
+    {
+        element->setName(name);
+        if (hudElements_.find(name) != hudElements_.end())
         {
             COUT(1) << "Ambiguous names encountered while load the HUD overlays" << std::endl;
         }
         else
         {
-            hudElements_[element->getName()] = element;
+            hudElements_[name] = element;
             element->setVisible(this->isVisible());
-            if (this->owner_)
+			if (this->owner_)
                 element->setOwner(this->owner_);
         }
+    }
+
+	/**
+    @brief
+        Removes an element from the map.
+    @param name
+        The name of the element that is removed.
+    @return
+        Returns true if there was such an element to remove, false if not.
+    */
+    bool OverlayGroup::removeElement(const std::string & name)
+    {
+        if(this->hudElements_.erase(name) == 0)
+            return false;
+        return true;
     }
 
     //! Returns a different element as long as index < hudElements_.size().

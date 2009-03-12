@@ -29,81 +29,371 @@
 #include "OrxonoxStableHeaders.h"
 #include "NotificationQueue.h"
 
+#include <OgreOverlayManager.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <list>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "NotificationManager.h"
+#include "Notification.h"
+#include "NotificationOverlay.h"
 
 namespace orxonox
 {
-    NotificationQueue* NotificationQueue::queue_s = 0;
-
+    
     CreateFactory(NotificationQueue);
+    
+    const std::string NotificationQueue::DEFAULT_FONT = "VeraMono";
 
-    NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayText(creator)
+    /**
+    @brief
+        Constructor. Creates and initializes the object.
+    */
+    NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayGroup(creator)
     {
-        RegisterObject(NotificationQueue);
-        //TDO: Does this work?
-        if(queue_s != NULL)
-        {
-                COUT(2) << "There is now more than one NotificationQueue, this shouldn't happen, since only the first NotificationQueue will be targeted by the NotificationManager." << std::endl;
-        }
-        else
-        {
-                queue_s = this;
-        }
-
-        this->length_ = 3;
-        this->width_ = 50;
+        this->initialize();
     }
-
+    
+    /**
+    @brief
+        Destructor.
+    @todo
+        I'm pretty sure that there are some thing that have to be distroyed.
+    */
     NotificationQueue::~NotificationQueue()
     {
-
+        
     }
-
+    
+    /**
+    @brief
+        Initializes the object.
+        Registers the object, initializes variables, sets default values and registers the queue with the NotificationManager.
+    */
+    void NotificationQueue::initialize(void)
+    {
+        RegisterObject(NotificationQueue);
+        
+        this->setDefaults();
+        this->size_ = 0;
+        this->tickTime_ = 0.0;
+        
+        NotificationManager::registerQueue(this);
+    }
+    
+    /**
+    @brief
+        Sets the defaults.
+    */
+    void NotificationQueue::setDefaults(void)
+    {
+        this->setMaxSize(DEFAULT_SIZE);
+        this->setNotificationLength(DEFAULT_LENGTH);
+        this->setDisplayTime(DEFAULT_DISPLAY_TIME);
+        
+        this->setTargets(NotificationManager::ALL);
+        
+        this->setFontSize(DEFAULT_FONT_SIZE);
+        this->setFont(DEFAULT_FONT);
+    }
+    
+    /**
+    @brief
+        Method for creating a NotificationQueue object through XML.
+    */
     void NotificationQueue::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(NotificationQueue, XMLPort, xmlElement, mode);
-
-        XMLPortParam(NotificationQueue, "length", setLength, getLength, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "width", setWidth, getWidth, xmlElement, mode);
+        
+        XMLPortParam(NotificationQueue, "maxSize", setMaxSize, getMaxSize, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "notificationLength", setNotificationLength, getNotificationLength, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "font", setFont, getFont, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlElement, mode);
+        
+        COUT(3) << "NotificationQueue created." << std::endl;
     }
-
+    
+    /**
+    @brief
+        Updates the queue from time to time.
+    @param dt
+        The time interval that has passed since the last tick.
+    */
     void NotificationQueue::tick(float dt)
     {
-        NotificationManager::tick(dt);
-
-        update();
-    }
-
-    bool NotificationQueue::setLength(int length)
-    {
-        if(length > 0)
+        this->tickTime_ += dt; //!< Add the time interval that has passed to the time counter.
+        if(this->tickTime_ >= 1.0) //!< If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
         {
-            this->length_ = length;
-            return true;
+            this->timeLimit_.time = std::time(0)-this->displayTime_; //!< Container containig the current time.
+            
+            std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it;
+            it = this->containers_.begin();
+            while(it != this->containers_.upper_bound(&this->timeLimit_)) //!< Iterate through all elements whose creation time is smaller than the current time minus the display time.
+            {
+                this->removeContainer(*it);
+                it = this->containers_.begin(); //TDO: Needed?
+            }
+            
+            this->tickTime_ = 0.0; //!< Reset time counter.
         }
-        return false;
     }
-
-    bool NotificationQueue::setWidth(int width)
-    {
-        if(width > 0)
-        {
-            this->width_ = width;
-            return true;
-        }
-        return false;
-    }
-
-    void NotificationQueue::setQueueText(const std::string & text)
-    {
-        this->queueText_ = text;
-    }
-
+    
+    /**
+    @brief
+        Updates the NotificationQueue.
+        Updates by clearing the queue and requesting all relevant Notifications from the NotificationManager and inserting the in the queue.
+    */
     void NotificationQueue::update(void)
     {
-        this->text_->setCaption(queueText_);
+        this->clear();
+    
+        std::multimap<std::time_t,Notification*>* notifications = NotificationManager::getNotifications(this, this->displayTime_);
+        
+        if(notifications == NULL)
+            return;
+        
+        for(std::multimap<std::time_t,Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++)
+        {
+            this->addNotification(it->second, it->first);
+        }
+        
+        COUT(3) << "NotificationQueue updated." << std::endl;
     }
+    
+    /**
+    @brief
+        Updates the NotificationQueue by adding an new Notification.
+    @param notification
+        Pointer to the Notification.
+    @param time
+        The time the Notification was sent.
+    */
+    void NotificationQueue::update(Notification* notification, const std::time_t & time)
+    {
+        this->addNotification(notification, time);
+        
+        //TDO: Position!
+        
+        std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it;
+        while(this->getSize() > this->getMaxSize())
+        {
+            it = this->containers_.begin();
+            this->removeContainer(*it);
+        }
+        
+        COUT(3) << "NotificationQueue updated. A new Notifications has been added." << std::endl;
+    }
+    
+    /**
+    @brief
+        Sets the maximum number of displayed Notifications.
+    @param size
+        The size to be set.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::setMaxSize(int size)
+    {
+        if(size < 0)
+            return false;
+        this->maxSize_ = size;
+        this->update();
+        return true;
+    }
+    
+    /**
+    @brief
+        Sets the maximum number of characters a Notification message displayed by this queue is allowed to have.
+    @param length
+        The length to be set.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::setNotificationLength(int length)
+    {
+        if(length < 0)
+            return false;
+        this->notificationLength_ = length;
+        this->update();
+        return true;
+    }
+    
+    /**
+    @brief
+        Sets the maximum number of seconds a Notification is displayed.
+    @param time
+        The number of seconds the Notifications is displayed.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::setDisplayTime(int time)
+    {
+        if(time < 0)
+            return false;
+        this->displayTime_ = time;
+        this->update();
+        return true;
+    }
+    
+    /**
+    @brief
+        Returns all targets concatinated as string, with kommas (',') as seperators.
+    @return
+        Returns all targets concatinated as string, with kommas (',') as seperators.
+    @todo
+        Where is the string deleted?
+    */
+    const std::string & NotificationQueue::getTargets() const
+    {
+        std::string* pTemp = new std::string("");
+        bool first = true;
+        for(std::set<std::string>::iterator it = this->targets_.begin(); it != this->targets_.end(); it++) //!< Iterate through the set of targets.
+        {
+            if(!first)
+            {
+                *pTemp += ",";
+            }
+            else
+            {
+                first = false;
+            }
+            *pTemp += *it;
+        }
+        
+        return *pTemp;
+    }
+    
+    /**
+    @brief
+        Sets the targets of the queue.
+        The targets are the senders whose Notifications are displayed in this queue.
+    @param targets
+        Accepts a string of targets, each seperated by commas (','), spaces are ignored.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::setTargets(const std::string & targets)
+    {
+        std::string* pTemp;
+        unsigned int index = 0;
+        while( index < targets.size() ) //!< Go through the string, character by character until the end is reached.
+        {
+            pTemp = new std::string("");
+            while(targets[index] != ',' && targets[index] != ' ' && index < targets.size())
+            {
+                *pTemp += targets[index];
+                index++;
+            }
+            this->targets_.insert(*pTemp);
+        }
+        
+        return true;
+    }
+    
+    /**
+    @brief
+        Sets the font size.
+    @param size
+        The font size.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::setFontSize(float size)
+    {
+        if(size <= 0)
+            return false;
+        this->fontSize_ = size;
+        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Set the font size for each overlay.
+        {
+            it->second->overlay->setFontSize(size);
+        }
+        return true;
+    }
+    
+    /**
+    @brief
+        Sets the font.
+    @param font
+        The font.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::setFont(const std::string & font)
+    {
+        this->font_ = font;
+        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Set the font for each overlay.
+        {
+            it->second->overlay->setFont(font);
+        }
+        return true;
+    }
+    
+    /**
+    @brief
+        Adds a Notification, to the queue.
+        It inserts it into the storage containers, creates an corresponding overlay and a container.
+    @param notification
+        The Notification.
+    @param time
+        The time.
+    */
+    void NotificationQueue::addNotification(Notification* notification, const std::time_t & time)
+    {
+        NotificationOverlayContainer* container = new NotificationOverlayContainer;
+        container->overlay = new NotificationOverlay(this, notification);
+        container->notification = notification;
+        container->time = time;
+        std::string timeString = std::ctime(&time);
+        timeString.erase(timeString.length()-1);
+        char buffer[64]; //TDO: Very un-nice.
+        std::sprintf(buffer,"%x",(unsigned long)notification); //TDO: Use other conversion to avoid 64bit problems.
+        std::string addressString = buffer;
+        container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
+        
+        this->containers_.insert(container);
+        this->overlays_[notification] = container;
+        this->insertElement(container->overlay, container->name);
+        this->size_= this->size_+1;
+    }
+    
+    /**
+    @brief
+        Removes a container from the queue.
+    @param container
+        A pointer to the container.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationQueue::removeContainer(NotificationOverlayContainer* container)
+    {
+        if(this->size_ == 0) //!< You cannot remove anything if the queue is empty.
+            return false;
+        
+        this->removeElement(container->name);
+        this->containers_.erase(container);
+        this->overlays_.erase(container->notification);
+        delete container->overlay;
+        delete container;
+        this->size_= this->size_-1;
+        
+        return true;
+    }
+    
+    /**
+    @brief
+        Clears the queue by removing all containers.
+    */
+    void NotificationQueue::clear(void)
+    {
+        std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it = this->containers_.begin();
+        while(it != this->containers_.end())
+        {
+            this->removeContainer(*it);
+            it = this->containers_.begin(); //TDO: Needed?
+        }
+    }
+
 }

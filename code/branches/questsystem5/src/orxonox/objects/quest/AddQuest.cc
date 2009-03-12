@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddQuest.cc
     @brief Implementation of the AddQuest class.
 */
 
@@ -41,6 +41,7 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
+#include "QuestDescription.h";
 #include "Quest.h"
 
 namespace orxonox

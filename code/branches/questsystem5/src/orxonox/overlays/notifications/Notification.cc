@@ -26,77 +26,109 @@
  *
  */
 
+/**
+    @file Notification.cc
+    @brief Implementation of the Notification class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"
+#include "util/Exception.h"
 
 #include "NotificationManager.h"
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Default constructor. Initializes the object.
+    */
     Notification::Notification(BaseObject* creator) : BaseObject(creator)
     {
-        RegisterObject(Notification);
+        this->initialize();
     }
     
-    Notification::Notification(BaseObject* creator, const std::string & message, const std::string & title, float time) : BaseObject(creator)
+    /**
+    @brief
+        Constructor. Creates a Notification with the input message.
+    @param message
+        The message of the Notification.
+    */
+    Notification::Notification(const std::string & message) : BaseObject(this)
     {
-        this->title_ = title;
         this->message_ = message;
-        if(time > 0)
-            this->displayTime_ = time;
     }
     
+    /**
+    @brief
+        Destructor.
+    */
     Notification::~Notification()
     {
     }
     
+    /**
+    @brief
+        Registers the object and sets some default values.
+    */
     void Notification::initialize(void)
     {
         RegisterObject(Notification);
         
-        this->title_ = "";
         this->message_ = "";
-        this->displayTime_ = NOTIFICATION_DISPLAY_TIME;
+        this->sender_ = NotificationManager::NONE;
         this->sent_ = false;
     }
     
+    /**
+    @brief
+        Sends the Notification to the Notificationmanager, with sender NetificationManager::NONE.
+    @return
+        Returns true if successful.
+    */
     bool Notification::send(void)
     {
-        bool successful = NotificationManager::insertNotification(this);
-        if(successful)
-            this->sent_ = true;
-        return successful;
+        return this->send(NotificationManager::NONE);
     }
     
-    bool Notification::setTitle(const std::string & title)
+    /**
+    @brief
+        Sends the Notification to the Notificationmanager, which then in turn distributes it to the different NotificationQueues.
+    @param sender
+        The sender the Notification was sent by. Used by the NotificationManager to distributes the notification to the correct NotificationQueues.
+    @return
+        Returns true if successful.
+    */
+    bool Notification::send(const std::string & sender)
     {
-        if(this->isSent())
+        this->sender_ = sender;
+        bool successful = NotificationManager::registerNotification(this);
+        if(!successful)
             return false;
-        this->title_ = title;
+        this->sent_ = true;
+        
+        COUT(3) << "Notification \"" << this->getMessage() << "\" sent." << std::endl;
+        
         return true;
     }
     
+    /**
+    @brief
+        Sets the message of the notification.
+    @param message
+        The message to be set.
+    @return
+        Returns true if successful.
+    */
     bool Notification::setMessage(const std::string & message)
     {
-        if(this->isSent())
+        if(this->isSent()) //!< The message cannot be changed if the message has already been sent.
             return false;
         this->message_ = message;
         return true;
     }
-    
-    bool Notification::setDisplayTime(float time)
-    {
-        if(this->isSent())
-        {
-            return false;
-        }
-        if(time > 0)
-        {
-            this->displayTime_ = time;
-            return true;
-        }
-        return false;
-    }
+
 }
