@@ -37,10 +37,9 @@
 #include "WeaponSystem.h"
 
 
-/* WEAPONSYSTEM
- * creates the WeaponSystem and the ability to use weapons and munition
- * loads the weapon the whole weaponSystem setting from an xml file
+/* WeaponSystem
  *
+ *  www.orxonox.net/wiki/WeaponSystem
  */
 
 namespace orxonox
@@ -83,32 +82,28 @@ namespace orxonox
         this->munitionSet_[munitionType] = munitionToAdd;
     }
 
-    //returns the Pointer to the munitionType
+    void WeaponSystem::setNewSharedMunition(std::string munitionType, Munition * munitionToAdd)
+    {
+        this->munitionSharedSet_[munitionType] = munitionToAdd;
+    }
+
+    //returns the Pointer to the munitionType, if this munitionType doesn't exist returns 0, see Weapon::attachNeededMunition
     Munition * WeaponSystem::getMunitionType(std::string munitionType)
     {
 //COUT(0) << "WeaponSystem::getMunitionType " << munitionType << std::endl;
-        std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);
-        if (it != this->munitionSet_.end())
+        std::map<std::string, Munition *>::const_iterator it = this->munitionSharedSet_.find(munitionType);
+        if (it != this->munitionSharedSet_.end())
             return it->second;
         else
             return 0;
     }
 
 
-/*
-    //the first weaponSet is at n=0
-    void WeaponSystem::setActiveWeaponSet(unsigned int n)
-    {
-        if (n < this->weaponSets_.size())
-            this->activeWeaponSet_ = this->weaponSets_[n];
-        else
-            this->activeWeaponSet_ = this->weaponSets_[0];
-    }
-*/
+
 
 
     //n is the n'th weaponSet, starting with zero
-    //SpaceShip.cc only needs to have the keybinding to a specific Set-number n
+    //SpaceShip.cc only needs to have the keybinding to a specific Set-number n (=firemode)
     void WeaponSystem::fire(WeaponMode::Enum n)
     {
         int set = 0;

@@ -64,6 +64,7 @@ namespace orxonox
         XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
         XMLPortParam(Weapon, "bulletLoadingTime", setBulletLoadingTime, getBulletLoadingTime, xmlelement, mode);
         XMLPortParam(Weapon, "magazineLoadingTime", setMagazineLoadingTime, getMagazineLoadingTime, xmlelement, mode);
+        XMLPortParam(Weapon, "bSharedMunition", setSharedMunition, getSharedMunition, xmlelement, mode);
     }
 
     void Weapon::setWeapon()
@@ -96,13 +97,13 @@ namespace orxonox
             else
             {
 //COUT(0) << "LaserGun::fire - no magazines" << std::endl;
-                //actions
+                //no magazines
             }
         }
         else
         {
 //COUT(0) << "LaserGun::fire - weapon not reloaded - bullets remaining:" << this->munition_->bullets() << std::endl;
-            //actions
+            //weapon not reloaded
         }
 
     }
@@ -140,19 +141,31 @@ namespace orxonox
     {
 //COUT(0) << "Weapon::attachNeededMunition, parentWeaponSystem=" << this->parentWeaponSystem_ << std::endl;
         //if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
+        //if the weapon shares one munitionType put it into sharedMunitionSet
+        //else to munitionSet
         if (this->parentWeaponSystem_)
         {
-//COUT(0) << "Weapon::attachNeededMunition " << munitionName << std::endl;
-            Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
-            if ( munition )
-                this->munition_ = munition;
-            else
+            if (this->bSharedMunition_ == false)
             {
-                //create new munition with identifier
-//COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munitionName << std::endl;
                 this->munitionIdentifier_ = ClassByString(munitionName);
                 this->munition_ = this->munitionIdentifier_.fabricate(this);
                 this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
+            }
+            else
+            {
+//COUT(0) << "Weapon::attachNeededMunition " << munitionName << std::endl;
+                //getMunitionType returns 0 if there is no such munitionType
+                Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
+                if ( munition )
+                    this->munition_ = munition;
+                else
+                {
+                    //create new munition with identifier because there is no such munitionType
+//COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munitionName << std::endl;
+                    this->munitionIdentifier_ = ClassByString(munitionName);
+                    this->munition_ = this->munitionIdentifier_.fabricate(this);
+                    this->parentWeaponSystem_->setNewSharedMunition(munitionName, this->munition_);
+                }
             }
         }
     }
@@ -179,6 +192,12 @@ namespace orxonox
 
     const float Weapon::getMagazineLoadingTime()
     {   return this->magazineLoadingTime_;  }
+
+    void Weapon::setSharedMunition(bool bSharedMunition)
+    {   this->bSharedMunition_ = bSharedMunition; }
+
+    const bool Weapon::getSharedMunition()
+    {   return this->bSharedMunition_;  }
 
 
     Munition * Weapon::getAttachedMunition(std::string munitionType)
