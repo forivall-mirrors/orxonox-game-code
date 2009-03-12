@@ -31,7 +31,6 @@
 #include "objects/worldentities/Drone.h"
 #include "util/Math.h"
 
-
 namespace orxonox
 {
     DroneController::DroneController(BaseObject* creator) : Controller(creator)
@@ -39,12 +38,12 @@ namespace orxonox
         // Place your code here:
         // - make sure to register the object in the factory
         // - do any kind of initialisation
-        
-        
-        
+
+
+
         // this checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
-        assert(dynamic_cast<Drone*>(creator)!=0);
+        assert(dynamic_cast<Drone*>(creator) != 0);
         this->setControllableEntity(dynamic_cast<Drone*>(creator));
     }
 
@@ -56,11 +55,11 @@ namespace orxonox
     {
         // Place your code here:
         // - steering commands
-        Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
+        Drone* myDrone = static_cast<Drone*>(this->getControllableEntity());
         // you can use the following commands for steering
         // - moveFrontBack, moveRightLeft, moveUpDown
         // - rotatePitch, rotateYaw, rotateRoll
         // - apply the to myDrone (e.g. myDrone->rotateYaw(..) )
-        
+
     }
 }

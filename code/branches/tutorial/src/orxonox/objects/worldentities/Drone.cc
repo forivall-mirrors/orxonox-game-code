@@ -36,7 +36,6 @@ namespace orxonox
 {
     // PLACE YOUR CODE HERE
     // create the factory for the drone
-    CreateFactory(Drone);
 
     Drone::Drone(BaseObject* creator) : ControllableEntity(creator)
     {
@@ -44,22 +43,22 @@ namespace orxonox
         // PLACE YOUR CODE HERE
         // - register the drone class to the core
         // - create a new controller and pass our this pointer to it as creator
-        
+
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
         this->primaryThrust_  = 100;
         this->auxilaryThrust_ = 100;
         this->rotationThrust_ = 10;
         this->steering_ = Vector3::ZERO;
-        
+
         this->setCollisionType(WorldEntity::Dynamic);
-        
-        myController_ = new DroneController(static_cast<BaseObject*>(this));
+
+        this->myController_ = new DroneController(this);
     }
 
     Drone::~Drone()
     {
-        if( this->myController_ )
+        if (this->isInitialized() && this->myController_)
             delete this->myController_;
     }
 
@@ -78,22 +77,22 @@ namespace orxonox
     {
         // PLACE YOUR CODE HERE
         // make sure the tick function of the base class gets called here
-        
+
         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
         if (this->localLinearAcceleration_.z() > 0)
-          this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
+            this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
         else
-          this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
+            this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
         this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
         this->localLinearAcceleration_.setValue(0, 0, 0);
-    
+
         this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
         this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
         this->localAngularAcceleration_.setValue(0, 0, 0);
     }
-    
-    
+
+
     void Drone::moveFrontBack(const Vector2& value)
     {
         this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
@@ -126,5 +125,4 @@ namespace orxonox
     {
         this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x);
     }
-    
 }
