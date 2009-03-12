@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "orxonox/overlays/OrxonoxOverlay.h"
+#include "orxonox/overlays/OverlayText.h"
 
 #include <string>
 #include <set>
@@ -47,62 +47,28 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport NotificationOverlay : public OrxonoxOverlay
+    class _OrxonoxExport NotificationOverlay : public OverlayText
     {
-    
-        friend class NotificationQueue; //TDO: Best solution?
-    
+
         public:
             NotificationOverlay(BaseObject* creator);
             NotificationOverlay(NotificationQueue* queue, Notification* notification);
             virtual ~NotificationOverlay();
             
             bool processNotification(Notification* notification);
+
+            void setFontSize(float size)
+                { this->setTextSize(size); }
         
         protected:
             const std::string clipMessage(const std::string & message);
-            const std::string clipMessage2(const std::string & message); //Outdated
-        
+
         private:
             NotificationQueue* queue_;
             Notification* notification_;
-            
-            int width_;
-            
-            Ogre::TextAreaOverlayElement* notificationText_;
-            
+
             void initialize(void);
             void defineOverlay(void);
-
-            virtual void sizeChanged();
-
-            void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment)
-                { this->notificationText_->setAlignment(alignment); }
-            void setCaption(const std::string& caption)
-                { this->notificationText_->setCaption(caption); }
-            void setColour(const ColourValue& colour)
-                { this->notificationText_->setColour(colour); }
-            void setFont(const std::string & font);
-            void setFontSize(float size);
-            void setWidth(int width);
-            void setAlignmentString(const std::string& alignment);
-            void setTextSize(float size)
-                { this->setSize(Vector2(size, size)); }
-            
-            Ogre::TextAreaOverlayElement::Alignment getAlignment() const
-                { return this->notificationText_->getAlignment(); }
-            std::string getCaption() const
-                { return this->notificationText_->getCaption(); }
-            float getFontSize(void) const;
-            const std::string & getFont(void) const
-                { return this->notificationText_->getFontName(); }
-            int getWidth(void) const
-                { return this->width_; }
-            const ColourValue& getColour() const
-                { return this->notificationText_->getColour(); }
-            std::string getAlignmentString() const;
-            float getTextSize() const
-                { return this->getSize().y; }
 
     };
 
