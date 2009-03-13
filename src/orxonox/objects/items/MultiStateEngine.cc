@@ -135,7 +135,7 @@ namespace orxonox
             }
         }
 
-        SUPER(MultiStateEngine, tick, dt);
+        Engine::tick(dt);
     }
 
     void MultiStateEngine::addToSpaceShip(SpaceShip* ship)

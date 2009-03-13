@@ -81,7 +81,7 @@ namespace orxonox
 
     void Projectile::tick(float dt)
     {
-        SUPER(Projectile, tick, dt);
+        MovableEntity::tick(dt);
 
         if (!this->isActive())
             return;
