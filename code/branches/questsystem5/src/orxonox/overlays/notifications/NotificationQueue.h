@@ -43,6 +43,7 @@
 #include <OgrePanelOverlayElement.h>
 #include <map>
 #include <ctime>
+#include "util/Math.h"
 
 #include "orxonox/overlays/OverlayGroup.h"
 #include "orxonox/objects/Tickable.h"
@@ -119,7 +120,7 @@ namespace orxonox
             */
             inline const std::set<std::string> & getTargetsSet()
                 { return this->targets_; }
-            const std::string & getTargets() const; //!< Returns a string consisting of teh concatination of the targets.
+            bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
             
             /**
             @brief Returns the font size used to display the Notifications.
@@ -133,6 +134,8 @@ namespace orxonox
             */
             inline const std::string & getFont() const
                 { return this->font_; }
+
+            void scroll(const Vector2 pos);
             
         private:
             static const int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.

@@ -96,7 +96,7 @@ namespace orxonox
             all = true;
         
         //!< Insert the notification in all queues that have its sender as target.
-        for(std::map<NotificationQueue*,int>::iterator it = queueList_s.begin(); it != queueList_s.end(); it++)
+        for(std::map<NotificationQueue*,int>::iterator it = queueList_s.begin(); it != queueList_s.end(); it++) //!< Iterate through all queues.
         {
             std::set<std::string> set = it->first->getTargetsSet();
             if(all || set.find(notification->getSender()) != set.end() || set.find(ALL) != set.end()) //TDO: Make sure this works.
@@ -106,7 +106,7 @@ namespace orxonox
             }
         }
         
-        COUT(3) << "NotificationQueue registered with the NotificationManager." << std::endl;
+        COUT(3) << "Notification registered with the NotificationManager." << std::endl;
         
         return true;
     }
@@ -132,6 +132,7 @@ namespace orxonox
         if(set.find(ALL) != set.end())
         {
             notificationLists_s[index] = &allNotificationsList_s;
+            COUT(3) << "NotificationQueue registered with the NotificationManager." << std::endl;
             return true;
         }
         
@@ -147,9 +148,9 @@ namespace orxonox
             }
         }
         
-        COUT(3) << "Notification registered with the NotificationManager." << std::endl;
-        
         queue->update(); //!< Update the queue.
+
+        COUT(3) << "NotificationQueue registered with the NotificationManager." << std::endl;
         
         return true;
     }
@@ -170,8 +171,6 @@ namespace orxonox
     */
     /*static*/ std::multimap<std::time_t,Notification*>* NotificationManager::getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd)
     {
-        COUT(1) << "Queue: " << queue << ", timeFrameStart: " << timeFrameStart << ", timeFrameEnd: " << timeFrameEnd << std::endl;
-    
         std::multimap<std::time_t,Notification*>* notifications = NotificationManager::notificationLists_s[NotificationManager::queueList_s[queue]];
         
         if(notifications == NULL)

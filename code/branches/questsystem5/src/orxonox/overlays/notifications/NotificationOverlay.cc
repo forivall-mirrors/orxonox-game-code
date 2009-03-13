@@ -86,11 +86,11 @@ namespace orxonox
         return true;
     }
 
-    const std::string NotificationOverlay::clipMessage(const std::string & str)
+    const std::string NotificationOverlay::clipMessage(const std::string & message)
     {
-        if(str.length() <= (unsigned int)this->queue_->getNotificationLength())
-            return str;
-        return str.substr(0, this->queue_->getNotificationLength());
+        if(message.length() <= (unsigned int)this->queue_->getNotificationLength())
+            return message;
+        return message.substr(0, this->queue_->getNotificationLength());
     }
 
 }

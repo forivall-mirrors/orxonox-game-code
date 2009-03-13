@@ -58,12 +58,11 @@ namespace orxonox
     /**
     @brief
         Destructor.
-    @todo
-        I'm pretty sure that there are some thing that have to be distroyed.
     */
     NotificationQueue::~NotificationQueue()
     {
-        
+        this->targets_.clear();
+        this->clear();
     }
     
     /**
@@ -75,7 +74,6 @@ namespace orxonox
     {
         RegisterObject(NotificationQueue);
         
-        this->setDefaults();
         this->size_ = 0;
         this->tickTime_ = 0.0;
         
@@ -106,6 +104,8 @@ namespace orxonox
     {
         SUPER(NotificationQueue, XMLPort, xmlElement, mode);
         
+        this->setDefaults();
+
         XMLPortParam(NotificationQueue, "maxSize", setMaxSize, getMaxSize, xmlElement, mode);
         XMLPortParam(NotificationQueue, "notificationLength", setNotificationLength, getNotificationLength, xmlElement, mode);
         XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlElement, mode);
@@ -134,6 +134,7 @@ namespace orxonox
             while(it != this->containers_.upper_bound(&this->timeLimit_)) //!< Iterate through all elements whose creation time is smaller than the current time minus the display time.
             {
                 this->removeContainer(*it);
+                this->scroll(Vector2(0.0,-(1.1*this->getFontSize())));
                 it = this->containers_.begin(); //TDO: Needed?
             }
             
@@ -175,13 +176,12 @@ namespace orxonox
     {
         this->addNotification(notification, time);
         
-        //TDO: Position!
-        
         std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it;
         while(this->getSize() > this->getMaxSize())
         {
             it = this->containers_.begin();
             this->removeContainer(*it);
+            this->scroll(Vector2(0.0,-(1.1*this->getFontSize())));
         }
         
         COUT(3) << "NotificationQueue updated. A new Notifications has been added." << std::endl;
@@ -240,30 +240,35 @@ namespace orxonox
     
     /**
     @brief
-        Returns all targets concatinated as string, with kommas (',') as seperators.
+        Produces all targets concatinated as string, with kommas (',') as seperators.
+    @param string
+        Pointer to a string which will be used by the method to fill with the concatination of the targets.
     @return
-        Returns all targets concatinated as string, with kommas (',') as seperators.
-    @todo
-        Where is the string deleted?
+        Returns true if successful.
     */
-    const std::string & NotificationQueue::getTargets() const
+    bool NotificationQueue::getTargets(std::string* string) const
     {
-        std::string* pTemp = new std::string("");
+        if(string == NULL)
+        {
+            COUT(4) << "Input string must have memory allocated." << std::endl;
+            return false;
+        }
+        string->clear();
         bool first = true;
         for(std::set<std::string>::iterator it = this->targets_.begin(); it != this->targets_.end(); it++) //!< Iterate through the set of targets.
         {
             if(!first)
             {
-                *pTemp += ",";
+                *string += ",";
             }
             else
             {
                 first = false;
             }
-            *pTemp += *it;
+            *string += *it;
         }
         
-        return *pTemp;
+        return true;
     }
     
     /**
@@ -277,16 +282,19 @@ namespace orxonox
     */
     bool NotificationQueue::setTargets(const std::string & targets)
     {
+        this->targets_.clear();
+
         std::string* pTemp;
         unsigned int index = 0;
         while( index < targets.size() ) //!< Go through the string, character by character until the end is reached.
         {
             pTemp = new std::string("");
-            while(targets[index] != ',' && targets[index] != ' ' && index < targets.size())
+            while(index < targets.size() && targets[index] != ',' && targets[index] != ' ')
             {
                 *pTemp += targets[index];
                 index++;
             }
+            index++;
             this->targets_.insert(*pTemp);
         }
         
@@ -330,7 +338,15 @@ namespace orxonox
         }
         return true;
     }
-    
+
+    void NotificationQueue::scroll(const Vector2 pos)
+    {
+        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Scroll each overlay.
+        {
+            it->second->overlay->scroll(pos);
+        }
+    }
+
     /**
     @brief
         Adds a Notification, to the queue.
@@ -357,6 +373,8 @@ namespace orxonox
         this->overlays_[notification] = container;
         this->insertElement(container->overlay, container->name);
         this->size_= this->size_+1;
+
+        container->overlay->scroll(Vector2(0.0,(1.1*this->getFontSize())*(this->getSize()-1)));
     }
     
     /**
