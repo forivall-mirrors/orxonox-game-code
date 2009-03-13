@@ -116,7 +116,7 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        SUPER(SpaceShip, tick, dt);
+        ControllableEntity::tick(dt);
 
         if (this->hasLocalController())
         {

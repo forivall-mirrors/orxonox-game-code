@@ -114,7 +114,7 @@ namespace orxonox
 
     void Pawn::tick(float dt)
     {
-        SUPER(Pawn, tick, dt);
+        ControllableEntity::tick(dt);
 
         if (this->weaponSystem_)
         {
