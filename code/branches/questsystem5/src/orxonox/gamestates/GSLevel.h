@@ -62,6 +62,8 @@ namespace orxonox
         CameraManager*        cameraManager_;
         LevelManager*         levelManager_;
         PlayerManager*        playerManager_;
+        QuestManager*          questManager_;
+        NotificationManager*  notificationManager_;
 
         //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;

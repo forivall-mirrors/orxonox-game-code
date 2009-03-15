@@ -57,6 +57,9 @@ namespace orxonox
     {
         RegisterRootObject(NotificationManager);
 
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
+
         this->highestIndex_ = 0;
     }
 
@@ -76,10 +79,7 @@ namespace orxonox
     */
     /*static*/ NotificationManager & NotificationManager::getInstance()
     {
-        if(singletonRef_s == NULL)
-        {
-            singletonRef_s = new NotificationManager();
-        }
+        assert(singletonRef_s);
         return *singletonRef_s;
     }
     

@@ -45,6 +45,8 @@
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "objects/quest/QuestManager.h"
+#include "overlays/notifications/NotificationManager.h"
 
 namespace orxonox
 {
@@ -94,6 +96,10 @@ namespace orxonox
         }
 
         this->playerManager_ = new PlayerManager();
+
+        this->questManager_ = new QuestManager();
+
+        this->notificationManager_ = new NotificationManager();
 
         if (Core::isMaster())
         {

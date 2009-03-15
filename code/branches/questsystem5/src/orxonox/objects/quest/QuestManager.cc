@@ -55,6 +55,8 @@ namespace orxonox
     {
         RegisterRootObject(QuestManager);
 
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
     }
 
     /**
@@ -74,10 +76,7 @@ namespace orxonox
     */
     /*static*/ QuestManager & QuestManager::getInstance()
     {
-        if(singletonRef_s == NULL)
-        {
-            singletonRef_s = new QuestManager();
-        }
+        assert(singletonRef_s);
         return *singletonRef_s;
     }
 

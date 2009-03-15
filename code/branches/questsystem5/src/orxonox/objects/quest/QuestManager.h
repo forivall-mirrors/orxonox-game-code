@@ -52,11 +52,8 @@ namespace orxonox
     */
     class _OrxonoxExport QuestManager : public BaseObject
     {
-
-        protected:
-            QuestManager();
-
         public:
+            QuestManager();
             virtual ~QuestManager();
 
             static QuestManager& getInstance(); //!< Returns a reference to the single instance of the Quest Manager.

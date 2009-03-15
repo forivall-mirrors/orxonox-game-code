@@ -56,10 +56,8 @@ namespace orxonox
     */
     class _OrxonoxExport NotificationManager : public BaseObject
     {
-        protected:
-            NotificationManager();
-
         public:
+            NotificationManager();
             virtual ~NotificationManager();
 	        
             static const std::string ALL;
