@@ -111,7 +111,7 @@ namespace orxonox
     */
     bool QuestListener::setQuestId(const std::string & id)
     {
-        this->quest_ = QuestManager::findQuest(id); //!< Find the Quest corresponding to the given questId.
+        this->quest_ = QuestManager::getInstance().findQuest(id); //!< Find the Quest corresponding to the given questId.
         
         if(this->quest_ == NULL) //!< If there is no such Quest.
         {

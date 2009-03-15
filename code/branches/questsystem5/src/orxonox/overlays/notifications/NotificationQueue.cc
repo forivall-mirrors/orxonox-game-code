@@ -45,6 +45,7 @@ namespace orxonox
     CreateFactory(NotificationQueue);
     
     const std::string NotificationQueue::DEFAULT_FONT = "VeraMono";
+    const Vector2 NotificationQueue::DEFAULT_POSITION = Vector2(0.0,0.0);
 
     /**
     @brief
@@ -77,7 +78,7 @@ namespace orxonox
         this->size_ = 0;
         this->tickTime_ = 0.0;
         
-        NotificationManager::registerQueue(this);
+        NotificationManager::getInstance().registerQueue(this);
     }
     
     /**
@@ -89,6 +90,7 @@ namespace orxonox
         this->setMaxSize(DEFAULT_SIZE);
         this->setNotificationLength(DEFAULT_LENGTH);
         this->setDisplayTime(DEFAULT_DISPLAY_TIME);
+        this->setPosition(DEFAULT_POSITION);
         
         this->setTargets(NotificationManager::ALL);
         
@@ -112,6 +114,7 @@ namespace orxonox
         XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlElement, mode);
         XMLPortParam(NotificationQueue, "font", setFont, getFont, xmlElement, mode);
         XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "position", setPosition, getPosition, xmlElement, mode);
         
         COUT(3) << "NotificationQueue created." << std::endl;
     }
@@ -151,7 +154,7 @@ namespace orxonox
     {
         this->clear();
     
-        std::multimap<std::time_t,Notification*>* notifications = NotificationManager::getNotifications(this, this->displayTime_);
+        std::multimap<std::time_t,Notification*>* notifications = NotificationManager::getInstance().getNotifications(this, this->displayTime_);
         
         if(notifications == NULL)
             return;
@@ -314,7 +317,7 @@ namespace orxonox
         if(size <= 0)
             return false;
         this->fontSize_ = size;
-        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Set the font size for each overlay.
+        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); it++) //!< Set the font size for each overlay.
         {
             it->second->overlay->setFontSize(size);
         }
@@ -332,7 +335,7 @@ namespace orxonox
     bool NotificationQueue::setFont(const std::string & font)
     {
         this->font_ = font;
-        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Set the font for each overlay.
+        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); it++) //!< Set the font for each overlay.
         {
             it->second->overlay->setFont(font);
         }
@@ -344,6 +347,17 @@ namespace orxonox
         for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Scroll each overlay.
         {
             it->second->overlay->scroll(pos);
+        }
+    }
+
+    void NotificationQueue::positionChanged()
+    {
+        int counter = 0;
+        for (std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it = this->containers_.begin(); it != this->containers_.end(); it++) //!< Set the position for each overlay.
+        {
+            (*it)->overlay->setPosition(this->getPosition());
+            (*it)->overlay->scroll(Vector2(0.0,(1.1*this->getFontSize())*counter));
+            counter++;
         }
     }
 

@@ -43,7 +43,6 @@
 #include <OgrePanelOverlayElement.h>
 #include <map>
 #include <ctime>
-#include "util/Math.h"
 
 #include "orxonox/overlays/OverlayGroup.h"
 #include "orxonox/objects/Tickable.h"
@@ -113,15 +112,12 @@ namespace orxonox
             */
             inline int getDisplayTime() const
                 { return this->displayTime_; }
-                
             /**
-            @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
-            @return Retuns a set of string holding the different targets.
+            @brief Returns the position of the NotificationQueue.
+            @return Returns the position.
             */
-            inline const std::set<std::string> & getTargetsSet()
-                { return this->targets_; }
-            bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
-            
+            inline const Vector2 & getPosition() const
+                { return this->position_; }
             /**
             @brief Returns the font size used to display the Notifications.
             @return  Returns the font size.
@@ -134,6 +130,17 @@ namespace orxonox
             */
             inline const std::string & getFont() const
                 { return this->font_; }
+                
+            /**
+            @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
+            @return Retuns a set of string holding the different targets.
+            */
+            inline const std::set<std::string> & getTargetsSet()
+                { return this->targets_; }
+            bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
+            
+            inline void setPosition(Vector2 pos)
+                { this->position_ = pos; this->positionChanged(); }
 
             void scroll(const Vector2 pos);
             
@@ -141,13 +148,16 @@ namespace orxonox
             static const int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const int DEFAULT_LENGTH = 64; //!< The default maximum number of Notifications displayed.
             static const int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
-            static const float DEFAULT_FONT_SIZE = 0.02; //!< The default font size.
+            static const float DEFAULT_FONT_SIZE = 0.025; //!< The default font size.
+
             static const std::string DEFAULT_FONT; //!< The default font.
+            static const Vector2 DEFAULT_POSITION; //!< the default position.
         
             int maxSize_; //!< The maximal number of Notifications displayed.
             int size_; //!< The number of Notifications displayed.
             int notificationLength_; //!< The maximal number of characters a Notification-message is allowed to have.
             int displayTime_; //!< The time a Notification is displayed.
+            Vector2 position_; //!< The position of the NotificationQueue.
             
             std::set<std::string> targets_; //!< The targets the Queue displays Notifications of.
             
@@ -171,6 +181,8 @@ namespace orxonox
             
             bool setFontSize(float size); //!< Set the font size.
             bool setFont(const std::string & font); //!< Set the font.
+
+            void positionChanged();
             
             void addNotification(Notification* notification, const std::time_t & time); //!< Add a notification to the queue.
             bool removeContainer(NotificationOverlayContainer* container); //!< Remove a container from the queue.

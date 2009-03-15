@@ -73,6 +73,8 @@ namespace orxonox
     {
         this->setFont(this->queue_->getFont());
         this->setTextSize(this->queue_->getFontSize());
+
+        this->setPosition(this->queue_->getPosition());
     }
 
     NotificationOverlay::~NotificationOverlay()

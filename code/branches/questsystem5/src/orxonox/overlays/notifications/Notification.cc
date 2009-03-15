@@ -105,7 +105,7 @@ namespace orxonox
     bool Notification::send(const std::string & sender)
     {
         this->sender_ = sender;
-        bool successful = NotificationManager::registerNotification(this);
+        bool successful = NotificationManager::getInstance().registerNotification(this);
         if(!successful)
             return false;
         this->sent_ = true;

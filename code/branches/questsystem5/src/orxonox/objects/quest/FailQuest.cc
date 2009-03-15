@@ -94,7 +94,7 @@ namespace orxonox
         Quest* quest;
         try
         {
-            quest = QuestManager::findQuest(this->getQuestId());
+            quest = QuestManager::getInstance().findQuest(this->getQuestId());
             if(quest == NULL || !quest->fail(player))
             {
                return false;

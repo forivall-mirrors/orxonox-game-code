@@ -47,19 +47,17 @@ namespace orxonox
     const std::string NotificationManager::ALL = "all";
     const std::string NotificationManager::NONE = "none";
 
-    std::multimap<std::time_t,Notification*> NotificationManager::allNotificationsList_s;
-    std::map<int,std::multimap<std::time_t,Notification*>*> NotificationManager::notificationLists_s;
-    std::map<NotificationQueue*,int> NotificationManager::queueList_s;
-    
-    int NotificationManager::highestIndex_s = 0;
+    NotificationManager* NotificationManager::singletonRef_s = NULL;
 
     /**
     @brief
         Constructor. Registers the Object.
     */
-    NotificationManager::NotificationManager(BaseObject* creator) : BaseObject(creator)
+    NotificationManager::NotificationManager() : BaseObject(this)
     {
-        RegisterObject(NotificationManager);
+        RegisterRootObject(NotificationManager);
+
+        this->highestIndex_ = 0;
     }
 
     /**
@@ -68,6 +66,21 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
+    }
+
+    /**
+    @brief
+        Returns the current (and single) instance of the NotificationManager. Creates one, if there isn't one to begin with.
+    @return
+        Returns a reference to the single instance of the NotificationManager.
+    */
+    /*static*/ NotificationManager & NotificationManager::getInstance()
+    {
+        if(singletonRef_s == NULL)
+        {
+            singletonRef_s = new NotificationManager();
+        }
+        return *singletonRef_s;
     }
     
     /**
@@ -78,7 +91,7 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    /*static*/ bool NotificationManager::registerNotification(Notification* notification)
+    bool NotificationManager::registerNotification(Notification* notification)
     {
     
         if(notification == NULL) //!< A NULL-Notification cannot be registered.
@@ -86,7 +99,7 @@ namespace orxonox
         
         std::time_t time = std::time(0); //TDO: Doesn't this expire? //!< Get current time.
         
-        allNotificationsList_s.insert(std::pair<std::time_t,Notification*>(time,notification));
+        this->allNotificationsList_.insert(std::pair<std::time_t,Notification*>(time,notification));
         
         if(notification->getSender() == NONE) //!< If the sender has no specific name, then the Notification is only added to the list of all Notifications.
             return true;
@@ -96,12 +109,12 @@ namespace orxonox
             all = true;
         
         //!< Insert the notification in all queues that have its sender as target.
-        for(std::map<NotificationQueue*,int>::iterator it = queueList_s.begin(); it != queueList_s.end(); it++) //!< Iterate through all queues.
+        for(std::map<NotificationQueue*,int>::iterator it = this->queueList_.begin(); it != this->queueList_.end(); it++) //!< Iterate through all queues.
         {
             std::set<std::string> set = it->first->getTargetsSet();
             if(all || set.find(notification->getSender()) != set.end() || set.find(ALL) != set.end()) //TDO: Make sure this works.
             {
-                notificationLists_s[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); //!< Insert the Notification in the Notifications list of the current NotificationQueue.
+                this->notificationLists_[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); //!< Insert the Notification in the Notifications list of the current NotificationQueue.
                 it->first->update(notification, time); //!< Update the queue.
             }
         }
@@ -119,28 +132,28 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    /*static*/ bool NotificationManager::registerQueue(NotificationQueue* queue)
+    bool NotificationManager::registerQueue(NotificationQueue* queue)
     {
-        NotificationManager::highestIndex_s += 1;
-        int index = NotificationManager::highestIndex_s;
+        this->highestIndex_ += 1;
+        int index = this->highestIndex_;
         
-        queueList_s[queue] = index; //!< Add the NotificationQueue to the list of queues.
+        this->queueList_[queue] = index; //!< Add the NotificationQueue to the list of queues.
         
         std::set<std::string> set = queue->getTargetsSet(); //TDO: Works this?
         
         //! If all senders are the target of the queue, then the list of notification for that specific queue is te same as the list of all Notifications.
         if(set.find(ALL) != set.end())
         {
-            notificationLists_s[index] = &allNotificationsList_s;
+            this->notificationLists_[index] = &this->allNotificationsList_;
             COUT(3) << "NotificationQueue registered with the NotificationManager." << std::endl;
             return true;
         }
         
-        notificationLists_s[index] = new std::multimap<std::time_t,Notification*>;
-        std::multimap<std::time_t,Notification*> map = *notificationLists_s[index];
+        this->notificationLists_[index] = new std::multimap<std::time_t,Notification*>;
+        std::multimap<std::time_t,Notification*> map = *this->notificationLists_[index];
         
         //! Iterate through all Notifications to determine whether any of them should belong to the newly registered NotificationQueue.
-        for(std::multimap<std::time_t,Notification*>::iterator it = allNotificationsList_s.begin(); it != allNotificationsList_s.end(); it++)
+        for(std::multimap<std::time_t,Notification*>::iterator it = this->allNotificationsList_.begin(); it != this->allNotificationsList_.end(); it++)
         {
             if(set.find(it->second->getSender()) != set.end()) //!< Checks whether the overlay has the sender of the current notification as target.
             {
@@ -169,9 +182,9 @@ namespace orxonox
     @todo
         Make sure the map is deleted.
     */
-    /*static*/ std::multimap<std::time_t,Notification*>* NotificationManager::getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd)
+    std::multimap<std::time_t,Notification*>* NotificationManager::getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd)
     {
-        std::multimap<std::time_t,Notification*>* notifications = NotificationManager::notificationLists_s[NotificationManager::queueList_s[queue]];
+        std::multimap<std::time_t,Notification*>* notifications = this->notificationLists_[this->queueList_[queue]];
         
         if(notifications == NULL)
             return NULL;
