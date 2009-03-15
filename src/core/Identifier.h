@@ -356,11 +356,11 @@ namespace orxonox
             static ClassIdentifier<T> *getIdentifier();
             static ClassIdentifier<T> *getIdentifier(const std::string& name);
             void addObject(T* object);
-            static bool isFirstCall();
 
             void updateConfigValues(bool updateChildren = true) const;
 
         private:
+            static void initialiseIdentifier();
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
             {
@@ -375,27 +375,7 @@ namespace orxonox
     };
 
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::classIdentifier_s;
-
-    /**
-        @brief Returns true if the function gets called the first time, false otherwise.
-        @return True if this function got called the first time.
-    */
-    template <class T>
-    bool ClassIdentifier<T>::isFirstCall()
-    {
-        static bool bFirstCall = true;
-
-        if (bFirstCall)
-        {
-            bFirstCall = false;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    ClassIdentifier<T>* ClassIdentifier<T>::classIdentifier_s = 0;
 
     /**
         @brief Returns the only instance of this class.
@@ -405,28 +385,9 @@ namespace orxonox
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         // check if the static field has already been filled
-        if (ClassIdentifier<T>::isFirstCall())
-        {
-            // Get the name of the class
-            std::string name = typeid(T).name();
+        if (ClassIdentifier<T>::classIdentifier_s == 0)
+            ClassIdentifier<T>::initialiseIdentifier();
 
-            // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
-            ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
-
-            // Get the entry from the map
-            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifierSingleton(name, proposal);
-
-            if (ClassIdentifier<T>::classIdentifier_s == proposal)
-            {
-                COUT(4) << "*** Identifier: Requested Identifier for " << name << " was not yet existing and got created." << std::endl;
-            }
-            else
-            {
-                COUT(4) << "*** Identifier: Requested Identifier for " << name << " was already existing and got assigned." << std::endl;
-            }
-        }
-
-        // Finally return the unique ClassIdentifier
         return ClassIdentifier<T>::classIdentifier_s;
     }
 
@@ -441,6 +402,31 @@ namespace orxonox
         ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
         identifier->setName(name);
         return identifier;
+    }
+
+    /**
+        @brief Assigns the static field for the identifier singleton.
+    */
+    template <class T>
+    void ClassIdentifier<T>::initialiseIdentifier()
+    {
+        // Get the name of the class
+        std::string name = typeid(T).name();
+
+        // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
+        ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
+
+        // Get the entry from the map
+        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifierSingleton(name, proposal);
+
+        if (ClassIdentifier<T>::classIdentifier_s == proposal)
+        {
+            COUT(4) << "*** Identifier: Requested Identifier for " << name << " was not yet existing and got created." << std::endl;
+        }
+        else
+        {
+            COUT(4) << "*** Identifier: Requested Identifier for " << name << " was already existing and got assigned." << std::endl;
+        }
     }
 
     /**
