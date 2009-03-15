@@ -32,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#ifdef _NDEBUG
+#ifdef NDEBUG
 #include <OgreSceneNode.h>
 #else
 #include <OgrePrerequisites.h>
@@ -418,11 +418,11 @@ namespace orxonox
     };
 
     // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.
-#ifdef _NDEBUG
+#ifdef NDEBUG
     inline const Vector3& WorldEntity::getPosition() const
         { return this->node_->getPosition(); }
     inline const Quaternion& WorldEntity::getOrientation() const
-        { return this->node_->getrOrientation(); }
+        { return this->node_->getOrientation(); }
     inline const Vector3& WorldEntity::getScale3D(void) const
         { return this->node_->getScale(); }
 #endif
