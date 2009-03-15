@@ -64,7 +64,7 @@ namespace orxonox
             inline ObjectListIterator()
             {
                 this->element_ = 0;
-                this->iterator_ = ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
             }
 
             /**
@@ -74,7 +74,7 @@ namespace orxonox
             inline ObjectListIterator(ObjectListElement<T>* element)
             {
                 this->element_ = element;
-                this->iterator_ = ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
             }
 
             /**
@@ -84,7 +84,7 @@ namespace orxonox
             inline ObjectListIterator(const ObjectListIterator<T>& other)
             {
                 this->element_ = other.element_;
-                this->iterator_ = ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
             }
 
             /**
@@ -92,7 +92,7 @@ namespace orxonox
             */
             inline ~ObjectListIterator()
             {
-                ClassIdentifier<T>::getIdentifier()->getObjects()->unregisterObjectListIterator(this->iterator_);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->unregisterObjectListIterator(this);
             }
 
             /**
@@ -226,7 +226,6 @@ namespace orxonox
 
         private:
             ObjectListElement<T>* element_;        //!< The element the Iterator points at
-            std::list<void*>::iterator iterator_;  //!< The iterator in the notifying list of the ObjectList
     };
 }
 
