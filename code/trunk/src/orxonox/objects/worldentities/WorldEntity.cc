@@ -487,7 +487,7 @@ namespace orxonox
     }
 
     // Note: These functions are placed in WorldEntity.h as inline functions for the release build.
-#ifndef _NDEBUG
+#ifndef NDEBUG
     const Vector3& WorldEntity::getPosition() const
     {
         return this->node_->getPosition();
