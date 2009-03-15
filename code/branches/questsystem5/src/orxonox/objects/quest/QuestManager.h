@@ -39,7 +39,7 @@
 #include <map>
 #include <string>
 
-#include "core/BaseObject.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -50,7 +50,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestManager : public BaseObject
+    class _OrxonoxExport QuestManager : public OrxonoxClass
     {
         public:
             QuestManager();

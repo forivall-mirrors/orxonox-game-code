@@ -36,7 +36,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "core/OrxonoxClass.h"
 
 #include <map>
 #include <string>
@@ -54,7 +54,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport NotificationManager : public BaseObject
+    class _OrxonoxExport NotificationManager : public OrxonoxClass
     {
         public:
             NotificationManager();

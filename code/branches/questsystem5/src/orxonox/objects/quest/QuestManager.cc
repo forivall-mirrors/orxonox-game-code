@@ -51,7 +51,7 @@ namespace orxonox
     @todo
         Is inheriting from BaseObject proper?
     */
-    QuestManager::QuestManager() : BaseObject(this)
+    QuestManager::QuestManager()
     {
         RegisterRootObject(QuestManager);
 

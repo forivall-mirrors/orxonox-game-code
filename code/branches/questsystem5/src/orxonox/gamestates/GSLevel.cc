@@ -181,6 +181,18 @@ namespace orxonox
             this->playerManager_ = 0;
         }
 
+        if (this->questManager_)
+        {
+            delete this->questManager_;
+            this->questManager_ = NULL;
+        }
+
+        if (this->notificationManager_)
+        {
+            delete this->notificationManager_;
+            this->notificationManager_ = NULL;
+        }
+
         if (Core::showsGraphics())
         {
             inputState_->setHandler(0);

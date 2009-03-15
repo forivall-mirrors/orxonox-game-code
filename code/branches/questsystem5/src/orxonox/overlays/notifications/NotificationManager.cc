@@ -53,7 +53,7 @@ namespace orxonox
     @brief
         Constructor. Registers the Object.
     */
-    NotificationManager::NotificationManager() : BaseObject(this)
+    NotificationManager::NotificationManager()
     {
         RegisterRootObject(NotificationManager);
 
