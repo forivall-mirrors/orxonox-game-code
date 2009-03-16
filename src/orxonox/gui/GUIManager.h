@@ -69,6 +69,7 @@ namespace orxonox
         ~GUIManager();
 
         bool initialise(Ogre::RenderWindow* renderWindow);
+        void loadScene(const std::string& name);
         void tick(float dt)
         {
             assert(guiSystem_);

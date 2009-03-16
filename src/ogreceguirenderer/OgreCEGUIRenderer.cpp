@@ -2,7 +2,7 @@
 	filename: 	OgreCEGUIRenderer.cpp
 	created:	11/5/2004
 	author:		Paul D Turner
-	
+
 	purpose:	Implementation of Renderer class for Ogre engine
 *************************************************************************/
 /*************************************************************************
@@ -53,7 +53,7 @@ const size_t    OgreCEGUIRenderer::UNDERUSED_FRAME_THRESHOLD = 50000; // halfs b
 /*************************************************************************
 	Utility function to create a render operation and vertex buffer to render quads
 *************************************************************************/
-static void createQuadRenderOp(Ogre::RenderOperation &d_render_op, 
+static void createQuadRenderOp(Ogre::RenderOperation &d_render_op,
     Ogre::HardwareVertexBufferSharedPtr &d_buffer, size_t nquads)
 {
     using namespace Ogre;
@@ -71,7 +71,7 @@ static void createQuadRenderOp(Ogre::RenderOperation &d_render_op,
 	vd->addElement(0, vd_offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
 
 	// create hardware vertex buffer
-	d_buffer = HardwareBufferManager::getSingleton().createVertexBuffer(vd->getVertexSize(0), nquads,  
+	d_buffer = HardwareBufferManager::getSingleton().createVertexBuffer(vd->getVertexSize(0), nquads,
         HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE, false);
 
 	// bind vertex buffer
@@ -82,7 +82,7 @@ static void createQuadRenderOp(Ogre::RenderOperation &d_render_op,
 	d_render_op.useIndexes = false;
 }
 
-static void destroyQuadRenderOp(Ogre::RenderOperation &d_render_op, 
+static void destroyQuadRenderOp(Ogre::RenderOperation &d_render_op,
     Ogre::HardwareVertexBufferSharedPtr &d_buffer)
 {
     delete d_render_op.vertexData;
@@ -145,7 +145,7 @@ void OgreCEGUIRenderer::addQuad(const Rect& dest_rect, float z, const Texture* t
 	{
 		d_sorted = false;
 		QuadInfo quad;
-		
+
 		// set quad position, flipping y co-ordinates, and applying appropriate texel origin offset
 		quad.position.d_left	= dest_rect.d_left;
 		quad.position.d_right	= dest_rect.d_right;
@@ -169,7 +169,7 @@ void OgreCEGUIRenderer::addQuad(const Rect& dest_rect, float z, const Texture* t
 		quad.topRightCol	= colourToOgre(colours.d_bottom_right);
 		quad.bottomLeftCol	= colourToOgre(colours.d_top_left);
 		quad.bottomRightCol	= colourToOgre(colours.d_top_right);
-		
+
 		// set quad split mode
 		quad.splitMode = quad_split_mode;
 
@@ -228,9 +228,9 @@ void OgreCEGUIRenderer::doRender(void)
                 buffmem->tu1 = quad.texPosition.d_left;
                 buffmem->tv1 = quad.texPosition.d_bottom;
                 ++buffmem;
-    
+
                 // setup Vertex 2...
-                
+
                 // top-left to bottom-right diagonal
                 if (quad.splitMode == TopLeftToBottomRight)
                 {
@@ -252,7 +252,7 @@ void OgreCEGUIRenderer::doRender(void)
                     buffmem->tv1 = quad.texPosition.d_top;
                 }
                 ++buffmem;
-    
+
                 // setup Vertex 3...
                 buffmem->x = quad.position.d_left;
                 buffmem->y = quad.position.d_top;
@@ -261,7 +261,7 @@ void OgreCEGUIRenderer::doRender(void)
                 buffmem->tu1 = quad.texPosition.d_left;
                 buffmem->tv1 = quad.texPosition.d_top;
                 ++buffmem;
-    
+
                 // setup Vertex 4...
                 buffmem->x = quad.position.d_right;
                 buffmem->y = quad.position.d_bottom;
@@ -270,7 +270,7 @@ void OgreCEGUIRenderer::doRender(void)
                 buffmem->tu1 = quad.texPosition.d_right;
                 buffmem->tv1 = quad.texPosition.d_bottom;
                 ++buffmem;
-    
+
                 // setup Vertex 5...
                 buffmem->x = quad.position.d_right;
                 buffmem->y = quad.position.d_top;
@@ -279,9 +279,9 @@ void OgreCEGUIRenderer::doRender(void)
                 buffmem->tu1 = quad.texPosition.d_right;
                 buffmem->tv1 = quad.texPosition.d_top;
                 ++buffmem;
-    
+
                 // setup Vertex 6...
-                
+
                 // top-left to bottom-right diagonal
                 if (quad.splitMode == TopLeftToBottomRight)
                 {
@@ -304,11 +304,11 @@ void OgreCEGUIRenderer::doRender(void)
                 }
                 ++buffmem;
             }
-    
+
             // ensure we leave the buffer in the unlocked state
             d_buffer->unlock();
         }
-        
+
         /// Render the buffer
         d_bufferPos = 0;
 		bool first = true;
@@ -317,7 +317,7 @@ void OgreCEGUIRenderer::doRender(void)
         QuadList::iterator i = d_quadlist.begin();
         while(i != d_quadlist.end())
         {
-            
+
             d_currTexture = i->texture;
             d_render_op.vertexData->vertexStart = d_bufferPos;
             for (; i != d_quadlist.end(); ++i)
@@ -425,7 +425,7 @@ void OgreCEGUIRenderer::destroyAllTextures(void)
 
 
 /*************************************************************************
-	setup states etc	
+	setup states etc
 *************************************************************************/
 void OgreCEGUIRenderer::initRenderStates(void)
 {
@@ -468,9 +468,9 @@ void OgreCEGUIRenderer::initRenderStates(void)
 }
 
 
- 
+
 /*************************************************************************
-	sort quads list according to texture	
+	sort quads list according to texture
 *************************************************************************/
 void OgreCEGUIRenderer::sortQuads(void)
 {
@@ -524,7 +524,7 @@ void OgreCEGUIRenderer::renderQuadDirect(const Rect& dest_rect, float z, const T
 		++buffmem;
 
 		// setup Vertex 2...
-		
+
 		// top-left to bottom-right diagonal
 		if (quad_split_mode == TopLeftToBottomRight)
 		{
@@ -576,7 +576,7 @@ void OgreCEGUIRenderer::renderQuadDirect(const Rect& dest_rect, float z, const T
 		++buffmem;
 
 		// setup Vertex 6...
-		
+
 		// top-left to bottom-right diagonal
 		if (quad_split_mode == TopLeftToBottomRight)
 		{
@@ -613,7 +613,7 @@ void OgreCEGUIRenderer::renderQuadDirect(const Rect& dest_rect, float z, const T
 
 /*************************************************************************
 	convert ARGB colour value to whatever the Ogre render system is
-	expecting.	
+	expecting.
 *************************************************************************/
 uint32 OgreCEGUIRenderer::colourToOgre(const colour& col) const
 {
@@ -627,7 +627,7 @@ uint32 OgreCEGUIRenderer::colourToOgre(const colour& col) const
 
 
 /*************************************************************************
-	Set the scene manager to be used for rendering the GUI.	
+	Set the scene manager to be used for rendering the GUI.
 *************************************************************************/
 void OgreCEGUIRenderer::setTargetSceneManager(Ogre::SceneManager* scene_manager)
 {
@@ -649,7 +649,7 @@ void OgreCEGUIRenderer::setTargetSceneManager(Ogre::SceneManager* scene_manager)
 
 
 /*************************************************************************
-	Set the target render queue for GUI rendering.	
+	Set the target render queue for GUI rendering.
 *************************************************************************/
 void OgreCEGUIRenderer::setTargetRenderQueue(Ogre::uint8 queue_id, bool post_queue)
 {
@@ -723,7 +723,7 @@ void OgreCEGUIRenderer::constructor_impl(Ogre::RenderWindow* window, Ogre::uint8
 
 
 /*************************************************************************
-	Create a texture from an existing Ogre::TexturePtr object	
+	Create a texture from an existing Ogre::TexturePtr object
 *************************************************************************/
 Texture* OgreCEGUIRenderer::createTexture(Ogre::TexturePtr& texture)
 {
@@ -748,7 +748,7 @@ ResourceProvider* OgreCEGUIRenderer::createResourceProvider(void)
 }
 
 /*************************************************************************
-Set the size of the display in pixels.	
+Set the size of the display in pixels.
 *************************************************************************/
 void OgreCEGUIRenderer::setDisplaySize(const Size& sz)
 {
@@ -766,7 +766,7 @@ void OgreCEGUIRenderer::setDisplaySize(const Size& sz)
 	Callback from Ogre invoked before other stuff in our target queue
 	is rendered
 *************************************************************************/
-void CEGUIRQListener::renderQueueStarted(Ogre::uint8 id, const Ogre::String& invocation, 
+void CEGUIRQListener::renderQueueStarted(Ogre::uint8 id, const Ogre::String& invocation,
 										 bool& skipThisQueue)
 {
 	if ((!d_post_queue) && (d_queue_id == id))

@@ -40,11 +40,15 @@ namespace orxonox
     public:
         GSStandalone();
         ~GSStandalone();
+        static void showGUI();
 
     private:
         void enter();
         void leave();
         void ticked(const Clock& time);
+
+        GUIManager*     guiManager_;
+        static bool     guiShowing_s;
     };
 }
 
