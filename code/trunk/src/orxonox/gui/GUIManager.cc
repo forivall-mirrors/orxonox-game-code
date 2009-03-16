@@ -171,7 +171,7 @@ namespace orxonox
                 state->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
 
                 // load the background scene
-                loadScenes();
+                //loadScenes();
                 //CEGUI::KeyEventArgs e;
                 //e.codepoint
             }
@@ -189,6 +189,36 @@ namespace orxonox
         }
 
         return true;
+    }
+
+    void GUIManager::loadScene(const std::string& name)
+    {
+        if (name.compare("IngameMenu") == 0)
+        {
+            try
+            {
+                /*this->scriptModule_ = new LuaScriptModule();
+                this->luaState_ = this->scriptModule_->getLuaState();
+                this->guiSystem_ = new System(this->guiRenderer_, this->resourceProvider_, 0, this->scriptModule_);
+                tolua_Core_open(this->scriptModule_->getLuaState());
+                tolua_Orxonox_open(this->scriptModule_->getLuaState());
+                */
+                this->scriptModule_->executeScriptFile("ingameGUI.lua", "GUI");
+            }
+            catch (CEGUI::Exception& ex)
+            {
+#if CEGUI_VERSION_MINOR < 6
+                throw GeneralException(ex.getMessage().c_str());
+#else
+                throw GeneralException(ex.getMessage().c_str(), ex.getLine(),
+                                       ex.getFileName().c_str(), ex.getName().c_str());
+#endif
+            }
+        }
+        else
+        {
+            loadScenes();
+        }
     }
 
     void GUIManager::loadScenes()
@@ -240,6 +270,7 @@ namespace orxonox
             COUT(3) << "Loading GUI " << name << std::endl;
             try
             {
+                COUT (0) << "************* sceneManager: " << sceneManager << std::endl;
                 if (!sceneManager)
                 {
                     // currently, only an image is loaded. We could do 3D, see loadBackground.
@@ -286,7 +317,8 @@ namespace orxonox
         if (this->state_ != OnDisplay)
             return;
         //this->viewport_->setCamera(0);
-        this->guiRenderer_->setTargetSceneManager(0);
+        // has no effect since you cannot assign 0 as SceneManager
+        //this->guiRenderer_->setTargetSceneManager(0);
         this->state_ = Ready;
         InputManager::getInstance().requestLeaveState("gui");
     }

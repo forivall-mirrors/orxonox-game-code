@@ -42,6 +42,9 @@ namespace orxonox
         GSLevel();
         ~GSLevel();
 
+        // was private before (is public now because of console command in GSStandalone)
+        void setConfigValues();
+
     protected:
         void enter(Ogre::Viewport* viewport);
         void leave();
@@ -69,9 +72,6 @@ namespace orxonox
         // console commands
         ConsoleCommand*       ccKeybind_;
         ConsoleCommand*       ccTkeybind_;
-
-    private:
-        void setConfigValues();
 
     };
 }

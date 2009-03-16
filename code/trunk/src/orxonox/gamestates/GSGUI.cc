@@ -50,6 +50,7 @@ namespace orxonox
         guiManager_ = getParent()->getGUIManager();
 
         // show main menu
+        guiManager_->loadScene("MainMenu");
         guiManager_->showGUI("MainMenu", 0);
         getParent()->getViewport()->setCamera(guiManager_->getCamera());
     }

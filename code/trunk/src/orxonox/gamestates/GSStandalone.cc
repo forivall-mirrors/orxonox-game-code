@@ -29,10 +29,18 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSStandalone.h"
 
+#include <OgreViewport.h>
+#include <OgreCamera.h>
 #include "core/Core.h"
+#include "core/ConsoleCommand.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
+    SetConsoleCommand(GSStandalone, showGUI, true).setAsInputCommand();
+
+    bool GSStandalone::guiShowing_s = false;
+
     GSStandalone::GSStandalone()
         : GameState<GSGraphics>("standalone")
     {
@@ -42,11 +50,20 @@ namespace orxonox
     {
     }
 
+    void GSStandalone::showGUI()
+    {
+        GSStandalone::guiShowing_s = true;
+    }
+
     void GSStandalone::enter()
     {
         Core::setIsStandalone(true);
 
         GSLevel::enter(this->getParent()->getViewport());
+
+        guiManager_ = getParent()->getGUIManager();
+        // not sure if necessary
+        // guiManager_->loadScene("IngameMenu");
     }
 
     void GSStandalone::leave()
@@ -58,6 +75,18 @@ namespace orxonox
 
     void GSStandalone::ticked(const Clock& time)
     {
+        if (guiShowing_s)
+        {
+            guiManager_->showGUI("IngameMenu", this->getParent()->getViewport()->getCamera()->getSceneManager());
+        }
+        else
+        {
+            if (guiManager_)
+                guiManager_->hideGUI();
+        }
+        // tick CEGUI
+        guiManager_->tick(time.getDeltaTime());
+
         GSLevel::ticked(time);
         this->tickChild(time);
     }
