@@ -111,6 +111,11 @@ namespace orxonox
             inline float getStartCountdown() const
                 { return this->gtinfo_.startCountdown_; }
 
+            inline void setHUDTemplate(const std::string& name)
+                { this->gtinfo_.hudtemplate_ = name; }
+            inline const std::string& getHUDTemplate() const
+                { return this->gtinfo_.hudtemplate_; }
+
             void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
 

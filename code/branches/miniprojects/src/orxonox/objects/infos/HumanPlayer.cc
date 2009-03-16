@@ -52,12 +52,16 @@ namespace orxonox
         this->bHumanPlayer_ = true;
         this->defaultController_ = Class(HumanController);
 
+        this->humanHud_ = 0;
+
         this->setConfigValues();
         this->registerVariables();
     }
 
     HumanPlayer::~HumanPlayer()
     {
+        if (this->isInitialized() && this->humanHud_)
+            delete this->humanHud_;
     }
 
     void HumanPlayer::setConfigValues()
@@ -88,7 +92,7 @@ namespace orxonox
 
     void HumanPlayer::configvaluecallback_changedHUDTemplate()
     {
-        this->changedController();
+        this->setHumanHUDTemplate(this->hudtemplate_);
     }
 
     void HumanPlayer::networkcallback_changednick()
@@ -145,14 +149,27 @@ namespace orxonox
         this->networkcallback_clientIDchanged();
     }
 
-    void HumanPlayer::changedController()
+    void HumanPlayer::changedControllableEntity()
     {
-        if (this->getController())
-        {
-            this->getController()->setHUDTemplate(this->hudtemplate_);
+        PlayerInfo::changedControllableEntity();
 
-            if (this->getController() && this->getController()->getHUD())
-                this->getController()->getHUD()->setOwner(this->getControllableEntity());
+        if (this->humanHud_)
+            this->humanHud_->setOwner(this->getControllableEntity());
+    }
+
+    void HumanPlayer::updateHumanHUD()
+    {
+        if (this->humanHud_)
+        {
+            delete this->humanHud_;
+            this->humanHud_ = 0;
+        }
+
+        if (this->humanHudTemplate_ != "")
+        {
+            this->humanHud_ = new OverlayGroup(this);
+            this->humanHud_->addTemplate(this->humanHudTemplate_);
+            this->humanHud_->setOwner(this->getControllableEntity());
         }
     }
 }

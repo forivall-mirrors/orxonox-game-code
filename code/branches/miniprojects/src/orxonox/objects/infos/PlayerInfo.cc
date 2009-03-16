@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "network/ClientInformation.h"
 #include "objects/gametypes/Gametype.h"
+#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
@@ -49,6 +50,7 @@ namespace orxonox
         this->controller_ = 0;
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = CLIENTID_UNKNOWN;
+        this->gametypeHud_ = 0;
 
         this->registerVariables();
     }
@@ -67,6 +69,9 @@ namespace orxonox
 
             if (this->getGametype())
                 this->getGametype()->playerLeft(this);
+
+            if (this->BaseObject::isInitialized() && this->gametypeHud_)
+                delete this->gametypeHud_;
         }
     }
 
@@ -103,6 +108,10 @@ namespace orxonox
                     this->getGametype()->playerSwitchedBack(this, this->getOldGametype());
                 else
                     this->getGametype()->playerEntered(this);
+
+                if (this->isLocalPlayer() && this->isHumanPlayer())
+                    if (this->getGametype()->getHUDTemplate() != "")
+                        this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
             }
         }
     }
@@ -140,6 +149,8 @@ namespace orxonox
 
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
+
+        this->changedControllableEntity();
     }
 
     void PlayerInfo::stopControl(ControllableEntity* entity, bool callback)
@@ -154,6 +165,8 @@ namespace orxonox
 
             if (callback)
                 entity->removePlayer();
+
+            this->changedControllableEntity();
         }
     }
 
@@ -169,6 +182,28 @@ namespace orxonox
         else
         {
             this->stopControl(this->controllableEntity_);
+        }
+    }
+
+    void PlayerInfo::changedControllableEntity()
+    {
+        if (this->gametypeHud_)
+            this->gametypeHud_->setOwner(this->getControllableEntity());
+    }
+
+    void PlayerInfo::updateGametypeHUD()
+    {
+        if (this->gametypeHud_)
+        {
+            delete this->gametypeHud_;
+            this->gametypeHud_ = 0;
+        }
+
+        if (this->isLocalPlayer() && this->isHumanPlayer() && this->gametypeHudTemplate_ != "")
+        {
+            this->gametypeHud_ = new OverlayGroup(this);
+            this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);
+            this->gametypeHud_->setOwner(this->getControllableEntity());
         }
     }
 }

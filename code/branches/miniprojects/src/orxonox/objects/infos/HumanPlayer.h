@@ -50,7 +50,21 @@ namespace orxonox
 
             void setClientID(unsigned int clientID);
 
-            virtual void changedController();
+            virtual void changedControllableEntity();
+
+            inline void setHumanHUDTemplate(const std::string& name)
+            {
+                if (name != this->humanHudTemplate_)
+                {
+                    this->humanHudTemplate_ = name;
+                    this->updateHumanHUD();
+                }
+            }
+            inline const std::string& getHumanHUDTemplate() const
+                { return this->humanHudTemplate_; }
+
+            inline OverlayGroup* getHumanHUD() const
+                { return this->humanHud_; }
 
         protected:
             void configvaluecallback_changednick();
@@ -60,11 +74,16 @@ namespace orxonox
             void networkcallback_server_initialized();
             void networkcallback_client_initialized();
 
+            void updateHumanHUD();
+
             std::string nick_;
             std::string synchronize_nick_;
             std::string hudtemplate_;
             bool server_initialized_;
             bool client_initialized_;
+
+            std::string humanHudTemplate_;
+            OverlayGroup* humanHud_;
     };
 }
 
