@@ -54,7 +54,7 @@ namespace orxonox
 {
     const int NETWORK_PORT = 55556;
     const int NETWORK_MAX_CONNECTIONS = 50;
-    const int NETWORK_WAIT_TIMEOUT = 1;
+    const int NETWORK_WAIT_TIMEOUT = 10;
     const int NETWORK_DEFAULT_CHANNEL = 0;
 
   struct _NetworkExport ClientList{
@@ -83,7 +83,7 @@ namespace orxonox
 
   private:
     ConnectionManager(const ConnectionManager& copy); // not used
-    bool processData(ENetEvent *event);
+    inline bool processData(ENetEvent *event){ return buffer.push(event); }
     void receiverThread();
     void disconnectClients();
     int getClientID(ENetPeer* peer);

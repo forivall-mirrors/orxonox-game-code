@@ -78,10 +78,10 @@ namespace orxonox{
       virtual inline uint32_t getSize(uint8_t mode);
       virtual inline void* getReference(){ return (void *)&this->variable_; }
     protected:
-      bool checkEquality(uint8_t* mem);
-      void setAndIncrease(uint8_t*& mem);
-      void getAndIncrease(uint8_t*& mem);
-      uint32_t returnSize();
+      inline bool checkEquality(uint8_t* mem);
+      inline void setAndIncrease(uint8_t*& mem);
+      inline void getAndIncrease(uint8_t*& mem);
+      inline uint32_t returnSize();
       
       T& variable_;
       uint8_t mode_;
@@ -96,9 +96,9 @@ namespace orxonox{
       virtual ~SynchronisableVariableBidirectional();
       
       virtual inline uint8_t getMode(){ return 0x3; } //this basically is a hack ^^
-      virtual void getData(uint8_t*& mem, uint8_t mode);
+      virtual inline void getData(uint8_t*& mem, uint8_t mode);
       virtual void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false);
-      virtual uint32_t getSize(uint8_t mode);
+      virtual inline uint32_t getSize(uint8_t mode);
     private:
       T varBuffer_;
       uint8_t varReference_;
@@ -121,7 +121,7 @@ namespace orxonox{
       NetworkCallbackManager::deleteCallback(this->callback_); //safe call for deletion
   }
 
-  template <class T> void SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
+  template <class T> inline void SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
   {
     if ( state_ == this->mode_ )
       getAndIncrease( mem );
@@ -142,14 +142,12 @@ namespace orxonox{
     }
   // write the data
     setAndIncrease( mem );
-//   mem += SynchronisableVariable<T>::getSize();
   // now do a callback if neccessary
     if ( callback )
       NetworkCallbackManager::triggerCallback( this->callback_ );
-      //this->callback_->call();
   }
 
-  template <class T> uint32_t SynchronisableVariable<T>::getSize(uint8_t mode)
+  template <class T> inline uint32_t SynchronisableVariable<T>::getSize(uint8_t mode)
   {
     if ( mode == this->mode_ )
       return returnSize();
@@ -303,7 +301,7 @@ namespace orxonox{
         //this->callback_->call();
     }
 
-    template <class T> uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)
+    template <class T> inline uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)
     {
       return SynchronisableVariable<T>::returnSize() + sizeof(varReference_);
     }
@@ -311,5 +309,6 @@ namespace orxonox{
 
 }
 
+#include "network/synchronisable/SynchronisableVariableSpecialisations.h"
 
 #endif

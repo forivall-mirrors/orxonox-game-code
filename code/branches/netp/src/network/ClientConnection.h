@@ -52,8 +52,8 @@ namespace orxonox
 
     const int NETWORK_PORT = 55556;
     const int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
-    const int NETWORK_CLIENT_WAIT_TIME = 1;
-    const int NETWORK_CLIENT_CONNECT_TIMEOUT = 3000; // miliseconds
+    const int NETWORK_CLIENT_WAIT_TIME = 10;
+    const int NETWORK_CLIENT_CONNECT_TIMEOUT = 10000; // miliseconds
     const int NETWORK_CLIENT_CHANNELS = 2;
 
 

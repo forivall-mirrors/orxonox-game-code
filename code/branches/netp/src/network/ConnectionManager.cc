@@ -56,10 +56,7 @@
 namespace std
 {
   bool operator< (ENetAddress a, ENetAddress b) {
-    if(a.host <= b.host)
-      return true;
-    else
-      return false;
+    return a.host <= b.host;
   }
 }
 
@@ -197,6 +194,7 @@ namespace orxonox
         boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
           // we should never reach this point
+          assert(0);
           quit=true;
           continue;
           // add some error handling here ========================
@@ -213,7 +211,7 @@ namespace orxonox
           break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
-          msleep(1);
+          msleep(10);
           break;
       }
 //       usleep(100);
@@ -264,13 +262,6 @@ namespace orxonox
     }
     return;
   }
-
-  bool ConnectionManager::processData(ENetEvent *event) {
-    // just add packet to the buffer
-    // this can be extended with some preprocessing
-    return buffer.push(event);
-  }
-
 
 
   int ConnectionManager::getClientID(ENetPeer* peer) {
