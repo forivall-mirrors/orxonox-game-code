@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-#include <OgreLog.h>
 #include "core/RootGameState.h"
 #include "core/OrxonoxClass.h"
 
@@ -75,15 +74,10 @@ namespace orxonox
         void ticked(const Clock& time);
 
         void setConfigValues();
-        void setThreadAffinity(unsigned int limitToCPU);
 
         float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
-        TclBind*              tclBind_;
-        TclThreadManager*     tclThreadManager_;
-        Shell*                shell_;
-        LuaBind*              luaBind_;
 
         // variables for time statistics
         uint64_t              statisticsStartTime_;

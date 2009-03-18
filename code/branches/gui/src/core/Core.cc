@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
- *   Co-authors:
  *      Reto Grieder
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -40,6 +41,9 @@
 #include <boost/filesystem.hpp>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
+#  ifndef WIN32_LEAN_AND_MEAN
+#    define WIN32_LEAN_AND_MEAN
+#  endif
 #  include <windows.h>
 #elif defined(ORXONOX_PLATFORM_APPLE)
 #  include <sys/param.h>
@@ -50,12 +54,22 @@
 #endif
 
 #include "SpecialConfig.h"
+#include "util/Debug.h"
 #include "util/Exception.h"
-#include "Language.h"
-#include "CoreIncludes.h"
-#include "ConfigValueIncludes.h"
-#include "LuaBind.h"
+#include "util/SignalHandler.h"
+#include "Clock.h"
+#include "CommandExecutor.h"
 #include "CommandLine.h"
+#include "ConfigFileManager.h"
+#include "ConfigValueIncludes.h"
+#include "CoreIncludes.h"
+#include "Factory.h"
+#include "Identifier.h"
+#include "Language.h"
+#include "LuaBind.h"
+#include "Shell.h"
+#include "TclBind.h"
+#include "TclThreadManager.h"
 
 namespace orxonox
 {
@@ -72,28 +86,70 @@ namespace orxonox
     bool Core::bIsStandalone_s  = false;
     bool Core::bIsMaster_s      = false;
 
-    bool Core::isDevBuild_s     = false;
     Core* Core::singletonRef_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("PATH");
-    SetCommandLineArgument(directory, "").information("DIR");
+    SetCommandLineArgument(writingPathSuffix, "").information("DIR");
+    SetCommandLineArgument(settingsFile, "orxonox.ini");
+    SetCommandLineArgument(limitToCPU, 0).information("0: off | #cpu");
 
     /**
         @brief Constructor: Registers the object and sets the config-values.
         @param A reference to a global variable, used to avoid an infinite recursion in getSoftDebugLevel()
     */
-    Core::Core()
+    Core::Core(int argc, char** argv)
     {
         RegisterRootObject(Core);
 
         assert(Core::singletonRef_s == 0);
         Core::singletonRef_s = this;
 
-        this->bInitializeRandomNumberGenerator_ = false;
-        this->setConfigValues();
+        // Parse command line arguments fist
+        try
+        {
+            CommandLine::parseAll(argc, argv);
+        }
+        catch (ArgumentException& ex)
+        {
+            COUT(1) << ex.what() << std::endl;
+            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
+        }
+
+        // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
+        // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
+        // the timer though).
+        int limitToCPU = CommandLine::getValue("limitToCPU");
+        if (limitToCPU > 0)
+            setThreadAffinity((unsigned int)limitToCPU);
+
+        // Determine and set the location of the executable
+        setExecutablePath();
+
+        // Determine whether we have an installed or a binary dir run
+        // The latter occurs when simply running from the build directory
+        checkDevBuild();
+
+        // Make sure the directories we write in exist or else make them
+        createDirectories();
+
+        // create a signal handler (only active for linux)
+        // This call is placed as soon as possible, but after the directories are set
+        this->signalHandler_ = new SignalHandler();
+        this->signalHandler_->doCatch(executablePath_g.string(), Core::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
         OutputHandler::getOutStream().setLogPath(Core::getLogPathString());
+
+        // Manage ini files and set the default settings file (usually orxonox.ini)
+        this->configFileManager_ = new ConfigFileManager();
+        this->configFileManager_->setFilename(ConfigFileType::Settings,
+            CommandLine::getValue("settingsFile").getString());
+
+        this->languageInstance_ = new Language();
+
+        // Do this soon after the ConfigFileManager has been created to open up the
+        // possibility to configure everything below here
+        this->setConfigValues();
 
         // Possible media path override by the command line
         if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
@@ -101,6 +157,21 @@ namespace orxonox
             //std::string mediaPath = CommandLine::getValue("mediaPath");
             Core::tsetMediaPath(CommandLine::getValue("mediaPath"));
         }
+
+        // Create the lua interface
+        this->luaBind_ = new LuaBind();
+
+        // initialise Tcl
+        this->tclBind_ = new TclBind(Core::getMediaPathString());
+        this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
+
+        // create a shell
+        this->shell_ = new Shell();
+
+        // creates the class hierarchy for all classes with factories
+        Factory::createClassHierarchy();
+        
+        this->loaded_ = true;
     }
 
     /**
@@ -108,6 +179,21 @@ namespace orxonox
     */
     Core::~Core()
     {
+        this->loaded_ = false;
+
+        delete this->shell_;
+        delete this->tclThreadManager_;
+        delete this->tclBind_;
+        delete this->luaBind_;
+        delete this->languageInstance_;
+        delete this->configFileManager_;
+        delete this->signalHandler_;
+
+        // Destroy command line arguments
+        CommandLine::destroyAllArguments();
+        // Also delete external console command that don't belong to an Identifier
+        CommandExecutor::destroyExternalCommands();
+
         assert(Core::singletonRef_s);
         Core::singletonRef_s = 0;
     }
@@ -291,32 +377,57 @@ namespace orxonox
         }
     }
 
+
     /**
-    @brief
-        Performs the rather lower level operations just after
-        int main() has been called.
-    @remarks
-        This gets called AFTER pre-main stuff like AddFactory,
-        SetConsoleCommand, etc.
+    @note
+        The code of this function has been copied and adjusted from OGRE, an open source graphics engine.
+            (Object-oriented Graphics Rendering Engine)
+        For the latest info, see http://www.ogre3d.org/
+
+        Copyright (c) 2000-2008 Torus Knot Software Ltd
+
+        OGRE is licensed under the LGPL. For more info, see OGRE license.
     */
-    /*static*/ void Core::postMainInitialisation()
+    void Core::setThreadAffinity(int limitToCPU)
     {
-        // set location of the executable
-        Core::setExecutablePath();
+        if (limitToCPU <= 0)
+            return;
 
-        // Determine whether we have an installed or a binary dir run
-        // The latter occurs when simply running from the build directory
-        Core::checkDevBuild();
+        unsigned int coreNr = limitToCPU - 1;
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // Get the current process core mask
+        DWORD procMask;
+        DWORD sysMask;
+#  if _MSC_VER >= 1400 && defined (_M_X64)
+        GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
+#  else
+        GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
+#  endif
 
-        // Make sure the directories we write in exist or else make them
-        Core::createDirectories();
+        // If procMask is 0, consider there is only one core available
+        // (using 0 as procMask will cause an infinite loop below)
+        if (procMask == 0)
+            procMask = 1;
+
+        // if the core specified with coreNr is not available, take the lowest one
+        if (!(procMask & (1 << coreNr)))
+            coreNr = 0;
+
+        // Find the lowest core that this process uses and coreNr suggests
+        DWORD threadMask = 1;
+        while ((threadMask & procMask) == 0 || (threadMask < (1u << coreNr)))
+            threadMask <<= 1;
+
+        // Set affinity to the first core
+        SetThreadAffinityMask(GetCurrentThread(), threadMask);
+#endif
     }
 
     /**
     @brief
         Compares the executable path with the working directory
     */
-    /*static*/ void Core::setExecutablePath()
+    void Core::setExecutablePath()
     {
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // get executable module
@@ -368,12 +479,12 @@ namespace orxonox
         If found it means that this is not an installed run, hence we
         don't write the logs and config files to ~/.orxonox
     */
-    /*static*/ void Core::checkDevBuild()
+    void Core::checkDevBuild()
     {
         if (boost::filesystem::exists(executablePath_g / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
-            Core::isDevBuild_s = true;
+            Core::isDevBuild_ = true;
             mediaPath_g  = ORXONOX_MEDIA_DEV_PATH;
             configPath_g = ORXONOX_CONFIG_DEV_PATH;
             logPath_g    = ORXONOX_LOG_DEV_PATH;
@@ -415,9 +526,9 @@ namespace orxonox
         }
 
         // Option to put all the config and log files in a separate folder
-        if (!CommandLine::getArgument("directory")->hasDefaultValue())
+        if (!CommandLine::getArgument("writingPathSuffix")->hasDefaultValue())
         {
-            std::string directory(CommandLine::getValue("directory").getString());
+            std::string directory(CommandLine::getValue("writingPathSuffix").getString());
             configPath_g = configPath_g / directory;
             logPath_g    = logPath_g    / directory;
         }
@@ -428,7 +539,7 @@ namespace orxonox
         Checks for the log and the config directory and creates them
         if necessary. Otherwise me might have problems opening those files.
     */
-    /*static*/ void Core::createDirectories()
+    void Core::createDirectories()
     {
         std::vector<std::pair<boost::filesystem::path, std::string> > directories;
         directories.push_back(std::pair<boost::filesystem::path, std::string>
@@ -449,5 +560,10 @@ namespace orxonox
                 COUT(4) << "Created " << it->second << " directory" << std::endl;
             }
         }
+    }
+
+    void Core::tick(const Clock& time)
+    {
+        this->tclThreadManager_->tick(time.getDeltaTime());
     }
 }

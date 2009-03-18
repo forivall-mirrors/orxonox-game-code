@@ -33,19 +33,14 @@
   */
 
 #include "OrxonoxStableHeaders.h"
+#include "OrxonoxConfig.h"
 
 #include <exception>
 #include <cassert>
 
-#include "OrxonoxConfig.h"
 #include "util/Debug.h"
-#include "util/SignalHandler.h"
-#include "core/ConfigFileManager.h"
-#include "core/CommandLine.h"
-#include "core/CommandExecutor.h"
-#include "core/Identifier.h"
 #include "core/Core.h"
-#include "core/Language.h"
+#include "core/Identifier.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -84,41 +79,19 @@
 #endif
 
 
-SetCommandLineArgument(settingsFile, "orxonox.ini");
-SetCommandLineArgument(configFileDirectory, "");
 
 int main(int argc, char** argv)
 {
-    using namespace orxonox;
-
-    // Parse command line arguments
-    try
+    orxonox::Core* core = new orxonox::Core(argc, argv);
+    if (!core->isLoaded())
     {
-        CommandLine::parseAll(argc, argv);
+        COUT(0) << "Core was not fully loaded, probably an exception occurred during consruction. Aborting" << std::endl;
+        abort();
     }
-    catch (ArgumentException& ex)
-    {
-        COUT(1) << ex.what() << std::endl;
-        COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-    }
-
-    // Do this after parsing the command line to allow customisation
-    Core::postMainInitialisation();
-
-    // create a signal handler (only active for linux)
-    SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
-
-    // Create the ConfigFileManager before creating the GameStates in order to have
-    // setConfigValues() in the constructor (required).
-    ConfigFileManager* configFileManager = new ConfigFileManager();
-    configFileManager->setFilename(ConfigFileType::Settings, CommandLine::getValue("settingsFile").getString());
-    // create the Core settings to configure the output level
-    Language* language = new Language();
-    Core*     core     = new Core();
 
     // put GameStates in its own scope so we can destroy the identifiers at the end of main().
     {
+        using namespace orxonox;
         // create the gamestates
         GSRoot root;
         GSGraphics graphics;
@@ -142,17 +115,12 @@ int main(int argc, char** argv)
         root.start();
     }
 
-    // destroy singletons
+    // Destroy pretty much everyhting left
     delete core;
-    delete language;
-    delete configFileManager;
 
     // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
-    Identifier::destroyAllIdentifiers();
-    // destroy command line arguments
-    CommandLine::destroyAllArguments();
-    // Also delete external console command that don't belong to an Identifier
-    CommandExecutor::destroyExternalCommands();
+    // Needs to be done after 'delete core' because of ~OrxonoxClass
+    orxonox::Identifier::destroyAllIdentifiers();
 
     return 0;
 }

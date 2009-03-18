@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
- *   Co-authors:
  *      Reto Grieder
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -58,12 +59,13 @@ namespace orxonox
     //! The Core class is a singleton, only used to configure some config-values.
     class _CoreExport Core : public OrxonoxClass
     {
-        friend int ::main(int, char**); // sets isDevBuild_s
-
         public:
-            Core();
+            Core(int argc, char** argv);
             ~Core();
             void setConfigValues();
+
+            bool isLoaded() { return this->loaded_; }
+            void tick(const Clock& time);
 
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
@@ -71,8 +73,6 @@ namespace orxonox
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
-
-            static bool isDevBuild() { return Core::isDevBuild_s; }
 
             static void tsetMediaPath(const std::string& path)
             { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
@@ -97,6 +97,12 @@ namespace orxonox
 
         private:
             Core(const Core&);
+
+            void checkDevBuild();
+            void setExecutablePath();
+            void createDirectories();
+            void setThreadAffinity(int limitToCPU);
+
             void resetLanguageIntern();
             void initializeRandomNumberGenerator();
             void debugLevelChanged();
@@ -104,10 +110,14 @@ namespace orxonox
             void mediaPathChanged();
             void _tsetMediaPath(const std::string& path);
 
-            static void postMainInitialisation();
-            static void checkDevBuild();
-            static void setExecutablePath();
-            static void createDirectories();
+            // Singletons
+            ConfigFileManager*    configFileManager_;
+            Language*             languageInstance_;
+            LuaBind*              luaBind_;
+            Shell*                shell_;
+            SignalHandler*        signalHandler_;
+            TclBind*              tclBind_;
+            TclThreadManager*     tclThreadManager_;
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
@@ -116,14 +126,14 @@ namespace orxonox
             std::string language_;                          //!< The language
             bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
             std::string mediaPathString_;                   //!< Path to the data/media file folder as string
+            bool isDevBuild_;                               //!< True for builds in the build directory (not installed)
+            bool loaded_;                                   //!< Only true if constructor was interrupted
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server
             static bool bIsClient_s;
             static bool bIsStandalone_s;
             static bool bIsMaster_s;
-
-            static bool isDevBuild_s;                       //!< True for builds in the build directory (not installed)
 
             static Core* singletonRef_s;
     };

@@ -30,6 +30,7 @@
 
 #include <OgreEntity.h>
 #include "Model.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"

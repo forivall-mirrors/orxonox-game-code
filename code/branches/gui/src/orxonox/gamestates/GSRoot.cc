@@ -32,38 +32,19 @@
 #include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Core.h"
-#include "core/Factory.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "core/CommandLine.h"
-#include "core/Shell.h"
-#include "core/TclBind.h"
-#include "core/TclThreadManager.h"
-#include "core/LuaBind.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
-#  ifndef WIN32_LEAN_AND_MEAN
-#    define WIN32_LEAN_AND_MEAN
-#  endif
-#  define NOMINMAX // required to stop windows.h screwing up std::min definition
-#  include "windows.h"
-#endif
-
 namespace orxonox
 {
-    SetCommandLineArgument(limitToCPU, 1).information("0: off | #cpu");
-
     GSRoot::GSRoot()
         : RootGameState("root")
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
-        , tclBind_(0)
-        , tclThreadManager_(0)
-        , shell_(0)
     {
         RegisterRootObject(GSRoot);
         setConfigValues();
@@ -86,9 +67,6 @@ namespace orxonox
 
     void GSRoot::enter()
     {
-        // creates the class hierarchy for all classes with factories
-        Factory::createClassHierarchy();
-
         // reset game speed to normal
         timeFactor_ = 1.0f;
 
@@ -98,23 +76,6 @@ namespace orxonox
         this->periodTickTime_ = 0;
         this->avgFPS_ = 0.0f;
         this->avgTickTime_ = 0.0f;
-
-        // Create the lua interface
-        this->luaBind_ = new LuaBind();
-
-        // initialise TCL
-        this->tclBind_ = new TclBind(Core::getMediaPathString());
-        this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
-
-        // create a shell
-        this->shell_ = new Shell();
-
-        // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
-        // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
-        // the timer though).
-        int limitToCPU = CommandLine::getValue("limitToCPU");
-        if (limitToCPU > 0)
-            setThreadAffinity((unsigned int)(limitToCPU - 1));
 
         {
             // add console commands
@@ -155,12 +116,6 @@ namespace orxonox
         delete this->ccExit_;
         delete this->ccSelectGameState_;
 
-        delete this->shell_;
-        delete this->tclThreadManager_;
-        delete this->tclBind_;
-
-        delete this->luaBind_;
-
         if (this->ccSetTimeFactor_)
         {
             delete this->ccSetTimeFactor_;
@@ -178,7 +133,7 @@ namespace orxonox
     {
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
-        TclThreadManager::getInstance().tick(time.getDeltaTime());
+        Core::getInstance().tick(time);
 
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
             it->tick(time);
@@ -231,47 +186,6 @@ namespace orxonox
             statisticsStartTime_ = timeAfterTick;
         }
 
-    }
-
-    /**
-    @note
-        The code of this function has been copied and adjusted from OGRE, an open source graphics engine.
-            (Object-oriented Graphics Rendering Engine)
-        For the latest info, see http://www.ogre3d.org/
-
-        Copyright (c) 2000-2008 Torus Knot Software Ltd
-
-        OGRE is licensed under the LGPL. For more info, see OGRE license.
-    */
-    void GSRoot::setThreadAffinity(unsigned int limitToCPU)
-    {
-#ifdef ORXONOX_PLATFORM_WINDOWS
-        // Get the current process core mask
-        DWORD procMask;
-        DWORD sysMask;
-#  if _MSC_VER >= 1400 && defined (_M_X64)
-        GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
-#  else
-        GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
-#  endif
-
-        // If procMask is 0, consider there is only one core available
-        // (using 0 as procMask will cause an infinite loop below)
-        if (procMask == 0)
-            procMask = 1;
-
-        // if the core specified with limitToCPU is not available, take the lowest one
-        if (!(procMask & (1 << limitToCPU)))
-            limitToCPU = 0;
-
-        // Find the lowest core that this process uses and limitToCPU suggests
-        DWORD threadMask = 1;
-        while ((threadMask & procMask) == 0 || (threadMask < (1u << limitToCPU)))
-            threadMask <<= 1;
-
-        // Set affinity to the first core
-        SetThreadAffinityMask(GetCurrentThread(), threadMask);
-#endif
     }
 
     /**
