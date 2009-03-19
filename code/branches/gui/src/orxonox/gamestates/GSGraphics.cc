@@ -232,9 +232,9 @@ namespace orxonox
 
         float dt = time.getDeltaTime();
 
-        this->inputManager_->tick(dt);
+        this->inputManager_->update(time);
         // tick console
-        this->console_->tick(dt);
+        this->console_->update(time);
         this->tickChild(time);
 
         if (this->bWindowEventListenerUpdateRequired_)

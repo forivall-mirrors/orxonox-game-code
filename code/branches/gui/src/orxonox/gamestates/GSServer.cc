@@ -72,7 +72,7 @@ namespace orxonox
     void GSServer::ticked(const Clock& time)
     {
         GSLevel::ticked(time);
-        server_->tick(time.getDeltaTime());
+        server_->update(time);
         this->tickChild(time);
     }
 }

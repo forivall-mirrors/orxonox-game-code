@@ -124,7 +124,7 @@ namespace orxonox
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
 
-        void tick(float dt);
+        void update(const Clock& time);
 
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
         static InputManager* getInstancePtr() { return singletonRef_s; }

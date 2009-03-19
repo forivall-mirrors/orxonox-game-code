@@ -85,7 +85,7 @@ namespace orxonox
                 guiManager_->hideGUI();
         }
         // tick CEGUI
-        guiManager_->tick(time.getDeltaTime());
+        guiManager_->update(time);
 
         GSLevel::ticked(time);
         this->tickChild(time);

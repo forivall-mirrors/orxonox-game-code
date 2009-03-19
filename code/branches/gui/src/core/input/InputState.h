@@ -70,8 +70,8 @@ namespace orxonox
         virtual void registerOnLeave(Executor* executor)      { executorOnLeave_ = executor; }
         virtual void unRegisterOnLeave()                      { executorOnLeave_ = 0; }
 
-        virtual void tickInput(float dt, unsigned int device) = 0;
-        virtual void tickInput(float dt) = 0;
+        virtual void updateInput(float dt, unsigned int device) = 0;
+        virtual void updateInput(float dt) = 0;
 
         virtual void keyPressed (const KeyEvent& evt) = 0;
         virtual void keyReleased(const KeyEvent& evt) = 0;

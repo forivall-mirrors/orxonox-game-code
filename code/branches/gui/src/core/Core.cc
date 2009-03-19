@@ -562,8 +562,8 @@ namespace orxonox
         }
     }
 
-    void Core::tick(const Clock& time)
+    void Core::update(const Clock& time)
     {
-        this->tclThreadManager_->tick(time.getDeltaTime());
+        this->tclThreadManager_->update(time);
     }
 }

@@ -65,7 +65,7 @@ namespace orxonox
             void setConfigValues();
 
             bool isLoaded() { return this->loaded_; }
-            void tick(const Clock& time);
+            void update(const Clock& time);
 
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 

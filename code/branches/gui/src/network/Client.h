@@ -75,7 +75,7 @@ namespace orxonox
     virtual bool broadcast(const std::string& message) { return false; }
     //bool sendChat(packet::Chat *chat);
 
-    void tick(float time);
+    void update(const Clock& time);
 
   private:
     Client(const Client& copy); // not used

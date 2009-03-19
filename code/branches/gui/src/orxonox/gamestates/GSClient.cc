@@ -30,6 +30,7 @@
 #include "GSClient.h"
 
 #include "core/input/InputManager.h"
+#include "core/Clock.h"
 #include "core/CommandLine.h"
 #include "core/Core.h"
 #include "network/Client.h"
@@ -59,7 +60,8 @@ namespace orxonox
 
         GSLevel::enter(this->getParent()->getViewport());
 
-        client_->tick(0);
+        // TODO: Get Clock from Game or GameStateManager, but with 0 delta time
+        client_->update(Clock());
     }
 
     void GSClient::leave()
@@ -77,7 +79,7 @@ namespace orxonox
     void GSClient::ticked(const Clock& time)
     {
         GSLevel::ticked(time);
-        client_->tick(time.getDeltaTime());
+        client_->update(time);
 
         this->tickChild(time);
     }

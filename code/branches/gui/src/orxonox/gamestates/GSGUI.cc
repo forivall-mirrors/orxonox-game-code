@@ -30,6 +30,7 @@
 #include "GSGUI.h"
 
 #include <OgreViewport.h>
+#include "core/Clock.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "gui/GUIManager.h"
@@ -63,7 +64,7 @@ namespace orxonox
     void GSGUI::ticked(const Clock& time)
     {
         // tick CEGUI
-        guiManager_->tick(time.getDeltaTime());
+        guiManager_->update(time);
 
         this->tickChild(time);
     }

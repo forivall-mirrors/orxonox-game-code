@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSDedicated.h"
 
+#include "core/Clock.h"
 #include "core/CommandLine.h"
 #include "core/Core.h"
 #include "core/Iterator.h"
@@ -82,7 +83,7 @@ namespace orxonox
 //            COUT(0) << "estimated ticks/sec: " << nrOfTicks/(time.getSecondsPrecise()-startTime) << endl;
             timeSinceLastUpdate_ -= static_cast<unsigned int>(timeSinceLastUpdate_ / NETWORK_PERIOD) * NETWORK_PERIOD;
             GSLevel::ticked(time);
-            server_->tick(time.getDeltaTime());
+            server_->update(time);
             this->tickChild(time);
         }
         else

@@ -52,7 +52,7 @@ namespace orxonox
         void destroy();
         void setConfigValues();
 
-        virtual void tick(float dt);
+        void update(const Clock& time);
 
         static InGameConsole& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
         static InGameConsole* getInstancePtr() { return singletonRef_s; }

@@ -42,6 +42,7 @@
 #include "ois/OISInputManager.h"
 
 #include "util/Exception.h"
+#include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CommandExecutor.h"
@@ -669,7 +670,7 @@ namespace orxonox
     /**
     @brief
         Public interface. Only reloads immediately if the call stack doesn't
-        include the tick() method.
+        include the update() method.
     @param joyStickSupport
         Whether or not to initialise joy sticks as well.
     */
@@ -741,10 +742,10 @@ namespace orxonox
     /**
     @brief
         Updates the states and the InputState situation.
-    @param dt
-        Delta time
+    @param time
+        Clock holding the current time.
     */
-    void InputManager::tick(float dt)
+    void InputManager::update(const Clock& time)
     {
         if (internalState_ == Uninitialised)
             return;
@@ -848,18 +849,18 @@ namespace orxonox
                     stateMaster_->joyStickButtonHeld(iJoyStick, joyStickButtonsDown_[iJoyStick][iButton]);
                 }
 
-            // tick the handlers for each active handler
+            // update the handlers for each active handler
             for (unsigned int i = 0; i < devicesNum_; ++i)
             {
-                activeStatesTop_[i]->tickInput(dt, i);
+                activeStatesTop_[i]->updateInput(time.getDeltaTime(), i);
                 if (stateMaster_->isInputDeviceEnabled(i))
-                    stateMaster_->tickInput(dt, i);
+                    stateMaster_->updateInput(time.getDeltaTime(), i);
             }
 
-            // tick the handler with a general tick afterwards
+            // update the handler with a general tick afterwards
             for (unsigned int i = 0; i < activeStatesTicked_.size(); ++i)
-                activeStatesTicked_[i]->tickInput(dt);
-            stateMaster_->tickInput(dt);
+                activeStatesTicked_[i]->updateInput(time.getDeltaTime());
+            stateMaster_->updateInput(time.getDeltaTime());
         }
 
         internalState_ &= ~Ticking;
@@ -868,7 +869,7 @@ namespace orxonox
     /**
     @brief
         Updates the currently active states (according to activeStates_) for each device.
-        Also, a list of all active states (no duplicates!) is compiled for the general tick.
+        Also, a list of all active states (no duplicates!) is compiled for the general update().
     */
     void InputManager::_updateActiveStates()
     {
@@ -1289,7 +1290,7 @@ namespace orxonox
         True if removal was successful, false if name was not found.
     @remarks
         You can't remove the internal states "empty", "calibrator" and "detector".
-        The removal process is being postponed if InputManager::tick() is currently running.
+        The removal process is being postponed if InputManager::update() is currently running.
     */
     bool InputManager::requestDestroyState(const std::string& name)
     {

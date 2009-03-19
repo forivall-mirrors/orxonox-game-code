@@ -70,7 +70,7 @@ namespace orxonox
     void close();
     bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
-    void tick(float time);
+    void update(const Clock& time);
     unsigned int getPing(unsigned int clientID);
     double getPacketLoss(unsigned int clientID);
   protected:

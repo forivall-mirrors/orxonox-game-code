@@ -39,6 +39,7 @@
 #include <CEGUIForwardRefs.h>
 #include <CEGUIInputEvent.h>
 #include <CEGUISystem.h>
+#include "core/Clock.h"
 #include "core/input/InputInterfaces.h"
 
 // Forward declaration
@@ -70,10 +71,10 @@ namespace orxonox
 
         bool initialise(Ogre::RenderWindow* renderWindow);
         void loadScene(const std::string& name);
-        void tick(float dt)
+        void update(const Clock& time)
         {
             assert(guiSystem_);
-            guiSystem_->injectTimePulse(dt);
+            guiSystem_->injectTimePulse(time.getDeltaTime());
         }
         void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
         void hideGUI(); // tolua_export
@@ -107,9 +108,9 @@ namespace orxonox
         void mouseScrolled      (int abs, int rel)
         { guiSystem_->injectMouseWheelChange(rel);}
 
-        void tickInput(float dt) { }
-        void tickKey(float dt) { }
-        void tickMouse(float dt) { }
+        void updateInput(float dt) { }
+        void updateKey(float dt) { }
+        void updateMouse(float dt) { }
 
         void loadScenes();
 
