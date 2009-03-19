@@ -50,7 +50,6 @@ namespace orxonox
     {
         RegisterObject(WeaponSystem);
 
-        this->activeWeaponSet_ = 0;
         this->parentPawn_ = 0;
     }
 
@@ -90,7 +89,6 @@ namespace orxonox
     //returns the Pointer to the munitionType, if this munitionType doesn't exist returns 0, see Weapon::attachNeededMunition
     Munition * WeaponSystem::getMunitionType(std::string munitionType)
     {
-//COUT(0) << "WeaponSystem::getMunitionType " << munitionType << std::endl;
         std::map<std::string, Munition *>::const_iterator it = this->munitionSharedSet_.find(munitionType);
         if (it != this->munitionSharedSet_.end())
             return it->second;
@@ -104,6 +102,7 @@ namespace orxonox
 
     //n is the n'th weaponSet, starting with zero
     //SpaceShip.cc only needs to have the keybinding to a specific Set-number n (=firemode)
+    //in future this could be well defined and not only for 3 different WeaponModes
     void WeaponSystem::fire(WeaponMode::Enum n)
     {
         int set = 0;
@@ -119,9 +118,7 @@ namespace orxonox
                 set = 2;
                 break;
         }
-//COUT(0) << "WeaponSystem::fire" << std::endl;
         if (set < (int)this->weaponSets_.size())
-//COUT(0) << "WeaponSystem::fire - after if" << std::endl;
             this->weaponSets_[set]->fire();
     }
 

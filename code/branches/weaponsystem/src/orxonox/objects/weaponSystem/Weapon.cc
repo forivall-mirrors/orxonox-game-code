@@ -41,15 +41,18 @@ namespace orxonox
     Weapon::Weapon(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Weapon);
+
         this->bulletReadyToShoot_ = true;
         this->magazineReadyToShoot_ = true;
         this->parentWeaponSystem_ = 0;
         this->attachedToWeaponSlot_ = 0;
-        this->munition_ = 0;
         this->bulletLoadingTime_ = 0;
         this->magazineLoadingTime_ = 0;
         this->bReloading_ = false;
-
+        this->bulletAmount_= 0;
+        this->magazineAmount_ = 0;
+        this->munition_ = 0;
+        this->unlimitedMunition_ = false;
         this->setObjectMode(0x0);
     }
 
@@ -65,6 +68,9 @@ namespace orxonox
         XMLPortParam(Weapon, "bulletLoadingTime", setBulletLoadingTime, getBulletLoadingTime, xmlelement, mode);
         XMLPortParam(Weapon, "magazineLoadingTime", setMagazineLoadingTime, getMagazineLoadingTime, xmlelement, mode);
         XMLPortParam(Weapon, "bSharedMunition", setSharedMunition, getSharedMunition, xmlelement, mode);
+        XMLPortParam(Weapon, "bullets", setBulletAmount, getBulletAmount, xmlelement, mode);
+        XMLPortParam(Weapon, "magazines", setMagazineAmount, getMagazineAmount, xmlelement, mode);
+        XMLPortParam(Weapon, "unlimitedMunition", setUnlimitedMunition, getUnlimitedMunition, xmlelement, mode);
     }
 
     void Weapon::setWeapon()
@@ -73,51 +79,68 @@ namespace orxonox
         this->munition_->fillMagazines();
     }
 
+    void Weapon::setMunition()
+    {
+        this->munition_->setMaxBullets(this->bulletAmount_);
+        this->munition_->setMaxMagazines(this->magazineAmount_);
+    }
 
     void Weapon::fire()
     {
-//COUT(0) << "LaserGun::fire, this=" << this << std::endl;
+COUT(0) << "Weapon::fire" << std::endl;
         if ( this->bulletReadyToShoot_ && this->magazineReadyToShoot_ && !this->bReloading_)
         {
-//COUT(0) << "LaserGun::fire - ready to shoot" << std::endl;
-//COUT(0) << "LaserGun::fire - bullets" << this->munition_->bullets() << std::endl;
+COUT(0) << "Weapon::fire 2" << std::endl;
             this->bulletReadyToShoot_ = false;
-            if ( this->munition_->bullets() > 0)
+            if ( this->unlimitedMunition_== true )
             {
+COUT(0) << "Weapon::fire 3" << std::endl;
                 //shoot
-                this->takeBullets();
+                this->reloadBullet();
                 this->createProjectile();
-            }
-            //if there are no bullets, but magazines
-            else if ( this->munition_->magazines() > 0 && this->munition_->bullets() == 0 )
-            {
-//COUT(0) << "LaserGun::fire - no bullets" << std::endl;
-                this->takeMagazines();
             }
             else
             {
-//COUT(0) << "LaserGun::fire - no magazines" << std::endl;
-                //no magazines
+COUT(0) << "Weapon::fire 4" << std::endl;
+                if ( this->munition_->bullets() > 0)
+                {
+COUT(0) << "Weapon::fire 5" << std::endl;
+                    //shoot
+                    this->takeBullets();
+                    this->reloadBullet();
+                    this->createProjectile();
+                }
+                //if there are no bullets, but magazines
+                else if ( this->munition_->magazines() > 0 && this->munition_->bullets() == 0 )
+                {
+COUT(0) << "Weapon::fire 6" << std::endl;
+                    this->takeMagazines();
+                    this->reloadMagazine();
+                }
+                else
+                {
+                    //no magazines
+                }
             }
         }
         else
         {
-//COUT(0) << "LaserGun::fire - weapon not reloaded - bullets remaining:" << this->munition_->bullets() << std::endl;
+COUT(0) << "Weapon::fire not reloaded" << std::endl;
             //weapon not reloaded
         }
 
     }
 
-
+    /*
+    * weapon reloading
+    */
     void Weapon::bulletTimer(float bulletLoadingTime)
     {
-//COUT(0) << "Weapon::bulletTimer started" << std::endl;
         this->bReloading_ = true;
         this->bulletReloadTimer_.setTimer( bulletLoadingTime , false , this , createExecutor(createFunctor(&Weapon::bulletReloaded)));
     }
     void Weapon::magazineTimer(float magazineLoadingTime)
     {
-//COUT(0) << "Weapon::magazineTimer started" << std::endl;
         this->bReloading_ = true;
         this->magazineReloadTimer_.setTimer( magazineLoadingTime , false , this , createExecutor(createFunctor(&Weapon::magazineReloaded)));
     }
@@ -139,10 +162,9 @@ namespace orxonox
 
     void Weapon::attachNeededMunition(std::string munitionName)
     {
-//COUT(0) << "Weapon::attachNeededMunition, parentWeaponSystem=" << this->parentWeaponSystem_ << std::endl;
-        //if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
-        //if the weapon shares one munitionType put it into sharedMunitionSet
-        //else to munitionSet
+        /*  if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
+        *   if the weapon shares one munitionType put it into sharedMunitionSet else to munitionSet
+        */
         if (this->parentWeaponSystem_)
         {
             if (this->bSharedMunition_ == false)
@@ -153,7 +175,6 @@ namespace orxonox
             }
             else
             {
-//COUT(0) << "Weapon::attachNeededMunition " << munitionName << std::endl;
                 //getMunitionType returns 0 if there is no such munitionType
                 Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
                 if ( munition )
@@ -161,20 +182,34 @@ namespace orxonox
                 else
                 {
                     //create new munition with identifier because there is no such munitionType
-//COUT(0) << "Weapon::attachNeededMunition, create new Munition of Type " << munitionName << std::endl;
                     this->munitionIdentifier_ = ClassByString(munitionName);
                     this->munition_ = this->munitionIdentifier_.fabricate(this);
                     this->parentWeaponSystem_->setNewSharedMunition(munitionName, this->munition_);
                 }
             }
+            this->setMunition();
         }
     }
+
+
+    Munition * Weapon::getAttachedMunition(std::string munitionType)
+    {
+        this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionType);
+        return this->munition_;
+    }
+
+
+    //these function are defined in the weapon classes
+    void Weapon::takeBullets() { };
+    void Weapon::createProjectile() { };
+    void Weapon::takeMagazines() { };
+    void Weapon::reloadBullet() { };
+    void Weapon::reloadMagazine() { };
 
 
      /*get and set functions
      *
      */
-
     void Weapon::setMunitionType(std::string munitionType)
     {   this->munitionType_ = munitionType; }
 
@@ -199,17 +234,22 @@ namespace orxonox
     const bool Weapon::getSharedMunition()
     {   return this->bSharedMunition_;  }
 
+    void Weapon::setBulletAmount(unsigned int amount)
+    {   this->bulletAmount_ = amount; }
 
-    Munition * Weapon::getAttachedMunition(std::string munitionType)
-    {
-//COUT(0) << "Weapon::getAttachedMunition, parentWeaponSystem_="<< this->parentWeaponSystem_ << std::endl;
-        this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionType);
-//COUT(0) << "Weapon::getAttachedMunition, munition_="<< this->munition_ << std::endl;
-        return this->munition_;
-    }
+    const unsigned int Weapon::getBulletAmount()
+    {   return this->bulletAmount_;  }
 
-    void Weapon::takeBullets() { };
-    void Weapon::createProjectile() { };
-    void Weapon::takeMagazines() { };
+    void Weapon::setMagazineAmount(unsigned int amount)
+    {   this->magazineAmount_ = amount; }
+
+    const unsigned int Weapon::getMagazineAmount()
+    {   return this->magazineAmount_;  }
+
+    void Weapon::setUnlimitedMunition(bool unlimitedMunition)
+    {   this->unlimitedMunition_ = unlimitedMunition;   }
+
+    const bool Weapon::getUnlimitedMunition()
+    {   return this->unlimitedMunition_;    }
 
 }

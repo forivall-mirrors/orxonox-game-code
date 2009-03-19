@@ -59,8 +59,8 @@ namespace orxonox
         {
             this->attachedWeaponPack_ = wPack;
             int wPackWeapon = 0;    //WeaponCounter for Attaching
+           
             //should be possible to choose which slot to use
-
             //attach every weapon of the weaponPack to a weaponSlot
             for (  int i=0; i < wPack->getSize() ; i++  )
             {
@@ -79,7 +79,6 @@ namespace orxonox
                     {
                         if ( this->parentWeaponSystem_->getWeaponSlotPointer(k)->getAttachedWeapon() == 0 )
                         {
-//COUT(0) << "WeaponSet::attachWeaponPack mode 2 k="<< k << std::endl;
                             this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(k) );
                             this->parentWeaponSystem_->getWeaponSlotPointer(k)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
                             this->parentWeaponSystem_->getParentPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
@@ -95,7 +94,6 @@ namespace orxonox
     void WeaponSet::fire()
     {
         //fires all WeaponSlots available for this weaponSet attached from the WeaponPack
-//COUT(0) << "WeaponSet::fire from Pack: " << this->attachedWeaponPack_ << std::endl;
         if (this->attachedWeaponPack_)
             this->attachedWeaponPack_->fire();
     }

@@ -74,7 +74,6 @@ namespace orxonox
             std::vector<WeaponPack *> weaponPacks_;
             std::map<std::string, Munition *> munitionSharedSet_;
             std::map<std::string, Munition *> munitionSet_;
-            WeaponSet *activeWeaponSet_;
             Pawn *parentPawn_;
     };
 }
