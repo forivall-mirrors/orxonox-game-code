@@ -52,9 +52,6 @@ namespace orxonox
         GSRoot();
         ~GSRoot();
 
-        void exitGame()
-        { requestState("root"); }
-
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
         void setTimeFactor(float factor);
@@ -92,7 +89,6 @@ namespace orxonox
         unsigned int          statisticsAvgLength_;
 
         // console commands
-        ConsoleCommand*       ccExit_;
         ConsoleCommand*       ccSelectGameState_;
         ConsoleCommand*       ccSetTimeFactor_;
         ConsoleCommand*       ccPause_;

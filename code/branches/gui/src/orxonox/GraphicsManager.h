@@ -33,8 +33,8 @@
     Declaration of GraphicsManager Singleton.
  */
 
-#ifndef _GraphicsEngine_H__
-#define _GraphicsEngine_H__
+#ifndef _GraphicsManager_H__
+#define _GraphicsManager_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -130,4 +130,4 @@ namespace orxonox
     };
 }
 
-#endif /* _GraphicsEngine_H__ */
+#endif /* _GraphicsManager_H__ */

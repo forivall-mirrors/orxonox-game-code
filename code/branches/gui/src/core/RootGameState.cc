@@ -31,12 +31,9 @@
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "Clock.h"
-#include "CommandLine.h"
 
 namespace orxonox
 {
-    SetCommandLineArgument(state, "gui").shortcut("s");
-
     RootGameState::RootGameState(const std::string& name)
         : GameState<GameStateBase>(name)
         , stateRequest_("")
@@ -117,62 +114,5 @@ namespace orxonox
     void RootGameState::requestState(const std::string& name)
     {
         this->stateRequest_ = name;
-    }
-
-    /**
-    @brief
-        Main loop of the orxonox game.
-        Starts the game. The little 'while' denotes the main loop.
-        Whenever the root state is selected, the game ends.
-    @param name
-        State to start with (usually main menu or specified by command line)
-    @note
-        We use the Ogre::Timer to measure time since it uses the most precise
-        method an a platform (however the windows timer lacks time when under
-        heavy kernel load!).
-    */
-    void RootGameState::start()
-    {
-        // Don't catch errors when having a debugger in msvc
-#if !defined(ORXONOX_COMPILER_MSVC) || defined(NDEBUG)
-        try
-        {
-#endif
-            // start global orxonox time
-            Clock clock;
-
-            this->activate();
-
-            // get initial state from command line
-            gotoState(CommandLine::getValue("state"));
-
-            while (this->activeChild_)
-            {
-                clock.capture();
-
-                this->tick(clock);
-
-                if (this->stateRequest_ != "")
-                    gotoState(stateRequest_);
-            }
-
-            this->deactivate();
-#if !defined(ORXONOX_COMPILER_MSVC) || defined(NDEBUG)
-        }
-        // Note: These are all unhandled exceptions that should not have made its way here!
-        // almost complete game catch block to display the messages appropriately.
-        catch (std::exception& ex)
-        {
-            COUT(0) << ex.what() << std::endl;
-            COUT(0) << "Program aborted." << std::endl;
-            abort();
-        }
-        // anything that doesn't inherit from std::exception
-        catch (...)
-        {
-            COUT(0) << "An unidentifiable exception has occured. Program aborted." << std::endl;
-            abort();
-        }
-#endif
     }
 }

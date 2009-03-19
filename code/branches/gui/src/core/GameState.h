@@ -64,6 +64,8 @@ namespace orxonox
         friend class RootGameState;
         template <class ParentType>
         friend class GameState;
+        // Hack
+        friend class Game;
 
     public:
         /**

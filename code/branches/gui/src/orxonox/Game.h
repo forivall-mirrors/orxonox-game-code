@@ -26,31 +26,45 @@
  *
  */
 
-#ifndef _RootGameState_H__
-#define _RootGameState_H__
+/**
+@file
+@brief
+    Declaration of Game Singleton.
+ */
 
-#include "CorePrereqs.h"
-#include "GameState.h"
+#ifndef _Game_H__
+#define _Game_H__
+
+#include "OrxonoxPrereqs.h"
+#include <cassert>
+#include "core/CorePrereqs.h"
 
 namespace orxonox
 {
-    class _CoreExport RootGameState : public GameState<GameStateBase>
+    /**
+    @brief
+        Main class responsible for running the game.
+    */
+    class _OrxonoxExport Game
     {
-        // Hack!
-        friend class Game;
-
     public:
-        RootGameState(const std::string& name);
-        ~RootGameState();
+        Game(int argc, char** argv);
+        ~Game();
 
-        void requestState(const std::string& name);
+        void run();
+        void stop();
+
+        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
-        void makeTransition(GameStateBase* source, GameStateBase* destination);
-        void gotoState(const std::string& name);
+        Game(Game&); // don't mess with singletons
 
-        std::string stateRequest_;
+        Core* core_;
+
+        bool abort_;
+
+        static Game* singletonRef_s;        //!< Pointer to the Singleton
     };
 }
 
-#endif /* _RootGameState_H__ */
+#endif /* _Game_H__ */

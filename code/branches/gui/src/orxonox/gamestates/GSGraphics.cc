@@ -74,7 +74,7 @@ namespace orxonox
     {
         Core::setShowsGraphics(true);
 
-        // initialise graphics engine. Doesn't load the render window yet!
+        // initialise graphics manager. Doesn't load the render window yet!
         this->graphicsManager_ = new GraphicsManager();
         this->graphicsManager_->initialise();
 

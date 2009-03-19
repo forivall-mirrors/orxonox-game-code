@@ -79,14 +79,6 @@ namespace orxonox
 
         {
             // add console commands
-            FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::exitGame);
-            functor->setObject(this);
-            this->ccExit_ = createConsoleCommand(functor, "exit");
-            CommandExecutor::addConsoleCommandShortcut(this->ccExit_);
-        }
-
-        {
-            // add console commands
             FunctorMember01<GameStateBase, const std::string&>* functor = createFunctor(&GameStateBase::requestState);
             functor->setObject(this);
             this->ccSelectGameState_ = createConsoleCommand(functor, "selectGameState");
@@ -113,7 +105,6 @@ namespace orxonox
     void GSRoot::leave()
     {
         // destroy console commands
-        delete this->ccExit_;
         delete this->ccSelectGameState_;
 
         if (this->ccSetTimeFactor_)
