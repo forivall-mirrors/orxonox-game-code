@@ -60,7 +60,7 @@ namespace orxonox
 
     HumanPlayer::~HumanPlayer()
     {
-        if (this->isInitialized() && this->humanHud_)
+        if (this->BaseObject::isInitialized() && this->humanHud_)
             delete this->humanHud_;
     }
 
