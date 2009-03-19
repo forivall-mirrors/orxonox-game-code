@@ -409,7 +409,7 @@ namespace orxonox
     /**
         @brief Resizes the console elements. Call if window size changes.
     */
-    void InGameConsole::windowResized(int newWidth, int newHeight)
+    void InGameConsole::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
         this->windowW_ = newWidth;
         this->windowH_ = newHeight;

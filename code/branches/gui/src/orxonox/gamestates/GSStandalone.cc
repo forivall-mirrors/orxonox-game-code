@@ -34,6 +34,7 @@
 #include "core/Core.h"
 #include "core/ConsoleCommand.h"
 #include "gui/GUIManager.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -59,9 +60,9 @@ namespace orxonox
     {
         Core::setIsStandalone(true);
 
-        GSLevel::enter(this->getParent()->getViewport());
+        GSLevel::enter();
 
-        guiManager_ = getParent()->getGUIManager();
+        guiManager_ = GUIManager::getInstancePtr();
         // not sure if necessary
         // guiManager_->loadScene("IngameMenu");
     }
@@ -77,7 +78,8 @@ namespace orxonox
     {
         if (guiShowing_s)
         {
-            guiManager_->showGUI("IngameMenu", this->getParent()->getViewport()->getCamera()->getSceneManager());
+            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
+            guiManager_->showGUI("IngameMenu", viewport->getCamera()->getSceneManager());
         }
         else
         {

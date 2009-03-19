@@ -39,7 +39,7 @@
 #include <OgreSceneManager.h>
 #include <cassert>
 
-#include "GraphicsEngine.h"
+#include "GraphicsManager.h"
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
@@ -177,8 +177,8 @@ namespace orxonox
     void ParticleInterface::setDetailLevel(unsigned int level)
     {
         this->detaillevel_ = level;
-        if (GraphicsEngine::getInstancePtr())
-            this->detailLevelChanged(GraphicsEngine::getInstance().getDetailLevelParticle());
+        if (Core::showsGraphics())
+            this->detailLevelChanged(GraphicsManager::getInstance().getDetailLevelParticle());
     }
 
     void ParticleInterface::detailLevelChanged(unsigned int newlevel)

@@ -96,7 +96,8 @@ namespace orxonox
     }
 
 
-    class GraphicsEngine;
+    class GraphicsManager;
+    class OgreWindowEventListener;
     class Settings;
 
     class RadarViewable;

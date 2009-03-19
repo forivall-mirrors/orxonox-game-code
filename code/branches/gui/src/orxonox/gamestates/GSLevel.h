@@ -30,7 +30,6 @@
 #define _GSLevel_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -46,7 +45,7 @@ namespace orxonox
         void setConfigValues();
 
     protected:
-        void enter(Ogre::Viewport* viewport);
+        void enter();
         void leave();
         void ticked(const Clock& time);
 

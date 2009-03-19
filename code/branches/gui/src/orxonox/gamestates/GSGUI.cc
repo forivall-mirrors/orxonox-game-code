@@ -34,6 +34,7 @@
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "gui/GUIManager.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -48,12 +49,12 @@ namespace orxonox
 
     void GSGUI::enter()
     {
-        guiManager_ = getParent()->getGUIManager();
+        guiManager_ = GUIManager::getInstancePtr();
 
         // show main menu
         guiManager_->loadScene("MainMenu");
         guiManager_->showGUI("MainMenu", 0);
-        getParent()->getViewport()->setCamera(guiManager_->getCamera());
+        GraphicsManager::getInstance().getViewport()->setCamera(guiManager_->getCamera());
     }
 
     void GSGUI::leave()

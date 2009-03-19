@@ -58,7 +58,7 @@ namespace orxonox
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
 
-        GSLevel::enter(this->getParent()->getViewport());
+        GSLevel::enter();
 
         // TODO: Get Clock from Game or GameStateManager, but with 0 delta time
         client_->update(Clock());

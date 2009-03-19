@@ -38,7 +38,7 @@
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
-#include "GraphicsEngine.h"
+#include "GraphicsManager.h"
 #include "util/Exception.h"
 
 #include <OgreMaterial.h>
@@ -58,7 +58,7 @@ namespace orxonox
         this->scenemanager_ = scenemanager;
         this->compositorInstance_ = 0;
         this->bVisible_ = true;
-        this->bLoadCompositor_ = Core::showsGraphics() && GraphicsEngine::getInstancePtr();
+        this->bLoadCompositor_ = Core::showsGraphics();
         this->bViewportInitialized_ = false;
         this->compositor_ = "";
         this->oldcompositor_ = "";
@@ -85,7 +85,7 @@ namespace orxonox
 
         if (this->bLoadCompositor_ && this->compositorInstance_)
         {
-            Ogre::Viewport* viewport = GraphicsEngine::getInstance().getViewport();
+            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
             assert(viewport);
             Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->compositor_);
         }
@@ -113,7 +113,7 @@ namespace orxonox
     {
         if (this->bLoadCompositor_)
         {
-            Ogre::Viewport* viewport = GraphicsEngine::getInstance().getViewport();
+            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
             assert(viewport);
             if (this->oldcompositor_ != "")
             {

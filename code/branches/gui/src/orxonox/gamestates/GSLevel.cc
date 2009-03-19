@@ -43,6 +43,7 @@
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
 #include "CameraManager.h"
+#include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
 
@@ -76,7 +77,7 @@ namespace orxonox
         SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
     }
 
-    void GSLevel::enter(Ogre::Viewport* viewport)
+    void GSLevel::enter()
     {
         if (Core::showsGraphics())
         {
@@ -86,8 +87,7 @@ namespace orxonox
             inputState_->setHandler(keyBinder_);
 
             // create the global CameraManager
-            assert(viewport);
-            this->cameraManager_ = new CameraManager(viewport);
+            this->cameraManager_ = new CameraManager(GraphicsManager::getInstance().getViewport());
 
             // Start the Radar
             this->radar_ = new Radar();

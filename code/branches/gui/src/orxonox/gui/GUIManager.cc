@@ -270,7 +270,7 @@ namespace orxonox
             COUT(3) << "Loading GUI " << name << std::endl;
             try
             {
-                COUT (0) << "************* sceneManager: " << sceneManager << std::endl;
+//                COUT (0) << "************* sceneManager: " << sceneManager << std::endl;
                 if (!sceneManager)
                 {
                     // currently, only an image is loaded. We could do 3D, see loadBackground.

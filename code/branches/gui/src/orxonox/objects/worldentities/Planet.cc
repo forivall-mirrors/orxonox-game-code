@@ -41,7 +41,7 @@
 #include "objects/Scene.h"
 #include "CameraManager.h"
 #include "Camera.h"
-#include "GraphicsEngine.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {
