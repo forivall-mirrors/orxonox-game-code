@@ -60,11 +60,12 @@ namespace orxonox
     class _CoreExport Core : public OrxonoxClass
     {
         public:
-            Core(int argc, char** argv);
+            Core();
             ~Core();
+
+            Clock* initialise(int argc, char** argv);
             void setConfigValues();
 
-            bool isLoaded() { return this->loaded_; }
             void update(const Clock& time);
 
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
@@ -73,6 +74,8 @@ namespace orxonox
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
+
+            static const Clock& getGameClock() { return *getInstance().gameClock_; }
 
             static void tsetMediaPath(const std::string& path)
             { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
@@ -118,6 +121,8 @@ namespace orxonox
             SignalHandler*        signalHandler_;
             TclBind*              tclBind_;
             TclThreadManager*     tclThreadManager_;
+
+            Clock*                gameClock_;
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console

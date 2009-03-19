@@ -88,12 +88,8 @@ namespace orxonox
 
         this->abort_ = false;
 
-        this->core_ = new orxonox::Core(argc, argv);
-        if (!this->core_->isLoaded())
-        {
-            COUT(0) << "Core was not fully loaded, probably an exception occurred during consruction. Aborting" << std::endl;
-            abort();
-        }
+        this->core_ = new orxonox::Core();
+        this->gameClock_ = this->core_->initialise(argc, argv);
     }
 
     /**
@@ -141,10 +137,6 @@ namespace orxonox
         root.addChild(&ioConsole);
         root.addChild(&dedicated);
 
-
-        // start global orxonox time
-        Clock clock;
-
         root.activate();
 
         // get initial state from command line
@@ -152,9 +144,9 @@ namespace orxonox
 
         while (!this->abort_)
         {
-            clock.capture();
+            this->gameClock_->capture();
 
-            root.tick(clock);
+            root.tick(*this->gameClock_);
 
             if (root.stateRequest_ != "")
                 root.gotoState(root.stateRequest_);

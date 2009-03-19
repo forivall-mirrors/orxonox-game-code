@@ -60,6 +60,7 @@ namespace orxonox
         Game(Game&); // don't mess with singletons
 
         Core* core_;
+        Clock* gameClock_;
 
         bool abort_;
 

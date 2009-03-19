@@ -60,8 +60,7 @@ namespace orxonox
 
         GSLevel::enter();
 
-        // TODO: Get Clock from Game or GameStateManager, but with 0 delta time
-        client_->update(Clock());
+        client_->update(Core::getGameClock());
     }
 
     void GSClient::leave()

@@ -93,16 +93,18 @@ namespace orxonox
     SetCommandLineArgument(settingsFile, "orxonox.ini");
     SetCommandLineArgument(limitToCPU, 0).information("0: off | #cpu");
 
-    /**
-        @brief Constructor: Registers the object and sets the config-values.
-        @param A reference to a global variable, used to avoid an infinite recursion in getSoftDebugLevel()
-    */
-    Core::Core(int argc, char** argv)
+    Core::Core()
     {
         RegisterRootObject(Core);
 
         assert(Core::singletonRef_s == 0);
         Core::singletonRef_s = this;
+    }
+
+    Clock* Core::initialise(int argc, char** argv)
+    {
+        // Set up a basic clock to keep time
+        this->gameClock_ = new Clock();
 
         // Parse command line arguments fist
         try
@@ -172,6 +174,9 @@ namespace orxonox
         Factory::createClassHierarchy();
         
         this->loaded_ = true;
+
+        // Return non const pointer to the game's clock for the main loop
+        return this->gameClock_;
     }
 
     /**
@@ -193,6 +198,8 @@ namespace orxonox
         CommandLine::destroyAllArguments();
         // Also delete external console command that don't belong to an Identifier
         CommandExecutor::destroyExternalCommands();
+
+        delete this->gameClock_;
 
         assert(Core::singletonRef_s);
         Core::singletonRef_s = 0;
