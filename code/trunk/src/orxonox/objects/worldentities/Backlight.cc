@@ -217,7 +217,7 @@ namespace orxonox
             }
         }
 
-        FadingBillboard::tick(dt);
+        SUPER(Backlight, tick, dt);
 
         if (this->ribbonTrail_ && this->changedirection_ != 0)
         {
