@@ -37,16 +37,11 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public RootGameState, public OrxonoxClass
+    class _OrxonoxExport GSRoot : public RootGameState
     {
         friend class ClassIdentifier<GSRoot>;
 
     public:
-        struct statisticsTickInfo
-        {
-            uint64_t    tickTime;
-            uint32_t    tickLength;
-        };
     
     public:
         GSRoot();
@@ -58,35 +53,14 @@ namespace orxonox
         void pause();
         float getTimeFactor() { return this->timeFactor_; }
 
-        float getAvgTickTime() { return this->avgTickTime_; }
-        float getAvgFPS()      { return this->avgFPS_; }
-
-        inline void addTickTime(uint32_t length)
-            { assert(!this->statisticsTickTimes_.empty()); this->statisticsTickTimes_.back().tickLength += length;
-              this->periodTickTime_+=length; }
-
     private:
         void enter();
         void leave();
         void ticked(const Clock& time);
 
-        void setConfigValues();
-
         float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
-
-        // variables for time statistics
-        uint64_t              statisticsStartTime_;
-        std::list<statisticsTickInfo>
-                              statisticsTickTimes_;
-        uint32_t              periodTickTime_;
-        float                 avgFPS_;
-        float                 avgTickTime_;
-
-        // config values
-        unsigned int          statisticsRefreshCycle_;
-        unsigned int          statisticsAvgLength_;
 
         // console commands
         ConsoleCommand*       ccSelectGameState_;

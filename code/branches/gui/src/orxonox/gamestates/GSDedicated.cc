@@ -40,7 +40,7 @@
 namespace orxonox
 {
     GSDedicated::GSDedicated()
-        : GameState<GSRoot>("dedicated")
+        : GameState("dedicated")
         , server_(0)
         , timeSinceLastUpdate_(0)
     {

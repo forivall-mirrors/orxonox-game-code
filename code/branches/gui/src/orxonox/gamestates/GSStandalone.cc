@@ -39,7 +39,7 @@
 namespace orxonox
 {
     GSStandalone::GSStandalone()
-        : GameState<GSGraphics>("standalone")
+        : GameState("standalone")
     {
     }
 

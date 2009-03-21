@@ -31,7 +31,7 @@
 #include <OgreTextAreaOverlayElement.h>
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
-#include "GraphicsManager.h"
+#include "Game.h"
 
 namespace orxonox
 {
@@ -50,7 +50,7 @@ namespace orxonox
     {
         SUPER(DebugRTRText, tick, dt);
 
-        float rtr = GraphicsManager::getInstance().getAverageTickTime();
+        float rtr = Game::getInstance().getAvgTickTime();
         this->setCaption(convertToString(rtr));
     }
 }

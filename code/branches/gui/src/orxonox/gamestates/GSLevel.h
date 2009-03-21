@@ -30,6 +30,7 @@
 #define _GSLevel_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/GameState.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

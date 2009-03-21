@@ -38,7 +38,7 @@ namespace orxonox
     SetCommandLineArgument(port, 55556).shortcut("p").information("0-65535");
 
     GSServer::GSServer()
-        : GameState<GSGraphics>("server")
+        : GameState("server")
         , server_(0)
     {
     }

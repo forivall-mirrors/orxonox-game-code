@@ -30,12 +30,12 @@
 #define _GSStandalone_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/GameState.h"
 #include "GSLevel.h"
-#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSStandalone : public GameState<GSGraphics>, public GSLevel
+    class _OrxonoxExport GSStandalone : public GameState, public GSLevel
     {
     public:
         GSStandalone();

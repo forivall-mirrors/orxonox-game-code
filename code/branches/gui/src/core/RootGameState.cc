@@ -35,7 +35,7 @@
 namespace orxonox
 {
     RootGameState::RootGameState(const std::string& name)
-        : GameState<GameStateBase>(name)
+        : GameState(name)
         , stateRequest_("")
     {
     }
@@ -49,7 +49,7 @@ namespace orxonox
         Internal method that actually makes the state transition. Since it is internal,
         the method can assume certain things to be granted (like 'this' is always active).
     */
-    void RootGameState::makeTransition(GameStateBase* source, GameStateBase* destination)
+    void RootGameState::makeTransition(GameState* source, GameState* destination)
     {
         if (source != 0)
         {
@@ -64,13 +64,13 @@ namespace orxonox
         }
 
         // Check for 'destination' in the children map first
-        std::map<GameStateBase*, GameStateBase*>::const_iterator it
+        std::map<GameState*, GameState*>::const_iterator it
             = this->grandchildrenToChildren_.find(destination);
         if (it != this->grandchildrenToChildren_.end())
         {
-            OrxAssert(static_cast<GameStateBase*>(it->second) != 0,
+            OrxAssert(static_cast<GameState*>(it->second) != 0,
                 "There was a mix with RootGameState and GameState, could not cast.");
-            GameStateBase* child = static_cast<GameStateBase*>(it->second);
+            GameState* child = static_cast<GameState*>(it->second);
             // child state. Don't use 'state', might be a grandchild!
             this->activeChild_ = child;
             child->makeTransition(this, destination);
@@ -84,10 +84,10 @@ namespace orxonox
 
     void RootGameState::gotoState(const std::string& name)
     {
-        GameStateBase* request = getState(name);
+        GameState* request = getState(name);
         if (request)
         {
-            GameStateBase* current = getCurrentState();
+            GameState* current = getCurrentState();
             if (current)
             {
                 current->makeTransition(0, request);

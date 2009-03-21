@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    class _CoreExport RootGameState : public GameState<GameStateBase>
+    class _CoreExport RootGameState : public GameState
     {
         // Hack!
         friend class Game;
@@ -46,7 +46,7 @@ namespace orxonox
         void requestState(const std::string& name);
 
     private:
-        void makeTransition(GameStateBase* source, GameStateBase* destination);
+        void makeTransition(GameState* source, GameState* destination);
         void gotoState(const std::string& name);
 
         std::string stateRequest_;

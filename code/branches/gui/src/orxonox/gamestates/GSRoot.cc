@@ -32,11 +32,11 @@
 #include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Core.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
+#include "Game.h"
 
 namespace orxonox
 {
@@ -46,9 +46,6 @@ namespace orxonox
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
     {
-        RegisterRootObject(GSRoot);
-        setConfigValues();
-
         this->ccSetTimeFactor_ = 0;
         this->ccPause_ = 0;
     }
@@ -57,29 +54,14 @@ namespace orxonox
     {
     }
 
-    void GSRoot::setConfigValues()
-    {
-        SetConfigValue(statisticsRefreshCycle_, 250000)
-            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
-        SetConfigValue(statisticsAvgLength_, 1000000)
-            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
-    }
-
     void GSRoot::enter()
     {
         // reset game speed to normal
         timeFactor_ = 1.0f;
 
-        // reset frame counter
-        this->statisticsStartTime_ = 0;
-        this->statisticsTickTimes_.clear();
-        this->periodTickTime_ = 0;
-        this->avgFPS_ = 0.0f;
-        this->avgTickTime_ = 0.0f;
-
         {
             // add console commands
-            FunctorMember01<GameStateBase, const std::string&>* functor = createFunctor(&GameStateBase::requestState);
+            FunctorMember01<GameState, const std::string&>* functor = createFunctor(&GameState::requestState);
             functor->setObject(this);
             this->ccSelectGameState_ = createConsoleCommand(functor, "selectGameState");
             CommandExecutor::addConsoleCommandShortcut(this->ccSelectGameState_);
@@ -143,40 +125,10 @@ namespace orxonox
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
-        // STATISTICS
-        assert(timeAfterTick - timeBeforeTick >= 0 );
-        statisticsTickInfo tickInfo = {timeAfterTick, timeAfterTick - timeBeforeTick};
-        statisticsTickTimes_.push_back(tickInfo);
-        assert(statisticsTickTimes_.back().tickLength==tickInfo.tickLength);
-        this->periodTickTime_ += tickInfo.tickLength;
+        // Also add our tick time to the list in GSRoot
+        Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
 
-        // Ticks GSGraphics or GSDedicated
         this->tickChild(time);
-
-        if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)
-        {
-            std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
-            assert(it != this->statisticsTickTimes_.end());
-            int64_t lastTime = timeAfterTick - statisticsAvgLength_;
-            if ((int64_t)it->tickTime < lastTime)
-            {
-                do
-                {
-                    assert(this->periodTickTime_ > it->tickLength);
-                    this->periodTickTime_ -= it->tickLength;
-                    ++it;
-                    assert(it != this->statisticsTickTimes_.end());
-                } while ((int64_t)it->tickTime < lastTime);
-                this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), it);
-            }
-
-            uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-            this->avgFPS_ = (float)framesPerPeriod / (timeAfterTick - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
-            this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
-
-            statisticsStartTime_ = timeAfterTick;
-        }
-
     }
 
     /**

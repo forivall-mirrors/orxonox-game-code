@@ -44,6 +44,8 @@
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "core/Identifier.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -60,8 +62,16 @@
 */
 int main(int argc, char** argv)
 {
-    orxonox::Game orxonox(argc, argv);
-    orxonox.run();
+    {
+        orxonox::Game orxonox(argc, argv);
+        orxonox.run();
+        // objects gets destroyed here!
+    }
+
+    // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
+    // Needs to be done after Game destructor because of ~OrxonoxClass
+    orxonox::Identifier::destroyAllIdentifiers();
+
     return 0;
 }
 
@@ -88,8 +98,19 @@ namespace orxonox
 
         this->abort_ = false;
 
+        // reset statistics
+        this->statisticsStartTime_ = 0;
+        this->statisticsTickTimes_.clear();
+        this->periodTickTime_ = 0;
+        this->periodTime_ = 0;
+        this->avgFPS_ = 0.0f;
+        this->avgTickTime_ = 0.0f;
+
         this->core_ = new orxonox::Core();
         this->gameClock_ = this->core_->initialise(argc, argv);
+
+        RegisterRootObject(Game);
+        this->setConfigValues();
     }
 
     /**
@@ -100,12 +121,16 @@ namespace orxonox
         // Destroy pretty much everyhting left
         delete this->core_;
 
-        // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
-        // Needs to be done after 'delete core' because of ~OrxonoxClass
-        orxonox::Identifier::destroyAllIdentifiers();
-
         assert(singletonRef_s);
         singletonRef_s = 0;
+    }
+
+    void Game::setConfigValues()
+    {
+        SetConfigValue(statisticsRefreshCycle_, 250000)
+            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+        SetConfigValue(statisticsAvgLength_, 1000000)
+            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
     }
 
     /**
@@ -142,11 +167,44 @@ namespace orxonox
         // get initial state from command line
         root.gotoState(CommandLine::getValue("state"));
 
+        this->gameClock_->capture(); // first delta time should be about 0 seconds
         while (!this->abort_)
         {
             this->gameClock_->capture();
+            uint64_t currentTime = this->gameClock_->getMicroseconds();
 
+            // STATISTICS
+            statisticsTickInfo tickInfo = {currentTime, 0};
+            statisticsTickTimes_.push_back(tickInfo);
+            this->periodTime_ += this->gameClock_->getDeltaTimeMicroseconds();
+
+            // UPDATE
             root.tick(*this->gameClock_);
+
+            // STATISTICS
+            if (this->periodTime_ > statisticsRefreshCycle_)
+            {
+                std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
+                assert(it != this->statisticsTickTimes_.end());
+                int64_t lastTime = currentTime - this->statisticsAvgLength_;
+                if ((int64_t)it->tickTime < lastTime)
+                {
+                    do
+                    {
+                        assert(this->periodTickTime_ > it->tickLength);
+                        this->periodTickTime_ -= it->tickLength;
+                        ++it;
+                        assert(it != this->statisticsTickTimes_.end());
+                    } while ((int64_t)it->tickTime < lastTime);
+                    this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), it);
+                }
+
+                uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
+                this->avgFPS_ = (float)framesPerPeriod / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
+                this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
+
+                this->periodTime_ -= this->statisticsRefreshCycle_;
+            }
 
             if (root.stateRequest_ != "")
                 root.gotoState(root.stateRequest_);
@@ -159,5 +217,12 @@ namespace orxonox
     void Game::stop()
     {
         this->abort_ = true;
+    }
+
+    void Game::addTickTime(uint32_t length)
+    {
+        assert(!this->statisticsTickTimes_.empty());
+        this->statisticsTickTimes_.back().tickLength += length;
+        this->periodTickTime_+=length;
     }
 }

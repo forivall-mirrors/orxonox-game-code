@@ -37,7 +37,8 @@
 
 #include "OrxonoxPrereqs.h"
 #include <cassert>
-#include "core/CorePrereqs.h"
+#include <list>
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -45,24 +46,49 @@ namespace orxonox
     @brief
         Main class responsible for running the game.
     */
-    class _OrxonoxExport Game
+    class _OrxonoxExport Game : public OrxonoxClass
     {
     public:
         Game(int argc, char** argv);
         ~Game();
+        void setConfigValues();
 
         void run();
         void stop();
 
+        float getAvgTickTime() { return this->avgTickTime_; }
+        float getAvgFPS()      { return this->avgFPS_; }
+
+        void addTickTime(uint32_t length);
+
         static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
+        struct statisticsTickInfo
+        {
+            uint64_t    tickTime;
+            uint32_t    tickLength;
+        };
+
         Game(Game&); // don't mess with singletons
 
         Core* core_;
         Clock* gameClock_;
 
         bool abort_;
+
+        // variables for time statistics
+        uint64_t              statisticsStartTime_;
+        std::list<statisticsTickInfo>
+                              statisticsTickTimes_;
+        uint32_t              periodTime_;
+        uint32_t              periodTickTime_;
+        float                 avgFPS_;
+        float                 avgTickTime_;
+
+        // config values
+        unsigned int          statisticsRefreshCycle_;
+        unsigned int          statisticsAvgLength_;
 
         static Game* singletonRef_s;        //!< Pointer to the Singleton
     };

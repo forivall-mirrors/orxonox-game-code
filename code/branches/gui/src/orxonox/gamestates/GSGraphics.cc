@@ -43,14 +43,13 @@
 #include "core/XMLFile.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
-
-// for compatibility
 #include "GraphicsManager.h"
+#include "Game.h"
 
 namespace orxonox
 {
     GSGraphics::GSGraphics()
-        : GameState<GSRoot>("graphics")
+        : GameState("graphics")
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
@@ -156,12 +155,8 @@ namespace orxonox
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
-        // Also add our tick time to the list in GSRoot
-        this->getParent()->addTickTime(timeAfterTick - timeBeforeTick);
-
-        // Update statistics overlay. Note that the values only change periodically in GSRoot.
-        GraphicsManager::getInstance().setAverageFramesPerSecond(this->getParent()->getAvgFPS());
-        GraphicsManager::getInstance().setAverageTickTime(this->getParent()->getAvgTickTime());
+        // Also add our tick time
+        Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
 
         this->graphicsManager_->update(time);
     }

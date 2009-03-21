@@ -30,13 +30,13 @@
 #define _GSDedicated_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
 #include "GSLevel.h"
-#include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSDedicated : public GameState<GSRoot>, public GSLevel
+    class _OrxonoxExport GSDedicated : public GameState, public GSLevel
     {
     public:
         GSDedicated();

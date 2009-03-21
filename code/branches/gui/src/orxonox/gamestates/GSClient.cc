@@ -40,7 +40,7 @@ namespace orxonox
     SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
     GSClient::GSClient()
-        : GameState<GSGraphics>("client")
+        : GameState("client")
         , client_(0)
     {
     }

@@ -65,13 +65,6 @@ namespace orxonox
         inline unsigned int getDetailLevelParticle() const
             { return this->detailLevelParticle_; }
 
-        // <HACK>
-        float getAverageFramesPerSecond() const   { return this->avgFramesPerSecond_; }
-        float getAverageTickTime() const          { return this->avgTickTime_; }
-        void setAverageTickTime(float tickTime)   { this->avgTickTime_ = tickTime; }
-        void setAverageFramesPerSecond(float fps) { this->avgFramesPerSecond_ = fps; }
-        // </HACK>
-
         inline void setViewport(Ogre::Viewport* viewport)
             { this->viewport_ = viewport; }
         inline Ogre::Viewport* getViewport() const

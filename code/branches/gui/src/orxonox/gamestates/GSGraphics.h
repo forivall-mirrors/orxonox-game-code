@@ -33,11 +33,10 @@
 #include "core/GameState.h"
 #include "core/OrxonoxClass.h"
 #include "tools/WindowEventListener.h"
-#include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGraphics : public GameState<GSRoot>, public WindowEventListener
+    class _OrxonoxExport GSGraphics : public GameState, public WindowEventListener
     {
         friend class ClassIdentifier<GSGraphics>;
 

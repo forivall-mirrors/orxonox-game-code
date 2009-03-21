@@ -31,11 +31,10 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
-#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGUI : public GameState<GSGraphics>
+    class _OrxonoxExport GSGUI : public GameState
     {
     public:
         GSGUI();
