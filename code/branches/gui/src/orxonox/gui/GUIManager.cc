@@ -62,7 +62,7 @@ extern "C" {
 
 namespace orxonox
 {
-    SetConsoleCommandShortcut(GUIManager, showGUI_s).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommandShortcut(GUIManager, toggleGUI).keybindMode(KeybindMode::OnPress);
 
     GUIManager* GUIManager::singletonRef_s = 0;
 
@@ -142,7 +142,7 @@ namespace orxonox
                 //this->viewport_->setClearEveryFrame(false);
 
                 // Note: No SceneManager specified yet
-                this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_MAIN, true, 3000);
+                this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, true, 3000);
                 this->resourceProvider_ = guiRenderer_->createResourceProvider();
                 this->resourceProvider_->setDefaultResourceGroup("GUI");
 
@@ -171,7 +171,7 @@ namespace orxonox
                 state->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
 
                 // load the background scene
-                //loadScenes();
+                loadScenes();
                 //CEGUI::KeyEventArgs e;
                 //e.codepoint
             }
@@ -203,7 +203,7 @@ namespace orxonox
                 tolua_Core_open(this->scriptModule_->getLuaState());
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
                 */
-                this->scriptModule_->executeScriptFile("ingameGUI.lua", "GUI");
+                this->scriptModule_->executeScriptFile("loadGUI.lua", "GUI");
             }
             catch (CEGUI::Exception& ex)
             {
@@ -260,6 +260,12 @@ namespace orxonox
         }
     }
 
+    void GUIManager::toggleGUI()
+    {
+        //COUT(0) << "********* TOGGLE TOGGLE **********" << std::endl;
+        getInstance().scriptModule_->executeScriptGlobal("toggleGUI");
+    }
+
     void GUIManager::showGUI(const std::string& name, Ogre::SceneManager* sceneManager)// bool showBackground)
     {
         if (state_ != Uninitialised)
@@ -270,7 +276,7 @@ namespace orxonox
             COUT(3) << "Loading GUI " << name << std::endl;
             try
             {
-//                COUT (0) << "************* sceneManager: " << sceneManager << std::endl;
+		// COUT (0) << "************* sceneManager: " << sceneManager << std::endl;
                 if (!sceneManager)
                 {
                     // currently, only an image is loaded. We could do 3D, see loadBackground.
@@ -285,6 +291,7 @@ namespace orxonox
                 {
                     //this->viewport_->setClearEveryFrame(false);
                     this->guiRenderer_->setTargetSceneManager(sceneManager);
+                    currentSceneManager_ = sceneManager;
                     //this->viewport_->setCamera(this->emptyCamera_);
 
                     lua_pushboolean(this->scriptModule_->getLuaState(), false);
@@ -310,6 +317,17 @@ namespace orxonox
         {
             COUT(2) << "Warning: GUI Manager not yet initialised, cannot load a GUI" << std::endl;
         }
+    }
+
+    void GUIManager::testFct()
+    {
+        //COUT(0) << "**** " << currentSceneManager_ << std::endl;
+        this->showGUI("IngameMenu", currentSceneManager_);
+    }
+
+    void GUIManager::testOutput(const std::string& str)
+    {
+        COUT(0) << "***" << str << "***" << std::endl;
     }
 
     void GUIManager::hideGUI()

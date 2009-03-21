@@ -78,6 +78,9 @@ namespace orxonox
         }
         void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
         void hideGUI(); // tolua_export
+        void testOutput(const std::string& str); // tolua_export
+
+        static void toggleGUI();
 
         Ogre::Camera* getCamera() { return this->backgroundCamera_; }
 
@@ -85,6 +88,9 @@ namespace orxonox
         {
             getInstance().showGUI(name, sceneManager);
         }
+
+        // please remove
+        void testFct();
 
         static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
         static GUIManager* getInstancePtr() { return singletonRef_s; }
@@ -127,6 +133,7 @@ namespace orxonox
         CEGUI::System*            guiSystem_;
         CEGUI::Imageset*          backgroundImage_;
         lua_State*                luaState_;
+        Ogre::SceneManager*         currentSceneManager_;
 
         State state_;
 

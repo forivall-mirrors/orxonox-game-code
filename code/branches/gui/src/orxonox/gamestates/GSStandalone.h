@@ -40,7 +40,6 @@ namespace orxonox
     public:
         GSStandalone();
         ~GSStandalone();
-        static void showGUI();
 
     private:
         void enter();
@@ -48,7 +47,6 @@ namespace orxonox
         void ticked(const Clock& time);
 
         GUIManager*     guiManager_;
-        static bool     guiShowing_s;
     };
 }
 

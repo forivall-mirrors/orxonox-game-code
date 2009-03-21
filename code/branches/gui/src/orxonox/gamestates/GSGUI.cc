@@ -52,7 +52,7 @@ namespace orxonox
         guiManager_ = GUIManager::getInstancePtr();
 
         // show main menu
-        guiManager_->loadScene("MainMenu");
+        //guiManager_->loadScene("MainMenu");
         guiManager_->showGUI("MainMenu", 0);
         GraphicsManager::getInstance().getViewport()->setCamera(guiManager_->getCamera());
     }
