@@ -126,7 +126,7 @@ namespace orxonox
             {
                 for (std::list<BaseInputBufferListenerTuple*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
                 {
-                    InputBufferListenerTuple<T>* refListener = dynamic_cast<InputBufferListenerTuple<T>*>(*it);
+                    InputBufferListenerTuple<T>* refListener = static_cast<InputBufferListenerTuple<T>*>(*it);
                     if (refListener && refListener->listener_ == listener)
                         this->listeners_.erase(it++);
                     else

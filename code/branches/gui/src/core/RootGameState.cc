@@ -68,7 +68,7 @@ namespace orxonox
             = this->grandchildrenToChildren_.find(destination);
         if (it != this->grandchildrenToChildren_.end())
         {
-            OrxAssert(dynamic_cast<GameStateBase*>(it->second) != 0,
+            OrxAssert(static_cast<GameStateBase*>(it->second) != 0,
                 "There was a mix with RootGameState and GameState, could not cast.");
             GameStateBase* child = static_cast<GameStateBase*>(it->second);
             // child state. Don't use 'state', might be a grandchild!

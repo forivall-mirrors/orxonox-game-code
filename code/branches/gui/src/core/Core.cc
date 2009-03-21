@@ -400,8 +400,8 @@ namespace orxonox
         if (limitToCPU <= 0)
             return;
 
-        unsigned int coreNr = limitToCPU - 1;
 #ifdef ORXONOX_PLATFORM_WINDOWS
+        unsigned int coreNr = limitToCPU - 1;
         // Get the current process core mask
         DWORD procMask;
         DWORD sysMask;

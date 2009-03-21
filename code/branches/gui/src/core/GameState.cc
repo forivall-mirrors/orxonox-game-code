@@ -177,8 +177,8 @@ namespace orxonox
         // fill the two maps correctly.
         this->allChildren_[grandchild->getName()] = grandchild;
         this->grandchildrenToChildren_[grandchild] = child;
-        if (this->getParent())
-            this->getParent()->grandchildAdded(this, grandchild);
+        if (this->getParentAsBase())
+            this->getParentAsBase()->grandchildAdded(this, grandchild);
     }
 
     /**
@@ -195,8 +195,8 @@ namespace orxonox
         // adjust the two maps correctly.
         this->allChildren_.erase(grandchild->getName());
         this->grandchildrenToChildren_.erase(grandchild);
-        if (this->getParent())
-            this->getParent()->grandchildRemoved(grandchild);
+        if (this->getParentAsBase())
+            this->getParentAsBase()->grandchildRemoved(grandchild);
     }
 
     /**
@@ -207,8 +207,8 @@ namespace orxonox
     */
     GameStateBase* GameStateBase::getState(const std::string& name)
     {
-        if (this->getParent())
-            return this->getParent()->getState(name);
+        if (this->getParentAsBase())
+            return this->getParentAsBase()->getState(name);
         else
         {
             // The map only contains children, so check ourself first
@@ -226,8 +226,8 @@ namespace orxonox
     */
     GameStateBase* GameStateBase::getRoot()
     {
-        if (this->getParent())
-            return this->getParent()->getRoot();
+        if (this->getParentAsBase())
+            return this->getParentAsBase()->getRoot();
         else
             return this;
     }
@@ -250,8 +250,8 @@ namespace orxonox
         }
         else
         {
-            if (this->getParent())
-                return this->getParent()->getCurrentState();
+            if (this->getParentAsBase())
+                return this->getParentAsBase()->getCurrentState();
             else
                 return 0;
         }
@@ -287,7 +287,7 @@ namespace orxonox
     */
     void GameStateBase::makeTransition(GameStateBase* source, GameStateBase* destination)
     {
-        if (source == this->getParent())
+        if (source == this->getParentAsBase())
         {
             // call is from the parent
             this->activate();
@@ -318,10 +318,10 @@ namespace orxonox
         else
         {
             // parent. We can be sure of this.
-            assert(this->getParent() != 0);
+            assert(this->getParentAsBase() != 0);
 
             this->deactivate();
-            this->getParent()->makeTransition(this, destination);
+            this->getParentAsBase()->makeTransition(this, destination);
         }
     }
 

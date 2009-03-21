@@ -108,7 +108,7 @@ namespace orxonox
 
         void tickChild(const Clock& time) { if (this->getActiveChild()) this->getActiveChild()->tick(time); }
 
-        virtual GameStateBase* getParent() const = 0;
+        virtual GameStateBase* getParentAsBase() const = 0;
         virtual void setParent(GameStateBase* state) = 0;
 
     private:
@@ -144,6 +144,9 @@ namespace orxonox
             , parent_(0)
         { }
         virtual ~GameState() { }
+
+        GameStateBase* getParentAsBase() const
+            { return parent_; }
 
         ParentType* getParent() const
             { return parent_; }
