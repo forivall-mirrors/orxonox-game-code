@@ -81,7 +81,7 @@ namespace orxonox
     {
         if (Core::showsGraphics())
         {
-            inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game", 20);
+            inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
             keyBinder_ = new KeyBinder();
             keyBinder_->loadBindings("keybindings.ini");
             inputState_->setHandler(keyBinder_);

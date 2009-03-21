@@ -42,6 +42,7 @@
 #include <vector>
 #include <stack>
 #include "util/Math.h"
+#include "util/OrxEnum.h"
 #include "core/OrxonoxClass.h"
 #include "InputInterfaces.h"
 
@@ -73,6 +74,19 @@ namespace orxonox
         int middleValue[24];
         float positiveCoeff[24];
         float negativeCoeff[24];
+    };
+
+    struct InputStatePriority : OrxEnum<InputStatePriority>
+    {
+        OrxEnumConstructors(InputStatePriority);
+
+        static const int Empty        = -1;
+        static const int Dynamic      = 0;
+
+        static const int HighPriority = 1000;
+        static const int Console      = HighPriority + 0;
+        static const int Calibrator   = HighPriority + 1;
+        static const int Detector     = HighPriority + 2;
     };
 
     /**
@@ -115,7 +129,7 @@ namespace orxonox
         void setKeyDetectorCallback(const std::string& command);
 
         template <class T>
-        T* createInputState(const std::string& name, int priority);
+        T* createInputState(const std::string& name, InputStatePriority priority = InputStatePriority::Dynamic);
 
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
@@ -201,7 +215,6 @@ namespace orxonox
         InputBuffer*                        calibratorCallbackBuffer_;
 
         std::map<std::string, InputState*>  inputStatesByName_;
-        std::map<int, InputState*>          inputStatesByPriority_;
 
         std::set<InputState*>               stateEnterRequests_;   //!< Request to enter a new state
         std::set<InputState*>               stateLeaveRequests_;   //!< Request to leave a running state
@@ -248,7 +261,7 @@ namespace orxonox
         number, but 1 - 99 is preferred (99 means high).
     */
     template <class T>
-    T* InputManager::createInputState(const std::string& name, int priority)
+    T* InputManager::createInputState(const std::string& name, InputStatePriority priority)
     {
         T* state = new T;
         if (_configureInputState(state, name, priority))

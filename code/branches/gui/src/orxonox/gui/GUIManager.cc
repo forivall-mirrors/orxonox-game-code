@@ -166,7 +166,7 @@ namespace orxonox
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
 
                 // register us as input handler
-                SimpleInputState* state = InputManager::getInstance().createInputState<SimpleInputState>("gui", 30);
+                SimpleInputState* state = InputManager::getInstance().createInputState<SimpleInputState>("gui");
                 state->setHandler(this);
                 state->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
 

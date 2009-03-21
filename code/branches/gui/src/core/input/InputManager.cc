@@ -173,7 +173,7 @@ namespace orxonox
             paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-#if defined OIS_LINUX_PLATFORM
+#if defined ORXONOX_PLATFORM_LINUX
             paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
             paramList.insert(std::make_pair(std::string("x11_mouse_grab"), "true"));
             paramList.insert(std::make_pair(std::string("x11_mouse_hide"), "true"));
@@ -218,7 +218,7 @@ namespace orxonox
             CCOUT(4) << "Initialising InputStates components..." << std::endl;
 
             // Lowest priority empty InputState
-            stateEmpty_ = createInputState<SimpleInputState>("empty", -1);
+            stateEmpty_ = createInputState<SimpleInputState>("empty", InputStatePriority::Empty);
             stateEmpty_->setHandler(&EMPTY_HANDLER);
             activeStates_[stateEmpty_->getPriority()] = stateEmpty_;
 
@@ -228,12 +228,12 @@ namespace orxonox
             stateMaster_->setNumOfJoySticks(joySticksSize_);
 
             // KeyDetector to evaluate a pressed key's name
-            SimpleInputState* detector = createInputState<SimpleInputState>("detector", 101);
+            SimpleInputState* detector = createInputState<SimpleInputState>("detector", InputStatePriority::Detector);
             keyDetector_ = new KeyDetector();
             detector->setHandler(keyDetector_);
 
             // Joy stick calibration helper callback
-            SimpleInputState* calibrator = createInputState<SimpleInputState>("calibrator", 100);
+            SimpleInputState* calibrator = createInputState<SimpleInputState>("calibrator", InputStatePriority::Calibrator);
             calibrator->setHandler(&EMPTY_HANDLER);
             calibratorCallbackBuffer_ = new InputBuffer();
             calibratorCallbackBuffer_->registerListener(this, &InputManager::_completeCalibration, '\r', true);
@@ -427,8 +427,8 @@ namespace orxonox
         activeStatesTop_.resize(devicesNum_);
 
         // inform all states
-        for (std::map<int, InputState*>::const_iterator it = inputStatesByPriority_.begin();
-            it != inputStatesByPriority_.end(); ++it)
+        for (std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.begin();
+            it != inputStatesByName_.end(); ++it)
         {
             it->second->setNumOfJoySticks(joySticksSize_);
         }
@@ -554,8 +554,8 @@ namespace orxonox
                 delete stateMaster_;
 
                 // destroy all user InputStates
-                while (inputStatesByPriority_.size() > 0)
-                    _destroyState((*inputStatesByPriority_.rbegin()).second);
+                while (inputStatesByName_.size() > 0)
+                    _destroyState((*inputStatesByName_.rbegin()).second);
 
                 // destroy the devices
                 _destroyKeyboard();
@@ -639,7 +639,6 @@ namespace orxonox
             this->activeStates_.erase(it);
             _updateActiveStates();
         }
-        inputStatesByPriority_.erase(state->getPriority());
         inputStatesByName_.erase(state->getName());
         delete state;
     }
@@ -767,6 +766,8 @@ namespace orxonox
                 assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
 
                 activeStates_.erase((*rit)->getPriority());
+                if ((*rit)->getPriority() < InputStatePriority::HighPriority)
+                    (*rit)->setPriority(0);
                 _updateActiveStates();
             }
             stateLeaveRequests_.clear();
@@ -781,6 +782,22 @@ namespace orxonox
                 // just to be sure that the state actually is registered
                 assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
 
+                if ((*rit)->getPriority() == 0)
+                {
+                    // Get smallest possible priority between 1 and maxStateStackSize_s
+                    for(std::map<int, InputState*>::const_reverse_iterator rit2 = activeStates_.rbegin();
+                        rit2 != activeStates_.rend(); ++rit2)
+                    {
+                        if (rit2->first < InputStatePriority::HighPriority)
+                        {
+                            (*rit)->setPriority(rit2->first + 1);
+                            break;
+                        }
+                    }
+                    // In case no normal handler was on the stack
+                    if ((*rit)->getPriority() == 0)
+                        (*rit)->setPriority(1);
+                }
                 activeStates_[(*rit)->getPriority()] = (*rit);
                 _updateActiveStates();
                 (*rit)->onEnter();
@@ -812,7 +829,7 @@ namespace orxonox
         if (bUpdateRequired)
             _updateActiveStates();
 
-        // mark that we capture and distribute input
+        // mark that we now start capturing and distributing input
         internalState_ |= Ticking;
 
         // Capture all the input. This calls the event handlers in InputManager.
@@ -1245,7 +1262,9 @@ namespace orxonox
     @param name
         Unique name of the handler.
     @param priority
-        Unique integer number. Higher means more prioritised.
+        Determines which InputState gets the input. Higher is better.
+        Use 0 to handle it implicitely by the order of activation.
+        Otherwise numbers larger than maxStateStackSize_s have to be used!
     @return
         True if added, false if name or priority already existed.
     */
@@ -1257,22 +1276,26 @@ namespace orxonox
             return false;
         if (inputStatesByName_.find(name) == inputStatesByName_.end())
         {
-            if (inputStatesByPriority_.find(priority)
-                == inputStatesByPriority_.end())
+            if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
             {
-                inputStatesByName_[name] = state;
-                inputStatesByPriority_[priority] = state;
-                state->setNumOfJoySticks(numberOfJoySticks());
-                state->setName(name);
+                // Make sure we don't add two high priority states with the same priority
+                for (std::map<std::string, InputState*>::const_iterator it = this->inputStatesByName_.begin();
+                    it != this->inputStatesByName_.end(); ++it)
+                {
+                    if (it->second->getPriority() == priority)
+                    {
+                        COUT(2) << "Warning: Could not add an InputState with the same priority '"
+                            << priority << "' != 0." << std::endl;
+                        return false;
+                    }
+                }
+            }
+            inputStatesByName_[name] = state;
+            state->setNumOfJoySticks(numberOfJoySticks());
+            state->setName(name);
+            if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
                 state->setPriority(priority);
-                return true;
-            }
-            else
-            {
-                COUT(2) << "Warning: Could not add an InputState with the same priority '"
-                    << priority << "'." << std::endl;
-                return false;
-            }
+            return true;
         }
         else
         {
@@ -1371,7 +1394,7 @@ namespace orxonox
                 if (stateDestroyRequests_.find(it->second) == stateDestroyRequests_.end())
                 {
                     // not scheduled for destruction
-                    // set prevents a state being added multiple times
+                    // prevents a state being added multiple times
                     stateEnterRequests_.insert(it->second);
                     return true;
                 }
@@ -1390,6 +1413,11 @@ namespace orxonox
     */
     bool InputManager::requestLeaveState(const std::string& name)
     {
+        if (name == "empty")
+        {
+            COUT(2) << "InputManager: Leaving the empty state is not allowed!" << std::endl;
+            return false;
+        }
         // get pointer from the map with all stored handlers
         std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.find(name);
         if (it != inputStatesByName_.end())
