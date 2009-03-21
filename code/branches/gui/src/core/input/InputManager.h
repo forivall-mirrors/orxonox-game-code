@@ -129,11 +129,10 @@ namespace orxonox
         void setKeyDetectorCallback(const std::string& command);
 
         template <class T>
-        T* createInputState(const std::string& name, InputStatePriority priority = InputStatePriority::Dynamic);
+        T* createInputState(const std::string& name, bool bAlwaysGetsInput = false, bool bTransparent = false, InputStatePriority priority = InputStatePriority::Dynamic);
 
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
-        ExtendedInputState* getMasterInputState() { return this->stateMaster_; }
         bool requestDestroyState   (const std::string& name);
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
@@ -178,7 +177,7 @@ namespace orxonox
         unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
 
         void _updateActiveStates();
-        bool _configureInputState(InputState* state, const std::string& name, int priority);
+        bool _configureInputState(InputState* state, const std::string& name, bool bAlwaysGetsInput, bool bTransparent, int priority);
 
         // input events
         bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
@@ -210,7 +209,6 @@ namespace orxonox
 
         // some internally handled states and handlers
         SimpleInputState*                   stateEmpty_;
-        ExtendedInputState*                 stateMaster_;          //!< Always active master input state
         KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         InputBuffer*                        calibratorCallbackBuffer_;
 
@@ -221,8 +219,8 @@ namespace orxonox
         std::set<InputState*>               stateDestroyRequests_; //!< Request to destroy a state
 
         std::map<int, InputState*>          activeStates_;
-        std::vector<InputState*>            activeStatesTop_;      //!< Current input states for joy stick events.
-        std::vector<InputState*>            activeStatesTicked_;   //!< Current input states for joy stick events.
+        std::vector<std::vector<InputState*> > activeStatesTriggered_;
+        std::vector<InputState*>            activeStatesTicked_;
 
         // joystick calibration
         std::vector<std::vector<int> >      joyStickMinValues_;
@@ -261,10 +259,10 @@ namespace orxonox
         number, but 1 - 99 is preferred (99 means high).
     */
     template <class T>
-    T* InputManager::createInputState(const std::string& name, InputStatePriority priority)
+    T* InputManager::createInputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
     {
         T* state = new T;
-        if (_configureInputState(state, name, priority))
+        if (_configureInputState(state, name, bAlwaysGetsInput, bTransparent, priority))
             return state;
         else
         {

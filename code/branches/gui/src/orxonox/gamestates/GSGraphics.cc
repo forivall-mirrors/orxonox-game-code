@@ -38,7 +38,7 @@
 #include "core/Core.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
-#include "core/input/ExtendedInputState.h"
+#include "core/input/SimpleInputState.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 #include "overlays/console/InGameConsole.h"
@@ -56,6 +56,7 @@ namespace orxonox
         , guiManager_(0)
         , graphicsManager_(0)
         , masterKeyBinder_(0)
+        , masterInputState_(0)
         , debugOverlay_(0)
     {
         RegisterRootObject(GSGraphics);
@@ -90,10 +91,11 @@ namespace orxonox
         Ogre::RenderWindow* renderWindow = GraphicsManager::getInstance().getRenderWindow();
         renderWindow->getCustomAttribute("WINDOW", &windowHnd);
         inputManager_->initialise(windowHnd, renderWindow->getWidth(), renderWindow->getHeight(), true);
-        // Configure master input state with a KeyBinder
+
+        masterInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("master", true);
         masterKeyBinder_ = new KeyBinder();
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
-        inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
+        masterInputState_->setKeyHandler(masterKeyBinder_);
 
         // Load the InGameConsole
         console_ = new InGameConsole();
@@ -102,10 +104,15 @@ namespace orxonox
         // load the CEGUI interface
         guiManager_ = new GUIManager();
         guiManager_->initialise(renderWindow);
+
+        InputManager::getInstance().requestEnterState("master");
     }
 
     void GSGraphics::leave()
     {
+        if (Core::showsGraphics())
+            InputManager::getInstance().requestLeaveState("master");
+
         delete this->guiManager_;
 
         delete this->console_;
@@ -118,6 +125,17 @@ namespace orxonox
         delete this->debugOverlay_;
 
         delete graphicsManager_;
+
+        if (Core::showsGraphics())
+        {
+            masterInputState_->setHandler(0);
+            InputManager::getInstance().requestDestroyState("master");
+            if (this->masterKeyBinder_)
+            {
+                delete this->masterKeyBinder_;
+                this->masterKeyBinder_ = 0;
+            }
+        }
     }
 
     /**

@@ -64,6 +64,7 @@ namespace orxonox
         GraphicsManager*      graphicsManager_;       //!< Interface to Ogre
 
         KeyBinder*            masterKeyBinder_;
+        SimpleInputState*     masterInputState_;
         XMLFile*              debugOverlay_;
     };
 }

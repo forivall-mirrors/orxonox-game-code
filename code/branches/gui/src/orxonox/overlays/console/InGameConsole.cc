@@ -172,7 +172,7 @@ namespace orxonox
     void InGameConsole::initialise(int windowWidth, int windowHeight)
     {
         // create the corresponding input state
-        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", InputStatePriority::Console);
+        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", false, false, InputStatePriority::Console);
         inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
         bHidesAllInputChanged();
 
