@@ -53,6 +53,7 @@ namespace orxonox
         this->defaultController_ = Class(HumanController);
 
         this->humanHud_ = 0;
+        this->gametypeHud_ = 0;
 
         this->setConfigValues();
         this->registerVariables();
@@ -60,8 +61,14 @@ namespace orxonox
 
     HumanPlayer::~HumanPlayer()
     {
-        if (this->BaseObject::isInitialized() && this->humanHud_)
-            delete this->humanHud_;
+        if (this->BaseObject::isInitialized())
+        {
+            if (this->humanHud_)
+                delete this->humanHud_;
+
+            if (this->gametypeHud_)
+                delete this->gametypeHud_;
+        }
     }
 
     void HumanPlayer::setConfigValues()
@@ -114,6 +121,7 @@ namespace orxonox
                 this->setName(this->nick_);
 
             this->createController();
+            this->updateHumanHUD();
         }
     }
 
@@ -149,12 +157,24 @@ namespace orxonox
         this->networkcallback_clientIDchanged();
     }
 
+    void HumanPlayer::changedGametype()
+    {
+        PlayerInfo::changedGametype();
+
+        if (this->isInitialized() && this->isLocalPlayer())
+            if (this->getGametype()->getHUDTemplate() != "")
+                this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
+    }
+
     void HumanPlayer::changedControllableEntity()
     {
         PlayerInfo::changedControllableEntity();
 
         if (this->humanHud_)
             this->humanHud_->setOwner(this->getControllableEntity());
+
+        if (this->gametypeHud_)
+            this->gametypeHud_->setOwner(this->getControllableEntity());
     }
 
     void HumanPlayer::updateHumanHUD()
@@ -165,11 +185,27 @@ namespace orxonox
             this->humanHud_ = 0;
         }
 
-        if (this->humanHudTemplate_ != "")
+        if (this->isLocalPlayer() && this->humanHudTemplate_ != "")
         {
             this->humanHud_ = new OverlayGroup(this);
             this->humanHud_->addTemplate(this->humanHudTemplate_);
             this->humanHud_->setOwner(this->getControllableEntity());
+        }
+    }
+
+    void HumanPlayer::updateGametypeHUD()
+    {
+        if (this->gametypeHud_)
+        {
+            delete this->gametypeHud_;
+            this->gametypeHud_ = 0;
+        }
+
+        if (this->isLocalPlayer() && this->gametypeHudTemplate_ != "")
+        {
+            this->gametypeHud_ = new OverlayGroup(this);
+            this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);
+            this->gametypeHud_->setOwner(this->getControllableEntity());
         }
     }
 }

@@ -49,7 +49,7 @@ namespace orxonox
             virtual void changedGametype();
 
             virtual void changedController() {}
-            virtual void changedControllableEntity();
+            virtual void changedControllableEntity() {}
 
             inline bool isHumanPlayer() const
                 { return this->bHumanPlayer_; }
@@ -76,20 +76,6 @@ namespace orxonox
             inline Controller* getController() const
                 { return this->controller_; }
 
-            inline void setGametypeHUDTemplate(const std::string& name)
-            {
-                if (name != this->gametypeHudTemplate_)
-                {
-                    this->gametypeHudTemplate_ = name;
-                    this->updateGametypeHUD();
-                }
-            }
-            inline const std::string& getGametypeHUDTemplate() const
-                { return this->gametypeHudTemplate_; }
-
-            inline OverlayGroup* getGametypeHUD() const
-                { return this->gametypeHud_; }
-
         protected:
             void createController();
 
@@ -101,14 +87,11 @@ namespace orxonox
 
         private:
             void networkcallback_changedcontrollableentityID();
-            void updateGametypeHUD();
 
             bool bReadyToSpawn_;
             Controller* controller_;
             ControllableEntity* controllableEntity_;
             unsigned int controllableEntityID_;
-            std::string gametypeHudTemplate_;
-            OverlayGroup* gametypeHud_;
     };
 }
 
