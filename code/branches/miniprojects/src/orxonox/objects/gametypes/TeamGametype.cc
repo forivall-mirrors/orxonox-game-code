@@ -33,7 +33,6 @@
 #include "core/ConfigValueIncludes.h"
 #include "objects/Teamcolourable.h"
 #include "objects/worldentities/TeamSpawnPoint.h"
-#include "objects/infos/PlayerInfo.h" // remove this
 
 namespace orxonox
 {
@@ -150,7 +149,7 @@ namespace orxonox
         return 0;
     }
 
-    void TeamGametype::playerPostSpawn(PlayerInfo* player)
+    void TeamGametype::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
     {
         if (!player)
             return;
@@ -159,9 +158,9 @@ namespace orxonox
         std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
         if (it_player != this->teamnumbers_.end() && it_player->second >= 0 && it_player->second < this->teamcolours_.size())
         {
-            if (player->getControllableEntity())
+            if (pawn)
             {
-                std::set<WorldEntity*> pawnAttachments = player->getControllableEntity()->getAttachedObjects();
+                std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
                 for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
                 {
                     if ((*it)->isA(Class(Teamcolourable)))

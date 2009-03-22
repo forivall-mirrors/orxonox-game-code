@@ -52,7 +52,7 @@ namespace orxonox
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
 
-            virtual void playerPostSpawn(PlayerInfo* player);
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
 
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;

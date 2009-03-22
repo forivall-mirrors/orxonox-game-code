@@ -100,6 +100,9 @@ namespace orxonox
             virtual void playerPreSpawn(PlayerInfo* player);
             virtual void playerPostSpawn(PlayerInfo* player);
 
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
+            virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);
+
             inline const std::map<PlayerInfo*, Player>& getPlayers() const
                 { return this->players_; }
 

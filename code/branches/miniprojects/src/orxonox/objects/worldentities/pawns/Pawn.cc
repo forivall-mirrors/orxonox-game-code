@@ -132,6 +132,22 @@ namespace orxonox
             this->death();
     }
 
+    void Pawn::setPlayer(PlayerInfo* player)
+    {
+        ControllableEntity::setPlayer(player);
+
+        if (this->getGametype())
+            this->getGametype()->playerStartsControllingPawn(player, this);
+    }
+
+    void Pawn::removePlayer()
+    {
+        if (this->getGametype())
+            this->getGametype()->playerStopsControllingPawn(this->getPlayer(), this);
+
+        ControllableEntity::removePlayer();
+    }
+
     void Pawn::setHealth(float health)
     {
         this->health_ = min(health, this->maxHealth_);

@@ -175,6 +175,14 @@ namespace orxonox
     {
     }
 
+    void Gametype::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    {
+    }
+
+    void Gametype::playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    {
+    }
+
     bool Gametype::allowPawnHit(Pawn* victim, Pawn* originator)
     {
         return true;
