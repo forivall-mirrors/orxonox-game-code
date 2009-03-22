@@ -26,42 +26,29 @@
  *
  */
 
-#ifndef _TeamGametype_H__
-#define _TeamGametype_H__
+#ifndef _Deathmatch_H__
+#define _Deathmatch_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
-
-#include "Deathmatch.h"
+#include "Gametype.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport TeamGametype : public Deathmatch
+    class _OrxonoxExport Deathmatch : public Gametype
     {
         public:
-            TeamGametype(BaseObject* creator);
-            virtual ~TeamGametype() {}
+            Deathmatch(BaseObject* creator);
+            virtual ~Deathmatch() {}
 
-            void setConfigValues();
-
+            virtual void start();
+            virtual void end();
             virtual void playerEntered(PlayerInfo* player);
             virtual bool playerLeft(PlayerInfo* player);
+            virtual bool playerChangedName(PlayerInfo* player);
 
-            virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
-            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
-            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
-
-            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
-
-        protected:
-            virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
-            bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);
-
-            std::map<PlayerInfo*, int> teamnumbers_;
-            std::vector<ColourValue> teamcolours_;
-            unsigned int teams_;
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
     };
 }
 
-#endif /* _TeamGametype_H__ */
+#endif /* _Deathmatch_H__ */

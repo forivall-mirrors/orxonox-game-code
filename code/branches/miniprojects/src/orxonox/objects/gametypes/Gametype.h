@@ -83,10 +83,10 @@ namespace orxonox
             virtual void start();
             virtual void end();
             virtual void playerEntered(PlayerInfo* player);
-            virtual void playerLeft(PlayerInfo* player);
+            virtual bool playerLeft(PlayerInfo* player);
             virtual void playerSwitched(PlayerInfo* player, Gametype* newgametype);
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
-            virtual void playerChangedName(PlayerInfo* player);
+            virtual bool playerChangedName(PlayerInfo* player);
 
             virtual void playerScored(Player& player);
 

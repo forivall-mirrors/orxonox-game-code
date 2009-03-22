@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(TeamGametype);
 
-    TeamGametype::TeamGametype(BaseObject* creator) : Gametype(creator)
+    TeamGametype::TeamGametype(BaseObject* creator) : Deathmatch(creator)
     {
         RegisterObject(TeamGametype);
 
@@ -65,7 +65,7 @@ namespace orxonox
 
     void TeamGametype::playerEntered(PlayerInfo* player)
     {
-        Gametype::playerEntered(player);
+        Deathmatch::playerEntered(player);
 
         std::vector<unsigned int> playersperteam(this->teams_, 0);
 
@@ -87,11 +87,14 @@ namespace orxonox
         this->teamnumbers_[player] = minplayersteam;
     }
 
-    void TeamGametype::playerLeft(PlayerInfo* player)
+    bool TeamGametype::playerLeft(PlayerInfo* player)
     {
-        Gametype::playerLeft(player);
+        bool valid_player = Deathmatch::playerLeft(player);
 
-        this->players_.erase(player);
+        if (valid_player)
+            this->players_.erase(player);
+
+        return valid_player;
     }
 
     bool TeamGametype::allowPawnHit(Pawn* victim, Pawn* originator)
