@@ -32,6 +32,7 @@
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "util/Exception.h"
 #include "util/Math.h"
 #include "PawnManager.h"
 #include "objects/infos/PlayerInfo.h"
@@ -59,8 +60,6 @@ namespace orxonox
         this->lastHitOriginator_ = 0;
 
         this->spawnparticleduration_ = 3.0f;
-
-        this->getPickUp().setPlayer(this);
 
         if (Core::isMaster())
         {
@@ -266,7 +265,7 @@ namespace orxonox
 
     void Pawn::dropItems()
     {
-	pickUp.eraseAll();
+        ThrowException(NotImplemented, "Pickupsystem not implemented yet.");
     }
 
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)
