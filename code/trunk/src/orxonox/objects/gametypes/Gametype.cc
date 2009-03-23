@@ -43,8 +43,6 @@
 #include "objects/worldentities/SpawnPoint.h"
 #include "objects/worldentities/Camera.h"
 
-#include "network/Host.h"
-
 namespace orxonox
 {
     CreateUnloadableFactory(Gametype);
@@ -64,8 +62,6 @@ namespace orxonox
         this->initialStartCountdown_ = 3;
 
         this->setConfigValues();
-
-        this->addBots(this->numberOfBots_);
 
         // load the corresponding score board
         if (Core::showsGraphics() && this->scoreboardTemplate_ != "")
@@ -104,7 +100,8 @@ namespace orxonox
 
     void Gametype::start()
     {
-        COUT(0) << "game started" << std::endl;
+        this->addBots(this->numberOfBots_);
+
         this->gtinfo_.bStarted_ = true;
 
         this->spawnPlayersIfRequested();
@@ -112,30 +109,23 @@ namespace orxonox
 
     void Gametype::end()
     {
-        COUT(0) << "game ended" << std::endl;
         this->gtinfo_.bEnded_ = true;
     }
 
     void Gametype::playerEntered(PlayerInfo* player)
     {
         this->players_[player].state_ = PlayerState::Joined;
-
-        std::string message = player->getName() + " entered the game";
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
     }
 
-    void Gametype::playerLeft(PlayerInfo* player)
+    bool Gametype::playerLeft(PlayerInfo* player)
     {
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
             this->players_.erase(it);
-
-            std::string message = player->getName() + " left the game";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
+            return true;
         }
+        return false;
     }
 
     void Gametype::playerSwitched(PlayerInfo* player, Gametype* newgametype)
@@ -146,17 +136,16 @@ namespace orxonox
     {
     }
 
-    void Gametype::playerChangedName(PlayerInfo* player)
+    bool Gametype::playerChangedName(PlayerInfo* player)
     {
         if (this->players_.find(player) != this->players_.end())
         {
             if (player->getName() != player->getOldName())
             {
-                std::string message = player->getOldName() + " changed name to " + player->getName();
-                COUT(0) << message << std::endl;
-                Host::Broadcast(message);
+                return true;
             }
         }
+        return false;
     }
 
     void Gametype::pawnPreSpawn(Pawn* pawn)
@@ -167,25 +156,39 @@ namespace orxonox
     {
     }
 
+    void Gametype::playerPreSpawn(PlayerInfo* player)
+    {
+    }
+
+    void Gametype::playerPostSpawn(PlayerInfo* player)
+    {
+    }
+
+    void Gametype::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    {
+    }
+
+    void Gametype::playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    {
+    }
+
+    bool Gametype::allowPawnHit(Pawn* victim, Pawn* originator)
+    {
+        return true;
+    }
+
+    bool Gametype::allowPawnDamage(Pawn* victim, Pawn* originator)
+    {
+        return true;
+    }
+
+    bool Gametype::allowPawnDeath(Pawn* victim, Pawn* originator)
+    {
+        return true;
+    }
+
     void Gametype::pawnKilled(Pawn* victim, Pawn* killer)
     {
-        if (victim && victim->getPlayer())
-        {
-            std::string message;
-            if (killer)
-            {
-                if (killer->getPlayer())
-                    message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
-                else
-                    message = victim->getPlayer()->getName() + " was killed";
-            }
-            else
-                message = victim->getPlayer()->getName() + " died";
-
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
-        }
-
         if (victim && victim->getPlayer())
         {
             std::map<PlayerInfo*, Player>::iterator it = this->players_.find(victim->getPlayer());
@@ -196,15 +199,7 @@ namespace orxonox
 
                 // Reward killer
                 if (killer)
-                {
-                    std::map<PlayerInfo*, Player>::iterator itKiller = this->players_.find(killer->getPlayer());
-                    if (itKiller != this->players_.end())
-                    {
-                        this->playerScored(itKiller->second);
-                    }
-                    else
-                        COUT(2) << "Warning: Killing Pawn was not in the playerlist" << std::endl;
-                }
+                    this->playerScored(killer->getPlayer());
 
                 ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
                 if (victim->getCamera())
@@ -224,9 +219,11 @@ namespace orxonox
         }
     }
 
-    void Gametype::playerScored(Player& player)
+    void Gametype::playerScored(PlayerInfo* player)
     {
-        player.frags_++;
+        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
+        if (it != this->players_.end())
+            it->second.frags_++;
     }
 
     SpawnPoint* Gametype::getBestSpawnPoint(PlayerInfo* player) const
@@ -335,8 +332,10 @@ namespace orxonox
         SpawnPoint* spawnpoint = this->getBestSpawnPoint(player);
         if (spawnpoint)
         {
+            this->playerPreSpawn(player);
             player->startControl(spawnpoint->spawn());
             this->players_[player].state_ = PlayerState::Alive;
+            this->playerPostSpawn(player);
         }
         else
         {

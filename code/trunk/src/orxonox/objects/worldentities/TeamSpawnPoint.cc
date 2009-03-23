@@ -27,48 +27,26 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "CameraPosition.h"
+#include "TeamSpawnPoint.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "Camera.h"
 
 namespace orxonox
 {
-    CreateFactory(CameraPosition);
+    CreateFactory(TeamSpawnPoint);
 
-    CameraPosition::CameraPosition(BaseObject* creator) : StaticEntity(creator)
+    TeamSpawnPoint::TeamSpawnPoint(BaseObject* creator) : SpawnPoint(creator)
     {
-        RegisterObject(CameraPosition);
+        RegisterObject(TeamSpawnPoint);
 
-        this->bDrag_ = false;
-        this->bAllowMouseLook_ = false;
-        this->bAbsolute_ = false;
-
-        this->setObjectMode(0x0);
+        this->teamNumber_ = 0;
     }
 
-    CameraPosition::~CameraPosition()
+    void TeamSpawnPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-    }
+        SUPER(TeamSpawnPoint, XMLPort, xmlelement, mode);
 
-    void CameraPosition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(CameraPosition, XMLPort, xmlelement, mode);
-
-        XMLPortParam(CameraPosition, "drag", setDrag, getDrag, xmlelement, mode).defaultValues(false);
-        XMLPortParam(CameraPosition, "mouselook", setAllowMouseLook, getAllowMouseLook, xmlelement, mode).defaultValues(false);
-        XMLPortParam(CameraPosition, "absolute", setIsAbsolute, getIsAbsolute, xmlelement, mode).defaultValues(false);
-    }
-
-    void CameraPosition::attachCamera(Camera* camera)
-    {
-        if (!this->bDrag_)
-            camera->setDrag(false);
-
-        this->attach(camera);
-
-        if (this->bDrag_)
-            camera->setDrag(true);
+        XMLPortParam(TeamSpawnPoint, "team", setTeamNumber, getTeamNumber, xmlelement, mode).defaultValues(0);
     }
 }

@@ -26,42 +26,31 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _TeamSpawnPoint_H__
+#define _TeamSpawnPoint_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "SpawnPoint.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport TeamSpawnPoint : public SpawnPoint
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            TeamSpawnPoint(BaseObject* creator);
+            virtual ~TeamSpawnPoint() {}
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setControllableEntity(ControllableEntity* entity)
-            {
-                if (entity != this->controllableEntity_)
-                {
-                    this->controllableEntity_ = entity;
-                    this->changedControllableEntity();
-                }
-            }
-            inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
-            virtual void changedControllableEntity() {}
+            void setTeamNumber(unsigned int team)
+                { this->teamNumber_ = team; }
+            unsigned int getTeamNumber() const
+                { return this->teamNumber_; }
 
-        protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+        private:
+            unsigned int teamNumber_;
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _TeamSpawnPoint_H__ */

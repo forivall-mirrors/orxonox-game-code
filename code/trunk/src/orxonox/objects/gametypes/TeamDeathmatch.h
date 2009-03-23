@@ -26,42 +26,42 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _TeamDeathmatch_H__
+#define _TeamDeathmatch_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include <vector>
+
+#include "Deathmatch.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport TeamDeathmatch : public Deathmatch
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            TeamDeathmatch(BaseObject* creator);
+            virtual ~TeamDeathmatch() {}
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            void setConfigValues();
 
-            inline void setControllableEntity(ControllableEntity* entity)
-            {
-                if (entity != this->controllableEntity_)
-                {
-                    this->controllableEntity_ = entity;
-                    this->changedControllableEntity();
-                }
-            }
-            inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
-            virtual void changedControllableEntity() {}
+            virtual void playerEntered(PlayerInfo* player);
+            virtual bool playerLeft(PlayerInfo* player);
+
+            virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
+            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
+            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
+
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
 
         protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+            virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
+            bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);
+
+            std::map<PlayerInfo*, int> teamnumbers_;
+            std::vector<ColourValue> teamcolours_;
+            unsigned int teams_;
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _TeamDeathmatch_H__ */

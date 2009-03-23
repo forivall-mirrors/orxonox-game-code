@@ -140,6 +140,8 @@ namespace orxonox
 
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
+
+        this->changedControllableEntity();
     }
 
     void PlayerInfo::stopControl(ControllableEntity* entity, bool callback)
@@ -154,6 +156,8 @@ namespace orxonox
 
             if (callback)
                 entity->removePlayer();
+
+            this->changedControllableEntity();
         }
     }
 

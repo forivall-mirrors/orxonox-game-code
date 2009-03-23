@@ -26,42 +26,40 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _Pong_H__
+#define _Pong_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "Deathmatch.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport Pong : public Deathmatch
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            Pong(BaseObject* creator);
+            virtual ~Pong() {}
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            virtual void start();
+            virtual void end();
 
-            inline void setControllableEntity(ControllableEntity* entity)
-            {
-                if (entity != this->controllableEntity_)
-                {
-                    this->controllableEntity_ = entity;
-                    this->changedControllableEntity();
-                }
-            }
-            inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
-            virtual void changedControllableEntity() {}
+            virtual void spawnPlayer(PlayerInfo* player);
+
+            virtual void playerScored(PlayerInfo* player);
+
+            void setCenterpoint(PongCenterpoint* center)
+                { this->center_ = center; }
 
         protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+            void startBall();
+
+            PongCenterpoint* center_;
+            PongBall* ball_;
+            PongBat* bat_[2];
+            Timer<Pong> starttimer_;
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _Pong_H__ */

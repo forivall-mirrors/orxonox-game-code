@@ -26,45 +26,49 @@
  *
  */
 
-#ifndef _GametypeInfo_H__
-#define _GametypeInfo_H__
+#ifndef _PongBat_H__
+#define _PongBat_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "Info.h"
+#include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeInfo : public Info
+    class _OrxonoxExport PongBat : public ControllableEntity
     {
-        friend class Gametype;
-
         public:
-            GametypeInfo(BaseObject* creator);
-            virtual ~GametypeInfo();
+            PongBat(BaseObject* creator);
+            virtual ~PongBat() {}
 
             void registerVariables();
+            virtual void tick(float dt);
 
-            inline bool hasStarted() const
-                { return this->bStarted_; }
-            inline bool hasEnded() const
-                { return this->bEnded_; }
+            virtual void moveFrontBack(const Vector2& value);
+            virtual void moveRightLeft(const Vector2& value);
 
-            inline bool isStartCountdownRunning() const
-                { return this->bStartCountdownRunning_; }
-            inline float getStartCountdown() const
-                { return this->startCountdown_; }
+            void setSpeed(float speed)
+                { this->speed_ = speed; }
+            float getSpeed() const
+                { return this->speed_; }
 
-            inline const std::string& getHUDTemplate() const
-                { return this->hudtemplate_; }
+            void setFieldHeight(float height)
+                { this->fieldHeight_ = height; }
+            float getFieldHeight() const
+                { return this->fieldHeight_; }
+
+            void setLength(float length)
+                { this->length_ = length; }
+            float getLength() const
+                { return this->length_; }
 
         private:
-            bool bStarted_;
-            bool bEnded_;
-            bool bStartCountdownRunning_;
-            float startCountdown_;
-            std::string hudtemplate_;
+            float movement_;
+            bool bMoveLocal_;
+            float speed_;
+            float length_;
+            float fieldHeight_;
     };
 }
 
-#endif /* _GametypeInfo_H__ */
+#endif /* _PongBat_H__ */

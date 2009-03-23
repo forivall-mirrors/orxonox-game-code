@@ -143,10 +143,19 @@ namespace orxonox
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
     {
-        if (position->getAllowMouseLook())
-            position->attachToNode(this->cameraPositionRootNode_);
+        if (!position->getIsAbsolute())
+        {
+            if (position->getAllowMouseLook())
+                position->attachToNode(this->cameraPositionRootNode_);
+            else
+                this->attach(position);
+        }
         else
-            this->attach(position);
+        {
+            WorldEntity* parent = this->getParent();
+            if (parent)
+                parent->attach(position);
+        }
         this->cameraPositions_.push_back(position);
     }
 
