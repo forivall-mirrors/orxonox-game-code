@@ -82,6 +82,7 @@ namespace orxonox
 
         static void toggleGUI();
 
+        void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->backgroundCamera_; }
 
         static void showGUI_s(const std::string& name, Ogre::SceneManager* sceneManager)//bool showBackground)

@@ -266,6 +266,11 @@ namespace orxonox
         getInstance().scriptModule_->executeScriptGlobal("toggleGUI");
     }
 
+    void GUIManager::setCamera(Ogre::Camera* camera)
+    {
+        this->showGUI("default", camera->getSceneManager());
+    }
+
     void GUIManager::showGUI(const std::string& name, Ogre::SceneManager* sceneManager)// bool showBackground)
     {
         if (state_ != Uninitialised)

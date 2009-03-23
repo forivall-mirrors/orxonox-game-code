@@ -40,6 +40,7 @@
 #include "objects/Scene.h"
 #include "tools/Shader.h"
 #include "util/String.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
@@ -140,6 +141,7 @@ namespace orxonox
         }
 
         this->viewport_->setCamera(camera);
+        GUIManager::getInstancePtr()->setCamera(camera);
 
         // reactivate all visible compositors
         {

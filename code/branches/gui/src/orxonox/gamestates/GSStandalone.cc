@@ -57,9 +57,6 @@ namespace orxonox
         guiManager_ = GUIManager::getInstancePtr();
         // not sure if necessary
         // guiManager_->loadScene("IngameMenu");
-
-        Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
-        guiManager_->showGUI("IngameMenu", viewport->getCamera()->getSceneManager());
     }
 
     void GSStandalone::leave()
@@ -71,11 +68,11 @@ namespace orxonox
 
     void GSStandalone::ticked(const Clock& time)
     {
-        Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
+        //Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
         //COUT(0) << "** " << viewport->getCamera()->getSceneManager() << std::endl;
         //guiManager_->testFct();
         //Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
-        guiManager_->showGUI("IngameMenu", viewport->getCamera()->getSceneManager());
+        //guiManager_->showGUI("IngameMenu", viewport->getCamera()->getSceneManager());
 
         // tick CEGUI
         guiManager_->update(time);
