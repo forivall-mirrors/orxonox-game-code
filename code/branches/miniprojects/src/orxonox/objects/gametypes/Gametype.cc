@@ -199,15 +199,7 @@ namespace orxonox
 
                 // Reward killer
                 if (killer)
-                {
-                    std::map<PlayerInfo*, Player>::iterator itKiller = this->players_.find(killer->getPlayer());
-                    if (itKiller != this->players_.end())
-                    {
-                        this->playerScored(itKiller->second);
-                    }
-                    else
-                        COUT(2) << "Warning: Killing Pawn was not in the playerlist" << std::endl;
-                }
+                    this->playerScored(killer->getPlayer());
 
                 ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
                 if (victim->getCamera())
@@ -227,9 +219,11 @@ namespace orxonox
         }
     }
 
-    void Gametype::playerScored(Player& player)
+    void Gametype::playerScored(PlayerInfo* player)
     {
-        player.frags_++;
+        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
+        if (it != this->players_.end())
+            it->second.frags_++;
     }
 
     SpawnPoint* Gametype::getBestSpawnPoint(PlayerInfo* player) const

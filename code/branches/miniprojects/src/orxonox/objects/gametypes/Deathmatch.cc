@@ -48,14 +48,18 @@ namespace orxonox
     {
         Gametype::start();
 
-        COUT(0) << "game started" << std::endl;
+        std::string message = "The match has started!";
+        COUT(0) << message << std::endl;
+        Host::Broadcast(message);
     }
 
     void Deathmatch::end()
     {
         Gametype::end();
 
-        COUT(0) << "game ended" << std::endl;
+        std::string message = "The match has ended.";
+        COUT(0) << message << std::endl;
+        Host::Broadcast(message);
     }
 
     void Deathmatch::playerEntered(PlayerInfo* player)
@@ -115,5 +119,17 @@ namespace orxonox
         }
 
         Gametype::pawnKilled(victim, killer);
+    }
+
+    void Deathmatch::playerScored(PlayerInfo* player)
+    {
+        Gametype::playerScored(player);
+
+        if (player)
+        {
+            std::string message = player->getName() + " scores!";
+            COUT(0) << message << std::endl;
+            Host::Broadcast(message);
+        }
     }
 }

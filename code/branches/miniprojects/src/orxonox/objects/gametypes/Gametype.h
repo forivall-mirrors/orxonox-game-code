@@ -88,7 +88,7 @@ namespace orxonox
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
             virtual bool playerChangedName(PlayerInfo* player);
 
-            virtual void playerScored(Player& player);
+            virtual void playerScored(PlayerInfo* player);
 
             virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
@@ -128,14 +128,11 @@ namespace orxonox
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
-            void addPlayer(PlayerInfo* player);
-            void removePlayer(PlayerInfo* player);
-
-            void assignDefaultPawnsIfNeeded();
-            void checkStart();
-            void spawnPlayer(PlayerInfo* player);
-            void spawnPlayersIfRequested();
-            void spawnDeadPlayersIfRequested();
+            virtual void assignDefaultPawnsIfNeeded();
+            virtual void checkStart();
+            virtual void spawnPlayer(PlayerInfo* player);
+            virtual void spawnPlayersIfRequested();
+            virtual void spawnDeadPlayersIfRequested();
 
             GametypeInfo gtinfo_;
 

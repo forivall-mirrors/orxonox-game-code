@@ -43,6 +43,7 @@ namespace orxonox
 
         this->bDrag_ = false;
         this->bAllowMouseLook_ = false;
+        this->bAbsolute_ = false;
 
         this->setObjectMode(0x0);
     }
@@ -57,6 +58,7 @@ namespace orxonox
 
         XMLPortParam(CameraPosition, "drag", setDrag, getDrag, xmlelement, mode).defaultValues(false);
         XMLPortParam(CameraPosition, "mouselook", setAllowMouseLook, getAllowMouseLook, xmlelement, mode).defaultValues(false);
+        XMLPortParam(CameraPosition, "absolute", setIsAbsolute, getIsAbsolute, xmlelement, mode).defaultValues(false);
     }
 
     void CameraPosition::attachCamera(Camera* camera)

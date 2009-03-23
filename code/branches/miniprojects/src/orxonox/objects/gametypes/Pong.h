@@ -26,30 +26,40 @@
  *
  */
 
-#ifndef _Deathmatch_H__
-#define _Deathmatch_H__
+#ifndef _Pong_H__
+#define _Pong_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "Gametype.h"
+#include "Deathmatch.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Deathmatch : public Gametype
+    class _OrxonoxExport Pong : public Deathmatch
     {
         public:
-            Deathmatch(BaseObject* creator);
-            virtual ~Deathmatch() {}
+            Pong(BaseObject* creator);
+            virtual ~Pong() {}
 
             virtual void start();
             virtual void end();
-            virtual void playerEntered(PlayerInfo* player);
-            virtual bool playerLeft(PlayerInfo* player);
-            virtual bool playerChangedName(PlayerInfo* player);
 
-            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+            virtual void spawnPlayer(PlayerInfo* player);
+
             virtual void playerScored(PlayerInfo* player);
+
+            void setCenterpoint(PongCenterpoint* center)
+                { this->center_ = center; }
+
+        protected:
+            void startBall();
+
+            PongCenterpoint* center_;
+            PongBall* ball_;
+            PongBat* bat_[2];
+            Timer<Pong> starttimer_;
     };
 }
 
-#endif /* _Deathmatch_H__ */
+#endif /* _Pong_H__ */
