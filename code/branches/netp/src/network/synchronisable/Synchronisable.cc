@@ -65,7 +65,9 @@ namespace orxonox
     else
       objectID=OBJECTID_UNKNOWN;
     classID = static_cast<uint32_t>(-1);
-
+    
+    // set dataSize to 0
+    this->dataSize_ = 0;
     // set standard priority
     this->setPriority( priority::normal );
 
@@ -250,28 +252,32 @@ namespace orxonox
 
     assert(this->classID==this->getIdentifier()->getNetworkID());
     std::list<SynchronisableVariableBase*>::iterator i;
-    uint32_t size;
-    size=getSize(id, mode);
 
     // start copy header
     SynchronisableHeader header(mem);
-    header.setDataSize( size );
-    header.setObjectID( this->objectID );
-    header.setCreatorID( this->creatorID );
-    header.setClassID( this->classID );
-    header.setDataAvailable( true );
-    tempsize += SynchronisableHeader::getSize();
     mem += SynchronisableHeader::getSize();
     // end copy header
 
 
-    COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << " length: " << size << std::endl;
+    COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << std::endl;
     // copy to location
     for(i=syncList.begin(); i!=syncList.end(); ++i){
-      (*i)->getData( mem, mode );
-      tempsize += (*i)->getSize( mode );
+      tempsize += (*i)->getData( mem, mode );
+      //tempsize += (*i)->getSize( mode );
     }
+    
+    tempsize += SynchronisableHeader::getSize();
+    header.setObjectID( this->objectID );
+    header.setCreatorID( this->creatorID );
+    header.setClassID( this->classID );
+    header.setDataAvailable( true );
+    header.setDataSize( tempsize );
+    
+#ifndef NDEBUG
+    uint32_t size;
+    size=getSize(id, mode);
     assert(tempsize==size);
+#endif
     return true;
   }
 
@@ -324,12 +330,14 @@ namespace orxonox
   */
   uint32_t Synchronisable::getSize(int32_t id, uint8_t mode){
     int tsize=SynchronisableHeader::getSize();
-    if(mode==0x0)
+    if (mode==0x0)
       mode=state_;
-    if(!doSync(id, mode))
+    if (!doSync(id, mode))
       return 0;
+    assert( mode==state_ );
+    tsize += this->dataSize_;
     std::list<SynchronisableVariableBase*>::iterator i;
-    for(i=syncList.begin(); i!=syncList.end(); i++){
+    for(i=stringList.begin(); i!=stringList.end(); ++i){
       tsize += (*i)->getSize( mode );
     }
     return tsize;

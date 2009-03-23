@@ -28,11 +28,30 @@
  */
 
 #include "network/synchronisable/Synchronisable.h"
+#include <string>
 
 // ================ template spezialisation
   
   
 namespace orxonox{
+  
+//   template <> void Synchronisable::registerVariable( const std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+//   {
+//     if (bidirectional)
+//       syncList.push_back(new SynchronisableVariableBidirectional<const std::string>(variable, mode, cb));
+//     else
+//       syncList.push_back(new SynchronisableVariable<const std::string>(variable, mode, cb));
+//     stringList.push_back(syncList.back());
+//   }
+  
+  template <> void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+  {
+    if (bidirectional)
+      syncList.push_back(new SynchronisableVariableBidirectional<const std::string>(variable, mode, cb));
+    else
+      syncList.push_back(new SynchronisableVariable<const std::string>(variable, mode, cb));
+    stringList.push_back(syncList.back());
+  }
   
   template <> void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
