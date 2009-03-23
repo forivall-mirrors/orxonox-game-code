@@ -128,7 +128,8 @@ namespace orxonox
         this->fire_ = this->firehack_;
         this->firehack_ = 0x0;
 
-        if (this->health_ <= 0)
+        if (Core::isMaster())
+          if (this->health_ <= 0)
             this->death();
     }
 

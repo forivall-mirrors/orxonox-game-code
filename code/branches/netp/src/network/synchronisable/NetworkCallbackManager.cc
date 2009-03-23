@@ -31,7 +31,7 @@
 #include "NetworkCallback.h"
 
 namespace orxonox{
-
+  
   std::set<NetworkCallbackBase*> NetworkCallbackManager::callbackSet_;
   std::queue<NetworkCallbackBase*> NetworkCallbackManager::triggeredCallbacks_;
   
@@ -59,7 +59,9 @@ namespace orxonox{
   {
     while( triggeredCallbacks_.empty()==false )
     {
-      triggeredCallbacks_.front()->call();
+      //make sure callback hasn't been deleted before
+      if ( callbackSet_.find(triggeredCallbacks_.front()) != callbackSet_.end() )
+        triggeredCallbacks_.front()->call();
       triggeredCallbacks_.pop();
     }
   }
