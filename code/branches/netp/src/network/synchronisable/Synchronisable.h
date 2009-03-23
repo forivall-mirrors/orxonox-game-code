@@ -32,6 +32,7 @@
 #include "network/NetworkPrereqs.h"
 
 #include <list>
+#include <vector>
 #include <map>
 #include <queue>
 #include <cassert>
@@ -155,8 +156,8 @@ namespace orxonox
     uint32_t creatorID;
     uint32_t classID;
 
-    std::list<SynchronisableVariableBase*> syncList;
-    std::list<SynchronisableVariableBase*> stringList;
+    std::vector<SynchronisableVariableBase*> syncList;
+    std::vector<SynchronisableVariableBase*> stringList;
     uint32_t dataSize_; //size of all variables except strings
     static uint8_t state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
@@ -195,7 +196,7 @@ namespace orxonox
 
 
 //   template <class T> void Synchronisable::unregisterVariable(T& var){
-//     std::list<SynchronisableVariableBase*>::iterator it = syncList.begin();
+//     std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin();
 //     while(it!=syncList.end()){
 //       if( ((*it)->getReference()) == &var ){
 //         delete (*it);

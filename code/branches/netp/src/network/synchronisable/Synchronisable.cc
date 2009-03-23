@@ -97,7 +97,7 @@ namespace orxonox
   Synchronisable::~Synchronisable(){
     // delete callback function objects
     if(!Identifier::isCreatingHierarchy()){
-      for(std::list<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
+      for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
         delete (*it);
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID);
@@ -251,7 +251,7 @@ namespace orxonox
         this->classID = this->getIdentifier()->getNetworkID();
 
     assert(this->classID==this->getIdentifier()->getNetworkID());
-    std::list<SynchronisableVariableBase*>::iterator i;
+    std::vector<SynchronisableVariableBase*>::iterator i;
 
     // start copy header
     SynchronisableHeader header(mem);
@@ -291,7 +291,7 @@ namespace orxonox
   bool Synchronisable::updateData(uint8_t*& mem, uint8_t mode, bool forceCallback){
     if(mode==0x0)
       mode=state_;
-    std::list<SynchronisableVariableBase *>::iterator i;
+    std::vector<SynchronisableVariableBase *>::iterator i;
     if(syncList.empty()){
       assert(0);
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
@@ -336,7 +336,7 @@ namespace orxonox
       return 0;
     assert( mode==state_ );
     tsize += this->dataSize_;
-    std::list<SynchronisableVariableBase*>::iterator i;
+    std::vector<SynchronisableVariableBase*>::iterator i;
     for(i=stringList.begin(); i!=stringList.end(); ++i){
       tsize += (*i)->getSize( mode );
     }
