@@ -132,6 +132,22 @@ namespace orxonox
             this->death();
     }
 
+    void Pawn::setPlayer(PlayerInfo* player)
+    {
+        ControllableEntity::setPlayer(player);
+
+        if (this->getGametype())
+            this->getGametype()->playerStartsControllingPawn(player, this);
+    }
+
+    void Pawn::removePlayer()
+    {
+        if (this->getGametype())
+            this->getGametype()->playerStopsControllingPawn(this->getPlayer(), this);
+
+        ControllableEntity::removePlayer();
+    }
+
     void Pawn::setHealth(float health)
     {
         this->health_ = min(health, this->maxHealth_);
@@ -139,18 +155,24 @@ namespace orxonox
 
     void Pawn::damage(float damage, Pawn* originator)
     {
-        this->setHealth(this->health_ - damage);
-        this->lastHitOriginator_ = originator;
+        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
+        {
+            this->setHealth(this->health_ - damage);
+            this->lastHitOriginator_ = originator;
 
-        // play damage effect
+            // play damage effect
+        }
     }
 
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
-        this->damage(damage, originator);
-        this->setVelocity(this->getVelocity() + force);
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator))
+        {
+            this->damage(damage, originator);
+            this->setVelocity(this->getVelocity() + force);
 
-        // play hit effect
+            // play hit effect
+        }
     }
 
     void Pawn::kill()
@@ -175,19 +197,24 @@ namespace orxonox
 
     void Pawn::death()
     {
-        // Set bAlive_ to false and wait for PawnManager to do the destruction
-        this->bAlive_ = false;
+        if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
+        {
+            // Set bAlive_ to false and wait for PawnManager to do the destruction
+            this->bAlive_ = false;
 
-        this->setDestroyWhenPlayerLeft(false);
+            this->setDestroyWhenPlayerLeft(false);
 
-        if (this->getGametype())
-            this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
+            if (this->getGametype())
+                this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
 
-        if (this->getPlayer())
-            this->getPlayer()->stopControl(this);
+            if (this->getPlayer())
+                this->getPlayer()->stopControl(this);
 
-        if (Core::isMaster())
-            this->deatheffect();
+            if (Core::isMaster())
+                this->deatheffect();
+        }
+        else
+            this->setHealth(1);
     }
 
     void Pawn::deatheffect()

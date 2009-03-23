@@ -36,10 +36,11 @@
 #include <OgreLight.h>
 
 #include "util/Math.h"
+#include "objects/Teamcolourable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Light : public StaticEntity
+    class _OrxonoxExport Light : public StaticEntity, public Teamcolourable
     {
         public:
             Light(BaseObject* creator);
@@ -67,6 +68,9 @@ namespace orxonox
                 { this->specular_ = colour; this->updateSpecularColour(); }
             inline const ColourValue& getSpecularColour() const
                 { return this->specular_; }
+
+            virtual void setTeamColour(const ColourValue& colour)
+                { this->setDiffuseColour(colour); this->setSpecularColour(colour); }
 
             /**
                 @brief Sets the attenuation parameters of the light source i.e. how it diminishes with distance.

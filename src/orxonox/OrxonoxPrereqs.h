@@ -103,6 +103,8 @@ namespace orxonox
     class Radar;
     class RadarListener;
 
+    class Teamcolourable;
+
     class CameraManager;
     class LevelManager;
     class PawnManager;
@@ -148,9 +150,14 @@ namespace orxonox
     class ParticleEmitter;
     class ParticleSpawner;
 
+    class PongCenterpoint;
+    class PongBall;
+    class PongBat;
+
     class Camera;
     class CameraPosition;
     class SpawnPoint;
+    class TeamSpawnPoint;
 
     class Spectator;
     class Pawn;
@@ -192,6 +199,9 @@ namespace orxonox
     class GametypeInfo;
 
     class Gametype;
+    class Deathmatch;
+    class TeamDeathmatch;
+    class Pong;
 
     class Scores;
     class CreateLines;

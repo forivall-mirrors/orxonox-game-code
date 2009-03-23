@@ -26,42 +26,24 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _Teamcolourable_H__
+#define _Teamcolourable_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "util/Math.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport Teamcolourable : virtual public OrxonoxClass
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
-
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
-
-            inline void setControllableEntity(ControllableEntity* entity)
-            {
-                if (entity != this->controllableEntity_)
-                {
-                    this->controllableEntity_ = entity;
-                    this->changedControllableEntity();
-                }
-            }
-            inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
-            virtual void changedControllableEntity() {}
+            virtual void setTeamColour(const ColourValue& colour) = 0;
 
         protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+            Teamcolourable();
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _Teamcolourable_H__ */

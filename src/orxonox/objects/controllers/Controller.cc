@@ -42,41 +42,9 @@ namespace orxonox
 
         this->player_ = 0;
         this->controllableEntity_ = 0;
-        this->hud_ = 0;
-        this->bUpdateHUD_ = false;
     }
 
     Controller::~Controller()
     {
-        if (this->isInitialized() && this->hud_)
-            delete this->hud_;
-    }
-
-    void Controller::changedControllableEntity()
-    {
-        if (this->bUpdateHUD_)
-        {
-            this->updateHUD();
-            this->bUpdateHUD_ = false;
-        }
-
-        if (this->hud_)
-            this->hud_->setOwner(this->getControllableEntity());
-    }
-
-    void Controller::updateHUD()
-    {
-        if (this->hud_)
-        {
-            delete this->hud_;
-            this->hud_ = 0;
-        }
-
-        if (this->hudtemplate_ != "")
-        {
-            this->hud_ = new OverlayGroup(this);
-            this->hud_->addTemplate(this->hudtemplate_);
-            this->hud_->setOwner(this->getControllableEntity());
-        }
     }
 }

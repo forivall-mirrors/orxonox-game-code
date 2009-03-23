@@ -47,6 +47,9 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
+            virtual void setPlayer(PlayerInfo* player);
+            virtual void removePlayer();
+
             inline bool isAlive() const
                 { return this->bAlive_; }
 

@@ -26,42 +26,30 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _Deathmatch_H__
+#define _Deathmatch_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "Gametype.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport Deathmatch : public Gametype
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            Deathmatch(BaseObject* creator);
+            virtual ~Deathmatch() {}
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            virtual void start();
+            virtual void end();
+            virtual void playerEntered(PlayerInfo* player);
+            virtual bool playerLeft(PlayerInfo* player);
+            virtual bool playerChangedName(PlayerInfo* player);
 
-            inline void setControllableEntity(ControllableEntity* entity)
-            {
-                if (entity != this->controllableEntity_)
-                {
-                    this->controllableEntity_ = entity;
-                    this->changedControllableEntity();
-                }
-            }
-            inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
-            virtual void changedControllableEntity() {}
-
-        protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+            virtual void playerScored(PlayerInfo* player);
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _Deathmatch_H__ */

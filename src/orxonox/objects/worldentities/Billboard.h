@@ -33,10 +33,11 @@
 #include "StaticEntity.h"
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
+#include "objects/Teamcolourable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Billboard : public StaticEntity
+    class _OrxonoxExport Billboard : public StaticEntity, public Teamcolourable
     {
         public:
             Billboard(BaseObject* creator);
@@ -59,6 +60,9 @@ namespace orxonox
                 { this->colour_ = colour; this->changedColour(); }
             inline const ColourValue& getColour() const
                 { return this->colour_; }
+
+            virtual void setTeamColour(const ColourValue& colour)
+                { this->setColour(colour); }
 
         protected:
             inline BillboardSet& getBillboardSet()

@@ -27,36 +27,13 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "GametypeInfo.h"
-
+#include "Teamcolourable.h"
 #include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    CreateUnloadableFactory(GametypeInfo);
-
-    GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
+    Teamcolourable::Teamcolourable()
     {
-        RegisterObject(GametypeInfo);
-
-        this->bStarted_ = false;
-        this->bEnded_ = false;
-        this->startCountdown_ = 0;
-        this->bStartCountdownRunning_ = false;
-
-        this->registerVariables();
-    }
-
-    GametypeInfo::~GametypeInfo()
-    {
-    }
-
-    void GametypeInfo::registerVariables()
-    {
-        registerVariable(this->bStarted_,               variableDirection::toclient);
-        registerVariable(this->bEnded_,                 variableDirection::toclient);
-        registerVariable(this->startCountdown_,         variableDirection::toclient);
-        registerVariable(this->bStartCountdownRunning_, variableDirection::toclient);
-        registerVariable(this->hudtemplate_,            variableDirection::toclient);
+        RegisterRootObject(Teamcolourable);
     }
 }
