@@ -100,17 +100,20 @@ namespace orxonox
 
     void AIController::tick(float dt)
     {
-        if (!this->isActive())
-            return;
-
-        if (this->target_)
-            this->aimAtTarget();
-
-        if (this->bHasTargetPosition_)
-            this->moveToTargetPosition(dt);
-
-        if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
-            this->getControllableEntity()->fire(WeaponMode::fire);
+        if(Core::isMaster())
+        {
+            if (!this->isActive())
+                return;
+    
+            if (this->target_)
+                this->aimAtTarget();
+    
+            if (this->bHasTargetPosition_)
+                this->moveToTargetPosition(dt);
+    
+            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
+                this->getControllableEntity()->fire(WeaponMode::fire);
+        }
 
         SUPER(AIController, tick, dt);
     }

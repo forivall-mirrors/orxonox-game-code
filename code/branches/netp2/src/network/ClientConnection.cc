@@ -41,6 +41,7 @@
 
 #include <enet/enet.h>
 #include <iostream>
+#include <cassert>
 // boost.thread library for multithreading support
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
@@ -165,6 +166,7 @@ namespace orxonox
         boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
         if(enet_host_service(client, event, NETWORK_CLIENT_WAIT_TIME)<0){
           // we should never reach this point
+	        assert(0);
           quit=true;
           continue;
           // add some error handling here ========================
@@ -205,7 +207,7 @@ namespace orxonox
     ENetEvent event;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
     enet_peer_disconnect(server, 0);
-    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME) > 0){
+    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME) >= 0){
       switch (event.type)
       {
       case ENET_EVENT_TYPE_NONE:

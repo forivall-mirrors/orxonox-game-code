@@ -65,11 +65,11 @@ class _NetworkExport Packet{
     virtual unsigned char *getData(){ return data_; };
     virtual unsigned int getSize() const =0;
     virtual bool process()=0;
-    uint32_t getFlags()
+    inline uint32_t getFlags()
       { return flags_; }
-    int getClientID()
+    inline int getClientID()
       { return clientID_; }
-    void setClientID( int id )
+    inline void setClientID( int id )
       { clientID_ = id; }
 
     bool send();
