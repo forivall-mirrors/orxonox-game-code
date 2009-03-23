@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _TeamGametype_H__
-#define _TeamGametype_H__
+#ifndef _TeamDeathmatch_H__
+#define _TeamDeathmatch_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -37,11 +37,11 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport TeamGametype : public Deathmatch
+    class _OrxonoxExport TeamDeathmatch : public Deathmatch
     {
         public:
-            TeamGametype(BaseObject* creator);
-            virtual ~TeamGametype() {}
+            TeamDeathmatch(BaseObject* creator);
+            virtual ~TeamDeathmatch() {}
 
             void setConfigValues();
 
@@ -64,4 +64,4 @@ namespace orxonox
     };
 }
 
-#endif /* _TeamGametype_H__ */
+#endif /* _TeamDeathmatch_H__ */

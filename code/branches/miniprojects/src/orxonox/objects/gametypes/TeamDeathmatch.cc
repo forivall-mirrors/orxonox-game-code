@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "TeamGametype.h"
+#include "TeamDeathmatch.h"
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -36,18 +36,18 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(TeamGametype);
+    CreateUnloadableFactory(TeamDeathmatch);
 
-    TeamGametype::TeamGametype(BaseObject* creator) : Deathmatch(creator)
+    TeamDeathmatch::TeamDeathmatch(BaseObject* creator) : Deathmatch(creator)
     {
-        RegisterObject(TeamGametype);
+        RegisterObject(TeamDeathmatch);
 
         this->teams_ = 2;
 
         this->setConfigValues();
     }
 
-    void TeamGametype::setConfigValues()
+    void TeamDeathmatch::setConfigValues()
     {
         SetConfigValue(teams_, 2);
 
@@ -63,7 +63,7 @@ namespace orxonox
         SetConfigValueVector(teamcolours_, defaultcolours);
     }
 
-    void TeamGametype::playerEntered(PlayerInfo* player)
+    void TeamDeathmatch::playerEntered(PlayerInfo* player)
     {
         Deathmatch::playerEntered(player);
 
@@ -87,7 +87,7 @@ namespace orxonox
         this->teamnumbers_[player] = minplayersteam;
     }
 
-    bool TeamGametype::playerLeft(PlayerInfo* player)
+    bool TeamDeathmatch::playerLeft(PlayerInfo* player)
     {
         bool valid_player = Deathmatch::playerLeft(player);
 
@@ -97,22 +97,22 @@ namespace orxonox
         return valid_player;
     }
 
-    bool TeamGametype::allowPawnHit(Pawn* victim, Pawn* originator)
+    bool TeamDeathmatch::allowPawnHit(Pawn* victim, Pawn* originator)
     {
         return (!this->pawnsAreInTheSameTeam(victim, originator));
     }
 
-    bool TeamGametype::allowPawnDamage(Pawn* victim, Pawn* originator)
+    bool TeamDeathmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
     {
         return (!this->pawnsAreInTheSameTeam(victim, originator));
     }
 
-    bool TeamGametype::allowPawnDeath(Pawn* victim, Pawn* originator)
+    bool TeamDeathmatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
         return (!this->pawnsAreInTheSameTeam(victim, originator));
     }
 
-    SpawnPoint* TeamGametype::getBestSpawnPoint(PlayerInfo* player) const
+    SpawnPoint* TeamDeathmatch::getBestSpawnPoint(PlayerInfo* player) const
     {
         int desiredTeamNr = -1;
         std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
@@ -152,7 +152,7 @@ namespace orxonox
         return 0;
     }
 
-    void TeamGametype::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    void TeamDeathmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
     {
         if (!player)
             return;
@@ -176,7 +176,7 @@ namespace orxonox
         }
     }
 
-    bool TeamGametype::pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2)
+    bool TeamDeathmatch::pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2)
     {
         if (pawn1 && pawn2)
         {
