@@ -237,12 +237,12 @@ namespace orxonox
    *             0x3: bidirectional
    * @return true: if !doSync or if everything was successfully saved
    */
-  bool Synchronisable::getData(uint8_t*& mem, int32_t id, uint8_t mode){
+  uint32_t Synchronisable::getData(uint8_t*& mem, int32_t id, uint8_t mode){
     if(mode==0x0)
       mode=state_;
     //if this tick is we dont synchronise, then abort now
     if(!doSync(id, mode))
-      return true;
+      return 0;
     uint32_t tempsize = 0;
     if (this->classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
@@ -278,7 +278,7 @@ namespace orxonox
     size=getSize(id, mode);
     assert(tempsize==size);
 #endif
-    return true;
+    return tempsize;
   }
 
 

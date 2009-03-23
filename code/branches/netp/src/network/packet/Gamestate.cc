@@ -106,7 +106,12 @@ bool Gamestate::collectData(int id, uint8_t mode)
   ObjectList<Synchronisable>::iterator it;
   for(it = ObjectList<Synchronisable>::begin(); it; ++it){
     
-    tempsize=it->getSize(id, mode);
+//     tempsize=it->getSize(id, mode);
+
+    tempsize = it->getData(mem, id, mode);
+    if ( it->doSync( id, mode ) )
+      dataMap_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
+    
 #ifndef NDEBUG
     if(currentsize+tempsize > size){
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
@@ -122,11 +127,8 @@ bool Gamestate::collectData(int id, uint8_t mode)
       size = currentsize+addsize;
     }// stop allocate additional memory
 #endif
-
-    if ( it->doSync( id, mode ) )
-      dataMap_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
-    if(!it->getData(mem, id, mode))
-      return false; // mem pointer gets automatically increased because of call by reference
+//     if(!it->getData(mem, id, mode))
+//       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
     currentsize+=tempsize;
   }

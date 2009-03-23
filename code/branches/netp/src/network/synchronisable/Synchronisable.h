@@ -146,7 +146,7 @@ namespace orxonox
 
 
   private:
-    bool getData(uint8_t*& men, int32_t id, uint8_t mode=0x0);
+    uint32_t getData(uint8_t*& men, int32_t id, uint8_t mode=0x0);
     uint32_t getSize(int32_t id, uint8_t mode=0x0);
     bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
