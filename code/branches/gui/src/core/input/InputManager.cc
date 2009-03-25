@@ -746,16 +746,16 @@ namespace orxonox
         // check for states to leave
         if (!stateLeaveRequests_.empty())
         {
-            for (std::set<InputState*>::reverse_iterator rit = stateLeaveRequests_.rbegin();
-                rit != stateLeaveRequests_.rend(); ++rit)
+            for (std::set<InputState*>::iterator it = stateLeaveRequests_.begin();
+                it != stateLeaveRequests_.end(); ++it)
             {
-                (*rit)->onLeave();
+                (*it)->onLeave();
                 // just to be sure that the state actually is registered
-                assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
+                assert(inputStatesByName_.find((*it)->getName()) != inputStatesByName_.end());
 
-                activeStates_.erase((*rit)->getPriority());
-                if ((*rit)->getPriority() < InputStatePriority::HighPriority)
-                    (*rit)->setPriority(0);
+                activeStates_.erase((*it)->getPriority());
+                if ((*it)->getPriority() < InputStatePriority::HighPriority)
+                    (*it)->setPriority(0);
                 _updateActiveStates();
             }
             stateLeaveRequests_.clear();
@@ -764,31 +764,31 @@ namespace orxonox
         // check for states to enter
         if (!stateEnterRequests_.empty())
         {
-            for (std::set<InputState*>::reverse_iterator rit = stateEnterRequests_.rbegin();
-                rit != stateEnterRequests_.rend(); ++rit)
+            for (std::set<InputState*>::const_iterator it = stateEnterRequests_.begin();
+                it != stateEnterRequests_.end(); ++it)
             {
                 // just to be sure that the state actually is registered
-                assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
+                assert(inputStatesByName_.find((*it)->getName()) != inputStatesByName_.end());
 
-                if ((*rit)->getPriority() == 0)
+                if ((*it)->getPriority() == 0)
                 {
                     // Get smallest possible priority between 1 and maxStateStackSize_s
-                    for(std::map<int, InputState*>::const_reverse_iterator rit2 = activeStates_.rbegin();
-                        rit2 != activeStates_.rend(); ++rit2)
+                    for(std::map<int, InputState*>::const_reverse_iterator rit = activeStates_.rbegin();
+                        rit != activeStates_.rend(); ++rit)
                     {
-                        if (rit2->first < InputStatePriority::HighPriority)
+                        if (rit->first < InputStatePriority::HighPriority)
                         {
-                            (*rit)->setPriority(rit2->first + 1);
+                            (*it)->setPriority(rit->first + 1);
                             break;
                         }
                     }
                     // In case no normal handler was on the stack
-                    if ((*rit)->getPriority() == 0)
-                        (*rit)->setPriority(1);
+                    if ((*it)->getPriority() == 0)
+                        (*it)->setPriority(1);
                 }
-                activeStates_[(*rit)->getPriority()] = (*rit);
+                activeStates_[(*it)->getPriority()] = (*it);
                 _updateActiveStates();
-                (*rit)->onEnter();
+                (*it)->onEnter();
             }
             stateEnterRequests_.clear();
         }
@@ -796,10 +796,10 @@ namespace orxonox
         // check for states to destroy
         if (!stateDestroyRequests_.empty())
         {
-            for (std::set<InputState*>::reverse_iterator rit = stateDestroyRequests_.rbegin();
-                rit != stateDestroyRequests_.rend(); ++rit)
+            for (std::set<InputState*>::iterator it = stateDestroyRequests_.begin();
+                it != stateDestroyRequests_.end(); ++it)
             {
-                _destroyState((*rit));
+                _destroyState((*it));
             }
             stateDestroyRequests_.clear();
         }
