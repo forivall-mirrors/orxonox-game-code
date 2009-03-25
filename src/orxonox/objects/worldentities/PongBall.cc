@@ -43,6 +43,7 @@ namespace orxonox
 
         this->speed_ = 0;
         this->bat_ = 0;
+        this->relMercyOffset_ = 0.05;
     }
 
     void PongBall::tick(float dt)
@@ -66,37 +67,47 @@ namespace orxonox
 
             if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
             {
-                velocity.x = -velocity.x;
                 float distance = 0;
 
-                if (position.x > this->fieldWidth_ / 2)
+                if (this->bat_)
                 {
-                    position.x = this->fieldWidth_ / 2;
-                    if (this->bat_ && this->bat_[1])
+                    if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
                     {
-                        distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * this->batlength_ / 2);
-                        if (this->getGametype() && this->bat_[0] && fabs(distance) > 1)
+                        distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                        if (fabs(distance) <= 1)
                         {
-                            this->getGametype()->playerScored(this->bat_[0]->getPlayer());
-                            return;
+                            position.x = this->fieldWidth_ / 2;
+                            velocity.x = -velocity.x;
+                            velocity.z = distance * distance * sgn(distance) * 1.5 * this->speed_;
+                        }
+                        else if (position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
+                        {
+                            if (this->getGametype() && this->bat_[0])
+                            {
+                                this->getGametype()->playerScored(this->bat_[0]->getPlayer());
+                                return;
+                            }
+                        }
+                    }
+                    if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
+                    {
+                        distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                        if (fabs(distance) <= 1)
+                        {
+                            position.x = -this->fieldWidth_ / 2;
+                            velocity.x = -velocity.x;
+                            velocity.z = distance * distance * sgn(distance) * 1.5 * this->speed_;
+                        }
+                        else if (position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
+                        {
+                            if (this->getGametype() && this->bat_[1])
+                            {
+                                this->getGametype()->playerScored(this->bat_[1]->getPlayer());
+                                return;
+                            }
                         }
                     }
                 }
-                if (position.x < -this->fieldWidth_ / 2)
-                {
-                    position.x = -this->fieldWidth_ / 2;
-                    if (this->bat_ && this->bat_[0])
-                    {
-                        distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * this->batlength_ / 2);
-                        if (this->getGametype() && this->bat_[1] && fabs(distance) > 1)
-                        {
-                            this->getGametype()->playerScored(this->bat_[1]->getPlayer());
-                            return;
-                        }
-                    }
-                }
-
-                velocity.z = distance * distance * sgn(distance) * 1.5 * this->speed_;
             }
 
             if (velocity != this->getVelocity())

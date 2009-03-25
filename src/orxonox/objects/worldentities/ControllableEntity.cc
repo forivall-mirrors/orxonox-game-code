@@ -250,6 +250,8 @@ namespace orxonox
                 this->setObjectMode(objectDirection::bidirectional);
             }
         }
+
+        this->changedPlayer();
     }
 
     void ControllableEntity::removePlayer()
@@ -262,6 +264,8 @@ namespace orxonox
         this->bHasLocalController_ = false;
         this->bHasHumanController_ = false;
         this->setObjectMode(objectDirection::toclient);
+
+        this->changedPlayer();
 
         if (this->bDestroyWhenPlayerLeft_)
             delete this;

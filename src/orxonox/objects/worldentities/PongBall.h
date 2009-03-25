@@ -47,6 +47,8 @@ namespace orxonox
                 { this->fieldWidth_ = width; this->fieldHeight_ = height; }
             void setFieldDimension(const Vector2& dimension)
                 { this->setFieldDimension(dimension.x, dimension.y); }
+            Vector2 getFieldDimension() const
+                { return Vector2(this->fieldWidth_, this->fieldHeight_); }
 
             void setSpeed(float speed);
             float getSpeed() const
@@ -66,6 +68,7 @@ namespace orxonox
             float speed_;
             float batlength_;
             PongBat** bat_;
+            float relMercyOffset_;
     };
 }
 

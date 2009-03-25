@@ -45,6 +45,7 @@ namespace orxonox
         this->speed_ = 60;
         this->length_ = 0.25;
         this->fieldHeight_ = 100;
+        this->bSteadiedPosition_ = false;
 
         this->registerVariables();
     }
@@ -60,30 +61,36 @@ namespace orxonox
     {
         if (this->hasLocalController())
         {
-            this->movement_ = clamp(this->movement_, -1.0f, 1.0f) * this->speed_;
+            if (this->movement_ != 0)
+            {
+                this->movement_ = clamp(this->movement_, -1.0f, 1.0f) * this->speed_;
 
-            if (this->bMoveLocal_)
-                this->setVelocity(this->getOrientation() * Vector3(this->movement_, 0, 0));
-            else
-                this->setVelocity(0, 0, this->movement_);
+                if (this->bMoveLocal_)
+                    this->setVelocity(this->getOrientation() * Vector3(this->movement_, 0, 0));
+                else
+                    this->setVelocity(0, 0, this->movement_);
 
-            this->movement_ = 0;
+                this->movement_ = 0;
+                this->bSteadiedPosition_ = false;
+            }
+            else if (!this->bSteadiedPosition_)
+            {
+                // To ensure network synchronicity
+                this->setVelocity(0, 0, 0);
+                this->setPosition(this->getPosition());
+                this->bSteadiedPosition_ = true;
+            }
         }
 
         SUPER(PongBat, tick, dt);
 
-        if (this->hasLocalController())
-        {
-            Vector3 position = this->getPosition();
-
-            if (position.z > this->fieldHeight_ / 2 - this->fieldHeight_ * this->length_ / 2)
-                position.z = this->fieldHeight_ / 2 - this->fieldHeight_ * this->length_ / 2;
-            if (position.z < -this->fieldHeight_ / 2 + this->fieldHeight_ * this->length_ / 2)
-                position.z = -this->fieldHeight_ / 2 + this->fieldHeight_ * this->length_ / 2;
-
-            if (position != this->getPosition())
-                this->setPosition(position);
-        }
+        Vector3 position = this->getPosition();
+        if (position.z > this->fieldHeight_ / 2 - this->fieldHeight_ * this->length_ / 2)
+            position.z = this->fieldHeight_ / 2 - this->fieldHeight_ * this->length_ / 2;
+        if (position.z < -this->fieldHeight_ / 2 + this->fieldHeight_ * this->length_ / 2)
+            position.z = -this->fieldHeight_ / 2 + this->fieldHeight_ * this->length_ / 2;
+        if (position != this->getPosition())
+            this->setPosition(position);
     }
 
     void PongBat::moveFrontBack(const Vector2& value)
@@ -96,5 +103,10 @@ namespace orxonox
     {
         this->bMoveLocal_ = true;
         this->movement_ = value.x;
+    }
+
+    void PongBat::changedPlayer()
+    {
+        this->setVelocity(0, 0, 0);
     }
 }
