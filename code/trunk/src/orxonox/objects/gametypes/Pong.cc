@@ -36,7 +36,9 @@
 #include "objects/worldentities/PongCenterpoint.h"
 #include "objects/worldentities/PongBall.h"
 #include "objects/worldentities/PongBat.h"
-#include "objects/infos/PlayerInfo.h"
+#include "objects/infos/HumanPlayer.h"
+#include "objects/infos/PongBot.h"
+#include "objects/controllers/PongAI.h"
 
 namespace orxonox
 {
@@ -55,6 +57,8 @@ namespace orxonox
 
         this->starttimer_.setTimer(1.0, false, this, createExecutor(createFunctor(&Pong::startBall)));
         this->starttimer_.stopTimer();
+
+        this->botclass_ = Class(PongBot);
     }
 
     void Pong::start()
@@ -131,6 +135,14 @@ namespace orxonox
         {
             player->startControl(this->bat_[1]);
             this->players_[player].state_ = PlayerState::Alive;
+        }
+        else
+            return;
+
+        if (player && player->getController() && player->getController()->isA(Class(PongAI)))
+        {
+            PongAI* ai = dynamic_cast<PongAI*>(player->getController());
+            ai->setPongBall(this->ball_);
         }
     }
 

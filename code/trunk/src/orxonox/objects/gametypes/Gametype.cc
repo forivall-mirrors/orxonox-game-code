@@ -199,7 +199,11 @@ namespace orxonox
 
                 // Reward killer
                 if (killer)
-                    this->playerScored(killer->getPlayer());
+                {
+                    std::map<PlayerInfo*, Player>::iterator it = this->players_.find(killer->getPlayer());
+                    if (it != this->players_.end())
+                        it->second.frags_++;
+                }
 
                 ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
                 if (victim->getCamera())
@@ -347,7 +351,7 @@ namespace orxonox
     void Gametype::addBots(unsigned int amount)
     {
         for (unsigned int i = 0; i < amount; ++i)
-            new Bot(this);
+            this->botclass_.fabricate(this);
     }
 
     void Gametype::killBots(unsigned int amount)

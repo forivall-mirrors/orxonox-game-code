@@ -191,11 +191,13 @@ namespace orxonox
     class ArtificialController;
     class AIController;
     class ScriptController;
+    class PongAI;
 
     class Info;
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
+    class PongBot;
     class GametypeInfo;
 
     class Gametype;

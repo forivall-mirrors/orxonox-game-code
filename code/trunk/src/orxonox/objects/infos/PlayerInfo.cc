@@ -109,6 +109,11 @@ namespace orxonox
 
     void PlayerInfo::createController()
     {
+        if (this->controller_)
+        {
+            delete this->controller_;
+            this->controller_ = 0;
+        }
         this->controller_ = this->defaultController_.fabricate(this);
         assert(this->controller_);
         this->controller_->setPlayer(this);

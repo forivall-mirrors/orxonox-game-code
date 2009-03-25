@@ -47,6 +47,8 @@ namespace orxonox
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);
 
+            virtual void changedPlayer();
+
             void setSpeed(float speed)
                 { this->speed_ = speed; }
             float getSpeed() const
@@ -68,6 +70,7 @@ namespace orxonox
             float speed_;
             float length_;
             float fieldHeight_;
+            bool bSteadiedPosition_;
     };
 }
 

@@ -141,6 +141,7 @@ namespace orxonox
 
             float initialStartCountdown_;
             unsigned int numberOfBots_;
+            SubclassIdentifier<Bot> botclass_;
 
             std::map<PlayerInfo*, Player> players_;
             std::set<SpawnPoint*> spawnpoints_;

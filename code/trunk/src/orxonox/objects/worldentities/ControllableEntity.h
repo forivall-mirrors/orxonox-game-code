@@ -48,6 +48,7 @@ namespace orxonox
             void setConfigValues();
 
             virtual void changedGametype();
+            virtual void changedPlayer() {}
 
             virtual void setPlayer(PlayerInfo* player);
             virtual void removePlayer();
