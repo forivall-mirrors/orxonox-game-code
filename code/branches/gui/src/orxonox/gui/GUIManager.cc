@@ -204,7 +204,7 @@ namespace orxonox
                 tolua_Core_open(this->scriptModule_->getLuaState());
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
                 */
-                this->scriptModule_->executeScriptFile("loadGUI.lua", "GUI");
+                this->scriptModule_->executeScriptFile("loadGUI_2.lua", "GUI");
             }
             catch (CEGUI::Exception& ex)
             {
@@ -248,7 +248,7 @@ namespace orxonox
         // TODO: create something 3D
         try
         {
-            this->scriptModule_->executeScriptFile("loadGUI.lua", "GUI");
+            this->scriptModule_->executeScriptFile("loadGUI_2.lua", "GUI");
             lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
             lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
         }
