@@ -186,6 +186,7 @@ namespace orxonox
             }
 
             state_ = Ready;
+
         }
 
         return true;
@@ -248,6 +249,8 @@ namespace orxonox
         try
         {
             this->scriptModule_->executeScriptFile("loadGUI.lua", "GUI");
+            lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
+            lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
         }
         catch (CEGUI::Exception& ex)
         {
@@ -263,12 +266,15 @@ namespace orxonox
     void GUIManager::toggleGUI()
     {
         //COUT(0) << "********* TOGGLE TOGGLE **********" << std::endl;
-        getInstance().scriptModule_->executeScriptGlobal("toggleGUI");
+        if (getInstance().scriptModule_->executeScriptGlobal("toggleGUI"))
+            InputManager::getInstance().requestEnterState("gui");
+        else
+            InputManager::getInstance().requestLeaveState("gui");
     }
 
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
-        this->showGUI("default", camera->getSceneManager());
+        this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
     }
 
     void GUIManager::showGUI(const std::string& name, Ogre::SceneManager* sceneManager)// bool showBackground)
@@ -303,7 +309,10 @@ namespace orxonox
                     lua_setglobal(this->scriptModule_->getLuaState(), "showBackground");
                 }
 
-                this->scriptModule_->executeScriptGlobal("showMainMenu");
+                lua_pushfstring(this->scriptModule_->getLuaState(), "mainmenu.lua");
+                lua_setglobal(this->scriptModule_->getLuaState(), "filename");
+
+                this->scriptModule_->executeScriptGlobal("showGUI");
 
                 InputManager::getInstance().requestEnterState("gui");
 
@@ -324,7 +333,7 @@ namespace orxonox
         }
     }
 
-    void GUIManager::testFct()
+    /*void GUIManager::testFct()
     {
         //COUT(0) << "**** " << currentSceneManager_ << std::endl;
         this->showGUI("IngameMenu", currentSceneManager_);
@@ -333,7 +342,7 @@ namespace orxonox
     void GUIManager::testOutput(const std::string& str)
     {
         COUT(0) << "***" << str << "***" << std::endl;
-    }
+    }*/
 
     void GUIManager::hideGUI()
     {
