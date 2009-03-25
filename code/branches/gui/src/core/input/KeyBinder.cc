@@ -41,7 +41,6 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
-#include "core/Core.h"
 #include "InputCommands.h"
 #include "InputManager.h"
 

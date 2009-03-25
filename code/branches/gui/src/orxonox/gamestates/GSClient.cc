@@ -61,7 +61,7 @@ namespace orxonox
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
 
-        client_->update(Core::getGameClock());
+        client_->update(Game::getInstance().getGameClock());
     }
 
     void GSClient::deactivate()

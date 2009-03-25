@@ -85,8 +85,12 @@ namespace orxonox
         this->avgFPS_ = 0.0f;
         this->avgTickTime_ = 0.0f;
 
+
+        // Set up a basic clock to keep time
+        this->gameClock_ = new Clock();
+
         this->core_ = new orxonox::Core();
-        this->gameClock_ = this->core_->initialise(argc, argv);
+        this->core_->initialise(argc, argv);
 
         RegisterRootObject(Game);
         this->setConfigValues();
@@ -103,6 +107,8 @@ namespace orxonox
         // Delete all GameStates created by the macros
         for (std::map<std::string, GameState*>::const_iterator it = allStates_s.begin(); it != allStates_s.end(); ++it)
             delete it->second;
+
+        delete this->gameClock_;
 
         assert(singletonRef_s);
         singletonRef_s = 0;
@@ -157,6 +163,7 @@ namespace orxonox
             }
 
             // UPDATE, bottom to top in the stack
+            this->core_->update(*this->gameClock_);
             for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin();
                 it != this->activeStates_.end(); ++it)
                 (*it)->update(*this->gameClock_);

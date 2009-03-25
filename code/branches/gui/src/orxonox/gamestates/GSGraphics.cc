@@ -112,8 +112,7 @@ namespace orxonox
 
     void GSGraphics::deactivate()
     {
-        if (Core::showsGraphics())
-            InputManager::getInstance().requestLeaveState("master");
+        InputManager::getInstance().requestLeaveState("master");
 
         delete this->guiManager_;
 
@@ -128,16 +127,15 @@ namespace orxonox
 
         delete graphicsManager_;
 
-        if (Core::showsGraphics())
+        masterInputState_->setHandler(0);
+        InputManager::getInstance().requestDestroyState("master");
+        if (this->masterKeyBinder_)
         {
-            masterInputState_->setHandler(0);
-            InputManager::getInstance().requestDestroyState("master");
-            if (this->masterKeyBinder_)
-            {
-                delete this->masterKeyBinder_;
-                this->masterKeyBinder_ = 0;
-            }
+            delete this->masterKeyBinder_;
+            this->masterKeyBinder_ = 0;
         }
+
+        Core::setShowsGraphics(false);
     }
 
     /**

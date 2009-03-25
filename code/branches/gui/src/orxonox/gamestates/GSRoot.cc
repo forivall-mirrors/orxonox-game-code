@@ -114,8 +114,6 @@ namespace orxonox
     {
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
-        Core::getInstance().update(time);
-
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
             it->tick(time);
 

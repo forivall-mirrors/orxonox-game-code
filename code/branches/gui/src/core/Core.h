@@ -44,8 +44,6 @@
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
-// Only allow main to access postMainInitialisation, so we need a forward declaration
-int main(int, char**);
 // boost::filesystem header has quite a large tail, use forward declaration
 namespace boost { namespace filesystem
 {
@@ -63,7 +61,7 @@ namespace orxonox
             Core();
             ~Core();
 
-            Clock* initialise(int argc, char** argv);
+            void initialise(int argc, char** argv);
             void setConfigValues();
 
             void update(const Clock& time);
@@ -74,8 +72,6 @@ namespace orxonox
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
-
-            static const Clock& getGameClock() { return *getInstance().gameClock_; }
 
             static void tsetMediaPath(const std::string& path)
             { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
@@ -121,8 +117,6 @@ namespace orxonox
             SignalHandler*        signalHandler_;
             TclBind*              tclBind_;
             TclThreadManager*     tclThreadManager_;
-
-            Clock*                gameClock_;
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console

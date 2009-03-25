@@ -67,6 +67,8 @@ namespace orxonox
         void requestState(const std::string& name);
         void popState();
 
+        const Clock& getGameClock() { return *this->gameClock_; }
+
         float getAvgTickTime() { return this->avgTickTime_; }
         float getAvgFPS()      { return this->avgFPS_; }
 
