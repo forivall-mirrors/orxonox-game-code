@@ -47,6 +47,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 
+#include "util/Debug.h"
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"

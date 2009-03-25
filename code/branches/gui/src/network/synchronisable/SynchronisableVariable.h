@@ -34,7 +34,7 @@
 
 #include <string>
 #include <cassert>
-#include "core/CoreIncludes.h"
+#include "util/Math.h"
 #include "network/synchronisable/NetworkCallback.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
 
