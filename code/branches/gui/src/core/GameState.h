@@ -73,6 +73,7 @@ namespace orxonox
             unsigned deactivating : 1;
             unsigned updating     : 1;
             unsigned suspended    : 1;
+            unsigned topState     : 1;
         };
 
     public:
@@ -80,7 +81,7 @@ namespace orxonox
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
-        const State getActivity() const    { return this->activity_; }
+        State getActivity() const    { return this->activity_; }
         GameState* getParent() const       { return this->parent_; }
 
         void addChild(GameState* state);

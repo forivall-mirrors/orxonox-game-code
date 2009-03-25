@@ -65,6 +65,7 @@ namespace orxonox
         void stop();
 
         void requestState(const std::string& name);
+        void requestStates(const std::string& names);
         void popState();
 
         const Clock& getGameClock() { return *this->gameClock_; }

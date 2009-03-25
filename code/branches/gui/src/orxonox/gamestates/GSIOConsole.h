@@ -45,7 +45,10 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
+        void loadMenu();
 
+        // console commands
+        ConsoleCommand* ccLoadMenu_;
     };
 }
 

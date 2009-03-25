@@ -43,7 +43,12 @@
 namespace orxonox
 {
     AddGameState(GSRoot, "root");
-    SetCommandLineSwitch(startWithConsole);
+    SetCommandLineSwitch(console);
+    // Shortcuts for easy direct loading
+    SetCommandLineSwitch(server);
+    SetCommandLineSwitch(client);
+    SetCommandLineSwitch(dedicated);
+    SetCommandLineSwitch(standalone);
 
     GSRoot::GSRoot(const std::string& name)
         : GameState(name)
@@ -62,7 +67,7 @@ namespace orxonox
     void GSRoot::activate()
     {
         // reset game speed to normal
-        timeFactor_ = 1.0f;
+        this->timeFactor_ = 1.0f;
 
         {
             // time factor console command
@@ -80,19 +85,43 @@ namespace orxonox
             CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
         }
 
+        // Load level directly?
+        bool loadLevel = false;
+        if (CommandLine::getValue("standalone").getBool())
+        {
+            Game::getInstance().requestStates("graphics, standalone, level");
+            loadLevel = true;
+        }
+        if (CommandLine::getValue("server").getBool())
+        {
+            Game::getInstance().requestStates("graphics, server, level");
+            loadLevel = true;
+        }
+        if (CommandLine::getValue("client").getBool())
+        {
+            Game::getInstance().requestStates("graphics, standalone, level");
+            loadLevel = true;
+        }
+        if (CommandLine::getValue("dedicated").getBool())
+        {
+            Game::getInstance().requestStates("dedicated, level");
+            loadLevel = true;
+        }
+        
         // Determine where to start
-        if (CommandLine::getValue("startWithConsole").getBool())
+        if (!loadLevel)
         {
-            // Start the game in the console
-            Game::getInstance().requestState("ioConsole");
+            if (CommandLine::getValue("console").getBool())
+            {
+                // Start the game in the console without 3D graphics
+                Game::getInstance().requestState("ioConsole");
+            }
+            else
+            {
+                // Start in GUI mode
+                Game::getInstance().requestStates("graphics, mainMenu");
+            }
         }
-        else
-        {
-            // Start in GUI main menu
-            Game::getInstance().requestState("graphics");
-            Game::getInstance().requestState("mainMenu");
-        }
-
     }
 
     void GSRoot::deactivate()
@@ -112,6 +141,13 @@ namespace orxonox
 
     void GSRoot::update(const Clock& time)
     {
+        if (this->getActivity().topState)
+        {
+            // This state can not 'survive' on its own.
+            // Load a user interface therefore
+            Game::getInstance().requestState("ioConsole");
+        }
+
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
@@ -131,7 +167,7 @@ namespace orxonox
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
-        // Also add our tick time to the list in GSRoot
+        // Also add our tick time
         Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
     }
 

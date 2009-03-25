@@ -1,4 +1,4 @@
 #!/bin/sh
 # convenience script for starting orxonox on Linux
 
-exec @CURRENT_RUNTIME_DIR@/@ORXONOX_EXECUTABLE_NAME@ --state client --writingPathSuffix client1 $@
+exec @CURRENT_RUNTIME_DIR@/@ORXONOX_EXECUTABLE_NAME@ --client --writingPathSuffix client1 $@

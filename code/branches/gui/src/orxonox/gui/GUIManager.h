@@ -39,7 +39,6 @@
 #include <CEGUIForwardRefs.h>
 #include <CEGUIInputEvent.h>
 #include <CEGUISystem.h>
-#include "core/Clock.h"
 #include "core/input/InputInterfaces.h"
 
 // Forward declaration
@@ -70,34 +69,21 @@ namespace orxonox
         ~GUIManager();
 
         bool initialise(Ogre::RenderWindow* renderWindow);
-        void loadScene(const std::string& name);
-        void update(const Clock& time)
-        {
-            assert(guiSystem_);
-            guiSystem_->injectTimePulse(time.getDeltaTime());
-        }
-        void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
-        void hideGUI(); // tolua_export
-        //void testOutput(const std::string& str); // tolua_export
 
-        static void toggleGUI();
+        void update(const Clock& time);
+
+        void showGUI(const std::string& name);
+        void executeCode(const std::string& str);
 
         void setCamera(Ogre::Camera* camera);
-        Ogre::Camera* getCamera() { return this->backgroundCamera_; }
-
-        static void showGUI_s(const std::string& name, Ogre::SceneManager* sceneManager)//bool showBackground)
-        {
-            getInstance().showGUI(name, sceneManager);
-        }
-
-        // please remove
-        //void testFct();
 
         static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
         static GUIManager* getInstancePtr() { return singletonRef_s; }
 
     private:
         GUIManager(const GUIManager& instance);
+
+        void loadLuaCode();
 
         void keyPressed (const KeyEvent& evt)
         { guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text); }
@@ -119,13 +105,6 @@ namespace orxonox
         void updateKey(float dt) { }
         void updateMouse(float dt) { }
 
-        void loadScenes();
-
-        //Ogre::SceneManager*       emptySceneManager_;
-        Ogre::SceneManager*       backgroundSceneManager_;
-        //Ogre::Camera*             emptyCamera_;
-        Ogre::Camera*             backgroundCamera_;
-        //Ogre::Viewport*           viewport_;
         Ogre::RenderWindow*       renderWindow_;
         CEGUI::OgreCEGUIRenderer* guiRenderer_;
         CEGUI::ResourceProvider*  resourceProvider_;
@@ -134,7 +113,6 @@ namespace orxonox
         CEGUI::System*            guiSystem_;
         CEGUI::Imageset*          backgroundImage_;
         lua_State*                luaState_;
-        Ogre::SceneManager*         currentSceneManager_;
 
         State state_;
 

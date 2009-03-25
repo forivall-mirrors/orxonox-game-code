@@ -27,70 +27,81 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#include "GSMainMenu.h"
 
-#include <OgreViewport.h>
+//#include <OgreViewport.h>
+#include <OgreSceneManager.h>
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "gui/GUIManager.h"
+#include "objects/Scene.h"
 #include "GraphicsManager.h"
 
 namespace orxonox
 {
-    AddGameState(GSGUI, "mainMenu");
+    AddGameState(GSMainMenu, "mainMenu");
 
-    GSGUI::GSGUI(const std::string& name)
+    GSMainMenu::GSMainMenu(const std::string& name)
         : GameState(name)
+        , inputState_(0)
     {
     }
 
-    GSGUI::~GSGUI()
+    GSMainMenu::~GSMainMenu()
     {
     }
 
-    void GSGUI::activate()
+    void GSMainMenu::activate()
     {
-        guiManager_ = GUIManager::getInstancePtr();
+        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("mainMenu");
+        inputState_->setHandler(GUIManager::getInstancePtr());
+        inputState_->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
+
+        // create an empty Scene
+        this->scene_ = new Scene(0);
+        // and a Camera
+        this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
 
         // show main menu
-        //guiManager_->loadScene("MainMenu");
-        guiManager_->showGUI("MainMenu", 0);
-        GraphicsManager::getInstance().getViewport()->setCamera(guiManager_->getCamera());
+        GUIManager::getInstance().showGUI("mainMenu");
+        GUIManager::getInstance().setCamera(this->camera_);
+        GraphicsManager::getInstance().setCamera(this->camera_);
 
         {
-            // time factor console command
-            FunctorMember<GSGUI>* functor = createFunctor(&GSGUI::startGame);
+            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startGame);
             functor->setObject(this);
             this->ccStartGame_ = createConsoleCommand(functor, "startGame");
             CommandExecutor::addConsoleCommandShortcut(this->ccStartGame_);
         }
+        
+        InputManager::getInstance().requestEnterState("mainMenu");
     }
 
-    void GSGUI::deactivate()
+    void GSMainMenu::deactivate()
     {
+        InputManager::getInstance().requestLeaveState("game");
+        InputManager::getInstance().requestDestroyState("game");
+
         if (this->ccStartGame_)
         {
             delete this->ccStartGame_;
             this->ccStartGame_ = 0;
         }
 
-        guiManager_->hideGUI();
+        GUIManager::getInstance().executeCode("hideGUI()");
     }
 
-    void GSGUI::update(const Clock& time)
+    void GSMainMenu::update(const Clock& time)
     {
-        // tick CEGUI
-        guiManager_->update(time);
     }
 
-    void GSGUI::startGame()
+    void GSMainMenu::startGame()
     {
         // HACK - HACK
         Game::getInstance().popState();
-        Game::getInstance().requestState("standalone");
-        Game::getInstance().requestState("level");
+        Game::getInstance().requestStates("standalone, level");
     }
 }

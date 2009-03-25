@@ -215,6 +215,11 @@ namespace orxonox
         }
     }
 
+    void GraphicsManager::setCamera(Ogre::Camera* camera)
+    {
+        this->viewport_->setCamera(camera);
+    }
+
     /**
     @brief
         Creates the Ogre Root object and sets up the ogre log.

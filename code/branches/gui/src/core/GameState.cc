@@ -48,8 +48,12 @@ namespace orxonox
         : name_(name)
         , parent_(0)
     {
-        State temp = {false, false, false, false, false};
-        this->activity_ = temp;
+        this->activity_.activating   = false;
+        this->activity_.active       = false;
+        this->activity_.deactivating = false;
+        this->activity_.suspended    = false;
+        this->activity_.topState     = false;
+        this->activity_.updating     = false;
     }
 
     /**

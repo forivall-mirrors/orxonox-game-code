@@ -34,6 +34,7 @@
 
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Clock.h"
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
@@ -145,12 +146,14 @@ namespace orxonox
 
         this->inputManager_->update(time);        // tick console
         this->console_->update(time);
+        this->guiManager_->update(time);
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
         // Also add our tick time
         Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
 
+        // Render
         this->graphicsManager_->update(time);
     }
 

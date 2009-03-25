@@ -39,6 +39,7 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/SubString.h"
 #include "Clock.h"
 #include "CommandLine.h"
 #include "ConsoleCommand.h"
@@ -246,7 +247,7 @@ namespace orxonox
 
         // Check parent and all its grand parents
         GameStateTreeNode* currentNode = lastRequestedNode;
-        while (requestedNode == NULL && currentNode->parent_ != NULL)
+        while (requestedNode == NULL && currentNode != NULL)
         {
             if (currentNode->state_ == state)
                 requestedNode = currentNode;
@@ -259,6 +260,13 @@ namespace orxonox
             this->requestedStateNodes_.push_back(requestedNode);
     }
 
+    void Game::requestStates(const std::string& names)
+    {
+        SubString tokens(names, ",;", " ");
+        for (unsigned int i = 0; i < tokens.size(); ++i)
+            this->requestState(tokens[i]);
+    }
+
     void Game::popState()
     {
         if (this->activeStateNode_ != NULL && this->requestedStateNodes_.back()->parent_)
@@ -269,7 +277,7 @@ namespace orxonox
 
     GameState* Game::getState(const std::string& name)
     {
-        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(name);
+        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(getLowercase(name));
         if (it != allStates_s.end())
             return it->second;
         else
@@ -355,21 +363,27 @@ namespace orxonox
 
     void Game::loadState(GameState* state)
     {
+        if (!this->activeStates_.empty())
+            this->activeStates_.back()->activity_.topState = false;
         state->activate();
+        state->activity_.topState = true;
         this->activeStates_.push_back(state);
     }
 
     void Game::unloadState(orxonox::GameState* state)
     {
+        state->activity_.topState = false;
         state->deactivate();
         this->activeStates_.pop_back();
+        if (!this->activeStates_.empty())
+            this->activeStates_.back()->activity_.topState = true;
     }
 
     /*static*/ bool Game::addGameState(GameState* state)
     {
-        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(state->getName());
+        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(getLowercase(state->getName()));
         if (it == allStates_s.end())
-            allStates_s[state->getName()] = state;
+            allStates_s[getLowercase(state->getName())] = state;
         else
             ThrowException(GameState, "Cannot add two GameStates with the same name to 'Game'.");
 

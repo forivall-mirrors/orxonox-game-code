@@ -141,7 +141,7 @@ namespace orxonox
         }
 
         this->viewport_->setCamera(camera);
-        GUIManager::getInstancePtr()->setCamera(camera);
+        GUIManager::getInstance().setCamera(camera);
 
         // reactivate all visible compositors
         {

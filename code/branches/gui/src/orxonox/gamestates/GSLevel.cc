@@ -48,6 +48,7 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
@@ -85,6 +86,13 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
+            {
+                FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::toggleGUI);
+                functor->setObject(this);
+                this->ccToggleGUI_ = createConsoleCommand(functor, "toggleGUI");
+                CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
+            }
+
             inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
             keyBinder_ = new KeyBinder();
             keyBinder_->loadBindings("keybindings.ini");
@@ -109,9 +117,6 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            // TODO: insert slomo console command with
-            // .accessLevel(AccessLevel::Offline).defaultValue(0, 1.0).axisParamIndex(0).isAxisRelative(false);
-
             // keybind console command
             FunctorMember<GSLevel>* functor1 = createFunctor(&GSLevel::keybind);
             functor1->setObject(this);
@@ -123,6 +128,9 @@ namespace orxonox
             CommandExecutor::addConsoleCommandShortcut(ccTkeybind_);
             // set our console command as callback for the key detector
             InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);
+
+            // InGame GUI test
+            GUIManager::getInstance().showGUI("inGameTest");
 
             // level is loaded: we can start capturing the input
             InputManager::getInstance().requestEnterState("game");
@@ -142,6 +150,12 @@ namespace orxonox
             delete this->ccTkeybind_;
             this->ccTkeybind_ = 0;
         }
+        if (this->ccToggleGUI_)
+        {
+            delete this->ccToggleGUI_;
+            this->ccToggleGUI_ = 0;
+        }
+
 
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
@@ -218,6 +232,14 @@ namespace orxonox
         //////////////////////////////////////////////////////////////////////////////////////////
 
         delete this->startFile_;
+    }
+
+    void GSLevel::toggleGUI()
+    {
+        if (GameMode::showsGraphics())
+        {
+            GUIManager::getInstance().executeCode("toggleGUI()");
+        }
     }
 
     void GSLevel::keybind(const std::string &command)

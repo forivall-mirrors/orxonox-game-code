@@ -65,15 +65,14 @@ namespace orxonox
         inline unsigned int getDetailLevelParticle() const
             { return this->detailLevelParticle_; }
 
-        inline void setViewport(Ogre::Viewport* viewport)
-            { this->viewport_ = viewport; }
         inline Ogre::Viewport* getViewport() const
             { return this->viewport_; }
         inline Ogre::RenderWindow* getRenderWindow()
             { return this->renderWindow_; }
 
-        static GraphicsManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+        void setCamera(Ogre::Camera* camera);
 
+        static GraphicsManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         GraphicsManager(GraphicsManager&); // don't mess with singletons

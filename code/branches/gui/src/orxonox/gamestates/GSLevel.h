@@ -46,6 +46,8 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
+        void toggleGUI();
+
     protected:
         void loadLevel();
         void unloadLevel();
@@ -69,7 +71,7 @@ namespace orxonox
         // console commands
         ConsoleCommand*       ccKeybind_;
         ConsoleCommand*       ccTkeybind_;
-
+        ConsoleCommand*       ccToggleGUI_;
     };
 }
 

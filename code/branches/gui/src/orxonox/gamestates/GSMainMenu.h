@@ -26,19 +26,20 @@
  *
  */
 
-#ifndef _GSGUI_H__
-#define _GSGUI_H__
+#ifndef _GSMainMenu_H__
+#define _GSMainMenu_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGUI : public GameState
+    class _OrxonoxExport GSMainMenu : public GameState
     {
     public:
-        GSGUI(const std::string& name);
-        ~GSGUI();
+        GSMainMenu(const std::string& name);
+        ~GSMainMenu();
 
         void activate();
         void deactivate();
@@ -47,11 +48,13 @@ namespace orxonox
         void startGame();
 
     private:
-        GUIManager* guiManager_;
+        SimpleInputState* inputState_;
+        Scene*            scene_;
+        Ogre::Camera*     camera_;
 
         // console commands
         ConsoleCommand* ccStartGame_;
     };
 }
 
-#endif /* _GSGUI_H__ */
+#endif /* _GSMainMenu_H__ */
