@@ -34,8 +34,9 @@
 
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/CoreIncludes.h"
 #include "core/Core.h"
+#include "core/CoreIncludes.h"
+#include "core/Game.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/SimpleInputState.h"
@@ -44,7 +45,6 @@
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "GraphicsManager.h"
-#include "core/Game.h"
 
 namespace orxonox
 {
@@ -73,9 +73,9 @@ namespace orxonox
 
     void GSGraphics::activate()
     {
-        setConfigValues();
-
         Core::setShowsGraphics(true);
+
+        setConfigValues();
 
         // initialise graphics manager. Doesn't load the render window yet!
         this->graphicsManager_ = new GraphicsManager();
@@ -112,28 +112,20 @@ namespace orxonox
 
     void GSGraphics::deactivate()
     {
-        InputManager::getInstance().requestLeaveState("master");
+        masterInputState_->setHandler(0);
+        InputManager::getInstance().requestDestroyState("master");
+        delete this->masterKeyBinder_;
 
         delete this->guiManager_;
-
         delete this->console_;
-
-        //inputManager_->getMasterInputState()->removeKeyHandler(this->masterKeyBinder_);
-        delete this->masterKeyBinder_;
-        delete this->inputManager_;
 
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
 
-        delete graphicsManager_;
+        delete this->inputManager_;
+        this->inputManager_ = 0;
 
-        masterInputState_->setHandler(0);
-        InputManager::getInstance().requestDestroyState("master");
-        if (this->masterKeyBinder_)
-        {
-            delete this->masterKeyBinder_;
-            this->masterKeyBinder_ = 0;
-        }
+        delete graphicsManager_;
 
         Core::setShowsGraphics(false);
     }
