@@ -26,47 +26,31 @@
  *
  */
 
-#ifndef _GSRoot_H__
-#define _GSRoot_H__
+#ifndef _TimeFactorListener_H__
+#define _TimeFactorListener_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <list>
-#include "core/RootGameState.h"
 #include "core/OrxonoxClass.h"
+
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public RootGameState
+    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
     {
-        friend class ClassIdentifier<GSRoot>;
+        friend class GSRoot;
 
-    public:
-    
-    public:
-        GSRoot();
-        ~GSRoot();
+        public:
+            TimeFactorListener();
+            virtual ~TimeFactorListener() {}
 
-        // this has to be public because proteced triggers a bug in msvc
-        // when taking the function address.
-        void setTimeFactor(float factor);
-        void pause();
-        float getTimeFactor() { return this->timeFactor_; }
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old) {}
+            inline float getTimeFactor() const
+                { return TimeFactorListener::timefactor_s; }
 
-    private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
-
-        float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
-        bool                  bPaused_;
-        float                 timeFactorPauseBackup_;
-
-        // console commands
-        ConsoleCommand*       ccSelectGameState_;
-        ConsoleCommand*       ccSetTimeFactor_;
-        ConsoleCommand*       ccPause_;
+        private:
+            static float timefactor_s;
     };
 }
 
-#endif /* _GSRoot_H__ */
+#endif /* _TimeFactorListener_H__ */

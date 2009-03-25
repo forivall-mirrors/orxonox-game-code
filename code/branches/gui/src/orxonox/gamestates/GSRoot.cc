@@ -34,6 +34,7 @@
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "tools/TimeFactorListener.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
 #include "Game.h"
@@ -169,15 +170,5 @@ namespace orxonox
                 this->setTimeFactor(this->timeFactorPauseBackup_);
             }
         }
-    }
-
-    ////////////////////////
-    // TimeFactorListener //
-    ////////////////////////
-    float TimeFactorListener::timefactor_s = 1.0f;
-
-    TimeFactorListener::TimeFactorListener()
-    {
-        RegisterRootObject(TimeFactorListener);
     }
 }
