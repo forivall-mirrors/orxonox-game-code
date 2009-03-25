@@ -80,12 +80,6 @@ namespace orxonox
     static boost::filesystem::path configPath_g;                //!< Path to the config file folder
     static boost::filesystem::path logPath_g;                   //!< Path to the log file folder
 
-    bool Core::bShowsGraphics_s = false;
-    bool Core::bHasServer_s     = false;
-    bool Core::bIsClient_s      = false;
-    bool Core::bIsStandalone_s  = false;
-    bool Core::bIsMaster_s      = false;
-
     Core* Core::singletonRef_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("PATH");

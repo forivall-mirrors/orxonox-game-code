@@ -35,7 +35,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Template.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "overlays/OverlayGroup.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/infos/Bot.h"
@@ -68,7 +68,7 @@ namespace orxonox
         this->addBots(this->numberOfBots_);
 
         // load the corresponding score board
-        if (Core::showsGraphics() && this->scoreboardTemplate_ != "")
+        if (GameMode::showsGraphics() && this->scoreboardTemplate_ != "")
         {
             this->scoreboard_ = new OverlayGroup(this);
             this->scoreboard_->addTemplate(this->scoreboardTemplate_);

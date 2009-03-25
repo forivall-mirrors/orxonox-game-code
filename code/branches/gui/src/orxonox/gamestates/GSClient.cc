@@ -32,9 +32,9 @@
 #include "core/input/InputManager.h"
 #include "core/Clock.h"
 #include "core/CommandLine.h"
-#include "core/Core.h"
-#include "network/Client.h"
 #include "core/Game.h"
+#include "core/GameMode.h"
+#include "network/Client.h"
 
 namespace orxonox
 {
@@ -54,7 +54,7 @@ namespace orxonox
 
     void GSClient::activate()
     {
-        Core::setIsClient(true);
+        GameMode::setIsClient(true);
 
         this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
@@ -71,7 +71,7 @@ namespace orxonox
         // destroy client
         delete this->client_;
 
-        Core::setIsClient(false);
+        GameMode::setIsClient(false);
     }
 
     void GSClient::update(const Clock& time)

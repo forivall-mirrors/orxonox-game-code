@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "Pawn.h"
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
@@ -62,7 +62,7 @@ namespace orxonox
 
         this->getPickUp().setPlayer(this);
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             this->weaponSystem_ = new WeaponSystem(this);
             this->weaponSystem_->setParentPawn(this);
@@ -186,7 +186,7 @@ namespace orxonox
         if (this->getPlayer())
             this->getPlayer()->stopControl(this);
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
             this->deatheffect();
     }
 
@@ -233,7 +233,7 @@ namespace orxonox
     void Pawn::postSpawn()
     {
         this->setHealth(this->initialHealth_);
-        if (Core::isMaster())
+        if (GameMode::isMaster())
             this->spawneffect();
     }
 

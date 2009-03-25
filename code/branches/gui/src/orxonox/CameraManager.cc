@@ -34,7 +34,7 @@
 #include <OgreCompositorManager.h>
 #include <OgreResource.h>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/Iterator.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/Scene.h"
@@ -74,7 +74,7 @@ namespace orxonox
 
     void CameraManager::requestFocus(Camera* camera)
     {
-        if (!Core::showsGraphics())
+        if (!GameMode::showsGraphics())
             return;
 
         // notify old camera (if it exists)
@@ -99,7 +99,7 @@ namespace orxonox
 
     void CameraManager::releaseFocus(Camera* camera)
     {
-        if (!Core::showsGraphics())
+        if (!GameMode::showsGraphics())
             return;
 
         // notify the cam of releasing the focus

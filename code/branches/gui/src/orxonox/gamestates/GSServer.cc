@@ -30,9 +30,9 @@
 #include "GSServer.h"
 
 #include "core/CommandLine.h"
-#include "core/Core.h"
-#include "network/Server.h"
 #include "core/Game.h"
+#include "core/GameMode.h"
+#include "network/Server.h"
 
 namespace orxonox
 {
@@ -52,7 +52,7 @@ namespace orxonox
 
     void GSServer::activate()
     {
-        Core::setHasServer(true);
+        GameMode::setHasServer(true);
 
         this->server_ = new Server(CommandLine::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
@@ -65,7 +65,7 @@ namespace orxonox
         this->server_->close();
         delete this->server_;
 
-        Core::setHasServer(false);
+        GameMode::setHasServer(false);
     }
 
     void GSServer::update(const Clock& time)

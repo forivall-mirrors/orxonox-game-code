@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "HumanPlayer.h"
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "network/ClientInformation.h"
@@ -46,7 +46,7 @@ namespace orxonox
     {
         RegisterObject(HumanPlayer);
 
-        this->server_initialized_ = Core::isMaster();
+        this->server_initialized_ = GameMode::isMaster();
         this->client_initialized_ = false;
 
         this->bHumanPlayer_ = true;
@@ -81,7 +81,7 @@ namespace orxonox
         {
             this->synchronize_nick_ = this->nick_;
 
-            if (Core::isMaster())
+            if (GameMode::isMaster())
                 this->setName(this->nick_);
         }
     }
@@ -104,7 +104,7 @@ namespace orxonox
             this->synchronize_nick_ = this->nick_;
             this->client_initialized_ = true;
 
-            if (!Core::isMaster())
+            if (!GameMode::isMaster())
                 this->setObjectMode(objectDirection::bidirectional);
             else
                 this->setName(this->nick_);

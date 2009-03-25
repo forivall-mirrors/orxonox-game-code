@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "BlinkingBillboard.h"
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
@@ -76,7 +76,7 @@ namespace orxonox
     {
         SUPER(BlinkingBillboard, tick, dt);
 
-        if (Core::isMaster() && this->isActive())
+        if (GameMode::isMaster() && this->isActive())
         {
             this->time_ += dt;
             if (this->bQuadratic_)

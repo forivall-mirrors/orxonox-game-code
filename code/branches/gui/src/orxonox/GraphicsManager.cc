@@ -61,6 +61,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
+#include "core/GameMode.h"
 #include "tools/WindowEventListener.h"
 #include "tools/ParticleInterface.h"
 
@@ -101,8 +102,6 @@ namespace orxonox
 
     void GraphicsManager::initialise()
     {
-        Core::setShowsGraphics(true);
-
         // Ogre setup procedure
         setupOgre();
         // load all the required plugins for Ogre
@@ -155,9 +154,6 @@ namespace orxonox
             this->ogreLogger_->getDefaultLog()->removeListener(this);
             this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
             delete this->ogreLogger_;
-
-            // Don't showing graphics anymore
-            Core::setShowsGraphics(false);
         }
 
         assert(singletonRef_s);

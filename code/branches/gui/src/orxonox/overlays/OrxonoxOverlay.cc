@@ -43,7 +43,7 @@
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/String.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
@@ -66,7 +66,7 @@ namespace orxonox
         this->owner_ = 0;
         this->group_ = 0;
 
-        if (!Core::showsGraphics())
+        if (!GameMode::showsGraphics())
             ThrowException(NoGraphics, "Can't create OrxonoxOverlay, graphics engine not initialized");
 
         // create the Ogre::Overlay

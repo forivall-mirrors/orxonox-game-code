@@ -40,7 +40,7 @@
 #include <cassert>
 
 #include "GraphicsManager.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 
@@ -63,7 +63,7 @@ namespace orxonox
         this->bAllowedByLOD_ = true;
         this->speedFactor_ = 1.0f;
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             try
             {
@@ -177,7 +177,7 @@ namespace orxonox
     void ParticleInterface::setDetailLevel(unsigned int level)
     {
         this->detaillevel_ = level;
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
             this->detailLevelChanged(GraphicsManager::getInstance().getDetailLevelParticle());
     }
 

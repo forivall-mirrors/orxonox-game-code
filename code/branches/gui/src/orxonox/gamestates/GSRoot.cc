@@ -32,13 +32,13 @@
 #include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Clock.h"
-#include "core/Core.h"
+#include "core/Game.h"
+#include "core/GameMode.h"
 #include "core/CommandLine.h"
 #include "core/ConsoleCommand.h"
 #include "tools/TimeFactorListener.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
-#include "core/Game.h"
 
 namespace orxonox
 {
@@ -141,7 +141,7 @@ namespace orxonox
     */
     void GSRoot::setTimeFactor(float factor)
     {
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             if (!this->bPaused_)
             {
@@ -159,7 +159,7 @@ namespace orxonox
 
     void GSRoot::pause()
     {
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             if (!this->bPaused_)
             {

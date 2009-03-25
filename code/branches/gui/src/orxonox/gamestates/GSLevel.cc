@@ -38,15 +38,16 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/CoreIncludes.h"
 #include "core/Core.h"
+#include "core/CoreIncludes.h"
+#include "core/Game.h"
+#include "core/GameMode.h"
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
 #include "CameraManager.h"
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
-#include "core/Game.h"
 
 namespace orxonox
 {
@@ -82,7 +83,7 @@ namespace orxonox
     {
         setConfigValues();
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
             keyBinder_ = new KeyBinder();
@@ -98,7 +99,7 @@ namespace orxonox
 
         this->playerManager_ = new PlayerManager();
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             // create the global LevelManager
             this->levelManager_ = new LevelManager();
@@ -106,7 +107,7 @@ namespace orxonox
             this->loadLevel();
         }
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             // TODO: insert slomo console command with
             // .accessLevel(AccessLevel::Offline).defaultValue(0, 1.0).axisParamIndex(0).isAxisRelative(false);
@@ -148,10 +149,10 @@ namespace orxonox
         // and call a sceneNode method that has already been destroy by the corresponding space ship.
         //Loader::close();
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
             InputManager::getInstance().requestLeaveState("game");
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
             this->unloadLevel();
 
         if (this->radar_)
@@ -178,7 +179,7 @@ namespace orxonox
             this->playerManager_ = 0;
         }
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             inputState_->setHandler(0);
             InputManager::getInstance().requestDestroyState("game");
@@ -239,7 +240,7 @@ namespace orxonox
     */
     void GSLevel::keybindInternal(const std::string& command, bool bTemporary)
     {
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             static std::string bindingString = "";
             static bool bTemporarySaved = false;

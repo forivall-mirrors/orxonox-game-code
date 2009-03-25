@@ -31,11 +31,11 @@
 
 #include <OgreViewport.h>
 #include <OgreCamera.h>
-#include "core/Core.h"
+#include "core/Game.h"
+#include "core/GameMode.h"
 #include "core/ConsoleCommand.h"
 #include "gui/GUIManager.h"
 #include "GraphicsManager.h"
-#include "core/Game.h"
 
 namespace orxonox
 {
@@ -53,7 +53,7 @@ namespace orxonox
 
     void GSStandalone::activate()
     {
-        Core::setIsStandalone(true);
+        GameMode::setIsStandalone(true);
 
         guiManager_ = GUIManager::getInstancePtr();
         // not sure if necessary
@@ -62,7 +62,7 @@ namespace orxonox
 
     void GSStandalone::deactivate()
     {
-        Core::setIsStandalone(false);
+        GameMode::setIsStandalone(false);
     }
 
     void GSStandalone::update(const Clock& time)

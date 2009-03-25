@@ -24,6 +24,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Core.cc
   Event.cc
   Game.cc
+  GameMode.cc
   GameState.cc
   Language.cc
   LuaBind.cc

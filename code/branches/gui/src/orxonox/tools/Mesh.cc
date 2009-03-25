@@ -34,7 +34,7 @@
 #include <OgreSceneManager.h>
 #include <cassert>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "util/Convert.h"
 #include "util/String.h"
 
@@ -63,7 +63,7 @@ namespace orxonox
         if (this->entity_)
             this->scenemanager_->destroyEntity(this->entity_);
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             try
             {

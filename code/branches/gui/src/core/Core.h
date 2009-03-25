@@ -82,18 +82,6 @@ namespace orxonox
             static std::string getConfigPathString();
             static std::string getLogPathString();
 
-            // fast access global variables.
-            static bool showsGraphics() { return bShowsGraphics_s; }
-            static bool hasServer()     { return bHasServer_s; }
-            static bool isClient()      { return bIsClient_s; }
-            static bool isStandalone()  { return bIsStandalone_s; }
-            static bool isMaster()      { return bIsMaster_s; }
-            static void setShowsGraphics(bool val) { bShowsGraphics_s = val; updateIsMaster(); }
-            static void setHasServer    (bool val) { bHasServer_s     = val; updateIsMaster(); }
-            static void setIsClient     (bool val) { bIsClient_s      = val; updateIsMaster(); }
-            static void setIsStandalone (bool val) { bIsStandalone_s  = val; updateIsMaster(); }
-            static void updateIsMaster  ()         { bIsMaster_s      = (bHasServer_s || bIsStandalone_s); }
-
         private:
             Core(const Core&);
 
@@ -127,12 +115,6 @@ namespace orxonox
             std::string mediaPathString_;                   //!< Path to the data/media file folder as string
             bool isDevBuild_;                               //!< True for builds in the build directory (not installed)
             bool loaded_;                                   //!< Only true if constructor was interrupted
-
-            static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
-            static bool bHasServer_s;                       //!< global variable that tells whether this is a server
-            static bool bIsClient_s;
-            static bool bIsStandalone_s;
-            static bool bIsMaster_s;
 
             static Core* singletonRef_s;
     };

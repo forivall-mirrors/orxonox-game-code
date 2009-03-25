@@ -32,11 +32,11 @@
 #include <OgreViewport.h>
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
+#include "core/Game.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "gui/GUIManager.h"
 #include "GraphicsManager.h"
-#include "core/Game.h"
 
 namespace orxonox
 {

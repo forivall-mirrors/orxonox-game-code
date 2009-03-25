@@ -20,33 +20,24 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#include "ClientConnectionListener.h"
-#include "core/CoreIncludes.h"
-#include "core/GameMode.h"
+/**
+    @file
+    @brief Implementation of the GameMode class.
+*/
 
-namespace orxonox{
+#include "GameMode.h"
 
-  ClientConnectionListener::ClientConnectionListener()
-  { 
-    RegisterRootObject(ClientConnectionListener); 
-  }
-
-  void ClientConnectionListener::getConnectedClients(){
-    if(GameMode::showsGraphics())
-      this->clientConnected(0); //server client id
-    ClientInformation *client = ClientInformation::getBegin();
-    while(client){
-      this->clientConnected(client->getID());
-      client=client->next();
-    }
-  }
-
+namespace orxonox
+{
+    bool GameMode::bShowsGraphics_s = false;
+    bool GameMode::bHasServer_s     = false;
+    bool GameMode::bIsClient_s      = false;
+    bool GameMode::bIsStandalone_s  = false;
+    bool GameMode::bIsMaster_s      = false;
 }
-
-

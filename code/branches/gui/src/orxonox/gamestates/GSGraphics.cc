@@ -37,6 +37,7 @@
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
+#include "core/GameMode.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/SimpleInputState.h"
@@ -73,7 +74,7 @@ namespace orxonox
 
     void GSGraphics::activate()
     {
-        Core::setShowsGraphics(true);
+        GameMode::setShowsGraphics(true);
 
         setConfigValues();
 
@@ -127,7 +128,7 @@ namespace orxonox
 
         delete graphicsManager_;
 
-        Core::setShowsGraphics(false);
+        GameMode::setShowsGraphics(false);
     }
 
     /**

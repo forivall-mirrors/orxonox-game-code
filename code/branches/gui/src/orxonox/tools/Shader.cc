@@ -35,7 +35,7 @@
 #include <OgreRoot.h>
 #include <OgrePlugin.h>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "GraphicsManager.h"
@@ -58,7 +58,7 @@ namespace orxonox
         this->scenemanager_ = scenemanager;
         this->compositorInstance_ = 0;
         this->bVisible_ = true;
-        this->bLoadCompositor_ = Core::showsGraphics();
+        this->bLoadCompositor_ = GameMode::showsGraphics();
         this->bViewportInitialized_ = false;
         this->compositor_ = "";
         this->oldcompositor_ = "";
@@ -245,7 +245,7 @@ namespace orxonox
 
     Shader::ParameterPointer* Shader::getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
     {
-        if (!Core::showsGraphics() || !Shader::bLoadedCgPlugin_s)
+        if (!GameMode::showsGraphics() || !Shader::bLoadedCgPlugin_s)
             return 0;
 
         MaterialMap::iterator material_iterator = Shader::parameters_s.find(material);
