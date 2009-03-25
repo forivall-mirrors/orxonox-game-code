@@ -35,11 +35,14 @@
 #include "core/ConsoleCommand.h"
 #include "gui/GUIManager.h"
 #include "GraphicsManager.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
-    GSStandalone::GSStandalone()
-        : GameState("standalone")
+    AddGameState(GSStandalone, "standalone");
+
+    GSStandalone::GSStandalone(const std::string& name)
+        : GameState(name)
     {
     }
 
@@ -48,25 +51,21 @@ namespace orxonox
     }
 
 
-    void GSStandalone::enter()
+    void GSStandalone::activate()
     {
         Core::setIsStandalone(true);
-
-        GSLevel::enter();
 
         guiManager_ = GUIManager::getInstancePtr();
         // not sure if necessary
         // guiManager_->loadScene("IngameMenu");
     }
 
-    void GSStandalone::leave()
+    void GSStandalone::deactivate()
     {
-        GSLevel::leave();
-
         Core::setIsStandalone(false);
     }
 
-    void GSStandalone::ticked(const Clock& time)
+    void GSStandalone::update(const Clock& time)
     {
         //Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
         //COUT(0) << "** " << viewport->getCamera()->getSceneManager() << std::endl;
@@ -76,8 +75,5 @@ namespace orxonox
 
         // tick CEGUI
         guiManager_->update(time);
-
-        GSLevel::ticked(time);
-        this->tickChild(time);
     }
 }

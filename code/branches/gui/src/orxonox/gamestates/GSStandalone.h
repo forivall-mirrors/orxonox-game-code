@@ -31,22 +31,21 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
-#include "GSLevel.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSStandalone : public GameState, public GSLevel
+    class _OrxonoxExport GSStandalone : public GameState
     {
     public:
-        GSStandalone();
+        GSStandalone(const std::string& name);
         ~GSStandalone();
 
-    private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
-        GUIManager*     guiManager_;
+    private:
+        GUIManager* guiManager_;
     };
 }
 

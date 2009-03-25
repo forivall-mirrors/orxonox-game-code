@@ -46,14 +46,17 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
+    AddGameState(GSLevel, "level");
+
     SetCommandLineArgument(level, "presentation.oxw").shortcut("l");
 
-    GSLevel::GSLevel()
-//        : GameState(name)
-        : keyBinder_(0)
+    GSLevel::GSLevel(const std::string& name)
+        : GameState(name)
+        , keyBinder_(0)
         , inputState_(0)
         , radar_(0)
         , startFile_(0)
@@ -64,8 +67,6 @@ namespace orxonox
 
         this->ccKeybind_ = 0;
         this->ccTkeybind_ = 0;
-
-        setConfigValues();
     }
 
     GSLevel::~GSLevel()
@@ -77,8 +78,10 @@ namespace orxonox
         SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
     }
 
-    void GSLevel::enter()
+    void GSLevel::activate()
     {
+        setConfigValues();
+
         if (Core::showsGraphics())
         {
             inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
@@ -125,7 +128,7 @@ namespace orxonox
         }
     }
 
-    void GSLevel::leave()
+    void GSLevel::deactivate()
     {
         // destroy console commands
         if (this->ccKeybind_)
@@ -187,9 +190,9 @@ namespace orxonox
         }
     }
 
-    void GSLevel::ticked(const Clock& time)
+    void GSLevel::update(const Clock& time)
     {
-        // Commented by 1337: Temporarily moved to GSGraphics.
+        // Note: Temporarily moved to GSGraphics.
         //// Call the scene objects
         //for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
         //    it->tick(time.getDeltaTime() * this->timeFactor_);
@@ -232,7 +235,7 @@ namespace orxonox
     @param command
         Command string that can be executed by the CommandExecutor
         OR: Internal string "KeybindBindingStringKeyName=" used for the second call to identify
-        the key/button/axis that has been activated. This is configured above in enter().
+        the key/button/axis that has been activated. This is configured above in activate().
     */
     void GSLevel::keybindInternal(const std::string& command, bool bTemporary)
     {

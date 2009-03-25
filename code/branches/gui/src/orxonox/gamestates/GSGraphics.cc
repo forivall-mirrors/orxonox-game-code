@@ -44,12 +44,14 @@
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "GraphicsManager.h"
-#include "Game.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
-    GSGraphics::GSGraphics()
-        : GameState("graphics")
+    AddGameState(GSGraphics, "graphics");
+
+    GSGraphics::GSGraphics(const std::string& name)
+        : GameState(name)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
@@ -59,7 +61,6 @@ namespace orxonox
         , debugOverlay_(0)
     {
         RegisterRootObject(GSGraphics);
-        setConfigValues();
     }
 
     GSGraphics::~GSGraphics()
@@ -70,8 +71,10 @@ namespace orxonox
     {
     }
 
-    void GSGraphics::enter()
+    void GSGraphics::activate()
     {
+        setConfigValues();
+
         Core::setShowsGraphics(true);
 
         // initialise graphics manager. Doesn't load the render window yet!
@@ -107,7 +110,7 @@ namespace orxonox
         InputManager::getInstance().requestEnterState("master");
     }
 
-    void GSGraphics::leave()
+    void GSGraphics::deactivate()
     {
         if (Core::showsGraphics())
             InputManager::getInstance().requestLeaveState("master");
@@ -145,13 +148,12 @@ namespace orxonox
         as shown that there is probably only one FrameListener that doesn't even
         need the time. So we shouldn't run into problems.
     */
-    void GSGraphics::ticked(const Clock& time)
+    void GSGraphics::update(const Clock& time)
     {
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
         this->inputManager_->update(time);        // tick console
         this->console_->update(time);
-        this->tickChild(time);
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 

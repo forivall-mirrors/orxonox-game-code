@@ -31,18 +31,20 @@
 
 #include "util/Exception.h"
 #include "util/Debug.h"
+#include "core/Clock.h"
 #include "core/Core.h"
-#include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "tools/TimeFactorListener.h"
 #include "tools/Timer.h"
 #include "objects/Tickable.h"
-#include "Game.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
-    GSRoot::GSRoot()
-        : RootGameState("root")
+    AddGameState(GSRoot, "root");
+
+    GSRoot::GSRoot(const std::string& name)
+        : GameState(name)
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
@@ -55,18 +57,10 @@ namespace orxonox
     {
     }
 
-    void GSRoot::enter()
+    void GSRoot::activate()
     {
         // reset game speed to normal
         timeFactor_ = 1.0f;
-
-        {
-            // add console commands
-            FunctorMember01<GameState, const std::string&>* functor = createFunctor(&GameState::requestState);
-            functor->setObject(this);
-            this->ccSelectGameState_ = createConsoleCommand(functor, "selectGameState");
-            CommandExecutor::addConsoleCommandShortcut(this->ccSelectGameState_);
-        }
 
         {
             // time factor console command
@@ -85,11 +79,8 @@ namespace orxonox
         }
     }
 
-    void GSRoot::leave()
+    void GSRoot::deactivate()
     {
-        // destroy console commands
-        delete this->ccSelectGameState_;
-
         if (this->ccSetTimeFactor_)
         {
             delete this->ccSetTimeFactor_;
@@ -103,7 +94,7 @@ namespace orxonox
         }
     }
 
-    void GSRoot::ticked(const Clock& time)
+    void GSRoot::update(const Clock& time)
     {
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
@@ -128,8 +119,6 @@ namespace orxonox
 
         // Also add our tick time to the list in GSRoot
         Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
-
-        this->tickChild(time);
     }
 
     /**

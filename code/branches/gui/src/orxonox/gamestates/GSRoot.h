@@ -30,22 +30,20 @@
 #define _GSRoot_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <list>
-#include "core/RootGameState.h"
+#include "core/GameState.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public RootGameState
+    class _OrxonoxExport GSRoot : public GameState
     {
-        friend class ClassIdentifier<GSRoot>;
-
     public:
-    
-    public:
-        GSRoot();
+        GSRoot(const std::string& name);
         ~GSRoot();
+
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
@@ -54,16 +52,11 @@ namespace orxonox
         float getTimeFactor() { return this->timeFactor_; }
 
     private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
-
         float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
 
         // console commands
-        ConsoleCommand*       ccSelectGameState_;
         ConsoleCommand*       ccSetTimeFactor_;
         ConsoleCommand*       ccPause_;
     };

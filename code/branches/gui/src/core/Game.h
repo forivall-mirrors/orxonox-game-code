@@ -35,10 +35,15 @@
 #ifndef _Game_H__
 #define _Game_H__
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 #include <cassert>
 #include <list>
-#include "core/OrxonoxClass.h"
+#include <map>
+#include <vector>
+#include "OrxonoxClass.h"
+
+#define AddGameState(classname, name, ...) \
+    static bool bGameStateDummy_##classname##__LINE__ = orxonox::Game::addGameState(new classname(name, __VA_ARGS__))
 
 namespace orxonox
 {
@@ -46,21 +51,28 @@ namespace orxonox
     @brief
         Main class responsible for running the game.
     */
-    class _OrxonoxExport Game : public OrxonoxClass
+    class _CoreExport Game : public OrxonoxClass
     {
     public:
         Game(int argc, char** argv);
         ~Game();
         void setConfigValues();
 
+        void setStateHierarchy(const std::string& str);
+        GameState* getState(const std::string& name);
+
         void run();
         void stop();
+
+        void requestState(const std::string& name);
+        void popState();
 
         float getAvgTickTime() { return this->avgTickTime_; }
         float getAvgFPS()      { return this->avgFPS_; }
 
         void addTickTime(uint32_t length);
 
+        static bool addGameState(GameState* state);
         static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
@@ -72,24 +84,32 @@ namespace orxonox
 
         Game(Game&); // don't mess with singletons
 
-        Core* core_;
-        Clock* gameClock_;
+        void loadState(GameState* state);
+        void unloadState(GameState* state);
 
-        bool abort_;
+        std::vector<GameState*>         activeStates_;
+        GameStateTreeNode*              rootStateNode_;
+        GameStateTreeNode*              activeStateNode_;
+        std::vector<GameStateTreeNode*> requestedStateNodes_;
+
+        Core*                           core_;
+        Clock*                          gameClock_;
+
+        bool                            abort_;
 
         // variables for time statistics
-        uint64_t              statisticsStartTime_;
-        std::list<statisticsTickInfo>
-                              statisticsTickTimes_;
-        uint32_t              periodTime_;
-        uint32_t              periodTickTime_;
-        float                 avgFPS_;
-        float                 avgTickTime_;
+        uint64_t                        statisticsStartTime_;
+        std::list<statisticsTickInfo>   statisticsTickTimes_;
+        uint32_t                        periodTime_;
+        uint32_t                        periodTickTime_;
+        float                           avgFPS_;
+        float                           avgTickTime_;
 
         // config values
-        unsigned int          statisticsRefreshCycle_;
-        unsigned int          statisticsAvgLength_;
+        unsigned int                    statisticsRefreshCycle_;
+        unsigned int                    statisticsAvgLength_;
 
+        static std::map<std::string, GameState*> allStates_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
     };
 }

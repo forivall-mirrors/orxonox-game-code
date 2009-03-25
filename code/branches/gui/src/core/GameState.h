@@ -38,10 +38,8 @@
 #include "CorePrereqs.h"
 
 #include <string>
-#include <vector>
 #include <map>
-#include <cassert>
-#include "Clock.h"
+#include "CorePrereqs.h"
 
 namespace orxonox
 {
@@ -61,8 +59,6 @@ namespace orxonox
     */
     class _CoreExport GameState
     {
-        friend class RootGameState;
-        // Hack
         friend class Game;
 
     public:
@@ -70,13 +66,13 @@ namespace orxonox
         @brief
             Gives information about what the GameState is currently doing
         */
-        struct Operations
+        struct State
         {
-            unsigned active    : 1;
-            unsigned entering  : 1;
-            unsigned leaving   : 1;
-            unsigned running   : 1;
-            unsigned suspended : 1;
+            unsigned active       : 1;
+            unsigned activating   : 1;
+            unsigned deactivating : 1;
+            unsigned updating     : 1;
+            unsigned suspended    : 1;
         };
 
     public:
@@ -84,50 +80,28 @@ namespace orxonox
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
-        const Operations getOperation() const { return this->operation_; }
-        bool isInSubtree(GameState* state) const;
-
-        GameState* getState(const std::string& name);
-        GameState* getRoot();
-        //! Returns the currently active game state
-        virtual GameState* getCurrentState();
-
-        virtual void requestState(const std::string& name);
+        const State getActivity() const    { return this->activity_; }
+        GameState* getParent() const       { return this->parent_; }
 
         void addChild(GameState* state);
         void removeChild(GameState* state);
-        void removeChild(const std::string& name);
 
     protected:
-        virtual void enter() = 0;
-        virtual void leave() = 0;
-        virtual void ticked(const Clock& time) = 0;
-
-        GameState* getActiveChild() { return this->activeChild_; }
-
-        void tickChild(const Clock& time) { if (this->getActiveChild()) this->getActiveChild()->tick(time); }
-
-        GameState* getParent() const     { return this->parent_; }
-        void setParent(GameState* state) { this->parent_ = state; }
+        virtual void activate() = 0;
+        virtual void deactivate() = 0;
+        virtual void update(const Clock& time) = 0;
 
     private:
-        //! Performs a transition to 'destination'
-        virtual void makeTransition(GameState* source, GameState* destination);
-
-        void grandchildAdded(GameState* child, GameState* grandchild);
-        void grandchildRemoved(GameState* grandchild);
-
-        void tick(const Clock& time);
-        void activate();
-        void deactivate();
+        void setParent(GameState* state) { this->parent_ = state; }
+        void setActivity(State activity);
+        void activateInternal();
+        void deactivateInternal();
+        void updateInternal(const Clock& time);
 
         const std::string                        name_;
-        Operations                               operation_;
+        State                                    activity_;
         GameState*                               parent_;
-        GameState*                               activeChild_;
-        //bool                                     bPauseParent_;
-        std::map<std::string, GameState*>        allChildren_;
-        std::map<GameState*, GameState*>         grandchildrenToChildren_;
+        std::map<std::string, GameState*>        children_;
     };
 }
 

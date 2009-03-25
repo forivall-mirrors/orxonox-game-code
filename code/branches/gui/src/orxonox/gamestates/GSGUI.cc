@@ -31,15 +31,19 @@
 
 #include <OgreViewport.h>
 #include "core/Clock.h"
+#include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "gui/GUIManager.h"
 #include "GraphicsManager.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState("gui")
+    AddGameState(GSGUI, "gui");
+
+    GSGUI::GSGUI(const std::string& name)
+        : GameState(name)
     {
     }
 
@@ -47,7 +51,7 @@ namespace orxonox
     {
     }
 
-    void GSGUI::enter()
+    void GSGUI::activate()
     {
         guiManager_ = GUIManager::getInstancePtr();
 
@@ -55,18 +59,38 @@ namespace orxonox
         //guiManager_->loadScene("MainMenu");
         guiManager_->showGUI("MainMenu", 0);
         GraphicsManager::getInstance().getViewport()->setCamera(guiManager_->getCamera());
+
+        {
+            // time factor console command
+            FunctorMember<GSGUI>* functor = createFunctor(&GSGUI::startGame);
+            functor->setObject(this);
+            this->ccStartGame_ = createConsoleCommand(functor, "startGame");
+            CommandExecutor::addConsoleCommandShortcut(this->ccStartGame_);
+        }
     }
 
-    void GSGUI::leave()
+    void GSGUI::deactivate()
     {
+        if (this->ccStartGame_)
+        {
+            delete this->ccStartGame_;
+            this->ccStartGame_ = 0;
+        }
+
         guiManager_->hideGUI();
     }
 
-    void GSGUI::ticked(const Clock& time)
+    void GSGUI::update(const Clock& time)
     {
         // tick CEGUI
         guiManager_->update(time);
+    }
 
-        this->tickChild(time);
+    void GSGUI::startGame()
+    {
+        // HACK - HACK
+        Game::getInstance().popState();
+        Game::getInstance().requestState("standalone");
+        Game::getInstance().requestState("level");
     }
 }

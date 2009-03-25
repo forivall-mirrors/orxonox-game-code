@@ -30,7 +30,6 @@
 #define _GSIOConsole_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
 #include "core/GameState.h"
 
 namespace orxonox
@@ -38,13 +37,15 @@ namespace orxonox
     class _OrxonoxExport GSIOConsole : public GameState
     {
     public:
-        GSIOConsole();
+        GSIOConsole(const std::string& name);
         ~GSIOConsole();
 
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
+
     private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
+
     };
 }
 

@@ -34,13 +34,16 @@
 #include "core/CommandLine.h"
 #include "core/Core.h"
 #include "network/Client.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
+    AddGameState(GSClient, "client");
+
     SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
-    GSClient::GSClient()
-        : GameState("client")
+    GSClient::GSClient(const std::string& name)
+        : GameState(name)
         , client_(0)
     {
     }
@@ -49,7 +52,7 @@ namespace orxonox
     {
     }
 
-    void GSClient::enter()
+    void GSClient::activate()
     {
         Core::setIsClient(true);
 
@@ -58,15 +61,11 @@ namespace orxonox
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
 
-        GSLevel::enter();
-
         client_->update(Core::getGameClock());
     }
 
-    void GSClient::leave()
+    void GSClient::deactivate()
     {
-        GSLevel::leave();
-
         client_->closeConnection();
 
         // destroy client
@@ -75,11 +74,8 @@ namespace orxonox
         Core::setIsClient(false);
     }
 
-    void GSClient::ticked(const Clock& time)
+    void GSClient::update(const Clock& time)
     {
-        GSLevel::ticked(time);
         client_->update(time);
-
-        this->tickChild(time);
     }
 }

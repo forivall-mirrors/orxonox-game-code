@@ -36,11 +36,14 @@
 #include "network/Server.h"
 #include "objects/Tickable.h"
 #include "util/Sleep.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
-    GSDedicated::GSDedicated()
-        : GameState("dedicated")
+    AddGameState(GSDedicated, "dedicated");
+
+    GSDedicated::GSDedicated(const std::string& name)
+        : GameState(name)
         , server_(0)
         , timeSinceLastUpdate_(0)
     {
@@ -50,29 +53,25 @@ namespace orxonox
     {
     }
 
-    void GSDedicated::enter()
+    void GSDedicated::activate()
     {
         Core::setHasServer(true);
 
         this->server_ = new Server(CommandLine::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
 
-        GSLevel::enter();
-
         server_->open();
     }
 
-    void GSDedicated::leave()
+    void GSDedicated::deactivate()
     {
-        GSLevel::leave();
-
         this->server_->close();
         delete this->server_;
 
         Core::setHasServer(false);
     }
 
-    void GSDedicated::ticked(const Clock& time)
+    void GSDedicated::update(const Clock& time)
     {
 //        static float startTime = time.getSecondsPrecise();
 //        static int nrOfTicks = 0;
@@ -82,9 +81,7 @@ namespace orxonox
 //            ++nrOfTicks;
 //            COUT(0) << "estimated ticks/sec: " << nrOfTicks/(time.getSecondsPrecise()-startTime) << endl;
             timeSinceLastUpdate_ -= static_cast<unsigned int>(timeSinceLastUpdate_ / NETWORK_PERIOD) * NETWORK_PERIOD;
-            GSLevel::ticked(time);
             server_->update(time);
-            this->tickChild(time);
         }
         else
         {

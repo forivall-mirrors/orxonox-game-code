@@ -31,7 +31,7 @@
 #include <OgreTextAreaOverlayElement.h>
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "Game.h"
+#include "core/Game.h"
 
 namespace orxonox
 {

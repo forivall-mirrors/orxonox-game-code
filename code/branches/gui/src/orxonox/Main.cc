@@ -20,37 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _RootGameState_H__
-#define _RootGameState_H__
+ /**
+ @file
+ @brief Entry point of the program.
+  */
 
-#include "CorePrereqs.h"
-#include "GameState.h"
+#include "OrxonoxStableHeaders.h"
+#include "OrxonoxConfig.h"
 
-namespace orxonox
+#include "util/Debug.h"
+#include "core/Identifier.h"
+#include "core/Game.h"
+
+/*
+@brief
+    Main method. Game starts here (except for static initialisations).
+*/
+int main(int argc, char** argv)
 {
-    class _CoreExport RootGameState : public GameState
     {
-        // Hack!
-        friend class Game;
+        orxonox::Game orxonox(argc, argv);
+        orxonox.run();
+    } // orxonox gets destroyed right here!
 
-    public:
-        RootGameState(const std::string& name);
-        ~RootGameState();
+    // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
+    // Needs to be done after Game destructor because of ~OrxonoxClass
+    orxonox::Identifier::destroyAllIdentifiers();
 
-        void requestState(const std::string& name);
-
-    private:
-        void makeTransition(GameState* source, GameState* destination);
-        void gotoState(const std::string& name);
-
-        std::string stateRequest_;
-    };
+    return 0;
 }
-
-#endif /* _RootGameState_H__ */

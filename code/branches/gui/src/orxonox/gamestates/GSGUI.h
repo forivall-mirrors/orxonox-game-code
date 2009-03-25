@@ -37,15 +37,20 @@ namespace orxonox
     class _OrxonoxExport GSGUI : public GameState
     {
     public:
-        GSGUI();
+        GSGUI(const std::string& name);
         ~GSGUI();
 
-    private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
+        void startGame();
+
+    private:
         GUIManager* guiManager_;
+
+        // console commands
+        ConsoleCommand* ccStartGame_;
     };
 }
 

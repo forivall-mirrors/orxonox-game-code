@@ -30,26 +30,23 @@
 #define _GSLevel_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
 #include "core/OrxonoxClass.h"
+#include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public OrxonoxClass
+    class _OrxonoxExport GSLevel : public GameState, public OrxonoxClass
     {
-        friend class ClassIdentifier<GSLevel>;
     public:
-        GSLevel();
+        GSLevel(const std::string& name);
         ~GSLevel();
-
-        // was private before (is public now because of console command in GSStandalone)
         void setConfigValues();
 
-    protected:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
+    protected:
         void loadLevel();
         void unloadLevel();
 

@@ -32,23 +32,22 @@
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
-#include "GSLevel.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSDedicated : public GameState, public GSLevel
+    class _OrxonoxExport GSDedicated : public GameState
     {
     public:
-        GSDedicated();
+        GSDedicated(const std::string& name);
         ~GSDedicated();
 
-    private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
-        Server*      server_;
-        float        timeSinceLastUpdate_;
+    private:
+        Server* server_;
+        float   timeSinceLastUpdate_;
     };
 }
 

@@ -31,31 +31,26 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
-#include "core/OrxonoxClass.h"
 #include "tools/WindowEventListener.h"
 
 namespace orxonox
 {
     class _OrxonoxExport GSGraphics : public GameState, public WindowEventListener
     {
-        friend class ClassIdentifier<GSGraphics>;
-
     public:
-        GSGraphics();
+        GSGraphics(const std::string& name);
         ~GSGraphics();
-
-    private: // functions
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
-
         void setConfigValues();
 
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
+
+    private:
         // Window events from WindowEventListener
         void windowResized(unsigned int newWidth, unsigned int newHeight);
         void windowFocusChanged();
 
-    private:
         // managed singletons
         InputManager*         inputManager_;
         InGameConsole*        console_;
