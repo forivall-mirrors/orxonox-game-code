@@ -47,6 +47,22 @@ int main(int argc, char** argv)
 {
     {
         orxonox::Game orxonox(argc, argv);
+
+        orxonox.setStateHierarchy(
+        "root"
+        " graphics"
+        "  mainMenu"
+        "  standalone"
+        "   level"
+        "  server"
+        "   level"
+        "  client"
+        "   level"
+        " dedicated"
+        "  level"
+        " ioConsole"
+        );
+
         orxonox.run();
     } // orxonox gets destroyed right here!
 

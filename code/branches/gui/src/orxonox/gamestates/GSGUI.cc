@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    AddGameState(GSGUI, "gui");
+    AddGameState(GSGUI, "mainMenu");
 
     GSGUI::GSGUI(const std::string& name)
         : GameState(name)

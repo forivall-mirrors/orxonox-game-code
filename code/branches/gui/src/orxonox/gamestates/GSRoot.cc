@@ -33,6 +33,7 @@
 #include "util/Debug.h"
 #include "core/Clock.h"
 #include "core/Core.h"
+#include "core/CommandLine.h"
 #include "core/ConsoleCommand.h"
 #include "tools/TimeFactorListener.h"
 #include "tools/Timer.h"
@@ -42,6 +43,7 @@
 namespace orxonox
 {
     AddGameState(GSRoot, "root");
+    SetCommandLineSwitch(startWithConsole);
 
     GSRoot::GSRoot(const std::string& name)
         : GameState(name)
@@ -77,6 +79,20 @@ namespace orxonox
             this->ccPause_ = createConsoleCommand(functor, "pause");
             CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
         }
+
+        // Determine where to start
+        if (CommandLine::getValue("startWithConsole").getBool())
+        {
+            // Start the game in the console
+            Game::getInstance().requestState("ioConsole");
+        }
+        else
+        {
+            // Start in GUI main menu
+            Game::getInstance().requestState("graphics");
+            Game::getInstance().requestState("mainMenu");
+        }
+
     }
 
     void GSRoot::deactivate()

@@ -49,10 +49,9 @@
 
 namespace orxonox
 {
-    void stop_game()
-    {
-        Game::getInstance().stop();
-    }
+    static void stop_game()
+        { Game::getInstance().stop(); }
+    SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
     struct _CoreExport GameStateTreeNode
     {
@@ -60,10 +59,6 @@ namespace orxonox
         GameStateTreeNode*              parent_;
         std::vector<GameStateTreeNode*> children_;
     };
-
-    SetCommandLineArgument(state, "gui").shortcut("s");
-    SetCommandLineSwitch(startWithConsole);
-    SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
     std::map<std::string, GameState*> Game::allStates_s;
     Game* Game::singletonRef_s = 0;
@@ -131,43 +126,12 @@ namespace orxonox
     */
     void Game::run()
     {
-        // </EXPORT THIS>
-        this->setStateHierarchy(
-        "root"
-        " graphics"
-        "  gui"
-        "  standalone"
-        "   level"
-        "  server"
-        "   level"
-        "  client"
-        "   level"
-        " dedicated"
-        "  level"
-        " ioConsole"
-        );
-        // </EXPORT THIS>
-
-
-        // Always start with the root state
+        // Always start with the ROOT state
         this->requestedStateNodes_.push_back(this->rootStateNode_);
         this->activeStateNode_ = this->rootStateNode_;
         this->loadState(this->rootStateNode_->state_);
 
-        // <EXPORT THIS>
-        if (CommandLine::getValue("startWithConsole").getBool())
-        {
-            // Start the game in the console
-            this->requestState("ioConsole");
-        }
-        else
-        {
-            // Start in GUI main menu
-            this->requestState("graphics");
-            this->requestState("gui");
-        }
-        // </EXPORT THIS>
-
+        // START GAME
         this->gameClock_->capture(); // first delta time should be about 0 seconds
         while (!this->abort_ && !this->activeStates_.empty())
         {
@@ -223,7 +187,7 @@ namespace orxonox
             }
         }
 
-        // Unload all remaining states
+        // UNLOAD all remaining states
         while (!this->activeStates_.empty())
             this->unloadState(this->activeStates_.back());
         this->activeStateNode_ = 0;
