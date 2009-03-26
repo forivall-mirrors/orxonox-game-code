@@ -27,6 +27,9 @@
 #include "Map.h"
  
 #include <string>
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
@@ -45,25 +48,62 @@
     {
         RegisterObject(Map);
         
-        //COUT(0) << "Map loaded\n" << this->getScene();
-        Ogre::SceneManager* sm = this->getScene()->getSceneManager();
-        Ogre::SceneNode* sn = new Ogre::SceneNode(sm);
-        COUT(0) << "Map loaded\n" << sm << " / " << sn << std::endl;
+        //Getting Scene Manager (Hack)
+        ObjectList<Scene>::iterator it = ObjectList<Scene>::begin();
+        this->sManager_ = it->getSceneManager();
+        
+        this->sNode_ = new Ogre::SceneNode(sManager_);
+        oManager_ = Ogre::OverlayManager::getSingletonPtr();
+        overlay_ = oManager_->create("Map");
+        //overlay_ is member of OrxonoxOverlay
+        
+        //Not Showing the map as default
+        this->isVisible_=false;
+        overlay_->hide();
+        
+        //TestEntity
+        Ogre::Entity * ent = sManager_->createEntity("ent", "drone.mesh");
+        sNode_->attachObject( ent );
+        sNode_->setPosition(0,0,-50);
+        overlay_->add3D(sNode_);
     }
     
     void Map::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(Map, XMLPort, xmlElement, mode);
     }
-    
-    void Map::changedVisibility()
+
+    void Map::toggleVisibility()
     {
-        SUPER(Map, changedVisibility);
-        
+        if (!(this->isVisible_))
+        {
+            this->overlay_->show();
+            this->isVisible_=1;
+        }
+        else
+        {
+            this->overlay_->hide();
+            this->isVisible_=0;
+        }
+    }
+    
+    //Static function to toggle visibility of the map
+    void Map::openMap()
+    {
+        for(ObjectList<orxonox::Map>::iterator it = ObjectList<orxonox::Map>::begin();
+            it!=ObjectList<orxonox::Map>::end();
+            it++)
+        {
+        //Map * m = it->getMap();
+        COUT(0) << it->isVisible_ << std::endl;
+        it->toggleVisibility();
+        }
     }
     
     void Map::tick(float dt)
     {
+        sNode_->lookAt(Vector3::NEGATIVE_UNIT_Z, Ogre::Node::TS_WORLD, Vector3::NEGATIVE_UNIT_Z);
+        
     }
     
  }

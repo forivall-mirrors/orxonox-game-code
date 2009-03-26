@@ -30,6 +30,13 @@
 
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayElement.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayContainer.h>
 
 #include <OgreBorderPanelOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
@@ -50,19 +57,20 @@ namespace orxonox
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
 
-        virtual void changedVisibility();
         
-        inline static void openMap()
-            {
-                COUT(0) << "Opening Map";
-            }
+        
+        static void openMap();
         
     private: // functions
+        void toggleVisibility();
 
 
     private: // variables
-
-
+        Ogre::SceneManager* sManager_;
+        Ogre::SceneNode* sNode_;
+        Ogre::OverlayManager * oManager_;
+        
+        bool isVisible_;
     };
 }
 
