@@ -30,6 +30,7 @@
 #include "PongAI.h"
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/worldentities/PongBall.h"
 
@@ -44,6 +45,14 @@ namespace orxonox
         this->ball_ = 0;
         this->randomOffset_ = 0;
         this->relHysteresisOffset_ = 0.02;
+        this->strength_ = 0.5;
+
+        this->setConfigValues();
+    }
+
+    void PongAI::setConfigValues()
+    {
+        SetConfigValue(strength_, 0.5).description("A value from 0 to 1 where 0 is weak and 1 is strong.");
     }
 
     void PongAI::tick(float dt)
@@ -88,6 +97,22 @@ namespace orxonox
 
     void PongAI::calculateRandomOffset()
     {
-        this->randomOffset_ = rnd(-0.45, 0.45) * this->ball_->getBatLength() * this->ball_->getFieldDimension().y;
+        // Calculate the exponent for the position-formula
+        float exp = pow(10, 1 - 2*this->strength_); // strength: 0   -> exp = 10
+                                                    // strength: 0.5 -> exp = 1
+                                                    // strength: 1   -> exp = 0.1
+
+        // Calculate the relative position where to hit the ball with the bat
+        float position = pow(rnd(), exp); // exp > 1 -> position is more likely a small number
+                                          // exp < 1 -> position is more likely a large number
+
+        // The position shouln't be larger than 0.5 (50% of the bat-length from the middle is the end)
+        position *= 0.45;
+
+        // Both sides are equally probable
+        position *= sgn(rnd(-1,1));
+
+        // Calculate the offset in world units
+        this->randomOffset_ = position * this->ball_->getBatLength() * this->ball_->getFieldDimension().y;
     }
 }
