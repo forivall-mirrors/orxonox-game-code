@@ -659,6 +659,7 @@ HACK HACK HACK
             ogreRelativeTo = Ogre::Node::TS_PARENT; break;
         case TransformSpace::World:
             ogreRelativeTo = Ogre::Node::TS_WORLD; break;
+        default: OrxAssert(false, "Faulty TransformSpace::Enum assigned.");
         }
         this->node_->setDirection(direction, ogreRelativeTo, localDirectionVector);
         Quaternion newOrientation(this->node_->getOrientation());
@@ -758,7 +759,7 @@ HACK HACK HACK
         switch (type)
         {
         case Dynamic:
-            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT));
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT & !btCollisionObject::CF_KINEMATIC_OBJECT);
             break;
         case Kinematic:
             this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);
