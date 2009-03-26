@@ -42,6 +42,8 @@ namespace orxonox
             PongAI(BaseObject* creator);
             virtual ~PongAI() {}
 
+            void setConfigValues();
+
             virtual void tick(float dt);
 
             void setPongBall(PongBall* ball)
@@ -53,6 +55,7 @@ namespace orxonox
             PongBall* ball_;
             float randomOffset_;
             float relHysteresisOffset_;
+            float strength_;
     };
 }
 
