@@ -67,7 +67,6 @@ namespace orxonox
         XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
         XMLPortParam(Weapon, "bulletLoadingTime", setBulletLoadingTime, getBulletLoadingTime, xmlelement, mode);
         XMLPortParam(Weapon, "magazineLoadingTime", setMagazineLoadingTime, getMagazineLoadingTime, xmlelement, mode);
-        XMLPortParam(Weapon, "bSharedMunition", setSharedMunition, getSharedMunition, xmlelement, mode);
         XMLPortParam(Weapon, "bullets", setBulletAmount, getBulletAmount, xmlelement, mode);
         XMLPortParam(Weapon, "magazines", setMagazineAmount, getMagazineAmount, xmlelement, mode);
         XMLPortParam(Weapon, "unlimitedMunition", setUnlimitedMunition, getUnlimitedMunition, xmlelement, mode);
@@ -87,25 +86,20 @@ namespace orxonox
 
     void Weapon::fire()
     {
-COUT(0) << "Weapon::fire" << std::endl;
         if ( this->bulletReadyToShoot_ && this->magazineReadyToShoot_ && !this->bReloading_)
         {
-COUT(0) << "Weapon::fire 2" << std::endl;
             this->bulletReadyToShoot_ = false;
             if ( this->unlimitedMunition_== true )
             {
-COUT(0) << "Weapon::fire 3" << std::endl;
                 //shoot
                 this->reloadBullet();
                 this->createProjectile();
             }
             else
             {
-COUT(0) << "Weapon::fire 4" << std::endl;
                 if ( this->munition_->bullets() > 0)
                 {
-COUT(0) << "Weapon::fire 5" << std::endl;
-                    //shoot
+                    //shoot and reload
                     this->takeBullets();
                     this->reloadBullet();
                     this->createProjectile();
@@ -113,7 +107,7 @@ COUT(0) << "Weapon::fire 5" << std::endl;
                 //if there are no bullets, but magazines
                 else if ( this->munition_->magazines() > 0 && this->munition_->bullets() == 0 )
                 {
-COUT(0) << "Weapon::fire 6" << std::endl;
+                    //reload magazine
                     this->takeMagazines();
                     this->reloadMagazine();
                 }
@@ -125,15 +119,13 @@ COUT(0) << "Weapon::fire 6" << std::endl;
         }
         else
         {
-COUT(0) << "Weapon::fire not reloaded" << std::endl;
             //weapon not reloaded
         }
 
     }
 
-    /*
-    * weapon reloading
-    */
+
+    //weapon reloading
     void Weapon::bulletTimer(float bulletLoadingTime)
     {
         this->bReloading_ = true;
@@ -155,39 +147,31 @@ COUT(0) << "Weapon::fire not reloaded" << std::endl;
     {
         this->bReloading_ = false;
         this->munition_->fillBullets();
-        this->magazineReadyToShoot_ = true;
-        this->bulletReadyToShoot_ = true;
     }
+
 
 
     void Weapon::attachNeededMunition(std::string munitionName)
     {
         /*  if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
-        *   if the weapon shares one munitionType put it into sharedMunitionSet else to munitionSet
         */
         if (this->parentWeaponSystem_)
         {
-            if (this->bSharedMunition_ == false)
+            //getMunitionType returns 0 if there is no such munitionType
+            Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
+            if ( munition )
             {
-                this->munitionIdentifier_ = ClassByString(munitionName);
-                this->munition_ = this->munitionIdentifier_.fabricate(this);
-                this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
+                this->munition_ = munition;
+                this->setMunition();
             }
             else
             {
-                //getMunitionType returns 0 if there is no such munitionType
-                Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
-                if ( munition )
-                    this->munition_ = munition;
-                else
-                {
-                    //create new munition with identifier because there is no such munitionType
-                    this->munitionIdentifier_ = ClassByString(munitionName);
-                    this->munition_ = this->munitionIdentifier_.fabricate(this);
-                    this->parentWeaponSystem_->setNewSharedMunition(munitionName, this->munition_);
-                }
+                //create new munition with identifier because there is no such munitionType
+                this->munitionIdentifier_ = ClassByString(munitionName);
+                this->munition_ = this->munitionIdentifier_.fabricate(this);
+                this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
+                this->setMunition();
             }
-            this->setMunition();
         }
     }
 
@@ -207,9 +191,7 @@ COUT(0) << "Weapon::fire not reloaded" << std::endl;
     void Weapon::reloadMagazine() { };
 
 
-     /*get and set functions
-     *
-     */
+    //get and set functions for XMLPort
     void Weapon::setMunitionType(std::string munitionType)
     {   this->munitionType_ = munitionType; }
 
@@ -228,12 +210,6 @@ COUT(0) << "Weapon::fire not reloaded" << std::endl;
     const float Weapon::getMagazineLoadingTime()
     {   return this->magazineLoadingTime_;  }
 
-    void Weapon::setSharedMunition(bool bSharedMunition)
-    {   this->bSharedMunition_ = bSharedMunition; }
-
-    const bool Weapon::getSharedMunition()
-    {   return this->bSharedMunition_;  }
-
     void Weapon::setBulletAmount(unsigned int amount)
     {   this->bulletAmount_ = amount; }
 
@@ -244,7 +220,7 @@ COUT(0) << "Weapon::fire not reloaded" << std::endl;
     {   this->magazineAmount_ = amount; }
 
     const unsigned int Weapon::getMagazineAmount()
-    {   return this->magazineAmount_;  }
+    {   return this->magazineAmount_;   }
 
     void Weapon::setUnlimitedMunition(bool unlimitedMunition)
     {   this->unlimitedMunition_ = unlimitedMunition;   }

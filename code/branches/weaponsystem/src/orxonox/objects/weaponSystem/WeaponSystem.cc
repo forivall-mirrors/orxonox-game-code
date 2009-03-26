@@ -81,23 +81,16 @@ namespace orxonox
         this->munitionSet_[munitionType] = munitionToAdd;
     }
 
-    void WeaponSystem::setNewSharedMunition(std::string munitionType, Munition * munitionToAdd)
-    {
-        this->munitionSharedSet_[munitionType] = munitionToAdd;
-    }
 
     //returns the Pointer to the munitionType, if this munitionType doesn't exist returns 0, see Weapon::attachNeededMunition
     Munition * WeaponSystem::getMunitionType(std::string munitionType)
     {
-        std::map<std::string, Munition *>::const_iterator it = this->munitionSharedSet_.find(munitionType);
-        if (it != this->munitionSharedSet_.end())
+        std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);
+        if (it != this->munitionSet_.end())
             return it->second;
         else
             return 0;
     }
-
-
-
 
 
     //n is the n'th weaponSet, starting with zero

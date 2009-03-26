@@ -68,8 +68,6 @@ namespace orxonox
             virtual const float getBulletLoadingTime();
             virtual void setMagazineLoadingTime(float loadingTime);
             virtual const float getMagazineLoadingTime();
-            virtual void setSharedMunition(bool bSharedMunition);
-            virtual const bool getSharedMunition();
             virtual void setBulletAmount(unsigned int amount);
             virtual const unsigned int getBulletAmount();
             virtual void setMagazineAmount(unsigned int amount);
@@ -105,7 +103,6 @@ namespace orxonox
             bool bReloading_;
             bool bulletReadyToShoot_;
             bool magazineReadyToShoot_;
-            bool bSharedMunition_;
             bool unlimitedMunition_;
             float bulletLoadingTime_;
             float magazineLoadingTime_;
