@@ -99,7 +99,7 @@ namespace orxonox
         }
         if (CommandLine::getValue("client").getBool())
         {
-            Game::getInstance().requestStates("graphics, standalone, level");
+            Game::getInstance().requestStates("graphics, client, level");
             loadLevel = true;
         }
         if (CommandLine::getValue("dedicated").getBool())
@@ -108,19 +108,11 @@ namespace orxonox
             loadLevel = true;
         }
         
-        // Determine where to start
-        if (!loadLevel)
+        // Determine where to start otherwise
+        if (!loadLevel && !CommandLine::getValue("console").getBool())
         {
-            if (CommandLine::getValue("console").getBool())
-            {
-                // Start the game in the console without 3D graphics
-                Game::getInstance().requestState("ioConsole");
-            }
-            else
-            {
-                // Start in GUI mode
-                Game::getInstance().requestStates("graphics, mainMenu");
-            }
+            // Also load graphics
+            Game::getInstance().requestState("graphics");
         }
     }
 

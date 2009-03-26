@@ -142,6 +142,13 @@ namespace orxonox
     */
     void GSGraphics::update(const Clock& time)
     {
+        if (this->getActivity().topState)
+        {
+            // This state can not 'survive' on its own.
+            // Load a user interface therefore
+            Game::getInstance().requestState("mainMenu");
+        }
+
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
         this->inputManager_->update(time);        // tick console
