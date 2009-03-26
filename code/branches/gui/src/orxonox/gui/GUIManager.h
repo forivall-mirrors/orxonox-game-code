@@ -77,6 +77,8 @@ namespace orxonox
 
         void setCamera(Ogre::Camera* camera);
 
+        void testOutput(std::string& str); // tolua_export
+
         static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
         static GUIManager* getInstancePtr() { return singletonRef_s; }
 

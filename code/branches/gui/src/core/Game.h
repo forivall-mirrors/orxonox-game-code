@@ -42,8 +42,8 @@
 #include <vector>
 #include "OrxonoxClass.h"
 
-#define AddGameState(classname, name, ...) \
-    static bool bGameStateDummy_##classname##__LINE__ = orxonox::Game::addGameState(new classname(name, __VA_ARGS__))
+#define AddGameState(classname, name) \
+    static bool bGameStateDummy_##classname##__LINE__ = orxonox::Game::addGameState(new classname(name))
 
 namespace orxonox
 {

@@ -34,6 +34,7 @@
 
 #include "Packet.h"
 #include "network/TrafficControl.h"
+#include <string.h>
 #include <map>
 #include <list>
 #include <cassert>

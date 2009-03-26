@@ -66,7 +66,7 @@ namespace orxonox
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
 
         // show main menu
-        GUIManager::getInstance().showGUI("mainMenu");
+        GUIManager::getInstance().showGUI("mainmenu");
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 
@@ -76,7 +76,7 @@ namespace orxonox
             this->ccStartGame_ = createConsoleCommand(functor, "startGame");
             CommandExecutor::addConsoleCommandShortcut(this->ccStartGame_);
         }
-        
+
         InputManager::getInstance().requestEnterState("mainMenu");
     }
 

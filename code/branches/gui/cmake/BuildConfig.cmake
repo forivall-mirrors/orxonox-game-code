@@ -89,7 +89,7 @@ CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
 
 ################ Compiler Config ################
 
-OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
+#OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
 
 INCLUDE(FlagUtilities)
 
@@ -183,6 +183,7 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # Disable Boost auto linking completely
 ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
+ADD_COMPILER_FLAGS("-Wno-deprecated")
 
 # If no defines are specified, these libs get linked statically
 ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)

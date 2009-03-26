@@ -185,6 +185,11 @@ namespace orxonox
         this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
     }
 
+    void GUIManager::testOutput(std::string& str)
+    {
+        COUT(0) << "*** CEGUI: " << str << std::endl;
+    }
+
     void GUIManager::showGUI(const std::string& name)
     {
         if (state_ != Uninitialised)
