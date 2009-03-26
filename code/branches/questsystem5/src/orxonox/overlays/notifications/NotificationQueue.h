@@ -70,6 +70,19 @@ namespace orxonox
     /**
     @brief
         Displays Notifications from specific senders.
+        Beware! The NotificationQueue is an OverlayGruop and thus cannot be be a sub-element of an OverlayGroup (at least no for now.)
+
+        Creating a NotificationQueue through XML goes as follows:
+        <NotificationQueue
+            name = "SuperQueue" //Name of your OverlayQueue.
+            maxSize = "5" //The maximum size of Notifications displayed.
+            notificationLength = "64" //The maximum number of characters of a Notification, that are displayed. (Default is 5)
+            displayTime = "30" //The time a Notification is displayed in seconds. (Default is 30)
+            targets = "target1, target2" //The senders this NotificationQueue displays Notifications from. (all, if all Notifications should be displayed.)
+            font = "VeraMono" //The font (Default is VeraMono)
+            fontSize = '0.4' //The font size. (Default is 0.025)
+            position = "0.0, .0.0" //The position of the NotificationQueue. (Default is 0.0,0.0)
+        />
     @author
         Damian 'Mozork' Frick
     */
@@ -139,10 +152,14 @@ namespace orxonox
                 { return this->targets_; }
             bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
             
-            inline void setPosition(Vector2 pos)
+            /**
+            @brief Sets the position of the NotificationQueue.
+            @param pos The position.
+            */
+            inline void setPosition(Vector2 pos) 
                 { this->position_ = pos; this->positionChanged(); }
 
-            void scroll(const Vector2 pos);
+            void scroll(const Vector2 pos); //!< Scrolls the NotificationQueue, meaning all NotificationOverlays are moved the input vector.
             
         private:
             static const int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
@@ -182,7 +199,7 @@ namespace orxonox
             bool setFontSize(float size); //!< Set the font size.
             bool setFont(const std::string & font); //!< Set the font.
 
-            void positionChanged();
+            void positionChanged(void); //!< Aligns all the Notifications to the position of the NotificationQueue.
             
             void addNotification(Notification* notification, const std::time_t & time); //!< Add a notification to the queue.
             bool removeContainer(NotificationOverlayContainer* container); //!< Remove a container from the queue.

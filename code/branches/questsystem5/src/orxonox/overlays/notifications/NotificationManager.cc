@@ -173,40 +173,35 @@ namespace orxonox
         Fetches the Notifications for a specific NotificationQueue in a specified timeframe.
     @param queue
         The NotificationQueue the Notifications are fetched for.
+    @param map
+        A multimap, in which the notifications are stored.
     @param timeFrameStart
         The start time of the timeframe.
     @param timeFrameEnd
         The end time of the timeframe.
     @return
-        Returns a time-ordered list of Notifications.
-    @todo
-        Make sure the map is deleted.
+        Returns true if successful.
     */
-    std::multimap<std::time_t,Notification*>* NotificationManager::getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd)
+    bool NotificationManager::getNotifications(NotificationQueue* queue, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd)
     {
-        std::multimap<std::time_t,Notification*>* notifications = this->notificationLists_[this->queueList_[queue]];
+        if(queue == NULL || map == NULL)
+            return false;
+
+        std::multimap<std::time_t,Notification*>* notifications = this->notificationLists_[this->queueList_[queue]]; //!< The Notifications for the input NotificationQueue.
         
-        if(notifications == NULL)
-            return NULL;
+        if(notifications == NULL) //!< Returns NULL, if there are no Notifications.
+            return true;
     
         std::multimap<std::time_t,Notification*>::iterator it, itLowest, itHighest;
         itLowest = notifications->lower_bound(timeFrameStart);
         itHighest = notifications->upper_bound(timeFrameStart);
         
-        std::multimap<std::time_t,Notification*>* map = new std::multimap<std::time_t,Notification*>();
-        
-        for(it = itLowest; it != itHighest; it++)
+        for(it = itLowest; it != itHighest; it++) //!< Iterate through the Notifications from the start of the time Frame to the end of it.
         {
-            map->insert(std::pair<std::time_t,Notification*>(it->first,it->second));
+            map->insert(std::pair<std::time_t,Notification*>(it->first,it->second)); //!< Add the found Notifications to the map.
         }
         
-        if(map->size() == 0)
-        {
-            delete map;
-            return NULL;
-        }
-        
-        return map;
+        return true;
     }
 
 }

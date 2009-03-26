@@ -65,28 +65,29 @@ namespace orxonox
          
             static NotificationManager & getInstance(); //! Returns a reference to the single instance of the NotificationManager.
 
-            //TDO: Visibility?
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
             bool registerQueue(NotificationQueue* queue); //!< Registers a NotificationQueue within the NotificationManager.
             
-            std::multimap<std::time_t,Notification*>* getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationQueue in a specified timeframe.
+            bool getNotifications(NotificationQueue* queue, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationQueue in a specified timeframe.
             
             /**
             @brief Fetches the Notifications for a specific NotificationQueue starting at a specified time.
             @param queue The NotificationQueue the Notifications are fetched for.
+            @param map A multimap, in which the notifications are stored.
             @param timeFrameStart The start time the Notifications are fetched from.
-            @return Returns a time-ordered list of Notifications.
+            @return Returns true if successful.
             */
-            std::multimap<std::time_t,Notification*>* getNotifications(NotificationQueue* queue, const std::time_t & timeFrameStart)
-                { return this->getNotifications(queue, timeFrameStart, std::time(0)); }
+            bool getNotifications(NotificationQueue* queue, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart)
+                { return this->getNotifications(queue, map, timeFrameStart, std::time(0)); }
             /**
             @brief Fetches the Notifications for a specific NotificationQueue starting at a specified timespan before now.
             @param queue The NotificationQueue the Notifications are fetched for.
+            @param map A multimap, in which the notifications are stored.
             @param timeDelay The timespan.
-            @return Returns a time-ordered list of Notifications.
+            @return Returns true if successful.
             */
-            std::multimap<std::time_t,Notification*>* getNotifications(NotificationQueue* queue, int timeDelay)
-                { return this->getNotifications(queue, std::time(0)-timeDelay, std::time(0)); }
+            bool getNotifications(NotificationQueue* queue, std::multimap<std::time_t,Notification*>* map, int timeDelay)
+                { return this->getNotifications(queue, map, std::time(0)-timeDelay, std::time(0)); }
      
         private:
             static NotificationManager* singletonRef_s;

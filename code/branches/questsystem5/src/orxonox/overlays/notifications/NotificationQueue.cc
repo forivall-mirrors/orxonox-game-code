@@ -26,12 +26,19 @@
  *
  */
 
+/**
+    @file NotificationQueue.cc
+    @brief Implementation of the NotificationQueue class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "NotificationQueue.h"
 
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <list>
+#include <iostream>
+#include <sstream>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -154,15 +161,22 @@ namespace orxonox
     {
         this->clear();
     
-        std::multimap<std::time_t,Notification*>* notifications = NotificationManager::getInstance().getNotifications(this, this->displayTime_);
+        std::multimap<std::time_t,Notification*>* notifications = new std::multimap<std::time_t,Notification*>;
+        if(!NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_)) //!< Get the Notifications sent in the interval form now to minus the display time.
+        {
+            COUT(1) << "NotificationQueue update failed due to undetermined cause." << std::endl;
+            return;
+        }
         
-        if(notifications == NULL)
+        if(notifications->empty())
             return;
         
-        for(std::multimap<std::time_t,Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++)
+        for(std::multimap<std::time_t,Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) //!> Add all Notifications.
         {
             this->addNotification(it->second, it->first);
         }
+        
+        delete notifications;
         
         COUT(3) << "NotificationQueue updated." << std::endl;
     }
@@ -342,6 +356,12 @@ namespace orxonox
         return true;
     }
 
+    /**
+    @brief
+        Scrolls the NotificationQueue, meaning all NotificationOverlays are moved the input vector.
+    @param pos
+        The vector the NotificationQueue is scrolled.
+    */
     void NotificationQueue::scroll(const Vector2 pos)
     {
         for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Scroll each overlay.
@@ -350,7 +370,11 @@ namespace orxonox
         }
     }
 
-    void NotificationQueue::positionChanged()
+    /**
+    @brief
+        Aligns all the Notifications to the position of the NotificationQueue.
+    */
+    void NotificationQueue::positionChanged(void)
     {
         int counter = 0;
         for (std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it = this->containers_.begin(); it != this->containers_.end(); it++) //!< Set the position for each overlay.
@@ -378,9 +402,9 @@ namespace orxonox
         container->time = time;
         std::string timeString = std::ctime(&time);
         timeString.erase(timeString.length()-1);
-        char buffer[64]; //TDO: Very un-nice.
-        std::sprintf(buffer,"%x",(unsigned long)notification); //TDO: Use other conversion to avoid 64bit problems.
-        std::string addressString = buffer;
+        std::ostringstream stream;
+        stream << (unsigned long)notification;
+        std::string addressString = stream.str() ;
         container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
         
         this->containers_.insert(container);

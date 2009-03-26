@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file NotificationOverlay.h
+    @brief Definition of the NotificationOverlay class.
+*/
+
+
 #ifndef _NotificationOverlay_H__
 #define _NotificationOverlay_H__
 
@@ -43,7 +49,7 @@ namespace orxonox
 
     /**
     @brief
-        
+        The NotificationOverlay is used to display single Notifications, then bundled in a NotificationQUeue.
     @author
         Damian 'Mozork' Frick
     */
@@ -55,20 +61,24 @@ namespace orxonox
             NotificationOverlay(NotificationQueue* queue, Notification* notification);
             virtual ~NotificationOverlay();
             
-            bool processNotification(Notification* notification);
+            bool processNotification(Notification* notification); //!< Processes the input Notification.
 
-            void setFontSize(float size)
+            /**
+            @brief Sets the font size of this overlay's text.
+            @param size The font size.
+            */
+            inline void setFontSize(float size)
                 { this->setTextSize(size); }
         
         protected:
-            const std::string clipMessage(const std::string & message);
+            const std::string clipMessage(const std::string & message); //!< Clips the input message if too long.
 
         private:
-            NotificationQueue* queue_;
-            Notification* notification_;
+            NotificationQueue* queue_; //!< The NotificationQeue this overlay belongs to.
+            Notification* notification_; //!< The Notification this overlay displays.
 
-            void initialize(void);
-            void defineOverlay(void);
+            void initialize(void); //!< Initializes the object.
+            void defineOverlay(void); //!< Sets some overlay-specific values.
 
     };
 

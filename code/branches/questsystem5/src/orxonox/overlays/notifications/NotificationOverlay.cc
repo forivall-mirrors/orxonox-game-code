@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file NotificationOverlay.cc
+    @brief Implementation of the NotificationOverlay class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "NotificationOverlay.h"
 
@@ -42,16 +47,30 @@
 namespace orxonox
 {
 
+    /**
+    @brief
+        Constructor. Intializes the class.
+    */
     NotificationOverlay::NotificationOverlay(BaseObject* creator) : OverlayText(creator)
     {
         this->initialize();
     }
 
+    /**
+    @brief
+        Constructor. Initilaizes the class creates a graphical representation of the input Notification for the input Queue.
+    @param queue
+        A pointer to the queue the NotificatonOverlay belongs to.
+    @param notification
+        A pointer to the Notification represented by this overlay.
+    @throws Argument
+        Throws an Argument-Exception if either no Notification or no NotificationQueue were input.
+    */
     NotificationOverlay::NotificationOverlay(NotificationQueue* queue, Notification* notification) : OverlayText(this)
     {
         this->initialize();
         
-        if(notification == NULL || queue == NULL)
+        if(notification == NULL || queue == NULL) //!> If either notification or queue are not given an Exception is thrown.
         {
             ThrowException(Argument, "There were NULL-Pointer arguments in NotificationOverlay creation.");
         }
@@ -62,6 +81,10 @@ namespace orxonox
         this->processNotification(notification);
     }
     
+    /**
+    @brief
+        Initializes and Registers the object.
+    */
     void NotificationOverlay::initialize(void)
     {
         RegisterObject(NotificationOverlay);
@@ -69,6 +92,10 @@ namespace orxonox
         this->queue_ = NULL;
     }
     
+    /**
+    @brief
+        Set some Overlay-specific values.
+    */
     void NotificationOverlay::defineOverlay(void)
     {
         this->setFont(this->queue_->getFont());
@@ -77,20 +104,38 @@ namespace orxonox
         this->setPosition(this->queue_->getPosition());
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     NotificationOverlay::~NotificationOverlay()
     {
     }
 
+    /**
+    @brief
+        Processes the input notification, resp. sees to it. that the NotificationOverlay displays the Notification message.
+    @param notification
+        A pointer to the notification that should be processed.
+    @return
+        Returns true if successful.
+    */
     bool NotificationOverlay::processNotification(Notification* notification)
     {
+        if(notification == NULL)
+            return false;
         this->setCaption(clipMessage(notification->getMessage()));
         this->notification_ = notification;
         return true;
     }
 
+    /**
+    @brief
+        Clips the input message so that it meets the requirements for the maximal length of Notifications given by the NotificationQueue.
+    */
     const std::string NotificationOverlay::clipMessage(const std::string & message)
     {
-        if(message.length() <= (unsigned int)this->queue_->getNotificationLength())
+        if(message.length() <= (unsigned int)this->queue_->getNotificationLength()) //!< If the message is not too long.
             return message;
         return message.substr(0, this->queue_->getNotificationLength());
     }
