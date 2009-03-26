@@ -334,6 +334,19 @@ namespace orxonox
         }
     }
 
+    void ControllableEntity::parentChanged()
+    {
+        WorldEntity::parentChanged();
+
+        WorldEntity* parent = this->getParent();
+        if (parent)
+        {
+            for (std::list<CameraPosition*>::iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                if ((*it)->getIsAbsolute())
+                    parent->attach((*it));
+        }
+    }
+
     void ControllableEntity::tick(float dt)
     {
         MobileEntity::tick(dt);

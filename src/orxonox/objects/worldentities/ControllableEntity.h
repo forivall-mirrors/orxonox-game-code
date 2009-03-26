@@ -136,6 +136,7 @@ namespace orxonox
         protected:
             virtual void startLocalHumanControl();
             virtual void stopLocalHumanControl();
+            virtual void parentChanged();
 
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
