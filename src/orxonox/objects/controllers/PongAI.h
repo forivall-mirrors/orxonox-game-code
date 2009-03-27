@@ -31,8 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <list>
+
 #include "Controller.h"
 #include "objects/Tickable.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -40,7 +43,7 @@ namespace orxonox
     {
         public:
             PongAI(BaseObject* creator);
-            virtual ~PongAI() {}
+            virtual ~PongAI();
 
             void setConfigValues();
 
@@ -51,11 +54,21 @@ namespace orxonox
 
         protected:
             void calculateRandomOffset();
+            void calculateBallEndPosition();
+            void move(char direction);
+            void delayedMove();
 
             PongBall* ball_;
+            Vector2 ballDirection_;
+            float ballEndPosition_;
             float randomOffset_;
             float relHysteresisOffset_;
             float strength_;
+
+//            Timer<PongAI> randomOffsetTimer_;
+//            Timer<PongAI> ballEndPositionTimer_;
+            std::list<std::pair<Timer<PongAI>*, char> > reactionTimers_;
+            char movement_;
     };
 }
 
