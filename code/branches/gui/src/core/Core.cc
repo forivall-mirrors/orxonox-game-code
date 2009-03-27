@@ -488,7 +488,7 @@ namespace orxonox
             // Also set the root path
             boost::filesystem::path relativeExecutablePath(ORXONOX_RUNTIME_INSTALL_PATH);
             rootPath_g = executablePath_g;
-            while (!boost::filesystem::equivalent(rootPath_g / relativeExecutablePath, executablePath_g) || rootPath_g.empty())
+            while (!boost::filesystem::equivalent(rootPath_g / relativeExecutablePath, executablePath_g) && !rootPath_g.empty())
                 rootPath_g = rootPath_g.branch_path();
             if (rootPath_g.empty())
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
