@@ -222,6 +222,10 @@ namespace orxonox
             virtual operator orxonox::Degree()      const = 0;
 
             virtual void toString(std::ostream& outstream) const = 0;
+            
+            virtual void importData( uint8_t*& mem )=0;
+            virtual void exportData( uint8_t*& mem ) const=0;
+            virtual uint8_t getSize() const=0;
 
             MT_Type type_;          //!< The type of the current value
             bool bHasDefaultValue_; //!< True if the last conversion wasn't successful
@@ -319,6 +323,15 @@ namespace orxonox
             /** @brief Returns true if the current type is T. */
             template <typename T> inline bool isType()                  const { return false; } // Only works for specialized values - see below
             std::string                       getTypename()             const;
+            
+            /** @brief Saves the value of the MT to a bytestream (pointed at by mem) and increases mem pointer by size of MT */
+            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type)<=8); *(uint8_t*)(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->importData(mem); }
+            /** @brief Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT */
+            inline void                       exportData(uint8_t*& mem) { assert(sizeof(MT_Type)<=8); this->setType(*(uint8_t*)mem); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
+            /** @brief Saves the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
+            inline uint8_t*& operator << (uint8_t*& mem) { importData(mem); return mem; }
+            /** @brief Loads the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
+            inline void operator >> (uint8_t*& mem) { exportData(mem); }
 
             /** @brief Checks whether the value is a default one. */
             bool                              hasDefaultValue()         const { return this->value_->hasDefaultValue(); }
