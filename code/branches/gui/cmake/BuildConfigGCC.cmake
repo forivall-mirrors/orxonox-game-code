@@ -64,7 +64,7 @@ ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 
 # For newer GCC (4.3 and above), don't display hundreds of annoying deprecated
 # messages. Other versions don't seem to show any such warnings at all.
-ADD_COMPILER_FLAGS("-Wno-deprecated")
+ADD_COMPILER_FLAGS("-Wno-deprecated" CXX)
 
 # Increase warning level if requested
 IF(EXTRA_COMPILER_WARNINGS)
