@@ -20,23 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
  *
  */
 
-#include "AudioSource.h"
-
-namespace orxonox
-{
-    AudioSource::AudioSource()
-    {
-
-    }
-
-    AudioSource::~AudioSource()
-    {
-
-    }
-}

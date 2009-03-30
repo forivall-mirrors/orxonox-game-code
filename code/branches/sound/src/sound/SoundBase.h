@@ -20,39 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
  *
  */
 
-#include "AudioBuffer.h"
+#include <al.h>
+
+class Ogre::SceneNode;
+class Orxonox::SoundManager;
 
 namespace orxonox
 {
-    AudioBuffer::AudioBuffer(std::string filename)
+
+    class SoundBase
     {
-        // Load wav data into buffers.
-        alGenBuffers(1, &buffer);
+    public:
+        SoundBase(Ogre::SceneNode* node);
+        ~SoundBase();
 
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
+        void attachToNode(Ogre::SceneNode* node);
+        void update();
+        void play(bool loop);
+        void stop();
+        void pause();
 
-        //FIXME deprecated; seems unneeded
-//        alutLoadWAVFile((ALbyte*)filename.c_str(), &format, &data, &size, &freq, &loop);
-        alBufferData(buffer, format, data, size, freq);
-        //FIXME deprecated; seems unneeded
-//        alutUnloadWAV(format, data, size, freq);
+        bool isPlaying();
 
-        // Do another error check and return.
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
-        else
-              loaded=AL_TRUE;
-    }
+    private:
+        ALuint source_;
+        ALuint buffer_;
+        Ogre::SceneNode* node_;
 
-    AudioBuffer::~AudioBuffer()
-    {
-
-    }
-}
+        static SoundManager* soundmanager_s;
+    }; // class SoundBase
+} // namepsace orxonox

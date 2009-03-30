@@ -20,28 +20,33 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
- *
  */
-
-/**
-  @file
-  @brief Various headers used in the audio lib. Avoid including this to
-         increase accuracy of header file dependencies.
-*/
-
-#include "AudioPrereqs.h"
-
-#include <iostream>
-#include <vector>
-#include <string>
 
 #include <al.h>
 #include <alc.h>
-#include <AL/alut.h>
-#include <ogg/ogg.h>
-#include <vorbis/codec.h>
-#include <vorbis/vorbisenc.h>
-#include <vorbis/vorbisfile.h>
+
+class SoundBase;
+
+namespace Orxonox
+{
+    class SoundManager : public Tickable
+    {
+    public:
+        SoundManager();
+        
+        void addSound(SoundBase* sound);
+        void removeSound(SoundBase* sound);
+
+        void tick(float dt);
+
+    private:
+        ALCcontext* context_;
+        ALCdevice* device_;
+
+        std::list<SoundBase*> soundlist_;
+
+    }; // class SoundManager
+} // namespace Orxonox
