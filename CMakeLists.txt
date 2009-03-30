@@ -41,7 +41,6 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 IF(UNIX AND NOT APPLE)
   INCLUDE(FlagUtilities)
-  SET_CACHE(CMAKE_INSTALL_PREFIX PATH "" /usr) # default: /usr/local
 ENDIF()
 
 # Library finding
