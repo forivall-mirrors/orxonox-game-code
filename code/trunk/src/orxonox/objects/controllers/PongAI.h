@@ -65,8 +65,6 @@ namespace orxonox
             float relHysteresisOffset_;
             float strength_;
 
-//            Timer<PongAI> randomOffsetTimer_;
-//            Timer<PongAI> ballEndPositionTimer_;
             std::list<std::pair<Timer<PongAI>*, char> > reactionTimers_;
             char movement_;
     };
