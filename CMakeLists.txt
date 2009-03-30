@@ -39,10 +39,6 @@ SET(ORXONOX_VERSION_NAME "Arcturus")
 # This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-IF(UNIX AND NOT APPLE)
-  INCLUDE(FlagUtilities)
-ENDIF()
-
 # Library finding
 INCLUDE(LibraryConfig)
 
