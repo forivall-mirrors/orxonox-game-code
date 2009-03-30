@@ -45,7 +45,6 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
-        GUIManager* guiManager_;
     };
 }
 

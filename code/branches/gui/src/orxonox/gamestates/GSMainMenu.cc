@@ -82,16 +82,14 @@ namespace orxonox
 
     void GSMainMenu::deactivate()
     {
-        InputManager::getInstance().requestLeaveState("game");
-        InputManager::getInstance().requestDestroyState("game");
+        InputManager::getInstance().requestLeaveState("mainMenu");
+        InputManager::getInstance().requestDestroyState("mainMenu");
 
         if (this->ccStartGame_)
         {
             delete this->ccStartGame_;
             this->ccStartGame_ = 0;
         }
-
-        GUIManager::getInstance().executeCode("hideGUI()");
     }
 
     void GSMainMenu::update(const Clock& time)

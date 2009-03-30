@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -194,7 +194,7 @@ namespace orxonox
     {
         if (state_ != Uninitialised)
         {
-            COUT(3) << "Loading GUI " << name << std::endl;
+            //COUT(3) << "Loading GUI " << name << std::endl;
             try
             {
                 this->scriptModule_->executeString(std::string("showGUI(\"") + name + "\")");

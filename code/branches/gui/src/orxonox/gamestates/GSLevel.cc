@@ -55,11 +55,14 @@ namespace orxonox
     AddGameState(GSLevel, "level");
 
     SetCommandLineArgument(level, "presentation.oxw").shortcut("l");
+    SetConsoleCommand(GSLevel, showIngameGUI, true).keybindMode(KeybindMode::OnPress).keybindMode(KeybindMode::OnRelease);
 
     GSLevel::GSLevel(const std::string& name)
         : GameState(name)
         , keyBinder_(0)
-        , inputState_(0)
+        , gameInputState_(0)
+        , guiMouseOnlyInputState_(0)
+        , guiKeysOnlyInputState_(0)
         , radar_(0)
         , startFile_(0)
         , cameraManager_(0)
@@ -86,17 +89,16 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            {
-                FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::toggleGUI);
-                functor->setObject(this);
-                this->ccToggleGUI_ = createConsoleCommand(functor, "toggleGUI");
-                CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
-            }
-
-            inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
+            gameInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
             keyBinder_ = new KeyBinder();
             keyBinder_->loadBindings("keybindings.ini");
-            inputState_->setHandler(keyBinder_);
+            gameInputState_->setHandler(keyBinder_);
+
+            guiMouseOnlyInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("guiMouseOnly");
+            guiMouseOnlyInputState_->setMouseHandler(GUIManager::getInstancePtr());
+
+            guiKeysOnlyInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("guiKeysOnly");
+            guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
 
             // create the global CameraManager
             this->cameraManager_ = new CameraManager(GraphicsManager::getInstance().getViewport());
@@ -137,6 +139,21 @@ namespace orxonox
         }
     }
 
+    void GSLevel::showIngameGUI(bool show)
+    {
+        COUT(0) << "*** Call works with \"" << (show ? "true" : "false") << "\" as param" << std::endl;
+        if (show)
+        {
+            GUIManager::getInstancePtr()->showGUI("inGameTest");
+            InputManager::getInstance().requestEnterState("guiMouseOnly");
+        }
+        else
+        {
+            GUIManager::getInstancePtr()->executeCode("hideGUI(inGameTest)");
+            InputManager::getInstance().requestLeaveState("guiMouseOnly");
+        }
+    }
+
     void GSLevel::deactivate()
     {
         // destroy console commands
@@ -149,11 +166,6 @@ namespace orxonox
         {
             delete this->ccTkeybind_;
             this->ccTkeybind_ = 0;
-        }
-        if (this->ccToggleGUI_)
-        {
-            delete this->ccToggleGUI_;
-            this->ccToggleGUI_ = 0;
         }
 
 
@@ -195,7 +207,9 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            inputState_->setHandler(0);
+            gameInputState_->setHandler(0);
+            guiMouseOnlyInputState_->setHandler(0);
+            guiKeysOnlyInputState_->setHandler(0);
             InputManager::getInstance().requestDestroyState("game");
             if (this->keyBinder_)
             {
@@ -232,14 +246,6 @@ namespace orxonox
         //////////////////////////////////////////////////////////////////////////////////////////
 
         delete this->startFile_;
-    }
-
-    void GSLevel::toggleGUI()
-    {
-        if (GameMode::showsGraphics())
-        {
-            GUIManager::getInstance().executeCode("toggleGUI()");
-        }
     }
 
     void GSLevel::keybind(const std::string &command)

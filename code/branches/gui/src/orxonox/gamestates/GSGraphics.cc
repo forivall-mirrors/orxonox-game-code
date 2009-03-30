@@ -35,6 +35,7 @@
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Clock.h"
+#include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
@@ -109,11 +110,24 @@ namespace orxonox
         guiManager_ = new GUIManager();
         guiManager_->initialise(renderWindow);
 
+        FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::toggleGUI);
+        functor->setObject(this);
+        this->ccToggleGUI_ = createConsoleCommand(functor, "toggleGUI");
+        CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
+
+
         InputManager::getInstance().requestEnterState("master");
     }
 
     void GSGraphics::deactivate()
     {
+
+        if (this->ccToggleGUI_)
+        {
+            delete this->ccToggleGUI_;
+            this->ccToggleGUI_ = 0;
+        }
+
         masterInputState_->setHandler(0);
         InputManager::getInstance().requestDestroyState("master");
         delete this->masterKeyBinder_;
@@ -130,6 +144,11 @@ namespace orxonox
         delete graphicsManager_;
 
         GameMode::setShowsGraphics(false);
+    }
+
+    void GSGraphics::toggleGUI()
+    {
+            GUIManager::getInstance().executeCode("toggleGUI()");
     }
 
     /**

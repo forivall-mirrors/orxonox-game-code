@@ -46,7 +46,7 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
-        void toggleGUI();
+        static void showIngameGUI(bool show);
 
     protected:
         void loadLevel();
@@ -57,10 +57,12 @@ namespace orxonox
         void tkeybind(const std::string& command);
         void keybindInternal(const std::string& command, bool bTemporary);
 
-        KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
-        SimpleInputState*     inputState_;
-        Radar*                radar_;            //!< represents the Radar (not the HUD part)
-        XMLFile*              startFile_;        //!< current hard coded default level
+        KeyBinder*            keyBinder_;               //!< tool that loads and manages the input bindings
+        SimpleInputState*     gameInputState_;          //!< input state for normal ingame playing
+        SimpleInputState*     guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
+        SimpleInputState*     guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
+        Radar*                radar_;                   //!< represents the Radar (not the HUD part)
+        XMLFile*              startFile_;               //!< current hard coded default level
         CameraManager*        cameraManager_;
         LevelManager*         levelManager_;
         PlayerManager*        playerManager_;
@@ -71,7 +73,6 @@ namespace orxonox
         // console commands
         ConsoleCommand*       ccKeybind_;
         ConsoleCommand*       ccTkeybind_;
-        ConsoleCommand*       ccToggleGUI_;
     };
 }
 

@@ -46,6 +46,8 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
+        void toggleGUI();
+
     private:
         // Window events from WindowEventListener
         void windowResized(unsigned int newWidth, unsigned int newHeight);
@@ -60,6 +62,7 @@ namespace orxonox
         KeyBinder*            masterKeyBinder_;
         SimpleInputState*     masterInputState_;
         XMLFile*              debugOverlay_;
+        ConsoleCommand*       ccToggleGUI_;
     };
 }
 

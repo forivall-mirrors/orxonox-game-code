@@ -54,10 +54,6 @@ namespace orxonox
     void GSStandalone::activate()
     {
         GameMode::setIsStandalone(true);
-
-        guiManager_ = GUIManager::getInstancePtr();
-        // not sure if necessary
-        // guiManager_->loadScene("IngameMenu");
     }
 
     void GSStandalone::deactivate()
@@ -67,13 +63,5 @@ namespace orxonox
 
     void GSStandalone::update(const Clock& time)
     {
-        //Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
-        //COUT(0) << "** " << viewport->getCamera()->getSceneManager() << std::endl;
-        //guiManager_->testFct();
-        //Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
-        //guiManager_->showGUI("IngameMenu", viewport->getCamera()->getSceneManager());
-
-        // tick CEGUI
-        guiManager_->update(time);
     }
 }
