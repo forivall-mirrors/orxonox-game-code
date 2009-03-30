@@ -123,8 +123,13 @@ namespace orxonox
             }
 
             Pawn* victim = dynamic_cast<Pawn*>(otherObject);
+
+            float dmg = this->damage_;
+            if (this->owner_)
+                dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
+
             if (victim)
-                victim->damage(this->damage_, this->owner_);
+                victim->damage(dmg, this->owner_);
         }
         return false;
     }

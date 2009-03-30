@@ -33,6 +33,7 @@
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/RadarViewable.h"
 #include "objects/weaponSystem/WeaponSystem.h"
+#include "objects/pickup/PickupCollection.h"
 
 namespace orxonox
 {
@@ -106,6 +107,8 @@ namespace orxonox
                 { return this->numexplosionchunks_; }
 
             virtual void dropItems();
+            inline PickupCollection& getPickups()
+                { return this->pickups_; }
 
         protected:
             virtual void death();
@@ -114,6 +117,7 @@ namespace orxonox
 
             bool bAlive_;
 
+            PickupCollection pickups_;
 
             float health_;
             float maxHealth_;
