@@ -69,6 +69,7 @@ namespace orxonox
             {
                 this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
                 this->entity_->setCastShadows(this->bCastShadows_);
+                this->entity_->setNormaliseNormals(true);
             }
             catch (...)
             {
