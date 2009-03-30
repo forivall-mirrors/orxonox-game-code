@@ -54,11 +54,6 @@ namespace orxonox
         this->movement_ = 0;
 
         this->setConfigValues();
-
-//        this->randomOffsetTimer_.setTimer(MAX_REACTION_TIME * (1 - this->strength_), false, this, createExecutor(createFunctor(&PongAI::calculateRandomOffset)));
-//        this->ballEndPositionTimer_.setTimer(MAX_REACTION_TIME * (1 - this->strength_), false, this, createExecutor(createFunctor(&PongAI::calculateBallEndPosition)));
-//        this->randomOffsetTimer_.stopTimer();
-//        this->ballEndPositionTimer_.stopTimer();
     }
 
     PongAI::~PongAI()
@@ -87,10 +82,11 @@ namespace orxonox
         // Check in which direction the ball is flying
         if ((mypos.x > 0 && ballvel.x < 0) || (mypos.x < 0 && ballvel.x > 0))
         {
-            // Ball is flying away
+            // The ball is flying away
             this->ballDirection_.x = -1;
             this->ballDirection_.y = 0;
 
+            // Move to the middle
             if (mypos.z > hysteresisOffset)
                 move = 1;
             else if (mypos.z < -hysteresisOffset)
@@ -98,15 +94,16 @@ namespace orxonox
         }
         else if (ballvel.x == 0)
         {
-            // Ball is standing still
+            // The ball is standing still
             this->ballDirection_.x = 0;
             this->ballDirection_.y = 0;
         }
         else
         {
-            // Ball is approaching
+            // The ball is approaching
             if (this->ballDirection_.x != 1)
             {
+                // The ball just startet to approach, initialize all values
                 this->ballDirection_.x = 1;
                 this->ballDirection_.y = sgn(ballvel.z);
                 this->ballEndPosition_ = 0;
@@ -114,21 +111,18 @@ namespace orxonox
 
                 this->calculateRandomOffset();
                 this->calculateBallEndPosition();
-                //this->randomOffsetTimer_.setInterval(MAX_REACTION_TIME * (1 - this->strength_));
-                //this->ballEndPositionTimer_.setInterval(MAX_REACTION_TIME * (1 - this->strength_));
-                //this->randomOffsetTimer_.startTimer();
-                //this->ballEndPositionTimer_.startTimer();
             }
 
             if (this->ballDirection_.y != sgn(ballvel.z))
             {
+                // The ball just bounced from a bound, recalculate the predicted end position
                 this->ballDirection_.y = sgn(ballvel.z);
 
                 this->calculateBallEndPosition();
-                //this->ballEndPositionTimer_.startTimer();
             }
 
-            float desiredZValue = /*((1 - this->strength_) * ballpos.z) + */(/*this->strength_ * */this->ballEndPosition_) + this->randomOffset_;
+            // Move to the predicted end position with an additional offset (to hit the ball with the side of the bat)
+            float desiredZValue = this->ballEndPosition_ + this->randomOffset_;
 
             if (mypos.z > desiredZValue + hysteresisOffset * (this->randomOffset_ < 0))
                 move = 1;
@@ -155,7 +149,7 @@ namespace orxonox
         position *= 0.48;
 
         // Both sides are equally probable
-        position *= sgn(rnd(-1,1));
+        position *= rndsgn();
 
         // Calculate the offset in world units
         this->randomOffset_ = position * this->ball_->getBatLength() * this->ball_->getFieldDimension().y;
@@ -173,16 +167,21 @@ namespace orxonox
         // Calculate bounces
         for (float limit = 0.35; limit < this->strength_ || this->strength_ > 0.99; limit += 0.4)
         {
+            // Bounce from the upper bound
             if (this->ballEndPosition_ > dimension.y / 2)
             {
+                // Mirror the predicted position at the upper bound and add some random error
                 this->ballEndPosition_ = dimension.y - this->ballEndPosition_ + (rnd(-1, 1) * dimension.y * (1 - this->strength_));
                 continue;
             }
+            // Bounce from the upper bound
             if (this->ballEndPosition_ < -dimension.y / 2)
             {
+                // Mirror the predicted position at the lower bound and add some random error
                 this->ballEndPosition_ = -dimension.y - this->ballEndPosition_ + (rnd(-1, 1) * dimension.y * (1 - this->strength_));
                 continue;
             }
+            // No bounce - break
             break;
         }
     }
@@ -215,8 +214,10 @@ namespace orxonox
 
     void PongAI::delayedMove()
     {
+        // Get the new movement direction from the timer list
         this->movement_ = this->reactionTimers_.front().second;
 
+        // Destroy the timer and remove it from the list
         Timer<PongAI>* timer = this->reactionTimers_.front().first;
         delete timer;
 

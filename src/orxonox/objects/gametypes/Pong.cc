@@ -150,6 +150,11 @@ namespace orxonox
     {
         Deathmatch::playerScored(player);
 
+        if (this->center_)
+        {
+            this->center_->fireEvent();
+        }
+
         if (this->ball_)
         {
             this->ball_->setPosition(Vector3::ZERO);
