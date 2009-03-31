@@ -53,8 +53,6 @@ namespace orxonox
         this->bat_[0] = 0;
         this->bat_[1] = 0;
 
-        this->bForceSpawn_ = true;
-
         this->starttimer_.setTimer(1.0, false, this, createExecutor(createFunctor(&Pong::startBall)));
         this->starttimer_.stopTimer();
 
@@ -110,7 +108,13 @@ namespace orxonox
 
         this->starttimer_.startTimer();
 
+
+        bool temp = this->bForceSpawn_;
+        this->bForceSpawn_ = true;
+
         Deathmatch::start();
+
+        this->bForceSpawn_ = temp;
     }
 
     void Pong::end()

@@ -62,6 +62,8 @@ namespace orxonox
             void setBats(PongBat** bats)
                 { this->bat_ = bats; }
 
+            static const float MAX_REL_Z_VELOCITY;
+
         private:
             float fieldWidth_;
             float fieldHeight_;

@@ -52,6 +52,8 @@ namespace orxonox
         this->relHysteresisOffset_ = 0.02;
         this->strength_ = 0.5;
         this->movement_ = 0;
+        this->oldMove_ = 0;
+        this->bOscillationAvoidanceActive_ = false;
 
         this->setConfigValues();
     }
@@ -78,6 +80,7 @@ namespace orxonox
         float hysteresisOffset = this->relHysteresisOffset_ * this->ball_->getFieldDimension().y;
 
         char move = 0;
+        bool delay = false;
 
         // Check in which direction the ball is flying
         if ((mypos.x > 0 && ballvel.x < 0) || (mypos.x < 0 && ballvel.x > 0))
@@ -85,6 +88,7 @@ namespace orxonox
             // The ball is flying away
             this->ballDirection_.x = -1;
             this->ballDirection_.y = 0;
+            this->bOscillationAvoidanceActive_ = false;
 
             // Move to the middle
             if (mypos.z > hysteresisOffset)
@@ -97,6 +101,7 @@ namespace orxonox
             // The ball is standing still
             this->ballDirection_.x = 0;
             this->ballDirection_.y = 0;
+            this->bOscillationAvoidanceActive_ = false;
         }
         else
         {
@@ -111,6 +116,8 @@ namespace orxonox
 
                 this->calculateRandomOffset();
                 this->calculateBallEndPosition();
+                delay = true;
+                this->bOscillationAvoidanceActive_ = false;
             }
 
             if (this->ballDirection_.y != sgn(ballvel.z))
@@ -119,18 +126,36 @@ namespace orxonox
                 this->ballDirection_.y = sgn(ballvel.z);
 
                 this->calculateBallEndPosition();
+                delay = true;
+                this->bOscillationAvoidanceActive_ = false;
             }
 
             // Move to the predicted end position with an additional offset (to hit the ball with the side of the bat)
-            float desiredZValue = this->ballEndPosition_ + this->randomOffset_;
+            if (!this->bOscillationAvoidanceActive_)
+            {
+                float desiredZValue = this->ballEndPosition_ + this->randomOffset_;
 
-            if (mypos.z > desiredZValue + hysteresisOffset * (this->randomOffset_ < 0))
-                move = 1;
-            else if (mypos.z < desiredZValue - hysteresisOffset * (this->randomOffset_ > 0))
-                move = -1;
+                if (mypos.z > desiredZValue + hysteresisOffset * (this->randomOffset_ < 0))
+                    move = 1;
+                else if (mypos.z < desiredZValue - hysteresisOffset * (this->randomOffset_ > 0))
+                    move = -1;
+            }
+
+            if (move != 0 && this->oldMove_ != 0 && move != this->oldMove_ && !delay)
+            {
+                // We had to correct our position because we moved too far
+                // (and delay ist false, so we're not in the wrong place because of a new end-position prediction)
+                if (fabs(mypos.z - this->ballEndPosition_) < 0.5 * this->ball_->getBatLength() * this->ball_->getFieldDimension().y)
+                {
+                    // We're not at the right position, but we still hit the ball, so just stay there to avoid oscillation
+                    move = 0;
+                    this->bOscillationAvoidanceActive_ = true;
+                }
+            }
         }
 
-        this->move(move);
+        this->oldMove_ = move;
+        this->move(move, delay);
         this->getControllableEntity()->moveFrontBack(this->movement_);
     }
 
@@ -167,18 +192,21 @@ namespace orxonox
         // Calculate bounces
         for (float limit = 0.35; limit < this->strength_ || this->strength_ > 0.99; limit += 0.4)
         {
-            // Bounce from the upper bound
+            // Calculate a random prediction error, based on the vertical speed of the ball and the strength of the AI
+            float randomError = rnd(-1, 1) * dimension.y * (velocity.z / velocity.x / PongBall::MAX_REL_Z_VELOCITY) * (1 - this->strength_);
+
+            // Bounce from the lower bound
             if (this->ballEndPosition_ > dimension.y / 2)
             {
                 // Mirror the predicted position at the upper bound and add some random error
-                this->ballEndPosition_ = dimension.y - this->ballEndPosition_ + (rnd(-1, 1) * dimension.y * (1 - this->strength_));
+                this->ballEndPosition_ = dimension.y - this->ballEndPosition_ + randomError;
                 continue;
             }
             // Bounce from the upper bound
             if (this->ballEndPosition_ < -dimension.y / 2)
             {
                 // Mirror the predicted position at the lower bound and add some random error
-                this->ballEndPosition_ = -dimension.y - this->ballEndPosition_ + (rnd(-1, 1) * dimension.y * (1 - this->strength_));
+                this->ballEndPosition_ = -dimension.y - this->ballEndPosition_ + randomError;
                 continue;
             }
             // No bounce - break
@@ -186,7 +214,7 @@ namespace orxonox
         }
     }
 
-    void PongAI::move(char direction)
+    void PongAI::move(char direction, bool bUseDelay)
     {
         // The current direction is either what we're doing right now (movement_) or what is last in the queue
         char currentDirection = this->movement_;
@@ -197,9 +225,9 @@ namespace orxonox
         if (direction == currentDirection)
             return;
 
-        // Calculate delay, but only to change direction or start moving (stop works without delay)
-        if (direction != 0)
+        if (bUseDelay)
         {
+            // Calculate delay
             float delay = MAX_REACTION_TIME * (1 - this->strength_);
 
             // Add a new Timer
@@ -208,7 +236,7 @@ namespace orxonox
         }
         else
         {
-            this->movement_ = 0;
+            this->movement_ = direction;
         }
     }
 

@@ -37,6 +37,8 @@ namespace orxonox
 {
     CreateFactory(PongBall);
 
+    const float PongBall::MAX_REL_Z_VELOCITY = 1.5;
+
     PongBall::PongBall(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(PongBall);
@@ -78,7 +80,7 @@ namespace orxonox
                         {
                             position.x = this->fieldWidth_ / 2;
                             velocity.x = -velocity.x;
-                            velocity.z = distance * distance * sgn(distance) * 1.5 * this->speed_;
+                            velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
                         }
                         else if (position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                         {
@@ -96,7 +98,7 @@ namespace orxonox
                         {
                             position.x = -this->fieldWidth_ / 2;
                             velocity.x = -velocity.x;
-                            velocity.z = distance * distance * sgn(distance) * 1.5 * this->speed_;
+                            velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
                         }
                         else if (position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                         {
