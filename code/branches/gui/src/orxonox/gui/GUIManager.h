@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -48,8 +48,15 @@ namespace CEGUI { class DefaultLogger; }
 namespace orxonox
 {
     /**
+    @class GUIManager
     @brief
-        Provides a simple interface to CEGUI with tolua methods and console commands
+        Provides a simple interface to CEGUI with tolua methods and console commands. It also acts as a key and mouse handler.
+
+        The GUIManager is a singleton and can be called anywhere when access on the GUI is needed.
+        Creation of the GUIManager is therefore not possible and the cunstructor is private.
+
+        Since the GUI needs user input, the GUIManager implements the functions needed to act as a key and/or mouse handler.
+        Those input events are then injected into CEGUI in Lua.
     */
     class _OrxonoxExport GUIManager
 // tolua_end
@@ -58,11 +65,15 @@ namespace orxonox
     {
 // tolua_end
     public:
+        /**
+        @enum State
+            The current state of the GUIManager. There should maybe be more (or we can omit this totally).
+        */
         enum State
         {
-            Uninitialised,
-            Ready,
-            OnDisplay
+            Uninitialised,  //!< Initial state of the GUIManager
+            Ready,          //!< State after initialisation if ready
+            OnDisplay       //!< State if GUI is displayed
         };
 
         GUIManager();
@@ -83,44 +94,43 @@ namespace orxonox
         static GUIManager* getInstancePtr() { return singletonRef_s; }
 
     private:
-        GUIManager(const GUIManager& instance);
+        GUIManager(const GUIManager& instance);                 //!< private constructor (this is a singleton class)
 
         void loadLuaCode();
 
+        // keyHandler functions
         void keyPressed (const KeyEvent& evt)
-        { guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text); }
+            { guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text); }
         void keyReleased(const KeyEvent& evt)
-        { guiSystem_->injectKeyUp(evt.key); }
-        void keyHeld    (const KeyEvent& evt)
-        { }
+            { guiSystem_->injectKeyUp(evt.key); }
+        void keyHeld    (const KeyEvent& evt) { }
 
+        // mouseHandler functions
         void mouseButtonPressed (MouseButtonCode::ByEnum id);
         void mouseButtonReleased(MouseButtonCode::ByEnum id);
-        void mouseButtonHeld    (MouseButtonCode::ByEnum id)
-        { }
+        void mouseButtonHeld    (MouseButtonCode::ByEnum id) { }
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
-        { guiSystem_->injectMouseMove(rel.x, rel.y); }
+            { guiSystem_->injectMouseMove(rel.x, rel.y); }
         void mouseScrolled      (int abs, int rel)
-        { guiSystem_->injectMouseWheelChange(rel);}
+            { guiSystem_->injectMouseWheelChange(rel);}
 
-        void updateInput(float dt) { }
-        void updateKey(float dt) { }
-        void updateMouse(float dt) { }
-
-        Ogre::RenderWindow*       renderWindow_;
-        CEGUI::OgreCEGUIRenderer* guiRenderer_;
-        CEGUI::ResourceProvider*  resourceProvider_;
-        CEGUI::LuaScriptModule*   scriptModule_;
-        CEGUI::DefaultLogger*     ceguiLogger_;
-        CEGUI::System*            guiSystem_;
-        CEGUI::Imageset*          backgroundImage_;
-        lua_State*                luaState_;
-
-        State state_;
+        void updateInput(float dt)  { }
+        void updateKey  (float dt)  { }
+        void updateMouse(float dt)  { }
 
         static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
-        static GUIManager*        singletonRef_s;
+        Ogre::RenderWindow*         renderWindow_;      //!< Ogre's render window to give CEGUI access to it
+        CEGUI::OgreCEGUIRenderer*   guiRenderer_;       //!< CEGUI's interface to the Ogre Engine
+        CEGUI::ResourceProvider*    resourceProvider_;  //!< CEGUI's resource provider
+        CEGUI::LuaScriptModule*     scriptModule_;      //!< CEGUI's script module to use Lua
+        CEGUI::DefaultLogger*       ceguiLogger_;       //!< CEGUI's logger to be able to log CEGUI errors in our log
+        CEGUI::System*              guiSystem_;         //!< CEGUI's main system
+        lua_State*                  luaState_;          //!< Lua state, access point to the Lua engine
+
+        State                       state_;             //!< reflects state of the GUIManager
+
+        static GUIManager*          singletonRef_s;     //!< Singleton reference to GUIManager
     }; // tolua_export
 } // tolua_export
 

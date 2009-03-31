@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
- *   Co-authors:
  *      Benjamin Knecht
+ *   Co-authors:
+ *
  *
  */
 
@@ -74,6 +75,12 @@ namespace orxonox
         singletonRef_s = this;
     }
 
+    /**
+    @brief
+        Deconstructor of the GUIManager
+
+        Basically shuts down CEGUI and destroys the Lua engine and afterwards the interface to the Ogre engine.
+    */
     GUIManager::~GUIManager()
     {
         if (guiSystem_)
@@ -95,6 +102,20 @@ namespace orxonox
         singletonRef_s = 0;
     }
 
+    /**
+    @brief
+        Initialises the GUIManager by starting up CEGUI
+    @param renderWindow
+        Ogre's render window. Without this, the GUI cannot be displayed.
+    @return true if success, otherwise false
+
+        Before this call the GUIManager won't do anything, but can be accessed.
+
+        Creates the interface to Ogre, sets up the CEGUI renderer and the Lua script module together with the Lua engine.
+        The log is set up and connected to the CEGUILogger.
+        After Lua setup tolua++-elements are linked to Lua-state to give Lua access to C++-code.
+        Finally initial Lua code is executed (maybe we can do this with the CEGUI startup script automatically).
+    */
     bool GUIManager::initialise(Ogre::RenderWindow* renderWindow)
     {
         using namespace CEGUI;
@@ -150,11 +171,24 @@ namespace orxonox
         return true;
     }
 
+    /**
+    @brief
+        Calls main Lua script
+    @todo
+        Replace loadGUI.lua with loadGUI_2.lua after merging this back to trunk.
+        However CEGUI is able to execute a startup script. We could maybe put this call in this startup code.
+
+        This function calls the main Lua script for our GUI.
+
+        Additionally we set the datapath variable in Lua. This is needed so Lua can access the data used for the GUI.
+    */
     void GUIManager::loadLuaCode()
     {
         try
         {
+            // call main Lua script
             this->scriptModule_->executeScriptFile("loadGUI_2.lua", "GUI");
+            // set datapath for GUI data
             lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
             lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
         }
@@ -169,27 +203,73 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        used to tick the GUI
+    @param time
+        clock which provides time value for the GUI System
+
+        Ticking the GUI means updating it with a certain regularity.
+        The elapsed time since the last call is given in the time value provided by the clock.
+        This time value is then used to provide a fluent animation of the GUI.
+    */
     void GUIManager::update(const Clock& time)
     {
         assert(guiSystem_);
         guiSystem_->injectTimePulse(time.getDeltaTime());
     }
 
+    /**
+    @brief
+        Executes Lua code
+    @param str
+        reference to string object holding the Lua code which is to be executed
+
+        This function gives total access to the GUI. You can execute ANY Lua code here.
+    */
     void GUIManager::executeCode(const std::string& str)
     {
         this->scriptModule_->executeString(str);
     }
 
+    /**
+    @brief
+        Tells the GUIManager which SceneManager to use
+    @param camera
+        The current camera on which the GUI should be displayed on.
+
+        In fact the GUIManager needs the SceneManager and not the Camera to display the GUI.
+        This means the GUI is not bound to a camera but rather to the SceneManager.
+        Hidding the GUI when needed can therefore not be solved by just NOT setting the current camera.
+    */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
         this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
     }
 
+    /**
+    @brief
+        Debug function to give CEGUI the possibility to output on our console
+    @param
+        String to be displaed in CEGUI's name
+
+        This function should be removed as it only provides a quick (and dirty) possibility to access the output on the console.
+        CEGUI's output should be put into the cegui.log using the CEGUI Logger.
+    */
     void GUIManager::testOutput(std::string& str)
     {
         COUT(0) << "*** CEGUI: " << str << std::endl;
     }
 
+    /**
+    @brief
+        Displays specified GUI on screen
+    @param name
+        The name of the GUI
+
+        The function executes the Lua function with the same name in case the GUIManager is ready.
+        For more details check out loadGUI_2.lua where the function presides.
+    */
     void GUIManager::showGUI(const std::string& name)
     {
         if (state_ != Uninitialised)
@@ -214,6 +294,15 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Function receiving a mouse button pressed event.
+    @param id
+        ID of the mouse button which got pressed
+
+        This function is inherited by MouseHandler and injects the event into CEGUI.
+        It is for CEGUI to process the event.
+    */
     void GUIManager::mouseButtonPressed(MouseButtonCode::ByEnum id)
     {
         try
@@ -227,6 +316,15 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Function receiving a mouse button released event.
+    @param id
+        ID of the mouse button which got released
+
+        This function is inherited by MouseHandler and injects the event into CEGUI.
+        It is for CEGUI to process the event.
+    */
     void GUIManager::mouseButtonReleased(MouseButtonCode::ByEnum id)
     {
         try
@@ -240,7 +338,16 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        converts mouse event code to CEGUI event code
+    @param button
+        code of the mouse button as we use it in Orxonox
+    @return
+        code of the mouse button as it is used by CEGUI
 
+        Simple convertion from mouse event code in Orxonox to the one used in CEGUI.
+     */
     inline CEGUI::MouseButton GUIManager::convertButton(MouseButtonCode::ByEnum button)
     {
         switch (button)

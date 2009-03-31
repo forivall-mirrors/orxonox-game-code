@@ -23,6 +23,7 @@
  *      Reto Grieder
  *   Co-authors:
  *      Fabian 'x3n' Landau
+ *      Benjamin Knecht
  *
  */
 
@@ -55,7 +56,7 @@ namespace orxonox
     AddGameState(GSLevel, "level");
 
     SetCommandLineArgument(level, "presentation.oxw").shortcut("l");
-    SetConsoleCommand(GSLevel, showIngameGUI, true).keybindMode(KeybindMode::OnPress).keybindMode(KeybindMode::OnRelease);
+    SetConsoleCommand(GSLevel, showIngameGUI, true);
 
     GSLevel::GSLevel(const std::string& name)
         : GameState(name)

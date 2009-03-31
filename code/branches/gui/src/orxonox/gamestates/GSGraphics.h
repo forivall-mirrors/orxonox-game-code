@@ -22,9 +22,14 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht (documentation)
  *
  */
+
+ /**
+    @file
+    @brief Declaration of the Graphics GameState class.
+  */
 
 #ifndef _GSGraphics_H__
 #define _GSGraphics_H__
@@ -35,6 +40,13 @@
 
 namespace orxonox
 {
+    /**
+    @class GSGraphics
+    @brief
+        Game state used when displaying graphics of any kind
+
+        This game state is only left out if we start a dedicated server where no graphics are present.
+    */
     class _OrxonoxExport GSGraphics : public GameState, public WindowEventListener
     {
     public:
@@ -54,15 +66,15 @@ namespace orxonox
         void windowFocusChanged();
 
         // managed singletons
-        InputManager*         inputManager_;
+        InputManager*         inputManager_;        //!< Reference to input management
         InGameConsole*        console_;
-        GUIManager*           guiManager_;
-        GraphicsManager*      graphicsManager_;       //!< Interface to Ogre
+        GUIManager*           guiManager_;          //!< Interface to GUI
+        GraphicsManager*      graphicsManager_;     //!< Interface to Ogre
 
-        KeyBinder*            masterKeyBinder_;
-        SimpleInputState*     masterInputState_;
+        KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings
+        SimpleInputState*     masterInputState_;    //!< Special input state for master input
         XMLFile*              debugOverlay_;
-        ConsoleCommand*       ccToggleGUI_;
+        ConsoleCommand*       ccToggleGUI_;         //!< Console command to toggle GUI
     };
 }
 

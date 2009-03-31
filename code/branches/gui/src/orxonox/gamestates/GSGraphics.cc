@@ -22,8 +22,13 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
+ */
+
+/**
+    @file
+    @brief Implementation of Graphics GameState class.
  */
 
 #include "OrxonoxStableHeaders.h"
@@ -70,10 +75,30 @@ namespace orxonox
     {
     }
 
+    /**
+    @brief
+        this function does nothing
+
+        Indeed. Here goes nothing.
+    */
     void GSGraphics::setConfigValues()
     {
     }
 
+    /**
+    @brief
+        This function is called when we enter this game state.
+
+        Since graphics is very important for our game this function does quite a lot:
+        \li starts graphics manager
+        \li loads debug overlay
+        \li manages render window
+        \li creates input manager
+        \li loads master key bindings
+        \li loads ingame console
+        \li loads GUI interface (GUIManager)
+        \li creates console command to toggle GUI
+    */
     void GSGraphics::activate()
     {
         GameMode::setShowsGraphics(true);
@@ -89,14 +114,16 @@ namespace orxonox
         this->debugOverlay_ = new XMLFile((Core::getMediaPath() / "overlay" / "debug.oxo").string());
         Loader::open(debugOverlay_);
 
-        // Calls the InputManager which sets up the input devices.
         // The render window width and height are used to set up the mouse movement.
-        inputManager_ = new InputManager();
         size_t windowHnd = 0;
         Ogre::RenderWindow* renderWindow = GraphicsManager::getInstance().getRenderWindow();
         renderWindow->getCustomAttribute("WINDOW", &windowHnd);
+
+        // Calls the InputManager which sets up the input devices.
+        inputManager_ = new InputManager();
         inputManager_->initialise(windowHnd, renderWindow->getWidth(), renderWindow->getHeight(), true);
 
+        // load master key bindings
         masterInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("master", true);
         masterKeyBinder_ = new KeyBinder();
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
@@ -110,15 +137,22 @@ namespace orxonox
         guiManager_ = new GUIManager();
         guiManager_->initialise(renderWindow);
 
+        // add console command to toggle GUI
         FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::toggleGUI);
         functor->setObject(this);
         this->ccToggleGUI_ = createConsoleCommand(functor, "toggleGUI");
         CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
 
-
+        // enable master input
         InputManager::getInstance().requestEnterState("master");
     }
 
+    /**
+    @brief
+        This function is called when the game state is left
+
+        Created references, input states and console commands are deleted.
+    */
     void GSGraphics::deactivate()
     {
 
@@ -146,6 +180,13 @@ namespace orxonox
         GameMode::setShowsGraphics(false);
     }
 
+    /**
+    @brief
+        Toggles the visibility of the current GUI
+
+        This function just executes a Lua function in the main script of the GUI by accessing the GUIManager.
+        For more details on this function check out the Lua code.
+    */
     void GSGraphics::toggleGUI()
     {
             GUIManager::getInstance().executeCode("toggleGUI()");
