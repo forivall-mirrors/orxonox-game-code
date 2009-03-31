@@ -35,6 +35,7 @@ ADD_SOURCE_FILES(BULLET_FILES
 	ConstraintSolver/btSolverConstraint.h
 	ConstraintSolver/btTypedConstraint.h
 
+	Dynamics/btActionInterface.h
 	Dynamics/btContinuousDynamicsWorld.h
 	Dynamics/btDiscreteDynamicsWorld.h
 	Dynamics/btDynamicsWorld.h

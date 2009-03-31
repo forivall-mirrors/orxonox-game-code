@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2008 Erwin Coumans  http://bulletphysics.com
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,32 +13,27 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef CHARACTER_CONTROLLER_INTERFACE_H
-#define CHARACTER_CONTROLLER_INTERFACE_H
+#ifndef _BT_ACTION_INTERFACE_H
+#define _BT_ACTION_INTERFACE_H
 
-#include "LinearMath/btVector3.h"
-#include "BulletDynamics/Dynamics/btActionInterface.h"
-
-class btCollisionShape;
-class btRigidBody;
+class btIDebugDraw;
 class btCollisionWorld;
 
-class btCharacterControllerInterface : public btActionInterface
+#include "LinearMath/btScalar.h"
+
+///Basic interface to allow actions such as vehicles and characters to be updated inside a btDynamicsWorld
+class btActionInterface
 {
-public:
-	btCharacterControllerInterface () {};
-	virtual ~btCharacterControllerInterface () {};
-	
-	virtual void	setWalkDirection(const btVector3& walkDirection) = 0;
-	virtual void	reset () = 0;
-	virtual void	warp (const btVector3& origin) = 0;
+	public:
 
-	virtual void	preStep ( btCollisionWorld* collisionWorld) = 0;
-	virtual void	playerStep (btCollisionWorld* collisionWorld, btScalar dt) = 0;
-	virtual bool	canJump () const = 0;
-	virtual void	jump () = 0;
+	virtual ~btActionInterface()
+	{
+	}
 
-	virtual bool	onGround () const = 0;
+	virtual void updateAction( btCollisionWorld* collisionWorld, btScalar deltaTimeStep)=0;
+
+	virtual void debugDraw(btIDebugDraw* debugDrawer) = 0;
+
 };
 
-#endif
+#endif //_BT_ACTION_INTERFACE_H
