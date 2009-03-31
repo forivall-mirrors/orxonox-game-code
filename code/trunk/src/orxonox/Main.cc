@@ -26,6 +26,10 @@
  *      ...
  *
  */
+ 
+ /**
+ @mainpage Orxonox Documentation
+ */
 
  /**
  @file
