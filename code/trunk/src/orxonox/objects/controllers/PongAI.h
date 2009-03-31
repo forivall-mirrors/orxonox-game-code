@@ -55,7 +55,7 @@ namespace orxonox
         protected:
             void calculateRandomOffset();
             void calculateBallEndPosition();
-            void move(char direction);
+            void move(char direction, bool bUseDelay);
             void delayedMove();
 
             PongBall* ball_;
@@ -67,6 +67,8 @@ namespace orxonox
 
             std::list<std::pair<Timer<PongAI>*, char> > reactionTimers_;
             char movement_;
+            char oldMove_;
+            bool bOscillationAvoidanceActive_;
     };
 }
 
