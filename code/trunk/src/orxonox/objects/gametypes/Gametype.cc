@@ -230,6 +230,15 @@ namespace orxonox
             it->second.frags_++;
     }
 
+    int Gametype::getScore(PlayerInfo* player) const
+    {
+        std::map<PlayerInfo*, Player>::const_iterator it = this->players_.find(player);
+        if (it != this->players_.end())
+            return it->second.frags_;
+        else
+            return 0;
+    }
+
     SpawnPoint* Gametype::getBestSpawnPoint(PlayerInfo* player) const
     {
         if (this->spawnpoints_.size() > 0)

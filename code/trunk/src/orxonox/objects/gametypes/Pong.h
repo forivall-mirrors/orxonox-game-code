@@ -52,6 +52,9 @@ namespace orxonox
             void setCenterpoint(PongCenterpoint* center)
                 { this->center_ = center; }
 
+            PlayerInfo* getLeftPlayer() const;
+            PlayerInfo* getRightPlayer() const;
+
         protected:
             void startBall();
 
