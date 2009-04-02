@@ -85,11 +85,13 @@ namespace orxonox
         InputManager::getInstance().requestLeaveState("mainMenu");
         InputManager::getInstance().requestDestroyState("mainMenu");
 
+/*
         if (this->ccStartGame_)
         {
             delete this->ccStartGame_;
             this->ccStartGame_ = 0;
         }
+*/
     }
 
     void GSMainMenu::update(const Clock& time)

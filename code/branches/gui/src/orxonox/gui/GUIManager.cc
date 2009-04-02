@@ -249,20 +249,6 @@ namespace orxonox
 
     /**
     @brief
-        Debug function to give CEGUI the possibility to output on our console
-    @param
-        String to be displaed in CEGUI's name
-
-        This function should be removed as it only provides a quick (and dirty) possibility to access the output on the console.
-        CEGUI's output should be put into the cegui.log using the CEGUI Logger.
-    */
-    void GUIManager::testOutput(std::string& str)
-    {
-        COUT(0) << "*** CEGUI: " << str << std::endl;
-    }
-
-    /**
-    @brief
         Displays specified GUI on screen
     @param name
         The name of the GUI

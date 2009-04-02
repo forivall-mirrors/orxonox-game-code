@@ -132,9 +132,6 @@ namespace orxonox
             // set our console command as callback for the key detector
             InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);
 
-            // InGame GUI test
-            GUIManager::getInstance().showGUI("inGameTest");
-
             // level is loaded: we can start capturing the input
             InputManager::getInstance().requestEnterState("game");
         }
@@ -142,15 +139,16 @@ namespace orxonox
 
     void GSLevel::showIngameGUI(bool show)
     {
-        COUT(0) << "*** Call works with \"" << (show ? "true" : "false") << "\" as param" << std::endl;
         if (show)
         {
             GUIManager::getInstancePtr()->showGUI("inGameTest");
+            GUIManager::getInstancePtr()->executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
         }
         else
         {
-            GUIManager::getInstancePtr()->executeCode("hideGUI(inGameTest)");
+            GUIManager::getInstancePtr()->executeCode("hideGUI(\"inGameTest\")");
+            GUIManager::getInstancePtr()->executeCode("hideCursor()");
             InputManager::getInstance().requestLeaveState("guiMouseOnly");
         }
     }
