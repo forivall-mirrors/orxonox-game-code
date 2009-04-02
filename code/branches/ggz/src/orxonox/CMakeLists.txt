@@ -19,6 +19,7 @@
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraManager.cc
+  GGZClient.cc
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
@@ -50,6 +51,7 @@ TARGET_LINK_LIBRARIES(orxonox
   ${LUA_LIBRARIES}
   ${CEGUILUA_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
+  ${GGZMOD_LIBRARIES}
   ogreceguirenderer_orxonox
   tinyxml++_orxonox
   tolua++_orxonox
