@@ -106,6 +106,8 @@ namespace orxonox
             inline const std::map<PlayerInfo*, Player>& getPlayers() const
                 { return this->players_; }
 
+            int getScore(PlayerInfo* player) const;
+
             inline void registerSpawnPoint(SpawnPoint* spawnpoint)
                 { this->spawnpoints_.insert(spawnpoint); }
 

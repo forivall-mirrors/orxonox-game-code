@@ -153,7 +153,7 @@ namespace orxonox
 
         virtual void changedVisibility();
 
-        inline void setOwner(ControllableEntity* owner)
+        inline void setOwner(BaseObject* owner)
         {
             if (this->owner_ != owner)
             {
@@ -161,7 +161,7 @@ namespace orxonox
                 this->changedOwner();
             }
         }
-        inline ControllableEntity* getOwner() const
+        inline BaseObject* getOwner() const
             { return this->owner_; }
         virtual void changedOwner() {}
 
@@ -205,7 +205,7 @@ namespace orxonox
         /** Contains all the overlays in a map for quick access via console commands.
             We could also use the ObjectList, but that doesn't guarantee XMLPort(.) was called and is slower. */
         static std::map<std::string, OrxonoxOverlay*> overlays_s;
-        ControllableEntity* owner_;
+        BaseObject* owner_;
         OverlayGroup* group_;
   };
 

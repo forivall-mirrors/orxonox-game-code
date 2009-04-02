@@ -172,9 +172,6 @@ namespace orxonox
 
         if (this->humanHud_)
             this->humanHud_->setOwner(this->getControllableEntity());
-
-        if (this->gametypeHud_)
-            this->gametypeHud_->setOwner(this->getControllableEntity());
     }
 
     void HumanPlayer::updateHumanHUD()
@@ -205,7 +202,7 @@ namespace orxonox
         {
             this->gametypeHud_ = new OverlayGroup(this);
             this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);
-            this->gametypeHud_->setOwner(this->getControllableEntity());
+            this->gametypeHud_->setOwner(this->getGametype());
         }
     }
 }

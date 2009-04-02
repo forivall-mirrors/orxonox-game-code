@@ -53,6 +53,8 @@ namespace orxonox
         this->bat_[0] = 0;
         this->bat_[1] = 0;
 
+        this->setHUDTemplate("PongHUD");
+
         this->starttimer_.setTimer(1.0, false, this, createExecutor(createFunctor(&Pong::startBall)));
         this->starttimer_.stopTimer();
 
@@ -179,5 +181,21 @@ namespace orxonox
     {
         if (this->ball_ && this->center_)
             this->ball_->setSpeed(this->center_->getBallSpeed());
+    }
+
+    PlayerInfo* Pong::getLeftPlayer() const
+    {
+        if (this->bat_ && this->bat_[0])
+            return this->bat_[0]->getPlayer();
+        else
+            return 0;
+    }
+
+    PlayerInfo* Pong::getRightPlayer() const
+    {
+        if (this->bat_ && this->bat_[1])
+            return this->bat_[1]->getPlayer();
+        else
+            return 0;
     }
 }
