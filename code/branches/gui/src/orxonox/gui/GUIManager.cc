@@ -229,7 +229,14 @@ namespace orxonox
     */
     void GUIManager::executeCode(const std::string& str)
     {
-        this->scriptModule_->executeString(str);
+        try
+        {
+            this->scriptModule_->executeString(str);
+        }
+        catch (CEGUI::Exception& ex)
+        {
+            COUT(2) << "CEGUI Error: \"" << ex.getMessage() << "\" while executing code \"" << str << "\"" << std::endl;
+        }
     }
 
     /**
