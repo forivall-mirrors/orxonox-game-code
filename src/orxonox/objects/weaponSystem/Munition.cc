@@ -104,7 +104,6 @@ namespace orxonox
 
     void Munition::fillBullets()
     {
-//COUT(0) << "Munition::fillBullets maxBullets_=" << this->maxBullets_ << std::endl;
         this->bullets_ = this->maxBullets_;
     }
 

@@ -42,6 +42,7 @@ namespace orxonox
     {
         RegisterObject(LaserGunMunition);
 
+        //default if not defined in XML
         this->maxBullets_ = 40;
         this->maxMagazines_ = 100;
     }

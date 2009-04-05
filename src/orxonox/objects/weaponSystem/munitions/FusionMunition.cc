@@ -26,37 +26,34 @@
  *
  */
 
-#ifndef _LaserGun_H__
-#define _LaserGun_H__
+#include "OrxonoxStableHeaders.h"
 
-#include "OrxonoxPrereqs.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "util/Debug.h"
 
-#include "core/BaseObject.h"
-
-#include "../munitions/LaserGunMunition.h"
-#include "util/Math.h"
-#include "../Weapon.h"
-#include "../projectiles/BillboardProjectile.h"
-#include "../projectiles/ParticleProjectile.h"
+#include "FusionMunition.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGun : public Weapon
+    CreateFactory(FusionMunition);
+
+    FusionMunition::FusionMunition(BaseObject* creator) : Munition(creator)
     {
-        public:
-            LaserGun(BaseObject* creator);
-            virtual ~LaserGun();
+        RegisterObject(FusionMunition);
 
-            virtual void takeBullets();
-            virtual void takeMagazines();
-            virtual void createProjectile();
-            virtual void reloadBullet();
-            virtual void reloadMagazine();
+        //default if not defined in XML
+        this->maxBullets_ = 10;
+        this->maxMagazines_ = 100;
+    }
 
-        private:
-            float speed_;
+    FusionMunition::~FusionMunition()
+    {
+    }
 
-    };
+    void FusionMunition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+
+    }
+
 }
-
-#endif /* _LaserGun_H__ */

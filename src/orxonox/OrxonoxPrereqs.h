@@ -181,6 +181,7 @@ namespace orxonox
     class Munition;
     class LaserGun;
     class LaserGunMunition;
+    class FusionMunition;
 
     class EventListener;
     class EventDispatcher;
