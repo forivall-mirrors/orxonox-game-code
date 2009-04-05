@@ -31,18 +31,18 @@
 
 #include <OgreViewport.h>
 #include <OgreCamera.h>
-#include "core/Core.h"
+#include "core/Game.h"
+#include "core/GameMode.h"
 #include "core/ConsoleCommand.h"
 #include "gui/GUIManager.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(GSStandalone, showGUI, true).setAsInputCommand();
+    AddGameState(GSStandalone, "standalone");
 
-    bool GSStandalone::guiShowing_s = false;
-
-    GSStandalone::GSStandalone()
-        : GameState<GSGraphics>("standalone")
+    GSStandalone::GSStandalone(const std::string& name)
+        : GameState(name)
     {
     }
 
@@ -50,44 +50,18 @@ namespace orxonox
     {
     }
 
-    void GSStandalone::showGUI()
+
+    void GSStandalone::activate()
     {
-        GSStandalone::guiShowing_s = true;
+        GameMode::setIsStandalone(true);
     }
 
-    void GSStandalone::enter()
+    void GSStandalone::deactivate()
     {
-        Core::setIsStandalone(true);
-
-        GSLevel::enter(this->getParent()->getViewport());
-
-        guiManager_ = getParent()->getGUIManager();
-        // not sure if necessary
-        // guiManager_->loadScene("IngameMenu");
+        GameMode::setIsStandalone(false);
     }
 
-    void GSStandalone::leave()
+    void GSStandalone::update(const Clock& time)
     {
-        GSLevel::leave();
-
-        Core::setIsStandalone(false);
-    }
-
-    void GSStandalone::ticked(const Clock& time)
-    {
-        if (guiShowing_s)
-        {
-            guiManager_->showGUI("IngameMenu", this->getParent()->getViewport()->getCamera()->getSceneManager());
-        }
-        else
-        {
-            if (guiManager_)
-                guiManager_->hideGUI();
-        }
-        // tick CEGUI
-        guiManager_->tick(time.getDeltaTime());
-
-        GSLevel::ticked(time);
-        this->tickChild(time);
     }
 }

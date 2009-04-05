@@ -26,29 +26,18 @@
  *
  */
 
-#ifndef _RootGameState_H__
-#define _RootGameState_H__
+/**
+    @file
+    @brief Implementation of the GameMode class.
+*/
 
-#include "CorePrereqs.h"
-#include "GameState.h"
+#include "GameMode.h"
 
 namespace orxonox
 {
-    class _CoreExport RootGameState : public GameState<GameStateBase>
-    {
-    public:
-        RootGameState(const std::string& name);
-        ~RootGameState();
-
-        void requestState(const std::string& name);
-        void start();
-
-    private:
-        void makeTransition(GameStateBase* source, GameStateBase* destination);
-        void gotoState(const std::string& name);
-
-        std::string stateRequest_;
-    };
+    bool GameMode::bShowsGraphics_s = false;
+    bool GameMode::bHasServer_s     = false;
+    bool GameMode::bIsClient_s      = false;
+    bool GameMode::bIsStandalone_s  = false;
+    bool GameMode::bIsMaster_s      = false;
 }
-
-#endif /* _RootGameState_H__ */

@@ -30,6 +30,7 @@
 #include "PongBall.h"
 
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "objects/worldentities/PongBat.h"
 #include "objects/gametypes/Gametype.h"
 
@@ -52,7 +53,7 @@ namespace orxonox
     {
         SUPER(PongBall, tick, dt);
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             Vector3 position = this->getPosition();
             Vector3 velocity = this->getVelocity();

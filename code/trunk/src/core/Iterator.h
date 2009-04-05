@@ -180,7 +180,7 @@ namespace orxonox
                 if (this->list_)
                     this->list_->unregisterIterator(this);
 
-                this->element_ = (other.element_) ? (ObjectListBaseElement*)other.element_ : 0;
+                this->element_ = (other.element_) ? static_cast<ObjectListBaseElement*>(other.element_) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->list_->registerIterator(this);
 

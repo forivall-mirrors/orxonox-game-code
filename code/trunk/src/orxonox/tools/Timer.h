@@ -63,7 +63,7 @@
 #include "OrxonoxPrereqs.h"
 #include "core/Executor.h"
 #include "core/OrxonoxClass.h"
-#include "gamestates/GSRoot.h"
+#include "tools/TimeFactorListener.h"
 
 namespace orxonox
 {

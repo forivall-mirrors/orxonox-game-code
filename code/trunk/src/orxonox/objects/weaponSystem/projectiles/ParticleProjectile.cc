@@ -32,7 +32,7 @@
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
@@ -45,7 +45,7 @@ namespace orxonox
     {
         RegisterObject(ParticleProjectile);
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::normal);
             this->attachOgreObject(this->particles_->getParticleSystem());

@@ -23,12 +23,13 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   ConfigValueContainer.cc
   Core.cc
   Event.cc
+  Game.cc
+  GameMode.cc
   GameState.cc
   Language.cc
   LuaBind.cc
   ObjectListBase.cc
   OrxonoxClass.cc
-  RootGameState.cc
 
   # command
   ArgumentCompletionFunctions.cc

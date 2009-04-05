@@ -189,7 +189,7 @@ namespace orxonox
 
         this->bUpdated_ = true;
 
-        return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryValue(name, fallback, bString)));
+        return this->entries_.insert(this->entries_.end(), static_cast<ConfigFileEntry*>(new ConfigFileEntryValue(name, fallback, bString)));
     }
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
@@ -206,9 +206,9 @@ namespace orxonox
         this->bUpdated_ = true;
 
         if (index == 0)
-            return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
+            return this->entries_.insert(this->entries_.end(), static_cast<ConfigFileEntry*>(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
         else
-            return this->entries_.insert(++this->getEntryIterator(name, index - 1, "", bString), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
+            return this->entries_.insert(++this->getEntryIterator(name, index - 1, "", bString), static_cast<ConfigFileEntry*>(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
     }
 
 

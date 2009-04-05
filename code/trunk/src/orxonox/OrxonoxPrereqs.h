@@ -76,9 +76,6 @@ namespace orxonox
     //put here all existing munitionTypes
     namespace MunitionType
     {
-
-
-
         enum Enum
         { laserGunMunition };
     }
@@ -96,7 +93,8 @@ namespace orxonox
     }
 
 
-    class GraphicsEngine;
+    class GraphicsManager;
+    class OgreWindowEventListener;
     class Settings;
 
     class RadarViewable;
@@ -249,17 +247,6 @@ namespace orxonox
 
     //gui
     class GUIManager;
-
-    // game states
-    class GSRoot;
-    class GSGraphics;
-    class GSIO;
-    class GSIOConsole;
-    class GSLevel;
-    class GSStandalone;
-    class GSServer;
-    class GSClient;
-    class GSGUI;
 }
 
 namespace Ogre

@@ -44,11 +44,11 @@ namespace orxonox
 {
     class _CoreExport Clock
     {
-        friend class RootGameState;
-
     public:
         Clock();
         ~Clock();
+
+        void capture();
 
         unsigned long long getMicroseconds()   const { return tickTime_; }
         unsigned long long getMilliseconds()   const { return tickTime_ / 1000; }
@@ -62,7 +62,6 @@ namespace orxonox
 
     private:
         Clock(const Clock& instance);
-        void capture();
 
         Ogre::Timer*       timer_;
         unsigned long long storedTime_;

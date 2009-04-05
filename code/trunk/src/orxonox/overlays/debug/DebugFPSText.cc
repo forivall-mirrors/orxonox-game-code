@@ -29,9 +29,9 @@
 #include "OrxonoxStableHeaders.h"
 #include "DebugFPSText.h"
 #include <OgreTextAreaOverlayElement.h>
-#include "core/CoreIncludes.h"
-#include "GraphicsEngine.h"
 #include "util/Convert.h"
+#include "core/CoreIncludes.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
@@ -50,7 +50,7 @@ namespace orxonox
     {
         SUPER(DebugFPSText, tick, dt);
 
-        float fps = GraphicsEngine::getInstance().getAverageFramesPerSecond();
+        float fps = Game::getInstance().getAvgFPS();
         this->setCaption(convertToString(fps));
     }
 }

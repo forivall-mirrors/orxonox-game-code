@@ -223,10 +223,10 @@ namespace orxonox
     }
 
     /**
-        @brief This tick() function is called by the InputManager if the InputBuffer is active.
+        @brief This update() function is called by the InputManager if the InputBuffer is active.
         @param dt Delta time
     */
-    void InputBuffer::tickInput(float dt)
+    void InputBuffer::updateInput(float dt)
     {
         timeSinceKeyPressed_ += dt;
         if (keysToRepeat_ < 10 && timeSinceKeyPressed_ > keyRepeatDeleay_)

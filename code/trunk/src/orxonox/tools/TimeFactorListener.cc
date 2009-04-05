@@ -26,33 +26,16 @@
  *
  */
 
-/**
-@file
-@brief
-    Different definitions of input processing.
-*/
-
-#ifndef _CalibratorCallback_H__
-#define _CalibratorCallback_H__
-
-#include "core/CorePrereqs.h"
-#include "InputInterfaces.h"
+#include "OrxonoxStableHeaders.h"
+#include "TimeFactorListener.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _CoreExport CalibratorCallback : public KeyHandler
+    float TimeFactorListener::timefactor_s = 1.0f;
+
+    TimeFactorListener::TimeFactorListener()
     {
-    public:
-        CalibratorCallback()  { }
-        ~CalibratorCallback() { }
-
-    private:
-        void keyPressed (const KeyEvent& evt);
-        void keyReleased(const KeyEvent& evt) { }
-        void keyHeld    (const KeyEvent& evt) { }
-
-        void updateInput(float dt) { }
-    };
+        RegisterRootObject(TimeFactorListener);
+    }
 }
-
-#endif /* _CalibratorCallback_H__ */
