@@ -199,7 +199,7 @@ namespace orxonox
         RotationState rotState_;             //!< horizontal, vertical or inbetween
 
     private:
-        void windowResized(int newWidth, int newHeight);
+        void windowResized(unsigned int newWidth, unsigned int newHeight);
 
         static unsigned int hudOverlayCounter_s;   //!< Static counter for hud elements
         /** Contains all the overlays in a map for quick access via console commands.

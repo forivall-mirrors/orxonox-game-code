@@ -26,45 +26,35 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#ifndef _GSMainMenu_H__
+#define _GSMainMenu_H__
 
-#include <OgreViewport.h>
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
+#include "core/GameState.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState<GSGraphics>("gui")
+    class _OrxonoxExport GSMainMenu : public GameState
     {
-    }
+    public:
+        GSMainMenu(const std::string& name);
+        ~GSMainMenu();
 
-    GSGUI::~GSGUI()
-    {
-    }
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
-    void GSGUI::enter()
-    {
-        guiManager_ = getParent()->getGUIManager();
+        void startGame();
 
-        // show main menu
-        guiManager_->loadScene("MainMenu");
-        guiManager_->showGUI("MainMenu", 0);
-        getParent()->getViewport()->setCamera(guiManager_->getCamera());
-    }
+    private:
+        SimpleInputState* inputState_;
+        Scene*            scene_;
+        Ogre::Camera*     camera_;
 
-    void GSGUI::leave()
-    {
-        guiManager_->hideGUI();
-    }
-
-    void GSGUI::ticked(const Clock& time)
-    {
-        // tick CEGUI
-        guiManager_->tick(time.getDeltaTime());
-
-        this->tickChild(time);
-    }
+        // console commands
+        ConsoleCommand* ccStartGame_;
+    };
 }
+
+#endif /* _GSMainMenu_H__ */

@@ -165,10 +165,9 @@ namespace orxonox
   class XMLPortParamContainer;
 
   // game states
-  class GameStateBase;
-  template <class ParentType>
+  class Game;
   class GameState;
-  class RootGameState;
+  struct GameStateTreeNode;
 
   // input
   class BaseCommand;

@@ -34,8 +34,7 @@
 
 #include <string>
 #include <cassert>
-#include "core/Core.h"
-#include "core/CoreIncludes.h"
+#include "util/Math.h"
 #include "network/synchronisable/NetworkCallback.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
 
@@ -62,6 +61,7 @@ namespace orxonox{
       virtual uint8_t getMode()=0;
       virtual ~SynchronisableVariableBase() {}
     protected:
+      static void setState();
       static uint8_t state_;
   };
 
@@ -109,10 +109,7 @@ namespace orxonox{
   template <class T> SynchronisableVariable<T>::SynchronisableVariable(T& variable, uint8_t syncDirection, NetworkCallbackBase *cb):
       variable_( variable ), mode_( syncDirection ), callback_( cb )
   {
-    if ( state_ == 0x0 )
-    {
-      state_ = Core::isMaster() ? 0x1 : 0x2;  // set the appropriate mode here
-    }
+      setState();
   }
   
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()

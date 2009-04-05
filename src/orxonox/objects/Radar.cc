@@ -143,7 +143,7 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it)
             {
-                if (*it == (RadarViewable*)this->owner_)
+                if (*it == static_cast<RadarViewable*>(this)->owner_)
                     continue;
 
                 float targetDistance = localPosition.squaredDistance((*it)->getRVWorldPosition());

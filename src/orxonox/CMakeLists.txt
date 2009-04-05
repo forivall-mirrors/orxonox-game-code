@@ -19,7 +19,7 @@
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraManager.cc
-  GraphicsEngine.cc
+  GraphicsManager.cc
   LevelManager.cc
   Main.cc
   PawnManager.cc

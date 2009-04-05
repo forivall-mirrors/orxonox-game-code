@@ -41,7 +41,6 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
-#include "core/Core.h"
 #include "InputCommands.h"
 #include "InputManager.h"
 
@@ -308,7 +307,7 @@ namespace orxonox
         }
     }
 
-    void KeyBinder::tickMouse(float dt)
+    void KeyBinder::updateMouse(float dt)
     {
         if (bDeriveMouseInput_)
         {
@@ -348,7 +347,7 @@ namespace orxonox
         {
             // Why dividing relative value by dt? The reason lies in the simple fact, that when you
             // press a button that has relative movement, that value has to be multiplied by dt to be
-            // frame rate independent. This can easily (and only) be done in tickInput(float).
+            // frame rate independent. This can easily (and only) be done in updateInput(float).
             // Hence we need to divide by dt here for the mouse to compensate, because the relative
             // move movements have nothing to do with dt.
             if (dt != 0.0f)
@@ -361,7 +360,7 @@ namespace orxonox
         }
     }
 
-    void KeyBinder::tickJoyStick(float dt, unsigned int joyStick)
+    void KeyBinder::updateJoyStick(float dt, unsigned int joyStick)
     {
         for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
         {

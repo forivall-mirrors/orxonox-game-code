@@ -93,7 +93,7 @@ namespace orxonox
 
     void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)
     {
-        if (object == (RadarViewable*)this->owner_)
+        if (object == static_cast<RadarViewable*>(this->owner_))
             return;
 
         const WorldEntity* wePointer = object->getWorldEntity();

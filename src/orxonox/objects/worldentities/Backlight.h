@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "FadingBillboard.h"
-#include "gamestates/GSRoot.h"
+#include "tools/TimeFactorListener.h"
 
 namespace orxonox
 {

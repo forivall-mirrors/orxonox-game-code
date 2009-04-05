@@ -64,7 +64,7 @@ namespace orxonox
         Element* element = xmlelement.FirstChildElement(false);
         if (element)
         {
-            TiXmlElement* tixmlelement = dynamic_cast<TiXmlElement*>(element->GetTiXmlPointer());
+            TiXmlElement* tixmlelement = static_cast<TiXmlElement*>(element->GetTiXmlPointer());
             if (tixmlelement)
                 this->setXMLElement(*tixmlelement);
         }
@@ -137,7 +137,7 @@ namespace orxonox
 
         COUT(4) << object->getLoaderIndentation() << " aplying Template \"" << this->getName() << "\"..." << std::endl;
 
-        Element temp = ((TiXmlElement*)&this->getXMLElement());
+        Element temp = &const_cast<TiXmlElement&>(this->getXMLElement());
 
         if (this->bLoadDefaults_)
             object->XMLPort(temp, XMLPort::LoadObject);

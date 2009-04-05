@@ -26,28 +26,31 @@
  *
  */
 
-#ifndef _GSGUI_H__
-#define _GSGUI_H__
+#ifndef _TimeFactorListener_H__
+#define _TimeFactorListener_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
-#include "GSGraphics.h"
+#include "core/OrxonoxClass.h"
+
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGUI : public GameState<GSGraphics>
+    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
     {
-    public:
-        GSGUI();
-        ~GSGUI();
+        friend class GSRoot;
 
-    private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
+        public:
+            TimeFactorListener();
+            virtual ~TimeFactorListener() {}
 
-        GUIManager* guiManager_;
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old) {}
+            inline float getTimeFactor() const
+                { return TimeFactorListener::timefactor_s; }
+
+        private:
+            static float timefactor_s;
     };
 }
 
-#endif /* _GSGUI_H__ */
+#endif /* _TimeFactorListener_H__ */

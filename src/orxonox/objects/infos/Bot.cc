@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "Bot.h"
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/gametypes/Gametype.h"
@@ -45,7 +45,7 @@ namespace orxonox
         RegisterObject(Bot);
 
         this->bHumanPlayer_ = false;
-        this->bLocalPlayer_ = Core::isMaster();
+        this->bLocalPlayer_ = GameMode::isMaster();
         this->bSetUnreadyAfterSpawn_ = false;
         this->setReadyToSpawn(true);
         this->defaultController_ = Class(AIController);

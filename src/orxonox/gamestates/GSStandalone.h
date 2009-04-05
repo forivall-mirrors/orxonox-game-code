@@ -30,25 +30,21 @@
 #define _GSStandalone_H__
 
 #include "OrxonoxPrereqs.h"
-#include "GSLevel.h"
-#include "GSGraphics.h"
+#include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSStandalone : public GameState<GSGraphics>, public GSLevel
+    class _OrxonoxExport GSStandalone : public GameState
     {
     public:
-        GSStandalone();
+        GSStandalone(const std::string& name);
         ~GSStandalone();
-        static void showGUI();
+
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
     private:
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
-
-        GUIManager*     guiManager_;
-        static bool     guiShowing_s;
     };
 }
 

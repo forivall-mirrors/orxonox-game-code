@@ -44,6 +44,7 @@
 #include "Client.h"
 #include "Host.h"
 #include "synchronisable/Synchronisable.h"
+#include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "packet/Packet.h"
 
@@ -137,7 +138,7 @@ namespace orxonox
    * Processes incoming packets, sends a gamestate to the server and does the cleanup
    * @param time
    */
-  void Client::tick(float time){
+  void Client::update(const Clock& time){
 //     COUT(3) << ".";
     if(client_connection.isConnected() && isSynched_){
       COUT(4) << "popping partial gamestate: " << std::endl;

@@ -33,7 +33,7 @@
 #include "../GamestateHandler.h"
 #include "../synchronisable/Synchronisable.h"
 #include "../TrafficControl.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 
@@ -161,7 +161,7 @@ bool Gamestate::spreadData(uint8_t mode)
     s = Synchronisable::getSynchronisable( objectheader.getObjectID() );
     if(!s)
     {
-      if (!Core::isMaster())
+      if (!GameMode::isMaster())
       {
         Synchronisable::fabricate(mem, mode);
       }

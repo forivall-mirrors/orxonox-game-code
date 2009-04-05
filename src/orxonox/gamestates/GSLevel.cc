@@ -23,6 +23,7 @@
  *      Reto Grieder
  *   Co-authors:
  *      Fabian 'x3n' Landau
+ *      Benjamin Knecht
  *
  */
 
@@ -38,22 +39,31 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/CoreIncludes.h"
 #include "core/Core.h"
+#include "core/CoreIncludes.h"
+#include "core/Game.h"
+#include "core/GameMode.h"
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
 #include "CameraManager.h"
+#include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
-    SetCommandLineArgument(level, "presentation_dm.oxw").shortcut("l");
+    AddGameState(GSLevel, "level");
 
-    GSLevel::GSLevel()
-//        : GameState<GSGraphics>(name)
-        : keyBinder_(0)
-        , inputState_(0)
+    SetCommandLineArgument(level, "presentation_dm.oxw").shortcut("l");
+    SetConsoleCommand(GSLevel, showIngameGUI, true);
+
+    GSLevel::GSLevel(const std::string& name)
+        : GameState(name)
+        , keyBinder_(0)
+        , gameInputState_(0)
+        , guiMouseOnlyInputState_(0)
+        , guiKeysOnlyInputState_(0)
         , radar_(0)
         , startFile_(0)
         , cameraManager_(0)
@@ -63,8 +73,6 @@ namespace orxonox
 
         this->ccKeybind_ = 0;
         this->ccTkeybind_ = 0;
-
-        setConfigValues();
     }
 
     GSLevel::~GSLevel()
@@ -76,18 +84,25 @@ namespace orxonox
         SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
     }
 
-    void GSLevel::enter(Ogre::Viewport* viewport)
+    void GSLevel::activate()
     {
-        if (Core::showsGraphics())
+        setConfigValues();
+
+        if (GameMode::showsGraphics())
         {
-            inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game", 20);
+            gameInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
             keyBinder_ = new KeyBinder();
             keyBinder_->loadBindings("keybindings.ini");
-            inputState_->setHandler(keyBinder_);
+            gameInputState_->setHandler(keyBinder_);
+
+            guiMouseOnlyInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("guiMouseOnly");
+            guiMouseOnlyInputState_->setMouseHandler(GUIManager::getInstancePtr());
+
+            guiKeysOnlyInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("guiKeysOnly");
+            guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
 
             // create the global CameraManager
-            assert(viewport);
-            this->cameraManager_ = new CameraManager(viewport);
+            this->cameraManager_ = new CameraManager(GraphicsManager::getInstance().getViewport());
 
             // Start the Radar
             this->radar_ = new Radar();
@@ -95,7 +110,7 @@ namespace orxonox
 
         this->playerManager_ = new PlayerManager();
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             // create the global LevelManager
             this->levelManager_ = new LevelManager();
@@ -103,11 +118,8 @@ namespace orxonox
             this->loadLevel();
         }
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
-            // TODO: insert slomo console command with
-            // .accessLevel(AccessLevel::Offline).defaultValue(0, 1.0).axisParamIndex(0).isAxisRelative(false);
-
             // keybind console command
             FunctorMember<GSLevel>* functor1 = createFunctor(&GSLevel::keybind);
             functor1->setObject(this);
@@ -125,7 +137,23 @@ namespace orxonox
         }
     }
 
-    void GSLevel::leave()
+    void GSLevel::showIngameGUI(bool show)
+    {
+        if (show)
+        {
+            GUIManager::getInstancePtr()->showGUI("inGameTest");
+            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            InputManager::getInstance().requestEnterState("guiMouseOnly");
+        }
+        else
+        {
+            GUIManager::getInstancePtr()->executeCode("hideGUI(\"inGameTest\")");
+            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            InputManager::getInstance().requestLeaveState("guiMouseOnly");
+        }
+    }
+
+    void GSLevel::deactivate()
     {
         // destroy console commands
         if (this->ccKeybind_)
@@ -139,16 +167,17 @@ namespace orxonox
             this->ccTkeybind_ = 0;
         }
 
+
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
         // The only 'memory leak' is the ParticleSpawer. They would be deleted here
         // and call a sceneNode method that has already been destroy by the corresponding space ship.
         //Loader::close();
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
             InputManager::getInstance().requestLeaveState("game");
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
             this->unloadLevel();
 
         if (this->radar_)
@@ -175,9 +204,11 @@ namespace orxonox
             this->playerManager_ = 0;
         }
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
-            inputState_->setHandler(0);
+            gameInputState_->setHandler(0);
+            guiMouseOnlyInputState_->setHandler(0);
+            guiKeysOnlyInputState_->setHandler(0);
             InputManager::getInstance().requestDestroyState("game");
             if (this->keyBinder_)
             {
@@ -187,9 +218,9 @@ namespace orxonox
         }
     }
 
-    void GSLevel::ticked(const Clock& time)
+    void GSLevel::update(const Clock& time)
     {
-        // Commented by 1337: Temporarily moved to GSGraphics.
+        // Note: Temporarily moved to GSGraphics.
         //// Call the scene objects
         //for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
         //    it->tick(time.getDeltaTime() * this->timeFactor_);
@@ -232,11 +263,11 @@ namespace orxonox
     @param command
         Command string that can be executed by the CommandExecutor
         OR: Internal string "KeybindBindingStringKeyName=" used for the second call to identify
-        the key/button/axis that has been activated. This is configured above in enter().
+        the key/button/axis that has been activated. This is configured above in activate().
     */
     void GSLevel::keybindInternal(const std::string& command, bool bTemporary)
     {
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             static std::string bindingString = "";
             static bool bTemporarySaved = false;

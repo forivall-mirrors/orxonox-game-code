@@ -33,7 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "objects/worldentities/Model.h"
 #include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
@@ -62,7 +62,7 @@ namespace orxonox
 
         this->setDestroyWhenPlayerLeft(true);
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             this->greetingFlare_ = new BillboardSet();
             this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
@@ -205,7 +205,7 @@ namespace orxonox
     {
         this->bGreeting_ = !this->bGreeting_;
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             this->bGreetingFlareVisible_ = this->bGreeting_;
             this->changedFlareVisibility();

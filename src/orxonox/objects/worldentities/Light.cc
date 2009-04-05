@@ -36,7 +36,7 @@
 
 #include "util/String.h"
 #include "util/Exception.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
@@ -56,7 +56,7 @@ namespace orxonox
         this->attenuation_ = Vector4(100000, 1, 0, 0);
         this->spotlightRange_ = Vector3(40.0f, 30.0f, 1.0f);
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             if (!this->getScene())
                 ThrowException(AbortLoading, "Can't create Light, no scene given.");

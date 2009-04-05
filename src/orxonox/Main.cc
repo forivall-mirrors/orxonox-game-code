@@ -37,126 +37,42 @@
   */
 
 #include "OrxonoxStableHeaders.h"
-
-#include <exception>
-#include <cassert>
-
 #include "OrxonoxConfig.h"
+
 #include "util/Debug.h"
-#include "util/SignalHandler.h"
-#include "core/ConfigFileManager.h"
-#include "core/CommandLine.h"
-#include "core/CommandExecutor.h"
 #include "core/Identifier.h"
-#include "core/Core.h"
-#include "core/Language.h"
+#include "core/Game.h"
 
-#include "gamestates/GSRoot.h"
-#include "gamestates/GSGraphics.h"
-#include "gamestates/GSStandalone.h"
-#include "gamestates/GSServer.h"
-#include "gamestates/GSClient.h"
-#include "gamestates/GSDedicated.h"
-#include "gamestates/GSGUI.h"
-#include "gamestates/GSIOConsole.h"
-
-#ifdef ORXONOX_PLATFORM_APPLE
-#include <CoreFoundation/CoreFoundation.h>
-
-// This function will locate the path to our application on OS X,
-// unlike windows you can not rely on the curent working directory
-// for locating your configuration files and resources.
-             std::string macBundlePath()
-{
-    char path[1024];
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    assert(mainBundle);
-
-    CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-    assert(mainBundleURL);
-
-    CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
-    assert(cfStringRef);
-
-    CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
-
-    CFRelease(mainBundleURL);
-    CFRelease(cfStringRef);
-
-    return std::string(path);
-}
-#endif
-
-
-SetCommandLineArgument(settingsFile, "orxonox.ini");
-SetCommandLineArgument(configFileDirectory, "");
-
+/*
+@brief
+    Main method. Game starts here (except for static initialisations).
+*/
 int main(int argc, char** argv)
 {
-    using namespace orxonox;
-
-    // Parse command line arguments
-    try
     {
-        CommandLine::parseAll(argc, argv);
-    }
-    catch (ArgumentException& ex)
-    {
-        COUT(1) << ex.what() << std::endl;
-        COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-    }
+        orxonox::Game orxonox(argc, argv);
 
-    // Do this after parsing the command line to allow customisation
-    Core::postMainInitialisation();
+        orxonox.setStateHierarchy(
+        "root"
+        " graphics"
+        "  mainMenu"
+        "  standalone"
+        "   level"
+        "  server"
+        "   level"
+        "  client"
+        "   level"
+        " dedicated"
+        "  level"
+        " ioConsole"
+        );
 
-    // create a signal handler (only active for linux)
-    SignalHandler signalHandler;
-    signalHandler.doCatch(argv[0], Core::getLogPathString() + "orxonox_crash.log");
-
-    // Create the ConfigFileManager before creating the GameStates in order to have
-    // setConfigValues() in the constructor (required).
-    ConfigFileManager* configFileManager = new ConfigFileManager();
-    configFileManager->setFilename(ConfigFileType::Settings, CommandLine::getValue("settingsFile").getString());
-    // create the Core settings to configure the output level
-    Language* language = new Language();
-    Core*     core     = new Core();
-
-    // put GameStates in its own scope so we can destroy the identifiers at the end of main().
-    {
-        // create the gamestates
-        GSRoot root;
-        GSGraphics graphics;
-        GSStandalone standalone;
-        GSServer server;
-        GSClient client;
-        GSDedicated dedicated;
-        GSGUI gui;
-        GSIOConsole ioConsole;
-
-        // make the hierarchy
-        root.addChild(&graphics);
-        graphics.addChild(&standalone);
-        graphics.addChild(&server);
-        graphics.addChild(&client);
-        graphics.addChild(&gui);
-        root.addChild(&ioConsole);
-        root.addChild(&dedicated);
-
-        // Here happens the game
-        root.start();
-    }
-
-    // destroy singletons
-    delete core;
-    delete language;
-    delete configFileManager;
+        orxonox.run();
+    } // orxonox gets destroyed right here!
 
     // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
-    Identifier::destroyAllIdentifiers();
-    // destroy command line arguments
-    CommandLine::destroyAllArguments();
-    // Also delete external console command that don't belong to an Identifier
-    CommandExecutor::destroyExternalCommands();
+    // Needs to be done after Game destructor because of ~OrxonoxClass
+    orxonox::Identifier::destroyAllIdentifiers();
 
     return 0;
 }

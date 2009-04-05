@@ -70,8 +70,8 @@ namespace orxonox
         virtual void registerOnLeave(Executor* executor)      { executorOnLeave_ = executor; }
         virtual void unRegisterOnLeave()                      { executorOnLeave_ = 0; }
 
-        virtual void tickInput(float dt, unsigned int device) = 0;
-        virtual void tickInput(float dt) = 0;
+        virtual void updateInput(float dt, unsigned int device) = 0;
+        virtual void updateInput(float dt) = 0;
 
         virtual void keyPressed (const KeyEvent& evt) = 0;
         virtual void keyReleased(const KeyEvent& evt) = 0;
@@ -89,7 +89,14 @@ namespace orxonox
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
 
     protected:
-        InputState() : bHandlersChanged_(false), priority_(0), executorOnEnter_(0), executorOnLeave_(0) { }
+        InputState()
+            : bHandlersChanged_(false)
+            , priority_(0)
+            , bAlwaysGetsInput_(false)
+            , bTransparent_(false)
+            , executorOnEnter_(0)
+            , executorOnLeave_(0)
+        { }
         virtual ~InputState() { }
 
         virtual void numberOfJoySticksChanged(unsigned int n) = 0;
@@ -113,6 +120,8 @@ namespace orxonox
         std::string                                 name_;
         int                                         priority_;
         std::vector<bool>                           bInputDeviceEnabled_;
+        bool                                        bAlwaysGetsInput_;
+        bool                                        bTransparent_;
 
         Executor*                                   executorOnEnter_;
         Executor*                                   executorOnLeave_;

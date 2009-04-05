@@ -52,7 +52,7 @@ namespace orxonox
 {
   const int CLIENTID_SERVER = 0;
   const unsigned int NETWORK_FREQUENCY = 25;
-  const float NETWORK_PERIOD = 1./NETWORK_FREQUENCY;
+  const float NETWORK_PERIOD = 1.f/NETWORK_FREQUENCY;
 
   /**
   * This class is the root class of the network module for a server.
@@ -70,7 +70,7 @@ namespace orxonox
     void close();
     bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
-    void tick(float time);
+    void update(const Clock& time);
     unsigned int getPing(unsigned int clientID);
     double getPacketLoss(unsigned int clientID);
   protected:

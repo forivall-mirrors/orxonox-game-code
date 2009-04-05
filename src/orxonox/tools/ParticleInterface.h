@@ -36,7 +36,7 @@
 
 #include "core/OrxonoxClass.h"
 #include "util/Math.h"
-#include "gamestates/GSRoot.h"
+#include "tools/TimeFactorListener.h"
 
 #define getAllEmitters() \
   storeThisAsCurrentParticleInterface(); \

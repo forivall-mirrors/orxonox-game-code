@@ -34,12 +34,13 @@
 #include <OgreCompositorManager.h>
 #include <OgreResource.h>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/Iterator.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/Scene.h"
 #include "tools/Shader.h"
 #include "util/String.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
@@ -73,7 +74,7 @@ namespace orxonox
 
     void CameraManager::requestFocus(Camera* camera)
     {
-        if (!Core::showsGraphics())
+        if (!GameMode::showsGraphics())
             return;
 
         // notify old camera (if it exists)
@@ -98,7 +99,7 @@ namespace orxonox
 
     void CameraManager::releaseFocus(Camera* camera)
     {
-        if (!Core::showsGraphics())
+        if (!GameMode::showsGraphics())
             return;
 
         // notify the cam of releasing the focus
@@ -140,6 +141,7 @@ namespace orxonox
         }
 
         this->viewport_->setCamera(camera);
+        GUIManager::getInstance().setCamera(camera);
 
         // reactivate all visible compositors
         {

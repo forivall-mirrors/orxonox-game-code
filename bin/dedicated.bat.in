@@ -1,4 +1,4 @@
 title @PROJECT_NAME@
 path @ORXONOX_RUNTIME_LIBRARY_DIRECTORY_WINDOWS@;%path%
-@CURRENT_RUNTIME_DIR_WINDOWS@\@ORXONOX_EXECUTABLE_NAME@ --state dedicated --directory dedicated
+@CURRENT_RUNTIME_DIR_WINDOWS@\@ORXONOX_EXECUTABLE_NAME@ --dedicated --writingPathSuffix dedicated
 pause

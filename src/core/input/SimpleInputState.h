@@ -58,8 +58,8 @@ namespace orxonox
         SimpleInputState();
         ~SimpleInputState() { }
 
-        void tickInput(float dt);
-        void tickInput(float dt, unsigned int device);
+        void updateInput(float dt);
+        void updateInput(float dt, unsigned int device);
 
         void keyPressed (const KeyEvent& evt);
         void keyReleased(const KeyEvent& evt);
@@ -86,31 +86,31 @@ namespace orxonox
         std::vector<InputHandler*>    allHandlers_;
     };
 
-    inline void SimpleInputState::tickInput(float dt)
+    inline void SimpleInputState::updateInput(float dt)
     {
         for (unsigned int i = 0; i < allHandlers_.size(); ++i)
         {
-            allHandlers_[i]->tickInput(dt);
+            allHandlers_[i]->updateInput(dt);
         }
     }
 
-    inline void SimpleInputState::tickInput(float dt, unsigned int device)
+    inline void SimpleInputState::updateInput(float dt, unsigned int device)
     {
         switch (device)
         {
         case InputDevice::Keyboard:
             if (keyHandler_)
-                keyHandler_->tickKey(dt);
+                keyHandler_->updateKey(dt);
             break;
 
         case InputDevice::Mouse:
             if (mouseHandler_)
-                mouseHandler_->tickMouse(dt);
+                mouseHandler_->updateMouse(dt);
             break;
 
         default: // joy sticks
             if (joyStickHandler_[device - 2])
-                joyStickHandler_[device - 2]->tickJoyStick(dt, device - 2);
+                joyStickHandler_[device - 2]->updateJoyStick(dt, device - 2);
             break;
         }
     }

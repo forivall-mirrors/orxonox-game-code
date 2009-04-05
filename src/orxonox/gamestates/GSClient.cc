@@ -30,16 +30,20 @@
 #include "GSClient.h"
 
 #include "core/input/InputManager.h"
+#include "core/Clock.h"
 #include "core/CommandLine.h"
-#include "core/Core.h"
+#include "core/Game.h"
+#include "core/GameMode.h"
 #include "network/Client.h"
 
 namespace orxonox
 {
+    AddGameState(GSClient, "client");
+
     SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
-    GSClient::GSClient()
-        : GameState<GSGraphics>("client")
+    GSClient::GSClient(const std::string& name)
+        : GameState(name)
         , client_(0)
     {
     }
@@ -48,37 +52,30 @@ namespace orxonox
     {
     }
 
-    void GSClient::enter()
+    void GSClient::activate()
     {
-        Core::setIsClient(true);
+        GameMode::setIsClient(true);
 
         this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
 
-        GSLevel::enter(this->getParent()->getViewport());
-
-        client_->tick(0);
+        client_->update(Game::getInstance().getGameClock());
     }
 
-    void GSClient::leave()
+    void GSClient::deactivate()
     {
-        GSLevel::leave();
-
         client_->closeConnection();
 
         // destroy client
         delete this->client_;
 
-        Core::setIsClient(false);
+        GameMode::setIsClient(false);
     }
 
-    void GSClient::ticked(const Clock& time)
+    void GSClient::update(const Clock& time)
     {
-        GSLevel::ticked(time);
-        client_->tick(time.getDeltaTime());
-
-        this->tickChild(time);
+        client_->update(time);
     }
 }
