@@ -248,7 +248,6 @@ namespace orxonox
         {
             ExplosionChunk* chunk = new ExplosionChunk(this->getCreator());
             chunk->setPosition(this->getPosition());
-
         }
     }
 
@@ -269,6 +268,12 @@ namespace orxonox
 	pickUp.eraseAll();
     }
 
+
+    /* WeaponSystem:
+    *   functions load Slot, Set, Pack from XML and make sure all parent-pointers are set.
+    *   with setWeaponPack you can not just load a Pack from XML but if a Pack already exists anywhere, you can attach it.
+    *       --> e.g. Pickup-Items
+    */
     void Pawn::setWeaponSlot(WeaponSlot * wSlot)
     {
         this->attach(wSlot);
