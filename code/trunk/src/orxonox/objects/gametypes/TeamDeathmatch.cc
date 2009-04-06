@@ -188,4 +188,13 @@ namespace orxonox
         }
         return false;
     }
+
+    int TeamDeathmatch::getTeam(PlayerInfo* player)
+    {
+        std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
+        if (it_player != this->teamnumbers_.end())
+            return it_player->second;
+        else
+            return -1;
+    }
 }
