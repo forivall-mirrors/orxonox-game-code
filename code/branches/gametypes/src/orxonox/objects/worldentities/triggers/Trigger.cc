@@ -101,7 +101,7 @@ namespace orxonox
     if (this->bFirstTick_)
     {
       this->bFirstTick_ = false;
-      this->fireEvent(false);
+      this->triggered(false);
     }
 
     // Check if the object is active (this is NOT Trigger::isActive()!)
@@ -143,7 +143,7 @@ namespace orxonox
       char newState = this->stateChanges_.front().second;
       this->bTriggered_ = (newState & 0x1);
       this->bActive_ = newState & 2;
-      this->fireEvent(this->bActive_);
+      this->triggered(this->bActive_);
       this->stateChanges_.pop();
       if (this->stateChanges_.size() != 0)
         this->remainingTime_ = this->stateChanges_.front().first;
@@ -159,6 +159,11 @@ namespace orxonox
       this->setBillboardColour(ColourValue(1.0, 0.5, 0.0));
     else
       this->setBillboardColour(ColourValue(1.0, 0.0, 0.0));
+  }
+
+  void Trigger::triggered(bool bIsTriggered)
+  {
+    this->fireEvent(bIsTriggered);
   }
 
   bool Trigger::isTriggered(TriggerMode mode)

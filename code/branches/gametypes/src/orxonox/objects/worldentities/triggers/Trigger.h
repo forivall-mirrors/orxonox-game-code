@@ -100,6 +100,7 @@ namespace orxonox
     protected:
       inline bool isTriggered() { return this->isTriggered(this->mode_); }
       virtual bool isTriggered(TriggerMode mode);
+      virtual void triggered(bool bIsTriggered);
 
     private:
       bool checkAnd();
