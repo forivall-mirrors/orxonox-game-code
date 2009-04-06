@@ -26,40 +26,26 @@
  *
  */
 
-#include <al.h>
-#include <string>
+#include <SoundBase.h>
+#include <SoundManager.h>
 
-class Ogre::SceneNode;
-class Orxonox::SoundManager;
+#include <Ogre/SceneNode.h>
 
-namespace orxonox
+namespace orxonox 
 {
-    /**
-     * The SoudBase class is the base class for all sound file loader classes.
-     * It server as main interface to the OpenAL library.
-     *
-     */
-    class SoundBase
+    SoundBase::SoundBase(Ogre::SceneNode* node)
     {
-    public:
-        SoundBase(Ogre::SceneNode* node);
-        ~SoundBase();
+        this->source_ = 0;
+        this->buffer_ = 0;
+        this->node_ = node;
 
-        void attachToNode(Ogre::SceneNode* node);
-        void update();
-        void play(bool loop);
-        void stop();
-        void pause();
+        if(SoundBase::soundmanager_s == null)
+            SoundBase::soundmanager_s == SoundManager::instance();
+    }
 
-        bool isPlaying();
+    void SoundBase::attachToNode(Ogre::ScenceNode* node)
+    {
+        this->node_ = node;
+    }
 
-        virtual void loadFile(std::string filename) = 0;
-
-    private:
-        ALuint source_;
-        ALuint buffer_;
-        Ogre::SceneNode* node_;
-
-        static SoundManager* soundmanager_s;
-    }; // class SoundBase
-} // namepsace orxonox
+} // namespace: orxonox

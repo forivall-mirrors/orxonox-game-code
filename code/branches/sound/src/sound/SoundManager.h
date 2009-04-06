@@ -28,21 +28,32 @@
 #include <al.h>
 #include <alc.h>
 
+#include <Tickable.h>
+
 class SoundBase;
 
 namespace Orxonox
 {
+    /**
+     * The SoundManager class manages the OpenAL device, context and listener
+     * position. It has a list of all SoundBase objects and calls their update
+     * function every tick. It is a singleton.
+     *
+     */
     class SoundManager : public Tickable
     {
     public:
-        SoundManager();
+        static SoundManager* instance();
         
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
-
+        
         void tick(float dt);
 
     private:
+        SoundManager(); // private constructor -> singleton
+        static SoundManager* singleton_;
+
         ALCcontext* context_;
         ALCdevice* device_;
 
