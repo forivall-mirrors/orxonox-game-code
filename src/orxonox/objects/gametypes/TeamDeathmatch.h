@@ -57,7 +57,6 @@ namespace orxonox
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
             bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);
-            int getTeam(PlayerInfo* player);
 
             std::map<PlayerInfo*, int> teamnumbers_;
             std::vector<ColourValue> teamcolours_;

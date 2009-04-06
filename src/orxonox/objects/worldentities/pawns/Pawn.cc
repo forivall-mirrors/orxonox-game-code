@@ -197,7 +197,6 @@ namespace orxonox
 
     void Pawn::death()
     {
-        this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
             // Set bAlive_ to false and wait for PawnManager to do the destruction
@@ -214,6 +213,8 @@ namespace orxonox
             if (GameMode::isMaster())
                 this->deatheffect();
         }
+        else
+            this->setHealth(1);
     }
 
     void Pawn::deatheffect()
