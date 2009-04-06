@@ -62,9 +62,12 @@ namespace orxonox
     {
         this->setOwner(pawn);
 
-        COUT(3) << "Adding '" << this->getPickupIdentifier() << "' item." << std::endl;
-
-        return pawn->getPickups().add(this);
+        if (pawn->getPickups().add(this))
+        {
+            COUT(3) << "Added '" << this->getPickupIdentifier() << "' item." << std::endl;
+            return true;
+        }
+        return false;
     }
     /**
         @brief Removes the item from a pawn.

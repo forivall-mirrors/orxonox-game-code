@@ -73,6 +73,9 @@ namespace orxonox
 
         XMLPortParamTemplate(ModifierPickup, "damageAdd", setAdditiveDamage, getAdditiveDamage, element, mode, float);
         XMLPortParamTemplate(ModifierPickup, "damageMulti", setMultiplicativeDamage, getMultiplicativeDamage, element, mode, float);
+
+        XMLPortParamTemplate(ModifierPickup, "accelerationAdd", setAdditiveAcceleration, getAdditiveAcceleration, element, mode, float);
+        XMLPortParamTemplate(ModifierPickup, "accelerationMulti", setMultiplicativeAcceleration, getMultiplicativeAcceleration, element, mode, float);
     }
     /**
         @brief
@@ -139,6 +142,8 @@ namespace orxonox
             
             if (this->timer_.getRemainingTime() > 0.0f)
                 this->timer_.stopTimer();
+
+            delete this;
 
             return true;
         }

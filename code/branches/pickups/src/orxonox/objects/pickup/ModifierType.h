@@ -44,7 +44,8 @@ namespace orxonox
         enum Enum
         {
             Unknown = 0,
-            Damage
+            Damage,
+            Acceleration
         };
     }
 }

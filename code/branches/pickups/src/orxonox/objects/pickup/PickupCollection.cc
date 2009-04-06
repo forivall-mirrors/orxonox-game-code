@@ -93,9 +93,8 @@ namespace orxonox
         this->bBlockRemovals_ = true;
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
-            (*it).second->dropped((*it).second->getOwner());
-
-            delete (*it).second;
+            if((*it).second && (*it).second->getOwner())
+                (*it).second->dropped((*it).second->getOwner());
         }
         this->items_.clear();
         this->bBlockRemovals_ = false;
@@ -124,6 +123,29 @@ namespace orxonox
             }
             return false;
         }
+    }
+    //! Uses the first usable item in the collection on the owner.
+    void PickupCollection::useItem()
+    {
+        Identifier* ident = Class(UsableItem);
+        for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
+        {
+            if ((*it).second->isA(ident))
+            {
+                UsableItem* asUsable = dynamic_cast<UsableItem*>((*it).second);
+                asUsable->used(this->owner_);
+                return;
+            }
+        }
+    }
+    /**
+        @brief Uses a usable item on the owner of the collection.
+        @param item Item to use.
+    */
+    void PickupCollection::useItem(UsableItem* item)
+    {
+        if (item && this->owner_)
+            item->used(this->owner_);
     }
     /**
         @brief Remove an item/all of a type from the collection.

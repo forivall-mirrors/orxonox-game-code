@@ -51,8 +51,8 @@ namespace orxonox
         virtual ~UsableItem();
 
         /**
-            @brief Method invoked if the item was used.
-            @param pawn Pawn which used the item.
+            @brief Method invoked when the item is being used.
+            @param pawn Pawn which is using the item.
         */
         virtual void used(Pawn* pawn) { }
     };

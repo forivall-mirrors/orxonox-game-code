@@ -109,6 +109,8 @@ namespace orxonox
             virtual void dropItems();
             inline PickupCollection& getPickups()
                 { return this->pickups_; }
+            virtual void useItem()
+                { this->pickups_.useItem(); }
 
         protected:
             virtual void death();

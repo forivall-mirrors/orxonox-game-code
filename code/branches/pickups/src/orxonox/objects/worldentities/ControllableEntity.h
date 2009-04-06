@@ -86,7 +86,7 @@ namespace orxonox
 
             virtual void boost() {}
             virtual void greet() {}
-            virtual void use() {}
+            virtual void useItem() {}
             virtual void dropItems() {}
             virtual void switchCamera();
             virtual void mouseLook();

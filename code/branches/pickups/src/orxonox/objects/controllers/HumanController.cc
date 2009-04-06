@@ -47,13 +47,13 @@ namespace orxonox
     SetConsoleCommand(HumanController, altFire,       true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, boost,         true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, greet,         true);
-    SetConsoleCommand(HumanController, use,           true);
     SetConsoleCommand(HumanController, switchCamera,  true);
     SetConsoleCommand(HumanController, mouseLook,     true);
     SetConsoleCommand(HumanController, suicide,       true);
     SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
     SetConsoleCommand(HumanController, dropItems,     true);
+    SetConsoleCommand(HumanController, useItem,       true);
 
     CreateUnloadableFactory(HumanController);
 
@@ -131,12 +131,6 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->greet();
     }
 
-    void HumanController::use()
-    {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->use();
-    }
-
     void HumanController::switchCamera()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
@@ -157,6 +151,12 @@ namespace orxonox
             if (pawn)
                 pawn->kill();
         }
+    }
+
+    void HumanController::useItem()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->useItem();
     }
 
     void HumanController::addBots(unsigned int amount)

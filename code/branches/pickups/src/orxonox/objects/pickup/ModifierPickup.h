@@ -57,6 +57,8 @@ namespace orxonox
         virtual bool pickedUp(Pawn* pawn);                              //!< Override of the BaseItem::pickedUp() method.
         virtual bool dropped(Pawn* pawn);                               //!< Override of the BaseItem::dropped() method
 
+        virtual int getMaxCarryAmount(){ return INT_MAX; }              //!< Allow the player to carry infinite ModPickups
+
         /**
             @brief Get the duration of this pickup.
             @return Returns how long the effect holds on.
@@ -95,6 +97,32 @@ namespace orxonox
         */
         inline void setMultiplicativeDamage(float value)
             { this->setMultiplicativeModifier(ModifierType::Damage, value); }
+
+        /**
+            @brief Get the amount of acceleration this pickup adds.
+            @return Returns how much acceleration this pickup adds.
+        */
+        inline float getAdditiveAcceleration() const
+            { return this->getAdditiveModifier(ModifierType::Acceleration); }
+        /**
+            @brief Get the factor by which this pickup multiplies the acceleration.
+            @return Returns the factor by which to multiply acceleration.
+        */
+        inline float getMultiplicativeAcceleration() const
+            { return this->getMultiplicativeModifier(ModifierType::Acceleration); }
+
+        /**
+            @brief Set the amount of acceleration this pickup adds.
+            @param value How much acceleration this pickup adds.
+        */
+        inline void setAdditiveAcceleration(float value)
+            { this->setAdditiveModifier(ModifierType::Acceleration, value); }
+        /**
+            @brief Set the factor by which this pickup multiplies the acceleration.
+            @param value Factor by which to multiply acceleration.
+        */
+        inline void setMultiplicativeAcceleration(float value)
+            { this->setMultiplicativeModifier(ModifierType::Acceleration, value); }
 
         void timerCallback(Pawn* pawn);     //!< Method called when the timer runs out.
     private:

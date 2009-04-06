@@ -47,6 +47,7 @@
 namespace orxonox
 {
     class BaseItem;
+    class UsableItem;
     class Pawn;
 
     /**
@@ -66,6 +67,9 @@ namespace orxonox
         bool contains(BaseItem* item, bool anyOfType = false);                      //!< Check if the collection contains an item.
 
         void remove(BaseItem* item, bool removeAllOfType = false);                  //!< Remove an item from the collection.
+
+        void useItem();                                                             //!< Use the first usable item.
+        void useItem(UsableItem* item);                                             //!< Use a usable item.
 
         void addAdditiveModifier(ModifierType::Enum type, float value);             //!< Add an additive modifier.
         void addMultiplicativeModifier(ModifierType::Enum type, float value);       //!< Add a multiplicative modifier.
