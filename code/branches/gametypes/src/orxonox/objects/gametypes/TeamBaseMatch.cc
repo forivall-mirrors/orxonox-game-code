@@ -1,0 +1,185 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ */
+ 
+ 
+
+#include TeamBaseMatch.h
+
+
+//implement this! not done yet!
+#include "objects/worldentities/pawns/TeamBaseMatchBase.h" 
+ 
+ 
+namespace orxonox
+{
+    CreateUnloadableFactory(TeamBaseMatch);
+
+
+    // Timer and Creator
+    TeamBaseMatch::TeamBaseMatch(BaseObject* creator) : TeamDeathMatch(creator)
+    {
+        RegisterObject(TeamBaseMatch);
+
+        this->scoreTimer_.setTimer(10, true, this, createExecutor(createFunctor(&TeamBaseMatch::winPoints)));
+        this->outputTimer_.setTimer(30, true, this, createExecutor(createFunctor(&TeamBaseMatch::showPoints)));
+
+        this->pointsTeam1_ = 0;
+        this->pointsTeam2_ = 0;
+    }
+     
+    
+    // set the Bases positions using XML
+    void TeamBaseMatch::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+//        XMLPortObject(TeamBaseMatch, WorldEntity, setNeutralshape, getNeturalshape, xmlelement, mode); 
+//        XMLPortObject(TeamBaseMatch, WorldEntity, setTeam1shape, getTeam1shape, xmlelement, mode);
+//        XMLPortObject(TeamBaseMatch, WorldEntity, setTeam2shape, getTeam2shape, xmlelement, mode);
+
+        XMLPortObject(TeamBaseMatch, TeamBaseMatchBase, addBase, getBase, xmlelement, mode);
+    }
+    
+    // pretty useless at the moment...should be implemented in the TeamBaseMatchBase class headerfile
+    // State of the Base (controlled, uncontrolled)
+    int TeamBaseMatch::baseState(Base)
+    {
+        if(Enum state_==uncontrolled) return 0;
+        if(Enum state_==controlTeam1) return 1;
+        if(Enum state_==controlTeam2) return 2;
+    }
+    
+    bool TeamBaseMatch::allowPawnDeath(Pawn* victim, Pawn* originator)
+    {
+        set::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(victim);
+        if (it != this->bases_.end() && victim)
+        {
+            TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
+            if (base)
+            {
+                int teamnr = this->getTeam(originator->getPlayer());
+                if (teamnr == 0)
+                    base->setState(BaseState::controlTeam1);
+                if (teamnr == 1)
+                    base->setState(BaseState::controlTeam2);
+            }
+
+            victim->setHealth(victim->getInitialHealth());
+            return false;
+        }
+
+        return TeamDeathmatch::allowPawnDeath(victim, originator);
+    }
+
+    // collect Points for killing oppenents
+    void TeamBaseMatch::playerScored(PlayerInfo* player)
+    {
+        int teamnr = this->getTeam(player);
+        this->addTeamPoints(teamnr, 5);
+    }
+
+    // show points or each interval of time
+    void TeamBaseMatch::showPoints()
+    {
+	
+	COUT(0) << "Points standing:" << std::endl << "Team 1: "<< pointsTeam1_ << std::endl << "Team 2: " << pointsTeam2_ << std::endl;
+	if(pointsTeam1_ >=1700) COUT(0) << "Team 1 is near victory!" << std::endl;
+	if(pointsTeam2_ >=1700) COUT(0) << "Team 2 is near victory!" << std::endl;
+    }
+
+
+    // collect Points while controlling Bases
+    void TeamBaseMatch::winPoints()
+    {
+	int amountControlled = 0;
+	int amountControlled2 = 0;
+
+        for (std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.begin(); it != this->bases_.end(); ++it)
+        {
+	    if((*it)->getState() == BaseState::controlTeam1)
+	    {
+	        amountControlled++;
+	    }
+	    if((*it)->getState() == BaseState::controlTeam2)
+	    {
+		amountControlled2++;
+	    }
+        }
+
+        this->addTeamPoints(0, (amountControlled * 30));
+        this->addTeamPoints(1, (amountControlled2 * 30));
+    }
+
+
+    // end game if one team reaches 2000 points
+    void TeamBaseMatch::endGame()
+    {
+        if(this->pointsTeam1_>=2000 || this->pointsTeam2_ >=2000)
+        {
+            this->end();
+        }
+    }
+
+    void addTeamPoints(int team, int points)
+    {
+        if(player && teamnr == 0)
+        {
+            this->pointsTeam1_ += points;
+        }
+        if(player && teamnr == 1)
+        {
+            this->pointsTeam2_ += points;
+        }      
+
+        this->endGame();
+    }
+
+    void TeamBaseMatch::addBase(TeamBaseMatchBase* base)
+    {
+        this->bases_.insert(base);
+        base->setState(BaseState::uncontrolled);
+    }
+
+    TeamBaseMatchBase* TeamBaseMatch::getBase(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.begin(); it != this->bases_.end(); ++it)
+        {
+            i++;
+            if (i > index)
+                return (*it);
+        }
+        return 0;
+    }
+
+
+    // declare the functions 'getshape' and 'setshape' from the XML function here
+ 
+
+
+
+    
+}
+
+ 
+
+ 
