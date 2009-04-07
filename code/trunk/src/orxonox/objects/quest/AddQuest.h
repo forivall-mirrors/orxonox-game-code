@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddQuest.h
     @brief Definition of the AddQuest class.
 */
 

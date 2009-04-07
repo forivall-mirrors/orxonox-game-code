@@ -20,47 +20,50 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
- 
-/**
-    @file QuestEffect.h
-    @brief Definition of the QuestEffect class.
-*/
 
-#ifndef _QuestEffect_H__
-#define _QuestEffect_H__
+#include "OrxonoxStableHeaders.h"
+#include "GSGUI.h"
 
-#include "OrxonoxPrereqs.h"
-
-#include <list>
-
-#include "core/BaseObject.h"
+#include <OgreViewport.h>
+#include "core/input/InputManager.h"
+#include "core/input/SimpleInputState.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
-    /**
-    @brief
-        Handles QuestEffects for Quests.
-        QuestEffects are the only way for Quests to have any sideeffects in the game world. They are also the only way for a player to gain, complete or fail Quests.
-    @author
-        Damian 'Mozork' Frick
-    */
-    class _OrxonoxExport QuestEffect : public BaseObject
+    GSGUI::GSGUI()
+        : GameState<GSGraphics>("gui")
     {
-        public:
-            QuestEffect(BaseObject* creator);
-            virtual ~QuestEffect();
+    }
 
-            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
-            static bool invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
+    GSGUI::~GSGUI()
+    {
+    }
 
+    void GSGUI::enter()
+    {
+        guiManager_ = getParent()->getGUIManager();
 
-    };
+        // show main menu
+        guiManager_->showGUI("MainMenu", 0);
+        getParent()->getViewport()->setCamera(guiManager_->getCamera());
+    }
 
+    void GSGUI::leave()
+    {
+        guiManager_->hideGUI();
+    }
+
+    void GSGUI::ticked(const Clock& time)
+    {
+        // tick CEGUI
+        guiManager_->tick(time.getDeltaTime());
+
+        this->tickChild(time);
+    }
 }
-
-#endif /* _QuestEffect_H__ */

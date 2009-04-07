@@ -12,7 +12,7 @@
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thes
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
@@ -26,33 +26,40 @@
  *
  */
 
-/**
-    @file Rewardable.cc
-    @brief Implementation of the Rewardable class.
-*/
-
 #include "OrxonoxStableHeaders.h"
-#include "Rewardable.h"
+#include "QuestNotification.h"
 
 #include "core/CoreIncludes.h"
 
-namespace orxonox
-{
-    /**
-    @brief
-        Constructor. Registers the object.
-    */
-    Rewardable::Rewardable(BaseObject* creator) : BaseObject(creator)
+#include "orxonox/overlays/notifications/Notification.h"
+
+namespace orxonox {
+
+    const std::string QuestNotification::SENDER = "questsystem";
+
+    QuestNotification::QuestNotification(BaseObject* creator) : Notification(creator)
     {
-        RegisterObject(Rewardable);
+        this->initialize();
+    }
+    
+    QuestNotification::QuestNotification(const std::string & message) : Notification(message)
+    {
+        this->initialize();
+    }
+    
+    QuestNotification::~QuestNotification()
+    {
+        
     }
 
-    /**
-    @brief
-        Destructor,
-    */
-    Rewardable::~Rewardable()
+    bool QuestNotification::send(void)
     {
+        return this->Notification::send(QuestNotification::SENDER);
+    }
+
+    void QuestNotification::initialize(void)
+    {
+        RegisterObject(QuestNotification);
     }
 
 

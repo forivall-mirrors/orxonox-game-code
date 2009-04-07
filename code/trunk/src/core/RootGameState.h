@@ -20,47 +20,35 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
- 
-/**
-    @file QuestEffect.h
-    @brief Definition of the QuestEffect class.
-*/
 
-#ifndef _QuestEffect_H__
-#define _QuestEffect_H__
+#ifndef _RootGameState_H__
+#define _RootGameState_H__
 
-#include "OrxonoxPrereqs.h"
-
-#include <list>
-
-#include "core/BaseObject.h"
+#include "CorePrereqs.h"
+#include "GameState.h"
 
 namespace orxonox
 {
-    /**
-    @brief
-        Handles QuestEffects for Quests.
-        QuestEffects are the only way for Quests to have any sideeffects in the game world. They are also the only way for a player to gain, complete or fail Quests.
-    @author
-        Damian 'Mozork' Frick
-    */
-    class _OrxonoxExport QuestEffect : public BaseObject
+    class _CoreExport RootGameState : public GameState<GameStateBase>
     {
-        public:
-            QuestEffect(BaseObject* creator);
-            virtual ~QuestEffect();
+    public:
+        RootGameState(const std::string& name);
+        ~RootGameState();
 
-            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
-            static bool invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
+        void requestState(const std::string& name);
+        void start();
 
+    private:
+        void makeTransition(GameStateBase* source, GameStateBase* destination);
+        void gotoState(const std::string& name);
 
+        std::string stateRequest_;
     };
-
 }
 
-#endif /* _QuestEffect_H__ */
+#endif /* _RootGameState_H__ */
