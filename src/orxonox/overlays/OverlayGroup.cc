@@ -112,6 +112,21 @@ namespace orxonox
             element->setOwner(this->owner_);
     }
 
+    /**
+    @brief
+        Removes an element from the map.
+    @param element
+        The element that is to be removed.
+    @return
+        Returns true if there was such an element to remove, false if not.
+    */
+    bool OverlayGroup::removeElement(OrxonoxOverlay* element)
+    {
+        if(this->hudElements_.erase(element) == 0)
+            return false;
+        return true;
+    }
+
     //! Returns a different element as long as index < hudElements_.size().
     OrxonoxOverlay* OverlayGroup::getElement(unsigned int index)
     {

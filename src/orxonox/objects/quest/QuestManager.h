@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestManager.h
     @brief Definition of the QuestManager class.
 */
 
@@ -39,33 +39,36 @@
 #include <map>
 #include <string>
 
-#include "core/BaseObject.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
     /**
     @brief
-        Is a static class and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
+        Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
         Quests (and QuestHints) are registered in the QuestManager with their id, and can be accessed in the same way.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestManager : public BaseObject
+    class _OrxonoxExport QuestManager : public OrxonoxClass
     {
-
         public:
-            QuestManager(BaseObject* creator);
+            QuestManager();
             virtual ~QuestManager();
 
-            static bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
-            static bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
+            static QuestManager& getInstance(); //!< Returns a reference to the single instance of the Quest Manager.
 
-            static Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
-            static QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
+            bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
+            bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
+
+            Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
+            QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
         private:
-            static std::map<std::string, Quest*> questMap_s; //!< All Quests registered by their id's.
-            static std::map<std::string, QuestHint*> hintMap_s; //!< All QuestHints registered by their id's.
+            static QuestManager* singletonRef_s;
+
+            std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
+            std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
 
     };
 

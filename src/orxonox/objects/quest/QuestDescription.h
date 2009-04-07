@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestDescription.h
     @brief Definition of the QuestDescription class.
 */
 

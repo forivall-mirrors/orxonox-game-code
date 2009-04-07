@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddQuestHint.cc
     @brief Implementation of the AddQuestHint class.
 */
 
@@ -116,7 +116,7 @@ namespace orxonox
 
         try
         {
-            QuestHint* hint = QuestManager::findHint(this->hintId_);
+            QuestHint* hint = QuestManager::getInstance().findHint(this->hintId_);
             if(hint == NULL || !hint->setActive(player))
             {
                 return false;

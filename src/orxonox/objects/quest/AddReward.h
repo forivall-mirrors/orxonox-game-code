@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddReward.h
     @brief Definition of the AddReward class.
 */
 

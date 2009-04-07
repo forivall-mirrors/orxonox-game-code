@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file QuestHint.cc
     @brief Implementation of the QuestHint class.
 */
 
@@ -72,7 +72,7 @@ namespace orxonox
     {
         SUPER(QuestHint, XMLPort, xmlelement, mode);
 
-        QuestManager::registerHint(this); //!< Registers the QuestHint with the QuestManager.
+        QuestManager::getInstance().registerHint(this); //!< Registers the QuestHint with the QuestManager.
         
         COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }

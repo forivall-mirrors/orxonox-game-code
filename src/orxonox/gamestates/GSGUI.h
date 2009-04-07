@@ -20,47 +20,34 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
- 
-/**
-    @file QuestEffect.h
-    @brief Definition of the QuestEffect class.
-*/
 
-#ifndef _QuestEffect_H__
-#define _QuestEffect_H__
+#ifndef _GSGUI_H__
+#define _GSGUI_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <list>
-
-#include "core/BaseObject.h"
+#include "core/GameState.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    /**
-    @brief
-        Handles QuestEffects for Quests.
-        QuestEffects are the only way for Quests to have any sideeffects in the game world. They are also the only way for a player to gain, complete or fail Quests.
-    @author
-        Damian 'Mozork' Frick
-    */
-    class _OrxonoxExport QuestEffect : public BaseObject
+    class _OrxonoxExport GSGUI : public GameState<GSGraphics>
     {
-        public:
-            QuestEffect(BaseObject* creator);
-            virtual ~QuestEffect();
+    public:
+        GSGUI();
+        ~GSGUI();
 
-            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
-            static bool invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
+    private:
+        void enter();
+        void leave();
+        void ticked(const Clock& time);
 
-
+        GUIManager* guiManager_;
     };
-
 }
 
-#endif /* _QuestEffect_H__ */
+#endif /* _GSGUI_H__ */

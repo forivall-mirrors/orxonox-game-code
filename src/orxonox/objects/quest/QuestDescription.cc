@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestDescription.cc
     @brief Implementation of the QuestDescription class.
 */
 
@@ -36,7 +36,7 @@
 #include "QuestDescription.h"
 
 #include "core/CoreIncludes.h"
-#include "orxonox/overlays/notifications/Notification.h"
+#include "QuestNotification.h"
 
 namespace orxonox
 {
@@ -88,32 +88,29 @@ namespace orxonox
         The status the QuestDescription us for.
     @return
         Returns true if successful.
+    @todo
+        Make sure the messages meet the conditions.
     */
     bool QuestDescription::notificationHelper(const std::string & item, const std::string & status) const
     {
         std::string message = "";
-        std::string title = "";
         if(item == "hint")
         {
-            title = "You received a hint: '" + this->title_ + "'";
-            message = this->description_;
+            message = "You received a hint: '" + this->title_ + "'";
         }
         else if(item == "quest")
         {
             if(status == "start")
             {
-                title = "You received a new quest: '" + this->title_ + "'";
-                message = this->description_;
+                message = "You received a new quest: '" + this->title_ + "'";
             }
             else if(status == "fail")
             {
-                title = "You failed the quest: '" + this->title_ + "'";
-                message = this->failMessage_;
+                message = "You failed the quest: '" + this->title_ + "'";
             }
             else if(status == "complete")
             {
-                title = "You successfully completed the quest: '" + this->title_ + "'";
-                message = this->completeMessage_;
+                message = "You successfully completed the quest: '" + this->title_ + "'";
             }
             else
             {
@@ -127,7 +124,7 @@ namespace orxonox
             return false;
         }
         
-        Notification* notification = new Notification(0, message, title, 30);
+        QuestNotification* notification = new QuestNotification(message);
         notification->send();
         return true;
     }
