@@ -34,7 +34,7 @@
 #include <OgreSceneManager.h>
 #include <cassert>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "util/Convert.h"
 #include "util/String.h"
 
@@ -63,12 +63,21 @@ namespace orxonox
         if (this->entity_)
             this->scenemanager_->destroyEntity(this->entity_);
 
-        if (Core::showsGraphics())
+        if (GameMode::showsGraphics())
         {
             try
             {
                 this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
                 this->entity_->setCastShadows(this->bCastShadows_);
+
+                this->entity_->setNormaliseNormals(true);
+                /*
+                    Excerpt from Ogre forum:
+                    "Note that the above is only for the fixed function pipeline.
+                    If/when you get into shaders, you'll need to manually normalize() the normal inside the vertex or pixel shader."
+
+                    I don't know exactly what this means, but I put this here if there will be problems with shaders.
+                */
             }
             catch (...)
             {

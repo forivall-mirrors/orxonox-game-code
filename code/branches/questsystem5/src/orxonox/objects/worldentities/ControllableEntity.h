@@ -48,6 +48,7 @@ namespace orxonox
             void setConfigValues();
 
             virtual void changedGametype();
+            virtual void changedPlayer() {}
 
             virtual void setPlayer(PlayerInfo* player);
             virtual void removePlayer();
@@ -135,6 +136,7 @@ namespace orxonox
         protected:
             virtual void startLocalHumanControl();
             virtual void stopLocalHumanControl();
+            virtual void parentChanged();
 
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }

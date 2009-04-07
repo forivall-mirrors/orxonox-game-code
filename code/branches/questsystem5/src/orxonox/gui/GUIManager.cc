@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
+ *      Benjamin Knecht
  *   Co-authors:
- *      ...
+ *
  *
  */
 
@@ -35,9 +36,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "GUIManager.h"
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include <OgreRenderWindow.h>
-#include <OgreRoot.h>
 #include <CEGUI.h>
 #include <CEGUIDefaultLogger.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
@@ -49,10 +49,9 @@
 #endif
 
 #include "util/Exception.h"
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
+#include "core/Clock.h"
 #include "ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
 
@@ -62,17 +61,10 @@ extern "C" {
 
 namespace orxonox
 {
-    SetConsoleCommandShortcut(GUIManager, showGUI_s).keybindMode(KeybindMode::OnPress);
-
     GUIManager* GUIManager::singletonRef_s = 0;
 
     GUIManager::GUIManager()
-        //: emptySceneManager_(0)
-        : backgroundSceneManager_(0)
-        //, emptyCamera_(0)
-        , backgroundCamera_(0)
-        //, viewport_(0)
-        , renderWindow_(0)
+        : renderWindow_(0)
         , guiRenderer_(0)
         , resourceProvider_(0)
         , scriptModule_(0)
@@ -83,22 +75,14 @@ namespace orxonox
         singletonRef_s = this;
     }
 
+    /**
+    @brief
+        Deconstructor of the GUIManager
+
+        Basically shuts down CEGUI and destroys the Lua engine and afterwards the interface to the Ogre engine.
+    */
     GUIManager::~GUIManager()
     {
-        if (backgroundCamera_)
-            backgroundSceneManager_->destroyCamera(backgroundCamera_);
-
-        if (backgroundSceneManager_)
-        {
-            // We have to make sure the SceneManager is not anymore referenced.
-            // For the case that the target SceneManager was yet another one, it
-            // wouldn't matter anyway since this is the destructor.
-            guiRenderer_->setTargetSceneManager(0);
-            Ogre::Root::getSingleton().destroySceneManager(backgroundSceneManager_);
-        }
-
-        InputManager::getInstance().requestDestroyState("gui");
-
         if (guiSystem_)
             delete guiSystem_;
 
@@ -109,10 +93,6 @@ namespace orxonox
 	        lua_setglobal(luaState_, "Orxonox");
 	        lua_pushnil(luaState_);
 	        lua_setglobal(luaState_, "Core");
-            // TODO: deleting the script module fails an assertion.
-            // However there is not much we can do about it since it occurs too when
-            // we don't open Core or Orxonox. Might be a CEGUI issue.
-            // The memory leak is not a problem anyway..
             delete scriptModule_;
         }
 
@@ -122,6 +102,20 @@ namespace orxonox
         singletonRef_s = 0;
     }
 
+    /**
+    @brief
+        Initialises the GUIManager by starting up CEGUI
+    @param renderWindow
+        Ogre's render window. Without this, the GUI cannot be displayed.
+    @return true if success, otherwise false
+
+        Before this call the GUIManager won't do anything, but can be accessed.
+
+        Creates the interface to Ogre, sets up the CEGUI renderer and the Lua script module together with the Lua engine.
+        The log is set up and connected to the CEGUILogger.
+        After Lua setup tolua++-elements are linked to Lua-state to give Lua access to C++-code.
+        Finally initial Lua code is executed (maybe we can do this with the CEGUI startup script automatically).
+    */
     bool GUIManager::initialise(Ogre::RenderWindow* renderWindow)
     {
         using namespace CEGUI;
@@ -134,15 +128,8 @@ namespace orxonox
                 // save the render window
                 renderWindow_ = renderWindow;
 
-                // Full screen viewport with Z order = 0 (top most). Don't yet feed a camera (so nothing gets rendered)
-                //this->viewport_ = renderWindow_->addViewport(0, 3);
-                //this->viewport_->setOverlaysEnabled(false);
-                //this->viewport_->setShadowsEnabled(false);
-                //this->viewport_->setSkiesEnabled(false);
-                //this->viewport_->setClearEveryFrame(false);
-
                 // Note: No SceneManager specified yet
-                this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_MAIN, true, 3000);
+                this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, true, 3000);
                 this->resourceProvider_ = guiRenderer_->createResourceProvider();
                 this->resourceProvider_->setDefaultResourceGroup("GUI");
 
@@ -165,15 +152,8 @@ namespace orxonox
                 tolua_Core_open(this->scriptModule_->getLuaState());
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
 
-                // register us as input handler
-                SimpleInputState* state = InputManager::getInstance().createInputState<SimpleInputState>("gui", 30);
-                state->setHandler(this);
-                state->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
-
-                // load the background scene
-                loadScenes();
-                //CEGUI::KeyEventArgs e;
-                //e.codepoint
+                // initialise the basic lua code
+                loadLuaCode();
             }
             catch (CEGUI::Exception& ex)
             {
@@ -191,33 +171,26 @@ namespace orxonox
         return true;
     }
 
-    void GUIManager::loadScenes()
+    /**
+    @brief
+        Calls main Lua script
+    @todo
+        Replace loadGUI.lua with loadGUI_2.lua after merging this back to trunk.
+        However CEGUI is able to execute a startup script. We could maybe put this call in this startup code.
+
+        This function calls the main Lua script for our GUI.
+
+        Additionally we set the datapath variable in Lua. This is needed so Lua can access the data used for the GUI.
+    */
+    void GUIManager::loadLuaCode()
     {
-        // first of all, we need to have our own SceneManager for the GUI. The reason
-        // is that we might have multiple viewports when in play mode (e.g. the view of
-        // a camera fixed at the back of the ship). That forces us to create our own
-        // full screen viewport that is on top of all the others, but doesn't clear the
-        // port before rendering, so everything from the GUI gets on top eventually.
-        // But in order to realise that, we also need a SceneManager with an empty scene,
-        // because the SceneManager is responsible for the render queue.
-        //this->emptySceneManager_ = Ogre::Root::getSingleton()
-        //    .createSceneManager(Ogre::ST_GENERIC, "GUI/EmptySceneManager");
-
-        // we also need a camera or we won't see anything at all.
-        // The camera settings don't matter at all for an empty scene since the GUI
-        // gets rendered on top of the screen rather than into the scene.
-        //this->emptyCamera_ = this->emptySceneManager_->createCamera("GUI/EmptyCamera");
-
-        // Create another SceneManager that enables to display some 3D
-        // scene in the background of the main menu.
-        this->backgroundSceneManager_ = Ogre::Root::getSingleton()
-            .createSceneManager(Ogre::ST_GENERIC, "GUI/BackgroundSceneManager");
-        this->backgroundCamera_ = backgroundSceneManager_->createCamera("GUI/BackgroundCamera");
-
-        // TODO: create something 3D
         try
         {
-            this->scriptModule_->executeScriptFile("loadGUI.lua", "GUI");
+            // call main Lua script
+            this->scriptModule_->executeScriptFile("loadGUI_2.lua", "GUI");
+            // set datapath for GUI data
+            lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
+            lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
         }
         catch (CEGUI::Exception& ex)
         {
@@ -230,41 +203,74 @@ namespace orxonox
         }
     }
 
-    void GUIManager::showGUI(const std::string& name, Ogre::SceneManager* sceneManager)// bool showBackground)
+    /**
+    @brief
+        used to tick the GUI
+    @param time
+        clock which provides time value for the GUI System
+
+        Ticking the GUI means updating it with a certain regularity.
+        The elapsed time since the last call is given in the time value provided by the clock.
+        This time value is then used to provide a fluent animation of the GUI.
+    */
+    void GUIManager::update(const Clock& time)
+    {
+        assert(guiSystem_);
+        guiSystem_->injectTimePulse(time.getDeltaTime());
+    }
+
+    /**
+    @brief
+        Executes Lua code
+    @param str
+        reference to string object holding the Lua code which is to be executed
+
+        This function gives total access to the GUI. You can execute ANY Lua code here.
+    */
+    void GUIManager::executeCode(const std::string& str)
+    {
+        try
+        {
+            this->scriptModule_->executeString(str);
+        }
+        catch (CEGUI::Exception& ex)
+        {
+            COUT(2) << "CEGUI Error: \"" << ex.getMessage() << "\" while executing code \"" << str << "\"" << std::endl;
+        }
+    }
+
+    /**
+    @brief
+        Tells the GUIManager which SceneManager to use
+    @param camera
+        The current camera on which the GUI should be displayed on.
+
+        In fact the GUIManager needs the SceneManager and not the Camera to display the GUI.
+        This means the GUI is not bound to a camera but rather to the SceneManager.
+        Hidding the GUI when needed can therefore not be solved by just NOT setting the current camera.
+    */
+    void GUIManager::setCamera(Ogre::Camera* camera)
+    {
+        this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
+    }
+
+    /**
+    @brief
+        Displays specified GUI on screen
+    @param name
+        The name of the GUI
+
+        The function executes the Lua function with the same name in case the GUIManager is ready.
+        For more details check out loadGUI_2.lua where the function presides.
+    */
+    void GUIManager::showGUI(const std::string& name)
     {
         if (state_ != Uninitialised)
         {
-            if (state_ == OnDisplay)
-                hideGUI();
-
-            COUT(3) << "Loading GUI " << name << std::endl;
+            //COUT(3) << "Loading GUI " << name << std::endl;
             try
             {
-                if (!sceneManager)
-                {
-                    // currently, only an image is loaded. We could do 3D, see loadBackground.
-                    //this->viewport_->setClearEveryFrame(true);
-                    this->guiRenderer_->setTargetSceneManager(this->backgroundSceneManager_);
-                    //this->viewport_->setCamera(this->backgroundCamera_);
-
-                    lua_pushboolean(this->scriptModule_->getLuaState(), true);
-                    lua_setglobal(this->scriptModule_->getLuaState(), "showBackground");
-                }
-                else
-                {
-                    //this->viewport_->setClearEveryFrame(false);
-                    this->guiRenderer_->setTargetSceneManager(sceneManager);
-                    //this->viewport_->setCamera(this->emptyCamera_);
-
-                    lua_pushboolean(this->scriptModule_->getLuaState(), false);
-                    lua_setglobal(this->scriptModule_->getLuaState(), "showBackground");
-                }
-
-                this->scriptModule_->executeScriptGlobal("showMainMenu");
-
-                InputManager::getInstance().requestEnterState("gui");
-
-                this->state_ = OnDisplay;
+                this->scriptModule_->executeString(std::string("showGUI(\"") + name + "\")");
             }
             catch (CEGUI::Exception& ex)
             {
@@ -281,16 +287,15 @@ namespace orxonox
         }
     }
 
-    void GUIManager::hideGUI()
-    {
-        if (this->state_ != OnDisplay)
-            return;
-        //this->viewport_->setCamera(0);
-        this->guiRenderer_->setTargetSceneManager(0);
-        this->state_ = Ready;
-        InputManager::getInstance().requestLeaveState("gui");
-    }
+    /**
+    @brief
+        Function receiving a mouse button pressed event.
+    @param id
+        ID of the mouse button which got pressed
 
+        This function is inherited by MouseHandler and injects the event into CEGUI.
+        It is for CEGUI to process the event.
+    */
     void GUIManager::mouseButtonPressed(MouseButtonCode::ByEnum id)
     {
         try
@@ -304,6 +309,15 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Function receiving a mouse button released event.
+    @param id
+        ID of the mouse button which got released
+
+        This function is inherited by MouseHandler and injects the event into CEGUI.
+        It is for CEGUI to process the event.
+    */
     void GUIManager::mouseButtonReleased(MouseButtonCode::ByEnum id)
     {
         try
@@ -317,7 +331,16 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        converts mouse event code to CEGUI event code
+    @param button
+        code of the mouse button as we use it in Orxonox
+    @return
+        code of the mouse button as it is used by CEGUI
 
+        Simple convertion from mouse event code in Orxonox to the one used in CEGUI.
+     */
     inline CEGUI::MouseButton GUIManager::convertButton(MouseButtonCode::ByEnum button)
     {
         switch (button)

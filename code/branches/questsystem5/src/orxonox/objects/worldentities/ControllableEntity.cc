@@ -33,7 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "core/Template.h"
 
@@ -143,10 +143,19 @@ namespace orxonox
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
     {
-        if (position->getAllowMouseLook())
-            position->attachToNode(this->cameraPositionRootNode_);
+        if (!position->getIsAbsolute())
+        {
+            if (position->getAllowMouseLook())
+                position->attachToNode(this->cameraPositionRootNode_);
+            else
+                this->attach(position);
+        }
         else
-            this->attach(position);
+        {
+            WorldEntity* parent = this->getParent();
+            if (parent)
+                parent->attach(position);
+        }
         this->cameraPositions_.push_back(position);
     }
 
@@ -235,12 +244,14 @@ namespace orxonox
         {
             this->startLocalHumanControl();
 
-            if (!Core::isMaster())
+            if (!GameMode::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
                 this->setObjectMode(objectDirection::bidirectional);
             }
         }
+
+        this->changedPlayer();
     }
 
     void ControllableEntity::removePlayer()
@@ -253,6 +264,8 @@ namespace orxonox
         this->bHasLocalController_ = false;
         this->bHasHumanController_ = false;
         this->setObjectMode(objectDirection::toclient);
+
+        this->changedPlayer();
 
         if (this->bDestroyWhenPlayerLeft_)
             delete this;
@@ -321,6 +334,19 @@ namespace orxonox
         }
     }
 
+    void ControllableEntity::parentChanged()
+    {
+        WorldEntity::parentChanged();
+
+        WorldEntity* parent = this->getParent();
+        if (parent)
+        {
+            for (std::list<CameraPosition*>::iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                if ((*it)->getIsAbsolute())
+                    parent->attach((*it));
+        }
+    }
+
     void ControllableEntity::tick(float dt)
     {
         MobileEntity::tick(dt);
@@ -330,7 +356,7 @@ namespace orxonox
             // Check whether Bullet doesn't do the physics for us
             if (!this->isDynamic())
             {
-                if (Core::isMaster())
+                if (GameMode::isMaster())
                 {
                     this->server_position_ = this->getPosition();
                     this->server_orientation_ = this->getOrientation();
@@ -445,7 +471,7 @@ namespace orxonox
 
     void ControllableEntity::setPosition(const Vector3& position)
     {
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             MobileEntity::setPosition(position);
             this->server_position_ = this->getPosition();
@@ -460,7 +486,7 @@ namespace orxonox
 
     void ControllableEntity::setOrientation(const Quaternion& orientation)
     {
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             MobileEntity::setOrientation(orientation);
             this->server_orientation_ = this->getOrientation();
@@ -475,7 +501,7 @@ namespace orxonox
 
     void ControllableEntity::setVelocity(const Vector3& velocity)
     {
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             MobileEntity::setVelocity(velocity);
             this->server_linear_velocity_ = this->getVelocity();
@@ -490,7 +516,7 @@ namespace orxonox
 
     void ControllableEntity::setAngularVelocity(const Vector3& velocity)
     {
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             MobileEntity::setAngularVelocity(velocity);
             this->server_angular_velocity_ = this->getAngularVelocity();
@@ -506,7 +532,7 @@ namespace orxonox
     void ControllableEntity::setWorldTransform(const btTransform& worldTrans)
     {
         MobileEntity::setWorldTransform(worldTrans);
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             this->server_position_ = this->getPosition();
             this->server_orientation_ = this->getOrientation();

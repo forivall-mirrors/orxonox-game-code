@@ -37,7 +37,7 @@
 #ifndef _ObjectListBase_H__
 #define _ObjectListBase_H__
 
-#include <list>
+#include <vector>
 
 #include "CorePrereqs.h"
 
@@ -70,7 +70,7 @@ namespace orxonox
     class ObjectListElement : public ObjectListBaseElement
     {
         public:
-            ObjectListElement(T* object) : ObjectListBaseElement((OrxonoxClass*)object), object_(object) {}
+            ObjectListElement(T* object) : ObjectListBaseElement(static_cast<OrxonoxClass*>(object)), object_(object) {}
             T* object_;              //!< The object
     };
 
@@ -109,10 +109,30 @@ namespace orxonox
             /** @brief Returns a pointer to the element in front of the first element in the list. @return The element */
             inline Export rend() { return ObjectListBase::Export(this, 0); }
 
-            inline std::list<void*>::iterator registerIterator(void* iterator) { return this->iterators_.insert(this->iterators_.begin(), iterator); }
-            inline void unregisterIterator(const std::list<void*>::iterator& iterator) { this->iterators_.erase(iterator); }
-            inline std::list<void*>::iterator registerObjectListIterator(void* iterator) { return this->objectListIterators_.insert(this->objectListIterators_.begin(), iterator); }
-            inline void unregisterObjectListIterator(const std::list<void*>::iterator& iterator) { this->objectListIterators_.erase(iterator); }
+            inline void registerIterator(void* iterator) { this->iterators_.push_back(iterator); }
+            inline void unregisterIterator(void* iterator)
+            {
+                for (unsigned int i = 0; i < this->iterators_.size(); ++i)
+                {
+                    if (iterators_[i] == iterator)
+                    {
+                        iterators_.erase(iterators_.begin() + i);
+                        break;
+                    }
+                }
+            }
+            inline void registerObjectListIterator(void* iterator) { this->objectListIterators_.push_back(iterator); }
+            inline void unregisterObjectListIterator(void* iterator)
+            {
+                for (unsigned int i = 0; i < this->objectListIterators_.size(); ++i)
+                {
+                    if (objectListIterators_[i] == iterator)
+                    {
+                        objectListIterators_.erase(objectListIterators_.begin() + i);
+                        break;
+                    }
+                }
+            }
             void notifyIterators(OrxonoxClass* object) const;
 
             inline Identifier* getIdentifier() const { return this->identifier_; }
@@ -121,8 +141,8 @@ namespace orxonox
             Identifier* identifier_;               //!< The Iterator owning this list
             ObjectListBaseElement* first_;         //!< The first element in the list
             ObjectListBaseElement* last_;          //!< The last element in the list
-            std::list<void*> iterators_;           //!< A list of Iterators pointing on an element in this list
-            std::list<void*> objectListIterators_; //!< A list of ObjectListIterators pointing on an element in this list
+            std::vector<void*> iterators_;           //!< A list of Iterators pointing on an element in this list
+            std::vector<void*> objectListIterators_; //!< A list of ObjectListIterators pointing on an element in this list
     };
 }
 

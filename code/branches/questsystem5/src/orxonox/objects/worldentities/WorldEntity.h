@@ -32,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#ifdef _NDEBUG
+#ifdef NDEBUG
 #include <OgreSceneNode.h>
 #else
 #include <OgrePrerequisites.h>
@@ -175,6 +175,8 @@ namespace orxonox
             void notifyChildPropsChanged();
 
         protected:
+            virtual void parentChanged() {}
+
             Ogre::SceneNode* node_;
 
         private:
@@ -190,7 +192,7 @@ namespace orxonox
                 { this->roll(angle); }
 
             // network callbacks
-            void parentChanged();
+            void networkcallback_parentChanged();
             inline void scaleChanged()
                 { this->setScale3D(this->getScale3D()); }
 
@@ -268,7 +270,7 @@ namespace orxonox
             /**
             @brief
                 Sets how much reaction is applied in a collision.
-                
+
                 Consider two equal spheres colliding with equal velocities:
                 Restitution 1 means that both spheres simply reverse their velocity (no loss of energy)
                 Restitution 0 means that both spheres will immediately stop moving
@@ -418,11 +420,11 @@ namespace orxonox
     };
 
     // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.
-#ifdef _NDEBUG
+#ifdef NDEBUG
     inline const Vector3& WorldEntity::getPosition() const
         { return this->node_->getPosition(); }
     inline const Quaternion& WorldEntity::getOrientation() const
-        { return this->node_->getrOrientation(); }
+        { return this->node_->getOrientation(); }
     inline const Vector3& WorldEntity::getScale3D(void) const
         { return this->node_->getScale(); }
 #endif

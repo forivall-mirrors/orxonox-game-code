@@ -62,8 +62,8 @@ namespace orxonox
 
     OverlayGroup::~OverlayGroup()
     {
-        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            delete it->second;
+        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            delete (*it);
     }
 
     /**
@@ -82,70 +82,47 @@ namespace orxonox
         XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode);
     }
 
-    //! Scales every element in the map.
+    //! Scales every element in the set.
     void OverlayGroup::setScale(const Vector2& scale)
     {
-        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            (*it).second->scale(scale / this->scale_);
+        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it)->scale(scale / this->scale_);
         this->scale_ = scale;
     }
 
-    //! Scrolls every element in the map.
+    //! Scrolls every element in the set.
     void OverlayGroup::setScroll(const Vector2& scroll)
     {
-        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            (*it).second->scroll(scroll - this->scroll_);
+        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it)->scroll(scroll - this->scroll_);
         this->scroll_ = scroll;
     }
 
     /**
     @brief
-        Adds an element to the map (used when loading with XMLPort).
+        Adds an element to the set (used when loading with XMLPort).
     @remarks
         The names of the OrxonoxOverlays have to be unique!
     */
     void OverlayGroup::addElement(OrxonoxOverlay* element)
     {
-        this->insertElement(element, element->getName());
+        hudElements_.insert(element);
+        element->setVisible(this->isVisible());
+        if (this->owner_)
+            element->setOwner(this->owner_);
     }
 
-	/**
-    @brief
-        Adds an element to the map.
-    @param element
-        The element to be added.
-    @param name
-        The name of the element.
-    @remarks
-        The names of the OrxonoxOverlays have to be unique!
-    */
-    void OverlayGroup::insertElement(OrxonoxOverlay* element, const std::string & name)
-    {
-        element->setName(name);
-        if (hudElements_.find(name) != hudElements_.end())
-        {
-            COUT(1) << "Ambiguous names encountered while load the HUD overlays" << std::endl;
-        }
-        else
-        {
-            hudElements_[name] = element;
-            element->setVisible(this->isVisible());
-			if (this->owner_)
-                element->setOwner(this->owner_);
-        }
-    }
-
-	/**
+    /**
     @brief
         Removes an element from the map.
-    @param name
-        The name of the element that is removed.
+    @param element
+        The element that is to be removed.
     @return
         Returns true if there was such an element to remove, false if not.
     */
-    bool OverlayGroup::removeElement(const std::string & name)
+    bool OverlayGroup::removeElement(OrxonoxOverlay* element)
     {
-        if(this->hudElements_.erase(name) == 0)
+        if(this->hudElements_.erase(element) == 0)
             return false;
         return true;
     }
@@ -155,10 +132,10 @@ namespace orxonox
     {
         if (index < this->hudElements_.size())
         {
-            std::map<std::string, OrxonoxOverlay*>::const_iterator it = hudElements_.begin();
+            std::set<OrxonoxOverlay*>::const_iterator it = hudElements_.begin();
             for (unsigned int i = 0; i != index; ++it, ++i)
                 ;
-            return (*it).second;
+            return (*it);
         }
         else
             return 0;
@@ -167,16 +144,16 @@ namespace orxonox
     //! Changes the visibility of all elements
     void OverlayGroup::changedVisibility()
     {
-        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            (*it).second->setVisible(this->isVisible());
+        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it)->setVisible(this->isVisible());
     }
 
-    void OverlayGroup::setOwner(ControllableEntity* owner)
+    void OverlayGroup::setOwner(BaseObject* owner)
     {
         this->owner_ = owner;
 
-        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            (*it).second->setOwner(owner);
+        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it)->setOwner(owner);
     }
 
     //########### Console commands ############

@@ -55,11 +55,15 @@ namespace orxonox
             inline float getStartCountdown() const
                 { return this->startCountdown_; }
 
+            inline const std::string& getHUDTemplate() const
+                { return this->hudtemplate_; }
+
         private:
             bool bStarted_;
             bool bEnded_;
             bool bStartCountdownRunning_;
             float startCountdown_;
+            std::string hudtemplate_;
     };
 }
 

@@ -20,50 +20,30 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#ifndef _Teamcolourable_H__
+#define _Teamcolourable_H__
 
-#include <OgreViewport.h>
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "OrxonoxPrereqs.h"
+
+#include "util/Math.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState<GSGraphics>("gui")
+    class _OrxonoxExport Teamcolourable : virtual public OrxonoxClass
     {
-    }
+        public:
+            virtual void setTeamColour(const ColourValue& colour) = 0;
 
-    GSGUI::~GSGUI()
-    {
-    }
-
-    void GSGUI::enter()
-    {
-        guiManager_ = getParent()->getGUIManager();
-
-        // show main menu
-        guiManager_->showGUI("MainMenu", 0);
-        getParent()->getViewport()->setCamera(guiManager_->getCamera());
-    }
-
-    void GSGUI::leave()
-    {
-        guiManager_->hideGUI();
-    }
-
-    void GSGUI::ticked(const Clock& time)
-    {
-        // tick CEGUI
-        guiManager_->tick(time.getDeltaTime());
-
-        this->tickChild(time);
-    }
+        protected:
+            Teamcolourable();
+    };
 }
+
+#endif /* _Teamcolourable_H__ */

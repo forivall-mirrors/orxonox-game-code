@@ -88,7 +88,7 @@ void PickupSpawner::triggerRespawnTimer()
 	{
 		ExecutorMember<BaseObject>* executor = createExecutor(createFunctor(&BaseObject::setActive));
 		executor->setDefaultValues(true);
-		RespawnTimer_.setTimer(this->respawntimer_, false, (BaseObject*)this, executor);
+		RespawnTimer_.setTimer(this->respawntimer_, false, this, executor);
 		COUT(0) << "TIMER SET" << std::endl;
 	}
 }

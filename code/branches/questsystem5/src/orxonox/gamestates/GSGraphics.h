@@ -22,92 +22,59 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht (documentation)
  *
  */
+
+ /**
+    @file
+    @brief Declaration of the Graphics GameState class.
+  */
 
 #ifndef _GSGraphics_H__
 #define _GSGraphics_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#define NOMINMAX // required to stop windows.h screwing up std::min definition
-#include <OgreWindowEventUtilities.h>
 #include "core/GameState.h"
-#include "core/OrxonoxClass.h"
-#include "GSRoot.h"
+#include "tools/WindowEventListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGraphics : public GameState<GSRoot>, public OrxonoxClass,
-                                      public Ogre::WindowEventListener, public Ogre::LogListener
+    /**
+    @class GSGraphics
+    @brief
+        Game state used when displaying graphics of any kind
+
+        This game state is only left out if we start a dedicated server where no graphics are present.
+    */
+    class _OrxonoxExport GSGraphics : public GameState, public WindowEventListener
     {
-        friend class ClassIdentifier<GSGraphics>;
-
     public:
-        GSGraphics();
+        GSGraphics(const std::string& name);
         ~GSGraphics();
-
-        Ogre::Root*     getOgreRoot()   { return this->ogreRoot_  ; }
-        Ogre::Viewport* getViewport()   { return this->viewport_  ; }
-        GUIManager*     getGUIManager() { return this->guiManager_; }
-
-    private: // functions
-        void enter();
-        void leave();
-        void ticked(const Clock& time);
-
         void setConfigValues();
 
-        void setupOgre();
-        void loadOgrePlugins();
-        void declareResources();
-        void loadRenderer();
-        void initialiseResources();
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
-        // console commands
-        void printScreen();
+        void toggleGUI();
 
-        // event from Ogre::LogListener
-        void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
-            bool maskDebug, const std::string& logName);
-
-        // window events from Ogre::WindowEventListener
-        void windowMoved       (Ogre::RenderWindow* rw);
-        void windowResized     (Ogre::RenderWindow* rw);
-        void windowFocusChange (Ogre::RenderWindow* rw);
-        void windowClosed      (Ogre::RenderWindow* rw);
-
-        void requestWindowEventListenerUpdate() { this->bWindowEventListenerUpdateRequired_ = true; }
-
-    private: // variables
-        Ogre::RenderWindow*   renderWindow_;          //!< the current render window
-        Ogre::Viewport*       viewport_;              //!< default full size viewport
-        bool bWindowEventListenerUpdateRequired_;     //!< True if a new WindowEventListener was created but not yet updated.
+    private:
+        // Window events from WindowEventListener
+        void windowResized(unsigned int newWidth, unsigned int newHeight);
+        void windowFocusChanged();
 
         // managed singletons
-        InputManager*         inputManager_;
+        InputManager*         inputManager_;        //!< Reference to input management
         InGameConsole*        console_;
-        GUIManager*           guiManager_;
-        Ogre::Root*           ogreRoot_;                  //!< Ogre's root
-        Ogre::LogManager*     ogreLogger_;
-        GraphicsEngine*       graphicsEngine_;   //!< Interface to Ogre
+        GUIManager*           guiManager_;          //!< Interface to GUI
+        GraphicsManager*      graphicsManager_;     //!< Interface to Ogre
 
-        KeyBinder*            masterKeyBinder_;
+        KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings
+        SimpleInputState*     masterInputState_;    //!< Special input state for master input
         XMLFile*              debugOverlay_;
-
-        // config values
-        std::string           resourceFile_;             //!< resources file name
-        std::string           ogreConfigFile_;           //!< ogre config file name
-        std::string           ogrePluginsFolder_;        //!< Folder where the Ogre plugins are located
-        std::string           ogrePlugins_;              //!< Comma separated list of all plugins to load
-        std::string           ogreLogFile_;              //!< log file name for Ogre log messages
-        int                   ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL
-        int                   ogreLogLevelNormal_;       //!< Corresponding Orxonx debug level for LL_NORMAL
-        int                   ogreLogLevelCritical_;     //!< Corresponding Orxonx debug level for LL_CRITICAL
-
-        // console commands
-        ConsoleCommand*       ccPrintScreen_;
+        ConsoleCommand*       ccToggleGUI_;         //!< Console command to toggle GUI
     };
 }
 

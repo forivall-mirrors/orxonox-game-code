@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "HumanPlayer.h"
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "network/ClientInformation.h"
@@ -46,11 +46,14 @@ namespace orxonox
     {
         RegisterObject(HumanPlayer);
 
-        this->server_initialized_ = Core::isMaster();
+        this->server_initialized_ = GameMode::isMaster();
         this->client_initialized_ = false;
 
         this->bHumanPlayer_ = true;
         this->defaultController_ = Class(HumanController);
+
+        this->humanHud_ = 0;
+        this->gametypeHud_ = 0;
 
         this->setConfigValues();
         this->registerVariables();
@@ -58,6 +61,14 @@ namespace orxonox
 
     HumanPlayer::~HumanPlayer()
     {
+        if (this->BaseObject::isInitialized())
+        {
+            if (this->humanHud_)
+                delete this->humanHud_;
+
+            if (this->gametypeHud_)
+                delete this->gametypeHud_;
+        }
     }
 
     void HumanPlayer::setConfigValues()
@@ -81,14 +92,14 @@ namespace orxonox
         {
             this->synchronize_nick_ = this->nick_;
 
-            if (Core::isMaster())
+            if (GameMode::isMaster())
                 this->setName(this->nick_);
         }
     }
 
     void HumanPlayer::configvaluecallback_changedHUDTemplate()
     {
-        this->changedController();
+        this->setHumanHUDTemplate(this->hudtemplate_);
     }
 
     void HumanPlayer::networkcallback_changednick()
@@ -104,12 +115,13 @@ namespace orxonox
             this->synchronize_nick_ = this->nick_;
             this->client_initialized_ = true;
 
-            if (!Core::isMaster())
+            if (!GameMode::isMaster())
                 this->setObjectMode(objectDirection::bidirectional);
             else
                 this->setName(this->nick_);
 
             this->createController();
+            this->updateHumanHUD();
         }
     }
 
@@ -145,14 +157,52 @@ namespace orxonox
         this->networkcallback_clientIDchanged();
     }
 
-    void HumanPlayer::changedController()
+    void HumanPlayer::changedGametype()
     {
-        if (this->getController())
-        {
-            this->getController()->setHUDTemplate(this->hudtemplate_);
+        PlayerInfo::changedGametype();
 
-            if (this->getController() && this->getController()->getHUD())
-                this->getController()->getHUD()->setOwner(this->getControllableEntity());
+        if (this->isInitialized() && this->isLocalPlayer())
+            if (this->getGametype()->getHUDTemplate() != "")
+                this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
+    }
+
+    void HumanPlayer::changedControllableEntity()
+    {
+        PlayerInfo::changedControllableEntity();
+
+        if (this->humanHud_)
+            this->humanHud_->setOwner(this->getControllableEntity());
+    }
+
+    void HumanPlayer::updateHumanHUD()
+    {
+        if (this->humanHud_)
+        {
+            delete this->humanHud_;
+            this->humanHud_ = 0;
+        }
+
+        if (this->isLocalPlayer() && this->humanHudTemplate_ != "")
+        {
+            this->humanHud_ = new OverlayGroup(this);
+            this->humanHud_->addTemplate(this->humanHudTemplate_);
+            this->humanHud_->setOwner(this->getControllableEntity());
+        }
+    }
+
+    void HumanPlayer::updateGametypeHUD()
+    {
+        if (this->gametypeHud_)
+        {
+            delete this->gametypeHud_;
+            this->gametypeHud_ = 0;
+        }
+
+        if (this->isLocalPlayer() && this->gametypeHudTemplate_ != "")
+        {
+            this->gametypeHud_ = new OverlayGroup(this);
+            this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);
+            this->gametypeHud_->setOwner(this->getGametype());
         }
     }
 }

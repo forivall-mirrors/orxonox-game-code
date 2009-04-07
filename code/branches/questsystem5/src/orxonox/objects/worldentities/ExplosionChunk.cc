@@ -31,7 +31,7 @@
 
 #include <OgreParticleSystem.h>
 
-#include "core/Core.h"
+#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "objects/Scene.h"
@@ -46,13 +46,13 @@ namespace orxonox
     {
         RegisterObject(ExplosionChunk);
 
-        if ( Core::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
+        if ( GameMode::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
             ThrowException(AbortLoading, "Can't create ExplosionChunk, no scene or no scene manager given.");
 
         this->bStop_ = false;
         this->LOD_ = LODParticle::normal;
 
-        if ( Core::showsGraphics() )
+        if ( GameMode::showsGraphics() )
         {
             try
             {
@@ -74,7 +74,7 @@ namespace orxonox
             this->smoke_ = 0;
         }
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             Vector3 velocity(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1));
             velocity.normalise();
@@ -131,7 +131,7 @@ namespace orxonox
         if (this->smoke_)
             this->smoke_->setEnabled(false);
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
         {
             this->bStop_ = true;
             this->destroyTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&ExplosionChunk::destroy)));
@@ -147,7 +147,7 @@ namespace orxonox
     {
         static const unsigned int CHANGES_PER_SECOND = 5;
 
-        if (Core::isMaster() && rnd() < dt*CHANGES_PER_SECOND)
+        if (GameMode::isMaster() && rnd() < dt*CHANGES_PER_SECOND)
         {
             float length = this->getVelocity().length();
 

@@ -41,7 +41,7 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
-#include "QuestDescription.h";
+#include "QuestDescription.h"
 #include "Quest.h"
 
 namespace orxonox

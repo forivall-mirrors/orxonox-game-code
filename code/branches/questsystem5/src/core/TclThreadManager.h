@@ -89,7 +89,7 @@ namespace orxonox
             void error(const std::string& error);
             void debug(const std::string& error);
 
-            virtual void tick(float dt);
+            void update(const Clock& time);
 
             std::list<unsigned int> getThreadList() const;
 

@@ -67,8 +67,8 @@ namespace orxonox
         ExtendedInputState() { }
         ~ExtendedInputState() { }
 
-        void tickInput(float dt);
-        void tickInput(float dt, unsigned int device);
+        void updateInput(float dt);
+        void updateInput(float dt, unsigned int device);
 
         void keyPressed (const KeyEvent& evt);
         void keyReleased(const KeyEvent& evt);

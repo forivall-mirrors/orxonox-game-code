@@ -41,6 +41,7 @@
 #include "util/Math.h"
 #include "util/Convert.h"
 #include "util/Debug.h"
+#include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -171,7 +172,7 @@ namespace orxonox
     void InGameConsole::initialise(int windowWidth, int windowHeight)
     {
         // create the corresponding input state
-        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", 40);
+        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", false, false, InputStatePriority::Console);
         inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
         bHidesAllInputChanged();
 
@@ -346,7 +347,7 @@ namespace orxonox
     /**
         @brief Used to control the actual scrolling and the cursor.
     */
-    void InGameConsole::tick(float dt)
+    void InGameConsole::update(const Clock& time)
     {
         if (this->scroll_ != 0)
         {
@@ -357,7 +358,7 @@ namespace orxonox
                 // scrolling down
                 // enlarge oldTop a little bit so that this exponential function
                 // reaches 0 before infinite time has passed...
-                float deltaScroll = (oldTop - 0.01) * dt * this->scrollSpeed_;
+                float deltaScroll = (oldTop - 0.01) * time.getDeltaTime() * this->scrollSpeed_;
                 if (oldTop - deltaScroll >= 0)
                 {
                     // window has completely scrolled down
@@ -372,7 +373,7 @@ namespace orxonox
             {
                 // scrolling up
                 // note: +0.01 for the same reason as when scrolling down
-                float deltaScroll = (1.2 * this->relativeHeight + 0.01 + oldTop) * dt * this->scrollSpeed_;
+                float deltaScroll = (1.2 * this->relativeHeight + 0.01 + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
                 if (oldTop - deltaScroll <= -1.2 * this->relativeHeight)
                 {
                     // window has completely scrolled up
@@ -387,7 +388,7 @@ namespace orxonox
 
         if (this->bActive_)
         {
-            this->cursor_ += dt;
+            this->cursor_ += time.getDeltaTime();
             if (this->cursor_ >= this->blinkTime)
             {
                 this->cursor_ = 0;
@@ -408,7 +409,7 @@ namespace orxonox
     /**
         @brief Resizes the console elements. Call if window size changes.
     */
-    void InGameConsole::windowResized(int newWidth, int newHeight)
+    void InGameConsole::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
         this->windowW_ = newWidth;
         this->windowH_ = newHeight;

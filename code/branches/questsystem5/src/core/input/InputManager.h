@@ -42,6 +42,7 @@
 #include <vector>
 #include <stack>
 #include "util/Math.h"
+#include "util/OrxEnum.h"
 #include "core/OrxonoxClass.h"
 #include "InputInterfaces.h"
 
@@ -73,6 +74,19 @@ namespace orxonox
         int middleValue[24];
         float positiveCoeff[24];
         float negativeCoeff[24];
+    };
+
+    struct InputStatePriority : OrxEnum<InputStatePriority>
+    {
+        OrxEnumConstructors(InputStatePriority);
+
+        static const int Empty        = -1;
+        static const int Dynamic      = 0;
+
+        static const int HighPriority = 1000;
+        static const int Console      = HighPriority + 0;
+        static const int Calibrator   = HighPriority + 1;
+        static const int Detector     = HighPriority + 2;
     };
 
     /**
@@ -115,16 +129,15 @@ namespace orxonox
         void setKeyDetectorCallback(const std::string& command);
 
         template <class T>
-        T* createInputState(const std::string& name, int priority);
+        T* createInputState(const std::string& name, bool bAlwaysGetsInput = false, bool bTransparent = false, InputStatePriority priority = InputStatePriority::Dynamic);
 
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
-        ExtendedInputState* getMasterInputState() { return this->stateMaster_; }
         bool requestDestroyState   (const std::string& name);
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
 
-        void tick(float dt);
+        void update(const Clock& time);
 
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
         static InputManager* getInstancePtr() { return singletonRef_s; }
@@ -164,7 +177,7 @@ namespace orxonox
         unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
 
         void _updateActiveStates();
-        bool _configureInputState(InputState* state, const std::string& name, int priority);
+        bool _configureInputState(InputState* state, const std::string& name, bool bAlwaysGetsInput, bool bTransparent, int priority);
 
         // input events
         bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
@@ -196,20 +209,18 @@ namespace orxonox
 
         // some internally handled states and handlers
         SimpleInputState*                   stateEmpty_;
-        ExtendedInputState*                 stateMaster_;          //!< Always active master input state
         KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         InputBuffer*                        calibratorCallbackBuffer_;
 
         std::map<std::string, InputState*>  inputStatesByName_;
-        std::map<int, InputState*>          inputStatesByPriority_;
 
         std::set<InputState*>               stateEnterRequests_;   //!< Request to enter a new state
         std::set<InputState*>               stateLeaveRequests_;   //!< Request to leave a running state
         std::set<InputState*>               stateDestroyRequests_; //!< Request to destroy a state
 
         std::map<int, InputState*>          activeStates_;
-        std::vector<InputState*>            activeStatesTop_;      //!< Current input states for joy stick events.
-        std::vector<InputState*>            activeStatesTicked_;   //!< Current input states for joy stick events.
+        std::vector<std::vector<InputState*> > activeStatesTriggered_;
+        std::vector<InputState*>            activeStatesTicked_;
 
         // joystick calibration
         std::vector<std::vector<int> >      joyStickMinValues_;
@@ -248,10 +259,10 @@ namespace orxonox
         number, but 1 - 99 is preferred (99 means high).
     */
     template <class T>
-    T* InputManager::createInputState(const std::string& name, int priority)
+    T* InputManager::createInputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
     {
         T* state = new T;
-        if (_configureInputState(state, name, priority))
+        if (_configureInputState(state, name, bAlwaysGetsInput, bTransparent, priority))
             return state;
         else
         {

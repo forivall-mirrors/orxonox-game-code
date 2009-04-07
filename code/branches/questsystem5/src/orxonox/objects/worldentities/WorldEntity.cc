@@ -180,14 +180,14 @@ namespace orxonox
                                                 variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
 
         // Attach to parent if necessary
-        registerVariable(this->parentID_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::parentChanged));
+        registerVariable(this->parentID_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::networkcallback_parentChanged));
     }
 
     /**
     @brief
         Network function that object this instance to its correct parent.
     */
-    void WorldEntity::parentChanged()
+    void WorldEntity::networkcallback_parentChanged()
     {
         if (this->parentID_ != OBJECTID_UNKNOWN)
         {
@@ -361,11 +361,13 @@ namespace orxonox
         this->parent_ = newParent;
         this->parentID_ = newParent->getObjectID();
 
+        this->parentChanged();
+
         // apply transform to collision shape
         this->collisionShape_->setPosition(this->getPosition());
         this->collisionShape_->setOrientation(this->getOrientation());
         // TODO: Scale
-        
+
         return true;
     }
 
@@ -405,6 +407,8 @@ namespace orxonox
     {
         this->parent_ = 0;
         this->parentID_ = OBJECTID_UNKNOWN;
+
+        this->parentChanged();
 
         // reset orientation of the collisionShape (cannot be set within a WE usually)
         this->collisionShape_->setPosition(Vector3::ZERO);
@@ -487,7 +491,7 @@ namespace orxonox
     }
 
     // Note: These functions are placed in WorldEntity.h as inline functions for the release build.
-#ifndef _NDEBUG
+#ifndef NDEBUG
     const Vector3& WorldEntity::getPosition() const
     {
         return this->node_->getPosition();
@@ -655,6 +659,7 @@ HACK HACK HACK
             ogreRelativeTo = Ogre::Node::TS_PARENT; break;
         case TransformSpace::World:
             ogreRelativeTo = Ogre::Node::TS_WORLD; break;
+        default: OrxAssert(false, "Faulty TransformSpace::Enum assigned.");
         }
         this->node_->setDirection(direction, ogreRelativeTo, localDirectionVector);
         Quaternion newOrientation(this->node_->getOrientation());
@@ -754,7 +759,7 @@ HACK HACK HACK
         switch (type)
         {
         case Dynamic:
-            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT));
+            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT & !btCollisionObject::CF_KINEMATIC_OBJECT);
             break;
         case Kinematic:
             this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);

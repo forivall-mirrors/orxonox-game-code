@@ -109,6 +109,11 @@ namespace orxonox
 
     void PlayerInfo::createController()
     {
+        if (this->controller_)
+        {
+            delete this->controller_;
+            this->controller_ = 0;
+        }
         this->controller_ = this->defaultController_.fabricate(this);
         assert(this->controller_);
         this->controller_->setPlayer(this);
@@ -140,6 +145,8 @@ namespace orxonox
 
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
+
+        this->changedControllableEntity();
     }
 
     void PlayerInfo::stopControl(ControllableEntity* entity, bool callback)
@@ -154,6 +161,8 @@ namespace orxonox
 
             if (callback)
                 entity->removePlayer();
+
+            this->changedControllableEntity();
         }
     }
 

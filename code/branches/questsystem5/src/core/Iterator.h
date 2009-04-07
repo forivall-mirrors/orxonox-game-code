@@ -74,7 +74,7 @@ namespace orxonox
             {
                 this->element_ = exp.element_;
                 this->list_ = exp.list_;
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
             }
 
             /**
@@ -85,7 +85,7 @@ namespace orxonox
             {
                 this->element_ = other.element_;
                 this->list_ = other.list_;
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
             }
 
             /**
@@ -97,7 +97,7 @@ namespace orxonox
             {
                 this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
             }
 
             /**
@@ -109,7 +109,7 @@ namespace orxonox
             {
                 this->element_ = (other.element_) ? static_cast<ObjectListBaseElement*>(other.element_) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
             }
 
             /**
@@ -117,7 +117,7 @@ namespace orxonox
             */
             inline ~Iterator()
             {
-                this->list_->unregisterIterator(this->iterator_);
+                this->list_->unregisterIterator(this);
             }
 
             /**
@@ -127,11 +127,11 @@ namespace orxonox
             inline const Iterator<T>& operator=(const ObjectListBase::Export& exp)
             {
                 if (this->list_)
-                    this->list_->unregisterIterator(this->iterator_);
+                    this->list_->unregisterIterator(this);
 
                 this->element_ = exp.element_;
                 this->list_ = exp.list_;
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
 
                 return (*this);
             }
@@ -143,11 +143,11 @@ namespace orxonox
             inline const Iterator<T>& operator=(const Iterator<T>& other)
             {
                 if (this->list_)
-                    this->list_->unregisterIterator(this->iterator_);
+                    this->list_->unregisterIterator(this);
 
                 this->element_ = other.element_;
                 this->list_ = other.list_;
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
 
                 return (*this);
             }
@@ -160,11 +160,11 @@ namespace orxonox
             inline const Iterator<T>& operator=(ObjectListElement<O>* element)
             {
                 if (this->list_)
-                    this->list_->unregisterIterator(this->iterator_);
+                    this->list_->unregisterIterator(this);
 
                 this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
 
                 return (*this);
                 return *this;
@@ -178,11 +178,11 @@ namespace orxonox
             inline const Iterator<T>& operator=(const ObjectListIterator<O>& other)
             {
                 if (this->list_)
-                    this->list_->unregisterIterator(this->iterator_);
+                    this->list_->unregisterIterator(this);
 
-                this->element_ = (other.element_) ? (ObjectListBaseElement*)other.element_ : 0;
+                this->element_ = (other.element_) ? static_cast<ObjectListBaseElement*>(other.element_) : 0;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->iterator_ = this->list_->registerIterator(this);
+                this->list_->registerIterator(this);
 
                 return (*this);
             }
@@ -299,7 +299,6 @@ namespace orxonox
         protected:
             ObjectListBaseElement* element_;       //!< The element the Iterator points at
             ObjectListBase* list_;                 //!< The list wherein the element is
-            std::list<void*>::iterator iterator_;  //!< The iterator in the notifying list of the ObjectList
     };
 
     typedef Iterator<OrxonoxClass> BaseIterator;
