@@ -36,8 +36,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <set>
-#include <string>
+#include <map>
 #include <OgrePrerequisites.h>
 #include "core/BaseObject.h"
 #include "util/Math.h"
@@ -64,13 +63,13 @@ namespace orxonox
         static void scaleGroup(const std::string& name, float scale);
         static void scrollGroup(const std::string& name, const Vector2& scroll);
 
-        inline const std::set<OrxonoxOverlay*>& getOverlays() const
+        inline const std::map<std::string, OrxonoxOverlay*>& getOverlays() const
             { return this->hudElements_; }
 
         void changedVisibility();
 
-        void setOwner(BaseObject* owner);
-        inline BaseObject* getOwner() const
+        void setOwner(ControllableEntity* owner);
+        inline ControllableEntity* getOwner() const
             { return this->owner_; }
 
         //! Scales each OrxonoxOverlay individually by scale.
@@ -86,14 +85,15 @@ namespace orxonox
         Vector2 getScroll() const { return this->scale_; }
 
         void addElement(OrxonoxOverlay* element);
-        bool removeElement(OrxonoxOverlay* element);
+		void insertElement(OrxonoxOverlay* element, const std::string & name);
+        bool removeElement(const std::string & name);
         OrxonoxOverlay* getElement(unsigned int index);
 
     private:
-        std::set<OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
-        Vector2 scale_;                            //!< Current scale (independent of the elements).
-        Vector2 scroll_;                           //!< Current scrolling offset.
-        BaseObject* owner_;                        //!< The owner of this OverlayGroup
+        std::map<std::string, OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
+        Vector2 scale_;                                         //!< Current scale (independent of the elements).
+        Vector2 scroll_;                                        //!< Current scrolling offset.
+        ControllableEntity* owner_;                             //!< The owner of this OverlayGroup
     };
 }
 

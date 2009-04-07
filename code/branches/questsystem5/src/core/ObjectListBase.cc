@@ -74,9 +74,9 @@ namespace orxonox
     */
     void ObjectListBase::notifyIterators(OrxonoxClass* object) const
     {
-        for (std::vector<void*>::const_iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
+        for (std::list<void*>::const_iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
             ((Iterator<OrxonoxClass>*)(*it))->incrementIfEqual(object);
-        for (std::vector<void*>::const_iterator it = this->objectListIterators_.begin(); it != this->objectListIterators_.end(); ++it)
+        for (std::list<void*>::const_iterator it = this->objectListIterators_.begin(); it != this->objectListIterators_.end(); ++it)
             ((ObjectListIterator<OrxonoxClass>*)(*it))->incrementIfEqual(object);
     }
 

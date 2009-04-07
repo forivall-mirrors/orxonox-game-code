@@ -153,7 +153,7 @@ namespace orxonox
 
         virtual void changedVisibility();
 
-        inline void setOwner(BaseObject* owner)
+        inline void setOwner(ControllableEntity* owner)
         {
             if (this->owner_ != owner)
             {
@@ -161,7 +161,7 @@ namespace orxonox
                 this->changedOwner();
             }
         }
-        inline BaseObject* getOwner() const
+        inline ControllableEntity* getOwner() const
             { return this->owner_; }
         virtual void changedOwner() {}
 
@@ -199,13 +199,13 @@ namespace orxonox
         RotationState rotState_;             //!< horizontal, vertical or inbetween
 
     private:
-        void windowResized(unsigned int newWidth, unsigned int newHeight);
+        void windowResized(int newWidth, int newHeight);
 
         static unsigned int hudOverlayCounter_s;   //!< Static counter for hud elements
         /** Contains all the overlays in a map for quick access via console commands.
             We could also use the ObjectList, but that doesn't guarantee XMLPort(.) was called and is slower. */
         static std::map<std::string, OrxonoxOverlay*> overlays_s;
-        BaseObject* owner_;
+        ControllableEntity* owner_;
         OverlayGroup* group_;
   };
 

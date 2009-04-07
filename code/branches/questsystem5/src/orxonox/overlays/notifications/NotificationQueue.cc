@@ -409,7 +409,7 @@ namespace orxonox
         
         this->containers_.insert(container);
         this->overlays_[notification] = container;
-        this->addElement(container->overlay);
+        this->insertElement(container->overlay, container->name);
         this->size_= this->size_+1;
 
         container->overlay->scroll(Vector2(0.0,(1.1*this->getFontSize())*(this->getSize()-1)));
@@ -428,7 +428,7 @@ namespace orxonox
         if(this->size_ == 0) //!< You cannot remove anything if the queue is empty.
             return false;
         
-        this->removeElement(container->overlay);
+        this->removeElement(container->name);
         this->containers_.erase(container);
         this->overlays_.erase(container->notification);
         delete container->overlay;

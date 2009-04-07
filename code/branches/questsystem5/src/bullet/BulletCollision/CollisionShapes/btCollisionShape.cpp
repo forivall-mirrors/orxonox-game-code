@@ -16,9 +16,6 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 
 
-btScalar gContactThresholdFactor=btScalar(0.02);
-
-
 /*
   Make sure this dummy function never changes so that it
   can be used by probes that are checking whether the
@@ -47,7 +44,8 @@ void	btCollisionShape::getBoundingSphere(btVector3& center,btScalar& radius) con
 
 btScalar	btCollisionShape::getContactBreakingThreshold() const
 {
-	return getAngularMotionDisc() * gContactThresholdFactor;
+	///@todo make this 0.1 configurable
+	return getAngularMotionDisc() * btScalar(0.1);
 }
 btScalar	btCollisionShape::getAngularMotionDisc() const
 {

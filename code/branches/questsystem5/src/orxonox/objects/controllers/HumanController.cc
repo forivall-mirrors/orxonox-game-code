@@ -34,7 +34,6 @@
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/worldentities/pawns/Pawn.h"
 #include "objects/gametypes/Gametype.h"
-#include "objects/infos/PlayerInfo.h"
 
 namespace orxonox
 {
@@ -157,8 +156,6 @@ namespace orxonox
             Pawn* pawn = dynamic_cast<Pawn*>(HumanController::localController_s->controllableEntity_);
             if (pawn)
                 pawn->kill();
-            else if (HumanController::localController_s->player_)
-                HumanController::localController_s->player_->stopControl(HumanController::localController_s->controllableEntity_);
         }
     }
 

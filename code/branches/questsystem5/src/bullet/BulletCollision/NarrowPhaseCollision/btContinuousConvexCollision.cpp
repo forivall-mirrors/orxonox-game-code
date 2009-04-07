@@ -135,9 +135,6 @@ bool	btContinuousConvexCollision::calcTimeOfImpact(
 			//btScalar clippedDist  = GEN_min(angularConservativeRadius,dist);
 			//btScalar clippedDist  = dist;
 			
-			//don't report time of impact for motion away from the contact normal (or causes minor penetration)
-			if ((projectedLinearVelocity+ maxAngularProjectedVelocity)<=SIMD_EPSILON)
-				return false;
 			
 			dLambda = dist / (projectedLinearVelocity+ maxAngularProjectedVelocity);
 
@@ -199,10 +196,11 @@ bool	btContinuousConvexCollision::calcTimeOfImpact(
 			}
 
 		}
-	
+
+		//don't report time of impact for motion away from the contact normal (or causes minor penetration)
 		if ((projectedLinearVelocity+ maxAngularProjectedVelocity)<=result.m_allowedPenetration)//SIMD_EPSILON)
 			return false;
-			
+
 		result.m_fraction = lambda;
 		result.m_normal = n;
 		result.m_hitPoint = c;

@@ -52,12 +52,12 @@ namespace orxonox
             void attachWeaponSet(WeaponSet *wSet);
             //void fire();
             void fire(WeaponMode::Enum fireMode);
+            //void setActiveWeaponSet(unsigned int n);
             void attachWeaponPack(WeaponPack * wPack, unsigned int firemode);
             WeaponSet * getWeaponSetPointer(unsigned int n);
             WeaponSlot * getWeaponSlotPointer(unsigned int n);
             WeaponPack * getWeaponPackPointer(unsigned int n);
             void setNewMunition(std::string munitionType, Munition * munitionToAdd);
-            void setNewSharedMunition(std::string munitionType, Munition * munitionToAdd);
             Munition * getMunitionType(std::string munitionType);
 
             inline void setParentPawn(Pawn *parentPawn)
@@ -73,6 +73,7 @@ namespace orxonox
             std::vector<WeaponSlot *> weaponSlots_;
             std::vector<WeaponPack *> weaponPacks_;
             std::map<std::string, Munition *> munitionSet_;
+            WeaponSet *activeWeaponSet_;
             Pawn *parentPawn_;
     };
 }

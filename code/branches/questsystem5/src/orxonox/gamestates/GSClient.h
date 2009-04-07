@@ -30,22 +30,24 @@
 #define _GSClient_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
+#include "GSLevel.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSClient : public GameState
+    class _OrxonoxExport GSClient : public GameState<GSGraphics>, public GSLevel
     {
     public:
-        GSClient(const std::string& name);
+        GSClient();
         ~GSClient();
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
 
     private:
+        void enter();
+        void leave();
+        void ticked(const Clock& time);
+
         Client* client_;
     };
 }

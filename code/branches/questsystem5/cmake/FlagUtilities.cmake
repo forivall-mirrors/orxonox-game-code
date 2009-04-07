@@ -53,14 +53,6 @@ MACRO(SET_CACHE _varname _type _docstring)
   ENDIF()
 ENDMACRO(SET_CACHE)
 
-# Visual studio (esp. IntelliSense) doesn't like dashes to specify arguments
-# Always use foward slashes instead
-IF(MSVC)
-  SET(ARGUMENT_STARTER "/")
-ELSE()
-  SET(ARGUMENT_STARTER "-")
-ENDIF(MSVC)
-
 # Separates a string of flags. " -" or " /" denotes the start of a flag.
 # The same sequence inside double quotation marks is ignored.
 # Spaces not within quotes are cleaned meaningfully.
@@ -78,7 +70,7 @@ MACRO(SEPARATE_FLAGS _flags _output_variable)
            "\\1@39535493@\\3" _flag_string "${_flag_string}")
     # Extract one flag if possible
     SET(_flag)
-    STRING(REGEX REPLACE "^.* [/-](.+)( [/-].*$)" "${ARGUMENT_STARTER}\\1" _flag "${_flag_string}")
+    STRING(REGEX REPLACE "^.* [/-](.+)( [/-].*$)" "-\\1" _flag "${_flag_string}")
     STRING(REGEX REPLACE "^.* [/-](.+)( [/-].*$)" "\\2"  _flag_string "${_flag_string}")
     IF(NOT _flag STREQUAL _flag_string)
       LIST(APPEND _parsed_flags "${_flag}")

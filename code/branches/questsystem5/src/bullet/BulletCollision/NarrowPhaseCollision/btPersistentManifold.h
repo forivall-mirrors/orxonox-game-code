@@ -55,7 +55,6 @@ ATTRIBUTE_ALIGNED16( class) btPersistentManifold
 	int	m_cachedPoints;
 
 	btScalar	m_contactBreakingThreshold;
-	btScalar	m_contactProcessingThreshold;
 
 	
 	/// sort cached points so most isolated points come first
@@ -71,10 +70,9 @@ public:
 
 	btPersistentManifold();
 
-	btPersistentManifold(void* body0,void* body1,int , btScalar contactBreakingThreshold,btScalar contactProcessingThreshold)
+	btPersistentManifold(void* body0,void* body1,int , btScalar contactBreakingThreshold)
 		: m_body0(body0),m_body1(body1),m_cachedPoints(0),
-		m_contactBreakingThreshold(contactBreakingThreshold),
-		m_contactProcessingThreshold(contactProcessingThreshold)
+		m_contactBreakingThreshold(contactBreakingThreshold)
 	{
 		
 	}
@@ -113,11 +111,6 @@ public:
 
 	///@todo: get this margin from the current physics / collision environment
 	btScalar	getContactBreakingThreshold() const;
-
-	btScalar	getContactProcessingThreshold() const
-	{
-		return m_contactProcessingThreshold;
-	}
 	
 	int getCacheEntry(const btManifoldPoint& newPoint) const;
 

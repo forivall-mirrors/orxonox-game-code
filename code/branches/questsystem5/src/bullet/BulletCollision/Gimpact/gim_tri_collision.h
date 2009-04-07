@@ -275,7 +275,7 @@ if 0.0<= u+v <=1.0 then they are inside of triangle
 		}
 		else
 		{
-			btScalar sumuv;
+			float sumuv;
 			sumuv = u+v;
 			if(sumuv<-G_EPSILON)
 			{

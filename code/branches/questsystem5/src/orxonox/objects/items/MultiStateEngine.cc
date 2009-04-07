@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "MultiStateEngine.h"
 
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/worldentities/pawns/SpaceShip.h"
@@ -122,7 +122,7 @@ namespace orxonox
                     this->state_ &= ~STATE_BRAKE;
             }
 
-            if (GameMode::isMaster())
+            if (Core::isMaster())
             {
                 for (std::list<WorldEntity*>::const_iterator it = this->activeEffects_.begin(); it != this->activeEffects_.end(); ++it)
                     (*it)->setMainState(this->state_ & STATE_ACTIVE);

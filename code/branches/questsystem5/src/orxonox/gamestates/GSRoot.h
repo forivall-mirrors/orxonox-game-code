@@ -30,20 +30,31 @@
 #define _GSRoot_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
+
+#include <list>
+#include <OgreLog.h>
+#include "core/RootGameState.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public GameState
+    class _OrxonoxExport GSRoot : public RootGameState, public OrxonoxClass
     {
+        friend class ClassIdentifier<GSRoot>;
+
     public:
-        GSRoot(const std::string& name);
+        struct statisticsTickInfo
+        {
+            uint64_t    tickTime;
+            uint32_t    tickLength;
+        };
+    
+    public:
+        GSRoot();
         ~GSRoot();
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
+        void exitGame()
+        { requestState("root"); }
 
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
@@ -51,14 +62,63 @@ namespace orxonox
         void pause();
         float getTimeFactor() { return this->timeFactor_; }
 
+        float getAvgTickTime() { return this->avgTickTime_; }
+        float getAvgFPS()      { return this->avgFPS_; }
+
+        inline void addTickTime(uint32_t length)
+            { assert(!this->statisticsTickTimes_.empty()); this->statisticsTickTimes_.back().tickLength += length;
+              this->periodTickTime_+=length; }
+
     private:
+        void enter();
+        void leave();
+        void ticked(const Clock& time);
+
+        void setConfigValues();
+        void setThreadAffinity(unsigned int limitToCPU);
+
         float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
+        TclBind*              tclBind_;
+        TclThreadManager*     tclThreadManager_;
+        Shell*                shell_;
+        LuaBind*              luaBind_;
+
+        // variables for time statistics
+        uint64_t              statisticsStartTime_;
+        std::list<statisticsTickInfo>
+                              statisticsTickTimes_;
+        uint32_t              periodTickTime_;
+        float                 avgFPS_;
+        float                 avgTickTime_;
+
+        // config values
+        unsigned int          statisticsRefreshCycle_;
+        unsigned int          statisticsAvgLength_;
 
         // console commands
+        ConsoleCommand*       ccExit_;
+        ConsoleCommand*       ccSelectGameState_;
         ConsoleCommand*       ccSetTimeFactor_;
         ConsoleCommand*       ccPause_;
+    };
+
+    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
+    {
+        friend class GSRoot;
+
+        public:
+            TimeFactorListener();
+            virtual ~TimeFactorListener() {}
+
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old) {}
+            inline float getTimeFactor() const
+                { return TimeFactorListener::timefactor_s; }
+
+        private:
+            static float timefactor_s;
     };
 }
 

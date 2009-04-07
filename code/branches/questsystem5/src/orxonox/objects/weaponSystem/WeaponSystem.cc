@@ -37,9 +37,10 @@
 #include "WeaponSystem.h"
 
 
-/* WeaponSystem
+/* WEAPONSYSTEM
+ * creates the WeaponSystem and the ability to use weapons and munition
+ * loads the weapon the whole weaponSystem setting from an xml file
  *
- *  www.orxonox.net/wiki/WeaponSystem
  */
 
 namespace orxonox
@@ -50,6 +51,7 @@ namespace orxonox
     {
         RegisterObject(WeaponSystem);
 
+        this->activeWeaponSet_ = 0;
         this->parentPawn_ = 0;
     }
 
@@ -81,10 +83,10 @@ namespace orxonox
         this->munitionSet_[munitionType] = munitionToAdd;
     }
 
-
-    //returns the Pointer to the munitionType, if this munitionType doesn't exist returns 0, see Weapon::attachNeededMunition
+    //returns the Pointer to the munitionType
     Munition * WeaponSystem::getMunitionType(std::string munitionType)
     {
+//COUT(0) << "WeaponSystem::getMunitionType " << munitionType << std::endl;
         std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);
         if (it != this->munitionSet_.end())
             return it->second;
@@ -93,9 +95,20 @@ namespace orxonox
     }
 
 
+/*
+    //the first weaponSet is at n=0
+    void WeaponSystem::setActiveWeaponSet(unsigned int n)
+    {
+        if (n < this->weaponSets_.size())
+            this->activeWeaponSet_ = this->weaponSets_[n];
+        else
+            this->activeWeaponSet_ = this->weaponSets_[0];
+    }
+*/
+
+
     //n is the n'th weaponSet, starting with zero
-    //SpaceShip.cc only needs to have the keybinding to a specific Set-number n (=firemode)
-    //in future this could be well defined and not only for 3 different WeaponModes
+    //SpaceShip.cc only needs to have the keybinding to a specific Set-number n
     void WeaponSystem::fire(WeaponMode::Enum n)
     {
         int set = 0;
@@ -111,7 +124,9 @@ namespace orxonox
                 set = 2;
                 break;
         }
+//COUT(0) << "WeaponSystem::fire" << std::endl;
         if (set < (int)this->weaponSets_.size())
+//COUT(0) << "WeaponSystem::fire - after if" << std::endl;
             this->weaponSets_[set]->fire();
     }
 

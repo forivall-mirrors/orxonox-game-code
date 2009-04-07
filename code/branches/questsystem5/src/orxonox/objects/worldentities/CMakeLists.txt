@@ -18,10 +18,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   ParticleSpawner.cc
   Planet.cc
   SpawnPoint.cc
-  TeamSpawnPoint.cc
-  PongCenterpoint.cc
-  PongBall.cc
-  PongBat.cc
 )
 
 ADD_SUBDIRECTORY(pawns)

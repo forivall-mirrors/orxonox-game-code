@@ -19,21 +19,6 @@ int gNumAlignedAllocs = 0;
 int gNumAlignedFree = 0;
 int gTotalBytesAlignedAllocs = 0;//detect memory leaks
 
-static void *btAllocDefault(size_t size)
-{
-	return malloc(size);
-}
-
-static void btFreeDefault(void *ptr)
-{
-	free(ptr);
-}
-
-static btAllocFunc *sAllocFunc = btAllocDefault;
-static btFreeFunc *sFreeFunc = btFreeDefault;
-
-
-
 #if defined (BT_HAS_ALIGNED_ALLOCATOR)
 #include <malloc.h>
 static void *btAlignedAllocDefault(size_t size, int alignment)
@@ -64,7 +49,7 @@ static inline void *btAlignedAllocDefault(size_t size, int alignment)
   char *real;
   unsigned long offset;
 
-  real = (char *)sAllocFunc(size + sizeof(void *) + (alignment-1));
+  real = (char *)malloc(size + sizeof(void *) + (alignment-1));
   if (real) {
     offset = (alignment - (unsigned long)(real + sizeof(void *))) & (alignment-1);
     ret = (void *)((real + sizeof(void *)) + offset);
@@ -81,14 +66,25 @@ static inline void btAlignedFreeDefault(void *ptr)
 
   if (ptr) {
     real = *((void **)(ptr)-1);
-    sFreeFunc(real);
+    free(real);
   }
 }
 #endif
 
+static void *btAllocDefault(size_t size)
+{
+	return malloc(size);
+}
+
+static void btFreeDefault(void *ptr)
+{
+	free(ptr);
+}
 
 static btAlignedAllocFunc *sAlignedAllocFunc = btAlignedAllocDefault;
 static btAlignedFreeFunc *sAlignedFreeFunc = btAlignedFreeDefault;
+static btAllocFunc *sAllocFunc = btAllocDefault;
+static btFreeFunc *sFreeFunc = btFreeDefault;
 
 void btAlignedAllocSetCustomAligned(btAlignedAllocFunc *allocFunc, btAlignedFreeFunc *freeFunc)
 {

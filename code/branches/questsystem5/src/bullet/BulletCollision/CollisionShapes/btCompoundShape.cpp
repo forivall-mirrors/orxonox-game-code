@@ -22,8 +22,7 @@ btCompoundShape::btCompoundShape(bool enableDynamicAabbTree)
 m_localAabbMax(btScalar(-1e30),btScalar(-1e30),btScalar(-1e30)),
 m_collisionMargin(btScalar(0.)),
 m_localScaling(btScalar(1.),btScalar(1.),btScalar(1.)),
-m_dynamicAabbTree(0),
-m_updateRevision(1)
+m_dynamicAabbTree(0)
 {
 	m_shapeType = COMPOUND_SHAPE_PROXYTYPE;
 
@@ -47,7 +46,6 @@ btCompoundShape::~btCompoundShape()
 
 void	btCompoundShape::addChildShape(const btTransform& localTransform,btCollisionShape* shape)
 {
-	m_updateRevision++;
 	//m_childTransforms.push_back(localTransform);
 	//m_childShapes.push_back(shape);
 	btCompoundShapeChild child;
@@ -56,7 +54,8 @@ void	btCompoundShape::addChildShape(const btTransform& localTransform,btCollisio
 	child.m_childShapeType = shape->getShapeType();
 	child.m_childMargin = shape->getMargin();
 
-	
+	m_children.push_back(child);
+
 	//extend the local aabbMin/aabbMax
 	btVector3 localAabbMin,localAabbMax;
 	shape->getAabb(localTransform,localAabbMin,localAabbMax);
@@ -75,11 +74,9 @@ void	btCompoundShape::addChildShape(const btTransform& localTransform,btCollisio
 	if (m_dynamicAabbTree)
 	{
 		const btDbvtVolume	bounds=btDbvtVolume::FromMM(localAabbMin,localAabbMax);
-		int index = m_children.size();
+		int index = m_children.size()-1;
 		child.m_node = m_dynamicAabbTree->insert(bounds,(void*)index);
 	}
-
-	m_children.push_back(child);
 
 }
 
@@ -102,7 +99,6 @@ void	btCompoundShape::updateChildTransform(int childIndex, const btTransform& ne
 
 void btCompoundShape::removeChildShapeByIndex(int childShapeIndex)
 {
-	m_updateRevision++;
 	btAssert(childShapeIndex >=0 && childShapeIndex < m_children.size());
 	if (m_dynamicAabbTree)
 	{
@@ -117,7 +113,6 @@ void btCompoundShape::removeChildShapeByIndex(int childShapeIndex)
 
 void btCompoundShape::removeChildShape(btCollisionShape* shape)
 {
-	m_updateRevision++;
 	// Find the children containing the shape specified, and remove those children.
 	//note: there might be multiple children using the same shape!
 	for(int i = m_children.size()-1; i >= 0 ; i--)
@@ -144,7 +139,6 @@ void btCompoundShape::recalculateLocalAabb()
 {
 	// Recalculate the local aabb
 	// Brute force, it iterates over all the shapes left.
-
 	m_localAabbMin = btVector3(btScalar(1e30),btScalar(1e30),btScalar(1e30));
 	m_localAabbMax = btVector3(btScalar(-1e30),btScalar(-1e30),btScalar(-1e30));
 
@@ -167,16 +161,8 @@ void btCompoundShape::recalculateLocalAabb()
 void btCompoundShape::getAabb(const btTransform& trans,btVector3& aabbMin,btVector3& aabbMax) const
 {
 	btVector3 localHalfExtents = btScalar(0.5)*(m_localAabbMax-m_localAabbMin);
-	btVector3 localCenter = btScalar(0.5)*(m_localAabbMax+m_localAabbMin);
-	
-	//avoid an illegal AABB when there are no children
-	if (!m_children.size())
-	{
-		localHalfExtents.setValue(0,0,0);
-		localCenter.setValue(0,0,0);
-	}
 	localHalfExtents += btVector3(getMargin(),getMargin(),getMargin());
-		
+	btVector3 localCenter = btScalar(0.5)*(m_localAabbMax+m_localAabbMin);
 
 	btMatrix3x3 abs_b = trans.getBasis().absolute();  
 
@@ -187,7 +173,7 @@ void btCompoundShape::getAabb(const btTransform& trans,btVector3& aabbMin,btVect
 		abs_b[2].dot(localHalfExtents));
 	aabbMin = center-extent;
 	aabbMax = center+extent;
-	
+
 }
 
 void	btCompoundShape::calculateLocalInertia(btScalar mass,btVector3& inertia) const

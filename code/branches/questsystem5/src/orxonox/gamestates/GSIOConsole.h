@@ -30,25 +30,22 @@
 #define _GSIOConsole_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 #include "core/GameState.h"
+#include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSIOConsole : public GameState
+    class _OrxonoxExport GSIOConsole : public GameState<GSRoot>
     {
     public:
-        GSIOConsole(const std::string& name);
+        GSIOConsole();
         ~GSIOConsole();
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
-
     private:
-        void loadMenu();
-
-        // console commands
-        ConsoleCommand* ccLoadMenu_;
+        void enter();
+        void leave();
+        void ticked(const Clock& time);
     };
 }
 

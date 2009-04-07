@@ -50,7 +50,6 @@
 #include "GamestateManager.h"
 #include "ClientInformation.h"
 #include "util/Sleep.h"
-#include "core/Clock.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
@@ -149,10 +148,10 @@ namespace orxonox
   * calls processQueue and updateGamestate
   * @param time time since last tick
   */
-  void Server::update(const Clock& time) {
+  void Server::tick(float time) {
     processQueue();
     //this steers our network frequency
-    timeSinceLastUpdate_+=time.getDeltaTime();
+    timeSinceLastUpdate_+=time;
     if(timeSinceLastUpdate_>=NETWORK_PERIOD){
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       gamestates_->processGamestates();

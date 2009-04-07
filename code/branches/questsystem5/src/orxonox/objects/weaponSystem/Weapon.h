@@ -61,31 +61,17 @@ namespace orxonox
             void bulletReloaded();
             void magazineReloaded();
 
-            //XMLPort functions
             virtual void setMunitionType(std::string munitionType);
             virtual const std::string getMunitionType();
             virtual void setBulletLoadingTime(float loadingTime);
             virtual const float getBulletLoadingTime();
             virtual void setMagazineLoadingTime(float loadingTime);
             virtual const float getMagazineLoadingTime();
-            virtual void setBulletAmount(unsigned int amount);
-            virtual const unsigned int getBulletAmount();
-            virtual void setMagazineAmount(unsigned int amount);
-            virtual const unsigned int getMagazineAmount();
-            virtual void setUnlimitedMunition(bool unlimitedMunition);
-            virtual const bool getUnlimitedMunition();
 
-            //weapon actions
             virtual void takeBullets();
             virtual void takeMagazines();
             virtual void createProjectile();
-            virtual void reloadBullet();
-            virtual void reloadMagazine();
 
-            //manually set or reset
-            virtual void setWeapon();
-            virtual void setMunition();
-            
             inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { this->parentWeaponSystem_=parentWeaponSystem; };
             inline WeaponSystem * getParentWeaponSystem()
@@ -96,6 +82,7 @@ namespace orxonox
             inline WeaponSlot * getAttachedToWeaponSlot()
                 { return this->attachedToWeaponSlot_; }
 
+            virtual void setWeapon();
 
         private:
 
@@ -103,11 +90,8 @@ namespace orxonox
             bool bReloading_;
             bool bulletReadyToShoot_;
             bool magazineReadyToShoot_;
-            bool unlimitedMunition_;
             float bulletLoadingTime_;
             float magazineLoadingTime_;
-            unsigned int bulletAmount_;
-            unsigned int magazineAmount_;
             std::string munitionType_;
 
             WeaponSlot * attachedToWeaponSlot_;

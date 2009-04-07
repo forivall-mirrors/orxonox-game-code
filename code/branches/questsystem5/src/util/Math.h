@@ -269,14 +269,6 @@ namespace orxonox
         return rnd(max - min) + min;
     }
 
-    /**
-        @brief Returns randomly 1 or -1 with equal probability.
-    */
-    inline float rndsgn()
-    {
-        return ((rand() & 0x2) - 1); // rand() & 0x2 is either 2 or 0
-    }
-
     _UtilExport unsigned long getUniqueNumber();
 
     class IntVector2

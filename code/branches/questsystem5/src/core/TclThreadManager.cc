@@ -34,7 +34,6 @@
 #include <boost/bind.hpp>
 #include <OgreTimer.h>
 
-#include "Clock.h"
 #include "CoreIncludes.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
@@ -598,7 +597,7 @@ namespace orxonox
         return output;
     }
 
-    void TclThreadManager::update(const Clock& time)
+    void TclThreadManager::tick(float dt)
     {
         {
             this->orxonoxEvalCondition_.notify_one();
@@ -633,7 +632,7 @@ namespace orxonox
 #else
             boost::try_mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_.interpreterMutex_);
 #endif
-            unsigned long maxtime = (unsigned long)(time.getDeltaTime() * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
+            unsigned long maxtime = (unsigned long)(dt * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
             Ogre::Timer timer;
             while (!this->queueIsEmpty())
             {

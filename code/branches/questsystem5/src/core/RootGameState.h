@@ -20,35 +20,35 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Martin Polak
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _FusionMunition_H__
-#define _FusionMunition_H__
+#ifndef _RootGameState_H__
+#define _RootGameState_H__
 
-#include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
-#include "../Munition.h"
+#include "CorePrereqs.h"
+#include "GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport FusionMunition : public Munition
+    class _CoreExport RootGameState : public GameState<GameStateBase>
     {
-        public:
-            FusionMunition(BaseObject* creator);
-            virtual ~FusionMunition();
+    public:
+        RootGameState(const std::string& name);
+        ~RootGameState();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        void requestState(const std::string& name);
+        void start();
 
+    private:
+        void makeTransition(GameStateBase* source, GameStateBase* destination);
+        void gotoState(const std::string& name);
 
-        private:
-
-
+        std::string stateRequest_;
     };
 }
 
-#endif /* _FusionMunition_H__ */
+#endif /* _RootGameState_H__ */

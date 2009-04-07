@@ -35,10 +35,10 @@
 #include <OgreRoot.h>
 #include <OgrePlugin.h>
 
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
-#include "GraphicsManager.h"
+#include "GraphicsEngine.h"
 #include "util/Exception.h"
 
 #include <OgreMaterial.h>
@@ -58,7 +58,7 @@ namespace orxonox
         this->scenemanager_ = scenemanager;
         this->compositorInstance_ = 0;
         this->bVisible_ = true;
-        this->bLoadCompositor_ = GameMode::showsGraphics();
+        this->bLoadCompositor_ = Core::showsGraphics() && GraphicsEngine::getInstancePtr();
         this->bViewportInitialized_ = false;
         this->compositor_ = "";
         this->oldcompositor_ = "";
@@ -85,7 +85,7 @@ namespace orxonox
 
         if (this->bLoadCompositor_ && this->compositorInstance_)
         {
-            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
+            Ogre::Viewport* viewport = GraphicsEngine::getInstance().getViewport();
             assert(viewport);
             Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->compositor_);
         }
@@ -113,7 +113,7 @@ namespace orxonox
     {
         if (this->bLoadCompositor_)
         {
-            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
+            Ogre::Viewport* viewport = GraphicsEngine::getInstance().getViewport();
             assert(viewport);
             if (this->oldcompositor_ != "")
             {
@@ -245,7 +245,7 @@ namespace orxonox
 
     Shader::ParameterPointer* Shader::getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
     {
-        if (!GameMode::showsGraphics() || !Shader::bLoadedCgPlugin_s)
+        if (!Core::showsGraphics() || !Shader::bLoadedCgPlugin_s)
             return 0;
 
         MaterialMap::iterator material_iterator = Shader::parameters_s.find(material);

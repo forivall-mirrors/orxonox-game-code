@@ -42,7 +42,6 @@ protected:
 
 public:
 	
- BT_DECLARE_ALIGNED_ALLOCATOR();
 
 	class Edge
 	{
@@ -139,7 +138,7 @@ public:
 	void updateHandle(BP_FP_INT_TYPE handle, const btVector3& aabbMin,const btVector3& aabbMax,btDispatcher* dispatcher);
 	SIMD_FORCE_INLINE Handle* getHandle(BP_FP_INT_TYPE index) const {return m_pHandles + index;}
 
-	virtual void resetPool(btDispatcher* dispatcher);
+	void resetPool();
 
 	void	processAllOverlappingPairs(btOverlapCallback* callback);
 
@@ -221,7 +220,7 @@ void btAxisSweep3<BP_FP_INT_TYPE>::debugPrintAxis(int axis, bool checkCardinalit
 	}
 
 	if (checkCardinality)
-		btAssert(numEdges == m_numHandles*2+1);
+		assert(numEdges == m_numHandles*2+1);
 }
 #endif //DEBUG_BROADPHASE
 
@@ -347,7 +346,7 @@ m_raycastAccelerator(0)
 		m_raycastAccelerator->m_deferedcollide = true;//don't add/remove pairs
 	}
 
-	//btAssert(bounds.HasVolume());
+	//assert(bounds.HasVolume());
 
 	// init bounds
 	m_worldAabbMin = worldAabbMin;
@@ -453,7 +452,7 @@ void btAxisSweep3Internal<BP_FP_INT_TYPE>::quantize(BP_FP_INT_TYPE* out, const b
 template <typename BP_FP_INT_TYPE>
 BP_FP_INT_TYPE btAxisSweep3Internal<BP_FP_INT_TYPE>::allocHandle()
 {
-	btAssert(m_firstFreeHandle);
+	assert(m_firstFreeHandle);
 
 	BP_FP_INT_TYPE handle = m_firstFreeHandle;
 	m_firstFreeHandle = getHandle(handle)->GetNextFree();
@@ -465,7 +464,7 @@ BP_FP_INT_TYPE btAxisSweep3Internal<BP_FP_INT_TYPE>::allocHandle()
 template <typename BP_FP_INT_TYPE>
 void btAxisSweep3Internal<BP_FP_INT_TYPE>::freeHandle(BP_FP_INT_TYPE handle)
 {
-	btAssert(handle > 0 && handle < m_maxHandles);
+	assert(handle > 0 && handle < m_maxHandles);
 
 	getHandle(handle)->SetNextFree(m_firstFreeHandle);
 	m_firstFreeHandle = handle;
@@ -588,7 +587,7 @@ void btAxisSweep3Internal<BP_FP_INT_TYPE>::removeHandle(BP_FP_INT_TYPE handle,bt
 }
 
 template <typename BP_FP_INT_TYPE>
-void btAxisSweep3Internal<BP_FP_INT_TYPE>::resetPool(btDispatcher* dispatcher)
+void btAxisSweep3Internal<BP_FP_INT_TYPE>::resetPool()
 {
 	if (m_numHandles == 0)
 	{
@@ -642,7 +641,6 @@ void	btAxisSweep3Internal<BP_FP_INT_TYPE>::calculateOverlappingPairs(btDispatche
 
 			if (!isDuplicate)
 			{
-				///important to use an AABB test that is consistent with the broadphase
 				bool hasOverlap = testAabbOverlap(pair.m_pProxy0,pair.m_pProxy1);
 
 				if (hasOverlap)
@@ -688,6 +686,10 @@ void	btAxisSweep3Internal<BP_FP_INT_TYPE>::calculateOverlappingPairs(btDispatche
 		//printf("overlappingPairArray.size()=%d\n",overlappingPairArray.size());
 	}
 
+
+
+	
+
 }
 
 
@@ -728,8 +730,8 @@ bool btAxisSweep3Internal<BP_FP_INT_TYPE>::testOverlap2D(const Handle* pHandleA,
 template <typename BP_FP_INT_TYPE>
 void btAxisSweep3Internal<BP_FP_INT_TYPE>::updateHandle(BP_FP_INT_TYPE handle, const btVector3& aabbMin,const btVector3& aabbMax,btDispatcher* dispatcher)
 {
-//	btAssert(bounds.IsFinite());
-	//btAssert(bounds.HasVolume());
+//	assert(bounds.IsFinite());
+	//assert(bounds.HasVolume());
 
 	Handle* pHandle = getHandle(handle);
 

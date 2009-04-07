@@ -4,5 +4,4 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   ArtificialController.cc
   AIController.cc
   ScriptController.cc
-  PongAI.cc
 )

@@ -51,7 +51,7 @@ namespace orxonox
         void keyReleased(const KeyEvent& evt) { }
         void keyHeld    (const KeyEvent& evt) { }
 
-        void updateInput(float dt) { }
+        void tickInput(float dt) { }
     };
 }
 

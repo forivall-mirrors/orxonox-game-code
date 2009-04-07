@@ -181,8 +181,7 @@ namespace orxonox
     {
         // We use a dynamic body. So we translate our node accordingly.
         this->node_->setPosition(Vector3(worldTrans.getOrigin().x(), worldTrans.getOrigin().y(), worldTrans.getOrigin().z()));
-        btQuaternion temp(worldTrans.getRotation());
-        this->node_->setOrientation(Quaternion(temp.w(), temp.x(), temp.y(), temp.z()));
+        this->node_->setOrientation(Quaternion(worldTrans.getRotation().w(), worldTrans.getRotation().x(), worldTrans.getRotation().y(), worldTrans.getRotation().z()));
         this->linearVelocity_.x = this->physicalBody_->getLinearVelocity().x();
         this->linearVelocity_.y = this->physicalBody_->getLinearVelocity().y();
         this->linearVelocity_.z = this->physicalBody_->getLinearVelocity().z();

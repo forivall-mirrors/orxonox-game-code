@@ -30,23 +30,24 @@
 #define _GSServer_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
+#include "GSLevel.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSServer : public GameState
+    class _OrxonoxExport GSServer : public GameState<GSGraphics>, public GSLevel
     {
     public:
-        GSServer(const std::string& name);
+        GSServer();
         ~GSServer();
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
-
     private:
-        Server* server_;
+        void enter();
+        void leave();
+        void ticked(const Clock& time);
+
+        Server*      server_;
     };
 }
 

@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      Benjamin Knecht
+ *      ...
  *
  */
 
@@ -30,25 +30,23 @@
 #define _GSLevel_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 #include "core/OrxonoxClass.h"
-#include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameState, public OrxonoxClass
+    class _OrxonoxExport GSLevel : public OrxonoxClass
     {
+        friend class ClassIdentifier<GSLevel>;
     public:
-        GSLevel(const std::string& name);
+        GSLevel();
         ~GSLevel();
-        void setConfigValues();
-
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
-
-        static void showIngameGUI(bool show);
 
     protected:
+        void enter(Ogre::Viewport* viewport);
+        void leave();
+        void ticked(const Clock& time);
+
         void loadLevel();
         void unloadLevel();
 
@@ -57,17 +55,15 @@ namespace orxonox
         void tkeybind(const std::string& command);
         void keybindInternal(const std::string& command, bool bTemporary);
 
-        KeyBinder*            keyBinder_;               //!< tool that loads and manages the input bindings
-        SimpleInputState*     gameInputState_;          //!< input state for normal ingame playing
-        SimpleInputState*     guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
-        SimpleInputState*     guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
-        Radar*                radar_;                   //!< represents the Radar (not the HUD part)
-        XMLFile*              startFile_;               //!< current hard coded default level
-        CameraManager*        cameraManager_;           //!< camera manager for this level
-        LevelManager*         levelManager_;            //!< global level manager
-        PlayerManager*        playerManager_;           //!< player manager for this level
-        QuestManager*         questManager_;            //!< quest manager for this level
-        NotificationManager*  notificationManager_;     //!< notification manager for this level
+        KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
+        SimpleInputState*     inputState_;
+        Radar*                radar_;            //!< represents the Radar (not the HUD part)
+        XMLFile*              startFile_;        //!< current hard coded default level
+        CameraManager*        cameraManager_;
+        LevelManager*         levelManager_;
+        PlayerManager*        playerManager_;
+        QuestManager*          questManager_;
+        NotificationManager*  notificationManager_;
 
         //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;
@@ -75,6 +71,10 @@ namespace orxonox
         // console commands
         ConsoleCommand*       ccKeybind_;
         ConsoleCommand*       ccTkeybind_;
+
+    private:
+        void setConfigValues();
+
     };
 }
 

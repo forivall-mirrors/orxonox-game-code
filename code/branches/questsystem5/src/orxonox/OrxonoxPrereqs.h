@@ -76,6 +76,9 @@ namespace orxonox
     //put here all existing munitionTypes
     namespace MunitionType
     {
+
+
+
         enum Enum
         { laserGunMunition };
     }
@@ -93,15 +96,12 @@ namespace orxonox
     }
 
 
-    class GraphicsManager;
-    class OgreWindowEventListener;
+    class GraphicsEngine;
     class Settings;
 
     class RadarViewable;
     class Radar;
     class RadarListener;
-
-    class Teamcolourable;
 
     class CameraManager;
     class LevelManager;
@@ -149,14 +149,9 @@ namespace orxonox
     class ParticleEmitter;
     class ParticleSpawner;
 
-    class PongCenterpoint;
-    class PongBall;
-    class PongBat;
-
     class Camera;
     class CameraPosition;
     class SpawnPoint;
-    class TeamSpawnPoint;
 
     class Spectator;
     class Pawn;
@@ -180,7 +175,6 @@ namespace orxonox
     class Munition;
     class LaserGun;
     class LaserGunMunition;
-    class FusionMunition;
 
     class EventListener;
     class EventDispatcher;
@@ -191,19 +185,14 @@ namespace orxonox
     class ArtificialController;
     class AIController;
     class ScriptController;
-    class PongAI;
 
     class Info;
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
-    class PongBot;
     class GametypeInfo;
 
     class Gametype;
-    class Deathmatch;
-    class TeamDeathmatch;
-    class Pong;
 
     class Scores;
     class CreateLines;
@@ -249,6 +238,17 @@ namespace orxonox
 
     //gui
     class GUIManager;
+
+    // game states
+    class GSRoot;
+    class GSGraphics;
+    class GSIO;
+    class GSIOConsole;
+    class GSLevel;
+    class GSStandalone;
+    class GSServer;
+    class GSClient;
+    class GSGUI;
 }
 
 namespace Ogre

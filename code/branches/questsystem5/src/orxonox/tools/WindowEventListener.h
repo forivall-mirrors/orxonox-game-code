@@ -48,7 +48,7 @@ namespace orxonox
             virtual void windowMoved() { }
 
             /** Window has resized */
-            virtual void windowResized(unsigned int newWidth, unsigned int newHeight) { }
+            virtual void windowResized(int newWidth, int newHeight) { }
 
             /** Window has lost/gained focus */
             virtual void windowFocusChanged() { }

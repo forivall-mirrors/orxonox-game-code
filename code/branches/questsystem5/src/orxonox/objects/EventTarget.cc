@@ -65,7 +65,7 @@ namespace orxonox
 
     void EventTarget::addAsEvent(BaseObject* object)
     {
-        if (object != static_cast<BaseObject*>(this))
+        if (object != (BaseObject*)this)
             object->addEvent(this, "");
     }
 }

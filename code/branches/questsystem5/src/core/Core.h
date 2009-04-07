@@ -21,9 +21,8 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
- *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -44,6 +43,8 @@
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
+// Only allow main to access postMainInitialisation, so we need a forward declaration
+int main(int, char**);
 // boost::filesystem header has quite a large tail, use forward declaration
 namespace boost { namespace filesystem
 {
@@ -57,14 +58,12 @@ namespace orxonox
     //! The Core class is a singleton, only used to configure some config-values.
     class _CoreExport Core : public OrxonoxClass
     {
+        friend int ::main(int, char**); // sets isDevBuild_s
+
         public:
             Core();
             ~Core();
-
-            void initialise(int argc, char** argv);
             void setConfigValues();
-
-            void update(const Clock& time);
 
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
@@ -72,6 +71,8 @@ namespace orxonox
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
+
+            static bool isDevBuild() { return Core::isDevBuild_s; }
 
             static void tsetMediaPath(const std::string& path)
             { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
@@ -82,14 +83,20 @@ namespace orxonox
             static std::string getConfigPathString();
             static std::string getLogPathString();
 
+            // fast access global variables.
+            static bool showsGraphics() { return bShowsGraphics_s; }
+            static bool hasServer()     { return bHasServer_s; }
+            static bool isClient()      { return bIsClient_s; }
+            static bool isStandalone()  { return bIsStandalone_s; }
+            static bool isMaster()      { return bIsMaster_s; }
+            static void setShowsGraphics(bool val) { bShowsGraphics_s = val; updateIsMaster(); }
+            static void setHasServer    (bool val) { bHasServer_s     = val; updateIsMaster(); }
+            static void setIsClient     (bool val) { bIsClient_s      = val; updateIsMaster(); }
+            static void setIsStandalone (bool val) { bIsStandalone_s  = val; updateIsMaster(); }
+            static void updateIsMaster  ()         { bIsMaster_s      = (bHasServer_s || bIsStandalone_s); }
+
         private:
             Core(const Core&);
-
-            void checkDevBuild();
-            void setExecutablePath();
-            void createDirectories();
-            void setThreadAffinity(int limitToCPU);
-
             void resetLanguageIntern();
             void initializeRandomNumberGenerator();
             void debugLevelChanged();
@@ -97,14 +104,10 @@ namespace orxonox
             void mediaPathChanged();
             void _tsetMediaPath(const std::string& path);
 
-            // Singletons
-            ConfigFileManager*    configFileManager_;
-            Language*             languageInstance_;
-            LuaBind*              luaBind_;
-            Shell*                shell_;
-            SignalHandler*        signalHandler_;
-            TclBind*              tclBind_;
-            TclThreadManager*     tclThreadManager_;
+            static void postMainInitialisation();
+            static void checkDevBuild();
+            static void setExecutablePath();
+            static void createDirectories();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
@@ -113,8 +116,14 @@ namespace orxonox
             std::string language_;                          //!< The language
             bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
             std::string mediaPathString_;                   //!< Path to the data/media file folder as string
-            bool isDevBuild_;                               //!< True for builds in the build directory (not installed)
-            bool loaded_;                                   //!< Only true if constructor was interrupted
+
+            static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
+            static bool bHasServer_s;                       //!< global variable that tells whether this is a server
+            static bool bIsClient_s;
+            static bool bIsStandalone_s;
+            static bool bIsMaster_s;
+
+            static bool isDevBuild_s;                       //!< True for builds in the build directory (not installed)
 
             static Core* singletonRef_s;
     };

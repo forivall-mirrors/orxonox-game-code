@@ -473,7 +473,7 @@ namespace orxonox
     {
     public:
         virtual ~InputHandler() { }
-        virtual void updateInput(float dt) = 0;
+        virtual void tickInput(float dt) = 0;
     };
 
     /**
@@ -487,7 +487,7 @@ namespace orxonox
         virtual void keyPressed (const KeyEvent& evt) = 0;
         virtual void keyReleased(const KeyEvent& evt) = 0;
         virtual void keyHeld    (const KeyEvent& evt) = 0;
-        virtual void updateKey    (float dt) = 0;
+        virtual void tickKey    (float dt) = 0;
     };
 
     /**
@@ -503,7 +503,7 @@ namespace orxonox
         virtual void mouseButtonHeld    (MouseButtonCode::ByEnum id) = 0;
         virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
         virtual void mouseScrolled      (int abs, int rel)     = 0;
-        virtual void updateMouse          (float dt) = 0;
+        virtual void tickMouse          (float dt) = 0;
     };
 
 
@@ -519,7 +519,7 @@ namespace orxonox
         virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
         virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
-        virtual void updateJoyStick          (float dt, unsigned int joyStick) = 0;
+        virtual void tickJoyStick          (float dt, unsigned int joyStick) = 0;
     };
 
     class _CoreExport EmptyHandler : public KeyHandler, public MouseHandler, public JoyStickHandler
@@ -530,10 +530,10 @@ namespace orxonox
         EmptyHandler(EmptyHandler&);
         virtual ~EmptyHandler() { }
 
-        void updateInput(float dt) { }
-        void updateJoyStick(float dt, unsigned int joyStick) { }
-        void updateMouse(float dt) { }
-        void updateKey(float dt) { }
+        void tickInput(float dt) { }
+        void tickJoyStick(float dt, unsigned int joyStick) { }
+        void tickMouse(float dt) { }
+        void tickKey(float dt) { }
 
         void keyPressed (const KeyEvent& evt) { }
         void keyReleased(const KeyEvent& evt) { }

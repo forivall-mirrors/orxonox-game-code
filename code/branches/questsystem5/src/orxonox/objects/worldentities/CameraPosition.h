@@ -53,17 +53,11 @@ namespace orxonox
             inline bool getAllowMouseLook() const
                 { return this->bAllowMouseLook_; }
 
-            inline void setIsAbsolute(bool bAbsolute)
-                { this->bAbsolute_ = bAbsolute; }
-            inline bool getIsAbsolute() const
-                { return this->bAbsolute_; }
-
             void attachCamera(Camera* camera);
 
         private:
             bool bDrag_;
             bool bAllowMouseLook_;
-            bool bAbsolute_;
     };
 }
 

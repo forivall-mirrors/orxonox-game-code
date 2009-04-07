@@ -38,16 +38,13 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
-#include <OgreRenderWindow.h>
-
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/String.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -66,7 +63,7 @@ namespace orxonox
         this->owner_ = 0;
         this->group_ = 0;
 
-        if (!GameMode::showsGraphics())
+        if (!Core::showsGraphics())
             ThrowException(NoGraphics, "Can't create OrxonoxOverlay, graphics engine not initialized");
 
         // create the Ogre::Overlay
@@ -79,9 +76,9 @@ namespace orxonox
             "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
         this->overlay_->add2D(this->background_);
 
-        // Get aspect ratio from the render window. Later on, we get informed automatically
-        Ogre::RenderWindow* defaultWindow = GraphicsManager::getInstance().getRenderWindow();
-        this->windowAspectRatio_ = (float)defaultWindow->getWidth() / defaultWindow->getHeight();
+        // We'll have to set the aspect ratio to a default value first.
+        // GSGraphics gets informed about our construction here and can update us in the next tick.
+        this->windowAspectRatio_ = 1.0;
         this->sizeCorrectionChanged();
 
         this->changedVisibility();
@@ -177,10 +174,10 @@ namespace orxonox
 
     /**
     @brief
-        Called by the GraphicsManager whenever the window size changes.
+        Called by the GraphicsEngine whenever the window size changes.
         Calculates the aspect ratio only.
     */
-    void OrxonoxOverlay::windowResized(unsigned int newWidth, unsigned int newHeight)
+    void OrxonoxOverlay::windowResized(int newWidth, int newHeight)
     {
         this->windowAspectRatio_ = newWidth/(float)newHeight;
         this->sizeCorrectionChanged();

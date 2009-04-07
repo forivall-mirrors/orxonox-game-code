@@ -32,7 +32,7 @@
 #include <OgreRibbonTrail.h>
 #include <OgreSceneManager.h>
 
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/XMLPort.h"
@@ -57,7 +57,7 @@ namespace orxonox
 
         this->tickcount_ = 0;
 
-        if (GameMode::showsGraphics())
+        if (Core::showsGraphics())
         {
             if (!this->getScene())
                 ThrowException(AbortLoading, "Can't create Backlight, no scene given.");

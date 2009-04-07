@@ -44,9 +44,7 @@
 // prevent Ogre from including winsock.h that messes with winsock2.h from enet
 #  define WIN32_LEAN_AND_MEAN
 #endif
-#ifndef NOMINMAX
-#  define NOMINMAX // required to stop windows.h screwing up std::min definition
-#endif
+#define NOMINMAX // required to stop windows.h screwing up std::min definition
 #include <Ogre.h>
 #include <CEGUI.h>
 #include <boost/thread/recursive_mutex.hpp>

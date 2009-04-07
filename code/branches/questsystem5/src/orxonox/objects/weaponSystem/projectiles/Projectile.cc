@@ -40,7 +40,7 @@
 #include "objects/worldentities/Model.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/collisionshapes/SphereCollisionShape.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 
 namespace orxonox
 {
@@ -54,7 +54,7 @@ namespace orxonox
 
         // Get notification about collisions
 
-        if (GameMode::isMaster())
+        if (Core::isMaster())
         {
             this->enableCollisionCallback();
 
@@ -92,13 +92,13 @@ namespace orxonox
 
     void Projectile::destroyObject()
     {
-        if (GameMode::isMaster())
+        if (Core::isMaster())
             delete this;
     }
 
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        if (!this->bDestroy_ && GameMode::isMaster())
+        if (!this->bDestroy_ && Core::isMaster())
         {
             this->bDestroy_ = true;
 

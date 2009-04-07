@@ -28,7 +28,6 @@ SET_SOURCE_FILES(UTIL_FILES
   MathConvert.h
   MultiType.h
   MultiTypeValue.h
-  OrxEnum.h
   OutputBuffer.h
   OutputHandler.h
   SignalHandler.h

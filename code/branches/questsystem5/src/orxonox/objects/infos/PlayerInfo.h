@@ -48,9 +48,6 @@ namespace orxonox
             virtual void changedName();
             virtual void changedGametype();
 
-            virtual void changedController() {}
-            virtual void changedControllableEntity() {}
-
             inline bool isHumanPlayer() const
                 { return this->bHumanPlayer_; }
             inline bool isLocalPlayer() const
@@ -75,6 +72,7 @@ namespace orxonox
 
             inline Controller* getController() const
                 { return this->controller_; }
+            virtual void changedController() {}
 
         protected:
             void createController();

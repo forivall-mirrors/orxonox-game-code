@@ -34,10 +34,9 @@
 
 #include "Packet.h"
 #include "network/TrafficControl.h"
-#include <string.h>
+#include "core/CoreIncludes.h"
 #include <map>
 #include <list>
-#include <cassert>
 #ifndef NDEBUG
 #include "util/CRC32.h"
 #endif

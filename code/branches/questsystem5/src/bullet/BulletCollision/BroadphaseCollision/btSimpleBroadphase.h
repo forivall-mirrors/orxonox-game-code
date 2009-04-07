@@ -108,9 +108,6 @@ protected:
 		return proxy0;
 	}
 
-	///reset broadphase internal structures, to ensure determinism/reproducability
-	virtual void resetPool(btDispatcher* dispatcher);
-
 
 	void	validate();
 

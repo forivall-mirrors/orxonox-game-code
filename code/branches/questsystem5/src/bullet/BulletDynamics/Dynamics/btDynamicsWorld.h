@@ -20,10 +20,10 @@ subject to the following restrictions:
 #include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
 
 class btTypedConstraint;
-class btActionInterface;
+class btRaycastVehicle;
 class btConstraintSolver;
 class btDynamicsWorld;
-
+class btCharacterControllerInterface;
 
 /// Type for the callback for each tick
 typedef void (*btInternalTickCallback)(btDynamicsWorld *world, btScalar timeStep);
@@ -72,9 +72,14 @@ public:
 
 		virtual void	removeConstraint(btTypedConstraint* constraint) {(void)constraint;}
 
-		virtual void	addAction(btActionInterface* action) = 0;
+		virtual void	addVehicle(btRaycastVehicle* vehicle) {(void)vehicle;}
 
-		virtual void	removeAction(btActionInterface* action) = 0;
+		virtual void	removeVehicle(btRaycastVehicle* vehicle) {(void)vehicle;}
+
+		virtual void	addCharacter(btCharacterControllerInterface* character) {(void)character;}
+
+		virtual void	removeCharacter(btCharacterControllerInterface* character) {(void)character;}
+
 
 		//once a rigidbody is added to the dynamics world, it will get this gravity assigned
 		//existing rigidbodies in the world get gravity assigned too, during this method
@@ -122,16 +127,6 @@ public:
 		{
 			return m_solverInfo;
 		}
-
-
-		///obsolete, use addAction instead.
-		virtual void	addVehicle(btActionInterface* vehicle) {(void)vehicle;}
-		///obsolete, use removeAction instead
-		virtual void	removeVehicle(btActionInterface* vehicle) {(void)vehicle;}
-		///obsolete, use addAction instead.
-		virtual void	addCharacter(btActionInterface* character) {(void)character;}
-		///obsolete, use removeAction instead
-		virtual void	removeCharacter(btActionInterface* character) {(void)character;}
 
 
 };

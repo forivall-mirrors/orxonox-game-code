@@ -29,20 +29,12 @@
 #include "SynchronisableVariable.h"
 #include <cstring>
 #include "util/Math.h"
-#include "core/GameMode.h"
 
 
 namespace orxonox{
 
 uint8_t SynchronisableVariableBase::state_ = 0;
 
-/*static*/ void SynchronisableVariableBase::setState()
-{
-  if ( state_ == 0x0 )
-  {
-    state_ = GameMode::isMaster() ? 0x1 : 0x2;  // set the appropriate mode here
-  }
-}
 
 
 // =================== Template specialisation stuff =============

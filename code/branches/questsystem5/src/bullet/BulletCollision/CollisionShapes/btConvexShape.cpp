@@ -154,6 +154,7 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 		btVector3 vec0(localDir.getX(),localDir.getY(),localDir.getZ());
 
 		btCapsuleShape* capsuleShape = (btCapsuleShape*)this;
+		btVector3 halfExtents = capsuleShape->getImplicitShapeDimensions();
 		btScalar halfHeight = capsuleShape->getHalfHeight();
 		int capsuleUpAxis = capsuleShape->getUpAxis();
 
@@ -300,8 +301,8 @@ void btConvexShape::getAabbNonVirtual (const btTransform& t, btVector3& aabbMin,
     case SPHERE_SHAPE_PROXYTYPE:
 	{
 		btSphereShape* sphereShape = (btSphereShape*)this;
-		btScalar radius = sphereShape->getImplicitShapeDimensions().getX();// * convexShape->getLocalScaling().getX();
-		btScalar margin = radius + sphereShape->getMarginNonVirtual();
+		float radius = sphereShape->getImplicitShapeDimensions().getX();// * convexShape->getLocalScaling().getX();
+		float margin = radius + sphereShape->getMarginNonVirtual();
 		const btVector3& center = t.getOrigin();
 		btVector3 extent(margin,margin,margin);
 		aabbMin = center - extent;
@@ -313,7 +314,7 @@ void btConvexShape::getAabbNonVirtual (const btTransform& t, btVector3& aabbMin,
 	case BOX_SHAPE_PROXYTYPE:
 	{
 		btBoxShape* convexShape = (btBoxShape*)this;
-		btScalar margin=convexShape->getMarginNonVirtual();
+		float margin=convexShape->getMarginNonVirtual();
 		btVector3 halfExtents = convexShape->getImplicitShapeDimensions();
 		halfExtents += btVector3(margin,margin,margin);
 		btMatrix3x3 abs_b = t.getBasis().absolute();  

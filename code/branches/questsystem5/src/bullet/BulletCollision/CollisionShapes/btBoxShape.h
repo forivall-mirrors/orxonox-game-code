@@ -161,25 +161,31 @@ public:
 		switch (i)
 		{
 		case 0:
-			plane.setValue(btScalar(1.),btScalar(0.),btScalar(0.),-halfExtents.x());
+			plane.setValue(btScalar(1.),btScalar(0.),btScalar(0.));
+			plane[3] = -halfExtents.x();
 			break;
 		case 1:
-			plane.setValue(btScalar(-1.),btScalar(0.),btScalar(0.),-halfExtents.x());
+			plane.setValue(btScalar(-1.),btScalar(0.),btScalar(0.));
+			plane[3] = -halfExtents.x();
 			break;
 		case 2:
-			plane.setValue(btScalar(0.),btScalar(1.),btScalar(0.),-halfExtents.y());
+			plane.setValue(btScalar(0.),btScalar(1.),btScalar(0.));
+			plane[3] = -halfExtents.y();
 			break;
 		case 3:
-			plane.setValue(btScalar(0.),btScalar(-1.),btScalar(0.),-halfExtents.y());
+			plane.setValue(btScalar(0.),btScalar(-1.),btScalar(0.));
+			plane[3] = -halfExtents.y();
 			break;
 		case 4:
-			plane.setValue(btScalar(0.),btScalar(0.),btScalar(1.),-halfExtents.z());
+			plane.setValue(btScalar(0.),btScalar(0.),btScalar(1.));
+			plane[3] = -halfExtents.z();
 			break;
 		case 5:
-			plane.setValue(btScalar(0.),btScalar(0.),btScalar(-1.),-halfExtents.z());
+			plane.setValue(btScalar(0.),btScalar(0.),btScalar(-1.));
+			plane[3] = -halfExtents.z();
 			break;
 		default:
-			btAssert(0);
+			assert(0);
 		}
 	}
 
@@ -306,7 +312,7 @@ public:
 			penetrationVector.setValue(btScalar(0.),btScalar(0.),btScalar(-1.));
 			break;
 		default:
-			btAssert(0);
+			assert(0);
 		}
 	}
 

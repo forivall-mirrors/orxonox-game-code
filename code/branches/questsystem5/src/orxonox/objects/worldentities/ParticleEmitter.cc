@@ -38,7 +38,6 @@
 
 #include "tools/ParticleInterface.h"
 #include "util/Exception.h"
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
@@ -51,7 +50,7 @@ namespace orxonox
     {
         RegisterObject(ParticleEmitter);
 
-        if (GameMode::showsGraphics() && (!this->getScene() || !this->getScene()->getSceneManager()))
+        if (Core::showsGraphics() && (!this->getScene() || !this->getScene()->getSceneManager()))
             ThrowException(AbortLoading, "Can't create ParticleEmitter, no scene or no scene manager given.");
 
         this->particles_ = 0;
@@ -107,7 +106,7 @@ namespace orxonox
             this->particles_ = 0;
         }
 
-        if (GameMode::showsGraphics() && this->getScene() && this->getScene()->getSceneManager())
+        if (Core::showsGraphics() && this->getScene() && this->getScene()->getSceneManager())
         {
             try
             {

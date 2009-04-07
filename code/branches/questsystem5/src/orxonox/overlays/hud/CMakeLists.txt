@@ -6,5 +6,4 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   HUDHealthBar.cc
   ChatOverlay.cc
   GametypeStatus.cc
-  PongScore.cc
 )

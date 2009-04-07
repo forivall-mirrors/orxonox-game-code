@@ -482,8 +482,3 @@ void	btMultiSapBroadphase::printStats()
 		*/
 
 }
-
-void btMultiSapBroadphase::resetPool(btDispatcher* dispatcher)
-{
-	// not yet
-}

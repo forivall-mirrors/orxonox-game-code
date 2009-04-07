@@ -401,31 +401,31 @@ namespace orxonox
         return success;
     }
 
-    void ExtendedInputState::updateInput(float dt)
+    void ExtendedInputState::tickInput(float dt)
     {
         for (unsigned int i = 0; i < allHandlers_.size(); ++i)
         {
-            allHandlers_[i]->updateInput(dt);
+            allHandlers_[i]->tickInput(dt);
         }
     }
 
-    void ExtendedInputState::updateInput(float dt, unsigned int device)
+    void ExtendedInputState::tickInput(float dt, unsigned int device)
     {
         switch (device)
         {
         case Keyboard:
             for (unsigned int i = 0; i < keyHandlers_.size(); ++i)
-                keyHandlers_[i]->updateKey(dt);
+                keyHandlers_[i]->tickKey(dt);
             break;
 
         case Mouse:
             for (unsigned int i = 0; i < mouseHandlers_.size(); ++i)
-                mouseHandlers_[i]->updateMouse(dt);
+                mouseHandlers_[i]->tickMouse(dt);
             break;
 
         default: // joy sticks
             for (unsigned int i = 0; i < joyStickHandlers_[device - 2].size(); ++i)
-                joyStickHandlers_[device - 2][i]->updateJoyStick(dt, device - 2);
+                joyStickHandlers_[device - 2][i]->tickJoyStick(dt, device - 2);
             break;
         }
     }

@@ -150,7 +150,7 @@ void btConvexPointCloudShape::getPlane(btVector3& ,btVector3& ,int ) const
 //not yet
 bool btConvexPointCloudShape::isInside(const btVector3& ,btScalar ) const
 {
-	btAssert(0);
+	assert(0);
 	return false;
 }
 

@@ -35,7 +35,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "objects/Scene.h"
 
 namespace orxonox
@@ -66,7 +66,7 @@ namespace orxonox
 
 //    this->bUpdating_ = false;
 
-    if (this->getScene() && GameMode::showsGraphics())
+    if (this->getScene() && Core::showsGraphics())
     {
       this->debugBillboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
       this->debugBillboard_.setVisible(false);

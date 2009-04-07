@@ -40,7 +40,7 @@
 #include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
 
 #include "core/CoreIncludes.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
 #include "objects/worldentities/WorldEntity.h"
@@ -56,7 +56,7 @@ namespace orxonox
         this->setScene(this);
         this->bShadows_ = true;
 
-        if (GameMode::showsGraphics())
+        if (Core::showsGraphics())
         {
             if (Ogre::Root::getSingletonPtr())
             {
@@ -98,7 +98,7 @@ namespace orxonox
             {
                 Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
             }
-            else if (!GameMode::showsGraphics())
+            else if (!Core::showsGraphics())
             {
                 delete this->sceneManager_;
             }
@@ -226,7 +226,7 @@ namespace orxonox
 
     void Scene::tick(float dt)
     {
-        if (!GameMode::showsGraphics())
+        if (!Core::showsGraphics())
         {
             // We need to update the scene nodes if we don't render
             this->rootSceneNode_->_update(true, false);
@@ -255,7 +255,7 @@ namespace orxonox
 
     void Scene::setSkybox(const std::string& skybox)
     {
-        if (GameMode::showsGraphics() && this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
             this->sceneManager_->setSkyBox(true, skybox);
 
         this->skybox_ = skybox;
@@ -263,7 +263,7 @@ namespace orxonox
 
     void Scene::setAmbientLight(const ColourValue& colour)
     {
-        if (GameMode::showsGraphics() && this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
             this->sceneManager_->setAmbientLight(colour);
 
         this->ambientLight_ = colour;
@@ -271,7 +271,7 @@ namespace orxonox
 
     void Scene::setShadow(bool bShadow)
     {
-        if (GameMode::showsGraphics() && this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
         {
             if (bShadow)
                 this->sceneManager_->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);

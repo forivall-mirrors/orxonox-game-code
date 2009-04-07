@@ -30,7 +30,6 @@
 
 #include <OgreEntity.h>
 #include "Model.h"
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
@@ -70,7 +69,7 @@ namespace orxonox
 
     void Model::changedMesh()
     {
-        if (GameMode::showsGraphics())
+        if (Core::showsGraphics())
         {
             if (this->mesh_.getEntity())
                 this->detachOgreObject(this->mesh_.getEntity());

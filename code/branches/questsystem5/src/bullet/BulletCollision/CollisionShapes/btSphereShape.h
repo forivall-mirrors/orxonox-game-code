@@ -47,12 +47,6 @@ public:
 
 	btScalar	getRadius() const { return m_implicitShapeDimensions.getX() * m_localScaling.getX();}
 
-	void	setUnscaledRadius(btScalar	radius)
-	{
-		m_implicitShapeDimensions.setX(radius);
-		btConvexInternalShape::setMargin(radius);
-	}
-
 	//debugging
 	virtual const char*	getName()const {return "SPHERE";}
 

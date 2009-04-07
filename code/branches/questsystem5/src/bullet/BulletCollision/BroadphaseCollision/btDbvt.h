@@ -57,7 +57,7 @@ subject to the following restrictions:
 // Specific methods implementation
 
 //SSE gives errors on a MSVC 7.1
-#ifdef BT_USE_SSE
+#if (defined (WIN32) && (_MSC_VER) && _MSC_VER >= 1400) && (!defined (BT_USE_DOUBLE_PRECISION))
 #define DBVT_SELECT_IMPL		DBVT_IMPL_SSE
 #define DBVT_MERGE_IMPL			DBVT_IMPL_SSE
 #define DBVT_INT0_IMPL			DBVT_IMPL_SSE
@@ -82,7 +82,7 @@ subject to the following restrictions:
 #define DBVT_VIRTUAL_DTOR(a)
 #define DBVT_PREFIX					template <typename T>
 #define DBVT_IPOLICY				T& policy
-#define DBVT_CHECKTYPE				static const ICollide&	typechecker=*(T*)1;(void)typechecker;
+#define DBVT_CHECKTYPE				static const ICollide&	typechecker=*(T*)0;
 #else
 #define	DBVT_VIRTUAL_DTOR(a)		virtual ~a() {}
 #define DBVT_VIRTUAL				virtual
@@ -146,7 +146,9 @@ struct	btDbvtAabbMm
 	DBVT_INLINE btScalar			ProjectMinimum(const btVector3& v,unsigned signs) const;
 	DBVT_INLINE friend bool			Intersect(	const btDbvtAabbMm& a,
 		const btDbvtAabbMm& b);
-	
+	DBVT_INLINE friend bool			Intersect(	const btDbvtAabbMm& a,
+		const btDbvtAabbMm& b,
+		const btTransform& xform);
 	DBVT_INLINE friend bool			Intersect(	const btDbvtAabbMm& a,
 		const btVector3& b);
 
@@ -302,7 +304,7 @@ struct	btDbvt
 		void		collideTTpersistentStack(	const btDbvtNode* root0,
 		  const btDbvtNode* root1,
 		  DBVT_IPOLICY);
-#if 0
+
 	DBVT_PREFIX
 		void		collideTT(	const btDbvtNode* root0,
 		const btDbvtNode* root1,
@@ -314,8 +316,6 @@ struct	btDbvt
 		const btDbvtNode* root1,
 		const btTransform& xform1,
 		DBVT_IPOLICY);
-#endif
-
 	DBVT_PREFIX
 		void		collideTV(	const btDbvtNode* root,
 		const btDbvtVolume& volume,
@@ -530,7 +530,21 @@ DBVT_INLINE bool		Intersect(	const btDbvtAabbMm& a,
 #endif
 }
 
-
+//
+DBVT_INLINE bool		Intersect(	const btDbvtAabbMm& a,
+								  const btDbvtAabbMm& b,
+								  const btTransform& xform)
+{
+	const btVector3		d0=xform*b.Center()-a.Center();
+	const btVector3		d1=d0*xform.getBasis();
+	btScalar			s0[2]={0,0};
+	btScalar			s1[2]={dot(xform.getOrigin(),d0),s1[0]};
+	a.AddSpan(d0,s0[0],s0[1]);
+	b.AddSpan(d1,s1[0],s1[1]);
+	if(s0[0]>(s1[1])) return(false);
+	if(s0[1]<(s1[0])) return(false);
+	return(true);
+}
 
 //
 DBVT_INLINE bool		Intersect(	const btDbvtAabbMm& a,
@@ -834,7 +848,7 @@ inline void		btDbvt::collideTTpersistentStack(	const btDbvtNode* root0,
 		}
 }
 
-#if 0
+
 //
 DBVT_PREFIX
 inline void		btDbvt::collideTT(	const btDbvtNode* root0,
@@ -890,6 +904,7 @@ inline void		btDbvt::collideTT(	const btDbvtNode* root0,
 			} while(depth);
 		}
 }
+
 //
 DBVT_PREFIX
 inline void		btDbvt::collideTT(	const btDbvtNode* root0,
@@ -901,7 +916,6 @@ inline void		btDbvt::collideTT(	const btDbvtNode* root0,
 	const btTransform	xform=xform0.inverse()*xform1;
 	collideTT(root0,root1,xform,policy);
 }
-#endif 
 
 //
 DBVT_PREFIX

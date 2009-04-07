@@ -36,7 +36,7 @@
 #include <OgreBillboardSet.h>
 #include <OgreBillboard.h>
 
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "util/Convert.h"
 #include "util/String.h"
 
@@ -71,7 +71,7 @@ namespace orxonox
 
         try
         {
-            if (GameMode::showsGraphics())
+            if (Core::showsGraphics())
             {
                 this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
                 this->billboardSet_->createBillboard(position);
@@ -94,7 +94,7 @@ namespace orxonox
 
         try
         {
-            if (GameMode::showsGraphics())
+            if (Core::showsGraphics())
             {
                 this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
                 this->billboardSet_->createBillboard(position, colour);

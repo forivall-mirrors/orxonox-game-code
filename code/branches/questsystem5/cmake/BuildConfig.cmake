@@ -89,7 +89,7 @@ CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
 
 ################ Compiler Config ################
 
-OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)" FALSE)
+OPTION(EXTRA_COMPILER_WARNINGS "Enable some extra warnings (heavily pollutes the output)")
 
 INCLUDE(FlagUtilities)
 

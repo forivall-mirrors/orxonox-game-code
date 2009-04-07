@@ -30,7 +30,7 @@
 #include "PlayerManager.h"
 
 #include "LevelManager.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
@@ -57,7 +57,7 @@ namespace orxonox
 
     void PlayerManager::clientConnected(unsigned int clientID)
     {
-        if (GameMode::isMaster())
+        if (Core::isMaster())
         {
             COUT(3) << "client connected" << std::endl;
 
@@ -76,7 +76,7 @@ namespace orxonox
 
     void PlayerManager::clientDisconnected(unsigned int clientID)
     {
-        if (GameMode::isMaster())
+        if (Core::isMaster())
         {
             COUT(3) << "client disconnected" << std::endl;
 
@@ -96,7 +96,7 @@ namespace orxonox
 
     PlayerInfo* PlayerManager::getClient(unsigned int clientID) const
     {
-        if (GameMode::isMaster())
+        if (Core::isMaster())
         {
             std::map<unsigned int, PlayerInfo*>::const_iterator it = this->clients_.find(clientID);
             if (it != this->clients_.end())

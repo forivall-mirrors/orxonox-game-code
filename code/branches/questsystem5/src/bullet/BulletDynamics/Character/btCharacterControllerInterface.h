@@ -17,13 +17,12 @@ subject to the following restrictions:
 #define CHARACTER_CONTROLLER_INTERFACE_H
 
 #include "LinearMath/btVector3.h"
-#include "BulletDynamics/Dynamics/btActionInterface.h"
 
 class btCollisionShape;
 class btRigidBody;
 class btCollisionWorld;
 
-class btCharacterControllerInterface : public btActionInterface
+class btCharacterControllerInterface
 {
 public:
 	btCharacterControllerInterface () {};

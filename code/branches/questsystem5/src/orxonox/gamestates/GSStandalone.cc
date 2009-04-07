@@ -29,20 +29,12 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSStandalone.h"
 
-#include <OgreViewport.h>
-#include <OgreCamera.h>
-#include "core/Game.h"
-#include "core/GameMode.h"
-#include "core/ConsoleCommand.h"
-#include "gui/GUIManager.h"
-#include "GraphicsManager.h"
+#include "core/Core.h"
 
 namespace orxonox
 {
-    AddGameState(GSStandalone, "standalone");
-
-    GSStandalone::GSStandalone(const std::string& name)
-        : GameState(name)
+    GSStandalone::GSStandalone()
+        : GameState<GSGraphics>("standalone")
     {
     }
 
@@ -50,18 +42,23 @@ namespace orxonox
     {
     }
 
-
-    void GSStandalone::activate()
+    void GSStandalone::enter()
     {
-        GameMode::setIsStandalone(true);
+        Core::setIsStandalone(true);
+
+        GSLevel::enter(this->getParent()->getViewport());
     }
 
-    void GSStandalone::deactivate()
+    void GSStandalone::leave()
     {
-        GameMode::setIsStandalone(false);
+        GSLevel::leave();
+
+        Core::setIsStandalone(false);
     }
 
-    void GSStandalone::update(const Clock& time)
+    void GSStandalone::ticked(const Clock& time)
     {
+        GSLevel::ticked(time);
+        this->tickChild(time);
     }
 }

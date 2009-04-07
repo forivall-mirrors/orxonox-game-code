@@ -67,10 +67,10 @@ namespace orxonox
         void resetJoyStickAxes();
 
     protected: // functions
-        void updateInput(float dt);
-        void updateKey(float dt) { }
-        void updateMouse(float dt);
-        void updateJoyStick(float dt, unsigned int joyStick);
+        void tickInput(float dt);
+        void tickKey(float dt) { }
+        void tickMouse(float dt);
+        void tickJoyStick(float dt, unsigned int joyStick);
         // internal
         void tickHalfAxis(HalfAxis& halfAxis);
 
@@ -133,7 +133,7 @@ namespace orxonox
         /**
         @brief
             Commands that have additional parameters (axes) are executed at the end of
-            update() so that all values can be buffered for single execution.
+            the tick() so that all values can be buffered for single execution.
         */
         std::vector<BufferedParamCommand*> paramCommandBuffer_;
 
@@ -199,7 +199,7 @@ namespace orxonox
     inline void KeyBinder::joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
     { joyStickButtons_[joyStickID][id].execute(KeybindMode::OnHold); }
 
-    inline void KeyBinder::updateInput(float dt)
+    inline void KeyBinder::tickInput(float dt)
     {
         // execute all buffered bindings (additional parameter)
         for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)

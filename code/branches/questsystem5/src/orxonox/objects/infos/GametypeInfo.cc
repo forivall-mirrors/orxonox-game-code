@@ -57,6 +57,5 @@ namespace orxonox
         registerVariable(this->bEnded_,                 variableDirection::toclient);
         registerVariable(this->startCountdown_,         variableDirection::toclient);
         registerVariable(this->bStartCountdownRunning_, variableDirection::toclient);
-        registerVariable(this->hudtemplate_,            variableDirection::toclient);
     }
 }

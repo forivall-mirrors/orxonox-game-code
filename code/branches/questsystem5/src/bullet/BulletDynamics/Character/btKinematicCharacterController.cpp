@@ -22,8 +22,6 @@ subject to the following restrictions:
 #include "LinearMath/btDefaultMotionState.h"
 #include "btKinematicCharacterController.h"
 
-static btVector3 upAxisDirection[3] = { btVector3(1.0f, 0.0f, 0.0f), btVector3(0.0f, 1.0f, 0.0f), btVector3(0.0f, 0.0f, 1.0f) };
-
 ///@todo Interact with dynamic objects,
 ///Ride kinematicly animated platforms properly
 ///More realistic (or maybe just a config option) falling
@@ -95,28 +93,29 @@ btVector3 btKinematicCharacterController::perpindicularComponent (const btVector
 	return direction - parallelComponent(direction, normal);
 }
 
-btKinematicCharacterController::btKinematicCharacterController (btPairCachingGhostObject* ghostObject,btConvexShape* convexShape,btScalar stepHeight, int upAxis)
+btKinematicCharacterController::btKinematicCharacterController (btPairCachingGhostObject* ghostObject,btConvexShape* convexShape,btScalar stepHeight)
 {
-	m_upAxis = upAxis;
 	m_addedMargin = 0.02f;
 	m_walkDirection.setValue(0,0,0);
 	m_useGhostObjectSweepTest = true;
 	m_ghostObject = ghostObject;
 	m_stepHeight = stepHeight;
 	m_turnAngle = btScalar(0.0);
-	m_convexShape=convexShape;	
+	m_convexShape=convexShape;
+	
 }
 
 btKinematicCharacterController::~btKinematicCharacterController ()
 {
 }
 
+
 btPairCachingGhostObject* btKinematicCharacterController::getGhostObject()
 {
 	return m_ghostObject;
 }
 
-bool btKinematicCharacterController::recoverFromPenetration ( btCollisionWorld* collisionWorld)
+bool btKinematicCharacterController::recoverFromPenetration (btCollisionWorld* collisionWorld)
 {
 
 	bool penetration = false;
@@ -173,13 +172,13 @@ void btKinematicCharacterController::stepUp ( btCollisionWorld* world)
 {
 	// phase 1: up
 	btTransform start, end;
-	m_targetPosition = m_currentPosition + upAxisDirection[m_upAxis] * m_stepHeight;
+	m_targetPosition = m_currentPosition + btVector3 (btScalar(0.0), m_stepHeight, btScalar(0.0));
 
 	start.setIdentity ();
 	end.setIdentity ();
 
 	/* FIXME: Handle penetration properly */
-	start.setOrigin (m_currentPosition + upAxisDirection[m_upAxis] * btScalar(0.1f));
+	start.setOrigin (m_currentPosition + btVector3(btScalar(0.0), btScalar(0.1), btScalar(0.0)));
 	end.setOrigin (m_targetPosition);
 
 	btKinematicClosestNotMeConvexResultCallback callback (m_ghostObject);
@@ -344,8 +343,8 @@ void btKinematicCharacterController::stepDown ( btCollisionWorld* collisionWorld
 	btTransform start, end;
 
 	// phase 3: down
-	btVector3 step_drop = upAxisDirection[m_upAxis] * m_currentStepOffset;
-	btVector3 gravity_drop = upAxisDirection[m_upAxis] * m_stepHeight; 
+	btVector3 step_drop = btVector3(btScalar(0.0), m_currentStepOffset, btScalar(0.0));
+	btVector3 gravity_drop = btVector3(btScalar(0.0), m_stepHeight, btScalar(0.0));
 	m_targetPosition -= (step_drop + gravity_drop);
 
 	start.setIdentity ();
@@ -390,7 +389,7 @@ void btKinematicCharacterController::warp (const btVector3& origin)
 }
 
 
-void btKinematicCharacterController::preStep (  btCollisionWorld* collisionWorld)
+void btKinematicCharacterController::preStep ( btCollisionWorld* collisionWorld)
 {
 	
 	int numPenetrationLoops = 0;
@@ -413,7 +412,7 @@ void btKinematicCharacterController::preStep (  btCollisionWorld* collisionWorld
 	
 }
 
-void btKinematicCharacterController::playerStep (  btCollisionWorld* collisionWorld, btScalar dt)
+void btKinematicCharacterController::playerStep ( btCollisionWorld* collisionWorld, btScalar dt)
 {
 	btTransform xform;
 	xform = m_ghostObject->getWorldTransform ();
@@ -468,9 +467,4 @@ void btKinematicCharacterController::jump ()
 bool btKinematicCharacterController::onGround () const
 {
 	return true;
-}
-
-
-void	btKinematicCharacterController::debugDraw(btIDebugDraw* debugDrawer)
-{
 }

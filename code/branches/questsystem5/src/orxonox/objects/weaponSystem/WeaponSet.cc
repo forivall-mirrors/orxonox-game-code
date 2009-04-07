@@ -55,19 +55,22 @@ namespace orxonox
 
     void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
+//COUT(0) << "WeaponSet::attachWeaponPack" << std::endl;
+//COUT(0) << "........ parentWeaponSystem_=" << this->parentWeaponSystem_ << std::endl;
+//COUT(0) << "........ this->parentWeaponSystem_->getWeaponSlotSize()" << this->parentWeaponSystem_->getWeaponSlotSize() << std::endl;
+//COUT(0) << "........ wPack->getSize()" << wPack->getSize() << std::endl;
         if ( this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
         {
+//COUT(0) << "WeaponSet::attachWeaponPack after if" << std::endl;
             this->attachedWeaponPack_ = wPack;
             int wPackWeapon = 0;    //WeaponCounter for Attaching
-           
             //should be possible to choose which slot to use
-            //attach every weapon of the weaponPack to a weaponSlot
             for (  int i=0; i < wPack->getSize() ; i++  )
             {
                 //at the moment this function only works for one weaponPack in the entire WeaponSystem...
-                //it also takes the first free weaponSlot...
                 if ( this->parentWeaponSystem_->getWeaponSlotPointer(i)->getAttachedWeapon() == 0 && this->parentWeaponSystem_->getWeaponSlotPointer(i) != 0) //if slot not full
                 {
+//COUT(0) << "WeaponSet::attachWeaponPack attaching Weapon" << std::endl;
                     this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(i) );
                     this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
                     this->parentWeaponSystem_->getParentPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
@@ -79,6 +82,7 @@ namespace orxonox
                     {
                         if ( this->parentWeaponSystem_->getWeaponSlotPointer(k)->getAttachedWeapon() == 0 )
                         {
+//COUT(0) << "WeaponSet::attachWeaponPack mode 2 k="<< k << std::endl;
                             this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(k) );
                             this->parentWeaponSystem_->getWeaponSlotPointer(k)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
                             this->parentWeaponSystem_->getParentPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
@@ -94,6 +98,7 @@ namespace orxonox
     void WeaponSet::fire()
     {
         //fires all WeaponSlots available for this weaponSet attached from the WeaponPack
+//COUT(0) << "WeaponSet::fire from Pack: " << this->attachedWeaponPack_ << std::endl;
         if (this->attachedWeaponPack_)
             this->attachedWeaponPack_->fire();
     }

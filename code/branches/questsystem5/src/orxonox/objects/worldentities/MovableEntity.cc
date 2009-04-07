@@ -33,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/Executor.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 
 namespace orxonox
 {
@@ -88,7 +88,7 @@ namespace orxonox
 
     void MovableEntity::resynchronize()
     {
-        if (GameMode::isMaster() && !this->continuousResynchroTimer_)
+        if (Core::isMaster() && !this->continuousResynchroTimer_)
         {
             // Resynchronise every few seconds because we only work with velocities (no positions)
             continuousResynchroTimer_ = new Timer<MovableEntity>(CONTINUOUS_SYNCHRONIZATION_TIME + rnd(-1, 1),

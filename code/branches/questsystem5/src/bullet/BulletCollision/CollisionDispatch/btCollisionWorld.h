@@ -58,8 +58,6 @@ subject to the following restrictions:
  * Pierre Terdiman, Kenny Erleben, Russell Smith, Oliver Strunk, Jan Paul van Waveren, Marten Svanfeldt.
  * 
  */
-
-
  
  
 
@@ -81,12 +79,10 @@ class btBroadphaseInterface;
 class btCollisionWorld
 {
 
-
 	
 protected:
 
 	btAlignedObjectArray<btCollisionObject*>	m_collisionObjects;
-
 	
 	btDispatcher*	m_dispatcher1;
 
@@ -97,7 +93,6 @@ protected:
 	btBroadphaseInterface*	m_broadphasePairCache;
 
 	btIDebugDraw*	m_debugDrawer;
-
 
 	
 public:
@@ -138,8 +133,6 @@ public:
 		return m_dispatcher1;
 	}
 
-	void	updateSingleAabb(btCollisionObject* colObj);
-
 	virtual void	updateAabbs();
 
 	
@@ -160,7 +153,6 @@ public:
 	{
 		int	m_shapePart;
 		int	m_triangleIndex;
-
 		
 		//const btCollisionShape*	m_shapeTemp;
 		//const btTransform*	m_shapeLocalTransform;
@@ -193,8 +185,6 @@ public:
 		btCollisionObject*		m_collisionObject;
 		short int	m_collisionFilterGroup;
 		short int	m_collisionFilterMask;
-      //@BP Mod - Custom flags, currently used to enable backface culling on tri-meshes, see btRaycastCallback
-      unsigned int m_flags;
 
 		virtual ~RayResultCallback()
 		{
@@ -208,9 +198,7 @@ public:
 			:m_closestHitFraction(btScalar(1.)),
 			m_collisionObject(0),
 			m_collisionFilterGroup(btBroadphaseProxy::DefaultFilter),
-			m_collisionFilterMask(btBroadphaseProxy::AllFilter),
-         //@BP Mod
-         m_flags(0)
+			m_collisionFilterMask(btBroadphaseProxy::AllFilter)
 		{
 		}
 
@@ -238,13 +226,11 @@ public:
 
 		btVector3	m_hitNormalWorld;
 		btVector3	m_hitPointWorld;
-
 			
 		virtual	btScalar	addSingleResult(LocalRayResult& rayResult,bool normalInWorldSpace)
 		{
 			//caller already does the filter on the m_closestHitFraction
 			btAssert(rayResult.m_hitFraction <= m_closestHitFraction);
-
 			
 			m_closestHitFraction = rayResult.m_hitFraction;
 			m_collisionObject = rayResult.m_collisionObject;
@@ -291,7 +277,6 @@ public:
 		btScalar	m_closestHitFraction;
 		short int	m_collisionFilterGroup;
 		short int	m_collisionFilterMask;
-
 		
 		ConvexResultCallback()
 			:m_closestHitFraction(btScalar(1.)),
@@ -303,13 +288,11 @@ public:
 		virtual ~ConvexResultCallback()
 		{
 		}
-
 		
 		bool	hasHit() const
 		{
 			return (m_closestHitFraction < btScalar(1.));
 		}
-
 
 		
 
@@ -338,13 +321,11 @@ public:
 		btVector3	m_hitNormalWorld;
 		btVector3	m_hitPointWorld;
 		btCollisionObject*	m_hitCollisionObject;
-
 		
 		virtual	btScalar	addSingleResult(LocalConvexResult& convexResult,bool normalInWorldSpace)
 		{
 //caller already does the filter on the m_closestHitFraction
 			btAssert(convexResult.m_hitFraction <= m_closestHitFraction);
-
 						
 			m_closestHitFraction = convexResult.m_hitFraction;
 			m_hitCollisionObject = convexResult.m_hitCollisionObject;

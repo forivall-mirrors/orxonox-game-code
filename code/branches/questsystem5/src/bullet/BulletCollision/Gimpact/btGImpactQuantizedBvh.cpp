@@ -171,7 +171,8 @@ int btQuantizedBvhTree::_sort_and_calc_splitting_index(
 		splitIndex = startIndex+ (numIndices>>1);
 	}
 
-	btAssert(!((splitIndex==startIndex) || (splitIndex == (endIndex))));
+	bool unbal = (splitIndex==startIndex) || (splitIndex == (endIndex));
+	btAssert(!unbal);
 
 	return splitIndex;
 

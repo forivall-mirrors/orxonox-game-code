@@ -84,12 +84,10 @@
 
 /* See if we can use __forceinline or if we need to use __inline instead */
 #cmakedefine HAVE_FORCEINLINE
-#ifndef FORCEINLINE
-#  ifdef HAVE_FORCEINLINE
-#    define FORCEINLINE __forceinline
-#  else
-#    define FORCEINLINE __inline
-#  endif
+#ifdef HAVE_FORCEINLINE
+#  define FORCEINLINE __forceinline
+#else
+#  define FORCEINLINE __inline
 #endif
 
 /* Try to define function information */

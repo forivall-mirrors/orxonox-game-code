@@ -30,18 +30,15 @@
 #include "GSServer.h"
 
 #include "core/CommandLine.h"
-#include "core/Game.h"
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "network/Server.h"
 
 namespace orxonox
 {
-    AddGameState(GSServer, "server");
-
     SetCommandLineArgument(port, 55556).shortcut("p").information("0-65535");
 
-    GSServer::GSServer(const std::string& name)
-        : GameState(name)
+    GSServer::GSServer()
+        : GameState<GSGraphics>("server")
         , server_(0)
     {
     }
@@ -50,26 +47,32 @@ namespace orxonox
     {
     }
 
-    void GSServer::activate()
+    void GSServer::enter()
     {
-        GameMode::setHasServer(true);
+        Core::setHasServer(true);
 
         this->server_ = new Server(CommandLine::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
 
+        GSLevel::enter(this->getParent()->getViewport());
+
         server_->open();
     }
 
-    void GSServer::deactivate()
+    void GSServer::leave()
     {
+        GSLevel::leave();
+
         this->server_->close();
         delete this->server_;
 
-        GameMode::setHasServer(false);
+        Core::setHasServer(false);
     }
 
-    void GSServer::update(const Clock& time)
+    void GSServer::ticked(const Clock& time)
     {
-        server_->update(time);
+        GSLevel::ticked(time);
+        server_->tick(time.getDeltaTime());
+        this->tickChild(time);
     }
 }

@@ -35,7 +35,6 @@ class btSimulationIslandManager
 	btAlignedObjectArray<btPersistentManifold*>  m_islandmanifold;
 	btAlignedObjectArray<btCollisionObject* >  m_islandBodies;
 	
-	bool m_splitIslands;
 	
 public:
 	btSimulationIslandManager();
@@ -65,15 +64,6 @@ public:
 	void	buildAndProcessIslands(btDispatcher* dispatcher,btCollisionWorld* collisionWorld, IslandCallback* callback);
 
 	void buildIslands(btDispatcher* dispatcher,btCollisionWorld* colWorld);
-
-	bool getSplitIslands()
-	{
-		return m_splitIslands;
-	}
-	void setSplitIslands(bool doSplitIslands)
-	{
-		m_splitIslands = doSplitIslands;
-	}
 
 };
 

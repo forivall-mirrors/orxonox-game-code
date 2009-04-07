@@ -52,28 +52,22 @@ namespace orxonox
     {
     }
 
-    void LaserGun::reloadBullet()
-    {
-        this->bulletTimer(this->bulletLoadingTime_);
-    }
-
-    void LaserGun::reloadMagazine()
-    {
-        this->magazineTimer(this->magazineLoadingTime_);
-    }
-
     void LaserGun::takeBullets()
     {
+//COUT(0) << "LaserGun::takeBullets" << std::endl;
         this->munition_->removeBullets(1);
+        this->bulletTimer(this->bulletLoadingTime_);
     }
 
     void LaserGun::takeMagazines()
     {
         this->munition_->removeMagazines(1);
+        this->magazineTimer(this->magazineLoadingTime_);
     }
 
     void LaserGun::createProjectile()
     {
+//COUT(0) << "LaserGun::createProjectile" << std::endl;
         BillboardProjectile* projectile = new ParticleProjectile(this);
         projectile->setOrientation(this->getWorldOrientation());
         projectile->setPosition(this->getWorldPosition());

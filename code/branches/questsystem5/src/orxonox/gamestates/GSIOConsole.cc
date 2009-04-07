@@ -35,14 +35,11 @@
 #include <OgreTimer.h>
 
 #include "core/ConsoleCommand.h"
-#include "core/Game.h"
 
 namespace orxonox
 {
-    AddGameState(GSIOConsole, "ioConsole");
-
-    GSIOConsole::GSIOConsole(const std::string& name)
-        : GameState(name)
+    GSIOConsole::GSIOConsole()
+        : GameState<GSRoot>("ioConsole")
     {
     }
 
@@ -50,36 +47,20 @@ namespace orxonox
     {
     }
 
-    void GSIOConsole::activate()
+    void GSIOConsole::enter()
     {
-        {
-            FunctorMember<GSIOConsole>* functor = createFunctor(&GSIOConsole::loadMenu);
-            functor->setObject(this);
-            this->ccLoadMenu_ = createConsoleCommand(functor, "loadMenu");
-            CommandExecutor::addConsoleCommandShortcut(this->ccLoadMenu_);
-        }
     }
 
-    void GSIOConsole::deactivate()
+    void GSIOConsole::leave()
     {
-        if (this->ccLoadMenu_)
-        {
-            delete this->ccLoadMenu_;
-            this->ccLoadMenu_ = 0;
-        }
     }
 
-    void GSIOConsole::update(const Clock& time)
+    void GSIOConsole::ticked(const Clock& time)
     {
-        std::cout << ">";
         std::string command;
         std::getline(std::cin, command);
         CommandExecutor::execute(command, true);
-    }
-
-    void GSIOConsole::loadMenu()
-    {
-        Game::getInstance().popState();
-        Game::getInstance().requestStates("graphics, mainMenu");
+        
+        tickChild(time);
     }
 }

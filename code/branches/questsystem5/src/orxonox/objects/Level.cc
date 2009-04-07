@@ -104,28 +104,19 @@ namespace orxonox
     void Level::setGametypeString(const std::string& gametype)
     {
         Identifier* identifier = ClassByString(gametype);
-
-        if (!identifier || !identifier->isA(Class(Gametype)))
+        if (identifier && identifier->isA(Class(Gametype)))
         {
-            COUT(0) << "Error: \"" << gametype << "\" is not a valid gametype." << std::endl;
-            identifier = Class(Gametype);
-            this->gametype_ = "Gametype";
-        }
-        else
             this->gametype_ = gametype;
 
-std::cout << "Load Gametype: " << this->gametype_ << std::endl;
+            Gametype* rootgametype = dynamic_cast<Gametype*>(identifier->fabricate(this));
+            this->setGametype(rootgametype);
 
-        Gametype* rootgametype = dynamic_cast<Gametype*>(identifier->fabricate(this));
-        this->setGametype(rootgametype);
+            for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
+                (*it)->setGametype(rootgametype);
 
-std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << std::endl;
-
-        for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
-            (*it)->setGametype(rootgametype);
-
-        if (LevelManager::getInstancePtr())
-            LevelManager::getInstance().requestActivity(this);
+            if (LevelManager::getInstancePtr())
+                LevelManager::getInstance().requestActivity(this);
+        }
     }
 
 

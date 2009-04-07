@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "AIController.h"
 
-#include "core/GameMode.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "objects/worldentities/ControllableEntity.h"
@@ -44,7 +44,7 @@ namespace orxonox
     {
         RegisterObject(AIController);
 
-        if (GameMode::isMaster())
+        if (Core::isMaster())
             this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&AIController::action)));
     }
 

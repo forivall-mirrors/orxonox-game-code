@@ -83,30 +83,19 @@ namespace orxonox
             virtual void start();
             virtual void end();
             virtual void playerEntered(PlayerInfo* player);
-            virtual bool playerLeft(PlayerInfo* player);
+            virtual void playerLeft(PlayerInfo* player);
             virtual void playerSwitched(PlayerInfo* player, Gametype* newgametype);
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
-            virtual bool playerChangedName(PlayerInfo* player);
+            virtual void playerChangedName(PlayerInfo* player);
 
-            virtual void playerScored(PlayerInfo* player);
-
-            virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
-            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
-            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
+            virtual void playerScored(Player& player);
 
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             virtual void pawnPreSpawn(Pawn* pawn);
             virtual void pawnPostSpawn(Pawn* pawn);
-            virtual void playerPreSpawn(PlayerInfo* player);
-            virtual void playerPostSpawn(PlayerInfo* player);
-
-            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
-            virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);
 
             inline const std::map<PlayerInfo*, Player>& getPlayers() const
                 { return this->players_; }
-
-            int getScore(PlayerInfo* player) const;
 
             inline void registerSpawnPoint(SpawnPoint* spawnpoint)
                 { this->spawnpoints_.insert(spawnpoint); }
@@ -116,25 +105,23 @@ namespace orxonox
             inline float getStartCountdown() const
                 { return this->gtinfo_.startCountdown_; }
 
-            inline void setHUDTemplate(const std::string& name)
-                { this->gtinfo_.hudtemplate_ = name; }
-            inline const std::string& getHUDTemplate() const
-                { return this->gtinfo_.hudtemplate_; }
-
             void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
 
             inline unsigned int getNumberOfPlayers() const
                 { return this->players_.size(); }
 
-        protected:
+        private:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
-            virtual void assignDefaultPawnsIfNeeded();
-            virtual void checkStart();
-            virtual void spawnPlayer(PlayerInfo* player);
-            virtual void spawnPlayersIfRequested();
-            virtual void spawnDeadPlayersIfRequested();
+            void addPlayer(PlayerInfo* player);
+            void removePlayer(PlayerInfo* player);
+
+            void assignDefaultPawnsIfNeeded();
+            void checkStart();
+            void spawnPlayer(PlayerInfo* player);
+            void spawnPlayersIfRequested();
+            void spawnDeadPlayersIfRequested();
 
             GametypeInfo gtinfo_;
 
@@ -143,7 +130,6 @@ namespace orxonox
 
             float initialStartCountdown_;
             unsigned int numberOfBots_;
-            SubclassIdentifier<Bot> botclass_;
 
             std::map<PlayerInfo*, Player> players_;
             std::set<SpawnPoint*> spawnpoints_;

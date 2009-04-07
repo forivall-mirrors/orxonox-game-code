@@ -19,7 +19,6 @@ subject to the following restrictions:
 
 
 #include "btVector3.h"
-#include "btQuadWord.h"
 
 /**@brief The btQuaternion implements quaternion to perform linear algebra rotations in combination with btMatrix3x3, btVector3 and btTransform. */
 class btQuaternion : public btQuadWord {
@@ -58,7 +57,7 @@ public:
 	void setRotation(const btVector3& axis, const btScalar& angle)
 	{
 		btScalar d = axis.length();
-		btAssert(d != btScalar(0.0));
+		assert(d != btScalar(0.0));
 		btScalar s = btSin(angle * btScalar(0.5)) / d;
 		setValue(axis.x() * s, axis.y() * s, axis.z() * s, 
 			btCos(angle * btScalar(0.5)));
@@ -177,7 +176,7 @@ public:
    * @param s The inverse scale factor */
 	btQuaternion operator/(const btScalar& s) const
 	{
-		btAssert(s != btScalar(0.0));
+		assert(s != btScalar(0.0));
 		return *this * (btScalar(1.0) / s);
 	}
 
@@ -185,7 +184,7 @@ public:
    * @param s The scale factor */
 	btQuaternion& operator/=(const btScalar& s) 
 	{
-		btAssert(s != btScalar(0.0));
+		assert(s != btScalar(0.0));
 		return *this *= btScalar(1.0) / s;
 	}
 
@@ -199,7 +198,7 @@ public:
 	btScalar angle(const btQuaternion& q) const 
 	{
 		btScalar s = btSqrt(length2() * q.length2());
-		btAssert(s != btScalar(0.0));
+		assert(s != btScalar(0.0));
 		return btAcos(dot(q) / s);
 	}
   /**@brief Return the angle of rotation represented by this quaternion */
@@ -273,12 +272,6 @@ public:
 		{
 			return *this;
 		}
-	}
-
-	static const btQuaternion&	getIdentity()
-	{
-		static const btQuaternion identityQuat(btScalar(0.),btScalar(0.),btScalar(0.),btScalar(1.));
-		return identityQuat;
 	}
 
 	SIMD_FORCE_INLINE const btScalar& getW() const { return m_floats[3]; }

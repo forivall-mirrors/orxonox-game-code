@@ -14,6 +14,8 @@ subject to the following restrictions:
 */
 
 #include "btUnionFind.h"
+#include <assert.h>
+
 
 
 

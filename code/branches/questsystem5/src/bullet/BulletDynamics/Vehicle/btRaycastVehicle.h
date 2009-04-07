@@ -17,12 +17,11 @@
 class btDynamicsWorld;
 #include "LinearMath/btAlignedObjectArray.h"
 #include "btWheelInfo.h"
-#include "BulletDynamics/Dynamics/btActionInterface.h"
 
 class btVehicleTuning;
 
 ///rayCast vehicle, very special constraint that turn a rigidbody into a vehicle.
-class btRaycastVehicle : public btActionInterface
+class btRaycastVehicle : public btTypedConstraint
 {
 
 		btAlignedObjectArray<btVector3>	m_forwardWS;
@@ -74,24 +73,13 @@ public:
 
 	virtual ~btRaycastVehicle() ;
 
-
-	///btActionInterface interface
-	virtual void updateAction( btCollisionWorld* collisionWorld, btScalar step)
-	{
-		updateVehicle(step);
-	}
-	
-
-	///btActionInterface interface
-	void	debugDraw(btIDebugDraw* debugDrawer);
-			
+		
 	const btTransform& getChassisWorldTransform() const;
 	
 	btScalar rayCast(btWheelInfo& wheel);
 
 	virtual void updateVehicle(btScalar step);
-	
-	
+
 	void resetSuspension();
 
 	btScalar	getSteeringValue(int wheel) const;
@@ -187,6 +175,16 @@ public:
 		m_indexForwardAxis = forwardIndex;
 	}
 
+	virtual void	buildJacobian()
+	{
+		//not yet
+	}
+
+	virtual	void	solveConstraint(btScalar	timeStep)
+	{
+		(void)timeStep;
+		//not yet
+	}
 
 
 };

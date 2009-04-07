@@ -50,34 +50,7 @@ namespace orxonox
 
             void setClientID(unsigned int clientID);
 
-            virtual void changedGametype();
-            virtual void changedControllableEntity();
-
-            inline void setHumanHUDTemplate(const std::string& name)
-            {
-                if (name != this->humanHudTemplate_)
-                {
-                    this->humanHudTemplate_ = name;
-                    this->updateHumanHUD();
-                }
-            }
-            inline const std::string& getHumanHUDTemplate() const
-                { return this->humanHudTemplate_; }
-            inline OverlayGroup* getHumanHUD() const
-                { return this->humanHud_; }
-
-            inline void setGametypeHUDTemplate(const std::string& name)
-            {
-                if (name != this->gametypeHudTemplate_)
-                {
-                    this->gametypeHudTemplate_ = name;
-                    this->updateGametypeHUD();
-                }
-            }
-            inline const std::string& getGametypeHUDTemplate() const
-                { return this->gametypeHudTemplate_; }
-            inline OverlayGroup* getGametypeHUD() const
-                { return this->gametypeHud_; }
+            virtual void changedController();
 
         protected:
             void configvaluecallback_changednick();
@@ -87,19 +60,11 @@ namespace orxonox
             void networkcallback_server_initialized();
             void networkcallback_client_initialized();
 
-            void updateHumanHUD();
-            void updateGametypeHUD();
-
             std::string nick_;
             std::string synchronize_nick_;
             std::string hudtemplate_;
             bool server_initialized_;
             bool client_initialized_;
-
-            std::string humanHudTemplate_;
-            OverlayGroup* humanHud_;
-            std::string gametypeHudTemplate_;
-            OverlayGroup* gametypeHud_;
     };
 }
 

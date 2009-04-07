@@ -52,7 +52,7 @@ namespace orxonox
         void destroy();
         void setConfigValues();
 
-        void update(const Clock& time);
+        virtual void tick(float dt);
 
         static InGameConsole& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
         static InGameConsole* getInstancePtr() { return singletonRef_s; }
@@ -80,7 +80,7 @@ namespace orxonox
         void setCursorPosition(unsigned int pos);
         void print(const std::string& text, int index, bool alwaysShift = false);
 
-        void windowResized(unsigned int newWidth, unsigned int newHeight);
+        void windowResized(int newWidth, int newHeight);
 
         // config value related
         void bHidesAllInputChanged();

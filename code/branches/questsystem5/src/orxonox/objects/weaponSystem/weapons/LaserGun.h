@@ -50,8 +50,6 @@ namespace orxonox
             virtual void takeBullets();
             virtual void takeMagazines();
             virtual void createProjectile();
-            virtual void reloadBullet();
-            virtual void reloadMagazine();
 
         private:
             float speed_;

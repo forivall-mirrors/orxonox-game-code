@@ -19,7 +19,6 @@ subject to the following restrictions:
 
 #include "btDispatcher.h"
 #include "btCollisionAlgorithm.h"
-#include "LinearMath/btAabbUtil2.h"
 
 #include <stdio.h>
 
@@ -136,8 +135,7 @@ void	btHashedOverlappingPairCache::removeOverlappingPairsContainingProxy(btBroad
 btBroadphasePair* btHashedOverlappingPairCache::findPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
 {
 	gFindPairs++;
-	if(proxy0->m_uniqueId>proxy1->m_uniqueId) 
-		btSwap(proxy0,proxy1);
+	if(proxy0>proxy1) btSwap(proxy0,proxy1);
 	int proxyId1 = proxy0->getUid();
 	int proxyId2 = proxy1->getUid();
 
@@ -213,8 +211,7 @@ void	btHashedOverlappingPairCache::growTables()
 
 btBroadphasePair* btHashedOverlappingPairCache::internalAddPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
 {
-	if(proxy0->m_uniqueId>proxy1->m_uniqueId) 
-		btSwap(proxy0,proxy1);
+	if(proxy0>proxy1) btSwap(proxy0,proxy1);
 	int proxyId1 = proxy0->getUid();
 	int proxyId2 = proxy1->getUid();
 
@@ -273,8 +270,7 @@ btBroadphasePair* btHashedOverlappingPairCache::internalAddPair(btBroadphaseProx
 void* btHashedOverlappingPairCache::removeOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1,btDispatcher* dispatcher)
 {
 	gRemovePairs++;
-	if(proxy0->m_uniqueId>proxy1->m_uniqueId) 
-		btSwap(proxy0,proxy1);
+	if(proxy0>proxy1) btSwap(proxy0,proxy1);
 	int proxyId1 = proxy0->getUid();
 	int proxyId2 = proxy1->getUid();
 
@@ -396,35 +392,6 @@ void	btHashedOverlappingPairCache::processAllOverlappingPairs(btOverlapCallback*
 	}
 }
 
-void	btHashedOverlappingPairCache::sortOverlappingPairs(btDispatcher* dispatcher)
-{
-	///need to keep hashmap in sync with pair address, so rebuild all
-	btBroadphasePairArray tmpPairs;
-	int i;
-	for (i=0;i<m_overlappingPairArray.size();i++)
-	{
-		tmpPairs.push_back(m_overlappingPairArray[i]);
-	}
-
-	for (i=0;i<tmpPairs.size();i++)
-	{
-		removeOverlappingPair(tmpPairs[i].m_pProxy0,tmpPairs[i].m_pProxy1,dispatcher);
-	}
-	
-	for (i = 0; i < m_next.size(); i++)
-	{
-		m_next[i] = BT_NULL_PAIR;
-	}
-
-	tmpPairs.quickSort(btBroadphasePairSortPredicate());
-
-	for (i=0;i<tmpPairs.size();i++)
-	{
-		addOverlappingPair(tmpPairs[i].m_pProxy0,tmpPairs[i].m_pProxy1);
-	}
-
-	
-}
 
 
 void*	btSortedOverlappingPairCache::removeOverlappingPair(btBroadphaseProxy* proxy0,btBroadphaseProxy* proxy1, btDispatcher* dispatcher )
@@ -462,7 +429,7 @@ void*	btSortedOverlappingPairCache::removeOverlappingPair(btBroadphaseProxy* pro
 btBroadphasePair*	btSortedOverlappingPairCache::addOverlappingPair(btBroadphaseProxy* proxy0,btBroadphaseProxy* proxy1)
 {
 	//don't add overlap with own
-	btAssert(proxy0 != proxy1);
+	assert(proxy0 != proxy1);
 
 	if (!needsBroadphaseCollision(proxy0,proxy1))
 		return 0;
@@ -493,7 +460,7 @@ btBroadphasePair*	btSortedOverlappingPairCache::addOverlappingPair(btBroadphaseP
 
 	if (findIndex < m_overlappingPairArray.size())
 	{
-		//btAssert(it != m_overlappingPairSet.end());
+		//assert(it != m_overlappingPairSet.end());
 		 btBroadphasePair* pair = &m_overlappingPairArray[findIndex];
 		return pair;
 	}
@@ -523,9 +490,8 @@ void	btSortedOverlappingPairCache::processAllOverlappingPairs(btOverlapCallback*
 		if (callback->processOverlap(*pair))
 		{
 			cleanOverlappingPair(*pair,dispatcher);
-			pair->m_pProxy0 = 0;
-			pair->m_pProxy1 = 0;
-			m_overlappingPairArray.swap(i,m_overlappingPairArray.size()-1);
+
+			m_overlappingPairArray.swap(i,m_overlappingPairArray.capacity()-1);
 			m_overlappingPairArray.pop_back();
 			gOverlappingPairs--;
 		} else
@@ -625,9 +591,3 @@ void	btSortedOverlappingPairCache::removeOverlappingPairsContainingProxy(btBroad
 
 	processAllOverlappingPairs(&removeCallback,dispatcher);
 }
-
-void	btSortedOverlappingPairCache::sortOverlappingPairs(btDispatcher* dispatcher)
-{
-	//should already be sorted
-}
-
