@@ -27,7 +27,7 @@
  */
  
 /**
-    @file GlobalQuest.h
+    @file
     @brief Definition of the GlobalQuest class.
 */
 

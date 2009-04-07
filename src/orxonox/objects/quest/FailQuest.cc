@@ -27,7 +27,7 @@
  */
  
 /**
-    @file FailQuest.cc
+    @file
     @brief Implementation of the FailQuest class.
 */
 
@@ -94,7 +94,7 @@ namespace orxonox
         Quest* quest;
         try
         {
-            quest = QuestManager::getInstance().findQuest(this->getQuestId());
+            quest = QuestManager::findQuest(this->getQuestId());
             if(quest == NULL || !quest->fail(player))
             {
                return false;

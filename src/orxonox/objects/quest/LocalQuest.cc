@@ -27,7 +27,7 @@
  */
 
 /**
-    @file LocalQuest.cc
+    @file
     @brief Implementation of the LocalQuest class.
 */
 

@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestItem.cc
+    @file
     @brief Implementation of the QuestItem class.
 */
 

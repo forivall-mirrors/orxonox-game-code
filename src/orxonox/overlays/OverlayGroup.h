@@ -37,7 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <set>
-#include <string>
 #include <OgrePrerequisites.h>
 #include "core/BaseObject.h"
 #include "util/Math.h"
@@ -86,7 +85,6 @@ namespace orxonox
         Vector2 getScroll() const { return this->scale_; }
 
         void addElement(OrxonoxOverlay* element);
-        bool removeElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
 
     private:

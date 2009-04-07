@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestDescription.cc
+    @file
     @brief Implementation of the QuestDescription class.
 */
 
@@ -36,7 +36,7 @@
 #include "QuestDescription.h"
 
 #include "core/CoreIncludes.h"
-#include "QuestNotification.h"
+#include "orxonox/overlays/notifications/Notification.h"
 
 namespace orxonox
 {
@@ -88,29 +88,32 @@ namespace orxonox
         The status the QuestDescription us for.
     @return
         Returns true if successful.
-    @todo
-        Make sure the messages meet the conditions.
     */
     bool QuestDescription::notificationHelper(const std::string & item, const std::string & status) const
     {
         std::string message = "";
+        std::string title = "";
         if(item == "hint")
         {
-            message = "You received a hint: '" + this->title_ + "'";
+            title = "You received a hint: '" + this->title_ + "'";
+            message = this->description_;
         }
         else if(item == "quest")
         {
             if(status == "start")
             {
-                message = "You received a new quest: '" + this->title_ + "'";
+                title = "You received a new quest: '" + this->title_ + "'";
+                message = this->description_;
             }
             else if(status == "fail")
             {
-                message = "You failed the quest: '" + this->title_ + "'";
+                title = "You failed the quest: '" + this->title_ + "'";
+                message = this->failMessage_;
             }
             else if(status == "complete")
             {
-                message = "You successfully completed the quest: '" + this->title_ + "'";
+                title = "You successfully completed the quest: '" + this->title_ + "'";
+                message = this->completeMessage_;
             }
             else
             {
@@ -124,7 +127,7 @@ namespace orxonox
             return false;
         }
         
-        QuestNotification* notification = new QuestNotification(message);
+        Notification* notification = new Notification(0, message, title, 30);
         notification->send();
         return true;
     }
