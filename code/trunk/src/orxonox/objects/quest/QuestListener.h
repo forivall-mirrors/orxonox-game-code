@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestListener.h
+    @file
     @brief Definition of the QuestListener class.
 */
 

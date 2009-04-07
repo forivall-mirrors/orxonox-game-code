@@ -128,7 +128,6 @@ namespace orxonox
     class QuestItem;
     class QuestListener;
     class QuestManager;
-    class QuestNotification;
     class Rewardable;
 
     class WorldEntity;
@@ -238,7 +237,6 @@ namespace orxonox
     class InGameConsole;
     class Notification;
     class NotificationManager;
-    class NotificationOverlay;
     class NotificationQueue;
     class OrxonoxOverlay;
     class OverlayGroup;

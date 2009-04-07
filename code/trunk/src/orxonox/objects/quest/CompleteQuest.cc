@@ -27,7 +27,7 @@
  */
  
 /**
-    @file CompleteQuest.cc
+    @file
     @brief Implementation of the CompleteQuest class.
 */
 
@@ -95,7 +95,7 @@ namespace orxonox
 
         try
         {
-            quest = QuestManager::getInstance().findQuest(this->getQuestId());
+            quest = QuestManager::findQuest(this->getQuestId());
             if(quest == NULL || !quest->complete(player))
             {
                return false;

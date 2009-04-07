@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestEffect.cc
+    @file
     @brief Implementation of the QuestEffect class.
 */
 

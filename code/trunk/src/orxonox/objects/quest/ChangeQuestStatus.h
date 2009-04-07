@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ChangeQuestStatus.h
+    @file
     @brief Definition of the ChangeQuestStatus class.
 */
 

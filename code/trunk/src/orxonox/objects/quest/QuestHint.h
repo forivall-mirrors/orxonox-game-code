@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestHint.h
+    @file
     @brief Definition of the QuestHint class.
 */
 

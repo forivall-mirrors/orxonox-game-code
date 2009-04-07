@@ -27,7 +27,7 @@
  */
  
 /**
-    @file Quest.cc
+    @file
     @brief Implementation of the Quest class.
 */
 
@@ -78,7 +78,7 @@ namespace orxonox
         XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffect, xmlelement, mode);
         XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffect, xmlelement, mode);
 
-        QuestManager::getInstance().registerQuest(this); //!<Registers the Quest with the QuestManager.
+        QuestManager::registerQuest(this); //!<Registers the Quest with the QuestManager.
     }
 
     /**

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file CompleteQuest.h
+    @file
     @brief Definition of the CompleteQuest class.
 */
 

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestEffectBeacon.cc
+    @file
     @brief Implementation of the QuestEffectBeacon class.
 */
 
