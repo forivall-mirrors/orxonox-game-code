@@ -15,5 +15,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   QuestItem.cc
   QuestListener.cc
   QuestManager.cc
+  QuestNotification.cc
   Rewardable.cc
 )

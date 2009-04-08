@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file ChangeQuestStatus.cc
     @brief Implementation of the ChangeQuestStatus class.
 */
 

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestEffectBeacon.h
     @brief Definition of the QuestEffectBeacon class.
 */
 

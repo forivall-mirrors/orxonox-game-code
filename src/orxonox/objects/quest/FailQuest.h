@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file FailQuest.h
     @brief Definition of the FailQuest class.
 */
 

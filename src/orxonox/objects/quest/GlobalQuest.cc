@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file GlobalQuest.cc
     @brief Implementation of the GlobalQuest class.
 */
 

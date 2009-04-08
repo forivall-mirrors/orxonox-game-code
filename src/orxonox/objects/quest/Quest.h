@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file Quest.h
     @brief Definition of the Quest class.
         The Quest is the parent class of LocalQuest and GlobalQuest.
 */

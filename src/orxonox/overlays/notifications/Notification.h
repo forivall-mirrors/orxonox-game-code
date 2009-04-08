@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file Notification.h
+    @brief Definition of the Notification class.
+*/
+
 #ifndef _Notification_H__
 #define _Notification_H__
 
@@ -37,44 +42,50 @@
 
 namespace orxonox
 {
-    static const float NOTIFICATION_DISPLAY_TIME = 4.0;
 
     /**
     @brief
-        This is rather temporary, so don't start relying on it, some better version will come soon but the Interface will not likely be the same.
+        A Notification is a short message used to inform the player about something that just happened. A Notification can be sent from any part of orxonox and is then displayed in the proper NotificationQueue (depending on which senders the specific NotificationQueue accepts).
     @author
         Damian 'Mozork' Frick
     */
     class _OrxonoxExport Notification : public BaseObject
     {
-    public:
-        Notification(BaseObject* creator);
-        Notification(BaseObject* creator, const std::string & message, const std::string & title = "", float time = NOTIFICATION_DISPLAY_TIME);
-        virtual ~Notification();
-        
-        bool send(void);
-        
-        inline bool isSent(void) const
-            { return this->sent_; }
-        inline const std::string & getTitle(void) const
-            { return this->title_; }
-        inline const std::string & getMessage(void) const
-            { return this->message_; }
-        inline const float getDisplayTime(void) const
-            { return displayTime_; }
-        
-        bool setTitle(const std::string & title);
-        bool setMessage(const std::string & message);
-        bool setDisplayTime(float time);
-        
-    private:
-        std::string title_; //!< The title of the Notification.
-        std::string message_; //!< The Notification message.
-        float displayTime_; //!< The time duration the Notification is displayed in seconds.
-        bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
-        
-        void initialize(void);
+        public:
+            Notification(BaseObject* creator);
+            Notification(const std::string & message);
+            virtual ~Notification();
+            
+            bool send(void); //!< Sends the Notification to the Notificationmanager, with sender NotificationManager::NONE;
+            bool send(const std::string & sender); //!< Sends the Notification to the Notificationmanager.
+            
+            /**
+            @brief Checks whether the Notification was sent.
+            @return Returns true if the Notification was sent already.
+            */
+            inline bool isSent(void) const
+                { return this->sent_; }
+            /**
+            @brief Returns the message of the Notification.
+            @return Returns the message of the Notification.
+            */
+            inline const std::string & getMessage(void) const
+                { return this->message_; }
+                
+            inline const std::string & getSender(void) const
+                { return this->sender_; }
+            
+            bool setMessage(const std::string & message); //!< Sets the message of the notification.
+	    
+        private:
+            std::string message_; //!< The Notification message.
+            std::string sender_; //!< The sender of the notification.
+            bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
+            
+            void initialize(void);
+	
     };
+
 }
 
 #endif /* _Notification_H__ */

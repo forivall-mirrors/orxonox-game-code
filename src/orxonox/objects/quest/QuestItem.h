@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file QuestItem.h
     @brief Definition of the QuestItem class.
         The QuestItem is the parent class of Quest and QuestHint.
 */
