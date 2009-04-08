@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddQuestHint.h
     @brief Definition of the AddQuestHint class.
 */
 

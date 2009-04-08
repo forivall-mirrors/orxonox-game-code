@@ -12,7 +12,7 @@
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thes
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
@@ -26,41 +26,39 @@
  *
  */
  
-/**
-    @file QuestEffect.h
-    @brief Definition of the QuestEffect class.
-*/
-
-#ifndef _QuestEffect_H__
-#define _QuestEffect_H__
+#ifndef _QuestNotification_H__
+#define _QuestNotification_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <list>
+#include <string>
 
-#include "core/BaseObject.h"
+#include "orxonox/overlays/notifications/Notification.h"
 
-namespace orxonox
-{
+namespace orxonox {
+
     /**
     @brief
-        Handles QuestEffects for Quests.
-        QuestEffects are the only way for Quests to have any sideeffects in the game world. They are also the only way for a player to gain, complete or fail Quests.
+        
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestEffect : public BaseObject
+    class _OrxonoxExport QuestNotification : public Notification
     {
         public:
-            QuestEffect(BaseObject* creator);
-            virtual ~QuestEffect();
-
-            virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.
-            static bool invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects); //!< Invokes all QuestEffects in the list.
-
-
+            QuestNotification(BaseObject* creator);
+            QuestNotification(const std::string & message);
+            virtual ~QuestNotification();
+            
+            bool send(void);
+     
+        private:
+            static const std::string SENDER;
+            
+            void initialize(void);
+ 
     };
 
 }
 
-#endif /* _QuestEffect_H__ */
+#endif /* _QuestNotification_H__ */

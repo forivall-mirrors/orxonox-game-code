@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddQuest.cc
     @brief Implementation of the AddQuest class.
 */
 
@@ -41,6 +41,7 @@
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
+#include "QuestDescription.h"
 #include "Quest.h"
 
 namespace orxonox
@@ -71,7 +72,7 @@ namespace orxonox
     void AddQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuest, XMLPort, xmlelement, mode);
-        
+
         COUT(3) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
@@ -95,7 +96,7 @@ namespace orxonox
 
         try
         {
-            Quest* quest = QuestManager::findQuest(this->getQuestId());
+            Quest* quest = QuestManager::getInstance().findQuest(this->getQuestId());
             if(quest == NULL || !quest->start(player))
             {
                return false;

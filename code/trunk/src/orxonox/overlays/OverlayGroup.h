@@ -85,6 +85,7 @@ namespace orxonox
         Vector2 getScroll() const { return this->scale_; }
 
         void addElement(OrxonoxOverlay* element);
+        bool removeElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
 
     private:

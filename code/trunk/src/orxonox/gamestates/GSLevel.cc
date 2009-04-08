@@ -50,6 +50,8 @@
 #include "LevelManager.h"
 #include "PlayerManager.h"
 #include "gui/GUIManager.h"
+#include "objects/quest/QuestManager.h"
+#include "overlays/notifications/NotificationManager.h"
 
 namespace orxonox
 {
@@ -109,6 +111,10 @@ namespace orxonox
         }
 
         this->playerManager_ = new PlayerManager();
+
+        this->questManager_ = new QuestManager();
+
+        this->notificationManager_ = new NotificationManager();
 
         if (GameMode::isMaster())
         {
@@ -202,6 +208,18 @@ namespace orxonox
         {
             delete this->playerManager_;
             this->playerManager_ = 0;
+        }
+
+        if (this->questManager_)
+        {
+            delete this->questManager_;
+            this->questManager_ = NULL;
+        }
+
+        if (this->notificationManager_)
+        {
+            delete this->notificationManager_;
+            this->notificationManager_ = NULL;
         }
 
         if (GameMode::showsGraphics())

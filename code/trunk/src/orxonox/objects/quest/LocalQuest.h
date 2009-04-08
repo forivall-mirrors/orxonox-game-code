@@ -27,7 +27,7 @@
  */
  
 /**
-    @file
+    @file LocalQuest.h
     @brief Definition of the LocalQuest class.
 */
 
