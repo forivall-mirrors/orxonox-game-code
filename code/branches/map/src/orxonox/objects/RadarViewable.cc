@@ -44,6 +44,8 @@ namespace orxonox
         : radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")
+        , MapNode_(NULL)
+        , MapEntity_(NULL)
     {
         RegisterRootObject(RadarViewable);
     }

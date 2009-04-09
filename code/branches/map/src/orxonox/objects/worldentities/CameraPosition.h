@@ -53,11 +53,18 @@ namespace orxonox
             inline bool getAllowMouseLook() const
                 { return this->bAllowMouseLook_; }
 
+            inline void setRenderCamera(bool bRenderCamera)
+                { this->bRenderCamera_ = bRenderCamera; }
+            inline bool getRenderCamera() const
+                { return this->bRenderCamera_; }
+
             void attachCamera(Camera* camera);
+            void attachCamera(Ogre::Camera* camera);
 
         private:
             bool bDrag_;
             bool bAllowMouseLook_;
+            bool bRenderCamera_;
     };
 }
 

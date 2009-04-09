@@ -109,6 +109,11 @@ namespace orxonox
             inline const std::string& getCameraPositionTemkplate() const
                 { return this->cameraPositionTemplate_; }
 
+            inline void setReverseCamera(CameraPosition* camera)
+                { this->reverseCamera_ = camera; }
+            inline CameraPosition* getReverseCamera() const
+                { return this->reverseCamera_; }
+
             using WorldEntity::setPosition;
             using WorldEntity::setOrientation;
             using MobileEntity::setVelocity;
@@ -187,6 +192,7 @@ namespace orxonox
             Ogre::SceneNode* cameraPositionRootNode_;
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
+            CameraPosition* reverseCamera_;
 
             const GametypeInfo* gtinfo_;
             unsigned int gtinfoID_;

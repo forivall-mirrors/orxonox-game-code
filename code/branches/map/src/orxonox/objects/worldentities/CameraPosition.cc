@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "CameraPosition.h"
 
+#include <OgreCamera.h>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "Camera.h"
@@ -43,6 +45,7 @@ namespace orxonox
 
         this->bDrag_ = false;
         this->bAllowMouseLook_ = false;
+        this->bRenderCamera_ = false;
 
         this->setObjectMode(0x0);
     }
@@ -57,6 +60,7 @@ namespace orxonox
 
         XMLPortParam(CameraPosition, "drag", setDrag, getDrag, xmlelement, mode).defaultValues(false);
         XMLPortParam(CameraPosition, "mouselook", setAllowMouseLook, getAllowMouseLook, xmlelement, mode).defaultValues(false);
+        XMLPortParam(CameraPosition, "rendercamera", setRenderCamera, getRenderCamera, xmlelement, mode).defaultValues(false);
     }
 
     void CameraPosition::attachCamera(Camera* camera)
@@ -68,5 +72,10 @@ namespace orxonox
 
         if (this->bDrag_)
             camera->setDrag(true);
+    }
+
+    void CameraPosition::attachCamera(Ogre::Camera* camera)
+    {
+        this->attachOgreObject(camera);
     }
 }

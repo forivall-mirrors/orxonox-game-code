@@ -36,6 +36,9 @@
 #include "util/Debug.h"
 #include "core/OrxonoxClass.h"
 
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+
 namespace orxonox
 {
     /**
@@ -79,6 +82,20 @@ namespace orxonox
         inline Shape getRadarObjectShape() const
             { return this->radarObjectShape_; }
 
+/*
+        inline void setMapNode(Ogre::SceneNode * node)
+            { this->MapNode_ = node; }
+        inline Ogre::SceneNode * getMapNode() const
+            { return this->MapNode_; }
+        inline void setMapEntity(Ogre::Entity * ent)
+            { this->MapEntity_ = ent; }
+        inline Ogre::Entity * getMapEntity() const
+            { return this->MapEntity_; }
+*/
+        //Used for Map
+        Ogre::SceneNode * MapNode_;
+        Ogre::Entity * MapEntity_;
+
     private:
         void validate(const WorldEntity* object) const
         {
@@ -93,6 +110,7 @@ namespace orxonox
         Shape radarObjectShape_;
         std::string radarObjectDescription_;
         ColourValue radarObjectColour_;
+        
     };
 }
 

@@ -27,7 +27,7 @@
 #ifndef _MAP_H__
 #define _MAP_H__
 
-
+#include <string>
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
 #include <OgreSceneManager.h>
@@ -45,6 +45,7 @@
 #include "objects/Tickable.h"
 
 
+
 namespace orxonox
 {
     class _OrxonoxExport Map : public OrxonoxOverlay, public Tickable
@@ -56,19 +57,27 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
+        virtual void changedOwner();
 
-        
+        static Ogre::MaterialPtr createRenderCamera(Ogre::Camera * cam, std::string matName);
         
         static void openMap();
+
+        static const int maxRange_s=1000;
         
     private: // functions
         void toggleVisibility();
+        void updatePositions();
 
 
     private: // variables
         Ogre::SceneManager* sManager_;
-        Ogre::SceneNode* sNode_;
+        Ogre::SceneManager* mapSceneM_;
+        Ogre::SceneNode* rootNode_;
         Ogre::OverlayManager * oManager_;
+        Ogre::Camera* mReflectCam_;
+
+        
         
         bool isVisible_;
     };
