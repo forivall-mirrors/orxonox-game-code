@@ -32,10 +32,9 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <vector>
+
 #include "core/BaseObject.h"
-
-#include "WeaponSlot.h"
-
 
 namespace orxonox
 {
@@ -50,16 +49,18 @@ namespace orxonox
             void attachWeaponPack(WeaponPack *wPack);
             void fire();
 
-            void setFireMode(const unsigned int firemode);
-            const unsigned int getFireMode() const;
+            inline void setFireMode(const unsigned int firemode)
+                { this->firemode_ = firemode; }
+            inline unsigned int getFireMode() const
+                { return this->firemode_; }
 
-            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
-                { parentWeaponSystem_=parentWeaponSystem; }
-            inline WeaponSystem * getParentWeaponSystem()
-                { return parentWeaponSystem_; }
+            inline void setWeaponSystem(WeaponSystem *weaponSystem)
+                { this->weaponSystem_ = weaponSystem; }
+            inline WeaponSystem * getWeaponSystem() const
+                { return this->weaponSystem_; }
 
         private:
-            WeaponSystem *parentWeaponSystem_;
+            WeaponSystem *weaponSystem_;
             std::vector<WeaponSlot *> setWeaponSlots_;
             unsigned int firemode_;
             WeaponPack * attachedWeaponPack_;

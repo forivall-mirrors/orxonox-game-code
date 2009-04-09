@@ -50,8 +50,7 @@ namespace orxonox
             static void rotatePitch(const Vector2& value);
             static void rotateRoll(const Vector2& value);
 
-            static void fire();
-            static void altFire();
+            static void fire(unsigned int firemode);
 
             static void boost();
             static void greet();

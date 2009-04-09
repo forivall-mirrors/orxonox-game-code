@@ -27,12 +27,9 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "FusionMunition.h"
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "util/Debug.h"
-
-#include "FusionMunition.h"
 
 namespace orxonox
 {

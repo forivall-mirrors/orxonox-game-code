@@ -73,26 +73,6 @@ namespace orxonox
         };
     }
 
-    //put here all existing munitionTypes
-    namespace MunitionType
-    {
-        enum Enum
-        { laserGunMunition };
-    }
-
-    //put here all weapon fire modes.
-    //they have to be added to Pawn and HumanController, too.
-    namespace WeaponMode
-    {
-        enum Enum
-        {
-            fire     = 0x1,
-            altFire  = 0x2,
-            altFire2 = 0x4
-        };
-    }
-
-
     class GraphicsManager;
     class OgreWindowEventListener;
     class Settings;

@@ -30,14 +30,7 @@
 #define _Fusion_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
-
-#include "../munitions/LaserGunMunition.h"
-#include "util/Math.h"
-#include "../Weapon.h"
-#include "../projectiles/BillboardProjectile.h"
-#include "../projectiles/ParticleProjectile.h"
+#include "objects/weaponSystem/Weapon.h"
 
 namespace orxonox
 {

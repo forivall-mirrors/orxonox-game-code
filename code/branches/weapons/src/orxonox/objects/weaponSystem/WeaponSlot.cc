@@ -27,13 +27,12 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "WeaponSlot.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
 
-#include "WeaponSlot.h"
-
+#include "Weapon.h"
 
 namespace orxonox
 {
@@ -46,12 +45,19 @@ namespace orxonox
         this->unlimitedAmmo_ = false;
         this->attachedWeapon_ = 0;
         this->setObjectMode(0x0);
+
+COUT(0) << "+WeaponSlot" << std::endl;
     }
 
     WeaponSlot::~WeaponSlot()
     {
+COUT(0) << "~WeaponSlot" << std::endl;
     }
 
+    void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(WeaponSlot, XMLPort, xmlelement, mode);
+    }
 
     /*sets the munition type
      *unlimited: true
@@ -68,12 +74,6 @@ namespace orxonox
         if ( this->attachedWeapon_ )
 //COUT(0) << "WeaponSlot::fire" << std::endl;
         this->attachedWeapon_->fire();
-    }
-
-
-    void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(WeaponSlot, XMLPort, xmlelement, mode);
     }
 
     void WeaponSlot::attachWeapon(Weapon *weapon)

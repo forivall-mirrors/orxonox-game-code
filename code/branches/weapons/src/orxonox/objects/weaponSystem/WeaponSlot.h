@@ -30,8 +30,6 @@
 #define _WeaponSlot_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "Weapon.h"
 #include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
@@ -49,17 +47,17 @@ namespace orxonox
             void setAmmoType(bool isUnlimited);
             void fire();
 
-            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
-                { parentWeaponSystem_=parentWeaponSystem; }
-            inline WeaponSystem * getParentWeaponSystem()
-                { return parentWeaponSystem_; }
+            inline void setWeaponSystem(WeaponSystem *weaponSystem)
+                { this->weaponSystem_ = weaponSystem; }
+            inline WeaponSystem * getWeaponSystem() const
+                { return this->weaponSystem_; }
 
 
         private:
             Weapon *attachedWeapon_;
             bool unlimitedAmmo_;
 
-            WeaponSystem *parentWeaponSystem_;
+            WeaponSystem *weaponSystem_;
     };
 }
 

@@ -27,12 +27,13 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Weapon.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
 
-#include "Weapon.h"
+#include "Munition.h"
+#include "WeaponSystem.h"
 
 namespace orxonox
 {
@@ -44,7 +45,7 @@ namespace orxonox
 
         this->bulletReadyToShoot_ = true;
         this->magazineReadyToShoot_ = true;
-        this->parentWeaponSystem_ = 0;
+        this->weaponSystem_ = 0;
         this->attachedToWeaponSlot_ = 0;
         this->bulletLoadingTime_ = 0;
         this->magazineLoadingTime_ = 0;
@@ -54,12 +55,14 @@ namespace orxonox
         this->munition_ = 0;
         this->unlimitedMunition_ = false;
         this->setObjectMode(0x0);
+
+COUT(0) << "+Weapon" << std::endl;
     }
 
     Weapon::~Weapon()
     {
+COUT(0) << "~Weapon" << std::endl;
     }
-
 
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -151,14 +154,14 @@ namespace orxonox
 
 
 
-    void Weapon::attachNeededMunition(std::string munitionName)
+    void Weapon::attachNeededMunition(const std::string& munitionName)
     {
         /*  if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
         */
-        if (this->parentWeaponSystem_)
+        if (this->weaponSystem_)
         {
             //getMunitionType returns 0 if there is no such munitionType
-            Munition* munition = this->parentWeaponSystem_->getMunitionType(munitionName);
+            Munition* munition = this->weaponSystem_->getMunitionType(munitionName);
             if ( munition )
             {
                 this->munition_ = munition;
@@ -169,16 +172,16 @@ namespace orxonox
                 //create new munition with identifier because there is no such munitionType
                 this->munitionIdentifier_ = ClassByString(munitionName);
                 this->munition_ = this->munitionIdentifier_.fabricate(this);
-                this->parentWeaponSystem_->setNewMunition(munitionName, this->munition_);
+                this->weaponSystem_->setNewMunition(munitionName, this->munition_);
                 this->setMunition();
             }
         }
     }
 
 
-    Munition * Weapon::getAttachedMunition(std::string munitionType)
+    Munition * Weapon::getAttachedMunition(const std::string& munitionType)
     {
-        this->munition_ = this->parentWeaponSystem_->getMunitionType(munitionType);
+        this->munition_ = this->weaponSystem_->getMunitionType(munitionType);
         return this->munition_;
     }
 
@@ -192,40 +195,40 @@ namespace orxonox
 
 
     //get and set functions for XMLPort
-    void Weapon::setMunitionType(std::string munitionType)
+    void Weapon::setMunitionType(const std::string& munitionType)
     {   this->munitionType_ = munitionType; }
 
-    const std::string Weapon::getMunitionType()
+    const std::string& Weapon::getMunitionType() const
     {   return this->munitionType_;  }
 
     void Weapon::setBulletLoadingTime(float loadingTime)
     {   this->bulletLoadingTime_ = loadingTime; }
 
-    const float Weapon::getBulletLoadingTime()
+    const float Weapon::getBulletLoadingTime() const
     {   return this->bulletLoadingTime_;  }
 
     void Weapon::setMagazineLoadingTime(float loadingTime)
     {   this->magazineLoadingTime_ = loadingTime; }
 
-    const float Weapon::getMagazineLoadingTime()
+    const float Weapon::getMagazineLoadingTime() const
     {   return this->magazineLoadingTime_;  }
 
     void Weapon::setBulletAmount(unsigned int amount)
     {   this->bulletAmount_ = amount; }
 
-    const unsigned int Weapon::getBulletAmount()
+    const unsigned int Weapon::getBulletAmount() const
     {   return this->bulletAmount_;  }
 
     void Weapon::setMagazineAmount(unsigned int amount)
     {   this->magazineAmount_ = amount; }
 
-    const unsigned int Weapon::getMagazineAmount()
+    const unsigned int Weapon::getMagazineAmount() const
     {   return this->magazineAmount_;   }
 
     void Weapon::setUnlimitedMunition(bool unlimitedMunition)
     {   this->unlimitedMunition_ = unlimitedMunition;   }
 
-    const bool Weapon::getUnlimitedMunition()
+    const bool Weapon::getUnlimitedMunition() const
     {   return this->unlimitedMunition_;    }
 
 }

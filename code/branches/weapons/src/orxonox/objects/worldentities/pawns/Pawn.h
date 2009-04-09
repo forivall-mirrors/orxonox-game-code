@@ -33,12 +33,13 @@
 #include "objects/pickup/ShipEquipment.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/RadarViewable.h"
-#include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
     class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable
     {
+        friend class WeaponSystem;
+
         public:
             Pawn(BaseObject* creator);
             virtual ~Pawn();
@@ -78,14 +79,14 @@ namespace orxonox
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void kill();
 
-            virtual void fire(WeaponMode::Enum fireMode);
+            virtual void fire(unsigned int firemode);
             virtual void postSpawn();
 
-            void setWeaponSlot(WeaponSlot * wSlot);
+            void addWeaponSlot(WeaponSlot * wSlot);
             WeaponSlot * getWeaponSlot(unsigned int index) const;
-            void setWeaponPack(WeaponPack * wPack);
+            void addWeaponPack(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int firemode) const;
-            void setWeaponSet(WeaponSet * wSet);
+            void addWeaponSet(WeaponSet * wSet);
             WeaponSet * getWeaponSet(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const
@@ -133,6 +134,10 @@ namespace orxonox
             std::string spawnparticlesource_;
             float spawnparticleduration_;
             unsigned int numexplosionchunks_;
+
+        private:
+            inline void setWeaponSystem(WeaponSystem* weaponsystem)
+                { this->weaponSystem_ = weaponsystem; }
     };
 
     class _OrxonoxExport PawnListener : virtual public OrxonoxClass

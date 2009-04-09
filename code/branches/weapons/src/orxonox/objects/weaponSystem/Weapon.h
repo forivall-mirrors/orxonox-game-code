@@ -30,16 +30,10 @@
 #define _Weapon_H__
 
 #include "OrxonoxPrereqs.h"
+#include "objects/worldentities/StaticEntity.h"
 
-#include "core/BaseObject.h"
-#include "tools/BillboardSet.h"
 #include "tools/Timer.h"
 #include "core/Identifier.h"
-
-#include "WeaponSystem.h"
-#include "Munition.h"
-
-#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
@@ -52,8 +46,8 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void fire();
-            void attachNeededMunition(std::string munitionType);
-            Munition * getAttachedMunition(std::string munitiontype);
+            void attachNeededMunition(const std::string& munitionType);
+            Munition * getAttachedMunition(const std::string& munitiontype);
 
             //reloading
             void bulletTimer(float bulletLoadingTime);
@@ -62,18 +56,18 @@ namespace orxonox
             void magazineReloaded();
 
             //XMLPort functions
-            virtual void setMunitionType(std::string munitionType);
-            virtual const std::string getMunitionType();
+            virtual void setMunitionType(const std::string& munitionType);
+            virtual const std::string& getMunitionType() const;
             virtual void setBulletLoadingTime(float loadingTime);
-            virtual const float getBulletLoadingTime();
+            virtual const float getBulletLoadingTime() const;
             virtual void setMagazineLoadingTime(float loadingTime);
-            virtual const float getMagazineLoadingTime();
+            virtual const float getMagazineLoadingTime() const;
             virtual void setBulletAmount(unsigned int amount);
-            virtual const unsigned int getBulletAmount();
+            virtual const unsigned int getBulletAmount() const;
             virtual void setMagazineAmount(unsigned int amount);
-            virtual const unsigned int getMagazineAmount();
+            virtual const unsigned int getMagazineAmount() const;
             virtual void setUnlimitedMunition(bool unlimitedMunition);
-            virtual const bool getUnlimitedMunition();
+            virtual const bool getUnlimitedMunition() const;
 
             //weapon actions
             virtual void takeBullets();
@@ -85,19 +79,16 @@ namespace orxonox
             //manually set or reset
             virtual void setWeapon();
             virtual void setMunition();
-            
-            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
-                { this->parentWeaponSystem_=parentWeaponSystem; };
-            inline WeaponSystem * getParentWeaponSystem()
-                { return this->parentWeaponSystem_; };
+
+            inline void setWeaponSystem(WeaponSystem *weaponSystem)
+                { this->weaponSystem_ = weaponSystem; };
+            inline WeaponSystem * getWeaponSystem() const
+                { return this->weaponSystem_; };
 
             inline void setAttachedToWeaponSlot(WeaponSlot * wSlot)
                 { this->attachedToWeaponSlot_ = wSlot; }
-            inline WeaponSlot * getAttachedToWeaponSlot()
+            inline WeaponSlot * getAttachedToWeaponSlot() const
                 { return this->attachedToWeaponSlot_; }
-
-
-        private:
 
         protected:
             bool bReloading_;
@@ -112,7 +103,7 @@ namespace orxonox
 
             WeaponSlot * attachedToWeaponSlot_;
             Munition * munition_;
-            WeaponSystem * parentWeaponSystem_;
+            WeaponSystem * weaponSystem_;
 
             SubclassIdentifier<Munition> munitionIdentifier_;
 

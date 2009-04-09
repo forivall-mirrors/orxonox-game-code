@@ -27,15 +27,14 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
-#include <vector>
-
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "util/Debug.h"
-
 #include "WeaponSystem.h"
 
+#include "core/CoreIncludes.h"
+#include "objects/worldentities/pawns/Pawn.h"
+
+#include "WeaponSlot.h"
+#include "WeaponPack.h"
+#include "WeaponSet.h"
 
 /* WeaponSystem
  *
@@ -50,40 +49,96 @@ namespace orxonox
     {
         RegisterObject(WeaponSystem);
 
-        this->parentPawn_ = 0;
+        this->pawn_ = 0;
+COUT(0) << "+WeaponSystem" << std::endl;
     }
 
     WeaponSystem::~WeaponSystem()
     {
-    }
-
-    void WeaponSystem::attachWeaponPack(WeaponPack *wPack, unsigned int firemode)
-    {
-        if (firemode < this->weaponSets_.size())
-            this->weaponSets_[firemode]->attachWeaponPack(wPack);
-        this->weaponPacks_.push_back(wPack);
-    }
-
-    void WeaponSystem::attachWeaponSlot(WeaponSlot *wSlot)
-    {
-        wSlot->setParentWeaponSystem(this);
-        this->weaponSlots_.push_back(wSlot);
+COUT(0) << "~WeaponSystem" << std::endl;
+        if (this->isInitialized())
+        {
+            if (this->pawn_)
+                this->pawn_->setWeaponSystem(0);
+        }
     }
 
     void WeaponSystem::attachWeaponSet(WeaponSet *wSet)
     {
-        wSet->setParentWeaponSystem(this);
-        this->weaponSets_.push_back(wSet);
+        if (!wSet)
+            return;
+
+        this->weaponSets_[wSet->getFireMode()] = wSet;
+        wSet->setWeaponSystem(this);
     }
 
-    void WeaponSystem::setNewMunition(std::string munitionType, Munition * munitionToAdd)
+    WeaponSet * WeaponSystem::getWeaponSet(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::map<unsigned int, WeaponSet*>::const_iterator it = this->weaponSets_.begin(); it != this->weaponSets_.end(); ++it)
+        {
+            ++i;
+            if (i > index)
+                return it->second;
+        }
+        return 0;
+    }
+
+    void WeaponSystem::attachWeaponSlot(WeaponSlot *wSlot)
+    {
+        if (!wSlot)
+            return;
+
+        this->weaponSlots_.insert(wSlot);
+        wSlot->setWeaponSystem(this);
+    }
+
+    WeaponSlot * WeaponSystem::getWeaponSlot(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
+        {
+            ++i;
+            if (i > index)
+                return (*it);
+        }
+        return 0;
+    }
+
+    void WeaponSystem::attachWeaponPack(WeaponPack *wPack, unsigned int wSetNumber)
+    {
+        if (!wPack)
+            return;
+
+        std::map<unsigned int, WeaponSet *>::iterator it = this->weaponSets_.find(wSetNumber);
+        if (it != this->weaponSets_.end() && it->second)
+            it->second->attachWeaponPack(wPack);
+
+        this->weaponPacks_.insert(wPack);
+        wPack->setWeaponSystem(this);
+        wPack->attachNeededMunitionToAllWeapons(); // TODO - what is this?
+    }
+
+    WeaponPack * WeaponSystem::getWeaponPack(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<WeaponPack*>::iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); ++it)
+        {
+            ++i;
+            if (i > index)
+                return (*it);
+        }
+        return 0;
+   }
+
+    void WeaponSystem::setNewMunition(const std::string& munitionType, Munition * munitionToAdd)
     {
         this->munitionSet_[munitionType] = munitionToAdd;
     }
 
 
     //returns the Pointer to the munitionType, if this munitionType doesn't exist returns 0, see Weapon::attachNeededMunition
-    Munition * WeaponSystem::getMunitionType(std::string munitionType)
+    Munition * WeaponSystem::getMunitionType(const std::string& munitionType) const
     {
         std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);
         if (it != this->munitionSet_.end())
@@ -96,53 +151,10 @@ namespace orxonox
     //n is the n'th weaponSet, starting with zero
     //SpaceShip.cc only needs to have the keybinding to a specific Set-number n (=firemode)
     //in future this could be well defined and not only for 3 different WeaponModes
-    void WeaponSystem::fire(WeaponMode::Enum n)
+    void WeaponSystem::fire(unsigned int firemode)
     {
-        int set = 0;
-        switch (n)
-        {
-            case WeaponMode::fire:
-                set = 0;
-                break;
-            case WeaponMode::altFire:
-                set = 1;
-                break;
-            case WeaponMode::altFire2:
-                set = 2;
-                break;
-        }
-        if (set < (int)this->weaponSets_.size())
-            this->weaponSets_[set]->fire();
+        std::map<unsigned int, WeaponSet *>::iterator it = this->weaponSets_.find(firemode);
+        if (it != this->weaponSets_.end() && it->second)
+            it->second->fire();
     }
-
-
-    WeaponSet * WeaponSystem::getWeaponSetPointer(unsigned int n)
-    {
-        if (n < this->weaponSets_.size())
-            return this->weaponSets_[n];
-        else
-            return 0;
-    }
-
-    WeaponSlot * WeaponSystem::getWeaponSlotPointer(unsigned int n)
-    {
-        if (n < this->weaponSlots_.size())
-            return this->weaponSlots_[n];
-        else
-            return 0;
-    }
-
-    WeaponPack * WeaponSystem::getWeaponPackPointer(unsigned int n)
-    {
-        if (n < this->weaponPacks_.size())
-            return this->weaponPacks_[n];
-        else
-            return 0;
-    }
-
-    void WeaponSystem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(WeaponSystem, XMLPort, xmlelement, mode);
-    }
-
 }

@@ -27,14 +27,10 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
+#include "HsW01.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
-
-#include "HsW01.h"
-
 
 namespace orxonox
 {
@@ -78,6 +74,6 @@ namespace orxonox
         projectile->setOrientation(this->getWorldOrientation());
         projectile->setPosition(this->getWorldPosition());
         projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
-        projectile->setOwner(this->getParentWeaponSystem()->getParentPawn());
+        projectile->setOwner(this->getWeaponSystem()->getPawn());
     }
 }

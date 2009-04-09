@@ -27,13 +27,10 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
-#include <list>
+#include "Missile.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
-
 
 namespace orxonox
 {

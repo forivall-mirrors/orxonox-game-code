@@ -30,9 +30,7 @@
 #define _LaserGunMunition_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
-#include "../Munition.h"
+#include "objects/weaponSystem/Munition.h"
 
 namespace orxonox
 {

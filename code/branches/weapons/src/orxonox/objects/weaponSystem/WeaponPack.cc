@@ -26,15 +26,14 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
-#include <vector>
+#include "WeaponPack.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
-
-#include "WeaponPack.h"
 #include "objects/worldentities/pawns/Pawn.h"
+
+#include "Weapon.h"
+#include "WeaponSlot.h"
 
 namespace orxonox
 {
@@ -44,16 +43,26 @@ namespace orxonox
     {
         RegisterObject(WeaponPack);
 
-        this->parentWeaponSystem_ = 0;
+        this->weaponSystem_ = 0;
         this->firemode_ = 0;
 
+COUT(0) << "+WeaponPack" << std::endl;
     }
 
     WeaponPack::~WeaponPack()
     {
+COUT(0) << "~WeaponPack" << std::endl;
     }
 
-    int WeaponPack::getSize()
+    void WeaponPack::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(WeaponPack, XMLPort, xmlelement, mode);
+
+        XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
+        XMLPortParam(WeaponPack, "firemode", setFireMode, getFireMode, xmlelement, mode);
+    }
+
+    int WeaponPack::getSize() const
     {
         return this->weapons_.size();
     }
@@ -66,17 +75,9 @@ namespace orxonox
         }
     }
 
-    Weapon * WeaponPack::getWeaponPointer(unsigned int n)
+    Weapon * WeaponPack::getWeaponPointer(unsigned int n) const
     {
         return this->weapons_[n];
-    }
-
-    void WeaponPack::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(WeaponPack, XMLPort, xmlelement, mode);
-
-        XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
-        XMLPortParam(WeaponPack, "firemode", setFireMode, getFireMode, xmlelement, mode);
     }
 
     void WeaponPack::setFireMode(unsigned int firemode)
@@ -84,7 +85,7 @@ namespace orxonox
         this->firemode_ = firemode;
     }
 
-    unsigned int WeaponPack::getFireMode()
+    unsigned int WeaponPack::getFireMode() const
     {
         return this->firemode_;
     }
@@ -94,28 +95,23 @@ namespace orxonox
         this->weapons_.push_back(weapon);
     }
 
-    const Weapon * WeaponPack::getWeapon(unsigned int index)
+    const Weapon * WeaponPack::getWeapon(unsigned int index) const
     {
         return weapons_[index];
     }
 
-    void WeaponPack::setParentWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
+    void WeaponPack::setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
     {
-        for (int i=0; i < (int) this->weapons_.size(); i++)
-        {
-            this->weapons_[i]->setParentWeaponSystem(weaponSystem);
-        }
-
+        for (size_t i = 0; i < this->weapons_.size(); i++)
+            this->weapons_[i]->setWeaponSystem(weaponSystem);
     }
 
     void WeaponPack::attachNeededMunitionToAllWeapons()
     {
-        for (int i=0; i < (int) this->weapons_.size(); i++)
+        for (size_t i = 0; i < this->weapons_.size(); i++)
         {
             this->weapons_[i]->attachNeededMunition(weapons_[i]->getMunitionType());
             this->weapons_[i]->setWeapon();
         }
-
     }
-
 }

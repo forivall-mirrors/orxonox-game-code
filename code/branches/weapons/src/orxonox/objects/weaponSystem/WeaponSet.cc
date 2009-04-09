@@ -26,16 +26,16 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
-#include <vector>
+#include "WeaponSet.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
 #include "objects/worldentities/pawns/Pawn.h"
 
-#include "WeaponSet.h"
+#include "Weapon.h"
+#include "WeaponSlot.h"
 #include "WeaponPack.h"
+#include "WeaponSystem.h"
 
 namespace orxonox
 {
@@ -45,43 +45,53 @@ namespace orxonox
     {
         RegisterObject(WeaponSet);
 
-        this->parentWeaponSystem_ = 0;
+        this->weaponSystem_ = 0;
         this->attachedWeaponPack_ = 0;
+
+COUT(0) << "+WeaponSet" << std::endl;
     }
 
     WeaponSet::~WeaponSet()
     {
+COUT(0) << "~WeaponSet" << std::endl;
+    }
+
+    void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(WeaponSet, XMLPort, xmlelement, mode);
+
+        XMLPortParam(WeaponSet, "firemode", setFireMode, getFireMode, xmlelement, mode);
     }
 
     void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
-        if ( this->parentWeaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->parentWeaponSystem_->getWeaponSlotSize() ) )
+        if ( this->weaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->weaponSystem_->getWeaponSlotSize() ) )
         {
             this->attachedWeaponPack_ = wPack;
             int wPackWeapon = 0;    //WeaponCounter for Attaching
-           
+
             //should be possible to choose which slot to use
             //attach every weapon of the weaponPack to a weaponSlot
             for (  int i=0; i < wPack->getSize() ; i++  )
             {
                 //at the moment this function only works for one weaponPack in the entire WeaponSystem...
                 //it also takes the first free weaponSlot...
-                if ( this->parentWeaponSystem_->getWeaponSlotPointer(i)->getAttachedWeapon() == 0 && this->parentWeaponSystem_->getWeaponSlotPointer(i) != 0) //if slot not full
+                if ( this->weaponSystem_->getWeaponSlot(i)->getAttachedWeapon() == 0 && this->weaponSystem_->getWeaponSlot(i) != 0) //if slot not full
                 {
-                    this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(i) );
-                    this->parentWeaponSystem_->getWeaponSlotPointer(i)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
-                    this->parentWeaponSystem_->getParentPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
+                    this->setWeaponSlots_.push_back( this->weaponSystem_->getWeaponSlot(i) );
+                    this->weaponSystem_->getWeaponSlot(i)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
+                    this->weaponSystem_->getPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
                     wPackWeapon++;
                 }
                 else
                 {
-                    for (int k=0; k < this->parentWeaponSystem_->getWeaponSlotSize(); k++)
+                    for (int k=0; k < this->weaponSystem_->getWeaponSlotSize(); k++)
                     {
-                        if ( this->parentWeaponSystem_->getWeaponSlotPointer(k)->getAttachedWeapon() == 0 )
+                        if ( this->weaponSystem_->getWeaponSlot(k)->getAttachedWeapon() == 0 )
                         {
-                            this->setWeaponSlots_.push_back( this->parentWeaponSystem_->getWeaponSlotPointer(k) );
-                            this->parentWeaponSystem_->getWeaponSlotPointer(k)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
-                            this->parentWeaponSystem_->getParentPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
+                            this->setWeaponSlots_.push_back( this->weaponSystem_->getWeaponSlot(k) );
+                            this->weaponSystem_->getWeaponSlot(k)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
+                            this->weaponSystem_->getPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
                             wPackWeapon++;
                         }
                     }
@@ -97,17 +107,4 @@ namespace orxonox
         if (this->attachedWeaponPack_)
             this->attachedWeaponPack_->fire();
     }
-
-    void WeaponSet::setFireMode(const unsigned int firemode)
-    {   this->firemode_ = firemode; }
-
-    const unsigned int WeaponSet::getFireMode() const
-    {   return this->firemode_; }
-
-    void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(WeaponSet, XMLPort, xmlelement, mode);
-        XMLPortParam(WeaponSet, "firemode", setFireMode, getFireMode, xmlelement, mode);
-    }
-
 }

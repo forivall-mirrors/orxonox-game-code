@@ -30,9 +30,7 @@
 #define _Missile_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "objects/weaponSystem/Weapon.h"
-
 
 namespace orxonox
 {

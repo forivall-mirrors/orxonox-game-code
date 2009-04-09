@@ -30,11 +30,7 @@
 #define _Munition_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "core/BaseObject.h"
-
-#include "Weapon.h"
-
 
 namespace orxonox
 {
@@ -43,8 +39,6 @@ namespace orxonox
         public:
             Munition(BaseObject* creator);
             virtual ~Munition();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void setMaxBullets(unsigned int amount);
             void setMaxMagazines(unsigned int amount);

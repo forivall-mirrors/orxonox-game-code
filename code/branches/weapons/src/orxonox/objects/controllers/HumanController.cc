@@ -45,7 +45,6 @@ namespace orxonox
     SetConsoleCommand(HumanController, rotatePitch,   true).setAsInputCommand();
     SetConsoleCommand(HumanController, rotateRoll,    true).setAsInputCommand();
     SetConsoleCommand(HumanController, fire,          true).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, altFire,       true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, boost,         true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, greet,         true);
     SetConsoleCommand(HumanController, use,           true);
@@ -108,16 +107,10 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->rotateRoll(value);
     }
 
-    void HumanController::fire()
+    void HumanController::fire(unsigned int firemode)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->fire(WeaponMode::fire);
-    }
-
-    void HumanController::altFire()
-    {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->fire(WeaponMode::altFire);
+            HumanController::localController_s->controllableEntity_->fire(firemode);
     }
 
     void HumanController::boost()

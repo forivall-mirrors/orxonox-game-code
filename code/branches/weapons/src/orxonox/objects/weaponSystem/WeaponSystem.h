@@ -32,13 +32,14 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include <set>
+#include <map>
 
-#include "WeaponSet.h"
-#include "WeaponPack.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
+    const unsigned int MAX_FIRE_MODES = 8;
 
     class _OrxonoxExport WeaponSystem : public BaseObject
     {
@@ -46,34 +47,40 @@ namespace orxonox
             WeaponSystem(BaseObject* creator);
             virtual ~WeaponSystem();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void attachWeaponSlot(WeaponSlot * wSlot);
+            WeaponSlot * getWeaponSlot(unsigned int index) const;
 
-            void attachWeaponSlot(WeaponSlot *wSlot);
-            void attachWeaponSet(WeaponSet *wSet);
-            //void fire();
-            void fire(WeaponMode::Enum fireMode);
-            void attachWeaponPack(WeaponPack * wPack, unsigned int firemode);
-            WeaponSet * getWeaponSetPointer(unsigned int n);
-            WeaponSlot * getWeaponSlotPointer(unsigned int n);
-            WeaponPack * getWeaponPackPointer(unsigned int n);
-            void setNewMunition(std::string munitionType, Munition * munitionToAdd);
-            void setNewSharedMunition(std::string munitionType, Munition * munitionToAdd);
-            Munition * getMunitionType(std::string munitionType);
+            void attachWeaponSet(WeaponSet * wSet);
+            WeaponSet * getWeaponSet(unsigned int index) const;
 
-            inline void setParentPawn(Pawn *parentPawn)
-                { parentPawn_=parentPawn; }
-            inline Pawn * getParentPawn()
-                { return parentPawn_; }
+            void attachWeaponPack(WeaponPack * wPack, unsigned int wSetNumber);
+            WeaponPack * getWeaponPack(unsigned int index) const;
 
-            inline int getWeaponSlotSize()
+            void fire(unsigned int firemode);
+
+            void setNewMunition(const std::string& munitionType, Munition * munitionToAdd);
+            void setNewSharedMunition(const std::string& munitionType, Munition * munitionToAdd);
+            Munition * getMunitionType(const std::string& munitionType) const;
+
+            inline void setPawn(Pawn * pawn)
+                { this->pawn_ = pawn; }
+            inline Pawn * getPawn() const
+                { return this->pawn_; }
+
+            inline int getWeaponSlotSize() const
                 { return this->weaponSlots_.size(); }
 
+            static inline unsigned int getMaxFireModes()
+                { return MAX_FIRE_MODES; }
+            static inline unsigned int getFireModeMask(unsigned int firemode)
+                { return (0x1 << firemode); }
+
         private:
-            std::vector<WeaponSet *> weaponSets_;
-            std::vector<WeaponSlot *> weaponSlots_;
-            std::vector<WeaponPack *> weaponPacks_;
+            std::map<unsigned int, WeaponSet *> weaponSets_;
+            std::set<WeaponSlot *> weaponSlots_;
+            std::set<WeaponPack *> weaponPacks_;
             std::map<std::string, Munition *> munitionSet_;
-            Pawn *parentPawn_;
+            Pawn * pawn_;
     };
 }
 

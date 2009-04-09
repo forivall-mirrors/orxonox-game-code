@@ -32,10 +32,9 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <vector>
+
 #include "core/BaseObject.h"
-
-#include "Weapon.h"
-
 
 namespace orxonox
 {
@@ -49,28 +48,29 @@ namespace orxonox
 
             void fire();
 
-            Weapon * getWeaponPointer(unsigned int n);
-            int getSize();
+            Weapon * getWeaponPointer(unsigned int n) const;
+            int getSize() const;
 
             void setFireMode(unsigned int firemode);
-            unsigned int getFireMode();
+            unsigned int getFireMode() const;
 
             void addWeapon(Weapon * weapon);
-            const Weapon * getWeapon(unsigned int index);
+            const Weapon * getWeapon(unsigned int index) const;
+
+            void attachNeededMunitionToAllWeapons();
 
             //functions with effect to all weapons of the weaponPack
             //functions needed for creating Pointer to the right objects (-->Pawn.cc)
-            void setParentWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
-            void attachNeededMunitionToAllWeapons();
-
-            inline void setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
-                { parentWeaponSystem_=parentWeaponSystem; }
-            inline WeaponSystem * getParentWeaponSystem()
-                { return parentWeaponSystem_; }
+            inline void setWeaponSystem(WeaponSystem *weaponSystem)
+                { this->weaponSystem_ = weaponSystem; this->setWeaponSystemToAllWeapons(weaponSystem); }
+            inline WeaponSystem * getWeaponSystem() const
+                { return this->weaponSystem_; }
 
         private:
+            void setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
+
             std::vector<Weapon *> weapons_;
-            WeaponSystem *parentWeaponSystem_;
+            WeaponSystem *weaponSystem_;
             unsigned int firemode_;
     };
 }

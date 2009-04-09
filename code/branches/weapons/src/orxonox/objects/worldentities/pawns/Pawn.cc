@@ -38,6 +38,10 @@
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
+#include "objects/weaponSystem/WeaponSystem.h"
+#include "objects/weaponSystem/WeaponSlot.h"
+#include "objects/weaponSystem/WeaponPack.h"
+#include "objects/weaponSystem/WeaponSet.h"
 
 namespace orxonox
 {
@@ -65,7 +69,7 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             this->weaponSystem_ = new WeaponSystem(this);
-            this->weaponSystem_->setParentPawn(this);
+            this->weaponSystem_->setPawn(this);
         }
         else
             this->weaponSystem_ = 0;
@@ -99,9 +103,9 @@ namespace orxonox
         XMLPortParam(Pawn, "spawnparticleduration", setSpawnParticleDuration, getSpawnParticleDuration, xmlelement, mode).defaultValues(3.0f);
         XMLPortParam(Pawn, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
 
-        XMLPortObject(Pawn, WeaponSlot, "weaponslots", setWeaponSlot, getWeaponSlot, xmlelement, mode);
-        XMLPortObject(Pawn, WeaponSet, "weaponsets", setWeaponSet, getWeaponSet, xmlelement, mode);
-        XMLPortObject(Pawn, WeaponPack, "weapons", setWeaponPack, getWeaponPack, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponSlot, "weaponslots", addWeaponSlot, getWeaponSlot, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPack, getWeaponPack, xmlelement, mode);
     }
 
     void Pawn::registerVariables()
@@ -118,12 +122,9 @@ namespace orxonox
 
         if (this->weaponSystem_)
         {
-            if (this->fire_ & WeaponMode::fire)
-                this->weaponSystem_->fire(WeaponMode::fire);
-            if (this->fire_ & WeaponMode::altFire)
-                this->weaponSystem_->fire(WeaponMode::altFire);
-            if (this->fire_ & WeaponMode::altFire2)
-                this->weaponSystem_->fire(WeaponMode::altFire2);
+            for (unsigned int firemode = 0; firemode < WeaponSystem::getMaxFireModes(); firemode++)
+                if (this->fire_ & WeaponSystem::getFireModeMask(firemode))
+                    this->weaponSystem_->fire(firemode);
         }
         this->fire_ = this->firehack_;
         this->firehack_ = 0x0;
@@ -251,9 +252,9 @@ namespace orxonox
         }
     }
 
-    void Pawn::fire(WeaponMode::Enum fireMode)
+    void Pawn::fire(unsigned int firemode)
     {
-        this->firehack_ |= fireMode;
+        this->firehack_ |= WeaponSystem::getFireModeMask(firemode);
     }
 
     void Pawn::postSpawn()
@@ -274,7 +275,7 @@ namespace orxonox
     *   with setWeaponPack you can not just load a Pack from XML but if a Pack already exists anywhere, you can attach it.
     *       --> e.g. Pickup-Items
     */
-    void Pawn::setWeaponSlot(WeaponSlot * wSlot)
+    void Pawn::addWeaponSlot(WeaponSlot * wSlot)
     {
         this->attach(wSlot);
         if (this->weaponSystem_)
@@ -284,31 +285,26 @@ namespace orxonox
     WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
     {
         if (this->weaponSystem_)
-            return this->weaponSystem_->getWeaponSlotPointer(index);
+            return this->weaponSystem_->getWeaponSlot(index);
         else
             return 0;
     }
 
-    void Pawn::setWeaponPack(WeaponPack * wPack)
+    void Pawn::addWeaponPack(WeaponPack * wPack)
     {
         if (this->weaponSystem_)
-        {
-            wPack->setParentWeaponSystem(this->weaponSystem_);
-            wPack->setParentWeaponSystemToAllWeapons(this->weaponSystem_);
-            this->weaponSystem_->attachWeaponPack( wPack,wPack->getFireMode() );
-            wPack->attachNeededMunitionToAllWeapons();
-        }
+            this->weaponSystem_->attachWeaponPack(wPack, wPack->getFireMode());
     }
 
     WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
     {
         if (this->weaponSystem_)
-            return this->weaponSystem_->getWeaponPackPointer(firemode);
+            return this->weaponSystem_->getWeaponPack(firemode);
         else
             return 0;
     }
 
-    void Pawn::setWeaponSet(WeaponSet * wSet)
+    void Pawn::addWeaponSet(WeaponSet * wSet)
     {
         if (this->weaponSystem_)
             this->weaponSystem_->attachWeaponSet(wSet);
@@ -317,7 +313,7 @@ namespace orxonox
     WeaponSet * Pawn::getWeaponSet(unsigned int index) const
     {
         if (this->weaponSystem_)
-            return this->weaponSystem_->getWeaponSetPointer(index);
+            return this->weaponSystem_->getWeaponSet(index);
         else
             return 0;
     }

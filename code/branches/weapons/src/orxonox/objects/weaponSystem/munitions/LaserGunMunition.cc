@@ -27,12 +27,9 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "LaserGunMunition.h"
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "util/Debug.h"
-
-#include "LaserGunMunition.h"
 
 namespace orxonox
 {

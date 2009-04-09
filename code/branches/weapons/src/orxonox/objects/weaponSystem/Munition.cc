@@ -27,12 +27,9 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Munition.h"
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "util/Debug.h"
-
-#include "Munition.h"
 
 namespace orxonox
 {
@@ -41,10 +38,13 @@ namespace orxonox
     Munition::Munition(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Munition);
+
+COUT(0) << "+Munition" << std::endl;
     }
 
     Munition::~Munition()
     {
+COUT(0) << "~Munition" << std::endl;
     }
 
     unsigned int Munition::bullets()
@@ -111,10 +111,4 @@ namespace orxonox
     {
         this->magazines_ = this->maxMagazines_;
     }
-
-    void Munition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(Munition, XMLPort, xmlelement, mode);
-    }
-
 }
