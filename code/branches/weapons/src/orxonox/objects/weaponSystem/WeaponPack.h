@@ -32,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
+#include <set>
 
 #include "core/BaseObject.h"
 
@@ -46,21 +46,18 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void fire();
-
-            Weapon * getWeaponPointer(unsigned int n) const;
-            int getSize() const;
-
-            void setFireMode(unsigned int firemode);
-            unsigned int getFireMode() const;
+            void fire(unsigned int weaponmode);
 
             void addWeapon(Weapon * weapon);
-            const Weapon * getWeapon(unsigned int index) const;
+            Weapon * getWeapon(unsigned int index) const;
+
+            inline size_t getNumWeapons() const
+                { return this->weapons_.size(); }
+
+            unsigned int getDesiredWeaponmode(unsigned int firemode) { return 0; } // TODO
 
             void attachNeededMunitionToAllWeapons();
 
-            //functions with effect to all weapons of the weaponPack
-            //functions needed for creating Pointer to the right objects (-->Pawn.cc)
             inline void setWeaponSystem(WeaponSystem *weaponSystem)
                 { this->weaponSystem_ = weaponSystem; this->setWeaponSystemToAllWeapons(weaponSystem); }
             inline WeaponSystem * getWeaponSystem() const
@@ -69,9 +66,8 @@ namespace orxonox
         private:
             void setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
 
-            std::vector<Weapon *> weapons_;
-            WeaponSystem *weaponSystem_;
-            unsigned int firemode_;
+            std::set<Weapon *> weapons_;
+            WeaponSystem * weaponSystem_;
     };
 }
 

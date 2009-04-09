@@ -85,10 +85,15 @@ namespace orxonox
             inline WeaponSystem * getWeaponSystem() const
                 { return this->weaponSystem_; };
 
-            inline void setAttachedToWeaponSlot(WeaponSlot * wSlot)
-                { this->attachedToWeaponSlot_ = wSlot; }
-            inline WeaponSlot * getAttachedToWeaponSlot() const
-                { return this->attachedToWeaponSlot_; }
+            inline void setWeaponPack(WeaponPack *weaponPack)
+                { this->weaponPack_ = weaponPack; };
+            inline WeaponPack * getWeaponPack() const
+                { return this->weaponPack_; };
+
+            inline void setWeaponSlot(WeaponSlot * wSlot)
+                { this->weaponSlot_ = wSlot; }
+            inline WeaponSlot * getWeaponSlot() const
+                { return this->weaponSlot_; }
 
         protected:
             bool bReloading_;
@@ -101,9 +106,10 @@ namespace orxonox
             unsigned int magazineAmount_;
             std::string munitionType_;
 
-            WeaponSlot * attachedToWeaponSlot_;
+            WeaponSlot * weaponSlot_;
             Munition * munition_;
             WeaponSystem * weaponSystem_;
+            WeaponPack* weaponPack_;
 
             SubclassIdentifier<Munition> munitionIdentifier_;
 

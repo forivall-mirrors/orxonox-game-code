@@ -46,7 +46,8 @@ namespace orxonox
         this->bulletReadyToShoot_ = true;
         this->magazineReadyToShoot_ = true;
         this->weaponSystem_ = 0;
-        this->attachedToWeaponSlot_ = 0;
+        this->weaponPack_ = 0;
+        this->weaponSlot_ = 0;
         this->bulletLoadingTime_ = 0;
         this->magazineLoadingTime_ = 0;
         this->bReloading_ = false;

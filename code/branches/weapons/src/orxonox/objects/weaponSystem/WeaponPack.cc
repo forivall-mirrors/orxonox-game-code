@@ -34,6 +34,7 @@
 
 #include "Weapon.h"
 #include "WeaponSlot.h"
+#include "WeaponSystem.h"
 
 namespace orxonox
 {
@@ -44,7 +45,6 @@ namespace orxonox
         RegisterObject(WeaponPack);
 
         this->weaponSystem_ = 0;
-        this->firemode_ = 0;
 
 COUT(0) << "+WeaponPack" << std::endl;
     }
@@ -52,6 +52,9 @@ COUT(0) << "+WeaponPack" << std::endl;
     WeaponPack::~WeaponPack()
     {
 COUT(0) << "~WeaponPack" << std::endl;
+
+        if (this->isInitialized() && this->weaponSystem_)
+            this->weaponSystem_->removeWeaponPack(this);
     }
 
     void WeaponPack::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -59,59 +62,49 @@ COUT(0) << "~WeaponPack" << std::endl;
         SUPER(WeaponPack, XMLPort, xmlelement, mode);
 
         XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
-        XMLPortParam(WeaponPack, "firemode", setFireMode, getFireMode, xmlelement, mode);
     }
 
-    int WeaponPack::getSize() const
+    void WeaponPack::fire(unsigned int weaponmode)
     {
-        return this->weapons_.size();
-    }
-
-    void WeaponPack::fire()
-    {
-        for (int i=0; i < (int) this->weapons_.size(); i++)
-        {
-            this->weapons_[i]->getAttachedToWeaponSlot()->fire();
-        }
-    }
-
-    Weapon * WeaponPack::getWeaponPointer(unsigned int n) const
-    {
-        return this->weapons_[n];
-    }
-
-    void WeaponPack::setFireMode(unsigned int firemode)
-    {
-        this->firemode_ = firemode;
-    }
-
-    unsigned int WeaponPack::getFireMode() const
-    {
-        return this->firemode_;
+        for (std::set<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+            (*it)->fire();
     }
 
     void WeaponPack::addWeapon(Weapon * weapon)
     {
-        this->weapons_.push_back(weapon);
+        if (!weapon)
+            return;
+
+        this->weapons_.insert(weapon);
+        weapon->setWeaponPack(this);
     }
 
-    const Weapon * WeaponPack::getWeapon(unsigned int index) const
+    Weapon * WeaponPack::getWeapon(unsigned int index) const
     {
-        return weapons_[index];
+        unsigned int i = 0;
+
+        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+            ++i;
+        }
+
+        return 0;
     }
 
     void WeaponPack::setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
     {
-        for (size_t i = 0; i < this->weapons_.size(); i++)
-            this->weapons_[i]->setWeaponSystem(weaponSystem);
+        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+            (*it)->setWeaponSystem(weaponSystem);
     }
 
     void WeaponPack::attachNeededMunitionToAllWeapons()
     {
-        for (size_t i = 0; i < this->weapons_.size(); i++)
+        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
         {
-            this->weapons_[i]->attachNeededMunition(weapons_[i]->getMunitionType());
-            this->weapons_[i]->setWeapon();
+            (*it)->attachNeededMunition((*it)->getMunitionType());
+            (*it)->setWeapon();
         }
     }
 }

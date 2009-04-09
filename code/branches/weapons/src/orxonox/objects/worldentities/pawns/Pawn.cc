@@ -122,8 +122,8 @@ namespace orxonox
 
         if (this->weaponSystem_)
         {
-            for (unsigned int firemode = 0; firemode < WeaponSystem::getMaxFireModes(); firemode++)
-                if (this->fire_ & WeaponSystem::getFireModeMask(firemode))
+            for (unsigned int firemode = 0; firemode < WeaponSystem::MAX_FIRE_MODES; firemode++)
+                if (this->fire_ & WeaponSystem::getFiremodeMask(firemode))
                     this->weaponSystem_->fire(firemode);
         }
         this->fire_ = this->firehack_;
@@ -254,7 +254,7 @@ namespace orxonox
 
     void Pawn::fire(unsigned int firemode)
     {
-        this->firehack_ |= WeaponSystem::getFireModeMask(firemode);
+        this->firehack_ |= WeaponSystem::getFiremodeMask(firemode);
     }
 
     void Pawn::postSpawn()
@@ -279,7 +279,7 @@ namespace orxonox
     {
         this->attach(wSlot);
         if (this->weaponSystem_)
-            this->weaponSystem_->attachWeaponSlot(wSlot);
+            this->weaponSystem_->addWeaponSlot(wSlot);
     }
 
     WeaponSlot * Pawn::getWeaponSlot(unsigned int index) const
@@ -290,30 +290,30 @@ namespace orxonox
             return 0;
     }
 
-    void Pawn::addWeaponPack(WeaponPack * wPack)
-    {
-        if (this->weaponSystem_)
-            this->weaponSystem_->attachWeaponPack(wPack, wPack->getFireMode());
-    }
-
-    WeaponPack * Pawn::getWeaponPack(unsigned int firemode) const
-    {
-        if (this->weaponSystem_)
-            return this->weaponSystem_->getWeaponPack(firemode);
-        else
-            return 0;
-    }
-
     void Pawn::addWeaponSet(WeaponSet * wSet)
     {
         if (this->weaponSystem_)
-            this->weaponSystem_->attachWeaponSet(wSet);
+            this->weaponSystem_->addWeaponSet(wSet);
     }
 
     WeaponSet * Pawn::getWeaponSet(unsigned int index) const
     {
         if (this->weaponSystem_)
             return this->weaponSystem_->getWeaponSet(index);
+        else
+            return 0;
+    }
+
+    void Pawn::addWeaponPack(WeaponPack * wPack)
+    {
+        if (this->weaponSystem_)
+            this->weaponSystem_->addWeaponPack(wPack);
+    }
+
+    WeaponPack * Pawn::getWeaponPack(unsigned int index) const
+    {
+        if (this->weaponSystem_)
+            return this->weaponSystem_->getWeaponPack(index);
         else
             return 0;
     }

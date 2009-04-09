@@ -39,24 +39,35 @@
 
 namespace orxonox
 {
-    const unsigned int MAX_FIRE_MODES = 8;
-
     class _OrxonoxExport WeaponSystem : public BaseObject
     {
         public:
             WeaponSystem(BaseObject* creator);
             virtual ~WeaponSystem();
 
-            void attachWeaponSlot(WeaponSlot * wSlot);
+            // adding and removing WeaponSlots
+            void addWeaponSlot(WeaponSlot * wSlot);
+            void removeWeaponSlot(WeaponSlot * wSlot);
             WeaponSlot * getWeaponSlot(unsigned int index) const;
 
-            void attachWeaponSet(WeaponSet * wSet);
+            // adding and removing WeaponSets
+            bool addWeaponSet(WeaponSet * wSet);
+            bool addWeaponSet(WeaponSet * wSet, unsigned int firemode);
+            void removeWeaponSet(WeaponSet * wSet);
             WeaponSet * getWeaponSet(unsigned int index) const;
 
-            void attachWeaponPack(WeaponPack * wPack, unsigned int wSetNumber);
+            // adding and removing WeaponPacks
+            bool canAddWeaponPack(WeaponPack * wPack);
+            bool addWeaponPack(WeaponPack * wPack);
+            void removeWeaponPack(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
 
+            // configure slots and firemodes
+            bool swapWeaponSlots(WeaponSlot * wSlot1, WeaponSlot * wSlot2);
+            void changeWeaponmode(WeaponPack * wPack, WeaponSet * wSet, unsigned int weaponmode);
+
             void fire(unsigned int firemode);
+
 
             void setNewMunition(const std::string& munitionType, Munition * munitionToAdd);
             void setNewSharedMunition(const std::string& munitionType, Munition * munitionToAdd);
@@ -70,10 +81,14 @@ namespace orxonox
             inline int getWeaponSlotSize() const
                 { return this->weaponSlots_.size(); }
 
-            static inline unsigned int getMaxFireModes()
-                { return MAX_FIRE_MODES; }
-            static inline unsigned int getFireModeMask(unsigned int firemode)
+            static inline unsigned int getFiremodeMask(unsigned int firemode)
                 { return (0x1 << firemode); }
+
+            static const unsigned int MAX_FIRE_MODES = 8;
+            static const unsigned int FIRE_MODE_UNASSIGNED = (unsigned int)-1;
+
+            static const unsigned int MAX_WEAPON_MODES = 8;
+            static const unsigned int WEAPON_MODE_UNASSIGNED = (unsigned int)-1;
 
         private:
             std::map<unsigned int, WeaponSet *> weaponSets_;

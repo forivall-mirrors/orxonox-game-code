@@ -42,22 +42,23 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeapon(Weapon *weapon);
-            Weapon * getAttachedWeapon() const;
-            void setAmmoType(bool isUnlimited);
-            void fire();
+            void attachWeapon(Weapon * weapon);
+            void removeWeapon();
+            Weapon * getWeapon() const
+                { return this->weapon_; }
 
-            inline void setWeaponSystem(WeaponSystem *weaponSystem)
+            inline bool isOccupied() const
+                { return (this->weapon_ != 0); }
+
+            inline void setWeaponSystem(WeaponSystem * weaponSystem)
                 { this->weaponSystem_ = weaponSystem; }
             inline WeaponSystem * getWeaponSystem() const
                 { return this->weaponSystem_; }
 
 
         private:
-            Weapon *attachedWeapon_;
-            bool unlimitedAmmo_;
-
-            WeaponSystem *weaponSystem_;
+            WeaponSystem * weaponSystem_;
+            Weapon * weapon_;
     };
 }
 

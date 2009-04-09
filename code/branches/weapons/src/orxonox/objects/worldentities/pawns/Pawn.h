@@ -84,10 +84,10 @@ namespace orxonox
 
             void addWeaponSlot(WeaponSlot * wSlot);
             WeaponSlot * getWeaponSlot(unsigned int index) const;
-            void addWeaponPack(WeaponPack * wPack);
-            WeaponPack * getWeaponPack(unsigned int firemode) const;
             void addWeaponSet(WeaponSet * wSet);
             WeaponSet * getWeaponSet(unsigned int index) const;
+            void addWeaponPack(WeaponPack * wPack);
+            WeaponPack * getWeaponPack(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const
                 { return const_cast<Pawn*>(this); }

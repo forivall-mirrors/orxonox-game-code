@@ -32,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
+#include <map>
 
 #include "core/BaseObject.h"
 
@@ -41,18 +41,23 @@ namespace orxonox
     class _OrxonoxExport WeaponSet : public BaseObject
     {
         public:
-            WeaponSet(BaseObject* creator, int k = 0);
+            WeaponSet(BaseObject* creator);
             virtual ~WeaponSet();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attachWeaponPack(WeaponPack *wPack);
+//            void attachWeaponPack(WeaponPack *wPack);
+
             void fire();
 
-            inline void setFireMode(const unsigned int firemode)
-                { this->firemode_ = firemode; }
-            inline unsigned int getFireMode() const
-                { return this->firemode_; }
+            void setWeaponmodeLink(WeaponPack* weaponpack, unsigned int weaponmode);
+            void removeWeaponmodeLink(WeaponPack* weaponpack);
+            unsigned int getWeaponmodeLink(WeaponPack* weaponpack);
+
+            inline void setDesiredFiremode(const unsigned int firemode)
+                { this->desiredFiremode_ = firemode; }
+            inline unsigned int getDesiredFiremode() const
+                { return this->desiredFiremode_; }
 
             inline void setWeaponSystem(WeaponSystem *weaponSystem)
                 { this->weaponSystem_ = weaponSystem; }
@@ -61,9 +66,8 @@ namespace orxonox
 
         private:
             WeaponSystem *weaponSystem_;
-            std::vector<WeaponSlot *> setWeaponSlots_;
-            unsigned int firemode_;
-            WeaponPack * attachedWeaponPack_;
+            unsigned int desiredFiremode_;
+            std::map<WeaponPack*, unsigned int> weaponpacks_;
     };
 }
 

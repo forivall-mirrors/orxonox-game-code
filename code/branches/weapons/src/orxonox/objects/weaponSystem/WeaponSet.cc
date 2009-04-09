@@ -30,23 +30,20 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/Pawn.h"
 
-#include "Weapon.h"
-#include "WeaponSlot.h"
-#include "WeaponPack.h"
 #include "WeaponSystem.h"
+#include "WeaponPack.h"
 
 namespace orxonox
 {
     CreateFactory(WeaponSet);
 
-    WeaponSet::WeaponSet(BaseObject* creator, int k) : BaseObject(creator)
+    WeaponSet::WeaponSet(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WeaponSet);
 
         this->weaponSystem_ = 0;
-        this->attachedWeaponPack_ = 0;
+        this->desiredFiremode_ = WeaponSystem::FIRE_MODE_UNASSIGNED;
 
 COUT(0) << "+WeaponSet" << std::endl;
     }
@@ -54,15 +51,18 @@ COUT(0) << "+WeaponSet" << std::endl;
     WeaponSet::~WeaponSet()
     {
 COUT(0) << "~WeaponSet" << std::endl;
+
+        if (this->isInitialized() && this->weaponSystem_)
+            this->weaponSystem_->removeWeaponSet(this);
     }
 
     void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WeaponSet, XMLPort, xmlelement, mode);
 
-        XMLPortParam(WeaponSet, "firemode", setFireMode, getFireMode, xmlelement, mode);
+        XMLPortParam(WeaponSet, "firemode", setDesiredFiremode, getDesiredFiremode, xmlelement, mode);
     }
-
+/*
     void WeaponSet::attachWeaponPack(WeaponPack *wPack)
     {
         if ( this->weaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->weaponSystem_->getWeaponSlotSize() ) )
@@ -99,12 +99,32 @@ COUT(0) << "~WeaponSet" << std::endl;
             }
         }
     }
-
+*/
 
     void WeaponSet::fire()
     {
-        //fires all WeaponSlots available for this weaponSet attached from the WeaponPack
-        if (this->attachedWeaponPack_)
-            this->attachedWeaponPack_->fire();
+        // fire all WeaponPacks with their defined weaponmode
+        for (std::map<WeaponPack*, unsigned int>::iterator it = this->weaponpacks_.begin(); it != this->weaponpacks_.end(); ++it)
+            if (it->second != WeaponSystem::WEAPON_MODE_UNASSIGNED)
+                it->first->fire(it->second);
+    }
+
+    void WeaponSet::setWeaponmodeLink(WeaponPack* weaponpack, unsigned int weaponmode)
+    {
+        this->weaponpacks_[weaponpack] = weaponmode;
+    }
+
+    void WeaponSet::removeWeaponmodeLink(WeaponPack* weaponpack)
+    {
+        this->weaponpacks_.erase(weaponpack);
+    }
+
+    unsigned int WeaponSet::getWeaponmodeLink(WeaponPack* weaponpack)
+    {
+        std::map<WeaponPack*, unsigned int>::iterator it = this->weaponpacks_.find(weaponpack);
+        if (it != this->weaponpacks_.end())
+            return it->second;
+        else
+            return WeaponSystem::WEAPON_MODE_UNASSIGNED;
     }
 }

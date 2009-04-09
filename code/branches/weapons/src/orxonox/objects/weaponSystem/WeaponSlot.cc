@@ -33,6 +33,7 @@
 #include "core/XMLPort.h"
 
 #include "Weapon.h"
+#include "WeaponSystem.h"
 
 namespace orxonox
 {
@@ -42,8 +43,9 @@ namespace orxonox
     {
         RegisterObject(WeaponSlot);
 
-        this->unlimitedAmmo_ = false;
-        this->attachedWeapon_ = 0;
+        this->weaponSystem_ = 0;
+        this->weapon_ = 0;
+
         this->setObjectMode(0x0);
 
 COUT(0) << "+WeaponSlot" << std::endl;
@@ -52,40 +54,38 @@ COUT(0) << "+WeaponSlot" << std::endl;
     WeaponSlot::~WeaponSlot()
     {
 COUT(0) << "~WeaponSlot" << std::endl;
+
+        if (this->isInitialized() && this->weaponSystem_)
+            this->weaponSystem_->removeWeaponSlot(this);
     }
 
     void WeaponSlot::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WeaponSlot, XMLPort, xmlelement, mode);
-    }
 
-    /*sets the munition type
-     *unlimited: true
-     *limited:   false  (in this case there will be munition)
-     */
-    void WeaponSlot::setAmmoType(bool isUnlimited)
-    {
-        unlimitedAmmo_ = isUnlimited;
-    }
-
-
-    void WeaponSlot::fire()
-    {
-        if ( this->attachedWeapon_ )
-//COUT(0) << "WeaponSlot::fire" << std::endl;
-        this->attachedWeapon_->fire();
+        // ...
     }
 
     void WeaponSlot::attachWeapon(Weapon *weapon)
     {
-        this->attachedWeapon_ = weapon;
-        weapon->setAttachedToWeaponSlot(this);
-//COUT(0) << "WeaponSlot::attachWeapon position=" << this->getWorldPosition() << std::endl;
-        weapon->setPosition(this->getPosition());
+        if (this->weapon_)
+            this->removeWeapon();
+
+        this->weapon_ = weapon;
+
+        if (this->weapon_)
+        {
+            this->weapon_->setWeaponSlot(this);
+            this->weapon_->setPosition(this->getPosition());
+        }
     }
 
-    Weapon * WeaponSlot::getAttachedWeapon() const
+    void WeaponSlot::removeWeapon()
     {
-        return this->attachedWeapon_;
+        if (this->weapon_)
+        {
+            this->weapon_->setWeaponSlot(0);
+            this->weapon_ = 0;
+        }
     }
 }
