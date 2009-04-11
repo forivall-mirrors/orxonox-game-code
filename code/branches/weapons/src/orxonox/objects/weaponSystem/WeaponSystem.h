@@ -34,6 +34,7 @@
 
 #include <set>
 #include <map>
+#include <vector>
 
 #include "core/BaseObject.h"
 
@@ -92,7 +93,7 @@ namespace orxonox
 
         private:
             std::map<unsigned int, WeaponSet *> weaponSets_;
-            std::set<WeaponSlot *> weaponSlots_;
+            std::vector<WeaponSlot *> weaponSlots_;
             std::set<WeaponPack *> weaponPacks_;
             std::map<std::string, Munition *> munitionSet_;
             Pawn * pawn_;

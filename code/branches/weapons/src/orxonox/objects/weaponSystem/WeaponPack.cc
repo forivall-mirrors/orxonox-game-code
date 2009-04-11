@@ -22,7 +22,8 @@
  *   Author:
  *      Martin Polak
  *   Co-authors:
- *      ... *
+ *      ...
+ *
  */
 
 #include "OrxonoxStableHeaders.h"
@@ -35,6 +36,7 @@
 #include "Weapon.h"
 #include "WeaponSlot.h"
 #include "WeaponSystem.h"
+#include "DefaultWeaponmodeLink.h"
 
 namespace orxonox
 {
@@ -54,7 +56,15 @@ COUT(0) << "+WeaponPack" << std::endl;
 COUT(0) << "~WeaponPack" << std::endl;
 
         if (this->isInitialized() && this->weaponSystem_)
+        {
             this->weaponSystem_->removeWeaponPack(this);
+
+            while (!this->weapons_.empty())
+                delete (*this->weapons_.begin());
+
+            for (std::set<DefaultWeaponmodeLink*>::iterator it = this->links_.begin(); it != this->links_.end(); )
+                delete (*(it++));
+        }
     }
 
     void WeaponPack::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -62,6 +72,7 @@ COUT(0) << "~WeaponPack" << std::endl;
         SUPER(WeaponPack, XMLPort, xmlelement, mode);
 
         XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
+        XMLPortObject(WeaponPack, DefaultWeaponmodeLink, "links", addDefaultWeaponmodeLink, getDefaultWeaponmodeLink, xmlelement, mode);
     }
 
     void WeaponPack::fire(unsigned int weaponmode)
@@ -79,6 +90,15 @@ COUT(0) << "~WeaponPack" << std::endl;
         weapon->setWeaponPack(this);
     }
 
+    void WeaponPack::removeWeapon(Weapon * weapon)
+    {
+        if (!weapon)
+            return;
+
+        this->weapons_.erase(weapon);
+        weapon->setWeaponPack(0);
+    }
+
     Weapon * WeaponPack::getWeapon(unsigned int index) const
     {
         unsigned int i = 0;
@@ -93,10 +113,10 @@ COUT(0) << "~WeaponPack" << std::endl;
         return 0;
     }
 
-    void WeaponPack::setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem)
+    void WeaponPack::setWeaponSystemToAllWeapons()
     {
         for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
-            (*it)->setWeaponSystem(weaponSystem);
+            (*it)->setWeaponSystem(this->weaponSystem_);
     }
 
     void WeaponPack::attachNeededMunitionToAllWeapons()
@@ -106,5 +126,32 @@ COUT(0) << "~WeaponPack" << std::endl;
             (*it)->attachNeededMunition((*it)->getMunitionType());
             (*it)->setWeapon();
         }
+    }
+
+    void WeaponPack::addDefaultWeaponmodeLink(DefaultWeaponmodeLink* link)
+    {
+        this->links_.insert(link);
+    }
+
+    DefaultWeaponmodeLink* WeaponPack::getDefaultWeaponmodeLink(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<DefaultWeaponmodeLink*>::const_iterator it = this->links_.begin(); it != this->links_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+
+            ++i;
+        }
+        return 0;
+    }
+
+    unsigned int WeaponPack::getDesiredWeaponmode(unsigned int firemode) const
+    {
+        for (std::set<DefaultWeaponmodeLink*>::const_iterator it = this->links_.begin(); it != this->links_.end(); ++it)
+            if ((*it)->getFiremode() == firemode)
+                return (*it)->getWeaponmode();
+
+        return WeaponSystem::WEAPON_MODE_UNASSIGNED;
     }
 }

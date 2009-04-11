@@ -49,24 +49,32 @@ namespace orxonox
             void fire(unsigned int weaponmode);
 
             void addWeapon(Weapon * weapon);
+            void removeWeapon(Weapon * weapon);
             Weapon * getWeapon(unsigned int index) const;
 
             inline size_t getNumWeapons() const
                 { return this->weapons_.size(); }
 
-            unsigned int getDesiredWeaponmode(unsigned int firemode) { return 0; } // TODO
+            void addDefaultWeaponmodeLink(DefaultWeaponmodeLink* link);
+            DefaultWeaponmodeLink* getDefaultWeaponmodeLink(unsigned int index) const;
 
-            void attachNeededMunitionToAllWeapons();
+            unsigned int getDesiredWeaponmode(unsigned int firemode) const;
 
             inline void setWeaponSystem(WeaponSystem *weaponSystem)
-                { this->weaponSystem_ = weaponSystem; this->setWeaponSystemToAllWeapons(weaponSystem); }
+            {
+                this->weaponSystem_ = weaponSystem;
+                this->setWeaponSystemToAllWeapons();
+                this->attachNeededMunitionToAllWeapons();
+            }
             inline WeaponSystem * getWeaponSystem() const
                 { return this->weaponSystem_; }
 
         private:
-            void setWeaponSystemToAllWeapons(WeaponSystem * weaponSystem);
+            void setWeaponSystemToAllWeapons();
+            void attachNeededMunitionToAllWeapons();
 
             std::set<Weapon *> weapons_;
+            std::set<DefaultWeaponmodeLink *> links_;
             WeaponSystem * weaponSystem_;
     };
 }

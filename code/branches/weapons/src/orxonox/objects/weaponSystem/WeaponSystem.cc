@@ -62,14 +62,20 @@ COUT(0) << "~WeaponSystem" << std::endl;
             if (this->pawn_)
                 this->pawn_->setWeaponSystem(0);
 
-            for (std::map<unsigned int, WeaponSet*>::iterator it = this->weaponSets_.begin(); it != this->weaponSets_.end(); )
-                delete (it++)->second;
+//            for (std::map<unsigned int, WeaponSet*>::iterator it = this->weaponSets_.begin(); it != this->weaponSets_.end(); )
+//                delete (it++)->second;
+            while (!this->weaponSets_.empty())
+                delete (this->weaponSets_.begin()->second);
 
-            for (std::set<WeaponPack*>::iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); )
-                delete (*(it++));
+//            for (std::set<WeaponPack*>::iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); )
+//                delete (*(it++));
+            while (!this->weaponPacks_.empty())
+                delete (*this->weaponPacks_.begin());
 
-            for (std::set<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); )
-                delete (*(it++));
+//            for (std::vector<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); )
+//                delete (*(it++));
+            while (!this->weaponSlots_.empty())
+                delete (*this->weaponSlots_.begin());
         }
     }
 
@@ -78,7 +84,7 @@ COUT(0) << "~WeaponSystem" << std::endl;
         if (!wSlot)
             return;
 
-        this->weaponSlots_.insert(wSlot);
+        this->weaponSlots_.push_back(wSlot);
         wSlot->setWeaponSystem(this);
     }
 
@@ -90,13 +96,20 @@ COUT(0) << "~WeaponSystem" << std::endl;
         if (wSlot->getWeapon())
             this->removeWeaponPack(wSlot->getWeapon()->getWeaponPack());
 
-        this->weaponSlots_.erase(wSlot);
+        for (std::vector<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
+        {
+            if ((*it) == wSlot)
+            {
+                this->weaponSlots_.erase(it);
+                break;
+            }
+        }
     }
 
     WeaponSlot * WeaponSystem::getWeaponSlot(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::set<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
+        for (std::vector<WeaponSlot*>::const_iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
         {
             ++i;
             if (i > index)
@@ -158,7 +171,7 @@ COUT(0) << "~WeaponSystem" << std::endl;
             return false;
 
         unsigned int freeSlots = 0;
-        for (std::set<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
+        for (std::vector<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
         {
             if (!(*it)->isOccupied())
                 ++freeSlots;
@@ -174,7 +187,7 @@ COUT(0) << "~WeaponSystem" << std::endl;
 
         // Attach all weapons to the first free slots (and to the Pawn)
         unsigned int i = 0;
-        for (std::set<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
+        for (std::vector<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); ++it)
         {
             if (!(*it)->isOccupied() && i < wPack->getNumWeapons())
             {
@@ -195,7 +208,6 @@ COUT(0) << "~WeaponSystem" << std::endl;
 
         this->weaponPacks_.insert(wPack);
         wPack->setWeaponSystem(this);
-        wPack->attachNeededMunitionToAllWeapons(); // TODO - what is this?
 
         return true;
     }
@@ -230,7 +242,18 @@ COUT(0) << "~WeaponSystem" << std::endl;
 
     bool WeaponSystem::swapWeaponSlots(WeaponSlot * wSlot1, WeaponSlot * wSlot2)
     {
-        // TODO
+        if (!wSlot1 || !wSlot2)
+            return false;
+
+        Weapon* weapon1 = wSlot1->getWeapon();
+        Weapon* weapon2 = wSlot2->getWeapon();
+
+        wSlot1->attachWeapon(weapon2);
+        wSlot2->attachWeapon(weapon1);
+
+        return true;
+        // In the future, certain weapons might not fit to some slots. Swapping would then be
+        // impossible and the returnvalue would be false.
     }
 
     void WeaponSystem::changeWeaponmode(WeaponPack * wPack, WeaponSet * wSet, unsigned int weaponmode)

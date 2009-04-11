@@ -22,7 +22,8 @@
  *   Author:
  *      Martin Polak
  *   Co-authors:
- *      ... *
+ *      ...
+ *
  */
 
 #include "OrxonoxStableHeaders.h"

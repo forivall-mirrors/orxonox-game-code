@@ -33,6 +33,7 @@
 #include "core/XMLPort.h"
 
 #include "Munition.h"
+#include "WeaponPack.h"
 #include "WeaponSystem.h"
 
 namespace orxonox
@@ -63,11 +64,14 @@ COUT(0) << "+Weapon" << std::endl;
     Weapon::~Weapon()
     {
 COUT(0) << "~Weapon" << std::endl;
+        if (this->isInitialized() && this->weaponPack_)
+            this->weaponPack_->removeWeapon(this);
     }
 
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Weapon, XMLPort, xmlelement, mode);
+
         XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
         XMLPortParam(Weapon, "bulletLoadingTime", setBulletLoadingTime, getBulletLoadingTime, xmlelement, mode);
         XMLPortParam(Weapon, "magazineLoadingTime", setMagazineLoadingTime, getMagazineLoadingTime, xmlelement, mode);
