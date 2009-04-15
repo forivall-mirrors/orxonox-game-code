@@ -60,7 +60,7 @@ namespace orxonox
 
         this->spawnparticleduration_ = 3.0f;
 
-        this->getPickUp().setPlayer(this);
+        this->getPickups().setOwner(this);
 
         if (GameMode::isMaster())
         {
@@ -204,6 +204,8 @@ namespace orxonox
 
             this->setDestroyWhenPlayerLeft(false);
 
+            this->dropItems();
+
             if (this->getGametype())
                 this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
 
@@ -265,7 +267,7 @@ namespace orxonox
 
     void Pawn::dropItems()
     {
-	pickUp.eraseAll();
+        this->getPickups().clear();
     }
 
 
