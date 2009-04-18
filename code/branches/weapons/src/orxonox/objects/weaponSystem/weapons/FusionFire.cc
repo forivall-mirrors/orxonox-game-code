@@ -59,6 +59,7 @@ namespace orxonox
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
+        projectile->scale(5);
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());

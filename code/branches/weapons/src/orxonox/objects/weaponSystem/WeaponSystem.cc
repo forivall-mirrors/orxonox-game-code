@@ -52,12 +52,10 @@ namespace orxonox
         RegisterObject(WeaponSystem);
 
         this->pawn_ = 0;
-COUT(0) << "+WeaponSystem" << std::endl;
     }
 
     WeaponSystem::~WeaponSystem()
     {
-COUT(0) << "~WeaponSystem" << std::endl;
         if (this->isInitialized())
         {
             if (this->pawn_)

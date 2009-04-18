@@ -47,14 +47,10 @@ namespace orxonox
         RegisterObject(WeaponPack);
 
         this->weaponSystem_ = 0;
-
-COUT(0) << "+WeaponPack" << std::endl;
     }
 
     WeaponPack::~WeaponPack()
     {
-COUT(0) << "~WeaponPack" << std::endl;
-
         if (this->isInitialized() && this->weaponSystem_)
         {
             this->weaponSystem_->removeWeaponPack(this);

@@ -45,14 +45,10 @@ namespace orxonox
 
         this->weaponSystem_ = 0;
         this->desiredFiremode_ = WeaponSystem::FIRE_MODE_UNASSIGNED;
-
-COUT(0) << "+WeaponSet" << std::endl;
     }
 
     WeaponSet::~WeaponSet()
     {
-COUT(0) << "~WeaponSet" << std::endl;
-
         if (this->isInitialized() && this->weaponSystem_)
             this->weaponSystem_->removeWeaponSet(this);
     }

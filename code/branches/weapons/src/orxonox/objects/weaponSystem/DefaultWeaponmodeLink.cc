@@ -44,13 +44,10 @@ namespace orxonox
 
         this->firemode_ = WeaponSystem::FIRE_MODE_UNASSIGNED;
         this->weaponmode_ = WeaponSystem::WEAPON_MODE_UNASSIGNED;
-
-COUT(0) << "+DefaultWeaponmodeLink" << std::endl;
     }
 
     DefaultWeaponmodeLink::~DefaultWeaponmodeLink()
     {
-COUT(0) << "~DefaultWeaponmodeLink" << std::endl;
     }
 
     void DefaultWeaponmodeLink::XMLPort(Element& xmlelement, XMLPort::Mode mode)

@@ -52,14 +52,10 @@ namespace orxonox
 
         this->reloadTimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&Weapon::reloaded)));
         this->reloadTimer_.stopTimer();
-
-COUT(0) << "+Weapon" << std::endl;
     }
 
     Weapon::~Weapon()
     {
-COUT(0) << "~Weapon" << std::endl;
-
         if (this->isInitialized())
         {
             if (this->weaponPack_)

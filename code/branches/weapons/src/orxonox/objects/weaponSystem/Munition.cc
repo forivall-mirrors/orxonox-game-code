@@ -50,16 +50,12 @@ namespace orxonox
         this->bAllowMultiMunitionRemovementUnderflow_ = true;
 
         this->reloadTime_ = 0;
-
-COUT(0) << "+Munition" << std::endl;
     }
 
     Munition::~Munition()
     {
         for (std::map<WeaponMode*, Magazine*>::iterator it = this->currentMagazines_.begin(); it != this->currentMagazines_.end(); ++it)
             delete it->second;
-
-COUT(0) << "~Munition" << std::endl;
     }
 
     Munition::Magazine* Munition::getMagazine(WeaponMode* user) const

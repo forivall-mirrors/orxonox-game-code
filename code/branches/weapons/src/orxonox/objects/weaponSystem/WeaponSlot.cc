@@ -47,14 +47,10 @@ namespace orxonox
         this->weapon_ = 0;
 
         this->setObjectMode(0x0);
-
-COUT(0) << "+WeaponSlot" << std::endl;
     }
 
     WeaponSlot::~WeaponSlot()
     {
-COUT(0) << "~WeaponSlot" << std::endl;
-
         if (this->isInitialized() && this->weaponSystem_)
             this->weaponSystem_->removeWeaponSlot(this);
     }
