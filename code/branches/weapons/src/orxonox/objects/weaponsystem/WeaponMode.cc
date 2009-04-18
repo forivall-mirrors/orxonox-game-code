@@ -197,7 +197,7 @@ namespace orxonox
     Vector3 WeaponMode::getMuzzlePosition() const
     {
         if (this->weapon_)
-            return (this->weapon_->getWorldPosition() + this->muzzleOffset_);
+            return (this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_);
         else
             return this->muzzleOffset_;
     }
