@@ -30,7 +30,7 @@
 #define _LaserFire_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponSystem/WeaponMode.h"
+#include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {

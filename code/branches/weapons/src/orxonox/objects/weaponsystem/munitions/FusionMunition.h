@@ -30,7 +30,7 @@
 #define _FusionMunition_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponSystem/Munition.h"
+#include "objects/weaponsystem/Munition.h"
 
 namespace orxonox
 {

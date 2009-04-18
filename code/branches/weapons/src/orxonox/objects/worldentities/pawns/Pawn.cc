@@ -38,10 +38,10 @@
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
-#include "objects/weaponSystem/WeaponSystem.h"
-#include "objects/weaponSystem/WeaponSlot.h"
-#include "objects/weaponSystem/WeaponPack.h"
-#include "objects/weaponSystem/WeaponSet.h"
+#include "objects/weaponsystem/WeaponSystem.h"
+#include "objects/weaponsystem/WeaponSlot.h"
+#include "objects/weaponsystem/WeaponPack.h"
+#include "objects/weaponsystem/WeaponSet.h"
 
 namespace orxonox
 {

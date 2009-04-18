@@ -30,11 +30,11 @@
 #include "FusionFire.h"
 
 #include "core/CoreIncludes.h"
-#include "objects/weaponSystem/projectiles/BillboardProjectile.h"
+#include "objects/weaponsystem/projectiles/BillboardProjectile.h"
 
-#include "objects/weaponSystem/Weapon.h"
-#include "objects/weaponSystem/WeaponPack.h"
-#include "objects/weaponSystem/WeaponSystem.h"
+#include "objects/weaponsystem/Weapon.h"
+#include "objects/weaponsystem/WeaponPack.h"
+#include "objects/weaponsystem/WeaponSystem.h"
 
 namespace orxonox
 {
