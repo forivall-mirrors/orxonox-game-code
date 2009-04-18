@@ -35,22 +35,21 @@ namespace orxonox
 {
     CreateFactory(LaserGunMunition);
 
-    LaserGunMunition::LaserGunMunition(BaseObject* creator) : Munition(creator)
+    LaserGunMunition::LaserGunMunition(BaseObject* creator) : ReplenishingMunition(creator)
     {
         RegisterObject(LaserGunMunition);
 
-        //default if not defined in XML
-        this->maxBullets_ = 40;
-        this->maxMagazines_ = 100;
+        this->maxMunitionPerMagazine_ = 20;
+        this->maxMagazines_ = 1;
+        this->magazines_ = 1;
+
+        this->bUseSeparateMagazines_ = false;
+        this->bStackMunition_ = true;
+
+        this->bAllowMunitionRefilling_ = true;
+        this->bAllowMultiMunitionRemovementUnderflow_ = true;
+
+        this->replenishIntervall_ = 0.5f;
+        this->replenishMunitionAmount_ = 1;
     }
-
-    LaserGunMunition::~LaserGunMunition()
-    {
-    }
-
-    void LaserGunMunition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-
-    }
-
 }

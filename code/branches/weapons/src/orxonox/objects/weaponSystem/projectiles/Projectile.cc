@@ -100,6 +100,9 @@ namespace orxonox
     {
         if (!this->bDestroy_ && GameMode::isMaster())
         {
+            if (otherObject == this->owner_)
+                return true;
+
             this->bDestroy_ = true;
 
             if (this->owner_)

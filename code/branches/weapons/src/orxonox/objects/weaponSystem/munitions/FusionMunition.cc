@@ -39,18 +39,15 @@ namespace orxonox
     {
         RegisterObject(FusionMunition);
 
-        //default if not defined in XML
-        this->maxBullets_ = 10;
-        this->maxMagazines_ = 100;
+        this->maxMunitionPerMagazine_ = 10;
+        this->maxMagazines_ = 10;
+        this->magazines_ = 10;
+
+        this->bUseSeparateMagazines_ = true;
+        this->bStackMunition_ = false;
+        this->reloadTime_ = 1.0f;
+
+        this->bAllowMunitionRefilling_ = true;
+        this->bAllowMultiMunitionRemovementUnderflow_ = true;
     }
-
-    FusionMunition::~FusionMunition()
-    {
-    }
-
-    void FusionMunition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-
-    }
-
 }

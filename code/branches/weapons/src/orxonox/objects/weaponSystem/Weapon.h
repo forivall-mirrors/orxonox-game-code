@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Martin Polak
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -33,7 +34,6 @@
 #include "objects/worldentities/StaticEntity.h"
 
 #include "tools/Timer.h"
-#include "core/Identifier.h"
 
 namespace orxonox
 {
@@ -45,76 +45,33 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual void fire();
-            void attachNeededMunition(const std::string& munitionType);
-            Munition * getAttachedMunition(const std::string& munitiontype);
+            void fire(unsigned int mode);
+            void reload();
 
-            //reloading
-            void bulletTimer(float bulletLoadingTime);
-            void magazineTimer(float magazineLoadingTime);
-            void bulletReloaded();
-            void magazineReloaded();
+            void addWeaponmode(WeaponMode* weaponmode);
+            WeaponMode* getWeaponmode(unsigned int index) const;
 
-            //XMLPort functions
-            virtual void setMunitionType(const std::string& munitionType);
-            virtual const std::string& getMunitionType() const;
-            virtual void setBulletLoadingTime(float loadingTime);
-            virtual const float getBulletLoadingTime() const;
-            virtual void setMagazineLoadingTime(float loadingTime);
-            virtual const float getMagazineLoadingTime() const;
-            virtual void setBulletAmount(unsigned int amount);
-            virtual const unsigned int getBulletAmount() const;
-            virtual void setMagazineAmount(unsigned int amount);
-            virtual const unsigned int getMagazineAmount() const;
-            virtual void setUnlimitedMunition(bool unlimitedMunition);
-            virtual const bool getUnlimitedMunition() const;
-
-            //weapon actions
-            virtual void takeBullets();
-            virtual void takeMagazines();
-            virtual void createProjectile();
-            virtual void reloadBullet();
-            virtual void reloadMagazine();
-
-            //manually set or reset
-            virtual void setWeapon();
-            virtual void setMunition();
-
-            inline void setWeaponSystem(WeaponSystem *weaponSystem)
-                { this->weaponSystem_ = weaponSystem; };
-            inline WeaponSystem * getWeaponSystem() const
-                { return this->weaponSystem_; };
-
-            inline void setWeaponPack(WeaponPack *weaponPack)
-                { this->weaponPack_ = weaponPack; };
+            inline void setWeaponPack(WeaponPack * weaponPack)
+                { this->weaponPack_ = weaponPack; this->notifyWeaponModes(); }
             inline WeaponPack * getWeaponPack() const
-                { return this->weaponPack_; };
+                { return this->weaponPack_; }
 
             inline void setWeaponSlot(WeaponSlot * wSlot)
                 { this->weaponSlot_ = wSlot; }
             inline WeaponSlot * getWeaponSlot() const
                 { return this->weaponSlot_; }
 
-        protected:
-            bool bReloading_;
-            bool bulletReadyToShoot_;
-            bool magazineReadyToShoot_;
-            bool unlimitedMunition_;
-            float bulletLoadingTime_;
-            float magazineLoadingTime_;
-            unsigned int bulletAmount_;
-            unsigned int magazineAmount_;
-            std::string munitionType_;
+        private:
+            void reloaded();
+            void notifyWeaponModes();
 
-            WeaponSlot * weaponSlot_;
-            Munition * munition_;
-            WeaponSystem * weaponSystem_;
             WeaponPack* weaponPack_;
+            WeaponSlot* weaponSlot_;
+            std::multimap<unsigned int, WeaponMode*> weaponmodes_;
 
-            SubclassIdentifier<Munition> munitionIdentifier_;
-
-            Timer<Weapon> bulletReloadTimer_;
-            Timer<Weapon> magazineReloadTimer_;
+            Timer<Weapon> reloadTimer_;
+            bool bReloading_;
+            unsigned int reloadingWeaponmode_;
     };
 }
 

@@ -63,7 +63,7 @@ COUT(0) << "~WeaponSlot" << std::endl;
     {
         SUPER(WeaponSlot, XMLPort, xmlelement, mode);
 
-        // ...
+        // In the future, there might be parameters like allowed weapon types or max size of the weapon
     }
 
     void WeaponSlot::attachWeapon(Weapon *weapon)

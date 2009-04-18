@@ -68,11 +68,9 @@ namespace orxonox
             void changeWeaponmode(WeaponPack * wPack, WeaponSet * wSet, unsigned int weaponmode);
 
             void fire(unsigned int firemode);
+            void reload();
 
-
-            void setNewMunition(const std::string& munitionType, Munition * munitionToAdd);
-            void setNewSharedMunition(const std::string& munitionType, Munition * munitionToAdd);
-            Munition * getMunitionType(const std::string& munitionType) const;
+            Munition * getMunition(SubclassIdentifier<Munition> * identifier);
 
             inline void setPawn(Pawn * pawn)
                 { this->pawn_ = pawn; }
@@ -95,7 +93,7 @@ namespace orxonox
             std::map<unsigned int, WeaponSet *> weaponSets_;
             std::vector<WeaponSlot *> weaponSlots_;
             std::set<WeaponPack *> weaponPacks_;
-            std::map<std::string, Munition *> munitionSet_;
+            std::map<Identifier *, Munition *> munitions_;
             Pawn * pawn_;
     };
 }

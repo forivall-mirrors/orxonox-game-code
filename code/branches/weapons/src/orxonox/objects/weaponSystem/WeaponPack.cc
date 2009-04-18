@@ -71,14 +71,20 @@ COUT(0) << "~WeaponPack" << std::endl;
     {
         SUPER(WeaponPack, XMLPort, xmlelement, mode);
 
-        XMLPortObject(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode);
+        XMLPortObjectExtended(WeaponPack, Weapon, "", addWeapon, getWeapon, xmlelement, mode, false, false);
         XMLPortObject(WeaponPack, DefaultWeaponmodeLink, "links", addDefaultWeaponmodeLink, getDefaultWeaponmodeLink, xmlelement, mode);
     }
 
     void WeaponPack::fire(unsigned int weaponmode)
     {
         for (std::set<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
-            (*it)->fire();
+            (*it)->fire(weaponmode);
+    }
+
+    void WeaponPack::reload()
+    {
+        for (std::set<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+            (*it)->reload();
     }
 
     void WeaponPack::addWeapon(Weapon * weapon)
@@ -113,21 +119,6 @@ COUT(0) << "~WeaponPack" << std::endl;
         return 0;
     }
 
-    void WeaponPack::setWeaponSystemToAllWeapons()
-    {
-        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
-            (*it)->setWeaponSystem(this->weaponSystem_);
-    }
-
-    void WeaponPack::attachNeededMunitionToAllWeapons()
-    {
-        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
-        {
-            (*it)->attachNeededMunition((*it)->getMunitionType());
-            (*it)->setWeapon();
-        }
-    }
-
     void WeaponPack::addDefaultWeaponmodeLink(DefaultWeaponmodeLink* link)
     {
         this->links_.insert(link);
@@ -153,5 +144,11 @@ COUT(0) << "~WeaponPack" << std::endl;
                 return (*it)->getWeaponmode();
 
         return WeaponSystem::WEAPON_MODE_UNASSIGNED;
+    }
+
+    void WeaponPack::notifyWeapons()
+    {
+        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+            (*it)->setWeaponPack(this);
     }
 }

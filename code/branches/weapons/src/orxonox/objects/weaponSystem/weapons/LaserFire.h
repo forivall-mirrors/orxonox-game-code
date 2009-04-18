@@ -26,26 +26,25 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "Missile.h"
+#ifndef _LaserFire_H__
+#define _LaserFire_H__
 
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
+#include "OrxonoxPrereqs.h"
+#include "objects/weaponSystem/WeaponMode.h"
 
 namespace orxonox
 {
-    Missile::Missile(BaseObject* creator) : Weapon(creator)
+    class _OrxonoxExport LaserFire : public WeaponMode
     {
-        RegisterObject(Missile);
-    }
+        public:
+            LaserFire(BaseObject* creator);
+            virtual ~LaserFire() {}
 
-    Missile::~Missile()
-    {
-    }
+            virtual void fire();
 
-    void Missile::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-
-    }
-
+        private:
+            float speed_;
+    };
 }
+
+#endif /* _LaserFire_H__ */

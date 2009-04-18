@@ -19,8 +19,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *   Author:
+ *   Authors:
  *      Martin Polak
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -30,37 +31,78 @@
 #define _Munition_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <map>
+
 #include "core/BaseObject.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
     class _OrxonoxExport Munition : public BaseObject
     {
+        struct Magazine
+        {
+            public:
+                Magazine(Munition* munition, bool bUseReloadTime = true);
+
+                unsigned int munition_;
+                Timer<Magazine> loadTimer_;
+                bool bLoaded_;
+
+            private:
+                void loaded(Munition* munition);
+        };
+
         public:
             Munition(BaseObject* creator);
             virtual ~Munition();
 
-            void setMaxBullets(unsigned int amount);
-            void setMaxMagazines(unsigned int amount);
+            unsigned int getNumMunition(WeaponMode* user) const;
+            unsigned int getNumMunitionInCurrentMagazine(WeaponMode* user) const;
+            unsigned int getNumMagazines() const;
 
-            void fillBullets();
-            void fillMagazines();
+            unsigned int getMaxMunition() const;
+            inline unsigned int getMaxMagazines() const
+                { return this->maxMagazines_; }
+            inline unsigned int getMaxMunitionPerMagazine() const
+                { return this->maxMunitionPerMagazine_; }
 
-            unsigned int bullets();
-            unsigned int magazines();
+            bool canTakeMunition(unsigned int amount, WeaponMode* user) const;
+            bool takeMunition(unsigned int amount, WeaponMode* user);
 
-            void removeBullets(unsigned int k);
-            void removeMagazines(unsigned int k);
-            void addBullets(unsigned int k);
-            void addMagazines(unsigned int k);
+            bool canReload() const;
+            bool needReload(WeaponMode* user) const;
+            bool reload(WeaponMode* user, bool bUseReloadTime = true);
+            inline float getReloadTime() const
+                { return this->reloadTime_; }
 
-        private:
+            bool canAddMunition(unsigned int amount) const;
+            bool addMunition(unsigned int amount);
+
+            bool canAddMagazines(unsigned int amount) const;
+            bool addMagazines(unsigned int amount);
+
+            bool canRemoveMagazines(unsigned int amount) const;
+            bool removeMagazines(unsigned int amount);
+
+            bool dropMagazine(WeaponMode* user);
 
         protected:
-            unsigned int bullets_;
-            unsigned int magazines_;
-            unsigned int maxBullets_;
+            unsigned int maxMunitionPerMagazine_;
             unsigned int maxMagazines_;
+            unsigned int magazines_;
+            std::map<WeaponMode*, Magazine*> currentMagazines_;
+
+            bool bUseSeparateMagazines_;
+            bool bStackMunition_;
+            bool bAllowMunitionRefilling_;
+            bool bAllowMultiMunitionRemovementUnderflow_;
+
+            float reloadTime_;
+
+        private:
+            Magazine* getMagazine(WeaponMode* user) const;
     };
 }
 

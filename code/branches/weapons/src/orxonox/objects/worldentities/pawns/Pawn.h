@@ -80,6 +80,7 @@ namespace orxonox
             virtual void kill();
 
             virtual void fire(unsigned int firemode);
+            virtual void reload();
             virtual void postSpawn();
 
             void addWeaponSlot(WeaponSlot * wSlot);
@@ -130,6 +131,7 @@ namespace orxonox
             WeaponSystem* weaponSystem_;
             unsigned int fire_;
             unsigned int firehack_;
+            bool bReload_;
 
             std::string spawnparticlesource_;
             float spawnparticleduration_;

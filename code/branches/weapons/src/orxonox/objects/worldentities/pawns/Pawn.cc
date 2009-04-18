@@ -55,6 +55,7 @@ namespace orxonox
         this->bAlive_ = true;
         this->fire_ = 0x0;
         this->firehack_ = 0x0;
+        this->bReload_ = false;
 
         this->health_ = 0;
         this->maxHealth_ = 0;
@@ -114,20 +115,26 @@ namespace orxonox
         registerVariable(this->health_,        variableDirection::toclient);
         registerVariable(this->initialHealth_, variableDirection::toclient);
         registerVariable(this->fire_,          variableDirection::toserver);
+        registerVariable(this->bReload_,       variableDirection::toserver);
     }
 
     void Pawn::tick(float dt)
     {
         SUPER(Pawn, tick, dt);
 
-        if (this->weaponSystem_)
+        if (this->weaponSystem_ && GameMode::isMaster())
         {
             for (unsigned int firemode = 0; firemode < WeaponSystem::MAX_FIRE_MODES; firemode++)
                 if (this->fire_ & WeaponSystem::getFiremodeMask(firemode))
                     this->weaponSystem_->fire(firemode);
+
+            if (this->bReload_)
+                this->weaponSystem_->reload();
         }
+
         this->fire_ = this->firehack_;
         this->firehack_ = 0x0;
+        this->bReload_ = false;
 
         if (this->health_ <= 0)
             this->death();
@@ -255,6 +262,11 @@ namespace orxonox
     void Pawn::fire(unsigned int firemode)
     {
         this->firehack_ |= WeaponSystem::getFiremodeMask(firemode);
+    }
+
+    void Pawn::reload()
+    {
+        this->bReload_ = true;
     }
 
     void Pawn::postSpawn()

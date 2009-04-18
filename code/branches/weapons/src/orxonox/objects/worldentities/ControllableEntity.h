@@ -81,6 +81,7 @@ namespace orxonox
                 { this->rotateRoll(Vector2(value, 0)); }
 
             virtual void fire(unsigned int firemode) {}
+            virtual void reload() {}
 
             virtual void boost() {}
             virtual void greet() {}

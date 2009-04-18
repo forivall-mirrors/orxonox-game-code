@@ -156,9 +156,14 @@ namespace orxonox
     class WeaponSlot;
     class WeaponPack;
     class Weapon;
+    class WeaponMode;
     class DefaultWeaponmodeLink;
+
+    class LaserFire;
+    class FusionFire;
+
+    class ReplenishingMunition;
     class Munition;
-    class LaserGun;
     class LaserGunMunition;
     class FusionMunition;
 

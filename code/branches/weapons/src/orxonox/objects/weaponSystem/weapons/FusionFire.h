@@ -26,30 +26,25 @@
  *
  */
 
-#ifndef _LaserGun_H__
-#define _LaserGun_H__
+#ifndef _FusionFire_H__
+#define _FusionFire_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponSystem/Weapon.h"
+#include "objects/weaponSystem/WeaponMode.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGun : public Weapon
+    class _OrxonoxExport FusionFire : public WeaponMode
     {
         public:
-            LaserGun(BaseObject* creator);
-            virtual ~LaserGun();
+            FusionFire(BaseObject* creator);
+            virtual ~FusionFire() {}
 
-            virtual void takeBullets();
-            virtual void takeMagazines();
-            virtual void createProjectile();
-            virtual void reloadBullet();
-            virtual void reloadMagazine();
+            virtual void fire();
 
         private:
             float speed_;
-
     };
 }
 
-#endif /* _LaserGun_H__ */
+#endif /* _FusionFire_H__ */

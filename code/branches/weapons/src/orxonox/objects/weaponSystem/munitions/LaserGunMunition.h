@@ -30,22 +30,15 @@
 #define _LaserGunMunition_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponSystem/Munition.h"
+#include "ReplenishingMunition.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGunMunition : public Munition
+    class _OrxonoxExport LaserGunMunition : public ReplenishingMunition
     {
         public:
             LaserGunMunition(BaseObject* creator);
-            virtual ~LaserGunMunition();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
-
-        private:
-
-
+            virtual ~LaserGunMunition() {}
     };
 }
 

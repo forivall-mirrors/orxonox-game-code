@@ -50,6 +50,11 @@ namespace orxonox
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             virtual void destroyedPawn(Pawn* pawn);
 
+            inline void setDamage(float damage)
+                { this->damage_ = damage; }
+            inline float getDamage() const
+                { return this->damage_; }
+
             inline void setOwner(Pawn* owner)
                 { this->owner_ = owner; }
             inline Pawn* getOwner() const

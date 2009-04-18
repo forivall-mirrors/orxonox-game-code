@@ -20,34 +20,37 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Martin Polak
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Fusion_H__
-#define _Fusion_H__
+#ifndef _ReplenishingMunition_H__
+#define _ReplenishingMunition_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponSystem/Weapon.h"
+#include "objects/weaponSystem/Munition.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Fusion : public Weapon
+    class _OrxonoxExport ReplenishingMunition : public Munition
     {
         public:
-            Fusion(BaseObject* creator);
-            virtual ~Fusion();
+            ReplenishingMunition(BaseObject* creator);
+            virtual ~ReplenishingMunition() {}
 
-            virtual void takeBullets();
-            virtual void takeMagazines();
-            virtual void createProjectile();
+        protected:
+            float replenishIntervall_;
+            unsigned int replenishMunitionAmount_;
 
         private:
-            float speed_;
+            void replenish();
+            void initializeTimer();
 
+            Timer<ReplenishingMunition> replenishingTimer_;
     };
 }
 
-#endif /* _Fusion_H__ */
+#endif /* _ReplenishingMunition_H__ */

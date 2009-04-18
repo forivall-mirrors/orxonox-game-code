@@ -38,14 +38,7 @@ namespace orxonox
     {
         public:
             FusionMunition(BaseObject* creator);
-            virtual ~FusionMunition();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
-
-        private:
-
-
+            virtual ~FusionMunition() {}
     };
 }
 

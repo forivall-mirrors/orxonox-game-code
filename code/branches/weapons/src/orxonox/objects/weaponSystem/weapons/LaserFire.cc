@@ -27,56 +27,39 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "LaserGun.h"
+#include "LaserFire.h"
 
 #include "core/CoreIncludes.h"
-
-#include "objects/weaponSystem/Munition.h"
 #include "objects/weaponSystem/projectiles/ParticleProjectile.h"
+
+#include "objects/weaponSystem/Weapon.h"
+#include "objects/weaponSystem/WeaponPack.h"
 #include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
-    CreateFactory(LaserGun);
+    CreateFactory(LaserFire);
 
-    LaserGun::LaserGun(BaseObject* creator) : Weapon(creator)
+    LaserFire::LaserFire(BaseObject* creator) : WeaponMode(creator)
     {
-        RegisterObject(LaserGun);
+        RegisterObject(LaserFire);
 
+        this->reloadTime_ = 0.25;
+        this->damage_ = 15;
         this->speed_ = 1250;
 
+        this->setMunitionName("LaserGunMunition");
     }
 
-    LaserGun::~LaserGun()
+    void LaserFire::fire()
     {
-    }
+        ParticleProjectile* projectile = new ParticleProjectile(this);
 
-    void LaserGun::reloadBullet()
-    {
-        this->bulletTimer(this->bulletLoadingTime_);
-    }
+        projectile->setOrientation(this->getMuzzleOrientation());
+        projectile->setPosition(this->getMuzzlePosition());
+        projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
 
-    void LaserGun::reloadMagazine()
-    {
-        this->magazineTimer(this->magazineLoadingTime_);
-    }
-
-    void LaserGun::takeBullets()
-    {
-        this->munition_->removeBullets(1);
-    }
-
-    void LaserGun::takeMagazines()
-    {
-        this->munition_->removeMagazines(1);
-    }
-
-    void LaserGun::createProjectile()
-    {
-        BillboardProjectile* projectile = new ParticleProjectile(this);
-        projectile->setOrientation(this->getWorldOrientation());
-        projectile->setPosition(this->getWorldPosition());
-        projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
-        projectile->setOwner(this->getWeaponSystem()->getPawn());
+        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setDamage(this->getDamage());
     }
 }

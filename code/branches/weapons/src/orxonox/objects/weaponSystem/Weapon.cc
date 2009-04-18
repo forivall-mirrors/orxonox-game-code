@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Martin Polak
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -32,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "Munition.h"
+#include "WeaponMode.h"
 #include "WeaponPack.h"
 #include "WeaponSystem.h"
 
@@ -44,19 +45,13 @@ namespace orxonox
     {
         RegisterObject(Weapon);
 
-        this->bulletReadyToShoot_ = true;
-        this->magazineReadyToShoot_ = true;
-        this->weaponSystem_ = 0;
         this->weaponPack_ = 0;
         this->weaponSlot_ = 0;
-        this->bulletLoadingTime_ = 0;
-        this->magazineLoadingTime_ = 0;
         this->bReloading_ = false;
-        this->bulletAmount_= 0;
-        this->magazineAmount_ = 0;
-        this->munition_ = 0;
-        this->unlimitedMunition_ = false;
-        this->setObjectMode(0x0);
+        this->reloadingWeaponmode_ = WeaponSystem::WEAPON_MODE_UNASSIGNED;
+
+        this->reloadTimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&Weapon::reloaded)));
+        this->reloadTimer_.stopTimer();
 
 COUT(0) << "+Weapon" << std::endl;
     }
@@ -64,176 +59,96 @@ COUT(0) << "+Weapon" << std::endl;
     Weapon::~Weapon()
     {
 COUT(0) << "~Weapon" << std::endl;
-        if (this->isInitialized() && this->weaponPack_)
-            this->weaponPack_->removeWeapon(this);
+
+        if (this->isInitialized())
+        {
+            if (this->weaponPack_)
+                this->weaponPack_->removeWeapon(this);
+
+            for (std::multimap<unsigned int, WeaponMode*>::iterator it = this->weaponmodes_.begin(); it != this->weaponmodes_.end(); ++it)
+                delete it->second;
+        }
     }
 
     void Weapon::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Weapon, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Weapon, "munitionType", setMunitionType, getMunitionType, xmlelement, mode);
-        XMLPortParam(Weapon, "bulletLoadingTime", setBulletLoadingTime, getBulletLoadingTime, xmlelement, mode);
-        XMLPortParam(Weapon, "magazineLoadingTime", setMagazineLoadingTime, getMagazineLoadingTime, xmlelement, mode);
-        XMLPortParam(Weapon, "bullets", setBulletAmount, getBulletAmount, xmlelement, mode);
-        XMLPortParam(Weapon, "magazines", setMagazineAmount, getMagazineAmount, xmlelement, mode);
-        XMLPortParam(Weapon, "unlimitedMunition", setUnlimitedMunition, getUnlimitedMunition, xmlelement, mode);
+        XMLPortObject(Weapon, WeaponMode, "", addWeaponmode, getWeaponmode, xmlelement, mode);
     }
 
-    void Weapon::setWeapon()
+    void Weapon::addWeaponmode(WeaponMode* weaponmode)
     {
-        this->munition_->fillBullets();
-        this->munition_->fillMagazines();
+        if (!weaponmode)
+            return;
+
+        this->weaponmodes_.insert(std::pair<unsigned int, WeaponMode*>(weaponmode->getMode(), weaponmode));
+        weaponmode->setWeapon(this);
     }
 
-    void Weapon::setMunition()
+    WeaponMode* Weapon::getWeaponmode(unsigned int index) const
     {
-        this->munition_->setMaxBullets(this->bulletAmount_);
-        this->munition_->setMaxMagazines(this->magazineAmount_);
-    }
-
-    void Weapon::fire()
-    {
-        if ( this->bulletReadyToShoot_ && this->magazineReadyToShoot_ && !this->bReloading_)
+        unsigned int i = 0;
+        for (std::multimap<unsigned int, WeaponMode*>::const_iterator it = this->weaponmodes_.begin(); it != this->weaponmodes_.end(); ++it)
         {
-            this->bulletReadyToShoot_ = false;
-            if ( this->unlimitedMunition_== true )
+            if (i == index)
+                return it->second;
+
+            ++i;
+        }
+        return 0;
+    }
+
+    void Weapon::fire(unsigned int mode)
+    {
+        // To avoid firing with more than one mode at the same time, we lock the weapon (reloading) for
+        // all modes except the one which is currently reloading.
+        //
+        // Example:
+        // WeaponMode A -> mode 0
+        // WeaponMode B -> mode 0
+        // WeaponMode C -> mode 1
+        //
+        // -> A and B can fire at the same time, but C has to wait until both (A and B) have reloaded
+        // -> If C fires, A and B have to wait until C has reloaded
+        //
+        // Note: The reloading of each WeaponMode is internally handled by each A, B and C.
+        //       The reloading of the weapon is only performed to avoid firing with different modes at the same time.
+        if (this->bReloading_ && this->reloadingWeaponmode_ != mode)
+            return;
+
+        std::multimap<unsigned int, WeaponMode*>::iterator start = this->weaponmodes_.lower_bound(mode);
+        std::multimap<unsigned int, WeaponMode*>::iterator end   = this->weaponmodes_.upper_bound(mode);
+
+        for (std::multimap<unsigned int, WeaponMode*>::iterator it = start; it != end; ++it)
+        {
+            float reloading_time = 0;
+            if (it->second->fire(&reloading_time))
             {
-                //shoot
-                this->reloadBullet();
-                this->createProjectile();
-            }
-            else
-            {
-                if ( this->munition_->bullets() > 0)
-                {
-                    //shoot and reload
-                    this->takeBullets();
-                    this->reloadBullet();
-                    this->createProjectile();
-                }
-                //if there are no bullets, but magazines
-                else if ( this->munition_->magazines() > 0 && this->munition_->bullets() == 0 )
-                {
-                    //reload magazine
-                    this->takeMagazines();
-                    this->reloadMagazine();
-                }
-                else
-                {
-                    //no magazines
-                }
+                this->bReloading_ = true;
+                this->reloadingWeaponmode_ = mode;
+
+                this->reloadTimer_.setInterval(reloading_time);
+                this->reloadTimer_.startTimer();
             }
         }
-        else
-        {
-            //weapon not reloaded
-        }
-
     }
 
-
-    //weapon reloading
-    void Weapon::bulletTimer(float bulletLoadingTime)
+    void Weapon::reload()
     {
-        this->bReloading_ = true;
-        this->bulletReloadTimer_.setTimer( bulletLoadingTime , false , this , createExecutor(createFunctor(&Weapon::bulletReloaded)));
-    }
-    void Weapon::magazineTimer(float magazineLoadingTime)
-    {
-        this->bReloading_ = true;
-        this->magazineReloadTimer_.setTimer( magazineLoadingTime , false , this , createExecutor(createFunctor(&Weapon::magazineReloaded)));
+        for (std::multimap<unsigned int, WeaponMode*>::iterator it = this->weaponmodes_.begin(); it != this->weaponmodes_.end(); ++it)
+            it->second->reload();
     }
 
-    void Weapon::bulletReloaded()
+    void Weapon::reloaded()
     {
         this->bReloading_ = false;
-        this->bulletReadyToShoot_ = true;
+        this->reloadingWeaponmode_ = WeaponSystem::WEAPON_MODE_UNASSIGNED;
     }
 
-    void Weapon::magazineReloaded()
+    void Weapon::notifyWeaponModes()
     {
-        this->bReloading_ = false;
-        this->munition_->fillBullets();
+        for (std::multimap<unsigned int, WeaponMode*>::iterator it = this->weaponmodes_.begin(); it != this->weaponmodes_.end(); ++it)
+            it->second->setWeapon(this);
     }
-
-
-
-    void Weapon::attachNeededMunition(const std::string& munitionName)
-    {
-        /*  if munition type already exists attach it, else create a new one of this type and attach it to the weapon and to the WeaponSystem
-        */
-        if (this->weaponSystem_)
-        {
-            //getMunitionType returns 0 if there is no such munitionType
-            Munition* munition = this->weaponSystem_->getMunitionType(munitionName);
-            if ( munition )
-            {
-                this->munition_ = munition;
-                this->setMunition();
-            }
-            else
-            {
-                //create new munition with identifier because there is no such munitionType
-                this->munitionIdentifier_ = ClassByString(munitionName);
-                this->munition_ = this->munitionIdentifier_.fabricate(this);
-                this->weaponSystem_->setNewMunition(munitionName, this->munition_);
-                this->setMunition();
-            }
-        }
-    }
-
-
-    Munition * Weapon::getAttachedMunition(const std::string& munitionType)
-    {
-        this->munition_ = this->weaponSystem_->getMunitionType(munitionType);
-        return this->munition_;
-    }
-
-
-    //these function are defined in the weapon classes
-    void Weapon::takeBullets() { };
-    void Weapon::createProjectile() { };
-    void Weapon::takeMagazines() { };
-    void Weapon::reloadBullet() { };
-    void Weapon::reloadMagazine() { };
-
-
-    //get and set functions for XMLPort
-    void Weapon::setMunitionType(const std::string& munitionType)
-    {   this->munitionType_ = munitionType; }
-
-    const std::string& Weapon::getMunitionType() const
-    {   return this->munitionType_;  }
-
-    void Weapon::setBulletLoadingTime(float loadingTime)
-    {   this->bulletLoadingTime_ = loadingTime; }
-
-    const float Weapon::getBulletLoadingTime() const
-    {   return this->bulletLoadingTime_;  }
-
-    void Weapon::setMagazineLoadingTime(float loadingTime)
-    {   this->magazineLoadingTime_ = loadingTime; }
-
-    const float Weapon::getMagazineLoadingTime() const
-    {   return this->magazineLoadingTime_;  }
-
-    void Weapon::setBulletAmount(unsigned int amount)
-    {   this->bulletAmount_ = amount; }
-
-    const unsigned int Weapon::getBulletAmount() const
-    {   return this->bulletAmount_;  }
-
-    void Weapon::setMagazineAmount(unsigned int amount)
-    {   this->magazineAmount_ = amount; }
-
-    const unsigned int Weapon::getMagazineAmount() const
-    {   return this->magazineAmount_;   }
-
-    void Weapon::setUnlimitedMunition(bool unlimitedMunition)
-    {   this->unlimitedMunition_ = unlimitedMunition;   }
-
-    const bool Weapon::getUnlimitedMunition() const
-    {   return this->unlimitedMunition_;    }
-
 }

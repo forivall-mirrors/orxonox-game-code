@@ -27,50 +27,41 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "Fusion.h"
+#include "FusionFire.h"
 
 #include "core/CoreIncludes.h"
+#include "objects/weaponSystem/projectiles/BillboardProjectile.h"
 
-#include "objects/weaponSystem/Munition.h"
-#include "objects/weaponSystem/projectiles/ParticleProjectile.h"
+#include "objects/weaponSystem/Weapon.h"
+#include "objects/weaponSystem/WeaponPack.h"
 #include "objects/weaponSystem/WeaponSystem.h"
 
 namespace orxonox
 {
-    CreateFactory(Fusion);
+    CreateFactory(FusionFire);
 
-    Fusion::Fusion(BaseObject* creator) : Weapon(creator)
+    FusionFire::FusionFire(BaseObject* creator) : WeaponMode(creator)
     {
-        RegisterObject(Fusion);
+        RegisterObject(FusionFire);
 
+        this->reloadTime_ = 1.0;
+        this->bParallelReload_ = false;
+        this->damage_ = 40;
         this->speed_ = 1250;
 
+        this->setMunitionName("FusionMunition");
     }
 
-    Fusion::~Fusion()
+    void FusionFire::fire()
     {
-    }
+        BillboardProjectile* projectile = new BillboardProjectile(this);
 
-    void Fusion::takeBullets()
-    {
-//COUT(0) << "Fusion::takeBullets" << std::endl;
-        this->munition_->removeBullets(1);
-        this->bulletTimer(this->bulletLoadingTime_);
-    }
+        projectile->setOrientation(this->getMuzzleOrientation());
+        projectile->setPosition(this->getMuzzlePosition());
+        projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
 
-    void Fusion::takeMagazines()
-    {
-        this->munition_->removeMagazines(1);
-        this->magazineTimer(this->magazineLoadingTime_);
-    }
-
-    void Fusion::createProjectile()
-    {
-//COUT(0) << "Fusion::createProjectile" << std::endl;
-        BillboardProjectile* projectile = new ParticleProjectile(this);
-        projectile->setOrientation(this->getWorldOrientation());
-        projectile->setPosition(this->getWorldPosition());
-        projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
-        projectile->setOwner(this->getWeaponSystem()->getPawn());
+        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setDamage(this->getDamage());
+        projectile->setColour(ColourValue(1.0f, 0.7f, 0.3f, 1.0f));
     }
 }

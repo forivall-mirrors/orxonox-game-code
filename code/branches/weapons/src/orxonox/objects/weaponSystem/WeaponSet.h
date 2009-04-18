@@ -46,9 +46,8 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-//            void attachWeaponPack(WeaponPack *wPack);
-
             void fire();
+            void reload();
 
             void setWeaponmodeLink(WeaponPack* weaponpack, unsigned int weaponmode);
             void removeWeaponmodeLink(WeaponPack* weaponpack);
@@ -65,7 +64,7 @@ namespace orxonox
                 { return this->weaponSystem_; }
 
         private:
-            WeaponSystem *weaponSystem_;
+            WeaponSystem * weaponSystem_;
             unsigned int desiredFiremode_;
             std::map<WeaponPack*, unsigned int> weaponpacks_;
     };

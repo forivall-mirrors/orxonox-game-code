@@ -63,44 +63,6 @@ COUT(0) << "~WeaponSet" << std::endl;
 
         XMLPortParam(WeaponSet, "firemode", setDesiredFiremode, getDesiredFiremode, xmlelement, mode);
     }
-/*
-    void WeaponSet::attachWeaponPack(WeaponPack *wPack)
-    {
-        if ( this->weaponSystem_->getWeaponSlotSize()>0 && wPack->getSize()>0 && ( wPack->getSize() <= this->weaponSystem_->getWeaponSlotSize() ) )
-        {
-            this->attachedWeaponPack_ = wPack;
-            int wPackWeapon = 0;    //WeaponCounter for Attaching
-
-            //should be possible to choose which slot to use
-            //attach every weapon of the weaponPack to a weaponSlot
-            for (  int i=0; i < wPack->getSize() ; i++  )
-            {
-                //at the moment this function only works for one weaponPack in the entire WeaponSystem...
-                //it also takes the first free weaponSlot...
-                if ( this->weaponSystem_->getWeaponSlot(i)->getAttachedWeapon() == 0 && this->weaponSystem_->getWeaponSlot(i) != 0) //if slot not full
-                {
-                    this->setWeaponSlots_.push_back( this->weaponSystem_->getWeaponSlot(i) );
-                    this->weaponSystem_->getWeaponSlot(i)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
-                    this->weaponSystem_->getPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
-                    wPackWeapon++;
-                }
-                else
-                {
-                    for (int k=0; k < this->weaponSystem_->getWeaponSlotSize(); k++)
-                    {
-                        if ( this->weaponSystem_->getWeaponSlot(k)->getAttachedWeapon() == 0 )
-                        {
-                            this->setWeaponSlots_.push_back( this->weaponSystem_->getWeaponSlot(k) );
-                            this->weaponSystem_->getWeaponSlot(k)->attachWeapon( wPack->getWeaponPointer(wPackWeapon) );
-                            this->weaponSystem_->getPawn()->attach( wPack->getWeaponPointer(wPackWeapon) );
-                            wPackWeapon++;
-                        }
-                    }
-                }
-            }
-        }
-    }
-*/
 
     void WeaponSet::fire()
     {
@@ -108,6 +70,13 @@ COUT(0) << "~WeaponSet" << std::endl;
         for (std::map<WeaponPack*, unsigned int>::iterator it = this->weaponpacks_.begin(); it != this->weaponpacks_.end(); ++it)
             if (it->second != WeaponSystem::WEAPON_MODE_UNASSIGNED)
                 it->first->fire(it->second);
+    }
+
+    void WeaponSet::reload()
+    {
+        // fire all WeaponPacks with their defined weaponmode
+        for (std::map<WeaponPack*, unsigned int>::iterator it = this->weaponpacks_.begin(); it != this->weaponpacks_.end(); ++it)
+            it->first->reload();
     }
 
     void WeaponSet::setWeaponmodeLink(WeaponPack* weaponpack, unsigned int weaponmode)

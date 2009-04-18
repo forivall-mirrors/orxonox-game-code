@@ -36,6 +36,7 @@
 #include "WeaponPack.h"
 #include "WeaponSet.h"
 #include "Weapon.h"
+#include "Munition.h"
 
 /* WeaponSystem
  *
@@ -62,20 +63,17 @@ COUT(0) << "~WeaponSystem" << std::endl;
             if (this->pawn_)
                 this->pawn_->setWeaponSystem(0);
 
-//            for (std::map<unsigned int, WeaponSet*>::iterator it = this->weaponSets_.begin(); it != this->weaponSets_.end(); )
-//                delete (it++)->second;
             while (!this->weaponSets_.empty())
                 delete (this->weaponSets_.begin()->second);
 
-//            for (std::set<WeaponPack*>::iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); )
-//                delete (*(it++));
             while (!this->weaponPacks_.empty())
                 delete (*this->weaponPacks_.begin());
 
-//            for (std::vector<WeaponSlot*>::iterator it = this->weaponSlots_.begin(); it != this->weaponSlots_.end(); )
-//                delete (*(it++));
             while (!this->weaponSlots_.empty())
                 delete (*this->weaponSlots_.begin());
+
+            while (!this->munitions_.empty())
+                { delete (this->munitions_.begin()->second); this->munitions_.erase(this->munitions_.begin()); }
         }
     }
 
@@ -283,26 +281,38 @@ COUT(0) << "~WeaponSystem" << std::endl;
         wSet->setWeaponmodeLink(wPack, weaponmode);
     }
 
-    void WeaponSystem::setNewMunition(const std::string& munitionType, Munition * munitionToAdd)
-    {
-        this->munitionSet_[munitionType] = munitionToAdd;
-    }
-
-
-    //returns the Pointer to the munitionType, if this munitionType doesn't exist returns 0, see Weapon::attachNeededMunition
-    Munition * WeaponSystem::getMunitionType(const std::string& munitionType) const
-    {
-        std::map<std::string, Munition *>::const_iterator it = this->munitionSet_.find(munitionType);
-        if (it != this->munitionSet_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
     void WeaponSystem::fire(unsigned int firemode)
     {
         std::map<unsigned int, WeaponSet *>::iterator it = this->weaponSets_.find(firemode);
         if (it != this->weaponSets_.end() && it->second)
             it->second->fire();
+    }
+
+    void WeaponSystem::reload()
+    {
+        for (std::map<unsigned int, WeaponSet *>::iterator it = this->weaponSets_.begin(); it != this->weaponSets_.end(); ++it)
+            it->second->reload();
+    }
+
+    Munition * WeaponSystem::getMunition(SubclassIdentifier<Munition> * identifier)
+    {
+        if (!identifier || !identifier->getIdentifier())
+            return 0;
+
+        std::map<Identifier *, Munition *>::iterator it = this->munitions_.find(identifier->getIdentifier());
+        if (it != this->munitions_.end())
+        {
+            return it->second;
+        }
+        else if (identifier->getIdentifier()->isA(Class(Munition)))
+        {
+            Munition* munition = identifier->fabricate(this);
+            this->munitions_[identifier->getIdentifier()] = munition;
+            return munition;
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
