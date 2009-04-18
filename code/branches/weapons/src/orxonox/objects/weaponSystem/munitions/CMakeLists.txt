@@ -1,5 +1,5 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   ReplenishingMunition.cc
-  LaserGunMunition.cc
+  LaserMunition.cc
   FusionMunition.cc
 )

@@ -26,20 +26,30 @@
  *
  */
 
-#ifndef _LaserGunMunition_H__
-#define _LaserGunMunition_H__
+#include "OrxonoxStableHeaders.h"
+#include "LaserMunition.h"
 
-#include "OrxonoxPrereqs.h"
-#include "ReplenishingMunition.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LaserGunMunition : public ReplenishingMunition
-    {
-        public:
-            LaserGunMunition(BaseObject* creator);
-            virtual ~LaserGunMunition() {}
-    };
-}
+    CreateFactory(LaserMunition);
 
-#endif /* _LaserGunMunition_H__ */
+    LaserMunition::LaserMunition(BaseObject* creator) : ReplenishingMunition(creator)
+    {
+        RegisterObject(LaserMunition);
+
+        this->maxMunitionPerMagazine_ = 20;
+        this->maxMagazines_ = 1;
+        this->magazines_ = 1;
+
+        this->bUseSeparateMagazines_ = false;
+        this->bStackMunition_ = true;
+
+        this->bAllowMunitionRefilling_ = true;
+        this->bAllowMultiMunitionRemovementUnderflow_ = true;
+
+        this->replenishIntervall_ = 0.5f;
+        this->replenishMunitionAmount_ = 1;
+    }
+}

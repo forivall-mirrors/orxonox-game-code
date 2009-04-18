@@ -48,7 +48,7 @@ namespace orxonox
         this->damage_ = 15;
         this->speed_ = 1250;
 
-        this->setMunitionName("LaserGunMunition");
+        this->setMunitionName("LaserMunition");
     }
 
     void LaserFire::fire()

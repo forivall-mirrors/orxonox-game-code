@@ -164,7 +164,7 @@ namespace orxonox
 
     class ReplenishingMunition;
     class Munition;
-    class LaserGunMunition;
+    class LaserMunition;
     class FusionMunition;
 
     class EventListener;
