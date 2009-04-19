@@ -165,7 +165,7 @@ namespace orxonox
             static const int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const int DEFAULT_LENGTH = 64; //!< The default maximum number of Notifications displayed.
             static const int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
-            static const float DEFAULT_FONT_SIZE = 0.025; //!< The default font size.
+            static const float DEFAULT_FONT_SIZE; //!< The default font size.
 
             static const std::string DEFAULT_FONT; //!< The default font.
             static const Vector2 DEFAULT_POSITION; //!< the default position.
