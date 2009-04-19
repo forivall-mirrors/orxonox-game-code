@@ -53,6 +53,7 @@ namespace orxonox
 
     const std::string NotificationQueue::DEFAULT_FONT = "VeraMono";
     const Vector2 NotificationQueue::DEFAULT_POSITION = Vector2(0.0,0.0);
+    const float NotificationQueue::DEFAULT_FONT_SIZE  = 0.025;
 
     /**
     @brief
@@ -272,7 +273,7 @@ namespace orxonox
         }
         string->clear();
         bool first = true;
-        for(std::set<std::string>::iterator it = this->targets_.begin(); it != this->targets_.end(); it++) //!< Iterate through the set of targets.
+        for(std::set<std::string>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++) //!< Iterate through the set of targets.
         {
             if(!first)
             {
