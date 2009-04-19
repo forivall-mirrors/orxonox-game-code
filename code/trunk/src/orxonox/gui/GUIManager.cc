@@ -251,7 +251,10 @@ namespace orxonox
     */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
-        this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
+        if (camera == NULL)
+            this->guiRenderer_->setTargetSceneManager(0);
+        else
+            this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
     }
 
     /**

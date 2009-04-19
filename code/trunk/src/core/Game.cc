@@ -105,9 +105,9 @@ namespace orxonox
         // Destroy pretty much everyhting left
         delete this->core_;
 
-        // Delete all GameStates created by the macros
-        for (std::map<std::string, GameState*>::const_iterator it = allStates_s.begin(); it != allStates_s.end(); ++it)
-            delete it->second;
+        // Delete all the created nodes
+        for (std::vector<GameStateTreeNode*>::const_iterator it = this->allStateNodes_.begin(); it != this->allStateNodes_.end(); ++it)
+            delete *it;
 
         delete this->gameClock_;
 
@@ -319,6 +319,7 @@ namespace orxonox
                 if (this->rootStateNode_ != NULL)
                     ThrowException(GameState, "No two root GameStates are allowed!");
                 GameStateTreeNode* newNode = new GameStateTreeNode;
+                this->allStateNodes_.push_back(newNode);
                 newNode->state_ = newState;
                 newNode->parent_ = 0;
                 this->rootStateNode_ = newNode;
@@ -327,6 +328,7 @@ namespace orxonox
             else if (currentNode)
             {
                 GameStateTreeNode* newNode = new GameStateTreeNode;
+                this->allStateNodes_.push_back(newNode);
                 newNode->state_ = newState;
                 if (newLevel < currentLevel)
                 {
@@ -389,5 +391,13 @@ namespace orxonox
 
         // just a required dummy return value
         return true;
+    }
+
+    /*static*/ void Game::destroyStates()
+    {
+        // Delete all GameStates created by the macros
+        for (std::map<std::string, GameState*>::const_iterator it = allStates_s.begin(); it != allStates_s.end(); ++it)
+            delete it->second;
+        allStates_s.clear();
     }
 }

@@ -76,6 +76,7 @@ namespace orxonox
         void addTickTime(uint32_t length);
 
         static bool addGameState(GameState* state);
+        static void destroyStates();
         static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
@@ -94,6 +95,7 @@ namespace orxonox
         GameStateTreeNode*              rootStateNode_;
         GameStateTreeNode*              activeStateNode_;
         std::vector<GameStateTreeNode*> requestedStateNodes_;
+        std::vector<GameStateTreeNode*> allStateNodes_;
 
         Core*                           core_;
         Clock*                          gameClock_;
