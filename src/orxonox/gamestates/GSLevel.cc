@@ -161,6 +161,7 @@ namespace orxonox
 
     void GSLevel::deactivate()
     {
+/*
         // destroy console commands
         if (this->ccKeybind_)
         {
@@ -172,6 +173,7 @@ namespace orxonox
             delete this->ccTkeybind_;
             this->ccTkeybind_ = 0;
         }
+*/
 
 
         // this call will delete every BaseObject!

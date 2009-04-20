@@ -62,11 +62,13 @@ namespace orxonox
 
     void GSIOConsole::deactivate()
     {
+/*
         if (this->ccLoadMenu_)
         {
             delete this->ccLoadMenu_;
             this->ccLoadMenu_ = 0;
         }
+*/
     }
 
     void GSIOConsole::update(const Clock& time)

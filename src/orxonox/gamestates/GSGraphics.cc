@@ -155,12 +155,13 @@ namespace orxonox
     */
     void GSGraphics::deactivate()
     {
-
+/*
         if (this->ccToggleGUI_)
         {
             delete this->ccToggleGUI_;
             this->ccToggleGUI_ = 0;
         }
+*/
 
         masterInputState_->setHandler(0);
         InputManager::getInstance().requestDestroyState("master");
