@@ -118,6 +118,7 @@ namespace orxonox
 
     void GSRoot::deactivate()
     {
+/*
         if (this->ccSetTimeFactor_)
         {
             delete this->ccSetTimeFactor_;
@@ -129,6 +130,7 @@ namespace orxonox
             delete this->ccPause_;
             this->ccPause_ = 0;
         }
+*/
     }
 
     void GSRoot::update(const Clock& time)

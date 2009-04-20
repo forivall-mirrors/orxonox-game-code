@@ -90,11 +90,13 @@ namespace orxonox
         this->scene_->getSceneManager()->destroyCamera(this->camera_);
         delete this->scene_;
 
+/*
         if (this->ccStartGame_)
         {
             delete this->ccStartGame_;
             this->ccStartGame_ = 0;
         }
+*/
     }
 
     void GSMainMenu::update(const Clock& time)
