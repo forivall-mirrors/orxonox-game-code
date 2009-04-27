@@ -26,7 +26,7 @@
  *
  */
 
-#include <OgreSceneNode.h>
+#include <AL/alut.h>
 
 #include "orxonox/CameraManager.h"
 #include "orxonox/objects/worldentities/Camera.h"
@@ -56,17 +56,9 @@ namespace orxonox
      */
     SoundManager::SoundManager()
     {
-        // OpenAL device and context creation
-        this->device_ = alcOpenDevice(NULL); // we operate on the default sound device
-        if(this->device_)
-            COUT(2) << "OpenAL: Could not create sound device, there will be no sound!" << std::endl;
-
-        this->context_ = alcCreateContext(this->device_, NULL);
-        alcMakeContextCurrent(this->context_);
-        ALenum error = alcGetError(this->device_);
-        if(error != ALC_NO_ERROR)
-            COUT(2) << "OpenAL: Could not create sound context." << std::endl;
-
+        if(!alutInit(NULL,NULL)) {
+            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError());
+        }
     }
 
     /**

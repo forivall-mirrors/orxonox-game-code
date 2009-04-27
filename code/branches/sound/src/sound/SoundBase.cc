@@ -112,6 +112,22 @@ namespace orxonox
         }
     }
 
+    bool SoundBase::loadFile(std::string filename) {
+        this->buffer_ = alutCreateBufferFromFile(filename.c_str());
+        if(this->buffer_ == AL_NONE) {
+            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError());
+            return false;
+        }
+
+        alGenSources(1, &this->source_);
+        alSourcei(this->source_, AL_BUFFER, this->buffer_);
+        if(alGetError() != AL_NO_ERROR) {
+            COUT(2) << "OpenAL: Error loading sample file";
+            return false;
+        }
+        return true;
+    }
+
     ALint SoundBase::getSourceState() {
         ALint state;
         alGetSourcei(this->source_, AL_SOURCE_STATE, &state);

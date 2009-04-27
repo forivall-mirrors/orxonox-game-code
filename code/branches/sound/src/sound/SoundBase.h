@@ -28,7 +28,8 @@
 #ifndef _SOUNDBASE_H__
 #define _SOUNDBASE_H__
 
-#include <al.h>
+#include <AL/al.h>
+#include <AL/alut.h>
 #include <string>
 
 namespace orxonox
@@ -56,7 +57,7 @@ namespace orxonox
         bool isPaused();
         bool isStopped();
 
-        virtual void loadFile(std::string filename) = 0;
+        bool loadFile(std::string filename);
 
     private:
         ALuint source_;

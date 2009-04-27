@@ -27,8 +27,8 @@
 #ifndef _SOUNDMANGER_H__
 #define _SOUNDMANGER_H__
 
-#include <al.h>
-#include <alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 
 #include <orxonox/objects/Tickable.h>
 
@@ -55,9 +55,6 @@ namespace orxonox
     private:
         SoundManager(); // private constructor -> singleton
         static SoundManager* singleton_;
-
-        ALCcontext* context_;
-        ALCdevice* device_;
 
         std::list<SoundBase*> soundlist_;
 
