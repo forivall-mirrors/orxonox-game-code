@@ -26,26 +26,95 @@
  *
  */
 
-#include <SoundBase.h>
-#include <SoundManager.h>
-
-#include <Ogre/SceneNode.h>
+#include "orxonox/objects/worldentities/WorldEntity.h"
+#include "util/Math.h"
+#include "SoundManager.h"
+#include "SoundBase.h"
 
 namespace orxonox 
 {
-    SoundBase::SoundBase(Ogre::SceneNode* node)
+    SoundBase::SoundBase(WorldEntity* entity)
     {
         this->source_ = 0;
         this->buffer_ = 0;
-        this->node_ = node;
+        this->entity_ = entity;
 
-        if(SoundBase::soundmanager_s == null)
-            SoundBase::soundmanager_s == SoundManager::instance();
+        if(SoundBase::soundmanager_s == NULL)
+            SoundBase::soundmanager_s = SoundManager::instance();
     }
 
-    void SoundBase::attachToNode(Ogre::ScenceNode* node)
+    void SoundBase::attachToEntity(WorldEntity* entity)
     {
-        this->node_ = node;
+        this->entity_ = entity;
+        this->update();
     }
 
+    void SoundBase::update() {
+        if(alIsSource(this->source_)) {
+            Vector3 pos = this->entity_->getPosition();
+            alSource3f(this->source_, AL_POSITION, pos.x, pos.y, pos.z);
+            ALenum error = alGetError();
+            if(error == AL_INVALID_VALUE)
+                COUT(2) << "OpenAL: Invalid sound position" << std::endl;
+
+            Vector3 vel = this->entity_->getVelocity();
+            alSource3f(this->source_, AL_VELOCITY, vel.x, vel.y, vel.z);
+            error = alGetError();
+            if(error == AL_INVALID_VALUE)
+                COUT(2) << "OpenAL: Invalid sound position" << std::endl;
+
+            Quaternion orient = this->entity_->getOrientation();
+            Vector3 at = orient.zAxis();
+            alSource3f(this->source_, AL_DIRECTION, at.x, at.y, at.z);
+            error = alGetError();
+            if(error == AL_INVALID_VALUE)
+                COUT(2) << "OpenAL: Invalid sound position" << std::endl;
+        }
+    }
+
+    void SoundBase::play(bool loop) {
+        if(alIsSource(this->source_)) {
+            if(loop)
+                alSourcei(this->source_, AL_LOOPING, AL_TRUE);
+            else
+                alSourcei(this->source_, AL_LOOPING, AL_FALSE);
+            alSourcePlay(this->source_);
+        }
+    }
+
+    void SoundBase::stop() {
+        if(alIsSource(this->source_)) {
+            alSourceStop(this->source_);
+        }
+    }
+
+    void SoundBase::pause() {
+        if(alIsSource(this->source_)) {
+            alSourcePause(this->source_);
+        }
+    }
+
+    bool SoundBase::isPlaying() {
+        if(alIsSource(this->source_)) {
+            return getSourceState() == AL_PLAYING;
+        }
+    }
+
+    bool SoundBase::isPaused() {
+        if(alIsSource(this->source_)) {
+            return getSourceState() == AL_PAUSED;
+        }
+    }
+
+    bool SoundBase::isStopped() {
+        if(alIsSource(this->source_)) {
+            return getSourceState() == AL_INITIAL || getSourceState() == AL_STOPPED;
+        }
+    }
+
+    ALint SoundBase::getSourceState() {
+        ALint state;
+        alGetSourcei(this->source_, AL_SOURCE_STATE, &state);
+        return state;
+    }
 } // namespace: orxonox

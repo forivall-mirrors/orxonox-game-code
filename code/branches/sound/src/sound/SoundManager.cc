@@ -31,6 +31,7 @@
 #include "orxonox/CameraManager.h"
 #include "orxonox/objects/worldentities/Camera.h"
 #include "util/Math.h"
+#include "SoundBase.h"
 #include "SoundManager.h"
 
 namespace orxonox
@@ -107,7 +108,7 @@ namespace orxonox
         Vector3 pos = camera->getPosition();
         alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
         ALenum error = alGetError();
-        if(error != AL_INVALID_VALUE)
+        if(error == AL_INVALID_VALUE)
             COUT(2) << "OpenAL: Invalid listener position" << std::endl;
 
         // update listener orientation
@@ -115,7 +116,7 @@ namespace orxonox
         Vector3 up = orient.xAxis(); // just a wild guess
         Vector3 at = orient.zAxis();
 
-        ALfloat* orientation = { at.x, at.y, at.z, 
+        ALfloat orientation[6] = { at.x, at.y, at.z, 
                                  up.x, up.y, up.z };
 
         alListenerfv(AL_POSITION, orientation);
