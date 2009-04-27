@@ -24,12 +24,14 @@
  
  
 
-#include TeamBaseMatch.h
+#include "TeamBaseMatch.h"
 
 
 //implement this! not done yet!
 #include "objects/worldentities/pawns/TeamBaseMatchBase.h" 
- 
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+
  
 namespace orxonox
 {
@@ -37,7 +39,7 @@ namespace orxonox
 
 
     // Timer and Creator
-    TeamBaseMatch::TeamBaseMatch(BaseObject* creator) : TeamDeathMatch(creator)
+    TeamBaseMatch::TeamBaseMatch(BaseObject* creator) : TeamDeathmatch(creator)
     {
         RegisterObject(TeamBaseMatch);
 
@@ -52,13 +54,16 @@ namespace orxonox
     // set the Bases positions using XML
     void TeamBaseMatch::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
+        SUPER(TeamBaseMatch, XMLPort, xmlelement, mode);
+
 //        XMLPortObject(TeamBaseMatch, WorldEntity, setNeutralshape, getNeturalshape, xmlelement, mode); 
 //        XMLPortObject(TeamBaseMatch, WorldEntity, setTeam1shape, getTeam1shape, xmlelement, mode);
 //        XMLPortObject(TeamBaseMatch, WorldEntity, setTeam2shape, getTeam2shape, xmlelement, mode);
 
-        XMLPortObject(TeamBaseMatch, TeamBaseMatchBase, addBase, getBase, xmlelement, mode);
+//        XMLPortObject(TeamBaseMatch, TeamBaseMatchBase,  addBase, getBase, xmlelement, mode);
     }
     
+/*
     // pretty useless at the moment...should be implemented in the TeamBaseMatchBase class headerfile
     // State of the Base (controlled, uncontrolled)
     int TeamBaseMatch::baseState(Base)
@@ -67,14 +72,17 @@ namespace orxonox
         if(Enum state_==controlTeam1) return 1;
         if(Enum state_==controlTeam2) return 2;
     }
-    
+*/  
+
+
+    // Change the control of the defeated base and respawn it with its initial health
     bool TeamBaseMatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
-        set::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(victim);
-        if (it != this->bases_.end() && victim)
+        TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
+        if (base)
         {
-            TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
-            if (base)
+            std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(base);
+            if (it != this->bases_.end())
             {
                 int teamnr = this->getTeam(originator->getPlayer());
                 if (teamnr == 0)
@@ -139,13 +147,15 @@ namespace orxonox
         }
     }
 
-    void addTeamPoints(int team, int points)
+
+    // this function is called by the function winPoints() which adds points to the teams for every base and killed openents at a certain time
+    void TeamBaseMatch::addTeamPoints(int team, int points)
     {
-        if(player && teamnr == 0)
+        if(team == 0)
         {
             this->pointsTeam1_ += points;
         }
-        if(player && teamnr == 1)
+        if(team == 1)
         {
             this->pointsTeam2_ += points;
         }      

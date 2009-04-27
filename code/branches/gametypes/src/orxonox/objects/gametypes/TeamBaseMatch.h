@@ -35,19 +35,19 @@
 #include <set>
 
 #include "TeamDeathmatch.h"
-#include "util/Timer.h"
+#include "tools/Timer.h"
 
 
 
 namespace orxonox
 {
- 
+    class TeamBaseMatchBase;
 
 
     class _OrxonoxExport TeamBaseMatch : public TeamDeathmatch
     {
         public:
-            TeamBasematch(BaseObject* creator);
+            TeamBaseMatch(BaseObject* creator);
             
             // if class closes, close everything           
             virtual ~TeamBaseMatch() {}
@@ -59,7 +59,8 @@ namespace orxonox
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
 
             // give information about the state of a base 
-            virtual int baseState(Base);
+            // (this should be pretty useless atm)
+//            virtual int baseState(Base);
             
 	    virtual void playerScored(PlayerInfo* player);
             virtual void showPoints();

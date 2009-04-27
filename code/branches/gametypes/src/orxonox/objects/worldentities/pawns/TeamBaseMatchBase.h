@@ -38,7 +38,7 @@
 #ifndef _TeamBaseMatchBase_H__
 #define _TeamBaseMatchBase_H__
 
-#include "pawn.h"
+#include "Pawn.h"
 
 namespace orxonox
 {
@@ -54,42 +54,35 @@ namespace orxonox
         };
     }
 
-    struct Base
-    {
-        BaseState::Enum state_;
-    };
 
-
-
-
-
-
-    class _OrxonoxExport TeamBaseMatchBase : public RadarViewable
+    class _OrxonoxExport TeamBaseMatchBase : public Pawn
     {
         public:
             TeamBaseMatchBase(BaseObject* creator);
 
-	    // if class closes, close everything  
-            virtual ~TeamBaseMatchBase();
-	    
-	    virtual void setState(base)
-	    {
-		
-
+            // if class closes, close everything  
+            virtual ~TeamBaseMatchBase() {}
+	     
+	     
+	     
+            // Set the state of a base to whatever the argument of the function is 
+            void setState(BaseState::Enum state)
+            {
+                this->state_ = state;
 	    }
-	    virtual enum getState(base);
-
-    	    
 
 
+	    // Get the state of a base as a return value 
+	    BaseState::Enum getState()
+	    {
+	        return this->state_;
+	    }
 
-	protected:
 
+        protected:
 
-
-
-
- 
+            BaseState::Enum state_;
+    };
 }
 
 #endif /* _TeamBaseMatchBase_H__ */
