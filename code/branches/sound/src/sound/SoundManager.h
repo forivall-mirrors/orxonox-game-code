@@ -24,23 +24,25 @@
  *   Co-authors:
  *      ...
  */
+#ifndef _SOUNDMANGER_H__
+#define _SOUNDMANGER_H__
 
 #include <al.h>
 #include <alc.h>
 
-#include <Tickable.h>
+#include <orxonox/objects/Tickable.h>
 
-class SoundBase;
-
-namespace Orxonox
+namespace orxonox
 {
+    class SoundBase;
+
     /**
      * The SoundManager class manages the OpenAL device, context and listener
      * position. It has a list of all SoundBase objects and calls their update
      * function every tick. It is a singleton.
      *
      */
-    class SoundManager : public Tickable
+    class SoundManager : public Tickable 
     {
     public:
         static SoundManager* instance();
@@ -48,7 +50,7 @@ namespace Orxonox
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
         
-        void tick(float dt);
+        virtual void tick(float dt);
 
     private:
         SoundManager(); // private constructor -> singleton
@@ -60,4 +62,6 @@ namespace Orxonox
         std::list<SoundBase*> soundlist_;
 
     }; // class SoundManager
-} // namespace Orxonox
+} // namespace orxonox
+
+#endif // _SOUNDMANAGER_H__

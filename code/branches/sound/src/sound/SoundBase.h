@@ -25,6 +25,8 @@
  *      ...
  *
  */
+#ifndef _SOUNDBASE_H__
+#define _SOUNDBASE_H__
 
 #include <al.h>
 #include <string>
@@ -63,3 +65,5 @@ namespace orxonox
         static SoundManager* soundmanager_s;
     }; // class SoundBase
 } // namepsace orxonox
+
+#endif // _SOUNDBASE_H__

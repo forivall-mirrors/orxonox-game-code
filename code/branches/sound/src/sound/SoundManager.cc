@@ -29,6 +29,8 @@
 #include <OgreSceneNode.h>
 
 #include "orxonox/CameraManager.h"
+#include "orxonox/objects/worldentities/Camera.h"
+#include "util/Math.h"
 #include "SoundManager.h"
 
 namespace orxonox
@@ -60,7 +62,7 @@ namespace orxonox
 
         this->context_ = alcCreateContext(this->device_, NULL);
         alcMakeContextCurrent(this->context_);
-        ALenum error = alcGetError();
+        ALenum error = alcGetError(this->device_);
         if(error != ALC_NO_ERROR)
             COUT(2) << "OpenAL: Could not create sound context." << std::endl;
 
@@ -111,10 +113,10 @@ namespace orxonox
         // update listener orientation
         Quaternion orient = camera->getOrientation();
         Vector3 up = orient.xAxis(); // just a wild guess
-        Vecotr3 at = orient.zAxis();
+        Vector3 at = orient.zAxis();
 
-        float[3][2] orientation = { { at.x, at.y, at.z },
-                                    { up.x, up.y, up.z } };
+        ALfloat* orientation = { at.x, at.y, at.z, 
+                                 up.x, up.y, up.z };
 
         alListenerfv(AL_POSITION, orientation);
         error = alGetError();
@@ -126,4 +128,4 @@ namespace orxonox
             (*i)->update();
     }
 
-} // namespace orxonox
+}  
