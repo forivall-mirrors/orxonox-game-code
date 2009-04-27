@@ -38,6 +38,7 @@
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "objects/items/Engine.h"
+#include "objects/gametypes/UnderAttack.h"
 
 namespace orxonox
 {
@@ -47,6 +48,11 @@ namespace orxonox
     {
         RegisterObject(Destroyer);
 
+        UnderAttack* gametype = dynamic_cast<UnderAttack*>(this->getGametype());
+        if (gametype)
+        {
+            gametype->addDestroyer(this);
+        }
     }
 
 }

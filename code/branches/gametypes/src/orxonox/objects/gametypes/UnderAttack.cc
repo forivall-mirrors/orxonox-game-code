@@ -120,11 +120,16 @@ namespace orxonox
     }
     void UnderAttack::tick(float dt)
     {
-        gameTime_ = gameTime_ - dt;
-        if (gameTime_<= 0)
+        SUPER(UnderAttack, tick, dt);
+
+        if (this->hasStarted())
         {
-            gameEnded_ = true;
-            COUT(0) << "Time is up! Team 1 has won!" << std::endl;
+            gameTime_ = gameTime_ - dt;
+            if (gameTime_<= 0 && !gameEnded_)
+            {
+                gameEnded_ = true;
+                COUT(0) << "Time is up! Team 1 has won!" << std::endl;
+            }
         }
     }
 
