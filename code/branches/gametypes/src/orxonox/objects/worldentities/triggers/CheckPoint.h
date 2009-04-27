@@ -35,27 +35,32 @@
 #ifndef _CheckPoint_H__
 #define _CheckPoint_H__
 
-#include "OrxonoxPrereqs.h"
+#include "DistanceTrigger.h"
 
-#include "Trigger.h"
+#include <set>
+
+#include "core/ClassTreeMask.h"
+#include "core/BaseObject.h"
+
+#include "orxonox/objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CheckPoint : public DistanceTrigger
+  class _OrxonoxExport CheckPoint : public DistanceTrigger
     {
     public:
-        CheckPoint(BaseObject* creator);
-        virtual ~CheckPoint();
+      CheckPoint(BaseObject* creator);
+      virtual ~CheckPoint();
         
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
+      virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
 
-	
     private:
-       virtual void triggered(bool bIsTriggered); 
-
-       bool bIsDestination_;	
-    };
-
+      virtual void triggered(bool bIsTriggered); 
+      virtual void setDestination(bool isDestination);
+      virtual bool getDestination();	
+      
+      bool bIsDestination_;
+  };
 }
 
 #endif /* _CheckPoint_H__ */

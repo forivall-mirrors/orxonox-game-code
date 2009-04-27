@@ -53,7 +53,7 @@ namespace orxonox
         Host::Broadcast(message);
     }
 
-    void Deathmatch::end()
+    void Asteroids::end()
     {
         Gametype::end();
 

@@ -3,4 +3,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   DistanceTrigger.cc
   EventTrigger.cc
   PlayerTrigger.cc
+  CheckPoint.cc
 )

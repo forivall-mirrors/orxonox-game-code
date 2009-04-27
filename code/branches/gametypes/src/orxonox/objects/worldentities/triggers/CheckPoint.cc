@@ -28,6 +28,7 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "CheckPoint.h"
+#include "objects/gametypes/Asteroids.h"
 
 #include <OgreNode.h>
 
@@ -44,21 +45,45 @@ namespace orxonox
   {
     RegisterObject(CheckPoint);
 
-    isForPlayer_ = true;
-    bStayActive_ = true;
+    this->setStayActive(true);
+    this->setDistance(20);
+    bIsDestination_ = false;
+    this->setVisible(true);
   }
 
   CheckPoint::~CheckPoint()
   {
   }
+  
+  void CheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+  {
+    SUPER(CheckPoint, XMLPort, xmlelement, mode);
 
-  void Checkpoint::triggered(bool bIsTriggered)
+    XMLPortParam(CheckPoint, "isdestination", setDestination, getDestination, xmlelement, mode).defaultValues(false);
+  }
+  
+  void CheckPoint::setDestination(bool isDestination)
+  {
+    bIsDestination_ = isDestination;
+  }
+
+  bool CheckPoint::getDestination()
+  {
+    return bIsDestination_;
+  }
+
+
+  void CheckPoint::triggered(bool bIsTriggered)
   {
     DistanceTrigger::triggered(bIsTriggered);
 
-    if (bIsTriggered)
+    if (bIsTriggered && bIsDestination_)
     {
-      //...
+      Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
+      if (gametype)
+      {
+        gametype->end();
+      }
     }
   }
 }

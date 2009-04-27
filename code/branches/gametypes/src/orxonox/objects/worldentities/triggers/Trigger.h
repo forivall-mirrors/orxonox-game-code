@@ -88,6 +88,9 @@ namespace orxonox
       inline int getActivations() const
         { return this->remainingActivations_; }
 
+      inline void setVisible(bool visibility)
+        { this->debugBillboard_.setVisible(visibility); }
+
       void setDelay(float delay);
       inline float getDelay() const
         { return this->delay_; }
