@@ -152,6 +152,8 @@ bool Packet::send(){
     case ENUM::Gamestate:
     case ENUM::Welcome:
     case ENUM::DeleteObjects:
+    case ENUM::FunctionIDs:
+    case ENUM::FunctionCalls:
       break;
     default:
       assert(0); //there was some error, if this is the case

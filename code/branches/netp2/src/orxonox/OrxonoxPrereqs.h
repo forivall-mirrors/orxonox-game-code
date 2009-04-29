@@ -158,6 +158,7 @@ namespace orxonox
     class CameraPosition;
     class SpawnPoint;
     class TeamSpawnPoint;
+    class Test;
 
     class Spectator;
     class Pawn;

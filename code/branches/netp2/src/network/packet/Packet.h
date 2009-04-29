@@ -44,11 +44,13 @@ namespace ENUM{
   };
   enum Type{
     Acknowledgement,
-    Gamestate,
-    ClassID,
     Chat,
-    Welcome,
-    DeleteObjects
+    ClassID,
+    DeleteObjects,
+    FunctionIDs,
+    FunctionCalls,
+    Gamestate,
+    Welcome
   };
 }
 
@@ -77,6 +79,9 @@ class _NetworkExport Packet{
     Packet();
     Packet(uint8_t *data, unsigned int clientID);
 //    Packet(ENetPacket *packet, ENetPeer *peer);
+    inline bool isDataENetAllocated() const
+      { return bDataENetAllocated_; }
+
     uint32_t flags_;
     unsigned int clientID_;
     ENUM::Direction packetDirection_;

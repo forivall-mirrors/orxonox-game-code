@@ -121,7 +121,6 @@ namespace orxonox
   class _NetworkExport Synchronisable : virtual public OrxonoxClass{
   public:
     friend class packet::Gamestate;
-//     friend class Server;
     virtual ~Synchronisable();
 
     static void setClient(bool b);

@@ -329,9 +329,10 @@ namespace orxonox
             /** @brief Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT */
             inline void                       exportData(uint8_t*& mem) { assert(sizeof(MT_Type)<=8); this->setType(*(uint8_t*)mem); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
             /** @brief Saves the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
-            inline uint8_t*& operator << (uint8_t*& mem) { importData(mem); return mem; }
+            inline uint8_t*&                  operator << (uint8_t*& mem) { importData(mem); return mem; }
             /** @brief Loads the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
-            inline void operator >> (uint8_t*& mem) { exportData(mem); }
+            inline void                       operator >> (uint8_t*& mem) { exportData(mem); }
+            inline uint32_t                   getNetworkSize() { assert(this->value_); return this->value_->getSize() + sizeof(uint8_t); }
 
             /** @brief Checks whether the value is a default one. */
             bool                              hasDefaultValue()         const { return this->value_->hasDefaultValue(); }

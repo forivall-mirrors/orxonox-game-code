@@ -30,6 +30,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "network/NetworkFunction.h"
 #include "Test.h"
 
 namespace orxonox
@@ -40,6 +41,14 @@ namespace orxonox
   SetConsoleCommand(Test, printV2, true).accessLevel(AccessLevel::User);
   SetConsoleCommand(Test, printV3, true).accessLevel(AccessLevel::User);
   SetConsoleCommand(Test, printV4, true).accessLevel(AccessLevel::User);
+  SetConsoleCommand(Test, call, true).accessLevel(AccessLevel::User);
+  
+  
+  //void=* aaaaa = copyPtr<sizeof(&Test::printV1)>( &NETWORK_FUNCTION_POINTER, &Test::printV1 );
+  //void* NETWORK_FUNCTION_TEST_B = memcpy(&NETWORK_FUNCTION_POINTER, &a, sizeof(a));
+//   NetworkFunctionBase* NETWORK_FUNCTION_TEST_C = new NetworkFunctionStatic( createFunctor(&Test::printV1), "bla", NETWORK_FUNCTION_POINTER );
+  
+  registerStaticNetworkFunction( &Test::printV1, "printV1" );
   
   Test* Test::instance_ = 0;
 
@@ -84,7 +93,12 @@ namespace orxonox
     registerVariable ( s3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkS3 ), true );
     registerVariable ( s4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkS4 ), true );
 	}
-
+  
+  void Test::call(unsigned int clientID)
+  {
+    callStaticNetworkFunction( &Test::printV1, clientID );
+  }
+  
   void Test::checkU1(){ COUT(1) << "U1 changed: " << u1 << std::endl; }
   void Test::checkU2(){ COUT(1) << "U2 changed: " << u2 << std::endl; }
   void Test::checkU3(){ COUT(1) << "U3 changed: " << u3 << std::endl; }
