@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 
 #include <OgreEntity.h>
+#include <OgreMaterialManager.h>
 #include "Model.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
@@ -60,6 +61,31 @@ namespace orxonox
 
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
+
+        //HACK
+        if (true)//this->meshSrc_ == "assasdfff.mesh")
+        {
+            this->mesh_.getEntity()->setMaterialName("ToonShader");
+            static bool load = true;
+            
+            if (load)
+            {
+                Ogre::MaterialPtr matPtr = Ogre::MaterialManager::getSingleton().getByName("ToonShader");
+                if (!matPtr.isNull()) {
+                // is this necessary to do here? Someday try it without
+                    matPtr->compile();
+                    matPtr->load();
+                }
+                else
+                    COUT(0) << "frakking shader\n";
+                
+                COUT(0) << "shiiit\n";
+
+                //Ogre::MaterialManager& mm = Ogre::MaterialManager::getSingleton();
+               //Ogre::Material* m = Ogre::Material*(Ogre::MaterialManager::getSingleton().getByName("ToonShader"));
+                load = false;
+            }
+        }
     }
 
     void Model::registerVariables()
@@ -83,6 +109,10 @@ namespace orxonox
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
                 this->mesh_.setVisible(this->isVisible());
             }
+        }
+        if (true)//this->meshSrc_ == "assasdfff.mesh")
+        {
+            this->mesh_.getEntity()->setMaterialName("ToonShader");
         }
     }
 
