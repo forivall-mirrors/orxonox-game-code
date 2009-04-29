@@ -185,11 +185,16 @@ namespace orxonox
   template <class T> void Synchronisable::registerVariable(T& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
   {
     if (bidirectional)
+    {
       syncList.push_back(new SynchronisableVariableBidirectional<const T>(variable, mode, cb));
-    else
-      syncList.push_back(new SynchronisableVariable<const T>(variable, mode, cb));
-    if ( this->state_ == mode )
       this->dataSize_ += syncList.back()->getSize(state_);
+    }
+    else
+    {
+      syncList.push_back(new SynchronisableVariable<const T>(variable, mode, cb));
+      if ( this->state_ == mode )
+        this->dataSize_ += syncList.back()->getSize(state_);
+    }
   }
   
 
