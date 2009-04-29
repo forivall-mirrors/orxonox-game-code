@@ -113,7 +113,7 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
 };
 
 
-class NetworkMemberFunctionBase: public NetworkFunctionBase {
+class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
   public:
     NetworkMemberFunctionBase(std::string name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunctionBase();
