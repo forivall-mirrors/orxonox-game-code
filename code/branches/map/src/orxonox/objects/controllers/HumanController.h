@@ -65,6 +65,9 @@ namespace orxonox
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
 
+            //friend class, for mouselook
+            friend class Map;
+
         private:
             static HumanController* localController_s;
     };

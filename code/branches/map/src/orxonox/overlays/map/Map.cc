@@ -27,16 +27,18 @@
 #include "Map.h"
  
 #include <string>
+#include "util/String.h"
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 #include <OgreNode.h>
 
+
 #include <OgreRenderWindow.h>
 #include <OgreRenderTexture.h>
 #include <OgreTexture.h>
 #include <OgreViewport.h>
-#include <OgreMaterial.h>
+
 #include <OgreMaterialManager.h>
 #include <OgreRoot.h>
 #include <OgreHardwarePixelBuffer.h>
@@ -52,16 +54,21 @@
 #include "core/ConsoleCommand.h"
 #include "objects/Scene.h"
 #include "objects/RadarViewable.h"
+#include "objects/controllers/HumanController.h"
  
  namespace orxonox
  {
     CreateFactory(Map);
-     SetConsoleCommand(Map, openMap, true);
+    SetConsoleCommand(Map, openMap, true);
+    SetConsoleCommand(Map, rotateYaw, true).setAsInputCommand();
+    SetConsoleCommand(Map, rotatePitch, true).setAsInputCommand();
+
+    Map* Map::singletonMap_s = 0;
     
     Map::Map(BaseObject* creator) : OrxonoxOverlay(creator)
     {
         RegisterObject(Map);
-        
+        Map::singletonMap_s=this;
         //Getting Scene Manager (Hack)
         ObjectList<Scene>::iterator it = ObjectList<Scene>::begin();
         this->sManager_ = it->getSceneManager();
@@ -87,7 +94,7 @@
         overlay_->add3D(sNode_);
         */
 	
-        
+        this->mouseLookSpeed_ = 200;
         
 
         
@@ -98,6 +105,7 @@
         mReflectCam_->lookAt(0,0,0);
         mReflectCam_->setAspectRatio(1);
 
+        //Create overlay material
         std::string camMat_id = "RttMat";
         Ogre::MaterialPtr material = this->createRenderCamera(mReflectCam_, camMat_id);
 /*
@@ -144,8 +152,39 @@
         this->isVisible_=false;
         overlay_->hide();
 
+        //Create plane in map
+        Ogre::Entity* plane_ent = this->mapSceneM_->createEntity( "MapPlane", "plane.mesh");
+        Ogre::SceneNode* plane_node = this->mapSceneM_->getRootSceneNode()->createChildSceneNode();
+        
+        //Ogre::MaterialPtr plane_mat = Ogre::MaterialManager::getSingleton().create("mapgrid", "General");
+        //plane_mat->getTechnique(0)->getPass(0)->createTextureUnitState("mapgrid.tga");
+        //plane_ent->setMaterialName("mapgrid");
+        plane_ent->setMaterialName("Map/Grid");
+        plane_node->attachObject(plane_ent);
+        plane_node->scale(10,1,10);
+        //Ogre::Material plane_mat = Ogre::MaterialManager::getSingletonPtr()->getByName("rock");
+        
+
+        //ToDo create material script
+        Ogre::MaterialPtr myManualObjectMaterial = Ogre::MaterialManager::getSingleton().create("Map/Line","General"); 
+        myManualObjectMaterial->setReceiveShadows(false); 
+        myManualObjectMaterial->getTechnique(0)->setLightingEnabled(true); 
+        myManualObjectMaterial->getTechnique(0)->getPass(0)->setDiffuse(1,1,0,0); 
+        myManualObjectMaterial->getTechnique(0)->getPass(0)->setAmbient(1,1,0); 
+        myManualObjectMaterial->getTechnique(0)->getPass(0)->setSelfIllumination(1,1,0);
+
     }
-    
+
+    Map::~Map()
+    {
+        singletonMap_s = 0;
+        //delete sManager_;
+        //delete rootNode_;
+        //delete oManager_;
+        //delete mReflectCam_;
+        //delete mapSceneM_;
+    }
+
     Ogre::MaterialPtr Map::createRenderCamera(Ogre::Camera * cam, std::string matName)
     {
         Ogre::TexturePtr rttTex = Ogre::TextureManager::getSingleton().createManual(matName+"_tex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 512, 512, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
@@ -167,13 +206,12 @@
 
     void Map::updatePositions()
     {
+
 //Ogre::Entity * ent;// = mapSceneM_->createEntity("ent1", "drone.mesh");
-       int i=0; 
        for(ObjectList<orxonox::RadarViewable>::iterator it = ObjectList<orxonox::RadarViewable>::begin();
             it!=ObjectList<orxonox::RadarViewable>::end();
             it++)
         {
-            i++;
             //COUT(0) << "Radar_Position: " << it->getRVWorldPosition() << std::endl;
             //Ogre::SceneNode node = it->getMapNode();
             //Ogre::Entity ent = it->getMapEntity();
@@ -181,14 +219,23 @@
             {
                 it->MapNode_ = rootNode_->createChildSceneNode( it->getRVWorldPosition() );
                 //it->MapNode_->translate( it->getRVOrientedVelocity(), Ogre::TS_WORLD );
+                /*if(it->getRadarObjectShape() == RadarViewable::Dot)
+                {
+                    //if( !(it->MapEntity_) )//check wether the entity is already attached
+                    //{
+                        //it->MapEntity_ = this->mapSceneM_->createEntity( getUniqueNumberString(), "drone.mesh");
+                        //it->addEntity();
+                        //it->MapNode_->attachObject( it->MapEntity_ );
+                        //it->MapNode_->attachObject( it->line_ );
+                   // }
+                }*/
+                it->addMapEntity();
             }
-            it->MapNode_->setPosition( it->getRVWorldPosition() );
-            it->MapNode_->translate( it->getRVOrientedVelocity(), (Ogre::Node::TransformSpace)3 );
-            if( !(it->MapEntity_) )
-            {
-                it->MapEntity_ = mapSceneM_->createEntity( "MapEnt"+i, "drone.mesh");
-                it->MapNode_->attachObject( it->MapEntity_ );
-            }
+
+            it->updateMapPosition();
+
+
+
             
         
             
@@ -217,12 +264,16 @@
         {
             this->overlay_->show();
             this->isVisible_=1;
-            //updatePositions();
+            //set mouselook when showing map
+            if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && !HumanController::localController_s->controllableEntity_->isInMouseLook())
+            HumanController::localController_s->controllableEntity_->mouseLook();
         }
         else
         {
             this->overlay_->hide();
             this->isVisible_=0;
+            if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->isInMouseLook())
+            HumanController::localController_s->controllableEntity_->mouseLook();
         }
     }
     
@@ -234,7 +285,7 @@
             it++)
         {
         //Map * m = it->getMap();
-        COUT(0) << it->isVisible_ << std::endl;
+        //COUT(0) << it->isVisible_ << std::endl;
         it->toggleVisibility();
         //it->updatePositions();
         }
@@ -243,8 +294,26 @@
     void Map::tick(float dt)
     {
         //sNode_->lookAt(Vector3::NEGATIVE_UNIT_Z, Ogre::Node::TS_WORLD, Vector3::NEGATIVE_UNIT_Z);
-        updatePositions();
+        if( this->isVisible_ )
+            updatePositions();
+        //mReflectCam_->roll(Degree(1));
         
+    }
+
+    void Map::rotateYaw(const Vector2& value)
+    {
+        //if (this->bMouseLook_)
+            //this->mReflectCam_->yaw(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+        if(Map::singletonMap_s)
+            singletonMap_s->mReflectCam_->setOrientation(singletonMap_s->mReflectCam_->getOrientation() * Quaternion( (Degree)(value.y * singletonMap_s->mouseLookSpeed_) , Vector3::UNIT_Y));
+    }
+
+    void Map::rotatePitch(const Vector2& value)
+    {
+        //if (this->bMouseLook_)
+            //this->mReflectCam_->pitch(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+        if(Map::singletonMap_s)
+            singletonMap_s->mReflectCam_->setOrientation(singletonMap_s->mReflectCam_->getOrientation() * Quaternion( (Degree)(-value.y * singletonMap_s->mouseLookSpeed_) , Vector3::UNIT_X));
     }
     
  }

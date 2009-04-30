@@ -53,7 +53,7 @@ namespace orxonox
 
     public: // functions
         Map(BaseObject* creator);
-        virtual ~Map() {}
+        ~Map();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
@@ -64,21 +64,44 @@ namespace orxonox
         static void openMap();
 
         static const int maxRange_s=1000;
+
+        static void rotateYaw(const Vector2& value);
+        static void rotatePitch(const Vector2& value);
+
+        // variables
+
+
+        bool inline getVisibility()
+            { return this->isVisible_; };
+
+        static inline Ogre::SceneManager* getMapSceneManagerPtr()
+        {
+            return Map::singletonMap_s->mapSceneM_;
+        }
+        static inline Map* getSingletonPtr()
+        {
+            return Map::singletonMap_s;
+        }
+
+
+
         
     private: // functions
+
         void toggleVisibility();
         void updatePositions();
-
+        
 
     private: // variables
+        static Map* singletonMap_s;
+
         Ogre::SceneManager* sManager_;
         Ogre::SceneManager* mapSceneM_;
         Ogre::SceneNode* rootNode_;
         Ogre::OverlayManager * oManager_;
         Ogre::Camera* mReflectCam_;
-
-        
-        
+        //Ogre::SceneNode* playerShipNode_;
+        int mouseLookSpeed_;
         bool isVisible_;
     };
 }

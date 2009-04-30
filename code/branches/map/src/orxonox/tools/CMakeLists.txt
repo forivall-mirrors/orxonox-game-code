@@ -6,4 +6,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   TextureGenerator.cc
   Timer.cc
   WindowEventListener.cc
+  DynamicLines.cpp
+  DynamicRenderable.cpp
 )

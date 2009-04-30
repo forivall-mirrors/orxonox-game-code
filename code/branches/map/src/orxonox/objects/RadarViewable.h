@@ -36,8 +36,11 @@
 #include "util/Debug.h"
 #include "core/OrxonoxClass.h"
 
+#include <string>
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
+#include <OgreManualObject.h>
+#include "orxonox/tools/DynamicLines.h"
 
 namespace orxonox
 {
@@ -54,9 +57,10 @@ namespace orxonox
             Triangle
         };
 
+
     public:
         RadarViewable();
-        virtual ~RadarViewable() { }
+        virtual ~RadarViewable();
 
         inline void setRadarObjectCamouflage(float camouflage)
             { this->radarObjectCamouflage_ = camouflage; }
@@ -95,7 +99,9 @@ namespace orxonox
         //Used for Map
         Ogre::SceneNode * MapNode_;
         Ogre::Entity * MapEntity_;
-
+        DynamicLines* line_;
+        void addMapEntity();
+        void updateMapPosition();
     private:
         void validate(const WorldEntity* object) const
         {
@@ -105,6 +111,9 @@ namespace orxonox
                 assert(0);
             }
         }
+
+        
+        std::string uniqueId_;
 
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
