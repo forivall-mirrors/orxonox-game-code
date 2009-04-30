@@ -66,7 +66,7 @@ struct _NetworkExport NetworkFunctionPointer {
 
 
 
-class NetworkFunctionBase: virtual public OrxonoxClass {
+class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
   public:
     NetworkFunctionBase(std::string name);
     ~NetworkFunctionBase();
@@ -155,7 +155,7 @@ template <class T> class _NetworkExport NetworkMemberFunction: public NetworkMem
 
 template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
 {
-  memset(&destptr, 0, sizeof(ptr));
+  memset((uint8_t*)&destptr + sizeof(T), 0, sizeof(NetworkFunctionPointer)-sizeof(T));
   T p2 = ptr;
   memcpy( &destptr, &p2, sizeof(T) );
 //   for(unsigned int i=0; i<(sizeof(T)-1/4)+1; i++)
@@ -166,6 +166,7 @@ template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, std::str
 {
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
+  COUT(0) << "-==================== destptr: " << destptr.pointer[0] << ", " << destptr.pointer[1] << endl;
   new NetworkFunctionStatic( createFunctor(ptr), name, destptr );
   return 0;
 }
@@ -186,7 +187,7 @@ template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT pt
   { \
     NetworkFunctionPointer p1; \
     copyPtr( functionPointer, p1 ); \
-    FunctionCallManager::addCallStatic(NetworkMemberFunctionBase::getFunction(p1)->getNetworkID(), __VA_ARGS__); \
+    FunctionCallManager::addCallStatic(NetworkFunctionStatic::getFunction(p1)->getNetworkID(), __VA_ARGS__); \
   }
 #define callMemberNetworkFunction( functionPointer, objectID, ...) \
   { \
