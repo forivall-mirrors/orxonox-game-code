@@ -267,14 +267,14 @@ namespace orxonox{
         }
         else{
           // apply data
-          mem += sizeof(varReference_);
-          if ( checkEquality( this->variable_, mem )==true )
+          if ( checkEquality( this->variable_, mem+sizeof(varReference_) )==true )
           {
             mem += getSize( mode );
             return;
           }
           else
           {
+            mem += sizeof(varReference_);
             memcpy((void*)&this->varBuffer_, &this->variable_, sizeof(T));
             if ( this->callback_ != 0 )
               callback = true;

@@ -59,6 +59,9 @@
 #include "packet/DeleteObjects.h"
 #include "util/Convert.h"
 #include "ChatListener.h"
+#include "FunctionCallManager.h"
+#include "packet/FunctionIDs.h"
+
 
 namespace orxonox
 {
@@ -156,6 +159,7 @@ namespace orxonox
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       gamestates_->processGamestates();
       updateGamestate();
+      FunctionCallManager::sendCalls();
     }
   }
 
@@ -339,13 +343,21 @@ namespace orxonox
       COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
       return false;
     }
-    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    COUT(5) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    
+    // synchronise class ids
     connection->syncClassid(temp->getID());
+    
+    // now synchronise functionIDs
+    packet::FunctionIDs *fIDs = new packet::FunctionIDs();
+    bool b = fIDs->send();
+    assert(b);
+    
     temp->setSynched(true);
-    COUT(3) << "sending welcome" << std::endl;
+    COUT(4) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
-    bool b = w->send();
+    b = w->send();
     assert(b);
     packet::Gamestate *g = new packet::Gamestate();
     g->setClientID(temp->getID());

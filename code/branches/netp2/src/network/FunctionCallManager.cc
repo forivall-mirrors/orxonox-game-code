@@ -56,8 +56,11 @@ void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, 
 void FunctionCallManager::sendCalls()
 {
   std::map<uint32_t, packet::FunctionCalls*>::iterator it;
-  for (it = FunctionCallManager::clientMap_.begin(); it != FunctionCallManager::clientMap_.end(); it++)
+  for (it = FunctionCallManager::clientMap_.begin(); it != FunctionCallManager::clientMap_.end(); )
+  {
     it->second->send();
+    clientMap_.erase(it++);
+  }
 }
 
 

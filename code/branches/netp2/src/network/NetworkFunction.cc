@@ -57,11 +57,12 @@ namespace orxonox
   
   
   
-  NetworkFunctionStatic::NetworkFunctionStatic(Functor* functor, std::string name, const NetworkFunctionPointer& p):
+  NetworkFunctionStatic::NetworkFunctionStatic(FunctorStatic* functor, std::string name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
     RegisterObject(NetworkFunctionStatic);
     
+    this->functor_ = functor;
     functorMap_[p] = this;
     idMap_[ this->getNetworkID() ] = this;
   }

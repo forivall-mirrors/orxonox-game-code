@@ -49,7 +49,7 @@ namespace orxonox
       void setConfigValues();
       void registerVariables();
       
-      void call(unsigned int clientID);
+      static void call(unsigned int clientID);
 
 
       //unsigned functions

@@ -71,13 +71,13 @@ bool FunctionCalls::process(){
   for( unsigned int i = 0; i<this->nrOfCalls_; i++ )
   {
     uint32_t functionID = *(uint32_t*)temp;
-    bool isStatic = NetworkFunctionBase::isStatic( functionID );
+    bool isStatic = *(uint8_t*)(temp+sizeof(uint32_t));
     if( isStatic )
     {
       MultiType mt1, mt2, mt3, mt4, mt5;
       NetworkFunctionStatic *fct = NetworkFunctionStatic::getFunction( functionID );
-      uint32_t nrOfArguments = *(uint32_t*)(temp+sizeof(uint32_t));
-      temp+=2*sizeof(uint32_t);
+      uint32_t nrOfArguments = *(uint32_t*)(temp+sizeof(uint32_t)+sizeof(uint8_t));
+      temp+=2*sizeof(uint32_t)+sizeof(uint8_t);
       switch(nrOfArguments)
       {
         case 0:
@@ -121,9 +121,9 @@ bool FunctionCalls::process(){
     {
       MultiType mt1, mt2, mt3, mt4, mt5;
       NetworkMemberFunctionBase *fct = NetworkMemberFunctionBase::getFunction( functionID );
-      uint32_t nrOfArguments = *(uint32_t*)(temp+sizeof(uint32_t));
-      uint32_t objectID = *(uint32_t*)(temp+2*sizeof(uint32_t));
-      temp+=3*sizeof(uint32_t);
+      uint32_t nrOfArguments = *(uint32_t*)(temp+sizeof(uint32_t)+sizeof(uint8_t));
+      uint32_t objectID = *(uint32_t*)(temp+2*sizeof(uint32_t)+sizeof(uint8_t));
+      temp+=3*sizeof(uint32_t)+sizeof(uint8_t);
       switch(nrOfArguments)
       {
         case 0:
@@ -165,6 +165,7 @@ bool FunctionCalls::process(){
       }
     }
   }
+  delete this;
   return true;
 }
 
@@ -172,7 +173,7 @@ void FunctionCalls::addCallStatic( uint32_t networkID, MultiType* mt1, MultiType
   assert(!isDataENetAllocated());
   
   // first determine the size that has to be reserved for this call
-  uint32_t callsize = 2*sizeof(uint32_t); //size for network-function-id and nrOfArguments
+  uint32_t callsize = 2*sizeof(uint32_t)+sizeof(uint8_t); //size for network-function-id and nrOfArguments and for bool isStatic
   uint32_t nrOfArguments = 0;
   if(mt1)
   {
@@ -210,12 +211,13 @@ void FunctionCalls::addCallStatic( uint32_t networkID, MultiType* mt1, MultiType
     data_ = temp;
   }
   
-  // now serialise the mt values and copy the function id
+  // now serialise the mt values and copy the function id and isStatic
   uint8_t* temp = data_+currentSize_;
   *(uint32_t*)(data_+sizeof(uint32_t)) = *(uint32_t*)(data_+sizeof(uint32_t))+1; // increase number of calls
   *(uint32_t*)temp = networkID;
-  *(uint32_t*)(temp+sizeof(uint32_t)) = nrOfArguments;
-  temp += 2*sizeof(uint32_t);
+  *(uint8_t*)(temp+sizeof(uint32_t)) = true;
+  *(uint32_t*)(temp+sizeof(uint32_t)+sizeof(uint8_t)) = nrOfArguments;
+  temp += 2*sizeof(uint32_t)+sizeof(uint8_t);
   if(mt1)
   {
     mt1->exportData( temp ); //temp gets automatically increased
@@ -236,7 +238,8 @@ void FunctionCalls::addCallStatic( uint32_t networkID, MultiType* mt1, MultiType
       }
     }
   }
-  currentSize_ += callsize;
+  //currentSize_ += callsize;
+  currentSize_ = temp-data_;
   
 }
 
@@ -244,7 +247,7 @@ void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, MultiT
   assert(!isDataENetAllocated());
   
   // first determine the size that has to be reserved for this call
-  uint32_t callsize = 3*sizeof(uint32_t); //size for network-function-id and nrOfArguments and the objectID
+  uint32_t callsize = 3*sizeof(uint32_t)+sizeof(uint8_t); //size for network-function-id and nrOfArguments and the objectID
   uint32_t nrOfArguments = 0;
   if(mt1)
   {
@@ -286,9 +289,10 @@ void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, MultiT
   uint8_t* temp = data_+currentSize_;
   *(uint32_t*)(data_+sizeof(uint32_t)) = *(uint32_t*)(data_+sizeof(uint32_t))+1; // increase number of calls
   *(uint32_t*)temp = networkID;
-  *(uint32_t*)(temp+sizeof(uint32_t)) = nrOfArguments;
-  *(uint32_t*)(temp+2*sizeof(uint32_t)) = objectID;
-  temp += 3*sizeof(uint32_t);
+  *(uint8_t*)(temp+sizeof(uint32_t)) = false;
+  *(uint32_t*)(temp+sizeof(uint32_t)+sizeof(uint8_t)) = nrOfArguments;
+  *(uint32_t*)(temp+2*sizeof(uint32_t)+sizeof(uint8_t)) = objectID;
+  temp += 3*sizeof(uint32_t)+sizeof(uint8_t);
   if(mt1)
   {
     mt1->exportData( temp ); //temp gets automatically increased

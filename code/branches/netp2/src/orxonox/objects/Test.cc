@@ -81,21 +81,22 @@ namespace orxonox
 	}
 
 
-	void Test::registerVariables()
-	{
-		registerVariable ( u1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
+  void Test::registerVariables()
+  {
+    registerVariable ( u1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
     registerVariable ( u2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkU2 ));
-		registerVariable ( u3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
+    registerVariable ( u3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
     registerVariable ( u4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkU4 ), true );
     
     registerVariable ( s1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkS1 ));
     registerVariable ( s2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkS2 ));
     registerVariable ( s3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkS3 ), true );
     registerVariable ( s4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkS4 ), true );
-	}
+  }
   
   void Test::call(unsigned int clientID)
   {
+    callStaticNetworkFunction( &Test::printV1, clientID );
     callStaticNetworkFunction( &Test::printV1, clientID );
   }
   

@@ -76,12 +76,13 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
     inline std::string  getName() const                 { return name_; }
     static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
     
-    
     static inline void setNetworkID(std::string name, uint32_t id){ assert( nameMap_.find(name)!=nameMap_.end() ); nameMap_[name]->setNetworkID(id); }
+    
+  protected:
+    static std::map<uint32_t, bool> isStaticMap_;
     
   private:
     static std::map<std::string, NetworkFunctionBase*> nameMap_;
-    static std::map<uint32_t, bool> isStaticMap_;
     uint32_t networkID_;
     std::string name_;
       
@@ -90,7 +91,7 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
 
 class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
   public:
-    NetworkFunctionStatic(Functor* functor, std::string name, const NetworkFunctionPointer& p);
+    NetworkFunctionStatic(FunctorStatic* functor, std::string name, const NetworkFunctionPointer& p);
     ~NetworkFunctionStatic();
     
     inline void call(){ (*this->functor_)(); }
@@ -151,6 +152,11 @@ template <class T> class _NetworkExport NetworkMemberFunction: public NetworkMem
   private:
     FunctorMember<T>* functor_;
 };
+
+template <class T> NetworkMemberFunction<T>::NetworkMemberFunction(FunctorMember<T>* functor, std::string name, const NetworkFunctionPointer& p):
+    NetworkMemberFunctionBase(name, p), functor_(functor)
+{
+}
 
 
 template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
