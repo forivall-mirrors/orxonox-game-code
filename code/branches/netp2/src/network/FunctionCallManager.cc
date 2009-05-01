@@ -34,33 +34,34 @@ namespace orxonox {
 std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::clientMap_;
 
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, MultiType* mt1, MultiType* mt2, MultiType* mt3, MultiType* mt4, MultiType* mt5)
-{ 
+{  
   if(clientMap_.find(clientID)==clientMap_.end()) 
   {
-    clientMap_[clientID] = new packet::FunctionCalls; 
-    clientMap_[clientID]->setClientID(clientID); 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
   } 
-  clientMap_[clientID]->addCallStatic(functionID, mt1, mt2, mt3, mt4, mt5);
+  FunctionCallManager::	clientMap_[clientID]->addCallStatic(functionID, mt1, mt2, mt3, mt4, mt5);
 }
 
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, MultiType* mt1, MultiType* mt2, MultiType* mt3, MultiType* mt4, MultiType* mt5)
 { 
   if(clientMap_.find(clientID)==clientMap_.end()) 
   {
-    clientMap_[clientID] = new packet::FunctionCalls; 
-    clientMap_[clientID]->setClientID(clientID); 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
   } 
-  clientMap_[clientID]->addCallMember(functionID, objectID, mt1, mt2, mt3, mt4, mt5);
+  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, mt1, mt2, mt3, mt4, mt5);
 }
 
 void FunctionCallManager::sendCalls()
 {
   std::map<uint32_t, packet::FunctionCalls*>::iterator it;
-  for (it = FunctionCallManager::clientMap_.begin(); it != FunctionCallManager::clientMap_.end(); )
+  for (it = FunctionCallManager::clientMap_.begin(); it != FunctionCallManager::clientMap_.end(); it++ )
   {
+    assert(!FunctionCallManager::clientMap_.empty());
     it->second->send();
-    clientMap_.erase(it++);
   }
+  FunctionCallManager::clientMap_.clear();
 }
 
 
