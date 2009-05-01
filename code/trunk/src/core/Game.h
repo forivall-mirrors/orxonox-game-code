@@ -43,7 +43,7 @@
 #include "OrxonoxClass.h"
 
 #define AddGameState(classname, name) \
-    static bool bGameStateDummy_##classname##__LINE__ = orxonox::Game::addGameState(new classname(name))
+    static bool MACRO_CONCATENATE(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(name))
 
 namespace orxonox
 {

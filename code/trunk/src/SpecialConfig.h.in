@@ -39,6 +39,8 @@
 #ifndef _SpecialConfig_H__
 #define _SpecialConfig_H__
 
+#include "OrxonoxConfig.h"
+
 /* Set whether we must suffix "ceguilua/" for the CEGUILua.h include */
 #cmakedefine CEGUILUA_USE_INTERNAL_LIBRARY
 
@@ -52,11 +54,6 @@
 
 /* Using MSVC or XCode IDE */
 #cmakedefine CMAKE_CONFIGURATION_TYPES
-
-/* Macros used in the next section */
-#define MACRO_CONCATENATE(str1, str2) str1##str2
-#define MACRO_QUOTEME_AUX(x) #x
-#define MACRO_QUOTEME(x) MACRO_QUOTEME_AUX(x)
 
 /* Handle default ConfigValues */
 namespace orxonox
