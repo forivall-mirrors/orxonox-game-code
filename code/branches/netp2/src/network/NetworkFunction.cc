@@ -69,6 +69,7 @@ namespace orxonox
   
   NetworkFunctionStatic::~NetworkFunctionStatic()
   {
+    delete this->functor_;
   }
   
   

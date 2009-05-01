@@ -37,6 +37,7 @@
 #include <cassert>
 #include "util/MultiType.h"
 #include "synchronisable/Synchronisable.h"
+#include "OrxonoxConfig.h"
 #include "FunctionCallManager.h"
 
 
@@ -157,7 +158,10 @@ template <class T> NetworkMemberFunction<T>::NetworkMemberFunction(FunctorMember
     NetworkMemberFunctionBase(name, p), functor_(functor)
 {
 }
-
+template <class T> NetworkMemberFunction<T>::~NetworkMemberFunction()
+{
+  delete this->functor_;
+}
 
 template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
 {
@@ -172,7 +176,6 @@ template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, std::str
 {
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
-  COUT(0) << "-==================== destptr: " << destptr.pointer[0] << ", " << destptr.pointer[1] << endl;
   new NetworkFunctionStatic( createFunctor(ptr), name, destptr );
   return 0;
 }
@@ -181,25 +184,27 @@ template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT pt
 {
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
-  new NetworkMemberFunction<T>( new FunctorMember<T>(ptr), name, destptr );
+  new NetworkMemberFunction<T>( createFunctor(ptr), name, destptr );
   return 0;
 }
 
-#define registerStaticNetworkFunction( functionPointer, name ) \
-  void* NETWORK_FUNCTION_name##a = registerStaticNetworkFunctionFct( functionPointer, name );
-#define registerMemberNetworkFunction( functionPointer, class, name ) \
-  void* NETWORK_FUNCTION_class##name##a = registerMemberNetworkFunction<class>( functionPointer, name );
+#define registerStaticNetworkFunction( functionPointer ) \
+  static void* MACRO_CONCATENATE( NETWORK_FUNCTION_, __LINE__ ) = registerStaticNetworkFunctionFct( functionPointer, #functionPointer );
+#define registerMemberNetworkFunction( class, function ) \
+  static void* MACRO_CONCATENATE( NETWORK_FUNCTION_##class, __LINE__ ) = registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function);
+  // call it with functionPointer, clientID, args
 #define callStaticNetworkFunction( functionPointer, ...) \
   { \
     NetworkFunctionPointer p1; \
     copyPtr( functionPointer, p1 ); \
     FunctionCallManager::addCallStatic(NetworkFunctionStatic::getFunction(p1)->getNetworkID(), __VA_ARGS__); \
   }
-#define callMemberNetworkFunction( functionPointer, objectID, ...) \
+  // call it with class, function, objectID, clientID, args
+#define callMemberNetworkFunction( class, function, objectID, ...) \
   { \
     NetworkFunctionPointer p1; \
-    copyPtr( functionPointer, p1 ); \
-    FunctionCallManager::addCallMember(NetworkMemberFunctionBase::getFunction(p1)->getNetworkID(), objectID, __VA_ARGS__) \
+    copyPtr( &class::function, p1 ); \
+    FunctionCallManager::addCallMember(NetworkMemberFunctionBase::getFunction(p1)->getNetworkID(), objectID, __VA_ARGS__); \
   }
 
 

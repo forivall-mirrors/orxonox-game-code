@@ -48,7 +48,8 @@ namespace orxonox
   //void* NETWORK_FUNCTION_TEST_B = memcpy(&NETWORK_FUNCTION_POINTER, &a, sizeof(a));
 //   NetworkFunctionBase* NETWORK_FUNCTION_TEST_C = new NetworkFunctionStatic( createFunctor(&Test::printV1), "bla", NETWORK_FUNCTION_POINTER );
   
-  registerStaticNetworkFunction( &Test::printV1, "printV1" );
+  registerStaticNetworkFunction( &Test::printV1 );
+  registerMemberNetworkFunction( Test, checkU1 );
   
   Test* Test::instance_ = 0;
 
@@ -98,6 +99,13 @@ namespace orxonox
   {
     callStaticNetworkFunction( &Test::printV1, clientID );
     callStaticNetworkFunction( &Test::printV1, clientID );
+  }
+  
+  void Test::tick(float dt)
+  {
+    if(!Core::isMaster())
+      callMemberNetworkFunction( Test, checkU1, this->getObjectID(), 0 );
+//       callMemberNetworkFunction( &Test::printV1, this->getObjectID(), 0);
   }
   
   void Test::checkU1(){ COUT(1) << "U1 changed: " << u1 << std::endl; }

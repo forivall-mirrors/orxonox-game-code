@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
+#include "Tickable.h"
 
 
 typedef int TYPE;
@@ -40,7 +41,7 @@ typedef unsigned int UTYPE;
 
 namespace orxonox
 {
-  class _OrxonoxExport Test: public BaseObject, public Synchronisable
+  class _OrxonoxExport Test: public BaseObject, public Synchronisable, public Tickable
   {
     public:
       Test(BaseObject* creator);
@@ -50,6 +51,7 @@ namespace orxonox
       void registerVariables();
       
       static void call(unsigned int clientID);
+      virtual void tick(float dt);
 
 
       //unsigned functions

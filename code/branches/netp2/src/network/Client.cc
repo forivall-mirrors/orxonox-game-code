@@ -46,6 +46,7 @@
 #include "synchronisable/Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include "packet/Packet.h"
+#include "FunctionCallManager.h"
 
 // #include "packet/Acknowledgement.h"
 
@@ -148,6 +149,7 @@ namespace orxonox
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // gs gets automatically deleted by enet callback
       }
+      FunctionCallManager::sendCalls();
     }
     ENetEvent *event;
     // stop if the packet queue is empty
