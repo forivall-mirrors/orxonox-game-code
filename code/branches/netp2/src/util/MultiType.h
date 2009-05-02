@@ -79,30 +79,30 @@ namespace orxonox
     */
     enum MT_Type
     {
-        MT_null,
-        MT_char,
-        MT_uchar,
-        MT_short,
-        MT_ushort,
-        MT_int,
-        MT_uint,
-        MT_long,
-        MT_ulong,
-        MT_longlong,
-        MT_ulonglong,
-        MT_float,
-        MT_double,
-        MT_longdouble,
-        MT_bool,
-        MT_void,
-        MT_string,
-        MT_vector2,
-        MT_vector3,
-        MT_vector4,
-        MT_colourvalue,
-        MT_quaternion,
-        MT_radian,
-        MT_degree
+        MT_null=0,
+        MT_char=1,
+        MT_uchar=2,
+        MT_short=3,
+        MT_ushort=4,
+        MT_int=5,
+        MT_uint=6,
+        MT_long=7,
+        MT_ulong=8,
+        MT_longlong=9,
+        MT_ulonglong=10,
+        MT_float=11,
+        MT_double=12,
+        MT_longdouble=13,
+        MT_bool=14,
+        MT_void=15,
+        MT_string=16,
+        MT_vector2=17,
+        MT_vector3=18,
+        MT_vector4=19,
+        MT_colourvalue=20,
+        MT_quaternion=21,
+        MT_radian=22,
+        MT_degree=23
     };
 
     /**
@@ -325,14 +325,14 @@ namespace orxonox
             std::string                       getTypename()             const;
             
             /** @brief Saves the value of the MT to a bytestream (pointed at by mem) and increases mem pointer by size of MT */
-            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type)<=8); *(uint8_t*)(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->importData(mem); }
+            inline void                       exportData(uint8_t*& mem) const { assert(sizeof(MT_Type)<=8); *(uint8_t*)(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
             /** @brief Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT */
-            inline void                       exportData(uint8_t*& mem) { assert(sizeof(MT_Type)<=8); this->setType(*(uint8_t*)mem); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
+            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type)<=8); this->setType(static_cast<MT_Type>(*(uint8_t*)mem)); mem+=sizeof(uint8_t); this->value_->importData(mem); }
             /** @brief Saves the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
             inline uint8_t*&                  operator << (uint8_t*& mem) { importData(mem); return mem; }
             /** @brief Loads the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
-            inline void                       operator >> (uint8_t*& mem) { exportData(mem); }
-            inline uint32_t                   getNetworkSize() { assert(this->value_); return this->value_->getSize() + sizeof(uint8_t); }
+            inline void                       operator >> (uint8_t*& mem) const { exportData(mem); }
+            inline uint32_t                   getNetworkSize() const { assert(this->value_); return this->value_->getSize() + sizeof(uint8_t); }
 
             /** @brief Checks whether the value is a default one. */
             bool                              hasDefaultValue()         const { return this->value_->hasDefaultValue(); }

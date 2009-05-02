@@ -38,10 +38,13 @@
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
+#include "network/NetworkFunction.h"
 
 namespace orxonox
 {
     CreateFactory(Pawn);
+    
+    registerMemberNetworkFunction( Pawn, doFire );
 
     Pawn::Pawn(BaseObject* creator) : ControllableEntity(creator)
     {
@@ -116,17 +119,17 @@ namespace orxonox
     {
         SUPER(Pawn, tick, dt);
 
-        if (this->weaponSystem_)
-        {
-            if (this->fire_ & WeaponMode::fire)
-                this->weaponSystem_->fire(WeaponMode::fire);
-            if (this->fire_ & WeaponMode::altFire)
-                this->weaponSystem_->fire(WeaponMode::altFire);
-            if (this->fire_ & WeaponMode::altFire2)
-                this->weaponSystem_->fire(WeaponMode::altFire2);
-        }
-        this->fire_ = this->firehack_;
-        this->firehack_ = 0x0;
+//         if (this->weaponSystem_)
+//         {
+//             if (this->fire_ & WeaponMode::fire)
+//                 this->weaponSystem_->fire(WeaponMode::fire);
+//             if (this->fire_ & WeaponMode::altFire)
+//                 this->weaponSystem_->fire(WeaponMode::altFire);
+//             if (this->fire_ & WeaponMode::altFire2)
+//                 this->weaponSystem_->fire(WeaponMode::altFire2);
+//         }
+//         this->fire_ = this->firehack_;
+//         this->firehack_ = 0x0;
 
         if (Core::isMaster())
           if (this->health_ <= 0)
@@ -255,7 +258,22 @@ namespace orxonox
 
     void Pawn::fire(WeaponMode::Enum fireMode)
     {
-        this->firehack_ |= fireMode;
+        doFire(fireMode);
+    }
+    
+    void Pawn::doFire(uint8_t fireMode)
+    {
+        if(Core::isMaster())
+        {
+            if (this->weaponSystem_)
+                this->weaponSystem_->fire((WeaponMode::Enum)fireMode);
+        }
+        else
+        {
+            callMemberNetworkFunction( Pawn, doFire, this->getObjectID(), 0, ((uint8_t)fireMode));
+            if (this->weaponSystem_)
+                this->weaponSystem_->fire((WeaponMode::Enum)fireMode);
+        }
     }
 
     void Pawn::postSpawn()

@@ -350,6 +350,7 @@ namespace orxonox
     
     // now synchronise functionIDs
     packet::FunctionIDs *fIDs = new packet::FunctionIDs();
+    fIDs->setClientID(clientID);
     bool b = fIDs->send();
     assert(b);
     

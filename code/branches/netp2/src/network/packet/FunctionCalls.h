@@ -31,8 +31,8 @@ public:
     { assert(!this->isDataENetAllocated()); return currentSize_; }
   bool process();
 
-  void addCallStatic( uint32_t networkID, MultiType* mt1=0, MultiType* mt2=0, MultiType* mt3=0, MultiType* mt4=0, MultiType* mt5=0);
-  void addCallMember( uint32_t networkID, uint32_t objectID, MultiType* mt1=0, MultiType* mt2=0, MultiType* mt3=0, MultiType* mt4=0, MultiType* mt5=0);
+  void addCallStatic( uint32_t networkID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
+  void addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
 private:
   uint32_t nrOfCalls_;
   unsigned int clientID_;

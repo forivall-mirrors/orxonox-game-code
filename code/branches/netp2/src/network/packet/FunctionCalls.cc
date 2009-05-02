@@ -170,7 +170,7 @@ bool FunctionCalls::process(){
   return true;
 }
 
-void FunctionCalls::addCallStatic( uint32_t networkID, MultiType* mt1, MultiType* mt2, MultiType* mt3, MultiType* mt4, MultiType* mt5){
+void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
   assert(!isDataENetAllocated());
   
   // first determine the size that has to be reserved for this call
@@ -244,7 +244,7 @@ void FunctionCalls::addCallStatic( uint32_t networkID, MultiType* mt1, MultiType
   
 }
 
-void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, MultiType* mt1, MultiType* mt2, MultiType* mt3, MultiType* mt4, MultiType* mt5){
+void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
   assert(!isDataENetAllocated());
   
   // first determine the size that has to be reserved for this call
