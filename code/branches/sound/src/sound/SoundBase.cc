@@ -33,14 +33,17 @@
 
 namespace orxonox 
 {
+    SoundBase::SoundBase()
+    {
+        this->source_ = 0;
+        this->buffer_ = 0;
+        this->entity_ = NULL;
+    }
     SoundBase::SoundBase(WorldEntity* entity)
     {
         this->source_ = 0;
         this->buffer_ = 0;
         this->entity_ = entity;
-
-        if(SoundBase::soundmanager_s == NULL)
-            SoundBase::soundmanager_s = SoundManager::instance();
     }
 
     void SoundBase::attachToEntity(WorldEntity* entity)
@@ -50,7 +53,7 @@ namespace orxonox
     }
 
     void SoundBase::update() {
-        if(alIsSource(this->source_)) {
+        if(this->entity_ != NULL && alIsSource(this->source_)) {
             Vector3 pos = this->entity_->getPosition();
             alSource3f(this->source_, AL_POSITION, pos.x, pos.y, pos.z);
             ALenum error = alGetError();
@@ -98,31 +101,35 @@ namespace orxonox
         if(alIsSource(this->source_)) {
             return getSourceState() == AL_PLAYING;
         }
+        return false;
     }
 
     bool SoundBase::isPaused() {
         if(alIsSource(this->source_)) {
             return getSourceState() == AL_PAUSED;
         }
+        return true;
     }
 
     bool SoundBase::isStopped() {
         if(alIsSource(this->source_)) {
             return getSourceState() == AL_INITIAL || getSourceState() == AL_STOPPED;
         }
+        return true;
     }
 
     bool SoundBase::loadFile(std::string filename) {
+        COUT(3) << "OpenAL ALUT: loading file " << filename << std::endl;
         this->buffer_ = alutCreateBufferFromFile(filename.c_str());
         if(this->buffer_ == AL_NONE) {
-            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError());
+            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
             return false;
         }
 
         alGenSources(1, &this->source_);
         alSourcei(this->source_, AL_BUFFER, this->buffer_);
         if(alGetError() != AL_NO_ERROR) {
-            COUT(2) << "OpenAL: Error loading sample file";
+            COUT(2) << "OpenAL: Error loading sample file" << std::endl;
             return false;
         }
         return true;

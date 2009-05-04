@@ -37,28 +37,16 @@
 namespace orxonox
 {
     /**
-     * Static function to get the singleton instance of SoundManager.
-     *
-     * @return The singleton instance
-     */
-    SoundManager* SoundManager::instance()
-    {
-        if(SoundManager::singleton_ == NULL)
-        {
-            SoundManager::singleton_ = new SoundManager();
-        }
-
-        return SoundManager::singleton_;
-    }
-
-    /**
      * Default constructor
      */
     SoundManager::SoundManager()
     {
         if(!alutInit(NULL,NULL)) {
-            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError());
+            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
         }
+
+        COUT(4) << "OpenAL ALUT version:" << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
+        COUT(4) << "OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
     }
 
     /**
@@ -97,6 +85,7 @@ namespace orxonox
     {
         // update listener position
         Camera* camera = CameraManager::getInstance().getActiveCamera();
+        if(camera == NULL) return;
         Vector3 pos = camera->getPosition();
         alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
         ALenum error = alGetError();

@@ -57,7 +57,7 @@ TARGET_LINK_LIBRARIES(orxonox
   util
   core
   network
-  #audio
+  sound
 )
 
 ORXONOX_INSTALL(orxonox)

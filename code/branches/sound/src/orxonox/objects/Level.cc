@@ -76,6 +76,8 @@ namespace orxonox
 
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
+        
+        XMLPortParamLoadOnly(Level, "ambientsound", loadAmbientSound, xmlelement, mode);
 
         XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
     }
@@ -145,6 +147,22 @@ std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << st
             ++i;
         }
         return 0;
+    }
+
+    void Level::loadAmbientSound(const std::string& filename)
+    {
+        if(filename == "") return;
+        else
+        {
+            if(this->ambientsound_ == NULL)
+            {
+                this->ambientsound_ = new SoundBase();
+                this->sndmgr_.addSound(this->ambientsound_);
+            }
+
+            this->ambientsound_->loadFile(filename);
+            this->ambientsound_->play();
+        }
     }
 
     void Level::playerEntered(PlayerInfo* player)

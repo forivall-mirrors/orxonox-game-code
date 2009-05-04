@@ -45,17 +45,13 @@ namespace orxonox
     class SoundManager : public Tickable 
     {
     public:
-        static SoundManager* instance();
-        
+        SoundManager();
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
-        
+
         virtual void tick(float dt);
 
     private:
-        SoundManager(); // private constructor -> singleton
-        static SoundManager* singleton_;
-
         std::list<SoundBase*> soundlist_;
 
     }; // class SoundManager

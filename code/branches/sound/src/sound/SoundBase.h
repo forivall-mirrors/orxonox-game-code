@@ -44,8 +44,8 @@ namespace orxonox
     class SoundBase
     {
     public:
+        SoundBase();
         SoundBase(WorldEntity* entity);
-        ~SoundBase();
 
         void attachToEntity(WorldEntity* entity);
         void update();
@@ -63,8 +63,6 @@ namespace orxonox
         ALuint source_;
         ALuint buffer_;
         WorldEntity* entity_;
-
-        static SoundManager* soundmanager_s;
 
         ALint getSourceState();
     }; // class SoundBase

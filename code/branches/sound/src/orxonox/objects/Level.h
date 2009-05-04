@@ -32,6 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include "network/synchronisable/Synchronisable.h"
+#include "sound/SoundBase.h"
+#include "sound/SoundManager.h"
 #include "core/BaseObject.h"
 
 namespace orxonox
@@ -49,6 +51,8 @@ namespace orxonox
                 { this->description_ = description; }
             inline const std::string& getDescription() const
                 { return this->description_; }
+
+            void loadAmbientSound(const std::string& filename);
 
             void playerEntered(PlayerInfo* player);
             void playerLeft(PlayerInfo* player);
@@ -68,6 +72,8 @@ namespace orxonox
             std::string            xmlfilename_;
             XMLFile*               xmlfile_;
             std::list<BaseObject*> objects_;
+            SoundManager           sndmgr_;
+            SoundBase*             ambientsound_;
     };
 }
 
