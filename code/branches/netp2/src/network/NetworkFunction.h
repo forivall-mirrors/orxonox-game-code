@@ -143,12 +143,36 @@ template <class T> class _NetworkExport NetworkMemberFunction: public NetworkMem
     NetworkMemberFunction(FunctorMember<T>* functor, std::string name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunction();
     
-    inline void call(uint32_t objectID){ (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID))); }
-    inline void call(uint32_t objectID, const MultiType& mt1){ (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1); }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2){ (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2); }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3){ (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3); }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4){ (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4); }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5){ (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4, mt5); }
+    inline void call(uint32_t objectID)
+    { 
+      if ( Synchronisable::getSynchronisable(objectID)!=0 )
+        (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)));
+    }
+    inline void call(uint32_t objectID, const MultiType& mt1)
+    { 
+      if ( Synchronisable::getSynchronisable(objectID)!=0 )
+        (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1);
+    }
+    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)
+    { 
+      if ( Synchronisable::getSynchronisable(objectID)!=0 )
+        (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2);
+    }
+    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
+    { 
+      if ( Synchronisable::getSynchronisable(objectID)!=0 )
+        (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3);
+    }
+    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
+    { 
+      if ( Synchronisable::getSynchronisable(objectID)!=0 )
+        (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4);
+    }
+    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
+    { 
+      if ( Synchronisable::getSynchronisable(objectID)!=0 )
+        (*this->functor_)(dynamic_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4, mt5);
+    }
     
   private:
     FunctorMember<T>* functor_;
