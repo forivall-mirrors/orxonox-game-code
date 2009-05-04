@@ -161,7 +161,7 @@ std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << st
             }
 
             this->ambientsound_->loadFile(filename);
-            this->ambientsound_->play();
+            this->ambientsound_->play(true);
         }
     }
 

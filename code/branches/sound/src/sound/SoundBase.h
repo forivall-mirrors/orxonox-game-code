@@ -49,7 +49,7 @@ namespace orxonox
 
         void attachToEntity(WorldEntity* entity);
         void update();
-        void play(bool loop);
+        void play(bool loop = false);
         void stop();
         void pause();
 
