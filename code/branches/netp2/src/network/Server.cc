@@ -154,13 +154,13 @@ namespace orxonox
   void Server::tick(float time) {
     processQueue();
     //this steers our network frequency
-    timeSinceLastUpdate_+=time;
-    if(timeSinceLastUpdate_>=NETWORK_PERIOD){
+//     timeSinceLastUpdate_+=time;
+//     if(timeSinceLastUpdate_>=NETWORK_PERIOD){
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       gamestates_->processGamestates();
       updateGamestate();
       FunctionCallManager::sendCalls();
-    }
+//     }
   }
 
   bool Server::queuePacket(ENetPacket *packet, int clientID){

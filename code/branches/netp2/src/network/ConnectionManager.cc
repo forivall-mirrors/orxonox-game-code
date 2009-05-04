@@ -189,14 +189,15 @@ namespace orxonox
     }
 
     event = new ENetEvent;
-    while(!quit){
+    while(!quit)
+    {
       { //mutex scope
         boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
           // we should never reach this point
-          assert(0);
           quit=true;
           continue;
+          printf("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhh");
           // add some error handling here ========================
         }
         lock.unlock();
@@ -204,6 +205,7 @@ namespace orxonox
       switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
+          printf("====================================================================");
         case ENET_EVENT_TYPE_DISCONNECT:
         case ENET_EVENT_TYPE_RECEIVE:
             processData(event);
