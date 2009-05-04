@@ -22,6 +22,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   PongCenterpoint.cc
   PongBall.cc
   PongBat.cc
+  ForceField.cc
 )
 
 ADD_SUBDIRECTORY(pawns)
