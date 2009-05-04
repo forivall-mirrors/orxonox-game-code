@@ -131,6 +131,7 @@ namespace orxonox
             virtual void assignDefaultPawnsIfNeeded();
             virtual void checkStart();
             virtual void spawnPlayer(PlayerInfo* player);
+            virtual void spawnPlayerAsDefaultPawn(PlayerInfo* player);
             virtual void spawnPlayersIfRequested();
             virtual void spawnDeadPlayersIfRequested();
 

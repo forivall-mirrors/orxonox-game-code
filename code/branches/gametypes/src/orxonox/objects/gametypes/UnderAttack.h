@@ -43,6 +43,9 @@ namespace orxonox
         public:
             UnderAttack(BaseObject* creator);
             virtual ~UnderAttack() {}
+
+            void setConfigValues();
+
             void tick (float dt);
             void addDestroyer(Destroyer* destroyer);
             inline Destroyer* getDestroyer() const

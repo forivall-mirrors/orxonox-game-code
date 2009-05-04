@@ -34,6 +34,7 @@
 #include "objects/Teamcolourable.h"
 #include "objects/worldentities/TeamSpawnPoint.h"
 
+#include "network/Host.h"
 namespace orxonox
 {
     CreateUnloadableFactory(UnderAttack);
@@ -49,6 +50,11 @@ namespace orxonox
         this->setConfigValues();
     }
 
+    void UnderAttack::setConfigValues()
+    {
+        SetConfigValue(gameTime_, 30);
+    }
+
     void UnderAttack::addDestroyer(Destroyer* destroyer)
     {
         this->destroyer_ = destroyer;
@@ -59,9 +65,10 @@ namespace orxonox
     {
         if (pawn == this->destroyer_)
         {
-
-            COUT(0) << "Ship destroyed! Team 0 has won!" << std::endl;
-            // Todo: end game
+            this->end(); //end gametype
+            std::string message = "Ship destroyed! Team 0 has won!";
+            COUT(0) << message << std::endl;
+            Host::Broadcast(message);
         }
     }
 
@@ -128,7 +135,10 @@ namespace orxonox
             if (gameTime_<= 0 && !gameEnded_)
             {
                 gameEnded_ = true;
-                COUT(0) << "Time is up! Team 1 has won!" << std::endl;
+                this->end();
+                std::string message = "Time is up! Team 1 has won!";
+                COUT(0) << message << std::endl;
+                Host::Broadcast(message);
             }
         }
     }

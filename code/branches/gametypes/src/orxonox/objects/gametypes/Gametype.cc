@@ -92,7 +92,7 @@ namespace orxonox
 
         if (!this->gtinfo_.bStarted_)
             this->checkStart();
-        else
+        else if (!this->gtinfo_.bEnded_)
             this->spawnDeadPlayersIfRequested();
 
         this->assignDefaultPawnsIfNeeded();
@@ -110,6 +110,31 @@ namespace orxonox
     void Gametype::end()
     {
         this->gtinfo_.bEnded_ = true;
+
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if (it->first->getControllableEntity())
+            {
+                ControllableEntity* oldentity = it->first->getControllableEntity();
+        
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity->getCreator());
+                if (oldentity->getCamera())
+                {
+                    entity->setPosition(oldentity->getCamera()->getWorldPosition());
+                    entity->setOrientation(oldentity->getCamera()->getWorldOrientation());
+                }
+                else
+                {
+                    entity->setPosition(oldentity->getWorldPosition());
+                    entity->setOrientation(oldentity->getWorldOrientation());
+                }
+
+                it->first->stopControl(oldentity, true);
+                it->first->startControl(entity);
+            }
+            else
+                this->spawnPlayerAsDefaultPawn(it->first);
+        }
     }
 
     void Gametype::playerEntered(PlayerInfo* player)
@@ -253,20 +278,8 @@ namespace orxonox
 
                 if (!it->first->isReadyToSpawn() || !this->gtinfo_.bStarted_)
                 {
-                    SpawnPoint* spawn = this->getBestSpawnPoint(it->first);
-                    if (spawn)
-                    {
-                        // force spawn at spawnpoint with default pawn
-                        ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
-                        spawn->spawn(entity);
-                        it->first->startControl(entity);
-                        it->second.state_ = PlayerState::Dead;
-                    }
-                    else
-                    {
-                        COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
-                        abort();
-                    }
+                    this->spawnPlayerAsDefaultPawn(it->first);
+                    it->second.state_ = PlayerState::Dead;
                 }
             }
         }
@@ -336,6 +349,23 @@ namespace orxonox
             player->startControl(spawnpoint->spawn());
             this->players_[player].state_ = PlayerState::Alive;
             this->playerPostSpawn(player);
+        }
+        else
+        {
+            COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+            abort();
+        }
+    }
+
+    void Gametype::spawnPlayerAsDefaultPawn(PlayerInfo* player)
+    {
+        SpawnPoint* spawn = this->getBestSpawnPoint(player);
+        if (spawn)
+        {
+            // force spawn at spawnpoint with default pawn
+            ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
+            spawn->spawn(entity);
+            player->startControl(entity);
         }
         else
         {
