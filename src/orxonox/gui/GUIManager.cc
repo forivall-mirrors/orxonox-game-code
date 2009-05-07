@@ -186,11 +186,11 @@ namespace orxonox
     {
         try
         {
-            // call main Lua script
-            this->scriptModule_->executeScriptFile("loadGUI_2.lua", "GUI");
             // set datapath for GUI data
             lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
             lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
+            // call main Lua script
+            this->scriptModule_->executeScriptFile("loadGUI_3.lua", "GUI");
         }
         catch (CEGUI::Exception& ex)
         {

@@ -66,7 +66,7 @@ namespace orxonox
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
 
         // show main menu
-        GUIManager::getInstance().showGUI("mainmenu");
+        GUIManager::getInstance().showGUI("mainmenu_2");
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 
