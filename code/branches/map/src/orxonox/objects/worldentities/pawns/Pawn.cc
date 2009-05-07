@@ -74,6 +74,8 @@ namespace orxonox
         this->setRadarObjectShape(RadarViewable::Dot);
 
         this->registerVariables();
+
+        this->isHumanShip_ = this->hasLocalController();
     }
 
     Pawn::~Pawn()
@@ -288,6 +290,14 @@ namespace orxonox
             return this->weaponSystem_->getWeaponSetPointer(index);
         else
             return 0;
+    }
+
+    //Tell the Map (RadarViewable), if this is a playership
+    void Pawn::startLocalHumanControl()
+    {
+//        SUPER(ControllableEntity, changedPlayer());
+        ControllableEntity::startLocalHumanControl();
+        this->isHumanShip_ = true;
     }
 
 

@@ -51,6 +51,7 @@ namespace orxonox
         , MapNode_(NULL)
         , MapEntity_(NULL)
         , line_(NULL)
+        , isHumanShip_(false)
     {
         RegisterRootObject(RadarViewable);
 
@@ -68,7 +69,13 @@ namespace orxonox
     RadarViewable::~RadarViewable()
     {
         delete MapNode_;
+        MapNode_=0;
         delete MapEntity_;
+        MapEntity_=0;
+        delete line_;
+        line_=0;
+        delete LineNode_;
+        LineNode_=0;
     }
 
     void RadarViewable::addMapEntity()
@@ -90,7 +97,9 @@ namespace orxonox
             this->line_->addPoint( Vector3(0,0,0) );
 
             this->MapNode_->attachObject( this->MapEntity_ );
-            this->MapNode_->attachObject( this->line_ );
+
+            this->LineNode_ = this->MapNode_->createChildSceneNode();
+            this->LineNode_->attachObject( this->line_ );
         }
         else
         {
@@ -105,8 +114,11 @@ namespace orxonox
             this->MapNode_->setPosition( this->getRVWorldPosition() );
             this->MapNode_->translate( this->getRVOrientedVelocity(), (Ogre::Node::TransformSpace)3 );
             this->MapNode_->setOrientation( this->getWorldEntity()->getOrientation() );
-Vector3 v = this->getRVWorldPosition();
-            this->line_->setPoint(1, Vector3(0,v.y,0) );
+//Vector3 v = this->getRVWorldPosition();
+            //this->line_->setPoint(1, Vector3(0,v.y,0) );
+            this->line_->setPoint(1, Vector3(0, -this->getRVWorldPosition().y ,0) );
+            this->line_->update();
+            this->LineNode_->setDirection(Vector3::UNIT_Y,Ogre::Node::TS_WORLD,Vector3::UNIT_Y);
         }
     }
 

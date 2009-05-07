@@ -100,8 +100,15 @@ namespace orxonox
         Ogre::SceneNode * MapNode_;
         Ogre::Entity * MapEntity_;
         DynamicLines* line_;
+        Ogre::SceneNode * LineNode_;
         void addMapEntity();
         void updateMapPosition();
+        bool isHumanShip_;
+        inline std::string getUniqueId()
+        {
+            return this->uniqueId_;
+        }
+
     private:
         void validate(const WorldEntity* object) const
         {
@@ -112,9 +119,11 @@ namespace orxonox
             }
         }
 
-        
+        //Map
         std::string uniqueId_;
+        
 
+        //Radar
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
         std::string radarObjectDescription_;

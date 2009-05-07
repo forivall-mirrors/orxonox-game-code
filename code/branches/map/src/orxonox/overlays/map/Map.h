@@ -63,11 +63,12 @@ namespace orxonox
         
         static void openMap();
 
+//Not yet implemented
         static const int maxRange_s=1000;
 
         static void rotateYaw(const Vector2& value);
         static void rotatePitch(const Vector2& value);
-
+        static void Zoom(const Vector2& value);
         // variables
 
 
@@ -76,13 +77,17 @@ namespace orxonox
 
         static inline Ogre::SceneManager* getMapSceneManagerPtr()
         {
-            return Map::singletonMap_s->mapSceneM_;
+            return Map::singletonMap_s->mapSceneM_s;
         }
         static inline Map* getSingletonPtr()
         {
             return Map::singletonMap_s;
         }
 
+        static inline Ogre::SceneManager* getMapSceneManager()
+        {
+            return Map::mapSceneM_s;
+        }
 
 
         
@@ -90,17 +95,25 @@ namespace orxonox
 
         void toggleVisibility();
         void updatePositions();
-        
+//        void changedPlayerNode();
+        static inline void setMapSceneManager( Ogre::SceneManager * sm)
+        {
+            Map::mapSceneM_s = sm;
+        }
 
     private: // variables
         static Map* singletonMap_s;
 
         Ogre::SceneManager* sManager_;
-        Ogre::SceneManager* mapSceneM_;
-        Ogre::SceneNode* rootNode_;
         Ogre::OverlayManager * oManager_;
-        Ogre::Camera* mReflectCam_;
-        //Ogre::SceneNode* playerShipNode_;
+
+        static Ogre::SceneManager* mapSceneM_s;
+        Ogre::SceneNode* CamNode_;
+        Ogre::Camera* Cam_;
+        //Ogre::SceneNode* CamNodeHelper_;
+        Ogre::SceneNode* playerShipNode_;
+        Ogre::SceneNode* planeNode_;
+        
         int mouseLookSpeed_;
         bool isVisible_;
     };

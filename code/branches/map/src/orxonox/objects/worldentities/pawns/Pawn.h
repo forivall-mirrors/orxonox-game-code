@@ -107,6 +107,8 @@ namespace orxonox
                 {return this->pickUp;}
 
             virtual void dropItems();
+            
+            virtual void startLocalHumanControl();
 
         protected:
             virtual void death();
