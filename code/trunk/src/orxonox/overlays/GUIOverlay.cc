@@ -58,15 +58,12 @@ namespace orxonox
     {
         SUPER(GUIOverlay, changedVisibility);
 
-        COUT(1) << "Somethings happened!!!" << std::endl;
-
         if (this->isVisible())
         {
             std::string str;
             std::stringstream out;
             out << (long)this;
             str = out.str();
-            COUT(1) << str << std::endl;
             GUIManager::getInstancePtr()->executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
             GUIManager::getInstancePtr()->executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
