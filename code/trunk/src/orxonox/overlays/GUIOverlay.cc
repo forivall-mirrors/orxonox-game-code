@@ -28,6 +28,9 @@
 
 #include "GUIOverlay.h"
 #include "OrxonoxStableHeaders.h"
+#include <string>
+#include <sstream>
+#include "core/input/InputManager.h"
 
 #include "../gui/GUIManager.h"
 
@@ -55,10 +58,25 @@ namespace orxonox
     {
         SUPER(GUIOverlay, changedVisibility);
 
+        COUT(1) << "Somethings happened!!!" << std::endl;
+
         if (this->isVisible())
-            GUIManager::getInstancePtr()->executeCode("showGUI(\"" + this->guiName_ + "\", " + this + ")");
+        {
+            std::string str;
+            std::stringstream out;
+            out << (long)this;
+            str = out.str();
+            COUT(1) << str << std::endl;
+            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            InputManager::getInstance().requestEnterState("guiMouseOnly");
+            GUIManager::getInstancePtr()->executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
+        }
         else
+        {
             GUIManager::getInstancePtr()->executeCode("hideGUI(\"" + this->guiName_ + "\")");
+            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            InputManager::getInstance().requestLeaveState("guiMouseOnly");
+        }
     }
 
 }
