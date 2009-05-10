@@ -42,9 +42,9 @@ namespace orxonox
 
       //Standard Values
       this->setDirection(Vector3::ZERO);
-      velocity_ = 1000;
+      velocity_ = 100;
       diameter_ = 500;
-      length_ = 1000;
+      length_ = 2000;
     }
 
     ForceField::~ForceField() {}
@@ -56,14 +56,16 @@ namespace orxonox
       //For correct xml import use: position, direction, velocity, scale
 
       XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
-      XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(20);
-      XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(500);
+      XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
+      XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
     }
   
     void ForceField::tick(float dt)
     {
+      
       for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
       {
+	
         //calculate from 
         Vector3 directionVec = this->getOrientation() * WorldEntity::FRONT;
         directionVec.normalise();
@@ -76,8 +78,7 @@ namespace orxonox
         if (distanceVec.length() < this->length_ / 2 && distFromCenterVec < diameter_ / 2)
         {
           //normalize distance from center
-          it->applyCentralForce(((diameter_ / 2 - distFromCenterVec) / diameter_) * directionVec * velocity_);
-		COUT(0) << "Forfce aplied" << std::endl;
+          it->applyCentralForce(((diameter_ / 2 - distFromCenterVec) / (diameter_ / 2)) * directionVec * velocity_);
         }
 	
       }
