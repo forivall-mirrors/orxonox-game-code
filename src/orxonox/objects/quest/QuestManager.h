@@ -40,9 +40,20 @@
 #include <string>
 
 #include "core/OrxonoxClass.h"
+#include "orxonox/objects/infos/PlayerInfo.h"
 
+// tolua_begin
 namespace orxonox
 {
+// tolua_end
+
+    struct RootQuest
+    {
+        Quest* quest;
+        RootQuest* next;
+    };
+
+// tolua_begin
     /**
     @brief
         Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
@@ -50,13 +61,17 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestManager : public OrxonoxClass
+    class _OrxonoxExport QuestManager
+// tolua_end
+        : public OrxonoxClass
+// tolua_begin
     {
+// tolua_end
         public:
             QuestManager();
             virtual ~QuestManager();
 
-            static QuestManager& getInstance(); //!< Returns a reference to the single instance of the Quest Manager.
+            static QuestManager& getInstance(); // tolua_export //!< Returns a reference to the single instance of the Quest Manager.
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
             bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
@@ -64,14 +79,19 @@ namespace orxonox
             Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
             QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
+            RootQuest* getQuests(const PlayerInfo & player);
+
+            static void toggleQuestGUI(void); //!< Opens the GUI.
+
         private:
             static QuestManager* singletonRef_s;
+            static bool GUIOpen;
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
 
-    };
+    }; // tolua_export
 
-}
+} // tolua_export
 
 #endif /* _QuestManager_H__ */
