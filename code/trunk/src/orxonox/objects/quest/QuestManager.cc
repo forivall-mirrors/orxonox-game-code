@@ -35,15 +35,22 @@
 #include "QuestManager.h"
 
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
+#include "core/input/InputManager.h"
+#include "util/Convert.h"
 
 #include "util/Exception.h"
+#include "gui/GUIManager.h"
 #include "Quest.h"
 #include "QuestHint.h"
 
 namespace orxonox
 {
     //! Pointer to the current (and single) instance of this class.
-    QuestManager* QuestManager::singletonRef_s = NULL;
+    /*static*/ QuestManager* QuestManager::singletonRef_s = NULL;
+    /*static*/ bool QuestManager::GUIOpen = false;
+
+    SetConsoleCommand(QuestManager, toggleQuestGUI, true);
 
     /**
     @brief
@@ -210,6 +217,154 @@ namespace orxonox
 
         return hint;
 
+    }
+
+    QuestContainer* QuestManager::getQuestTree(std::string & name)
+    {
+        GUIOverlay* gui = GUIManager::getInstance().getOverlay(name);
+
+        PlayerInfo* player;
+        if(gui == NULL)
+        {
+            COUT(1) << "Something BAD happened." << std::endl;
+            return NULL;
+        }
+        COUT(1) << player << std::endl;
+        ConverterExplicit<BaseObject, PlayerInfo>::convert(player, *(gui->getOwner()));
+    
+        QuestContainer* root = NULL;
+        QuestContainer* current = NULL;
+        
+        std::list<Quest*>* pRootQuests = new std::list<Quest*>();
+        std::list<Quest*> rootQuests = *pRootQuests;
+        getRootQuests(player, rootQuests);
+        
+        for(std::list<Quest*>::iterator it = rootQuests.begin(); it != rootQuests.end(); it++)
+        {
+            Quest* quest = *it;
+            
+            QuestContainer* container = new QuestContainer;
+
+            container->description = quest->getDescription();
+            addHints(container, quest, player);
+            addSubQuests(container, quest, player);
+
+            if(root == NULL)
+            {
+                root = container;
+            }
+            else
+            {
+                current->next = container;
+            }
+            
+            current = container;
+
+        }
+        if(current != NULL)
+            current->next = NULL;
+
+        delete pRootQuests;
+
+        return root;
+    }
+
+    void QuestManager::getRootQuests(const PlayerInfo* player, std::list<Quest*> & list)
+    {
+        for(std::map<std::string, Quest*>::iterator it=this->questMap_.begin(); it!=this->questMap_.end(); it++)
+        {
+            Quest* quest = (*it).second;
+            if(quest->getParentQuest() == NULL && !quest->isInactive(player))
+            {
+                list.push_back(quest);
+            }
+        }
+    }
+
+    void QuestManager::addSubQuests(QuestContainer* container, Quest* quest, const PlayerInfo* player)
+    {
+        QuestContainer* current = NULL;
+        QuestContainer* first = NULL;
+
+        std::list<Quest*> quests = quest->getSubQuestList();
+        for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
+        {
+            Quest* subQuest = *it;
+            if(!subQuest->isInactive(player))
+            {
+                QuestContainer* subQuestContainer = new QuestContainer;
+
+                subQuestContainer->description = subQuest->getDescription();
+                addHints(subQuestContainer, subQuest, player);
+                addSubQuests(subQuestContainer, subQuest, player);
+
+                if(first == NULL)
+                {
+                    first = subQuestContainer;
+                }
+                else
+                {
+                    current->next = subQuestContainer;
+                }
+                
+                current = subQuestContainer;
+            }
+        }
+
+        if(current != NULL)
+            current->next = NULL;
+        container->subQuests = first;
+        
+    }
+
+    void QuestManager::addHints(QuestContainer* container, Quest* quest, const PlayerInfo* player)
+    {
+        HintContainer* current = NULL;
+        HintContainer* first = NULL;
+
+        std::list<QuestHint*> hints = quest->getHintsList();
+        for(std::list<QuestHint*>::iterator it = hints.begin(); it != hints.end(); it++)
+        {
+            if((*it)->isActive(player))
+            {
+                HintContainer* hint = new HintContainer;
+                hint->description = (*it)->getDescription();
+
+                if(first == NULL)
+                {
+                    first = hint;
+                }
+                else
+                {
+                    current->next = hint;
+                }
+                
+                current = hint;
+            }
+        }
+
+        if(current != NULL)
+            current->next = NULL;
+        container->hint = first;
+    }
+
+    /*static*/ void QuestManager::toggleQuestGUI(void)
+    {
+        if (!QuestManager::GUIOpen)
+        {
+            GUIManager::getInstancePtr()->showGUI("QuestGUI");
+            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            InputManager::getInstance().requestEnterState("guiMouseOnly");
+            GUIManager::getInstancePtr()->executeCode("loadQuestsList()");
+            GUIOpen = true;
+        }
+        else
+        {
+            GUIManager::getInstancePtr()->executeCode("hideGUI(\"QuestGUI\")");
+            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            InputManager::getInstance().requestLeaveState("guiMouseOnly");
+            GUIOpen = false;
+        }
     }
 
 

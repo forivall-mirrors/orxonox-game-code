@@ -196,17 +196,6 @@ namespace orxonox
 
     /**
     @brief
-        Returns the parentquest of the Quest.
-    @return
-        Returns a pointer to the parentquest of the Quest.
-    */
-    const Quest* Quest::getParentQuest(void)
-    {
-        return this->parentQuest_;
-    }
-
-    /**
-    @brief
         Returns the subquest at the given index.
     @param
         The index.

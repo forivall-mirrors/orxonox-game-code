@@ -117,7 +117,6 @@ namespace orxonox
             virtual bool isFailable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be failed.
             virtual bool isCompletable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be completed.
 
-            const Quest* getParentQuest(void); //!< Returns the parentquest of the Quest.
             const Quest* getSubQuest(unsigned int index) const; //!<Returns the subquest at the given index.
             const QuestHint* getHint(unsigned int index) const; //!< Returns the QuestHint at the given index.
             const QuestEffect* getFailEffect(unsigned int index) const; //!< Returns the fail QuestEffect at the given index.

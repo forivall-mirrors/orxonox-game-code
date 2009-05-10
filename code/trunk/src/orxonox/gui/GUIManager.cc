@@ -241,6 +241,34 @@ namespace orxonox
 
     /**
     @brief
+        Registers a GUIOverlay with the GUIManager so that the GUIOverlay can be accessed by it's name through the GUIManager.
+    @param name
+        The name of the GUI.
+    @param overlay
+        A pointer to the GUIOverlay of the GUI.
+    @return
+        Returns false if the Overlay was already present.
+    */
+    bool GUIManager::registerOverlay(std::string name, GUIOverlay* overlay)
+    {
+        return (this->guiOverlays_.insert(std::pair<std::string, GUIOverlay*>(name, overlay))).second;
+    }
+
+    /**
+    @brief
+        Get the GUIOverlay of the GUI with the given name.
+    @param name
+        The name of the GUI.
+    @return
+        Returns a pointer to the GUIOverlay.
+    */
+    GUIOverlay* GUIManager::getOverlay(std::string name)
+    {
+        return (this->guiOverlays_.find(name))->second;
+    }
+
+    /**
+    @brief
         Tells the GUIManager which SceneManager to use
     @param camera
         The current camera on which the GUI should be displayed on.
