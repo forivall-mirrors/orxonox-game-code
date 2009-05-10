@@ -52,6 +52,8 @@ namespace orxonox
         SUPER(GUIOverlay, XMLPort, xmlElement, mode);
 
         XMLPortParam(GUIOverlay, "guiname", setGUIName, getGUIName, xmlElement, mode);
+        
+        GUIManager::getInstancePtr()->registerOverlay(this->guiName_, this);
     }
 
     void GUIOverlay::changedVisibility()

@@ -41,6 +41,7 @@
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
 
+// tolua_begin
 namespace orxonox
 {
     /**
@@ -54,14 +55,17 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestDescription : public BaseObject
-    {
+    class _OrxonoxExport QuestDescription
+// tolua_end
+        : public BaseObject
+    { // tolua_export
         public:
             QuestDescription(BaseObject* creator);
             virtual ~QuestDescription();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestDescription object through XML.
 
+// tolua_begin
             /**
             @brief Returns the title.
             @return Returns a string containing the title of the QuestDescription.
@@ -75,6 +79,7 @@ namespace orxonox
             */
             inline const std::string & getDescription(void) const
                 { return this->description_; }
+// tolua_end
         
             /**
             @brief Returns the fail message.
@@ -154,8 +159,8 @@ namespace orxonox
             inline void setCompleteMessage(const std::string & message)
                 { this->completeMessage_ = message; }
 
-    };
+    }; // tolua_export
 
-}
+} // tolua_export
 
 #endif /* _QuestDescription_H__ */

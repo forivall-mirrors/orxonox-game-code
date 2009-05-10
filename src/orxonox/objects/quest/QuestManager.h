@@ -37,23 +37,34 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
+#include <list>
 #include <string>
 
 #include "core/OrxonoxClass.h"
 #include "orxonox/objects/infos/PlayerInfo.h"
+#include "overlays/GUIOverlay.h"
 
 // tolua_begin
 namespace orxonox
 {
-// tolua_end
 
-    struct RootQuest
+    struct QuestContainer;
+    struct HintContainer;
+
+    struct QuestContainer
     {
-        Quest* quest;
-        RootQuest* next;
+        const QuestDescription* description;
+        HintContainer* hint;
+        QuestContainer* subQuests;
+        QuestContainer* next;
     };
 
-// tolua_begin
+    struct HintContainer
+    {
+        const QuestDescription* description;
+        HintContainer* next;
+    };
+
     /**
     @brief
         Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
@@ -79,7 +90,7 @@ namespace orxonox
             Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
             QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
-            RootQuest* getQuests(const PlayerInfo & player);
+            QuestContainer* getQuestTree(std::string & name); // tolua_export
 
             static void toggleQuestGUI(void); //!< Opens the GUI.
 
@@ -89,6 +100,10 @@ namespace orxonox
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
+
+            void getRootQuests(const PlayerInfo* player, std::list<Quest*> & list);
+            void addHints(QuestContainer* container, Quest* quest, const PlayerInfo* player);
+            void addSubQuests(QuestContainer* container, Quest* quest, const PlayerInfo* player);
 
     }; // tolua_export
 
