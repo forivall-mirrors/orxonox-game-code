@@ -42,16 +42,19 @@ namespace orxonox
      * function every tick. It is a singleton.
      *
      */
-    class SoundManager : public Tickable 
+    class _OrxonoxExport SoundManager : public Tickable 
     {
     public:
         SoundManager();
+        ~SoundManager();
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
 
         virtual void tick(float dt);
 
     private:
+        static ALCdevice* device_s;
+        ALCcontext* context_;
         std::list<SoundBase*> soundlist_;
 
     }; // class SoundManager

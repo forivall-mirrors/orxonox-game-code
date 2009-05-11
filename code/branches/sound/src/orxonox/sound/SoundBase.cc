@@ -39,11 +39,19 @@ namespace orxonox
         this->buffer_ = 0;
         this->entity_ = NULL;
     }
+
     SoundBase::SoundBase(WorldEntity* entity)
     {
         this->source_ = 0;
         this->buffer_ = 0;
         this->entity_ = entity;
+    }
+
+    SoundBase::~SoundBase()
+    {
+        alSourcei(this->source_, AL_BUFFER, 0);
+        alDeleteSources(1, &this->source_);
+        alDeleteBuffers(1, &this->buffer_);
     }
 
     void SoundBase::attachToEntity(WorldEntity* entity)

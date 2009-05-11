@@ -36,17 +36,51 @@
 
 namespace orxonox
 {
+    ALCdevice* SoundManager::device_s = NULL;
+
     /**
      * Default constructor
      */
     SoundManager::SoundManager()
     {
-        if(!alutInit(NULL,NULL)) {
+        if(!alutInitWithoutContext(NULL,NULL))
+        {
             COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
         }
+        else
+        {
+            COUT(4) << "OpenAL ALUT version:" << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
+            COUT(4) << "OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
+            if(SoundManager::device_s == NULL)
+            {
+                COUT(3) << "OpenAL: open sound device..." << std::endl;
+                SoundManager::device_s = alcOpenDevice(NULL);
+            }
 
-        COUT(4) << "OpenAL ALUT version:" << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
-        COUT(4) << "OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
+            if(SoundManager::device_s == NULL)
+            {
+                COUT(2) << "OpenAL: Could not open sound device" << std::endl;
+            }
+            else
+            {
+                this->context_ = alcCreateContext(SoundManager::device_s, NULL);
+                if(this->context_ == NULL)
+                {
+                    COUT(2) << "OpenAL: Could not create sound context";
+                }
+                else
+                {
+                    alcMakeContextCurrent(this->context_);
+                }
+            }
+        }
+    }
+
+    SoundManager::~SoundManager()
+    {
+        alcDestroyContext(this->context_);
+        alcCloseDevice(SoundManager::device_s);
+        alutExit();
     }
 
     /**
@@ -71,7 +105,7 @@ namespace orxonox
             if((*i) == sound)
                 pos = i;
         }
-        
+
         delete (*pos);
         this->soundlist_.erase(pos);
     }
@@ -109,5 +143,4 @@ namespace orxonox
         for(std::list<SoundBase*>::iterator i = this->soundlist_.begin(); i != this->soundlist_.end(); i++)
             (*i)->update();
     }
-
-}  
+}

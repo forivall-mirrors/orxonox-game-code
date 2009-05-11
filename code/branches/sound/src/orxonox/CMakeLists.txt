@@ -30,6 +30,7 @@ ADD_SUBDIRECTORY(gui)
 ADD_SUBDIRECTORY(objects)
 ADD_SUBDIRECTORY(overlays)
 ADD_SUBDIRECTORY(tools)
+ADD_SUBDIRECTORY(sound)
 GET_ALL_HEADER_FILES(ORXONOX_HDR_FILES)
 SET(ORXONOX_FILES ${ORXONOX_SRC_FILES} ${ORXONOX_HDR_FILES})
 
@@ -50,6 +51,11 @@ TARGET_LINK_LIBRARIES(orxonox
   ${LUA_LIBRARIES}
   ${CEGUILUA_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
+  ${OPENAL_LIBRARY}
+  ${ALUT_LIBRARY}
+  #${VORBISFILE_LIBRARY}
+  #${VORBIS_LIBRARY}
+  #${OGG_LIBRARY}
   ogreceguirenderer_orxonox
   tinyxml++_orxonox
   tolua++_orxonox
@@ -57,7 +63,6 @@ TARGET_LINK_LIBRARIES(orxonox
   util
   core
   network
-  sound
 )
 
 ORXONOX_INSTALL(orxonox)

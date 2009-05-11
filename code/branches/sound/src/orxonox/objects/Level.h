@@ -72,7 +72,7 @@ namespace orxonox
             std::string            xmlfilename_;
             XMLFile*               xmlfile_;
             std::list<BaseObject*> objects_;
-            SoundManager           sndmgr_;
+            SoundManager*          sndmgr_;
             SoundBase*             ambientsound_;
     };
 }

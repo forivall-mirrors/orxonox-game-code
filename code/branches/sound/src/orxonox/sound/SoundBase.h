@@ -41,11 +41,12 @@ namespace orxonox
      * It server as main interface to the OpenAL library.
      *
      */
-    class SoundBase
+    class _OrxonoxExport SoundBase
     {
     public:
         SoundBase();
         SoundBase(WorldEntity* entity);
+        ~SoundBase();
 
         void attachToEntity(WorldEntity* entity);
         void update();

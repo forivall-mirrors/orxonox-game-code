@@ -56,6 +56,8 @@ namespace orxonox
 
         if (this->xmlfilename_.length() >= Core::getMediaPathString().length())
             this->xmlfilename_ = this->xmlfilename_.substr(Core::getMediaPathString().length());
+            
+        this->sndmgr_ = new SoundManager();
     }
 
     Level::~Level()
@@ -67,6 +69,11 @@ namespace orxonox
 
             if (this->xmlfile_)
                 Loader::unload(this->xmlfile_);
+            
+            if(this->ambientsound_ != NULL)
+                delete this->ambientsound_;
+            
+            delete this->sndmgr_;
         }
     }
 
@@ -157,7 +164,7 @@ std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << st
             if(this->ambientsound_ == NULL)
             {
                 this->ambientsound_ = new SoundBase();
-                this->sndmgr_.addSound(this->ambientsound_);
+                this->sndmgr_->addSound(this->ambientsound_);
             }
 
             this->ambientsound_->loadFile(filename);
