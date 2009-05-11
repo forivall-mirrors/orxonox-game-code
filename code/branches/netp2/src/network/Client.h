@@ -87,6 +87,7 @@ namespace orxonox
     bool isSynched_;
 
     bool gameStateFailure_;
+    float timeSinceLastUpdate_;
   };
 
 

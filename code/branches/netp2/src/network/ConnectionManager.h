@@ -80,6 +80,7 @@ namespace orxonox
     bool sendPackets();
     void disconnectClient(ClientInformation *client);
     void syncClassid(unsigned int clientID);
+    bool checkReceiverThread(){ return !quit_; }
 
   private:
     ConnectionManager(const ConnectionManager& copy); // not used
@@ -94,7 +95,7 @@ namespace orxonox
     ENetHost *server;
     ENetAddress *bindAddress;
 
-    bool quit; // quit-variable (communication with threads)
+    bool quit_; // quit-variable (communication with threads)
 
     boost::thread *receiverThread_;
     static ConnectionManager *instance_;

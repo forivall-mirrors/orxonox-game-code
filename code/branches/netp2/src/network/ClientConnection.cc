@@ -57,7 +57,7 @@ namespace orxonox
   static boost::recursive_mutex enet_mutex_g;
 
   ClientConnection::ClientConnection(int port, const std::string& address) {
-    quit=false;
+    quit_=false;
     server=NULL;
     serverAddress = new ENetAddress();
     enet_address_set_host(serverAddress, address.c_str());
@@ -66,7 +66,7 @@ namespace orxonox
   }
 
   ClientConnection::ClientConnection(int port, const char *address) {
-    quit=false;
+    quit_=false;
     server=NULL;
     serverAddress = new ENetAddress();
     enet_address_set_host(serverAddress, address);
@@ -106,7 +106,7 @@ namespace orxonox
   }
 
   bool ClientConnection::closeConnection() {
-    quit=true;
+    quit_=true;
     //network_threads.join_all();
     receiverThread_->join();
     established=false;
@@ -150,25 +150,26 @@ namespace orxonox
     if(client==NULL) {
       COUT(2) << "ClientConnection: could not create client host" << std::endl;
       // add some error handling here ==========================
-      quit=true;
+      quit_=true;
     }
     //connect to the server
     if(!establishConnection()){
       COUT(2) << "clientConn: receiver thread: could not establishConnection" << std::endl;
-      quit=true;
+      quit_=true;
       return;
     }
     event = new ENetEvent;
     //main loop
-    while(!quit){
+    while(!quit_){
       //std::cout << "connection loop" << std::endl;
       {
         boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
         if(enet_host_service(client, event, NETWORK_CLIENT_WAIT_TIME)<0){
           // we should never reach this point
-	        assert(0);
-          quit=true;
-          continue;
+// 	        assert(0);
+          printf("ClientConnection: ENet returned with an error!\n");
+          quit_=true;
+          break;
           // add some error handling here ========================
         }
         lock.unlock();
@@ -184,7 +185,8 @@ namespace orxonox
         event = new ENetEvent;
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        quit=true;
+        quit_=true;
+        printf("Received disconnect Packet from Server!\n");
         // server closed the connection
         return;
         break;
@@ -234,7 +236,7 @@ namespace orxonox
       return false;
     }
     // handshake
-    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && !quit){
+    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && !quit_){
       if( event.type == ENET_EVENT_TYPE_CONNECT ){
         established=true;
         return true;
