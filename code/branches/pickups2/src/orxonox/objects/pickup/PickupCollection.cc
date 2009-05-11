@@ -38,6 +38,8 @@
 #include "PassiveItem.h"
 #include "UsableItem.h"
 
+#include "core/CoreIncludes.h"
+
 #include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -311,15 +313,15 @@ namespace orxonox
         @brief Get a list of equipment-type items.
         @return Returns a list of all the equipment-type items in the collection.
     */
-    std::set<BaseItem*> PickupCollection::getEquipmentItems()
+    std::deque<EquipmentItem*> PickupCollection::getEquipmentItems()
     {
-        std::set<BaseItem*> ret;
+        std::deque<EquipmentItem*> ret;
         Identifier* ident = Class(EquipmentItem);
 
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
             if ((*it).second->isA(ident))
-                ret.insert((*it).second);
+                ret.push_back(dynamic_cast<EquipmentItem*>((*it).second));
         }
 
         return ret;
@@ -328,15 +330,15 @@ namespace orxonox
         @brief Get a list of passive items.
         @return Returns a list of all the passive items in the collection.
     */
-    std::set<BaseItem*> PickupCollection::getPassiveItems()
+    std::deque<PassiveItem*> PickupCollection::getPassiveItems()
     {
-        std::set<BaseItem*> ret;
+        std::deque<PassiveItem*> ret;
         Identifier* ident = Class(PassiveItem);
 
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
             if ((*it).second->isA(ident))
-                ret.insert((*it).second);
+                ret.push_back(dynamic_cast<PassiveItem*>((*it).second));
         }
 
         return ret;
@@ -345,15 +347,15 @@ namespace orxonox
         @brief Get a list of usable items.
         @return Returns a list of all the usable items in the collection.
     */
-    std::set<BaseItem*> PickupCollection::getUsableItems()
+    std::deque<UsableItem*> PickupCollection::getUsableItems()
     {
-        std::set<BaseItem*> ret;
+        std::deque<UsableItem*> ret;
         Identifier* ident = Class(UsableItem);
 
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
             if ((*it).second->isA(ident))
-                ret.insert((*it).second);
+                ret.push_back(dynamic_cast<UsableItem*>((*it).second));
         }
 
         return ret;

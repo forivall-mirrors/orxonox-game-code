@@ -54,7 +54,10 @@ namespace orxonox
     void DroppedItem::timerCallback()
     {
         if (this->item_)
+        {
+            COUT(3) << "Delete DroppedItem with '" << this->item_->getPickupIdentifier() << "'" << std::endl;
             delete this->item_;
+        }
 
         delete this;
     }

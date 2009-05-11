@@ -38,6 +38,7 @@
 
 #include "core/BaseObject.h"
 
+// tolua_begin
 namespace orxonox
 {
     /**
@@ -50,9 +51,12 @@ namespace orxonox
     */
     class _OrxonoxExport BaseItem : public BaseObject
     {
+// tolua_end
     public:
         BaseItem(BaseObject* creator);
         virtual ~BaseItem();
+
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
 
         /**
             @brief Checks how many instances of this item can be carried at a time.
@@ -115,6 +119,22 @@ namespace orxonox
         */
         inline void setPickupIdentifier(const std::string& identifier)
             { this->pickupIdentifier_ = identifier; }
+
+        // GUI stuff
+        virtual const std::string& getGUIText()
+            { return this->guiText_; }
+        inline void setGUIText(const std::string& text)
+            { this->guiText_ = text; }
+
+        virtual const std::string& getGUITooltip()
+            { return this->guiTooltip_; }
+        inline void setGUITooltip(const std::string& tooltip)
+            { this->guiTooltip_ = tooltip; }
+
+        virtual const std::string& getGUIImage()
+            { return this->guiImage_; }
+        inline void setGUIImage(const std::string& image)
+            { this->guiImage_ = image; }
     private:
         Pawn* owner_;   //!< The current owner of the item.
 
@@ -126,6 +146,10 @@ namespace orxonox
                 used to index items in the PickupCollection.
         */
         std::string pickupIdentifier_;
+
+        std::string guiText_;
+        std::string guiTooltip_;
+        std::string guiImage_;
     };
 }
 

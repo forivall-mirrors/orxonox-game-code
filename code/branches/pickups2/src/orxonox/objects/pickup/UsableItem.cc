@@ -25,7 +25,7 @@
  *      ...
  *
  */
-
+        
 /**
     @file
     @brief Implementation of UsableItem.

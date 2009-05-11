@@ -37,7 +37,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
-#include <set>
+#include <deque>
 #include <string>
 
 #include "util/Math.h"  
@@ -47,6 +47,8 @@
 namespace orxonox
 {
     class BaseItem;
+    class EquipmentItem;
+    class PassiveItem;
     class UsableItem;
     class Pawn;
 
@@ -103,9 +105,9 @@ namespace orxonox
         inline void setOwner(Pawn* owner)
             { this->owner_ = owner; }
 
-        std::set<BaseItem*> getEquipmentItems();   //!< Get a list of equipment-type items.
-        std::set<BaseItem*> getPassiveItems();     //!< Get a list of passive items.
-        std::set<BaseItem*> getUsableItems();      //!< Get a list of usable items.
+        std::deque<EquipmentItem*> getEquipmentItems();   //!< Get a list of equipment-type items.
+        std::deque<PassiveItem*> getPassiveItems();     //!< Get a list of passive items.
+        std::deque<UsableItem*> getUsableItems();      //!< Get a list of usable items.
     private:
         Pawn* owner_;           //!< The owner of the PickupCollection.
 

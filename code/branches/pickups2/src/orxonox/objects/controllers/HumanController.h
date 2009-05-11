@@ -65,6 +65,9 @@ namespace orxonox
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
 
+            static inline HumanController* getLocalControllerSingleton()
+                { return HumanController::localController_s; }
+
         private:
             static HumanController* localController_s;
     };

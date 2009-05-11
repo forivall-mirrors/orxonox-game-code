@@ -6,6 +6,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   ModifierPickup.cc
   PassiveItem.cc
   PickupCollection.cc
+  PickupInventory.cc
   PickupSpawner.cc
   UsableItem.cc
 )

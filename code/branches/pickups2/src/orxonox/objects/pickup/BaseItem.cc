@@ -34,6 +34,9 @@
 #include "BaseItem.h"
 
 #include "PickupCollection.h"
+
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -53,6 +56,21 @@ namespace orxonox
     BaseItem::~BaseItem()
     {
     }
+
+    /**
+        @brief XMLPort for BaseItem.
+        @param xmlelement Element of the XML-file.
+        @param mode XMLPort mode to use.
+    */
+    void BaseItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(BaseItem, XMLPort, xmlelement, mode);
+
+        XMLPortParam(BaseItem, "guiText", setGUIText, getGUIText, xmlelement, mode);
+        XMLPortParam(BaseItem, "guiTooltip", setGUITooltip, getGUITooltip, xmlelement, mode);
+        XMLPortParam(BaseItem, "guiImage", setGUIImage, getGUIImage, xmlelement, mode);
+    }
+
     /**
         @brief Method to add the item to a pawn.
         @param pawn Pawn to which the item should get added.
