@@ -53,9 +53,9 @@ TARGET_LINK_LIBRARIES(orxonox
   ${Boost_SYSTEM_LIBRARY}
   ${OPENAL_LIBRARY}
   ${ALUT_LIBRARY}
-  #${VORBISFILE_LIBRARY}
-  #${VORBIS_LIBRARY}
-  #${OGG_LIBRARY}
+  ${VORBISFILE_LIBRARY}
+  ${VORBIS_LIBRARY}
+  ${OGG_LIBRARY}
   ogreceguirenderer_orxonox
   tinyxml++_orxonox
   tolua++_orxonox

@@ -25,6 +25,8 @@
  *      ...
  *
  */
+#include <AL/alut.h>
+#include <vorbis/vorbisfile.h>
 
 #include "orxonox/objects/worldentities/WorldEntity.h"
 #include "util/Math.h"
@@ -127,11 +129,18 @@ namespace orxonox
     }
 
     bool SoundBase::loadFile(std::string filename) {
+        filename = Core::getMediaPathString() + "/audio/" + filename;
         COUT(3) << "OpenAL ALUT: loading file " << filename << std::endl;
         this->buffer_ = alutCreateBufferFromFile(filename.c_str());
         if(this->buffer_ == AL_NONE) {
             COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
-            return false;
+            if(filename.find("ogg", 0) != string::npos)
+            {
+                this->buffer_ = loadOggFile(filename);
+            }
+
+            if(this->buffer_ == AL_NONE) 
+                return false;
         }
 
         alGenSources(1, &this->source_);
@@ -147,5 +156,11 @@ namespace orxonox
         ALint state;
         alGetSourcei(this->source_, AL_SOURCE_STATE, &state);
         return state;
+    }
+    
+    ALuint SoundBase::loadOggFile(std::string filename)
+    {
+        // just a dummy
+        return AL_NONE;
     }
 } // namespace: orxonox

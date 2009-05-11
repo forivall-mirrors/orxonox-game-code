@@ -29,7 +29,6 @@
 #define _SOUNDBASE_H__
 
 #include <AL/al.h>
-#include <AL/alut.h>
 #include <string>
 
 namespace orxonox
@@ -61,6 +60,7 @@ namespace orxonox
         bool loadFile(std::string filename);
 
     private:
+        ALuint loadOggFile(std::string filename);
         ALuint source_;
         ALuint buffer_;
         WorldEntity* entity_;
