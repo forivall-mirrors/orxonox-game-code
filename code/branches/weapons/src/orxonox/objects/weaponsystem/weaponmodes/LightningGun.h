@@ -20,36 +20,30 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Joel Smely
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _BillboardProjectile_H__
-#define _BillboardProjectile_H__
+#ifndef _LightningGun_H__
+#define _LightningGun_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "Projectile.h"
-#include "tools/BillboardSet.h"
-#include "util/Math.h"
+#include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport BillboardProjectile : public Projectile
+    class _OrxonoxExport LightningGun : public WeaponMode
     {
         public:
-            BillboardProjectile(BaseObject* creator);
-            virtual ~BillboardProjectile();
+            LightningGun(BaseObject* creator);
+            virtual ~LightningGun();
 
-            virtual void setColour(const ColourValue& colour);
-            virtual void setMaterial(const std::string& material);
-            virtual void changedVisibility();
-
-        private:
-            BillboardSet billboard_;
+            virtual void fire();
+       private:
+            float speed_;
     };
 }
 
-#endif /* _BillboardProjectile_H__ */
+#endif /* _LightningGun_H__ */

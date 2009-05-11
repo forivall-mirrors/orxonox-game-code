@@ -46,6 +46,7 @@ namespace orxonox
 
         this->material_ = "";
         this->colour_ = ColourValue::White;
+//        this->rotation_ = 0;
 
         this->registerVariables();
     }
@@ -65,12 +66,14 @@ namespace orxonox
 
         XMLPortParam(Billboard, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(Billboard, "colour",   setColour,   getColour,   xmlelement, mode).defaultValues(ColourValue::White);
+//        XMLPortParam(Billboard, "rotation", setRotation, getRotation, xmlelement, mode).defaultValues(0);
     }
 
     void Billboard::registerVariables()
     {
         registerVariable(this->material_, variableDirection::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
         registerVariable(this->colour_,   variableDirection::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
+//        registerVariable(this->rotation_, variableDirection::toclient, new NetworkCallback<Billboard>(this, &Billboard::changedRotation));
     }
 
     void Billboard::changedMaterial()
@@ -86,6 +89,7 @@ namespace orxonox
                 if (this->billboard_.getBillboardSet())
                      this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
+//                this->changedRotation();
             }
         }
         else
@@ -109,6 +113,14 @@ namespace orxonox
         else
             this->billboard_.setColour(this->colour_);
     }
+    
+/*
+    void Billboard::changedRotation()
+    {
+        if (this->billboard_.getBillboardSet())
+            this->billboard_.getBillboardSet()->setRotation(this->rotation_);
+    }
+*/
 
     void Billboard::changedVisibility()
     {

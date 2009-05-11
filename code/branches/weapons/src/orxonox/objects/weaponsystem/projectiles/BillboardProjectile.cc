@@ -63,6 +63,11 @@ namespace orxonox
     {
         this->billboard_.setColour(colour);
     }
+    
+    void BillboardProjectile::setMaterial(const std::string& material)
+    {
+        this->billboard_.setMaterial(material);
+    }
 
     void BillboardProjectile::changedVisibility()
     {
