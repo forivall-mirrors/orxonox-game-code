@@ -70,14 +70,14 @@ namespace orxonox
         this->gtinfoID_ = OBJECTID_UNKNOWN;
         this->changedGametype();
 
-        this->server_position_         = Vector3::ZERO;
-        this->client_position_         = Vector3::ZERO;
-        this->server_linear_velocity_  = Vector3::ZERO;
-        this->client_linear_velocity_  = Vector3::ZERO;
-        this->server_orientation_      = Quaternion::IDENTITY;
-        this->client_orientation_      = Quaternion::IDENTITY;
-        this->server_angular_velocity_ = Vector3::ZERO;
-        this->client_angular_velocity_ = Vector3::ZERO;
+        this->common_position_         = Vector3::ZERO;
+//         this->client_position_         = Vector3::ZERO;
+        this->common_linear_velocity_  = Vector3::ZERO;
+//         this->client_linear_velocity_  = Vector3::ZERO;
+        this->common_orientation_      = Quaternion::IDENTITY;
+//         this->client_orientation_      = Quaternion::IDENTITY;
+        this->common_angular_velocity_ = Vector3::ZERO;
+//         this->client_angular_velocity_ = Vector3::ZERO;
 
 
         this->setConfigValues();
@@ -339,20 +339,20 @@ namespace orxonox
             // Check whether Bullet doesn't do the physics for us
             if (!this->isDynamic())
             {
-                if (Core::isMaster())
-                {
-                    this->server_position_ = this->getPosition();
-                    this->server_orientation_ = this->getOrientation();
-                    this->server_linear_velocity_ = this->getVelocity();
-                    this->server_angular_velocity_ = this->getAngularVelocity();
-                }
-                else if (this->bHasLocalController_)
-                {
-                    this->client_position_ = this->getPosition();
-                    this->client_orientation_ = this->getOrientation();
-                    this->client_linear_velocity_ = this->getVelocity();
-                    this->client_angular_velocity_ = this->getAngularVelocity();
-                }
+//                 if (Core::isMaster())
+//                 {
+                    this->common_position_ = this->getPosition();
+                    this->common_orientation_ = this->getOrientation();
+                    this->common_linear_velocity_ = this->getVelocity();
+                    this->common_angular_velocity_ = this->getAngularVelocity();
+//                 }
+//                 else if (this->bHasLocalController_)
+//                 {
+//                     this->client_position_ = this->getPosition();
+//                     this->client_orientation_ = this->getOrientation();
+//                     this->client_linear_velocity_ = this->getVelocity();
+//                     this->client_angular_velocity_ = this->getAngularVelocity();
+//                 }
             }
         }
     }
@@ -362,18 +362,23 @@ namespace orxonox
         registerVariable(this->cameraPositionTemplate_,  variableDirection::toclient);
         registerVariable(this->hudtemplate_,             variableDirection::toclient);
 
-        registerVariable(this->server_position_,         variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
-        registerVariable(this->server_linear_velocity_,  variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity));
-        registerVariable(this->server_orientation_,      variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
-        registerVariable(this->server_angular_velocity_, variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity));
-
-        registerVariable(this->server_overwrite_,        variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
-        registerVariable(this->client_overwrite_,        variableDirection::toserver);
-
-        registerVariable(this->client_position_,         variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
-        registerVariable(this->client_linear_velocity_,  variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientLinearVelocity));
-        registerVariable(this->client_orientation_,      variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
-        registerVariable(this->client_angular_velocity_, variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
+//         registerVariable(this->server_position_,         variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
+//         registerVariable(this->server_linear_velocity_,  variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity));
+//         registerVariable(this->server_orientation_,      variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
+//         registerVariable(this->server_angular_velocity_, variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity));
+// 
+//         registerVariable(this->server_overwrite_,        variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
+//         registerVariable(this->client_overwrite_,        variableDirection::toserver);
+// 
+//         registerVariable(this->client_position_,         variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
+//         registerVariable(this->client_linear_velocity_,  variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientLinearVelocity));
+//         registerVariable(this->client_orientation_,      variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
+//         registerVariable(this->client_angular_velocity_, variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
+        
+        registerVariable(this->common_position_,         variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition), true);
+        registerVariable(this->common_linear_velocity_,  variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity), true);
+        registerVariable(this->common_orientation_,      variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation), true);
+        registerVariable(this->common_angular_velocity_, variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity), true);
 
         registerVariable(this->playerID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
         registerVariable(this->gtinfoID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedgtinfoID));
@@ -382,37 +387,37 @@ namespace orxonox
     void ControllableEntity::processServerPosition()
     {
         if (!this->bHasLocalController_)
-            MobileEntity::setPosition(this->server_position_);
+            MobileEntity::setPosition(this->common_position_);
     }
 
     void ControllableEntity::processServerLinearVelocity()
     {
         if (!this->bHasLocalController_)
-            MobileEntity::setVelocity(this->server_linear_velocity_);
+            MobileEntity::setVelocity(this->common_linear_velocity_);
     }
 
     void ControllableEntity::processServerOrientation()
     {
         if (!this->bHasLocalController_)
-            MobileEntity::setOrientation(this->server_orientation_);
+            MobileEntity::setOrientation(this->common_orientation_);
     }
 
     void ControllableEntity::processServerAngularVelocity()
     {
         if (!this->bHasLocalController_)
-            MobileEntity::setAngularVelocity(this->server_angular_velocity_);
+            MobileEntity::setAngularVelocity(this->common_angular_velocity_);
     }
 
     void ControllableEntity::processOverwrite()
     {
         if (this->bHasLocalController_)
         {
-            this->setPosition(this->server_position_);
-            this->setOrientation(this->server_orientation_);
-            this->setVelocity(this->server_linear_velocity_);
-            this->setAngularVelocity(this->server_angular_velocity_);
+//             this->setPosition(this->server_position_);
+//             this->setOrientation(this->server_orientation_);
+//             this->setVelocity(this->server_linear_velocity_);
+//             this->setAngularVelocity(this->server_angular_velocity_);
 
-            this->client_overwrite_ = this->server_overwrite_;
+//             this->client_overwrite_ = this->server_overwrite_;
         }
     }
 
@@ -420,8 +425,8 @@ namespace orxonox
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            MobileEntity::setPosition(this->client_position_);
-            this->server_position_ = this->getPosition();
+//             MobileEntity::setPosition(this->client_position_);
+//             this->server_position_ = this->getPosition();
         }
     }
 
@@ -429,8 +434,8 @@ namespace orxonox
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            MobileEntity::setVelocity(this->client_linear_velocity_);
-            this->server_linear_velocity_ = this->getVelocity();
+//             MobileEntity::setVelocity(this->client_linear_velocity_);
+//             this->server_linear_velocity_ = this->getVelocity();
         }
     }
 
@@ -438,8 +443,8 @@ namespace orxonox
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            MobileEntity::setOrientation(this->client_orientation_);
-            this->server_orientation_ = this->getOrientation();
+//             MobileEntity::setOrientation(this->client_orientation_);
+//             this->server_orientation_ = this->getOrientation();
         }
     }
 
@@ -447,87 +452,87 @@ namespace orxonox
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            MobileEntity::setAngularVelocity(this->client_angular_velocity_);
-            this->server_angular_velocity_ = this->getAngularVelocity();
+//             MobileEntity::setAngularVelocity(this->client_angular_velocity_);
+//             this->server_angular_velocity_ = this->getAngularVelocity();
         }
     }
 
     void ControllableEntity::setPosition(const Vector3& position)
     {
-        if (Core::isMaster())
-        {
+//         if (Core::isMaster())
+//         {
             MobileEntity::setPosition(position);
-            this->server_position_ = this->getPosition();
-            ++this->server_overwrite_;
-        }
-        else if (this->bHasLocalController_)
-        {
-            MobileEntity::setPosition(position);
-            this->client_position_ = this->getPosition();
-        }
+            this->common_position_ = this->getPosition();
+//             ++this->server_overwrite_;
+//         }
+//         else if (this->bHasLocalController_)
+//         {
+//             MobileEntity::setPosition(position);
+//             this->client_position_ = this->getPosition();
+//         }
     }
 
     void ControllableEntity::setOrientation(const Quaternion& orientation)
     {
-        if (Core::isMaster())
-        {
+//         if (Core::isMaster())
+//         {
             MobileEntity::setOrientation(orientation);
-            this->server_orientation_ = this->getOrientation();
-            ++this->server_overwrite_;
-        }
-        else if (this->bHasLocalController_)
-        {
-            MobileEntity::setOrientation(orientation);
-            this->client_orientation_ = this->getOrientation();
-        }
+            this->common_orientation_ = this->getOrientation();
+//             ++this->server_overwrite_;
+//         }
+//         else if (this->bHasLocalController_)
+//         {
+//             MobileEntity::setOrientation(orientation);
+//             this->client_orientation_ = this->getOrientation();
+//         }
     }
 
     void ControllableEntity::setVelocity(const Vector3& velocity)
     {
-        if (Core::isMaster())
-        {
+//         if (Core::isMaster())
+//         {
             MobileEntity::setVelocity(velocity);
-            this->server_linear_velocity_ = this->getVelocity();
-            ++this->server_overwrite_;
-        }
-        else if (this->bHasLocalController_)
-        {
-            MobileEntity::setVelocity(velocity);
-            this->client_linear_velocity_ = this->getVelocity();
-        }
+            this->common_linear_velocity_ = this->getVelocity();
+//             ++this->server_overwrite_;
+//         }
+//         else if (this->bHasLocalController_)
+//         {
+//             MobileEntity::setVelocity(velocity);
+//             this->client_linear_velocity_ = this->getVelocity();
+//         }
     }
 
     void ControllableEntity::setAngularVelocity(const Vector3& velocity)
     {
-        if (Core::isMaster())
-        {
+//         if (Core::isMaster())
+//         {
             MobileEntity::setAngularVelocity(velocity);
-            this->server_angular_velocity_ = this->getAngularVelocity();
-            ++this->server_overwrite_;
-        }
-        else if (this->bHasLocalController_)
-        {
-            MobileEntity::setAngularVelocity(velocity);
-            this->client_angular_velocity_ = this->getAngularVelocity();
-        }
+            this->common_angular_velocity_ = this->getAngularVelocity();
+//             ++this->server_overwrite_;
+//         }
+//         else if (this->bHasLocalController_)
+//         {
+//             MobileEntity::setAngularVelocity(velocity);
+//             this->client_angular_velocity_ = this->getAngularVelocity();
+//         }
     }
 
     void ControllableEntity::setWorldTransform(const btTransform& worldTrans)
     {
         MobileEntity::setWorldTransform(worldTrans);
-        if (Core::isMaster())
-        {
-            this->server_position_ = this->getPosition();
-            this->server_orientation_ = this->getOrientation();
-            this->server_linear_velocity_ = this->getVelocity();
-            this->server_angular_velocity_ = this->getAngularVelocity();
-        }
-        else if (this->bHasLocalController_)
-        {
-            this->client_position_ = this->getPosition();
-            this->client_orientation_ = this->getOrientation();
-            this->client_linear_velocity_ = this->getVelocity();
-            this->client_angular_velocity_ = this->getAngularVelocity();
-        }
+//         if (Core::isMaster())
+//         {
+            this->common_position_ = this->getPosition();
+            this->common_orientation_ = this->getOrientation();
+            this->common_linear_velocity_ = this->getVelocity();
+            this->common_angular_velocity_ = this->getAngularVelocity();
+//         }
+//         else if (this->bHasLocalController_)
+//         {
+//             this->client_position_ = this->getPosition();
+//             this->client_orientation_ = this->getOrientation();
+//             this->client_linear_velocity_ = this->getVelocity();
+//             this->client_angular_velocity_ = this->getAngularVelocity();
+//         }
     }
 }
