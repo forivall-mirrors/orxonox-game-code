@@ -134,7 +134,7 @@ namespace orxonox
         this->buffer_ = alutCreateBufferFromFile(filename.c_str());
         if(this->buffer_ == AL_NONE) {
             COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
-            if(filename.find("ogg", 0) != string::npos)
+            if(filename.find("ogg", 0) != std::string::npos)
             {
                 this->buffer_ = loadOggFile(filename);
             }
