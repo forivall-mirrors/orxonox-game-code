@@ -33,6 +33,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "objects/Teamcolourable.h"
 #include "objects/worldentities/TeamSpawnPoint.h"
+#include "util/Convert.h"
 
 #include "network/Host.h"
 namespace orxonox
@@ -42,12 +43,13 @@ namespace orxonox
     UnderAttack::UnderAttack(BaseObject* creator) : TeamDeathmatch(creator)
     {
         RegisterObject(UnderAttack);
-        this->gameTime_ = 30;
+        this->gameTime_ = 90;
         this->teams_ = 2;
         this->destroyer_ = 0;
         this->gameEnded_ = false;
 
         this->setConfigValues();
+        this->timesequence_ = (int) this->gameTime_;
     }
 
     void UnderAttack::setConfigValues()
@@ -69,6 +71,7 @@ namespace orxonox
             std::string message = "Ship destroyed! Team 0 has won!";
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
+            this->gameEnded_ = true;
         }
     }
 
@@ -125,20 +128,42 @@ namespace orxonox
 
         return TeamDeathmatch::allowPawnDeath(victim, originator);
     }
+
+
     void UnderAttack::tick(float dt)
     {
         SUPER(UnderAttack, tick, dt);
 
-        if (this->hasStarted())
+        if (this->hasStarted() && !gameEnded_)
         {
             gameTime_ = gameTime_ - dt;
-            if (gameTime_<= 0 && !gameEnded_)
+            if (gameTime_<= 0)
             {
-                gameEnded_ = true;
+                this->gameEnded_ = true;
                 this->end();
                 std::string message = "Time is up! Team 1 has won!";
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
+            }
+
+             //prints gametime
+            if ( gameTime_ <= timesequence_)
+            {
+                std::string message = convertToString(timesequence_) + " sec left!";
+                COUT(0) << message << std::endl;
+                Host::Broadcast(message);
+                if (timesequence_ >= 30 && timesequence_ <= 60)
+                {
+                    timesequence_ = timesequence_ - 10;
+                }
+                else if (timesequence_ <= 30)
+                {
+                    timesequence_ = timesequence_ - 5;
+                }
+                else
+                {
+                    timesequence_ = timesequence_ - 30;
+                }
             }
         }
     }

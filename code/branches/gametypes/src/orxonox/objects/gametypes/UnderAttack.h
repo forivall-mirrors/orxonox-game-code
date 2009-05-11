@@ -45,7 +45,6 @@ namespace orxonox
             virtual ~UnderAttack() {}
 
             void setConfigValues();
-
             void tick (float dt);
             void addDestroyer(Destroyer* destroyer);
             inline Destroyer* getDestroyer() const
@@ -61,6 +60,7 @@ namespace orxonox
             Destroyer* destroyer_;
             unsigned int teams_;
             float gameTime_;
+            int timesequence_;
             bool gameEnded_;
     };
 }
