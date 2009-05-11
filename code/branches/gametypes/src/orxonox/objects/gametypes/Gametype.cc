@@ -59,6 +59,10 @@ namespace orxonox
         this->bForceSpawn_ = false;
         this->numberOfBots_ = 0;
 
+        this->timeLimit_ = 0;
+        this->time_ = 0;
+        this->timerIsActive_ = false;
+
         this->initialStartCountdown_ = 3;
 
         this->setConfigValues();
@@ -86,6 +90,15 @@ namespace orxonox
     void Gametype::tick(float dt)
     {
         SUPER(Gametype, tick, dt);
+
+        //count timer
+        if (timerIsActive_)
+        {
+            if (this->timeLimit_ == 0)
+                this->time_ += dt;
+            else
+                this->time_ -= dt;
+        }
 
         if (this->gtinfo_.bStartCountdownRunning_ && !this->gtinfo_.bStarted_)
             this->gtinfo_.startCountdown_ -= dt;
@@ -391,5 +404,32 @@ namespace orxonox
                 ++i;
             }
         }
+    }
+
+    void Gametype::addTime(float t)
+    { 
+        if (this->timeLimit_ == 0)
+          this->time_ -= t;
+        else
+          this->time_ += t;
+    }
+
+    void Gametype::removeTime(float t)
+    { 
+        if (this->timeLimit_ == 0)
+          this->time_ += t;
+        else
+          this->time_ -= t;
+    }
+
+    void Gametype::resetTimer()
+    { 
+        this->resetTimer(timeLimit_);
+    }
+
+    void Gametype::resetTimer(float t)
+    { 
+        this->timeLimit_ = t;
+        this->time_ = t;
     }
 }

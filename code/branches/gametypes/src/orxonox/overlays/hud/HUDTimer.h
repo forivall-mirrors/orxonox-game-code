@@ -20,40 +20,34 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian
+ *      Aurelian Jaggi
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Asteroids_H__
-#define _Asteroids_H__
+#ifndef _HUDTimer_H__
+#define _HUDTimer_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "Gametype.h"
+#include "overlays/OverlayText.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Asteroids : public Gametype
-    {
-        public:
-            Asteroids(BaseObject* creator);
-            virtual ~Asteroids() {}
+  class _OrxonoxExport HUDTimer : public OverlayText, public Tickable
+  {
+    public:
+      HUDTimer(BaseObject* creator);
+      ~HUDTimer();
 
-            virtual void tick(float dt);
+      virtual void tick(float dt);
 
-            virtual void start();
-            virtual void end();
-           
-            inline void firstCheckpointReached(bool reached)
-              { this->firstCheckpointReached_ = reached; }
+      virtual void changedOwner();
 
-        private:
-            bool firstCheckpointReached_;
-            bool gameEnded_;
-
+      private:
+        ControllableEntity* owner_;
     };
 }
-
-#endif /* _Asteroids_H__ */
+#endif /* _HUDTimer_H__ */

@@ -46,8 +46,9 @@ namespace orxonox
     RegisterObject(CheckPoint);
 
     this->setStayActive(true);
-    this->setDistance(20);
-    bIsDestination_ = false;
+    this->setDistance(50);
+    this->bIsFirst_ = false;
+    this->bIsDestination_ = false;
     this->setVisible(true);
   }
 
@@ -59,31 +60,29 @@ namespace orxonox
   {
     SUPER(CheckPoint, XMLPort, xmlelement, mode);
 
+    XMLPortParam(CheckPoint, "isfirst", setFirst, getFirst, xmlelement, mode).defaultValues(false);
     XMLPortParam(CheckPoint, "isdestination", setDestination, getDestination, xmlelement, mode).defaultValues(false);
+    XMLPortParam(CheckPoint, "addtime", setAddTime, getAddTime, xmlelement, mode).defaultValues(30);
   }
   
-  void CheckPoint::setDestination(bool isDestination)
-  {
-    bIsDestination_ = isDestination;
-  }
-
-  bool CheckPoint::getDestination()
-  {
-    return bIsDestination_;
-  }
-
-
   void CheckPoint::triggered(bool bIsTriggered)
   {
     DistanceTrigger::triggered(bIsTriggered);
 
-    if (bIsTriggered && bIsDestination_)
-    {
-      Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
-      if (gametype)
-      {
-        gametype->end();
-      }
-    }
+    Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
+    if (gametype)
+    { 
+        gametype->addTime(addTime_);
+
+        if (bIsTriggered && bIsFirst_)
+        {
+            gametype->firstCheckpointReached(true);
+        }
+     
+        if (bIsTriggered && bIsDestination_)
+        {
+            gametype->end();
+        }
+     }
   }
 }

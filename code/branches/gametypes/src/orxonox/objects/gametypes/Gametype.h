@@ -125,6 +125,24 @@ namespace orxonox
             inline unsigned int getNumberOfPlayers() const
                 { return this->players_.size(); }
 
+            virtual void addTime(float t);
+            virtual void removeTime(float t);
+
+            inline  void startTimer()
+              { this->timerIsActive_ = true; }
+
+            inline void stopTimer()
+              { this->timerIsActive_ = false; }
+
+            inline float getTime()
+              { return this->time_; }
+
+            inline bool getTimerIsActive()
+              { return timerIsActive_; }
+
+            virtual void resetTimer();
+            virtual void resetTimer(float t);
+
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
@@ -139,6 +157,10 @@ namespace orxonox
 
             bool bAutoStart_;
             bool bForceSpawn_;
+
+            float time_;
+            float timeLimit_;
+            bool timerIsActive_;
 
             float initialStartCountdown_;
             unsigned int numberOfBots_;

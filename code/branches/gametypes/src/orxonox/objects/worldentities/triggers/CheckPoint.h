@@ -56,10 +56,28 @@ namespace orxonox
 
     private:
       virtual void triggered(bool bIsTriggered); 
-      virtual void setDestination(bool isDestination);
-      virtual bool getDestination();	
+
+      inline void setDestination(bool isDestination)
+        { bIsDestination_ = isDestination; }
+
+      inline bool getDestination()
+        { return bIsDestination_; }	
+   
+      inline void setFirst(bool isFirst)
+        { this->bIsFirst_ = isFirst; }
+
+      inline bool getFirst()
+        { return this->bIsFirst_; }
+
+      inline void setAddTime(float time)
+        { this->addTime_ = time; }
+
+      inline bool getAddTime()
+        { return this->addTime_; }
       
+      bool bIsFirst_;
       bool bIsDestination_;
+      float addTime_;
   };
 }
 

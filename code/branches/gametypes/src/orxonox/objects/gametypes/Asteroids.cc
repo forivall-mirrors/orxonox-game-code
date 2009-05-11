@@ -42,7 +42,27 @@ namespace orxonox
     Asteroids::Asteroids(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(Asteroids);
+        this->firstCheckpointReached_ = false;
+        this->timeLimit_ = 30;
     }
+
+    void Asteroids::tick(float dt)
+    {
+        SUPER(Asteroids, tick, dt);
+ 
+        if (firstCheckpointReached_)
+        {
+            this->timeLimit_ = this->time_;
+            this->startTimer();
+        }
+
+        if (this->time_ < 0 && !this->hasEnded())
+        {
+            this->end();
+        }
+        
+    }
+
 
     void Asteroids::start()
     {

@@ -1,0 +1,75 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Aurelian Jaggi
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+#include "OrxonoxStableHeaders.h"
+#include "HUDTimer.h"
+
+#include <OgreTextAreaOverlayElement.h>
+
+#include "core/CoreIncludes.h"
+#include "util/Convert.h"
+#include "objects/infos/GametypeInfo.h"
+#include "objects/infos/PlayerInfo.h"
+#include "objects/worldentities/ControllableEntity.h"
+#include "objects/worldentities/pawns/Spectator.h"
+#include "objects/gametypes/Gametype.h"
+
+namespace orxonox
+{
+  CreateFactory(HUDTimer);
+
+  HUDTimer::HUDTimer(BaseObject* creator) : OverlayText(creator)
+  {
+    RegisterObject(HUDTimer);
+
+    this->owner_ = 0;
+  }
+
+  HUDTimer::~HUDTimer()
+  {
+  }
+
+  void HUDTimer::tick(float dt)
+  {
+    SUPER(HUDTimer, tick, dt);
+
+    Gametype* gametype = this->getGametype();
+
+    if (gametype->getTimerIsActive())
+    {
+      this->setCaption(convertToString((int)gametype->getTime()));
+    }
+  }
+
+  void HUDTimer::changedOwner()
+  { 
+    SUPER(HUDTimer, changedOwner);
+
+    this->owner_ = dynamic_cast<ControllableEntity*>(this->getOwner());
+  }
+}
