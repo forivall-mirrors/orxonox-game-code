@@ -57,14 +57,14 @@ namespace orxonox
     {
         SUPER(GametypeStatus, tick, dt);
 
-        if (this->owner_ && this->owner_->getGametypeInfo() && this->owner_->getPlayer())
+        if (this->owner_ && this->owner_->getGametypeInfo() && this->owner_->getControllableEntity())
         {
             const GametypeInfo* gtinfo = this->owner_->getGametypeInfo();
-            PlayerInfo* pinfo = this->owner_->getPlayer();
+            ControllableEntity* ce = this->owner_->getControllableEntity();
 
             if (!gtinfo->hasStarted() && !gtinfo->isStartCountdownRunning())
             {
-                if (!pinfo->isReadyToSpawn())
+                if (!this->owner_->isReadyToSpawn())
                     this->setCaption("Press [Fire] to start the match");
                 else
                     this->setCaption("Waiting for other players");
@@ -73,7 +73,7 @@ namespace orxonox
             {
                 if (gtinfo->isStartCountdownRunning())
                     this->setCaption(convertToString((int)ceil(gtinfo->getStartCountdown())));
-                else if (this->owner_->isA(Class(Spectator)))
+                else if (ce->isA(Class(Spectator)))
                     this->setCaption("Press [Fire] to respawn");
                 else
                     this->setCaption("");
@@ -88,6 +88,6 @@ namespace orxonox
     {
         SUPER(GametypeStatus, changedOwner);
 
-        this->owner_ = dynamic_cast<ControllableEntity*>(this->getOwner());
+        this->owner_ = dynamic_cast<PlayerInfo*>(this->getOwner());
     }
 }

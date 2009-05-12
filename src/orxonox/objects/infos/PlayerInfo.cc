@@ -50,6 +50,10 @@ namespace orxonox
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = CLIENTID_UNKNOWN;
 
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+        this->updateGametypeInfo();
+
         this->registerVariables();
     }
 
@@ -75,6 +79,7 @@ namespace orxonox
         registerVariable(this->name_,                 variableDirection::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
         registerVariable(this->controllableEntityID_, variableDirection::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
         registerVariable(this->bReadyToSpawn_,        variableDirection::toserver);
+        registerVariable(this->gtinfoID_,             variableDirection::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedgtinfoID));
     }
 
     void PlayerInfo::changedName()
@@ -87,6 +92,8 @@ namespace orxonox
 
     void PlayerInfo::changedGametype()
     {
+        this->updateGametypeInfo();
+
         if (this->isInitialized())
         {
             if (this->getOldGametype())
@@ -104,6 +111,18 @@ namespace orxonox
                 else
                     this->getGametype()->playerEntered(this);
             }
+        }
+    }
+
+    void PlayerInfo::updateGametypeInfo()
+    {
+        this->gtinfo_ = 0;
+        this->gtinfoID_ = OBJECTID_UNKNOWN;
+
+        if (this->getGametype() && this->getGametype()->getGametypeInfo())
+        {
+            this->gtinfo_ = this->getGametype()->getGametypeInfo();
+            this->gtinfoID_ = this->gtinfo_->getObjectID();
         }
     }
 
@@ -178,6 +197,17 @@ namespace orxonox
         else
         {
             this->stopControl(this->controllableEntity_);
+        }
+    }
+
+    void PlayerInfo::networkcallback_changedgtinfoID()
+    {
+        if (this->gtinfoID_ != OBJECTID_UNKNOWN)
+        {
+            this->gtinfo_ = dynamic_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
+
+            if (!this->gtinfo_)
+                this->gtinfoID_ = OBJECTID_UNKNOWN;
         }
     }
 }

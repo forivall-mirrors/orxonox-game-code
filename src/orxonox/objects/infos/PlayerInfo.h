@@ -76,6 +76,9 @@ namespace orxonox
             inline Controller* getController() const
                 { return this->controller_; }
 
+            inline const GametypeInfo* getGametypeInfo() const
+                { return this->gtinfo_; }
+
         protected:
             void createController();
 
@@ -87,11 +90,16 @@ namespace orxonox
 
         private:
             void networkcallback_changedcontrollableentityID();
+            void networkcallback_changedgtinfoID();
+            void updateGametypeInfo();
 
             bool bReadyToSpawn_;
             Controller* controller_;
             ControllableEntity* controllableEntity_;
             unsigned int controllableEntityID_;
+
+            const GametypeInfo* gtinfo_;
+            unsigned int gtinfoID_;
     };
 }
 
