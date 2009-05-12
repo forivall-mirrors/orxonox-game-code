@@ -46,7 +46,7 @@ namespace orxonox
             virtual void changedOwner();
 
         private:
-            ControllableEntity* owner_;
+            PlayerInfo* owner_;
     };
 }
 #endif /* _GametypeStatus_H__ */

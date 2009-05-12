@@ -47,7 +47,6 @@ namespace orxonox
             void registerVariables();
             void setConfigValues();
 
-            virtual void changedGametype();
             virtual void changedPlayer() {}
 
             virtual void setPlayer(PlayerInfo* player);
@@ -125,9 +124,6 @@ namespace orxonox
             inline bool hasHumanController() const
                 { return this->bHasHumanController_; }
 
-            inline const GametypeInfo* getGametypeInfo() const
-                { return this->gtinfo_; }
-
             inline bool isInMouseLook() const
                 { return this->bMouseLook_; }
             inline float getMouseLookSpeed() const
@@ -156,7 +152,6 @@ namespace orxonox
             void processClientAngularVelocity();
 
             void networkcallback_changedplayerID();
-            void networkcallback_changedgtinfoID();
 
             // Bullet btMotionState related
             void setWorldTransform(const btTransform& worldTrans);
@@ -189,9 +184,6 @@ namespace orxonox
             Ogre::SceneNode* cameraPositionRootNode_;
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
-
-            const GametypeInfo* gtinfo_;
-            unsigned int gtinfoID_;
     };
 }
 

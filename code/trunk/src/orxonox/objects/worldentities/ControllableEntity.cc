@@ -41,7 +41,6 @@
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/worldentities/CameraPosition.h"
-#include "objects/gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox
@@ -65,10 +64,6 @@ namespace orxonox
         this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
         this->bMouseLook_ = false;
         this->mouseLookSpeed_ = 200;
-
-        this->gtinfo_ = 0;
-        this->gtinfoID_ = OBJECTID_UNKNOWN;
-        this->changedGametype();
 
         this->server_position_         = Vector3::ZERO;
         this->client_position_         = Vector3::ZERO;
@@ -124,21 +119,6 @@ namespace orxonox
     void ControllableEntity::setConfigValues()
     {
         SetConfigValue(mouseLookSpeed_, 3.0f);
-    }
-
-    void ControllableEntity::changedGametype()
-    {
-        //SUPER(ControllableEntity, changedGametype);
-        WorldEntity::changedGametype();
-
-        this->gtinfo_ = 0;
-        this->gtinfoID_ = OBJECTID_UNKNOWN;
-
-        if (this->getGametype() && this->getGametype()->getGametypeInfo())
-        {
-            this->gtinfo_ = this->getGametype()->getGametypeInfo();
-            this->gtinfoID_ = this->gtinfo_->getObjectID();
-        }
     }
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
@@ -282,17 +262,6 @@ namespace orxonox
         }
     }
 
-    void ControllableEntity::networkcallback_changedgtinfoID()
-    {
-        if (this->gtinfoID_ != OBJECTID_UNKNOWN)
-        {
-            this->gtinfo_ = dynamic_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
-
-            if (!this->gtinfo_)
-                this->gtinfoID_ = OBJECTID_UNKNOWN;
-        }
-    }
-
     void ControllableEntity::startLocalHumanControl()
     {
         if (!this->camera_)
@@ -393,7 +362,6 @@ namespace orxonox
         registerVariable(this->client_angular_velocity_, variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
 
         registerVariable(this->playerID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
-        registerVariable(this->gtinfoID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedgtinfoID));
     }
 
     void ControllableEntity::processServerPosition()

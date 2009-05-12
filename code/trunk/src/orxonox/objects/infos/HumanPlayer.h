@@ -51,7 +51,6 @@ namespace orxonox
             void setClientID(unsigned int clientID);
 
             virtual void changedGametype();
-            virtual void changedControllableEntity();
 
             inline void setHumanHUDTemplate(const std::string& name)
             {
