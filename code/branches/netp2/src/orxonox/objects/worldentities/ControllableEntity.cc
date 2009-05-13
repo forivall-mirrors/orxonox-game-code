@@ -333,6 +333,7 @@ namespace orxonox
     void ControllableEntity::tick(float dt)
     {
         MobileEntity::tick(dt);
+//         COUT(0) << this->common_angular_velocity_ << endl;
 
         if (this->isActive())
         {
@@ -345,6 +346,7 @@ namespace orxonox
                     this->common_orientation_ = this->getOrientation();
                     this->common_linear_velocity_ = this->getVelocity();
                     this->common_angular_velocity_ = this->getAngularVelocity();
+                    COUT(0) << "tick " << this->common_angular_velocity_ << endl;
 //                 }
 //                 else if (this->bHasLocalController_)
 //                 {
@@ -378,7 +380,7 @@ namespace orxonox
         registerVariable(this->common_position_,         variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition), true);
         registerVariable(this->common_linear_velocity_,  variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity), true);
         registerVariable(this->common_orientation_,      variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation), true);
-        registerVariable(this->common_angular_velocity_, variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity), true);
+//         registerVariable(this->common_angular_velocity_, variableDirection::serverMaster, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity), true);
 
         registerVariable(this->playerID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
         registerVariable(this->gtinfoID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedgtinfoID));
@@ -406,6 +408,7 @@ namespace orxonox
     {
         if (!this->bHasLocalController_)
             MobileEntity::setAngularVelocity(this->common_angular_velocity_);
+        COUT(0) << "process " << this->common_angular_velocity_ << endl;
     }
 
     void ControllableEntity::processOverwrite()
@@ -508,6 +511,7 @@ namespace orxonox
 //         {
             MobileEntity::setAngularVelocity(velocity);
             this->common_angular_velocity_ = this->getAngularVelocity();
+            COUT(0) << "setav " << this->common_angular_velocity_ << endl;
 //             ++this->server_overwrite_;
 //         }
 //         else if (this->bHasLocalController_)
@@ -526,6 +530,7 @@ namespace orxonox
             this->common_orientation_ = this->getOrientation();
             this->common_linear_velocity_ = this->getVelocity();
             this->common_angular_velocity_ = this->getAngularVelocity();
+            COUT(0) << "setwt " << this->common_angular_velocity_ << endl;
 //         }
 //         else if (this->bHasLocalController_)
 //         {
