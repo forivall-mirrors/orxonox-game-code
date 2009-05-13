@@ -60,7 +60,7 @@ namespace orxonox
             inline void setAngularVelocity(float x, float y, float z)
                 { this->setAngularVelocity(Vector3(x, y, z)); }
             inline const Vector3& getAngularVelocity() const
-                { return this->linearAcceleration_; }
+                { return this->angularVelocity_; }
 
             void setAcceleration(const Vector3& acceleration);
             inline void setAcceleration(float x, float y, float z)
