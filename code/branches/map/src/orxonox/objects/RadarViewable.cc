@@ -116,9 +116,10 @@ namespace orxonox
             this->MapNode_->setOrientation( this->getWorldEntity()->getOrientation() );
 //Vector3 v = this->getRVWorldPosition();
             //this->line_->setPoint(1, Vector3(0,v.y,0) );
-            this->line_->setPoint(1, Vector3(0, -this->getRVWorldPosition().y ,0) );
+            this->line_->setPoint(1, Vector3( 0, (int) -Map::getSingletonPtr()->movablePlane_->getDistance( this->getRVWorldPosition() ) ,0 ));
             this->line_->update();
-            this->LineNode_->setDirection(Vector3::UNIT_Y,Ogre::Node::TS_WORLD,Vector3::UNIT_Y);
+            if( Map::getSingletonPtr()->playerShipNode_ )
+                this->LineNode_->setDirection( Map::getSingletonPtr()->playerShipNode_->getLocalAxes().GetColumn(1) ,Ogre::Node::TS_WORLD,Vector3::UNIT_Y);
         }
     }
 

@@ -37,6 +37,7 @@
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
 #include <OgreOverlayContainer.h>
+#include <OgreMovablePlane.h>
 
 #include <OgreBorderPanelOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
@@ -113,9 +114,11 @@ namespace orxonox
         //Ogre::SceneNode* CamNodeHelper_;
         Ogre::SceneNode* playerShipNode_;
         Ogre::SceneNode* planeNode_;
-        
+        Ogre::MovablePlane* movablePlane_;
         int mouseLookSpeed_;
         bool isVisible_;
+     
+    friend class RadarViewable;
     };
 }
 

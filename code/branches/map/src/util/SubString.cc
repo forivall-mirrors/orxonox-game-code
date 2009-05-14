@@ -38,6 +38,7 @@
  */
 
 #include "SubString.h"
+#include <stdio.h>
 
 namespace orxonox
 {

@@ -46,6 +46,7 @@
 #include "objects/worldentities/CameraPosition.h"
 
 #include <OgreOverlay.h>
+#include <OgreMovablePlane.h>
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
 #include <OgreOverlayContainer.h>
@@ -168,16 +169,21 @@
         this->isVisible_=false;
         overlay_->hide();
 
-        //Create plane in map
+        //Create plane to show grid
         Ogre::Entity* plane_ent = Map::getMapSceneManager()->createEntity( "MapPlane", "plane.mesh");
         planeNode_ = Map::getMapSceneManager()->getRootSceneNode()->createChildSceneNode();
-        
+        //Create plane for calculations
+        movablePlane_ = new Ogre::MovablePlane( Vector3::UNIT_Y, 0 );
+        movablePlane_->normalise();
+
         //Ogre::MaterialPtr plane_mat = Ogre::MaterialManager::getSingleton().create("mapgrid", "General");
         //plane_mat->getTechnique(0)->getPass(0)->createTextureUnitState("mapgrid.tga");
         //plane_ent->setMaterialName("mapgrid");
         plane_ent->setMaterialName("Map/Grid");
         planeNode_->attachObject(plane_ent);
+        
         planeNode_->scale(10,1,10);
+        planeNode_->attachObject(movablePlane_);
         //Ogre::Material plane_mat = Ogre::MaterialManager::getSingletonPtr()->getByName("rock");
         
 
@@ -271,8 +277,8 @@
                 //this->CamNodeHelper_->attachObject(this->Cam_);
                 this->Cam_->setPosition(0, 0, DISTANCE);
                 this->Cam_->pitch( (Degree)PITCH );
-                //this->CamNodeHelper_->lookAt(Vector3(0,0,0), Ogre::Node::TS_PARENT);
-                this->Cam_->setAutoTracking(true, this->playerShipNode_);
+                this->Cam_->lookAt(Vector3(0,0,0));
+                //this->Cam_->setAutoTracking(true, this->playerShipNode_);
             }
             
             
@@ -363,7 +369,7 @@
         Map::singletonMap_s->CamNodeHelper_->setDirection(Vector3::UNIT_Y, Ogre::Node::TS_PARENT, Vector3::UNIT_Y);
         Map::singletonMap_s->CamNodeHelper_->lookAt(Vector3(0,0,0), Ogre::Node::TS_PARENT);
 */
-        singletonMap_s->CamNode_->pitch( (Degree)(value.y * singletonMap_s->mouseLookSpeed_), Ogre::Node::TS_PARENT);
+        singletonMap_s->CamNode_->pitch( (Degree)(value.y * singletonMap_s->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
         
     }
     
