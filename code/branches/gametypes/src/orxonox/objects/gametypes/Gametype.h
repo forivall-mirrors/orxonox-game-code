@@ -129,7 +129,10 @@ namespace orxonox
             virtual void removeTime(float t);
 
             inline  void startTimer()
-              { this->timerIsActive_ = true; }
+            { 
+                this->time_ = this->timeLimit_;
+                this->timerIsActive_ = true;
+            }
 
             inline void stopTimer()
               { this->timerIsActive_ = false; }
@@ -139,6 +142,9 @@ namespace orxonox
 
             inline bool getTimerIsActive()
               { return timerIsActive_; }
+
+            inline void setTimeLimit(float t)
+              { this->timeLimit_ = t; }
 
             virtual void resetTimer();
             virtual void resetTimer(float t);

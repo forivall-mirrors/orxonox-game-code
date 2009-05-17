@@ -49,7 +49,7 @@ namespace orxonox
     this->setDistance(50);
     this->bIsFirst_ = false;
     this->bIsDestination_ = false;
-    this->setVisible(true);
+    //this->setVisible(true);
   }
 
   CheckPoint::~CheckPoint()
@@ -76,6 +76,7 @@ namespace orxonox
 
         if (bIsTriggered && bIsFirst_)
         {
+            gametype->setTimeLimit(addTime_);
             gametype->firstCheckpointReached(true);
         }
      

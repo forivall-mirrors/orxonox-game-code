@@ -43,20 +43,18 @@ namespace orxonox
     {
         RegisterObject(Asteroids);
         this->firstCheckpointReached_ = false;
-        this->timeLimit_ = 30;
     }
 
     void Asteroids::tick(float dt)
     {
         SUPER(Asteroids, tick, dt);
  
-        if (firstCheckpointReached_)
+        if (firstCheckpointReached_ && !this->timerIsActive_)
         {
-            this->timeLimit_ = this->time_;
             this->startTimer();
         }
 
-        if (this->time_ < 0 && !this->hasEnded())
+        if (this->time_ < 0 && !this->hasEnded() && this->timerIsActive_)
         {
             this->end();
         }

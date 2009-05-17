@@ -62,7 +62,7 @@ namespace orxonox
 
     if (gametype->getTimerIsActive())
     {
-      this->setCaption(convertToString((int)gametype->getTime()));
+      this->setCaption(convertToString((int)gametype->getTime() + 1));
     }
   }
 
