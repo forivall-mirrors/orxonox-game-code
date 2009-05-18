@@ -53,7 +53,7 @@ namespace orxonox
             COUT(4) << "OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
             if(SoundManager::device_s == NULL)
             {
-                COUT(3) << "OpenAL: open sound device..." << std::endl;
+                COUT(3) << "OpenAL: Open sound device..." << std::endl;
                 SoundManager::device_s = alcOpenDevice(NULL);
             }
 
@@ -63,6 +63,7 @@ namespace orxonox
             }
             else
             {
+                COUT(3) << "OpenAL: Sound device opened";
                 this->context_ = alcCreateContext(SoundManager::device_s, NULL);
                 if(this->context_ == NULL)
                 {
@@ -70,6 +71,7 @@ namespace orxonox
                 }
                 else
                 {
+                    COUT(3) << "OpenAL: Context " << this->context_ << "loaded";
                     alcMakeContextCurrent(this->context_);
                 }
             }

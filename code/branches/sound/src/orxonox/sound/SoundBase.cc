@@ -30,23 +30,25 @@
 
 #include "orxonox/objects/worldentities/WorldEntity.h"
 #include "util/Math.h"
-#include "SoundManager.h"
 #include "SoundBase.h"
+#include "SoundManager.h"
 
 namespace orxonox 
 {
-    SoundBase::SoundBase()
-    {
-        this->source_ = 0;
-        this->buffer_ = 0;
-        this->entity_ = NULL;
-    }
+    SoundManager* SoundBase::soundmanager_s = NULL;
 
     SoundBase::SoundBase(WorldEntity* entity)
     {
+        if(SoundBase::soundmanager_s == NULL)
+        {
+            SoundBase::soundmanager_s = new SoundManager();
+        }
+
         this->source_ = 0;
         this->buffer_ = 0;
         this->entity_ = entity;
+
+        SoundBase::soundmanager_s->addSound(this);
     }
 
     SoundBase::~SoundBase()

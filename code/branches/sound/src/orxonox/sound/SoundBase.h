@@ -35,6 +35,7 @@ namespace orxonox
 {
     class SoundManager;
     class WorldEntity;
+
     /**
      * The SoudBase class is the base class for all sound file loader classes.
      * It server as main interface to the OpenAL library.
@@ -43,8 +44,7 @@ namespace orxonox
     class _OrxonoxExport SoundBase
     {
     public:
-        SoundBase();
-        SoundBase(WorldEntity* entity);
+        SoundBase(WorldEntity* entity = NULL);
         ~SoundBase();
 
         void attachToEntity(WorldEntity* entity);
@@ -66,6 +66,8 @@ namespace orxonox
         WorldEntity* entity_;
 
         ALint getSourceState();
+
+        static SoundManager* soundmanager_s;
     }; // class SoundBase
 } // namepsace orxonox
 

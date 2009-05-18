@@ -32,8 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include "network/synchronisable/Synchronisable.h"
-#include "sound/SoundBase.h"
-#include "sound/SoundManager.h"
 #include "core/BaseObject.h"
 
 namespace orxonox
@@ -72,7 +70,7 @@ namespace orxonox
             std::string            xmlfilename_;
             XMLFile*               xmlfile_;
             std::list<BaseObject*> objects_;
-            SoundManager*          sndmgr_;
+
             SoundBase*             ambientsound_;
     };
 }

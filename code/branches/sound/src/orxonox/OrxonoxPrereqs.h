@@ -256,7 +256,11 @@ namespace orxonox
     class GSStandalone;
     class GSServer;
     class GSClient;
-    class GSGUI;
+    class GSGUI; 
+
+    //sound
+    class SoundBase;
+    class SoundManger;
 }
 
 namespace Ogre
