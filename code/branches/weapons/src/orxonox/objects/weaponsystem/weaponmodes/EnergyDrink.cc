@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "HsW01.h"
+#include "EnergyDrink.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -41,58 +41,58 @@
 
 namespace orxonox
 {
-    CreateFactory(HsW01);
+    CreateFactory(EnergyDrink);
 
-    HsW01::HsW01(BaseObject* creator) : WeaponMode(creator)
+    EnergyDrink::EnergyDrink(BaseObject* creator) : WeaponMode(creator)
     {
-        RegisterObject(HsW01);
+        RegisterObject(EnergyDrink);
 
         this->reloadTime_ = 0.25;
         this->damage_ = 15;
         this->speed_ = 2500;
         this->delay_ = 0;
-        this->setMunitionName("HsW01");
+        this->setMunitionName("EnergyDrink");
 
-        this->delayTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&HsW01::shot)));
+        this->delayTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&EnergyDrink::shot)));
         this->delayTimer_.stopTimer();
     }
 
-    void HsW01::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void EnergyDrink::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(HsW01, XMLPort, xmlelement, mode);
+        SUPER(EnergyDrink, XMLPort, xmlelement, mode);
 
-        XMLPortParam(HsW01, "delay", setDelay, getDelay, xmlelement, mode);
-        XMLPortParam(HsW01, "material", setMaterial, getMaterial, xmlelement, mode);
+        XMLPortParam(EnergyDrink, "delay", setDelay, getDelay, xmlelement, mode);
+        XMLPortParam(EnergyDrink, "material", setMaterial, getMaterial, xmlelement, mode);
 
     }
 
-    void HsW01::setMaterial(const std::string& material)
+    void EnergyDrink::setMaterial(const std::string& material)
     {
         this->material_ = material;
     }
 
-    std::string& HsW01::getMaterial()
+    std::string& EnergyDrink::getMaterial()
     {
         return this->material_;
     }
 
-    void HsW01::setDelay(float d)
+    void EnergyDrink::setDelay(float d)
     {
         this->delay_ = d;
         this->delayTimer_.setInterval(this->delay_);
     }
 
-    float HsW01::getDelay() const
+    float EnergyDrink::getDelay() const
     {
         return this->delay_;
     }
 
-    void HsW01::fire()
+    void EnergyDrink::fire()
     {
         this->delayTimer_.startTimer();
     }
 
-    void HsW01::muendungsfeuer()
+    void EnergyDrink::muendungsfeuer()
     {
         MuzzleFlash *muzzleFlash = new MuzzleFlash(this);
         this->getWeapon()->attach(muzzleFlash);
@@ -100,11 +100,11 @@ namespace orxonox
         muzzleFlash->setMaterial(this->material_);
     }
 
-    void HsW01::shot()
+    void EnergyDrink::shot()
     {
         Projectile* projectile = new Projectile(this);
 	Model* model = new Model(projectile);
-	model->setMeshSource("laserbeam.mesh");
+	model->setMeshSource("can.mesh");
 	model->setCastShadows(false);
 	projectile->attach(model);
 	model->setScale(5);
@@ -116,6 +116,6 @@ namespace orxonox
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
 
-        HsW01::muendungsfeuer();
+        EnergyDrink::muendungsfeuer();
     }
 }
