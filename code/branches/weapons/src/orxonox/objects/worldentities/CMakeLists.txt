@@ -14,7 +14,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Camera.cc
   CameraPosition.cc
   Model.cc
-  MuzzleFlash.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
   Planet.cc

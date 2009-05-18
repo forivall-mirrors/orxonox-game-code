@@ -7,6 +7,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   WeaponSlot.cc
   WeaponSystem.cc
   DefaultWeaponmodeLink.cc
+  MuzzleFlash.cc
 )
 
 ADD_SUBDIRECTORY(munitions)
