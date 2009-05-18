@@ -63,16 +63,16 @@ namespace orxonox
             }
             else
             {
-                COUT(3) << "OpenAL: Sound device opened";
+                COUT(3) << "OpenAL: Sound device opened" << std::endl;
                 this->context_ = alcCreateContext(SoundManager::device_s, NULL);
                 if(this->context_ == NULL)
                 {
-                    COUT(2) << "OpenAL: Could not create sound context";
+                    COUT(2) << "OpenAL: Could not create sound context" << std::endl;
                 }
                 else
                 {
-                    COUT(3) << "OpenAL: Context " << this->context_ << "loaded";
-                    alcMakeContextCurrent(this->context_);
+                    if(alcMakeContextCurrent(this->context_) == AL_TRUE)
+                        COUT(3) << "OpenAL: Context " << this->context_ << "loaded" << std::endl;
                 }
             }
         }
