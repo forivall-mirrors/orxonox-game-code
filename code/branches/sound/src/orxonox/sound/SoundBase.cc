@@ -25,6 +25,7 @@
  *      ...
  *
  */
+#include <vector>
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
 
@@ -70,20 +71,20 @@ namespace orxonox
             alSource3f(this->source_, AL_POSITION, pos.x, pos.y, pos.z);
             ALenum error = alGetError();
             if(error == AL_INVALID_VALUE)
-                COUT(2) << "OpenAL: Invalid sound position" << std::endl;
+                COUT(2) << "Sound: OpenAL: Invalid sound position" << std::endl;
 
             Vector3 vel = this->entity_->getVelocity();
             alSource3f(this->source_, AL_VELOCITY, vel.x, vel.y, vel.z);
             error = alGetError();
             if(error == AL_INVALID_VALUE)
-                COUT(2) << "OpenAL: Invalid sound position" << std::endl;
+                COUT(2) << "Sound: OpenAL: Invalid sound velocity" << std::endl;
 
             Quaternion orient = this->entity_->getOrientation();
             Vector3 at = orient.zAxis();
             alSource3f(this->source_, AL_DIRECTION, at.x, at.y, at.z);
             error = alGetError();
             if(error == AL_INVALID_VALUE)
-                COUT(2) << "OpenAL: Invalid sound position" << std::endl;
+                COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
         }
     }
 
@@ -132,10 +133,10 @@ namespace orxonox
 
     bool SoundBase::loadFile(std::string filename) {
         filename = Core::getMediaPathString() + "/audio/" + filename;
-        COUT(3) << "OpenAL ALUT: loading file " << filename << std::endl;
+        COUT(3) << "Sound: OpenAL ALUT: loading file " << filename << std::endl;
         this->buffer_ = alutCreateBufferFromFile(filename.c_str());
         if(this->buffer_ == AL_NONE) {
-            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
+            COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
             if(filename.find("ogg", 0) != std::string::npos)
             {
                 this->buffer_ = loadOggFile(filename);
@@ -148,7 +149,7 @@ namespace orxonox
         alGenSources(1, &this->source_);
         alSourcei(this->source_, AL_BUFFER, this->buffer_);
         if(alGetError() != AL_NO_ERROR) {
-            COUT(2) << "OpenAL: Error loading sample file" << std::endl;
+            COUT(2) << "Sound: OpenAL: Error loading sample file" << std::endl;
             return false;
         }
         return true;
@@ -159,10 +160,47 @@ namespace orxonox
         alGetSourcei(this->source_, AL_SOURCE_STATE, &state);
         return state;
     }
-    
+
     ALuint SoundBase::loadOggFile(std::string filename)
     {
-        // just a dummy
-        return AL_NONE;
+        COUT(2) << "Sound: Trying fallback ogg loader";
+
+        char inbuffer[4096];
+        std::vector<char> outbuffer;
+        OggVorbis_File vf;
+        int eof = false;
+        int current_section;
+
+        FILE* f = fopen(filename.c_str(), "rb");
+
+        if(ov_open(f, &vf, NULL, 0) < 0)
+        {
+            COUT(2) << "Sound: libvorbisfile: File seems not to be an Ogg Vorbis bitstream" << std::endl;
+            ov_clear(&vf);
+            return AL_NONE;
+        }
+
+        while(!eof)
+        {
+            long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
+            if (ret == 0)
+            {
+                eof = true;
+            }
+            else if (ret < 0)
+            {
+                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                ov_clear(&vf);
+                return AL_NONE;
+            }
+            else
+            {
+                outbuffer.insert(outbuffer.end(), inbuffer, inbuffer + sizeof(inbuffer));
+            }
+        }
+        
+        ov_clear(&vf);
+
+        return alutCreateBufferFromFileImage(&outbuffer, outbuffer.size());
     }
 } // namespace: orxonox

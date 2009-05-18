@@ -45,34 +45,34 @@ namespace orxonox
     {
         if(!alutInitWithoutContext(NULL,NULL))
         {
-            COUT(2) << "OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
+            COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
         }
         else
         {
-            COUT(4) << "OpenAL ALUT version:" << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
-            COUT(4) << "OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
+            COUT(4) << "Sound: OpenAL ALUT version:" << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
+            COUT(4) << "Sound: OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
             if(SoundManager::device_s == NULL)
             {
-                COUT(3) << "OpenAL: Open sound device..." << std::endl;
+                COUT(3) << "Sound: OpenAL: Open sound device..." << std::endl;
                 SoundManager::device_s = alcOpenDevice(NULL);
             }
 
             if(SoundManager::device_s == NULL)
             {
-                COUT(2) << "OpenAL: Could not open sound device" << std::endl;
+                COUT(2) << "Sound: OpenAL: Could not open sound device" << std::endl;
             }
             else
             {
-                COUT(3) << "OpenAL: Sound device opened" << std::endl;
+                COUT(3) << "Sound: OpenAL: Sound device opened" << std::endl;
                 this->context_ = alcCreateContext(SoundManager::device_s, NULL);
                 if(this->context_ == NULL)
                 {
-                    COUT(2) << "OpenAL: Could not create sound context" << std::endl;
+                    COUT(2) << "Sound: OpenAL: Could not create sound context" << std::endl;
                 }
                 else
                 {
                     if(alcMakeContextCurrent(this->context_) == AL_TRUE)
-                        COUT(3) << "OpenAL: Context " << this->context_ << "loaded" << std::endl;
+                        COUT(3) << "Sound: OpenAL: Context " << this->context_ << "loaded" << std::endl;
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace orxonox
         alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
         ALenum error = alGetError();
         if(error == AL_INVALID_VALUE)
-            COUT(2) << "OpenAL: Invalid listener position" << std::endl;
+            COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
 
         // update listener orientation
         Quaternion orient = camera->getOrientation();
@@ -139,7 +139,7 @@ namespace orxonox
         alListenerfv(AL_POSITION, orientation);
         error = alGetError();
         if(error == AL_INVALID_VALUE)
-            COUT(2) << "OpenAL: Invalid listener orientation" << std::endl;
+            COUT(2) << "Sound: OpenAL: Invalid listener orientation" << std::endl;
 
         // update sounds
         for(std::list<SoundBase*>::iterator i = this->soundlist_.begin(); i != this->soundlist_.end(); i++)
