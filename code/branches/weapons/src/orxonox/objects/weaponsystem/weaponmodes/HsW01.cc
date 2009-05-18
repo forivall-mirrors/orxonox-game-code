@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Martin Polak
+ *      Hagen Seifert
  *   Co-authors:
  *      ...
  *
@@ -31,49 +31,91 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "objects/weaponsystem/projectiles/ParticleProjectile.h"
+#include "objects/worldentities/Model.h"
+#include "objects/worldentities/MuzzleFlash.h"
+
+#include "objects/weaponsystem/Weapon.h"
+#include "objects/weaponsystem/WeaponPack.h"
+#include "objects/weaponsystem/WeaponSystem.h"
 
 namespace orxonox
 {
     CreateFactory(HsW01);
 
-    HsW01::HsW01(BaseObject* creator) : Weapon(creator)
+    HsW01::HsW01(BaseObject* creator) : WeaponMode(creator)
     {
         RegisterObject(HsW01);
 
-        this->speed_ = 1250;
+        this->reloadTime_ = 0.25;
+        this->damage_ = 15;
+        this->speed_ = 2500;
+        this->delay_ = 0;
+        this->setMunitionName("HsW01");
+
+        this->delayTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&HsW01::shot)));
+        this->delayTimer_.stopTimer();
+    }
+
+    void HsW01::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(HsW01, XMLPort, xmlelement, mode);
+
+        XMLPortParam(HsW01, "delay", setDelay, getDelay, xmlelement, mode);
+        XMLPortParam(HsW01, "material", setMaterial, getMaterial, xmlelement, mode);
 
     }
 
-    HsW01::~HsW01()
+    void HsW01::setMaterial(const std::string& material)
     {
+        this->material_ = material;
     }
 
-    void HsW01::reloadBullet()
+    std::string& HsW01::getMaterial()
     {
-        this->bulletTimer(this->bulletLoadingTime_);
+        return this->material_;
     }
 
-    void HsW01::reloadMagazine()
+    void HsW01::setDelay(float d)
     {
-        this->magazineTimer(this->magazineLoadingTime_);
+        this->delay_ = d;
+        this->delayTimer_.setInterval(this->delay_);
     }
 
-    void HsW01::takeBullets()
+    float HsW01::getDelay() const
     {
-        this->munition_->removeBullets(1);
+        return this->delay_;
     }
 
-    void HsW01::takeMagazines()
+    void HsW01::fire()
     {
-        this->munition_->removeMagazines(1);
+        this->delayTimer_.startTimer();
     }
 
-    void HsW01::createProjectile()
+    void HsW01::muendungsfeuer()
     {
-        BillboardProjectile* projectile = new ParticleProjectile(this);
-        projectile->setOrientation(this->getWorldOrientation());
-        projectile->setPosition(this->getWorldPosition());
-        projectile->setVelocity(this->getWorldOrientation() * WorldEntity::FRONT * this->speed_);
-        projectile->setOwner(this->getWeaponSystem()->getPawn());
+        MuzzleFlash *muzzleFlash = new MuzzleFlash(this);
+        this->getWeapon()->attach(muzzleFlash);
+        muzzleFlash->setPosition(this->getMuzzleOffset());
+        muzzleFlash->setMaterial(this->material_);
+    }
+
+    void HsW01::shot()
+    {
+        Projectile* projectile = new Projectile(this);
+	Model* model = new Model(projectile);
+	model->setMeshSource("laserbeam.mesh");
+	model->setCastShadows(false);
+	projectile->attach(model);
+	model->setScale(5);
+
+        projectile->setOrientation(this->getMuzzleOrientation());
+        projectile->setPosition(this->getMuzzlePosition());
+        projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
+
+        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setDamage(this->getDamage());
+
+        HsW01::muendungsfeuer();
     }
 }

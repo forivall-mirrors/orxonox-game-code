@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Martin Polak
+ *      Hagen Seifert
  *   Co-authors:
  *      ...
  *
@@ -30,32 +30,32 @@
 #define _HsW01_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
-
-#include "../munitions/LaserGunMunition.h"
-#include "util/Math.h"
-#include "../Weapon.h"
-#include "../projectiles/BillboardProjectile.h"
-#include "../projectiles/ParticleProjectile.h"
+#include "objects/weaponsystem/WeaponMode.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HsW01 : public Weapon
+    class _OrxonoxExport HsW01 : public WeaponMode
     {
         public:
             HsW01(BaseObject* creator);
-            virtual ~HsW01();
+            virtual ~HsW01() {}
 
-            virtual void takeBullets();
-            virtual void takeMagazines();
-            virtual void createProjectile();
-            virtual void reloadBullet();
-            virtual void reloadMagazine();
+            virtual void fire();
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         private:
-            float speed_;
+            void setMaterial(const std::string& material);
+            std::string& getMaterial();
+            void setDelay(float d);
+            float getDelay() const;
+            void shot();
+            void muendungsfeuer();
 
+            std::string material_;
+            float speed_;
+            float delay_;
+            Timer<HsW01> delayTimer_;
     };
 }
 
