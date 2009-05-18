@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Val Mikos
  *
  */
 
@@ -58,6 +58,10 @@ namespace orxonox
                         
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
 
+	    virtual bool allowPawnDamage(Pawn* victim, Pawn* originator);
+
+
+
             // give information about the state of a base 
             // (this should be pretty useless atm)
 //            virtual int baseState(Base);
@@ -76,6 +80,10 @@ namespace orxonox
             
         protected:
             void winPoints();
+
+
+	    bool pawnsAreInTheSameTeam(Pawn* pawn1, TeamBaseMatchBase* base);
+            using TeamDeathmatch::pawnsAreInTheSameTeam;
 
             std::set<TeamBaseMatchBase*> bases_;
             Timer<TeamBaseMatch> scoreTimer_;

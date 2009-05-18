@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Val Mikos
  *
  */
 
@@ -30,6 +30,7 @@
 #include "TeamBaseMatchBase.h"
 #include "core/CoreIncludes.h"
 #include "objects/gametypes/TeamBaseMatch.h"
+#include "objects/Teamcolourable.h"
 
 namespace orxonox
 {
@@ -45,6 +46,42 @@ namespace orxonox
         if (gametype)
         {
             gametype->addBase(this);
+        }
+    }
+
+    void TeamBaseMatchBase::changeTeamColour()
+    {
+        this->fireEvent();
+
+        TeamDeathmatch* gametype = dynamic_cast<TeamDeathmatch*>(this->getGametype());
+        if (!gametype)
+            return;
+
+        ColourValue colour;
+
+        switch (this->state_)
+        {
+            case BaseState::controlTeam1:
+                colour = gametype->getTeamColour(0);
+                break;
+            case BaseState::controlTeam2:
+                colour = gametype->getTeamColour(1);
+                break;
+            case BaseState::uncontrolled:
+            default:
+                colour = ColourValue(0.5, 0.5, 0.7, 1.0);
+                break;
+        }
+
+        
+        std::set<WorldEntity*> attachments = this->getAttachedObjects();
+        for (std::set<WorldEntity*>::iterator it = attachments.begin(); it != attachments.end(); ++it)
+        {
+            if ((*it)->isA(Class(Teamcolourable)))
+            {
+                Teamcolourable* tc = dynamic_cast<Teamcolourable*>(*it);
+                tc->setTeamColour(colour);
+            }
         }
     }
 }

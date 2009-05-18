@@ -54,6 +54,9 @@ namespace orxonox
 
             virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
 
+            inline const ColourValue& getTeamColour(int teamnr) const
+                { return this->teamcolours_[teamnr]; }
+
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
             bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);

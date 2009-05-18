@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *   Author:
+ *   Author: Val Mikos
  */
  
  
@@ -27,7 +27,6 @@
 #include "TeamBaseMatch.h"
 
 
-//implement this! not done yet!
 #include "objects/worldentities/pawns/TeamBaseMatchBase.h" 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -97,6 +96,53 @@ namespace orxonox
 
         return TeamDeathmatch::allowPawnDeath(victim, originator);
     }
+
+
+    // if the player is in the same team as the base, he can't make any damage to it
+    bool TeamBaseMatch::allowPawnDamage(Pawn* victim, Pawn* originator)
+    {
+        TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
+        if (base)
+        {
+            std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(base);
+            if (it != this->bases_.end())
+                return (!this->pawnsAreInTheSameTeam(victim, base));
+        }
+        return (!this->pawnsAreInTheSameTeam(victim, originator));
+    }
+
+    bool TeamBaseMatch::pawnsAreInTheSameTeam(Pawn* pawn1, TeamBaseMatchBase* base)
+    {
+        if (pawn1 && base)
+        {
+            std::map<PlayerInfo*, int>::const_iterator it1 = this->teamnumbers_.find(pawn1->getPlayer());
+	    int teamnrbase = -1;
+	    int teamnrplayer = getTeam(pawn1->getPlayer());
+
+	    switch(base->getState())
+            {
+                case BaseState::controlTeam1:
+                    teamnrbase = 0;
+                    break;
+                case BaseState::controlTeam2:
+                    teamnrbase = 1;
+                    break;
+                case BaseState::uncontrolled:
+                default:
+		    teamnrbase = -1;
+	    }
+
+
+	    if(teamnrbase == teamnrplayer){
+		return false;
+	    }
+        }
+        return true;
+    }
+
+
+
+
 
     // collect Points for killing oppenents
     void TeamBaseMatch::playerScored(PlayerInfo* player)
@@ -180,16 +226,7 @@ namespace orxonox
         }
         return 0;
     }
-
-
-    // declare the functions 'getshape' and 'setshape' from the XML function here
- 
-
-
-
     
 }
-
- 
 
  

@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Val Mikos
  *
  */
 
@@ -69,6 +69,7 @@ namespace orxonox
             void setState(BaseState::Enum state)
             {
                 this->state_ = state;
+                this->changeTeamColour();
 	    }
 
 
@@ -80,6 +81,7 @@ namespace orxonox
 
 
         protected:
+            void changeTeamColour();
 
             BaseState::Enum state_;
     };
