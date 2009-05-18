@@ -43,6 +43,7 @@ namespace orxonox
     {
         RegisterObject(Asteroids);
         this->firstCheckpointReached_ = false;
+        this->firstTimeSpawned_ = false;
     }
 
     void Asteroids::tick(float dt)
@@ -58,9 +59,19 @@ namespace orxonox
         {
             this->end();
         }
-        
     }
 
+    void Asteroids::spawnPlayer(PlayerInfo* player)
+    {
+        if (this->timerIsActive_ && this->firstTimeSpawned_)
+        {
+            this->end();
+            return;
+        }
+
+        this->firstTimeSpawned_ = true;
+        Gametype::spawnPlayer(player);
+    }
 
     void Asteroids::start()
     {

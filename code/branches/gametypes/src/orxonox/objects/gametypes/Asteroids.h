@@ -49,9 +49,13 @@ namespace orxonox
             inline void firstCheckpointReached(bool reached)
               { this->firstCheckpointReached_ = reached; }
 
+        protected:
+            virtual void spawnPlayer(PlayerInfo* player);
+
         private:
             bool firstCheckpointReached_;
             bool gameEnded_;
+            bool firstTimeSpawned_;
 
     };
 }

@@ -62,9 +62,11 @@ namespace orxonox
 
     protected:
       virtual bool isTriggered(TriggerMode mode);
+      virtual void notifyMaskUpdate() {}
+
+      ClassTreeMask targetMask_;
 
     private:
-      ClassTreeMask targetMask_;
       std::set<Ogre::Node*> targetSet_;
       float distance_;
       

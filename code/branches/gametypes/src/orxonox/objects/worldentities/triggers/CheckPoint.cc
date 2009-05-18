@@ -36,6 +36,7 @@
 #include "core/XMLPort.h"
 
 #include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -50,6 +51,8 @@ namespace orxonox
     this->bIsFirst_ = false;
     this->bIsDestination_ = false;
     //this->setVisible(true);
+
+    this->notifyMaskUpdate();
   }
 
   CheckPoint::~CheckPoint()
@@ -85,5 +88,11 @@ namespace orxonox
             gametype->end();
         }
      }
+  }
+
+  void CheckPoint::notifyMaskUpdate()
+  {
+      this->targetMask_.exclude(Class(BaseObject));
+      this->targetMask_.include(Class(Pawn));
   }
 }

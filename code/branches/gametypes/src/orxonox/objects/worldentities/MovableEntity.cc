@@ -34,6 +34,7 @@
 #include "core/XMLPort.h"
 #include "core/Executor.h"
 #include "core/Core.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -66,7 +67,27 @@ namespace orxonox
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(MovableEntity, XMLPort, xmlelement, mode);
+
+        XMLPortParam(MovableEntity, "enablecollisiondamage", setEnableCollisionDamage, getEnableCollisionDamage, xmlelement, mode).defaultValues(false);
+        XMLPortParam(MovableEntity, "collisiondamage", setCollisionDamage, getCollisionDamage, xmlelement, mode).defaultValues(1);
     }
+
+    bool MovableEntity::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    {
+            if (Core::isMaster() && enableCollisionDamage_)
+            {
+                Pawn* victim = dynamic_cast<Pawn*>(otherObject);
+                if (victim)
+		{
+COUT(0) << "colission";
+                    
+                    victim->damage(this->collisionDamage_ * victim->getVelocity().dotProduct(this->getVelocity()));
+}
+            }
+
+        return false;
+    }
+
 
     void MovableEntity::registerVariables()
     {

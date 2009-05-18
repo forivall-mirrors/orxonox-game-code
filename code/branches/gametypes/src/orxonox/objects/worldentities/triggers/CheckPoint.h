@@ -56,6 +56,7 @@ namespace orxonox
 
     private:
       virtual void triggered(bool bIsTriggered); 
+      virtual void notifyMaskUpdate();
 
       inline void setDestination(bool isDestination)
         { bIsDestination_ = isDestination; }
