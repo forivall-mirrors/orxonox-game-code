@@ -198,8 +198,8 @@ namespace orxonox
           // we should never reach this point
           printf("ConnectionManager: ENet returned with an error\n");
           quit_=true;
+          printf("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhh\n");
           continue;
-          printf("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhh");
           // add some error handling here ========================
         }
         lock.unlock();
@@ -207,7 +207,7 @@ namespace orxonox
       switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          printf("====================================================================");
+//             printf("====================================================================");
         case ENET_EVENT_TYPE_DISCONNECT:
         case ENET_EVENT_TYPE_RECEIVE:
             processData(event);

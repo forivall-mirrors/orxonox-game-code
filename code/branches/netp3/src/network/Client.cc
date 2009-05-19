@@ -141,7 +141,7 @@ namespace orxonox
    */
   void Client::update(const Clock& time){
     //this steers our network frequency
-    timeSinceLastUpdate_+=time;
+    timeSinceLastUpdate_+=time.getDeltaTime();
     if(timeSinceLastUpdate_>=NETWORK_PERIOD){
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       //     COUT(3) << ".";
