@@ -131,7 +131,7 @@ namespace orxonox
 //         this->fire_ = this->firehack_;
 //         this->firehack_ = 0x0;
 
-        if (Core::isMaster())
+        if (GameMode::isMaster())
           if (this->health_ <= 0)
             this->death();
     }
@@ -262,7 +262,7 @@ namespace orxonox
     
     void Pawn::doFire(uint8_t fireMode)
     {
-        if(Core::isMaster())
+        if(GameMode::isMaster())
         {
             if (this->weaponSystem_)
                 this->weaponSystem_->fire((WeaponMode::Enum)fireMode);

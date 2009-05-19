@@ -100,7 +100,7 @@ namespace orxonox
 
     void AIController::tick(float dt)
     {
-        if(Core::isMaster())
+        if(GameMode::isMaster())
         {
             if (!this->isActive())
                 return;
