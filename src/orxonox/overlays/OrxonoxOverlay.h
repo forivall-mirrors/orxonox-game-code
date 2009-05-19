@@ -148,6 +148,7 @@ namespace orxonox
         static void scaleOverlay(const std::string& name, float scale);
         //! ConsoleCommand: Accesses the overlay by its name and scrolls it.
         static void scrollOverlay(const std::string& name, const Vector2& scroll);
+        static void toggleVisibility(const std::string& name);
         //! ConsoleCommand: Accesses the overlay by its name and rotates it.
         static void rotateOverlay(const std::string& name, const Degree& angle);
 
