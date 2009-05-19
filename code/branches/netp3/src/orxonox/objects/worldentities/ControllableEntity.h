@@ -163,14 +163,18 @@ namespace orxonox
             bool bHasHumanController_;
             bool bDestroyWhenPlayerLeft_;
 
-            Vector3 server_position_;
-            Vector3 client_position_;
-            Vector3 server_linear_velocity_;
-            Vector3 client_linear_velocity_;
-            Quaternion server_orientation_;
-            Quaternion client_orientation_;
-            Vector3 server_angular_velocity_;
-            Vector3 client_angular_velocity_;
+//             Vector3 server_position_;
+            Vector3 common_position_;
+//             Vector3 client_position_;
+//             Vector3 server_linear_velocity_;
+//             Vector3 client_linear_velocity_;
+            Vector3 common_linear_velocity_;
+//             Quaternion server_orientation_;
+//             Quaternion client_orientation_;
+            Quaternion common_orientation_;
+//             Vector3 server_angular_velocity_;
+//             Vector3 client_angular_velocity_;
+            Vector3 common_angular_velocity_;
 
             PlayerInfo* player_;
             unsigned int playerID_;

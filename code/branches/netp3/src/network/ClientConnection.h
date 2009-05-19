@@ -52,7 +52,7 @@ namespace orxonox
 
     const int NETWORK_PORT = 55556;
     const int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
-    const int NETWORK_CLIENT_WAIT_TIME = 1;
+    const int NETWORK_CLIENT_WAIT_TIME = 10;
     const int NETWORK_CLIENT_CONNECT_TIMEOUT = 3000; // miliseconds
     const int NETWORK_CLIENT_CHANNELS = 2;
 
@@ -75,7 +75,8 @@ namespace orxonox
     // send out all queued packets and save result in event
     //bool sendPackets(ENetEvent *event);
     bool waitEstablished(int milisec);
-    bool isConnected(){return established;}
+    inline bool isConnected(){return established;}
+    inline bool checkConnection(){ return !quit_ && isConnected(); }
   private:
     ClientConnection(const ClientConnection& copy); // not used
     bool processData(ENetEvent *event);
@@ -89,7 +90,7 @@ namespace orxonox
     ENetHost *client;
     ENetAddress *serverAddress;
     // quit-variable (communication with threads)
-    bool quit;
+    bool quit_;
     bool established;
     // clientlist
     ENetPeer *server;

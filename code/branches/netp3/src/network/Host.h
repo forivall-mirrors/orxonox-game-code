@@ -35,6 +35,10 @@
 
 namespace orxonox {
 
+  const int CLIENTID_SERVER = 0;
+  const unsigned int NETWORK_FREQUENCY = 25;
+  const float NETWORK_PERIOD = 1.0f/NETWORK_FREQUENCY;
+
 /**
 *       @brief Base class of Server and Client
 *       This is the Base class of the Server and Client classes

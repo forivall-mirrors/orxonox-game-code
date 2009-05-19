@@ -47,6 +47,7 @@
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "packet/Packet.h"
+#include "FunctionCallManager.h"
 
 // #include "packet/Acknowledgement.h"
 
@@ -139,33 +140,40 @@ namespace orxonox
    * @param time
    */
   void Client::update(const Clock& time){
-//     COUT(3) << ".";
-    if(client_connection.isConnected() && isSynched_){
-      COUT(4) << "popping partial gamestate: " << std::endl;
-      packet::Gamestate *gs = gamestate.getGamestate();
-      if(gs){
-        COUT(4) << "client tick: sending gs " << gs << std::endl;
-        if( !gs->send() )
-          COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
+    //this steers our network frequency
+    timeSinceLastUpdate_+=time;
+    if(timeSinceLastUpdate_>=NETWORK_PERIOD){
+      timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
+      //     COUT(3) << ".";
+      if(client_connection.isConnected() && isSynched_){
+        COUT(4) << "popping partial gamestate: " << std::endl;
+        packet::Gamestate *gs = gamestate.getGamestate();
+        if(gs){
+          COUT(4) << "client tick: sending gs " << gs << std::endl;
+          if( !gs->send() )
+            COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // gs gets automatically deleted by enet callback
+        }
+        FunctionCallManager::sendCalls();
       }
-    }
-    ENetEvent *event;
+      ENetEvent *event;
     // stop if the packet queue is empty
-    while(!(client_connection.queueEmpty())){
-      event = client_connection.getEvent();
-      COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-      packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
+      while(!(client_connection.queueEmpty())){
+        event = client_connection.getEvent();
+        COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
+        packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
       // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
-      bool b = packet->process();
-      assert(b);
+        bool b = packet->process();
+        assert(b);
+      }
+      if(gamestate.processGamestates())
+      {
+        if(!isSynched_)
+          isSynched_=true;
+      }
+      gamestate.cleanup();
     }
-    if(gamestate.processGamestates())
-    {
-      if(!isSynched_)
-        isSynched_=true;
-    }
-    gamestate.cleanup();
+
     return;
   }
 

@@ -57,10 +57,7 @@
 namespace std
 {
   bool operator< (ENetAddress a, ENetAddress b) {
-    if(a.host <= b.host)
-      return true;
-    else
-      return false;
+    return a.host <= b.host;
   }
 }
 
@@ -74,7 +71,7 @@ namespace orxonox
   ConnectionManager::ConnectionManager():receiverThread_(0){
     assert(instance_==0);
     instance_=this;
-    quit=false;
+    quit_=false;
     bindAddress = new ENetAddress();
     bindAddress->host = ENET_HOST_ANY;
     bindAddress->port = NETWORK_PORT;
@@ -83,7 +80,7 @@ namespace orxonox
   ConnectionManager::ConnectionManager(int port){
     assert(instance_==0);
     instance_=this;
-    quit=false;
+    quit_=false;
     bindAddress = new ENetAddress();
     bindAddress->host = ENET_HOST_ANY;
     bindAddress->port = port;
@@ -92,7 +89,7 @@ namespace orxonox
   ConnectionManager::ConnectionManager(int port, const std::string& address) :receiverThread_(0) {
     assert(instance_==0);
     instance_=this;
-    quit=false;
+    quit_=false;
     bindAddress = new ENetAddress();
     enet_address_set_host (bindAddress, address.c_str());
     bindAddress->port = NETWORK_PORT;
@@ -101,14 +98,14 @@ namespace orxonox
   ConnectionManager::ConnectionManager(int port, const char *address) : receiverThread_(0) {
     assert(instance_==0);
     instance_=this;
-    quit=false;
+    quit_=false;
     bindAddress = new ENetAddress();
     enet_address_set_host (bindAddress, address);
     bindAddress->port = NETWORK_PORT;
   }
 
   ConnectionManager::~ConnectionManager(){
-    if(!quit)
+    if(!quit_)
       quitListener();
     instance_=0;
     delete bindAddress;
@@ -132,7 +129,7 @@ namespace orxonox
   }
 
   bool ConnectionManager::quitListener() {
-    quit=true;
+    quit_=true;
     receiverThread_->join();
     return true;
   }
@@ -188,18 +185,21 @@ namespace orxonox
     }
     if(server==NULL){
       // add some error handling here ==========================
-      quit=true;
+      quit_=true;
       return;
     }
 
     event = new ENetEvent;
-    while(!quit){
+    while(!quit_)
+    {
       { //mutex scope
         boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
           // we should never reach this point
-          quit=true;
+          printf("ConnectionManager: ENet returned with an error\n");
+          quit_=true;
           continue;
+          printf("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhh");
           // add some error handling here ========================
         }
         lock.unlock();
@@ -207,6 +207,7 @@ namespace orxonox
       switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
+          printf("====================================================================");
         case ENET_EVENT_TYPE_DISCONNECT:
         case ENET_EVENT_TYPE_RECEIVE:
             processData(event);
@@ -214,7 +215,7 @@ namespace orxonox
           break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
-          msleep(1);
+          msleep(10);
           break;
       }
 //       usleep(100);
@@ -265,13 +266,6 @@ namespace orxonox
     }
     return;
   }
-
-  bool ConnectionManager::processData(ENetEvent *event) {
-    // just add packet to the buffer
-    // this can be extended with some preprocessing
-    return buffer.push(event);
-  }
-
 
 
   int ConnectionManager::getClientID(ENetPeer* peer) {

@@ -20,17 +20,41 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2008
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>
  *   Co-authors:
  *      ...
  *
  */
+#ifndef NETWORKFUNCTIONIDS_H
+#define NETWORKFUNCTIONIDS_H
 
-#include "SynchronisableVariable.h"
+#include "../NetworkPrereqs.h"
 
+#include <string>
 
-namespace orxonox{
+#include "Packet.h"
 
-uint8_t SynchronisableVariableBase::state_ = 0;
+namespace orxonox {
+namespace packet {
 
-} //namespace
+  
+/**
+	@author
+*/
+class _NetworkExport FunctionIDs : public Packet
+{
+public:
+  FunctionIDs( );
+  FunctionIDs( uint8_t* data, unsigned int clientID );
+  ~FunctionIDs();
+
+  uint32_t getSize() const;
+  bool process();
+
+private:
+};
+
+} //namespace packet
+} //namespace orxonox
+
+#endif

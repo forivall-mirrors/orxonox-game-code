@@ -90,8 +90,8 @@ namespace orxonox {
 
   void TrafficControl::setConfigValues()
   {
-    SetConfigValue ( bActive_, true );
-    SetConfigValue ( targetSize, 5000 );
+    SetConfigValue ( bActive_, false );
+    SetConfigValue ( targetSize, 10000 );
   }
 
   /**

@@ -79,6 +79,7 @@ namespace orxonox
             virtual void kill();
 
             virtual void fire(WeaponMode::Enum fireMode);
+            virtual void doFire(uint8_t fireMode);
             virtual void postSpawn();
 
             void setWeaponSlot(WeaponSlot * wSlot);

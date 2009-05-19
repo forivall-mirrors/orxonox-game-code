@@ -32,9 +32,11 @@
 #include "network/NetworkPrereqs.h"
 
 #include <list>
+#include <vector>
 #include <map>
 #include <queue>
 #include <cassert>
+#include <string>
 #include "util/Math.h"
 #include "util/mbool.h"
 #include "core/OrxonoxClass.h"
@@ -119,7 +121,6 @@ namespace orxonox
   class _NetworkExport Synchronisable : virtual public OrxonoxClass{
   public:
     friend class packet::Gamestate;
-//     friend class Server;
     virtual ~Synchronisable();
 
     static void setClient(bool b);
@@ -138,13 +139,13 @@ namespace orxonox
   protected:
     Synchronisable(BaseObject* creator);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
-    template <class T> void unregisterVariable(T& var);
+    //template <class T> void unregisterVariable(T& var);
     void setObjectMode(uint8_t mode);
     void setPriority(unsigned int freq){ objectFrequency_ = freq; }
 
 
   private:
-    bool getData(uint8_t*& men, int32_t id, uint8_t mode=0x0);
+    uint32_t getData(uint8_t*& men, int32_t id, uint8_t mode=0x0);
     uint32_t getSize(int32_t id, uint8_t mode=0x0);
     bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
@@ -154,7 +155,9 @@ namespace orxonox
     uint32_t creatorID;
     uint32_t classID;
 
-    std::list<SynchronisableVariableBase*> syncList;
+    std::vector<SynchronisableVariableBase*> syncList;
+    std::vector<SynchronisableVariableBase*> stringList;
+    uint32_t dataSize_; //size of all variables except strings
     static uint8_t state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
     unsigned int objectFrequency_;
@@ -163,31 +166,10 @@ namespace orxonox
     static std::queue<uint32_t> deletedObjects_;
   };
 
-  template <class T> void Synchronisable::registerVariable(T& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
-  {
-    if (bidirectional)
-      syncList.push_back(new SynchronisableVariableBidirectional<const T>(variable, mode, cb));
-    else
-      syncList.push_back(new SynchronisableVariable<const T>(variable, mode, cb));
-  }
-
-  template <class T> void Synchronisable::unregisterVariable(T& var){
-    std::list<SynchronisableVariableBase*>::iterator it = syncList.begin();
-    while(it!=syncList.end()){
-      if( ((*it)->getReference()) == &var ){
-        delete (*it);
-        syncList.erase(it);
-        return;
-      }
-      else
-        it++;
-    }
-    bool unregistered_nonexistent_variable = false;
-    assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
-    // the variable has not been registered before
-  }
-
   // ================= Specialisation declarations
+  
+//   template <> _NetworkExport void Synchronisable::registerVariable( const std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( const ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( ColourValue& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( const Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
@@ -199,6 +181,41 @@ namespace orxonox
   template <> _NetworkExport void Synchronisable::registerVariable( mbool& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( const Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
   template <> _NetworkExport void Synchronisable::registerVariable( Quaternion& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional);
+  
+  template <class T> void Synchronisable::registerVariable(T& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+  {
+    if (bidirectional)
+    {
+      syncList.push_back(new SynchronisableVariableBidirectional<const T>(variable, mode, cb));
+      this->dataSize_ += syncList.back()->getSize(state_);
+    }
+    else
+    {
+      syncList.push_back(new SynchronisableVariable<const T>(variable, mode, cb));
+      if ( this->state_ == mode )
+        this->dataSize_ += syncList.back()->getSize(state_);
+    }
+  }
+  
+
+
+//   template <class T> void Synchronisable::unregisterVariable(T& var){
+//     std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin();
+//     while(it!=syncList.end()){
+//       if( ((*it)->getReference()) == &var ){
+//         delete (*it);
+//         syncList.erase(it);
+//         return;
+//       }
+//       else
+//         it++;
+//     }
+//     bool unregistered_nonexistent_variable = false;
+//     assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
+//     // the variable has not been registered before
+//   }
+
+  
 }
 
 #endif /* _Synchronisable_H__ */
