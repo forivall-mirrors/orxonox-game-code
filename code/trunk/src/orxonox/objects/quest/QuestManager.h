@@ -54,6 +54,7 @@ namespace orxonox
     struct QuestContainer
     {
         const QuestDescription* description;
+        std::string status;
         HintContainer* hint;
         QuestContainer* subQuests;
         QuestContainer* next;
@@ -92,18 +93,15 @@ namespace orxonox
 
             QuestContainer* getQuestTree(std::string & name); // tolua_export
 
-            static void toggleQuestGUI(void); //!< Opens the GUI.
-
         private:
             static QuestManager* singletonRef_s;
-            static bool GUIOpen;
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
 
             void getRootQuests(const PlayerInfo* player, std::list<Quest*> & list);
-            void addHints(QuestContainer* container, Quest* quest, const PlayerInfo* player);
-            void addSubQuests(QuestContainer* container, Quest* quest, const PlayerInfo* player);
+            HintContainer* addHints(Quest* quest, const PlayerInfo* player);
+            QuestContainer* addSubQuest(Quest* quest, const PlayerInfo* player);
 
     }; // tolua_export
 

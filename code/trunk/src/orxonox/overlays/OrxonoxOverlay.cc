@@ -56,6 +56,7 @@ namespace orxonox
 
     SetConsoleCommand(OrxonoxOverlay, scaleOverlay, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OrxonoxOverlay, scrollOverlay, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand(OrxonoxOverlay, toggleVisibility, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OrxonoxOverlay, rotateOverlay, false).accessLevel(AccessLevel::User);
 
     OrxonoxOverlay::OrxonoxOverlay(BaseObject* creator)
@@ -306,6 +307,26 @@ namespace orxonox
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
             (*it).second->scale(Vector2(scale, scale));
+    }
+
+    /**
+    @brief
+        Toggles the visibility of an Overlay by it's name.
+    @param name
+        The name of the overlay defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file).
+    */
+    /*static*/ void OrxonoxOverlay::toggleVisibility(const std::string& name)
+    {
+        std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
+        if (it != overlays_s.end())
+        {
+            OrxonoxOverlay* overlay= (*it).second;
+            if(overlay->isVisible())
+                overlay->hide();
+            else
+                overlay->show();
+        }
     }
 
     /**
