@@ -66,6 +66,8 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
+
+        this->sound_ = NULL;
     }
 
     Engine::~Engine()
