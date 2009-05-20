@@ -63,6 +63,7 @@ REMOVE_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
 ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 
 # Increase warning level if requested
+SET(EXTRA_COMPILER_WARNINGS TRUE)
 IF(EXTRA_COMPILER_WARNINGS)
   ADD_COMPILER_FLAGS("-Wall -Wextra -Wno-unused-parameter" CACHE)
 ELSE()

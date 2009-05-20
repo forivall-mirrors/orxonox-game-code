@@ -7,9 +7,14 @@ namespace orxonox
     GGZClient* GGZClient::singletonRef_s = 0;
 
     GGZClient::GGZClient()
+        : ggzSocket(io), gameSocket(io)
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
+
+        boost::asio::ip::tcp::socket::non_blocking_io non_blocking_io(true);
+        ggzSocket.io_control(non_blocking_io);
+        gameSocket.io_control(non_blocking_io);
 
         active = ggzmod_is_ggz_mode();
         if (active) {
@@ -33,6 +38,15 @@ namespace orxonox
         return *singletonRef_s;
     }
 
+    void GGZClient::tick(const float /*dt*/)
+    {
+        boost::system::error_code ec;
+        io.poll(ec);
+        if (ec) {
+            /* TODO: Error */
+        }
+    }
+
     void GGZClient::initGGZ()
     {
         ggzmod = ggzmod_new(GGZMOD_GAME);
@@ -41,11 +55,13 @@ namespace orxonox
         if (ggzmod_connect(ggzmod) < 0) {
             /* TODO: Error */
         }
-        int ggzSocket = ggzmod_get_fd(ggzmod);
-        if (ggzSocket < 0) {
+        int fd = ggzmod_get_fd(ggzmod);
+        if (fd < 0) {
             /* TODO: Error */
         }
-        sockets.add(ggzSocket, &orxonox::GGZClient::handleGGZ);
+        /* TODO: Error */
+        ggzSocket.assign(boost::asio::ip::tcp::v4(), fd);
+        ggzSocket.async_read_some(boost::asio::null_buffers(), handleGGZ);
     }
 
     void GGZClient::deinitGGZ()
@@ -55,13 +71,13 @@ namespace orxonox
     }
 
     /* Got data from game server */
-    void handleGame(int fd)
+    void handleGame(const boost::system::error_code& /*e*/)
     {
-        /* TODO: read from fd */
+        /* TODO: read from gameSocket */
     }
 
     /* Got data from GGZ */
-    void GGZClient::handleGGZ(int fd)
+    void GGZClient::handleGGZ(const boost::system::error_code& /*e*/)
     {
         ggzmod_dispatch(getInstance().ggzmod);
     }
@@ -71,7 +87,7 @@ namespace orxonox
             const void *data)
     {
         ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-        int gameSocket = *(int*)data;
-        getInstance().sockets.add(gameSocket, &orxonox::GGZClient::handleGGZ);
+        gameSocket.assign(boost::asio::ip::tcp::v4(), *(int*)data);
+        gameSocket.async_read_some(boost::asio::null_buffers(), handleGame);
     }
 }

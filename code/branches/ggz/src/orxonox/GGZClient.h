@@ -2,31 +2,35 @@
 #define _GGZClient_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/FDWatcher.h"
+#include "objects/Tickable.h"
 
 #include <ggzmod.h>
+#include <boost/asio.hpp>
 
 namespace orxonox
 {
-    class _OrxonoxExport GGZClient
+    class _OrxonoxExport GGZClient : public Tickable
     {
         public:
             GGZClient();
             ~GGZClient();
 
             static GGZClient& getInstance();
+            virtual void tick(const float dt);
 
         private:
             static GGZClient* singletonRef_s;
 
             bool active;
-            GGZMod *ggzmod;
-            FDWatcher sockets;
+            GGZMod * ggzmod;
+            boost::asio::io_service io;
+            boost::asio::ip::tcp::socket ggzSocket;
+            boost::asio::ip::tcp::socket gameSocket;
 
             void initGGZ();
             void deinitGGZ();
-            static void handleGame(int fd);
-            static void handleGGZ(int fd);
+            void handleGame(const boost::system::error_code& e);
+            void handleGGZ(const boost::system::error_code& e);
             static void handleGGZModServer(GGZMod * ggzmod, GGZModEvent e,
                     const void *data);
     };
