@@ -138,7 +138,7 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
 };
 
 
-template <class T> class _NetworkExport NetworkMemberFunction: public NetworkMemberFunctionBase {
+template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase {
   public:
     NetworkMemberFunction(FunctorMember<T>* functor, std::string name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunction();

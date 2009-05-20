@@ -229,8 +229,8 @@ namespace orxonox
             COUT(1) << "Something BAD happened." << std::endl;
             return NULL;
         }
+        player = static_cast<PlayerInfo*>(gui->getOwner());
         COUT(1) << player << std::endl;
-        ConverterExplicit<BaseObject, PlayerInfo>::convert(player, *(gui->getOwner()));
     
         QuestContainer* root = NULL;
         QuestContainer* current = NULL;
