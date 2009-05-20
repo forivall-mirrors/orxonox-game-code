@@ -148,6 +148,7 @@ namespace orxonox
       if(client_connection.isConnected() && isSynched_){
         COUT(4) << "popping partial gamestate: " << std::endl;
         packet::Gamestate *gs = gamestate.getGamestate();
+        assert(gs);
         if(gs){
           COUT(4) << "client tick: sending gs " << gs << std::endl;
           if( !gs->send() )

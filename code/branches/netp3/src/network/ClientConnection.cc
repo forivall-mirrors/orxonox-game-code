@@ -207,6 +207,8 @@ namespace orxonox
 
   bool ClientConnection::disconnectConnection() {
     ENetEvent event;
+    if(this->quit_)
+      return true;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
     enet_peer_disconnect(server, 0);
     while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME) >= 0){

@@ -178,28 +178,31 @@ bool Gamestate::spreadData(uint8_t mode)
       assert(b);
     }
   }
-
    // In debug mode, check first, whether there are no duplicate objectIDs
 #ifndef NDEBUG
-  ObjectList<Synchronisable>::iterator it;
-  for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
-    if (it->getObjectID() == OBJECTID_UNKNOWN) {
-      if (it->objectMode_ != 0x0) {
-        COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
-        COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
-        COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
-        assert(false);
-      }
-    }
-    else {
-      ObjectList<Synchronisable>::iterator it2;
-      for (it2 = ObjectList<Synchronisable>::begin(); it2 != ObjectList<Synchronisable>::end(); ++it2) {
-        if (it->getObjectID() == it2->getObjectID() && *it != *it2) {
-           COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
-                   << "Are you sure you don't create a Sychnronisable objcect with 'new' \
-                       that doesn't have objectMode = 0x0?" << std::endl;
-           assert(false);
+  if(this->getID()%1000==0){
+    std::vector<uint32_t> v1;
+    ObjectList<Synchronisable>::iterator it;
+    for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
+      if (it->getObjectID() == OBJECTID_UNKNOWN) {
+        if (it->objectMode_ != 0x0) {
+          COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
+          COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
+          COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
+          assert(false);
         }
+      }
+      else {
+        std::vector<uint32_t>::iterator it2;
+        for (it2 = v1.begin(); it2 != v1.end(); ++it2) {
+          if (it->getObjectID() == *it2) {
+            COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
+                    << "Are you sure you don't create a Sychnronisable objcect with 'new' \
+                        that doesn't have objectMode = 0x0?" << std::endl;
+            assert(false);
+          }
+        }
+        v1.push_back(it->getObjectID());
       }
     }
   }
