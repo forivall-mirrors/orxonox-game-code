@@ -49,13 +49,14 @@ namespace orxonox
         ~SoundManager();
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
-
         virtual void tick(float dt);
+        bool isSoundAvailable();
 
     private:
         static ALCdevice* device_s;
         ALCcontext* context_;
         std::list<SoundBase*> soundlist_;
+        bool soundavailable_;
 
     }; // class SoundManager
 } // namespace orxonox

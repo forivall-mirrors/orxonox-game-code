@@ -43,9 +43,11 @@ namespace orxonox
      */
     SoundManager::SoundManager()
     {
+        this->soundavailable_ = true;
         if(!alutInitWithoutContext(NULL,NULL))
         {
             COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
+            this->soundavailable_ = false;
         }
         else
         {
@@ -60,6 +62,7 @@ namespace orxonox
             if(SoundManager::device_s == NULL)
             {
                 COUT(2) << "Sound: OpenAL: Could not open sound device" << std::endl;
+                this->soundavailable_ = false;
             }
             else
             {
@@ -68,6 +71,7 @@ namespace orxonox
                 if(this->context_ == NULL)
                 {
                     COUT(2) << "Sound: OpenAL: Could not create sound context" << std::endl;
+                    this->soundavailable_ = false;
                 }
                 else
                 {
@@ -144,5 +148,13 @@ namespace orxonox
         // update sounds
         for(std::list<SoundBase*>::iterator i = this->soundlist_.begin(); i != this->soundlist_.end(); i++)
             (*i)->update();
+    }
+    
+    /**
+    * Check if sound is available
+    */
+    bool SoundManager::isSoundAvailable()
+    {
+        return this->soundavailable_;
     }
 }

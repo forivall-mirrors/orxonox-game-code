@@ -225,9 +225,6 @@ namespace orxonox
     {
         this->ship_ = ship;
 
-        if(this->sound_ != NULL)
-            this->sound_->attachToEntity(ship);
-
         if (ship)
         {
             this->shipID_ = ship->getObjectID();
@@ -239,6 +236,9 @@ namespace orxonox
                 delete this->boostBlur_;
                 this->boostBlur_ = 0;
             }
+
+            if(this->sound_ != NULL)
+                this->sound_->attachToEntity(ship);
         }
     }
 

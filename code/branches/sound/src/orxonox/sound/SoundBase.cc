@@ -133,6 +133,13 @@ namespace orxonox
 
     bool SoundBase::loadFile(std::string filename) {
         filename = Core::getMediaPathString() + "/audio/" + filename;
+
+        if(!SoundBase::soundmanager_s->isSoundAvailable())
+        {
+            COUT(3) << "Sound: not available, skipping " << filename << std::endl;
+            return false;
+        }
+
         COUT(3) << "Sound: OpenAL ALUT: loading file " << filename << std::endl;
         this->buffer_ = alutCreateBufferFromFile(filename.c_str());
         if(this->buffer_ == AL_NONE) {
