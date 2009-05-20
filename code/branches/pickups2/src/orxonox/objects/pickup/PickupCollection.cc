@@ -48,6 +48,7 @@ namespace orxonox
     PickupCollection::PickupCollection()
     {
         this->bBlockRemovals_ = false;
+        this->currentUsable_ = NULL;
     }
 
     /**
@@ -63,6 +64,10 @@ namespace orxonox
     {
         if (this->checkSlot(item))
         {
+            Identifier* ident = Class(UsableItem);
+            if(this->currentUsable_ == NULL && item->isA(ident))
+                this->currentUsable_ = dynamic_cast<UsableItem*>(item);
+
             this->items_.insert( std::pair<std::string, BaseItem*> (item->getPickupIdentifier(), item) );
             return true;
         }
@@ -98,6 +103,7 @@ namespace orxonox
             if((*it).second && (*it).second->getOwner())
                 (*it).second->dropped((*it).second->getOwner());
         }
+        this->currentUsable_ = NULL;
         this->items_.clear();
         this->bBlockRemovals_ = false;
     }
@@ -129,16 +135,8 @@ namespace orxonox
     //! Uses the first usable item in the collection on the owner.
     void PickupCollection::useItem()
     {
-        Identifier* ident = Class(UsableItem);
-        for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
-        {
-            if ((*it).second->isA(ident))
-            {
-                UsableItem* asUsable = dynamic_cast<UsableItem*>((*it).second);
-                asUsable->used(this->owner_);
-                return;
-            }
-        }
+        if(this->currentUsable_)
+            this->currentUsable_->used(this->owner_);
     }
     /**
         @brief Uses a usable item on the owner of the collection.
@@ -159,6 +157,15 @@ namespace orxonox
         if (!item || !this->contains(item, removeAllOfType) || this->bBlockRemovals_)
             return;
 
+        if (item == this->currentUsable_ || (this->currentUsable_ && removeAllOfType && this->currentUsable_->getPickupIdentifier() == item->getPickupIdentifier()))
+        {
+            std::deque<UsableItem*> usables = this->getUsableItems();
+
+            if(usables.size() > 0)
+                this->currentUsable_ = usables.at(0);
+            else
+                this->currentUsable_ = NULL;
+        }
         if (removeAllOfType)
         {
             std::multimap<std::string, BaseItem*>::iterator it;

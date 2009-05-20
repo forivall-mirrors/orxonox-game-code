@@ -54,6 +54,9 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
 
+        virtual int getMaxCarryAmount() const
+            { return INT_MAX; }
+
         virtual void used(Pawn* pawn);          //!< Called when the item is used.
 
         virtual bool pickedUp(Pawn* pawn);      //!< Called when the item is picked up.

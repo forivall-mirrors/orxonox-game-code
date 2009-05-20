@@ -51,6 +51,8 @@ namespace orxonox
 
         this->setOwner(0);
         this->setPickupIdentifier(this->getName());
+        this->setGUIImage("");
+        this->setGUIText("");
     }
     //! Deconstructor.
     BaseItem::~BaseItem()
@@ -67,7 +69,6 @@ namespace orxonox
         SUPER(BaseItem, XMLPort, xmlelement, mode);
 
         XMLPortParam(BaseItem, "guiText", setGUIText, getGUIText, xmlelement, mode);
-        XMLPortParam(BaseItem, "guiTooltip", setGUITooltip, getGUITooltip, xmlelement, mode);
         XMLPortParam(BaseItem, "guiImage", setGUIImage, getGUIImage, xmlelement, mode);
     }
 
@@ -102,4 +103,6 @@ namespace orxonox
 
         return true;
     }
+
+    const std::string& BaseItem::getGUIText() const { return this->guiText_; }
 }

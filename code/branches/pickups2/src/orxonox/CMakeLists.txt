@@ -34,7 +34,7 @@ GET_ALL_HEADER_FILES(ORXONOX_HDR_FILES)
 SET(ORXONOX_FILES ${ORXONOX_SRC_FILES} ${ORXONOX_HDR_FILES})
 
 GENERATE_SOURCE_GROUPS(${ORXONOX_FILES})
-GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h objects/pickup/PickupInventory.h objects/pickup/BaseItem.h objects/pickup/EquipmentItem.h objects/pickup/UsableItem.h objects/pickup/PassiveItem.h)
+GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h objects/pickup/PickupInventory.h objects/pickup/BaseItem.h)
 
 # Not using precompiled header files: Avoid dependencies
 INCLUDE_DIRECTORIES(pch/nopch)

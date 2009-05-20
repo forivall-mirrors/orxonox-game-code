@@ -105,11 +105,17 @@ namespace orxonox
         inline void setOwner(Pawn* owner)
             { this->owner_ = owner; }
 
+        inline UsableItem* getCurrentUsable()
+            { return this->currentUsable_; };
+        inline void setCurrentUsable(UsableItem* usable)
+            { this->currentUsable_ = usable; }
+
         std::deque<EquipmentItem*> getEquipmentItems();   //!< Get a list of equipment-type items.
         std::deque<PassiveItem*> getPassiveItems();     //!< Get a list of passive items.
         std::deque<UsableItem*> getUsableItems();      //!< Get a list of usable items.
     private:
         Pawn* owner_;           //!< The owner of the PickupCollection.
+        UsableItem* currentUsable_;
 
         bool bBlockRemovals_;   //!< Whether to block direct removals through remove().
 

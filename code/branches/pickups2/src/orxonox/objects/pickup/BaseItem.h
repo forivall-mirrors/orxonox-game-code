@@ -49,7 +49,10 @@ namespace orxonox
         @author
             Daniel 'Huty' Haggenmueller
     */
-    class _OrxonoxExport BaseItem : public BaseObject
+    class _OrxonoxExport BaseItem
+// tolua_end
+        : public BaseObject
+// tolua_begin
     {
 // tolua_end
     public:
@@ -121,17 +124,11 @@ namespace orxonox
             { this->pickupIdentifier_ = identifier; }
 
         // GUI stuff
-        virtual const std::string& getGUIText()
-            { return this->guiText_; }
+        virtual const std::string& getGUIText() const; // tolua_export
         inline void setGUIText(const std::string& text)
             { this->guiText_ = text; }
 
-        virtual const std::string& getGUITooltip()
-            { return this->guiTooltip_; }
-        inline void setGUITooltip(const std::string& tooltip)
-            { this->guiTooltip_ = tooltip; }
-
-        virtual const std::string& getGUIImage()
+        virtual const std::string& getGUIImage() const
             { return this->guiImage_; }
         inline void setGUIImage(const std::string& image)
             { this->guiImage_ = image; }
@@ -148,9 +145,8 @@ namespace orxonox
         std::string pickupIdentifier_;
 
         std::string guiText_;
-        std::string guiTooltip_;
         std::string guiImage_;
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _BaseItem_H__ */

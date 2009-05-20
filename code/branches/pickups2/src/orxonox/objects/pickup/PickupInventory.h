@@ -38,19 +38,19 @@
 
 #include "core/BaseObject.h"
 
-namespace CEGUI { class Window; }
+namespace CEGUI { class Window; class WindowManager; class Image; }
 
 // tolua_begin
 namespace orxonox
 {
-    class EquipmentItem;
-    class PassiveItem;
-    class UsableItem;
+// tolua_end
+    class _OrxonoxExport BaseItem;
 
     /**
         @brief Static class for the inventory GUI window.
         @author Daniel 'Huty' Haggenmueller
-    */
+    */ 
+// tolua_begin
     class _OrxonoxExport PickupInventory
     {
 // tolua_end
@@ -69,13 +69,23 @@ namespace orxonox
         static unsigned int getUsableCount(); // tolua_export
         static unsigned int getPassiveCount(); // tolua_export
 
-        static EquipmentItem* getEquipmentItem(unsigned int i); // tolua_export
-        static UsableItem* getUsableItem(unsigned int i); // tolua_export
-        static PassiveItem* getPassiveItem(unsigned int i); // tolua_export
+        static unsigned int getCurrentUsableIndex(); // tolua_export
+        static bool isCurrentUsable(const BaseItem* item); // tolua_export
+        static void selectUsable(unsigned int i); // tolua_export
 
-        static std::string getImagesetForEquipment(unsigned int i); // tolua_export
-        static std::string getImagesetForUsable(unsigned int i); // tolua_export 
-        static std::string getImagesetForPassive(unsigned int i); // tolua_export
+        static BaseItem* getEquipmentItem(unsigned int i); // tolua_export
+        static BaseItem* getUsableItem(unsigned int i); // tolua_export
+        static BaseItem* getPassiveItem(unsigned int i); // tolua_export
+
+        static std::string getImageForItem(const BaseItem* item); // tolua_export
+
+        static void clearInventory(CEGUI::WindowManager* winMgr, int equipCount, int usableCount); // tolua_export
+        static void updateTabs(CEGUI::WindowManager* winMgr, CEGUI::Window* equipWindow, CEGUI::Window* usableWindow); // tolua_export
+
+        static void updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
+        static void updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
+
+        static void addItem(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, BaseItem* item, const std::string& titleColour, int x, int y); // tolua_export
     }; // tolua_export
 } // tolua_export
 

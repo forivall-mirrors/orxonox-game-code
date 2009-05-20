@@ -102,7 +102,7 @@ namespace orxonox
     */
     bool Jump::dropped(Pawn* pawn)
     {
-        DroppedItem::createDefaultDrop(this, pawn, ColourValue(1.0f, 0.0f, 0.0f), 5.0f);
+        DroppedItem::createDefaultDrop(this, pawn, ColourValue(1.0f, 0.0f, 0.0f), 30.0f);
         return this->removeFrom(pawn);
     }
 }
