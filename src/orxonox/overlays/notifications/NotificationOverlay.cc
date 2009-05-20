@@ -58,7 +58,7 @@ namespace orxonox
 
     /**
     @brief
-        Constructor. Initilaizes the class creates a graphical representation of the input Notification for the input Queue.
+        Constructor. Initializes the class creates a graphical representation of the input Notification for the input Queue.
     @param queue
         A pointer to the queue the NotificatonOverlay belongs to.
     @param notification
@@ -66,7 +66,7 @@ namespace orxonox
     @throws Argument
         Throws an Argument-Exception if either no Notification or no NotificationQueue were input.
     */
-    NotificationOverlay::NotificationOverlay(NotificationQueue* queue, Notification* notification) : OverlayText(this)
+    NotificationOverlay::NotificationOverlay(NotificationQueue* queue, Notification* notification) : OverlayText(NULL)
     {
         this->initialize();
         

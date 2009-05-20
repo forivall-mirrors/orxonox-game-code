@@ -57,7 +57,7 @@ namespace orxonox
     @param message
         The message of the Notification.
     */
-    Notification::Notification(const std::string & message) : BaseObject(this)
+    Notification::Notification(const std::string & message) : BaseObject(NULL)
     {
         this->message_ = message;
     }
