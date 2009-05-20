@@ -23,6 +23,7 @@
  *      Reto Grieder
  *   Co-authors:
  *      Fabian 'x3n' Landau
+ *      Adrian Friedli
  *
  */
 
@@ -52,6 +53,19 @@ namespace orxonox
     {
         Core::setIsClient(true);
 
+#ifdef HAS_GGZ
+        ggzClient = NULL;
+        if (GGZClient::isActive()) {
+            COUT(3) << "Initializing GGZ\n";
+            ggzClient = new GGZClient;
+        }
+        else {
+            COUT(3) << "Not using GGZ\n";
+        }
+#else  /* HAS_GGZ */
+        COUT(3) << "GGZ support disabled\n";
+#endif /* HAS_GGZ */
+
         this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
@@ -67,6 +81,13 @@ namespace orxonox
         GSLevel::leave();
 
         client_->closeConnection();
+
+#ifdef HAS_GGZ
+        if (ggzClient)
+        {
+            delete ggzClient;
+        }
+#endif /* HAS_GGZ */
 
         // destroy client
         delete this->client_;

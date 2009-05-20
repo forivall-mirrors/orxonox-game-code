@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Adrian Friedli
  *
  */
 
@@ -33,6 +33,9 @@
 #include "network/NetworkPrereqs.h"
 #include "GSLevel.h"
 #include "GSGraphics.h"
+#ifdef HAS_GGZ
+#include "GGZClient.h"
+#endif /* HAS_GGZ */
 
 namespace orxonox
 {
@@ -49,6 +52,10 @@ namespace orxonox
         void ticked(const Clock& time);
 
         Client* client_;
+#ifdef HAS_GGZ
+        GGZClient* ggzClient;
+#endif /* HAS_GGZ */
+
     };
 }
 

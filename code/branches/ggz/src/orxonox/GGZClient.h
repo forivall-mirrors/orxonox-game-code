@@ -16,21 +16,21 @@ namespace orxonox
             ~GGZClient();
 
             static GGZClient& getInstance();
+            static bool isActive();
             virtual void tick(const float dt);
 
         private:
             static GGZClient* singletonRef_s;
 
-            bool active;
             GGZMod * ggzmod;
             boost::asio::io_service io;
-            boost::asio::ip::tcp::socket ggzSocket;
-            boost::asio::ip::tcp::socket gameSocket;
+            boost::asio::local::stream_protocol::socket ggzSocket;
+            boost::asio::local::stream_protocol::socket gameSocket;
 
             void initGGZ();
             void deinitGGZ();
-            void handleGame(const boost::system::error_code& e);
-            void handleGGZ(const boost::system::error_code& e);
+            static void handleGame(const boost::system::error_code& e);
+            static void handleGGZ(const boost::system::error_code& e);
             static void handleGGZModServer(GGZMod * ggzmod, GGZModEvent e,
                     const void *data);
     };

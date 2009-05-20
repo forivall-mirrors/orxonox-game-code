@@ -4,7 +4,7 @@ FIND_PATH(GGZ_INCLUDE_DIR ggzmod.h)
 
 FIND_LIBRARY(GGZMOD_LIBRARY NAMES ggzmod)
 
-# handle the QUIETLY and REQUIRED arguments and set GGZ_FOUND to TRUE if
+# handle the QUIETLY and REQUIRED arguments and set GGZMOD_FOUND to TRUE if
 # all listed variables are TRUE
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(GGZMOD DEFAULT_MSG GGZMOD_LIBRARY GGZ_INCLUDE_DIR)

@@ -1,6 +1,7 @@
 #include "GGZClient.h"
 
 #include <cassert>
+#include <boost/bind.hpp>
 
 namespace orxonox
 {
@@ -12,21 +13,12 @@ namespace orxonox
         assert(singletonRef_s == 0);
         singletonRef_s = this;
 
-        boost::asio::ip::tcp::socket::non_blocking_io non_blocking_io(true);
-        ggzSocket.io_control(non_blocking_io);
-        gameSocket.io_control(non_blocking_io);
-
-        active = ggzmod_is_ggz_mode();
-        if (active) {
-            initGGZ();
-        }
+        initGGZ();
     }
 
     GGZClient::~GGZClient()
     {
-        if (active) {
-            deinitGGZ();
-        }
+        deinitGGZ();
 
         assert(singletonRef_s);
         singletonRef_s = 0;
@@ -36,6 +28,11 @@ namespace orxonox
     {
         assert(singletonRef_s);
         return *singletonRef_s;
+    }
+
+    bool GGZClient::isActive()
+    {
+        return ggzmod_is_ggz_mode();
     }
 
     void GGZClient::tick(const float /*dt*/)
@@ -60,8 +57,8 @@ namespace orxonox
             /* TODO: Error */
         }
         /* TODO: Error */
-        ggzSocket.assign(boost::asio::ip::tcp::v4(), fd);
-        ggzSocket.async_read_some(boost::asio::null_buffers(), handleGGZ);
+        ggzSocket.assign(boost::asio::local::stream_protocol(), fd);
+        ggzSocket.async_read_some(boost::asio::null_buffers(), boost::bind(&handleGGZ, boost::asio::placeholders::error));
     }
 
     void GGZClient::deinitGGZ()
@@ -71,7 +68,7 @@ namespace orxonox
     }
 
     /* Got data from game server */
-    void handleGame(const boost::system::error_code& /*e*/)
+    void GGZClient::handleGame(const boost::system::error_code& /*e*/)
     {
         /* TODO: read from gameSocket */
     }
@@ -87,7 +84,7 @@ namespace orxonox
             const void *data)
     {
         ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-        gameSocket.assign(boost::asio::ip::tcp::v4(), *(int*)data);
-        gameSocket.async_read_some(boost::asio::null_buffers(), handleGame);
+        getInstance().gameSocket.assign(boost::asio::local::stream_protocol(), *(int*)data);
+        getInstance().gameSocket.async_read_some(boost::asio::null_buffers(), boost::bind(&handleGame, boost::asio::placeholders::error));
     }
 }

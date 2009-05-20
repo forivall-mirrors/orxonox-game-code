@@ -19,13 +19,15 @@
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraManager.cc
-  GGZClient.cc
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
   PawnManager.cc
   PlayerManager.cc
 )
+IF(GGZMOD_FOUND)
+	ADD_SOURCE_FILES(ORXONOX_SRC_FILES GGZClient.cc)
+ENDIF(GGZMOD_FOUND)
 ADD_SUBDIRECTORY(gamestates)
 ADD_SUBDIRECTORY(gui)
 ADD_SUBDIRECTORY(objects)
