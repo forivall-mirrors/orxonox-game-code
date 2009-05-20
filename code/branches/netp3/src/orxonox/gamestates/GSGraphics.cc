@@ -56,10 +56,10 @@
 
 namespace orxonox
 {
-    AddGameState(GSGraphics, "graphics");
+    AddGameState(GSGraphics, "graphics", false);
 
-    GSGraphics::GSGraphics(const std::string& name)
-        : GameState(name)
+    GSGraphics::GSGraphics(const std::string& name, bool countTickTime)
+        : GameState(name, countTickTime)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
@@ -212,15 +212,16 @@ namespace orxonox
 
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
-        this->inputManager_->update(time);        // tick console
+        this->inputManager_->update(time);
         this->console_->update(time);
-        this->guiManager_->update(time);
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
 
         // Also add our tick time
         Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
 
+        // Process gui events
+        this->guiManager_->update(time);
         // Render
         this->graphicsManager_->update(time);
     }
