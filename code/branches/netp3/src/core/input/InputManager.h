@@ -137,6 +137,12 @@ namespace orxonox
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
 
+#ifdef ORXONOX_PLATFORM_LINUX
+        // HACK!
+        void grabMouse();
+        void ungrabMouse();
+#endif
+
         void update(const Clock& time);
 
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }

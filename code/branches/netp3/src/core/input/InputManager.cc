@@ -41,6 +41,11 @@
 #include "ois/OISException.h"
 #include "ois/OISInputManager.h"
 
+// HACK
+#ifdef ORXONOX_PLATFORM_LINUX
+#  include "ois/linux/LinuxMouse.h"
+#endif
+
 #include "util/Exception.h"
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
@@ -1468,4 +1473,26 @@ namespace orxonox
     {
         getInstance().reloadInputSystem(joyStickSupport);
     }
+
+
+    // ############################################################
+    // #####                   ugly hacks                     #####
+    // ##########                                        ##########
+    // ############################################################
+
+#ifdef ORXONOX_PLATFORM_LINUX
+    void InputManager::grabMouse()
+    {
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(this->mouse_);
+        assert(linuxMouse);
+        linuxMouse->grab(true);
+    }
+
+    void InputManager::ungrabMouse()
+    {
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(this->mouse_);
+        assert(linuxMouse);
+        linuxMouse->grab(false);
+    }
+#endif
 }
