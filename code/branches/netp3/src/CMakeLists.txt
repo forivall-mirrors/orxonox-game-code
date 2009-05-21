@@ -108,7 +108,6 @@ INCLUDE_DIRECTORIES(
   # OIS headers need the root dir as well
   ${CMAKE_CURRENT_SOURCE_DIR}/ois
   # Convenience directory
-  # Convenience directory
   ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
