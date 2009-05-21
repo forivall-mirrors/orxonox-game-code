@@ -20,39 +20,45 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
- *
  */
+#ifndef _SOUNDMANGER_H__
+#define _SOUNDMANGER_H__
 
-#include "AudioBuffer.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+
+#include <orxonox/objects/Tickable.h>
 
 namespace orxonox
 {
-    AudioBuffer::AudioBuffer(std::string filename)
+    class SoundBase;
+
+    /**
+     * The SoundManager class manages the OpenAL device, context and listener
+     * position. It has a list of all SoundBase objects and calls their update
+     * function every tick. It is a singleton.
+     *
+     */
+    class _OrxonoxExport SoundManager : public Tickable 
     {
-        // Load wav data into buffers.
-        alGenBuffers(1, &buffer);
+    public:
+        SoundManager();
+        ~SoundManager();
+        void addSound(SoundBase* sound);
+        void removeSound(SoundBase* sound);
+        virtual void tick(float dt);
+        bool isSoundAvailable();
 
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
+    private:
+        static ALCdevice* device_s;
+        ALCcontext* context_;
+        std::list<SoundBase*> soundlist_;
+        bool soundavailable_;
 
-        //FIXME deprecated; seems unneeded
-//        alutLoadWAVFile((ALbyte*)filename.c_str(), &format, &data, &size, &freq, &loop);
-        alBufferData(buffer, format, data, size, freq);
-        //FIXME deprecated; seems unneeded
-//        alutUnloadWAV(format, data, size, freq);
+    }; // class SoundManager
+} // namespace orxonox
 
-        // Do another error check and return.
-        if (alGetError() != AL_NO_ERROR)
-            loaded=AL_FALSE;
-        else
-              loaded=AL_TRUE;
-    }
-
-    AudioBuffer::~AudioBuffer()
-    {
-
-    }
-}
+#endif // _SOUNDMANAGER_H__

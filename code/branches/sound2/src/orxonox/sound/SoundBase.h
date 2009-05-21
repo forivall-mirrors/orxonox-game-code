@@ -20,59 +20,55 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
  *
  */
+#ifndef _SOUNDBASE_H__
+#define _SOUNDBASE_H__
 
-#ifndef _AudioStream_H__
-#define _AudioStream_H__
-
-#include "AudioPrereqs.h"
-
+#include <AL/al.h>
 #include <string>
-#include <iostream>
-#include <al.h>
-#include <vorbis/vorbisfile.h>
-#include <vorbis/codec.h>
-
 
 namespace orxonox
 {
-    const int BUFFER_SIZE = 4096 * 4;
+    class SoundManager;
+    class WorldEntity;
 
-    class _AudioExport AudioStream
+    /**
+     * The SoudBase class is the base class for all sound file loader classes.
+     * It server as main interface to the OpenAL library.
+     *
+     */
+    class _OrxonoxExport SoundBase
     {
     public:
-        AudioStream(std::string path);
-        void open();
-        void release();
-        void display();
-        bool playback();
-        bool playing();
-        bool update();
-        inline bool isLoaded() { return loaded; }
+        SoundBase(WorldEntity* entity = NULL);
+        ~SoundBase();
 
-    protected:
-        bool stream(ALuint buffer);
-        void empty();
-        void check();
-        std::string errorString(int code);
+        void attachToEntity(WorldEntity* entity);
+        void update();
+        void play(bool loop = false);
+        void stop();
+        void pause();
+
+        bool isPlaying();
+        bool isPaused();
+        bool isStopped();
+
+        bool loadFile(std::string filename);
 
     private:
-        std::string path;
+        ALuint loadOggFile(std::string filename);
+        ALuint source_;
+        ALuint buffer_;
+        WorldEntity* entity_;
 
-        FILE*           oggFile;
-        OggVorbis_File  oggStream;
-        vorbis_info*    vorbisInfo;
-        vorbis_comment* vorbisComment;
-        bool loaded;
+        ALint getSourceState();
 
-        ALuint buffers[2];
-        ALuint source;
-        ALenum format;
-    };
-}
+        static SoundManager* soundmanager_s;
+    }; // class SoundBase
+} // namepsace orxonox
 
-#endif /* _AudioStream_H__ */
+#endif // _SOUNDBASE_H__
