@@ -96,6 +96,8 @@ namespace orxonox
         static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
         static GUIManager* getInstancePtr() { return singletonRef_s; }
 
+        void getLevelList(); //tolua_export
+
     private:
         GUIManager(const GUIManager& instance);                 //!< private constructor (this is a singleton class)
 

@@ -47,6 +47,9 @@ namespace orxonox
         void update(const Clock& time);
 
         static void showIngameGUI(bool show);
+        static void setLevel(std::string levelName);
+
+        static XMLFile* startFile_s;
 
     protected:
         void loadLevel();
@@ -62,7 +65,6 @@ namespace orxonox
         SimpleInputState*     guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
         SimpleInputState*     guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
         Radar*                radar_;                   //!< represents the Radar (not the HUD part)
-        XMLFile*              startFile_;               //!< current hard coded default level
         CameraManager*        cameraManager_;           //!< camera manager for this level
         LevelManager*         levelManager_;            //!< global level manager
         PlayerManager*        playerManager_;           //!< player manager for this level

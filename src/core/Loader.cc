@@ -29,6 +29,7 @@
 #include "Loader.h"
 
 #include <tinyxml/ticpp.h>
+#include <boost/filesystem.hpp>
 
 #include "XMLFile.h"
 #include "BaseObject.h"
@@ -40,6 +41,7 @@
 #include "Namespace.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "Core.h"
 
 namespace orxonox
 {
@@ -208,5 +210,25 @@ namespace orxonox
     {
         Loader::unload(file, mask);
         return Loader::load(file, mask);
+    }
+
+    std::vector<std::string> Loader::getLevelList()
+    {
+        std::vector<std::string> levelList;
+
+        boost::filesystem::directory_iterator file(Core::getMediaPathString() + "levels");
+        boost::filesystem::directory_iterator end;
+
+        while (file != end)
+        {
+            if (!boost::filesystem::is_directory(*file) && file->string()[file->string().length()-1] != '~')
+            {
+                std::string filename = file->path().leaf();
+                if (filename.length() > 4)
+                    levelList.push_back(filename.substr(0,filename.length()-4));
+            }
+            ++file;
+        }
+        return levelList;
     }
 }
