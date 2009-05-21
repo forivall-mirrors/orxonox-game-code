@@ -78,10 +78,10 @@ namespace orxonox
 
             if (this->boostBlur_)
                 delete this->boostBlur_;
-        }
 
-        if(this->sound_ != NULL)
-            delete this->sound_;
+            if(this->sound_ != NULL)
+                delete this->sound_;
+        }
     }
 
     void Engine::XMLPort(Element& xmlelement, XMLPort::Mode mode)
