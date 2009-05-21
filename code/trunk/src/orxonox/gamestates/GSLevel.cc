@@ -59,6 +59,9 @@ namespace orxonox
 
     SetCommandLineArgument(level, "presentation_dm.oxw").shortcut("l");
     SetConsoleCommand(GSLevel, showIngameGUI, true);
+    SetConsoleCommand(GSLevel, setLevel, true);
+
+    XMLFile* GSLevel::startFile_s = NULL;
 
     GSLevel::GSLevel(const std::string& name)
         : GameState(name)
@@ -67,7 +70,6 @@ namespace orxonox
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
         , radar_(0)
-        , startFile_(0)
         , cameraManager_(0)
         , levelManager_(0)
     {
@@ -251,9 +253,18 @@ namespace orxonox
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
         std::string levelName;
-        CommandLine::getValue("level", &levelName);
-        startFile_ = new XMLFile(Core::getMediaPathString() + "levels" + '/' + levelName);
-        Loader::open(startFile_);
+        if (!startFile_s)
+        {
+            CommandLine::getValue("level", &levelName);
+            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + levelName);
+        }
+        Loader::open(startFile_s);
+    }
+
+    void GSLevel::setLevel(std::string levelName)
+    {
+        delete GSLevel::startFile_s;
+        GSLevel::startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + levelName);
     }
 
     void GSLevel::unloadLevel()
@@ -264,7 +275,7 @@ namespace orxonox
         // Loader::unload(startFile_); // TODO: REACTIVATE THIS IF LOADER::UNLOAD WORKS PROPERLY /
         //////////////////////////////////////////////////////////////////////////////////////////
 
-        delete this->startFile_;
+        delete startFile_s;
     }
 
     void GSLevel::keybind(const std::string &command)

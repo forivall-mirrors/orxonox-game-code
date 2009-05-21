@@ -56,6 +56,7 @@ namespace orxonox
             static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
 
             static ClassTreeMask currentMask_s;
+            static std::vector<std::string> getLevelList();
 
         private:
             static std::vector<std::pair<const XMLFile*, ClassTreeMask> > files_s;

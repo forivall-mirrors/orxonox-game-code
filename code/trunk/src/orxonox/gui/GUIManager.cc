@@ -54,6 +54,7 @@
 #include "core/Clock.h"
 #include "ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
+#include "core/Loader.h"
 
 extern "C" {
 #include <lua.h>
@@ -237,6 +238,27 @@ namespace orxonox
         {
             COUT(2) << "CEGUI Error: \"" << ex.getMessage() << "\" while executing code \"" << str << "\"" << std::endl;
         }
+    }
+
+    /**
+
+    */
+    void GUIManager::getLevelList()
+    {
+        lua_State* L = this->scriptModule_->getLuaState();
+        lua_newtable(L);
+
+        std::vector<std::string> list = Loader::getLevelList();
+
+        int j = 1;
+        for (std::vector<std::string>::iterator i = list.begin(); i != list.end(); i++)
+        {
+            lua_pushnumber(L,j);
+            lua_pushstring(L,i->c_str());
+            lua_settable(L,-3);
+            j++;
+        }
+        lua_setglobal(L, "levellist");
     }
 
     /**
