@@ -227,7 +227,7 @@ namespace orxonox
     WeaponPack * WeaponSystem::getWeaponPack(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::set<WeaponPack*>::iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); ++it)
+        for (std::set<WeaponPack*>::const_iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); ++it)
         {
             ++i;
             if (i > index)
