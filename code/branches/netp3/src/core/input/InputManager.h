@@ -139,8 +139,8 @@ namespace orxonox
 
 #ifdef ORXONOX_PLATFORM_LINUX
         // HACK!
-        void grabMouse();
-        void ungrabMouse();
+        static void grabMouse();
+        static void ungrabMouse();
 #endif
 
         void update(const Clock& time);

@@ -40,6 +40,7 @@
 
 #include "ois/OISException.h"
 #include "ois/OISInputManager.h"
+#include "core/ConsoleCommand.h"
 
 // HACK
 #ifdef ORXONOX_PLATFORM_LINUX
@@ -51,7 +52,6 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CommandExecutor.h"
-#include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "util/Debug.h"
 
@@ -68,6 +68,8 @@ namespace orxonox
 {
     SetConsoleCommand(InputManager, calibrate, true);
     SetConsoleCommand(InputManager, reload, false);
+    SetConsoleCommand(InputManager, grabMouse, true);
+    SetConsoleCommand(InputManager, ungrabMouse, true);
     SetCommandLineSwitch(keyboard_no_grab);
 
     EmptyHandler InputManager::EMPTY_HANDLER;
@@ -1483,14 +1485,14 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_LINUX
     void InputManager::grabMouse()
     {
-        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(this->mouse_);
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(singletonRef_s->mouse_);
         assert(linuxMouse);
         linuxMouse->grab(true);
     }
 
     void InputManager::ungrabMouse()
     {
-        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(this->mouse_);
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(singletonRef_s->mouse_);
         assert(linuxMouse);
         linuxMouse->grab(false);
     }
