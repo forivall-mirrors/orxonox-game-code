@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss <scheusso [at] ee.ethz.ch>, (C) 2008
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>
  *   Co-authors:
  *      ...
  *
@@ -31,7 +31,7 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
-#include <list>
+#include <vector>
 #include <map>
 #include <utility>
 #include <algorithm>
@@ -82,20 +82,6 @@ class TrafficControl : public ClientConnectionListener {
   private:
 
     /**
-    *Lists that will be used:
-    *listToProcess
-    *clientListPerm
-    *clientListTemp
-    *referenceList
-    *permObjPrio list
-    *schedObjPrio
-    */
-    //start: lists to be used
-    /**
-    *creates list (typ map) that contains objids, struct with info concerning object(objid)
-    */
-//     std::map<unsigned int, objInfo> listToProcess_;//copy of argument, when traffic control tool is being called, the original of this must be returned later on, eg the list given by GS
-    /**
     *permanent client list: contains client ids, object ids and objectInfos (in this order)
     */
     std::map<unsigned int, std::map<unsigned int, objInfo > > clientListPerm_;
@@ -104,16 +90,7 @@ class TrafficControl : public ClientConnectionListener {
     /**
     *temporary client list: contains client ids, gamestate ids and object ids (in this order)
     */
-    std::map<unsigned int, std::map<unsigned int, std::list<obj> > > clientListTemp_;
-    /**
-    *static priority list: contains obj id, basic priority (in this order)
-    */
-//     std::map<unsigned int, unsigned int> permObjPrio_;
-    /**
-    *dynamic priority list: contains obj id, dynamic priority (eg scheduled) (in this order)
-    */
-//     std::map<unsigned int, unsigned int> schedObjPrio_;
-    //end: lists to be used
+    std::map<unsigned int, std::map<unsigned int, std::vector<obj> > > clientListTemp_;
 
     /**updateReferenceList
     *currentGamestateID and currentClientID will be defined as soon as TrafficControl is being called by Server
@@ -122,24 +99,15 @@ class TrafficControl : public ClientConnectionListener {
     unsigned int currentClientID;
     unsigned int targetSize;
     bool         bActive_;
-    /**
-    *copiedVector is a copy of the given Vector by the GSmanager, on this list all manipulations are performed
-    */
-//     std::list<obj> copiedVector;
-
-//     void updateReferenceList(std::map<unsigned int, objInfo> *list);//done
-    void insertinClientListPerm(unsigned int clientID, obj objinf);//done
-    /**
-    *creates listToProcess, which can be easialy compared with other lists
-    */
-//     void copyList(std::list<obj> *list);//done
     
-    void cut(std::list<obj> *list, unsigned int targetsize);
-    void updateClientListTemp(std::list<obj> *list);//done
+    void insertinClientListPerm(unsigned int clientID, obj objinf);
+    
+    void cut(std::vector<obj>& list, unsigned int targetsize);
+    void updateClientListTemp(std::vector<obj>& list);//done
     /**
     *evaluates Data given (list) and produces result(->Data to be updated)
     */
-    void evaluateList(unsigned int clientID, std::list<obj> *list);//done    
+    void evaluateList(unsigned int clientID, std::vector<obj>& list);//done    
     void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
     
     //ClientConnectionListener functions
@@ -161,17 +129,15 @@ class TrafficControl : public ClientConnectionListener {
     */
     void setConfigValues();
     static TrafficControl *getInstance();
-    void processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>* list); //gets a pointer to the list (containing objectIDs) and sorts it
-    //done
+    void processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj>& list); //gets a pointer to the list (containing objectIDs) and sorts it
     static void processAck(unsigned int clientID, unsigned int gamestateID)
     { return instance_->ack(clientID, gamestateID); }
-    //done
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
     
     bool prioritySort(uint32_t clientID, obj i, obj j);
     bool dataSort(obj i, obj j);
-    void printList(std::list<obj> *list, unsigned int clientID);
-    void fixCreatorDependencies(std::list<obj>::iterator it, std::list<obj> *list, unsigned int clientID);
+    void printList(std::vector<obj>& list, unsigned int clientID);
+    void fixCreatorDependencies(std::vector<obj>::iterator it, std::vector<obj>& list, unsigned int clientID);
 };
 
 }

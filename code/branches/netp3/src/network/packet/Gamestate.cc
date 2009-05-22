@@ -110,7 +110,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
 
     tempsize = it->getData(mem, id, mode);
     if ( it->doSync( id, mode ) )
-      dataMap_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
+      dataVector_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
     
 #ifndef NDEBUG
     if(currentsize+tempsize > size){
@@ -363,7 +363,7 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
 Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
   assert(data_);
-  std::list<obj>::iterator it;
+  std::vector<obj>::iterator it;
 
   // allocate memory for new data
   uint8_t *gdata = new uint8_t[header_->getDataSize()+GamestateHeader::getSize()];
@@ -382,10 +382,10 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   //Synchronisable *object;
 
   //call TrafficControl
-  TrafficControl::getInstance()->processObjectList( clientID, header_->getID(), &dataMap_ );
+  TrafficControl::getInstance()->processObjectList( clientID, header_->getID(), dataVector_ );
 
   //copy in the zeros
-  for(it=dataMap_.begin(); it!=dataMap_.end();){
+  for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);
     if ( (*it).objSize == 0 )

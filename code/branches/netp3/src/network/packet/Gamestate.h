@@ -36,7 +36,7 @@
 #include "network/TrafficControl.h"
 #include <string.h>
 #include <map>
-#include <list>
+#include <vector>
 #include <cassert>
 #ifndef NDEBUG
 #include "util/CRC32.h"
@@ -128,7 +128,7 @@ class _NetworkExport Gamestate: public Packet{
     bool operator ==(packet::Gamestate gs);
   private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
-    std::list<obj> dataMap_;
+    std::vector<obj> dataVector_;
     GamestateHeader* header_;
 };
 
