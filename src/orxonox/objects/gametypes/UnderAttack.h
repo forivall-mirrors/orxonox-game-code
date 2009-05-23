@@ -20,51 +20,46 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Matthias Mock
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _TeamDeathmatch_H__
-#define _TeamDeathmatch_H__
+#ifndef _UnderAttack_H__
+#define _UnderAttack_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
-
-#include "Deathmatch.h"
+#include "TeamDeathmatch.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport TeamDeathmatch : public Deathmatch
+    class _OrxonoxExport UnderAttack : public TeamDeathmatch, public PawnListener
     {
         public:
-            TeamDeathmatch(BaseObject* creator);
-            virtual ~TeamDeathmatch() {}
+            UnderAttack(BaseObject* creator);
+            virtual ~UnderAttack() {}
 
             void setConfigValues();
-
-            virtual void playerEntered(PlayerInfo* player);
-            virtual bool playerLeft(PlayerInfo* player);
+            void tick (float dt);
+            void addDestroyer(Destroyer* destroyer);
+            inline Destroyer* getDestroyer() const
+                { return this->destroyer_; }
 
             virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
 
-            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
-
-            inline const ColourValue& getTeamColour(int teamnr) const
-                { return this->teamcolours_[teamnr]; }
-
         protected:
-            virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
-            bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);
-            int getTeam(PlayerInfo* player);
+            virtual void destroyedPawn(Pawn* pawn);
 
-            std::map<PlayerInfo*, int> teamnumbers_;
-            std::vector<ColourValue> teamcolours_;
+            Destroyer* destroyer_;
             unsigned int teams_;
+            float gameTime_;
+            int timesequence_;
+            bool gameEnded_;
     };
 }
 

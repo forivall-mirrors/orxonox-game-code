@@ -74,6 +74,10 @@ namespace orxonox
             inline const Vector3& getAngularAcceleration() const
                 { return this->angularAcceleration_; }
 
+            void applyCentralForce(const Vector3& force);
+            inline void applyCentralForce(float x, float y, float z)
+                { this->applyCentralForce(Vector3(x, y, z)); }
+
             inline void setRotationRate(Degree rate)
                 { this->setAngularVelocity(this->getAngularVelocity().normalisedCopy() * rate.valueRadians()); }
             inline Degree getRotationRate() const

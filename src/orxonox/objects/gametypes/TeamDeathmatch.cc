@@ -126,7 +126,7 @@ namespace orxonox
             if ((*it)->isA(Class(TeamSpawnPoint)))
             {
                 TeamSpawnPoint* tsp = dynamic_cast<TeamSpawnPoint*>(*it);
-                if (tsp && tsp->getTeamNumber() != desiredTeamNr)
+                if (tsp && (int)tsp->getTeamNumber() != desiredTeamNr)
                 {
                     teamSpawnPoints.erase(it++);
                     continue;
@@ -187,5 +187,14 @@ namespace orxonox
                 return (it1->second == it2->second);
         }
         return false;
+    }
+
+    int TeamDeathmatch::getTeam(PlayerInfo* player)
+    {
+        std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
+        if (it_player != this->teamnumbers_.end())
+            return it_player->second;
+        else
+            return -1;
     }
 }

@@ -40,7 +40,7 @@
 #include "core/EventIncludes.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/worldentities/pawns/Pawn.h"
 #include "orxonox/objects/worldentities/triggers/PlayerTrigger.h"
 #include "QuestEffect.h"
 
@@ -119,16 +119,16 @@ namespace orxonox
         }
 
         //! Extracting the ControllableEntity form the PlayerTrigger.
-        ControllableEntity* entity = trigger->getTriggeringPlayer();
+        Pawn* pawn = trigger->getTriggeringPlayer();
 
-        if(entity == NULL)
+        if(pawn == NULL)
         {
-            COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a ControllableEntity." << std::endl;
+            COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a Pawn." << std::endl;
             return false;
         }
         
         //! Extract the PlayerInfo from the ControllableEntity.
-        PlayerInfo* player = entity->getPlayer();
+        PlayerInfo* player = pawn->getPlayer();
         
         if(player == NULL)
         {

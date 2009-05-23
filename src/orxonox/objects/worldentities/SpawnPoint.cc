@@ -94,7 +94,7 @@ namespace orxonox
 
     void SpawnPoint::spawn(ControllableEntity* entity)
     {
-        entity->setPosition(this->getPosition());
-        entity->setOrientation(this->getOrientation());
+        entity->setPosition(this->getWorldPosition());
+        entity->setOrientation(this->getWorldOrientation());
     }
 }

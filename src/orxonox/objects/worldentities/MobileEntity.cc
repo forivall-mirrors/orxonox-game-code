@@ -165,6 +165,12 @@ namespace orxonox
         this->angularAcceleration_ = acceleration;
     }
 
+    void MobileEntity::applyCentralForce(const Vector3& force)
+    {
+        if (this->isDynamic())
+            this->physicalBody_->applyCentralForce(btVector3(force.x * this->getMass(), force.y * this->getMass(), force.z * this->getMass()));
+    }
+
     bool MobileEntity::isCollisionTypeLegal(WorldEntity::CollisionType type) const
     {
         if (type == WorldEntity::Static)

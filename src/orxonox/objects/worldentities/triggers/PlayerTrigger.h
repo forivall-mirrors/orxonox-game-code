@@ -59,7 +59,7 @@ namespace orxonox
         @brief Returns the player that triggered the PlayerTrigger.
         @return Returns a pointer to the ControllableEntity that triggered the PlayerTrigger.
         */
-        inline ControllableEntity* getTriggeringPlayer(void) const
+        inline Pawn* getTriggeringPlayer(void) const
             { return this->player_; }
         
         /**
@@ -76,7 +76,7 @@ namespace orxonox
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
         @param player A pointer to the ControllableEntity that triggered the PlayerTrigger.
         */
-        inline void setTriggeringPlayer(ControllableEntity* player)
+        inline void setTriggeringPlayer(Pawn* player)
            { this->player_ = player; }
 
             /**
@@ -87,7 +87,7 @@ namespace orxonox
            { this->isForPlayer_ = isForPlayer; }
         
     private:
-        ControllableEntity* player_; //!< The player that triggered the PlayerTrigger.
+        Pawn* player_; //!< The player that triggered the PlayerTrigger.
         bool isForPlayer_; //!< Is true when the PlayerTrigger schould be set to normally be triggered by ControllableEntities.
     
     };

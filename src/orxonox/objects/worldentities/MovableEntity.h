@@ -45,6 +45,7 @@ namespace orxonox
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             void registerVariables();
 
             using WorldEntity::setPosition;
@@ -54,6 +55,26 @@ namespace orxonox
                 { MobileEntity::setPosition(position); this->overwrite_position_ = this->getPosition(); }
             inline void setOrientation(const Quaternion& orientation)
                 { MobileEntity::setOrientation(orientation); this->overwrite_orientation_ = this->getOrientation(); }
+
+            inline void setOwner(Pawn* owner)
+                { this->owner_ = owner; }
+            inline Pawn* getOwner() const
+                { return this->owner_; }
+
+            inline void setCollisionDamage(float c)
+                { this->collisionDamage_ = c; }
+
+            inline float getCollisionDamage()
+                { return this->collisionDamage_; }
+
+            inline void setEnableCollisionDamage(bool c)
+            { 
+                this->enableCollisionDamage_ = c; 
+                this->enableCollisionCallback();
+            } 
+
+            inline bool getEnableCollisionDamage()
+                { return this->enableCollisionDamage_; }
 
         private:
             void clientConnected(unsigned int clientID);
@@ -75,6 +96,10 @@ namespace orxonox
 
             Timer<MovableEntity> resynchronizeTimer_;
             Timer<MovableEntity>* continuousResynchroTimer_;
+
+            Pawn* owner_;
+            float collisionDamage_;
+            bool enableCollisionDamage_;
     };
 }
 
