@@ -55,10 +55,10 @@ namespace orxonox
             Notification(BaseObject* creator);
             Notification(const std::string & message);
             virtual ~Notification();
-            
+
             bool send(void); //!< Sends the Notification to the Notificationmanager, with sender NotificationManager::NONE;
             bool send(const std::string & sender); //!< Sends the Notification to the Notificationmanager.
-            
+
             /**
             @brief Checks whether the Notification was sent.
             @return Returns true if the Notification was sent already.
@@ -71,19 +71,19 @@ namespace orxonox
             */
             inline const std::string & getMessage(void) const
                 { return this->message_; }
-                
+
             inline const std::string & getSender(void) const
                 { return this->sender_; }
-            
+
             bool setMessage(const std::string & message); //!< Sets the message of the notification.
-	    
+
         private:
             std::string message_; //!< The Notification message.
             std::string sender_; //!< The sender of the notification.
             bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
-            
+
             void initialize(void);
-	
+
     };
 
 }

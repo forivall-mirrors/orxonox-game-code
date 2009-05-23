@@ -112,7 +112,7 @@ namespace orxonox
             element->setOwner(this->owner_);
     }
 
-	/**
+    /**
     @brief
         Removes an element from the map.
     @param name

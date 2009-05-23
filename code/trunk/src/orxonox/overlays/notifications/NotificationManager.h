@@ -59,17 +59,17 @@ namespace orxonox
         public:
             NotificationManager();
             virtual ~NotificationManager();
-	        
+
             static const std::string ALL;
             static const std::string NONE;
-         
+
             static NotificationManager & getInstance(); //! Returns a reference to the single instance of the NotificationManager.
 
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
             bool registerQueue(NotificationQueue* queue); //!< Registers a NotificationQueue within the NotificationManager.
-            
+
             bool getNotifications(NotificationQueue* queue, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationQueue in a specified timeframe.
-            
+
             /**
             @brief Fetches the Notifications for a specific NotificationQueue starting at a specified time.
             @param queue The NotificationQueue the Notifications are fetched for.
@@ -88,16 +88,16 @@ namespace orxonox
             */
             bool getNotifications(NotificationQueue* queue, std::multimap<std::time_t,Notification*>* map, int timeDelay)
                 { return this->getNotifications(queue, map, std::time(0)-timeDelay, std::time(0)); }
-     
+
         private:
             static NotificationManager* singletonRef_s;
 
             int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that  no key appears twice.
-        
+
             std::multimap<std::time_t,Notification*> allNotificationsList_; //!< Container where all notifications are stored (together with their respecive timestamps).
             std::map<NotificationQueue*,int> queueList_; //!< Container where all NotificationQueues are stored with a number as identifier.
             std::map<int,std::multimap<std::time_t,Notification*>*> notificationLists_; //!< Container where all Notifications, for each identifier (associated with a NotificationQueue), are stored.
-            
+
 
     };
 
