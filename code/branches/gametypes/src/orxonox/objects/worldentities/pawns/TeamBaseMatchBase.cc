@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
- *   Co-authors:
  *      Val Mikos
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -73,7 +73,7 @@ namespace orxonox
                 break;
         }
 
-        
+
         std::set<WorldEntity*> attachments = this->getAttachedObjects();
         for (std::set<WorldEntity*>::iterator it = attachments.begin(); it != attachments.end(); ++it)
         {

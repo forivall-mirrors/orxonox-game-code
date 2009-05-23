@@ -20,20 +20,11 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
- *   Co-authors:
  *      Val Mikos
+ *   Co-authors:
+ *      ...
  *
  */
-
-
-
-// setState und getState functions declare here
-// TeamBaseMatchBase class 
-
-
-// save as TeamBaseMatchBase.h in objects/worldentities/pawns/TeamBaseMatchBase.h
-
 
 #ifndef _TeamBaseMatchBase_H__
 #define _TeamBaseMatchBase_H__
@@ -60,24 +51,24 @@ namespace orxonox
         public:
             TeamBaseMatchBase(BaseObject* creator);
 
-            // if class closes, close everything  
+            // if class closes, close everything
             virtual ~TeamBaseMatchBase() {}
-	     
-	     
-	     
-            // Set the state of a base to whatever the argument of the function is 
+
+
+
+            // Set the state of a base to whatever the argument of the function is
             void setState(BaseState::Enum state)
             {
                 this->state_ = state;
                 this->changeTeamColour();
-	    }
+            }
 
 
-	    // Get the state of a base as a return value 
-	    BaseState::Enum getState()
-	    {
-	        return this->state_;
-	    }
+            // Get the state of a base as a return value
+            BaseState::Enum getState() const
+            {
+                return this->state_;
+            }
 
 
         protected:

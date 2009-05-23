@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Matthias Mock
  *   Co-authors:
  *      ...
  *
@@ -31,8 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
-#include "objects/worldentities/pawns/Destroyer.h"
 #include "TeamDeathmatch.h"
 #include "objects/worldentities/pawns/Pawn.h"
 

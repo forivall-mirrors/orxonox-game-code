@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Matthias Mock
  *   Co-authors:
  *      ...
  *
@@ -30,8 +30,6 @@
 #define _Destroyer_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "LinearMath/btVector3.h"
 
 #include "SpaceShip.h"
 

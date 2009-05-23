@@ -52,21 +52,21 @@ namespace orxonox
     void ForceField::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
       SUPER(ForceField, XMLPort, xmlelement, mode);
-    
+
       //For correct xml import use: position, direction, velocity, scale
 
       XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
       XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
       XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
     }
-  
+
     void ForceField::tick(float dt)
     {
-      
+
       for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
       {
-	
-        //calculate from 
+
+        //calculate from
         Vector3 directionVec = this->getOrientation() * WorldEntity::FRONT;
         directionVec.normalise();
 
@@ -80,7 +80,7 @@ namespace orxonox
           //normalize distance from center
           it->applyCentralForce(((diameter_ / 2 - distFromCenterVec) / (diameter_ / 2)) * directionVec * velocity_);
         }
-	
+
       }
   }
 }

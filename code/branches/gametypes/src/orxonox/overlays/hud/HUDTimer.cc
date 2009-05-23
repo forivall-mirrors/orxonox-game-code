@@ -29,14 +29,9 @@
 #include "OrxonoxStableHeaders.h"
 #include "HUDTimer.h"
 
-#include <OgreTextAreaOverlayElement.h>
-
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
-#include "objects/infos/GametypeInfo.h"
-#include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/ControllableEntity.h"
-#include "objects/worldentities/pawns/Spectator.h"
 #include "objects/gametypes/Gametype.h"
 
 namespace orxonox
@@ -67,7 +62,7 @@ namespace orxonox
   }
 
   void HUDTimer::changedOwner()
-  { 
+  {
     SUPER(HUDTimer, changedOwner);
 
     this->owner_ = dynamic_cast<ControllableEntity*>(this->getOwner());

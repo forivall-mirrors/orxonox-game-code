@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Matthias Mock
  *   Co-authors:
  *      ...
  *
@@ -31,11 +31,11 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "objects/Teamcolourable.h"
-#include "objects/worldentities/TeamSpawnPoint.h"
 #include "util/Convert.h"
-
 #include "network/Host.h"
+
+#include "objects/worldentities/pawns/Destroyer.h"
+
 namespace orxonox
 {
     CreateUnloadableFactory(UnderAttack);
@@ -167,5 +167,4 @@ namespace orxonox
             }
         }
     }
-
 }

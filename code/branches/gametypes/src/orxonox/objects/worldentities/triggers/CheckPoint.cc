@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian
+ *      Aurelian Jaggi
  *   Co-authors:
  *      ...
  *
@@ -28,14 +28,11 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "CheckPoint.h"
-#include "objects/gametypes/Asteroids.h"
-
-#include <OgreNode.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "objects/gametypes/Asteroids.h"
 #include "orxonox/objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -58,7 +55,7 @@ namespace orxonox
   CheckPoint::~CheckPoint()
   {
   }
-  
+
   void CheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
   {
     SUPER(CheckPoint, XMLPort, xmlelement, mode);
@@ -67,14 +64,14 @@ namespace orxonox
     XMLPortParam(CheckPoint, "isdestination", setDestination, getDestination, xmlelement, mode).defaultValues(false);
     XMLPortParam(CheckPoint, "addtime", setAddTime, getAddTime, xmlelement, mode).defaultValues(30);
   }
-  
+
   void CheckPoint::triggered(bool bIsTriggered)
   {
     DistanceTrigger::triggered(bIsTriggered);
 
     Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
     if (gametype)
-    { 
+    {
         gametype->addTime(addTime_);
 
         if (bIsTriggered && bIsFirst_)
@@ -82,7 +79,7 @@ namespace orxonox
             gametype->setTimeLimit(addTime_);
             gametype->firstCheckpointReached(true);
         }
-     
+
         if (bIsTriggered && bIsDestination_)
         {
             gametype->end();

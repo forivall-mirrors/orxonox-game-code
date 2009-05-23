@@ -48,6 +48,6 @@ namespace orxonox
 
       private:
         ControllableEntity* owner_;
-    };
+  };
 }
 #endif /* _HUDTimer_H__ */

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian
+ *      Aurelian Jaggi
  *   Co-authors:
  *      ...
  *
@@ -45,7 +45,7 @@ namespace orxonox
 
             virtual void start();
             virtual void end();
-           
+
             inline void firstCheckpointReached(bool reached)
               { this->firstCheckpointReached_ = reached; }
 

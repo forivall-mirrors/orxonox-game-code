@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian
+ *      Aurelian Jaggi
  *   Co-authors:
  *      ...
  *
@@ -49,7 +49,7 @@ namespace orxonox
     void Asteroids::tick(float dt)
     {
         SUPER(Asteroids, tick, dt);
- 
+
         if (firstCheckpointReached_ && !this->timerIsActive_)
         {
             this->startTimer();

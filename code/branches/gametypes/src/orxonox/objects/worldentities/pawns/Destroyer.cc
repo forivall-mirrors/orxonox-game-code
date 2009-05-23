@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Matthias Mock
  *   Co-authors:
  *      ...
  *
@@ -29,15 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "Destroyer.h"
 
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-
-#include "util/Math.h"
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/Template.h"
-#include "core/XMLPort.h"
-#include "objects/items/Engine.h"
 #include "objects/gametypes/UnderAttack.h"
 
 namespace orxonox
@@ -54,5 +46,4 @@ namespace orxonox
             gametype->addDestroyer(this);
         }
     }
-
 }

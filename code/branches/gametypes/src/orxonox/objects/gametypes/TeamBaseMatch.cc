@@ -19,25 +19,22 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *   Author: Val Mikos
+ *   Author:
+ *      Val Mikos
+ *   Co-authors:
+ *      ...
+ *
  */
- 
- 
 
 #include "TeamBaseMatch.h"
 
-
-#include "objects/worldentities/pawns/TeamBaseMatchBase.h" 
+#include "objects/worldentities/pawns/TeamBaseMatchBase.h"
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 
- 
 namespace orxonox
 {
     CreateUnloadableFactory(TeamBaseMatch);
 
-
-    // Timer and Creator
     TeamBaseMatch::TeamBaseMatch(BaseObject* creator) : TeamDeathmatch(creator)
     {
         RegisterObject(TeamBaseMatch);
@@ -48,31 +45,6 @@ namespace orxonox
         this->pointsTeam1_ = 0;
         this->pointsTeam2_ = 0;
     }
-     
-    
-    // set the Bases positions using XML
-    void TeamBaseMatch::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(TeamBaseMatch, XMLPort, xmlelement, mode);
-
-//        XMLPortObject(TeamBaseMatch, WorldEntity, setNeutralshape, getNeturalshape, xmlelement, mode); 
-//        XMLPortObject(TeamBaseMatch, WorldEntity, setTeam1shape, getTeam1shape, xmlelement, mode);
-//        XMLPortObject(TeamBaseMatch, WorldEntity, setTeam2shape, getTeam2shape, xmlelement, mode);
-
-//        XMLPortObject(TeamBaseMatch, TeamBaseMatchBase,  addBase, getBase, xmlelement, mode);
-    }
-    
-/*
-    // pretty useless at the moment...should be implemented in the TeamBaseMatchBase class headerfile
-    // State of the Base (controlled, uncontrolled)
-    int TeamBaseMatch::baseState(Base)
-    {
-        if(Enum state_==uncontrolled) return 0;
-        if(Enum state_==controlTeam1) return 1;
-        if(Enum state_==controlTeam2) return 2;
-    }
-*/  
-
 
     // Change the control of the defeated base and respawn it with its initial health
     bool TeamBaseMatch::allowPawnDeath(Pawn* victim, Pawn* originator)
@@ -116,10 +88,10 @@ namespace orxonox
         if (pawn1 && base)
         {
             std::map<PlayerInfo*, int>::const_iterator it1 = this->teamnumbers_.find(pawn1->getPlayer());
-	    int teamnrbase = -1;
-	    int teamnrplayer = getTeam(pawn1->getPlayer());
+            int teamnrbase = -1;
+            int teamnrplayer = getTeam(pawn1->getPlayer());
 
-	    switch(base->getState())
+            switch (base->getState())
             {
                 case BaseState::controlTeam1:
                     teamnrbase = 0;
@@ -129,13 +101,11 @@ namespace orxonox
                     break;
                 case BaseState::uncontrolled:
                 default:
-		    teamnrbase = -1;
-	    }
+                    teamnrbase = -1;
+            }
 
-
-	    if(teamnrbase == teamnrplayer){
-		return false;
-	    }
+            if (teamnrbase == teamnrplayer)
+                return false;
         }
         return true;
     }
@@ -154,7 +124,7 @@ namespace orxonox
     // show points or each interval of time
     void TeamBaseMatch::showPoints()
     {
-	
+
 	COUT(0) << "Points standing:" << std::endl << "Team 1: "<< pointsTeam1_ << std::endl << "Team 2: " << pointsTeam2_ << std::endl;
 	if(pointsTeam1_ >=1700) COUT(0) << "Team 1 is near victory!" << std::endl;
 	if(pointsTeam2_ >=1700) COUT(0) << "Team 2 is near victory!" << std::endl;
@@ -204,7 +174,7 @@ namespace orxonox
         if(team == 1)
         {
             this->pointsTeam2_ += points;
-        }      
+        }
 
         this->endGame();
     }
@@ -226,7 +196,7 @@ namespace orxonox
         }
         return 0;
     }
-    
+
 }
 
- 
+

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian
+ *      Aurelian Jaggi
  *   Co-authors:
  *      ...
  *
@@ -29,7 +29,6 @@
 /**
     @file
     @brief
-    Definition of the PlayerTrigger class.
 */
 
 #ifndef _CheckPoint_H__
@@ -37,33 +36,26 @@
 
 #include "DistanceTrigger.h"
 
-#include <set>
-
-#include "core/ClassTreeMask.h"
-#include "core/BaseObject.h"
-
-#include "orxonox/objects/worldentities/ControllableEntity.h"
-
 namespace orxonox
 {
   class _OrxonoxExport CheckPoint : public DistanceTrigger
-    {
+  {
     public:
       CheckPoint(BaseObject* creator);
       virtual ~CheckPoint();
-        
+
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
 
     private:
-      virtual void triggered(bool bIsTriggered); 
+      virtual void triggered(bool bIsTriggered);
       virtual void notifyMaskUpdate();
 
       inline void setDestination(bool isDestination)
         { bIsDestination_ = isDestination; }
 
       inline bool getDestination()
-        { return bIsDestination_; }	
-   
+        { return bIsDestination_; }
+
       inline void setFirst(bool isFirst)
         { this->bIsFirst_ = isFirst; }
 
@@ -75,7 +67,7 @@ namespace orxonox
 
       inline bool getAddTime()
         { return this->addTime_; }
-      
+
       bool bIsFirst_;
       bool bIsDestination_;
       float addTime_;
