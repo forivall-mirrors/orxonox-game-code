@@ -157,15 +157,12 @@ namespace orxonox
         if (!item || !this->contains(item, removeAllOfType) || this->bBlockRemovals_)
             return;
 
+        bool getNewUsable = false;
         if (item == this->currentUsable_ || (this->currentUsable_ && removeAllOfType && this->currentUsable_->getPickupIdentifier() == item->getPickupIdentifier()))
         {
-            std::deque<UsableItem*> usables = this->getUsableItems();
-
-            if(usables.size() > 0)
-                this->currentUsable_ = usables.at(0);
-            else
-                this->currentUsable_ = NULL;
+            getNewUsable = true;
         }
+
         if (removeAllOfType)
         {
             std::multimap<std::string, BaseItem*>::iterator it;
@@ -182,9 +179,20 @@ namespace orxonox
                 if ((*it).second == item)
                 {
                     this->items_.erase(it);
-                    return;
+                    break;
                 }
             }
+        }
+
+        if (getNewUsable)
+        {
+            std::deque<UsableItem*> usables = this->getUsableItems();
+
+            if(usables.size() > 0)
+                this->currentUsable_ = usables.at(0);
+            else
+                this->currentUsable_ = NULL;
+            
         }
     }
     /**

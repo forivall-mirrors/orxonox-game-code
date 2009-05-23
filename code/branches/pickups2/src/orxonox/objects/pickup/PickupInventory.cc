@@ -52,10 +52,30 @@ namespace orxonox
     orxonox::ConsoleCommand& function_PickupInventory_ToggleInventory_0 =
         orxonox::CommandExecutor::addConsoleCommandShortcut(orxonox::createConsoleCommand(orxonox::createFunctor(&PickupInventory::toggleInventory), "toggleInventory"), true);
 
-    static bool bInventoryVisible_ = false;
+    PickupInventory* PickupInventory::pickupInventory_s = NULL;
+    PickupInventory* PickupInventory::getSingleton()
+    {
+        if(!PickupInventory::pickupInventory_s)
+            PickupInventory::pickupInventory_s = new PickupInventory();
+
+        return PickupInventory::pickupInventory_s;
+    }
+
+    PickupInventory::PickupInventory()
+    {
+        this->bInventoryVisible_ = false;
+        this->createdEquipmentWindows_ = this->createdUsableWindows_ = 0;
+        this->visibleEquipmentWindows_ = this->visibleUsableWIndows_ = 0;
+    }
+    PickupInventory::~PickupInventory()
+    {
+    }
+
+    
+
     void PickupInventory::toggleInventory()
     {
-        if(bInventoryVisible_) {
+        if(PickupInventory::getSingleton()->isVisible()) {
             GUIManager::getInstancePtr()->executeCode("hideGUI(\"PickupInventory\")");
             GUIManager::getInstancePtr()->executeCode("hideCursor()");
             InputManager::getInstance().requestLeaveState("guiMouseOnly");
@@ -66,19 +86,7 @@ namespace orxonox
             GUIManager::getInstancePtr()->executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
         }
-        bInventoryVisible_ = !bInventoryVisible_;
-    }
-    void PickupInventory::tabChanged(CEGUI::Window *tab)
-    {
-        CEGUI::TabControl* tabCtrl = dynamic_cast<CEGUI::TabControl*>(tab);
-        if(tabCtrl != NULL)
-        {
-            COUT(1) << "tabChanged() tab index: " << tabCtrl->getSelectedTabIndex() << std::endl;
-        }
-        else
-        {
-            COUT(1) << "tabChanged() argument is no CEGUI::TabControl!" << std::endl;
-        }
+        PickupInventory::getSingleton()->setVisible(!PickupInventory::getSingleton()->isVisible());
     }
 
     unsigned int PickupInventory::getCurrentUsableIndex()
@@ -192,32 +200,39 @@ namespace orxonox
         return "set:" + name + " image:full_image";
     }
 
-    void PickupInventory::clearInventory(CEGUI::WindowManager* winMgr, int equipCount, int usableCount)
+    void PickupInventory::clearInventory(CEGUI::WindowManager* winMgr, CEGUI::Window* equipPane, CEGUI::Window* usablePane)
     {
-        for(int i = 0; i < equipCount; i++)
+        for(unsigned int i = 0; i < this->visibleEquipmentWindows_; i++)
         {
             std::ostringstream id;
             id << i;
 
-            winMgr->destroyWindow("orxonox/Inventory/Frame/equ/" + id.str());
-            winMgr->destroyWindow("orxonox/Inventory/Title/equ/" + id.str());
-            winMgr->destroyWindow("orxonox/Inventory/Items/equ/" + id.str());
+            winMgr->getWindow("orxonox/Inventory/Frame/equ/" + id.str())->setVisible(false);
+            winMgr->getWindow("orxonox/Inventory/Title/equ/" + id.str())->setVisible(false);
+            winMgr->getWindow("orxonox/Inventory/Items/equ/" + id.str())->setVisible(false);
+
+            /*equipPane->removeChildWindow("orxonox/Inventory/Frame/equ/" + id.str());
+            equipPane->removeChildWindow("orxonox/Inventory/Title/equ/" + id.str());
+            equipPane->removeChildWindow("orxonox/Inventory/Items/equ/" + id.str());*/
         }
-        for(int i = 0; i < usableCount; i++)
+        for(unsigned int i = 0; i < this->visibleUsableWIndows_; i++)
         {
             std::ostringstream id;
             id << i;
 
-            std::string s = id.str();
-            winMgr->destroyWindow("orxonox/Inventory/Frame/use/" + id.str());
-            winMgr->destroyWindow("orxonox/Inventory/Title/use/" + id.str());
-            winMgr->destroyWindow("orxonox/Inventory/Items/use/" + id.str());
+            winMgr->getWindow("orxonox/Inventory/Frame/use/" + id.str())->setVisible(false);
+            winMgr->getWindow("orxonox/Inventory/Title/use/" + id.str())->setVisible(false);
+            winMgr->getWindow("orxonox/Inventory/Items/use/" + id.str())->setVisible(false);
+
+            /*usablePane->removeChildWindow("orxonox/Inventory/Frame/use/" + id.str());
+            usablePane->removeChildWindow("orxonox/Inventory/Title/use/" + id.str());
+            usablePane->removeChildWindow("orxonox/Inventory/Items/use/" + id.str());*/
         }
     }
     void PickupInventory::updateTabs(CEGUI::WindowManager *winMgr, CEGUI::Window *equipWindow, CEGUI::Window *usableWindow)
     {
-        PickupInventory::updateEquipment(winMgr, equipWindow);
-        PickupInventory::updateUsable(winMgr, usableWindow);
+        this->updateEquipment(winMgr, equipWindow);
+        this->updateUsable(winMgr, usableWindow);
     }
 
     void PickupInventory::updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target)
@@ -233,8 +248,15 @@ namespace orxonox
 
                 EquipmentItem* item = items.at(i);
 
-                PickupInventory::addItem(winMgr, target, id.str(), item, "FFFFFFFF", i % 5, i / 5);
+                if(this->createdEquipmentWindows_ <= i)
+                {
+                    PickupInventory::createItemWindows(winMgr, id.str(), i % 5, i / 5);
+                    this->createdEquipmentWindows_++;
+                }
+
+                PickupInventory::setWindowProperties(winMgr, target, id.str(), item, "FFFFFFFF");
             }
+            this->visibleEquipmentWindows_ = items.size();
         }
     }
     void PickupInventory::updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target)
@@ -256,16 +278,21 @@ namespace orxonox
                 else
                     colour = "FFFFFFFF";
 
-                PickupInventory::addItem(winMgr, target, id.str(), item, colour, i % 5, i / 5);
+                if(this->createdUsableWindows_ <= i)
+                {
+                    PickupInventory::createItemWindows(winMgr, id.str(), i % 5, i / 5);
+                    this->createdUsableWindows_++;
+                }
+
+                PickupInventory::setWindowProperties(winMgr, target, id.str(), item, colour);
             }
+            this->visibleUsableWIndows_ = items.size();
         }
     }
 
-    void PickupInventory::addItem(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, BaseItem* item, const std::string& titleColour, int x, int y)
+    void PickupInventory::createItemWindows(CEGUI::WindowManager* winMgr, const std::string& id, int x, int y)
     { 
-        if(!winMgr || !target || !item) { return; }
-
-        std::string image = PickupInventory::getImageForItem(item);
+        if(!winMgr) { return; }
 
         CEGUI::Window* frame = winMgr->createWindow("TaharezLook/StaticImage", "orxonox/Inventory/Frame/" + id);
         frame->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 5 + y * 90)));
@@ -274,25 +301,39 @@ namespace orxonox
         CEGUI::Window* text = winMgr->createWindow("TaharezLook/StaticText", "orxonox/Inventory/Title/" + id);
         text->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 70 + y * 90)));
         text->setSize(CEGUI::UVector2(CEGUI::UDim(0, 65), CEGUI::UDim(0, 20)));
-        text->setProperty("Text", item->getGUIText());
         text->setProperty("FrameEnabled", "False");
         text->setProperty("BackgroundEnabled", "False");
         text->setProperty("HorzFormatting", "HorzCentred");
         text->setProperty("VertFormatting", "VertCentred");
-        text->setProperty("TextColours", "tl:" + titleColour + " tr:" + titleColour + " bl:" + titleColour + " br:" + titleColour + "");
+        text->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF");
 
         CEGUI::Window* btn = winMgr->createWindow("TaharezLook/Button", "orxonox/Inventory/Items/" + id);
         btn->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 8 + x * 70), CEGUI::UDim(0, 8 + y * 90)));
         btn->setSize(CEGUI::UVector2(CEGUI::UDim(0, 59), CEGUI::UDim(0, 59)));
+        btn->subscribeScriptedEvent("Clicked", "itemClicked");
+    }
+    void PickupInventory::setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour)
+    {
+        CEGUI::Window* txt = winMgr->getWindow("orxonox/Inventory/Title/" + id);
+        CEGUI::Window* btn = winMgr->getWindow("orxonox/Inventory/Items/" + id);
+        CEGUI::Window* frm = winMgr->getWindow("orxonox/Inventory/Frame/" + id);
+
+        frm->setVisible(true);
+
+        txt->setVisible(true);
+        txt->setProperty("Text", item->getGUIText());
+        txt->setProperty("TextColours", "tl:" + textColour + " tr:" + textColour + " bl:" + textColour + " br:" + textColour + "");
+
+        std::string image = PickupInventory::getImageForItem(item);
+        btn->setVisible(true);
         btn->setProperty("NormalImage", image);
         btn->setProperty("HoverImage", image);
         btn->setProperty("PushedImage", image);
         btn->setProperty("DisabledImage", image);
         btn->setProperty("Tooltip", item->getGUIText());
-        btn->subscribeScriptedEvent("Clicked", "itemClicked");
 
-        target->addChildWindow(text);
-        target->addChildWindow(frame);
+        target->addChildWindow(frm);
+        target->addChildWindow(txt);
         target->addChildWindow(btn);
     }
 }

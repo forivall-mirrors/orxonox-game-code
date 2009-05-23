@@ -55,15 +55,12 @@ namespace orxonox
     {
 // tolua_end
     public:
-        //PickupInventory(BaseObject* creator);
-        //virtual ~PickupInventory();
+        PickupInventory();
+        virtual ~PickupInventory();
 
-        /**
-            @brief Toggle visiblity of inventory.
-        */
+        static PickupInventory* getSingleton(); // tolua_export
+
         static void toggleInventory(); // tolua_export
-
-        static void tabChanged(CEGUI::Window* tab); // tolua_export
 
         static unsigned int getEquipmentCount(); // tolua_export
         static unsigned int getUsableCount(); // tolua_export
@@ -79,13 +76,27 @@ namespace orxonox
 
         static std::string getImageForItem(const BaseItem* item); // tolua_export
 
-        static void clearInventory(CEGUI::WindowManager* winMgr, int equipCount, int usableCount); // tolua_export
-        static void updateTabs(CEGUI::WindowManager* winMgr, CEGUI::Window* equipWindow, CEGUI::Window* usableWindow); // tolua_export
+        void clearInventory(CEGUI::WindowManager* winMgr, CEGUI::Window* equipPane, CEGUI::Window* usablePane); // tolua_export
+        void updateTabs(CEGUI::WindowManager* winMgr, CEGUI::Window* equipWindow, CEGUI::Window* usableWindow); // tolua_export
 
-        static void updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
-        static void updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
+        void updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
+        void updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
 
-        static void addItem(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, BaseItem* item, const std::string& titleColour, int x, int y); // tolua_export
+        static void createItemWindows(CEGUI::WindowManager* winMgr, const std::string& id, int x, int y);
+        static void setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour);
+
+        const bool isVisible() const
+            { return this->bInventoryVisible_; }
+        void setVisible(bool visible)
+            { this->bInventoryVisible_ = visible; }
+    private:
+        bool bInventoryVisible_;
+        unsigned int createdEquipmentWindows_;
+        unsigned int createdUsableWindows_;
+        unsigned int visibleEquipmentWindows_;
+        unsigned int visibleUsableWIndows_;
+
+        static PickupInventory* pickupInventory_s;
     }; // tolua_export
 } // tolua_export
 
