@@ -90,10 +90,10 @@ namespace orxonox
         if (scriptModule_)
         {
             // destroy our own tolua interfaces
-	        lua_pushnil(luaState_);
-	        lua_setglobal(luaState_, "Orxonox");
-	        lua_pushnil(luaState_);
-	        lua_setglobal(luaState_, "Core");
+            lua_pushnil(luaState_);
+            lua_setglobal(luaState_, "Orxonox");
+            lua_pushnil(luaState_);
+            lua_setglobal(luaState_, "Core");
             delete scriptModule_;
         }
 

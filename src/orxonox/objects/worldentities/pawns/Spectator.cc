@@ -111,7 +111,7 @@ namespace orxonox
 
     void Spectator::changedFlareVisibility()
     {
-	if ( this->greetingFlare_ )
+        if (this->greetingFlare_)
             this->greetingFlare_->setVisible(this->bGreetingFlareVisible_);
     }
 

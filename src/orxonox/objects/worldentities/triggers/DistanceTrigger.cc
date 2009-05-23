@@ -85,14 +85,14 @@ namespace orxonox
   void DistanceTrigger::addTargets(const std::string& targets)
   {
     Identifier* targetId = ClassByString(targets);
-    
+
     //! Checks whether the target is (or is derived from) a ControllableEntity.
     Identifier* controllableEntityId = Class(ControllableEntity);
     if(targetId->isA(controllableEntityId))
     {
       this->setForPlayer(true);
     }
-    
+
     if (!targetId)
     {
         COUT(1) << "Error: \"" << targets << "\" is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << std::endl;
@@ -130,14 +130,14 @@ namespace orxonox
       Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
       if (distanceVec.length() < this->distance_)
       {
-        
-        //! If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
+
+        // If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
         if(this->isForPlayer())
-	{
+        {
           Pawn* player = dynamic_cast<Pawn*>(entity);
-	  this->setTriggeringPlayer(player);
-	}
-        
+          this->setTriggeringPlayer(player);
+        }
+
         return true;
       }
     }
