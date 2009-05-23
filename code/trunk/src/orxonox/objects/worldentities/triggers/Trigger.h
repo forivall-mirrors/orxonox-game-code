@@ -88,6 +88,9 @@ namespace orxonox
       inline int getActivations() const
         { return this->remainingActivations_; }
 
+      inline void setVisible(bool visibility)
+        { this->debugBillboard_.setVisible(visibility); }
+
       void setDelay(float delay);
       inline float getDelay() const
         { return this->delay_; }
@@ -100,6 +103,7 @@ namespace orxonox
     protected:
       inline bool isTriggered() { return this->isTriggered(this->mode_); }
       virtual bool isTriggered(TriggerMode mode);
+      virtual void triggered(bool bIsTriggered);
 
     private:
       bool checkAnd();

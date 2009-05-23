@@ -34,7 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "orxonox/objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -108,6 +108,8 @@ namespace orxonox
     ClassTreeMask WEMask;
     WEMask.include(Class(WorldEntity));
     this->targetMask_ *= WEMask;
+
+    this->notifyMaskUpdate();
   }
 
   void DistanceTrigger::removeTargets(const std::string& targets)
@@ -132,7 +134,7 @@ namespace orxonox
         //! If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
         if(this->isForPlayer())
 	{
-          ControllableEntity* player = dynamic_cast<ControllableEntity*>(entity);
+          Pawn* player = dynamic_cast<Pawn*>(entity);
 	  this->setTriggeringPlayer(player);
 	}
         

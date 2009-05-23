@@ -137,6 +137,7 @@ namespace orxonox
     class ControllableEntity;
     class MovableEntity;
     class Sublevel;
+    class ForceField;
 
     class Model;
     class Billboard;
@@ -161,6 +162,8 @@ namespace orxonox
     class Spectator;
     class Pawn;
     class SpaceShip;
+    class TeamBaseMatchBase;
+    class Destroyer;
 
     class Item;
     class Engine;
@@ -171,6 +174,7 @@ namespace orxonox
     class DistanceTrigger;
     class EventTrigger;
     class PlayerTrigger;
+    class CheckPoint;
 
     class WeaponSystem;
     class WeaponSet;
@@ -203,6 +207,9 @@ namespace orxonox
     class Gametype;
     class Deathmatch;
     class TeamDeathmatch;
+    class Asteroids;
+    class TeamBaseMatch;
+    class UnderAttack;
     class Pong;
 
     class Scores;
@@ -235,6 +242,7 @@ namespace orxonox
     class HUDRadar;
     class HUDSpeedBar;
     class HUDHealthBar;
+    class HUDTimer;
     class InGameConsole;
     class Notification;
     class NotificationManager;
