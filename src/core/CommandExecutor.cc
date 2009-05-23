@@ -108,6 +108,16 @@ namespace orxonox
         return CommandExecutor::getEvaluation().execute();
     }
 
+    MultiType CommandExecutor::getReturnValue()
+    {
+        return CommandExecutor::getEvaluation().getReturnvalue();
+    }
+
+    std::string CommandExecutor::getReturnValueString()
+    {
+        return CommandExecutor::getEvaluation().getReturnvalue().getString();
+    }
+
     std::string CommandExecutor::complete(const std::string& command)
     {
         CommandExecutor::parseIfNeeded(command);

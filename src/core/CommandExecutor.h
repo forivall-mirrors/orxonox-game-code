@@ -43,6 +43,9 @@ namespace orxonox
 // tolua_end
         public:
             static bool execute(const std::string& command, bool useTcl = true); // tolua_export
+            static MultiType getReturnValue();
+            static std::string getReturnValueString(); // tolua_export
+
             static std::string complete(const std::string& command);
             static std::string hint(const std::string& command);
 
