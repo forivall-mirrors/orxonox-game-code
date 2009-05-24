@@ -31,7 +31,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "objects/worldentities/PongBat.h"
 #include "objects/gametypes/Gametype.h"
 
 namespace orxonox
@@ -46,7 +45,18 @@ namespace orxonox
 
         this->speed_ = 0;
         this->bat_ = 0;
+        this->batID_ = new unsigned int[2];
+        this->batID_[0] = OBJECTID_UNKNOWN;
+        this->batID_[1] = OBJECTID_UNKNOWN;
         this->relMercyOffset_ = 0.05;
+        
+        this->registerVariables();
+    }
+    
+    void PongBall::registerVariables()
+    {
+        registerVariable( this->batID_[0] );
+        registerVariable( this->batID_[1], variableDirection::toclient, new NetworkCallback<PongBall>( this, &PongBall::applyBats) );
     }
 
     void PongBall::tick(float dt)
@@ -117,6 +127,55 @@ namespace orxonox
                 this->setVelocity(velocity);
             if (position != this->getPosition())
                 this->setPosition(position);
+        }
+        else
+        {
+          Vector3 position = this->getPosition();
+          Vector3 velocity = this->getVelocity();
+
+          if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
+          {
+            velocity.z = -velocity.z;
+
+            if (position.z > this->fieldHeight_ / 2)
+              position.z = this->fieldHeight_ / 2;
+            if (position.z < -this->fieldHeight_ / 2)
+              position.z = -this->fieldHeight_ / 2;
+          }
+
+          if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
+          {
+            float distance = 0;
+
+            if (this->bat_)
+            {
+              if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
+              {
+                distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                if (fabs(distance) <= 1)
+                {
+                  position.x = this->fieldWidth_ / 2;
+                  velocity.x = -velocity.x;
+                  velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                }
+              }
+              if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
+              {
+                distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                if (fabs(distance) <= 1)
+                {
+                  position.x = -this->fieldWidth_ / 2;
+                  velocity.x = -velocity.x;
+                  velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                }
+              }
+            }
+          }
+
+          if (velocity != this->getVelocity())
+            this->setVelocity(velocity);
+          if (position != this->getPosition())
+            this->setPosition(position);
         }
     }
 

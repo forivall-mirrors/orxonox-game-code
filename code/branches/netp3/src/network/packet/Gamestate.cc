@@ -109,7 +109,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
 //     tempsize=it->getSize(id, mode);
 
     tempsize = it->getData(mem, id, mode);
-    if ( it->doSync( id, mode ) )
+    if ( tempsize != 0 )
       dataVector_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
     
 #ifndef NDEBUG
@@ -338,18 +338,48 @@ Gamestate *Gamestate::diff(Gamestate *base)
     return NULL;
   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
   uint8_t *dest = ndata + GamestateHeader::getSize();
-  while(of < diffHeader.getDataSize() && of < header_->getDataSize()){
-    *(dest+of)=*(basep+of)^*(gs+of); // do the xor
-    ++of;
-  }
-  if(diffHeader.getDataSize()!=header_->getDataSize()){
-    uint8_t n=0;
-    if(diffHeader.getDataSize() < header_->getDataSize()){
-      while(of<dest_length){
-        *(dest+of)=n^*(gs+of);
-        of++;
-      }
+  
+  
+  // LOOP-UNROLLED DIFFING
+  uint32_t *dest32 = (uint32_t*)dest, *base32 = (uint32_t*)basep, *gs32 = (uint32_t*)gs;
+  // diff in 4-byte steps
+  while( of < (uint32_t)(header_->getDataSize())/4 ){
+    if( of < (uint32_t)(diffHeader.getDataSize())/4 )
+    {
+      *(dest32+of)=*(base32+of) ^ *(gs32+of); // do the xor
+      ++of;
+    } else
+    {
+      *(dest32+of)=*(gs32+of); // same as 0 ^ *(gs32+of)
+      ++of;
     }
+  }
+  uint32_t base_rest = 0;
+  // fill the base_rest first with 0 and then with the remaining bytes in base32
+  switch( diffHeader.getDataSize()%sizeof(uint32_t) )
+  {
+    case 3:
+      *((uint8_t*)(&base_rest)+2) = *((uint8_t*)(base32+of-1)+2); // save the last byte to the buffer
+    case 2:
+      *((uint16_t*)(&base_rest)) = *((uint16_t*)(base32+of-1)); // xor 2 bytes at once (either 2nd and 3rd last or the 2 last bytes)
+      break;
+    case 1:
+      *((uint8_t*)(&base_rest)) = *((uint8_t*)(base32+of-1)); // xor the last byte
+    case 0:
+      break; // leave 0
+  }
+  // now diff the rest and save it to dest32 in 2- and 1-byte steps
+  switch( header_->getDataSize()%sizeof(uint32_t) )
+  {
+    case 3:
+      *((uint8_t*)(dest32+of)+2) = *((uint8_t*)&base_rest+2) ^ *((uint8_t*)(gs32+of-1)+2); // save the last byte to the buffer
+    case 2:
+      *((uint16_t*)(dest32+of)) = *((uint16_t*)&base_rest) ^ *((uint16_t*)(gs32+of-1)); // xor 2 bytes at once (either 2nd and 3rd last or the 2 last bytes)
+      break;
+    case 1:
+      *((uint8_t*)(dest32+of)) = *((uint8_t*)&base_rest) ^ *((uint8_t*)(gs32+of-1)); // xor the last byte
+    case 0:
+      break;
   }
 
   Gamestate *g = new Gamestate(ndata, getClientID());

@@ -141,26 +141,30 @@ namespace orxonox {
     //assertions to make sure the maps already exist
     assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
     assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
-	  assert( clientListTemp_[clientID].find(gamestateID) != clientListTemp_[clientID].end() );
+    assert( clientListTemp_[clientID].find(gamestateID) != clientListTemp_[clientID].end() );
+    
+    // shortcut for maps
+    std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
+    std::map<unsigned int, std::vector<obj> >& objectListTemp = clientListTemp_[clientID];
 
-    for(itvec = clientListTemp_[clientID][gamestateID].begin(); itvec != clientListTemp_[clientID][gamestateID].end(); itvec++)
+    for(itvec = objectListTemp[gamestateID].begin(); itvec != objectListTemp[gamestateID].end(); itvec++)
 	  {
-      if(clientListPerm_[clientID].find((*itvec).objID) != clientListPerm_[clientID].end()) // check whether the obj already exists in our lists
+      if(objectListPerm.find((*itvec).objID) != objectListPerm.end()) // check whether the obj already exists in our lists
       {
-        clientListPerm_[clientID][(*itvec).objID].objCurGS = gamestateID;
-        clientListPerm_[clientID][(*itvec).objID].objValueSched = 0; //set scheduling value back
+        objectListPerm[(*itvec).objID].objCurGS = gamestateID;
+        objectListPerm[(*itvec).objID].objValueSched = 0; //set scheduling value back
       }
       else
       {
         assert(0);
-        clientListPerm_[clientID][(*itvec).objID].objCurGS = gamestateID;
-        clientListPerm_[clientID][(*itvec).objID].objID = (*itvec).objID;
-        clientListPerm_[clientID][(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
-        clientListPerm_[clientID][(*itvec).objID].objSize = (*itvec).objSize;
+        objectListPerm[(*itvec).objID].objCurGS = gamestateID;
+        objectListPerm[(*itvec).objID].objID = (*itvec).objID;
+        objectListPerm[(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
+        objectListPerm[(*itvec).objID].objSize = (*itvec).objSize;
       }
 	  }
 	   // remove temporary list (with acked objects) from the map
-    clientListTemp_[clientID].erase( clientListTemp_[clientID].find(gamestateID) );
+    objectListTemp.erase( objectListTemp.find(gamestateID) );
 	}
 
 /**
@@ -226,13 +230,16 @@ namespace orxonox {
 	  //compare listToProcess vs clientListPerm
     //if listToProcess contains new Objects, add them to clientListPerm
     std::vector<obj>::iterator itvec;
+    
+    std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
+    
 	  for( itvec=list.begin(); itvec != list.end(); itvec++)
 	  {
-	    if ( clientListPerm_[clientID].find( (*itvec).objID) != clientListPerm_[clientID].end() )
+	    if ( objectListPerm.find( (*itvec).objID) != objectListPerm.end() )
       {
         // we already have the object in our map
         //obj bleibt in liste und permanente prio wird berechnet
-        clientListPerm_[clientID][(*itvec).objID].objDiffGS = currentGamestateID - clientListPerm_[clientID][(*itvec).objID].objCurGS;
+        objectListPerm[(*itvec).objID].objDiffGS = currentGamestateID - objectListPerm[(*itvec).objID].objCurGS;
         continue;//check next objId
       }
       else
