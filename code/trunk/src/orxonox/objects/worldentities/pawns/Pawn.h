@@ -47,9 +47,6 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
-            virtual void setPlayer(PlayerInfo* player);
-            virtual void removePlayer();
-
             inline bool isAlive() const
                 { return this->bAlive_; }
 
@@ -112,6 +109,9 @@ namespace orxonox
             virtual void dropItems();
 
         protected:
+            virtual void setPlayer(PlayerInfo* player);
+            virtual void removePlayer();
+
             virtual void death();
             virtual void deatheffect();
             virtual void spawneffect();

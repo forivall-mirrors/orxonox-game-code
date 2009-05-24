@@ -38,6 +38,8 @@ namespace orxonox
 {
     class _OrxonoxExport ControllableEntity : public MobileEntity
     {
+        friend class PlayerInfo; // PlayerInfo uses setPlayer and removePlayer
+
         public:
             ControllableEntity(BaseObject* creator);
             virtual ~ControllableEntity();
@@ -49,8 +51,6 @@ namespace orxonox
 
             virtual void changedPlayer() {}
 
-            virtual void setPlayer(PlayerInfo* player);
-            virtual void removePlayer();
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
@@ -130,6 +130,9 @@ namespace orxonox
                 { return this->mouseLookSpeed_; }
 
         protected:
+            virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
+            virtual void removePlayer();                // don't call this directly, use friend class PlayerInfo instead
+
             virtual void startLocalHumanControl();
             virtual void stopLocalHumanControl();
             virtual void parentChanged();

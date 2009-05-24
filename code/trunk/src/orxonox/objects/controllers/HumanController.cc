@@ -158,7 +158,7 @@ namespace orxonox
             if (pawn)
                 pawn->kill();
             else if (HumanController::localController_s->player_)
-                HumanController::localController_s->player_->stopControl(HumanController::localController_s->controllableEntity_);
+                HumanController::localController_s->player_->stopControl();
         }
     }
 

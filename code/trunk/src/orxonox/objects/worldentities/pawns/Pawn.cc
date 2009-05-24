@@ -208,8 +208,8 @@ namespace orxonox
             if (this->getGametype())
                 this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
 
-            if (this->getPlayer())
-                this->getPlayer()->stopControl(this);
+            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
+                this->getPlayer()->stopControl();
 
             if (GameMode::isMaster())
                 this->deatheffect();

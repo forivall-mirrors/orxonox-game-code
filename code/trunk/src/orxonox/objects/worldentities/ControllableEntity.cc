@@ -90,7 +90,7 @@ namespace orxonox
                 this->stopLocalHumanControl();
 
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
-                this->getPlayer()->stopControl(this, false);
+                this->getPlayer()->stopControl();
 
             if (this->hud_)
                 delete this->hud_;

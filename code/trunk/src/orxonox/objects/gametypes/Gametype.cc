@@ -129,7 +129,7 @@ namespace orxonox
             if (it->first->getControllableEntity())
             {
                 ControllableEntity* oldentity = it->first->getControllableEntity();
-        
+
                 ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity->getCreator());
                 if (oldentity->getCamera())
                 {
@@ -142,7 +142,6 @@ namespace orxonox
                     entity->setOrientation(oldentity->getWorldOrientation());
                 }
 
-                it->first->stopControl(oldentity, true);
                 it->first->startControl(entity);
             }
             else
@@ -420,7 +419,7 @@ namespace orxonox
     }
 
     void Gametype::addTime(float t)
-    { 
+    {
         if (this->timeLimit_ == 0)
           this->time_ -= t;
         else
@@ -428,7 +427,7 @@ namespace orxonox
     }
 
     void Gametype::removeTime(float t)
-    { 
+    {
         if (this->timeLimit_ == 0)
           this->time_ += t;
         else
@@ -436,12 +435,12 @@ namespace orxonox
     }
 
     void Gametype::resetTimer()
-    { 
+    {
         this->resetTimer(timeLimit_);
     }
 
     void Gametype::resetTimer(float t)
-    { 
+    {
         this->timeLimit_ = t;
         this->time_ = t;
     }
