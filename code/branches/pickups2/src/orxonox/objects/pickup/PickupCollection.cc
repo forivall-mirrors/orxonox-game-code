@@ -44,6 +44,9 @@
 
 namespace orxonox
 {
+    typedef std::pair<std::multimap<std::string, BaseItem*>::iterator, std::multimap<std::string, BaseItem*>::iterator> item_range;
+    typedef std::pair<std::multimap<ModifierType::Enum, float>::iterator, std::multimap<ModifierType::Enum, float>::iterator> modifier_range;
+
     //! Constructor
     PickupCollection::PickupCollection()
     {
@@ -54,7 +57,7 @@ namespace orxonox
     /**
         @brief
             Add an item to the collection.
-            
+
             Only adds the item if there's a free slot for it.
 
         @param item Item to add to the collection.
@@ -121,7 +124,7 @@ namespace orxonox
         }
         else
         {
-            std::multimap<std::string, BaseItem*>::_Pairii bounds = this->items_.equal_range(item->getPickupIdentifier());
+            item_range bounds = this->items_.equal_range(item->getPickupIdentifier());
             for (std::multimap<std::string, BaseItem*>::iterator it = bounds.first; it != bounds.second && it != this->items_.end(); it++)
             {
                 if ((*it).second == item)
@@ -173,7 +176,7 @@ namespace orxonox
         }
         else
         {
-            std::multimap<std::string, BaseItem*>::_Pairii bounds = this->items_.equal_range(item->getPickupIdentifier());
+            item_range bounds = this->items_.equal_range(item->getPickupIdentifier());
             for (std::multimap<std::string, BaseItem*>::iterator it = bounds.first; it != bounds.second && it != this->items_.end(); it++)
             {
                 if ((*it).second == item)
@@ -192,7 +195,7 @@ namespace orxonox
                 this->currentUsable_ = usables.at(0);
             else
                 this->currentUsable_ = NULL;
-            
+
         }
     }
     /**
@@ -213,7 +216,7 @@ namespace orxonox
     {
         float v = 0.0f;
 
-        std::multimap<ModifierType::Enum, float>::_Pairii range = this->additiveModifiers_.equal_range(type);
+        modifier_range range = this->additiveModifiers_.equal_range(type);
 
         for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
         {
@@ -229,7 +232,7 @@ namespace orxonox
     */
     void PickupCollection::removeAdditiveModifier(ModifierType::Enum type, float value)
     {
-        std::multimap<ModifierType::Enum, float>::_Pairii range = this->additiveModifiers_.equal_range(type);
+        modifier_range range = this->additiveModifiers_.equal_range(type);
         for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
         {
             if ((*it).second == value)
@@ -257,7 +260,7 @@ namespace orxonox
     {
         float v = 1.0f;
 
-        std::multimap<ModifierType::Enum, float>::_Pairii range = this->multiplicativeModifiers_.equal_range(type);
+        modifier_range range = this->multiplicativeModifiers_.equal_range(type);
         for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
         {
             v *= (*it).second;
@@ -272,7 +275,7 @@ namespace orxonox
     */
     void PickupCollection::removeMultiplicativeModifier(ModifierType::Enum type, float value)
     {
-        std::multimap<ModifierType::Enum, float>::_Pairii range = this->multiplicativeModifiers_.equal_range(type);
+        modifier_range range = this->multiplicativeModifiers_.equal_range(type);
         for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
         {
             if ((*it).second == value)
