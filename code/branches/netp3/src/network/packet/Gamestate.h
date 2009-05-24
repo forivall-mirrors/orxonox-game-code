@@ -119,13 +119,13 @@ class _NetworkExport Gamestate: public Packet{
     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
+    bool operator ==(packet::Gamestate gs);
 
     // Packet functions
   private:
     virtual uint32_t getSize() const;
     virtual inline bool process();
 
-    bool operator ==(packet::Gamestate gs);
   private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
     std::vector<obj> dataVector_;
