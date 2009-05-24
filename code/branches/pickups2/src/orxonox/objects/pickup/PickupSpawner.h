@@ -108,6 +108,12 @@ namespace orxonox
 
         float triggerDistance_;                 //!< Distance in which this gets triggered.
 
+        /* Pickup animation */
+        float tickSum_;                         //!< Adds up tick to use in sine movement
+        static const float bounceSpeed_s;       //!< Speed of pickup to bounce up and down
+        static const float bounceDistance_s;    //!< Distance the pickup bounces up and down
+        static const float rotationSpeed_s;     //!< Rotation speed of pickup
+
         float respawnTime_;                     //!< Time after which this gets re-actived.
         Timer<PickupSpawner> respawnTimer_;     //!< Timer used for re-activating.
     };

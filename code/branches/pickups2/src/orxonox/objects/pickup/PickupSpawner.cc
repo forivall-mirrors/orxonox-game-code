@@ -43,6 +43,10 @@
 
 namespace orxonox
 {
+    const float PickupSpawner::bounceSpeed_s = 6.0f;
+    const float PickupSpawner::rotationSpeed_s = 1.0f;
+    const float PickupSpawner::bounceDistance_s = 4.0f;
+
     CreateFactory(PickupSpawner);
 
     /**
@@ -56,6 +60,7 @@ namespace orxonox
         this->itemTemplate_ = 0;
         this->triggerDistance_ = 20;
         this->respawnTime_ = 0.0f;
+        this->tickSum_ = 0.0f;
     }
     //! Deconstructor.
     PickupSpawner::~PickupSpawner()
@@ -107,6 +112,11 @@ namespace orxonox
                 if (distance.length() < this->triggerDistance_)
                     this->trigger(*it);
             }
+            this->yaw(Radian(rotationSpeed_s*dt));
+            this->tickSum_ += bounceSpeed_s*dt;
+            this->translate(Vector3(0,bounceDistance_s*dt*sin(this->tickSum_),0));
+            if (this->tickSum_ > 2*Ogre::Math::PI)
+                this->tickSum_ -= 2*Ogre::Math::PI;
         }
     }
     /**
