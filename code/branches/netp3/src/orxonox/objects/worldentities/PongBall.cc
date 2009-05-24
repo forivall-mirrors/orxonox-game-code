@@ -55,6 +55,11 @@ namespace orxonox
     
     void PongBall::registerVariables()
     {
+        registerVariable( this->fieldWidth_ );
+        registerVariable( this->fieldHeight_ );
+        registerVariable( this->batlength_ );
+        registerVariable( this->speed_ );
+        registerVariable( this->relMercyOffset_ );
         registerVariable( this->batID_[0] );
         registerVariable( this->batID_[1], variableDirection::toclient, new NetworkCallback<PongBall>( this, &PongBall::applyBats) );
     }
