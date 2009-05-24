@@ -39,7 +39,7 @@
 #include "core/BaseObject.h"
 #include "objects/Tickable.h"
 #include "objects/worldentities/StaticEntity.h"
-#include "tools/timer.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {

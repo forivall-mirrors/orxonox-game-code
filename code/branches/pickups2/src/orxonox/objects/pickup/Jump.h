@@ -34,6 +34,8 @@
 #ifndef _Jump_H__
 #define _Jump_H__
 
+#include <climits>
+
 #include "OrxonoxPrereqs.h"
 
 #include "UsableItem.h"
