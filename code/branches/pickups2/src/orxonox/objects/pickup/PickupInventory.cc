@@ -64,8 +64,19 @@ namespace orxonox
     PickupInventory::PickupInventory()
     {
         this->bInventoryVisible_ = false;
-        this->createdEquipmentWindows_ = this->createdUsableWindows_ = 0;
         this->visibleEquipmentWindows_ = this->visibleUsableWIndows_ = 0;
+
+        // Create some windows to avoid creating them while playing
+        CEGUI::WindowManager* winMgr = CEGUI::WindowManager::getSingletonPtr();
+        for(int i = 0; i < 10; i++)
+        {
+            std::ostringstream id;
+            id << i;
+
+            PickupInventory::createItemWindows(winMgr, "equ/" + id.str(), i % 5, i / 5);
+            PickupInventory::createItemWindows(winMgr, "use/" + id.str(), i % 5, i / 5);
+        }
+        this->createdEquipmentWindows_ = this->createdUsableWindows_ = 10;
     }
     PickupInventory::~PickupInventory()
     {
@@ -297,6 +308,7 @@ namespace orxonox
         CEGUI::Window* frame = winMgr->createWindow("TaharezLook/StaticImage", "orxonox/Inventory/Frame/" + id);
         frame->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 5 + y * 90)));
         frame->setSize(CEGUI::UVector2(CEGUI::UDim(0, 65), CEGUI::UDim(0, 65)));
+        frame->setVisible(false);
 
         CEGUI::Window* text = winMgr->createWindow("TaharezLook/StaticText", "orxonox/Inventory/Title/" + id);
         text->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 70 + y * 90)));
@@ -306,11 +318,13 @@ namespace orxonox
         text->setProperty("HorzFormatting", "HorzCentred");
         text->setProperty("VertFormatting", "VertCentred");
         text->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF");
+        text->setVisible(false);
 
         CEGUI::Window* btn = winMgr->createWindow("TaharezLook/Button", "orxonox/Inventory/Items/" + id);
         btn->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 8 + x * 70), CEGUI::UDim(0, 8 + y * 90)));
         btn->setSize(CEGUI::UVector2(CEGUI::UDim(0, 59), CEGUI::UDim(0, 59)));
         btn->subscribeScriptedEvent("Clicked", "itemClicked");
+        btn->setVisible(false);
     }
     void PickupInventory::setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour)
     {
