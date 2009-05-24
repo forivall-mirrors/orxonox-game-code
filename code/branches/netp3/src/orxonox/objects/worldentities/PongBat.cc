@@ -53,8 +53,8 @@ namespace orxonox
     void PongBat::registerVariables()
     {
         registerVariable(this->speed_);
-        registerVariable(this->speed_);
-        registerVariable(this->speed_);
+        registerVariable(this->fieldHeight_);
+        registerVariable(this->length_);
     }
 
     void PongBat::tick(float dt)
