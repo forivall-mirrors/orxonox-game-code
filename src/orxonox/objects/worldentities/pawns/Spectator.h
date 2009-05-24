@@ -45,9 +45,6 @@ namespace orxonox
             void registerVariables();
             virtual void tick(float dt);
 
-            virtual void setPlayer(PlayerInfo* player);
-            virtual void startLocalHumanControl();
-
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);
             virtual void moveUpDown(const Vector2& value);
@@ -58,6 +55,10 @@ namespace orxonox
 
             virtual void fire(WeaponMode::Enum fireMode);
             virtual void greet();
+
+        protected:
+            virtual void setPlayer(PlayerInfo* player);
+            virtual void startLocalHumanControl();
 
         private:
             void changedGreeting();

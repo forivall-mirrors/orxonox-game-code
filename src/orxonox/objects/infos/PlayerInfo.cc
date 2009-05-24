@@ -61,7 +61,7 @@ namespace orxonox
     {
         if (this->BaseObject::isInitialized())
         {
-            this->stopControl(this->controllableEntity_);
+            this->stopControl();
 
             if (this->controller_)
             {
@@ -141,26 +141,20 @@ namespace orxonox
         this->changedController();
     }
 
-    void PlayerInfo::startControl(ControllableEntity* entity, bool callback)
+    void PlayerInfo::startControl(ControllableEntity* entity)
     {
-        if (entity == this->controllableEntity_)
+        if (!entity || entity == this->controllableEntity_)
             return;
 
         if (this->controllableEntity_)
-            this->stopControl(this->controllableEntity_, callback);
+            this->stopControl();
 
         this->controllableEntity_ = entity;
+        this->controllableEntityID_ = entity->getObjectID();
 
-        if (entity)
-        {
-            this->controllableEntityID_ = entity->getObjectID();
-            entity->setPlayer(this);
-            this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
-        }
-        else
-        {
-            this->controllableEntityID_ = OBJECTID_UNKNOWN;
-        }
+        entity->setPlayer(this);
+
+        this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
 
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
@@ -168,21 +162,22 @@ namespace orxonox
         this->changedControllableEntity();
     }
 
-    void PlayerInfo::stopControl(ControllableEntity* entity, bool callback)
+    void PlayerInfo::stopControl()
     {
-        if (entity && this->controllableEntity_ == entity)
-        {
-            this->controllableEntity_ = 0;
-            this->controllableEntityID_ = OBJECTID_UNKNOWN;
+        ControllableEntity* entity = this->controllableEntity_;
 
-            if (this->controller_)
-                this->controller_->setControllableEntity(0);
+        if (!entity)
+            return;
 
-            if (callback)
-                entity->removePlayer();
+        this->controllableEntity_ = 0;
+        this->controllableEntityID_ = OBJECTID_UNKNOWN;
 
-            this->changedControllableEntity();
-        }
+        if (this->controller_)
+            this->controller_->setControllableEntity(0);
+
+        entity->removePlayer();
+
+        this->changedControllableEntity();
     }
 
     void PlayerInfo::networkcallback_changedcontrollableentityID()
@@ -191,12 +186,11 @@ namespace orxonox
         {
             Synchronisable* temp = Synchronisable::getSynchronisable(this->controllableEntityID_);
             ControllableEntity* entity = dynamic_cast<ControllableEntity*>(temp);
-
             this->startControl(entity);
         }
         else
         {
-            this->stopControl(this->controllableEntity_);
+            this->stopControl();
         }
     }
 

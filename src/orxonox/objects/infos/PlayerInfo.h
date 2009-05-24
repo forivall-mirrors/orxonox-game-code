@@ -67,8 +67,8 @@ namespace orxonox
             inline bool isReadyToSpawn() const
                 { return this->bReadyToSpawn_; }
 
-            void startControl(ControllableEntity* entity, bool callback = true);
-            void stopControl(ControllableEntity* entity, bool callback = true);
+            void startControl(ControllableEntity* entity);
+            void stopControl();
 
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
