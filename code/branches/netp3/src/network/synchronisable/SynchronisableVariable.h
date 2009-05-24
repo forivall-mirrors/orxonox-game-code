@@ -80,10 +80,6 @@ namespace orxonox{
       virtual inline uint32_t getSize(uint8_t mode);
       virtual inline void* getReference(){ return (void *)&this->variable_; }
     protected:
-//       inline bool checkEquality(uint8_t* mem);
-//       inline void loadAndIncrease(uint8_t*& mem);
-//       inline void saveAndIncrease(uint8_t*& mem);
-//       inline uint32_t returnSize();
       
       T& variable_;
       uint8_t mode_;
@@ -132,7 +128,6 @@ namespace orxonox{
     }
     else
       return 0;
-//   mem += SynchronisableVariable<T>::getSize();
   }
 
   template <class T> void SynchronisableVariable<T>::putData(uint8_t*& mem, uint8_t mode, bool forceCallback)
@@ -191,7 +186,6 @@ namespace orxonox{
       mem += sizeof(this->varReference_);
   // now write the content
       saveAndIncrease( this->variable_, mem );
-//   mem += SynchronisableVariable<T>::getSize();
       return SynchronisableVariableBidirectional::getSize(mode);
     }
 
@@ -203,6 +197,7 @@ namespace orxonox{
         // check that the client (source of the data) has a recent version of this variable
         if ( *static_cast<uint8_t*>(mem) != this->varReference_ )
         { // wrong reference number, so discard the data
+//           COUT(0) << "discharding data" << endl;
           mem += getSize( mode ); // SynchronisableVariableBidirectional::getSize returns size of variable + reference
           return;
         }
@@ -246,7 +241,6 @@ namespace orxonox{
   // now do a callback if neccessary
       if ( callback )
         NetworkCallbackManager::triggerCallback( this->callback_ );
-        //this->callback_->call();
     }
 
     template <class T> inline uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)
@@ -257,6 +251,5 @@ namespace orxonox{
 
 }
 
-//#include "network/synchronisable/SynchronisableVariableSpecialisations.h"
 
 #endif
