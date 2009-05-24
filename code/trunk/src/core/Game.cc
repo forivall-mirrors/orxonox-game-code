@@ -130,7 +130,7 @@ namespace orxonox
         ModifyConfigValue(levelName_, set, levelName);
     }
 
-    const std::string& Game::getLevel()
+    std::string Game::getLevel()
     {
         std::string levelName;
         CommandLine::getValue("level", &levelName);
