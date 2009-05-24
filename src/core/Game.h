@@ -85,7 +85,7 @@ namespace orxonox
         static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; } //tolua_export
 
         void setLevel(std::string levelName); //tolua_export
-        const std::string& getLevel(); //tolua_export
+        std::string getLevel(); //tolua_export
 
     private:
         struct statisticsTickInfo
