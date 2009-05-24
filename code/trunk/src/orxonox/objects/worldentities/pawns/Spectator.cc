@@ -176,7 +176,7 @@ namespace orxonox
 
     void Spectator::rotateYaw(const Vector2& value)
     {
-        this->yaw_ -= value.y;
+        this->yaw_ += value.y;
 
         ControllableEntity::rotateYaw(value);
     }
