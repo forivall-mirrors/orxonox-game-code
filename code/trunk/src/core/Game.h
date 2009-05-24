@@ -45,14 +45,19 @@
 #define AddGameState(classname, name) \
     static bool MACRO_CONCATENATE(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(name))
 
+// tolua_begin
 namespace orxonox
 {
     /**
     @brief
         Main class responsible for running the game.
     */
-    class _CoreExport Game : public OrxonoxClass
+    class _CoreExport Game
+    // tolua_end
+        : public OrxonoxClass
+    // tolua_begin
     {
+    //tolua_end
     public:
         Game(int argc, char** argv);
         ~Game();
@@ -77,7 +82,10 @@ namespace orxonox
 
         static bool addGameState(GameState* state);
         static void destroyStates();
-        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; } //tolua_export
+
+        void setLevel(std::string levelName); //tolua_export
+        const std::string& getLevel(); //tolua_export
 
     private:
         struct statisticsTickInfo
@@ -113,10 +121,12 @@ namespace orxonox
         // config values
         unsigned int                    statisticsRefreshCycle_;
         unsigned int                    statisticsAvgLength_;
+        std::string                     levelName_;
 
         static std::map<std::string, GameState*> allStates_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
+        // tolua_begin
     };
 }
-
+//tolua_end
 #endif /* _Game_H__ */
