@@ -69,6 +69,11 @@ namespace orxonox
         inline const std::string& getRadarObjectDescription() const
             { return this->radarObjectDescription_; }
 
+        inline void setRadarVisibility(bool b)
+            { this->bVisibility_ = b; }
+        inline bool getRadarVisibility() const
+            { return this->bVisibility_; }
+
         virtual const WorldEntity* getWorldEntity() const = 0;
 
         const Vector3& getRVWorldPosition() const;
@@ -88,7 +93,8 @@ namespace orxonox
                 assert(0);
             }
         }
-
+        
+        bool bVisibility_;
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
         std::string radarObjectDescription_;

@@ -79,7 +79,7 @@ namespace orxonox
             Pawn* victim = dynamic_cast<Pawn*>(otherObject);
             if (victim)
             {
-                victim->damage(this->collisionDamage_ * victim->getVelocity().dotProduct(this->getVelocity()));
+                victim->damage(this->collisionDamage_ * (victim->getVelocity() - this->getVelocity()).length());
             }
         }
 

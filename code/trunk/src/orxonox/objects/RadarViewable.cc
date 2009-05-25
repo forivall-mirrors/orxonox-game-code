@@ -46,6 +46,8 @@ namespace orxonox
         , radarObjectDescription_("staticObject")
     {
         RegisterRootObject(RadarViewable);
+
+        this->bVisibility_ = true;
     }
 
     void RadarViewable::setRadarObjectDescription(const std::string& str)

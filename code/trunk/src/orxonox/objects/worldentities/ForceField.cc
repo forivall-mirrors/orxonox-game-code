@@ -34,55 +34,51 @@
 
 namespace orxonox
 {
-  CreateFactory(ForceField);
+    CreateFactory(ForceField);
 
     ForceField::ForceField(BaseObject* creator) : StaticEntity(creator)
     {
-      RegisterObject(ForceField);
+        RegisterObject(ForceField);
 
-      //Standard Values
-      this->setDirection(Vector3::ZERO);
-      velocity_ = 100;
-      diameter_ = 500;
-      length_ = 2000;
+        //Standard Values
+        this->setDirection(Vector3::ZERO);
+        velocity_ = 100;
+        diameter_ = 500;
+        length_ = 5000;
     }
 
     ForceField::~ForceField() {}
 
     void ForceField::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-      SUPER(ForceField, XMLPort, xmlelement, mode);
-
-      //For correct xml import use: position, direction, velocity, scale
-
-      XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
-      XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
-      XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
+        SUPER(ForceField, XMLPort, xmlelement, mode);
+ 
+        //For correct xml import use: position, direction, velocity, scale
+        XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
+        XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
+        XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
     }
 
     void ForceField::tick(float dt)
     {
-
-      for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
-      {
-
-        //calculate from
-        Vector3 directionVec = this->getOrientation() * WorldEntity::FRONT;
-        directionVec.normalise();
-
-        Vector3 distanceVec = it->getWorldPosition() - (this->getWorldPosition() + (this->length_ / 2 * directionVec));
-
-        //distance from centervector of the field (
-        float distFromCenterVec = ((it->getWorldPosition() - this->getWorldPosition()).crossProduct(directionVec)).length();
-
-        if (distanceVec.length() < this->length_ / 2 && distFromCenterVec < diameter_ / 2)
+        for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
         {
-          //normalize distance from center
-          it->applyCentralForce(((diameter_ / 2 - distFromCenterVec) / (diameter_ / 2)) * directionVec * velocity_);
-        }
+            //calculate from
+            Vector3 directionVec = this->getOrientation() * WorldEntity::FRONT;
+            directionVec.normalise();
 
-      }
-  }
+            Vector3 distanceVec = it->getWorldPosition() - (this->getWorldPosition() + (this->length_ / 2 * directionVec));
+
+            //distance from centervector of the field (
+            float distFromCenterVec = ((it->getWorldPosition() - this->getWorldPosition()).crossProduct(directionVec)).length();
+
+            if (distanceVec.length() < this->length_ / 2 && distFromCenterVec < diameter_ / 2)
+            {
+                //normalize distance from center
+                it->applyCentralForce(((diameter_ / 2 - distFromCenterVec) / (diameter_ / 2)) * directionVec * velocity_);
+            }
+        }
+    }
 }
 
 
