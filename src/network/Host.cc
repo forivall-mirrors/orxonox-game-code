@@ -106,10 +106,10 @@ bool Host::Broadcast(const std::string& message){
   if(!instance_)
   {
     for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-      it->incomingChat(message, playerID);
+      it->incomingChat(message, 0);
   }
-
-  return instance_->broadcast(message);
+  else
+    return instance_->broadcast(message);
 }
 
 bool Host::incomingChat(const std::string& message, unsigned int playerID){
