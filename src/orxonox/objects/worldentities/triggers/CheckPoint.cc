@@ -74,12 +74,10 @@ namespace orxonox
         
         if (this->BaseObject::isActive())
         {
-COUT(0) << "active " << this << std::endl;
             this->setRadarVisibility(true);
         }
         else
         {
-COUT(0) << "inactive " << this << std::endl;
             this->setRadarVisibility(false);
         }
     }
