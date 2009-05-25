@@ -20,23 +20,31 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
  *
  */
 
-#include "AudioSource.h"
+#ifndef _SOUNDMAINMENU_H__
+#define _SOUNDMAINMENU_H__
+
+#include <string>
+
+#include "core/OrxonoxClass.h"
+#include "OrxonoxPrereqs.h"
+#include "SoundBase.h"
 
 namespace orxonox
 {
-    AudioSource::AudioSource()
+    class _OrxonoxExport SoundMainMenu : public SoundBase, public virtual OrxonoxClass
     {
+        public:
+            SoundMainMenu();
+            void setConfigValues();
 
-    }
-
-    AudioSource::~AudioSource()
-    {
-
-    }
+        private:
+            std::string filename_;
+    };
 }
+#endif
