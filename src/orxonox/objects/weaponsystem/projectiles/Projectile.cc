@@ -125,9 +125,13 @@ namespace orxonox
                 }
             }
 
+            float dmg = this->damage_;
+            if (this->owner_)
+                dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
+
             Pawn* victim = dynamic_cast<Pawn*>(otherObject);
             if (victim)
-                victim->damage(this->damage_, this->owner_);
+                victim->damage(dmg, this->owner_);
         }
         return false;
     }

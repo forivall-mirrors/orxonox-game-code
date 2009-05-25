@@ -1,78 +1,108 @@
-/* has to be added to player
-   multimap<std::string, BaseItem*> Equipment;*/
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Daniel 'Huty' Haggenmueller
+ *   Co-authors:
+ *      ...
+ *
+ */
 
+/**
+    @file
+    @brief Implementation of BaseItem (base-class for items/pickups).
+*/
 
-#include "OrxonoxStableHeaders.h"
 #include "BaseItem.h"
+
+#include "PickupCollection.h"
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/String.h"
 #include "objects/worldentities/pawns/Pawn.h"
-
 
 namespace orxonox
 {
-BaseItem::BaseItem(BaseObject* creator) : BaseObject(creator)
-{
-	RegisterObject(BaseItem);
+    /**
+        @brief Constructor. Registers the BaseItem.
+        @param creator Pointer to the object which created this item.
+    */
+    BaseItem::BaseItem(BaseObject* creator) : BaseObject(creator)
+    {
+        RegisterObject(BaseItem);
 
-	this->playerBaseClass_ = 0;
-}
+        this->setOwner(0);
+        this->setPickupIdentifier(this->getName());
+        this->setGUIImage("");
+        this->setGUIText("");
+    }
+    //! Deconstructor.
+    BaseItem::~BaseItem()
+    {
+    }
 
-BaseItem::~BaseItem()
-{
-}
+    /**
+        @brief XMLPort for BaseItem.
+        @param xmlelement Element of the XML-file.
+        @param mode XMLPort mode to use.
+    */
     void BaseItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(BaseItem, XMLPort, xmlelement, mode);
 
-        XMLPortParam(BaseItem, "playerclass", setPlayerBaseClassName, getPlayerBaseClassName, xmlelement, mode);
+        XMLPortParam(BaseItem, "guiText", setGUIText, getGUIText, xmlelement, mode);
+        XMLPortParam(BaseItem, "guiImage", setGUIImage, getGUIImage, xmlelement, mode);
     }
 
-bool BaseItem::addTo (Pawn* player)
-{
+    /**
+        @brief Method to add the item to a pawn.
+        @param pawn Pawn to which the item should get added.
+        @return Returns whether the pawn's PickupCollection accepted the item.
+    */
+    bool BaseItem::addTo(Pawn* pawn)
+    {
+        this->setOwner(pawn);
 
-	return player->getPickUp().insert(this);
-	/*if(checkSlot(player)==true)
-	player->pickUp.Equipment.insert ( std::pair<std::string, BaseItem*>(this->getName(),this) );
-	else
-	COUT(3) << "swap?" << std::endl;*/
-}
-bool BaseItem::remove(Pawn* player)
-{
- 	/*if(player->pickUp.Equipment.find(this->getName())!= player->pickUp.Equipment.end())
- 	{
- 	std::multimap<std::string,BaseItem*>::iterator it;
- 	it=player->pickUp.Equipment.find(this->getName());
-  	player->pickUp.Equipment.erase (it);
-  	return true;
-  	}
-  	else
-  	return false;*/
-  	return player->getPickUp().erase(this);
-}
-bool BaseItem::checkSlot(Pawn* player)
-{
-	/*std::multimap<std::string,BaseItem*>::iterator it;
-	for ( it=player->getPickUp().getEquipment().begin() ; it != player->getPickUp().getEquipment().end(); it++ )
-	{
-	if((*it).second->playerBaseClass_==this->playerBaseClass_)
-		//das isch schmarre...machs mit isExactlyA(...)
-	return false;
-	}
-	return true;*/
-	return player->getPickUp().checkSlot(this);
-}
-void BaseItem::setPlayerBaseClassName(const std::string& name)
-{
-	this->playerBaseClass_ = ClassByString(name);
-}
+        if (pawn->getPickups().add(this))
+        {
+            COUT(3) << "Added '" << this->getPickupIdentifier() << "' item." << std::endl;
+            return true;
+        }
+        return false;
+    }
+    /**
+        @brief Removes the item from a pawn.
+        @param pawn Pawn from which to remove the item.
+        @return Returns whether the pawn's PickupCollection was able to locate and remove the item.
+    */
+    bool BaseItem::removeFrom(Pawn* pawn)
+    {
+        this->setOwner(0);
 
-const std::string& BaseItem::getPlayerBaseClassName() const
-{
-	if (this->playerBaseClass_)
-		return this->playerBaseClass_->getName();
-	else
-		return BLANKSTRING;
-}
+        COUT(3) << "Removing '" << this->getPickupIdentifier() << "' item." << std::endl;
+
+        pawn->getPickups().remove(this, false);
+
+        return true;
+    }
+
+    const std::string& BaseItem::getGUIText() const { return this->guiText_; }
 }

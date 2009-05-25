@@ -33,6 +33,7 @@
 
 #include "util/Math.h"
 #include "Controller.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -55,15 +56,26 @@ namespace orxonox
 
             static void boost();
             static void greet();
-            static void use();
             static void switchCamera();
             static void mouseLook();
             static void dropItems();
+            static void useItem();
 
             static void suicide();
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
+
+            static inline HumanController* getLocalControllerSingleton()
+                { return HumanController::localController_s; }
+            static inline Pawn* getLocalControllerEntityAsPawn()
+            {
+                if (HumanController::localController_s) {
+                    return dynamic_cast<Pawn*>(HumanController::localController_s->getControllableEntity());
+                } else {
+                    return NULL;
+                }
+            }
 
         private:
             static HumanController* localController_s;
