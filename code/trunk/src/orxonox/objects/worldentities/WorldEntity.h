@@ -172,6 +172,11 @@ namespace orxonox
             void attachToNode(Ogre::SceneNode* node);
             void detachFromNode(Ogre::SceneNode* node);
 
+            inline void setDeleteWithParent(bool value)
+                { this->bDeleteWithParent_ = value; }
+            inline bool getDeleteWithParent() const
+                { return this->bDeleteWithParent_; }
+
             void notifyChildPropsChanged();
 
         protected:
@@ -199,6 +204,7 @@ namespace orxonox
             WorldEntity* parent_;
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
+            bool bDeleteWithParent_;
 
 
         /////////////

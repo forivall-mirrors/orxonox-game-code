@@ -5,6 +5,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   MobileEntity.cc
   ControllableEntity.cc
 
+  Attacher.cc
   Backlight.cc
   Billboard.cc
   BlinkingBillboard.cc

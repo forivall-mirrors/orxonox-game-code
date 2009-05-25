@@ -68,6 +68,7 @@ namespace orxonox
 
         this->parent_ = 0;
         this->parentID_ = OBJECTID_UNKNOWN;
+        this->bDeleteWithParent_ = true;
 
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
@@ -107,7 +108,16 @@ namespace orxonox
                 this->detachFromParent();
 
             for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
-                delete (*(it++));
+            {
+                if ((*it)->getDeleteWithParent())
+                    delete (*(it++));
+                else
+                {
+                    this->detach(*it);
+                    (*it)->setPosition(this->getWorldPosition());
+                    ++it;
+                }
+            }
 
             if (this->physicalBody_)
             {
@@ -137,6 +147,7 @@ namespace orxonox
         XMLPortParamLoadOnly(WorldEntity, "yaw",         yaw_xmlport,          xmlelement, mode);
         XMLPortParamLoadOnly(WorldEntity, "pitch",       pitch_xmlport,        xmlelement, mode);
         XMLPortParamLoadOnly(WorldEntity, "roll",        roll_xmlport,         xmlelement, mode);
+        XMLPortParam        (WorldEntity, "deletewithparent", setDeleteWithParent, getDeleteWithParent, xmlelement, mode);
 
         // Physics
         XMLPortParam(WorldEntity, "collisionType",     setCollisionTypeStr,  getCollisionTypeStr,  xmlelement, mode);
