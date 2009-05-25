@@ -154,11 +154,11 @@ namespace orxonox
   */
   void Server::update(const Clock& time) {
     processQueue();
+    gamestates_->processGamestates();
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
     if(timeSinceLastUpdate_>=NETWORK_PERIOD){
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-      gamestates_->processGamestates();
       updateGamestate();
       FunctionCallManager::sendCalls();
     }

@@ -157,23 +157,24 @@ namespace orxonox
         }
         FunctionCallManager::sendCalls();
       }
-      ENetEvent *event;
-    // stop if the packet queue is empty
-      while(!(client_connection.queueEmpty())){
-        event = client_connection.getEvent();
-        COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-        packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
-      // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
-        bool b = packet->process();
-        assert(b);
-      }
-      if(gamestate.processGamestates())
-      {
-        if(!isSynched_)
-          isSynched_=true;
-      }
-      gamestate.cleanup();
     }
+    
+    ENetEvent *event;
+    // stop if the packet queue is empty
+    while(!(client_connection.queueEmpty())){
+      event = client_connection.getEvent();
+      COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
+      packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
+      // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
+      bool b = packet->process();
+      assert(b);
+    }
+    if(gamestate.processGamestates())
+    {
+      if(!isSynched_)
+        isSynched_=true;
+    }
+    gamestate.cleanup();
 
     return;
   }

@@ -36,7 +36,7 @@
 namespace orxonox {
 
   const int CLIENTID_SERVER = 0;
-  const unsigned int NETWORK_FREQUENCY = 25;
+  const unsigned int NETWORK_FREQUENCY = 30;
   const float NETWORK_PERIOD = 1.0f/NETWORK_FREQUENCY;
 
 /**
