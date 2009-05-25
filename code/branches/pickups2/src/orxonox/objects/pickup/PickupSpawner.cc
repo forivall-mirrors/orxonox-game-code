@@ -33,6 +33,8 @@
 
 #include "PickupSpawner.h"
 #include "BaseItem.h"
+#include "PickupInventory.h"    // HACK; Only for hack, remove later
+#include "gui/GUIManager.h"     // HACK; see above
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -78,6 +80,24 @@ namespace orxonox
         XMLPortParam(PickupSpawner, "item", setItemTemplateName, getItemTemplateName, xmlelement, mode);
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
+
+        // HACKs
+        // Load the GUI image as soon as the PickupSpawner gets loaded
+        //  = less delays while running
+        BaseObject* newObject = this->itemTemplate_->getBaseclassIdentifier()->fabricate(this);
+        BaseItem* asItem = dynamic_cast<BaseItem*>(newObject);
+        if (asItem)
+        {
+            asItem->addTemplate(this->itemTemplate_);
+            PickupInventory::getImageForItem(asItem);
+            delete newObject;
+        }
+
+        //  & load the GUI itself too, along with some empty windows
+        //   = even less delays
+        GUIManager::getInstancePtr()->showGUI("PickupInventory");
+        GUIManager::getInstancePtr()->executeCode("hideGUI(\"PickupInventory\")");
+        PickupInventory::getSingleton();
     }
     /**
         @brief Invoked when the activity has changed. Sets visibility of attached objects.

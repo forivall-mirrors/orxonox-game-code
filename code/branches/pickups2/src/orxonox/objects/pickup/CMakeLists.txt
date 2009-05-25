@@ -2,7 +2,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   BaseItem.cc
   DroppedItem.cc
   EquipmentItem.cc
-  Jump.cc
   ModifierPickup.cc
   PassiveItem.cc
   PickupCollection.cc
@@ -10,3 +9,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   PickupSpawner.cc
   UsableItem.cc
 )
+
+ADD_SUBDIRECTORY(items)
