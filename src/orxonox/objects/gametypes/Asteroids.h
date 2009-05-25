@@ -50,13 +50,11 @@ namespace orxonox
               { this->firstCheckpointReached_ = reached; }
 
         protected:
-            virtual void spawnPlayer(PlayerInfo* player);
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 
         private:
             bool firstCheckpointReached_;
             bool gameEnded_;
-            bool firstTimeSpawned_;
-
     };
 }
 
