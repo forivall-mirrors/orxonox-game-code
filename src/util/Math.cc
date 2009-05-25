@@ -128,7 +128,14 @@ namespace orxonox
         orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
 
         float projectionlength = projection.length();
-        if (projectionlength == 0) return orxonox::Vector2(0, 0);
+        if (projectionlength == 0)
+        {
+            if (myposition.dotProduct(otherposition) >= 0)
+                return orxonox::Vector2(0, 0);
+            else
+                return orxonox::Vector2(0, 1);
+        }
+
         float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
 
         if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
@@ -160,7 +167,13 @@ namespace orxonox
         orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
 
         float projectionlength = projection.length();
-        if (projectionlength == 0) return orxonox::Vector2(0, 0);
+        if (projectionlength == 0)
+        {
+            if (myposition.dotProduct(otherposition) >= 0)
+                return orxonox::Vector2(0, 0);
+            else
+                return orxonox::Vector2(0, 1);
+        }
         float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
 
         float distancelength = distance.length();

@@ -129,6 +129,9 @@ namespace orxonox
             inline float getMouseLookSpeed() const
                 { return this->mouseLookSpeed_; }
 
+            inline Controller* getXMLController() const
+                { return this->xmlcontroller_; }
+
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
             virtual void removePlayer();                // don't call this directly, use friend class PlayerInfo instead
@@ -141,6 +144,8 @@ namespace orxonox
                 { this->hudtemplate_ = name; }
 
         private:
+            void setXMLController(Controller* controller);
+
             void overwrite();
             void processOverwrite();
 
@@ -187,6 +192,7 @@ namespace orxonox
             Ogre::SceneNode* cameraPositionRootNode_;
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
+            Controller* xmlcontroller_;
     };
 }
 

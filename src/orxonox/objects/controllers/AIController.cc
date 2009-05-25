@@ -107,9 +107,9 @@ namespace orxonox
             this->aimAtTarget();
 
         if (this->bHasTargetPosition_)
-            this->moveToTargetPosition(dt);
+            this->moveToTargetPosition();
 
-        if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
+        if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
             this->getControllableEntity()->fire(WeaponMode::fire);
 
         SUPER(AIController, tick, dt);
