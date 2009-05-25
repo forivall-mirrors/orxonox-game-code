@@ -323,7 +323,7 @@ namespace orxonox
         CEGUI::Window* btn = winMgr->createWindow("TaharezLook/Button", "orxonox/Inventory/Items/" + id);
         btn->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 8 + x * 70), CEGUI::UDim(0, 8 + y * 90)));
         btn->setSize(CEGUI::UVector2(CEGUI::UDim(0, 59), CEGUI::UDim(0, 59)));
-        btn->subscribeScriptedEvent("Clicked", "itemClicked");
+        btn->subscribeScriptedEvent("Clicked", "PickupInventory.itemClicked");
         btn->setVisible(false);
     }
     void PickupInventory::setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour)
