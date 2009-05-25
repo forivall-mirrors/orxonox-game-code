@@ -43,7 +43,7 @@ namespace orxonox
     UnderAttack::UnderAttack(BaseObject* creator) : TeamDeathmatch(creator)
     {
         RegisterObject(UnderAttack);
-        this->gameTime_ = 90;
+        this->gameTime_ = 180;
         this->teams_ = 2;
         this->destroyer_ = 0;
         this->gameEnded_ = false;
@@ -54,7 +54,7 @@ namespace orxonox
 
     void UnderAttack::setConfigValues()
     {
-        SetConfigValue(gameTime_, 30);
+        SetConfigValue(gameTime_, 180);
     }
 
     void UnderAttack::addDestroyer(Destroyer* destroyer)
