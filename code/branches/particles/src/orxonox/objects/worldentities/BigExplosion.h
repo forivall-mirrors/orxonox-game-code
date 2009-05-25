@@ -30,6 +30,8 @@
 #define _BigExplosion_H__
 
 #include "OrxonoxPrereqs.h"
+#include <string>
+
 
 #include "MovableEntity.h"
 #include "tools/Timer.h"
@@ -59,7 +61,15 @@ namespace orxonox
             void init();
             void initZero();
 
+
             bool                  bStop_;
+            bool                  firstTick_;
+
+            std::string           stf_;
+
+            unsigned int          cps_;
+
+            double                timeFactor_;
 
             StaticEntity*         explosion_;
 
@@ -72,6 +82,8 @@ namespace orxonox
             Model*                debris2_;
             Model*                debris3_;
             Model*                debris4_;
+
+
 
             ParticleInterface*    debrisSmoke1_;
             ParticleInterface*    debrisSmoke2_;

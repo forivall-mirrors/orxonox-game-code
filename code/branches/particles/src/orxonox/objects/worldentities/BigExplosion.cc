@@ -33,10 +33,12 @@
 
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
+#include <sstream>
 
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
+#include "core/CommandExecutor.h"
 #include "objects/Scene.h"
 #include "tools/ParticleInterface.h"
 #include "objects/worldentities/ParticleSpawner.h"
@@ -52,9 +54,20 @@ namespace orxonox
 
         if ( Core::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
             ThrowException(AbortLoading, "Can't create BigExplosion, no scene or no scene manager given.");
-
+/*
+        this->cps_ = 1;
+        this->firstTick_ = true;
+*/
         this->bStop_ = false;
         this->LOD_ = LODParticle::normal;
+
+/*      this->stf_ = "setTimeFactor ";
+        this->timeFactor_ =  1;
+        std::ostringstream o;
+        o << stf_ << this->timeFactor_;
+        CommandExecutor::execute(o.str() ,false);
+        this->timeFactor_ = 0.1;
+*/
 
         if ( Core::showsGraphics() )
         {
@@ -145,22 +158,22 @@ namespace orxonox
         this->debris1_->setMeshSource("CockpitDebris.mesh");
         this->debris2_->setMeshSource("WingDebris1.mesh");
         this->debris3_->setMeshSource("BodyDebris1.mesh");
-        this->debris4_->setMeshSource("WingDebris1.mesh");
+        this->debris4_->setMeshSource("WingDebris2.mesh");
 
         this->debrisEntity1_->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(50,100));
-        this->debrisEntity1_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(1000).valueRadians());
+        this->debrisEntity1_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
         this->debrisEntity1_->setScale(4);
 
         this->debrisEntity2_->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(50,100));
-        this->debrisEntity2_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(1000).valueRadians());
+        this->debrisEntity2_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
         this->debrisEntity2_->setScale(4);
 
         this->debrisEntity3_->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(50,100));
-        this->debrisEntity3_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(1000).valueRadians());
+        this->debrisEntity3_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
         this->debrisEntity3_->setScale(4);
 
         this->debrisEntity4_->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(50,100));
-        this->debrisEntity4_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(1000).valueRadians());
+        this->debrisEntity4_->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
         this->debrisEntity4_->setScale(4);
 
         this->debrisEntity1_->attach(debris1_);
@@ -188,7 +201,7 @@ namespace orxonox
         this->attach(debrisEntity4_);
 
 
-        for(int i=0;i<50;i++)
+        for(int i=0;i<10;i++)
         {
             Identifier* idf1 = Class(Model);
             BaseObject* obj1 = idf1->fabricate(this);
@@ -208,15 +221,16 @@ namespace orxonox
             MovableEntity* partEntity2 = dynamic_cast<MovableEntity*>(obj4);
 
             partEntity1->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10,100));
-            partEntity1->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(1000).valueRadians());
-            partEntity1->setScale(2);
+            partEntity1->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
+            partEntity1->setScale(rnd(1, 3));
 
             partEntity2->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10, 100));
-            partEntity2->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(1000).valueRadians());
-            partEntity2->setScale(2);
+            partEntity2->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
+            partEntity2->setScale(rnd(1, 3));
 
             part1->setMeshSource("SmallPart1.mesh");
             part2->setMeshSource("SmallPart2.mesh");
+
 
             partEntity1->attach(part1);
             partEntity2->attach(part2);
@@ -244,6 +258,8 @@ namespace orxonox
 
     BigExplosion::~BigExplosion()
     {
+        CommandExecutor::execute("setTimeFactor 1", false);
+
         if (this->isInitialized())
         {
             if (this->debrisFire1_)
@@ -361,18 +377,41 @@ namespace orxonox
         delete this;
     }
 
-     void BigExplosion::tick(float dt)
+/* TODO
+
+    void BigExplosion::setDebrisMeshes()
     {
 
+    }
+    void BigExplosion::getDebrisMeshes()
+    {
 
-//        static const unsigned int CHANGES_PER_SECOND = 5;
-//
-//        if (Core::isMaster() && rnd() < dt*CHANGES_PER_SECOND)
-//        {
-//            Vector3 velocity = this->object2_->getVelocity();
-//            velocity /= 1.5;
-//            this->object2_->setVelocity(velocity);
-//        }
+    }
+*/
+
+     void BigExplosion::tick(float dt)
+    {
+//        static const unsigned int CHANGES_PER_SECOND = 10;
+
+
+/*        if (Core::isMaster() && rnd() < dt*(this->cps_))
+        {
+
+            if(this->timeFactor_ < 1 )
+                this->timeFactor_ += 0.05;
+
+            if(this->firstTick_)
+                this->cps_ = 256;
+
+            std::ostringstream o;
+            o << this->stf_ << this->timeFactor_;
+            CommandExecutor::execute(o.str() ,false);
+            if(this->cps_>50)
+                this->cps_/=2;
+            this->firstTick_ = false;
+            COUT(0) << timeFactor_ << std::endl;
+        }
+*/
 
         SUPER(BigExplosion, tick, dt);
     }
