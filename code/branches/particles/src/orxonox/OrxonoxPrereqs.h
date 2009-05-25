@@ -142,6 +142,7 @@ namespace orxonox
     class Model;
     class Billboard;
     class BlinkingBillboard;
+    class BigExplosion;
     class ExplosionChunk;
     class FadingBillboard;
     class GlobalShader;

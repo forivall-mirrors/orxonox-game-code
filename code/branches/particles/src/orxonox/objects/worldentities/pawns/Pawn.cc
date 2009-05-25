@@ -38,6 +38,7 @@
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
+#include "objects/worldentities/BigExplosion.h"
 
 namespace orxonox
 {
@@ -128,8 +129,9 @@ namespace orxonox
         this->fire_ = this->firehack_;
         this->firehack_ = 0x0;
 
-        if (this->health_ <= 0)
+        if (this->health_ <= 0 && bAlive_){
             this->death();
+        }
     }
 
     void Pawn::setPlayer(PlayerInfo* player)
@@ -211,12 +213,21 @@ namespace orxonox
                 this->getPlayer()->stopControl(this);
 
             if (Core::isMaster())
-                this->deatheffect();
+            // this->deathEffect();
+                this->goWithStyle();
         }
         else
             this->setHealth(1);
     }
+    void Pawn::goWithStyle()
+    {
+        this->bAlive_ = false;
+        this->setDestroyWhenPlayerLeft(false);
 
+        BigExplosion* chunk = new BigExplosion(this->getCreator());
+        chunk->setPosition(this->getPosition());
+
+    }
     void Pawn::deatheffect()
     {
         // play death effect

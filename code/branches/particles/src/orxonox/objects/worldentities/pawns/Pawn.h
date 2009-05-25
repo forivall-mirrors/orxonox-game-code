@@ -113,6 +113,7 @@ namespace orxonox
 
         protected:
             virtual void death();
+            virtual void goWithStyle();
             virtual void deatheffect();
             virtual void spawneffect();
 
