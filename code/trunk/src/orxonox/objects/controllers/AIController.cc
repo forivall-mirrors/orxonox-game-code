@@ -110,7 +110,7 @@ namespace orxonox
             this->moveToTargetPosition();
 
         if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
-            this->getControllableEntity()->fire(WeaponMode::fire);
+            this->getControllableEntity()->fire(0);
 
         SUPER(AIController, tick, dt);
     }
