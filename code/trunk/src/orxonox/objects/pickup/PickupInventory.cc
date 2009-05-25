@@ -249,7 +249,7 @@ namespace orxonox
     void PickupInventory::updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target)
     {
         Pawn* pawn;
-        if(pawn = HumanController::getLocalControllerEntityAsPawn())
+        if((pawn = HumanController::getLocalControllerEntityAsPawn()))
         {
             std::deque<EquipmentItem*> items = pawn->getPickups().getEquipmentItems();
             for(unsigned int i = 0; i < items.size(); i++)
@@ -273,7 +273,7 @@ namespace orxonox
     void PickupInventory::updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target)
     {
         Pawn* pawn;
-        if(pawn = HumanController::getLocalControllerEntityAsPawn())
+        if((pawn = HumanController::getLocalControllerEntityAsPawn()))
         {
             std::deque<UsableItem*> items = pawn->getPickups().getUsableItems();
             for(unsigned int i = 0; i < items.size(); i++)

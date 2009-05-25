@@ -213,7 +213,7 @@ namespace orxonox
         // Remove all weapons from their WeaponSlot
         unsigned int i = 0;
         Weapon* weapon = 0;
-        while (weapon = wPack->getWeapon(i++))
+        while ((weapon = wPack->getWeapon(i++)))
             weapon->getWeaponSlot()->removeWeapon();
 
         // Remove all added links from the WeaponSets

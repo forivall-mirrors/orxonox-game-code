@@ -107,6 +107,7 @@ bool Host::Broadcast(const std::string& message){
   {
     for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
       it->incomingChat(message, 0);
+    return true;
   }
   else
     return instance_->broadcast(message);

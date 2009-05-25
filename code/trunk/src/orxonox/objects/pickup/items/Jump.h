@@ -38,7 +38,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "UsableItem.h"
+#include "objects/pickup/UsableItem.h"
 #include "util/Math.h"
 
 namespace orxonox

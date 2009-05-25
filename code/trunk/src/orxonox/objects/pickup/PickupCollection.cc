@@ -89,7 +89,7 @@ namespace orxonox
     */
     bool PickupCollection::checkSlot(BaseItem* item)
     {
-        return (this->items_.count(item->getPickupIdentifier()) < item->getMaxCarryAmount());
+        return ((int)this->items_.count(item->getPickupIdentifier()) < item->getMaxCarryAmount());
     }
     /**
         @brief

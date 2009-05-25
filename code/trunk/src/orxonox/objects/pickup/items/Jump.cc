@@ -32,7 +32,7 @@
 */
 
 #include "Jump.h"
-#include "DroppedItem.h"
+#include "objects/pickup/DroppedItem.h"
 
 #include "objects/worldentities/pawns/Pawn.h"
 
