@@ -195,7 +195,7 @@ namespace orxonox
         ControllableEntity::rotateRoll(value);
     }
 
-    void Spectator::fire(WeaponMode::Enum fireMode)
+    void Spectator::fire(unsigned int firemode)
     {
         if (this->getPlayer())
             this->getPlayer()->setReadyToSpawn(true);
