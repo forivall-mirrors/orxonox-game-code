@@ -23,41 +23,28 @@
  *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
+ *
  */
-#ifndef _SOUNDMANGER_H__
-#define _SOUNDMANGER_H__
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#ifndef _SOUNDMAINMENU_H__
+#define _SOUNDMAINMENU_H__
 
+#include <string>
+
+#include "core/OrxonoxClass.h"
 #include "OrxonoxPrereqs.h"
-#include "orxonox/objects/Tickable.h"
+#include "SoundBase.h"
 
 namespace orxonox
 {
-    /**
-     * The SoundManager class manages the OpenAL device, context and listener
-     * position. It has a list of all SoundBase objects and calls their update
-     * function every tick. It is a singleton.
-     *
-     */
-    class _OrxonoxExport SoundManager : public Tickable 
+    class _OrxonoxExport SoundMainMenu : public SoundBase, public virtual OrxonoxClass
     {
-    public:
-        SoundManager();
-        ~SoundManager();
-        void addSound(SoundBase* sound);
-        void removeSound(SoundBase* sound);
-        virtual void tick(float dt);
-        bool isSoundAvailable();
+        public:
+            SoundMainMenu();
+            void setConfigValues();
 
-    private:
-        static ALCdevice* device_s;
-        ALCcontext* context_;
-        std::list<SoundBase*> soundlist_;
-        bool soundavailable_;
-
-    }; // class SoundManager
-} // namespace orxonox
-
-#endif // _SOUNDMANAGER_H__
+        private:
+            std::string filename_;
+    };
+}
+#endif

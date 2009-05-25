@@ -51,8 +51,8 @@ namespace orxonox
         }
         else
         {
-            COUT(4) << "Sound: OpenAL ALUT version:" << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
-            COUT(4) << "Sound: OpenAL ALUT supported MIME types:" << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
+            COUT(4) << "Sound: OpenAL ALUT version: " << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
+            COUT(4) << "Sound: OpenAL ALUT supported MIME types: " << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
             if(SoundManager::device_s == NULL)
             {
                 COUT(3) << "Sound: OpenAL: Open sound device..." << std::endl;
@@ -76,7 +76,7 @@ namespace orxonox
                 else
                 {
                     if(alcMakeContextCurrent(this->context_) == AL_TRUE)
-                        COUT(3) << "Sound: OpenAL: Context " << this->context_ << "loaded" << std::endl;
+                        COUT(3) << "Sound: OpenAL: Context " << this->context_ << " loaded" << std::endl;
                 }
             }
         }
@@ -123,6 +123,9 @@ namespace orxonox
      */
     void SoundManager::tick(float dt)
     {
+        if (!CameraManager::getInstancePtr())
+            return;
+
         // update listener position
         Camera* camera = CameraManager::getInstance().getActiveCamera();
         if(camera == NULL) return;

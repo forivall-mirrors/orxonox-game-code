@@ -252,7 +252,8 @@ namespace orxonox
 
     //sound
     class SoundBase;
-    class SoundManger;
+    class SoundManager;
+    class SoundMainMenu;
 }
 
 namespace Ogre

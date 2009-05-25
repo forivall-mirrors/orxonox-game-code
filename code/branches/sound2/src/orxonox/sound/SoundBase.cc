@@ -147,17 +147,21 @@ namespace orxonox
             COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
             if(filename.find("ogg", 0) != std::string::npos)
             {
+                COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
                 this->buffer_ = loadOggFile(filename);
             }
 
-            if(this->buffer_ == AL_NONE) 
+            if(this->buffer_ == AL_NONE)
+            {
+                COUT(2) << "Sound: fallback ogg loader failed: " << alutGetErrorString(alutGetError()) << std::endl;
                 return false;
+            }
         }
 
         alGenSources(1, &this->source_);
         alSourcei(this->source_, AL_BUFFER, this->buffer_);
         if(alGetError() != AL_NO_ERROR) {
-            COUT(2) << "Sound: OpenAL: Error loading sample file" << std::endl;
+            COUT(2) << "Sound: OpenAL: Error loading sample file: " << filename << std::endl;
             return false;
         }
         return true;
@@ -171,8 +175,6 @@ namespace orxonox
 
     ALuint SoundBase::loadOggFile(std::string filename)
     {
-        COUT(2) << "Sound: Trying fallback ogg loader";
-
         char inbuffer[4096];
         std::vector<char> outbuffer;
         OggVorbis_File vf;
@@ -206,7 +208,7 @@ namespace orxonox
                 outbuffer.insert(outbuffer.end(), inbuffer, inbuffer + sizeof(inbuffer));
             }
         }
-        
+
         ov_clear(&vf);
 
         return alutCreateBufferFromFileImage(&outbuffer, outbuffer.size());

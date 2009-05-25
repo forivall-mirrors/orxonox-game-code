@@ -31,11 +31,10 @@
 #include <AL/al.h>
 #include <string>
 
+#include "OrxonoxPrereqs.h"
+
 namespace orxonox
 {
-    class SoundManager;
-    class WorldEntity;
-
     /**
      * The SoudBase class is the base class for all sound file loader classes.
      * It server as main interface to the OpenAL library.

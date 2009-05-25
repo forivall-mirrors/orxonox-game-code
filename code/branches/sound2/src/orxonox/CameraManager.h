@@ -55,6 +55,7 @@ namespace orxonox
             void releaseFocus(Camera* camera);
 
             static CameraManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+            static CameraManager* getInstancePtr() { return singletonRef_s; }
 
             void useCamera(Ogre::Camera* camera);
 
