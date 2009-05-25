@@ -106,6 +106,8 @@ namespace orxonox
 
             virtual const Vector3& getDirection() const;
 
+            void loadSound(const std::string filename);
+
         private:
             void networkcallback_shipID();
 
@@ -128,6 +130,8 @@ namespace orxonox
 
             Shader* boostBlur_;
             float blurStrength_;
+
+            SoundBase* sound_;
     };
 }
 

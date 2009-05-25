@@ -20,28 +20,27 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
+ *       Erwin 'vaiursch' Herrsche
  *   Co-authors:
  *      ...
  *
  */
 
-/**
-  @file
-  @brief Various headers used in the audio lib. Avoid including this to
-         increase accuracy of header file dependencies.
-*/
+#include "SoundMainMenu.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 
-#include "AudioPrereqs.h"
+namespace orxonox
+{
+    SoundMainMenu::SoundMainMenu()
+    {
+        RegisterObject(SoundMainMenu);
+        setConfigValues();
+        loadFile(this->filename_);
+    }
 
-#include <iostream>
-#include <vector>
-#include <string>
-
-#include <al.h>
-#include <alc.h>
-#include <AL/alut.h>
-#include <ogg/ogg.h>
-#include <vorbis/codec.h>
-#include <vorbis/vorbisenc.h>
-#include <vorbis/vorbisfile.h>
+    void SoundMainMenu::setConfigValues()
+    {
+        SetConfigValue(filename_, "ambient/mainmenu.wav");
+    }
+}

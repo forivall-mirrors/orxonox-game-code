@@ -54,6 +54,9 @@ namespace orxonox
 
         // console commands
         ConsoleCommand* ccStartGame_;
+
+        // ambient sound for the main menu
+        SoundMainMenu* ambient_;
     };
 }
 

@@ -39,6 +39,7 @@
 #include "gui/GUIManager.h"
 #include "objects/Scene.h"
 #include "GraphicsManager.h"
+#include "sound/SoundMainMenu.h"
 
 namespace orxonox
 {
@@ -78,10 +79,15 @@ namespace orxonox
         }
 
         InputManager::getInstance().requestEnterState("mainMenu");
+
+        this->ambient_ = new SoundMainMenu();
+        this->ambient_->play(true);
     }
 
     void GSMainMenu::deactivate()
     {
+        delete this->ambient_;
+
         InputManager::getInstance().requestLeaveState("mainMenu");
         InputManager::getInstance().requestDestroyState("mainMenu");
 
