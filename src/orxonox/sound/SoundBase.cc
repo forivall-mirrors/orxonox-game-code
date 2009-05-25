@@ -160,6 +160,7 @@ namespace orxonox
 
         alGenSources(1, &this->source_);
         alSourcei(this->source_, AL_BUFFER, this->buffer_);
+//         ALenum
         if(alGetError() != AL_NO_ERROR) {
             COUT(2) << "Sound: OpenAL: Error loading sample file: " << filename << std::endl;
             return false;
@@ -178,8 +179,11 @@ namespace orxonox
         char inbuffer[4096];
         std::vector<char> outbuffer;
         OggVorbis_File vf;
+        vorbis_info* vorbisInfo;
         int eof = false;
         int current_section;
+        ALuint buffer;
+        ALenum format;
 
         FILE* f = fopen(filename.c_str(), "rb");
 
@@ -209,8 +213,16 @@ namespace orxonox
             }
         }
 
+        vorbisInfo = ov_info(&vf, -1);
+        if(vorbisInfo->channels == 1)
+            format = AL_FORMAT_MONO16;
+        else
+            format = AL_FORMAT_STEREO16;
+
+        alGenBuffers(1, &buffer);
+        alBufferData(buffer, format, &outbuffer[0], outbuffer.size(), vorbisInfo->rate);
         ov_clear(&vf);
 
-        return alutCreateBufferFromFileImage(&outbuffer, outbuffer.size());
+        return buffer;
     }
 } // namespace: orxonox
