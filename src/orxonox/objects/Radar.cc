@@ -113,8 +113,9 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
             {
-                if ((*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
-                    (*itListener)->displayObject(*itElement, *itElement == this->focus_);
+                if ((*itElement)->getRadarVisibility())
+                    if ((*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
+                        (*itListener)->displayObject(*itElement, *itElement == this->focus_);
             }
         }
     }

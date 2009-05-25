@@ -47,7 +47,7 @@ namespace orxonox
             virtual void end();
 
             inline void firstCheckpointReached(bool reached)
-              { this->firstCheckpointReached_ = reached; }
+                { this->firstCheckpointReached_ = reached; }
 
         protected:
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);

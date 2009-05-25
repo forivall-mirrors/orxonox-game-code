@@ -37,59 +37,79 @@
 
 namespace orxonox
 {
-  CreateFactory(CheckPoint);
+    CreateFactory(CheckPoint);
 
-  CheckPoint::CheckPoint(BaseObject* creator) : DistanceTrigger(creator)
-  {
-    RegisterObject(CheckPoint);
-
-    this->setStayActive(true);
-    this->setDistance(50);
-    this->bIsFirst_ = false;
-    this->bIsDestination_ = false;
-    //this->setVisible(true);
-
-    this->notifyMaskUpdate();
-  }
-
-  CheckPoint::~CheckPoint()
-  {
-  }
-
-  void CheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-  {
-    SUPER(CheckPoint, XMLPort, xmlelement, mode);
-
-    XMLPortParam(CheckPoint, "isfirst", setFirst, getFirst, xmlelement, mode).defaultValues(false);
-    XMLPortParam(CheckPoint, "isdestination", setDestination, getDestination, xmlelement, mode).defaultValues(false);
-    XMLPortParam(CheckPoint, "addtime", setAddTime, getAddTime, xmlelement, mode).defaultValues(30);
-  }
-
-  void CheckPoint::triggered(bool bIsTriggered)
-  {
-    DistanceTrigger::triggered(bIsTriggered);
-
-    Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
-    if (gametype)
+    CheckPoint::CheckPoint(BaseObject* creator) : DistanceTrigger(creator)
     {
-        gametype->addTime(addTime_);
+        RegisterObject(CheckPoint);
 
-        if (bIsTriggered && bIsFirst_)
+        this->setStayActive(true);
+        this->setDistance(50);
+        this->bIsFirst_ = false;
+        this->bIsDestination_ = false;
+
+        this->setRadarObjectColour(ColourValue::Green);
+        this->setRadarObjectShape(RadarViewable::Dot);
+        this->setRadarVisibility(false);
+
+        this->notifyMaskUpdate();
+    }
+
+    CheckPoint::~CheckPoint()
+    {
+    }
+
+    void CheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(CheckPoint, XMLPort, xmlelement, mode);
+
+        XMLPortParam(CheckPoint, "isfirst", setFirst, getFirst, xmlelement, mode).defaultValues(false);
+        XMLPortParam(CheckPoint, "isdestination", setDestination, getDestination, xmlelement, mode).defaultValues(false);
+        XMLPortParam(CheckPoint, "addtime", setAddTime, getAddTime, xmlelement, mode).defaultValues(30);
+    }
+
+    void CheckPoint::changedActivity()
+    {
+        SUPER(CheckPoint, changedActivity);
+        
+        if (this->BaseObject::isActive())
         {
-            gametype->setTimeLimit(addTime_);
-            gametype->firstCheckpointReached(true);
+COUT(0) << "active " << this << std::endl;
+            this->setRadarVisibility(true);
         }
-
-        if (bIsTriggered && bIsDestination_)
+        else
         {
-            gametype->end();
+COUT(0) << "inactive " << this << std::endl;
+            this->setRadarVisibility(false);
         }
-     }
-  }
+    }
 
-  void CheckPoint::notifyMaskUpdate()
-  {
-      this->targetMask_.exclude(Class(BaseObject));
-      this->targetMask_.include(Class(Pawn));
-  }
+    void CheckPoint::triggered(bool bIsTriggered)
+    {
+        DistanceTrigger::triggered(bIsTriggered);
+
+        Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
+        if (gametype)
+        {
+            gametype->addTime(addTime_);
+            this->setRadarVisibility(false);
+
+            if (bIsTriggered && bIsFirst_)
+            {
+                gametype->setTimeLimit(addTime_);
+                gametype->firstCheckpointReached(true);
+            }
+
+            if (bIsTriggered && bIsDestination_)
+            {
+                gametype->end();
+            }
+        }
+    }
+
+    void CheckPoint::notifyMaskUpdate()
+    {
+        this->targetMask_.exclude(Class(BaseObject));
+        this->targetMask_.include(Class(Pawn));
+    }
 }

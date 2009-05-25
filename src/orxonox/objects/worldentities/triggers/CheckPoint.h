@@ -35,43 +35,48 @@
 #define _CheckPoint_H__
 
 #include "DistanceTrigger.h"
+#include "objects/RadarViewable.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport CheckPoint : public DistanceTrigger
-  {
+    class _OrxonoxExport CheckPoint : public DistanceTrigger, public RadarViewable
+    {
     public:
-      CheckPoint(BaseObject* creator);
-      virtual ~CheckPoint();
+        CheckPoint(BaseObject* creator);
+        virtual ~CheckPoint();
 
-      virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
+        virtual void changedActivity();
 
     private:
-      virtual void triggered(bool bIsTriggered);
-      virtual void notifyMaskUpdate();
+        virtual void triggered(bool bIsTriggered);
+        virtual void notifyMaskUpdate();
 
-      inline void setDestination(bool isDestination)
-        { bIsDestination_ = isDestination; }
+        inline void setDestination(bool isDestination)
+            { bIsDestination_ = isDestination; }
 
-      inline bool getDestination()
-        { return bIsDestination_; }
+        inline const WorldEntity* getWorldEntity() const
+            { return this; }
 
-      inline void setFirst(bool isFirst)
-        { this->bIsFirst_ = isFirst; }
+        inline bool getDestination()
+            { return bIsDestination_; }
 
-      inline bool getFirst()
-        { return this->bIsFirst_; }
+        inline void setFirst(bool isFirst)
+            { this->bIsFirst_ = isFirst; }
 
-      inline void setAddTime(float time)
-        { this->addTime_ = time; }
+        inline bool getFirst()
+            { return this->bIsFirst_; }
 
-      inline bool getAddTime()
-        { return this->addTime_; }
+        inline void setAddTime(float time)
+            { this->addTime_ = time; }
 
-      bool bIsFirst_;
-      bool bIsDestination_;
-      float addTime_;
-  };
+        inline bool getAddTime()
+            { return this->addTime_; }
+
+        bool bIsFirst_;
+        bool bIsDestination_;
+        float addTime_;
+    };
 }
 
 #endif /* _CheckPoint_H__ */
