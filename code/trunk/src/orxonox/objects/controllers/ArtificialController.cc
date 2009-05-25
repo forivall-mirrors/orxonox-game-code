@@ -33,6 +33,9 @@
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/worldentities/pawns/Pawn.h"
 
+#include "objects/gametypes/TeamDeathmatch.h"
+#include "objects/controllers/WaypointPatrolController.h"
+
 namespace orxonox
 {
     ArtificialController::ArtificialController(BaseObject* creator) : Controller(creator)
@@ -49,13 +52,13 @@ namespace orxonox
     {
     }
 
-    void ArtificialController::moveToTargetPosition(float dt)
+    void ArtificialController::moveToPosition(const Vector3& target)
     {
         if (!this->getControllableEntity())
             return;
 
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, this->targetPosition_);
-        float distance = (this->targetPosition_ - this->getControllableEntity()->getPosition()).length();
+        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        float distance = (target - this->getControllableEntity()->getPosition()).length();
 
         if (this->target_ || distance > 10)
         {
@@ -70,10 +73,29 @@ namespace orxonox
             this->getControllableEntity()->moveFrontBack(0.8);
     }
 
+    void ArtificialController::moveToTargetPosition()
+    {
+        this->moveToPosition(this->targetPosition_);
+    }
+
+    void ArtificialController::setTargetPosition(const Vector3& target)
+    {
+        this->targetPosition_ = target;
+        this->bHasTargetPosition_ = true;
+    }
+
     void ArtificialController::searchRandomTargetPosition()
     {
         this->targetPosition_ = Vector3(rnd(-2000,2000), rnd(-2000,2000), rnd(-2000,2000));
         this->bHasTargetPosition_ = true;
+    }
+
+    void ArtificialController::setTarget(Pawn* target)
+    {
+        this->target_ = target;
+
+        if (target)
+            this->targetPosition_ = target->getPosition();
     }
 
     void ArtificialController::searchNewTarget()
@@ -86,7 +108,9 @@ namespace orxonox
 
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-//            if (it->getTeamNr() != this->getTeamNr())
+            if (ArtificialController::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
+                continue;
+
             if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity())
             {
                 float speed = this->getControllableEntity()->getVelocity().length();
@@ -145,5 +169,39 @@ namespace orxonox
             this->forgetTarget();
             this->searchRandomTargetPosition();
         }
+    }
+
+    bool ArtificialController::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
+    {
+        if (entity1 == entity2)
+            return true;
+
+        int team1 = -1;
+        int team2 = -1;
+
+        if (entity1->getXMLController())
+        {
+            WaypointPatrolController* wpc = dynamic_cast<WaypointPatrolController*>(entity1->getXMLController());
+            if (wpc)
+                team1 = wpc->getTeam();
+        }
+        if (entity2->getXMLController())
+        {
+            WaypointPatrolController* wpc = dynamic_cast<WaypointPatrolController*>(entity2->getXMLController());
+            if (wpc)
+                team2 = wpc->getTeam();
+        }
+
+        TeamDeathmatch* tdm = dynamic_cast<TeamDeathmatch*>(gametype);
+        if (tdm)
+        {
+            if (entity1->getPlayer())
+                team1 = tdm->getTeam(entity1->getPlayer());
+
+            if (entity2->getPlayer())
+                team2 = tdm->getTeam(entity2->getPlayer());
+        }
+
+        return (team1 == team2 && team1 != -1);
     }
 }

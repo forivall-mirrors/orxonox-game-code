@@ -39,6 +39,7 @@
 
 #include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
+#include "objects/controllers/Controller.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/worldentities/CameraPosition.h"
 #include "overlays/OverlayGroup.h"
@@ -60,6 +61,7 @@ namespace orxonox
         this->playerID_ = OBJECTID_UNKNOWN;
         this->hud_ = 0;
         this->camera_ = 0;
+        this->xmlcontroller_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
         this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
         this->bMouseLook_ = false;
@@ -92,6 +94,9 @@ namespace orxonox
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
                 this->getPlayer()->stopControl();
 
+            if (this->xmlcontroller_)
+                delete this->xmlcontroller_;
+
             if (this->hud_)
                 delete this->hud_;
 
@@ -114,6 +119,7 @@ namespace orxonox
         XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemkplate, xmlelement, mode);
 
         XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
+        XMLPortObject(ControllableEntity, Controller,     "controller",      setXMLController,  getXMLController,  xmlelement, mode);
     }
 
     void ControllableEntity::setConfigValues()
@@ -301,6 +307,18 @@ namespace orxonox
             delete this->hud_;
             this->hud_ = 0;
         }
+    }
+
+    void ControllableEntity::setXMLController(Controller* controller)
+    {
+        if (!this->xmlcontroller_)
+        {
+            this->xmlcontroller_ = controller;
+            this->bHasLocalController_ = true;
+            this->xmlcontroller_->setControllableEntity(this);
+        }
+        else
+            COUT(2) << "Warning: ControllableEntity \"" << this->getName() << "\" already has a Controller." << std::endl;
     }
 
     void ControllableEntity::parentChanged()

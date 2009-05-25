@@ -46,14 +46,21 @@ namespace orxonox
             virtual void destroyedPawn(Pawn* pawn);
 
         protected:
-            void moveToTargetPosition(float dt);
+            void moveToPosition(const Vector3& target);
+            void moveToTargetPosition();
+
+            void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();
+
+            void setTarget(Pawn* target);
             void searchNewTarget();
             void forgetTarget();
             void aimAtTarget();
 
             bool isCloseAtTarget(float distance) const;
             bool isLookingAtTarget(float angle) const;
+
+            static bool sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype); // hack
 
             bool bHasTargetPosition_;
             Vector3 targetPosition_;

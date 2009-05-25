@@ -195,6 +195,8 @@ namespace orxonox
     class ArtificialController;
     class AIController;
     class ScriptController;
+    class WaypointController;
+    class WaypointPatrolController;
     class PongAI;
 
     class Info;

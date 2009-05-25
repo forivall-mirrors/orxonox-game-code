@@ -163,6 +163,8 @@ namespace orxonox
         {
             if (pawn)
             {
+                pawn->setRadarObjectColour(this->teamcolours_[it_player->second]);
+
                 std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
                 for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
                 {
