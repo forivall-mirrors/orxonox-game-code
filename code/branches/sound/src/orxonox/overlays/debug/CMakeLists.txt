@@ -1,4 +1,0 @@
-ADD_SOURCE_FILES(ORXONOX_SRC_FILES
-  DebugFPSText.cc
-  DebugRTRText.cc
-)
