@@ -36,15 +36,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
 #include "objects/Tickable.h"
 #include "objects/worldentities/StaticEntity.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class BaseItem;
-
     /**
         @brief PickupSpawner.
         @author Daniel 'Huty' Haggenmueller

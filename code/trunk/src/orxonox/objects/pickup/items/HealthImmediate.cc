@@ -37,7 +37,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Core.h"
 
 namespace orxonox
 {

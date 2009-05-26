@@ -42,9 +42,6 @@
 
 namespace orxonox
 {
-    class BaseItem;
-    class Pawn;
-
     class _OrxonoxExport DroppedItem : public StaticEntity, public Tickable
     {
     public:
@@ -65,7 +62,7 @@ namespace orxonox
         inline void setTriggerDistance(float distance)
             { this->triggerDistance_ = distance; }
 
-        inline BaseItem* getItem() const 
+        inline BaseItem* getItem() const
             { return this->item_; }
         inline void setItem(BaseItem* item)
             { this->item_ = item; }

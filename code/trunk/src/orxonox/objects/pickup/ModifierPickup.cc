@@ -36,11 +36,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Core.h"
 
 #include "objects/worldentities/pawns/Pawn.h"
-
-#include "util/Debug.h"
 
 namespace orxonox
 {
@@ -109,7 +106,7 @@ namespace orxonox
                 executor->setDefaultValues(pawn);
                 this->timer_.setTimer(this->duration_, false, this, executor);
             }
-            
+
             return true;
         }
         return false;
@@ -139,7 +136,7 @@ namespace orxonox
             {
                 pawn->getPickups().removeMultiplicativeModifier((*it).first, (*it).second);
             }
-            
+
             if (this->timer_.getRemainingTime() > 0.0f)
                 this->timer_.stopTimer();
 

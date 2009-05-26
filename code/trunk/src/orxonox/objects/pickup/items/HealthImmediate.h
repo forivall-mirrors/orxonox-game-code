@@ -36,12 +36,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "../PassiveItem.h"
+#include "objects/pickup/PassiveItem.h"
 
 namespace orxonox
 {
-    class Pawn;
-
     /**
         @brief Health-item, immediatly recovers health when picked up.
     */

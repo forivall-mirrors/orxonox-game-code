@@ -36,13 +36,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "../UsableItem.h"
+#include "objects/pickup/UsableItem.h"
 #include "util/Math.h"
 
 namespace orxonox
 {
-    class Pawn;
-
     /**
         @brief Health-item, enables player recover health when used.
     */

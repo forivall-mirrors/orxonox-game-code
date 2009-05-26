@@ -40,18 +40,12 @@
 #include <deque>
 #include <string>
 
-#include "util/Math.h"  
+#include "util/Math.h"
 
 #include "ModifierType.h"
 
 namespace orxonox
 {
-    class BaseItem;
-    class EquipmentItem;
-    class PassiveItem;
-    class UsableItem;
-    class Pawn;
-
     /**
         @brief PickupCollection for organising items.
         @author Daniel 'Huty' Haggenmueller
@@ -96,7 +90,7 @@ namespace orxonox
             @brief Get the owner of the PickupCollection.
             @return Returns the pawn which owns the PickupCollection.
         */
-        inline Pawn* getOwner() const 
+        inline Pawn* getOwner() const
             { return this->owner_; }
         /**
             @brief Set the owner of the PickupCollection.
