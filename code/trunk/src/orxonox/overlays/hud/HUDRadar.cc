@@ -63,7 +63,7 @@ namespace orxonox
         this->setMaximumDotSize(0.1f);
 
         this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.tga";
-        this->shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
+        this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.tga";
         this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
 
         this->owner_ = 0;

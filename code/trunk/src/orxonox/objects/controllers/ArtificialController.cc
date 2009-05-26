@@ -35,6 +35,7 @@
 
 #include "objects/gametypes/TeamDeathmatch.h"
 #include "objects/controllers/WaypointPatrolController.h"
+#include "objects/worldentities/pawns/TeamBaseMatchBase.h"
 
 namespace orxonox
 {
@@ -200,6 +201,40 @@ namespace orxonox
 
             if (entity2->getPlayer())
                 team2 = tdm->getTeam(entity2->getPlayer());
+        }
+
+        TeamBaseMatchBase* base = 0;
+        base = dynamic_cast<TeamBaseMatchBase*>(entity1);
+        if (base)
+        {
+            switch (base->getState())
+            {
+                case BaseState::controlTeam1:
+                    team1 = 0;
+                    break;
+                case BaseState::controlTeam2:
+                    team1 = 1;
+                    break;
+                case BaseState::uncontrolled:
+                default:
+                    team1 = -1;
+            }
+        }
+        base = dynamic_cast<TeamBaseMatchBase*>(entity2);
+        if (base)
+        {
+            switch (base->getState())
+            {
+                case BaseState::controlTeam1:
+                    team2 = 0;
+                    break;
+                case BaseState::controlTeam2:
+                    team2 = 1;
+                    break;
+                case BaseState::uncontrolled:
+                default:
+                    team2 = -1;
+            }
         }
 
         return (team1 == team2 && team1 != -1);
