@@ -184,7 +184,17 @@ namespace orxonox
             this->core_->update(*this->gameClock_);
             for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin();
                 it != this->activeStates_.end(); ++it)
+            {
+                // Add tick time for most of the states
+                uint64_t timeBeforeTick;
+                if ((*it)->getCountTickTime())
+                    timeBeforeTick = this->gameClock_->getRealMicroseconds();
+                
                 (*it)->update(*this->gameClock_);
+
+                if ((*it)->getCountTickTime())
+                    this->addTickTime(this->gameClock_->getRealMicroseconds() - timeBeforeTick);
+            }
 
             // STATISTICS
             if (this->periodTime_ > statisticsRefreshCycle_)

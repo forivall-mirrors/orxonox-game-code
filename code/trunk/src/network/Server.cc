@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -60,6 +60,9 @@
 #include "packet/DeleteObjects.h"
 #include "util/Convert.h"
 #include "ChatListener.h"
+#include "FunctionCallManager.h"
+#include "packet/FunctionIDs.h"
+
 
 namespace orxonox
 {
@@ -151,12 +154,13 @@ namespace orxonox
   */
   void Server::update(const Clock& time) {
     processQueue();
+    gamestates_->processGamestates();
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
     if(timeSinceLastUpdate_>=NETWORK_PERIOD){
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-      gamestates_->processGamestates();
       updateGamestate();
+      FunctionCallManager::sendCalls();
     }
   }
 
@@ -340,13 +344,22 @@ namespace orxonox
       COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
       return false;
     }
-    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    COUT(5) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    
+    // synchronise class ids
     connection->syncClassid(temp->getID());
+    
+    // now synchronise functionIDs
+    packet::FunctionIDs *fIDs = new packet::FunctionIDs();
+    fIDs->setClientID(clientID);
+    bool b = fIDs->send();
+    assert(b);
+    
     temp->setSynched(true);
-    COUT(3) << "sending welcome" << std::endl;
+    COUT(4) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
-    bool b = w->send();
+    b = w->send();
     assert(b);
     packet::Gamestate *g = new packet::Gamestate();
     g->setClientID(temp->getID());

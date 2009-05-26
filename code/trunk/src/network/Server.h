@@ -20,23 +20,11 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
  */
-
-//
-// C++ Interface: Server
-//
-// Description:
-//
-//
-// Author:  Oliver Scheuss, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 
 #ifndef _Server_H__
 #define _Server_H__
@@ -50,9 +38,6 @@
 
 namespace orxonox
 {
-  const int CLIENTID_SERVER = 0;
-  const unsigned int NETWORK_FREQUENCY = 25;
-  const float NETWORK_PERIOD = 1.f/NETWORK_FREQUENCY;
 
   /**
   * This class is the root class of the network module for a server.

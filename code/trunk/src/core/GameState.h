@@ -77,12 +77,14 @@ namespace orxonox
         };
 
     public:
-        GameState(const std::string& name);
+        GameState(const std::string& name, bool countTicktime = true);
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
-        State getActivity() const    { return this->activity_; }
-        GameState* getParent() const       { return this->parent_; }
+        State getActivity()          const { return this->activity_; }
+        GameState* getParent()       const { return this->parent_; }
+
+        bool getCountTickTime()      const { return this->bCountTickTime_; }
 
         void addChild(GameState* state);
         void removeChild(GameState* state);
@@ -101,6 +103,7 @@ namespace orxonox
 
         const std::string                        name_;
         State                                    activity_;
+        const bool                               bCountTickTime_;
         GameState*                               parent_;
         std::map<std::string, GameState*>        children_;
     };

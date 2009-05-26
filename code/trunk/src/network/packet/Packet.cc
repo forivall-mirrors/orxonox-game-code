@@ -38,11 +38,13 @@
 #include "network/ClientInformation.h"
 
 #include "Acknowledgement.h"
+#include "DeleteObjects.h"
 #include "Chat.h"
 #include "ClassID.h"
+#include "FunctionCalls.h"
+#include "FunctionIDs.h"
 #include "Gamestate.h"
 #include "Welcome.h"
-#include "DeleteObjects.h"
 #include "network/Host.h"
 #include "core/CoreIncludes.h"
 
@@ -152,6 +154,8 @@ bool Packet::send(){
     case ENUM::Gamestate:
     case ENUM::Welcome:
     case ENUM::DeleteObjects:
+    case ENUM::FunctionIDs:
+    case ENUM::FunctionCalls:
       break;
     default:
       assert(0); //there was some error, if this is the case
@@ -169,33 +173,41 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   assert(ClientInformation::findClient(&peer->address)->getID() != (unsigned int)-2 || !Host::isServer());
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p = 0;
-  COUT(5) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
+  COUT(6) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
   switch( *(ENUM::Type *)(data + _PACKETID) )
   {
     case ENUM::Acknowledgement:
-      COUT(4) << "ack" << std::endl;
+      COUT(5) << "ack" << std::endl;
       p = new Acknowledgement( data, clientID );
       break;
     case ENUM::Chat:
-      COUT(4) << "chat" << std::endl;
+      COUT(5) << "chat" << std::endl;
       p = new Chat( data, clientID );
       break;
     case ENUM::ClassID:
-      COUT(4) << "classid" << std::endl;
+      COUT(5) << "classid" << std::endl;
       p = new ClassID( data, clientID );
       break;
     case ENUM::Gamestate:
-      COUT(4) << "gamestate" << std::endl;
+      COUT(5) << "gamestate" << std::endl;
       // TODO: remove brackets
       p = new Gamestate( data, clientID );
       break;
     case ENUM::Welcome:
-      COUT(4) << "welcome" << std::endl;
+      COUT(5) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
       break;
     case ENUM::DeleteObjects:
-      COUT(4) << "deleteobjects" << std::endl;
+      COUT(5) << "deleteobjects" << std::endl;
       p = new DeleteObjects( data, clientID );
+      break;
+    case ENUM::FunctionCalls:
+      COUT(5) << "functionCalls" << std::endl;
+      p = new FunctionCalls( data, clientID );
+      break;
+    case ENUM::FunctionIDs:
+      COUT(5) << "functionIDs" << std::endl;
+      p = new FunctionIDs( data, clientID );
       break;
     default:
       assert(0); //TODO: repair this

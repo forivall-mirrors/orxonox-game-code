@@ -42,8 +42,13 @@
 #include <vector>
 #include "OrxonoxClass.h"
 
-#define AddGameState(classname, name) \
-    static bool MACRO_CONCATENATE(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(name))
+/**
+@def
+    Adds a new GameState to the Game. The second parameter is the name as string
+    and every following paramter is a constructor argument (which is usually non existent)
+*/
+#define AddGameState(classname, ...) \
+    static bool MACRO_CONCATENATE(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(__VA_ARGS__))
 
 // tolua_begin
 namespace orxonox

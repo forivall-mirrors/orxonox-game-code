@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -87,6 +87,7 @@ namespace orxonox
     bool isSynched_;
 
     bool gameStateFailure_;
+    float timeSinceLastUpdate_;
   };
 
 

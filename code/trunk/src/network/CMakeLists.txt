@@ -24,13 +24,15 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   ClientInformation.cc
   ClientConnectionListener.cc
   ConnectionManager.cc
+  FunctionCallManager.cc
   GamestateManager.cc
   GamestateClient.cc
   GamestateHandler.cc
+  NetworkFunction.cc
+  Host.cc
   PacketBuffer.cc
   Server.cc
   TrafficControl.cc
-  Host.cc
 )
 ADD_SUBDIRECTORY(packet)
 ADD_SUBDIRECTORY(synchronisable)

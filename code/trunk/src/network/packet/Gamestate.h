@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2008
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -36,7 +36,7 @@
 #include "network/TrafficControl.h"
 #include <string.h>
 #include <map>
-#include <list>
+#include <vector>
 #include <cassert>
 #ifndef NDEBUG
 #include "util/CRC32.h"
@@ -119,16 +119,16 @@ class _NetworkExport Gamestate: public Packet{
     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
+    bool operator ==(packet::Gamestate gs);
 
     // Packet functions
   private:
     virtual uint32_t getSize() const;
     virtual inline bool process();
 
-    bool operator ==(packet::Gamestate gs);
   private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
-    std::list<obj> dataMap_;
+    std::list<obj> dataVector_;
     GamestateHeader* header_;
 };
 

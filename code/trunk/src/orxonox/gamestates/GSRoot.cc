@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    AddGameState(GSRoot, "root");
+    AddGameState(GSRoot, "root", false);
     SetCommandLineSwitch(console);
     // Shortcuts for easy direct loading
     SetCommandLineSwitch(server);
@@ -50,8 +50,8 @@ namespace orxonox
     SetCommandLineSwitch(dedicated);
     SetCommandLineSwitch(standalone);
 
-    GSRoot::GSRoot(const std::string& name)
-        : GameState(name)
+    GSRoot::GSRoot(const std::string& name, bool countTickTime)
+        : GameState(name, countTickTime)
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)

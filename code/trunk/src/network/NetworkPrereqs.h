@@ -89,12 +89,18 @@ namespace orxonox
   class ClientFrameListener;
   class ClientInformation;
   class ConnectionManager;
+  class FunctionCallManager;
   class GamestateClient;
   class GamestateManager;
   class GamestateHandler;
   class NetworkCallbackBase;
   template <class T> class NetworkCallback;
   class NetworkCallbackManager;
+  class NetworkFunctionBase;
+  class NetworkFunctionStatic;
+  class NetworkMemberFunctionBase;
+  template <class T> class NetworkMemeberFunction;
+  struct NetworkFunctionPointer;
   class PacketBuffer;
   class Server;
   class ServerFrameListener;
@@ -111,12 +117,15 @@ namespace orxonox
 
   namespace packet
   {
-    class Gamestate;
-    class Packet;
     class Acknowledgement;
-    class ClassID;
-    class Welcome;
     class Chat;
+    class ClassID;
+    class FunctionCalls;
+    class FunctionIDs;
+    class Gamestate;
+    class NetworkIDs;
+    class Packet;
+    class Welcome;
   }
 }
 

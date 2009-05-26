@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -47,6 +47,7 @@
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "packet/Packet.h"
+#include "FunctionCallManager.h"
 
 // #include "packet/Acknowledgement.h"
 
@@ -139,17 +140,25 @@ namespace orxonox
    * @param time
    */
   void Client::update(const Clock& time){
-//     COUT(3) << ".";
-    if(client_connection.isConnected() && isSynched_){
-      COUT(4) << "popping partial gamestate: " << std::endl;
-      packet::Gamestate *gs = gamestate.getGamestate();
-      if(gs){
-        COUT(4) << "client tick: sending gs " << gs << std::endl;
-        if( !gs->send() )
-          COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
+    //this steers our network frequency
+    timeSinceLastUpdate_+=time.getDeltaTime();
+    if(timeSinceLastUpdate_>=NETWORK_PERIOD){
+      timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
+      //     COUT(3) << ".";
+      if(client_connection.isConnected() && isSynched_){
+        COUT(4) << "popping partial gamestate: " << std::endl;
+        packet::Gamestate *gs = gamestate.getGamestate();
+        //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
+        if(gs){
+          COUT(4) << "client tick: sending gs " << gs << std::endl;
+          if( !gs->send() )
+            COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // gs gets automatically deleted by enet callback
+        }
+        FunctionCallManager::sendCalls();
       }
     }
+    
     ENetEvent *event;
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
@@ -166,6 +175,7 @@ namespace orxonox
         isSynched_=true;
     }
     gamestate.cleanup();
+
     return;
   }
 

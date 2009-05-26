@@ -78,6 +78,7 @@ namespace orxonox
 
             virtual void fire(unsigned int firemode);
             virtual void reload();
+            virtual void doFire(uint8_t firemode);
             virtual void postSpawn();
 
             void addWeaponSlot(WeaponSlot * wSlot);
