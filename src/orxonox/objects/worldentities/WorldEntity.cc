@@ -113,9 +113,8 @@ namespace orxonox
                     delete (*(it++));
                 else
                 {
-                    this->detach(*it);
                     (*it)->setPosition(this->getWorldPosition());
-                    ++it;
+                    this->detach(*(it++));
                 }
             }
 
