@@ -128,7 +128,7 @@ class _NetworkExport Gamestate: public Packet{
 
   private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
-    std::vector<obj> dataVector_;
+    std::list<obj> dataVector_;
     GamestateHeader* header_;
 };
 

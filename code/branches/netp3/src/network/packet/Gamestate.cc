@@ -181,7 +181,7 @@ bool Gamestate::spreadData(uint8_t mode)
    // In debug mode, check first, whether there are no duplicate objectIDs
 #ifndef NDEBUG
   if(this->getID()%1000==0){
-    std::vector<uint32_t> v1;
+    std::list<uint32_t> v1;
     ObjectList<Synchronisable>::iterator it;
     for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
       if (it->getObjectID() == OBJECTID_UNKNOWN) {
@@ -193,7 +193,7 @@ bool Gamestate::spreadData(uint8_t mode)
         }
       }
       else {
-        std::vector<uint32_t>::iterator it2;
+        std::list<uint32_t>::iterator it2;
         for (it2 = v1.begin(); it2 != v1.end(); ++it2) {
           if (it->getObjectID() == *it2) {
             COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
@@ -411,7 +411,7 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
 Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
   assert(data_);
-  std::vector<obj>::iterator it;
+  std::list<obj>::iterator it;
 
   // allocate memory for new data
   uint8_t *gdata = new uint8_t[header_->getDataSize()+GamestateHeader::getSize()];
@@ -433,6 +433,11 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   TrafficControl::getInstance()->processObjectList( clientID, header_->getID(), dataVector_ );
 
   //copy in the zeros
+//   std::list<obj>::iterator itt;
+//   COUT(0) << "myvector contains:";
+//   for ( itt=dataVector_.begin() ; itt!=dataVector_.end(); itt++ )
+//     COUT(0) << " " << (*itt).objID;
+//   COUT(0) << endl;
   for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);

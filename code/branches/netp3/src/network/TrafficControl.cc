@@ -120,7 +120,7 @@ namespace orxonox {
 
 
 
-	void TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj>& list)
+	void TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>& list)
 	{
 	  currentClientID=clientID;
 	  currentGamestateID=gamestateID;
@@ -136,7 +136,7 @@ namespace orxonox {
 
 	void TrafficControl::ack(unsigned int clientID, unsigned int gamestateID)
 	{
-	  std::vector<obj>::iterator itvec;  // iterator to iterate through the acked objects
+	  std::list<obj>::iterator itvec;  // iterator to iterate through the acked objects
 
     //assertions to make sure the maps already exist
     assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
@@ -145,7 +145,7 @@ namespace orxonox {
     
     // shortcut for maps
     std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
-    std::map<unsigned int, std::vector<obj> >& objectListTemp = clientListTemp_[clientID];
+    std::map<unsigned int, std::list<obj> >& objectListTemp = clientListTemp_[clientID];
 
     for(itvec = objectListTemp[gamestateID].begin(); itvec != objectListTemp[gamestateID].end(); itvec++)
 	  {
@@ -186,19 +186,19 @@ namespace orxonox {
   * updateClientListTemp
   * takes the shortened list which will be sent to the gsmanager and puts the *info into clientListTemp
   */
-  void TrafficControl::updateClientListTemp(std::vector<obj>& list)
+  void TrafficControl::updateClientListTemp(std::list<obj>& list)
   {
-    clientListTemp_[currentClientID][currentGamestateID] = std::vector<obj>(list);
+    clientListTemp_[currentClientID][currentGamestateID] = std::list<obj>(list);
   }
 
   /**
   *cut
   *takes the current list that has to be returned to the gsmanager and shortens it in criteria of bandwidth of clientID(XY)
   */
-  void TrafficControl::cut(std::vector<obj>& list, unsigned int targetsize)
+  void TrafficControl::cut(std::list<obj>& list, unsigned int targetsize)
   {
     unsigned int size=0;
-    std::vector<obj>::iterator itvec, ittemp;
+    std::list<obj>::iterator itvec, ittemp;
     assert(!list.empty());
     for(itvec = list.begin(); itvec != list.end();)
     {
@@ -211,7 +211,8 @@ namespace orxonox {
       else
       {
         clientListPerm_[currentClientID][(*itvec).objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
-        list.erase(itvec++);
+        list.erase(itvec, list.end());
+        break;
       }
 //       printList(list, currentClientID);
     }
@@ -222,14 +223,14 @@ namespace orxonox {
 	/**
 	*evaluateList evaluates whether new obj are there, whether there are things to be updatet and manipulates all this.
 	*/
-	void TrafficControl::evaluateList(unsigned int clientID, std::vector<obj>& list)
+	void TrafficControl::evaluateList(unsigned int clientID, std::list<obj>& list)
 	{
 
 	  //now the sorting
 
 	  //compare listToProcess vs clientListPerm
     //if listToProcess contains new Objects, add them to clientListPerm
-    std::vector<obj>::iterator itvec;
+    std::list<obj>::iterator itvec;
     
     std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
     
@@ -255,11 +256,13 @@ namespace orxonox {
     {
       //sort copied list according to priorities
       // use boost bind here because we need to pass a memberfunction to stl sort
-      sort( list.begin(), list.end(), boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
+//       sort( list.begin(), list.end(), boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
+      list.sort( boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
+      
 //       list.sort(boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
 
       //now we check, that the creator of an object always exists on a client
-      std::vector<obj>::iterator itcreator;
+      std::list<obj>::iterator itcreator;
       for(itvec = list.begin(); itvec != list.end(); itvec++)
       {
         fixCreatorDependencies(itvec, list, clientID);
@@ -268,30 +271,30 @@ namespace orxonox {
       //now the cutting, work the same obj out in processobjectlist and copiedlist, compression rate muss noch festgelegt werden.
 //       printList(list, clientID);
       cut(list, targetSize);
-
       //now sort again after objDataOffset
-      sort(list.begin(), list.end(), boost::bind(&TrafficControl::dataSort, this, _1, _2) );
+//       sort(list.begin(), list.end(), boost::bind(&TrafficControl::dataSort, this, _1, _2) );
+      list.sort( boost::bind(&TrafficControl::dataSort, this, _1, _2) );
     }
     //diese Funktion updateClientList muss noch gemacht werden
     updateClientListTemp(list);
     //end of sorting
   }
 
-  void TrafficControl::printList(std::vector<obj>& list, unsigned int clientID)
+  void TrafficControl::printList(std::list<obj>& list, unsigned int clientID)
   {
-    std::vector<obj>::iterator it;
+    std::list<obj>::iterator it;
     COUT(0) << "=========== Objectlist ===========" << endl;
     for( it=list.begin(); it!=list.end(); it++)
       COUT(0) << "ObjectID: " << (*it).objID << " creatorID: " << (*it).objCreatorID << " Priority: " << clientListPerm_[clientID][(*it).objID].objValuePerm + clientListPerm_[clientID][(*it).objID].objValueSched << " size: " << (*it).objSize << endl;
   }
 
-  void TrafficControl::fixCreatorDependencies(std::vector<obj>::iterator it1, std::vector<obj>& list, unsigned int clientID)
+  void TrafficControl::fixCreatorDependencies(std::list<obj>::iterator it1, std::list<obj>& list, unsigned int clientID)
   {
     if ( (*it1).objCreatorID == OBJECTID_UNKNOWN )
       return;
     if( clientListPerm_[clientID][(*it1).objCreatorID].objCurGS != GAMESTATEID_INITIAL )
       return;
-    std::vector<obj>::iterator it2, it3=it1;
+    std::list<obj>::iterator it2, it3=it1;
     for( it2 = ++it3; it2 != list.end(); it2++ )
     {
       if( (*it2).objID == (*it1).objCreatorID )

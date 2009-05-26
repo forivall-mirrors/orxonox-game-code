@@ -31,7 +31,7 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
-#include <vector>
+#include <list>
 #include <map>
 #include <utility>
 #include <algorithm>
@@ -90,7 +90,7 @@ class TrafficControl : public ClientConnectionListener {
     /**
     *temporary client list: contains client ids, gamestate ids and object ids (in this order)
     */
-    std::map<unsigned int, std::map<unsigned int, std::vector<obj> > > clientListTemp_;
+    std::map<unsigned int, std::map<unsigned int, std::list<obj> > > clientListTemp_;
 
     /**updateReferenceList
     *currentGamestateID and currentClientID will be defined as soon as TrafficControl is being called by Server
@@ -102,12 +102,12 @@ class TrafficControl : public ClientConnectionListener {
     
     void insertinClientListPerm(unsigned int clientID, obj objinf);
     
-    void cut(std::vector<obj>& list, unsigned int targetsize);
-    void updateClientListTemp(std::vector<obj>& list);//done
+    void cut(std::list<obj>& list, unsigned int targetsize);
+    void updateClientListTemp(std::list<obj>& list);//done
     /**
     *evaluates Data given (list) and produces result(->Data to be updated)
     */
-    void evaluateList(unsigned int clientID, std::vector<obj>& list);//done    
+    void evaluateList(unsigned int clientID, std::list<obj>& list);//done    
     void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
     
     //ClientConnectionListener functions
@@ -129,15 +129,15 @@ class TrafficControl : public ClientConnectionListener {
     */
     void setConfigValues();
     static TrafficControl *getInstance();
-    void processObjectList(unsigned int clientID, unsigned int gamestateID, std::vector<obj>& list); //gets a pointer to the list (containing objectIDs) and sorts it
+    void processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>& list); //gets a pointer to the list (containing objectIDs) and sorts it
     static void processAck(unsigned int clientID, unsigned int gamestateID)
     { return instance_->ack(clientID, gamestateID); }
     void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
     
     bool prioritySort(uint32_t clientID, obj i, obj j);
     bool dataSort(obj i, obj j);
-    void printList(std::vector<obj>& list, unsigned int clientID);
-    void fixCreatorDependencies(std::vector<obj>::iterator it, std::vector<obj>& list, unsigned int clientID);
+    void printList(std::list<obj>& list, unsigned int clientID);
+    void fixCreatorDependencies(std::list<obj>::iterator it, std::list<obj>& list, unsigned int clientID);
 };
 
 }
