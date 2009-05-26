@@ -146,13 +146,10 @@ namespace orxonox
 
     class _OrxonoxExport PawnListener : virtual public OrxonoxClass
     {
-        friend class Pawn;
-
         public:
             PawnListener();
             virtual ~PawnListener() {}
 
-        protected:
             virtual void destroyedPawn(Pawn* pawn) = 0;
     };
 }

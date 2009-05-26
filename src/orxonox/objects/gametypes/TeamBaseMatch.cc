@@ -40,7 +40,7 @@ namespace orxonox
         RegisterObject(TeamBaseMatch);
 
         this->scoreTimer_.setTimer(10, true, this, createExecutor(createFunctor(&TeamBaseMatch::winPoints)));
-        this->outputTimer_.setTimer(30, true, this, createExecutor(createFunctor(&TeamBaseMatch::showPoints)));
+        this->outputTimer_.setTimer(10, true, this, createExecutor(createFunctor(&TeamBaseMatch::showPoints)));
 
         this->pointsTeam1_ = 0;
         this->pointsTeam2_ = 0;
@@ -78,9 +78,9 @@ namespace orxonox
         {
             std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(base);
             if (it != this->bases_.end())
-                return (!this->pawnsAreInTheSameTeam(victim, base));
+                return (!this->pawnsAreInTheSameTeam(originator, base));
         }
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return TeamDeathmatch::allowPawnDamage(victim, originator);
     }
 
     bool TeamBaseMatch::pawnsAreInTheSameTeam(Pawn* pawn1, TeamBaseMatchBase* base)
@@ -89,7 +89,7 @@ namespace orxonox
         {
             std::map<PlayerInfo*, int>::const_iterator it1 = this->teamnumbers_.find(pawn1->getPlayer());
             int teamnrbase = -1;
-            int teamnrplayer = getTeam(pawn1->getPlayer());
+            int teamnrplayer = this->getTeam(pawn1->getPlayer());
 
             switch (base->getState())
             {
@@ -105,9 +105,9 @@ namespace orxonox
             }
 
             if (teamnrbase == teamnrplayer)
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
 
@@ -125,8 +125,8 @@ namespace orxonox
     void TeamBaseMatch::showPoints()
     {
         COUT(0) << "Points standing:" << std::endl << "Team 1: "<< pointsTeam1_ << std::endl << "Team 2: " << pointsTeam2_ << std::endl;
-        if(pointsTeam1_ >=1700) COUT(0) << "Team 1 is near victory!" << std::endl;
-        if(pointsTeam2_ >=1700) COUT(0) << "Team 2 is near victory!" << std::endl;
+        if(pointsTeam1_ >=1700 && pointsTeam1_ < 2000) COUT(0) << "Team 1 is near victory!" << std::endl;
+        if(pointsTeam2_ >=1700 && pointsTeam2_ < 2000) COUT(0) << "Team 2 is near victory!" << std::endl;
     }
 
 
@@ -156,9 +156,16 @@ namespace orxonox
     // end game if one team reaches 2000 points
     void TeamBaseMatch::endGame()
     {
-        if(this->pointsTeam1_>=2000 || this->pointsTeam2_ >=2000)
+        if (this->pointsTeam1_ >= 2000 || this->pointsTeam2_ >= 2000)
         {
+            if (this->pointsTeam1_ > this->pointsTeam2_)
+                COUT(0) << "Team 1 has won the match" << std::endl;
+            else
+                COUT(0) << "Team 2 has won the match" << std::endl;
+
             this->end();
+            this->scoreTimer_.stopTimer();
+            this->outputTimer_.stopTimer();
         }
     }
 

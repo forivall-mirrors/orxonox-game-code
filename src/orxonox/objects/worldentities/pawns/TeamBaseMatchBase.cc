@@ -47,6 +47,8 @@ namespace orxonox
         {
             gametype->addBase(this);
         }
+
+        this->setRadarObjectShape(RadarViewable::Triangle);
     }
 
     void TeamBaseMatchBase::changeTeamColour()
@@ -69,7 +71,7 @@ namespace orxonox
                 break;
             case BaseState::uncontrolled:
             default:
-                colour = ColourValue(0.5, 0.5, 0.7, 1.0);
+                colour = ColourValue(0.5, 0.5, 0.5, 1.0);
                 break;
         }
 
@@ -83,6 +85,12 @@ namespace orxonox
                 tc->setTeamColour(colour);
             }
         }
+
+        this->setRadarObjectColour(colour);
+
+        // Call this so bots stop shooting at the base after they converted it
+        for (ObjectList<PawnListener>::iterator it = ObjectList<PawnListener>::begin(); it != ObjectList<PawnListener>::end(); ++it)
+            it->destroyedPawn(this);
     }
 }
 
