@@ -32,7 +32,6 @@
 #include "PassiveItem.h"
 #include "UsableItem.h"
 
-#include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
 
@@ -49,8 +48,7 @@
 
 namespace orxonox
 {
-    orxonox::ConsoleCommand& function_PickupInventory_ToggleInventory_0 =
-        orxonox::CommandExecutor::addConsoleCommandShortcut(orxonox::createConsoleCommand(orxonox::createFunctor(&PickupInventory::toggleInventory), "toggleInventory"), true);
+    SetConsoleCommandShortcut(PickupInventory, toggleInventory);
 
     PickupInventory* PickupInventory::pickupInventory_s = NULL;
     PickupInventory* PickupInventory::getSingleton()
@@ -82,7 +80,7 @@ namespace orxonox
     {
     }
 
-    
+
 
     void PickupInventory::toggleInventory()
     {
@@ -302,7 +300,7 @@ namespace orxonox
     }
 
     void PickupInventory::createItemWindows(CEGUI::WindowManager* winMgr, const std::string& id, int x, int y)
-    { 
+    {
         if(!winMgr) { return; }
 
         CEGUI::Window* frame = winMgr->createWindow("TaharezLook/StaticImage", "orxonox/Inventory/Frame/" + id);

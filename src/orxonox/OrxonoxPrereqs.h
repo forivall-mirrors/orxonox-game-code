@@ -118,6 +118,7 @@ namespace orxonox
     class MovableEntity;
     class Sublevel;
     class ForceField;
+    class Attacher;
 
     class Model;
     class Billboard;
@@ -144,6 +145,20 @@ namespace orxonox
     class SpaceShip;
     class TeamBaseMatchBase;
     class Destroyer;
+
+    class BaseItem;
+    class DroppedItem;
+    class EquipmentItem;
+    class ModifierPickup;
+    class PassiveItem;
+    class PickupCollection;
+    class PickupInventory;
+    class PickupSpawner;
+    class UsableItem;
+
+    class Jump;
+    class HealthUsable;
+    class PassiveItem;
 
     class Item;
     class Engine;

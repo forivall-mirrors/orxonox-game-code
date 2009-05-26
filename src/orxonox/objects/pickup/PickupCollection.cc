@@ -40,8 +40,6 @@
 
 #include "core/CoreIncludes.h"
 
-#include "objects/worldentities/pawns/Pawn.h"
-
 namespace orxonox
 {
     typedef std::pair<std::multimap<std::string, BaseItem*>::iterator, std::multimap<std::string, BaseItem*>::iterator> item_range;

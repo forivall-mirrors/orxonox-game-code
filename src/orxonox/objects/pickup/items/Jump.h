@@ -43,8 +43,6 @@
 
 namespace orxonox
 {
-    class Pawn;
-
     /**
         @brief Jump-item, enables player to "jump" into a direction.
     */

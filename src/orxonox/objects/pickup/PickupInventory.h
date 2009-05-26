@@ -44,12 +44,10 @@ namespace CEGUI { class Window; class WindowManager; class Image; }
 namespace orxonox
 {
 // tolua_end
-    class _OrxonoxExport BaseItem;
-
     /**
         @brief Static class for the inventory GUI window.
         @author Daniel 'Huty' Haggenmueller
-    */ 
+    */
 // tolua_begin
     class _OrxonoxExport PickupInventory
     {

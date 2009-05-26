@@ -41,7 +41,6 @@
 #include "core/Template.h"
 
 #include "objects/worldentities/pawns/Pawn.h"
-#include "objects/worldentities/triggers/DistanceTrigger.h"
 
 namespace orxonox
 {
