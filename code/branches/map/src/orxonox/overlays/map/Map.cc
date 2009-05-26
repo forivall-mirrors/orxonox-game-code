@@ -65,6 +65,7 @@
     //SetConsoleCommand(Map, rotatePitch, true).setAsInputCommand();
     SetConsoleCommand(Map, Zoom, true).setAsInputCommand();
 
+
     Map* Map::singletonMap_s = 0;
     Ogre::SceneManager* Map::mapSceneM_s = 0;
     //int Map::mouseLookSpeed_ = 200;
@@ -157,14 +158,32 @@
         pOverlay->add2D(m_pOverlayPanel);
         pOverlay->show();
 */
-        overlay_ = Ogre::OverlayManager::getSingleton().create("MapOverlay");
+        this->overlay_ = Ogre::OverlayManager::getSingletonPtr()->create("MapOverlay");
         Ogre::OverlayContainer* m_pOverlayPanel = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel","OverlayPanelName%d"));
         m_pOverlayPanel->setMetricsMode(Ogre::GMM_PIXELS);
         m_pOverlayPanel->setPosition(10, 10);
-        m_pOverlayPanel->setDimensions(500, 300);
+        m_pOverlayPanel->setDimensions(600, 400);
         // Give overlay a texture
         m_pOverlayPanel->setMaterialName(camMat_id); 
         overlay_->add2D(m_pOverlayPanel);
+
+        //Add Borders
+        Ogre::BorderPanelOverlayElement* oBorder = static_cast<Ogre::BorderPanelOverlayElement*>(Ogre::OverlayManager::getSingletonPtr()->createOverlayElement("BorderPanel", "MapBorderPanel" + getUniqueNumberString()));
+/*
+//TODO border size
+        oBorder->setBorderSize( 0.003, 16 * 0.003 );
+        oBorder->setBorderMaterialName("StatsBorder");
+        oBorder->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
+        oBorder->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
+        oBorder->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
+        oBorder->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
+        oBorder->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
+        oBorder->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
+        oBorder->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
+        oBorder->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+        overlay_->add2D(oBorder);
+*/
+
         //Not Showing the map as default
         this->isVisible_=false;
         overlay_->hide();
@@ -183,7 +202,7 @@
         planeNode_->attachObject(plane_ent);
         
         planeNode_->scale(10,1,10);
-        planeNode_->attachObject(movablePlane_);
+//        planeNode_->attachObject(movablePlane_);
         //Ogre::Material plane_mat = Ogre::MaterialManager::getSingletonPtr()->getByName("rock");
         
 
@@ -260,26 +279,36 @@
                 }*/
                 it->addMapEntity();
             }
+            if(it->isHumanShip_)
+            {
+                this->movablePlane_->redefine(it->MapNode_->getLocalAxes().GetColumn(1) , it->MapNode_->getPosition());
+                if(it->isHumanShip_ && it->MapNode_ != this->playerShipNode_)
+                {
+                    this->playerShipNode_ = it->MapNode_;
+                    this->planeNode_->getParent()->removeChild(this->planeNode_);
+                    this->playerShipNode_->addChild(this->planeNode_);
+                //Movable Plane needs to be attached direcly for calculations
+                //this->movablePlane_->detatchFromParent();
+                //this->movablePlane_->getParentSceneNode()->detachObject(this->movablePlane_);
+                //this->movablePlane_->redefine(it->MapNode_->getLocalAxes().GetColumn(1) , it->MapNode_->getPosition());
+                //it->MapNode_->attachObject(this->movablePlane_);
 
+                    this->CamNode_->getParent()->removeChild(this->CamNode_);
+                    this->playerShipNode_->addChild(this->CamNode_);
+                    this->CamNode_->attachObject(this->Cam_);
+                //this->CamNodeHelper_ = this->CamNode_->createChildSceneNode();
+                //this->CamNodeHelper_->attachObject(this->Cam_);
+                    this->Cam_->setPosition(0, 0, DISTANCE);
+                    this->Cam_->pitch( (Degree)PITCH );
+                    this->Cam_->lookAt(Vector3(0,0,0));
+                //this->Cam_->setAutoTracking(true, this->playerShipNode_);
+                }
+            }
             it->updateMapPosition();
             
 
 
-            if(it->isHumanShip_ && it->MapNode_ != this->playerShipNode_)
-            {
-                this->playerShipNode_ = it->MapNode_;
-                this->planeNode_->getParent()->removeChild(this->planeNode_);
-                this->playerShipNode_->addChild(this->planeNode_);
-                this->CamNode_->getParent()->removeChild(this->CamNode_);
-                this->playerShipNode_->addChild(this->CamNode_);
-                this->CamNode_->attachObject(this->Cam_);
-                //this->CamNodeHelper_ = this->CamNode_->createChildSceneNode();
-                //this->CamNodeHelper_->attachObject(this->Cam_);
-                this->Cam_->setPosition(0, 0, DISTANCE);
-                this->Cam_->pitch( (Degree)PITCH );
-                this->Cam_->lookAt(Vector3(0,0,0));
-                //this->Cam_->setAutoTracking(true, this->playerShipNode_);
-            }
+
             
             
         }
@@ -338,7 +367,10 @@
     
     void Map::tick(float dt)
     {
-        //sNode_->lookAt(Vector3::NEGATIVE_UNIT_Z, Ogre::Node::TS_WORLD, Vector3::NEGATIVE_UNIT_Z);
+        //Debug
+        //COUT(0) << "MovablePlane Position: " << this->movablePlane_->getParentSceneNode()->getName() << this->movablePlane_->getParentSceneNode()->getPosition() << std::endl;
+        //COUT(0) << "planeNode_ Position: " << this->planeNode_ ->getName() << this->planeNode_->getPosition() << std::endl;
+        //COUT(0) <<  "planeNode_ Parrent Position" << this->planeNode_->getParent()->getName() << this->planeNode_->getParent()->getPosition() << std::endl;
         if( this->isVisible_ )
             updatePositions();
         //Cam_->roll(Degree(1));
