@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -131,8 +131,11 @@ namespace orxonox
     }
     if(client){
 //       COUT(3) << "diffing" << std::endl;
+//       packet::Gamestate* gs1  = gs;
       gs = gs->diff(client);
+//       packet::Gamestate* gs2 = gs->undiff(client);
 //       gs = new packet::Gamestate(*gs);
+//       assert(*gs1==*gs2);
     }
     else{
 //       COUT(3) << "not diffing" << std::endl;
@@ -160,6 +163,7 @@ namespace orxonox
       std::map<unsigned int, packet::Gamestate*>::iterator it;
       for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end(); ){
         delete it->second;
+
         gamestateMap_[clientID].erase(it++);
       }
       return true;

@@ -53,8 +53,8 @@ namespace orxonox
     void PongBat::registerVariables()
     {
         registerVariable(this->speed_);
-        registerVariable(this->speed_);
-        registerVariable(this->speed_);
+        registerVariable(this->fieldHeight_);
+        registerVariable(this->length_);
     }
 
     void PongBat::tick(float dt)
@@ -90,13 +90,16 @@ namespace orxonox
         if (position.z < -this->fieldHeight_ / 2 + this->fieldHeight_ * this->length_ / 2)
             position.z = -this->fieldHeight_ / 2 + this->fieldHeight_ * this->length_ / 2;
         if (position != this->getPosition())
+        {
             this->setPosition(position);
+            this->setVelocity( Vector3::ZERO );
+        }
     }
 
     void PongBat::moveFrontBack(const Vector2& value)
     {
         this->bMoveLocal_ = false;
-        this->movement_ -= value.x;
+        this->movement_ = -value.x;
     }
 
     void PongBat::moveRightLeft(const Vector2& value)

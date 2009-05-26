@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport GSRoot : public GameState
     {
     public:
-        GSRoot(const std::string& name);
+        GSRoot(const std::string& name, bool countTickTime);
         ~GSRoot();
 
         void activate();

@@ -39,6 +39,8 @@
 #include "UtilPrereqs.h"
 #include "MathConvert.h"
 #include "MultiType.h"
+#include "Serialise.h"
+#include <cassert>
 
 namespace orxonox
 {
@@ -146,9 +148,118 @@ namespace orxonox
 
         /** @brief Puts the current value on the stream */
         inline void toString(std::ostream& outstream) const { outstream << this->value_; }
+        
+        /** @brief loads data from the bytestream (mem) into the MT and increases the bytestream pointer by the size of the data */
+        inline void importData( uint8_t*& mem )         { loadAndIncrease( /*(const T&)*/this->value_, mem ); }
+        /** @brief saves data from the MT into the bytestream (mem) and increases the bytestream pointer by the size of the data */
+        inline void exportData( uint8_t*& mem ) const   { saveAndIncrease( /*(const T&)*/this->value_, mem ); }
+        /** @brief returns the size of the data that would be saved by exportData */
+        inline uint8_t getSize() const { return returnSize( this->value_ ); }
 
         T value_; //!< The stored value
     };
+    
+    // Import / Export specialisation
+    // ColourValue
+    template <> inline void MT_Value<ColourValue>::importData( uint8_t*& mem )
+    {
+        loadAndIncrease( this->value_.r, mem );
+        loadAndIncrease( this->value_.g, mem );
+        loadAndIncrease( this->value_.b, mem );
+        loadAndIncrease( this->value_.a, mem );
+    }
+    template <> inline void MT_Value<ColourValue>::exportData( uint8_t*& mem ) const
+    {
+        saveAndIncrease( this->value_.r, mem );
+        saveAndIncrease( this->value_.g, mem );
+        saveAndIncrease( this->value_.b, mem );
+        saveAndIncrease( this->value_.a, mem );
+    }
+    template <> inline uint8_t MT_Value<ColourValue>::getSize() const
+    {
+        return 4*returnSize(this->value_.r);
+    }
+    // Ogre::Quaternion
+    template <> inline void MT_Value<Ogre::Quaternion>::importData( uint8_t*& mem )
+    {
+        loadAndIncrease( this->value_.x, mem );
+        loadAndIncrease( this->value_.y, mem );
+        loadAndIncrease( this->value_.z, mem );
+        loadAndIncrease( this->value_.w, mem );
+    }
+    template <> inline void MT_Value<Ogre::Quaternion>::exportData( uint8_t*& mem ) const
+    {
+        saveAndIncrease( this->value_.x, mem );
+        saveAndIncrease( this->value_.y, mem );
+        saveAndIncrease( this->value_.z, mem );
+        saveAndIncrease( this->value_.w, mem );
+    }template <> inline uint8_t MT_Value<Ogre::Quaternion>::getSize() const
+    {
+        return 4*returnSize(this->value_.x);
+    }
+    // Ogre::Vector2
+    template <> inline void MT_Value<Ogre::Vector2>::importData( uint8_t*& mem )
+    {
+        loadAndIncrease( this->value_.x, mem );
+        loadAndIncrease( this->value_.y, mem );
+    }
+    template <> inline void MT_Value<Ogre::Vector2>::exportData( uint8_t*& mem ) const
+    {
+        saveAndIncrease( this->value_.x, mem );
+        saveAndIncrease( this->value_.y, mem );
+    }
+    template <> inline uint8_t MT_Value<Ogre::Vector2>::getSize() const
+    {
+        return 2*returnSize(this->value_.x);
+    }
+    // Ogre::Vector3
+    template <> inline void MT_Value<Ogre::Vector3>::importData( uint8_t*& mem )
+    {
+        loadAndIncrease( this->value_.x, mem );
+        loadAndIncrease( this->value_.y, mem );
+        loadAndIncrease( this->value_.z, mem );
+    }
+    template <> inline void MT_Value<Ogre::Vector3>::exportData( uint8_t*& mem ) const
+    {
+        saveAndIncrease( this->value_.x, mem );
+        saveAndIncrease( this->value_.y, mem );
+        saveAndIncrease( this->value_.z, mem );
+    }
+    template <> inline uint8_t MT_Value<Ogre::Vector3>::getSize() const
+    {
+        return 3*returnSize(this->value_.x);
+    }
+    // Ogre::Vector4
+    template <> inline void MT_Value<Ogre::Vector4>::importData( uint8_t*& mem )
+    {
+        loadAndIncrease( this->value_.x, mem );
+        loadAndIncrease( this->value_.y, mem );
+        loadAndIncrease( this->value_.z, mem );
+        loadAndIncrease( this->value_.w, mem );
+    }
+    template <> inline void MT_Value<Ogre::Vector4>::exportData( uint8_t*& mem ) const
+    {
+        saveAndIncrease( this->value_.x, mem );
+        saveAndIncrease( this->value_.y, mem );
+        saveAndIncrease( this->value_.z, mem );
+        saveAndIncrease( this->value_.w, mem );
+    }
+    template <> inline uint8_t MT_Value<Ogre::Vector4>::getSize() const
+    {
+        return 4*returnSize(this->value_.x);
+    }
+    template <> inline void MT_Value<void*>::importData( uint8_t*& mem )
+    {
+        assert(0);
+    }
+    template <> inline void MT_Value<void*>::exportData( uint8_t*& mem ) const
+    {
+        assert(0);
+    }
+    template <> inline uint8_t MT_Value<void*>::getSize() const
+    {
+        assert(0); return 0;
+    }
 }
 
 #endif /* _MultiTypeValue_H__ */

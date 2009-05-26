@@ -105,6 +105,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   # Bullet headers really need the include directory
   ${CMAKE_CURRENT_SOURCE_DIR}/bullet
+  # OIS headers need the root dir as well
+  ${CMAKE_CURRENT_SOURCE_DIR}/ois
   # Convenience directory
   ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
   # OrxonoxConfig.h

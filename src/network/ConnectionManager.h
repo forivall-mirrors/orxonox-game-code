@@ -54,7 +54,7 @@ namespace orxonox
 {
     const int NETWORK_PORT = 55556;
     const int NETWORK_MAX_CONNECTIONS = 50;
-    const int NETWORK_WAIT_TIMEOUT = 1;
+    const int NETWORK_WAIT_TIMEOUT = 10;
     const int NETWORK_DEFAULT_CHANNEL = 0;
 
   struct _NetworkExport ClientList{
@@ -80,10 +80,11 @@ namespace orxonox
     bool sendPackets();
     void disconnectClient(ClientInformation *client);
     void syncClassid(unsigned int clientID);
+    bool checkReceiverThread(){ return !quit_; }
 
   private:
     ConnectionManager(const ConnectionManager& copy); // not used
-    bool processData(ENetEvent *event);
+    inline bool processData(ENetEvent *event){ return buffer.push(event); }
     void receiverThread();
     void disconnectClients();
     int getClientID(ENetPeer* peer);
@@ -94,7 +95,7 @@ namespace orxonox
     ENetHost *server;
     ENetAddress *bindAddress;
 
-    bool quit; // quit-variable (communication with threads)
+    bool quit_; // quit-variable (communication with threads)
 
     boost::thread *receiverThread_;
     static ConnectionManager *instance_;

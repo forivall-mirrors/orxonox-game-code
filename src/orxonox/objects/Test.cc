@@ -30,7 +30,9 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "network/NetworkFunction.h"
 #include "Test.h"
+#include "util/MultiType.h"
 
 namespace orxonox
 {
@@ -40,6 +42,17 @@ namespace orxonox
   SetConsoleCommand(Test, printV2, true).accessLevel(AccessLevel::User);
   SetConsoleCommand(Test, printV3, true).accessLevel(AccessLevel::User);
   SetConsoleCommand(Test, printV4, true).accessLevel(AccessLevel::User);
+  SetConsoleCommand(Test, call, true).accessLevel(AccessLevel::User);
+  SetConsoleCommand(Test, call2, true).accessLevel(AccessLevel::User);
+  
+  
+  //void=* aaaaa = copyPtr<sizeof(&Test::printV1)>( &NETWORK_FUNCTION_POINTER, &Test::printV1 );
+  //void* NETWORK_FUNCTION_TEST_B = memcpy(&NETWORK_FUNCTION_POINTER, &a, sizeof(a));
+//   NetworkFunctionBase* NETWORK_FUNCTION_TEST_C = new NetworkFunctionStatic( createFunctor(&Test::printV1), "bla", NETWORK_FUNCTION_POINTER );
+  
+  registerStaticNetworkFunction( &Test::printV1 );
+  registerMemberNetworkFunction( Test, checkU1 );
+  registerMemberNetworkFunction( Test, printBlaBla );
   
   Test* Test::instance_ = 0;
 
@@ -72,19 +85,54 @@ namespace orxonox
 	}
 
 
-	void Test::registerVariables()
-	{
-		registerVariable ( u1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
+  void Test::registerVariables()
+  {
+    registerVariable ( u1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
     registerVariable ( u2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkU2 ));
-		registerVariable ( u3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
+    registerVariable ( u3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
     registerVariable ( u4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkU4 ), true );
     
     registerVariable ( s1, variableDirection::toclient, new NetworkCallback<Test> ( this, &Test::checkS1 ));
     registerVariable ( s2, variableDirection::toserver, new NetworkCallback<Test> ( this, &Test::checkS2 ));
     registerVariable ( s3, variableDirection::serverMaster, new NetworkCallback<Test> ( this, &Test::checkS3 ), true );
     registerVariable ( s4, variableDirection::clientMaster, new NetworkCallback<Test> ( this, &Test::checkS4 ), true );
-	}
-
+  }
+  
+  void Test::call(unsigned int clientID)
+  {
+    callStaticNetworkFunction( &Test::printV1, clientID );
+    callStaticNetworkFunction( &Test::printV1, clientID );
+  }
+  
+  void Test::call2(unsigned int clientID, std::string s1, std::string s2, std::string s3, std::string s4)
+  {
+    callMemberNetworkFunction( Test, printBlaBla, this->getObjectID(), clientID, s1, s2, s3, s4, s4 );
+  }
+  
+  void Test::tick(float dt)
+  {
+//     std::string str1 = "blub";
+//     //MultiType mt1(std::string("blub"));
+//     MultiType mt1(str1);
+//     uint8_t* mem = new uint8_t[mt1.getNetworkSize()];
+//     uint8_t* temp = mem;
+//     mt1.exportData( temp );
+//     assert( temp-mem == mt1.getNetworkSize() );
+//     MultiType mt2;
+//     temp = mem;
+//     mt2.importData( temp );
+//     assert( temp-mem == mt1.getNetworkSize() );
+//     COUT(0) << mt2 << endl;
+    if(!Core::isMaster())
+      call2(0, "bal", "a", "n", "ce");
+//       callMemberNetworkFunction( Test, checkU1, this->getObjectID(), 0 );
+  }
+  
+  void Test::printBlaBla(std::string s1, std::string s2, std::string s3, std::string s4, std::string s5)
+  {
+    COUT(0) << s1 << s2 << s3 << s4 << s5 << endl;
+  }
+  
   void Test::checkU1(){ COUT(1) << "U1 changed: " << u1 << std::endl; }
   void Test::checkU2(){ COUT(1) << "U2 changed: " << u2 << std::endl; }
   void Test::checkU3(){ COUT(1) << "U3 changed: " << u3 << std::endl; }

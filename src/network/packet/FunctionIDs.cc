@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2008
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -28,57 +28,49 @@
 
 
 
-#include "ClassID.h"
+#include "FunctionIDs.h"
+#include "network/NetworkFunction.h"
 #include <enet/enet.h>
 #include "core/CoreIncludes.h"
-#include "core/Factory.h"
-#include <cstring>
 #include <string>
 #include <cassert>
-#include <map>
 #include <queue>
 
 namespace orxonox {
 namespace packet {
 
 
-#define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
-#define _PACKETID             0
+#define PACKET_FLAGS_FUNCTIONIDS  ENET_PACKET_FLAG_RELIABLE
+#define _PACKETID                 0
 
 
-ClassID::ClassID( ) : Packet(){
-  Identifier *id;
-  std::string classname;
-  unsigned int nrOfClasses=0; 
-  unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nrofclasses
-  uint32_t network_id;
-  flags_ = flags_ | PACKET_FLAGS_CLASSID;
+FunctionIDs::FunctionIDs( ) : Packet(){
+  std::string functionname;
+  unsigned int nrOfFunctions=0; 
+  unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nroffunctions
+  uint32_t networkID;
+  flags_ = flags_ | PACKET_FLAGS_FUNCTIONIDS;
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
   
   //calculate total needed size (for all strings and integers)
-  std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
-  for(;it != Factory::getFactoryMapEnd();++it){
-    id = (*it).second;
-    if(id == NULL)
-      continue;
-    classname = id->getName();
-    network_id = id->getNetworkID();
-    if(network_id==0)
-      COUT(3) << "we got a null class id: " << id->getName() << std::endl;
+  ObjectList<NetworkFunctionBase>::iterator it;
+  for(it = ObjectList<NetworkFunctionBase>::begin(); it; ++it){
+    functionname = it->getName();
+    networkID = it->getNetworkID();
     // now push the network id and the classname to the stack
-    tempQueue.push( std::pair<unsigned int, std::string>(network_id, classname) );
-    ++nrOfClasses;
-    packetSize += (classname.size()+1)+sizeof(uint32_t)+sizeof(uint32_t);
+    tempQueue.push( std::pair<unsigned int, std::string>(networkID, functionname) );
+    ++nrOfFunctions;
+    packetSize += (functionname.size()+1)+sizeof(uint32_t)+sizeof(uint32_t); // reserver size for the functionname string, the functionname length and the networkID
   }
   
   this->data_=new uint8_t[ packetSize ];
   //set the appropriate packet id
   assert(this->data_);
-  *(ENUM::Type *)(this->data_ + _PACKETID ) = ENUM::ClassID;
+  *(ENUM::Type *)(this->data_ + _PACKETID ) = ENUM::FunctionIDs;
   
   uint8_t *temp=data_+sizeof(uint32_t);
   // save the number of all classes
-  *(uint32_t*)temp = nrOfClasses;
+  *(uint32_t*)temp = nrOfFunctions;
   temp += sizeof(uint32_t);
   
   // now save all classids and classnames
@@ -92,62 +84,54 @@ ClassID::ClassID( ) : Packet(){
     temp+=2*sizeof(uint32_t)+tempPair.second.size()+1;
   }
   
-  COUT(5) << "classid packetSize is " << packetSize << endl;
+  COUT(5) << "FunctionIDs packetSize is " << packetSize << endl;
   
 }
 
-ClassID::ClassID( uint8_t* data, unsigned int clientID )
+FunctionIDs::FunctionIDs( uint8_t* data, unsigned int clientID )
   : Packet(data, clientID)
 {
 }
 
-ClassID::~ClassID()
+FunctionIDs::~FunctionIDs()
 {
 }
 
-uint32_t ClassID::getSize() const{
+uint32_t FunctionIDs::getSize() const{
+  assert(this->data_);
   uint8_t *temp = data_+sizeof(uint32_t); // packet identification
-  uint32_t totalsize = sizeof(uint32_t); // packet identification
-  uint32_t nrOfClasses = *(uint32_t*)temp;
+  uint32_t totalsize = sizeof(uint32_t); // data size
+  uint32_t nrOfFunctions = *(uint32_t*)temp;
   temp += sizeof(uint32_t);
   totalsize += sizeof(uint32_t); // storage size for nr of all classes
   
-  for(unsigned int i=0; i<nrOfClasses; i++){
-    totalsize += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t));
+  for(unsigned int i=0; i<nrOfFunctions; i++){
+    totalsize += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t)); // for each network function add size for id, sizeof(string) and length of string itself to totalsize
+    temp += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t));
   }
   return totalsize;
 }
 
 
-bool ClassID::process(){
-  int nrOfClasses;
+bool FunctionIDs::process(){
+  int nrOfFunctions;
   uint8_t *temp = data_+sizeof(uint32_t); //skip the packetid
   uint32_t networkID;
   uint32_t stringsize;
-  unsigned char *classname;
+  unsigned char *functionname;
   
-  
-  //clean the map of network ids
-  Factory::cleanNetworkIDs();
-  
-  COUT(4) << "=== processing classids: " << endl;
+  COUT(4) << "=== processing functionids: " << endl;
   std::pair<uint32_t, std::string> tempPair;
-  Identifier *id;
   // read the total number of classes
-  nrOfClasses = *(uint32_t*)temp;
+  nrOfFunctions = *(uint32_t*)temp;
   temp += sizeof(uint32_t);
   
-  for( int i=0; i<nrOfClasses; i++){
+  for( int i=0; i<nrOfFunctions; i++){
     networkID = *(uint32_t*)temp;
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
-    classname = temp+2*sizeof(uint32_t);
-    id=ClassByString( std::string((const char*)classname) );
-    COUT(0) << "processing classid: " << networkID << " name: " << classname << " id: " << id << std::endl;
-    if(id==NULL){
-      COUT(0) << "Recieved a bad classname" << endl;
-      abort();
-    }
-    id->setNetworkID( networkID );
+    functionname = temp+2*sizeof(uint32_t);
+    COUT(0) << "processing functionid: " << networkID << " name: " << functionname << std::endl;
+    NetworkFunctionBase::setNetworkID((const char*)functionname, networkID);
     temp += 2*sizeof(uint32_t) + stringsize;
   }
   delete this;

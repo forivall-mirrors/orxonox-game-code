@@ -38,14 +38,19 @@
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
+
 #include "objects/weaponsystem/WeaponSystem.h"
 #include "objects/weaponsystem/WeaponSlot.h"
 #include "objects/weaponsystem/WeaponPack.h"
 #include "objects/weaponsystem/WeaponSet.h"
 
+#include "network/NetworkFunction.h"
+
 namespace orxonox
 {
     CreateFactory(Pawn);
+
+    registerMemberNetworkFunction( Pawn, doFire );
 
     Pawn::Pawn(BaseObject* creator) : ControllableEntity(creator)
     {
@@ -122,21 +127,22 @@ namespace orxonox
     {
         SUPER(Pawn, tick, dt);
 
-        if (this->weaponSystem_ && GameMode::isMaster())
-        {
-            for (unsigned int firemode = 0; firemode < WeaponSystem::MAX_FIRE_MODES; firemode++)
-                if (this->fire_ & WeaponSystem::getFiremodeMask(firemode))
-                    this->weaponSystem_->fire(firemode);
-
-            if (this->bReload_)
-                this->weaponSystem_->reload();
-        }
-
-        this->fire_ = this->firehack_;
-        this->firehack_ = 0x0;
+//        if (this->weaponSystem_ && GameMode::isMaster())
+//        {
+//            for (unsigned int firemode = 0; firemode < WeaponSystem::MAX_FIRE_MODES; firemode++)
+//                if (this->fire_ & WeaponSystem::getFiremodeMask(firemode))
+//                    this->weaponSystem_->fire(firemode);
+//
+//            if (this->bReload_)
+//                this->weaponSystem_->reload();
+//        }
+//
+//        this->fire_ = this->firehack_;
+//        this->firehack_ = 0x0;
         this->bReload_ = false;
 
-        if (this->health_ <= 0)
+        if (GameMode::isMaster())
+          if (this->health_ <= 0)
             this->death();
     }
 
@@ -262,7 +268,22 @@ namespace orxonox
 
     void Pawn::fire(unsigned int firemode)
     {
-        this->firehack_ |= WeaponSystem::getFiremodeMask(firemode);
+        this->doFire(firemode);
+    }
+
+    void Pawn::doFire(uint8_t firemode)
+    {
+        if(GameMode::isMaster())
+        {
+            if (this->weaponSystem_)
+                this->weaponSystem_->fire(firemode);
+        }
+        else
+        {
+            callMemberNetworkFunction(Pawn, doFire, this->getObjectID(), 0, ((uint8_t)firemode));
+            if (this->weaponSystem_)
+                this->weaponSystem_->fire(firemode);
+        }
     }
 
     void Pawn::reload()

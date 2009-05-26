@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2008
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -106,7 +106,12 @@ bool Gamestate::collectData(int id, uint8_t mode)
   ObjectList<Synchronisable>::iterator it;
   for(it = ObjectList<Synchronisable>::begin(); it; ++it){
     
-    tempsize=it->getSize(id, mode);
+//     tempsize=it->getSize(id, mode);
+
+    tempsize = it->getData(mem, id, mode);
+    if ( tempsize != 0 )
+      dataVector_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
+    
 #ifndef NDEBUG
     if(currentsize+tempsize > size){
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
@@ -122,11 +127,8 @@ bool Gamestate::collectData(int id, uint8_t mode)
       size = currentsize+addsize;
     }// stop allocate additional memory
 #endif
-
-    if ( it->doSync( id, mode ) )
-      dataMap_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
-    if(!it->getData(mem, id, mode))
-      return false; // mem pointer gets automatically increased because of call by reference
+//     if(!it->getData(mem, id, mode))
+//       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
     currentsize+=tempsize;
   }
@@ -176,28 +178,31 @@ bool Gamestate::spreadData(uint8_t mode)
       assert(b);
     }
   }
-
    // In debug mode, check first, whether there are no duplicate objectIDs
 #ifndef NDEBUG
-  ObjectList<Synchronisable>::iterator it;
-  for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
-    if (it->getObjectID() == OBJECTID_UNKNOWN) {
-      if (it->objectMode_ != 0x0) {
-        COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
-        COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
-        COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
-        assert(false);
-      }
-    }
-    else {
-      ObjectList<Synchronisable>::iterator it2;
-      for (it2 = ObjectList<Synchronisable>::begin(); it2 != ObjectList<Synchronisable>::end(); ++it2) {
-        if (it->getObjectID() == it2->getObjectID() && *it != *it2) {
-           COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
-                   << "Are you sure you don't create a Sychnronisable objcect with 'new' \
-                       that doesn't have objectMode = 0x0?" << std::endl;
-           assert(false);
+  if(this->getID()%1000==0){
+    std::list<uint32_t> v1;
+    ObjectList<Synchronisable>::iterator it;
+    for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
+      if (it->getObjectID() == OBJECTID_UNKNOWN) {
+        if (it->objectMode_ != 0x0) {
+          COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
+          COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
+          COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
+          assert(false);
         }
+      }
+      else {
+        std::list<uint32_t>::iterator it2;
+        for (it2 = v1.begin(); it2 != v1.end(); ++it2) {
+          if (it->getObjectID() == *it2) {
+            COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
+                    << "Are you sure you don't create a Sychnronisable objcect with 'new' \
+                        that doesn't have objectMode = 0x0?" << std::endl;
+            assert(false);
+          }
+        }
+        v1.push_back(it->getObjectID());
       }
     }
   }
@@ -220,16 +225,12 @@ uint32_t Gamestate::getSize() const
 bool Gamestate::operator==(packet::Gamestate gs){
   uint8_t *d1 = data_+GamestateHeader::getSize();
   uint8_t *d2 = gs.data_+GamestateHeader::getSize();
+  GamestateHeader* h1 = new GamestateHeader(data_);
+  GamestateHeader* h2 = new GamestateHeader(gs.data_);
+  assert(h1->getDataSize() == h2->getDataSize());
   assert(!isCompressed());
   assert(!gs.isCompressed());
-  while(d1<data_+header_->getDataSize())
-  {
-    if(*d1!=*d2)
-      return false;
-    d1++;
-    d2++;
-  }
-  return true;
+  return memcmp(d1, d2, h1->getDataSize())==0;
 }
 
 bool Gamestate::process()
@@ -356,6 +357,58 @@ Gamestate *Gamestate::diff(Gamestate *base)
   return g;
 }
 
+// Gamestate *Gamestate::diff(Gamestate *base)
+// {
+//   assert(data_);
+//   assert(!header_->isCompressed());
+//   assert(!header_->isDiffed());
+//   GamestateHeader diffHeader(base->data_);
+//   uint8_t *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
+//   uint32_t of=0; // pointers offset
+//   uint32_t dest_length=0;
+//   dest_length=header_->getDataSize();
+//   if(dest_length==0)
+//     return NULL;
+//   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
+//   uint8_t *dest = ndata + GamestateHeader::getSize();
+//   
+//   
+//   // LOOP-UNROLLED DIFFING
+//   uint32_t *dest32 = (uint32_t*)dest, *base32 = (uint32_t*)basep, *gs32 = (uint32_t*)gs;
+//   // diff in 4-byte steps
+//   while( of < (uint32_t)(header_->getDataSize())/4 ){
+//     if( of < (uint32_t)(diffHeader.getDataSize())/4 )
+//     {
+//       *(dest32+of)=*(base32+of) ^ *(gs32+of); // do the xor
+//       ++of;
+//     }
+//     else
+//     {
+//       *(dest32+of)=*(gs32+of); // same as 0 ^ *(gs32+of)
+//       ++of;
+//     }
+//   }
+//   for( unsigned int of2 = 0; of2 < header_->getDataSize()%4; ++of2 )
+//   {
+//     if( of*4+of2 < diffHeader.getDataSize() )
+//     {
+//       *(dest+4*of+of2)=*(basep+4*of+of2) ^ *(gs+4*of+of2); // do the xor
+//     }
+//     else
+//     {
+//       *(dest+4*of+of2)=*(gs+4*of+of2); // same as 0 ^ *(gs32+of)
+//     }
+//   }
+// 
+//   Gamestate *g = new Gamestate(ndata, getClientID());
+//   *(g->header_) = *header_;
+//   g->header_->setDiffed( true );
+//   g->header_->setBaseID( base->getID() );
+//   g->flags_=flags_;
+//   g->packetDirection_ = packetDirection_;
+//   return g;
+// }
+
 Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
   assert(data_);
   std::list<obj>::iterator it;
@@ -377,10 +430,15 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   //Synchronisable *object;
 
   //call TrafficControl
-  TrafficControl::getInstance()->processObjectList( clientID, header_->getID(), &dataMap_ );
+  TrafficControl::getInstance()->processObjectList( clientID, header_->getID(), dataVector_ );
 
   //copy in the zeros
-  for(it=dataMap_.begin(); it!=dataMap_.end();){
+//   std::list<obj>::iterator itt;
+//   COUT(0) << "myvector contains:";
+//   for ( itt=dataVector_.begin() ; itt!=dataVector_.end(); itt++ )
+//     COUT(0) << " " << (*itt).objID;
+//   COUT(0) << endl;
+  for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);
     if ( (*it).objSize == 0 )

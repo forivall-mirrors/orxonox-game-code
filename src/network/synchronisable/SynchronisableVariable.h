@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2008
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -34,7 +34,10 @@
 
 #include <string>
 #include <cassert>
-#include "util/Math.h"
+#include "util/Serialise.h"
+#include "core/Core.h"
+#include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "network/synchronisable/NetworkCallback.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
 
@@ -54,14 +57,13 @@ namespace orxonox{
   class _NetworkExport SynchronisableVariableBase
   {
     public:
-      virtual void getData(uint8_t*& mem, uint8_t mode)=0;
+      virtual uint32_t getData(uint8_t*& mem, uint8_t mode)=0;
       virtual void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false)=0;
       virtual uint32_t getSize(uint8_t mode)=0;
       virtual void* getReference()=0;
       virtual uint8_t getMode()=0;
       virtual ~SynchronisableVariableBase() {}
     protected:
-      static void setState();
       static uint8_t state_;
   };
 
@@ -73,15 +75,11 @@ namespace orxonox{
       virtual ~SynchronisableVariable();
 
       virtual inline uint8_t getMode(){ return mode_; }
-      virtual inline void getData(uint8_t*& mem, uint8_t mode);
+      virtual inline uint32_t getData(uint8_t*& mem, uint8_t mode);
       virtual inline void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false);
       virtual inline uint32_t getSize(uint8_t mode);
       virtual inline void* getReference(){ return (void *)&this->variable_; }
     protected:
-      bool checkEquality(uint8_t* mem);
-      void setAndIncrease(uint8_t*& mem);
-      void getAndIncrease(uint8_t*& mem);
-      uint32_t returnSize();
       
       T& variable_;
       uint8_t mode_;
@@ -96,9 +94,9 @@ namespace orxonox{
       virtual ~SynchronisableVariableBidirectional();
       
       virtual inline uint8_t getMode(){ return 0x3; } //this basically is a hack ^^
-      virtual void getData(uint8_t*& mem, uint8_t mode);
+      virtual inline uint32_t getData(uint8_t*& mem, uint8_t mode);
       virtual void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false);
-      virtual uint32_t getSize(uint8_t mode);
+      virtual inline uint32_t getSize(uint8_t mode);
     private:
       T varBuffer_;
       uint8_t varReference_;
@@ -109,7 +107,10 @@ namespace orxonox{
   template <class T> SynchronisableVariable<T>::SynchronisableVariable(T& variable, uint8_t syncDirection, NetworkCallbackBase *cb):
       variable_( variable ), mode_( syncDirection ), callback_( cb )
   {
-      setState();
+    if ( state_ == 0x0 )
+    {
+      state_ = GameMode::isMaster() ? 0x1 : 0x2;  // set the appropriate mode here
+    }
   }
   
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()
@@ -118,11 +119,15 @@ namespace orxonox{
       NetworkCallbackManager::deleteCallback(this->callback_); //safe call for deletion
   }
 
-  template <class T> void SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
+  template <class T> inline uint32_t SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
   {
     if ( state_ == this->mode_ )
-      getAndIncrease( mem );
-//   mem += SynchronisableVariable<T>::getSize();
+    {
+      saveAndIncrease( this->variable_, mem );
+      return returnSize( this->variable_ );
+    }
+    else
+      return 0;
   }
 
   template <class T> void SynchronisableVariable<T>::putData(uint8_t*& mem, uint8_t mode, bool forceCallback)
@@ -134,86 +139,24 @@ namespace orxonox{
   // check whether we need to consider a callback
     if ( this->callback_ != 0 )
     {
-      if( forceCallback || !checkEquality( mem ) )
+      if( forceCallback || !checkEquality( this->variable_, mem ) )
         callback = true;
     }
   // write the data
-    setAndIncrease( mem );
-//   mem += SynchronisableVariable<T>::getSize();
+    loadAndIncrease( this->variable_, mem );
   // now do a callback if neccessary
     if ( callback )
       NetworkCallbackManager::triggerCallback( this->callback_ );
-      //this->callback_->call();
   }
 
-  template <class T> uint32_t SynchronisableVariable<T>::getSize(uint8_t mode)
+  template <class T> inline uint32_t SynchronisableVariable<T>::getSize(uint8_t mode)
   {
     if ( mode == this->mode_ )
-      return returnSize();
+      return returnSize( this->variable_ );
     else
       return 0;
   }
 
-  template <> _NetworkExport uint32_t SynchronisableVariable<const bool>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const bool>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const bool>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const bool>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const unsigned char>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned char>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned char>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const unsigned char>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const short>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const short>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const short>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const short>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const unsigned short>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned short>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned short>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const unsigned short>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const int>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const int>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const int>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const int>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const unsigned int>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned int>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned int>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const unsigned int>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const long>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const long>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const long>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const long>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const unsigned long>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned long>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned long>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const unsigned long>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const long long>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const long long>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const long long>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const long long>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const unsigned long long>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned long long>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const unsigned long long>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const unsigned long long>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const float>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const float>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const float>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const float>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const double>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const double>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const double>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const double>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const long double>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const long double>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const long double>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const long double>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const std::string>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const std::string>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const std::string>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const std::string>::checkEquality(uint8_t* mem);
-  template <> _NetworkExport uint32_t SynchronisableVariable<const Degree>::returnSize();
-  template <> _NetworkExport void     SynchronisableVariable<const Degree>::setAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport void     SynchronisableVariable<const Degree>::getAndIncrease(uint8_t*& mem);
-  template <> _NetworkExport bool     SynchronisableVariable<const Degree>::checkEquality(uint8_t* mem);
 
 
 
@@ -228,7 +171,7 @@ namespace orxonox{
     {
     }
 
-    template <class T> void SynchronisableVariableBidirectional<T>::getData(uint8_t*& mem, uint8_t mode)
+    template <class T> uint32_t SynchronisableVariableBidirectional<T>::getData(uint8_t*& mem, uint8_t mode)
     {
       if ( this->mode_ == mode )
       {   // we are master for this variable and have to check whether to change the varReference
@@ -242,8 +185,8 @@ namespace orxonox{
       *static_cast<uint8_t*>(mem) = varReference_;
       mem += sizeof(this->varReference_);
   // now write the content
-      SynchronisableVariable<T>::getAndIncrease( mem );
-//   mem += SynchronisableVariable<T>::getSize();
+      saveAndIncrease( this->variable_, mem );
+      return SynchronisableVariableBidirectional::getSize(mode);
     }
 
     template <class T> void SynchronisableVariableBidirectional<T>::putData(uint8_t*& mem, uint8_t mode, bool forceCallback)
@@ -254,19 +197,20 @@ namespace orxonox{
         // check that the client (source of the data) has a recent version of this variable
         if ( *static_cast<uint8_t*>(mem) != this->varReference_ )
         { // wrong reference number, so discard the data
+//           COUT(0) << "discharding data" << endl;
           mem += getSize( mode ); // SynchronisableVariableBidirectional::getSize returns size of variable + reference
           return;
         }
         else{
           // apply data
-          mem += sizeof(varReference_);
-          if ( SynchronisableVariableBidirectional<T>::checkEquality( mem )==true )
+          if ( checkEquality( this->variable_, mem+sizeof(varReference_) )==true )
           {
-            mem += SynchronisableVariable<T>::getSize( mode );
+            mem += getSize( mode );
             return;
           }
           else
           {
+            mem += sizeof(varReference_);
             memcpy((void*)&this->varBuffer_, &this->variable_, sizeof(T));
             if ( this->callback_ != 0 )
               callback = true;
@@ -284,7 +228,7 @@ namespace orxonox{
         {
           this->varReference_ = *static_cast<uint8_t*>(mem);
           mem += sizeof(varReference_);
-          if ( SynchronisableVariable<T>::checkEquality( mem ) == false )
+          if ( checkEquality( this->variable_, mem ) == false )
           {
             // value changed so remark for callback
             if ( this->callback_ != 0 )
@@ -293,16 +237,15 @@ namespace orxonox{
         }
       }
   // now write the data
-      SynchronisableVariable<T>::setAndIncrease(mem);
+      loadAndIncrease(this->variable_, mem);
   // now do a callback if neccessary
       if ( callback )
         NetworkCallbackManager::triggerCallback( this->callback_ );
-        //this->callback_->call();
     }
 
-    template <class T> uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)
+    template <class T> inline uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)
     {
-      return SynchronisableVariable<T>::returnSize() + sizeof(varReference_);
+      return returnSize( this->variable_ ) + sizeof(varReference_);
     }
   
 
