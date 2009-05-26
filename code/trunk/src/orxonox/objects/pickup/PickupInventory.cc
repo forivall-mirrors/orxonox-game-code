@@ -306,6 +306,7 @@ namespace orxonox
         CEGUI::Window* frame = winMgr->createWindow("TaharezLook/StaticImage", "orxonox/Inventory/Frame/" + id);
         frame->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 5 + y * 90)));
         frame->setSize(CEGUI::UVector2(CEGUI::UDim(0, 65), CEGUI::UDim(0, 65)));
+        frame->setRiseOnClickEnabled(false);
         frame->setVisible(false);
 
         CEGUI::Window* text = winMgr->createWindow("TaharezLook/StaticText", "orxonox/Inventory/Title/" + id);
