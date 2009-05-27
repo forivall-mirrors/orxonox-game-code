@@ -45,7 +45,10 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
-        void startGame();
+        void startStandalone();
+        void startServer();
+        void startClient();
+        void startDedicated();
 
     private:
         SimpleInputState* inputState_;
@@ -53,7 +56,10 @@ namespace orxonox
         Ogre::Camera*     camera_;
 
         // console commands
-        ConsoleCommand* ccStartGame_;
+        ConsoleCommand* ccStartStandalone_;
+        ConsoleCommand* ccStartServer_;
+        ConsoleCommand* ccStartClient_;
+        ConsoleCommand* ccStartDedicated_;
 
         // ambient sound for the main menu
         SoundMainMenu* ambient_;
