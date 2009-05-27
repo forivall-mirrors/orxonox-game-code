@@ -164,7 +164,8 @@ bool Packet::send(){
 #endif
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
-  Host::addPacket( enetPacket_, clientID_);
+  if(!Host::addPacket( enetPacket_, clientID_))
+    enet_packet_destroy(this->enetPacket_); // if we could not add the packet to the enet queue delete it manually
   return true;
 }
 
