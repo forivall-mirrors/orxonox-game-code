@@ -46,7 +46,7 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        inline void setCaption(const std::string& caption) { this->text_->setCaption(caption); }
+        inline void setCaption(const std::string& caption) { this->text_->setCaption(caption); this->changedCaption(); }
         inline std::string getCaption() const              { return this->text_->getCaption(); }
 
         void setFont(const std::string& font);
@@ -55,7 +55,7 @@ namespace orxonox
         inline void setSpaceWidth(float width) { this->text_->setSpaceWidth(width); }
         inline float getSpaceWidth() const     { return this->text_->getSpaceWidth(); }
 
-        inline void setColour(const ColourValue& colour) { this->text_->setColour(colour); }
+        inline void setColour(const ColourValue& colour) { this->text_->setColour(colour); this->changedColour(); }
         inline const ColourValue& getColour() const      { return this->text_->getColour(); }
 
         inline void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment) { this->text_->setAlignment(alignment); }
@@ -69,6 +69,8 @@ namespace orxonox
 
     protected:
         virtual void sizeChanged();
+        virtual void changedColour() {}
+        virtual void changedCaption() {}
 
         Ogre::TextAreaOverlayElement* text_;
     };

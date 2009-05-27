@@ -235,11 +235,18 @@ namespace orxonox
                 it->second.killed_++;
 
                 // Reward killer
-                if (killer)
+                if (killer && killer->getPlayer())
                 {
                     std::map<PlayerInfo*, Player>::iterator it = this->players_.find(killer->getPlayer());
                     if (it != this->players_.end())
+                    {
                         it->second.frags_++;
+
+                        if (killer->getPlayer()->getClientID() != CLIENTID_UNKNOWN)
+                            this->gtinfo_.sendKillMessage("You killed " + victim->getPlayer()->getName(), killer->getPlayer()->getClientID());
+                        if (victim->getPlayer()->getClientID() != CLIENTID_UNKNOWN)
+                            this->gtinfo_.sendDeathMessage("You were killed by " + killer->getPlayer()->getName(), victim->getPlayer()->getClientID());
+                    }
                 }
 
                 ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());

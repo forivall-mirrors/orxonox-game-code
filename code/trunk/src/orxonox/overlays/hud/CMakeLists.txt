@@ -7,5 +7,8 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   HUDTimer.cc
   ChatOverlay.cc
   GametypeStatus.cc
+  AnnounceMessage.cc
+  KillMessage.cc
+  DeathMessage.cc
   PongScore.cc
 )

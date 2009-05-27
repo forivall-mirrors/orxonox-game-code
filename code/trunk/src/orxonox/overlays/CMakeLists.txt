@@ -2,6 +2,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   OrxonoxOverlay.cc
   OverlayGroup.cc
   OverlayText.cc
+  FadeoutText.cc
   GUIOverlay.cc
 )
 

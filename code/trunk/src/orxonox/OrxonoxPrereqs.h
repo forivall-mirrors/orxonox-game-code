@@ -267,7 +267,11 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+    class FadeoutText;
     class GametypeStatus;
+    class AnnounceMessage;
+    class KillMessage;
+    class DeathMessage;
     class CreateLines;
     class Scoreboard;
     class Map;
