@@ -44,6 +44,8 @@
 
 namespace orxonox
 {
+    CreateFactory(Projectile);
+  
     Projectile::Projectile(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(Projectile);
