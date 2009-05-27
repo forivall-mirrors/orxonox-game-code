@@ -38,6 +38,7 @@
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
+#include "objects/worldentities/BigExplosion.h"
 
 #include "objects/weaponsystem/WeaponSystem.h"
 #include "objects/weaponsystem/WeaponSlot.h"
@@ -142,8 +143,8 @@ namespace orxonox
         this->bReload_ = false;
 
         if (GameMode::isMaster())
-          if (this->health_ <= 0)
-            this->death();
+            if (this->health_ <= 0 && bAlive_)
+                this->death();
     }
 
     void Pawn::setPlayer(PlayerInfo* player)
@@ -228,10 +229,21 @@ namespace orxonox
                 this->getPlayer()->stopControl();
 
             if (GameMode::isMaster())
-                this->deatheffect();
+            {
+//                this->deathEffect();
+                this->goWithStyle();
+            }
         }
     }
+    void Pawn::goWithStyle()
+    {
+        this->bAlive_ = false;
+        this->setDestroyWhenPlayerLeft(false);
 
+        BigExplosion* chunk = new BigExplosion(this->getCreator());
+        chunk->setPosition(this->getPosition());
+
+    }
     void Pawn::deatheffect()
     {
         // play death effect
