@@ -98,7 +98,11 @@ unsigned int Host::getPlayerID(){
 
 bool Host::Chat(const std::string& message){
   if(!instance_)
-    return false;
+  {
+    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
+      it->incomingChat(message, 0);
+    return true;
+  }
   return instance_->chat(message);
 }
 
@@ -106,7 +110,7 @@ bool Host::Broadcast(const std::string& message){
   if(!instance_)
   {
     for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-      it->incomingChat(message, 0);
+      it->incomingChat(message, CLIENTID_UNKNOWN);
     return true;
   }
   else
