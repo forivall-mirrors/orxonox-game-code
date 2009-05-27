@@ -75,7 +75,7 @@ namespace orxonox
     void createListener();
     bool quitListener();
     static bool addPacket(ENetPacket *packet, ENetPeer *peer);
-    static bool addPacket(ENetPacket *packet, int ID);
+    static bool addPacket(ENetPacket *packet, unsigned int ID);
     static bool addPacketAll(ENetPacket *packet);
     bool sendPackets();
     void disconnectClient(ClientInformation *client);

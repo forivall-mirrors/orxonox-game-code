@@ -142,24 +142,32 @@ namespace orxonox
     return true;
   }
 
-  bool ConnectionManager::addPacket(ENetPacket *packet, int clientID) {
-    ClientInformation *temp = ClientInformation::findClient(clientID);
-    if(!temp){
-      COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
-      return false;
+  bool ConnectionManager::addPacket(ENetPacket *packet, unsigned int clientID) {
+    if ( clientID == CLIENTID_UNKNOWN )
+    {
+      return addPacketAll(packet);
     }
-    return addPacket(packet, temp->getPeer());
+    else
+    {
+      ClientInformation *temp = ClientInformation::findClient(clientID);
+      if(!temp){
+        COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
+        return false;
+      }
+      return addPacket(packet, temp->getPeer());
+    }
   }
 
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
     if(!instance_)
       return false;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
-    for(ClientInformation *i=ClientInformation::getBegin()->next(); i!=0; i=i->next()){
-      COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
-      if(enet_peer_send(i->getPeer(), 0, packet)!=0)
-        return false;
-    }
+//    for(ClientInformation *i=ClientInformation::getBegin()->next(); i!=0; i=i->next()){
+//      COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
+//      if(enet_peer_send(i->getPeer(), 0, packet)!=0)
+//        return false;
+//    }
+    enet_host_broadcast( instance_->server, 0, packet);
     return true;
   }
 
