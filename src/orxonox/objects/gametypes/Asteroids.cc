@@ -56,6 +56,7 @@ namespace orxonox
 
         if (this->time_ < 0 && !this->hasEnded() && this->timerIsActive_)
         {
+            this->gtinfo_.sendAnnounceMessage("Time's up - you have lost the match!");
             this->end();
         }
     }
@@ -64,6 +65,7 @@ namespace orxonox
     {
         if (victim && victim->getPlayer())
         {
+            this->gtinfo_.sendAnnounceMessage("You're dead - you have lost the match!");
             this->end();
         }
     }
@@ -72,7 +74,7 @@ namespace orxonox
     {
         Gametype::start();
 
-        std::string message = "The match has started! Reach the first chekpoint within 60 seconds! But be aware, there may be pirates around...";
+        std::string message = "The match has started! Reach the first chekpoint within 15 seconds! But be aware, there may be pirates around...";
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
     }

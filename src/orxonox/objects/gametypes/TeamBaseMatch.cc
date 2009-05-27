@@ -30,6 +30,7 @@
 
 #include "objects/worldentities/pawns/TeamBaseMatchBase.h"
 #include "core/CoreIncludes.h"
+#include "objects/infos/PlayerInfo.h"
 
 namespace orxonox
 {
@@ -57,9 +58,15 @@ namespace orxonox
             {
                 int teamnr = this->getTeam(originator->getPlayer());
                 if (teamnr == 0)
+                {
                     base->setState(BaseState::controlTeam1);
+                    this->gtinfo_.sendAnnounceMessage("The red team captured a base");
+                }
                 if (teamnr == 1)
+                {
                     base->setState(BaseState::controlTeam2);
+                    this->gtinfo_.sendAnnounceMessage("The blue team captured a base");
+                }
             }
 
             victim->setHealth(victim->getInitialHealth());
@@ -124,6 +131,9 @@ namespace orxonox
     // show points or each interval of time
     void TeamBaseMatch::showPoints()
     {
+        if (!this->hasStarted() || this->hasEnded())
+            return;
+
         COUT(0) << "Points standing:" << std::endl << "Team 1: "<< pointsTeam1_ << std::endl << "Team 2: " << pointsTeam2_ << std::endl;
         if(pointsTeam1_ >=1700 && pointsTeam1_ < 2000) COUT(0) << "Team 1 is near victory!" << std::endl;
         if(pointsTeam2_ >=1700 && pointsTeam2_ < 2000) COUT(0) << "Team 2 is near victory!" << std::endl;
@@ -158,10 +168,29 @@ namespace orxonox
     {
         if (this->pointsTeam1_ >= 2000 || this->pointsTeam2_ >= 2000)
         {
+            int winningteam = -1;
+
             if (this->pointsTeam1_ > this->pointsTeam2_)
+            {
                 COUT(0) << "Team 1 has won the match" << std::endl;
+                winningteam = 0;
+            }
             else
+            {
                 COUT(0) << "Team 2 has won the match" << std::endl;
+                winningteam = 1;
+            }
+
+            for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+            {
+                if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    continue;
+
+                if (it->second == winningteam)
+                    this->gtinfo_.sendAnnounceMessage("You have won the match!", it->first->getClientID());
+                else
+                    this->gtinfo_.sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+            }
 
             this->end();
             this->scoreTimer_.stopTimer();

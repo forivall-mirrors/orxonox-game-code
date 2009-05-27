@@ -30,10 +30,18 @@
 #include "GametypeInfo.h"
 
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
+#include "network/NetworkFunction.h"
+#include "network/Host.h"
+#include "objects/GametypeMessageListener.h"
 
 namespace orxonox
 {
     CreateUnloadableFactory(GametypeInfo);
+
+    registerMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage);
+    registerMemberNetworkFunction(GametypeInfo, dispatchKillMessage);
+    registerMemberNetworkFunction(GametypeInfo, dispatchDeathMessage);
 
     GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
     {
@@ -58,5 +66,65 @@ namespace orxonox
         registerVariable(this->startCountdown_,         variableDirection::toclient);
         registerVariable(this->bStartCountdownRunning_, variableDirection::toclient);
         registerVariable(this->hudtemplate_,            variableDirection::toclient);
+    }
+
+    void GametypeInfo::sendAnnounceMessage(const std::string& message) const
+    {
+        if (GameMode::isMaster())
+        {
+            callMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage, this->getObjectID(), CLIENTID_UNKNOWN, message);
+            this->dispatchAnnounceMessage(message);
+        }
+    }
+
+    void GametypeInfo::sendAnnounceMessage(const std::string& message, unsigned int clientID) const
+    {
+        if (GameMode::isMaster())
+        {
+            if (clientID == CLIENTID_SERVER)
+                this->dispatchAnnounceMessage(message);
+            else
+                callMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage, this->getObjectID(), clientID, message);
+        }
+    }
+
+    void GametypeInfo::sendKillMessage(const std::string& message, unsigned int clientID) const
+    {
+        if (GameMode::isMaster())
+        {
+            if (clientID == CLIENTID_SERVER)
+                this->dispatchKillMessage(message);
+            else
+                callMemberNetworkFunction(GametypeInfo, dispatchKillMessage, this->getObjectID(), clientID, message);
+        }
+    }
+
+    void GametypeInfo::sendDeathMessage(const std::string& message, unsigned int clientID) const
+    {
+        if (GameMode::isMaster())
+        {
+            if (clientID == CLIENTID_SERVER)
+                this->dispatchDeathMessage(message);
+            else
+                callMemberNetworkFunction(GametypeInfo, dispatchDeathMessage, this->getObjectID(), clientID, message);
+        }
+    }
+
+    void GametypeInfo::dispatchAnnounceMessage(const std::string& message) const
+    {
+        for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
+            it->announcemessage(this, message);
+    }
+
+    void GametypeInfo::dispatchKillMessage(const std::string& message) const
+    {
+        for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
+            it->killmessage(this, message);
+    }
+
+    void GametypeInfo::dispatchDeathMessage(const std::string& message) const
+    {
+        for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
+            it->deathmessage(this, message);
     }
 }

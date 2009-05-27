@@ -71,7 +71,7 @@ namespace orxonox
     void CheckPoint::changedActivity()
     {
         SUPER(CheckPoint, changedActivity);
-        
+
         if (this->BaseObject::isActive())
         {
             this->setRadarVisibility(true);
@@ -92,15 +92,24 @@ namespace orxonox
             gametype->addTime(addTime_);
             this->setRadarVisibility(false);
 
-            if (bIsTriggered && bIsFirst_)
+            if (bIsTriggered)
             {
-                gametype->setTimeLimit(addTime_);
-                gametype->firstCheckpointReached(true);
-            }
+                if (bIsFirst_)
+                {
+                    gametype->setTimeLimit(addTime_);
+                    gametype->firstCheckpointReached(true);
+                }
 
-            if (bIsTriggered && bIsDestination_)
-            {
-                gametype->end();
+                if (bIsDestination_)
+                {
+                    const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage("Congratulations - you have won the match!");
+                    gametype->end();
+                }
+
+                if (!bIsFirst_ && !bIsDestination_)
+                {
+                    const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage("Checkpoint reached");
+                }
             }
         }
     }

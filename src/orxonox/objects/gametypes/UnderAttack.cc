@@ -35,6 +35,7 @@
 #include "network/Host.h"
 
 #include "objects/worldentities/pawns/Destroyer.h"
+#include "objects/infos/PlayerInfo.h"
 
 namespace orxonox
 {
@@ -72,6 +73,17 @@ namespace orxonox
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
             this->gameEnded_ = true;
+
+            for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+            {
+                if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    continue;
+
+                if (it->second == 0)
+                    this->gtinfo_.sendAnnounceMessage("You have won the match!", it->first->getClientID());
+                else
+                    this->gtinfo_.sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+            }
         }
     }
 
@@ -144,14 +156,29 @@ namespace orxonox
                 std::string message = "Time is up! Team 1 has won!";
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
+
+                for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+                {
+                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                        continue;
+
+                    if (it->second == 1)
+                        this->gtinfo_.sendAnnounceMessage("You have won the match!", it->first->getClientID());
+                    else
+                        this->gtinfo_.sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+                }
             }
 
              //prints gametime
-            if ( gameTime_ <= timesequence_)
+            if ( gameTime_ <= timesequence_ && gameTime_ > 0)
             {
-                std::string message = convertToString(timesequence_) + " sec left!";
+                std::string message = convertToString(timesequence_) + " seconds left!";
+/*
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
+*/
+                this->gtinfo_.sendAnnounceMessage(message);
+
                 if (timesequence_ >= 30 && timesequence_ <= 60)
                 {
                     timesequence_ = timesequence_ - 10;
