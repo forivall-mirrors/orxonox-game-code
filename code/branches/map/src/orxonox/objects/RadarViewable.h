@@ -108,6 +108,7 @@ namespace orxonox
         {
             return this->uniqueId_;
         }
+        //friend class Map;
 
     private:
         void validate(const WorldEntity* object) const

@@ -68,6 +68,19 @@
 
     Map* Map::singletonMap_s = 0;
     Ogre::SceneManager* Map::mapSceneM_s = 0;
+    Ogre::Camera* Map::Cam_ = 0;
+    Ogre::SceneNode* Map::CamNode_ = 0;
+    Ogre::MaterialPtr Map::OverlayMaterial_;// = init();
+    Ogre::Overlay* Map::overlay_ = 0;
+/*
+Ogre::MaterialPtr Map::init()
+{
+	Ogre::MaterialPtr tmp;
+	tmp.setNull();
+	return tmp;
+}
+*/
+
     //int Map::mouseLookSpeed_ = 200;
     //Ogre::SceneNode* Map::playerShipNode_ = 0;
 
@@ -115,17 +128,19 @@
         
         // Alter the camera aspect ratio to match the viewport
         //mCamera->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
-        Cam_ = Map::getMapSceneManager()->createCamera("ReflectCam");
+        if(!Map::Cam_)
+            Cam_ = Map::getMapSceneManager()->createCamera("ReflectCam");
         //Cam_->setPosition(200,170, -160);
         //Cam_->lookAt(0,0,0);
         Cam_->setAspectRatio(1);
         //Cam_->setRenderingDistance(0);
-        CamNode_ = Map::getMapSceneManager()->getRootSceneNode()->createChildSceneNode();
+        if(!Map::CamNode_)
+            CamNode_ = Map::getMapSceneManager()->getRootSceneNode()->createChildSceneNode();
         
 
         //Create overlay material
-        std::string camMat_id = "RttMat";
-        Ogre::MaterialPtr material = this->createRenderCamera(Cam_, camMat_id);
+        if(Map::OverlayMaterial_.isNull())
+            Map::OverlayMaterial_ = this->createRenderCamera(Cam_, "RttMat");
 /*
         Ogre::TexturePtr rttTex = Ogre::TextureManager::getSingleton().createManual("RttTex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 512, 512, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
@@ -158,67 +173,83 @@
         pOverlay->add2D(m_pOverlayPanel);
         pOverlay->show();
 */
-        this->overlay_ = Ogre::OverlayManager::getSingletonPtr()->create("MapOverlay");
-        Ogre::OverlayContainer* m_pOverlayPanel = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel","OverlayPanelName%d"));
-        m_pOverlayPanel->setMetricsMode(Ogre::GMM_PIXELS);
-        m_pOverlayPanel->setPosition(10, 10);
-        m_pOverlayPanel->setDimensions(600, 400);
-        // Give overlay a texture
-        m_pOverlayPanel->setMaterialName(camMat_id); 
-        overlay_->add2D(m_pOverlayPanel);
+        if(!this->overlay_)
+        {
+            this->overlay_ = Ogre::OverlayManager::getSingletonPtr()->create("MapOverlay");
+            Ogre::OverlayContainer* m_pOverlayPanel = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel","OverlayPanelName%d"));
+            //m_pOverlayPanel->setMetricsMode(Ogre::GMM_PIXELS);
+            //m_pOverlayPanel->setPosition(10, 10);
+            //m_pOverlayPanel->setDimensions(600, 400);
+            m_pOverlayPanel->setPosition(0.01, 0.003);
+            m_pOverlayPanel->setDimensions(0.5, 0.4);
+            // Give overlay a texture
+            m_pOverlayPanel->setMaterialName("RttMat"); 
+            overlay_->add2D(m_pOverlayPanel);
 
-        //Add Borders
-        Ogre::BorderPanelOverlayElement* oBorder = static_cast<Ogre::BorderPanelOverlayElement*>(Ogre::OverlayManager::getSingletonPtr()->createOverlayElement("BorderPanel", "MapBorderPanel" + getUniqueNumberString()));
-/*
-//TODO border size
-        oBorder->setBorderSize( 0.003, 16 * 0.003 );
-        oBorder->setBorderMaterialName("StatsBorder");
-        oBorder->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
-        oBorder->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
-        oBorder->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
-        oBorder->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
-        oBorder->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
-        oBorder->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
-        oBorder->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
-        oBorder->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
-        overlay_->add2D(oBorder);
-*/
+            //Add Borders
+            Ogre::BorderPanelOverlayElement* oBorder = static_cast<Ogre::BorderPanelOverlayElement*>(Ogre::OverlayManager::getSingletonPtr()->createOverlayElement("BorderPanel", "MapBorderPanel" + getUniqueNumberString()));
+            oBorder->setBorderSize( 0.003, 0.003 );
+            oBorder->setDimensions(0.5, 0.4);
+            oBorder->setBorderMaterialName("StatsBorder");
+            oBorder->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
+            oBorder->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
+            oBorder->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
+            oBorder->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
+            oBorder->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
+            oBorder->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
+            oBorder->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
+            oBorder->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+            //overlay_->add2D(oBorder);
+            m_pOverlayPanel->addChild(oBorder);
+        }
+
 
         //Not Showing the map as default
         this->isVisible_=false;
         overlay_->hide();
 
-        //Create plane to show grid
-        Ogre::Entity* plane_ent = Map::getMapSceneManager()->createEntity( "MapPlane", "plane.mesh");
-        planeNode_ = Map::getMapSceneManager()->getRootSceneNode()->createChildSceneNode();
+        //Create plane to show gridTypeError: blimport() takes no keyword arguments
+/*        Ogre::Entity* plane_ent;
+        if(Map::getMapSceneManager()->hasEntity("MapPlane"))
+            plane_ent = Map::getMapSceneManager()->getEntity("MapPlane");
+        else
+            plane_ent = Map::getMapSceneManager()->createEntity( "MapPlane", "plane.mesh");
+*/
+        this->movablePlane_ = new Ogre::MovablePlane( Vector3::UNIT_Y, 0 );
+        this->movablePlane_->normalise();
+
+        if(!Map::getMapSceneManager()->hasEntity("MapPlane"))
+        {
+            Ogre::Entity* plane_ent = Map::getMapSceneManager()->createEntity( "MapPlane", "plane.mesh");
+            planeNode_ = Map::getMapSceneManager()->createSceneNode();
         //Create plane for calculations
-        movablePlane_ = new Ogre::MovablePlane( Vector3::UNIT_Y, 0 );
-        movablePlane_->normalise();
+        
 
         //Ogre::MaterialPtr plane_mat = Ogre::MaterialManager::getSingleton().create("mapgrid", "General");
         //plane_mat->getTechnique(0)->getPass(0)->createTextureUnitState("mapgrid.tga");
         //plane_ent->setMaterialName("mapgrid");
-        plane_ent->setMaterialName("Map/Grid");
-        planeNode_->attachObject(plane_ent);
+            plane_ent->setMaterialName("Map/Grid");
+            planeNode_->attachObject(plane_ent);
         
-        planeNode_->scale(10,1,10);
+            planeNode_->scale(160,1,160);
 //        planeNode_->attachObject(movablePlane_);
         //Ogre::Material plane_mat = Ogre::MaterialManager::getSingletonPtr()->getByName("rock");
         
 
         //ToDo create material script
-        Ogre::MaterialPtr myManualObjectMaterial = Ogre::MaterialManager::getSingleton().create("Map/Line","General"); 
-        myManualObjectMaterial->setReceiveShadows(false); 
-        myManualObjectMaterial->getTechnique(0)->setLightingEnabled(true); 
-        myManualObjectMaterial->getTechnique(0)->getPass(0)->setDiffuse(1,1,0,0); 
-        myManualObjectMaterial->getTechnique(0)->getPass(0)->setAmbient(1,1,0); 
-        myManualObjectMaterial->getTechnique(0)->getPass(0)->setSelfIllumination(1,1,0);
-
+            Ogre::MaterialPtr myManualObjectMaterial = Ogre::MaterialManager::getSingleton().create("Map/Line","General"); 
+            myManualObjectMaterial->setReceiveShadows(false); 
+            myManualObjectMaterial->getTechnique(0)->setLightingEnabled(true); 
+            myManualObjectMaterial->getTechnique(0)->getPass(0)->setDiffuse(1,1,0,0); 
+            myManualObjectMaterial->getTechnique(0)->getPass(0)->setAmbient(1,1,0); 
+            myManualObjectMaterial->getTechnique(0)->getPass(0)->setSelfIllumination(1,1,0);
+    }
     }
 
     Map::~Map()
     {
         this->singletonMap_s = 0;
+        //delete this->overlay_;
         /*if (this->isInitialized())
         {
         //delete sManager_;
@@ -285,15 +316,16 @@
                 if(it->isHumanShip_ && it->MapNode_ != this->playerShipNode_)
                 {
                     this->playerShipNode_ = it->MapNode_;
-                    this->planeNode_->getParent()->removeChild(this->planeNode_);
+                    if(planeNode_ && this->planeNode_->getParent())
+                        this->planeNode_->getParent()->removeChild(this->planeNode_);
                     this->playerShipNode_->addChild(this->planeNode_);
                 //Movable Plane needs to be attached direcly for calculations
                 //this->movablePlane_->detatchFromParent();
                 //this->movablePlane_->getParentSceneNode()->detachObject(this->movablePlane_);
                 //this->movablePlane_->redefine(it->MapNode_->getLocalAxes().GetColumn(1) , it->MapNode_->getPosition());
                 //it->MapNode_->attachObject(this->movablePlane_);
-
-                    this->CamNode_->getParent()->removeChild(this->CamNode_);
+                    if(planeNode_ && this->CamNode_->getParent())
+                        this->CamNode_->getParent()->removeChild(this->CamNode_);
                     this->playerShipNode_->addChild(this->CamNode_);
                     this->CamNode_->attachObject(this->Cam_);
                 //this->CamNodeHelper_ = this->CamNode_->createChildSceneNode();
