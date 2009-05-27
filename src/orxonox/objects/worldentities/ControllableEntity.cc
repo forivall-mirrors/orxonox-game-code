@@ -62,6 +62,7 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->xmlcontroller_ = 0;
+        this->reverseCamera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
         this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
         this->bMouseLook_ = false;
@@ -142,7 +143,11 @@ namespace orxonox
             if (parent)
                 parent->attach(position);
         }
-        this->cameraPositions_.push_back(position);
+
+        if (!position->getRenderCamera())
+            this->cameraPositions_.push_back(position);
+        else
+            this->setReverseCamera(position);
     }
 
     CameraPosition* ControllableEntity::getCameraPosition(unsigned int index) const

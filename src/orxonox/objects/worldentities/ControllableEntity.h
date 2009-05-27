@@ -107,6 +107,11 @@ namespace orxonox
             inline const std::string& getCameraPositionTemkplate() const
                 { return this->cameraPositionTemplate_; }
 
+            inline void setReverseCamera(CameraPosition* camera)
+                { this->reverseCamera_ = camera; }
+            inline CameraPosition* getReverseCamera() const
+                { return this->reverseCamera_; }
+
             using WorldEntity::setPosition;
             using WorldEntity::setOrientation;
             using MobileEntity::setVelocity;
@@ -191,6 +196,7 @@ namespace orxonox
             std::list<CameraPosition*> cameraPositions_;
             std::string cameraPositionTemplate_;
             Controller* xmlcontroller_;
+            CameraPosition* reverseCamera_;
     };
 }
 
