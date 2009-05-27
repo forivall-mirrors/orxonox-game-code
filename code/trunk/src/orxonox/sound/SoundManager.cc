@@ -52,7 +52,11 @@ namespace orxonox
         else
         {
             COUT(4) << "Sound: OpenAL ALUT version: " << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
-            COUT(4) << "Sound: OpenAL ALUT supported MIME types: " << alutGetMIMETypes(ALUT_LOADER_BUFFER) << std::endl;
+            const char* str = alutGetMIMETypes(ALUT_LOADER_BUFFER);
+            if (str == NULL)
+                COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
+            else
+                COUT(4) << "Sound: OpenAL ALUT supported MIME types: " << str << std::endl;
             if(SoundManager::device_s == NULL)
             {
                 COUT(3) << "Sound: OpenAL: Open sound device..." << std::endl;
