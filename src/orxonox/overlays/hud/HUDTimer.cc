@@ -54,10 +54,13 @@ namespace orxonox
     SUPER(HUDTimer, tick, dt);
 
     Gametype* gametype = this->getGametype();
-
-    if (gametype->getTimerIsActive())
+    
+    if(gametype)
     {
-      this->setCaption(convertToString((int)gametype->getTime() + 1));
+      if (gametype->getTimerIsActive())
+      {
+        this->setCaption(convertToString((int)gametype->getTime() + 1));
+      }
     }
   }
 

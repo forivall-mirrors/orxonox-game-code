@@ -47,6 +47,13 @@ namespace orxonox
         this->textureIndex_ = 1;
         this->maxTextureIndex_ = 8;
         this->textureTimer_.setTimer(0.01, true, this, createExecutor(createFunctor(&LightningGunProjectile::changeTexture)));
+        
+        registerVariables();
+    }
+    
+    void LightningGunProjectile::registerVariables()
+    {
+        registerVariable(this->materialBase_);
     }
     
     void LightningGunProjectile::setMaterial(const std::string& material)

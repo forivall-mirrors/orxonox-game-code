@@ -143,7 +143,7 @@ namespace orxonox
     Identifier* id = ClassByID(header.getClassID());
     if (!id)
     {
-        for(int i = 0; i<100; i++)
+        for(int i = 0; i<160; i++)
             COUT(0) << "classid: " << i << " identifier: " << ClassByID(i) << endl;
         COUT(0) << "Assertion failed: id" << std::endl;
         COUT(0) << "Possible reason for this error: Client received a synchronizable object whose class has no factory." << std::endl;
@@ -250,6 +250,7 @@ namespace orxonox
     if (this->classID == static_cast<uint32_t>(-1))
         this->classID = this->getIdentifier()->getNetworkID();
 
+    assert(ClassByID(this->classID));
     assert(this->classID==this->getIdentifier()->getNetworkID());
     std::vector<SynchronisableVariableBase*>::iterator i;
 

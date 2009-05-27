@@ -51,6 +51,8 @@ namespace orxonox
             unsigned int maxTextureIndex_;
             Timer<LightningGunProjectile> textureTimer_;
             std::string materialBase_;
+      private:
+            void registerVariables();
     };
 }
 
