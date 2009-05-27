@@ -72,10 +72,28 @@ namespace orxonox
         GraphicsManager::getInstance().setCamera(this->camera_);
 
         {
-            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startGame);
+            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startStandalone);
             functor->setObject(this);
-            this->ccStartGame_ = createConsoleCommand(functor, "startGame");
-            CommandExecutor::addConsoleCommandShortcut(this->ccStartGame_);
+            this->ccStartStandalone_ = createConsoleCommand(functor, "startGame");
+            CommandExecutor::addConsoleCommandShortcut(this->ccStartStandalone_);
+        }
+        {
+            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startServer);
+            functor->setObject(this);
+            this->ccStartServer_ = createConsoleCommand(functor, "startServer");
+            CommandExecutor::addConsoleCommandShortcut(this->ccStartServer_);
+        }
+        {
+            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startClient);
+            functor->setObject(this);
+            this->ccStartClient_ = createConsoleCommand(functor, "startClient");
+            CommandExecutor::addConsoleCommandShortcut(this->ccStartClient_);
+        }
+        {
+            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startDedicated);
+            functor->setObject(this);
+            this->ccStartDedicated_ = createConsoleCommand(functor, "startDedicated");
+            CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
         }
 
         InputManager::getInstance().requestEnterState("mainMenu");
@@ -109,10 +127,32 @@ namespace orxonox
     {
     }
 
-    void GSMainMenu::startGame()
+    void GSMainMenu::startStandalone()
     {
         // HACK - HACK
         Game::getInstance().popState();
         Game::getInstance().requestStates("standalone, level");
+    }
+
+    void GSMainMenu::startServer()
+    {
+        // HACK - HACK
+        Game::getInstance().popState();
+        Game::getInstance().requestStates("server, level");
+    }
+
+    void GSMainMenu::startClient()
+    {
+        // HACK - HACK
+        Game::getInstance().popState();
+        Game::getInstance().requestStates("client, level");
+    }
+
+    void GSMainMenu::startDedicated()
+    {
+        // HACK - HACK
+        Game::getInstance().popState();
+        Game::getInstance().popState();
+        Game::getInstance().requestStates("dedicated, level");
     }
 }
