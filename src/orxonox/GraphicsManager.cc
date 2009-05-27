@@ -61,6 +61,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
+#include "core/Game.h"
 #include "core/GameMode.h"
 #include "tools/WindowEventListener.h"
 #include "tools/ParticleInterface.h"
@@ -439,6 +440,6 @@ namespace orxonox
     }
     void OgreWindowEventListener::windowClosed(Ogre::RenderWindow* rw)
     {
-        // TODO: Notify the right class to shut down the Game
+        Game::getInstance().stop();
     }
 }
