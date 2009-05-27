@@ -117,6 +117,7 @@ namespace orxonox
             virtual void removePlayer();
 
             virtual void death();
+            virtual void goWithStyle();
             virtual void deatheffect();
             virtual void spawneffect();
 
