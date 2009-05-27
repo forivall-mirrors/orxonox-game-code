@@ -36,6 +36,12 @@
 #include "util/Debug.h"
 #include "core/OrxonoxClass.h"
 
+#include <string>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+#include <OgreManualObject.h>
+#include "orxonox/tools/DynamicLines.h"
+
 namespace orxonox
 {
     /**
@@ -51,9 +57,10 @@ namespace orxonox
             Triangle
         };
 
+
     public:
         RadarViewable();
-        virtual ~RadarViewable() { }
+        virtual ~RadarViewable();
 
         inline void setRadarObjectCamouflage(float camouflage)
             { this->radarObjectCamouflage_ = camouflage; }
@@ -84,6 +91,29 @@ namespace orxonox
         inline Shape getRadarObjectShape() const
             { return this->radarObjectShape_; }
 
+/*
+        inline void setMapNode(Ogre::SceneNode * node)
+            { this->MapNode_ = node; }
+        inline Ogre::SceneNode * getMapNode() const
+            { return this->MapNode_; }
+        inline void setMapEntity(Ogre::Entity * ent)
+            { this->MapEntity_ = ent; }
+        inline Ogre::Entity * getMapEntity() const
+            { return this->MapEntity_; }
+*/
+        //Used for Map
+        Ogre::SceneNode * MapNode_;
+        Ogre::Entity * MapEntity_;
+        DynamicLines* line_;
+        Ogre::SceneNode * LineNode_;
+        void addMapEntity();
+        void updateMapPosition();
+        bool isHumanShip_;
+        inline std::string getUniqueId()
+        {
+            return this->uniqueId_;
+        }
+
     private:
         void validate(const WorldEntity* object) const
         {
@@ -93,12 +123,18 @@ namespace orxonox
                 assert(0);
             }
         }
-        
+
         bool bVisibility_;
+        //Map
+        std::string uniqueId_;
+
+
+        //Radar
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
         std::string radarObjectDescription_;
         ColourValue radarObjectColour_;
+
     };
 }
 

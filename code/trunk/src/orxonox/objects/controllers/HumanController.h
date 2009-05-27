@@ -77,6 +77,9 @@ namespace orxonox
                 }
             }
 
+            //friend class, for mouselook
+            friend class Map;
+
         private:
             static HumanController* localController_s;
     };

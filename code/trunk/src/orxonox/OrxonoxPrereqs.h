@@ -246,6 +246,8 @@ namespace orxonox
     class Shader;
     template <class T>
     class Timer;
+    class DynamicLines;
+    class DynamicRenderable;
 
     // overlays
     class BarColour;
@@ -268,6 +270,7 @@ namespace orxonox
     class GametypeStatus;
     class CreateLines;
     class Scoreboard;
+    class Map;
 
     //gui
     class GUIManager;

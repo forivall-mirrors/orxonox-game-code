@@ -58,12 +58,19 @@ namespace orxonox
             inline bool getIsAbsolute() const
                 { return this->bAbsolute_; }
 
+            inline void setRenderCamera(bool bRenderCamera)
+                { this->bRenderCamera_ = bRenderCamera; }
+            inline bool getRenderCamera() const
+                { return this->bRenderCamera_; }
+
             void attachCamera(Camera* camera);
+            void attachCamera(Ogre::Camera* camera);
 
         private:
             bool bDrag_;
             bool bAllowMouseLook_;
             bool bAbsolute_;
+            bool bRenderCamera_;
     };
 }
 

@@ -111,6 +111,8 @@ namespace orxonox
                 { return this->pickups_; }
             virtual void useItem()
                 { this->pickups_.useItem(); }
+            
+            virtual void startLocalHumanControl();
 
         protected:
             virtual void setPlayer(PlayerInfo* player);
