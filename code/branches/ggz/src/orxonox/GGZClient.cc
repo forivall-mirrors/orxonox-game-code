@@ -7,12 +7,13 @@ namespace orxonox
 {
     GGZClient* GGZClient::singletonRef_s = 0;
 
-    GGZClient::GGZClient()
+    GGZClient::GGZClient(GSClient * c)
         : ggzSocket(io), gameSocket(io)
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
 
+        client = c;
         initGGZ();
     }
 
@@ -37,23 +38,28 @@ namespace orxonox
 
     void GGZClient::tick(const float /*dt*/)
     {
+        COUT(3) << "Tick\n";
         boost::system::error_code ec;
         io.poll(ec);
-        if (ec) {
+        if (ec)
+        {
             /* TODO: Error */
         }
     }
 
     void GGZClient::initGGZ()
     {
+        COUT(3) << "Initializing GGZ\n";
         ggzmod = ggzmod_new(GGZMOD_GAME);
         ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
                 &orxonox::GGZClient::handleGGZModServer);
-        if (ggzmod_connect(ggzmod) < 0) {
+        if (ggzmod_connect(ggzmod) < 0)
+        {
             /* TODO: Error */
         }
         int fd = ggzmod_get_fd(ggzmod);
-        if (fd < 0) {
+        if (fd < 0)
+        {
             /* TODO: Error */
         }
         /* TODO: Error */
@@ -83,6 +89,7 @@ namespace orxonox
     void GGZClient::handleGGZModServer(GGZMod * ggzmod, GGZModEvent e,
             const void *data)
     {
+        COUT(3) << "GGZ Initialized\n";
         ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
         getInstance().gameSocket.assign(boost::asio::local::stream_protocol(), *(int*)data);
         getInstance().gameSocket.async_read_some(boost::asio::null_buffers(), boost::bind(&handleGame, boost::asio::placeholders::error));

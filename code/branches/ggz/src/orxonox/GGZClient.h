@@ -3,6 +3,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "objects/Tickable.h"
+#include "gamestates/GSClient.h"
 
 #include <ggzmod.h>
 #include <boost/asio.hpp>
@@ -12,7 +13,7 @@ namespace orxonox
     class _OrxonoxExport GGZClient : public Tickable
     {
         public:
-            GGZClient();
+            GGZClient(GSClient * client);
             ~GGZClient();
 
             static GGZClient& getInstance();
@@ -22,6 +23,7 @@ namespace orxonox
         private:
             static GGZClient* singletonRef_s;
 
+            GSClient * client;
             GGZMod * ggzmod;
             boost::asio::io_service io;
             boost::asio::local::stream_protocol::socket ggzSocket;

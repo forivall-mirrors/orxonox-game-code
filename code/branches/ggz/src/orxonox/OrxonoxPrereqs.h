@@ -234,7 +234,7 @@ namespace orxonox
     class CreateLines;
     class Scoreboard;
 
-    //gui
+    // gui
     class GUIManager;
 
     // game states
@@ -247,6 +247,9 @@ namespace orxonox
     class GSServer;
     class GSClient;
     class GSGUI;
+
+    // GGZ
+    class GGZClient;
 }
 
 namespace Ogre

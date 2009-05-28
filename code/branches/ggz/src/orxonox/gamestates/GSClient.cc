@@ -29,6 +29,7 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "GSClient.h"
+#include "SpecialConfig.h"
 
 #include "core/input/InputManager.h"
 #include "core/CommandLine.h"
@@ -43,8 +44,9 @@ namespace orxonox
     SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
     GSClient::GSClient()
-        : GameState<GSGraphics>("client")
-        , client_(0)
+        : GameState<GSGraphics>("client"),
+        client_(0),
+        ggzClient(0)
     {
     }
 
@@ -57,19 +59,19 @@ namespace orxonox
         Core::setIsClient(true);
 
 #ifdef GGZMOD_FOUND
-        ggzClient = NULL;
-        if (GGZClient::isActive()) {
-            COUT(3) << "Initializing GGZ\n";
-            ggzClient = new GGZClient;
+        if (GGZClient::isActive())
+        {
+            this->ggzClient = new GGZClient(this);
+            return;
         }
-        else {
-            COUT(3) << "Not using GGZ\n";
-        }
-#else  /* GGZMOD_FOUND */
-        COUT(3) << "GGZ support disabled\n";
 #endif /* GGZMOD_FOUND */
 
-        this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+        this->connect(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+    }
+
+    void GSClient::connect(const std::string& address, int port)
+    {
+        this->client_ = new Client(address, port);
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
@@ -85,12 +87,10 @@ namespace orxonox
 
         client_->closeConnection();
 
-#ifdef GGZMOD_FOUND
         if (ggzClient)
         {
             delete ggzClient;
         }
-#endif /* GGZMOD_FOUND */
 
         // destroy client
         delete this->client_;

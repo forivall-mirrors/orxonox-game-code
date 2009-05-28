@@ -7,4 +7,4 @@ Name = Orxonox
 ProtocolEngine = Orxonox
 ProtocolVersion = 0
 Version = 0
-IconPath = /home/adi/development/orxonox/media/materials/textures/orxonox_logo.svg
+#IconPath = /home/adi/development/orxonox/media/materials/textures/orxonox_logo.svg
