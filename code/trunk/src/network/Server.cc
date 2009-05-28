@@ -363,7 +363,7 @@ namespace orxonox
     assert(b);
     packet::Gamestate *g = new packet::Gamestate();
     g->setClientID(temp->getID());
-    b = g->collectData(0);
+    b = g->collectData(0,0x1);
     if(!b)
       return false; //no data for the client
     b = g->compressData();
