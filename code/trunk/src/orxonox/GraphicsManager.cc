@@ -141,10 +141,6 @@ namespace orxonox
                 delete this->ogreWindowEventListener_;
             }
 
-            // destroy render window
-            Ogre::RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
-            renderer->destroyRenderWindow("Orxonox");
-
             // unload all compositors
             Ogre::CompositorManager::getSingleton().removeAll();
 
