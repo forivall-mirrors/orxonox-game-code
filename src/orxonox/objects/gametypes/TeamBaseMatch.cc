@@ -53,6 +53,8 @@ namespace orxonox
         TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
         if (base)
         {
+            if ( !originator )
+                return false;
             std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(base);
             if (it != this->bases_.end())
             {
