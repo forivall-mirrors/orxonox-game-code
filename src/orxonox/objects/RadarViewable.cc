@@ -71,21 +71,20 @@ namespace orxonox
 
     RadarViewable::~RadarViewable()
     {
+        if (this->isHumanShip_ && MapNode_)
+            MapNode_->removeAllChildren();
+
         if (MapNode_)
             delete MapNode_;
-        MapNode_=0;
 
         if (MapEntity_)
             delete MapEntity_;
-        MapEntity_=0;
 
         if (line_)
             delete line_;
-        line_=0;
 
         if (LineNode_)
             delete LineNode_;
-        LineNode_=0;
     }
 
     void RadarViewable::addMapEntity()
