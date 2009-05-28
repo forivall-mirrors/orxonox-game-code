@@ -96,6 +96,11 @@ namespace orxonox
             else
                 alSourcei(this->source_, AL_LOOPING, AL_FALSE);
             alSourcePlay(this->source_);
+
+            if(alGetError() != AL_NO_ERROR)
+            {
+                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->source_ << std::endl;
+            }
         }
     }
 
@@ -160,7 +165,6 @@ namespace orxonox
 
         alGenSources(1, &this->source_);
         alSourcei(this->source_, AL_BUFFER, this->buffer_);
-//         ALenum
         if(alGetError() != AL_NO_ERROR) {
             COUT(2) << "Sound: OpenAL: Error loading sample file: " << filename << std::endl;
             return false;
