@@ -45,6 +45,8 @@ namespace orxonox
 
         this->pointsTeam1_ = 0;
         this->pointsTeam2_ = 0;
+
+        this->setHUDTemplate("TeamBaseMatchHUD");
     }
 
     // Change the control of the defeated base and respawn it with its initial health
@@ -53,8 +55,9 @@ namespace orxonox
         TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
         if (base)
         {
-            if ( !originator )
+            if (!originator)
                 return false;
+
             std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(base);
             if (it != this->bases_.end())
             {
@@ -214,6 +217,35 @@ namespace orxonox
         }
 
         this->endGame();
+    }
+
+    int TeamBaseMatch::getTeamPoints(int team)
+    {
+        if(team == 0)
+        {
+            return this->pointsTeam1_;
+        }
+        if(team == 1)
+        {
+            return this->pointsTeam2_;
+        }
+
+        return 0;
+    }
+
+    int TeamBaseMatch::getTeamBases(int team)
+    {
+        int count = 0;
+
+        for (std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.begin(); it != this->bases_.end(); ++it)
+        {
+            if ((*it)->getState() == BaseState::controlTeam1 && team == 0)
+                count++;
+            if ((*it)->getState() == BaseState::controlTeam2 && team == 1)
+                count++;
+        }
+
+        return count;
     }
 
     void TeamBaseMatch::addBase(TeamBaseMatchBase* base)

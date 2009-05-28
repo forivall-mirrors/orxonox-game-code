@@ -54,6 +54,8 @@ namespace orxonox
             TeamBaseMatchBase* getBase(unsigned int index) const;
 
             void addTeamPoints(int team, int points);
+            int getTeamPoints(int team);
+            int getTeamBases(int team);
 
         protected:
             void winPoints();
