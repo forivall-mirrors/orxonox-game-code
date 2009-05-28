@@ -101,6 +101,7 @@ namespace orxonox
         {
             Map::mapSceneM_s = sm;
         }
+        //static Ogre::MaterialPtr init();
 
     private: // variables
         static Map* singletonMap_s;
@@ -109,8 +110,10 @@ namespace orxonox
         Ogre::OverlayManager * oManager_;
 
         static Ogre::SceneManager* mapSceneM_s;
-        Ogre::SceneNode* CamNode_;
-        Ogre::Camera* Cam_;
+        static Ogre::SceneNode* CamNode_;
+        static Ogre::Camera* Cam_;
+        static Ogre::MaterialPtr OverlayMaterial_;
+        static Ogre::Overlay* overlay_;
         //Ogre::SceneNode* CamNodeHelper_;
         Ogre::SceneNode* playerShipNode_;
         Ogre::SceneNode* planeNode_;
