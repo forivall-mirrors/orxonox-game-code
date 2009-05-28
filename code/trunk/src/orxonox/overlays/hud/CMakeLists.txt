@@ -11,4 +11,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   KillMessage.cc
   DeathMessage.cc
   PongScore.cc
+  UnderAttackHealthBar.cc
+  TeamBaseMatchScore.cc
 )

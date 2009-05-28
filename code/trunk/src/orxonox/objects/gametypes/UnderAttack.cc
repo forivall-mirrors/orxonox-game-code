@@ -49,6 +49,8 @@ namespace orxonox
         this->destroyer_ = 0;
         this->gameEnded_ = false;
 
+        this->setHUDTemplate("UnderAttackHUD");
+
         this->setConfigValues();
         this->timesequence_ = (int) this->gameTime_;
     }
