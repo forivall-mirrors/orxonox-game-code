@@ -180,7 +180,6 @@ namespace orxonox
         delete this->luaBind_;
         delete this->languageInstance_;
         delete this->configFileManager_;
-        delete this->signalHandler_;
 
         // Destroy command line arguments
         CommandLine::destroyAllArguments();
@@ -189,6 +188,7 @@ namespace orxonox
 
         assert(Core::singletonRef_s);
         Core::singletonRef_s = 0;
+        delete this->signalHandler_;
     }
 
     /**
