@@ -101,7 +101,7 @@ namespace orxonox
     if ( reference != 0 )
       delete reference;
     reference = new packet::Gamestate();
-    if(!reference->collectData(++id_)){ //we have no data to send
+    if(!reference->collectData(++id_, 0x1)){ //we have no data to send
       delete reference;
       reference=0;
     }
@@ -199,7 +199,7 @@ namespace orxonox
        assert(b);
     }
     assert(!gs->isDiffed());
-    return gs->spreadData();
+    return gs->spreadData(0x1);
   }
 
 }

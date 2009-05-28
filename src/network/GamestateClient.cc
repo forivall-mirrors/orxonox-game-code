@@ -110,7 +110,7 @@ namespace orxonox
 
   packet::Gamestate *GamestateClient::getGamestate(){
     packet::Gamestate *gs = new packet::Gamestate();
-    if(!gs->collectData(0)){
+    if(!gs->collectData(0,0x2)){
       delete gs;
       return 0;
     }
@@ -171,7 +171,7 @@ namespace orxonox
       gs=undiffed;
       COUT(5) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
     }
-    if(gs->spreadData())
+    if(gs->spreadData(0x2))
       return gs;
     else
     {

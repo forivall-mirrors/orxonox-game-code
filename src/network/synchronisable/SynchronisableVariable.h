@@ -121,7 +121,7 @@ namespace orxonox{
 
   template <class T> inline uint32_t SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
   {
-    if ( state_ == this->mode_ )
+    if ( mode == this->mode_ )
     {
       saveAndIncrease( this->variable_, mem );
       return returnSize( this->variable_ );
