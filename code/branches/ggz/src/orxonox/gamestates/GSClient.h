@@ -29,22 +29,23 @@
 #ifndef _GSClient_H__
 #define _GSClient_H__
 
+#include "SpecialConfig.h"
 #include "OrxonoxPrereqs.h"
 #include "network/NetworkPrereqs.h"
 #include "GSLevel.h"
 #include "GSGraphics.h"
-#ifdef HAS_GGZ
-#include "GGZClient.h"
-#endif /* HAS_GGZ */
 
 namespace orxonox
 {
+#ifdef GGZMOD_FOUND
+    class _OrxonoxExport GGZClient;
+#endif /* GGZMOD_FOUND */
+
     class _OrxonoxExport GSClient : public GameState<GSGraphics>, public GSLevel
     {
     public:
         GSClient();
         ~GSClient();
-
 
     private:
         void enter();
@@ -52,10 +53,9 @@ namespace orxonox
         void ticked(const Clock& time);
 
         Client* client_;
-#ifdef HAS_GGZ
+#ifdef GGZMOD_FOUND
         GGZClient* ggzClient;
-#endif /* HAS_GGZ */
-
+#endif /* GGZMOD_FOUND */
     };
 }
 

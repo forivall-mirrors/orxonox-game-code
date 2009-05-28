@@ -31,10 +31,6 @@ ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
 # Tolua binding speedup if required
 ADD_COMPILER_FLAGS("-DTOLUA_RELEASE" Release MinSizeRel TOLUA_PARSER_RELEASE)
-# Enable GGZMode support if found
-IF(GGZMODE_FOUND)
-  ADD_COMPILER_FLAGS("-DHAS_GGZ")
-ENDIF()
 
 ################ OrxonoxConfig.h ################
 

@@ -34,6 +34,9 @@
 #include "core/CommandLine.h"
 #include "core/Core.h"
 #include "network/Client.h"
+#ifdef GGZMOD_FOUND
+#include "GGZClient.h"
+#endif /* GGZMOD_FOUND */
 
 namespace orxonox
 {
@@ -53,7 +56,7 @@ namespace orxonox
     {
         Core::setIsClient(true);
 
-#ifdef HAS_GGZ
+#ifdef GGZMOD_FOUND
         ggzClient = NULL;
         if (GGZClient::isActive()) {
             COUT(3) << "Initializing GGZ\n";
@@ -62,9 +65,9 @@ namespace orxonox
         else {
             COUT(3) << "Not using GGZ\n";
         }
-#else  /* HAS_GGZ */
+#else  /* GGZMOD_FOUND */
         COUT(3) << "GGZ support disabled\n";
-#endif /* HAS_GGZ */
+#endif /* GGZMOD_FOUND */
 
         this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
@@ -82,12 +85,12 @@ namespace orxonox
 
         client_->closeConnection();
 
-#ifdef HAS_GGZ
+#ifdef GGZMOD_FOUND
         if (ggzClient)
         {
             delete ggzClient;
         }
-#endif /* HAS_GGZ */
+#endif /* GGZMOD_FOUND */
 
         // destroy client
         delete this->client_;

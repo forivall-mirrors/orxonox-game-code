@@ -58,6 +58,9 @@
 #define MACRO_QUOTEME_AUX(x) #x
 #define MACRO_QUOTEME(x) MACRO_QUOTEME_AUX(x)
 
+/* Macro for availability of the ggzmod library */
+#cmakedefine GGZMOD_FOUND
+
 /* Handle default ConfigValues */
 namespace orxonox
 {
