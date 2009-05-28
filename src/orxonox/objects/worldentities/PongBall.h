@@ -43,7 +43,7 @@ namespace orxonox
             virtual ~PongBall() {}
 
             virtual void tick(float dt);
-            
+
             void registerVariables();
 
             void setFieldDimension(float width, float height)
@@ -64,7 +64,7 @@ namespace orxonox
 
             void setBats(PongBat** bats)
             { this->bat_ = bats; this->batID_[0] = this->bat_[0]->getObjectID(); this->batID_[1] = this->bat_[1]->getObjectID(); }
-            
+
             void applyBats()
             { if(!this->bat_) this->bat_ = new PongBat*[2]; if(this->batID_[0] != OBJECTID_UNKNOWN) this->bat_[0] = dynamic_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[0])); if(this->batID_[1] != OBJECTID_UNKNOWN) this->bat_[1] = dynamic_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[1])); }
 
@@ -78,6 +78,10 @@ namespace orxonox
             PongBat** bat_;
             unsigned int* batID_;
             float relMercyOffset_;
+
+            SoundBase* sidesound_;
+            SoundBase* batsound_;
+            SoundBase* scoresound_;
     };
 }
 
