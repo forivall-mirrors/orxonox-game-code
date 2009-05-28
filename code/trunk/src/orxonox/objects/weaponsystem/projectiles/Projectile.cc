@@ -45,7 +45,7 @@
 namespace orxonox
 {
     CreateFactory(Projectile);
-  
+
     Projectile::Projectile(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(Projectile);
@@ -59,11 +59,11 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             this->enableCollisionCallback();
-
+            this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
             SphereCollisionShape* shape = new SphereCollisionShape(this);
-            shape->setRadius(10);
+            shape->setRadius(20);
             this->attachCollisionShape(shape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
@@ -103,7 +103,7 @@ namespace orxonox
         if (!this->bDestroy_ && GameMode::isMaster())
         {
             if (otherObject == this->owner_)
-                return true;
+                return false;
 
             this->bDestroy_ = true;
 
