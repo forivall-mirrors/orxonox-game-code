@@ -101,7 +101,10 @@ namespace orxonox
     void GSClient::ticked(const Clock& time)
     {
         GSLevel::ticked(time);
-        client_->tick(time.getDeltaTime());
+        if(client_)
+        {
+            client_->tick(time.getDeltaTime());
+        }
 
         this->tickChild(time);
     }

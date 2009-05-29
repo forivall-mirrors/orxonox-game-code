@@ -38,7 +38,6 @@ namespace orxonox
 
     void GGZClient::tick(const float /*dt*/)
     {
-        COUT(3) << "Tick\n";
         boost::system::error_code ec;
         io.poll(ec);
         if (ec)
