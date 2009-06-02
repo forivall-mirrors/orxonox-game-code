@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "OverlayText.h"
 
 #include <OgreOverlayManager.h>

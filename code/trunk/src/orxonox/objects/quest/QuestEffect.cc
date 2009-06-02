@@ -31,7 +31,6 @@
     @brief Implementation of the QuestEffect class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestEffect.h"
 
 #include "core/CoreIncludes.h"

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "TimeFactorListener.h"
 #include "core/CoreIncludes.h"
 

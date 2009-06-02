@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Script.h"
 
 #include "util/Debug.h"

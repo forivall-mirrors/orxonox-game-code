@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "WorldEntity.h"
 
 #include <cassert>

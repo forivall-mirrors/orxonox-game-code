@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Light.h"
 
 #include <sstream>

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "SpaceShip.h"
 
 #include "BulletDynamics/Dynamics/btRigidBody.h"

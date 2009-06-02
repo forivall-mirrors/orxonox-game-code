@@ -31,7 +31,6 @@
     @brief Implementation of the QuestItem class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestItem.h"
 
 #include "core/CoreIncludes.h"

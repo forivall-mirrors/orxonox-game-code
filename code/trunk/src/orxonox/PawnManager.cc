@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "PawnManager.h"
 
 #include "core/CoreIncludes.h"

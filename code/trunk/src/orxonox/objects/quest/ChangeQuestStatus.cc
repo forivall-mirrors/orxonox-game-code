@@ -31,7 +31,6 @@
     @brief Implementation of the ChangeQuestStatus class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "ChangeQuestStatus.h"
 
 #include "core/CoreIncludes.h"

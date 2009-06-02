@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "DistanceTrigger.h"
 
 #include <OgreNode.h>

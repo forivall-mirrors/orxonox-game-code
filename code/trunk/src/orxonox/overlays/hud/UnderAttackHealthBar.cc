@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "UnderAttackHealthBar.h"
 
 #include "core/CoreIncludes.h"

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "HUDHealthBar.h"
 
 #include <OgreOverlayManager.h>

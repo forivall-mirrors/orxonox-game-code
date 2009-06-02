@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ParticleSpawner.h"
 
 #include "core/CoreIncludes.h"

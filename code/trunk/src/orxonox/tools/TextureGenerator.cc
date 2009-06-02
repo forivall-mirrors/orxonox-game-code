@@ -31,7 +31,6 @@
     @brief Implementation of the TextureGenerator.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "TextureGenerator.h"
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>

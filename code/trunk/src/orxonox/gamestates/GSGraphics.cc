@@ -31,7 +31,6 @@
     @brief Implementation of Graphics GameState class.
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSGraphics.h"
 
 #include <boost/filesystem.hpp>

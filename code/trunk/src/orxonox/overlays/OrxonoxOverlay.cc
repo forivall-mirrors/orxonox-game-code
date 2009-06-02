@@ -31,7 +31,6 @@
 @brief Definition of the OrxonoxOverlay class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "OrxonoxOverlay.h"
 
 #include <cmath>

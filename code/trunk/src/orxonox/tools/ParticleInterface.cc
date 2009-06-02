@@ -31,7 +31,6 @@
 * @brief class to control praticle effects
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "ParticleInterface.h"
 
 #include <OgreParticleSystem.h>

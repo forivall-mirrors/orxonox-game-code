@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "PongBot.h"
 
 #include "core/CoreIncludes.h"

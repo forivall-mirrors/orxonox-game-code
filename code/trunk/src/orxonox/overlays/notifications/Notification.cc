@@ -31,7 +31,6 @@
     @brief Implementation of the Notification class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"

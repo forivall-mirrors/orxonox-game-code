@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "RadarListener.h"
 #include "core/CoreIncludes.h"
 

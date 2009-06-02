@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "PongCenterpoint.h"
 
 #include "core/CoreIncludes.h"

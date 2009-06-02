@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "CameraPosition.h"
 
 #include <OgreCamera.h>

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "FusionFire.h"
 
 #include "core/CoreIncludes.h"

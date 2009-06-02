@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "FadeoutText.h"
 
 #include <OgreTextAreaOverlayElement.h>

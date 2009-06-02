@@ -31,7 +31,6 @@
     @brief Implementation of the LocalQuest class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "LocalQuest.h"
 
 #include "core/CoreIncludes.h"

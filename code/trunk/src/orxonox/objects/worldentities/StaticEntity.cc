@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "StaticEntity.h"
 
 #include <OgreSceneNode.h>

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GlobalShader.h"
 
 #include "core/CoreIncludes.h"

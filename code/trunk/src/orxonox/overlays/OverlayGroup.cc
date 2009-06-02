@@ -31,7 +31,6 @@
 @brief Definition of the OverlayGroup class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "OverlayGroup.h"
 
 #include "util/Debug.h"

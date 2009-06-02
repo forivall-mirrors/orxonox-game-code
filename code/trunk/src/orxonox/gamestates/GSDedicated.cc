@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSDedicated.h"
 
 #include "core/Clock.h"

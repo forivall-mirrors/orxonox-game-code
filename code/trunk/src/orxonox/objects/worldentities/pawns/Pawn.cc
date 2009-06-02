@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Pawn.h"
 
 #include "core/GameMode.h"

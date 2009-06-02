@@ -31,7 +31,6 @@
     @brief Implementation of the AddReward class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "AddReward.h"
 
 #include "core/CoreIncludes.h"

@@ -36,7 +36,6 @@
  @brief Entry point of the program.
   */
 
-#include "OrxonoxStableHeaders.h"
 #include "OrxonoxConfig.h"
 
 #include "util/Debug.h"

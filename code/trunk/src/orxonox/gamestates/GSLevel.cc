@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSLevel.h"
 
 #include "core/input/InputManager.h"

@@ -31,7 +31,6 @@
     @brief Implementation of the FailQuest class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "FailQuest.h"
 
 #include "core/CoreIncludes.h"

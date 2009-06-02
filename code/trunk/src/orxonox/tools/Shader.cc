@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Shader.h"
 
 #include <OgreCompositorManager.h>

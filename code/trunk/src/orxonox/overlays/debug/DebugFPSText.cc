@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "DebugFPSText.h"
 #include <OgreTextAreaOverlayElement.h>
 #include "util/Convert.h"

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "WeaponSlot.h"
 
 #include "core/CoreIncludes.h"

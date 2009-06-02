@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "MuzzleFlash.h"
 
 #include "core/GameMode.h"

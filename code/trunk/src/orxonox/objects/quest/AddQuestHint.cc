@@ -31,7 +31,6 @@
     @brief Implementation of the AddQuestHint class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "AddQuestHint.h"
 
 #include "core/CoreIncludes.h"

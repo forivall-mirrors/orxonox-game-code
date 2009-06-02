@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSIOConsole.h"
 
 #include <iostream>

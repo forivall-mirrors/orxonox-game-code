@@ -27,7 +27,6 @@
  */
 
 #include "GUIOverlay.h"
-#include "OrxonoxStableHeaders.h"
 #include <string>
 #include <sstream>
 #include "core/input/InputManager.h"

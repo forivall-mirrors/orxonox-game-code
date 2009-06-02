@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "PlaneCollisionShape.h"
 
 #include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"

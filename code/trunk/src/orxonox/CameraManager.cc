@@ -25,7 +25,6 @@
  *      Fabian 'x3n' Landau
  *
  */
-#include "OrxonoxStableHeaders.h"
 #include "CameraManager.h"
 
 #include <OgreSceneManager.h>

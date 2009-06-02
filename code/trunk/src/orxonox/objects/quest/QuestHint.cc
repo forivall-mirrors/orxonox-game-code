@@ -31,7 +31,6 @@
     @brief Implementation of the QuestHint class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestHint.h"
 
 #include "core/CoreIncludes.h"

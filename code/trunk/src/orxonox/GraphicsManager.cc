@@ -33,7 +33,6 @@
     Implementation of an partial interface to Ogre.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "GraphicsManager.h"
 
 #include <fstream>

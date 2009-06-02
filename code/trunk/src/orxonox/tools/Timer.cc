@@ -28,7 +28,6 @@
 
 #include <set>
 
-#include "OrxonoxStableHeaders.h"
 #include "Timer.h"
 
 #include "core/Executor.h"

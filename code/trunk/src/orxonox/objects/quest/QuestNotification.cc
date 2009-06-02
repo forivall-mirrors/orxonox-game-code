@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestNotification.h"
 
 #include "core/CoreIncludes.h"

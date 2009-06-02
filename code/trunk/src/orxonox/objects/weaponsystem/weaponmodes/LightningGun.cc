@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "LightningGun.h"
 
 #include "core/CoreIncludes.h"

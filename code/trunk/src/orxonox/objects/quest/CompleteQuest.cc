@@ -31,7 +31,6 @@
     @brief Implementation of the CompleteQuest class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "CompleteQuest.h"
 
 #include "core/CoreIncludes.h"

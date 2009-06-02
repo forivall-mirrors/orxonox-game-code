@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSRoot.h"
 
 #include "util/Exception.h"

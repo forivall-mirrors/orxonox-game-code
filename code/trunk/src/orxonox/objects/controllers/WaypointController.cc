@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "WaypointController.h"
 
 #include "core/CoreIncludes.h"

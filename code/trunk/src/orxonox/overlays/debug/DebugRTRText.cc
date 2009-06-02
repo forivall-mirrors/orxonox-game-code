@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "DebugRTRText.h"
 #include <OgreTextAreaOverlayElement.h>
 #include "core/CoreIncludes.h"

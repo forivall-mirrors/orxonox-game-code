@@ -31,7 +31,6 @@
     @brief Implementation of the AddQuest class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "AddQuest.h"
 
 #include <string>

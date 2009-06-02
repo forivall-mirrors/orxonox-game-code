@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "CheckPoint.h"
 
 #include "core/CoreIncludes.h"

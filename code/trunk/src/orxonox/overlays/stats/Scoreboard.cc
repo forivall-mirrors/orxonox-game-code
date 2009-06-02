@@ -24,7 +24,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Scoreboard.h"
 
 #include <string>

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "LightningGunProjectile.h"
 
 #include <OgreBillboardSet.h>

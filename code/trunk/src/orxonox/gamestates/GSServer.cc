@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSServer.h"
 
 #include "core/CommandLine.h"

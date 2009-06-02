@@ -32,7 +32,6 @@
     Implementation of the PlayerTrigger class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "PlayerTrigger.h"
 
 #include "core/CoreIncludes.h"

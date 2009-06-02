@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "MultiStateEngine.h"
 
 #include "core/GameMode.h"

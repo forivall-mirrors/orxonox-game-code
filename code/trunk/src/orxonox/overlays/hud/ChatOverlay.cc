@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ChatOverlay.h"
 
 #include <OgreTextAreaOverlayElement.h>

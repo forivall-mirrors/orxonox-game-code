@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ExplosionChunk.h"
 
 #include <OgreParticleSystem.h>

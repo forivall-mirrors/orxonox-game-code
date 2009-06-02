@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ParticleProjectile.h"
 
 #include <OgreParticleSystem.h>

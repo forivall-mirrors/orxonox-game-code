@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "LevelManager.h"
 
 #include "PlayerManager.h"
