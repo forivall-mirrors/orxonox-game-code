@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "EventTarget.h"
 
 #include "core/CoreIncludes.h"

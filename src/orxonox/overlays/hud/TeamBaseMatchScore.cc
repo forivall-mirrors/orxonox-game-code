@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "TeamBaseMatchScore.h"
 
 #include <OgreTextAreaOverlayElement.h>

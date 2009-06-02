@@ -24,7 +24,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "CreateLines.h"
 
 #include <string>

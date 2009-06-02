@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "PongScore.h"
 
 #include <OgreTextAreaOverlayElement.h>

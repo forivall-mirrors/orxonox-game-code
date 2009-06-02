@@ -31,7 +31,6 @@
     @brief Implementation of the QuestEffectBeacon class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestEffectBeacon.h"
 
 #include "core/CoreIncludes.h"

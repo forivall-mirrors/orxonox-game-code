@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 
 #include <OgreEntity.h>
 #include "Model.h"

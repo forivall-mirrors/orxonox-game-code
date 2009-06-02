@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "MobileEntity.h"
 
 #include <OgreSceneNode.h>

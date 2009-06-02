@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Bot.h"
 
 #include "core/GameMode.h"

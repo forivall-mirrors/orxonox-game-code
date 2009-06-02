@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Spectator.h"
 
 #include <OgreBillboardSet.h>

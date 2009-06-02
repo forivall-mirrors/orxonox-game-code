@@ -31,7 +31,6 @@
     @brief
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "Radar.h"
 #include <cfloat>
 #include <cassert>

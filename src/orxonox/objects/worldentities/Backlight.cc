@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Backlight.h"
 
 #include <OgreRibbonTrail.h>

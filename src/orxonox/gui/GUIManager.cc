@@ -33,7 +33,6 @@
         Implementation of the GUIManager class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "GUIManager.h"
 
 #include <boost/filesystem/path.hpp>

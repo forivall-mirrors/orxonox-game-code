@@ -31,7 +31,6 @@
     @brief Implementation of the QuestManager class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestManager.h"
 
 #include "core/CoreIncludes.h"

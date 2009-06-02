@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "BillboardSet.h"
 
 #include <sstream>

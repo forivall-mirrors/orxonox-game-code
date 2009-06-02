@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "BigExplosion.h"
 #include "MovableEntity.h"
 #include "Model.h"

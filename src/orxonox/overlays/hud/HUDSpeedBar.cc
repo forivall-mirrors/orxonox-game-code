@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "HUDSpeedBar.h"
 #include "core/CoreIncludes.h"
 #include "objects/worldentities/pawns/SpaceShip.h"

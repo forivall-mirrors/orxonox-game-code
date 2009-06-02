@@ -31,7 +31,6 @@
     @brief Implementation of the GlobalQuest class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "GlobalQuest.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"

@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "HUDRadar.h"
 
 #include <OgreOverlayManager.h>

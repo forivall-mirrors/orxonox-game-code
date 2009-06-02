@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "TeamSpawnPoint.h"
 
 #include "core/CoreIncludes.h"

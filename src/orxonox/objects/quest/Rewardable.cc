@@ -31,7 +31,6 @@
     @brief Implementation of the Rewardable class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "Rewardable.h"
 
 #include "core/CoreIncludes.h"

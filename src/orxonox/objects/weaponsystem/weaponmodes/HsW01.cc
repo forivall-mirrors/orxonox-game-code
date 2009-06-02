@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "HsW01.h"
 
 #include "core/CoreIncludes.h"

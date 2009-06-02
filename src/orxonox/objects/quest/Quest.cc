@@ -31,7 +31,6 @@
     @brief Implementation of the Quest class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "Quest.h"
 
 #include "core/CoreIncludes.h"

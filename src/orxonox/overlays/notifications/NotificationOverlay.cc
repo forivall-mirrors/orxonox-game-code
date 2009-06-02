@@ -31,7 +31,6 @@
     @brief Implementation of the NotificationOverlay class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "NotificationOverlay.h"
 
 #include <OgreOverlayManager.h>

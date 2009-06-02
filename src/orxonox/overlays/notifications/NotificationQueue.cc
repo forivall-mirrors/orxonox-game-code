@@ -31,7 +31,6 @@
     @brief Implementation of the NotificationQueue class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "NotificationQueue.h"
 
 #include <OgreOverlayManager.h>

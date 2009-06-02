@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "RadarViewable.h"
 
 #include "util/Debug.h"

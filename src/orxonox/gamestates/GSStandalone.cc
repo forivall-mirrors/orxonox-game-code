@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GSStandalone.h"
 
 #include <OgreViewport.h>

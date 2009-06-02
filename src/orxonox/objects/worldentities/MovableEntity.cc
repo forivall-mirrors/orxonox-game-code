@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "MovableEntity.h"
 
 #include "core/CoreIncludes.h"

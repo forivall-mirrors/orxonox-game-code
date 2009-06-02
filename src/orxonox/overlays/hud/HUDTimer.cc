@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "HUDTimer.h"
 
 #include "core/CoreIncludes.h"

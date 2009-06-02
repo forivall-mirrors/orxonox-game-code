@@ -37,9 +37,6 @@ SET(ORXONOX_FILES ${ORXONOX_SRC_FILES} ${ORXONOX_HDR_FILES})
 GENERATE_SOURCE_GROUPS(${ORXONOX_FILES})
 GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h objects/quest/QuestManager.h objects/quest/QuestDescription.h objects/pickup/PickupInventory.h objects/pickup/BaseItem.h)
 
-# Not using precompiled header files: Avoid dependencies
-INCLUDE_DIRECTORIES(pch/nopch)
-
 ADD_EXECUTABLE(orxonox ${ORXONOX_FILES})
 GET_TARGET_PROPERTY(_exec_loc orxonox LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)

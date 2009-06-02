@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ArtificialController.h"
 
 #include "core/CoreIncludes.h"

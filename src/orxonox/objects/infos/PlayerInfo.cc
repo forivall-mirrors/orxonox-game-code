@@ -28,7 +28,6 @@
 
 #include <cassert>
 
-#include "OrxonoxStableHeaders.h"
 #include "PlayerInfo.h"
 
 #include "core/CoreIncludes.h"

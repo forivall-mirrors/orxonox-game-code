@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ControllableEntity.h"
 
 #include <OgreSceneManager.h>

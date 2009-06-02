@@ -31,7 +31,6 @@
     @brief Implementation of the QuestListener class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "QuestListener.h"
 
 #include "core/CoreIncludes.h"

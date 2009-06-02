@@ -31,7 +31,6 @@
     @brief Implementation of the QuestDescription class.
 */
 
-#include "OrxonoxStableHeaders.h"
 
 #include "QuestDescription.h"
 

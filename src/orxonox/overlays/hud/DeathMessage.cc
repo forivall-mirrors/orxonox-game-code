@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "DeathMessage.h"
 
 #include "core/CoreIncludes.h"

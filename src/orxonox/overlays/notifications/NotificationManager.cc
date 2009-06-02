@@ -31,7 +31,6 @@
     @brief Implementation of the NotificationManager class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "NotificationManager.h"
 
 #include "core/CoreIncludes.h"

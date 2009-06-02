@@ -27,7 +27,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "Scene.h"
 
 #include <OgreRoot.h>

@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "GametypeStatus.h"
 
 #include <OgreTextAreaOverlayElement.h>

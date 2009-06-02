@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "BlinkingBillboard.h"
 
 #include "core/GameMode.h"

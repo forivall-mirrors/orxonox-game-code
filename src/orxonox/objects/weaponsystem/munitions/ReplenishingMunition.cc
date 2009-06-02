@@ -26,7 +26,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
 #include "ReplenishingMunition.h"
 
 #include "core/CoreIncludes.h"

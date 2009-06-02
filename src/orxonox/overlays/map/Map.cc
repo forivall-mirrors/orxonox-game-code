@@ -23,7 +23,6 @@
  *      Si Sun
  *
  */
-#include "OrxonoxStableHeaders.h"
 #include "Map.h"
 
 #include <string>
