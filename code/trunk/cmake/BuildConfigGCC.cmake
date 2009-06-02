@@ -56,7 +56,7 @@ IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 ENDIF()
 
 # We have some uncoformant code, disable an optimisation feature
-REMOVE_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
+ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
 
 # For GCC older than version 4, do not display sign compare warings
 # because of boost::filesystem (which creates about a hundred per include)
