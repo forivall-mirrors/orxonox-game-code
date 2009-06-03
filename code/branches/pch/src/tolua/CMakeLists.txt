@@ -35,19 +35,30 @@ GENERATE_SOURCE_GROUPS(${TOLUA++_FILES})
 REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
 
-ADD_LIBRARY(tolua++_orxonox SHARED ${TOLUA++_FILES})
-SET_TARGET_PROPERTIES(tolua++_orxonox PROPERTIES DEFINE_SYMBOL "TOLUA_SHARED_BUILD")
-TARGET_LINK_LIBRARIES(tolua++_orxonox ${LUA_LIBRARIES})
-
-SET_TARGET_PROPERTIES(tolua++_orxonox PROPERTIES VERSION 1.0.92)
-
-ORXONOX_INSTALL(tolua++_orxonox)
+ORXONOX_ADD_LIBRARY(tolua++_orxonox
+  ORXONOX_EXTERNAL
+  DEFINE_SYMBOL
+    "TOLUA_SHARED_BUILD"
+  VERSION
+    1.0.92
+  LINK_LIBRARIES
+    ${LUA_LIBRARIES}
+  SOURCE_FILES
+    ${TOLUA++_FILES}
+)
 
 
 ################## Tolua++ generator ##################
 
-ADD_EXECUTABLE(tolua++app_orxonox tolua.c)
-TARGET_LINK_LIBRARIES(tolua++app_orxonox tolua++_orxonox ${LUA_LIBRARIES})
+ORXONOX_ADD_EXECUTABLE(tolua++app_orxonox
+  ORXONOX_EXTERNAL
+  VERSION
+    1.0.92
+  LINK_LIBRARIES
+    ${LUA_LIBRARIES}
+  SOURCE_FILES
+    tolua.c
+)
 
 OPTION(TOLUA_PARSER_RELEASE "Disable all debug messages from tolua bind files for Release and MinSizeRel build types." FALSE)
 

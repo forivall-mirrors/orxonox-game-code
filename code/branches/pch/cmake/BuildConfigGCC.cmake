@@ -23,6 +23,9 @@
  #    Sets the right compiler and linker flags for GCC.
  #
 
+# Shortcut for CMAKE_COMPILER_IS_GNUCXX and ..._GNUC
+SET(CMAKE_COMPILER_IS_GNU TRUE)
+
 # Determine compiler version
 EXEC_PROGRAM(
   ${CMAKE_CXX_COMPILER}

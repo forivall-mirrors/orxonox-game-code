@@ -23,9 +23,19 @@
  #    Sets the right compiler and linker flags for the Microsoft Compiler.
  #
 
+################### Compiler Version ####################
+
+# We make use of variadic macros, which is only supported by MSVC 8 and above
+IF(MSVC_VERSION LESS 1400)
+  MESSAGE(FATAL_ERROR "Microsoft Visual Studio versions below 8 (2005) are not supported because of missing compiler extensions.")
+ENDIF()
+
+
 ######################## Options ########################
 
-OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" FALSE)
+IF(MSVC80)
+  OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" FALSE)
+ENDIF(MSVC80)
 
 #################### Compiler Flags #####################
 

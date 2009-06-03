@@ -21,9 +21,7 @@
 
 # various macro includes
 INCLUDE(FlagUtilities)
-INCLUDE(GenerateToluaBindings)
-INCLUDE(InstallUtilities)
-INCLUDE(SourceFileUtilities)
+INCLUDE(TargetUtilities)
 
 # Use TinyXML++
 ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
@@ -31,6 +29,9 @@ ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
 # Tolua binding speedup if required
 ADD_COMPILER_FLAGS("-DTOLUA_RELEASE" Release MinSizeRel TOLUA_PARSER_RELEASE)
+
+# Default linking is SHARED
+SET(ORXONOX_DEFAULT_LINK SHARED)
 
 ################ OrxonoxConfig.h ################
 
@@ -82,6 +83,12 @@ CONFIGURE_FILE(OrxonoxConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h)
 # This file only gets included by very few classes to avoid a large recompilation
 CONFIGURE_FILE(SpecialConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/SpecialConfig.h)
 
+SET(ORXONOX_CONFIG_FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/OrxonoxConfig.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/SpecialConfig.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/SpecialConfig.h.in
+)
 
 ############## Include Directories ##############
 

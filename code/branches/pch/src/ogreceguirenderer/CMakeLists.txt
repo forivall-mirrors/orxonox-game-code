@@ -26,19 +26,20 @@ SET(OCR_FILES
   OgreCEGUIResourceProvider.cpp
   OgreCEGUITexture.cpp
 )
-GENERATE_SOURCE_GROUPS(${OCR_FILES})
 
 # No warnings needed from third party libraries
 REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
 
-ADD_LIBRARY(ogreceguirenderer_orxonox SHARED ${OCR_FILES})
-SET_TARGET_PROPERTIES(ogreceguirenderer_orxonox PROPERTIES DEFINE_SYMBOL "OGRE_GUIRENDERER_EXPORTS")
-TARGET_LINK_LIBRARIES(ogreceguirenderer_orxonox
-  ${OGRE_LIBRARY}
-  ${CEGUI_LIBRARY}
+ORXONOX_ADD_LIBRARY(ogreceguirenderer_orxonox
+  ORXONOX_EXTERNAL
+  LINK_LIBRARIES
+    ${OGRE_LIBRARY}
+    ${CEGUI_LIBRARY}
+  DEFINE_SYMBOL
+    "OGRE_GUIRENDERER_EXPORTS"
+  VERSION
+    1.4.9
+  SOURCE_FILES
+    ${OCR_FILES}
 )
-
-SET_TARGET_PROPERTIES(ogreceguirenderer_orxonox PROPERTIES VERSION 1.4.9)
-
-ORXONOX_INSTALL(ogreceguirenderer_orxonox)
