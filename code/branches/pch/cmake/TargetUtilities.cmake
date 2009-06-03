@@ -33,12 +33,16 @@
  #      NO_SOURCE_GROUPS:  Don't create msvc source groups
  #      STATIC/SHARED:     Inherited from ADD_LIBRARY
  #      WIN32:             Inherited from ADD_EXECUTABLE
+ #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
+ #                         specified with PCH_FILE
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
  #      VERSION:           Set version to the binary
  #      SOURCE_FILES:      Source files for the target
  #      DEFINE_SYMBOL:     Sets the DEFINE_SYMBOL target property
  #      TOLUA_FILES:       Files with tolua interface
+ #      PCH_FILE:          Precompiled header file
+ #      PCH_EXCLUDE:       Source files to be excluded from PCH support
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
@@ -51,6 +55,9 @@ INCLUDE(CapitaliseName)
 INCLUDE(GenerateToluaBindings)
 INCLUDE(ParseMacroArguments)
 INCLUDE(SourceFileUtilities)
+IF(PCH_COMPILER_SUPPORT)
+  INCLUDE(PrecompiledHeaderFiles)
+ENDIF()
 
 FUNCTION(ORXONOX_ADD_LIBRARY _target_name)
   TU_ADD_TARGET(${_target_name} LIBRARY "STATIC;SHARED" ${ARGN})
@@ -66,9 +73,10 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
-                  NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches})
+                  NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
+                  PCH_NO_DEFAULT)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
-                  TOLUA_FILES)
+                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
@@ -100,6 +108,22 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(_arg_TOLUA_FILES)
     GENERATE_TOLUA_BINDINGS(${_target_name_capitalised} _${_target_name}_files
                             INPUTFILES ${_arg_TOLUA_FILES})
+  ENDIF()
+
+  # First part (pre target) of precompiled header files
+  IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
+    # Provide convenient option to control PCH
+    STRING(TOUPPER "${_target_name}" _target_name_upper)
+    IF(_arg_PCH_NO_DEFAULT)
+      SET(PCH_DEFAULT FALSE)
+    ELSE()
+      SET(PCH_DEFAULT TRUE)
+    ENDIF()
+    OPTION(PCH_ENABLE_${_target_name_upper} "Enable using precompiled header files for library ${_target_name}." ${PCH_DEFAULT})
+
+    IF(PCH_ENABLE_${_target_name_upper})
+      PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
+    ENDIF()
   ENDIF()
 
   # Certain libraries don't have dllexport/dllimport and can't be linked shared with msvc
@@ -141,6 +165,11 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${_arg_VERSION})
   ELSEIF(NOT ORXONOX_EXTERNAL)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${ORXONOX_VERSION})
+  ENDIF()
+
+  # Second part of precompiled header files
+  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE_${_target_name_upper} AND _arg_PCH_FILE)
+    PRECOMPILED_HEADER_FILES_POST_TARGET(${_target_name} ${_arg_PCH_FILE})
   ENDIF()
 
   IF(NOT _arg_STATIC)

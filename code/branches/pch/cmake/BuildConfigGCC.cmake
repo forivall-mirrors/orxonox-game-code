@@ -42,6 +42,13 @@ IF(_compare_result LESS 0)
   SET(GCC_NO_SYSTEM_HEADER_SUPPORT TRUE)
 ENDIF()
 
+# GCC only supports PCH in versions 3.4 and above
+INCLUDE(CompareVersionStrings)
+COMPARE_VERSION_STRINGS("${GCC_VERSION}" "3.4.0" _compare_result)
+IF(_compare_result GREATER -1)
+  SET(PCH_COMPILER_SUPPORT TRUE)
+ENDIF()
+
 # Also include environment flags. Could cause conflicts though
 SET_COMPILER_FLAGS("$ENV{CXXFLAGS}" CXX CACHE)
 SET_COMPILER_FLAGS("$ENV{CFLAGS}"   C   CACHE)

@@ -40,6 +40,9 @@ ORXONOX_ADD_EXECUTABLE(orxonox
     objects/pickup/PickupInventory.h
     objects/quest/QuestDescription.h
     objects/quest/QuestManager.h
+  PCH_FILE
+    OrxonoxPrecompiledHeaders.h
+  PCH_NO_DEFAULT
   LINK_LIBRARIES
     ${OGRE_LIBRARY}
     ${CEGUI_LIBRARY}

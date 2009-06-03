@@ -37,6 +37,10 @@ IF(MSVC80)
   OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" FALSE)
 ENDIF(MSVC80)
 
+# Orxonox only supports MSVC 8 and above, which gets asserted above
+SET(PCH_COMPILER_SUPPORT TRUE)
+
+
 #################### Compiler Flags #####################
 
 # -MD    Minimal Rebuild
