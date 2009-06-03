@@ -59,7 +59,7 @@
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/MathConvert.h"
-#include "util/Multitype.h"
+#include "util/MultiType.h"
 #include "util/Sleep.h"
 #include "util/String.h"
 #include "util/SubString.h"
