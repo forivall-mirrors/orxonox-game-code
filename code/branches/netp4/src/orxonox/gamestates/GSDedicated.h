@@ -32,6 +32,11 @@
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
+#include <queue>
+#include <cstring>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 namespace orxonox
 {
@@ -46,8 +51,22 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
-        Server* server_;
-        float   timeSinceLastUpdate_;
+        void inputThread();
+        void printLine();
+        void processQueue();
+        
+        Server*                 server_;
+        float                   timeSinceLastUpdate_;
+        
+        boost::thread           *inputThread_;
+//         boost::recursive_mutex  inputLineMutex_;
+        boost::recursive_mutex  inputQueueMutex_;
+        bool                    closeThread_;
+        bool                    cleanLine_;
+        unsigned char*          commandLine_;
+        unsigned int            inputIterator_;
+        std::queue<std::string> commandQueue_;
+        
     };
 }
 
