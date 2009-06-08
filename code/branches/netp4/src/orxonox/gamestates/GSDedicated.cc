@@ -130,19 +130,41 @@ namespace orxonox
                 boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                 if ( inputIterator_>=MAX_COMMAND_LENGTH-1 && c!='\n' )
                     continue;
-                this->commandLine_[this->inputIterator_++] = c;
-                if( c == '\n' )
+                switch (c)
                 {
-                    this->cleanLine_ = true;
-                    boost::recursive_mutex::scoped_lock(this->inputQueueMutex_);
-                    this->commandQueue_.push( std::string((const char*)this->commandLine_,inputIterator_) );
-                    memset( this->commandLine_, 0, inputIterator_ );
-                    inputIterator_ = 0;
-                }
-                else if( c == 0x8 ) // Backspace
-                {
-                    boost::recursive_mutex::scoped_lock(this->inputQueueMutex_);
-                    commandLine_[inputIterator_--]=0;
+                    case '\n':
+                        this->cleanLine_ = true;
+                        {
+                            boost::recursive_mutex::scoped_lock(this->inputQueueMutex_);
+                            boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
+                            this->commandQueue_.push( std::string((const char*)this->commandLine_,inputIterator_) );
+                        }
+                        memset( this->commandLine_, 0, inputIterator_ );
+                        inputIterator_ = 0;
+                        std::cout << endl;
+                        break;
+                    case 127: // backspace
+                    case '\b':
+                    {
+                        boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
+                        if(inputIterator_>0)
+                            --inputIterator_;
+                        break;
+                    }
+                    case '\t':
+                    {
+                        boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
+                        COUT(0) << endl << CommandExecutor::hint( std::string((const char*)this->commandLine_,inputIterator_) ) << endl;
+                        strncpy((char*)this->commandLine_, CommandExecutor::complete( std::string((const char*)this->commandLine_,inputIterator_) ).c_str(), MAX_COMMAND_LENGTH);
+                        inputIterator_ = strlen((const char*)this->commandLine_);
+                        break;
+                    }
+                    default:
+                    {
+                        boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
+                        this->commandLine_[this->inputIterator_++] = c;
+                        break;
+                    }
                 }
             }
         }
@@ -154,7 +176,7 @@ namespace orxonox
 //         std::cout << "\033[s\033[0G";
         std::cout << "\033[0G\033[K";
         boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
-        std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # " << this->commandLine_;
+        std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # " << std::string((const char*)this->commandLine_,inputIterator_);
         //if ( this->cleanLine_ )
         //    this->cleanLine_ = false;
         //else
@@ -185,22 +207,23 @@ namespace orxonox
     
     void GSDedicated::setTerminalMode()
     {
-      termios new_settings;
+        termios new_settings;
      
-      tcgetattr(0,this->originalTerminalSettings_);
-      new_settings = *this->originalTerminalSettings_;
-      new_settings.c_lflag &= (~ICANON);
-      new_settings.c_cc[VTIME] = 0;
-      new_settings.c_cc[VMIN] = 1;
-      tcsetattr(0,TCSANOW,&new_settings);
-      COUT(0) << endl;
-      atexit(&GSDedicated::resetTerminalMode);
+        tcgetattr(0,this->originalTerminalSettings_);
+        new_settings = *this->originalTerminalSettings_;
+        new_settings.c_lflag &= ~( ICANON | ECHO );
+//         new_settings.c_lflag |= ( ISIG | IEXTEN );
+        new_settings.c_cc[VTIME] = 0;
+        new_settings.c_cc[VMIN] = 1;
+        tcsetattr(0,TCSANOW,&new_settings);
+        COUT(0) << endl;
+//       atexit(&GSDedicated::resetTerminalMode);
     }
     
     void GSDedicated::resetTerminalMode()
     {
 #ifndef ORXONOX_PLATFORM_WINDOWS
-      tcsetattr(0, TCSANOW, GSDedicated::originalTerminalSettings_);
+        tcsetattr(0, TCSANOW, GSDedicated::originalTerminalSettings_);
 #endif
     }
 }
