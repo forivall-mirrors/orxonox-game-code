@@ -42,12 +42,18 @@
 #include <iomanip>
 #include <boost/bind.hpp>
 
+#ifndef ORXONOX_PLATFORM_WINDOWS
+#include <termios.h>
+#endif
+
 
 namespace orxonox
 {
     const unsigned int MAX_COMMAND_LENGTH = 255;
     
     AddGameState(GSDedicated, "dedicated");
+    
+    termios* GSDedicated::originalTerminalSettings_;
 
     GSDedicated::GSDedicated(const std::string& name)
         : GameState(name)
@@ -60,6 +66,10 @@ namespace orxonox
         this->inputThread_ = new boost::thread(boost::bind(&GSDedicated::inputThread, this));
         this->commandLine_ = new unsigned char[MAX_COMMAND_LENGTH];
 //         memset( this->commandLine_, 0, MAX_COMMAND_LENGTH );
+#ifndef ORXONOX_PLATFORM_WINDOWS
+        this->originalTerminalSettings_ = new termios;
+        this->setTerminalMode();
+#endif
     }
 
     GSDedicated::~GSDedicated()
@@ -68,6 +78,8 @@ namespace orxonox
 #ifndef ORXONOX_PLATFORM_WINDOWS
         std::cout << "\033[0G\033[K";
         std::cout.flush();
+        resetTerminalMode();
+        delete this->originalTerminalSettings_;
 #endif
         //inputThread_->join();
     }
@@ -115,7 +127,7 @@ namespace orxonox
         {
             c = getchar();
             {
-//                 boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
+                boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                 if ( inputIterator_>=MAX_COMMAND_LENGTH-1 && c!='\n' )
                     continue;
                 this->commandLine_[this->inputIterator_++] = c;
@@ -124,7 +136,13 @@ namespace orxonox
                     this->cleanLine_ = true;
                     boost::recursive_mutex::scoped_lock(this->inputQueueMutex_);
                     this->commandQueue_.push( std::string((const char*)this->commandLine_,inputIterator_) );
+                    memset( this->commandLine_, 0, inputIterator_ );
                     inputIterator_ = 0;
+                }
+                else if( c == 0x8 ) // Backspace
+                {
+                    boost::recursive_mutex::scoped_lock(this->inputQueueMutex_);
+                    commandLine_[inputIterator_--]=0;
                 }
             }
         }
@@ -133,13 +151,14 @@ namespace orxonox
     void GSDedicated::printLine()
     {
 #ifndef ORXONOX_PLATFORM_WINDOWS
-        std::cout << "\033[s\033[0G";
-//         boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
-        std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
-        if ( this->cleanLine_ )
-            this->cleanLine_ = false;
-        else
-            std::cout <<"\033[u";
+//         std::cout << "\033[s\033[0G";
+        std::cout << "\033[0G\033[K";
+        boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
+        std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # " << this->commandLine_;
+        //if ( this->cleanLine_ )
+        //    this->cleanLine_ = false;
+        //else
+        //    std::cout <<"\033[u";
         std::cout.flush();
 #endif
     }
@@ -162,5 +181,26 @@ namespace orxonox
                 CommandExecutor::execute(tempstr, true);
             }
         }
+    }
+    
+    void GSDedicated::setTerminalMode()
+    {
+      termios new_settings;
+     
+      tcgetattr(0,this->originalTerminalSettings_);
+      new_settings = *this->originalTerminalSettings_;
+      new_settings.c_lflag &= (~ICANON);
+      new_settings.c_cc[VTIME] = 0;
+      new_settings.c_cc[VMIN] = 1;
+      tcsetattr(0,TCSANOW,&new_settings);
+      COUT(0) << endl;
+      atexit(&GSDedicated::resetTerminalMode);
+    }
+    
+    void GSDedicated::resetTerminalMode()
+    {
+#ifndef ORXONOX_PLATFORM_WINDOWS
+      tcsetattr(0, TCSANOW, GSDedicated::originalTerminalSettings_);
+#endif
     }
 }

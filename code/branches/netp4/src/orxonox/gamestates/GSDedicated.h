@@ -38,8 +38,11 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 
+struct termios;
+
 namespace orxonox
 {
+    
     class _OrxonoxExport GSDedicated : public GameState
     {
     public:
@@ -54,19 +57,21 @@ namespace orxonox
         void inputThread();
         void printLine();
         void processQueue();
+        void setTerminalMode();
+        static void resetTerminalMode();
         
         Server*                 server_;
         float                   timeSinceLastUpdate_;
         
         boost::thread           *inputThread_;
-//         boost::recursive_mutex  inputLineMutex_;
+        boost::recursive_mutex  inputLineMutex_;
         boost::recursive_mutex  inputQueueMutex_;
         bool                    closeThread_;
         bool                    cleanLine_;
         unsigned char*          commandLine_;
         unsigned int            inputIterator_;
         std::queue<std::string> commandQueue_;
-        
+        static termios*         originalTerminalSettings_;
     };
 }
 
