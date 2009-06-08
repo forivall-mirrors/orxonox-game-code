@@ -132,7 +132,10 @@ namespace orxonox
     if(client){
 //       COUT(3) << "diffing" << std::endl;
 //       packet::Gamestate* gs1  = gs;
-      gs = gs->diff(client);
+      packet::Gamestate *diffed = gs->diff(client);
+      //packet::Gamestate *gs2 = diffed->undiff(gs);
+//       assert(*gs == *gs2);
+      gs = diffed;
 //       packet::Gamestate* gs2 = gs->undiff(client);
 //       gs = new packet::Gamestate(*gs);
 //       assert(*gs1==*gs2);

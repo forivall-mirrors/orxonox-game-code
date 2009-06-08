@@ -123,6 +123,7 @@ class _NetworkExport Gamestate: public Packet{
 
     // Packet functions
   private:
+    void rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength);
     virtual uint32_t getSize() const;
     virtual inline bool process();
 

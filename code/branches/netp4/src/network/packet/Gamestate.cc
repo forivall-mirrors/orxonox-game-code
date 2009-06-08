@@ -137,6 +137,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
   //start write gamestate header
   header_->setDataSize( currentsize );
   header_->setID( id );
+  header_->setBaseID( GAMESTATEID_INITIAL );
   header_->setDiffed( false );
   header_->setComplete( true );
   header_->setCompressed( false );
@@ -207,7 +208,6 @@ bool Gamestate::spreadData(uint8_t mode)
     }
   }
 #endif
-
   return true;
 }
 
@@ -320,7 +320,7 @@ bool Gamestate::decompressData()
   return true;
 }
 
-Gamestate *Gamestate::diff(Gamestate *base)
+/*Gamestate *Gamestate::diff(Gamestate *base)
 {
   assert(data_);
   assert(!header_->isCompressed());
@@ -355,7 +355,72 @@ Gamestate *Gamestate::diff(Gamestate *base)
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   return g;
+}*/
+
+Gamestate *Gamestate::diff(Gamestate *base)
+{
+  assert(this && base); assert(data_ && base->data_);
+  assert(!header_->isCompressed() && !base->header_->isCompressed());
+  assert(!header_->isDiffed());
+  
+  uint8_t *basep = GAMESTATE_START(base->data_);
+  uint8_t *gs = GAMESTATE_START(this->data_);
+  uint32_t dest_length = header_->getDataSize();
+  
+  if(dest_length==0)
+    return NULL;
+  
+  uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
+  uint8_t *dest = GAMESTATE_START(ndata);
+  
+  rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
+#ifndef NDEBUG
+  uint8_t *dest2 = new uint8_t[dest_length];
+  rawDiff( dest2, dest, basep, header_->getDataSize(), base->header_->getDataSize() );
+  assert( memcmp( dest2, gs, dest_length) == 0 );
+#endif
+
+  Gamestate *g = new Gamestate(ndata, getClientID());
+  assert(g->header_);
+  *(g->header_) = *header_;
+  g->header_->setDiffed( true );
+  g->header_->setBaseID( base->getID() );
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  assert(g->isDiffed());
+  assert(!g->isCompressed());
+  return g;
 }
+
+Gamestate *Gamestate::undiff(Gamestate *base)
+{
+  assert(this && base); assert(data_ && base->data_);
+  assert(!header_->isCompressed() && !base->header_->isCompressed());
+  assert(header_->isDiffed());
+  
+  uint8_t *basep = GAMESTATE_START(base->data_);
+  uint8_t *gs = GAMESTATE_START(this->data_);
+  uint32_t dest_length = header_->getDataSize();
+  
+  if(dest_length==0)
+    return NULL;
+  
+  uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
+  uint8_t *dest = ndata + GamestateHeader::getSize();
+  
+  rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
+  
+  Gamestate *g = new Gamestate(ndata, getClientID());
+  assert(g->header_);
+  *(g->header_) = *header_;
+  g->header_->setDiffed( false );
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  assert(!g->isDiffed());
+  assert(!g->isCompressed());
+  return g;
+}
+
 
 // Gamestate *Gamestate::diff(Gamestate *base)
 // {
@@ -408,6 +473,33 @@ Gamestate *Gamestate::diff(Gamestate *base)
 //   g->packetDirection_ = packetDirection_;
 //   return g;
 // }
+
+
+void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength)
+{
+  uint64_t* gd = (uint64_t*)data;
+  uint64_t* bd = (uint64_t*)basedata;
+  uint64_t* nd = (uint64_t*)newdata;
+  
+  unsigned int i;
+  for( i=0; i<datalength/8; i++ )
+  {
+    if( i<baselength/8 )
+      *(nd+i) = *(gd+i) ^ *(bd+i);  // xor the data
+    else
+      *(nd+i) = *(gd+i); // just copy over the data
+  }
+  unsigned int j;
+  // now process the rest (when datalength isn't a multiple of 4)
+  for( j = 8*(datalength/8); j<datalength; j++ )
+  {
+    if( j<baselength )
+      *(newdata+j) = *(data+j) ^ *(basedata+j); // xor
+    else
+      *(newdata+j) = *(data+j); // just copy
+  }
+  assert(j==datalength);
+}
 
 Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
   assert(data_);
@@ -478,7 +570,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 }
 
 
-Gamestate *Gamestate::undiff(Gamestate *base)
+/*Gamestate *Gamestate::undiff(Gamestate *base)
 {
   assert(this && base);assert(data_);
   assert(header_->isDiffed());
@@ -514,8 +606,7 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   assert(!g->isDiffed());
   assert(!g->isCompressed());
   return g;
-}
-
+}*/
 
 uint32_t Gamestate::calcGamestateSize(int32_t id, uint8_t mode)
 {
