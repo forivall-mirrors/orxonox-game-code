@@ -214,13 +214,14 @@ namespace orxonox
     if (it1 != objectMap_.end())
       return it1->second;
 
-    ObjectList<Synchronisable>::iterator it;
-    for(it = ObjectList<Synchronisable>::begin(); it; ++it){
-      if( it->getObjectID()==objectID ){
-        objectMap_[objectID] = *it;
-        return *it;
-      }
-    }
+//     ObjectList<Synchronisable>::iterator it;
+//     for(it = ObjectList<Synchronisable>::begin(); it; ++it){
+//       if( it->getObjectID()==objectID ){
+//         objectMap_[objectID] = *it;
+//         return *it;
+//       }
+//     }
+    // if the objects not in the map it should'nt exist at all anymore
     return NULL;
   }
 
