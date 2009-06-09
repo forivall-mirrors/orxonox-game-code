@@ -60,6 +60,9 @@ namespace orxonox
         void setTerminalMode();
         static void resetTerminalMode();
         
+        void insertCharacter( unsigned int position, char c );
+        void deleteCharacter( unsigned int position );
+        
         Server*                 server_;
         float                   timeSinceLastUpdate_;
         
@@ -72,6 +75,9 @@ namespace orxonox
         unsigned int            inputIterator_;
         std::queue<std::string> commandQueue_;
         static termios*         originalTerminalSettings_;
+        
+        unsigned int            cursorX_;
+        unsigned int            cursorY_;
     };
 }
 
