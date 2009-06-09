@@ -246,13 +246,12 @@ namespace orxonox
     class Shader;
     template <class T>
     class Timer;
-    class DynamicLines;
-    class DynamicRenderable;
 
     // overlays
     class BarColour;
     class DebugFPSText;
     class DebugRTRText;
+    class GUIOverlay;
     class HUDBar;
     class HUDNavigation;
     class HUDRadar;
@@ -291,6 +290,10 @@ namespace Ogre
     class BorderPanelOverlayElement;
     class PanelOverlayElement;
     class TextAreaOverlayElement;
+
+    // OGRE Wiki adapted code
+    class DynamicLines;
+    class DynamicRenderable;
 }
 
 namespace CEGUI

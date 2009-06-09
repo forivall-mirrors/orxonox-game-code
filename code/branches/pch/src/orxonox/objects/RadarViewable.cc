@@ -28,6 +28,7 @@
 
 #include "RadarViewable.h"
 
+#include <OgreSceneManager.h>
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
@@ -100,7 +101,7 @@ namespace orxonox
             this->line_->position(0, 0, 0);
 
             this->line_->end(); */
-            this->line_ = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
+            this->line_ = new Ogre::DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
             this->line_->addPoint( Vector3(0,0,0) );
             this->line_->addPoint( Vector3(0,0,0) );
 

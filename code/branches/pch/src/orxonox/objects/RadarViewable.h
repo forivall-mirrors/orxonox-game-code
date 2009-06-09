@@ -104,7 +104,7 @@ namespace orxonox
         //Used for Map
         Ogre::SceneNode * MapNode_;
         Ogre::Entity * MapEntity_;
-        DynamicLines* line_;
+        Ogre::DynamicLines* line_;
         Ogre::SceneNode * LineNode_;
         void addMapEntity();
         void updateMapPosition();
