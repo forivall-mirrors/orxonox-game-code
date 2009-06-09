@@ -41,7 +41,8 @@ function classPackage:preprocess ()
                                                tinsert(L,c)
                                                return "\n#["..getn(L).."]#"
                                            end
-    )    -- avoid preprocessing embedded C code
+    )
+    -- avoid preprocessing embedded C code
     local C = {}
     self.code = gsub(self.code,"\n%s*%$%<","\3") -- deal with embedded C code
     self.code = gsub(self.code,"\n%s*%$%>","\4")
@@ -49,7 +50,8 @@ function classPackage:preprocess ()
                                                tinsert(C,c)
                                                return "\n#<"..getn(C)..">#"
                                            end
-    )    -- avoid preprocessing embedded C code
+    )
+    -- avoid preprocessing embedded C code
     self.code = gsub(self.code,"\n%s*%$%{","\5") -- deal with embedded C code
     self.code = gsub(self.code,"\n%s*%$%}","\6")
     self.code = gsub(self.code,"(%b\5\6)", function (c)
@@ -57,6 +59,7 @@ function classPackage:preprocess ()
                                                return "\n#<"..getn(C)..">#"
                                            end
     )
+
     --self.code = gsub(self.code,"\n%s*#[^d][^\n]*\n", "\n\n") -- eliminate preprocessor directives that don't start with 'd'
     self.code = gsub(self.code,"\n[ \t]*#[ \t]*[^d%<%[]", "\n//") -- eliminate preprocessor directives that don't start with 'd'
 
@@ -67,6 +70,7 @@ function classPackage:preprocess ()
                                                              return "\n#"..getn(V).."#"
                                                          end
     )
+
     -- perform global substitution
 
     self.code = gsub(self.code,"(//[^\n]*)","")     -- eliminate C++ comments
@@ -89,20 +93,25 @@ function classPackage:preprocess ()
     self.code = gsub(self.code,"%#%[(%d+)%]%#", function (n)
                                                     return L[tonumber(n)]
                                                 end
-    )    -- restore embedded C code
+    )
+    -- restore embedded C code
     self.code = gsub(self.code,"%#%<(%d+)%>%#", function (n)
                                                     return C[tonumber(n)]
                                                 end
-    )    -- restore verbatim lines
+    )
+    -- restore verbatim lines
     self.code = gsub(self.code,"%#(%d+)%#", function (n)
                                                 return V[tonumber(n)]
                                             end
     )
+
     self.code = string.gsub(self.code, "\n%s*%$([^\n]+)", function (l)
                                                               Verbatim(l.."\n")
                                                               return "\n"
                                                           end
-    )end
+    )
+end
+
 -- translate verbatim
 function classPackage:preamble ()
     output('/*\n')
@@ -159,7 +168,7 @@ function classPackage:preamble ()
             end
         end
     end)
-    output('}')
+ output('}')
     output('\n')
 end
 
@@ -188,7 +197,7 @@ function classPackage:register (pre)
     output("#if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM >= 501\n");
     output(pre.."int luaopen_"..self.name.." (lua_State* tolua_S) {")
     output(pre.." return tolua_"..self.name.."_open(tolua_S);")
-    output(pre.."}")
+    output(pre.."};")
     output("#endif\n\n")
 
     pop()
@@ -201,9 +210,12 @@ function classPackage:header ()
     output('*/\n\n')
 
     if flags.H then
-        local package_lower = string.lower(self.name)        output('#include "'..package_lower..'/'..self.name..'Prereqs.h"\n')        output('/* Exported function */')
+        local package_lower = string.lower(self.name)
+        output('#include "'..package_lower..'/'..self.name..'Prereqs.h"\n')
+        output('/* Exported function */')
         output('_'..self.name..'Export')
-        output('int  tolua_'..self.name..'_open (lua_State* tolua_S);')        output('\n')
+        output('int  tolua_'..self.name..'_open (lua_State* tolua_S);')
+        output('\n')
     end
 end
 
@@ -218,7 +230,11 @@ end
 function extract_code(fn,s)
     local code = '\n$#include "'..string.lower(flags.n)..'/'..fn..'"\n'
     s= "\n" .. s .. "\n" -- add blank lines as sentinels
-    -- eliminate export macro problems in class declarations    s = gsub(s, ' _%w*Export ', ' ')    local _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n")
+
+    -- eliminate export macro problems in class declarations
+    s = gsub(s, ' _%w*Export ', ' ')
+
+    local _,e,c,t = strfind(s, "\n([^\n]-)[Tt][Oo][Ll][Uu][Aa]_([^%s]*)[^\n]*\n")
     while e do
         t = strlower(t)
         if t == "begin" then
@@ -242,7 +258,17 @@ function Package (name,fn)
     local st,msg
     if fn then
         local file
-        if flags.f then            if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' or (string.len(flags.f) > 1 and string.sub(flags.f, 2, 2) == ':') then                file = flags.f            else                file = flags.w..'/'..flags.f            end        else            file = flags.f        end        st, msg = readfrom(flags.f)        if not st then
+        if flags.f then
+            if string.sub(flags.f, 1, 1) == '/' or string.sub(flags.f, 1, 1) == '\\' or (string.len(flags.f) > 1 and string.sub(flags.f, 2, 2) == ':') then
+                file = flags.f
+            else
+                file = flags.w..'/'..flags.f
+            end
+        else
+            file = flags.f
+        end
+        st, msg = readfrom(file)
+        if not st then
             error('#'..msg..' path: '..flags.f)
         end
         local _; _, _, ext = strfind(fn,".*%.(.*)$")
@@ -262,7 +288,21 @@ function Package (name,fn)
         readfrom()
     end
 
-    -- prepare working directory    local current_path    if not flags.w and flags.f then        current_path = gsub(flags.f, '(/)[^/]*%.?[^/]*$', '%1')    elseif flags.w then        if not (string.sub(flags.w, string.len(flags.w)) == '/') then            current_path = flags.w..'/'        else            current_path = flags.w        end    else        current_path = ''    end    -- deal with include directive
+    -- prepare working directory
+    local current_path
+    if not flags.w and flags.f then
+        current_path = gsub(flags.f, '(/)[^/]*%.?[^/]*$', '%1')
+    elseif flags.w then
+        if not (string.sub(flags.w, string.len(flags.w)) == '/') then
+            current_path = flags.w..'/'
+        else
+            current_path = flags.w
+        end
+    else
+        current_path = ''
+    end
+
+    -- deal with include directive
     local nsubst
     repeat
         code,nsubst = gsub(code,'\n%s*%$(.)file%s*"(.-)"([^\n]*)\n',
@@ -293,7 +333,8 @@ function Package (name,fn)
                     error('#Invalid include directive (use $cfile, $pfile, $lfile or $ifile)')
                 end
             end
-        )    until nsubst==0
+        )
+    until nsubst==0
 
     -- deal with renaming directive
     repeat -- I don't know why this is necesary
@@ -317,20 +358,20 @@ function prep(file)
 
     local chunk = {'local __ret = {"\\n"}\n'}
     for line in file:lines() do
-       if string.find(line, "^##") then
-           table.insert(chunk, string.sub(line, 3) .. "\n")
-       else
-           local last = 1
-           for text, expr, index in string.gfind(line, "(.-)$(%b())()") do 
-               last = index
-               if text ~= "" then
-                   table.insert(chunk, string.format('table.insert(__ret, %q )', text))
-               end
-               table.insert(chunk, string.format('table.insert(__ret, %s )', expr))
-           end
-           table.insert(chunk, string.format('table.insert(__ret, %q)\n',
-                               string.sub(line, last).."\n"))
-       end
+        if string.find(line, "^##") then
+            table.insert(chunk, string.sub(line, 3) .. "\n")
+        else
+            local last = 1
+            for text, expr, index in string.gfind(line, "(.-)$(%b())()") do 
+                last = index
+                if text ~= "" then
+                    table.insert(chunk, string.format('table.insert(__ret, %q )', text))
+                end
+                table.insert(chunk, string.format('table.insert(__ret, %s )', expr))
+            end
+            table.insert(chunk, string.format('table.insert(__ret, %q)\n',
+                                string.sub(line, last).."\n"))
+        end
     end
     table.insert(chunk, '\nreturn table.concat(__ret)\n')
     local f,e = loadstring(table.concat(chunk))
