@@ -17,6 +17,7 @@ dofile(path.."lua/function.lua")
 dofile(path.."lua/operator.lua")
 dofile(path.."lua/class.lua")
 dofile(path.."lua/clean.lua")
+dofile(path.."lua/template_class.lua")
 --dofile(path.."lua/custom.lua")
 dofile(path.."lua/doit.lua")
 
