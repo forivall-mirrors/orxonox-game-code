@@ -25,15 +25,22 @@
  *      ...
  *
  */
+
+#include "SoundBase.h"
+
 #include <vector>
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
+#include <boost/static_assert.hpp>
 
-#include "orxonox/objects/worldentities/WorldEntity.h"
 #include "util/Math.h"
-#include "SoundBase.h"
-#include "SoundManager.h"
 #include "core/Core.h"
+#include "orxonox/objects/worldentities/WorldEntity.h"
+#include "SoundManager.h"
+
+// Make sure we correctly avoid including al.h in the header
+BOOST_STATIC_ASSERT(sizeof(uint32_t) == sizeof(ALuint));
+BOOST_STATIC_ASSERT(sizeof(int32_t)  == sizeof(ALint));
 
 namespace orxonox 
 {

@@ -26,13 +26,14 @@
  *
  */
 
+#include "SoundManager.h"
+
 #include <AL/alut.h>
 
+#include "util/Math.h"
 #include "orxonox/CameraManager.h"
 #include "orxonox/objects/worldentities/Camera.h"
-#include "util/Math.h"
 #include "SoundBase.h"
-#include "SoundManager.h"
 
 namespace orxonox
 {
