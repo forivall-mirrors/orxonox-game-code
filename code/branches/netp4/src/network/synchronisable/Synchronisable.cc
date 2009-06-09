@@ -173,6 +173,8 @@ namespace orxonox
     no->classID=header.getClassID();
     COUT(4) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
+    assert( Synchronisable::objectMap_.find(header.getObjectID()) == Synchronisable::objectMap_.end() );
+    Synchronisable::objectMap_[header.getObjectID()] = no;
     bool b = no->updateData(mem, mode, true);
     assert(b);
     if (b)
