@@ -188,7 +188,7 @@ namespace orxonox {
   */
   void TrafficControl::updateClientListTemp(std::list<obj>& list)
   {
-    clientListTemp_[currentClientID][currentGamestateID] = std::list<obj>(list);
+    clientListTemp_[currentClientID][currentGamestateID] = list;
   }
 
   /**
