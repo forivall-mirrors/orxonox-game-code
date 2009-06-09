@@ -57,16 +57,6 @@
 
 namespace orxonox
 {
-    using Ogre::Radian;
-    using Ogre::Degree;
-    using Ogre::Vector2;
-    using Ogre::Vector3;
-    using Ogre::Vector4;
-    using Ogre::Matrix3;
-    using Ogre::Matrix4;
-    using Ogre::Quaternion;
-    using Ogre::ColourValue;
-
     // Also define our own transform space enum
     namespace TransformSpace
     {
