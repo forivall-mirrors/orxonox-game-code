@@ -40,6 +40,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "OrxonoxClass.h"
 
 /**
@@ -105,10 +106,9 @@ namespace orxonox
         void unloadState(GameState* state);
 
         std::vector<GameState*>         activeStates_;
-        GameStateTreeNode*              rootStateNode_;
-        GameStateTreeNode*              activeStateNode_;
-        std::vector<GameStateTreeNode*> requestedStateNodes_;
-        std::vector<GameStateTreeNode*> allStateNodes_;
+        boost::shared_ptr<GameStateTreeNode> rootStateNode_;
+        boost::shared_ptr<GameStateTreeNode> activeStateNode_;
+        std::vector<boost::shared_ptr<GameStateTreeNode> > requestedStateNodes_;
 
         Core*                           core_;
         Clock*                          gameClock_;
