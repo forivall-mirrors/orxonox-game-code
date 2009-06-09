@@ -30,14 +30,14 @@
 
 #include <sstream>
 #include <cassert>
-
 #include <OgreSceneManager.h>
 #include <OgreBillboardSet.h>
 #include <OgreBillboard.h>
 
-#include "core/GameMode.h"
 #include "util/Convert.h"
+#include "util/Math.h"
 #include "util/String.h"
+#include "core/GameMode.h"
 
 namespace orxonox
 {

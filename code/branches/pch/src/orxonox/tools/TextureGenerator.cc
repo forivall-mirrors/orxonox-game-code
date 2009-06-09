@@ -32,9 +32,11 @@
 */
 
 #include "TextureGenerator.h"
+
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
 #include "util/Convert.h"
+#include "util/Math.h"
 
 namespace std
 {

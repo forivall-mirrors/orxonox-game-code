@@ -35,9 +35,10 @@
 #define _TextureGenerator_H__
 
 #include "OrxonoxPrereqs.h"
-#include <string>
+
 #include <map>
-#include "util/Math.h"
+#include <string>
+#include "util/UtilPrereqs.h"
 
 namespace orxonox
 {

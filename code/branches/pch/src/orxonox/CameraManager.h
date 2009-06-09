@@ -54,17 +54,17 @@ namespace orxonox
             void requestFocus(Camera* camera);
             void releaseFocus(Camera* camera);
 
+            void useCamera(Ogre::Camera* camera);
+
             static CameraManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
             static CameraManager* getInstancePtr() { return singletonRef_s; }
 
-            void useCamera(Ogre::Camera* camera);
-
         private:
-            CameraManager(const CameraManager&);
+            CameraManager(const CameraManager&); // don't use
 
-            std::list<Camera*> cameraList_;
-            Ogre::Viewport* viewport_;
-            Ogre::Camera* fallbackCamera_;
+            std::list<Camera*>    cameraList_;
+            Ogre::Viewport*       viewport_;
+            Ogre::Camera*         fallbackCamera_;
 
             static CameraManager* singletonRef_s;
     };

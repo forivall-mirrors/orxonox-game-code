@@ -87,8 +87,6 @@ namespace orxonox
         , renderWindow_(0)
         , viewport_(0)
         , ogreWindowEventListener_(0)
-        , avgTickTime_(0.0f)
-        , avgFramesPerSecond_(0.0f)
     {
         RegisterObject(GraphicsManager);
 

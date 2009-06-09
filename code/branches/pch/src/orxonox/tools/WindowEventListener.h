@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
 
-
 namespace orxonox
 {
     /**

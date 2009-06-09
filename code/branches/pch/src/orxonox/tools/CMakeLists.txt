@@ -1,5 +1,7 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   BillboardSet.cc
+  DynamicLines.cc
+  DynamicRenderable.cc
   Mesh.cc
   ParticleInterface.cc
   Shader.cc
@@ -7,6 +9,4 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   TimeFactorListener.cc
   Timer.cc
   WindowEventListener.cc
-  DynamicLines.cpp
-  DynamicRenderable.cpp
 )

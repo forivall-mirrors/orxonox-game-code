@@ -38,10 +38,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
 #include <cassert>
+#include <string>
 #include <OgreLog.h>
-
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -65,14 +64,15 @@ namespace orxonox
         inline unsigned int getDetailLevelParticle() const
             { return this->detailLevelParticle_; }
 
-        inline Ogre::Viewport* getViewport() const
+        inline Ogre::Viewport* getViewport()
             { return this->viewport_; }
         inline Ogre::RenderWindow* getRenderWindow()
             { return this->renderWindow_; }
 
         void setCamera(Ogre::Camera* camera);
 
-        static GraphicsManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+        inline static GraphicsManager& getInstance()
+            { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         GraphicsManager(GraphicsManager&); // don't mess with singletons
@@ -99,10 +99,6 @@ namespace orxonox
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
         OgreWindowEventListener* ogreWindowEventListener_;
-
-        // stats (Hack)
-        float               avgTickTime_;              //!< time in ms to tick() one frame
-        float               avgFramesPerSecond_;       //!< number of frames processed in one second
 
         // config values
         unsigned int        detailLevelParticle_;      //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)

@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
 
-
 namespace orxonox
 {
     class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass

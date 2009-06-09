@@ -30,9 +30,11 @@
 #define _Shader_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <vector>
+
 #include <map>
+#include <string>
+#include <vector>
+#include <OgrePrerequisites.h>
 
 #include "objects/Tickable.h"
 
