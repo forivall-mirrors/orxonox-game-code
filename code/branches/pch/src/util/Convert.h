@@ -369,7 +369,7 @@ namespace orxonox
     // Like getConvertedValue, but the template argument order is in reverse.
     // That means you can call it exactly like static_cast<ToType>(fromTypeValue).
     template<class ToType, class FromType>
-    inline ToType omni_cast(const FromType& input)
+    inline ToType multi_cast(const FromType& input)
     {
         ToType output;
         convertValue(&output, input);

@@ -71,6 +71,6 @@ namespace orxonox
 
     btCollisionShape* BoxCollisionShape::createNewShape() const
     {
-        return new btBoxShape(omni_cast<btVector3>(this->halfExtents_));
+        return new btBoxShape(multi_cast<btVector3>(this->halfExtents_));
     }
 }

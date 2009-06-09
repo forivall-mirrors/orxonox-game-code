@@ -138,7 +138,7 @@ namespace orxonox
         if (range.length() < 10.0f)
         {
             CCOUT(2) << "Warning: Setting the negative world range to a very small value: "
-                     << omni_cast<std::string>(range) << std::endl;
+                     << multi_cast<std::string>(range) << std::endl;
         }
         if (this->hasPhysics())
         {
@@ -157,7 +157,7 @@ namespace orxonox
         if (range.length() < 10.0f)
         {
             CCOUT(2) << "Warning: Setting the positive world range to a very small value: "
-                     << omni_cast<std::string>(range) << std::endl;
+                     << multi_cast<std::string>(range) << std::endl;
         }
         if (this->hasPhysics())
         {
@@ -175,7 +175,7 @@ namespace orxonox
     {
         this->gravity_ = gravity;
         if (this->hasPhysics())
-            this->physicalWorld_->setGravity(omni_cast<btVector3>(this->gravity_));
+            this->physicalWorld_->setGravity(multi_cast<btVector3>(this->gravity_));
     }
 
     void Scene::setPhysicalWorld(bool wantPhysics)
@@ -186,13 +186,13 @@ namespace orxonox
             // Note: These are all little known default classes and values.
             //       It would require further investigation to properly dertermine the right choices.
             this->broadphase_      = new bt32BitAxisSweep3(
-                omni_cast<btVector3>(this->negativeWorldRange_), omni_cast<btVector3>(this->positiveWorldRange_));
+                multi_cast<btVector3>(this->negativeWorldRange_), multi_cast<btVector3>(this->positiveWorldRange_));
             this->collisionConfig_ = new btDefaultCollisionConfiguration();
             this->dispatcher_      = new btCollisionDispatcher(this->collisionConfig_);
             this->solver_          = new btSequentialImpulseConstraintSolver();
 
             this->physicalWorld_   = new btDiscreteDynamicsWorld(this->dispatcher_, this->broadphase_, this->solver_, this->collisionConfig_);
-            this->physicalWorld_->setGravity(omni_cast<btVector3>(this->gravity_));
+            this->physicalWorld_->setGravity(multi_cast<btVector3>(this->gravity_));
 
             // also set the collision callback variable.
             // Note: This is a global variable which we assign a static function.

@@ -100,9 +100,9 @@ namespace orxonox
         unsigned int index = 0;
         for (std::map<PlayerInfo*, Player>::const_iterator it = playerList.begin(); it != playerList.end(); ++it)
         {
-            this->lines_[index]->setPlayerName(omni_cast<std::string>(it->first->getName()));
-            this->lines_[index]->setScore(omni_cast<std::string>(it->second.frags_));
-            this->lines_[index]->setDeaths(omni_cast<std::string>(it->second.killed_));
+            this->lines_[index]->setPlayerName(multi_cast<std::string>(it->first->getName()));
+            this->lines_[index]->setScore(multi_cast<std::string>(it->second.frags_));
+            this->lines_[index]->setDeaths(multi_cast<std::string>(it->second.killed_));
             index++;
         }
 

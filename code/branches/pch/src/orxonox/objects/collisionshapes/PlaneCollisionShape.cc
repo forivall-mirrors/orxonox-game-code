@@ -71,6 +71,6 @@ namespace orxonox
 
     btCollisionShape* PlaneCollisionShape::createNewShape() const
     {
-        return new btStaticPlaneShape(omni_cast<btVector3>(this->normal_), this->offset_);
+        return new btStaticPlaneShape(multi_cast<btVector3>(this->normal_), this->offset_);
     }
 }
