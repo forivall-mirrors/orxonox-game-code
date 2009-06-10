@@ -31,6 +31,10 @@
 #include "OrxonoxPrereqs.h"
 #include <string>
 
+// forward declarations
+typedef unsigned int ALuint;
+typedef int ALint;
+
 namespace orxonox
 {
     /**
@@ -57,12 +61,12 @@ namespace orxonox
         bool loadFile(std::string filename);
 
     private:
-        uint32_t loadOggFile(std::string filename);
-        uint32_t source_;
-        uint32_t buffer_;
+        ALuint loadOggFile(std::string filename);
+        ALuint source_;
+        ALuint buffer_;
         WorldEntity* entity_;
 
-        int32_t getSourceState();
+        ALint getSourceState();
 
         static SoundManager* soundmanager_s;
     }; // class SoundBase
