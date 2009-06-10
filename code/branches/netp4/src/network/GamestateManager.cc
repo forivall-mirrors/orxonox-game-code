@@ -62,6 +62,10 @@ namespace orxonox
 
   GamestateManager::~GamestateManager()
   {
+    if( this->reference )
+      delete this->reference;
+    for( std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateQueue.begin(); it != gamestateQueue.end(); it++ )
+      delete (*it).second;
     delete trafficControl_;
   }
 

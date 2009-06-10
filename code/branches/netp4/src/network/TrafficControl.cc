@@ -136,6 +136,8 @@ namespace orxonox {
 
 	void TrafficControl::ack(unsigned int clientID, unsigned int gamestateID)
 	{
+    if ( !this->bActive_ )
+      return;
 	  std::list<obj>::iterator itvec;  // iterator to iterate through the acked objects
 
     //assertions to make sure the maps already exist
@@ -226,34 +228,34 @@ namespace orxonox {
 	void TrafficControl::evaluateList(unsigned int clientID, std::list<obj>& list)
 	{
 
-	  //now the sorting
-
-	  //compare listToProcess vs clientListPerm
-    //if listToProcess contains new Objects, add them to clientListPerm
-    std::list<obj>::iterator itvec;
-    
-    std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
-    
-	  for( itvec=list.begin(); itvec != list.end(); itvec++)
-	  {
-	    if ( objectListPerm.find( (*itvec).objID) != objectListPerm.end() )
-      {
-        // we already have the object in our map
-        //obj bleibt in liste und permanente prio wird berechnet
-        objectListPerm[(*itvec).objID].objDiffGS = currentGamestateID - objectListPerm[(*itvec).objID].objCurGS;
-        continue;//check next objId
-      }
-      else
-      {
-        // insert the object into clientListPerm
-        insertinClientListPerm(clientID,*itvec);
-        continue;//check next objId
-      }
-    }
-	  //end compare listToProcess vs clientListPerm
-
     if( bActive_ )
     {
+      //now the sorting
+
+      //compare listToProcess vs clientListPerm
+      //if listToProcess contains new Objects, add them to clientListPerm
+      std::list<obj>::iterator itvec;
+    
+      std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
+    
+      for( itvec=list.begin(); itvec != list.end(); itvec++)
+      {
+        if ( objectListPerm.find( (*itvec).objID) != objectListPerm.end() )
+        {
+        // we already have the object in our map
+        //obj bleibt in liste und permanente prio wird berechnet
+          objectListPerm[(*itvec).objID].objDiffGS = currentGamestateID - objectListPerm[(*itvec).objID].objCurGS;
+          continue;//check next objId
+        }
+        else
+        {
+        // insert the object into clientListPerm
+          insertinClientListPerm(clientID,*itvec);
+          continue;//check next objId
+        }
+      }
+    //end compare listToProcess vs clientListPerm
+      
       //sort copied list according to priorities
       // use boost bind here because we need to pass a memberfunction to stl sort
 //       sort( list.begin(), list.end(), boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
@@ -274,10 +276,11 @@ namespace orxonox {
       //now sort again after objDataOffset
 //       sort(list.begin(), list.end(), boost::bind(&TrafficControl::dataSort, this, _1, _2) );
       list.sort( boost::bind(&TrafficControl::dataSort, this, _1, _2) );
+      
+      //diese Funktion updateClientList muss noch gemacht werden
+      updateClientListTemp(list);
+      //end of sorting
     }
-    //diese Funktion updateClientList muss noch gemacht werden
-    updateClientListTemp(list);
-    //end of sorting
   }
 
   void TrafficControl::printList(std::list<obj>& list, unsigned int clientID)

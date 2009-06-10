@@ -79,6 +79,8 @@ Gamestate::Gamestate(const Gamestate& g) :
 
 Gamestate::~Gamestate()
 {
+  if( header_ )
+    delete header_;
 }
 
 bool Gamestate::collectData(int id, uint8_t mode)
@@ -98,6 +100,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
   }
   
   // create the header object
+  assert( header_ == 0 );
   header_ = new GamestateHeader(data_);
 
   //start collect data synchronisable by synchronisable

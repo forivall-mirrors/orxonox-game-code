@@ -131,6 +131,7 @@ namespace orxonox
   bool ConnectionManager::quitListener() {
     quit_=true;
     receiverThread_->join();
+    delete receiverThread_;
     return true;
   }
 
@@ -205,8 +206,8 @@ namespace orxonox
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
           // we should never reach this point
           printf("ConnectionManager: ENet returned with an error\n");
-          quit_=true;
-          printf("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhh\n");
+//           quit_=true;
+//           printf("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhh\n");
           continue;
           // add some error handling here ========================
         }
@@ -217,13 +218,14 @@ namespace orxonox
         case ENET_EVENT_TYPE_CONNECT:
 //             printf("====================================================================");
         case ENET_EVENT_TYPE_DISCONNECT:
+//           printf("====================================================================");
         case ENET_EVENT_TYPE_RECEIVE:
-            processData(event);
-            event = new ENetEvent;
+          processData(event);
+          event = new ENetEvent;
           break;
         case ENET_EVENT_TYPE_NONE:
           //receiverThread_->yield();
-          msleep(10);
+          msleep(1);
           break;
       }
 //       usleep(100);

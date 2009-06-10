@@ -162,6 +162,7 @@ namespace orxonox
                                     --cursorX_;
                                 break;
                             default: //not supported...
+//                                 std::cout << endl << c << endl;
                                 break;
                         }
                         escapeChar = 0;
@@ -250,6 +251,7 @@ namespace orxonox
     
     void GSDedicated::setTerminalMode()
     {
+#ifndef ORXONOX_PLATFORM_WINDOWS
         termios new_settings;
      
         tcgetattr(0,this->originalTerminalSettings_);
@@ -261,6 +263,7 @@ namespace orxonox
         tcsetattr(0,TCSANOW,&new_settings);
         COUT(0) << endl;
 //       atexit(&GSDedicated::resetTerminalMode);
+#endif
     }
     
     void GSDedicated::resetTerminalMode()
