@@ -23,23 +23,28 @@
  *      Reto Grieder
  *      Benjamin Knecht
  *   Co-authors:
- *
+ *      ...
  *
  */
 
 /**
-    @file
-    @brief
-        Implementation of the GUIManager class.
+@file
+@brief
+    Implementation of the GUIManager class.
 */
 
 #include "GUIManager.h"
 
-#include <boost/filesystem/path.hpp>
-#include <OgreRenderWindow.h>
-#include <CEGUI.h>
+extern "C" {
+#include <lua.h>
+}
 #include <CEGUIDefaultLogger.h>
+#include <CEGUIExceptions.h>
+#include <CEGUIInputEvent.h>
+#include <CEGUIResourceProvider.h>
+#include <CEGUISystem.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
+
 #include "SpecialConfig.h" // Configures the macro below
 #ifdef CEGUILUA_USE_INTERNAL_LIBRARY
 #   include <ceguilua/CEGUILua.h>
@@ -48,19 +53,15 @@
 #endif
 
 #include "util/Exception.h"
-#include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "core/Clock.h"
 #include "ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
 #include "core/Loader.h"
 
-extern "C" {
-#include <lua.h>
-}
-
 namespace orxonox
 {
+    static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
     GUIManager* GUIManager::singletonRef_s = 0;
 
     GUIManager::GUIManager()
@@ -138,9 +139,8 @@ namespace orxonox
                 this->luaState_ = this->scriptModule_->getLuaState();
 
                 // Create our own logger to specify the filepath
-                boost::filesystem::path ceguiLogFilepath(Core::getLogPath() / "cegui.log");
                 this->ceguiLogger_ = new DefaultLogger();
-                this->ceguiLogger_->setLogFilename(ceguiLogFilepath.string());
+                this->ceguiLogger_->setLogFilename(Core::getLogPathString() + "cegui.log");
                 // set the log level according to ours (translate by subtracting 1)
                 this->ceguiLogger_->setLoggingLevel(
                     (LoggingLevel)(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
@@ -339,6 +339,15 @@ namespace orxonox
         }
     }
 
+    void GUIManager::keyPressed(const KeyEvent& evt)
+    {
+        guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text);
+    }
+    void GUIManager::keyReleased(const KeyEvent& evt)
+    {
+        guiSystem_->injectKeyUp(evt.key);
+    }
+
     /**
     @brief
         Function receiving a mouse button pressed event.
@@ -383,6 +392,15 @@ namespace orxonox
         }
     }
 
+    void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    {
+        guiSystem_->injectMouseMove(rel.x, rel.y);
+    }
+    void GUIManager::mouseScrolled(int abs, int rel)
+    {
+        guiSystem_->injectMouseWheelChange(rel);
+    }
+
     /**
     @brief
         converts mouse event code to CEGUI event code
@@ -393,7 +411,7 @@ namespace orxonox
 
         Simple convertion from mouse event code in Orxonox to the one used in CEGUI.
      */
-    inline CEGUI::MouseButton GUIManager::convertButton(MouseButtonCode::ByEnum button)
+    static inline CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button)
     {
         switch (button)
         {
