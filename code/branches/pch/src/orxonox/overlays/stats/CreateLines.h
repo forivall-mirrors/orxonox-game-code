@@ -27,15 +27,8 @@
 #ifndef _CreateLines_H__
 #define _CreateLines_H__
 
-
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <OgreBorderPanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
-
-#include "overlays/OrxonoxOverlay.h"
-#include "objects/Tickable.h"
-
+#include <string>
 
 namespace orxonox
 {

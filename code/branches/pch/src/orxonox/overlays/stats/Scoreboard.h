@@ -29,19 +29,16 @@
 
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <OgreBorderPanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 
+#include <string>
+#include <vector>
 #include "overlays/OrxonoxOverlay.h"
 #include "objects/Tickable.h"
-
 
 namespace orxonox
 {
     class _OrxonoxExport Scoreboard : public OrxonoxOverlay, public Tickable
     {
-
     public: // functions
         Scoreboard(BaseObject* creator);
         virtual ~Scoreboard() {}

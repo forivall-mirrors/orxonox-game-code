@@ -26,16 +26,8 @@
 
 #include "Scoreboard.h"
 
-#include <string>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
-
 #include "util/Convert.h"
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/infos/PlayerInfo.h"
 #include "CreateLines.h"
