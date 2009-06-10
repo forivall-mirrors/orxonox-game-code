@@ -33,10 +33,9 @@
 
 #include "NotificationManager.h"
 
-#include "core/CoreIncludes.h"
-
 #include <set>
 
+#include "core/CoreIncludes.h"
 #include "Notification.h"
 #include "NotificationQueue.h"
 

@@ -33,17 +33,12 @@
 
 #include "NotificationQueue.h"
 
-#include <OgreOverlayManager.h>
-#include <OgreTextAreaOverlayElement.h>
-#include <list>
-#include <iostream>
 #include <sstream>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
-#include "Notification.h"
 #include "NotificationOverlay.h"
+#include "NotificationManager.h"
 
 namespace orxonox
 {
@@ -60,6 +55,7 @@ namespace orxonox
     */
     NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayGroup(creator)
     {
+        RegisterObject(NotificationQueue);
         this->initialize();
     }
 
@@ -80,8 +76,6 @@ namespace orxonox
     */
     void NotificationQueue::initialize(void)
     {
-        RegisterObject(NotificationQueue);
-
         this->size_ = 0;
         this->tickTime_ = 0.0;
 

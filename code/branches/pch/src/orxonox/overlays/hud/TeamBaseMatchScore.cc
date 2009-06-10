@@ -28,8 +28,6 @@
 
 #include "TeamBaseMatchScore.h"
 
-#include <OgreTextAreaOverlayElement.h>
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"

@@ -36,18 +36,14 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
-#include <set>
-#include <OgreOverlayManager.h>
-#include <OgreTextAreaOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
-#include <map>
 #include <ctime>
+#include <map>
+#include <set>
+#include <string>
 
-#include "orxonox/overlays/OverlayGroup.h"
+#include "util/Math.h"
 #include "orxonox/objects/Tickable.h"
-
-#include "NotificationManager.h"
+#include "orxonox/overlays/OverlayGroup.h"
 
 namespace orxonox
 {

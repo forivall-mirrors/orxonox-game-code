@@ -24,28 +24,17 @@
  *
  */
 
-#ifndef _MAP_H__
-#define _MAP_H__
+#ifndef _Map_H__
+#define _Map_H__
+
+#include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreEntity.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
-#include <OgreMovablePlane.h>
+#include <OgreMaterial.h>
 
-#include <OgreBorderPanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
-
-#include "overlays/OrxonoxOverlay.h"
+#include "util/UtilPrereqs.h"
 #include "objects/Tickable.h"
-
-
+#include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
@@ -54,7 +43,7 @@ namespace orxonox
 
     public: // functions
         Map(BaseObject* creator);
-        ~Map();
+        virtual ~Map();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
@@ -125,4 +114,4 @@ namespace orxonox
     };
 }
 
-#endif /* _MAP_H__ */
+#endif /* _Map_H__ */

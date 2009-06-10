@@ -34,6 +34,8 @@
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
 #include <OgreOverlayContainer.h>
+#include <OgreBorderPanelOverlayElement.h>
+#include <OgreTextAreaOverlayElement.h>
 #include <OgreFontManager.h>
 #include <OgreFont.h>
 

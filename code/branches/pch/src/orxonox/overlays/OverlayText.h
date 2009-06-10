@@ -32,8 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
+#include "util/Math.h"
 #include "OrxonoxOverlay.h"
 
 namespace orxonox
@@ -41,25 +40,32 @@ namespace orxonox
     class _OrxonoxExport OverlayText : public OrxonoxOverlay
     {
     public:
+        enum Alignment
+        {
+            Left,
+            Right,
+            Center
+        };
+
         OverlayText(BaseObject* creator);
         virtual ~OverlayText();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        inline void setCaption(const std::string& caption) { this->text_->setCaption(caption); this->changedCaption(); }
-        inline std::string getCaption() const              { return this->text_->getCaption(); }
+        void setCaption(const std::string& caption);
+        std::string getCaption() const;
 
         void setFont(const std::string& font);
-        inline const std::string& getFont() const { return this->text_->getFontName(); }
+        const std::string& getFont() const;
 
-        inline void setSpaceWidth(float width) { this->text_->setSpaceWidth(width); }
-        inline float getSpaceWidth() const     { return this->text_->getSpaceWidth(); }
+        void setSpaceWidth(float width);
+        float getSpaceWidth() const;
 
-        inline void setColour(const ColourValue& colour) { this->text_->setColour(colour); this->changedColour(); }
-        inline const ColourValue& getColour() const      { return this->text_->getColour(); }
+        void setColour(const ColourValue& colour);
+        const ColourValue& getColour() const;
 
-        inline void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment) { this->text_->setAlignment(alignment); }
-        inline Ogre::TextAreaOverlayElement::Alignment getAlignment() const         { return this->text_->getAlignment(); }
+        void setAlignment(OverlayText::Alignment alignment);
+        OverlayText::Alignment getAlignment() const;
 
         void setAlignmentString(const std::string& alignment);
         std::string getAlignmentString() const;

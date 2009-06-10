@@ -37,12 +37,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "orxonox/overlays/OverlayText.h"
-
 #include <string>
-#include <set>
-#include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
+#include "orxonox/overlays/OverlayText.h"
 
 namespace orxonox
 {

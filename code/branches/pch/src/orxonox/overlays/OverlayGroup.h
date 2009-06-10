@@ -38,8 +38,8 @@
 
 #include <set>
 #include <OgrePrerequisites.h>
-#include "core/BaseObject.h"
 #include "util/Math.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {

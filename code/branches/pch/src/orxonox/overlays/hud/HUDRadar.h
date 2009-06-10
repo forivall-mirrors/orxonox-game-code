@@ -32,9 +32,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
 #include <map>
+#include <vector>
 #include <OgrePrerequisites.h>
+
 #include "overlays/OrxonoxOverlay.h"
 #include "objects/RadarListener.h"
 #include "objects/RadarViewable.h"
@@ -45,7 +46,7 @@ namespace orxonox
     {
     public:
         HUDRadar(BaseObject* creator);
-        ~HUDRadar();
+        virtual ~HUDRadar();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void changedOwner();

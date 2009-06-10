@@ -33,6 +33,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
+#include <OgrePass.h>
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"

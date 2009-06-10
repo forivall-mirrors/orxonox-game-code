@@ -34,8 +34,6 @@
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"
-#include "util/Exception.h"
-
 #include "NotificationManager.h"
 
 namespace orxonox
@@ -47,6 +45,7 @@ namespace orxonox
     */
     Notification::Notification(BaseObject* creator) : BaseObject(creator)
     {
+        RegisterObject(Notification);
         this->initialize();
     }
     
@@ -75,8 +74,6 @@ namespace orxonox
     */
     void Notification::initialize(void)
     {
-        RegisterObject(Notification);
-        
         this->message_ = "";
         this->sender_ = NotificationManager::NONE;
         this->sent_ = false;

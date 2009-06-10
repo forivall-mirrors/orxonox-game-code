@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "overlays/OverlayText.h"
 #include "objects/Tickable.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             TeamBaseMatchScore(BaseObject* creator);
-            ~TeamBaseMatchScore();
+            virtual ~TeamBaseMatchScore();
 
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

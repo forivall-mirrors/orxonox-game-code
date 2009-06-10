@@ -31,9 +31,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "HUDBar.h"
+#include "util/Math.h"
 #include "objects/Tickable.h"
 #include "overlays/OverlayText.h"
+#include "HUDBar.h"
 
 namespace orxonox
 {
@@ -41,7 +42,7 @@ namespace orxonox
     {
         public:
             HUDHealthBar(BaseObject* creator);
-            ~HUDHealthBar();
+            virtual ~HUDHealthBar();
 
             virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
             virtual void tick(float dt);
@@ -63,9 +64,9 @@ namespace orxonox
             inline bool getTextUseBarColour() const
                 { return this->bUseBarColour_; }
 
-            inline void setTextAlignment(Ogre::TextAreaOverlayElement::Alignment alignment)
+            inline void setTextAlignment(OverlayText::Alignment alignment)
                 { this->textoverlay_->setAlignment(alignment); }
-            inline Ogre::TextAreaOverlayElement::Alignment getTextAlignment() const
+            inline OverlayText::Alignment getTextAlignment() const
                 { return this->textoverlay_->getAlignment(); }
 
             void setTextAlignmentString(const std::string& alignment)

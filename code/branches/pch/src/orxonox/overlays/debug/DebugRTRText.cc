@@ -27,9 +27,9 @@
  */
 
 #include "DebugRTRText.h"
-#include <OgreTextAreaOverlayElement.h>
-#include "core/CoreIncludes.h"
+
 #include "util/Convert.h"
+#include "core/CoreIncludes.h"
 #include "core/Game.h"
 
 namespace orxonox
@@ -50,6 +50,6 @@ namespace orxonox
         SUPER(DebugRTRText, tick, dt);
 
         float rtr = Game::getInstance().getAvgTickTime();
-        this->setCaption(convertToString(rtr));
+        this->setCaption(multi_cast<std::string>(rtr));
     }
 }

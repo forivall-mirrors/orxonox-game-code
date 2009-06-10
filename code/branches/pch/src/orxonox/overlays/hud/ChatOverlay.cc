@@ -30,18 +30,15 @@
 
 #include <OgreTextAreaOverlayElement.h>
 
+#include "util/Convert.h"
 #include "util/UTFStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Executor.h"
 
-#include "network/ClientInformation.h"
-
-#include "PlayerManager.h"
-#include "objects/infos/PlayerInfo.h"
 #include "tools/Timer.h"
-
-#include "util/Convert.h"
+#include "objects/infos/PlayerInfo.h"
+#include "PlayerManager.h"
 
 namespace orxonox
 {
