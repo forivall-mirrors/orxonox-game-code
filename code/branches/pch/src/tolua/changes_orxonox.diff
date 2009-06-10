@@ -1,5 +1,6 @@
---- tolua++.h	Tue Jun  9 16:27:17 2009
-+++ tolua++.h	Tue Jun  9 14:50:04 2009
+diff -ruN tolua/tolua++.h tolua2/tolua++.h
+--- tolua/tolua++.h	Wed Jan 28 21:51:38 2009
++++ tolua2/tolua++.h	Sat Jan 10 14:48:44 2009
 @@ -16,9 +16,34 @@
  #ifndef TOLUA_H
  #define TOLUA_H
@@ -35,8 +36,9 @@
  
  #define TOLUA_VERSION "tolua++-1.0.92"
  
---- tolua.c	Tue Jun  9 16:27:12 2009
-+++ tolua.c	Tue Jun  9 14:50:04 2009
+diff -ruN tolua/tolua.c tolua2/tolua.c
+--- tolua/tolua.c	Wed Jan 28 21:51:00 2009
++++ tolua2/tolua.c	Sat Jan 10 14:48:45 2009
 @@ -4,6 +4,8 @@
  ** TeCGraf/PUC-Rio
  ** Aug 2003
@@ -55,7 +57,7 @@
           "  -p       : parse only.\n"
           "  -P       : parse and print structure information (for debug).\n"
           "  -S       : disable support for c++ strings.\n"
-@@ -65,12 +69,12 @@
+@@ -64,12 +68,12 @@
  }
  
  static void add_extra (lua_State* L, char* value) {
@@ -74,7 +76,7 @@
  };
  
  static void error (char* o)
-@@ -82,6 +86,9 @@
+@@ -81,6 +85,9 @@
  
  int main (int argc, char* argv[])
  {
@@ -84,7 +86,7 @@
   #ifdef LUA_VERSION_NUM /* lua 5.1 */
   lua_State* L = luaL_newstate();
   luaL_openlibs(L);
-@@ -98,6 +105,7 @@
+@@ -97,6 +104,7 @@
   lua_pushstring(L,TOLUA_VERSION); lua_setglobal(L,"TOLUA_VERSION");
   lua_pushstring(L,LUA_VERSION); lua_setglobal(L,"TOLUA_LUA_VERSION");
  
@@ -92,7 +94,7 @@
   if (argc==1)
   {
    help();
-@@ -125,6 +133,14 @@
+@@ -124,6 +132,14 @@
       case 'o': setfield(L,t,"o",argv[++i]); break;
       case 'n': setfield(L,t,"n",argv[++i]); break;
       case 'H': setfield(L,t,"H",argv[++i]); break;
@@ -107,7 +109,7 @@
       case 'S': setfield(L,t,"S",""); break;
       case '1': setfield(L,t,"1",""); break;
       case 'L': setfield(L,t,"L",argv[++i]); break;
-@@ -145,25 +161,53 @@
+@@ -143,25 +159,53 @@
    }
    lua_pop(L,1);
   }

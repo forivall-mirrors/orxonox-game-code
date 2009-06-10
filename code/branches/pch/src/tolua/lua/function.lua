@@ -208,7 +208,7 @@ function classFunction:supcode (local_constructor)
     local narg
     if class then narg=2 else narg=1 end
     if class then
-        local func = get_is_function(self.parent.type)
+        local func = 'tolua_isusertype'
         local type = self.parent.type
         if self.name=='new' or static~=nil then
             func = 'tolua_isusertable'
@@ -225,7 +225,7 @@ function classFunction:supcode (local_constructor)
         while self.args[i] do
             local btype = isbasic(self.args[i].type)
             if btype ~= 'value' and btype ~= 'state' then
-                output('     '..self.args[i]:outchecktype(narg)..' ||\n')
+                output('     !'..self.args[i]:outchecktype(narg)..' ||\n')
             end
             if btype ~= 'state' then
                 narg = narg+1
@@ -249,8 +249,7 @@ function classFunction:supcode (local_constructor)
     if class and self.name~='new' and static==nil then
         output(' ',self.const,self.parent.type,'*','self = ')
         output('(',self.const,self.parent.type,'*) ')
-        local to_func = get_to_function(self.parent.type)
-        output(to_func,'(tolua_S,1,0);')
+        output('tolua_tousertype(tolua_S,1,0);')
     elseif static then
         _,_,self.mod = strfind(self.mod,'^%s*static%s%s*(.*)')
     end
@@ -269,7 +268,7 @@ function classFunction:supcode (local_constructor)
     -- check self
     if class and self.name~='new' and static==nil then
         output('#ifndef TOLUA_RELEASE\n')
-        output('  if (!self) tolua_error(tolua_S,"'..output_error_hook("invalid \'self\' in function \'%s\'", self.name)..'", NULL);');
+        output('  if (!self) tolua_error(tolua_S,"invalid \'self\' in function \''..self.name..'\'",NULL);');
         output('#endif\n')
     end
 
@@ -312,8 +311,6 @@ function classFunction:supcode (local_constructor)
     local exRaiseError = false
     --------------------------------------------------
 
-    pre_call_hook(self)
-
     local out = string.find(self.mod, "tolua_outside")
 
     ---------------
@@ -325,7 +322,7 @@ function classFunction:supcode (local_constructor)
 
     -- call function
     if class and self.name=='delete' then
-        output('  Mtolua_delete(self);')
+        output('  delete self;')
     elseif class and self.name == 'operator&[]' then
         if flags['1'] then -- for compatibility with tolua5 ?
             output('  self->operator[](',self.args[1].name,'-1) = ',self.args[2].name,';')
@@ -354,7 +351,7 @@ function classFunction:supcode (local_constructor)
         output('  ')
     end
     if class and self.name=='new' then
-        output('Mtolua_new((',self.type,')(')
+        output('new',self.type,'(')
     elseif class and static then
         if out then
             output(self.name,'(')
@@ -366,8 +363,7 @@ function classFunction:supcode (local_constructor)
             output(self.name,'(')
         else
             if self.cast_operator then
-                --output('static_cast<',self.mod,self.type,self.ptr,' >(*self')
-                output('self->operator ',self.mod,self.type,'(')
+                output('static_cast<',self.mod,self.type,self.ptr,'>(*self')
             else
                 output('self->'..self.name,'(')
             end
@@ -395,18 +391,14 @@ function classFunction:supcode (local_constructor)
     if class and self.name == 'operator[]' and flags['1'] then
         output('-1);')
     else
-        if class and self.name=='new' then
-            output('));') -- close Mtolua_new(
-        else
-            output(');')
-        end
+        output(');')
     end
 
     -- return values
     if self.type ~= '' and self.type ~= 'void' then
         nret = nret + 1
         local t,ct = isbasic(self.type)
-        if t and self.name ~= "new" then
+        if t then
             if self.cast_operator and _basic_raw_push[t] then
                 output('   ',_basic_raw_push[t],'(tolua_S,(',ct,')tolua_ret);')
             else
@@ -415,29 +407,23 @@ function classFunction:supcode (local_constructor)
             else
                 t = self.type
                 new_t = string.gsub(t, "const%s+", "")
-                local owned = false
-                if string.find(self.mod, "tolua_owned") then
-                    owned = true
-                end
-                local push_func = get_push_function(t)
                 if self.ptr == '' then
                     output('   {')
                     output('#ifdef __cplusplus\n')
-                    output('    void* tolua_obj = Mtolua_new((',new_t,')(tolua_ret));')
-                    output('    ',push_func,'(tolua_S,tolua_obj,"',t,'");')
-                    output('    tolua_register_gc(tolua_S,lua_gettop(tolua_S));')
+                    output('    void* tolua_obj = new',new_t,'(tolua_ret);')
+                    output('    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"',t,'");')
                     output('#else\n')
                     output('    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(',t,'));')
-                    output('    ',push_func,'(tolua_S,tolua_obj,"',t,'");')
-                    output('    tolua_register_gc(tolua_S,lua_gettop(tolua_S));')
+                    output('    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"',t,'");')
                     output('#endif\n')
                     output('   }')
                 elseif self.ptr == '&' then
-                    output('   ',push_func,'(tolua_S,(void*)&tolua_ret,"',t,'");')
+                    output('   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"',t,'");')
                 else
-                    output('   ',push_func,'(tolua_S,(void*)tolua_ret,"',t,'");')
-                    if owned or local_constructor then
-                        output('    tolua_register_gc(tolua_S,lua_gettop(tolua_S));')
+                    if local_constructor then
+                        output('   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"',t,'");')
+                    else
+                        output('   tolua_pushusertype(tolua_S,(void*)tolua_ret,"',t,'");')
                     end
                 end
             end
@@ -479,8 +465,6 @@ function classFunction:supcode (local_constructor)
         end
     end
 
-    post_call_hook(self)
-
     output(' }')
     output(' return '..nret..';')
 
@@ -489,7 +473,7 @@ function classFunction:supcode (local_constructor)
 
         output('#ifndef TOLUA_RELEASE\n')
         output('tolua_lerror:\n')
-        output(' tolua_error(tolua_S,"'..output_error_hook("#ferror in function \'%s\'.", self.lname)..'",&tolua_err);')
+        output(' tolua_error(tolua_S,"#ferror in function \''..self.lname..'\'.",&tolua_err);')
         output(' return 0;')
         output('#endif\n')
     else
@@ -589,7 +573,7 @@ function param_object(par) -- returns true if the parameter has an object as its
 
     if string.find(par, "%*") then -- it's a pointer with a default value
 
-        if string.find(par, '=%s*new') or string.find(par, "%(") then -- it's a pointer with an instance as default parameter.. is that valid?
+        if string.find(par, '=%s*new') then -- it's a pointer with an instance as default parameter.. is that valid?
             return true
         end
         return false -- default value is 'NULL' or something
@@ -676,7 +660,7 @@ function Function (d,a,c)
         ns = "("..string.gsub(ns, "%s*,%s*$", "")..')'
         --ns = strip_defaults(ns)
 
-        local f = Function(d, ns, c)
+        Function(d, ns, c)
         for i=1,last do
             t[i] = string.gsub(t[i], "=.*$", "")
         end

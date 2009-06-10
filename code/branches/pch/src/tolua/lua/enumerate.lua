@@ -21,16 +21,11 @@ setmetatable(classEnumerate,classFeature)
 
 -- register enumeration
 function classEnumerate:register (pre)
-    if not self:check_public_access() then
-        return
-    end
     pre = pre or ''
     local nspace = getnamespace(classContainer.curr)
     local i=1
     while self[i] do
-        if self.lnames[i] and self.lnames[i] ~= "" then
-            output(pre..'tolua_constant(tolua_S,"'..self.lnames[i]..'",'..nspace..self[i]..');')
-        end
+        output(pre..'tolua_constant(tolua_S,"'..self.lnames[i]..'",'..nspace..self[i]..');')
         i = i+1
     end
 end
@@ -60,11 +55,6 @@ function _Enumerate (t,varname)
             warning("Variable "..ns..varname.." of type <anonymous enum> is declared as read-only")
             Variable("tolua_readonly int "..varname)
         end
-    end
-    local parent = classContainer.curr
-    if parent then
-        t.access = parent.curr_member_access
-        t.global_access = t:check_public_access()
     end
     return t
 end

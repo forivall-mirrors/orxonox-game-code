@@ -614,13 +614,6 @@ function classContainer:doparse (s)
             -- try a single letter function name
             b,e,decl,arg,const = strfind(s,"^%s*([_%w])%s*(%b())%s*(c?o?n?s?t?)%s*;%s*")
         end
-        if not b then
-            -- try function pointer
-            b,e,decl,arg,const = strfind(s,"^%s*([^%(;\n]+%b())%s*(%b())%s*;%s*")
-            if b then
-                decl = string.gsub(decl, "%(%s*%*([^%)]*)%s*%)", " %1 ")
-            end
-        end
         if b then
             if virt and string.find(virt, "[=0]") then
                 if self.flags then
@@ -653,23 +646,22 @@ function classContainer:doparse (s)
         local b,e,name,base,body
         base = '' body = ''
         b,e,name = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*;")  -- dummy class
-        local dummy = false
         if not b then
             b,e,name = strfind(s,"^%s*struct%s*([_%w][_%w@]*)%s*;")    -- dummy struct
             if not b then
-                b,e,name,base,body = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*([^{]-)%s*(%b{})%s*")
+                b,e,name,base,body = strfind(s,"^%s*class%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
                 if not b then
-                    b,e,name,base,body = strfind(s,"^%s*struct%s+([_%w][_%w@]*)%s*([^{]-)%s*(%b{})%s*")
+                    b,e,name,base,body = strfind(s,"^%s*struct%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
                     if not b then
-                        b,e,name,base,body = strfind(s,"^%s*union%s*([_%w][_%w@]*)%s*([^{]-)%s*(%b{})%s*")
+                        b,e,name,base,body = strfind(s,"^%s*union%s*([_%w][_%w@]*)%s*(.-)%s*(%b{})%s*;%s*")
                         if not b then
                             base = ''
-                            b,e,body,name = strfind(s,"^%s*typedef%s%s*struct%s%s*[_%w]*%s*(%b{})%s*([_%w][_%w@]*)%s*;")
+                            b,e,body,name = strfind(s,"^%s*typedef%s%s*struct%s%s*[_%w]*%s*(%b{})%s*([_%w][_%w@]*)%s*;%s*")
                         end
                     end
                 end
-            else dummy = 1 end
-        else dummy = 1 end
+            end
+        end
         if b then
             if base ~= '' then
                 base = string.gsub(base, "^%s*:%s*", "")
@@ -682,13 +674,6 @@ function classContainer:doparse (s)
             end
             _curr_code = strsub(s,b,e)
             Class(name,base,body)
-            if not dummy then
-                varb,vare,varname = string.find(s, "^%s*([_%w]+)%s*;", e+1)
-                if varb then
-                    Variable(name.." "..varname)
-                    e = vare
-                end
-            end
             return strsub(s,e+1)
         end
     end
@@ -737,7 +722,7 @@ function classContainer:doparse (s)
 
     -- try array
     do
-    local b,e,decl = strfind(s,"^%s*([_%w][][_@%s%w%d%*&:<>]*[]_%w%d])%s*;%s*")
+        local b,e,decl = strfind(s,"^%s*([_%w][][_@%s%w%d%*&:]*[]_%w%d])%s*;%s*")
         if b then
             _curr_code = strsub(s,b,e)
             Array(decl)
@@ -757,7 +742,7 @@ end
 
 function classContainer:parse (s)
 
-    --self.curr_member_access = nil
+    self.curr_member_access = nil
 
     while s ~= '' do
         s = self:doparse(s)

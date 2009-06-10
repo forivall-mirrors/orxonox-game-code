@@ -101,15 +101,14 @@ function classArray:supcode ()
 
     -- return value
     local t,ct = isbasic(self.type)
-    local push_func = get_push_function(t)
     if t then
         output(' tolua_push'..t..'(tolua_S,(',ct,')'..self:getvalue(class,static)..');')
     else
         t = self.type
         if self.ptr == '&' or self.ptr == '' then
-            output(' ',push_func,'(tolua_S,(void*)&'..self:getvalue(class,static)..',"',t,'");')
+            output(' tolua_pushusertype(tolua_S,(void*)&'..self:getvalue(class,static)..',"',t,'");')
         else
-            output(' ',push_func,'(tolua_S,(void*)'..self:getvalue(class,static)..',"',t,'");')
+            output(' tolua_pushusertype(tolua_S,(void*)'..self:getvalue(class,static)..',"',t,'");')
         end
     end
     output(' return 1;')
@@ -193,8 +192,7 @@ function classArray:supcode ()
         if t then
             output('tolua_to'..t,'(tolua_S,3,',def,'));')
         else
-            local to_func = get_to_function(self.type)
-            output(to_func,'(tolua_S,3,',def,'));')
+            output('tolua_tousertype(tolua_S,3,',def,'));')
         end
         output(' return 0;')
         output('}')
@@ -204,10 +202,6 @@ function classArray:supcode ()
 end
 
 function classArray:register (pre)
-    if not self:check_public_access() then
-        return
-    end
-
     pre = pre or ''
     if self.csetname then
         output(pre..'tolua_array(tolua_S,"'..self.lname..'",'..self.cgetname..','..self.csetname..');')

@@ -139,17 +139,13 @@ function resolve_template_types(type)
         m = split_c_tokens(string.sub(m, 2, -2), ",")
         for i=1, table.getn(m) do
             m[i] = string.gsub(m[i],"%s*([%*&])", "%1")
-            if not isbasic(m[i]) then
-                if not isenum(m[i]) then _, m[i] = applytypedef("", m[i]) end
-                m[i] = findtype(m[i]) or m[i]
-                m[i] = resolve_template_types(m[i])
-            end
+            m[i] = findtype(m[i]) or m[i]
+            m[i] = resolve_template_types(m[i])
         end
 
         local b,i
         type,b,i = break_template(type)
-        --print("concat is ",concat(m, 1, m.n))
-        local template_part = "<"..concat(m, 1, m.n, ",")..">"
+        local template_part = "<"..string.gsub(concat(m, 1, m.n), " ", ",")..">"
         type = rebuild_template(type, b, template_part)
         type = string.gsub(type, ">>", "> >")
     end
@@ -190,10 +186,10 @@ end
 
 -- check if array of values are returned to Lua
 function classDeclaration:requirecollection (t)
-    if self.mod ~= 'const' and
+ if self.mod ~= 'const' and
         self.dim and self.dim ~= '' and
                  not isbasic(self.type) and
-                 self.ptr == '' and self:check_public_access() then
+                 self.ptr == '' then
         local type = gsub(self.type,"%s*const%s+","")
         t[type] = "tolua_collect_" .. clean_template(type)
         return true
@@ -225,18 +221,13 @@ function classDeclaration:outchecktype (narg)
         --if t=='string' then
         --    return 'tolua_isstringarray(tolua_S,'..narg..','..def..',&tolua_err)'
         --else
-        return '!tolua_istable(tolua_S,'..narg..',0,&tolua_err)'
+        return 'tolua_istable(tolua_S,'..narg..',0,&tolua_err)'
         --end
     elseif t then
-        return '!tolua_is'..t..'(tolua_S,'..narg..','..def..',&tolua_err)'
+        return 'tolua_is'..t..'(tolua_S,'..narg..','..def..',&tolua_err)'
     else
-        local is_func = get_is_function(self.type)
-        if self.ptr == '&' or self.ptr == '' then
-            return '(tolua_isvaluenil(tolua_S,'..narg..',&tolua_err) || !'..is_func..'(tolua_S,'..narg..',"'..self.type..'",'..def..',&tolua_err))'
-        else
-            return '!'..is_func..'(tolua_S,'..narg..',"'..self.type..'",'..def..',&tolua_err)'
-        end
-   end
+        return 'tolua_isusertype(tolua_S,'..narg..',"'..self.type..'",'..def..',&tolua_err)'
+    end
 end
 
 function classDeclaration:builddeclaration (narg, cplusplus)
@@ -245,7 +236,6 @@ function classDeclaration:builddeclaration (narg, cplusplus)
     local ptr = ''
     local mod
     local type = self.type
-    local nctype = gsub(self.type,'const%s+','')
     if self.dim ~= '' then
         type = gsub(self.type,'const%s+','')  -- eliminates const modifier for arrays
     end
@@ -260,7 +250,7 @@ function classDeclaration:builddeclaration (narg, cplusplus)
             line = concatparam(line,'[',self.dim,'];')
         else
             if cplusplus then
-                line = concatparam(line,' = Mtolua_new_dim(',type,ptr,', '..self.dim..');')
+                line = concatparam(line,' = new',type,ptr,'['..self.dim..'];')
             else
                 line = concatparam(line,' = (',type,ptr,'*)',
                 'malloc((',self.dim,')*sizeof(',type,ptr,'));')
@@ -282,7 +272,7 @@ function classDeclaration:builddeclaration (narg, cplusplus)
                 line = concatparam(line,'*')
             end
             line = concatparam(line,') ')
-            if isenum(nctype) then
+            if isenum(type) then
                 line = concatparam(line,'(int) ')
             end
             local def = 0
@@ -295,8 +285,7 @@ function classDeclaration:builddeclaration (narg, cplusplus)
             if t then
                 line = concatparam(line,'tolua_to'..t,'(tolua_S,',narg,',',def,'));')
             else
-                local to_func = get_to_function(type)
-                line = concatparam(line,to_func..'(tolua_S,',narg,',',def,'));')
+                line = concatparam(line,'tolua_tousertype(tolua_S,',narg,',',def,'));')
             end
         end
     end
@@ -371,7 +360,7 @@ function classDeclaration:setarray (narg)
             if self.ptr == '' then
                 output('   {')
                 output('#ifdef __cplusplus\n')
-                output('    void* tolua_obj = Mtolua_new((',type,')(',self.name,'[i]));')
+                output('    void* tolua_obj = new',type,'(',self.name,'[i]);')
                 output('    tolua_pushfieldusertype_and_takeownership(tolua_S,',narg,',i+1,tolua_obj,"',type,'");')
                 output('#else\n')
                 output('    void* tolua_obj = tolua_copy(tolua_S,(void*)&',self.name,'[i],sizeof(',type,'));')
@@ -390,7 +379,7 @@ end
 function classDeclaration:freearray ()
     if self.dim ~= '' and tonumber(self.dim)==nil then
         output('#ifdef __cplusplus\n')
-        output('  Mtolua_delete_dim(',self.name,');')
+        output('  delete []',self.name,';')
         output('#else\n')
         output('  free(',self.name,');')
         output('#endif\n')
@@ -415,8 +404,7 @@ function classDeclaration:retvalue ()
         if t and t~='' then
             output('   tolua_push'..t..'(tolua_S,(',ct,')'..self.name..');')
         else
-            local push_func = get_push_function(self.type)
-            output('   ',push_func,'(tolua_S,(void*)'..self.name..',"',self.type,'");')
+            output('   tolua_pushusertype(tolua_S,(void*)'..self.name..',"',self.type,'");')
         end
         return 1
     end
