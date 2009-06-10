@@ -40,6 +40,7 @@
 #include "util/Math.h"
 #include "util/Convert.h"
 #include "util/Debug.h"
+#include "util/UTFStringConversions.h"
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -465,14 +466,14 @@ namespace orxonox
                 while (output.size() > this->maxCharsPerLine_)
                 {
                     ++linesUsed;
-                    this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(output.substr(0, this->maxCharsPerLine_)));
+                    this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output.substr(0, this->maxCharsPerLine_)));
                     output.erase(0, this->maxCharsPerLine_);
                     output.insert(0, 1, ' ');
                     if (linesUsed > numLinesShifted_ || alwaysShift)
                         this->shiftLines();
                     this->colourLine(level, index);
                 }
-                this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(output));
+                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output));
                 this->displayedText_ = output;
                 this->numLinesShifted_ = linesUsed;
             }
@@ -490,7 +491,7 @@ namespace orxonox
                 else
                   this->inputWindowStart_ = 0;
                 this->displayedText_ = output;
-                this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(output));
+                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output));
             }
         }
     }
@@ -604,23 +605,5 @@ namespace orxonox
     /*static*/ void InGameConsole::closeConsole()
     {
         InGameConsole::getInstance().deactivate();
-    }
-
-    /**
-        @brief Converts a string into an Ogre::UTFString.
-        @param s The string to convert
-        @return The converted string
-    */
-    /*static*/ Ogre::UTFString InGameConsole::convert2UTF(const std::string& text)
-    {
-        Ogre::UTFString utf;
-        Ogre::UTFString::code_point cp;
-        for (unsigned int i = 0; i < text.size(); ++i)
-        {
-          cp = text[i];
-          cp &= 0xFF;
-          utf.append(1, cp);
-        }
-        return utf;
     }
 }

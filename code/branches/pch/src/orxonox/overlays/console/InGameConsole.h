@@ -60,8 +60,6 @@ namespace orxonox
         static void openConsole();
         static void closeConsole();
 
-        static Ogre::UTFString convert2UTF(const std::string& text);
-
     private: // functions
         InGameConsole(const InGameConsole& other);
 

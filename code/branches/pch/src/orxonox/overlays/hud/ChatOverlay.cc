@@ -30,6 +30,7 @@
 
 #include <OgreTextAreaOverlayElement.h>
 
+#include "util/UTFStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Executor.h"
@@ -38,7 +39,6 @@
 
 #include "PlayerManager.h"
 #include "objects/infos/PlayerInfo.h"
-#include "overlays/console/InGameConsole.h"
 #include "tools/Timer.h"
 
 #include "util/Convert.h"
@@ -85,7 +85,7 @@ namespace orxonox
             text = message;
         }
 
-        this->messages_.push_back(InGameConsole::convert2UTF(text));
+        this->messages_.push_back(multi_cast<Ogre::UTFString>(text));
         COUT(0) << "Chat: " << text << std::endl;
 
         new Timer<ChatOverlay>(this->displayTime_, false, this, createExecutor(createFunctor(&ChatOverlay::dropMessage)), true);

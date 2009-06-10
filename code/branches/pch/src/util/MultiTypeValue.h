@@ -193,7 +193,8 @@ namespace orxonox
         saveAndIncrease( this->value_.y, mem );
         saveAndIncrease( this->value_.z, mem );
         saveAndIncrease( this->value_.w, mem );
-    }template <> inline uint8_t MT_Value<Ogre::Quaternion>::getSize() const
+    }
+    template <> inline uint8_t MT_Value<Ogre::Quaternion>::getSize() const
     {
         return 4*returnSize(this->value_.x);
     }
