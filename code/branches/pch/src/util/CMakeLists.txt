@@ -17,27 +17,7 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET_SOURCE_FILES(UTIL_FILES
-  CRC32.h
-  Clipboard.h
-  Convert.h
-  Debug.h
-  Exception.h
-  ExprParser.h
-  Math.h
-  MathConvert.h
-  MultiType.h
-  MultiTypeValue.h
-  OrxEnum.h
-  OutputBuffer.h
-  OutputHandler.h
-  SignalHandler.h
-  Sleep.h
-  String.h
-  SubString.h
-  UtilPrereqs.h
-  mbool.h
-  
+SET_SOURCE_FILES(UTIL_SRC_FILES
   Clipboard.cc
   CRC32.cc
   Exception.cc
@@ -58,11 +38,11 @@ IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
 ENDIF()
 
 ORXONOX_ADD_LIBRARY(util
-  #FIND_HEADER_FILES
+  FIND_HEADER_FILES
   DEFINE_SYMBOL
     "UTIL_SHARED_BUILD"
   LINK_LIBRARIES
     ${OGRE_LIBRARY}
   SOURCE_FILES
-    ${UTIL_FILES}
+    ${UTIL_SRC_FILES}
 )
