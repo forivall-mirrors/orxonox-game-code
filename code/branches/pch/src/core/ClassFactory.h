@@ -87,7 +87,7 @@ namespace orxonox
         @return The new object
     */
     template <class T>
-    BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
+    inline BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
     {
         return ClassFactory<T>::createNewObject(creator);
     }
@@ -97,7 +97,7 @@ namespace orxonox
         @return The new object
     */
     template <class T>
-    T* ClassFactory<T>::createNewObject(BaseObject* creator)
+    inline T* ClassFactory<T>::createNewObject(BaseObject* creator)
     {
         return new T(creator);
     }

@@ -382,7 +382,7 @@ namespace orxonox
         @return The unique Identifier
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
+    inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         // check if the static field has already been filled
         if (ClassIdentifier<T>::classIdentifier_s == 0)
@@ -397,7 +397,7 @@ namespace orxonox
         @return The Identifier
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
+    inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
     {
         ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
         identifier->setName(name);
@@ -434,7 +434,7 @@ namespace orxonox
         @param object The object to add
     */
     template <class T>
-    void ClassIdentifier<T>::addObject(T* object)
+    inline void ClassIdentifier<T>::addObject(T* object)
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));

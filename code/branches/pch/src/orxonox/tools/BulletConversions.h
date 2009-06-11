@@ -42,7 +42,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::Vector3, btVector3>
     {
-        static bool convert(btVector3* output, const orxonox::Vector3& input)
+        FORCEINLINE static bool convert(btVector3* output, const orxonox::Vector3& input)
         {
             output->setX(input.x);
             output->setY(input.y);
@@ -55,7 +55,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<btVector3, orxonox::Vector3>
     {
-        static bool convert(orxonox::Vector3* output, const btVector3& input)
+        FORCEINLINE static bool convert(orxonox::Vector3* output, const btVector3& input)
         {
             output->x = input.x();
             output->y = input.y();
@@ -68,7 +68,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::Quaternion, btQuaternion>
     {
-        static bool convert(btQuaternion* output, const orxonox::Quaternion& input)
+        FORCEINLINE static bool convert(btQuaternion* output, const orxonox::Quaternion& input)
         {
             output->setW(input.w);
             output->setX(input.x);
@@ -82,7 +82,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<btQuaternion, orxonox::Quaternion>
     {
-        static bool convert(orxonox::Quaternion* output, const btQuaternion& input)
+        FORCEINLINE static bool convert(orxonox::Quaternion* output, const btQuaternion& input)
         {
             output->w = input.w();
             output->x = input.x();

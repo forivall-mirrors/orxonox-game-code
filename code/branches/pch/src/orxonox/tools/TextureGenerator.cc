@@ -41,7 +41,7 @@
 namespace std
 {
     template <>
-    bool less<orxonox::ColourValue>::operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y) const
+    inline bool less<orxonox::ColourValue>::operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y) const
     {
         if (__x.r == __y.r)
         {
