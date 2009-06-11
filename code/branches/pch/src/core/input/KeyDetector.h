@@ -37,6 +37,7 @@
 
 #include "core/CorePrereqs.h"
 
+#include <string>
 #include "KeyBinder.h"
 
 namespace orxonox

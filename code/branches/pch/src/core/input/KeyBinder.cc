@@ -33,9 +33,6 @@
 
 #include "KeyBinder.h"
 
-#include <fstream>
-#include <string>
-
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"

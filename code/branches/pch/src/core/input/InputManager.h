@@ -39,8 +39,13 @@
 #include "core/CorePrereqs.h"
 
 #include <map>
+#include <set>
+#include <string>
 #include <vector>
-#include <stack>
+#include <ois/OISKeyboard.h>
+#include <ois/OISMouse.h>
+#include <ois/OISJoyStick.h>
+
 #include "util/Math.h"
 #include "util/OrxEnum.h"
 #include "core/OrxonoxClass.h"

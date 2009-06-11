@@ -37,26 +37,23 @@
 
 #include <climits>
 #include <cassert>
-
-#include "ois/OISException.h"
-#include "ois/OISInputManager.h"
-#include "core/ConsoleCommand.h"
+#include <ois/OISException.h>
+#include <ois/OISInputManager.h>
 
 // HACK
 #ifdef ORXONOX_PLATFORM_LINUX
-#  include "ois/linux/LinuxMouse.h"
+#  include <ois/linux/LinuxMouse.h>
 #endif
 
 #include "util/Exception.h"
+#include "util/Debug.h"
+#include "core/ConsoleCommand.h"
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/CommandExecutor.h"
 #include "core/CommandLine.h"
-#include "util/Debug.h"
 
 #include "InputBuffer.h"
-#include "KeyBinder.h"
 #include "KeyDetector.h"
 #include "InputState.h"
 #include "SimpleInputState.h"

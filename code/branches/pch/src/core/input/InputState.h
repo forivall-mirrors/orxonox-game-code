@@ -38,7 +38,6 @@
 
 #include <string>
 #include <vector>
-#include "core/Executor.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
@@ -62,8 +61,8 @@ namespace orxonox
         bool handlersChanged() { return this->bHandlersChanged_; }
         void resetHandlersChanged() { bHandlersChanged_ = false; }
 
-        virtual void onEnter() { if (executorOnEnter_) (*executorOnEnter_)(); }
-        virtual void onLeave() { if (executorOnLeave_) (*executorOnLeave_)(); }
+        virtual void onEnter() = 0;
+        virtual void onLeave() = 0;
 
         virtual void registerOnEnter(Executor* executor)      { executorOnEnter_ = executor; }
         virtual void unRegisterOnEnter()                      { executorOnEnter_ = 0; }
@@ -107,6 +106,8 @@ namespace orxonox
         }
 
         bool bHandlersChanged_;
+        Executor*                                   executorOnEnter_;
+        Executor*                                   executorOnLeave_;
 
     private:
         void setNumOfJoySticks(unsigned int n)
@@ -122,9 +123,6 @@ namespace orxonox
         std::vector<bool>                           bInputDeviceEnabled_;
         bool                                        bAlwaysGetsInput_;
         bool                                        bTransparent_;
-
-        Executor*                                   executorOnEnter_;
-        Executor*                                   executorOnLeave_;
     };
 }
 
