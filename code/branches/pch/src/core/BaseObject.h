@@ -44,6 +44,7 @@
     }
 
 #include <map>
+#include <list>
 
 #include "CorePrereqs.h"
 

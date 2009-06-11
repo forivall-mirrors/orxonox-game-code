@@ -32,7 +32,7 @@
 #include "CorePrereqs.h"
 
 #include <map>
-
+#include <set>
 #include "CommandEvaluation.h"
 
 // tolua_begin

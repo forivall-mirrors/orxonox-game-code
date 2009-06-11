@@ -32,11 +32,11 @@
 */
 
 #include "SignalHandler.h"
-#include "Debug.h"
 
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include "Debug.h"
 
 namespace orxonox
 {

@@ -39,8 +39,6 @@
 
 #include <string>
 #include <sstream>
-#include <istream>
-#include <ostream>
 #include <typeinfo>
 
 #include "Debug.h"

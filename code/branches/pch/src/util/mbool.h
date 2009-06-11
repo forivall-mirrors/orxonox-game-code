@@ -35,7 +35,6 @@ namespace orxonox
 {
     struct _UtilExport mbool
     {
-//        friend Synchronisable::registerVariable<>()
         public:
             inline mbool(bool value = false)
                 { this->value_.memory_ = 0; this->value_.bool_ = value; }

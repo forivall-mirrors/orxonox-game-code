@@ -34,10 +34,10 @@
 #include "Math.h"
 
 #include <OgrePlane.h>
+
 #include "MathConvert.h"
 #include "SubString.h"
-
-// Do not remove this include to avoid linker errors.
+// Do not remove this include, it avoids linker errors.
 #include "mbool.h"
 
 namespace orxonox

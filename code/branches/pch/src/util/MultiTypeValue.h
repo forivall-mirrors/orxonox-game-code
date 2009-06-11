@@ -37,10 +37,11 @@
 #define _MultiTypeValue_H__
 
 #include "UtilPrereqs.h"
+
+#include <cassert>
 #include "MathConvert.h"
 #include "MultiType.h"
 #include "Serialise.h"
-#include <cassert>
 
 namespace orxonox
 {

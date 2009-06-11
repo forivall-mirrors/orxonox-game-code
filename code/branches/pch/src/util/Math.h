@@ -36,17 +36,13 @@
 
 #include "UtilPrereqs.h"
 
-#include <ostream>
 #include <string>
 #include <cmath>
-#include <boost/static_assert.hpp>
 
 #include <OgreMath.h>
 #include <OgreVector2.h>
 #include <OgreVector3.h>
 #include <OgreVector4.h>
-#include <OgreMatrix3.h>
-#include <OgreMatrix4.h>
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 
@@ -206,6 +202,19 @@ namespace orxonox
     template <> inline orxonox::ColourValue zeroise<orxonox::ColourValue>() { return orxonox::ColourValue(0, 0, 0, 0); }
     template <> inline orxonox::Quaternion  zeroise<orxonox::Quaternion>()  { return orxonox::Quaternion (0, 0, 0, 0); }
 
+    //! Provides zero value symbols that can be returned as reference
+    template <typename T>
+    struct NilValue
+    {
+        inline operator const T&() const
+        {
+            return value;
+        }
+        static T value;
+    };
+    template <typename T>
+    T NilValue<T>::value = zeroise<T>();
+
     /**
         @brief Interpolates between two values for a time between 0 and 1.
         @param time The time is a value between 0 and 1 - the function returns start if time is 0 and end if time is 1 and interpolates if time is between 0 and 1.
@@ -214,7 +223,7 @@ namespace orxonox
         @return The interpolation at a given time
     */
     template <typename T>
-    T interpolate(float time, const T& start, const T& end)
+    inline T interpolate(float time, const T& start, const T& end)
     {
         return time * (end - start) + start;
     }
@@ -227,7 +236,7 @@ namespace orxonox
         @return The smoothed interpolation at a given time
     */
     template <typename T>
-    T interpolateSmooth(float time, const T& start, const T& end)
+    inline T interpolateSmooth(float time, const T& start, const T& end)
     {
         return (-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start;
     }
@@ -272,20 +281,20 @@ namespace orxonox
     class IntVector2
     {
     public:
-      IntVector2() : x(0), y(0) { }
-      IntVector2(int _x, int _y) : x(_x), y(_y) { }
-      int x;
-      int y;
+        IntVector2() : x(0), y(0) { }
+        IntVector2(int _x, int _y) : x(_x), y(_y) { }
+        int x;
+        int y;
     };
 
     class IntVector3
     {
     public:
-      IntVector3() : x(0), y(0), z(0) { }
-      IntVector3(int _x, int _y, int _z) : x(_x), y(_y), z(_z) { }
-      int x;
-      int y;
-      int z;
+        IntVector3() : x(0), y(0), z(0) { }
+        IntVector3(int _x, int _y, int _z) : x(_x), y(_y), z(_z) { }
+        int x;
+        int y;
+        int z;
     };
 }
 
