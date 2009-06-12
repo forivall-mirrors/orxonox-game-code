@@ -62,7 +62,6 @@ namespace orxonox
 
         this->bHasConfigValues_ = false;
         this->bHasConsoleCommands_ = false;
-        this->bHasConstructionCallback_ = false;
 
         this->children_ = new std::set<const Identifier*>();
         this->directChildren_ = new std::set<const Identifier*>();
@@ -92,8 +91,6 @@ namespace orxonox
             delete (it->second);
         for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
             delete (it->second);
-        for (std::vector<Functor*>::iterator it = this->constructionCallbacks_.begin(); it != this->constructionCallbacks_.end(); ++it)
-            delete *it;
     }
 
     /**
@@ -515,38 +512,6 @@ namespace orxonox
         }
 
         this->xmlportEventContainers_[eventname] = container;
-    }
-
-    /**
-        @brief Adds a construction callback functor that gets called every time an object is created.
-        @param functor Functor pointer to any function with no argument.
-    */
-    void Identifier::addConstructionCallback(Functor* functor)
-    {
-        for (unsigned int i = 0; i < this->constructionCallbacks_.size(); ++i)
-        {
-            if (this->constructionCallbacks_[i] == functor)
-                return;
-        }
-        this->constructionCallbacks_.push_back(functor);
-        this->bHasConstructionCallback_ = true;
-    }
-
-    /**
-        @brief Removes a construction callback functor that gets called every time an object is created.
-        @param functor Functor pointer to any function with no argument.
-    */
-    void Identifier::removeConstructionCallback(Functor* functor)
-    {
-        for (unsigned int i = 0; i < this->constructionCallbacks_.size(); ++i)
-        {
-            if (this->constructionCallbacks_[i] == functor)
-            {
-                this->constructionCallbacks_.erase(this->constructionCallbacks_.begin() + i);
-            }
-        }
-        if (constructionCallbacks_.empty())
-            this->bHasConstructionCallback_ = false;
     }
 
     /**
