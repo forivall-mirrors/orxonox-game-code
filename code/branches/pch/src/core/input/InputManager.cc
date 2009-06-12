@@ -40,17 +40,12 @@
 #include <ois/OISException.h>
 #include <ois/OISInputManager.h>
 
-// HACK
-#ifdef ORXONOX_PLATFORM_LINUX
-#  include <ois/linux/LinuxMouse.h>
-#endif
-
 #include "util/Exception.h"
 #include "util/Debug.h"
-#include "core/ConsoleCommand.h"
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 
 #include "InputBuffer.h"
@@ -59,6 +54,11 @@
 #include "SimpleInputState.h"
 #include "ExtendedInputState.h"
 #include "JoyStickDeviceNumberListener.h"
+
+// HACK (include this as last, X11 seems to define some macros...)
+#ifdef ORXONOX_PLATFORM_LINUX
+#  include <ois/linux/LinuxMouse.h>
+#endif
 
 namespace orxonox
 {

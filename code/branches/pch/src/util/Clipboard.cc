@@ -128,7 +128,7 @@ namespace orxonox
         @brief Default implementation if there is no OS-specific implementation or no clipboard. Gets the text from the internal clipboard.
         @return The text
     */
-    const std::string& fromClipboard()
+    std::string fromClipboard()
     {
         return clipboard;
     }

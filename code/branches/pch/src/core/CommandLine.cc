@@ -29,6 +29,8 @@
 #include "CommandLine.h"
 
 #include <boost/filesystem.hpp>
+
+#include "util/Exception.h"
 #include "util/String.h"
 #include "util/SubString.h"
 #include "Core.h"

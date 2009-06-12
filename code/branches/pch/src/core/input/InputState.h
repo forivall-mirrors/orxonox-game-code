@@ -90,11 +90,11 @@ namespace orxonox
     protected:
         InputState()
             : bHandlersChanged_(false)
+            , executorOnEnter_(0)
+            , executorOnLeave_(0)
             , priority_(0)
             , bAlwaysGetsInput_(false)
             , bTransparent_(false)
-            , executorOnEnter_(0)
-            , executorOnLeave_(0)
         { }
         virtual ~InputState() { }
 

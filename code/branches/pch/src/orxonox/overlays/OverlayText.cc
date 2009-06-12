@@ -42,9 +42,9 @@ namespace orxonox
 {
     CreateFactory(OverlayText);
 
-    BOOST_STATIC_ASSERT(Ogre::TextAreaOverlayElement::Left   == OverlayText::Left);
-    BOOST_STATIC_ASSERT(Ogre::TextAreaOverlayElement::Center == OverlayText::Center);
-    BOOST_STATIC_ASSERT(Ogre::TextAreaOverlayElement::Right  == OverlayText::Right);
+    BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Left   == (int)OverlayText::Left);
+    BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Center == (int)OverlayText::Center);
+    BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Right  == (int)OverlayText::Right);
 
     OverlayText::OverlayText(BaseObject* creator)
         : OrxonoxOverlay(creator)
