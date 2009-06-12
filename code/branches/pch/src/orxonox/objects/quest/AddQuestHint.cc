@@ -34,7 +34,6 @@
 #include "AddQuestHint.h"
 
 #include "core/CoreIncludes.h"
-#include "util/Exception.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"

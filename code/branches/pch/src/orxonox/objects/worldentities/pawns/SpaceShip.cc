@@ -31,7 +31,6 @@
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 
 #include "util/Math.h"
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Template.h"

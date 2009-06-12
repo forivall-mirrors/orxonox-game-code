@@ -30,7 +30,6 @@
 
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"

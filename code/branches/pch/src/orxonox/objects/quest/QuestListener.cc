@@ -35,7 +35,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Exception.h"
 
 #include "Quest.h"
 #include "QuestManager.h"

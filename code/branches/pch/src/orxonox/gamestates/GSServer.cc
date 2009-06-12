@@ -28,6 +28,7 @@
 
 #include "GSServer.h"
 
+#include "util/Debug.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
 #include "core/GameMode.h"

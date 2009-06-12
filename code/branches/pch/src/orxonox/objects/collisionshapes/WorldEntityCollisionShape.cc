@@ -30,7 +30,7 @@
 
 #include "BulletCollision/CollisionShapes/btCompoundShape.h"
 
-#include "util/Exception.h"
+#include "util/OrxAssert.h"
 #include "core/CoreIncludes.h"
 #include "objects/worldentities/WorldEntity.h"
 

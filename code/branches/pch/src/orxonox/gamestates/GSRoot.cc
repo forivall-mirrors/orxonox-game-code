@@ -28,7 +28,6 @@
 
 #include "GSRoot.h"
 
-#include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Clock.h"
 #include "core/Game.h"

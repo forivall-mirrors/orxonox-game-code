@@ -122,13 +122,4 @@ namespace orxonox
 #define ThrowException(type, description) \
     throw InternalHandleException(type##Exception(description, __LINE__, __FILE__, __FUNCTIONNAME__))
 
-    // define an assert macro that can display a message
-#ifndef NDEBUG
-#define OrxAssert(Assertion, ErrorMessage) \
-    Assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << ErrorMessage << std::endl); \
-    assert(Assertion)
-#else
-#define OrxAssert(condition, errorMessage)  ((void)0)
-#endif
-
 #endif /* _Exception_H__ */

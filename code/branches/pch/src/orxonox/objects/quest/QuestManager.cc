@@ -37,7 +37,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
 
-#include "util/Exception.h"
 #include "gui/GUIManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "Quest.h"

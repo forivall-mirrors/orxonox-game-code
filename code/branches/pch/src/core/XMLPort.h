@@ -46,6 +46,7 @@
 #include <tinyxml/ticpp.h>
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/OrxAssert.h"
 #include "util/MultiType.h"
 #include "XMLIncludes.h"
 #include "Executor.h"

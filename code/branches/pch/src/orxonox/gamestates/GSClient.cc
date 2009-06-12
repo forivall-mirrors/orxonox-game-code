@@ -28,6 +28,7 @@
 
 #include "GSClient.h"
 
+#include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/Clock.h"
 #include "core/CommandLine.h"

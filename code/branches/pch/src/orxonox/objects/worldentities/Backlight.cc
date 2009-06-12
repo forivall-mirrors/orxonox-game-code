@@ -36,7 +36,6 @@
 #include "core/Executor.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
-#include "util/Exception.h"
 
 namespace orxonox
 {

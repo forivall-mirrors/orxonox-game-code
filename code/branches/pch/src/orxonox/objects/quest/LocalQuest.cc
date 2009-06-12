@@ -35,7 +35,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Super.h"
-#include "util/Exception.h"
 
 #include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestEffect.h"
