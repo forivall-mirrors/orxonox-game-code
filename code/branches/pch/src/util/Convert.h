@@ -339,13 +339,6 @@ namespace orxonox
         }
     }
 
-    // for compatibility reason. (capital 'c' in ConvertValue)
-    template<class FromType, class ToType>
-    FORCEINLINE bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
-    {
-        return convertValue(output, input, fallback);
-    }
-
     // Directly returns the converted value, even if the conversion was not successful.
     template<class FromType, class ToType>
     FORCEINLINE ToType getConvertedValue(const FromType& input)

@@ -180,6 +180,15 @@ typedef unsigned __int64  uint64_t;
 #endif
 */
 
+/* Forward declare the everywhere used std::string */
+namespace std
+{
+    template<class _Elem> struct char_traits;
+    template<class _Ty>   class  allocator;
+    template<class _Elem, class _Traits, class _Ax> class basic_string;
+    typedef basic_string<char, char_traits<char>, allocator<char> > string;
+}
+
 /* Visual Leak Detector looks for memory leaks */
 #cmakedefine VISUAL_LEAK_DETECTOR_ENABLE
 #ifdef VISUAL_LEAK_DETECTOR_ENABLE

@@ -311,7 +311,7 @@ namespace orxonox
                             {
                                 // There might be an array index
                                 unsigned int index = 0;
-                                if (ConvertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
+                                if (convertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
                                 {
                                     // New array
                                     std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value, false);
