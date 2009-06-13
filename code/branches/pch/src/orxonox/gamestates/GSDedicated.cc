@@ -32,7 +32,7 @@
 #include "core/CommandLine.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/Iterator.h"
+#include "core/ObjectList.h"
 #include "network/Server.h"
 #include "objects/Tickable.h"
 #include "util/Sleep.h"

@@ -56,7 +56,7 @@ namespace orxonox
         bool loadFile(std::string filename);
 
     private:
-        ALuint loadOggFile(std::string filename);
+        ALuint loadOggFile(const std::string& filename);
         ALuint source_;
         ALuint buffer_;
         WorldEntity* entity_;

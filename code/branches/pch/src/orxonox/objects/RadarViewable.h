@@ -30,17 +30,13 @@
 #define _RadarViewable_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include <string>
 #include <cassert>
+
 #include "util/Math.h"
 #include "util/Debug.h"
 #include "core/OrxonoxClass.h"
-
-#include <string>
-#include <OgreSceneNode.h>
-#include <OgreEntity.h>
-#include <OgreManualObject.h>
-#include "orxonox/tools/DynamicLines.h"
 
 namespace orxonox
 {
@@ -109,7 +105,7 @@ namespace orxonox
         void addMapEntity();
         void updateMapPosition();
         bool isHumanShip_;
-        inline std::string getUniqueId()
+        inline const std::string& getUniqueId()
         {
             return this->uniqueId_;
         }

@@ -29,15 +29,17 @@
 #include "RadarViewable.h"
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+#include <OgreManualObject.h>
+
 #include "util/Debug.h"
-#include "util/Exception.h"
+#include "util/String.h"
 #include "core/CoreIncludes.h"
+#include "orxonox/tools/DynamicLines.h"
 #include "objects/worldentities/WorldEntity.h"
 #include "objects/Radar.h"
-#include "util/String.h"
-#include <OgreManualObject.h>
 #include "overlays/map/Map.h"
-#include "orxonox/tools/DynamicLines.h"
 
 namespace orxonox
 {

@@ -28,6 +28,7 @@
 
 #include "SoundBase.h"
 
+#include <string>
 #include <vector>
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
@@ -180,7 +181,7 @@ namespace orxonox
         return state;
     }
 
-    ALuint SoundBase::loadOggFile(std::string filename)
+    ALuint SoundBase::loadOggFile(const std::string& filename)
     {
         char inbuffer[4096];
         std::vector<char> outbuffer;
