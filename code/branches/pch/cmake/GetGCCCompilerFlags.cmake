@@ -41,10 +41,10 @@ FUNCTION(GET_GCC_COMPILER_FLAGS _target _flagsvar)
   ENDIF()
 
   # For shared libraries linked with gcc, we have to add -fPIC
-  #GET_TARGET_PROPERTY(_target_type ${_target} TYPE)
-  #IF(${_target_type} STREQUAL SHARED_LIBRARY)
-  #  SET(_flag_str "${_flag_str} -fPIC")
-  #ENDIF()
+  GET_TARGET_PROPERTY(_target_type ${_target} TYPE)
+  IF(NOT MINGW AND ${_target_type} STREQUAL SHARED_LIBRARY)
+    SET(_flag_str "${_flag_str} -fPIC")
+  ENDIF()
 
   # Target compile flags
   GET_TARGET_PROPERTY(_target_flags ${_target} COMPILE_FLAGS)

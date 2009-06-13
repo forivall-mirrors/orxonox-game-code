@@ -57,7 +57,10 @@
 #include <ois/OISJoyStick.h>
 #include <tinyxml/ticpp.h>
 
-#include "util/Convert.h"
+// GCC may have problems with anonymous namespaces in certain situations
+#if !(defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ < 420))
+#  include "util/Convert.h"
+#endif
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/Math.h"

@@ -76,6 +76,9 @@ ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 # messages. Other versions don't seem to show any such warnings at all.
 ADD_COMPILER_FLAGS("-Wno-deprecated" CXX CACHE)
 
+# Always show why a precompiled header file could not be used
+ADD_COMPILER_FLAGS("-Winvalid-pch" CXX CACHE)
+
 # Increase warning level if requested
 IF(EXTRA_COMPILER_WARNINGS)
   ADD_COMPILER_FLAGS("-Wall -Wextra -Wno-unused-parameter" CACHE)
