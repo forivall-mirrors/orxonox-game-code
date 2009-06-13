@@ -236,7 +236,7 @@ namespace orxonox
   bool Trigger::switchState()
   {
     if (( (this->latestState_ & 2) && this->bStayActive_ && (this->remainingActivations_ <= 0))
-     || (!(this->latestState_ & 2))                      && (this->remainingActivations_ == 0))
+     || (!(this->latestState_ & 2)                       && (this->remainingActivations_ == 0)))
       return false;
     else
     {

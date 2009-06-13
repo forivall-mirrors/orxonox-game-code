@@ -171,7 +171,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 
 ##### Boost #####
 # Expand the next statement if newer boost versions than 1.36.1 are released
-SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0)
+SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 1.38 1.38.0 1.39 1.39.0)
 # MSVC seems to be the only compiler requiring date_time
 IF(MSVC)
   FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem date_time)

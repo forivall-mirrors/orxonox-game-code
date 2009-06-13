@@ -208,12 +208,12 @@ namespace orxonox
       while ( read( gdbOut[0], &byte, 1 ) == 1 )
       {
         if (
-          charsFound == 0 && byte == '(' ||
-          charsFound == 1 && byte == 'g' ||
-          charsFound == 2 && byte == 'd' ||
-          charsFound == 3 && byte == 'b' ||
-          charsFound == 4 && byte == ')' ||
-          charsFound == 5 && byte == ' '
+          (charsFound == 0 && byte == '(') ||
+          (charsFound == 1 && byte == 'g') ||
+          (charsFound == 2 && byte == 'd') ||
+          (charsFound == 3 && byte == 'b') ||
+          (charsFound == 4 && byte == ')') ||
+          (charsFound == 5 && byte == ' ')
             )
               charsFound++;
         else
@@ -245,12 +245,12 @@ namespace orxonox
         bt += std::string( &byte, 1 );
 
         if (
-          charsFound == 0 && byte == '(' ||
-          charsFound == 1 && byte == 'g' ||
-          charsFound == 2 && byte == 'd' ||
-          charsFound == 3 && byte == 'b' ||
-          charsFound == 4 && byte == ')' ||
-          charsFound == 5 && byte == ' '
+          (charsFound == 0 && byte == '(') ||
+          (charsFound == 1 && byte == 'g') ||
+          (charsFound == 2 && byte == 'd') ||
+          (charsFound == 3 && byte == 'b') ||
+          (charsFound == 4 && byte == ')') ||
+          (charsFound == 5 && byte == ' ')
             )
               charsFound++;
         else

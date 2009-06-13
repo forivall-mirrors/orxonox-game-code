@@ -41,9 +41,10 @@ namespace orxonox
 
     Template::Template(BaseObject* creator) : BaseObject(creator)
     {
+        this->xmlelement_ = new TiXmlElement("");
+
         RegisterObject(Template);
 
-        this->xmlelement_ = new TiXmlElement("");
         this->bIsLink_ = false;
         this->bLoadDefaults_ = true;
         this->bIsReturningXMLElement_ = false;

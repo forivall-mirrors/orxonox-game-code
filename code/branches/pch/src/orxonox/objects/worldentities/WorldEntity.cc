@@ -632,7 +632,7 @@ HACK HACK HACK
     */
     void WorldEntity::lookAt(const Vector3& target, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
     {
-        Vector3 origin;
+        Vector3 origin(0, 0, 0);
         switch (relativeTo)
         {
         case TransformSpace::Local:
@@ -659,7 +659,7 @@ HACK HACK HACK
     void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
     {
         Quaternion savedOrientation(this->getOrientation());
-        Ogre::Node::TransformSpace ogreRelativeTo;
+        Ogre::Node::TransformSpace ogreRelativeTo = Ogre::Node::TS_LOCAL;
         switch (relativeTo)
         {
         case TransformSpace::Local:
@@ -771,10 +771,10 @@ HACK HACK HACK
             this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT & !btCollisionObject::CF_KINEMATIC_OBJECT);
             break;
         case Kinematic:
-            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);
+            this->physicalBody_->setCollisionFlags((this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT) | btCollisionObject::CF_KINEMATIC_OBJECT);
             break;
         case Static:
-            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
+            this->physicalBody_->setCollisionFlags((this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT) | btCollisionObject::CF_STATIC_OBJECT);
             break;
         case None:
             assert(false); // Doesn't happen

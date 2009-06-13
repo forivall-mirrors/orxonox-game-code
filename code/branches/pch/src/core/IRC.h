@@ -30,6 +30,8 @@
 #define _IRC_H__
 
 #include "CorePrereqs.h"
+
+#include <string>
 #include "OrxonoxClass.h"
 
 namespace orxonox

@@ -246,11 +246,11 @@ namespace orxonox
             this->failed_ = true;
             return 0;
         }
-        else if (*reading_stream > 47 && *reading_stream < 59 || *reading_stream == 46)
+        else if ((*reading_stream > 47 && *reading_stream < 59) || *reading_stream == 46)
         {  // number
             value = strtod(reading_stream, const_cast<char**>(&reading_stream));
         }
-        else if (*reading_stream > 64 && *reading_stream < 91 || *reading_stream > 96 && *reading_stream < 123 || *reading_stream == 46)
+        else if ((*reading_stream > 64 && *reading_stream < 91) || (*reading_stream > 96 && *reading_stream < 123) || *reading_stream == 46)
         {  // variable or function
             char* word = new char[256];
             parse_word(word);
@@ -383,7 +383,7 @@ namespace orxonox
     {
         char* word = str;
         int counter = 0;
-        while (*reading_stream > 47 && *reading_stream < 58 || *reading_stream > 64 && *reading_stream < 91 || *reading_stream > 96 && *reading_stream < 123 || *reading_stream == 46)
+        while ((*reading_stream > 47 && *reading_stream < 58) || (*reading_stream > 64 && *reading_stream < 91) || (*reading_stream > 96 && *reading_stream < 123) || *reading_stream == 46)
         {
             *word++ = *reading_stream++;
             counter++;

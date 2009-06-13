@@ -50,6 +50,7 @@
 #include "util/Exception.h"
 #include "util/MultiType.h"
 #include "util/OrxAssert.h"
+#include "Factory.h"
 #include "Identifier.h"
 #include "Executor.h"
 #include "BaseObject.h"
