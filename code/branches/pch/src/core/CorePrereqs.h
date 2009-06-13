@@ -61,130 +61,130 @@
 //-----------------------------------------------------------------------
 namespace orxonox
 {
-  namespace XMLPort
-  {
-    enum Mode
+    namespace XMLPort
     {
-      LoadObject,
-      SaveObject,
-      ExpandObject
-    };
-  }
+        enum Mode
+        {
+            LoadObject,
+            SaveObject,
+            ExpandObject
+        };
+    }
 
-  namespace KeybindMode
-  {
-    enum Enum
+    namespace KeybindMode
     {
-      OnPress,
-      OnHold,
-      OnRelease,
-      None
+        enum Enum
+        {
+            OnPress,
+            OnHold,
+            OnRelease,
+            None
+        };
     };
-  };
 
-  typedef std::string LanguageEntryLabel;
+    typedef std::string LanguageEntryLabel;
 
-  class ArgumentCompleter;
-  class ArgumentCompletionListElement;
-  class BaseFactory;
-  class BaseMetaObjectListElement;
-  class BaseObject;
-  template <class T>
-  class ClassFactory;
-  template <class T>
-  class ClassIdentifier;
-  class ClassTreeMask;
-  class ClassTreeMaskIterator;
-  class ClassTreeMaskNode;
-  class ClassTreeMaskObjectIterator;
-  class Clock;
-  class CommandEvaluation;
-  class CommandExecutor;
-  class CommandLine;
-  class CommandLineArgument;
-  class ConfigFile;
-  class ConfigFileEntry;
-  class ConfigFileEntryComment;
-  class ConfigFileEntryValue;
-  class ConfigFileManager;
-  class ConfigFileSection;
-  class ConfigValueContainer;
-  class ConsoleCommand;
-  class Core;
-  struct Event;
-  class EventContainer;
-  class Executor;
-  template <class T>
-  class ExecutorMember;
-  class ExecutorStatic;
-  class Factory;
-  class Functor;
-  template <class T>
-  class FunctorMember;
-  class FunctorStatic;
-  class Identifier;
-  class IRC;
-  template <class T>
-  class Iterator;
-  class IteratorBase;
-  class Language;
-  class LanguageEntry;
-  class Loader;
-  class LuaBind;
-  class MetaObjectList;
-  class MetaObjectListElement;
-  class Namespace;
-  class NamespaceNode;
-  template <class T>
-  class ObjectList;
-  class ObjectListBase;
-  class ObjectListBaseElement;
-  template <class T>
-  class ObjectListElement;
-  template <class T>
-  class ObjectListIterator;
-  class OrxonoxClass;
-  class Shell;
-  class ShellListener;
-  template <class T>
-  class SubclassIdentifier;
-  class TclBind;
-  struct TclInterpreterBundle;
-  class TclThreadManager;
-  class Template;
-  class Tickable;
-  class XMLFile;
-  class XMLNameListener;
-  template <class T, class O>
-  class XMLPortClassObjectContainer;
-  template <class T>
-  class XMLPortClassParamContainer;
-  class XMLPortObjectContainer;
-  class XMLPortParamContainer;
+    class ArgumentCompleter;
+    class ArgumentCompletionListElement;
+    class BaseFactory;
+    class BaseMetaObjectListElement;
+    class BaseObject;
+    template <class T>
+    class ClassFactory;
+    template <class T>
+    class ClassIdentifier;
+    class ClassTreeMask;
+    class ClassTreeMaskIterator;
+    class ClassTreeMaskNode;
+    class ClassTreeMaskObjectIterator;
+    class Clock;
+    class CommandEvaluation;
+    class CommandExecutor;
+    class CommandLine;
+    class CommandLineArgument;
+    class ConfigFile;
+    class ConfigFileEntry;
+    class ConfigFileEntryComment;
+    class ConfigFileEntryValue;
+    class ConfigFileManager;
+    class ConfigFileSection;
+    class ConfigValueContainer;
+    class ConsoleCommand;
+    class Core;
+    struct Event;
+    class EventContainer;
+    class Executor;
+    template <class T>
+    class ExecutorMember;
+    class ExecutorStatic;
+    class Factory;
+    class Functor;
+    template <class T>
+    class FunctorMember;
+    class FunctorStatic;
+    class Identifier;
+    class IRC;
+    template <class T>
+    class Iterator;
+    class IteratorBase;
+    class Language;
+    class LanguageEntry;
+    class Loader;
+    class LuaBind;
+    class MetaObjectList;
+    class MetaObjectListElement;
+    class Namespace;
+    class NamespaceNode;
+    template <class T>
+    class ObjectList;
+    class ObjectListBase;
+    class ObjectListBaseElement;
+    template <class T>
+    class ObjectListElement;
+    template <class T>
+    class ObjectListIterator;
+    class OrxonoxClass;
+    class Shell;
+    class ShellListener;
+    template <class T>
+    class SubclassIdentifier;
+    class TclBind;
+    struct TclInterpreterBundle;
+    class TclThreadManager;
+    class Template;
+    class Tickable;
+    class XMLFile;
+    class XMLNameListener;
+    template <class T, class O>
+    class XMLPortClassObjectContainer;
+    template <class T>
+    class XMLPortClassParamContainer;
+    class XMLPortObjectContainer;
+    class XMLPortParamContainer;
 
-  // game states
-  class Game;
-  class GameState;
-  struct GameStateTreeNode;
+    // game states
+    class Game;
+    class GameState;
+    struct GameStateTreeNode;
 
-  // input
-  class BaseCommand;
-  class BufferedParamCommand;
-  class Button;
-  class CalibratorCallback;
-  class ExtendedInputState;
-  class HalfAxis;
-  class InputBuffer;
-  class InputManager;
-  class InputState;
-  class JoyStickHandler;
-  class MouseHandler;
-  class KeyBinder;
-  class KeyDetector;
-  class KeyHandler;
-  class ParamCommand;
-  class SimpleCommand;
-  class SimpleInputState;
+    // input
+    class BaseCommand;
+    class BufferedParamCommand;
+    class Button;
+    class CalibratorCallback;
+    class ExtendedInputState;
+    class HalfAxis;
+    class InputBuffer;
+    class InputManager;
+    class InputState;
+    class JoyStickHandler;
+    class MouseHandler;
+    class KeyBinder;
+    class KeyDetector;
+    class KeyHandler;
+    class ParamCommand;
+    class SimpleCommand;
+    class SimpleInputState;
 }
 
 // CppTcl
