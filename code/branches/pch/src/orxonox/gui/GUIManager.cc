@@ -270,7 +270,7 @@ namespace orxonox
     @return
         Returns false if the Overlay was already present.
     */
-    bool GUIManager::registerOverlay(std::string name, GUIOverlay* overlay)
+    bool GUIManager::registerOverlay(const std::string& name, GUIOverlay* overlay)
     {
         return (this->guiOverlays_.insert(std::pair<std::string, GUIOverlay*>(name, overlay))).second;
     }
@@ -283,7 +283,7 @@ namespace orxonox
     @return
         Returns a pointer to the GUIOverlay.
     */
-    GUIOverlay* GUIManager::getOverlay(std::string name)
+    GUIOverlay* GUIManager::getOverlay(const std::string& name)
     {
         return (this->guiOverlays_.find(name))->second;
     }

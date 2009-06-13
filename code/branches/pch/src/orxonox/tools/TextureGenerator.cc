@@ -64,7 +64,7 @@ namespace orxonox
     std::map<std::string, std::map<ColourValue, std::string> > TextureGenerator::materials_s;
     unsigned int TextureGenerator::materialCount_s = 0;
 
-    /*static*/ const std::string& TextureGenerator::getMaterialName(std::string textureName, const ColourValue& colour)
+    /*static*/ const std::string& TextureGenerator::getMaterialName(const std::string& textureName, const ColourValue& colour)
     {
         std::map<ColourValue, std::string>& colourMap = materials_s[textureName];
         std::map<ColourValue, std::string>::const_iterator it = colourMap.find(colour);

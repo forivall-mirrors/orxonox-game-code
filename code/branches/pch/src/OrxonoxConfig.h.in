@@ -189,6 +189,11 @@ namespace std
     typedef basic_string<char, char_traits<char>, allocator<char> > string;
 }
 
+/* Just in case you don't include a standard header */
+#ifndef NULL
+  #define NULL 0
+#endif
+
 /* Visual Leak Detector looks for memory leaks */
 #cmakedefine VISUAL_LEAK_DETECTOR_ENABLE
 #ifdef VISUAL_LEAK_DETECTOR_ENABLE

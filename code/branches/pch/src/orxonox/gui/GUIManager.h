@@ -90,8 +90,8 @@ namespace orxonox
         void showGUI(const std::string& name);
         void executeCode(const std::string& str);
 
-        bool registerOverlay(std::string name, GUIOverlay* overlay); //!< Register a GUIOverlay with the GUIManager.
-        GUIOverlay* getOverlay(std::string name); // Get the GUIOverlay of the GUI with the given name.
+        bool registerOverlay(const std::string& name, GUIOverlay* overlay); //!< Register a GUIOverlay with the GUIManager.
+        GUIOverlay* getOverlay(const std::string& name); // Get the GUIOverlay of the GUI with the given name.
 
         void setCamera(Ogre::Camera* camera);
 
