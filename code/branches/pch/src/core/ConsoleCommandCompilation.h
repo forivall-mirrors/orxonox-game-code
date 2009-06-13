@@ -31,8 +31,6 @@
 
 #include "CorePrereqs.h"
 
-#include <string>
-
 namespace orxonox
 {
     _CoreExport void source(const std::string& filename);

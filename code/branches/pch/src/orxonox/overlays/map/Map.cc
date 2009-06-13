@@ -30,6 +30,7 @@
 
 #include <OgreBorderPanelOverlayElement.h>
 #include <OgreCamera.h>
+#include <OgreEntity.h>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreMaterialManager.h>
 #include <OgreMovablePlane.h>
@@ -49,7 +50,7 @@
 
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
-#include "core/Iterator.h"
+#include "core/ObjectList.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
 #include "objects/RadarViewable.h"
@@ -264,7 +265,7 @@ Ogre::MaterialPtr Map::init()
         }*/
     }
 
-    Ogre::MaterialPtr Map::createRenderCamera(Ogre::Camera * cam, std::string matName)
+    Ogre::MaterialPtr Map::createRenderCamera(Ogre::Camera * cam, const std::string& matName)
     {
         Ogre::TexturePtr rttTex = Ogre::TextureManager::getSingleton().createManual(matName+"_tex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 512, 512, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 

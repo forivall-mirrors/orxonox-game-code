@@ -38,7 +38,7 @@
 
 #include <map>
 #include <string>
-#include "core/Iterator.h"
+#include "core/ObjectList.h"
 #include "core/OrxonoxClass.h"
 #include "objects/Tickable.h"
 #include "RadarViewable.h"

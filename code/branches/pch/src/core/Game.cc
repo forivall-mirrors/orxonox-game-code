@@ -35,7 +35,6 @@
 #include "Game.h"
 
 #include <exception>
-#include <cassert>
 #include <boost/weak_ptr.hpp>
 
 #include "util/Debug.h"

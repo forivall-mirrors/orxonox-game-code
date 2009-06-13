@@ -31,10 +31,10 @@
 
 #include "CorePrereqs.h"
 
+#include "ArgumentCompletionFunctions.h"
+#include "CommandExecutor.h"
 #include "Executor.h"
 #include "Identifier.h"
-#include "CommandExecutor.h"
-#include "ArgumentCompletionFunctions.h"
 
 
 #define SetConsoleCommand(classname, function, bCreateShortcut) \

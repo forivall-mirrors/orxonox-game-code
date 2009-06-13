@@ -36,6 +36,7 @@
 #include <map>
 #include <cassert>
 #include "util/MultiType.h"
+#include "core/Functor.h"
 #include "synchronisable/Synchronisable.h"
 #include "OrxonoxConfig.h"
 #include "FunctionCallManager.h"

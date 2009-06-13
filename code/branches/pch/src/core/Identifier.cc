@@ -35,10 +35,10 @@
 
 #include <ostream>
 
-#include "Factory.h"
+#include "util/String.h"
 #include "ConfigValueContainer.h"
 #include "ConsoleCommand.h"
-#include "CommandExecutor.h"
+#include "Factory.h"
 #include "XMLPort.h"
 
 namespace orxonox

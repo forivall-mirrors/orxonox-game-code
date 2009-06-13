@@ -35,15 +35,16 @@
 
 #include <tinyxml/tinyxml.h>
 
+#include "util/String.h"
 #include "CoreIncludes.h"
+#include "Event.h"
 #include "EventIncludes.h"
 #include "Functor.h"
-#include "XMLPort.h"
+#include "Iterator.h"
+#include "Template.h"
 #include "XMLFile.h"
 #include "XMLNameListener.h"
-#include "Template.h"
-#include "util/String.h"
-#include "util/mbool.h"
+#include "XMLPort.h"
 
 namespace orxonox
 {

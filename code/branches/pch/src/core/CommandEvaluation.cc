@@ -27,10 +27,11 @@
  */
 
 #include "CommandEvaluation.h"
-#include "ConsoleCommand.h"
-#include "Identifier.h"
+
 #include "util/Debug.h"
 #include "util/String.h"
+#include "ConsoleCommand.h"
+#include "Identifier.h"
 
 namespace orxonox
 {

@@ -27,12 +27,13 @@
  */
 
 #include "Shell.h"
+
+#include "util/OutputHandler.h"
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
 #include "Core.h"
 #include "ConsoleCommand.h"
-#include "util/OutputHandler.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \

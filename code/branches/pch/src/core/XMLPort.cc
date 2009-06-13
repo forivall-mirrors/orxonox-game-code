@@ -27,10 +27,9 @@
  */
 
 #include "XMLPort.h"
-#include "Language.h"
+
 #include "Loader.h"
 #include "Namespace.h"
-#include "CoreIncludes.h"
 
 namespace orxonox
 {
@@ -39,6 +38,6 @@ namespace orxonox
     // ################################
     bool XMLPortObjectContainer::identifierIsIncludedInLoaderMask(const Identifier* identifier)
     {
-        return ((!this->bApplyLoaderMask_) || identifier->isA(Class(Namespace)) || Loader::currentMask_s.isIncluded(identifier));
+        return ((!this->bApplyLoaderMask_) || identifier->isA(ClassIdentifier<Namespace>::getIdentifier()) || Loader::currentMask_s.isIncluded(identifier));
     }
 }

@@ -28,10 +28,10 @@
 
 #include "ConfigFileManager.h"
 
-#include <cassert>
 #include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
+#include "util/Math.h"
 #include "util/String.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"

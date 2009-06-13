@@ -30,6 +30,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include "util/Convert.h"
+#include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/String.h"
 #include "util/SubString.h"

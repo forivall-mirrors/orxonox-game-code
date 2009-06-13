@@ -33,14 +33,9 @@
 
 #include "ConfigValueContainer.h"
 
-#include <fstream>
-
-#include "util/SubString.h"
 #include "util/Convert.h"
+#include "util/SubString.h"
 #include "Language.h"
-#include "Identifier.h"
-
-
 
 namespace orxonox
 {

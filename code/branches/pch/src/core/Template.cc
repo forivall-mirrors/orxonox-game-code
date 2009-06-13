@@ -28,20 +28,22 @@
 
 #include "Template.h"
 
+#include <tinyxml/tinyxml.h>
 #include <tinyxml/ticpp.h>
 
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
 
 namespace orxonox
 {
     CreateFactory(Template);
 
-    Template::Template(BaseObject* creator) : BaseObject(creator), xmlelement_("")
+    Template::Template(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Template);
 
+        this->xmlelement_ = new TiXmlElement("");
         this->bIsLink_ = false;
         this->bLoadDefaults_ = true;
         this->bIsReturningXMLElement_ = false;
@@ -51,6 +53,7 @@ namespace orxonox
     Template::~Template()
     {
         Template::getTemplateMap().erase(this->getName());
+        delete this->xmlelement_;
     }
 
     void Template::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -89,6 +92,11 @@ namespace orxonox
         }
     }
 
+    void Template::setXMLElement(const TiXmlElement& xmlelement)
+    {
+        *this->xmlelement_ = xmlelement;
+    }
+
     const TiXmlElement& Template::getXMLElement() const
     {
         if (this->bIsLink_)
@@ -114,7 +122,7 @@ namespace orxonox
             }
         }
 
-        return this->xmlelement_;
+        return *this->xmlelement_;
     }
 
     void Template::setBaseclass(const std::string& baseclass)

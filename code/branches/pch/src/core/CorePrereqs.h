@@ -36,8 +36,6 @@
 
 #include "OrxonoxConfig.h"
 
-#include <string>
-
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
@@ -187,6 +185,13 @@ namespace orxonox
   class ParamCommand;
   class SimpleCommand;
   class SimpleInputState;
+}
+
+// CppTcl
+namespace Tcl
+{
+    class interpreter;
+    class object;
 }
 
 #endif /* _CorePrereqs_H__ */

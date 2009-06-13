@@ -27,9 +27,14 @@
  */
 
 #include "ConsoleCommandCompilation.h"
-#include "ConsoleCommand.h"
+
+#include <fstream>
+#include <set>
+#include <string>
+
 #include "util/Debug.h"
 #include "util/ExprParser.h"
+#include "ConsoleCommand.h"
 
 namespace orxonox
 {

@@ -30,6 +30,7 @@
 #define _Event_H__
 
 #include "CorePrereqs.h"
+#include <string>
 
 namespace orxonox
 {

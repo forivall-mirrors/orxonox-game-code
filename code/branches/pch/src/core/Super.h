@@ -66,8 +66,6 @@
 #ifndef _Super_H__
 #define _Super_H__
 
-#include <iostream>
-
 #include "CorePrereqs.h"
 
 #include "util/Debug.h"

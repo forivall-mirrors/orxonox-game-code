@@ -29,7 +29,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
 #include <OgreMaterial.h>
 
 #include "util/UtilPrereqs.h"
@@ -49,7 +48,7 @@ namespace orxonox
         virtual void tick(float dt);
         virtual void changedOwner();
 
-        static Ogre::MaterialPtr createRenderCamera(Ogre::Camera * cam, std::string matName);
+        static Ogre::MaterialPtr createRenderCamera(Ogre::Camera * cam, const std::string& matName);
 
         static void openMap();
 

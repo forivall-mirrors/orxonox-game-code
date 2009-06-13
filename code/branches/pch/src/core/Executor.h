@@ -32,11 +32,11 @@
 
 #include "CorePrereqs.h"
 
-#include "util/SubString.h"
-#include "util/String.h"
-#include "util/Math.h"
-#include "Functor.h"
 #include "util/Debug.h"
+#include "util/Math.h"
+#include "util/String.h"
+#include "util/SubString.h"
+#include "Functor.h"
 
 
 #define EXECUTOR_PARSE_FUNCTORCALL(mode) EXECUTOR_PARSE_FUNCTORCALL##mode

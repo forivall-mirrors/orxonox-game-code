@@ -28,17 +28,15 @@
 
 #include "ArgumentCompletionFunctions.h"
 
-#include <iostream>
 #include <map>
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 
-#include "CoreIncludes.h"
+#include "util/Convert.h"
+#include "util/String.h"
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
 #include "TclThreadManager.h"
-#include "util/Convert.h"
-#include "util/String.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)

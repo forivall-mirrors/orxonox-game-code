@@ -43,16 +43,16 @@
         this->functorGetMainState_ = createFunctor(&classname::getfunction)->setObject(this); \
     }
 
-#include <map>
-#include <list>
 
 #include "CorePrereqs.h"
 
-#include "Super.h"
-#include "OrxonoxClass.h"
-#include "XMLIncludes.h"
-#include "Event.h"
+#include <map>
+#include <list>
+
 #include "util/mbool.h"
+#include "OrxonoxClass.h"
+#include "Super.h"
+#include "XMLIncludes.h"
 
 namespace orxonox
 {

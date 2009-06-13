@@ -31,9 +31,8 @@
 
 #include "CorePrereqs.h"
 
-#include <string>
 #include <list>
-
+#include <string>
 
 namespace orxonox
 {

@@ -33,6 +33,9 @@
 
 #include <map>
 #include <set>
+#include <string>
+
+#include "util/MultiType.h"
 #include "CommandEvaluation.h"
 
 // tolua_begin

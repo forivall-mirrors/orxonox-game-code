@@ -36,11 +36,13 @@
 #define _Game_H__
 
 #include "CorePrereqs.h"
+
 #include <cassert>
 #include <list>
 #include <map>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+
 #include "OrxonoxClass.h"
 
 /**

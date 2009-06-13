@@ -33,7 +33,7 @@
 
 #include "util/String.h"
 #include "core/GameMode.h"
-#include "core/Iterator.h"
+#include "core/ObjectList.h"
 #include "tools/Shader.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/Scene.h"

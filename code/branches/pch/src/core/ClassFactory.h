@@ -40,9 +40,9 @@
 
 #include <string>
 
+#include "util/Debug.h"
 #include "Factory.h"
 #include "Identifier.h"
-#include "util/Debug.h"
 
 namespace orxonox
 {

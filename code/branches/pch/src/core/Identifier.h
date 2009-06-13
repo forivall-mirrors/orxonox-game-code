@@ -54,21 +54,17 @@
 
 #include "CorePrereqs.h"
 
-#include <set>
-#include <map>
-#include <vector>
-#include <string>
-#include <utility>
-#include <typeinfo>
-#include <cstdlib>
 #include <cassert>
+#include <map>
+#include <set>
+#include <string>
+#include <typeinfo>
 
-#include "MetaObjectList.h"
-#include "Iterator.h"
-#include "Super.h"
-#include "Functor.h"
 #include "util/Debug.h"
-#include "util/String.h"
+#include "MetaObjectList.h"
+#include "ObjectList.h"
+#include "ObjectListBase.h"
+#include "Super.h"
 
 namespace orxonox
 {

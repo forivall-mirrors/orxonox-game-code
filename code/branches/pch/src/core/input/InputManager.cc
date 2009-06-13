@@ -40,6 +40,7 @@
 #include <ois/OISException.h>
 #include <ois/OISInputManager.h>
 
+#include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Clock.h"
@@ -47,6 +48,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
+#include "core/ObjectList.h"
 
 #include "InputBuffer.h"
 #include "KeyDetector.h"

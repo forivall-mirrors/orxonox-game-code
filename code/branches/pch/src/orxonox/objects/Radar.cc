@@ -36,7 +36,7 @@
 #include <cassert>
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "core/Iterator.h"
+#include "core/ObjectList.h"
 #include "RadarListener.h"
 
 namespace orxonox

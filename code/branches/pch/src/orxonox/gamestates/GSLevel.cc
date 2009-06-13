@@ -147,14 +147,14 @@ namespace orxonox
     {
         if (show)
         {
-            GUIManager::getInstancePtr()->showGUI("inGameTest");
-            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            GUIManager::getInstance().showGUI("inGameTest");
+            GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
         }
         else
         {
-            GUIManager::getInstancePtr()->executeCode("hideGUI(\"inGameTest\")");
-            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            GUIManager::getInstance().executeCode("hideGUI(\"inGameTest\")");
+            GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().requestLeaveState("guiMouseOnly");
         }
     }

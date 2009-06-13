@@ -29,11 +29,10 @@
 #ifndef _Template_H__
 #define _Template_H__
 
-#include <map>
-
 #include "CorePrereqs.h"
 
-#include <tinyxml/tinyxml.h>
+#include <map>
+#include <string>
 #include "BaseObject.h"
 
 namespace orxonox
@@ -57,8 +56,7 @@ namespace orxonox
             inline bool getLoadDefaults() const
                 { return this->bLoadDefaults_; }
 
-            inline void setXMLElement(const TiXmlElement& xmlelement)
-                { this->xmlelement_ = xmlelement; }
+            void setXMLElement(const TiXmlElement& xmlelement);
             const TiXmlElement& getXMLElement() const;
 
             void setBaseclass(const std::string& baseclass);
@@ -74,7 +72,7 @@ namespace orxonox
             static void apply(const std::string& name, BaseObject* object);
 
         private:
-            TiXmlElement xmlelement_;
+            TiXmlElement* xmlelement_;
             std::string link_;
             std::string baseclass_;
             Identifier* baseclassIdentifier_;

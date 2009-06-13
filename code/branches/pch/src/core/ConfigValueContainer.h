@@ -48,7 +48,6 @@
 #include <string>
 #include <vector>
 
-#include "util/Math.h"
 #include "util/MultiType.h"
 #include "ConfigFileManager.h"
 #include "Identifier.h"

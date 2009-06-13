@@ -30,16 +30,14 @@
 
 #include <fstream>
 #include <map>
-
 extern "C" {
-#include <lua.h>
 #include <lualib.h>
 }
 #include <tolua/tolua++.h>
 #include <boost/filesystem.hpp>
 
-#include "util/String.h"
 #include "util/Debug.h"
+#include "util/String.h"
 #include "ToluaBindCore.h"
 #include "Core.h"
 
@@ -71,7 +69,7 @@ namespace orxonox
     isRunning_ = false;
   }
 
-  void LuaBind::luaPrint(std::string str)
+  void LuaBind::luaPrint(const std::string& str)
   {
     output_ += str;
 //    COUT(4) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
@@ -83,7 +81,7 @@ namespace orxonox
       @param filename The filename of the file
       @param luaTags if true, the loaded file gets stripped off luaTags
   */
-  void LuaBind::loadFile(std::string filename, bool luaTags)
+  void LuaBind::loadFile(const std::string& filename, bool luaTags)
   {
     boost::filesystem::path filepath(filename);
 
@@ -116,7 +114,7 @@ namespace orxonox
     COUT(5) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
-  void LuaBind::loadString(std::string code)
+  void LuaBind::loadString(const std::string& code)
   {
     luaSource_ = code;
     output_ = "";
