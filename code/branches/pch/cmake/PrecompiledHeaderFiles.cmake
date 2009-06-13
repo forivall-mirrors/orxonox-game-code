@@ -100,7 +100,7 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
   ELSEIF(CMAKE_COMPILER_IS_GNU)
 
     SET(_pch_file "${CMAKE_CURRENT_BINARY_DIR}/${_pch_header_filename}.gch")
-    SET(_pch_dep_helper_file "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}_pch_dependency_helper.cc")
+    SET(_pch_dep_helper_file "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}PCHDependencyHelper.h")
 
     # Append the gch-dir to make sure gcc finds the pch file
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -121,7 +121,7 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
         ENDIF()
         SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES
           COMPILE_FLAGS "${_old_flags} -include ${_pch_header_filename}"
-	  OBJECT_DEPENDS "${_pch_header_file};${_pch_file}"
+          OBJECT_DEPENDS "${_pch_header_file};${_pch_file}"
         )
       ENDIF(NOT _is_header)
     ENDFOREACH(_file)
