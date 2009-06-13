@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestListener.h
+    @file
     @brief Definition of the QuestListener class.
 */
 
@@ -89,7 +89,7 @@ namespace orxonox
         bool setQuestId(const std::string & id); //!< Sets the questId of the Quest the QuestListener reacts to.
         bool setMode(const std::string & mode); //!< Sets the mode of the QuestListener.
         
-        const std::string getMode(void); //!< Get the mode of the QuestListener.
+        std::string getMode(void); //!< Get the mode of the QuestListener.
         
         /**
         @brief Get the questId of the Quest the QuestListener reacts to.

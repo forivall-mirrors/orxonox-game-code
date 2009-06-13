@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationQueue.cc
+    @file
     @brief Implementation of the NotificationQueue class.
 */
 

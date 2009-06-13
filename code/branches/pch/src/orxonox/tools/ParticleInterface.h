@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
 #include <OgrePrerequisites.h>
 #include "tools/TimeFactorListener.h"
 

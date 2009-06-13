@@ -34,6 +34,7 @@
 #include "ParticleInterface.h"
 
 #include <cassert>
+#include <string>
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 #include <OgreSceneManager.h>

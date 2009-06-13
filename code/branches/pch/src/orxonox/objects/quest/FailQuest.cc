@@ -27,7 +27,7 @@
  */
  
 /**
-    @file FailQuest.cc
+    @file
     @brief Implementation of the FailQuest class.
 */
 

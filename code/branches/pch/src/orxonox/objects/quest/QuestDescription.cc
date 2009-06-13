@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestDescription.cc
+    @file
     @brief Implementation of the QuestDescription class.
 */
 

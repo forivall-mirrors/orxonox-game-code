@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationQueue.h
+    @file
     @brief Definition of the NotificationQueue class.
 */
 

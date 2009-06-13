@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationOverlay.cc
+    @file
     @brief Implementation of the NotificationOverlay class.
 */
 
@@ -126,7 +126,7 @@ namespace orxonox
     @brief
         Clips the input message so that it meets the requirements for the maximal length of Notifications given by the NotificationQueue.
     */
-    const std::string NotificationOverlay::clipMessage(const std::string & message)
+    std::string NotificationOverlay::clipMessage(const std::string & message)
     {
         if(message.length() <= (unsigned int)this->queue_->getNotificationLength()) //!< If the message is not too long.
             return message;

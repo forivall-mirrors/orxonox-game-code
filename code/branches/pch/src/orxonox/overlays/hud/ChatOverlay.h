@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
 #include <list>
 #include <OgreUTFString.h>
 

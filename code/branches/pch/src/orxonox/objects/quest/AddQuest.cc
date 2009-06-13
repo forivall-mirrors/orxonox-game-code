@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddQuest.cc
+    @file
     @brief Implementation of the AddQuest class.
 */
 

@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
 #include <OgrePrerequisites.h>
 #include "objects/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"

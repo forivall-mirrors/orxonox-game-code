@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Rewardable.h
+    @file
     @brief Definition of the Rewardable class.
 */
 

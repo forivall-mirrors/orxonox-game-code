@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationManager.cc
+    @file
     @brief Implementation of the NotificationManager class.
 */
 

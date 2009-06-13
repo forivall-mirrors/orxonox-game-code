@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddQuest.h
+    @file
     @brief Definition of the AddQuest class.
 */
 
@@ -35,8 +35,6 @@
 #define _AddQuest_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <string>
 
 #include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"

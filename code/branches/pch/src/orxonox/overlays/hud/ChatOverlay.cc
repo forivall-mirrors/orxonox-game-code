@@ -28,6 +28,7 @@
 
 #include "ChatOverlay.h"
 
+#include <string>
 #include <OgreTextAreaOverlayElement.h>
 
 #include "util/Convert.h"

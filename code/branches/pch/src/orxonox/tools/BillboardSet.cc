@@ -28,8 +28,9 @@
 
 #include "BillboardSet.h"
 
-#include <sstream>
 #include <cassert>
+#include <string>
+#include <sstream>
 #include <OgreSceneManager.h>
 #include <OgreBillboardSet.h>
 #include <OgreBillboard.h>

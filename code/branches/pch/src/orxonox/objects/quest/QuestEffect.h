@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestEffect.h
+    @file
     @brief Definition of the QuestEffect class.
 */
 

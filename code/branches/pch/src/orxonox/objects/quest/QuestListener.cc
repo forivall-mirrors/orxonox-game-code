@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestListener.cc
+    @file
     @brief Implementation of the QuestListener class.
 */
 
@@ -162,7 +162,7 @@ namespace orxonox
     @return
         Return the mode of the QuestListener. Can be eighter 'all', 'start', 'fail' or 'complete'.
     */
-    const std::string QuestListener::getMode(void)
+    std::string QuestListener::getMode(void)
     {
         if(this->mode_ == questListenerMode::all)
         {

@@ -27,7 +27,7 @@
  */
  
 /**
-    @file Quest.cc
+    @file
     @brief Implementation of the Quest class.
 */
 

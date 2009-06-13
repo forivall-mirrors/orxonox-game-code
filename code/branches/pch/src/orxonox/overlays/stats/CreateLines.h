@@ -28,7 +28,6 @@
 #define _CreateLines_H__
 
 #include "OrxonoxPrereqs.h"
-#include <string>
 
 namespace orxonox
 {

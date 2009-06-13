@@ -30,6 +30,7 @@
 
 #include <cassert>
 #include <sstream>
+#include <string>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 

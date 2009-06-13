@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationOverlay.h
+    @file
     @brief Definition of the NotificationOverlay class.
 */
 
@@ -67,7 +67,7 @@ namespace orxonox
                 { this->setTextSize(size); }
         
         protected:
-            const std::string clipMessage(const std::string & message); //!< Clips the input message if too long.
+            std::string clipMessage(const std::string & message); //!< Clips the input message if too long.
 
         private:
             NotificationQueue* queue_; //!< The NotificationQeue this overlay belongs to.

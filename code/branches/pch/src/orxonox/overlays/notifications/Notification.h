@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Notification.h
+    @file
     @brief Definition of the Notification class.
 */
 

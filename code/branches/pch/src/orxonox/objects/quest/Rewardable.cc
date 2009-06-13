@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Rewardable.cc
+    @file
     @brief Implementation of the Rewardable class.
 */
 

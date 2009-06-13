@@ -28,6 +28,7 @@
 
 #include "HUDNavigation.h"
 
+#include <string>
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>

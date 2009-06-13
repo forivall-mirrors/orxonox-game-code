@@ -27,7 +27,7 @@
  */
 
 /**
-    @file CompleteQuest.h
+    @file
     @brief Definition of the CompleteQuest class.
 */
 
@@ -35,8 +35,6 @@
 #define _CompleteQuest_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <string>
 
 #include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationManager.h
+    @file
     @brief Definition of the NotificationManager class.
 */
 

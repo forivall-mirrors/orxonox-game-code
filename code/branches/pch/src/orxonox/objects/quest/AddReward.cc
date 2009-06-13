@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddReward.cc
+    @file
     @brief Implementation of the AddReward class.
 */
 
