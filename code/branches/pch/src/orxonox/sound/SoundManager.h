@@ -32,10 +32,6 @@
 #include <list>
 #include "orxonox/objects/Tickable.h"
 
-// forward declarations
-typedef struct ALCcontext_struct ALCcontext;
-typedef struct ALCdevice_struct ALCdevice;
-
 namespace orxonox
 {
     /**

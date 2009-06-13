@@ -33,7 +33,6 @@
 
 #include <set>
 #include <string>
-#include "XMLIncludes.h"
 #include "BaseObject.h"
 
 namespace orxonox

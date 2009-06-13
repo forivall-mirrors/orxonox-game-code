@@ -69,7 +69,6 @@
 #include "CorePrereqs.h"
 
 #include "util/Debug.h"
-#include "XMLIncludes.h"
 #include "Event.h"
 
 ///////////////////////

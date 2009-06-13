@@ -44,14 +44,6 @@
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
-// boost::filesystem header has quite a large tail, use forward declaration
-namespace boost { namespace filesystem
-{
-    struct path_traits;
-    template<class String, class Traits> class basic_path;
-    typedef basic_path< std::string, path_traits> path;
-} }
-
 namespace orxonox
 {
     //! The Core class is a singleton, only used to configure some config-values.

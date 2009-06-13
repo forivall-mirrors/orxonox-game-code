@@ -194,4 +194,47 @@ namespace Tcl
     class object;
 }
 
+// Boost
+namespace boost { namespace filesystem
+{
+    struct path_traits;
+    template <class String, class Traits> class basic_path;
+    typedef basic_path<std::string, path_traits> path;
+} }
+
+// TinyXML and TinyXML++
+class TiXmlString;
+class TiXmlOutStream;
+class TiXmlNode;
+class TiXmlHandle;
+class TiXmlDocument;
+class TiXmlElement;
+class TiXmlComment;
+class TiXmlUnknown;
+class TiXmlAttribute;
+class TiXmlText;
+class TiXmlDeclaration;
+class TiXmlParsingData;
+namespace ticpp
+{
+    class Document;
+    class Element;
+    class Declaration;
+    class StylesheetReference;
+    class Text;
+    class Comment;
+    class Attribute;
+}
+namespace orxonox
+{
+    using ticpp::Document;
+    using ticpp::Element;
+    using ticpp::Declaration;
+    using ticpp::StylesheetReference;
+    using ticpp::Text;
+    using ticpp::Comment;
+    using ticpp::Attribute;
+}
+
+
 #endif /* _CorePrereqs_H__ */

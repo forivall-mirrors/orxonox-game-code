@@ -45,9 +45,6 @@
 
 #include "core/input/InputInterfaces.h"
 
-// Forward declaration
-namespace CEGUI { class DefaultLogger; }
-
 // tolua_begin
 namespace orxonox
 {

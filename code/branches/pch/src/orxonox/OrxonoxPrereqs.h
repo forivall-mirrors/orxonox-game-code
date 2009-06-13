@@ -298,6 +298,7 @@ namespace Ogre
 
 namespace CEGUI
 {
+    class DefaultLogger;
     class LuaScriptModule;
 
     class OgreCEGUIRenderer;
@@ -306,7 +307,6 @@ namespace CEGUI
 }
 
 // Bullet Physics Engine
-
 class btTransform;
 class btVector3;
 
@@ -326,7 +326,13 @@ class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btSequentialImpulseConstraintSolver;
 
-// lua
+// ALUT
+typedef struct ALCcontext_struct ALCcontext;
+typedef struct ALCdevice_struct ALCdevice;
+typedef unsigned int ALuint;
+typedef int ALint;
+
+// Lua
 struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

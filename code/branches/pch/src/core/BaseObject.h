@@ -52,7 +52,6 @@
 #include "util/mbool.h"
 #include "OrxonoxClass.h"
 #include "Super.h"
-#include "XMLIncludes.h"
 
 namespace orxonox
 {

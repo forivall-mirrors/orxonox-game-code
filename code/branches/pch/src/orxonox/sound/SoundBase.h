@@ -29,11 +29,6 @@
 #define _SoundBase_H__
 
 #include "OrxonoxPrereqs.h"
-#include <string>
-
-// forward declarations
-typedef unsigned int ALuint;
-typedef int ALint;
 
 namespace orxonox
 {
