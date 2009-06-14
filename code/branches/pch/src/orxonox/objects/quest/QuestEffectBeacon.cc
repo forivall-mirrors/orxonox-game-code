@@ -88,7 +88,7 @@ namespace orxonox
     {
         SUPER(QuestEffectBeacon, processEvent, event);
     
-        SetSubclassEvent(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
+        ORXONOX_SET_SUBCLASS_EVENT(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
     }
     
     /**

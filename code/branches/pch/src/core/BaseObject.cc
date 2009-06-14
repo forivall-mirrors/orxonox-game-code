@@ -293,8 +293,8 @@ namespace orxonox
 
     void BaseObject::processEvent(Event& event)
     {
-        SetEvent(BaseObject, "activity", setActive, event);
-        SetEvent(BaseObject, "visibility", setVisible, event);
+        ORXONOX_SET_EVENT(BaseObject, "activity", setActive, event);
+        ORXONOX_SET_EVENT(BaseObject, "visibility", setVisible, event);
     }
 
     void BaseObject::setMainStateName(const std::string& name)
