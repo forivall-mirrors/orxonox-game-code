@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <boost/preprocessor/cat.hpp>
 
 #include "OrxonoxClass.h"
 
@@ -52,7 +53,7 @@
     and every following paramter is a constructor argument (which is usually non existent)
 */
 #define AddGameState(classname, ...) \
-    static bool MACRO_CONCATENATE(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(__VA_ARGS__))
+    static bool BOOST_PP_CAT(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(__VA_ARGS__))
 
 // tolua_begin
 namespace orxonox

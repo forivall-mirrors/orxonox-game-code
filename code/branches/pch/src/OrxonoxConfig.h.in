@@ -142,15 +142,6 @@
 
 
 /*---------------------------------
- * Special Macros
- *-------------------------------*/
-#define MACRO_CONCATENATE_AUX(a, b) a##b
-#define MACRO_CONCATENATE(a, b) MACRO_CONCATENATE_AUX(a, b)
-#define MACRO_QUOTEME_AUX(x) #x
-#define MACRO_QUOTEME(x) MACRO_QUOTEME_AUX(x)
-
-
-/*---------------------------------
  * Options
  *-------------------------------*/
 /**
