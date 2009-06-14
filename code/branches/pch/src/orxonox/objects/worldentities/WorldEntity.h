@@ -74,6 +74,22 @@ namespace orxonox
         friend class Scene;
 
         public:
+            // Define our own transform space enum to avoid Ogre includes here
+            /**
+            @brief
+                Enumeration denoting the spaces which a transform can be relative to.
+            */
+            enum TransformSpace
+            {
+                //! Transform is relative to the local space
+                Local,
+                //! Transform is relative to the space of the parent node
+                Parent,
+                //! Transform is relative to world space
+                World
+            };
+
+        public:
             WorldEntity(BaseObject* creator);
             virtual ~WorldEntity();
 
@@ -96,8 +112,8 @@ namespace orxonox
             const Vector3& getPosition() const;
             const Vector3& getWorldPosition() const;
 
-            void translate(const Vector3& distance, TransformSpace::Enum relativeTo = TransformSpace::Parent);
-            inline void translate(float x, float y, float z, TransformSpace::Enum relativeTo = TransformSpace::Parent)
+            void translate(const Vector3& distance, TransformSpace relativeTo = WorldEntity::Parent);
+            inline void translate(float x, float y, float z, TransformSpace relativeTo = WorldEntity::Parent)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
             virtual inline const Vector3& getVelocity() const
@@ -113,20 +129,20 @@ namespace orxonox
             const Quaternion& getOrientation() const;
             const Quaternion& getWorldOrientation() const;
 
-            void rotate(const Quaternion& rotation, TransformSpace::Enum relativeTo = TransformSpace::Local);
-            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            void rotate(const Quaternion& rotation, TransformSpace relativeTo = WorldEntity::Local);
+            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, axis), relativeTo); }
 
-            inline void yaw(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            inline void yaw(const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_Y), relativeTo); }
-            inline void pitch(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            inline void pitch(const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_X), relativeTo); }
-            inline void roll(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            inline void roll(const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_Z), relativeTo); }
 
-            void lookAt(const Vector3& target, TransformSpace::Enum relativeTo = TransformSpace::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, TransformSpace::Enum relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            inline void setDirection(float x, float y, float z, TransformSpace::Enum relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
+            void lookAt(const Vector3& target, TransformSpace relativeTo = WorldEntity::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            void setDirection(const Vector3& direction, TransformSpace relativeTo = WorldEntity::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            inline void setDirection(float x, float y, float z, TransformSpace relativeTo = WorldEntity::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
             virtual void setScale3D(const Vector3& scale);

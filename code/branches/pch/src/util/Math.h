@@ -53,24 +53,6 @@
 
 namespace orxonox
 {
-    // Also define our own transform space enum
-    namespace TransformSpace
-    {
-        /**
-        @brief
-            Enumeration denoting the spaces which a transform can be relative to.
-        */
-        enum Enum
-        {
-            //! Transform is relative to the local space
-            Local,
-            //! Transform is relative to the space of the parent node
-            Parent,
-            //! Transform is relative to world space
-            World
-        };
-    }
-
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian);
     _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree);
