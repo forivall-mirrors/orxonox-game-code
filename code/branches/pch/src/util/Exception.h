@@ -37,9 +37,9 @@
 
 #include "UtilPrereqs.h"
 
-#include <string>
 #include <exception>
-#include <cassert>
+#include <sstream>
+#include <string>
 #include "Debug.h"
 
 namespace orxonox
@@ -120,6 +120,6 @@ namespace orxonox
     }
 
 #define ThrowException(type, description) \
-    throw InternalHandleException(type##Exception(description, __LINE__, __FILE__, __FUNCTIONNAME__))
+    throw InternalHandleException(type##Exception(static_cast<std::ostringstream&>(std::ostringstream().flush() << description).str(), __LINE__, __FILE__, __FUNCTIONNAME__))
 
 #endif /* _Exception_H__ */
