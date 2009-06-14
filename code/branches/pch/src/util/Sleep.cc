@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
-    @brief Implementation of three sleep functions.
+@file
+@brief
+    Implementation of three sleep functions. Avoids including windows.h
 */
 
 #include "Sleep.h"

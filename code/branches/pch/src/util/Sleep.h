@@ -27,9 +27,9 @@
  */
 
 /**
- @file
- @brief
-    Functions for using sleep() and usleep() on windows.
+@file
+@brief
+    Functions declarations to make the current thread sleep.
  */
 
 #ifndef _Sleep_H__
@@ -39,8 +39,11 @@
 
 namespace orxonox
 {
+    //! Makes the thread sleep for a few @a microseconds
     _UtilExport void usleep(unsigned long microseconds);
+    //! Makes the thread sleep for a few @a milliseconds
     _UtilExport void msleep(unsigned long milliseconds);
+    //! Makes the thread sleep for a few @a seconds
     _UtilExport void sleep (unsigned long seconds);
 }
 
