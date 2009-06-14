@@ -109,7 +109,10 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
     # This is just the best possible opportunity to address this dependency issue
     GET_GCC_COMPILER_FLAGS(${_target_name} _pch_gcc_flags)
     # Make sure we recompile the pch file even if only the flags change
-    FILE(WRITE ${_pch_dep_helper_file} "/* ${_pch_gcc_flags} */")
+    IF(NOT "${_pch_gcc_flags}" STREQUAL "${_INTERNAL_PCH_GCC_FLAGS}")
+      SET(_INTERNAL_PCH_GCC_FLAGS "${_pch_gcc_flags}" CACHE INTERNAL "")
+      FILE(WRITE ${_pch_dep_helper_file} "/* ${_pch_gcc_flags} */")
+    ENDIF()
 
     # Set Compile flags for the other source files
     FOREACH(_file ${_source_files})
@@ -156,6 +159,3 @@ FUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET _target_name)
 
     ENDIF(CMAKE_COMPILER_IS_GNU)
 ENDFUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET)
-
-# TODO: Investigate what happens when we suddenly disable PCH for a library
-# TODO: C and CXX

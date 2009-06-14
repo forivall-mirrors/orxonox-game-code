@@ -66,28 +66,8 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
   ELSE()
     INCLUDE(PackageConfigMinGW)
     INCLUDE(PackageConfigMSVC)
-
-    # On Windows, DLLs have to be in the executable folder, install them
-    IF(DEP_BINARY_DIR AND WIN32)
-      # When installing a debug version, we really can't know which libraries
-      # are used in released mode because there might be deps of deps.
-      INSTALL(
-        DIRECTORY ${DEP_BINARY_DIR}/
-        DESTINATION bin
-        CONFIGURATIONS Debug
-        REGEX "^.*\\.pdb$" EXCLUDE
-      )
-
-      # Try to filter out all the debug libraries. If the regex doesn't do the
-      # job anymore, simply adjust it.
-      INSTALL(
-        DIRECTORY ${DEP_BINARY_DIR}/
-        DESTINATION bin
-        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
-        REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
-      )
-    ENDIF(DEP_BINARY_DIR AND WIN32)
-  ENDIF(NOT DEPENDENCY_PACKAGE_DIR)
+    INCLUDE(PackageConfig) # For both msvc and mingw
+  ENDIF()
 ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
 # User script

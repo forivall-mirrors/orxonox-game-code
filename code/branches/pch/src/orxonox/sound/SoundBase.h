@@ -29,6 +29,7 @@
 #define _SoundBase_H__
 
 #include "OrxonoxPrereqs.h"
+#include <cstring> // define NULL
 
 namespace orxonox
 {

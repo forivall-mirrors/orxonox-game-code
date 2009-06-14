@@ -33,12 +33,12 @@
  */
 
 /**
- @file
- @brief
+@file
+@brief
     Various constants for compiler, architecture and platform.
-
+@remarks
     @GENERATED_FILE_COMMENT@
- */
+*/
 
 #ifndef _OrxonoxConfig_H__
 #define _OrxonoxConfig_H__
@@ -51,7 +51,7 @@
 #cmakedefine ORXONOX_PLATFORM_APPLE
 #cmakedefine ORXONOX_PLATFORM_UNIX /* Apple and Linux */
 
-/* Determine compiler and set ORXONOX_COMP_VER */
+// Determine compiler and set ORXONOX_COMP_VER
 #if defined( _MSC_VER )
 #  define ORXONOX_COMPILER_MSVC
 #  define ORXONOX_COMP_VER _MSC_VER
@@ -74,15 +74,15 @@
 
 #endif
 
-/* Endianness */
+// Endianness
 #cmakedefine ORXONOX_BIG_ENDIAN
 #cmakedefine ORXONOX_LITTLE_ENDIAN
 
-/* Architecture */
+// Architecture
 #cmakedefine ORXONOX_ARCH_32
 #cmakedefine ORXONOX_ARCH_64
 
-/* See if we can use __forceinline or if we need to use __inline instead */
+// See if we can use __forceinline or if we need to use __inline instead
 #cmakedefine HAVE_FORCEINLINE
 #ifndef FORCEINLINE
 #  ifdef HAVE_FORCEINLINE
@@ -92,7 +92,7 @@
 #  endif
 #endif
 
-/* Try to define function information */
+// Try to define function information
 #ifndef __FUNCTIONNAME__
 #  ifdef ORXONOX_COMPILER_BORLAND
 #    define __FUNCTIONNAME__ __FUNC__
@@ -114,7 +114,9 @@
 #define ORXONOX_VERSION_PATCH @ORXONOX_VERSION_PATCH@
 #define ORXONOX_VERSION_NAME "@ORXONOX_VERSION_NAME@"
 
-#define ORXONOX_VERSION ((ORXONOX_VERSION_MAJOR << 16) | (ORXONOX_VERSION_MINOR << 8) | ORXONOX_VERSION_PATCH)
+//! Defines version info encoded as 0xMMIIPP (M: Major version, I: Minor version, P: Patch version, all as hex)
+#define ORXONOX_VERSION \
+    ((ORXONOX_VERSION_MAJOR << 16) | (ORXONOX_VERSION_MINOR << 8) | ORXONOX_VERSION_PATCH)
 
 
 /*---------------------------------
@@ -122,12 +124,11 @@
  *-------------------------------*/
 #ifdef ORXONOX_PLATFORM_UNIX
 
-/* TODO: Check what this actually is and whether we need it or not */
+// TODO: Check what this actually is and whether we need it or not
 #if 0
 #  ifdef ORXONOX_PLATFORM_APPLE
 #    define ORXONOX_PLATFORM_LIB "OrxonoxPlatform.bundle"
-#  else
-/* ORXONOX_PLATFORM_LINUX */
+#  else // ORXONOX_PLATFORM_LINUX
 #    define ORXONOX_PLATFORM_LIB "libOrxonoxPlatform.so"
 #  endif
 #endif
@@ -150,10 +151,20 @@
 
 
 /*---------------------------------
- * Includes
+ * Options
  *-------------------------------*/
-/* Define the english written operators like and, or, xor
- * This is C++ standard, but the Microsoft compiler doesn't define them. */
+/**
+@def ORXONOX_RELEASE
+    Enables expensive (build time) optimisations and disables certain features
+*/
+#cmakedefine ORXONOX_RELEASE
+
+
+/*---------------------------------
+ * Includes and Declarations
+ *-------------------------------*/
+// Define the english written operators like and, or, xor
+// This is C++ standard, but the Microsoft compiler doesn't define them.
 #cmakedefine HAVE_ISO646_H
 #ifdef HAVE_ISO646_H
 #  include <iso646.h>
@@ -180,7 +191,13 @@ typedef unsigned __int64  uint64_t;
 #endif
 */
 
-/* Forward declare the everywhere used std::string */
+// Always include the memory leak detector for MSVC except for actual releases
+// Note: Although officially supported, VLD does not work with MSVC 9
+#if defined(ORXONOX_COMPILER_MSVC) && _MSC_VER < 1500 && !defined(ORXONOX_RELEASE)
+#  include <vld.h>
+#endif
+
+// Forward declare the everywhere used std::string
 namespace std
 {
     template<class _Elem> struct char_traits;
@@ -188,16 +205,5 @@ namespace std
     template<class _Elem, class _Traits, class _Ax> class basic_string;
     typedef basic_string<char, char_traits<char>, allocator<char> > string;
 }
-
-/* Just in case you don't include a standard header */
-#ifndef NULL
-  #define NULL 0
-#endif
-
-/* Visual Leak Detector looks for memory leaks */
-#cmakedefine VISUAL_LEAK_DETECTOR_ENABLE
-#ifdef VISUAL_LEAK_DETECTOR_ENABLE
-#  include <vld.h>
-#endif
 
 #endif /* _OrxonoxConfig_H__ */
