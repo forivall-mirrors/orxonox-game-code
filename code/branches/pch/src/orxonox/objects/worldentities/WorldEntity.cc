@@ -32,7 +32,7 @@
 #include <cassert>
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <boost/static_assert.hpp>
 
 #include "util/OrxAssert.h"

@@ -28,7 +28,7 @@
 
 #include "WorldEntityCollisionShape.h"
 
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
 #include "util/OrxAssert.h"
 #include "core/CoreIncludes.h"

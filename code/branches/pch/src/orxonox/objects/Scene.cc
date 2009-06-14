@@ -33,10 +33,10 @@
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreSceneNode.h>
 
-#include "BulletCollision/BroadphaseCollision/btAxisSweep3.h"
-#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include <BulletCollision/BroadphaseCollision/btAxisSweep3.h>
+#include <BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h>
+#include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"

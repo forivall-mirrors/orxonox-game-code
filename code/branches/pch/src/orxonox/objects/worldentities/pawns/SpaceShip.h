@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "LinearMath/btVector3.h"
+#include <LinearMath/btVector3.h>
 
 #include "Pawn.h"
 

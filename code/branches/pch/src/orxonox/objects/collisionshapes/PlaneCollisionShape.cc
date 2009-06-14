@@ -28,7 +28,7 @@
 
 #include "PlaneCollisionShape.h"
 
-#include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
+#include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

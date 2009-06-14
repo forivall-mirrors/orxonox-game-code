@@ -161,10 +161,10 @@ namespace orxonox
 
     void OverlayText::setAlignment(OverlayText::Alignment alignment)
     {
-        this->text_->setAlignment((Ogre::TextAreaOverlayElement::Alignment)alignment);
+        this->text_->setAlignment(static_cast<Ogre::TextAreaOverlayElement::Alignment>(alignment));
     }
     OverlayText::Alignment OverlayText::getAlignment() const
     {
-        return (OverlayText::Alignment)this->text_->getAlignment();
+        return static_cast<OverlayText::Alignment>(this->text_->getAlignment());
     }
 }

@@ -28,7 +28,7 @@
 
 #include "BoxCollisionShape.h"
 
-#include "BulletCollision/CollisionShapes/btBoxShape.h"
+#include <BulletCollision/CollisionShapes/btBoxShape.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

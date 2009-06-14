@@ -33,8 +33,8 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "LinearMath/btQuaternion.h"
-#include "LinearMath/btVector3.h"
+#include <LinearMath/btQuaternion.h>
+#include <LinearMath/btVector3.h>
 
 namespace orxonox
 {

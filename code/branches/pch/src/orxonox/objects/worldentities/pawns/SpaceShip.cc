@@ -28,7 +28,7 @@
 
 #include "SpaceShip.h"
 
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 
 #include "util/Math.h"
 #include "core/CoreIncludes.h"

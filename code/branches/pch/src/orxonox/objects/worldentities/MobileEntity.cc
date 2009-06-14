@@ -29,7 +29,7 @@
 #include "MobileEntity.h"
 
 #include <OgreSceneNode.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 
 #include "util/Debug.h"
 #include "util/MathConvert.h"
