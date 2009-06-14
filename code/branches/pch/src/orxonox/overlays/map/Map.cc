@@ -401,6 +401,12 @@ Ogre::MaterialPtr Map::init()
         }
     }
 
+    // HACK!
+    void Map::hackDestroyMap()
+    {
+        Map::OverlayMaterial_.setNull();
+    }
+
     void Map::tick(float dt)
     {
         //Debug

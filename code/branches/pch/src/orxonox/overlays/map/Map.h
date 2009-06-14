@@ -51,6 +51,8 @@ namespace orxonox
         static Ogre::MaterialPtr createRenderCamera(Ogre::Camera * cam, const std::string& matName);
 
         static void openMap();
+        // HACK!
+        static void hackDestroyMap();
 
 //Not yet implemented
         static const int maxRange_s=1000;

@@ -65,6 +65,9 @@
 #include "tools/WindowEventListener.h"
 #include "tools/ParticleInterface.h"
 
+// HACK!
+#include "overlays/map/Map.h"
+
 namespace orxonox
 {
     class _OrxonoxExport OgreWindowEventListener : public Ogre::WindowEventListener
@@ -141,6 +144,9 @@ namespace orxonox
             // destroy render window
 //            Ogre::RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
 //            renderer->destroyRenderWindow("Orxonox");
+
+            // HACK! This fixes an exit crash
+            Map::hackDestroyMap();
 
             // unload all compositors
             Ogre::CompositorManager::getSingleton().removeAll();
