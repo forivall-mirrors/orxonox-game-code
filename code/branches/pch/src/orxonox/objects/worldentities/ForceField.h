@@ -31,7 +31,7 @@
 #define _ForceField_H__
 
 #include "StaticEntity.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

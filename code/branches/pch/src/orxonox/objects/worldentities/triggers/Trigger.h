@@ -34,7 +34,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 #include "objects/worldentities/StaticEntity.h"
 #include "tools/BillboardSet.h"
 

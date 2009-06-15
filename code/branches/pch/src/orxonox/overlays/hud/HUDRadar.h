@@ -36,9 +36,9 @@
 #include <vector>
 #include <OgrePrerequisites.h>
 
+#include "interfaces/RadarListener.h"
+#include "interfaces/RadarViewable.h"
 #include "overlays/OrxonoxOverlay.h"
-#include "objects/RadarListener.h"
-#include "objects/RadarViewable.h"
 
 namespace orxonox
 {

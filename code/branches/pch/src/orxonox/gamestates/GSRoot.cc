@@ -33,9 +33,9 @@
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "tools/TimeFactorListener.h"
 #include "tools/Timer.h"
-#include "objects/Tickable.h"
+#include "interfaces/TimeFactorListener.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

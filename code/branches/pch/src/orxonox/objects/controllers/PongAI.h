@@ -33,8 +33,8 @@
 
 #include <list>
 #include "util/Math.h"
+#include "interfaces/Tickable.h"
 #include "Controller.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {

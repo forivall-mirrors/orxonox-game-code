@@ -36,7 +36,7 @@
 #include "tools/BillboardSet.h"
 #include "tools/Mesh.h"
 #include "MovableEntity.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

@@ -36,7 +36,7 @@
 #include <OgreLight.h>
 
 #include "util/Math.h"
-#include "objects/Teamcolourable.h"
+#include "interfaces/Teamcolourable.h"
 
 namespace orxonox
 {

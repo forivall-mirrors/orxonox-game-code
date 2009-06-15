@@ -34,7 +34,7 @@
 
 #include <string>
 #include "core/Shell.h"
-#include "tools/WindowEventListener.h"
+#include "interfaces/WindowEventListener.h"
 
 namespace orxonox
 {

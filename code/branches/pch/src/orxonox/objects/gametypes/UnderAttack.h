@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "TeamDeathmatch.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "interfaces/PawnListener.h"
 
 namespace orxonox
 {

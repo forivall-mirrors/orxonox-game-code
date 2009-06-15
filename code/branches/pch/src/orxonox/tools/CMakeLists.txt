@@ -4,10 +4,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   DynamicRenderable.cc
   Mesh.cc
   ParticleInterface.cc
-  PawnListener.cc
   Shader.cc
   TextureGenerator.cc
-  TimeFactorListener.cc
   Timer.cc
-  WindowEventListener.cc
 )

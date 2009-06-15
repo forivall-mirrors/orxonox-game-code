@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "Billboard.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 #include "tools/Timer.h"
 
 namespace orxonox

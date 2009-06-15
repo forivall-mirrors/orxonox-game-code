@@ -42,8 +42,8 @@
 #include <string>
 
 #include "util/Math.h"
-#include "orxonox/objects/Tickable.h"
-#include "orxonox/overlays/OverlayGroup.h"
+#include "interfaces/Tickable.h"
+#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {

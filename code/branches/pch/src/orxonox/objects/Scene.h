@@ -40,7 +40,7 @@
 #include "util/Math.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

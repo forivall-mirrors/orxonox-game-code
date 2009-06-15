@@ -33,6 +33,7 @@
 #include "core/XMLPort.h"
 #include "util/Math.h"
 #include "PawnManager.h"
+#include "interfaces/PawnListener.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"

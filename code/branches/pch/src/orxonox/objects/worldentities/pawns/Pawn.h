@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "objects/worldentities/ControllableEntity.h"
-#include "objects/RadarViewable.h"
+#include "interfaces/RadarViewable.h"
 #include "objects/pickup/PickupCollection.h"
 
 namespace orxonox

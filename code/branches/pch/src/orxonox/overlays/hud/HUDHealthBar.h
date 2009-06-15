@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/Math.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 #include "HUDBar.h"
 

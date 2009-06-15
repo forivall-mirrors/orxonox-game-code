@@ -33,7 +33,7 @@
 
 #include <OgrePrerequisites.h>
 #include "objects/worldentities/StaticEntity.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

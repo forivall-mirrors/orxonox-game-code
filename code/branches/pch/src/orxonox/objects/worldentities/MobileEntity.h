@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

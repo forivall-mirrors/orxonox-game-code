@@ -38,7 +38,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/GameState.h"
-#include "tools/WindowEventListener.h"
+#include "interfaces/WindowEventListener.h"
 
 namespace orxonox
 {

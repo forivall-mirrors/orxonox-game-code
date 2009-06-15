@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
-#include "tools/TimeFactorListener.h"
+#include "interfaces/TimeFactorListener.h"
 
 #define getAllEmitters() \
   storeThisAsCurrentParticleInterface(); \

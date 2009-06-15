@@ -43,8 +43,8 @@
 #include "core/ObjectList.h"
 #include "core/XMLFile.h"
 
+#include "interfaces/Tickable.h"
 #include "objects/Radar.h"
-#include "objects/Tickable.h"
 #include "objects/quest/QuestManager.h"
 #include "overlays/notifications/NotificationManager.h"
 #include "gui/GUIManager.h"

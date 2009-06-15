@@ -2,14 +2,9 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   EventListener.cc
   EventDispatcher.cc
   EventTarget.cc
-  GametypeMessageListener.cc
   GlobalShader.cc
   Level.cc
   Radar.cc
-  RadarListener.cc
-  RadarViewable.cc
-  Teamcolourable.cc
-  Tickable.cc
   Scene.cc
   Script.cc
 )

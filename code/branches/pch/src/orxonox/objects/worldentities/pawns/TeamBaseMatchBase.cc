@@ -30,7 +30,8 @@
 #include "TeamBaseMatchBase.h"
 #include "core/CoreIncludes.h"
 #include "objects/gametypes/TeamBaseMatch.h"
-#include "objects/Teamcolourable.h"
+#include "interfaces/Teamcolourable.h"
+#include "interfaces/PawnListener.h"
 
 namespace orxonox
 {

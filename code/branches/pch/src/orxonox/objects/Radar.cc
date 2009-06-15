@@ -38,7 +38,7 @@
 //#include "util/Math.h"
 #include "core/ConsoleCommand.h"
 #include "core/ObjectList.h"
-#include "RadarListener.h"
+#include "interfaces/RadarListener.h"
 
 namespace orxonox
 {

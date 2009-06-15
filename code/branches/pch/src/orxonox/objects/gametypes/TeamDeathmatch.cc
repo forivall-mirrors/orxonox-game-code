@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "objects/Teamcolourable.h"
+#include "interfaces/Teamcolourable.h"
 #include "objects/worldentities/TeamSpawnPoint.h"
 
 namespace orxonox

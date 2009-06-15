@@ -40,8 +40,8 @@
 #include <string>
 
 #include "core/ObjectListIterator.h"
-#include "objects/Tickable.h"
-#include "RadarViewable.h"
+#include "interfaces/RadarViewable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

@@ -32,7 +32,7 @@
 #include "core/GameMode.h"
 #include "network/NetworkFunction.h"
 #include "network/Host.h"
-#include "objects/GametypeMessageListener.h"
+#include "interfaces/GametypeMessageListener.h"
 
 namespace orxonox
 {
