@@ -58,7 +58,7 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            assert(Ogre::Root::getSingletonPtr())
+            assert(Ogre::Root::getSingletonPtr());
             this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }

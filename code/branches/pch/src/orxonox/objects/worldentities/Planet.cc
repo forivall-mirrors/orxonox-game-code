@@ -69,18 +69,21 @@ namespace orxonox
         if(!this->isVisible())
             return;
 
-        Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
-        if(activeCamera)
+        if (GameMode::showsGraphics())
         {
-            float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
-            //             COUT(2) << distance << std::endl;
-            float planetRadius = this->getScale();
+            Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
+            if(activeCamera)
+            {
+                float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
+                //             COUT(2) << distance << std::endl;
+                float planetRadius = this->getScale();
 
-            float newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
-            float tempTest = newScale*(1+float(this->atmosphereSize)/float(this->imageSize));
-            newScale = tempTest;
+                float newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
+                float tempTest = newScale*(1+float(this->atmosphereSize)/float(this->imageSize));
+                newScale = tempTest;
 
-            this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
+                this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
+            }
         }
 
         SUPER(Planet, tick, dt);
@@ -144,11 +147,14 @@ namespace orxonox
     {
         SUPER(Planet, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Planet, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("planet/Atmosphere");
-        XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);     
-        XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);         
-        XMLPortParam(Planet, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
-        XMLPortParam(Planet, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
+        if (GameMode::showsGraphics())
+        {
+            XMLPortParam(Planet, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("planet/Atmosphere");
+            XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);     
+            XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);         
+            XMLPortParam(Planet, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
+            XMLPortParam(Planet, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
+        }
     }
 
     void Planet::registerVariables()
