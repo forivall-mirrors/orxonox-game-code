@@ -35,6 +35,7 @@
 #include "GametypeMessageListener.h"
 #include "PawnListener.h"
 #include "RadarListener.h"
+#include "Rewardable.h"
 #include "Teamcolourable.h"
 #include "Tickable.h"
 #include "TimeFactorListener.h"
@@ -109,5 +110,13 @@ namespace orxonox
     WindowEventListener::WindowEventListener()
     {
         RegisterRootObject(WindowEventListener);
+    }
+
+    //----------------------------
+    // Rewardable
+    //----------------------------
+    Rewardable::Rewardable()
+    {
+        RegisterObject(Rewardable);
     }
 }
