@@ -32,9 +32,14 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "network/synchronisable/Synchronisable.h"
-#include "core/BaseObject.h"
+#include <list>
+#include <set>
+#include <string>
+#include <OgrePrerequisites.h>
+
 #include "util/Math.h"
+#include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
 #include "objects/Tickable.h"
 
 namespace orxonox

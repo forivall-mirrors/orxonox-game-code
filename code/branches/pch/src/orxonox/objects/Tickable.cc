@@ -28,7 +28,6 @@
 
 #include "Tickable.h"
 #include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {

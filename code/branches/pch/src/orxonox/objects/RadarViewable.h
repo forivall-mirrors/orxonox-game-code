@@ -33,6 +33,7 @@
 
 #include <string>
 #include <cassert>
+#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
 #include "util/Debug.h"

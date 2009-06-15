@@ -30,7 +30,6 @@
 #define _GametypeMessageListener_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

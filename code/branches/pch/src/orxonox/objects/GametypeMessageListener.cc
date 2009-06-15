@@ -27,7 +27,6 @@
  */
 
 #include "GametypeMessageListener.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox

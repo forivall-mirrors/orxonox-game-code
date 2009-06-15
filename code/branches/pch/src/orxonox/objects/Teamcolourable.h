@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "util/Math.h"
+#include "util/UtilPrereqs.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

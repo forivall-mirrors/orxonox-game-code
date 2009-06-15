@@ -28,9 +28,9 @@
 
 #include "Script.h"
 
+#include <tinyxml/ticpp.h>
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 #include "core/LuaBind.h"
 
 namespace orxonox

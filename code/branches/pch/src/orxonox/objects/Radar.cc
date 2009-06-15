@@ -27,14 +27,15 @@
  */
 
 /**
-    @file
-    @brief
+@file
+@brief
 */
 
 #include "Radar.h"
-#include <cfloat>
+
 #include <cassert>
-#include "core/CoreIncludes.h"
+
+//#include "util/Math.h"
 #include "core/ConsoleCommand.h"
 #include "core/ObjectList.h"
 #include "RadarListener.h"

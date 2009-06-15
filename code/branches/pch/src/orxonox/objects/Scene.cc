@@ -30,6 +30,7 @@
 #include "Scene.h"
 
 #include <OgreRoot.h>
+#include <OgreSceneManager.h>
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreSceneNode.h>
 
@@ -57,16 +58,9 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            if (Ogre::Root::getSingletonPtr())
-            {
-                this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
-                this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
-            }
-            else
-            {
-                this->sceneManager_ = 0;
-                this->rootSceneNode_ = 0;
-            }
+            assert(Ogre::Root::getSingletonPtr())
+            this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
+            this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }
         else
         {
@@ -93,14 +87,10 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (Ogre::Root::getSingletonPtr())
-            {
+            if (GameMode::showsGraphics())
                 Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
-            }
-            else if (!GameMode::showsGraphics())
-            {
+            else
                 delete this->sceneManager_;
-            }
 
             this->setPhysicalWorld(false);
         }
