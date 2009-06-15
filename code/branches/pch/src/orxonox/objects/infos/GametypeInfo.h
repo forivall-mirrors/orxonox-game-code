@@ -58,14 +58,14 @@ namespace orxonox
             inline const std::string& getHUDTemplate() const
                 { return this->hudtemplate_; }
 
-            void sendAnnounceMessage(const std::string& message) const;
-            void sendAnnounceMessage(const std::string& message, unsigned int clientID) const;
-            void sendKillMessage(const std::string& message, unsigned int clientID) const;
-            void sendDeathMessage(const std::string& message, unsigned int clientID) const;
+            void sendAnnounceMessage(const std::string& message);
+            void sendAnnounceMessage(const std::string& message, unsigned int clientID);
+            void sendKillMessage(const std::string& message, unsigned int clientID);
+            void sendDeathMessage(const std::string& message, unsigned int clientID);
 
-            void dispatchAnnounceMessage(const std::string& message) const;
-            void dispatchKillMessage(const std::string& message) const;
-            void dispatchDeathMessage(const std::string& message) const;
+            void dispatchAnnounceMessage(const std::string& message);
+            void dispatchKillMessage(const std::string& message);
+            void dispatchDeathMessage(const std::string& message);
 
         private:
             bool bStarted_;
