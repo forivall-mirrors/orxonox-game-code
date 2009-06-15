@@ -28,8 +28,8 @@
 
 #include "MultiStateEngine.h"
 
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "objects/worldentities/pawns/SpaceShip.h"
 

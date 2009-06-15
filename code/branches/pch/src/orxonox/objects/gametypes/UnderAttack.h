@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "TeamDeathmatch.h"
 #include "interfaces/PawnListener.h"
+#include "TeamDeathmatch.h"
 
 namespace orxonox
 {

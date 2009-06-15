@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <list>
 #include "Engine.h"
 
 namespace orxonox

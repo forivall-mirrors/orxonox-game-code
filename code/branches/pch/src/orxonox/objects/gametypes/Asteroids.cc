@@ -28,11 +28,10 @@
 
 #include "Asteroids.h"
 
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "objects/infos/PlayerInfo.h"
-#include "objects/worldentities/pawns/Pawn.h"
-
 #include "network/Host.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

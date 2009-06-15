@@ -32,10 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
+#include <set>
+#include <string>
 
 #include "core/BaseObject.h"
 #include "core/Identifier.h"
-#include "objects/worldentities/ControllableEntity.h"
 #include "interfaces/Tickable.h"
 #include "objects/infos/GametypeInfo.h"
 

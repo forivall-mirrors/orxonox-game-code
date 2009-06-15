@@ -28,12 +28,12 @@
 
 #include "Bot.h"
 
+#include "util/Math.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/controllers/AIController.h"
-#include "util/Math.h"
 
 namespace orxonox
 {
@@ -65,7 +65,7 @@ namespace orxonox
 
     void Bot::setConfigValues()
     {
-        static std::string names[] =
+        static const std::string names[] =
         {
             "Dr. Julius No",
             "Rosa Klebb",
