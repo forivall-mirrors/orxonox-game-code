@@ -28,14 +28,13 @@
 
 #include "GSDedicated.h"
 
+#include "util/Debug.h"
+#include "util/Sleep.h"
 #include "core/Clock.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/ObjectList.h"
 #include "network/Server.h"
-#include "objects/Tickable.h"
-#include "util/Sleep.h"
 
 namespace orxonox
 {

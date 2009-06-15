@@ -26,24 +26,25 @@
  *
  */
 
- /**
-    @file
-    @brief Declaration of the Graphics GameState class.
-  */
+/**
+@file
+@brief
+    Declaration of the Graphics GameState class.
+*/
 
 #ifndef _GSGraphics_H__
 #define _GSGraphics_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include "core/GameState.h"
 #include "tools/WindowEventListener.h"
 
 namespace orxonox
 {
     /**
-    @class GSGraphics
     @brief
-        Game state used when displaying graphics of any kind
+        Game state used when displaying graphics of any kind. Another blubb resides here.
 
         This game state is only left out if we start a dedicated server where no graphics are present.
     */

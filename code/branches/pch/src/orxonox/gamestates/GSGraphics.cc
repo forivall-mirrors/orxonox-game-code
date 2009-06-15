@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
-    @brief Implementation of Graphics GameState class.
+@file
+@brief
+    Implementation of Graphics GameState class.
  */
 
 #include "GSGraphics.h"

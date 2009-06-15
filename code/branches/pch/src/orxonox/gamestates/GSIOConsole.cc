@@ -29,9 +29,6 @@
 #include "GSIOConsole.h"
 
 #include <iostream>
-#include <OgreFrameListener.h>
-#include <OgreRoot.h>
-#include <OgreTimer.h>
 
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
