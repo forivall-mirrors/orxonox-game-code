@@ -35,8 +35,6 @@
 #define _CompleteQuest_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox

@@ -37,9 +37,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "core/BaseObject.h"
-#include "core/XMLPort.h"
 
 // tolua_begin
 namespace orxonox

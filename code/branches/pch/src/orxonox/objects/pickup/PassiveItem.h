@@ -35,7 +35,6 @@
 #define _PassiveItem_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "BaseItem.h"
 
 namespace orxonox
@@ -48,7 +47,7 @@ namespace orxonox
     {
     public:
         PassiveItem(BaseObject* creator);
-        virtual ~PassiveItem();
+        virtual ~PassiveItem() {}
     };
 }
 

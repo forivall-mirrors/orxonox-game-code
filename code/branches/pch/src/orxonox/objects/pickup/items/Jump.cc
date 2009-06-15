@@ -32,12 +32,11 @@
 */
 
 #include "Jump.h"
-#include "objects/pickup/DroppedItem.h"
-
-#include "objects/worldentities/pawns/Pawn.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "objects/pickup/DroppedItem.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

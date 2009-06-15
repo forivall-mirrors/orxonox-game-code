@@ -33,9 +33,9 @@
 
 #include "AddQuestHint.h"
 
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/XMLPort.h"
 #include "QuestManager.h"
 #include "QuestItem.h"
 #include "QuestHint.h"

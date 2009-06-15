@@ -34,9 +34,7 @@
 #include "LocalQuest.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Super.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/XMLPort.h"
 #include "QuestEffect.h"
 
 namespace orxonox

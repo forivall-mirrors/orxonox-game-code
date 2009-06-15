@@ -38,10 +38,7 @@
 
 #include <string>
 #include <list>
-
 #include "core/BaseObject.h"
-
-#include "Quest.h"
 
 namespace orxonox
 {
@@ -91,13 +88,7 @@ namespace orxonox
         
         std::string getMode(void); //!< Get the mode of the QuestListener.
         
-        /**
-        @brief Get the questId of the Quest the QuestListener reacts to.
-        @return Returns the questId of the Quest the QuestListener reacts to.
-        */
-        inline const std::string & getQuestId(void)
-                { return this->quest_->getId(); }
-        
+        const std::string & getQuestId(void);        
         bool execute(void); //!< Executes the QuestListener, resp. fires an Event.
         
     private:

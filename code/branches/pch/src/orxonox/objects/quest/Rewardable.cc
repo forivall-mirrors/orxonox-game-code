@@ -32,7 +32,6 @@
 */
 
 #include "Rewardable.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -41,18 +40,8 @@ namespace orxonox
     @brief
         Constructor. Registers the object.
     */
-    Rewardable::Rewardable(BaseObject* creator) : BaseObject(creator)
+    Rewardable::Rewardable()
     {
         RegisterObject(Rewardable);
     }
-
-    /**
-    @brief
-        Destructor,
-    */
-    Rewardable::~Rewardable()
-    {
-    }
-
-
 }

@@ -39,9 +39,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "core/BaseObject.h"
-#include "core/XMLPort.h"
 
 namespace orxonox
 {

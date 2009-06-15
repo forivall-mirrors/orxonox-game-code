@@ -37,7 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "QuestEffect.h"
 
 namespace orxonox

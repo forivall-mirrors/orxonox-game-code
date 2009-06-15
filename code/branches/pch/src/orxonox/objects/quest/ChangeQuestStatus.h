@@ -37,8 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
-#include "core/XMLPort.h"
 #include "QuestEffect.h"
 
 namespace orxonox

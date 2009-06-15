@@ -34,8 +34,7 @@
 #include "CompleteQuest.h"
 
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/XMLPort.h"
 #include "QuestManager.h"
 #include "Quest.h"
 

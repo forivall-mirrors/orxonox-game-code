@@ -36,9 +36,10 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <string>
+#include "tools/Timer.h"
 #include "interfaces/Tickable.h"
 #include "objects/worldentities/StaticEntity.h"
-#include "tools/Timer.h"
 
 namespace orxonox
 {

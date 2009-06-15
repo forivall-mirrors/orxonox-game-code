@@ -33,13 +33,10 @@
 
 #include "AddQuest.h"
 
-#include <string>
-
+#include "util/Debug.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
 #include "QuestManager.h"
-#include "QuestDescription.h"
 #include "Quest.h"
 
 namespace orxonox

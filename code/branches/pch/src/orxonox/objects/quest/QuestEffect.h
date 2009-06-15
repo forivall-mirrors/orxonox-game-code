@@ -37,7 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-
 #include "core/BaseObject.h"
 
 namespace orxonox

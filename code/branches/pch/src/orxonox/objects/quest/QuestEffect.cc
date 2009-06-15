@@ -32,10 +32,7 @@
 */
 
 #include "QuestEffect.h"
-
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
 
 namespace orxonox
 {

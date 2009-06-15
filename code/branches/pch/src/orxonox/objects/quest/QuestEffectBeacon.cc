@@ -35,10 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Event.h"
 #include "core/EventIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
 #include "orxonox/objects/worldentities/pawns/Pawn.h"
 #include "orxonox/objects/worldentities/triggers/PlayerTrigger.h"
 #include "QuestEffect.h"

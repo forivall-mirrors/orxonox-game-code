@@ -33,9 +33,9 @@
 
 #include "AddReward.h"
 
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/XMLPort.h"
 #include "Rewardable.h"
 
 namespace orxonox

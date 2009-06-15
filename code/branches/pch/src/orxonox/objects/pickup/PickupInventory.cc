@@ -28,23 +28,23 @@
 
 #include "PickupInventory.h"
 
-#include "EquipmentItem.h"
-#include "PassiveItem.h"
-#include "UsableItem.h"
-
-#include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h"
-
-#include "gui/GUIManager.h"
-#include "objects/controllers/HumanController.h"
-#include "objects/worldentities/pawns/Pawn.h"
-
 #include <CEGUIImage.h>
 #include <CEGUIImageset.h>
 #include <CEGUIImagesetManager.h>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUITabControl.h>
+
+#include "core/ConsoleCommand.h"
+#include "core/input/InputManager.h"
+#include "gui/GUIManager.h"
+#include "objects/controllers/HumanController.h"
+#include "objects/worldentities/pawns/Pawn.h"
+
+#include "EquipmentItem.h"
+#include "PassiveItem.h"
+#include "UsableItem.h"
+
 
 namespace orxonox
 {

@@ -35,7 +35,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "Quest.h"
 #include "QuestManager.h"
 
@@ -185,6 +184,17 @@ namespace orxonox
             COUT(1) << "An unforseen, never to happen, Error has occured. This is impossible!" << std::endl;
         return "";
         }
+    }
+
+    /**
+    @brief
+        Get the questId of the Quest the QuestListener reacts to.
+    @return
+        Returns the questId of the Quest the QuestListener reacts to.
+    */
+    const std::string & QuestListener::getQuestId(void)    
+    {
+        return this->quest_->getId();
     }
 
     /**
