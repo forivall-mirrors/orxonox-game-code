@@ -33,7 +33,6 @@
 
 #include "ModifierPickup.h"
 
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/worldentities/pawns/Pawn.h"

@@ -32,7 +32,6 @@
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
-#include "util/Debug.h"
 #include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "tools/DynamicLines.h"
@@ -157,5 +156,14 @@ namespace orxonox
         const WorldEntity* object = this->getWorldEntity();
         validate(object);
         return object->getWorldOrientation() * object->getVelocity();
+    }
+
+    void RadarViewable::validate(const WorldEntity* object) const
+    {
+        if (!object)
+        {
+            COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
+            assert(0);
+        }
     }
 }

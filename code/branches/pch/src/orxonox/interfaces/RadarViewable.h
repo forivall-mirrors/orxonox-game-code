@@ -36,7 +36,6 @@
 #include <OgrePrerequisites.h>
 
 #include "util/Math.h"
-#include "util/Debug.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -113,15 +112,7 @@ namespace orxonox
         //friend class Map;
 
     private:
-        void validate(const WorldEntity* object) const
-        {
-            if (!object)
-            {
-                COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
-                assert(0);
-            }
-        }
-
+        void validate(const WorldEntity* object) const;
         bool bVisibility_;
         //Map
         std::string uniqueId_;

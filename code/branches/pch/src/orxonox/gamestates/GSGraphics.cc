@@ -37,7 +37,6 @@
 #include <boost/filesystem.hpp>
 #include <OgreRenderWindow.h>
 
-#include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"

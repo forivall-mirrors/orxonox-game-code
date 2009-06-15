@@ -33,7 +33,6 @@
 
 #include "OverlayGroup.h"
 
-#include "util/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/ObjectList.h"

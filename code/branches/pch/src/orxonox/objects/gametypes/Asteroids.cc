@@ -28,7 +28,6 @@
 
 #include "Asteroids.h"
 
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
 #include "objects/worldentities/pawns/Pawn.h"

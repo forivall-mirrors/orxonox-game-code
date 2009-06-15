@@ -30,7 +30,6 @@
 
 #include <OgreBillboard.h>
 #include <OgreBillboardSet.h>
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"

@@ -51,7 +51,6 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "SpecialConfig.h"
-#include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/String.h"
 #include "util/SubString.h"
