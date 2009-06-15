@@ -71,6 +71,7 @@ namespace orxonox
         InGameConsole*        console_;
         GUIManager*           guiManager_;          //!< Interface to GUI
         GraphicsManager*      graphicsManager_;     //!< Interface to Ogre
+        SoundManager*         soundManager_;        //!< Keeps track of SoundBase objects
 
         KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings
         SimpleInputState*     masterInputState_;    //!< Special input state for master input

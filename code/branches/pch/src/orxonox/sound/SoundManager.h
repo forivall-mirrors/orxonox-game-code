@@ -29,6 +29,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <cassert>
 #include <list>
 #include "interfaces/Tickable.h"
 
@@ -50,12 +51,15 @@ namespace orxonox
         void tick(float dt);
         bool isSoundAvailable();
 
+        static SoundManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+
     private:
         static ALCdevice* device_s;
         ALCcontext* context_;
         std::list<SoundBase*> soundlist_;
         bool soundavailable_;
 
+        static SoundManager* singletonRef_s;
     }; // class SoundManager
 } // namespace orxonox
 

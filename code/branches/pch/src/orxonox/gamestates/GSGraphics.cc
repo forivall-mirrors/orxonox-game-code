@@ -51,6 +51,7 @@
 #include "core/XMLFile.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
+#include "sound/SoundManager.h"
 #include "GraphicsManager.h"
 
 namespace orxonox
@@ -63,6 +64,7 @@ namespace orxonox
         , console_(0)
         , guiManager_(0)
         , graphicsManager_(0)
+        , soundManager_(0)
         , masterKeyBinder_(0)
         , masterInputState_(0)
         , debugOverlay_(0)
@@ -94,6 +96,7 @@ namespace orxonox
         \li manages render window
         \li creates input manager
         \li loads master key bindings
+        \li loads the SoundManager
         \li loads ingame console
         \li loads GUI interface (GUIManager)
         \li creates console command to toggle GUI
@@ -127,6 +130,9 @@ namespace orxonox
         masterKeyBinder_ = new KeyBinder();
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
         masterInputState_->setKeyHandler(masterKeyBinder_);
+
+        // Load the SoundManager
+        soundManager_ = new SoundManager();
 
         // Load the InGameConsole
         console_ = new InGameConsole();
@@ -171,6 +177,8 @@ namespace orxonox
 
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
+
+        delete this->soundManager_;
 
         delete this->inputManager_;
         this->inputManager_ = 0;

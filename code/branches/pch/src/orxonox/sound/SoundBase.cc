@@ -40,20 +40,13 @@
 
 namespace orxonox 
 {
-    SoundManager* SoundBase::soundmanager_s = NULL;
-
     SoundBase::SoundBase(WorldEntity* entity)
     {
-        if(SoundBase::soundmanager_s == NULL)
-        {
-            SoundBase::soundmanager_s = new SoundManager();
-        }
-
         this->source_ = 0;
         this->buffer_ = 0;
         this->entity_ = entity;
 
-        SoundBase::soundmanager_s->addSound(this);
+        SoundManager::getInstance().addSound(this);
     }
 
     SoundBase::~SoundBase()
@@ -143,7 +136,7 @@ namespace orxonox
     bool SoundBase::loadFile(std::string filename) {
         filename = Core::getMediaPathString() + "/audio/" + filename;
 
-        if(!SoundBase::soundmanager_s->isSoundAvailable())
+        if(!SoundManager::getInstance().isSoundAvailable())
         {
             COUT(3) << "Sound: not available, skipping " << filename << std::endl;
             return false;

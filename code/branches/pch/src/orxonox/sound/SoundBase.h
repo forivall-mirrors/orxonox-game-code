@@ -63,8 +63,6 @@ namespace orxonox
         WorldEntity* entity_;
 
         ALint getSourceState();
-
-        static SoundManager* soundmanager_s;
     }; // class SoundBase
 } // namepsace orxonox
 

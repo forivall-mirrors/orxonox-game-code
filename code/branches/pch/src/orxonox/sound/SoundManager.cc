@@ -37,6 +37,7 @@
 
 namespace orxonox
 {
+    SoundManager* SoundManager::singletonRef_s = NULL;
     ALCdevice* SoundManager::device_s = NULL;
 
     /**
@@ -44,6 +45,9 @@ namespace orxonox
      */
     SoundManager::SoundManager()
     {
+        assert(singletonRef_s == NULL);
+        singletonRef_s = this;
+
         this->soundavailable_ = true;
         if(!alutInitWithoutContext(NULL,NULL))
         {
@@ -90,6 +94,9 @@ namespace orxonox
 
     SoundManager::~SoundManager()
     {
+        assert(singletonRef_s != NULL);
+        singletonRef_s = NULL;
+
         alcDestroyContext(this->context_);
         alcCloseDevice(SoundManager::device_s);
         alutExit();
