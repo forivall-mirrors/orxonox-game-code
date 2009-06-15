@@ -28,6 +28,7 @@
 
 #include "AIController.h"
 
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "objects/worldentities/ControllableEntity.h"

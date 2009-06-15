@@ -27,9 +27,7 @@
  */
 
 #include "Controller.h"
-
 #include "core/CoreIncludes.h"
-#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {

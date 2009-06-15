@@ -32,8 +32,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "tools/BulletConversions.h"
-
 #include "objects/worldentities/WorldEntity.h"
 #include "CompoundCollisionShape.h"
 #include "WorldEntityCollisionShape.h"

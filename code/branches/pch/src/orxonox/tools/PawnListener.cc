@@ -20,37 +20,22 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _WorldEntityCollisionShape_H__
-#define _WorldEntityCollisionShape_H__
-
-#include "OrxonoxPrereqs.h"
-#include "CompoundCollisionShape.h"
+#include "PawnListener.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WorldEntityCollisionShape : public CompoundCollisionShape
+    /**
+        @brief Constructor for the PawnListener.
+    */
+    PawnListener::PawnListener()
     {
-        public:
-            WorldEntityCollisionShape(WorldEntity* creator);
-            virtual ~WorldEntityCollisionShape();
-
-            inline WorldEntity* getWorldEntityOwner()
-                { return this->worldEntityOwner_; }
-
-        protected:
-            virtual void updateParent();
-
-        private:
-            void parentChanged();
-
-            WorldEntity* worldEntityOwner_;
-    };
+        RegisterRootObject(PawnListener);
+    }
 }
-
-#endif /* _WorldEntityCollisionShape_H__ */

@@ -372,13 +372,4 @@ namespace orxonox
         ControllableEntity::startLocalHumanControl();
         this->isHumanShip_ = true;
     }
-
-
-    ///////////////////
-    // Pawn Listener //
-    ///////////////////
-    PawnListener::PawnListener()
-    {
-        RegisterRootObject(PawnListener);
-    }
 }

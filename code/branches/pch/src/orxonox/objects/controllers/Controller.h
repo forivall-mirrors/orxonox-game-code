@@ -30,7 +30,6 @@
 #define _Controller_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "core/BaseObject.h"
 
 namespace orxonox

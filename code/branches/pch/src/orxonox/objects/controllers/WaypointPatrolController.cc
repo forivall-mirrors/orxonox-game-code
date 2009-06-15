@@ -28,8 +28,11 @@
 
 #include "WaypointPatrolController.h"
 
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
+#include "core/ObjectList.h"
 #include "core/XMLPort.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

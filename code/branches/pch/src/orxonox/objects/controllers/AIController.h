@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "tools/Timer.h"
 #include "ArtificialController.h"
 #include "objects/Tickable.h"
-#include "tools/Timer.h"
 
 namespace orxonox
 {

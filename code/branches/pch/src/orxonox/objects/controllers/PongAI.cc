@@ -30,9 +30,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "tools/Timer.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/worldentities/PongBall.h"
-#include "tools/Timer.h"
 
 namespace orxonox
 {

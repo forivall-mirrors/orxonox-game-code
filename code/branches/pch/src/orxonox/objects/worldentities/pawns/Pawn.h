@@ -146,15 +146,6 @@ namespace orxonox
             inline void setWeaponSystem(WeaponSystem* weaponsystem)
                 { this->weaponSystem_ = weaponsystem; }
     };
-
-    class _OrxonoxExport PawnListener : virtual public OrxonoxClass
-    {
-        public:
-            PawnListener();
-            virtual ~PawnListener() {}
-
-            virtual void destroyedPawn(Pawn* pawn) = 0;
-    };
 }
 
 #endif /* _Pawn_H__ */

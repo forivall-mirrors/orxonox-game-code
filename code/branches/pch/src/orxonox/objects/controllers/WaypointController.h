@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <vector>
-
 #include "ArtificialController.h"
 #include "objects/Tickable.h"
 

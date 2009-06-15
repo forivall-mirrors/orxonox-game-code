@@ -26,42 +26,22 @@
  *
  */
 
-#ifndef _WaypointPatrolController_H__
-#define _WaypointPatrolController_H__
+#ifndef _PawnListener_H__
+#define _PawnListener_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "tools/Timer.h"
-#include "WaypointController.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WaypointPatrolController : public WaypointController
+    class _OrxonoxExport PawnListener : virtual public OrxonoxClass
     {
         public:
-            WaypointPatrolController(BaseObject* creator);
-            virtual ~WaypointPatrolController() {}
+            PawnListener();
+            virtual ~PawnListener() {}
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
-
-            inline void setTeam(int team)
-                { this->team_ = team; }
-            inline int getTeam() const
-                { return this->team_; }
-
-            inline void setAlertnessRadius(float radius)
-                { this->alertnessradius_ = radius; }
-            inline float getAlertnessRadius() const
-                { return this->alertnessradius_; }
-
-        protected:
-            void searchEnemy();
-
-            int team_;
-            float alertnessradius_;
-            Timer<WaypointPatrolController> patrolTimer_;
+            virtual void destroyedPawn(Pawn* pawn) = 0;
     };
 }
 
-#endif /* _WaypointPatrolController_H__ */
+#endif /* _PawnListener_H__ */

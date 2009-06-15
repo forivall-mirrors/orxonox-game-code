@@ -30,10 +30,7 @@
 #define _HumanController_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "util/Math.h"
 #include "Controller.h"
-#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -68,15 +65,7 @@ namespace orxonox
 
             static inline HumanController* getLocalControllerSingleton()
                 { return HumanController::localController_s; }
-            static inline Pawn* getLocalControllerEntityAsPawn()
-            {
-                if (HumanController::localController_s) {
-                    return dynamic_cast<Pawn*>(HumanController::localController_s->getControllableEntity());
-                } else {
-                    return NULL;
-                }
-            }
-
+            static Pawn* getLocalControllerEntityAsPawn();
             //friend class, for mouselook
             friend class Map;
 

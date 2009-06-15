@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "util/Math.h"
 #include "CollisionShape.h"
 
 namespace orxonox
