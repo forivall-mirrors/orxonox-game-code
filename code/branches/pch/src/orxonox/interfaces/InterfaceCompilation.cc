@@ -36,7 +36,7 @@
 #include "PawnListener.h"
 #include "RadarListener.h"
 #include "Rewardable.h"
-#include "Teamcolourable.h"
+#include "TeamColourable.h"
 #include "Tickable.h"
 #include "TimeFactorListener.h"
 #include "WindowEventListener.h"
@@ -73,11 +73,11 @@ namespace orxonox
     }
 
     //----------------------------
-    // Teamcolourable
+    // TeamColourable
     //----------------------------
-    Teamcolourable::Teamcolourable()
+    TeamColourable::TeamColourable()
     {
-        RegisterRootObject(Teamcolourable);
+        RegisterRootObject(TeamColourable);
     }
 
     //----------------------------

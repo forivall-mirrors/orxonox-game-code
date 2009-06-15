@@ -35,7 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "Rewardable.h"
+#include "interfaces/Rewardable.h"
 
 namespace orxonox
 {

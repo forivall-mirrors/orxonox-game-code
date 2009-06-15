@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _Teamcolourable_H__
-#define _Teamcolourable_H__
+#ifndef _TeamColourable_H__
+#define _TeamColourable_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -36,14 +36,14 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Teamcolourable : virtual public OrxonoxClass
+    class _OrxonoxExport TeamColourable : virtual public OrxonoxClass
     {
         public:
             virtual void setTeamColour(const ColourValue& colour) = 0;
 
         protected:
-            Teamcolourable();
+            TeamColourable();
     };
 }
 
-#endif /* _Teamcolourable_H__ */
+#endif /* _TeamColourable_H__ */

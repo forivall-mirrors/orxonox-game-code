@@ -36,11 +36,11 @@
 #include <OgreLight.h>
 
 #include "util/Math.h"
-#include "interfaces/Teamcolourable.h"
+#include "interfaces/TeamColourable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Light : public StaticEntity, public Teamcolourable
+    class _OrxonoxExport Light : public StaticEntity, public TeamColourable
     {
         public:
             Light(BaseObject* creator);

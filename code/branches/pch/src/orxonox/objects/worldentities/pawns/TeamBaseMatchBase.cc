@@ -30,7 +30,7 @@
 #include "TeamBaseMatchBase.h"
 #include "core/CoreIncludes.h"
 #include "objects/gametypes/TeamBaseMatch.h"
-#include "interfaces/Teamcolourable.h"
+#include "interfaces/TeamColourable.h"
 #include "interfaces/PawnListener.h"
 
 namespace orxonox
@@ -80,9 +80,9 @@ namespace orxonox
         std::set<WorldEntity*> attachments = this->getAttachedObjects();
         for (std::set<WorldEntity*>::iterator it = attachments.begin(); it != attachments.end(); ++it)
         {
-            if ((*it)->isA(Class(Teamcolourable)))
+            if ((*it)->isA(Class(TeamColourable)))
             {
-                Teamcolourable* tc = dynamic_cast<Teamcolourable*>(*it);
+                TeamColourable* tc = dynamic_cast<TeamColourable*>(*it);
                 tc->setTeamColour(colour);
             }
         }

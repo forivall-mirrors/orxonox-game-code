@@ -33,11 +33,11 @@
 #include "StaticEntity.h"
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
-#include "interfaces/Teamcolourable.h"
+#include "interfaces/TeamColourable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Billboard : public StaticEntity, public Teamcolourable
+    class _OrxonoxExport Billboard : public StaticEntity, public TeamColourable
     {
         public:
             Billboard(BaseObject* creator);
