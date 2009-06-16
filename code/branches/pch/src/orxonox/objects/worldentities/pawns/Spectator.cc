@@ -33,14 +33,10 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
-#include "objects/worldentities/Model.h"
+
+#include "tools/BillboardSet.h"
 #include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
-#include "objects/gametypes/Gametype.h"
-#include "tools/BillboardSet.h"
-#include "overlays/OverlayText.h"
-#include "overlays/OverlayGroup.h"
-#include "util/Convert.h"
 
 namespace orxonox
 {

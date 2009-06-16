@@ -29,10 +29,8 @@
 #ifndef _EventTrigger_H__
 #define _EventTrigger_H__
 
+#include "OrxonoxPrereqs.h"
 #include "Trigger.h"
-
-#include "core/ClassTreeMask.h"
-#include "core/BaseObject.h"
 
 namespace orxonox
 {

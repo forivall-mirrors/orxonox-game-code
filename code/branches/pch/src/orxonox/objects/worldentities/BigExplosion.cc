@@ -27,21 +27,19 @@
  */
 
 #include "BigExplosion.h"
-#include "MovableEntity.h"
-#include "Model.h"
 
+//#include <sstream>
 #include <OgreParticleSystem.h>
-#include <OgreSceneNode.h>
-#include <sstream>
 
-#include "core/GameMode.h"
-#include "core/CoreIncludes.h"
-#include "core/Executor.h"
-#include "core/CommandExecutor.h"
-#include "objects/Scene.h"
-#include "tools/ParticleInterface.h"
-#include "objects/worldentities/ParticleSpawner.h"
 #include "util/Exception.h"
+#include "core/CoreIncludes.h"
+#include "core/CommandExecutor.h"
+#include "core/Executor.h"
+#include "core/GameMode.h"
+#include "tools/ParticleInterface.h"
+#include "objects/Scene.h"
+#include "objects/worldentities/ParticleSpawner.h"
+#include "Model.h"
 
 namespace orxonox
 {

@@ -28,10 +28,9 @@
 
 #include "BlinkingBillboard.h"
 
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "util/Math.h"
 
 namespace orxonox
 {

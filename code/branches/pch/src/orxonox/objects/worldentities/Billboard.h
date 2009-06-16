@@ -30,10 +30,11 @@
 #define _Billboard_H__
 
 #include "OrxonoxPrereqs.h"
-#include "StaticEntity.h"
+
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
 #include "interfaces/TeamColourable.h"
+#include "StaticEntity.h"
 
 namespace orxonox
 {

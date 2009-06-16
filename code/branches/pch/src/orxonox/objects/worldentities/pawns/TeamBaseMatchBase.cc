@@ -28,10 +28,11 @@
 
 
 #include "TeamBaseMatchBase.h"
+
 #include "core/CoreIncludes.h"
-#include "objects/gametypes/TeamBaseMatch.h"
-#include "interfaces/TeamColourable.h"
 #include "interfaces/PawnListener.h"
+#include "interfaces/TeamColourable.h"
+#include "objects/gametypes/TeamBaseMatch.h"
 
 namespace orxonox
 {

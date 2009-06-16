@@ -31,10 +31,8 @@
 #include <OgreSceneNode.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
-#include "util/MathConvert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "objects/Scene.h"
 
 namespace orxonox

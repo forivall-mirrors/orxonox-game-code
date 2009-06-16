@@ -32,7 +32,6 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
-#include "core/ObjectList.h"
 
 #include "objects/infos/PlayerInfo.h"
 #include "objects/infos/Bot.h"
@@ -40,6 +39,7 @@
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/worldentities/SpawnPoint.h"
 #include "objects/worldentities/pawns/Spectator.h"
+#include "objects/worldentities/pawns/Pawn.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox

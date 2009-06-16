@@ -27,9 +27,9 @@
  */
 
 #include "ForceField.h"
-#include "core/XMLPort.h"
 
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "objects/worldentities/MobileEntity.h"
 
 namespace orxonox

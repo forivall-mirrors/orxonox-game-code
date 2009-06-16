@@ -30,11 +30,10 @@
 #define _BigExplosion_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include <string>
-
-
-#include "MovableEntity.h"
 #include "tools/Timer.h"
+#include "MovableEntity.h"
 
 namespace orxonox
 {

@@ -32,9 +32,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "MobileEntity.h"
+#include "util/Math.h"
 #include "network/ClientConnectionListener.h"
 #include "tools/Timer.h"
+#include "MobileEntity.h"
 
 namespace orxonox
 {

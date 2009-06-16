@@ -28,9 +28,6 @@
 
 #include "Camera.h"
 
-#include <string>
-#include <cassert>
-
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>

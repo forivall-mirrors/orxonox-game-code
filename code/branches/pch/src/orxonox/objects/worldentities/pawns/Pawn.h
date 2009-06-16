@@ -30,8 +30,10 @@
 #define _Pawn_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/worldentities/ControllableEntity.h"
+
+#include <string>
 #include "interfaces/RadarViewable.h"
+#include "objects/worldentities/ControllableEntity.h"
 #include "objects/pickup/PickupCollection.h"
 
 namespace orxonox

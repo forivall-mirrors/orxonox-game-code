@@ -29,7 +29,6 @@
 
 #include "WorldEntity.h"
 
-#include <cassert>
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
@@ -37,9 +36,9 @@
 
 #include "util/OrxAssert.h"
 #include "util/Convert.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "objects/Scene.h"
 #include "objects/collisionshapes/WorldEntityCollisionShape.h"
 
@@ -506,7 +505,7 @@ namespace orxonox
     }
 
     // Note: These functions are placed in WorldEntity.h as inline functions for the release build.
-#ifndef NDEBUG
+#ifndef ORXONOX_RELEASE
     const Vector3& WorldEntity::getPosition() const
     {
         return this->node_->getPosition();

@@ -30,6 +30,8 @@
 #define _ParticleEmitter_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <string>
 #include "StaticEntity.h"
 
 namespace orxonox

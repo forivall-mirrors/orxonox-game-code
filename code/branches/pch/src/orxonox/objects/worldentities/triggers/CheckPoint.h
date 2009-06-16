@@ -34,8 +34,10 @@
 #ifndef _CheckPoint_H__
 #define _CheckPoint_H__
 
-#include "DistanceTrigger.h"
+#include "OrxonoxPrereqs.h"
+
 #include "interfaces/RadarViewable.h"
+#include "DistanceTrigger.h"
 
 namespace orxonox
 {

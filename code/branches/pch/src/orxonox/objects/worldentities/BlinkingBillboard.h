@@ -30,8 +30,10 @@
 #define _BlinkingBillboard_H__
 
 #include "OrxonoxPrereqs.h"
-#include "Billboard.h"
+
+#include "util/Math.h"
 #include "interfaces/Tickable.h"
+#include "Billboard.h"
 
 namespace orxonox
 {

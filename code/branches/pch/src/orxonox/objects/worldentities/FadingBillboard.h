@@ -30,9 +30,11 @@
 #define _FadingBillboard_H__
 
 #include "OrxonoxPrereqs.h"
-#include "Billboard.h"
-#include "interfaces/Tickable.h"
+
+#include "util/Math.h"
 #include "tools/Timer.h"
+#include "interfaces/Tickable.h"
+#include "Billboard.h"
 
 namespace orxonox
 {

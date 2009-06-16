@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <string>
+#include <util/Math.h>
 #include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox

@@ -28,21 +28,25 @@
 
 #include "Light.h"
 
-#include <sstream>
-#include <cassert>
-
 #include <OgreSceneManager.h>
+#include <OgreLight.h>
+#include <boost/static_assert.hpp>
 
 #include "util/String.h"
 #include "util/Exception.h"
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
 
 namespace orxonox
 {
     CreateFactory(Light);
+
+    // Be sure we don't do bad conversions
+    BOOST_STATIC_ASSERT((int)Ogre::Light::LT_POINT       == (int)Light::LT_POINT);
+    BOOST_STATIC_ASSERT((int)Ogre::Light::LT_DIRECTIONAL == (int)Light::LT_DIRECTIONAL);
+    BOOST_STATIC_ASSERT((int)Ogre::Light::LT_SPOTLIGHT   == (int)Light::LT_SPOTLIGHT);
 
     Light::Light(BaseObject* creator) : StaticEntity(creator)
     {
@@ -51,7 +55,7 @@ namespace orxonox
         this->light_ = 0;
         this->diffuse_ = ColourValue::White;
         this->specular_ = ColourValue::White;
-        this->type_ = Ogre::Light::LT_POINT;
+        this->type_ = Light::LT_POINT;
         this->attenuation_ = Vector4(100000, 1, 0, 0);
         this->spotlightRange_ = Vector3(40.0f, 30.0f, 1.0f);
 
@@ -135,24 +139,24 @@ namespace orxonox
     void Light::setTypeString(const std::string& type)
     {
         if (type == "point")
-            this->setType(Ogre::Light::LT_POINT);
+            this->setType(Light::LT_POINT);
         else if (type == "directional")
-            this->setType(Ogre::Light::LT_DIRECTIONAL);
+            this->setType(Light::LT_DIRECTIONAL);
         else if (type == "spotlight")
-            this->setType(Ogre::Light::LT_SPOTLIGHT);
+            this->setType(Light::LT_SPOTLIGHT);
         else
-            this->setType(Ogre::Light::LT_POINT);
+            this->setType(Light::LT_POINT);
     }
 
     std::string Light::getTypeString() const
     {
         switch (this->type_)
         {
-            case Ogre::Light::LT_DIRECTIONAL:
+            case Light::LT_DIRECTIONAL:
                 return "directional";
-            case Ogre::Light::LT_SPOTLIGHT:
+            case Light::LT_SPOTLIGHT:
                 return "spotlight";
-            case Ogre::Light::LT_POINT:
+            case Light::LT_POINT:
             default:
                 return "point";
         }
@@ -162,7 +166,7 @@ namespace orxonox
     {
         if (this->light_)
         {
-            this->light_->setType(this->type_);
+            this->light_->setType(static_cast<Ogre::Light::LightTypes>(this->type_));
 
             if (this->type_ != Ogre::Light::LT_DIRECTIONAL)
                 this->updateAttenuation();

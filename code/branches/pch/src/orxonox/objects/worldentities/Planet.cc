@@ -28,19 +28,16 @@
 
 #include "Planet.h"
 
-#include <math.h>
-
 #include <OgreEntity.h>
 #include <OgreBillboardSet.h>
-#include <OgreHardwareVertexBuffer.h>
-#include <OgreMeshManager.h>
+#include <OgreProgressiveMesh.h>
 
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
-#include "CameraManager.h"
 #include "Camera.h"
-#include "GraphicsManager.h"
+#include "CameraManager.h"
 
 namespace orxonox
 {
