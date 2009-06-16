@@ -33,8 +33,6 @@
 
 #include "ParticleEmitter.h"
 
-#include <OgreParticleSystem.h>
-
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"

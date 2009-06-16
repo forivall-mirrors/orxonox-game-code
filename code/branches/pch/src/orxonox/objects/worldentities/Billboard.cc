@@ -28,8 +28,6 @@
 
 #include "Billboard.h"
 
-#include <OgreBillboardSet.h>
-
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"

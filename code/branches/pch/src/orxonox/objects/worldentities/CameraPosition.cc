@@ -28,7 +28,6 @@
 
 #include "CameraPosition.h"
 
-#include <OgreCamera.h>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "Camera.h"

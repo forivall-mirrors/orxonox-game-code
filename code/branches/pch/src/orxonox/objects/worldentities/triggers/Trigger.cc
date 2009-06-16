@@ -28,8 +28,6 @@
 
 #include "Trigger.h"
 
-#include <OgreBillboardSet.h>
-
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/GameMode.h"

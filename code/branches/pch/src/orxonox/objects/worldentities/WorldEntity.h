@@ -172,8 +172,18 @@ namespace orxonox
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
 
-            void attachOgreObject(Ogre::MovableObject* object);
-            void detachOgreObject(Ogre::MovableObject* object);
+            void attachOgreObject(Ogre::MovableObject*  object);
+            void attachOgreObject(Ogre::BillboardSet*   object);
+            void attachOgreObject(Ogre::Camera*         object);
+            void attachOgreObject(Ogre::Entity*         object);
+            void attachOgreObject(Ogre::ParticleSystem* object);
+
+            void detachOgreObject(Ogre::MovableObject*  object);
+            void detachOgreObject(Ogre::BillboardSet*   object);
+            void detachOgreObject(Ogre::Camera*         object);
+            void detachOgreObject(Ogre::Entity*         object);
+            void detachOgreObject(Ogre::ParticleSystem* object);
+
             Ogre::MovableObject* detachOgreObject(const Ogre::String& name);
 
             inline void attachToParent(WorldEntity* parent)

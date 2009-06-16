@@ -29,8 +29,12 @@
 
 #include "WorldEntity.h"
 
-#include <OgreSceneNode.h>
+#include <OgreBillboardSet.h>
+#include <OgreCamera.h>
+#include <OgreEntity.h>
+#include <OgreParticleSystem.h>
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <boost/static_assert.hpp>
 
@@ -467,15 +471,27 @@ namespace orxonox
 
     //! Attaches an Ogre::MovableObject to this WorldEntity.
     void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
-    {
-        this->node_->attachObject(object);
-    }
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::BillboardSet* object)
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::Camera* object)
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::Entity* object)
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::ParticleSystem* object)
+        { this->node_->attachObject(object); }
 
     //! Detaches an Ogre::MovableObject from this WorldEntity.
     void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
-    {
-        this->node_->detachObject(object);
-    }
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::BillboardSet* object)
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::Camera* object)
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::Entity* object)
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::ParticleSystem* object)
+        { this->node_->detachObject(object); }
 
     //! Detaches an Ogre::MovableObject (by string) from this WorldEntity.
     Ogre::MovableObject* WorldEntity::detachOgreObject(const Ogre::String& name)

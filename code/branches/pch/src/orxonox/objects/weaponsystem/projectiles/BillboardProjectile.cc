@@ -28,7 +28,6 @@
 
 #include "BillboardProjectile.h"
 
-#include <OgreBillboardSet.h>
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "objects/Scene.h"

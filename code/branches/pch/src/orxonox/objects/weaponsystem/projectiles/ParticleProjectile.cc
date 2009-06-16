@@ -28,9 +28,7 @@
 
 #include "ParticleProjectile.h"
 
-#include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
-
 #include "tools/ParticleInterface.h"
 #include "core/CoreIncludes.h"
 #include "objects/Scene.h"

@@ -29,7 +29,6 @@
 #include "BigExplosion.h"
 
 //#include <sstream>
-#include <OgreParticleSystem.h>
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
