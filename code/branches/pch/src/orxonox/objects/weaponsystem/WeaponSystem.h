@@ -32,10 +32,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <set>
 #include <map>
+#include <set>
 #include <vector>
-
 #include "core/BaseObject.h"
 
 namespace orxonox

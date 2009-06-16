@@ -28,12 +28,8 @@
 
 #include "LightningGunProjectile.h"
 
-#include <OgreBillboardSet.h>
-
-#include "core/GameMode.h"
-#include "core/CoreIncludes.h"
-#include "objects/Scene.h"
 #include "util/Convert.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

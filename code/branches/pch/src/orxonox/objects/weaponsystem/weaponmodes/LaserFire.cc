@@ -30,7 +30,6 @@
 
 #include "core/CoreIncludes.h"
 #include "objects/weaponsystem/projectiles/ParticleProjectile.h"
-
 #include "objects/weaponsystem/Weapon.h"
 #include "objects/weaponsystem/WeaponPack.h"
 #include "objects/weaponsystem/WeaponSystem.h"

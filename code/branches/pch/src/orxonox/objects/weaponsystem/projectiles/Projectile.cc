@@ -28,18 +28,13 @@
 
 #include "Projectile.h"
 
-#include <OgreBillboard.h>
-
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/ObjectList.h"
-#include "tools/ParticleInterface.h"
-
-#include "objects/worldentities/Model.h"
-#include "objects/worldentities/ParticleSpawner.h"
-#include "objects/collisionshapes/SphereCollisionShape.h"
+#include "core/Executor.h"
 #include "core/GameMode.h"
+#include "objects/collisionshapes/SphereCollisionShape.h"
+#include "objects/worldentities/pawns/Pawn.h"
+#include "objects/worldentities/ParticleSpawner.h"
 
 namespace orxonox
 {

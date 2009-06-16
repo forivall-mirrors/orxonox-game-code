@@ -29,11 +29,12 @@
 #include "EnergyDrink.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Executor.h"
 #include "core/XMLPort.h"
-#include "objects/weaponsystem/projectiles/ParticleProjectile.h"
 #include "objects/worldentities/Model.h"
-#include "objects/weaponsystem/MuzzleFlash.h"
 
+#include "objects/weaponsystem/projectiles/Projectile.h"
+#include "objects/weaponsystem/MuzzleFlash.h"
 #include "objects/weaponsystem/Weapon.h"
 #include "objects/weaponsystem/WeaponPack.h"
 #include "objects/weaponsystem/WeaponSystem.h"
@@ -68,11 +69,6 @@ namespace orxonox
     void EnergyDrink::setMaterial(const std::string& material)
     {
         this->material_ = material;
-    }
-
-    std::string& EnergyDrink::getMaterial()
-    {
-        return this->material_;
     }
 
     void EnergyDrink::setDelay(float d)

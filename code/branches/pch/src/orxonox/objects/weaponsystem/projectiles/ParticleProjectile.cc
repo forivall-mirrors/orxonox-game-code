@@ -31,9 +31,8 @@
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 
-#include "core/GameMode.h"
+#include "tools/ParticleInterface.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
 
 namespace orxonox
