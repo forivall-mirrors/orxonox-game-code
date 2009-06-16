@@ -48,7 +48,6 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
-#include "core/ObjectList.h"
 
 #include "InputBuffer.h"
 #include "KeyDetector.h"

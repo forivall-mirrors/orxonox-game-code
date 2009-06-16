@@ -27,9 +27,7 @@
  */
 
 #include "EventTarget.h"
-
 #include "core/CoreIncludes.h"
-#include "core/ObjectList.h"
 
 namespace orxonox
 {

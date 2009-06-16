@@ -30,7 +30,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "core/ObjectList.h"
 #include "network/NetworkFunction.h"
 #include "network/Host.h"
 #include "interfaces/GametypeMessageListener.h"

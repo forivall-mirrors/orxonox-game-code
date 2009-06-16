@@ -41,7 +41,6 @@
 #include "core/GameMode.h"
 #include "core/Core.h"
 #include "core/Loader.h"
-#include "core/ObjectList.h"
 #include "core/XMLFile.h"
 
 #include "interfaces/Tickable.h"

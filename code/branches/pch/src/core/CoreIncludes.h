@@ -42,10 +42,11 @@
 
 #include "CorePrereqs.h"
 
+#include "util/Debug.h"
 #include "Identifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
-#include "util/Debug.h"
+#include "ObjectList.h"
 
 
 /**

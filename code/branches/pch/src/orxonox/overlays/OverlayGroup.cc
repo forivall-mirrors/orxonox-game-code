@@ -35,7 +35,6 @@
 
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
-#include "core/ObjectList.h"
 #include "core/XMLPort.h"
 #include "OrxonoxOverlay.h"
 

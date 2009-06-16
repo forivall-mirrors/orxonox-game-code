@@ -36,7 +36,6 @@
 #include "BaseItem.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ObjectList.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "gui/GUIManager.h"     // HACK; see below
