@@ -120,7 +120,7 @@ namespace orxonox
 
 namespace orxonox
 {
-    namespace
+    namespace detail
     {
         //! Little template that maps integers to entire types (Alexandrescu 2001)
         template <int I>
@@ -259,14 +259,14 @@ namespace orxonox
 
     // implicit cast not possible, try stringstream conversion next
     template <class FromType, class ToType>
-    FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, orxonox::Int2Type<false>)
+    FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, detail::Int2Type<false>)
     {
         return ConverterStringStream<FromType, ToType>::convert(output, input);
     }
 
     // We can cast implicitely
     template <class FromType, class ToType>
-    FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, orxonox::Int2Type<true>)
+    FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, detail::Int2Type<true>)
     {
         (*output) = static_cast<ToType>(input);
         return true;
@@ -286,7 +286,7 @@ namespace orxonox
             // Try implict cast and probe first. If a simple cast is not possible, it will not compile
             // We therefore have to out source it into another template function
             const bool probe = ImplicitConversion<FromType, ToType>::exists;
-            return convertImplicitely(output, input, orxonox::Int2Type<probe>());
+            return convertImplicitely(output, input, detail::Int2Type<probe>());
         }
     };
 
