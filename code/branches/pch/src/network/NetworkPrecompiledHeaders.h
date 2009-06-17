@@ -29,10 +29,10 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the core library for MSVC
+    Compilation of the most often used header files in the network library
 */
 
-#include "CorePrereqs.h"
+#include "NetworkPrereqs.h"
 
 #include <fstream>
 #include <iostream>
@@ -47,35 +47,23 @@
 #ifdef ORXONOX_COMPILER_MSVC
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <enet/enet.h>
 #undef max
 #undef min
 
-#include <ois/OISKeyboard.h>
-#include <ois/OISMouse.h>
-#include <ois/OISJoyStick.h>
-#include <tinyxml/ticpp.h>
-// Included by both filesystem and thread but still relatively small
-#include <boost/iterator/iterator_facade.hpp>
+// Too larg PCH file if you include this and only 10% faster
+#include <boost/thread/recursive_mutex.hpp>
 
-#endif /* ORXONOX_COMPILER_MSVC */
-
-
-#include "util/Convert.h"
+#include "util/CRC32.h"
 #include "util/Debug.h"
-#include "util/Exception.h"
 #include "util/Math.h"
 #include "util/mbool.h"
 #include "util/MultiType.h"
-#include "util/OrxAssert.h"
-#include "util/OrxEnum.h"
 #include "util/String.h"
-#include "util/SubString.h"
 
+#include "core/Core.h"
+#include "core/CoreIncludes.h"
+#include "core/Functor.h"
+#include "core/GameMode.h"
 
-#ifdef ORXONOX_COMPILER_MSVC
-
-// A change would trigger an 80% Core rebuild anyway
-#include "Identifier.h"
-
-#endif /*ORXONOX_COMPILER_MSVC */
+#endif /* ORXONOX_COMPILER_MSVC */
