@@ -53,10 +53,10 @@ namespace orxonox
 
         static ColourValue colours[] =
         {
-            ColourValue(1.0, 0.3, 0.3),
-            ColourValue(0.3, 0.3, 1.0),
-            ColourValue(0.3, 1.0, 0.3),
-            ColourValue(1.0, 1.0, 0.0)
+            ColourValue(1.0f, 0.3f, 0.3f),
+            ColourValue(0.3f, 0.3f, 1.0f),
+            ColourValue(0.3f, 1.0f, 0.3f),
+            ColourValue(1.0f, 1.0f, 0.0f)
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 
@@ -138,7 +138,7 @@ namespace orxonox
 
         if (teamSpawnPoints.size() > 0)
         {
-            unsigned int randomspawn = (unsigned int)rnd(teamSpawnPoints.size());
+            unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); ++it)
             {

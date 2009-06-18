@@ -189,7 +189,7 @@ namespace orxonox
                 (*it)->update(*this->gameClock_);
 
                 if ((*it)->getCountTickTime())
-                    this->addTickTime(this->gameClock_->getRealMicroseconds() - timeBeforeTick);
+                    this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
             }
 
             // STATISTICS
@@ -211,8 +211,8 @@ namespace orxonox
                 }
 
                 uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-                this->avgFPS_ = (float)framesPerPeriod / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
-                this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
+                this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
+                this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
                 this->periodTime_ -= this->statisticsRefreshCycle_;
             }

@@ -215,7 +215,7 @@ namespace orxonox
             if (pointer->first)
                 return (*((float*)pointer->second));
             else
-                return (*((int*)pointer->second));
+                return static_cast<float>(*((int*)pointer->second));
         }
         else
             return 0;

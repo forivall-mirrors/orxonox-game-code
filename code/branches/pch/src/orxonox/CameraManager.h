@@ -39,7 +39,7 @@
 
 #include <cassert>
 #include <list>
-#include <OgrePrerequisites.h>
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {

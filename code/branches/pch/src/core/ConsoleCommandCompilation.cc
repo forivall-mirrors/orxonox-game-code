@@ -169,7 +169,7 @@ namespace orxonox
             {
                 COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << "'" << std::endl;
             }
-            return expr.getResult();
+            return static_cast<float>(expr.getResult());
         }
         else
         {

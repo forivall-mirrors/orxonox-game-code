@@ -39,7 +39,7 @@ namespace orxonox
     MuzzleFlash::MuzzleFlash(BaseObject* creator) : Billboard(creator)
     {
         RegisterObject(MuzzleFlash);
-        this->setScale(0.1);
+        this->setScale(0.1f);
         
         this->delayTimer_.setTimer(0.1f, false, this, createExecutor(createFunctor(&MuzzleFlash::destroy)));
 

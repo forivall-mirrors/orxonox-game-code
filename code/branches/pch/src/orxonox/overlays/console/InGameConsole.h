@@ -33,6 +33,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include "util/OgreForwardRefs.h"
 #include "core/Shell.h"
 #include "interfaces/WindowEventListener.h"
 

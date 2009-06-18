@@ -33,6 +33,7 @@
 
 #include <string>
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "OrxonoxOverlay.h"
 
 namespace orxonox

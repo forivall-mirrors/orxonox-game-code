@@ -30,9 +30,7 @@
 #define _BillboardSet_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <OgrePrerequisites.h>
-#include "util/UtilPrereqs.h"
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {

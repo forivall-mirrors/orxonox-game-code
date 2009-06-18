@@ -37,9 +37,9 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "interfaces/WindowEventListener.h"
 

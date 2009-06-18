@@ -308,13 +308,6 @@ namespace orxonox
         return ConverterExplicit<FromType, ToType>::convert(output, input);
     }
 
-    // For compatibility reasons. The same, but with capital ConvertValue
-    template<class FromType, class ToType>
-    FORCEINLINE bool ConvertValue(ToType* output, const FromType& input)
-    {
-        return convertValue(output, input);
-    }
-
     // Calls convertValue and returns true if the conversion was successful.
     // Otherwise the fallback is used.
     /**
@@ -371,14 +364,14 @@ namespace orxonox
     template <class FromType>
     FORCEINLINE std::string convertToString(FromType value)
     {
-      return getConvertedValue<FromType, std::string>(value);
+        return getConvertedValue<FromType, std::string>(value);
     }
 
     // convert from string Shortcut
     template <class ToType>
     FORCEINLINE ToType convertFromString(std::string str)
     {
-      return getConvertedValue<std::string, ToType>(str);
+        return getConvertedValue<std::string, ToType>(str);
     }
 
     ////////////////////////////////

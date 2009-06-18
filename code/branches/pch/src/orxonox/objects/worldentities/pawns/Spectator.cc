@@ -58,7 +58,7 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             this->greetingFlare_ = new BillboardSet();
-            this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
+            this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0f, 1.0f, 0.8f), Vector3(0, 20, 0), 1);
             if (this->greetingFlare_->getBillboardSet())
                 this->attachOgreObject(this->greetingFlare_->getBillboardSet());
             this->greetingFlare_->setVisible(false);

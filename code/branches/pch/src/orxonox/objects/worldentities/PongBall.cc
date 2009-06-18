@@ -49,7 +49,7 @@ namespace orxonox
         this->batID_ = new unsigned int[2];
         this->batID_[0] = OBJECTID_UNKNOWN;
         this->batID_[1] = OBJECTID_UNKNOWN;
-        this->relMercyOffset_ = 0.05;
+        this->relMercyOffset_ = 0.05f;
 
         this->registerVariables();
 
@@ -102,7 +102,7 @@ namespace orxonox
                 {
                     if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
                     {
-                        distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                        distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
                         if (fabs(distance) <= 1)
                         {
                             position.x = this->fieldWidth_ / 2;
@@ -122,7 +122,7 @@ namespace orxonox
                     }
                     if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
                     {
-                        distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                        distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
                         if (fabs(distance) <= 1)
                         {
                             position.x = -this->fieldWidth_ / 2;
@@ -172,7 +172,7 @@ namespace orxonox
             {
               if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
               {
-                distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
                 if (fabs(distance) <= 1)
                 {
                   position.x = this->fieldWidth_ / 2;
@@ -183,7 +183,7 @@ namespace orxonox
               }
               if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
               {
-                distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10) / 2);
+                distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
                 if (fabs(distance) <= 1)
                 {
                   position.x = -this->fieldWidth_ / 2;

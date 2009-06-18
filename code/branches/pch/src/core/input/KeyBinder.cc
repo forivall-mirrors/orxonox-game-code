@@ -316,14 +316,14 @@ namespace orxonox
                     if (mouseRelative_[i] < 0)
                     {
                         mouseAxes_[2*i + 0].absVal_
-                            = -mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+                            = -mouseRelative_[i] / deriveTime_ * 0.0005f * mouseSensitivityDerived_;
                         mouseAxes_[2*i + 1].absVal_ = 0.0f;
                     }
                     else if (mouseRelative_[i] > 0)
                     {
                         mouseAxes_[2*i + 0].absVal_ = 0.0f;
                         mouseAxes_[2*i + 1].absVal_
-                            =  mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+                            =  mouseRelative_[i] / deriveTime_ * 0.0005f * mouseSensitivityDerived_;
                     }
                     else
                     {

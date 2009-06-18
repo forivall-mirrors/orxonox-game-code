@@ -394,11 +394,11 @@ namespace orxonox
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        guiSystem_->injectMouseMove(rel.x, rel.y);
+        guiSystem_->injectMouseMove(static_cast<float>(rel.x), static_cast<float>(rel.y));
     }
     void GUIManager::mouseScrolled(int abs, int rel)
     {
-        guiSystem_->injectMouseWheelChange(rel);
+        guiSystem_->injectMouseWheelChange(static_cast<float>(rel));
     }
 
     /**

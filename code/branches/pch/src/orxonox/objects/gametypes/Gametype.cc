@@ -286,7 +286,7 @@ namespace orxonox
     {
         if (this->spawnpoints_.size() > 0)
         {
-            unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
+            unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(this->spawnpoints_.size())));
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
             {

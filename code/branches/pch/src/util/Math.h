@@ -228,7 +228,7 @@ namespace orxonox
     */
     inline float rnd()
     {
-        return rand() / (RAND_MAX + 1.0);
+        return rand() / (RAND_MAX + 1.0f);
     }
 
     /**
@@ -255,7 +255,7 @@ namespace orxonox
     */
     inline float rndsgn()
     {
-        return ((rand() & 0x2) - 1); // rand() & 0x2 is either 2 or 0
+        return static_cast<float>((rand() & 0x2) - 1); // rand() & 0x2 is either 2 or 0
     }
 
     _UtilExport unsigned long getUniqueNumber();

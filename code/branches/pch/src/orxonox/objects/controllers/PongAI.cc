@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(PongAI);
 
-    const static float MAX_REACTION_TIME = 0.4;
+    const static float MAX_REACTION_TIME = 0.4f;
 
     PongAI::PongAI(BaseObject* creator) : Controller(creator)
     {
@@ -48,8 +48,8 @@ namespace orxonox
         this->ballDirection_ = Vector2::ZERO;
         this->ballEndPosition_ = 0;
         this->randomOffset_ = 0;
-        this->relHysteresisOffset_ = 0.02;
-        this->strength_ = 0.5;
+        this->relHysteresisOffset_ = 0.02f;
+        this->strength_ = 0.5f;
         this->movement_ = 0;
         this->oldMove_ = 0;
         this->bOscillationAvoidanceActive_ = false;
@@ -170,7 +170,7 @@ namespace orxonox
                                           // exp < 1 -> position is more likely a large number
 
         // The position shouln't be larger than 0.5 (50% of the bat-length from the middle is the end)
-        position *= 0.48;
+        position *= 0.48f;
 
         // Both sides are equally probable
         position *= rndsgn();
@@ -189,7 +189,7 @@ namespace orxonox
         this->ballEndPosition_ = position.z + velocity.z / velocity.x * (-position.x + dimension.x / 2 * sgn(velocity.x));
 
         // Calculate bounces
-        for (float limit = 0.35; limit < this->strength_ || this->strength_ > 0.99; limit += 0.4)
+        for (float limit = 0.35f; limit < this->strength_ || this->strength_ > 0.99f; limit += 0.4f)
         {
             // Calculate a random prediction error, based on the vertical speed of the ball and the strength of the AI
             float randomError = rnd(-1, 1) * dimension.y * (velocity.z / velocity.x / PongBall::MAX_REL_Z_VELOCITY) * (1 - this->strength_);

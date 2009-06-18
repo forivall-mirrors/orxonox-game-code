@@ -34,8 +34,8 @@
 
 #include <map>
 #include <vector>
-#include <OgrePrerequisites.h>
 
+#include "util/OgreForwardRefs.h"
 #include "interfaces/RadarListener.h"
 #include "interfaces/RadarViewable.h"
 #include "overlays/OrxonoxOverlay.h"

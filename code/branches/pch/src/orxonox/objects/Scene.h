@@ -35,9 +35,9 @@
 #include <list>
 #include <set>
 #include <string>
-#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
 #include "interfaces/Tickable.h"

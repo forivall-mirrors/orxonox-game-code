@@ -366,7 +366,7 @@ namespace orxonox
         static bool bInitialized = false;
         if (!bInitialized && this->bInitializeRandomNumberGenerator_)
         {
-            srand(time(0));
+            srand(static_cast<unsigned int>(time(0)));
             rand();
             bInitialized = true;
         }

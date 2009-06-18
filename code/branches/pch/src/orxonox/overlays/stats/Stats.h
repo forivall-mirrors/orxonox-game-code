@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "util/OgreForwardRefs.h"
 #include "interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
 

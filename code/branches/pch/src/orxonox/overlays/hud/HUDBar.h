@@ -35,9 +35,9 @@
 
 #include <map>
 #include <vector>
-#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "overlays/OrxonoxOverlay.h"
 

@@ -56,7 +56,7 @@ namespace orxonox
         unsigned long timersTime = timer_->getMicroseconds();
         tickTime_ = storedTime_ + timersTime;
         tickDt_ = timersTime - lastTimersTime_;
-        tickDtFloat_ = (float)tickDt_ / 1000000.0f;
+        tickDtFloat_ = static_cast<float>(tickDt_ / 1000000.0f);
 
         if (timersTime > 0x7FFFFFF0)
         {

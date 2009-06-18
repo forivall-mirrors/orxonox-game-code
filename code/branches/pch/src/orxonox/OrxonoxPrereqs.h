@@ -286,11 +286,6 @@ namespace orxonox
 
 namespace Ogre
 {
-    // some got forgotten in OgrePrerequisites
-    class BorderPanelOverlayElement;
-    class PanelOverlayElement;
-    class TextAreaOverlayElement;
-
     // OGRE Wiki adapted code
     class DynamicLines;
     class DynamicRenderable;

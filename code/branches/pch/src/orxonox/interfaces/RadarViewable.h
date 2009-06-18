@@ -33,9 +33,9 @@
 
 #include <string>
 #include <cassert>
-#include <OgrePrerequisites.h>
 
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

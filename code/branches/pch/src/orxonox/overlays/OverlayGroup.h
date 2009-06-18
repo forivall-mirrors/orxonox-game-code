@@ -37,8 +37,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include <set>
-#include <OgrePrerequisites.h>
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 
 namespace orxonox

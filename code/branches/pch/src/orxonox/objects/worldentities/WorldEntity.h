@@ -33,13 +33,12 @@
 #include "OrxonoxPrereqs.h"
 
 #ifdef ORXONOX_RELEASE
-#include <OgreSceneNode.h>
-#else
-#include <OgrePrerequisites.h>
+#  include <OgreSceneNode.h>
 #endif
 #include <LinearMath/btMotionState.h>
 
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
 

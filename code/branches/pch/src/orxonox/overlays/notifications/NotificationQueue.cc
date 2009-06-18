@@ -47,7 +47,7 @@ namespace orxonox
 
     const std::string NotificationQueue::DEFAULT_FONT = "VeraMono";
     const Vector2 NotificationQueue::DEFAULT_POSITION = Vector2(0.0,0.0);
-    const float NotificationQueue::DEFAULT_FONT_SIZE  = 0.025;
+    const float NotificationQueue::DEFAULT_FONT_SIZE  = 0.025f;
 
     /**
     @brief

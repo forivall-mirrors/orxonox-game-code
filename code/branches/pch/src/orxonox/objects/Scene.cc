@@ -101,7 +101,7 @@ namespace orxonox
         SUPER(Scene, XMLPort, xmlelement, mode);
 
         XMLPortParam(Scene, "skybox", setSkybox, getSkybox, xmlelement, mode);
-        XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
+        XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2f, 0.2f, 0.2f, 1.0f));
         XMLPortParam(Scene, "shadow", setShadow, getShadow, xmlelement, mode).defaultValues(true);
 
         XMLPortParam(Scene, "gravity", setGravity, getGravity, xmlelement, mode);

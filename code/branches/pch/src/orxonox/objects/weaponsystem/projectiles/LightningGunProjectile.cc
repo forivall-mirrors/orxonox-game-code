@@ -41,7 +41,7 @@ namespace orxonox
 
         this->textureIndex_ = 1;
         this->maxTextureIndex_ = 8;
-        this->textureTimer_.setTimer(0.01, true, this, createExecutor(createFunctor(&LightningGunProjectile::changeTexture)));
+        this->textureTimer_.setTimer(0.01f, true, this, createExecutor(createFunctor(&LightningGunProjectile::changeTexture)));
         
         registerVariables();
     }

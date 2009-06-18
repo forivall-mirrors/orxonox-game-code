@@ -40,9 +40,9 @@
 
 #include <map>
 #include <string>
-#include <OgrePrerequisites.h>
 #include <CEGUIForwardRefs.h>
 
+#include "util/OgreForwardRefs.h"
 #include "core/input/InputInterfaces.h"
 
 // tolua_begin

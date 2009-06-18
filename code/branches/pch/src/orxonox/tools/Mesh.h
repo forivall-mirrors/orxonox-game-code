@@ -30,8 +30,7 @@
 #define _Mesh_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <OgrePrerequisites.h>
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {

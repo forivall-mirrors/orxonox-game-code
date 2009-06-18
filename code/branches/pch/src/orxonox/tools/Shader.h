@@ -34,8 +34,8 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <OgrePrerequisites.h>
 
+#include "util/OgreForwardRefs.h"
 #include "interfaces/Tickable.h"
 
 namespace orxonox

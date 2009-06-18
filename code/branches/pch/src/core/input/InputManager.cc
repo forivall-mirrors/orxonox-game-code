@@ -1165,7 +1165,7 @@ namespace orxonox
         }
         else
         {
-            float fValue = value - joyStickCalibrations_[iJoyStick].middleValue[axis];
+            float fValue = static_cast<float>(value - joyStickCalibrations_[iJoyStick].middleValue[axis]);
             if (fValue > 0.0f)
                 fValue *= joyStickCalibrations_[iJoyStick].positiveCoeff[axis];
             else

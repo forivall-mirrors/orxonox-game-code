@@ -142,12 +142,12 @@ namespace orxonox
 
     float HumanPlayer::getPing() const
     {
-        return ClientInformation::findClient(this->getClientID())->getRTT();
+        return static_cast<float>(ClientInformation::findClient(this->getClientID())->getRTT());
     }
 
     float HumanPlayer::getPacketLossRatio() const
     {
-        return ClientInformation::findClient(this->getClientID())->getPacketLoss();
+        return static_cast<float>(ClientInformation::findClient(this->getClientID())->getPacketLoss());
     }
 
     void HumanPlayer::setClientID(unsigned int clientID)

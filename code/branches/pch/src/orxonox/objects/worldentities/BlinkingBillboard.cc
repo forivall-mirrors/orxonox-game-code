@@ -78,9 +78,9 @@ namespace orxonox
         {
             this->time_ += dt;
             if (this->bQuadratic_)
-                this->setScale(this->amplitude_ * square(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_)));
+                this->setScale(this->amplitude_ * static_cast<float>(square(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_))));
             else
-                this->setScale(this->amplitude_ * sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_));
+                this->setScale(this->amplitude_ * static_cast<float>(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_)));
         }
     }
 }
