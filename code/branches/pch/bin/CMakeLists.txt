@@ -39,8 +39,10 @@ ENDIF()
 
 IF(NOT CMAKE_CONFIGURATION_TYPES)
   SET(_subdirs .)
+  SEt(_default_subdir .)
 ELSE()
   SET(_subdirs ${CMAKE_CONFIGURATION_TYPES})
+  SEt(_default_subdir) # No default subdir
 ENDIF()
 STRING(REPLACE "/" "\\" ORXONOX_RUNTIME_LIBRARY_DIRECTORY_WINDOWS ${ORXONOX_RUNTIME_LIBRARY_DIRECTORY})
 FOREACH(_subdir ${_subdirs})
@@ -52,6 +54,10 @@ FOREACH(_subdir ${_subdirs})
 
   FOREACH(_script ${RUN_SCRIPTS})
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${_script}.in ${CURRENT_RUNTIME_DIR}/${_script} @ONLY)
+    IF(_subdir STREQUAL _default_subdir)
+      # Convenience script to be used when sitting in the binary directory. Does nothing for MSVC
+      CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${_script}.in ${CMAKE_BINARY_DIR}/${_script} @ONLY)
+    ENDIF()
   ENDFOREACH(_script)
 
   # In order to evaluate at run time whether it is a dev build in the build tree,
