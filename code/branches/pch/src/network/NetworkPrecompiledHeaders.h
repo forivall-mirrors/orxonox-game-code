@@ -52,7 +52,7 @@
 #undef min
 
 // Too larg PCH file if you include this and only 10% faster
-#include <boost/thread/recursive_mutex.hpp>
+//#include <boost/thread/recursive_mutex.hpp>
 
 #include "util/CRC32.h"
 #include "util/Debug.h"

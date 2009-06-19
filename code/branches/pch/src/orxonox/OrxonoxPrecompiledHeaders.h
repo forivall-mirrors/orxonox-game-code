@@ -32,60 +32,69 @@
     Compilation of the most often used header files in the orxonox executable
 */
 
-// including std headers here is useless since they're already precompiled
+#include "OrxonoxPrereqs.h"
 
-#ifndef WIN32_LEAN_AND_MEAN
-// prevent Ogre from including winsock.h that messes with winsock2.h from enet
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#ifndef NOMINMAX
-#  define NOMINMAX // required to stop windows.h screwing up std::min definition
-#endif
-#include <Ogre.h>
-#include <boost/thread/recursive_mutex.hpp>
-#include <boost/static_assert.hpp>
-#include <boost/filesystem.hpp>
+#include <deque>
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <string>
+#include <vector>
 
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "tinyxml/ticpp.h"
-#include "tolua/tolua++.h"
+// Prevent headers from including winsock.h that messes with winsock2.h from ENet
+#define WIN32_LEAN_AND_MEAN
+
+
+#ifdef ORXONOX_COMPILER_MSVC
+
+// Note: Numbers after the include specify the number of times included (2009-06-19)
+// The sizes in MB was just to see how much the MSVC9 PCH file increases for Ogre includes
+#include <OgreMaterial.h> // 33, 2.7MB
+#include <OgreRenderable.h> // 32, 2.6MB
+#include <OgreSingleton.h> // 28, 0.0MB
+#include <OgreSceneNode.h> // 25, 1.1MB
+#include <OgreTexture.h> // 25, 0.2MB (1.1MB)
+#include <OgreMovableObject.h> // 22, 1.3MB
+#include <OgreResourceGroupManager.h> // 21, 1.4MB
+#include <OgreTechnique.h> // 18, 1.2MB
+//#include <OgreSceneManager.h> // 16, 7.4MB
+
+#endif
+
+
+//#include <boost/preprocessor/cat.hpp> // 15
+//#include <boost/shared_ptr.hpp> // 13
+#include <LinearMath/btMotionState.h>
+#include <tinyxml/ticpp.h>
+
+// Just in case some header included windows.h
+#undef min
+#undef max
 
 //--------- Orxonox files --------
 //--------------------------------
 
-#include "util/Convert.h"
+//#include "util/Convert.h" // 24
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/Math.h"
-#include "util/MathConvert.h"
-#include "util/MultiType.h"
-#include "util/Sleep.h"
+#include "util/OgreForwardRefs.h"
+#include "util/OrxAssert.h"
 #include "util/String.h"
 #include "util/SubString.h"
 
 #include "core/BaseObject.h"
-#include "core/ClassTreeMask.h"
-#include "core/Clock.h"
-#include "core/ConsoleCommand.h"
-#include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/CommandExecutor.h"
-#include "core/CommandLine.h"
+//#include "core/ConfigValueIncludes.h" // 19
+//#include "core/ConsoleCommand.h" // 15
 #include "core/Core.h"
-#include "core/EventIncludes.h"
-#include "core/Executor.h"
-#include "core/Game.h"
+#include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "core/GameState.h"
-#include "core/ObjectList.h"
-#include "core/Super.h"
-#include "core/Template.h"
-#include "core/XMLFile.h"
-#include "core/XMLIncludes.h"
 #include "core/XMLPort.h"
-#include "core/input/SimpleInputState.h"
-#include "core/input/InputManager.h"
 
 #include "network/synchronisable/Synchronisable.h"
-#include "network/ClientInformation.h"
+//#include "network/ClientInformation.h" // 26
+//#include "network/ClientConnectionListener.h" // 24
