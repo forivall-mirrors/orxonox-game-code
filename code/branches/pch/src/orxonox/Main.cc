@@ -33,7 +33,7 @@
     Entry point of the program.
 */
 
-#include "OrxonoxConfig.h"
+#include "OrxonoxPrereqs.h"
 
 #include "util/Debug.h"
 #include "core/Identifier.h"
