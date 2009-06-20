@@ -223,13 +223,11 @@ namespace orxonox
             return;
         }
 
-        char line[1024];
-
         // Iterate through the file and create the LanguageEntries
         while (file.good() && !file.eof())
         {
-            file.getline(line, 1024);
-            std::string lineString = std::string(line);
+            std::string lineString;
+            std::getline(file, lineString);
 
             // Check if the line is empty
             if ((lineString != "") && (lineString.size() > 0))
@@ -271,13 +269,11 @@ namespace orxonox
             return;
         }
 
-        char line[1024];
-
         // Iterate through the file and create the LanguageEntries
         while (file.good() && !file.eof())
         {
-            file.getline(line, 1024);
-            std::string lineString = std::string(line);
+            std::string lineString;
+            std::getline(file, lineString);
 
             // Check if the line is empty
             if ((lineString != "") && (lineString.size() > 0))

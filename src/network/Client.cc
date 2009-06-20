@@ -168,6 +168,7 @@ namespace orxonox
       // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
       bool b = packet->process();
       assert(b);
+      delete event;
     }
     if(gamestate.processGamestates())
     {

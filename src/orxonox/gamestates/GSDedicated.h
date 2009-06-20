@@ -33,9 +33,17 @@
 
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
+#include <queue>
+#include <cstring>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
+
+struct termios;
 
 namespace orxonox
 {
+    
     class _OrxonoxExport GSDedicated : public GameState
     {
     public:
@@ -47,8 +55,30 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
-        Server* server_;
-        float   timeSinceLastUpdate_;
+        void inputThread();
+        void printLine();
+        void processQueue();
+        void setTerminalMode();
+        static void resetTerminalMode();
+        
+        void insertCharacter( unsigned int position, char c );
+        void deleteCharacter( unsigned int position );
+        
+        Server*                 server_;
+        float                   timeSinceLastUpdate_;
+        
+        boost::thread           *inputThread_;
+        boost::recursive_mutex  inputLineMutex_;
+        boost::recursive_mutex  inputQueueMutex_;
+        bool                    closeThread_;
+        bool                    cleanLine_;
+        unsigned char*          commandLine_;
+        unsigned int            inputIterator_;
+        std::queue<std::string> commandQueue_;
+        static termios*         originalTerminalSettings_;
+        
+        unsigned int            cursorX_;
+        unsigned int            cursorY_;
     };
 }
 

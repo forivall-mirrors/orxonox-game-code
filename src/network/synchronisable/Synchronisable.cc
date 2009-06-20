@@ -97,10 +97,14 @@ namespace orxonox
   Synchronisable::~Synchronisable(){
     // delete callback function objects
     if(!Identifier::isCreatingHierarchy()){
-      for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
-        delete (*it);
+      // remove object from the static objectMap
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID);
+      // delete all Synchronisable Variables from syncList ( which are also in stringList )
+      for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
+        delete (*it);
+      syncList.clear();
+      stringList.clear();
     }
     std::map<uint32_t, Synchronisable*>::iterator it;
     it = objectMap_.find(objectID);
@@ -173,6 +177,8 @@ namespace orxonox
     no->classID=header.getClassID();
     COUT(4) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
+    assert( Synchronisable::objectMap_.find(header.getObjectID()) == Synchronisable::objectMap_.end() );
+    Synchronisable::objectMap_[header.getObjectID()] = no;
     bool b = no->updateData(mem, mode, true);
     assert(b);
     if (b)
@@ -212,13 +218,14 @@ namespace orxonox
     if (it1 != objectMap_.end())
       return it1->second;
 
-    ObjectList<Synchronisable>::iterator it;
-    for(it = ObjectList<Synchronisable>::begin(); it; ++it){
-      if( it->getObjectID()==objectID ){
-        objectMap_[objectID] = *it;
-        return *it;
-      }
-    }
+//     ObjectList<Synchronisable>::iterator it;
+//     for(it = ObjectList<Synchronisable>::begin(); it; ++it){
+//       if( it->getObjectID()==objectID ){
+//         objectMap_[objectID] = *it;
+//         return *it;
+//       }
+//     }
+    // if the objects not in the map it should'nt exist at all anymore
     return NULL;
   }
 

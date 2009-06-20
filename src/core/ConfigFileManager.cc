@@ -39,7 +39,6 @@
 
 namespace orxonox
 {
-    const int CONFIG_FILE_MAX_LINELENGHT  = 1024;
     const char* const DEFAULT_CONFIG_FILE = "default.ini";
 
     ConfigFileManager* ConfigFileManager::singletonRef_s = 0;
@@ -243,16 +242,12 @@ namespace orxonox
         file.open(filepath.string().c_str(), std::fstream::in);
         if (file.is_open())
         {
-
-            char linearray[CONFIG_FILE_MAX_LINELENGHT];
-
             ConfigFileSection* newsection = 0;
 
             while (file.good() && !file.eof())
             {
-                file.getline(linearray, CONFIG_FILE_MAX_LINELENGHT);
-
-                std::string line = std::string(linearray);
+                std::string line;
+                std::getline(file, line);
 
                 std::string temp = getStripped(line);
                 if (!isEmpty(temp) && !isComment(temp))

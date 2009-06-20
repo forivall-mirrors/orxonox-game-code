@@ -168,8 +168,8 @@ namespace orxonox
           // we should never reach this point
 // 	        assert(0);
           printf("ClientConnection: ENet returned with an error!\n");
-          quit_=true;
-          break;
+//           quit_=true;
+          continue;
           // add some error handling here ========================
         }
         lock.unlock();
@@ -196,12 +196,18 @@ namespace orxonox
         break;
       }
     }
+    delete event;
     // now disconnect
 
     if(!disconnectConnection())
+    {
+      printf("could not disconnect properly\n");
       // if disconnecting failed destroy conn.
       boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
       enet_peer_reset(server);
+    }
+    else
+      printf("properly disconnected\n");
     return;
   }
 
@@ -220,6 +226,7 @@ namespace orxonox
         enet_packet_destroy(event.packet);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
+        printf("received disconnect confirmation from server");
         return true;
       }
     }

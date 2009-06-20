@@ -90,7 +90,6 @@ namespace orxonox
     bool setSynched(bool s);
     bool getSynched();
 
-
   private:
     static ClientInformation *head_;
 

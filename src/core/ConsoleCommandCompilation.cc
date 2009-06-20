@@ -72,10 +72,10 @@ namespace orxonox
         executingFiles.insert(filename);
 
         // Iterate through the file and put the lines into the CommandExecutor
-        char line[1024];
         while (file.good() && !file.eof())
         {
-            file.getline(line, 1024);
+            std::string line;
+            std::getline(file, line);
             CommandExecutor::execute(line);
         }
 
@@ -143,10 +143,10 @@ namespace orxonox
         }
 
         std::string output = "";
-        char line[1024];
         while (file.good() && !file.eof())
         {
-            file.getline(line, 1024);
+            std::string line;
+            std::getline(file, line);
             output += line;
             output += "\n";
         }

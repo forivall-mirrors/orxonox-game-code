@@ -35,8 +35,6 @@
 
 namespace orxonox
 {
-    const int OUTPUTBUFFER_MAX_LINE_LENGTH = 16384; //! The maximal number of lines that can be stored within the OutputBuffer.
-
     /**
         @brief Adds a new listener to the list.
         @param listener The new listener
@@ -104,10 +102,7 @@ namespace orxonox
     */
     bool OutputBuffer::getLine(std::string* output)
     {
-        char line[OUTPUTBUFFER_MAX_LINE_LENGTH];
-
-        this->stream_.getline(line, OUTPUTBUFFER_MAX_LINE_LENGTH);
-        (*output) = std::string(line);
+        std::getline(this->stream_, *output);
 
         bool eof = this->stream_.eof();
         bool fail = this->stream_.fail();
