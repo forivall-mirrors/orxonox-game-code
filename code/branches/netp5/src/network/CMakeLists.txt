@@ -23,7 +23,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   ClientConnection.cc
   ClientInformation.cc
   ClientConnectionListener.cc
-  ConnectionManager.cc
+  Connection.cc
   FunctionCallManager.cc
   GamestateManager.cc
   GamestateClient.cc
@@ -32,6 +32,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   Host.cc
   PacketBuffer.cc
   Server.cc
+  ServerConnection.cc
   TrafficControl.cc
 )
 ADD_SUBDIRECTORY(packet)

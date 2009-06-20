@@ -45,7 +45,7 @@
 #include <cassert>
 
 
-#include "ConnectionManager.h"
+// #include "ConnectionManager.h"
 #include "ClientConnectionListener.h"
 #include "GamestateManager.h"
 #include "ClientInformation.h"
@@ -57,6 +57,7 @@
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
 #include "packet/DeleteObjects.h"
+#include "packet/ClassID.h"
 #include "util/Convert.h"
 #include "ChatListener.h"
 #include "FunctionCallManager.h"
@@ -73,13 +74,12 @@ namespace orxonox
   */
   Server::Server() {
     timeSinceLastUpdate_=0;
-    connection = new ConnectionManager();
     gamestates_ = new GamestateManager();
   }
 
   Server::Server(int port){
+    this->setPort( port );
     timeSinceLastUpdate_=0;
-    connection = new ConnectionManager(port);
     gamestates_ = new GamestateManager();
   }
 
@@ -89,19 +89,9 @@ namespace orxonox
   * @param bindAddress Address to listen on
   */
   Server::Server(int port, const std::string& bindAddress) {
+    this->setPort( port );
+    this->setBindAddress( bindAddress );
     timeSinceLastUpdate_=0;
-    connection = new ConnectionManager(port, bindAddress);
-    gamestates_ = new GamestateManager();
-  }
-
-  /**
-  * Constructor
-  * @param port Port to listen on
-  * @param bindAddress Address to listen on
-  */
-  Server::Server(int port, const char *bindAddress) {
-    timeSinceLastUpdate_=0;
-    connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
   }
 
@@ -109,8 +99,6 @@ namespace orxonox
   * @brief Destructor
   */
   Server::~Server(){
-    if(connection)
-      delete connection;
     if(gamestates_)
       delete gamestates_;
   }
@@ -119,7 +107,8 @@ namespace orxonox
   * This function opens the server by creating the listener thread
   */
   void Server::open() {
-    connection->createListener();
+    COUT(4) << "opening server" << endl;
+    this->openListener();
     return;
   }
 
@@ -127,16 +116,9 @@ namespace orxonox
   * This function closes the server
   */
   void Server::close() {
-    ClientInformation *temp = ClientInformation::getBegin();
-    ClientInformation *temp2;
-    // disconnect all connected clients
-    while( temp )
-    {
-      temp2 = temp;
-      temp = temp->next();
-      disconnectClient( temp2 );
-    }
-    connection->quitListener();
+    COUT(4) << "closing server" << endl;
+    this->disconnectClients();
+    this->closeListener();
     return;
   }
 
@@ -161,7 +143,7 @@ namespace orxonox
   * @param time time since last tick
   */
   void Server::update(const Clock& time) {
-    processQueue();
+    ServerConnection::processQueue();
     gamestates_->processGamestates();
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
@@ -173,7 +155,7 @@ namespace orxonox
   }
 
   bool Server::queuePacket(ENetPacket *packet, int clientID){
-    return connection->addPacket(packet, clientID);
+    return ServerConnection::addPacket(packet, clientID);
   }
   
   /**
@@ -190,39 +172,6 @@ namespace orxonox
   double Server::getPacketLoss(unsigned int clientID){
     assert(ClientInformation::findClient(clientID));
     return ClientInformation::findClient(clientID)->getPacketLoss();
-  }
-  
-  /**
-  * processes all the packets waiting in the queue
-  */
-  void Server::processQueue() {
-    ENetEvent *event;
-    while(!connection->queueEmpty()){
-      //std::cout << "Client " << clientID << " sent: " << std::endl;
-      //clientID here is a reference to grab clientID from ClientInformation
-      event = connection->getEvent();
-      if(!event)
-        continue;
-      assert(event->type != ENET_EVENT_TYPE_NONE);
-      switch( event->type ) {
-      case ENET_EVENT_TYPE_CONNECT:
-        COUT(4) << "processing event_Type_connect" << std::endl;
-        addClient(event);
-        break;
-      case ENET_EVENT_TYPE_DISCONNECT:
-        if(ClientInformation::findClient(&event->peer->address))
-          disconnectClient(event);
-        break;
-      case ENET_EVENT_TYPE_RECEIVE:
-        if(!processPacket(event->packet, event->peer))
-          COUT(3) << "processing incoming packet failed" << std::endl;
-        break;
-      default:
-        break;
-      }
-      delete event;
-      //if statement to catch case that packetbuffer is empty
-    }
   }
 
   /**
@@ -317,20 +266,14 @@ namespace orxonox
   }
 
 
-  bool Server::addClient(ENetEvent *event){
+  void Server::addClient(ENetEvent *event){
     static unsigned int newid=1;
 
     COUT(2) << "Server: adding client" << std::endl;
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
     if(!temp){
       COUT(2) << "Server: could not add client" << std::endl;
-      return false;
     }
-    /*if(temp==ClientInformation::getBegin()) { //not good if you use anything else than insertBack
-      newid=1;
-    }
-    else
-      newid=temp->prev()->getID()+1;*/
     temp->setID(newid);
     temp->setPeer(event->peer);
 
@@ -341,10 +284,10 @@ namespace orxonox
       listener++;
     }
 
-    newid++;
+    ++newid;
 
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
-    return createClient(temp->getID());
+    createClient(temp->getID());
 }
 
   bool Server::createClient(int clientID){
@@ -356,7 +299,7 @@ namespace orxonox
     COUT(5) << "Con.Man: creating client id: " << temp->getID() << std::endl;
     
     // synchronise class ids
-    connection->syncClassid(temp->getID());
+    syncClassid(temp->getID());
     
     // now synchronise functionIDs
     packet::FunctionIDs *fIDs = new packet::FunctionIDs();
@@ -381,28 +324,9 @@ namespace orxonox
     assert(b);
     return true;
   }
-
-  bool Server::disconnectClient(ENetEvent *event){
-    COUT(4) << "removing client from list" << std::endl;
-    //return removeClient(head_->findClient(&(peer->address))->getID());
-
-    //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
-    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
-    if(!client)
-      return false;
-    else
-      disconnectClient( client );
-    return true;
-  }
-
-  void Server::disconnectClient(int clientID){
-    ClientInformation *client = ClientInformation::findClient(clientID);
-    if(client)
-      disconnectClient(client);
-  }
   
-  void Server::disconnectClient( ClientInformation *client){
-    connection->disconnectClient(client);
+  void Server::disconnectClient( ClientInformation *client ){
+    ServerConnection::disconnectClient( client );
     gamestates_->removeClient(client);
 // inform all the listeners
     ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
@@ -436,6 +360,17 @@ namespace orxonox
       it->incomingChat(message, clientID);
 
     return true;
+  }
+
+  void Server::syncClassid(unsigned int clientID) {
+    int failures=0;
+    packet::ClassID *classid = new packet::ClassID();
+    classid->setClientID(clientID);
+    while(!classid->send() && failures < 10){
+      failures++;
+    }
+    assert(failures<10);
+    COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
 }

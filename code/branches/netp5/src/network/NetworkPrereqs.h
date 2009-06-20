@@ -88,7 +88,7 @@ namespace orxonox
   class ClientConnectionListener;
   class ClientFrameListener;
   class ClientInformation;
-  class ConnectionManager;
+  class Connection;
   class FunctionCallManager;
   class GamestateClient;
   class GamestateManager;
@@ -103,6 +103,7 @@ namespace orxonox
   struct NetworkFunctionPointer;
   class PacketBuffer;
   class Server;
+  class ServerConnection;
   class ServerFrameListener;
   class Synchronisable;
   class SynchronisableVariableBase;
