@@ -313,10 +313,13 @@ namespace orxonox {
 
   void TrafficControl::clientDisconnected(unsigned int clientID)
   {
-    assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
-    assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
-    clientListTemp_.erase(clientListTemp_.find(clientID));
-    clientListPerm_.erase(clientListPerm_.find(clientID));
+    if(bActive_)
+    {
+      assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
+      assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
+      clientListTemp_.erase(clientListTemp_.find(clientID));
+      clientListPerm_.erase(clientListPerm_.find(clientID));
+    }
   }
 
 
