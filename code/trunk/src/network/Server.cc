@@ -127,6 +127,15 @@ namespace orxonox
   * This function closes the server
   */
   void Server::close() {
+    ClientInformation *temp = ClientInformation::getBegin();
+    ClientInformation *temp2;
+    // disconnect all connected clients
+    while( temp )
+    {
+      temp2 = temp;
+      temp = temp->next();
+      disconnectClient( temp2 );
+    }
     connection->quitListener();
     return;
   }
@@ -197,7 +206,7 @@ namespace orxonox
       assert(event->type != ENET_EVENT_TYPE_NONE);
       switch( event->type ) {
       case ENET_EVENT_TYPE_CONNECT:
-        COUT(3) << "processing event_Type_connect" << std::endl;
+        COUT(4) << "processing event_Type_connect" << std::endl;
         addClient(event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
@@ -303,6 +312,7 @@ namespace orxonox
       temp=temp->next();
       // gs gets automatically deleted by enet callback
     }
+    delete del;
     return true;
   }
 
@@ -380,16 +390,9 @@ namespace orxonox
     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
     if(!client)
       return false;
-    gamestates_->removeClient(client);
-
-// inform all the listeners
-    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
-    while(listener){
-      listener->clientDisconnected(client->getID());
-      listener++;
-    }
-
-    return ClientInformation::removeClient(event->peer);
+    else
+      disconnectClient( client );
+    return true;
   }
 
   void Server::disconnectClient(int clientID){
@@ -397,9 +400,17 @@ namespace orxonox
     if(client)
       disconnectClient(client);
   }
+  
   void Server::disconnectClient( ClientInformation *client){
     connection->disconnectClient(client);
     gamestates_->removeClient(client);
+// inform all the listeners
+    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
+    while(listener){
+      listener->clientDisconnected(client->getID());
+      ++listener;
+    }
+    delete client; //remove client from list
   }
 
   bool Server::chat(const std::string& message){

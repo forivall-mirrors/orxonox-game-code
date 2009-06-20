@@ -106,11 +106,6 @@ namespace orxonox
      */
     void SignalHandler::sigHandler( int sig )
     {
-      for ( SignalCallbackList::iterator it = SignalHandler::getInstance().callbackList.begin(); it != SignalHandler::getInstance().callbackList.end(); it++  )
-      {
-        (*(it->cb))( it->someData );
-      }
-
       std::string sigName = "UNKNOWN";
 
       switch ( sig )
@@ -125,6 +120,18 @@ namespace orxonox
           sigName = "SIGILL";
           break;
       }
+      // if the signalhandler has already been destroyed then don't do anything
+      if( SignalHandler::singletonRef_s == 0 )
+      {
+        COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "can't write backtrace because SignalHandler already destroyed" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+
+      for ( SignalCallbackList::iterator it = SignalHandler::getInstance().callbackList.begin(); it != SignalHandler::getInstance().callbackList.end(); it++  )
+      {
+        (*(it->cb))( it->someData );
+      }
+
 
       COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "try to write backtrace to file orxonox_crash.log" << std::endl;
 

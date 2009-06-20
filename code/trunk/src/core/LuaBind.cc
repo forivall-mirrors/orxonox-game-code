@@ -94,12 +94,12 @@ namespace orxonox
       // some error msg
     }
 
-    char line[1024*32];
     std::string levelString = "";
 
     while (file.good() && !file.eof())
     {
-      file.getline(line, 1024*32);
+      std::string line;
+      std::getline(file, line);
       levelString += line;
       levelString += "\n";
     }
