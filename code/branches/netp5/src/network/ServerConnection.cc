@@ -55,12 +55,15 @@ namespace orxonox
     this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, 0, 0);
     if ( this->host_ == NULL )
       return false;
+    else
+      return true;
   }
 
   bool ServerConnection::closeListener() {
     this->bListening_=false;
     disconnectClients();
     enet_host_destroy(this->host_);
+    return true;
   }
 
   bool ServerConnection::addPacket(ENetPacket *packet, unsigned int clientID) {

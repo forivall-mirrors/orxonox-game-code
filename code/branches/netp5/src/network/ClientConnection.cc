@@ -85,6 +85,7 @@ namespace orxonox
       }
     }
     COUT(1) << "Could not connect to server" << endl;
+    return false;
   }
 
   bool ClientConnection::closeConnection() {

@@ -50,11 +50,11 @@
 
 namespace orxonox
 {
-    const int NETWORK_PORT = 55556;
-    const int NETWORK_MAX_CONNECTIONS = 50;
-    const int NETWORK_WAIT_TIMEOUT = 0;
-    const int NETWORK_DEFAULT_CHANNEL = 0;
-    const int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
+    const unsigned int NETWORK_PORT = 55556;
+    const unsigned int NETWORK_MAX_CONNECTIONS = 50;
+    const unsigned int NETWORK_WAIT_TIMEOUT = 0;
+    const unsigned int NETWORK_DEFAULT_CHANNEL = 0;
+    const unsigned int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
 
   class _NetworkExport Connection{
   public:
