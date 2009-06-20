@@ -1,0 +1,265 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+//
+// C++ Interface: ClientConnection
+//
+// Description: The Class ClientConnection manages the servers conenctions to the clients.
+// each connection is provided by a new process. communication between master process and
+// connection processes is provided by ...
+//
+//
+// Author:  Oliver Scheuss
+//
+
+#include "ClientConnection.h"
+
+#include <enet/enet.h>
+#include <iostream>
+#include <cassert>
+// boost.thread library for multithreading support
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
+#include <boost/thread/recursive_mutex.hpp>
+
+#include "util/Sleep.h"
+#include "util/Debug.h"
+
+namespace orxonox
+{
+  //static boost::thread_group network_threads;
+
+  static boost::recursive_mutex enet_mutex_g;
+
+  ClientConnection::ClientConnection(int port, const std::string& address) {
+    quit_=false;
+    server=NULL;
+    serverAddress = new ENetAddress();
+    enet_address_set_host(serverAddress, address.c_str());
+    serverAddress->port = port;
+    established=false;
+  }
+
+  ClientConnection::ClientConnection(int port, const char *address) {
+    quit_=false;
+    server=NULL;
+    serverAddress = new ENetAddress();
+    enet_address_set_host(serverAddress, address);
+    serverAddress->port = port;
+    established=false;
+  }
+
+  bool ClientConnection::waitEstablished(int milisec) {
+    for(int i=0; i<=milisec && !established; i++)
+      msleep(1);
+
+    return established;
+  }
+
+  ClientConnection::~ClientConnection(){
+    if(established)
+      closeConnection();
+    delete serverAddress; // surely was created
+  }
+
+  ENetEvent *ClientConnection::getEvent(){
+    if(!buffer.isEmpty())
+      return buffer.pop();
+    else
+      return NULL;
+  }
+
+  bool ClientConnection::queueEmpty() {
+    return buffer.isEmpty();
+  }
+
+  bool ClientConnection::createConnection() {
+    receiverThread_ = new boost::thread(boost::bind(&ClientConnection::receiverThread, this));
+    //network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
+    // wait 10 seconds for the connection to be established
+    return waitEstablished(NETWORK_CLIENT_CONNECT_TIMEOUT);
+  }
+
+  bool ClientConnection::closeConnection() {
+    quit_=true;
+    //network_threads.join_all();
+    receiverThread_->join();
+    established=false;
+    return true;
+  }
+
+
+  bool ClientConnection::addPacket(ENetPacket *packet) {
+    if(server==NULL)
+      return false;
+    if(packet==NULL){
+      COUT(3) << "Cl.con: addpacket: invalid packet" << std::endl;
+      return false;
+    }
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+    if(enet_peer_send(server, 0, packet)<0)
+      return false;
+    else
+      return true;
+  }
+
+  bool ClientConnection::sendPackets() {
+    if(server==NULL)
+      return false;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+    enet_host_flush(client);
+    lock.unlock();
+    return true;
+  }
+
+  void ClientConnection::receiverThread() {
+    // what about some error-handling here ?
+    atexit(enet_deinitialize);
+    ENetEvent *event;
+    {
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+      enet_initialize();
+      client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
+      lock.unlock();
+    }
+    if(client==NULL) {
+      COUT(2) << "ClientConnection: could not create client host" << std::endl;
+      // add some error handling here ==========================
+      quit_=true;
+    }
+    //connect to the server
+    if(!establishConnection()){
+      COUT(2) << "clientConn: receiver thread: could not establishConnection" << std::endl;
+      quit_=true;
+      return;
+    }
+    event = new ENetEvent;
+    //main loop
+    while(!quit_){
+      //std::cout << "connection loop" << std::endl;
+      {
+        boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+        if(enet_host_service(client, event, NETWORK_CLIENT_WAIT_TIME)<0){
+          // we should never reach this point
+// 	        assert(0);
+          printf("ClientConnection: ENet returned with an error!\n");
+//           quit_=true;
+          continue;
+          // add some error handling here ========================
+        }
+        lock.unlock();
+      }
+      switch(event->type){
+        // log handling ================
+      case ENET_EVENT_TYPE_CONNECT:
+        break;
+      case ENET_EVENT_TYPE_RECEIVE:
+        //COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
+        if ( !processData(event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
+        //COUT(5) << "Cl.Con: processed Data in receiver-thread while loop" << std::endl;
+        event = new ENetEvent;
+        break;
+      case ENET_EVENT_TYPE_DISCONNECT:
+        quit_=true;
+        printf("Received disconnect Packet from Server!\n");
+        // server closed the connection
+        return;
+        break;
+      case ENET_EVENT_TYPE_NONE:
+        //receiverThread_->yield();
+        msleep(1);
+        break;
+      }
+    }
+    delete event;
+    // now disconnect
+
+    if(!disconnectConnection())
+    {
+      printf("could not disconnect properly\n");
+      // if disconnecting failed destroy conn.
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+      enet_peer_reset(server);
+    }
+    else
+      printf("properly disconnected\n");
+    return;
+  }
+
+  bool ClientConnection::disconnectConnection() {
+    ENetEvent event;
+    if(this->quit_)
+      return true;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+    enet_peer_disconnect(server, 0);
+    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME) >= 0){
+      switch (event.type)
+      {
+      case ENET_EVENT_TYPE_NONE:
+      case ENET_EVENT_TYPE_CONNECT:
+      case ENET_EVENT_TYPE_RECEIVE:
+        enet_packet_destroy(event.packet);
+        break;
+      case ENET_EVENT_TYPE_DISCONNECT:
+        printf("received disconnect confirmation from server");
+        return true;
+      }
+    }
+    enet_peer_reset(server);
+    return false;
+  }
+
+  bool ClientConnection::establishConnection() {
+    ENetEvent event;
+    // connect to peer (server is type ENetPeer*)
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_g);
+    server = enet_host_connect(client, serverAddress, NETWORK_CLIENT_CHANNELS);
+    if(server==NULL) {
+      COUT(2) << "ClientConnection: server == NULL" << std::endl;
+      // error handling
+      return false;
+    }
+    // handshake
+    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && !quit_){
+      if( event.type == ENET_EVENT_TYPE_CONNECT ){
+        established=true;
+        return true;
+      }
+    }
+    COUT(2) << "ClientConnection: enet_host_service < 0 or event.type != ENET_EVENT_TYPE_CONNECT # EVENT:" << event.type << std::endl;
+    return false;
+  }
+
+  bool ClientConnection::processData(ENetEvent *event) {
+    COUT(5) << "Cl.Con: got packet, pushing to queue" << std::endl;
+    // just add packet to the buffer
+    // this can be extended with some preprocessing
+    return buffer.push(event);
+  }
+
+}
