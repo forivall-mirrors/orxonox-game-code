@@ -111,7 +111,7 @@ namespace orxonox
 
 namespace orxonox
 {
-    std::string clipboard = ""; //!< Keeps the text of our internal clipboard
+    static std::string clipboard = ""; //!< Keeps the text of our internal clipboard
 
     /**
         @brief Default implementation if there is no OS-specific implementation or no clipboard. Copies the text into an internal clipboard.

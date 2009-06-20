@@ -30,9 +30,7 @@
 #define _Mesh_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <string>
-#include <OgrePrerequisites.h>
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
@@ -57,10 +55,11 @@ namespace orxonox
                 { return this->bCastShadows_; }
 
         private:
-            static unsigned int meshCounter_s;
             Ogre::Entity* entity_;
             bool bCastShadows_;
             Ogre::SceneManager* scenemanager_;
+
+            static unsigned int meshCounter_s;
     };
 }
 

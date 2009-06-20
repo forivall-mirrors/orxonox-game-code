@@ -34,13 +34,12 @@
     Newly created objects are added through the RegisterObject-macro in its constructor.
 */
 
-#include <set>
-
-#include "CorePrereqs.h"
-
 #include "ObjectListBase.h"
+
+#include <set>
 #include "Identifier.h"
 #include "Iterator.h"
+#include "ObjectListIterator.h"
 
 namespace orxonox
 {

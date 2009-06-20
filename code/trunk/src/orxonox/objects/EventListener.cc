@@ -29,7 +29,6 @@
 #include "EventListener.h"
 
 #include "core/CoreIncludes.h"
-#include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 
 namespace orxonox

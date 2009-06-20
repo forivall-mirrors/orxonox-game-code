@@ -26,16 +26,8 @@
 
 #include "Scoreboard.h"
 
-#include <string>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
-
 #include "util/Convert.h"
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/infos/PlayerInfo.h"
 #include "CreateLines.h"
@@ -100,9 +92,9 @@ namespace orxonox
         unsigned int index = 0;
         for (std::map<PlayerInfo*, Player>::const_iterator it = playerList.begin(); it != playerList.end(); ++it)
         {
-            this->lines_[index]->setPlayerName(omni_cast<std::string>(it->first->getName()));
-            this->lines_[index]->setScore(omni_cast<std::string>(it->second.frags_));
-            this->lines_[index]->setDeaths(omni_cast<std::string>(it->second.killed_));
+            this->lines_[index]->setPlayerName(multi_cast<std::string>(it->first->getName()));
+            this->lines_[index]->setScore(multi_cast<std::string>(it->second.frags_));
+            this->lines_[index]->setDeaths(multi_cast<std::string>(it->second.killed_));
             index++;
         }
 

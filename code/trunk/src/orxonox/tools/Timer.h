@@ -61,9 +61,10 @@
 #define _Timer_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include "core/Executor.h"
 #include "core/OrxonoxClass.h"
-#include "tools/TimeFactorListener.h"
+#include "interfaces/TimeFactorListener.h"
 
 namespace orxonox
 {

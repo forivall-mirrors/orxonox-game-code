@@ -27,9 +27,10 @@
  */
 
 #include "CommandExecutor.h"
-#include "ConsoleCommand.h"
-#include "util/String.h"
+
 #include "util/Debug.h"
+#include "util/String.h"
+#include "ConsoleCommand.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "TclBind.h"

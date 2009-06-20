@@ -31,9 +31,8 @@
 
 #include "CorePrereqs.h"
 
-#include <map>
-
-#include "XMLIncludes.h"
+#include <set>
+#include <string>
 #include "BaseObject.h"
 
 namespace orxonox

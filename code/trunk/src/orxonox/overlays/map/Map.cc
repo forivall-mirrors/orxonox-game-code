@@ -23,38 +23,39 @@
  *      Si Sun
  *
  */
+
 #include "Map.h"
 
 #include <string>
-#include "util/String.h"
+
+#include <OgreBorderPanelOverlayElement.h>
+#include <OgreCamera.h>
+#include <OgreEntity.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreMaterialManager.h>
+#include <OgreMovablePlane.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayContainer.h>
+#include <OgreOverlayManager.h>
+#include <OgrePass.h>
+#include <OgreRenderTexture.h>
+#include <OgreResourceGroupManager.h>
+#include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <OgreEntity.h>
-#include <OgreNode.h>
-
-
-#include <OgreRenderWindow.h>
-#include <OgreRenderTexture.h>
+#include <OgreTechnique.h>
 #include <OgreTexture.h>
+#include <OgreTextureManager.h>
 #include <OgreViewport.h>
 
-#include <OgreMaterialManager.h>
-#include <OgreRoot.h>
-#include <OgreHardwarePixelBuffer.h>
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/worldentities/CameraPosition.h"
-
-#include <OgreOverlay.h>
-#include <OgreMovablePlane.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
-#include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "interfaces/RadarViewable.h"
 #include "objects/Scene.h"
-#include "objects/RadarViewable.h"
 #include "objects/controllers/HumanController.h"
+#include "objects/worldentities/CameraPosition.h"
+#include "objects/worldentities/ControllableEntity.h"
 
  namespace orxonox
  {
@@ -263,7 +264,7 @@ Ogre::MaterialPtr Map::init()
         }*/
     }
 
-    Ogre::MaterialPtr Map::createRenderCamera(Ogre::Camera * cam, std::string matName)
+    Ogre::MaterialPtr Map::createRenderCamera(Ogre::Camera * cam, const std::string& matName)
     {
         Ogre::TexturePtr rttTex = Ogre::TextureManager::getSingleton().createManual(matName+"_tex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 512, 512, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
@@ -397,6 +398,12 @@ Ogre::MaterialPtr Map::init()
         it->toggleVisibility();
         //it->updatePositions();
         }
+    }
+
+    // HACK!
+    void Map::hackDestroyMap()
+    {
+        Map::OverlayMaterial_.setNull();
     }
 
     void Map::tick(float dt)

@@ -33,17 +33,14 @@
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
 #include <OgrePlugin.h>
-
-#include "core/GameMode.h"
-#include "core/CoreIncludes.h"
-#include "core/Executor.h"
-#include "GraphicsManager.h"
-#include "util/Exception.h"
-
 #include <OgreMaterial.h>
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreMaterialManager.h>
+
+#include "core/CoreIncludes.h"
+#include "core/GameMode.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -218,7 +215,7 @@ namespace orxonox
             if (pointer->first)
                 return (*((float*)pointer->second));
             else
-                return (*((int*)pointer->second));
+                return static_cast<float>(*((int*)pointer->second));
         }
         else
             return 0;

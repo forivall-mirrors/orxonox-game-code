@@ -29,8 +29,10 @@
 #include "SpawnPoint.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Template.h"
 #include "core/XMLPort.h"
 #include "objects/gametypes/Gametype.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -68,6 +70,12 @@ namespace orxonox
     {
         this->templatename_ = name;
         this->template_ = Template::getTemplate(name);
+    }
+
+    void SpawnPoint::setTemplate(Template* temp)
+    {
+        this->template_ = temp;
+        this->templatename_ = temp->getName();
     }
 
     Pawn* SpawnPoint::spawn()

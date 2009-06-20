@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Iterator.h
+    @file
     @brief Definition and implementation of the Iterator class.
 
     The ObjectListIterator of a given class allows to iterate through the
@@ -46,7 +46,8 @@
 #define _ObjectListIterator_H__
 
 #include "CorePrereqs.h"
-#include "ObjectListBase.h"
+#include "Identifier.h"
+#include "ObjectList.h"
 
 namespace orxonox
 {
@@ -228,8 +229,5 @@ namespace orxonox
             ObjectListElement<T>* element_;        //!< The element the Iterator points at
     };
 }
-
-// Include ObjectList.h so the user only has to include one file: Iterator.h
-#include "ObjectList.h"
 
 #endif /* _ObjectListIterator_H__ */

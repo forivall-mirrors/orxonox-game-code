@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgrePrerequisites.h>
+#include "util/OgreForwardRefs.h"
+#include "interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {
@@ -41,7 +41,7 @@ namespace orxonox
     {
     public:
         HUDNavigation(BaseObject* creator);
-        ~HUDNavigation();
+        virtual ~HUDNavigation();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);

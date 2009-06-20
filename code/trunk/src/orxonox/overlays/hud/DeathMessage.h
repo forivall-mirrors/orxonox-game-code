@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "interfaces/GametypeMessageListener.h"
 #include "overlays/FadeoutText.h"
-#include "objects/GametypeMessageListener.h"
 
 namespace orxonox
 {

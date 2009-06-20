@@ -28,14 +28,12 @@
 
 #include "Camera.h"
 
-#include <string>
-#include <cassert>
-
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
 #include "util/Exception.h"
+#include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"

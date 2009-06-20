@@ -30,8 +30,8 @@
 #define _Bot_H__
 
 #include "OrxonoxPrereqs.h"
-#include <vector>
 
+#include <vector>
 #include "PlayerInfo.h"
 
 namespace orxonox

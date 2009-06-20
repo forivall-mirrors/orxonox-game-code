@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestManager.h
+    @file
     @brief Definition of the QuestManager class.
 */
 
@@ -36,13 +36,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <map>
 #include <list>
+#include <map>
 #include <string>
-
 #include "core/OrxonoxClass.h"
-#include "orxonox/objects/infos/PlayerInfo.h"
-#include "overlays/GUIOverlay.h"
 
 // tolua_begin
 namespace orxonox

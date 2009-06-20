@@ -66,28 +66,8 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
   ELSE()
     INCLUDE(PackageConfigMinGW)
     INCLUDE(PackageConfigMSVC)
-
-    # On Windows, DLLs have to be in the executable folder, install them
-    IF(DEP_BINARY_DIR AND WIN32)
-      # When installing a debug version, we really can't know which libraries
-      # are used in released mode because there might be deps of deps.
-      INSTALL(
-        DIRECTORY ${DEP_BINARY_DIR}/
-        DESTINATION bin
-        CONFIGURATIONS Debug
-        REGEX "^.*\\.pdb$" EXCLUDE
-      )
-
-      # Try to filter out all the debug libraries. If the regex doesn't do the
-      # job anymore, simply adjust it.
-      INSTALL(
-        DIRECTORY ${DEP_BINARY_DIR}/
-        DESTINATION bin
-        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
-        REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
-      )
-    ENDIF(DEP_BINARY_DIR AND WIN32)
-  ENDIF(NOT DEPENDENCY_PACKAGE_DIR)
+    INCLUDE(PackageConfig) # For both msvc and mingw
+  ENDIF()
 ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
 # User script
@@ -171,7 +151,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 
 ##### Boost #####
 # Expand the next statement if newer boost versions than 1.36.1 are released
-SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0)
+SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 1.38 1.38.0 1.39 1.39.0)
 # MSVC seems to be the only compiler requiring date_time
 IF(MSVC)
   FIND_PACKAGE(Boost 1.34 REQUIRED thread filesystem date_time)

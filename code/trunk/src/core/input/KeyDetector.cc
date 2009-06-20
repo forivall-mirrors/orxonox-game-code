@@ -33,11 +33,9 @@
 */
 
 #include "KeyDetector.h"
+
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "core/CommandExecutor.h"
-#include "core/CommandEvaluation.h"
-#include "InputCommands.h"
 #include "Button.h"
 
 namespace orxonox

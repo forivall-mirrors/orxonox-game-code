@@ -31,11 +31,12 @@
 #define _WeaponMode_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/BaseObject.h"
 
-#include "tools/Timer.h"
-#include "core/Identifier.h"
+#include <string>
 #include "util/Math.h"
+#include "core/BaseObject.h"
+#include "core/Identifier.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {

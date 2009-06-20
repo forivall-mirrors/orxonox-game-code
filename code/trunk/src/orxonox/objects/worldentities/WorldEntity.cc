@@ -29,16 +29,20 @@
 
 #include "WorldEntity.h"
 
-#include <cassert>
-#include <OgreSceneNode.h>
+#include <OgreBillboardSet.h>
+#include <OgreCamera.h>
+#include <OgreEntity.h>
+#include <OgreParticleSystem.h>
 #include <OgreSceneManager.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <OgreSceneNode.h>
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include <boost/static_assert.hpp>
 
-#include "util/Exception.h"
+#include "util/OrxAssert.h"
 #include "util/Convert.h"
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "objects/Scene.h"
 #include "objects/collisionshapes/WorldEntityCollisionShape.h"
 
@@ -50,6 +54,11 @@ namespace orxonox
     const Vector3 WorldEntity::RIGHT = Vector3::UNIT_X;
     const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
     const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
+
+    // Be sure we don't do bad conversions
+    BOOST_STATIC_ASSERT((int)Ogre::Node::TS_LOCAL  == (int)WorldEntity::Local);
+    BOOST_STATIC_ASSERT((int)Ogre::Node::TS_PARENT == (int)WorldEntity::Parent);
+    BOOST_STATIC_ASSERT((int)Ogre::Node::TS_WORLD  == (int)WorldEntity::World);
 
     /**
     @brief
@@ -462,15 +471,27 @@ namespace orxonox
 
     //! Attaches an Ogre::MovableObject to this WorldEntity.
     void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
-    {
-        this->node_->attachObject(object);
-    }
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::BillboardSet* object)
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::Camera* object)
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::Entity* object)
+        { this->node_->attachObject(object); }
+    void WorldEntity::attachOgreObject(Ogre::ParticleSystem* object)
+        { this->node_->attachObject(object); }
 
     //! Detaches an Ogre::MovableObject from this WorldEntity.
     void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
-    {
-        this->node_->detachObject(object);
-    }
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::BillboardSet* object)
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::Camera* object)
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::Entity* object)
+        { this->node_->detachObject(object); }
+    void WorldEntity::detachOgreObject(Ogre::ParticleSystem* object)
+        { this->node_->detachObject(object); }
 
     //! Detaches an Ogre::MovableObject (by string) from this WorldEntity.
     Ogre::MovableObject* WorldEntity::detachOgreObject(const Ogre::String& name)
@@ -500,7 +521,7 @@ namespace orxonox
     }
 
     // Note: These functions are placed in WorldEntity.h as inline functions for the release build.
-#ifndef NDEBUG
+#ifndef ORXONOX_RELEASE
     const Vector3& WorldEntity::getPosition() const
     {
         return this->node_->getPosition();
@@ -573,20 +594,20 @@ HACK HACK HACK
     @brief
         Translates this WorldEntity by a vector.
     @param relativeTo
-        @see TransformSpace::Enum
+        @see WorldEntity::TransformSpace
     */
-    void WorldEntity::translate(const Vector3& distance, TransformSpace::Enum relativeTo)
+    void WorldEntity::translate(const Vector3& distance, TransformSpace relativeTo)
     {
         switch (relativeTo)
         {
-        case TransformSpace::Local:
+        case WorldEntity::Local:
             // position is relative to parent so transform downwards
             this->setPosition(this->getPosition() + this->getOrientation() * distance);
             break;
-        case TransformSpace::Parent:
+        case WorldEntity::Parent:
             this->setPosition(this->getPosition() + distance);
             break;
-        case TransformSpace::World:
+        case WorldEntity::World:
             // position is relative to parent so transform upwards
             if (this->node_->getParent())
                 setPosition(getPosition() + (node_->getParent()->_getDerivedOrientation().Inverse() * distance)
@@ -601,20 +622,20 @@ HACK HACK HACK
     @brief
         Rotates this WorldEntity by a quaternion.
     @param relativeTo
-        @see TransformSpace::Enum
+        @see WorldEntity::TransformSpace
     */
-    void WorldEntity::rotate(const Quaternion& rotation, TransformSpace::Enum relativeTo)
+    void WorldEntity::rotate(const Quaternion& rotation, TransformSpace relativeTo)
     {
         switch(relativeTo)
         {
-        case TransformSpace::Local:
+        case WorldEntity::Local:
             this->setOrientation(this->getOrientation() * rotation);
             break;
-        case TransformSpace::Parent:
+        case WorldEntity::Parent:
             // Rotations are normally relative to local axes, transform up
             this->setOrientation(rotation * this->getOrientation());
             break;
-        case TransformSpace::World:
+        case WorldEntity::World:
             // Rotations are normally relative to local axes, transform up
             this->setOrientation(this->getOrientation() * this->getWorldOrientation().Inverse()
                 * rotation * this->getWorldOrientation());
@@ -626,22 +647,22 @@ HACK HACK HACK
     @brief
         Makes this WorldEntity look a specific target location.
     @param relativeTo
-        @see TransformSpace::Enum
+        @see WorldEntity::TransformSpace
     @param localDirectionVector
         The vector which normally describes the natural direction of the object, usually -Z.
     */
-    void WorldEntity::lookAt(const Vector3& target, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
+    void WorldEntity::lookAt(const Vector3& target, TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
-        Vector3 origin;
+        Vector3 origin(0, 0, 0);
         switch (relativeTo)
         {
-        case TransformSpace::Local:
+        case WorldEntity::Local:
             origin = Vector3::ZERO;
             break;
-        case TransformSpace::Parent:
+        case WorldEntity::Parent:
             origin = this->getPosition();
             break;
-        case TransformSpace::World:
+        case WorldEntity::World:
             origin = this->getWorldPosition();
             break;
         }
@@ -652,25 +673,14 @@ HACK HACK HACK
     @brief
         Makes this WorldEntity look in specific direction.
     @param relativeTo
-        @see TransformSpace::Enum
+        @see WorldEntity::TransformSpace
     @param localDirectionVector
         The vector which normally describes the natural direction of the object, usually -Z.
     */
-    void WorldEntity::setDirection(const Vector3& direction, TransformSpace::Enum relativeTo, const Vector3& localDirectionVector)
+    void WorldEntity::setDirection(const Vector3& direction, TransformSpace relativeTo, const Vector3& localDirectionVector)
     {
         Quaternion savedOrientation(this->getOrientation());
-        Ogre::Node::TransformSpace ogreRelativeTo;
-        switch (relativeTo)
-        {
-        case TransformSpace::Local:
-            ogreRelativeTo = Ogre::Node::TS_LOCAL; break;
-        case TransformSpace::Parent:
-            ogreRelativeTo = Ogre::Node::TS_PARENT; break;
-        case TransformSpace::World:
-            ogreRelativeTo = Ogre::Node::TS_WORLD; break;
-        default: OrxAssert(false, "Faulty TransformSpace::Enum assigned.");
-        }
-        this->node_->setDirection(direction, ogreRelativeTo, localDirectionVector);
+        this->node_->setDirection(direction, static_cast<Ogre::Node::TransformSpace>(relativeTo), localDirectionVector);
         Quaternion newOrientation(this->node_->getOrientation());
         this->node_->setOrientation(savedOrientation);
         this->setOrientation(newOrientation);
@@ -771,10 +781,10 @@ HACK HACK HACK
             this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT & !btCollisionObject::CF_KINEMATIC_OBJECT);
             break;
         case Kinematic:
-            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_KINEMATIC_OBJECT);
+            this->physicalBody_->setCollisionFlags((this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_STATIC_OBJECT) | btCollisionObject::CF_KINEMATIC_OBJECT);
             break;
         case Static:
-            this->physicalBody_->setCollisionFlags(this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_STATIC_OBJECT);
+            this->physicalBody_->setCollisionFlags((this->physicalBody_->getCollisionFlags() & !btCollisionObject::CF_KINEMATIC_OBJECT) | btCollisionObject::CF_STATIC_OBJECT);
             break;
         case None:
             assert(false); // Doesn't happen

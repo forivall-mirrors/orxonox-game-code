@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestHint.h
+    @file
     @brief Definition of the QuestHint class.
 */
 
@@ -37,9 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
-#include <string>
-
-#include "core/XMLPort.h"
 #include "QuestItem.h"
 
 namespace orxonox

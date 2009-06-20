@@ -30,7 +30,6 @@
 #define _Asteroids_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "Gametype.h"
 
 namespace orxonox

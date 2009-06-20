@@ -31,7 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgreTextAreaOverlayElement.h>
+#include <list>
+#include <OgreUTFString.h>
 
 #include "network/ChatListener.h"
 #include "overlays/OverlayText.h"
@@ -42,7 +43,7 @@ namespace orxonox
     {
         public:
             ChatOverlay(BaseObject* creator);
-            ~ChatOverlay();
+            virtual ~ChatOverlay();
 
             void setConfigValues();
 

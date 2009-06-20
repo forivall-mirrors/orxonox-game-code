@@ -35,7 +35,9 @@
 #include <string>
 #include <map>
 #include <cassert>
+#include <boost/preprocessor/cat.hpp>
 #include "util/MultiType.h"
+#include "core/Functor.h"
 #include "synchronisable/Synchronisable.h"
 #include "OrxonoxConfig.h"
 #include "FunctionCallManager.h"
@@ -213,9 +215,9 @@ template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT pt
 }
 
 #define registerStaticNetworkFunction( functionPointer ) \
-  static void* MACRO_CONCATENATE( NETWORK_FUNCTION_, __LINE__ ) = registerStaticNetworkFunctionFct( functionPointer, #functionPointer );
+  static void* BOOST_PP_CAT( NETWORK_FUNCTION_, __LINE__ ) = registerStaticNetworkFunctionFct( functionPointer, #functionPointer );
 #define registerMemberNetworkFunction( class, function ) \
-  static void* MACRO_CONCATENATE( NETWORK_FUNCTION_##class, __LINE__ ) = registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function);
+  static void* BOOST_PP_CAT( NETWORK_FUNCTION_##class, __LINE__ ) = registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function);
   // call it with functionPointer, clientID, args
 #define callStaticNetworkFunction( functionPointer, ...) \
   { \

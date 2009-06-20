@@ -30,8 +30,10 @@
 #define _Backlight_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <string>
+#include "interfaces/TimeFactorListener.h"
 #include "FadingBillboard.h"
-#include "tools/TimeFactorListener.h"
 
 namespace orxonox
 {

@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgrePrerequisites.h>
+#include "util/OgreForwardRefs.h"
+#include "interfaces/Tickable.h"
 #include "objects/worldentities/StaticEntity.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {

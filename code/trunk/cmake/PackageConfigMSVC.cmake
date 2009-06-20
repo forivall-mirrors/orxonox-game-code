@@ -27,13 +27,6 @@
 
 IF(MSVC)
 
-  # MAJOR: Interface breaking change somewhere or added a new library
-  # MINOR: Updated a library to a new version
-  # PATCH: Bug fix or smaller things
-  SET(DEPENDENCY_VERSION 0.0.1)
-
-  MESSAGE(STATUS "Using library package for the dependencies.")
-
   # 64 bit system?
   IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
     SET(BINARY_POSTFIX x64)
@@ -44,9 +37,6 @@ IF(MSVC)
   # Choose right MSVC version
   STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
          _msvc_version "${CMAKE_GENERATOR}")
-  IF(MSVC71)
-    SET(_msvc_version "7.1")
-  ENDIF(MSVC71)
 
   SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
   SET(DEP_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/lib/msvc${_msvc_version}-${BINARY_POSTFIX})
@@ -61,21 +51,15 @@ IF(MSVC)
   # Sets the library path for the FIND_LIBRARY
   SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 
-  # Include paths and other special treatments
-  SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut-1.1.0)
-  SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost-1.37.0)
-  SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui-0.6.2)
-  SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx-2007.aug)
-  SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet-1.2)
-  SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua-5.1.4)
-  SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg-1.1.3)
-  SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis-1.2.0)
-  SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre-1.4.9)
-  SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
-  SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal-1.1)
-  LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl-8.5.2/include)
-  SET(TCL_LIBRARY                ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
-  LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib-1.2.3/include)
-  SET(ZLIB_LIBRARY               ${DEP_LIBRARY_DIR}/zdll.lib CACHE FILEPATH "")
+  # Certain find scripts don't behave as ecpected to we have
+  # to specify the libraries ourselves.
+  SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
+  SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
+
+  # Visual Leak Detector
+  SET(VLD_INCLUDE_DIR  ${DEP_INCLUDE_DIR}/vld-1.9h CACHE PATH "")
+  SET(VLD_LIBRARY_DIR  ${DEP_LIBRARY_DIR}          CACHE PATH "")
+  LINK_DIRECTORIES(${VLD_LIBRARY_DIR}) # Used for auto-linking
+  MARK_AS_ADVANCED(VLD_INCLUDE_DIR VLD_LIBRARY_DIR)
 
 ENDIF(MSVC)

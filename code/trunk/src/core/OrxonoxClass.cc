@@ -32,6 +32,7 @@
 */
 
 #include "OrxonoxClass.h"
+
 #include "MetaObjectList.h"
 #include "Identifier.h"
 

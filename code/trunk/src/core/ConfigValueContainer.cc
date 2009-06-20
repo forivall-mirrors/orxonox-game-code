@@ -33,14 +33,9 @@
 
 #include "ConfigValueContainer.h"
 
-#include <fstream>
-
-#include "util/SubString.h"
 #include "util/Convert.h"
+#include "util/SubString.h"
 #include "Language.h"
-#include "Identifier.h"
-
-
 
 namespace orxonox
 {
@@ -302,7 +297,7 @@ namespace orxonox
         bool success = false;
 
         if (token.size() > 0)
-            success = ConvertValue(&index, token[0]);
+            success = convertValue(&index, token[0]);
 
         if (!success || index < 0 || index > (signed int)MAX_VECTOR_INDEX)
         {

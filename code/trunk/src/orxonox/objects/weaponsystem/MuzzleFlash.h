@@ -30,9 +30,9 @@
 #define _MuzzleFlash_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/worldentities/Billboard.h"
-#include "tools/Timer.h"
 
+#include "tools/Timer.h"
+#include "objects/worldentities/Billboard.h"
 
 namespace orxonox
 {

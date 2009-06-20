@@ -25,13 +25,11 @@
  *      ...
  *
  */
-#ifndef _SOUNDBASE_H__
-#define _SOUNDBASE_H__
-
-#include <AL/al.h>
-#include <string>
+#ifndef _SoundBase_H__
+#define _SoundBase_H__
 
 #include "OrxonoxPrereqs.h"
+#include <cstring> // define NULL
 
 namespace orxonox
 {
@@ -59,15 +57,13 @@ namespace orxonox
         bool loadFile(std::string filename);
 
     private:
-        ALuint loadOggFile(std::string filename);
+        ALuint loadOggFile(const std::string& filename);
         ALuint source_;
         ALuint buffer_;
         WorldEntity* entity_;
 
         ALint getSourceState();
-
-        static SoundManager* soundmanager_s;
     }; // class SoundBase
 } // namepsace orxonox
 
-#endif // _SOUNDBASE_H__
+#endif /* _SoundBase_H__ */

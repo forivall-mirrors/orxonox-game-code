@@ -27,7 +27,6 @@
  */
 
 #include "PassiveItem.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -39,9 +38,5 @@ namespace orxonox
     PassiveItem::PassiveItem(BaseObject* creator) : BaseItem(creator)
     {
         RegisterObject(PassiveItem);
-    }
-    //! Deconstructor.
-    PassiveItem::~PassiveItem()
-    {
     }
 }

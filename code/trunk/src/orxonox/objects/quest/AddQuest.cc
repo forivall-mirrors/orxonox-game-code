@@ -27,20 +27,15 @@
  */
 
 /**
-    @file AddQuest.cc
+    @file
     @brief Implementation of the AddQuest class.
 */
 
 #include "AddQuest.h"
 
-#include <string>
-
-#include "core/CoreIncludes.h"
 #include "util/Exception.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/CoreIncludes.h"
 #include "QuestManager.h"
-#include "QuestDescription.h"
 #include "Quest.h"
 
 namespace orxonox

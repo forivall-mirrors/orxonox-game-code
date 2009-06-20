@@ -28,9 +28,8 @@
 
 #include "CompoundCollisionShape.h"
 
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
@@ -88,7 +87,7 @@ namespace orxonox
         if (shape->getCollisionShape())
         {
             // Only actually attach if we didn't pick a CompoundCollisionShape with no content
-            btTransform transf(omni_cast<btQuaternion>(shape->getOrientation()), omni_cast<btVector3>(shape->getPosition()));
+            btTransform transf(multi_cast<btQuaternion>(shape->getOrientation()), multi_cast<btVector3>(shape->getPosition()));
             this->compoundShape_->addChildShape(transf, shape->getCollisionShape());
 
             this->updatePublicShape();
@@ -133,7 +132,7 @@ namespace orxonox
         if (shape->getCollisionShape())
         {
             // Only actually attach if we didn't pick a CompoundCollisionShape with no content
-            btTransform transf(omni_cast<btQuaternion>(shape->getOrientation()), omni_cast<btVector3>(shape->getPosition()));
+            btTransform transf(multi_cast<btQuaternion>(shape->getOrientation()), multi_cast<btVector3>(shape->getPosition()));
             this->compoundShape_->addChildShape(transf, shape->getCollisionShape());
             it->second = shape->getCollisionShape();
         }

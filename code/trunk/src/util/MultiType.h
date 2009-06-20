@@ -68,9 +68,13 @@
 
 #include "UtilPrereqs.h"
 
-#include <boost/static_assert.hpp>
-
-#include "Math.h"
+#include <cassert>
+#include <string>
+#include <OgreVector2.h>
+#include <OgreVector3.h>
+#include <OgreVector4.h>
+#include <OgreQuaternion.h>
+#include <OgreColourValue.h>
 
 namespace orxonox
 {
@@ -440,7 +444,7 @@ namespace orxonox
             /** @brief Changes the value container. */
             template <typename T> inline void changeValueContainer(const T& value) { if (this->value_) { delete this->value_; } this->createNewValueContainer<T>(value); }
             /** @brief Creates a new value container (works only with specialized types). */
-            template <typename T>        void createNewValueContainer(const T& value) { BOOST_STATIC_ASSERT(sizeof(T) == 0); return false; }
+            template <typename T>        void createNewValueContainer(const T& value) { /* STATIC ASSERT */ *****value; return false; }
 
             MT_ValueBase* value_; //!< A pointer to the value container
     };

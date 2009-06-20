@@ -28,13 +28,8 @@
 
 #include "GSStandalone.h"
 
-#include <OgreViewport.h>
-#include <OgreCamera.h>
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/ConsoleCommand.h"
-#include "gui/GUIManager.h"
-#include "GraphicsManager.h"
 
 namespace orxonox
 {

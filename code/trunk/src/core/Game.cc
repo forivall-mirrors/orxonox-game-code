@@ -35,7 +35,7 @@
 #include "Game.h"
 
 #include <exception>
-#include <cassert>
+#include <boost/weak_ptr.hpp>
 
 #include "util/Debug.h"
 #include "util/Exception.h"
@@ -50,15 +50,18 @@
 
 namespace orxonox
 {
+    using boost::shared_ptr;
+    using boost::weak_ptr;
+
     static void stop_game()
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
     struct _CoreExport GameStateTreeNode
     {
-        GameState*                      state_;
-        GameStateTreeNode*              parent_;
-        std::vector<GameStateTreeNode*> children_;
+        GameState* state_;
+        weak_ptr<GameStateTreeNode> parent_;
+        std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
     std::map<std::string, GameState*> Game::allStates_s;
@@ -72,9 +75,6 @@ namespace orxonox
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
-
-        this->rootStateNode_ = 0;
-        this->activeStateNode_ = 0;
 
         this->abort_ = false;
 
@@ -104,10 +104,6 @@ namespace orxonox
     {
         // Destroy pretty much everyhting left
         delete this->core_;
-
-        // Delete all the created nodes
-        for (std::vector<GameStateTreeNode*>::const_iterator it = this->allStateNodes_.begin(); it != this->allStateNodes_.end(); ++it)
-            delete *it;
 
         delete this->gameClock_;
 
@@ -171,8 +167,8 @@ namespace orxonox
             while (this->requestedStateNodes_.size() > 1)
             {
                 // Note: this->requestedStateNodes_.front() is the currently active state node
-                std::vector<GameStateTreeNode*>::iterator it = this->requestedStateNodes_.begin() + 1;
-                if (*it == this->activeStateNode_->parent_)
+                std::vector<shared_ptr<GameStateTreeNode> >::iterator it = this->requestedStateNodes_.begin() + 1;
+                if (*it == this->activeStateNode_->parent_.lock())
                     this->unloadState(this->activeStateNode_->state_);
                 else // has to be child
                     this->loadState((*it)->state_);
@@ -193,7 +189,7 @@ namespace orxonox
                 (*it)->update(*this->gameClock_);
 
                 if ((*it)->getCountTickTime())
-                    this->addTickTime(this->gameClock_->getRealMicroseconds() - timeBeforeTick);
+                    this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
             }
 
             // STATISTICS
@@ -215,8 +211,8 @@ namespace orxonox
                 }
 
                 uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-                this->avgFPS_ = (float)framesPerPeriod / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0;
-                this->avgTickTime_ = (float)this->periodTickTime_ / framesPerPeriod / 1000.0;
+                this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
+                this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
                 this->periodTime_ -= this->statisticsRefreshCycle_;
             }
@@ -225,7 +221,7 @@ namespace orxonox
         // UNLOAD all remaining states
         while (!this->activeStates_.empty())
             this->unloadState(this->activeStates_.back());
-        this->activeStateNode_ = 0;
+        this->activeStateNode_.reset();
         this->requestedStateNodes_.clear();
     }
 
@@ -250,10 +246,10 @@ namespace orxonox
         if (state == NULL || this->activeStateNode_ == NULL)
             return;
 
-        GameStateTreeNode* requestedNode = 0;
+        shared_ptr<GameStateTreeNode> requestedNode;
 
         // this->requestedStateNodes_.back() is the currently active state
-        GameStateTreeNode* lastRequestedNode = this->requestedStateNodes_.back();
+        shared_ptr<GameStateTreeNode> lastRequestedNode = this->requestedStateNodes_.back();
 
         // Already the active node?
         if (state == lastRequestedNode->state_)
@@ -273,12 +269,12 @@ namespace orxonox
         }
 
         // Check parent and all its grand parents
-        GameStateTreeNode* currentNode = lastRequestedNode;
+        shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
         while (requestedNode == NULL && currentNode != NULL)
         {
             if (currentNode->state_ == state)
                 requestedNode = currentNode;
-            currentNode = currentNode->parent_;
+            currentNode = currentNode->parent_.lock();
         }
 
         if (requestedNode == NULL)
@@ -296,8 +292,8 @@ namespace orxonox
 
     void Game::popState()
     {
-        if (this->activeStateNode_ != NULL && this->requestedStateNodes_.back()->parent_)
-            this->requestState(this->requestedStateNodes_.back()->parent_->state_->getName());
+        if (this->activeStateNode_ != NULL && this->requestedStateNodes_.back()->parent_.lock())
+            this->requestState(this->requestedStateNodes_.back()->parent_.lock()->state_->getName());
         else
             COUT(2) << "Warning: Could not pop GameState. Ignoring." << std::endl;
     }
@@ -332,7 +328,7 @@ namespace orxonox
                 str.substr(startPos, pos - startPos), indentation));
         }
         unsigned int currentLevel = 0;
-        GameStateTreeNode* currentNode = 0;
+        shared_ptr<GameStateTreeNode> currentNode;
         for (std::vector<std::pair<std::string, unsigned> >::const_iterator it = stateStrings.begin(); it != stateStrings.end(); ++it)
         {
             std::string newStateName = it->first;
@@ -345,30 +341,27 @@ namespace orxonox
                 // root
                 if (this->rootStateNode_ != NULL)
                     ThrowException(GameState, "No two root GameStates are allowed!");
-                GameStateTreeNode* newNode = new GameStateTreeNode;
-                this->allStateNodes_.push_back(newNode);
+                shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
                 newNode->state_ = newState;
-                newNode->parent_ = 0;
                 this->rootStateNode_ = newNode;
                 currentNode = this->rootStateNode_;
             }
             else if (currentNode)
             {
-                GameStateTreeNode* newNode = new GameStateTreeNode;
-                this->allStateNodes_.push_back(newNode);
+                shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
                 newNode->state_ = newState;
                 if (newLevel < currentLevel)
                 {
                     // Get down the hierarchy
                     do
-                        currentNode = currentNode->parent_;
+                        currentNode = currentNode->parent_.lock();
                     while (newLevel < --currentLevel);
                 }
                 if (newLevel == currentLevel)
                 {
                     // same level
                     newNode->parent_ = currentNode->parent_;
-                    newNode->parent_->children_.push_back(newNode);
+                    newNode->parent_.lock()->children_.push_back(newNode);
                 }
                 else if (newLevel == currentLevel + 1)
                 {

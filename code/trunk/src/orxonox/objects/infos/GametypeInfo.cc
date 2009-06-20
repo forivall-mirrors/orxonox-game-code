@@ -32,7 +32,7 @@
 #include "core/GameMode.h"
 #include "network/NetworkFunction.h"
 #include "network/Host.h"
-#include "objects/GametypeMessageListener.h"
+#include "interfaces/GametypeMessageListener.h"
 
 namespace orxonox
 {
@@ -67,7 +67,7 @@ namespace orxonox
         registerVariable(this->hudtemplate_,            variableDirection::toclient);
     }
 
-    void GametypeInfo::sendAnnounceMessage(const std::string& message) const
+    void GametypeInfo::sendAnnounceMessage(const std::string& message)
     {
         if (GameMode::isMaster())
         {
@@ -76,7 +76,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendAnnounceMessage(const std::string& message, unsigned int clientID) const
+    void GametypeInfo::sendAnnounceMessage(const std::string& message, unsigned int clientID)
     {
         if (GameMode::isMaster())
         {
@@ -87,7 +87,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendKillMessage(const std::string& message, unsigned int clientID) const
+    void GametypeInfo::sendKillMessage(const std::string& message, unsigned int clientID)
     {
         if (GameMode::isMaster())
         {
@@ -98,7 +98,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendDeathMessage(const std::string& message, unsigned int clientID) const
+    void GametypeInfo::sendDeathMessage(const std::string& message, unsigned int clientID)
     {
         if (GameMode::isMaster())
         {
@@ -109,19 +109,19 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::dispatchAnnounceMessage(const std::string& message) const
+    void GametypeInfo::dispatchAnnounceMessage(const std::string& message)
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->announcemessage(this, message);
     }
 
-    void GametypeInfo::dispatchKillMessage(const std::string& message) const
+    void GametypeInfo::dispatchKillMessage(const std::string& message)
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->killmessage(this, message);
     }
 
-    void GametypeInfo::dispatchDeathMessage(const std::string& message) const
+    void GametypeInfo::dispatchDeathMessage(const std::string& message)
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->deathmessage(this, message);

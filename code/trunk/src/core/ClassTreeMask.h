@@ -74,9 +74,8 @@
 
 #include <list>
 #include <stack>
-
-#include "Iterator.h"
 #include "BaseObject.h"
+#include "Iterator.h"
 
 namespace orxonox
 {

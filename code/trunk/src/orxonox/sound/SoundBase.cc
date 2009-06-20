@@ -25,32 +25,28 @@
  *      ...
  *
  */
+
+#include "SoundBase.h"
+
+#include <string>
 #include <vector>
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
 
-#include "orxonox/objects/worldentities/WorldEntity.h"
 #include "util/Math.h"
-#include "SoundBase.h"
-#include "SoundManager.h"
 #include "core/Core.h"
+#include "orxonox/objects/worldentities/WorldEntity.h"
+#include "SoundManager.h"
 
 namespace orxonox 
 {
-    SoundManager* SoundBase::soundmanager_s = NULL;
-
     SoundBase::SoundBase(WorldEntity* entity)
     {
-        if(SoundBase::soundmanager_s == NULL)
-        {
-            SoundBase::soundmanager_s = new SoundManager();
-        }
-
         this->source_ = 0;
         this->buffer_ = 0;
         this->entity_ = entity;
 
-        SoundBase::soundmanager_s->addSound(this);
+        SoundManager::getInstance().addSound(this);
     }
 
     SoundBase::~SoundBase()
@@ -140,7 +136,7 @@ namespace orxonox
     bool SoundBase::loadFile(std::string filename) {
         filename = Core::getMediaPathString() + "/audio/" + filename;
 
-        if(!SoundBase::soundmanager_s->isSoundAvailable())
+        if(!SoundManager::getInstance().isSoundAvailable())
         {
             COUT(3) << "Sound: not available, skipping " << filename << std::endl;
             return false;
@@ -178,7 +174,7 @@ namespace orxonox
         return state;
     }
 
-    ALuint SoundBase::loadOggFile(std::string filename)
+    ALuint SoundBase::loadOggFile(const std::string& filename)
     {
         char inbuffer[4096];
         std::vector<char> outbuffer;

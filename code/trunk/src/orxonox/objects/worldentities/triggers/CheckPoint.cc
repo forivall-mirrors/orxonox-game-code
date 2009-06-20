@@ -30,9 +30,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "objects/gametypes/Asteroids.h"
-#include "orxonox/objects/worldentities/pawns/Pawn.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

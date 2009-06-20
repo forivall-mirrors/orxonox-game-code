@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
-#include "Tickable.h"
+#include "interfaces/Tickable.h"
 
 
 typedef int TYPE;

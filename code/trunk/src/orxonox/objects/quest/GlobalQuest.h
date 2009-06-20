@@ -27,7 +27,7 @@
  */
  
 /**
-    @file GlobalQuest.h
+    @file
     @brief Definition of the GlobalQuest class.
 */
 
@@ -36,10 +36,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <set>
 #include <list>
-
-#include "core/XMLPort.h"
+#include <set>
 #include "Quest.h"
 
 namespace orxonox

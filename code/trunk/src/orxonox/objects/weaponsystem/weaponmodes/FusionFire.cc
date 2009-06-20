@@ -28,6 +28,7 @@
 
 #include "FusionFire.h"
 
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "objects/weaponsystem/projectiles/BillboardProjectile.h"
 

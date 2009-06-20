@@ -29,13 +29,10 @@
 #include "Stats.h"
 
 #include <string>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
+#include <OgreBorderPanelOverlayElement.h>
 
-#include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 

@@ -29,12 +29,12 @@
 #ifndef _TeamBaseMatchBase_H__
 #define _TeamBaseMatchBase_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include "Pawn.h"
 
 namespace orxonox
 {
-
-
     namespace BaseState
     {
         enum Enum

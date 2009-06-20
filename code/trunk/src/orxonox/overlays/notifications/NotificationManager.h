@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationManager.h
+    @file
     @brief Definition of the NotificationManager class.
 */
 
@@ -36,13 +36,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/OrxonoxClass.h"
-
+#include <ctime>
 #include <map>
 #include <string>
-#include <ctime>
-
-#include "NotificationOverlay.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {

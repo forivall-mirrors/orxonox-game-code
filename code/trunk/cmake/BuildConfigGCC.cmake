@@ -23,6 +23,9 @@
  #    Sets the right compiler and linker flags for GCC.
  #
 
+# Shortcut for CMAKE_COMPILER_IS_GNUCXX and ..._GNUC
+SET(CMAKE_COMPILER_IS_GNU TRUE)
+
 # Determine compiler version
 EXEC_PROGRAM(
   ${CMAKE_CXX_COMPILER}
@@ -37,6 +40,13 @@ INCLUDE(CompareVersionStrings)
 COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.0.0" _compare_result)
 IF(_compare_result LESS 0)
   SET(GCC_NO_SYSTEM_HEADER_SUPPORT TRUE)
+ENDIF()
+
+# GCC only supports PCH in versions 3.4 and above
+INCLUDE(CompareVersionStrings)
+COMPARE_VERSION_STRINGS("${GCC_VERSION}" "3.4.0" _compare_result)
+IF(_compare_result GREATER -1)
+  SET(PCH_COMPILER_SUPPORT TRUE)
 ENDIF()
 
 # Also include environment flags. Could cause conflicts though
@@ -65,6 +75,9 @@ ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 # For newer GCC (4.3 and above), don't display hundreds of annoying deprecated
 # messages. Other versions don't seem to show any such warnings at all.
 ADD_COMPILER_FLAGS("-Wno-deprecated" CXX CACHE)
+
+# Always show why a precompiled header file could not be used
+ADD_COMPILER_FLAGS("-Winvalid-pch" CXX CACHE)
 
 # Increase warning level if requested
 IF(EXTRA_COMPILER_WARNINGS)

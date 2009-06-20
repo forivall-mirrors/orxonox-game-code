@@ -31,12 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
-#include <OgrePrerequisites.h>
-
-#include "core/OrxonoxClass.h"
-#include "util/Math.h"
-#include "tools/TimeFactorListener.h"
+#include "util/OgreForwardRefs.h"
+#include "interfaces/TimeFactorListener.h"
 
 #define getAllEmitters() \
   storeThisAsCurrentParticleInterface(); \
@@ -51,7 +47,7 @@ namespace orxonox
             ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel);
             virtual ~ParticleInterface();
 
-            inline Ogre::ParticleSystem* getParticleSystem() const
+            inline Ogre::ParticleSystem* getParticleSystem()
                 { return this->particleSystem_; }
 
             Ogre::ParticleEmitter* createNewEmitter();
@@ -61,7 +57,7 @@ namespace orxonox
             unsigned int getNumEmitters() const;
 
             Ogre::ParticleAffector* addAffector(const std::string& name);
-            Ogre::ParticleAffector* getAffector(unsigned int affectorNr) const;
+            Ogre::ParticleAffector* getAffector(unsigned int affectorNr);
             void removeAffector(unsigned int affectorNr);
             void removeAllAffectors();
             unsigned int getNumAffectors() const;
@@ -94,16 +90,16 @@ namespace orxonox
         private:
             void updateVisibility();
 
-            static ParticleInterface* currentParticleInterface_s;
-            static unsigned int       counter_s;
-
             Ogre::ParticleSystem*     particleSystem_;
+            Ogre::SceneManager*       scenemanager_;
             bool                      bVisible_;
             bool                      bEnabled_;
             bool                      bAllowedByLOD_;
             unsigned int              detaillevel_;     //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
             float                     speedFactor_;
-            Ogre::SceneManager*       scenemanager_;
+
+            static ParticleInterface* currentParticleInterface_s;
+            static unsigned int       counter_s;
     };
 }
 

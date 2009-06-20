@@ -34,13 +34,14 @@
 #ifndef _ModifierPickup_H__
 #define _ModifierPickup_H__
 
-#include <climits>
-
 #include "OrxonoxPrereqs.h"
 
-#include "PassiveItem.h"
-#include "ModifierType.h"
+#include <climits>
+#include <map>
+
 #include "orxonox/tools/Timer.h"
+#include "ModifierType.h"
+#include "PassiveItem.h"
 
 namespace orxonox
 {

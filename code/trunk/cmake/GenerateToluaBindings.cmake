@@ -47,6 +47,10 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
     PARENT_SCOPE
   )
   SOURCE_GROUP("Tolua" FILES ${_tolua_cxxfile} ${_tolua_hfile})
+  # Disable annoying GCC warnings
+  IF(CMAKE_COMPILER_IS_GNU)
+    SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES COMPILE_FLAGS "-w")
+  ENDIF()
 
   # Create temporary package file
   FILE(REMOVE ${_tolua_pkgfile})

@@ -30,11 +30,13 @@
 #define _Shader_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <vector>
-#include <map>
 
-#include "objects/Tickable.h"
+#include <map>
+#include <string>
+#include <vector>
+
+#include "util/OgreForwardRefs.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

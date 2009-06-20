@@ -32,8 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include <set>
-#include "TeamDeathmatch.h"
 #include "tools/Timer.h"
+#include "TeamDeathmatch.h"
 
 namespace orxonox
 {

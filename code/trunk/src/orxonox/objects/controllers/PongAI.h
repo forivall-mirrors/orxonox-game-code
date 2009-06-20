@@ -32,10 +32,9 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-
-#include "Controller.h"
-#include "objects/Tickable.h"
 #include "util/Math.h"
+#include "interfaces/Tickable.h"
+#include "Controller.h"
 
 namespace orxonox
 {

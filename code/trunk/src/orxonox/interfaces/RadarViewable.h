@@ -30,17 +30,13 @@
 #define _RadarViewable_H__
 
 #include "OrxonoxPrereqs.h"
-#include <string>
-#include <cassert>
-#include "util/Math.h"
-#include "util/Debug.h"
-#include "core/OrxonoxClass.h"
 
 #include <string>
-#include <OgreSceneNode.h>
-#include <OgreEntity.h>
-#include <OgreManualObject.h>
-#include "orxonox/tools/DynamicLines.h"
+#include <cassert>
+
+#include "util/Math.h"
+#include "util/OgreForwardRefs.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -104,27 +100,19 @@ namespace orxonox
         //Used for Map
         Ogre::SceneNode * MapNode_;
         Ogre::Entity * MapEntity_;
-        DynamicLines* line_;
+        Ogre::DynamicLines* line_;
         Ogre::SceneNode * LineNode_;
         void addMapEntity();
         void updateMapPosition();
         bool isHumanShip_;
-        inline std::string getUniqueId()
+        inline const std::string& getUniqueId()
         {
             return this->uniqueId_;
         }
         //friend class Map;
 
     private:
-        void validate(const WorldEntity* object) const
-        {
-            if (!object)
-            {
-                COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
-                assert(0);
-            }
-        }
-
+        void validate(const WorldEntity* object) const;
         bool bVisibility_;
         //Map
         std::string uniqueId_;

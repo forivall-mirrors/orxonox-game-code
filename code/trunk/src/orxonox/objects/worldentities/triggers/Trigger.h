@@ -29,14 +29,14 @@
 #ifndef _Trigger_H__
 #define _Trigger_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <set>
 #include <queue>
 
-#include "OrxonoxPrereqs.h"
-
-#include "objects/Tickable.h"
-#include "objects/worldentities/StaticEntity.h"
 #include "tools/BillboardSet.h"
+#include "interfaces/Tickable.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {

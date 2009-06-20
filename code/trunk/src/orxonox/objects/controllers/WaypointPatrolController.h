@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WaypointController.h"
 #include "tools/Timer.h"
+#include "WaypointController.h"
 
 namespace orxonox
 {

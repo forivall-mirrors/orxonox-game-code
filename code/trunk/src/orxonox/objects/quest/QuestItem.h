@@ -27,7 +27,7 @@
  */
  
 /**
-    @file QuestItem.h
+    @file
     @brief Definition of the QuestItem class.
         The QuestItem is the parent class of Quest and QuestHint.
 */
@@ -39,9 +39,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "core/BaseObject.h"
-#include "core/XMLPort.h"
 
 namespace orxonox
 {

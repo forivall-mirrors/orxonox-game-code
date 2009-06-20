@@ -32,10 +32,9 @@
 
 #include "CorePrereqs.h"
 
+#include "util/Debug.h"
 #include "util/MultiType.h"
 #include "util/String.h"
-#include "util/Debug.h"
-
 
 namespace orxonox
 {

@@ -31,9 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <string>
 #include "core/Identifier.h"
-#include "core/Template.h"
-#include "objects/worldentities/pawns/Pawn.h"
 #include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
@@ -51,8 +50,7 @@ namespace orxonox
             inline Identifier* getSpawnClass() const
                 { return this->spawnclass_; }
 
-            inline void setTemplate(Template* temp)
-                { this->template_ = temp; this->templatename_ = temp->getName(); }
+            void setTemplate(Template* temp);
             inline Template* getTemplate() const
                 { return this->template_; }
 

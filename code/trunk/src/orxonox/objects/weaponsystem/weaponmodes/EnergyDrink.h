@@ -30,8 +30,10 @@
 #define _EnergyDrink_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponsystem/WeaponMode.h"
+
+#include <string>
 #include "tools/Timer.h"
+#include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
@@ -46,7 +48,8 @@ namespace orxonox
 
         private:
             void setMaterial(const std::string& material);
-            std::string& getMaterial();
+            inline const std::string& getMaterial()
+                { return this->material_; }
             void setDelay(float d);
             float getDelay() const;
             void shot();

@@ -29,7 +29,7 @@
 #include "FadeoutText.h"
 
 #include <OgreTextAreaOverlayElement.h>
-
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 

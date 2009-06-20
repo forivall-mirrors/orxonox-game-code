@@ -28,13 +28,15 @@
 
 #include "TclBind.h"
 
-#include <iostream>
+#include <exception>
 #include <string>
-#include "ConsoleCommand.h"
-#include "CommandExecutor.h"
-#include "TclThreadManager.h"
+#include <cpptcl/cpptcl.h>
+
 #include "util/Debug.h"
 #include "util/String.h"
+#include "CommandExecutor.h"
+#include "ConsoleCommand.h"
+#include "TclThreadManager.h"
 
 namespace orxonox
 {

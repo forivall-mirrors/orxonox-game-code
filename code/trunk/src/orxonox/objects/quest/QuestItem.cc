@@ -27,14 +27,14 @@
  */
  
 /**
-    @file QuestItem.cc
+    @file
     @brief Implementation of the QuestItem class.
 */
 
 #include "QuestItem.h"
 
 #include "core/CoreIncludes.h"
-
+#include "core/XMLPort.h"
 #include "QuestDescription.h"
 
 namespace orxonox

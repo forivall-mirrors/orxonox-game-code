@@ -28,19 +28,16 @@
 
 #include "Planet.h"
 
-#include <math.h>
-
 #include <OgreEntity.h>
 #include <OgreBillboardSet.h>
-#include <OgreHardwareVertexBuffer.h>
-#include <OgreMeshManager.h>
+#include <OgreProgressiveMesh.h>
 
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
-#include "CameraManager.h"
 #include "Camera.h"
-#include "GraphicsManager.h"
+#include "CameraManager.h"
 
 namespace orxonox
 {
@@ -69,18 +66,21 @@ namespace orxonox
         if(!this->isVisible())
             return;
 
-        Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
-        if(activeCamera)
+        if (GameMode::showsGraphics())
         {
-            float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
-            //             COUT(2) << distance << std::endl;
-            float planetRadius = this->getScale();
+            Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
+            if(activeCamera)
+            {
+                float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
+                //             COUT(2) << distance << std::endl;
+                float planetRadius = this->getScale();
 
-            float newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
-            float tempTest = newScale*(1+float(this->atmosphereSize)/float(this->imageSize));
-            newScale = tempTest;
+                float newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);
+                float tempTest = newScale*(1+float(this->atmosphereSize)/float(this->imageSize));
+                newScale = tempTest;
 
-            this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
+                this->billboard_.getBillboardSet()->setDefaultDimensions(newScale, newScale);
+            }
         }
 
         SUPER(Planet, tick, dt);
@@ -90,18 +90,18 @@ namespace orxonox
     {
         float scaleFactor = this->getScale();
 
-        this->distList.push_back(10.0*scaleFactor);
-        this->distList.push_back(19.0*scaleFactor);
-        this->distList.push_back(27.0*scaleFactor);
-        this->distList.push_back(34.0*scaleFactor);
-        this->distList.push_back(40.0*scaleFactor);
-        this->distList.push_back(45.0*scaleFactor);
-        this->distList.push_back(49.0*scaleFactor);
-        this->distList.push_back(52.0*scaleFactor);
-        this->distList.push_back(54.0*scaleFactor);
-        this->distList.push_back(55.0*scaleFactor);
+        this->distList.push_back(10.0f*scaleFactor);
+        this->distList.push_back(19.0f*scaleFactor);
+        this->distList.push_back(27.0f*scaleFactor);
+        this->distList.push_back(34.0f*scaleFactor);
+        this->distList.push_back(40.0f*scaleFactor);
+        this->distList.push_back(45.0f*scaleFactor);
+        this->distList.push_back(49.0f*scaleFactor);
+        this->distList.push_back(52.0f*scaleFactor);
+        this->distList.push_back(54.0f*scaleFactor);
+        this->distList.push_back(55.0f*scaleFactor);
 
-        float reductionValue = 0.2;
+        float reductionValue = 0.2f;
 
         this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
         billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));
@@ -144,11 +144,14 @@ namespace orxonox
     {
         SUPER(Planet, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Planet, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("planet/Atmosphere");
-        XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);     
-        XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);         
-        XMLPortParam(Planet, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
-        XMLPortParam(Planet, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
+        if (GameMode::showsGraphics())
+        {
+            XMLPortParam(Planet, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("planet/Atmosphere");
+            XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);     
+            XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);         
+            XMLPortParam(Planet, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
+            XMLPortParam(Planet, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
+        }
     }
 
     void Planet::registerVariables()

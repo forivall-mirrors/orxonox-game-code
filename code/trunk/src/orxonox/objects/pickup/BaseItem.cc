@@ -33,8 +33,6 @@
 
 #include "BaseItem.h"
 
-#include "PickupCollection.h"
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/worldentities/pawns/Pawn.h"
@@ -54,7 +52,7 @@ namespace orxonox
         this->setGUIImage("");
         this->setGUIText("");
     }
-    //! Deconstructor.
+    //! Destructor.
     BaseItem::~BaseItem()
     {
     }
@@ -104,5 +102,8 @@ namespace orxonox
         return true;
     }
 
-    const std::string& BaseItem::getGUIText() const { return this->guiText_; }
+    const std::string& BaseItem::getGUIText() const
+    {
+        return this->guiText_;
+    }
 }

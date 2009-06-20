@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "Controller.h"
-#include "objects/worldentities/pawns/Pawn.h"
 #include "util/Math.h"
+#include "interfaces/PawnListener.h"
+#include "Controller.h"
 
 namespace orxonox
 {

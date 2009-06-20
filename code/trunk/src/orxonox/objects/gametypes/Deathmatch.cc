@@ -29,10 +29,9 @@
 #include "Deathmatch.h"
 
 #include "core/CoreIncludes.h"
+#include "network/Host.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Pawn.h"
-
-#include "network/Host.h"
 
 namespace orxonox
 {

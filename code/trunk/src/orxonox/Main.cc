@@ -27,16 +27,13 @@
  *
  */
  
- /**
- @mainpage Orxonox Documentation
- */
+/**
+@file
+@brief
+    Entry point of the program.
+*/
 
- /**
- @file
- @brief Entry point of the program.
-  */
-
-#include "OrxonoxConfig.h"
+#include "OrxonoxPrereqs.h"
 
 #include "util/Debug.h"
 #include "core/Identifier.h"
@@ -46,7 +43,11 @@
 @brief
     Main method. Game starts here (except for static initialisations).
 */
+#ifdef ORXONOX_USE_WINMAIN
+INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+#else
 int main(int argc, char** argv)
+#endif
 {
     {
         orxonox::Game orxonox(argc, argv);

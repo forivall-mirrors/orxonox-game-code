@@ -31,23 +31,23 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDTimer : public OverlayText, public Tickable
-  {
+    class _OrxonoxExport HUDTimer : public OverlayText, public Tickable
+    {
     public:
-      HUDTimer(BaseObject* creator);
-      ~HUDTimer();
+        HUDTimer(BaseObject* creator);
+        virtual ~HUDTimer();
 
-      virtual void tick(float dt);
+        virtual void tick(float dt);
 
-      virtual void changedOwner();
+        virtual void changedOwner();
 
-      private:
+    private:
         ControllableEntity* owner_;
-  };
+    };
 }
 #endif /* _HUDTimer_H__ */

@@ -28,15 +28,11 @@
 
 #include "HUDHealthBar.h"
 
-#include <OgreOverlayManager.h>
-#include <OgrePanelOverlayElement.h>
-
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/worldentities/pawns/Pawn.h"
-#include "objects/items/Engine.h"
 #include "overlays/OverlayGroup.h"
-#include "util/Convert.h"
 
 namespace orxonox
 {

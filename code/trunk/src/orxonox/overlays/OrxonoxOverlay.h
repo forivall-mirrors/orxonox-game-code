@@ -36,10 +36,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgrePrerequisites.h>
-#include "tools/WindowEventListener.h"
+#include <string>
+
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
+#include "interfaces/WindowEventListener.h"
 
 namespace orxonox
 {
@@ -133,10 +135,10 @@ namespace orxonox
         void setSize(const Vector2& size)         { this->size_ = size; this->sizeChanged(); }
 
         //! Gets the current size that was set (uncorrected)
-        const Vector2& getSize() const                   { return this->size_; }
+        const Vector2& getSize() const            { return this->size_; }
 
         //! Gets the actual size of the overlay on the screen (corrected)
-        Vector2 getActualSize() const      { return this->size_ * this->sizeCorrection_; }
+        Vector2 getActualSize() const             { return this->size_ * this->sizeCorrection_; }
 
         //! Gets the current size correction (default: 1.0, 1.0)
         const Vector2& getSizeCorrection() const  { return this->sizeCorrection_; }
@@ -197,7 +199,7 @@ namespace orxonox
         Vector2 position_;                         //!< Position of the pickPoint on the screen.
         Vector2 pickPoint_;                        //!< Point on the overlay to pick when translating
         Degree angle_;                             //!< Rotation angle of the overlay
-        RotationState rotState_;             //!< horizontal, vertical or inbetween
+        RotationState rotState_;                   //!< horizontal, vertical or inbetween
 
     private:
         void windowResized(unsigned int newWidth, unsigned int newHeight);

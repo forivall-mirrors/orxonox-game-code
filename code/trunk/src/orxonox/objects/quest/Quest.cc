@@ -27,15 +27,14 @@
  */
  
 /**
-    @file Quest.cc
+    @file
     @brief Implementation of the Quest class.
 */
 
 #include "Quest.h"
 
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/XMLPort.h"
 #include "QuestManager.h"
 #include "QuestDescription.h"
 #include "QuestHint.h"

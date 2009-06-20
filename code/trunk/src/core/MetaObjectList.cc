@@ -32,9 +32,10 @@
 */
 
 #include "MetaObjectList.h"
-#include "ObjectListBase.h"
-#include "Identifier.h"
+
 #include "util/Debug.h"
+#include "Identifier.h"
+#include "ObjectListBase.h"
 
 namespace orxonox
 {

@@ -28,8 +28,9 @@
  */
 
 /**
-    @file
-    @brief Implementation of the Core class.
+@file
+@brief
+    Implementation of the Core singleton with its global variables (avoids boost include)
 */
 
 #include "Core.h"
@@ -80,6 +81,7 @@ namespace orxonox
     static boost::filesystem::path configPath_g;                //!< Path to the config file folder
     static boost::filesystem::path logPath_g;                   //!< Path to the log file folder
 
+    //! Static pointer to the singleton
     Core* Core::singletonRef_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("PATH");
@@ -364,7 +366,7 @@ namespace orxonox
         static bool bInitialized = false;
         if (!bInitialized && this->bInitializeRandomNumberGenerator_)
         {
-            srand(time(0));
+            srand(static_cast<unsigned int>(time(0)));
             rand();
             bInitialized = true;
         }
@@ -471,6 +473,8 @@ namespace orxonox
         Checks for "orxonox_dev_build.keep_me" in the executable diretory.
         If found it means that this is not an installed run, hence we
         don't write the logs and config files to ~/.orxonox
+    @throws
+        GeneralException
     */
     void Core::checkDevBuild()
     {
@@ -531,14 +535,14 @@ namespace orxonox
     @brief
         Checks for the log and the config directory and creates them
         if necessary. Otherwise me might have problems opening those files.
+    @throws
+        orxonox::GeneralException if the directory to be created is a file.
     */
     void Core::createDirectories()
     {
         std::vector<std::pair<boost::filesystem::path, std::string> > directories;
-        directories.push_back(std::pair<boost::filesystem::path, std::string>
-            (boost::filesystem::path(configPath_g), "config"));
-        directories.push_back(std::pair<boost::filesystem::path, std::string>
-            (boost::filesystem::path(logPath_g),    "log"));
+        directories.push_back(std::make_pair(boost::filesystem::path(configPath_g), "config"));
+        directories.push_back(std::make_pair(boost::filesystem::path(logPath_g), "log"));
 
         for (std::vector<std::pair<boost::filesystem::path, std::string> >::iterator it = directories.begin();
             it != directories.end(); ++it)

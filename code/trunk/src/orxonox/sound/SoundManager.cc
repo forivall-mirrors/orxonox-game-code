@@ -26,16 +26,18 @@
  *
  */
 
+#include "SoundManager.h"
+
 #include <AL/alut.h>
 
+#include "util/Math.h"
 #include "orxonox/CameraManager.h"
 #include "orxonox/objects/worldentities/Camera.h"
-#include "util/Math.h"
 #include "SoundBase.h"
-#include "SoundManager.h"
 
 namespace orxonox
 {
+    SoundManager* SoundManager::singletonRef_s = NULL;
     ALCdevice* SoundManager::device_s = NULL;
 
     /**
@@ -43,6 +45,9 @@ namespace orxonox
      */
     SoundManager::SoundManager()
     {
+        assert(singletonRef_s == NULL);
+        singletonRef_s = this;
+
         this->soundavailable_ = true;
         if(!alutInitWithoutContext(NULL,NULL))
         {
@@ -89,6 +94,9 @@ namespace orxonox
 
     SoundManager::~SoundManager()
     {
+        assert(singletonRef_s != NULL);
+        singletonRef_s = NULL;
+
         alcDestroyContext(this->context_);
         alcCloseDevice(SoundManager::device_s);
         alutExit();

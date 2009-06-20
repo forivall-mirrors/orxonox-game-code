@@ -30,7 +30,6 @@
 #define _WorldEntityCollisionShape_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "CompoundCollisionShape.h"
 
 namespace orxonox

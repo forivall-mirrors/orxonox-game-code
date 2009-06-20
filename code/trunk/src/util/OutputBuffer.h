@@ -42,11 +42,10 @@
 #ifndef _OutputBuffer_H__
 #define _OutputBuffer_H__
 
-#include <list>
-#include <sstream>
-#include <iostream>
-
 #include "UtilPrereqs.h"
+
+#include <vector>
+#include <sstream>
 
 namespace orxonox
 {
@@ -166,8 +165,8 @@ namespace orxonox
         private:
             void callListeners();
 
-            std::stringstream stream_;                   //!< The stringstream that stores the assigned text
-            std::list<OutputBufferListener*> listeners_; //!< A list of all listeners
+            std::stringstream stream_;                     //!< The stringstream that stores the assigned text
+            std::vector<OutputBufferListener*> listeners_; //!< A list of all listeners
     };
 }
 

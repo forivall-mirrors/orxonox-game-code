@@ -27,7 +27,7 @@
  */
 
 /**
-    @file NotificationOverlay.h
+    @file
     @brief Definition of the NotificationOverlay class.
 */
 
@@ -37,12 +37,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "orxonox/overlays/OverlayText.h"
-
 #include <string>
-#include <set>
-#include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
+#include "orxonox/overlays/OverlayText.h"
 
 namespace orxonox
 {
@@ -71,7 +67,7 @@ namespace orxonox
                 { this->setTextSize(size); }
         
         protected:
-            const std::string clipMessage(const std::string & message); //!< Clips the input message if too long.
+            std::string clipMessage(const std::string & message); //!< Clips the input message if too long.
 
         private:
             NotificationQueue* queue_; //!< The NotificationQeue this overlay belongs to.

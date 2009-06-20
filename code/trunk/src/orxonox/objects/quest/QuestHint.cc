@@ -27,16 +27,14 @@
  */
  
 /**
-    @file QuestHint.cc
+    @file
     @brief Implementation of the QuestHint class.
 */
 
 #include "QuestHint.h"
 
 #include "core/CoreIncludes.h"
-#include "util/Exception.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
+#include "core/XMLPort.h"
 #include "QuestManager.h"
 #include "QuestDescription.h"
 #include "Quest.h"

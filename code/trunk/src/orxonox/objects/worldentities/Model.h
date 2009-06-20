@@ -30,8 +30,10 @@
 #define _Model_H__
 
 #include "OrxonoxPrereqs.h"
-#include "StaticEntity.h"
+
+#include <string>
 #include "tools/Mesh.h"
+#include "StaticEntity.h"
 
 namespace orxonox
 {

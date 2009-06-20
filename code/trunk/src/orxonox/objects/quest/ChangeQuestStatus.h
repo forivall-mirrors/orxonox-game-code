@@ -27,7 +27,7 @@
  */
 
 /**
-    @file ChangeQuestStatus.h
+    @file
     @brief Definition of the ChangeQuestStatus class.
 */
 
@@ -37,8 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
-#include "core/XMLPort.h"
 #include "QuestEffect.h"
 
 namespace orxonox

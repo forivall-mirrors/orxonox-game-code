@@ -28,23 +28,23 @@
 
 #include "Pawn.h"
 
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "util/Math.h"
+#include "network/NetworkFunction.h"
+
+#include "interfaces/PawnListener.h"
 #include "PawnManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ParticleSpawner.h"
 #include "objects/worldentities/ExplosionChunk.h"
 #include "objects/worldentities/BigExplosion.h"
-
 #include "objects/weaponsystem/WeaponSystem.h"
 #include "objects/weaponsystem/WeaponSlot.h"
 #include "objects/weaponsystem/WeaponPack.h"
 #include "objects/weaponsystem/WeaponSet.h"
 
-#include "network/NetworkFunction.h"
 
 namespace orxonox
 {
@@ -371,14 +371,5 @@ namespace orxonox
 //        SUPER(ControllableEntity, changedPlayer());
         ControllableEntity::startLocalHumanControl();
         this->isHumanShip_ = true;
-    }
-
-
-    ///////////////////
-    // Pawn Listener //
-    ///////////////////
-    PawnListener::PawnListener()
-    {
-        RegisterRootObject(PawnListener);
     }
 }

@@ -20,37 +20,30 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _TimeFactorListener_H__
-#define _TimeFactorListener_H__
+#ifndef _GametypeMessageListener_H__
+#define _GametypeMessageListener_H__
 
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
 
-
 namespace orxonox
 {
-    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
+    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxClass
     {
-        friend class GSRoot;
-
         public:
-            TimeFactorListener();
-            virtual ~TimeFactorListener() {}
+            GametypeMessageListener();
+            virtual ~GametypeMessageListener() {}
 
-        protected:
-            virtual void changedTimeFactor(float factor_new, float factor_old) {}
-            inline float getTimeFactor() const
-                { return TimeFactorListener::timefactor_s; }
-
-        private:
-            static float timefactor_s;
+            virtual void announcemessage(const GametypeInfo* gtinfo, const std::string& message) {}
+            virtual void killmessage(const GametypeInfo* gtinfo, const std::string& message) {}
+            virtual void deathmessage(const GametypeInfo* gtinfo, const std::string& message) {}
     };
 }
 
-#endif /* _TimeFactorListener_H__ */
+#endif /* _GametypeMessageListener_H__ */

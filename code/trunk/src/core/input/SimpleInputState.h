@@ -79,6 +79,9 @@ namespace orxonox
         void update();
         void numberOfJoySticksChanged(unsigned int n);
 
+        void onEnter();
+        void onLeave();
+
         KeyHandler*                   keyHandler_;
         MouseHandler*                 mouseHandler_;
         std::vector<JoyStickHandler*> joyStickHandler_;

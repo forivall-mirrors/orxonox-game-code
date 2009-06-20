@@ -28,20 +28,17 @@
 
 #include "TclThreadManager.h"
 
-#include <iostream>
-#include <string>
-#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <OgreTimer.h>
+#include <cpptcl/cpptcl.h>
 
-#include "Clock.h"
-#include "CoreIncludes.h"
-#include "ConsoleCommand.h"
-#include "CommandExecutor.h"
-#include "TclBind.h"
-#include "util/Debug.h"
 #include "util/Convert.h"
-
+#include "util/Debug.h"
+#include "Clock.h"
+#include "CommandExecutor.h"
+#include "ConsoleCommand.h"
+#include "CoreIncludes.h"
+#include "TclBind.h"
 
 namespace orxonox
 {

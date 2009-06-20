@@ -27,7 +27,7 @@
  */
 
 /**
-    @file FailQuest.h
+    @file
     @brief Definition of the FailQuest class.
 */
 
@@ -35,10 +35,6 @@
 #define _FailQuest_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <string>
-
-#include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox

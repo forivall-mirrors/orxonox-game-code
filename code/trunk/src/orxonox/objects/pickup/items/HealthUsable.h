@@ -34,12 +34,10 @@
 #ifndef _HealthUsable_H__
 #define _HealthUsable_H__
 
-#include <climits>
-
 #include "OrxonoxPrereqs.h"
 
+#include <climits>
 #include "objects/pickup/UsableItem.h"
-#include "util/Math.h"
 
 namespace orxonox
 {

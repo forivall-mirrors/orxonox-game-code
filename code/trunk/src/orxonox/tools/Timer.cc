@@ -26,15 +26,15 @@
  *
  */
 
-#include <set>
-
 #include "Timer.h"
 
-#include "core/Executor.h"
+#include <set>
+
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandExecutor.h"
 #include "core/Clock.h"
+#include "core/Functor.h"
 
 namespace orxonox
 {

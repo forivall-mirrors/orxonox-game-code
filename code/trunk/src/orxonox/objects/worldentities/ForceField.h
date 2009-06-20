@@ -30,8 +30,10 @@
 #ifndef _ForceField_H__
 #define _ForceField_H__
 
+#include "OrxonoxPrereqs.h"
+
+#include "interfaces/Tickable.h"
 #include "StaticEntity.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {

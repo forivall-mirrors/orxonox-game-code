@@ -29,13 +29,10 @@
 #include "Pong.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/Executor.h"
-#include "objects/worldentities/Model.h"
 #include "objects/worldentities/PongCenterpoint.h"
 #include "objects/worldentities/PongBall.h"
 #include "objects/worldentities/PongBat.h"
-#include "objects/infos/HumanPlayer.h"
 #include "objects/infos/PongBot.h"
 #include "objects/controllers/PongAI.h"
 

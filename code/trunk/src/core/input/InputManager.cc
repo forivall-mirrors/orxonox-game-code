@@ -37,32 +37,29 @@
 
 #include <climits>
 #include <cassert>
+#include <ois/OISException.h>
+#include <ois/OISInputManager.h>
 
-#include "ois/OISException.h"
-#include "ois/OISInputManager.h"
-#include "core/ConsoleCommand.h"
-
-// HACK
-#ifdef ORXONOX_PLATFORM_LINUX
-#  include "ois/linux/LinuxMouse.h"
-#endif
-
+#include "util/Convert.h"
 #include "util/Exception.h"
+#include "util/Debug.h"
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/CommandExecutor.h"
+#include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
-#include "util/Debug.h"
 
 #include "InputBuffer.h"
-#include "KeyBinder.h"
 #include "KeyDetector.h"
-#include "CalibratorCallback.h"
 #include "InputState.h"
 #include "SimpleInputState.h"
 #include "ExtendedInputState.h"
 #include "JoyStickDeviceNumberListener.h"
+
+// HACK (include this as last, X11 seems to define some macros...)
+#ifdef ORXONOX_PLATFORM_LINUX
+#  include <ois/linux/LinuxMouse.h>
+#endif
 
 namespace orxonox
 {
@@ -366,8 +363,8 @@ namespace orxonox
 
         for (unsigned int i = 0; i < configValueVectorSize; ++i)
         {
-            list[i] = omni_cast<int>(ConfigFileManager::getInstance().getValue(
-                ConfigFileType::JoyStickCalibration, sectionName, valueName, i, omni_cast<std::string>(defaultValue), false));
+            list[i] = multi_cast<int>(ConfigFileManager::getInstance().getValue(
+                ConfigFileType::JoyStickCalibration, sectionName, valueName, i, multi_cast<std::string>(defaultValue), false));
         }
 
         // fill the rest with default values
@@ -402,18 +399,18 @@ namespace orxonox
         {
             // Generate some sort of execution unique id per joy stick
             std::string id = "JoyStick_";
-            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Button))  + "_";
-            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Axis))    + "_";
-            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Slider))  + "_";
-            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_POV))     + "_";
-            id += omni_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Vector3)) + "_";
+            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Button))  + "_";
+            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Axis))    + "_";
+            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Slider))  + "_";
+            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_POV))     + "_";
+            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Vector3)) + "_";
             id += joySticks_[iJoyStick]->vendor();
             for (unsigned int i = 0; i < iJoyStick; ++i)
             {
                 if (id == joyStickIDs_[i])
                 {
                     // Two joysticks are probably equal --> add the index as well
-                    id += "_" + omni_cast<std::string>(iJoyStick);
+                    id += "_" + multi_cast<std::string>(iJoyStick);
                 }
             }
             joyStickIDs_[iJoyStick] = id;
@@ -496,17 +493,17 @@ namespace orxonox
                 if (joyStickMinValues_[iJoyStick][i] == INT_MAX)
                     joyStickMinValues_[iJoyStick][i] = -32768;
                 ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                    this->joyStickIDs_[iJoyStick], "MinValue", i, omni_cast<std::string>(joyStickMinValues_[iJoyStick][i]), false);
+                    this->joyStickIDs_[iJoyStick], "MinValue", i, multi_cast<std::string>(joyStickMinValues_[iJoyStick][i]), false);
 
                 // Maximum values
                 if (joyStickMaxValues_[iJoyStick][i] == INT_MIN)
                     joyStickMaxValues_[iJoyStick][i] = 32767;
                 ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                    this->joyStickIDs_[iJoyStick], "MaxValue", i, omni_cast<std::string>(joyStickMaxValues_[iJoyStick][i]), false);
+                    this->joyStickIDs_[iJoyStick], "MaxValue", i, multi_cast<std::string>(joyStickMaxValues_[iJoyStick][i]), false);
 
                 // Middle values
                 ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                    this->joyStickIDs_[iJoyStick], "MiddleValue", i, omni_cast<std::string>(joyStickMiddleValues_[iJoyStick][i]), false);
+                    this->joyStickIDs_[iJoyStick], "MiddleValue", i, multi_cast<std::string>(joyStickMiddleValues_[iJoyStick][i]), false);
             }
         }
 
@@ -1168,7 +1165,7 @@ namespace orxonox
         }
         else
         {
-            float fValue = value - joyStickCalibrations_[iJoyStick].middleValue[axis];
+            float fValue = static_cast<float>(value - joyStickCalibrations_[iJoyStick].middleValue[axis]);
             if (fValue > 0.0f)
                 fValue *= joyStickCalibrations_[iJoyStick].positiveCoeff[axis];
             else

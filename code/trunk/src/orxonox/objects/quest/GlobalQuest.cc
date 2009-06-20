@@ -27,17 +27,14 @@
  */
  
 /**
-    @file GlobalQuest.cc
+    @file
     @brief Implementation of the GlobalQuest class.
 */
 
 #include "GlobalQuest.h"
 
-#include "orxonox/objects/infos/PlayerInfo.h"
 #include "core/CoreIncludes.h"
-#include "core/Super.h"
-#include "util/Exception.h"
-
+#include "core/XMLPort.h"
 #include "QuestEffect.h"
 
 namespace orxonox

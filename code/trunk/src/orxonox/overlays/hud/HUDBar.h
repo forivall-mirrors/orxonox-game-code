@@ -34,8 +34,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
-#include <OgrePrerequisites.h>
+#include <vector>
+
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
+#include "core/BaseObject.h"
 #include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
@@ -44,7 +47,7 @@ namespace orxonox
     {
     public:
         BarColour(BaseObject* creator);
-        ~BarColour() { }
+        virtual ~BarColour() { }
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 

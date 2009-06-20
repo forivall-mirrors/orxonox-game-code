@@ -31,8 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "LinearMath/btVector3.h"
-
+#include <string>
+#include <LinearMath/btVector3.h>
+#include "util/Math.h"
 #include "Pawn.h"
 
 namespace orxonox

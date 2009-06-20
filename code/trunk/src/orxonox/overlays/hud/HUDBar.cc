@@ -33,6 +33,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
+#include <OgrePass.h>
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
@@ -76,7 +77,7 @@ namespace orxonox
         this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
         this->textureUnitState_->setTextureName("bar2.tga");
         // use the default colour
-        this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
+        this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2f, 0.7f, 0.2f));
 
         this->bar_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
             .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));

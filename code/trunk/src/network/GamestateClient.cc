@@ -33,7 +33,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
-#include "core/Iterator.h"
 #include "synchronisable/Synchronisable.h"
 #include "synchronisable/NetworkCallbackManager.h"
 #include "packet/Acknowledgement.h"

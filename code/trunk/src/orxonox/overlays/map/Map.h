@@ -24,28 +24,16 @@
  *
  */
 
-#ifndef _MAP_H__
-#define _MAP_H__
+#ifndef _Map_H__
+#define _Map_H__
 
-#include <string>
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreEntity.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
-#include <OgreMovablePlane.h>
 
-#include <OgreBorderPanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
+#include <OgreMaterial.h>
 
+#include "util/UtilPrereqs.h"
+#include "interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
-#include "objects/Tickable.h"
-
-
 
 namespace orxonox
 {
@@ -54,15 +42,17 @@ namespace orxonox
 
     public: // functions
         Map(BaseObject* creator);
-        ~Map();
+        virtual ~Map();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
         virtual void changedOwner();
 
-        static Ogre::MaterialPtr createRenderCamera(Ogre::Camera * cam, std::string matName);
+        static Ogre::MaterialPtr createRenderCamera(Ogre::Camera * cam, const std::string& matName);
 
         static void openMap();
+        // HACK!
+        static void hackDestroyMap();
 
 //Not yet implemented
         static const int maxRange_s=1000;
@@ -125,4 +115,4 @@ namespace orxonox
     };
 }
 
-#endif /* _MAP_H__ */
+#endif /* _Map_H__ */
