@@ -33,6 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "network/ClientInformation.h"
 #include "objects/gametypes/Gametype.h"
+#include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {

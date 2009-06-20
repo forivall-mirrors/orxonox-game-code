@@ -43,7 +43,7 @@ namespace orxonox
     */
     void OutputBuffer::registerListener(OutputBufferListener* listener)
     {
-        this->listeners_.insert(this->listeners_.end(), listener);
+        this->listeners_.push_back(listener);
     }
 
     /**
@@ -52,10 +52,10 @@ namespace orxonox
     */
     void OutputBuffer::unregisterListener(OutputBufferListener* listener)
     {
-        for (std::list<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
+        for (std::vector<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
         {
             if ((*it) == listener)
-                this->listeners_.erase(it++);
+                it = this->listeners_.erase(it);
             else
                 ++it;
         }
@@ -126,7 +126,7 @@ namespace orxonox
     */
     void OutputBuffer::callListeners()
     {
-        for (std::list<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
             (*it)->outputChanged();
     }
 }

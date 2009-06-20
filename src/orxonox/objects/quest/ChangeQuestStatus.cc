@@ -27,14 +27,14 @@
  */
 
 /**
-    @file ChangeQuestStatus.cc
+    @file
     @brief Implementation of the ChangeQuestStatus class.
 */
 
 #include "ChangeQuestStatus.h"
 
 #include "core/CoreIncludes.h"
-
+#include "core/XMLPort.h"
 #include "QuestItem.h"
 
 namespace orxonox

@@ -37,13 +37,11 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
+#include <string>
 extern "C" {
 #include <lua.h>
 }
-
-#include <cassert>
-#include <list>
-#include <string>
 
 // tolua_begin
 namespace orxonox
@@ -63,19 +61,19 @@ namespace orxonox
 
       inline static LuaBind& getInstance() { assert(singletonRef_s); return *LuaBind::singletonRef_s; } // tolua_export
 
-    void loadFile(std::string filename, bool luaTags);
-    void loadString(std::string code);
+    void loadFile(const std::string& filename, bool luaTags);
+    void loadString(const std::string& code);
     //void init(lua_State *state_);
     //void xmlToLua();
     void run();
-    void luaPrint(std::string str); // tolua_export
+    void luaPrint(const std::string& str); // tolua_export
 
 #if LUA_VERSION_NUM != 501
     static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size);
 #endif
 
     inline lua_State* getLuaState() { return luaState_; };
-    inline std::string getLuaOutput() { return output_; };
+    inline const std::string& getLuaOutput() { return output_; };
     //inline std::string* getFileString() { return &fileString_; };
     inline void clearLuaOutput() { output_ = ""; }
 

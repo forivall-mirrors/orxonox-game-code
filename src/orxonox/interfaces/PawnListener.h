@@ -26,17 +26,22 @@
  *
  */
 
-#include "Tickable.h"
-#include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
+#ifndef _PawnListener_H__
+#define _PawnListener_H__
+
+#include "OrxonoxPrereqs.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    /**
-        @brief Constructor: Registers the object in the Tickable-list
-    */
-    Tickable::Tickable()
+    class _OrxonoxExport PawnListener : virtual public OrxonoxClass
     {
-        RegisterRootObject(Tickable);
-    }
+        public:
+            PawnListener();
+            virtual ~PawnListener() {}
+
+            virtual void destroyedPawn(Pawn* pawn) = 0;
+    };
 }
+
+#endif /* _PawnListener_H__ */

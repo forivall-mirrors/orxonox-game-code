@@ -30,6 +30,7 @@
 #define _GSServer_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
 

@@ -28,15 +28,16 @@
 
 #include "RadarViewable.h"
 
-#include "util/Debug.h"
-#include "util/Exception.h"
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+
+#include "util/String.h"
 #include "core/CoreIncludes.h"
+#include "tools/DynamicLines.h"
 #include "objects/worldentities/WorldEntity.h"
 #include "objects/Radar.h"
-#include "util/String.h"
-#include <OgreManualObject.h>
 #include "overlays/map/Map.h"
-#include "orxonox/tools/DynamicLines.h"
 
 namespace orxonox
 {
@@ -100,7 +101,7 @@ namespace orxonox
             this->line_->position(0, 0, 0);
 
             this->line_->end(); */
-            this->line_ = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
+            this->line_ = new Ogre::DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
             this->line_->addPoint( Vector3(0,0,0) );
             this->line_->addPoint( Vector3(0,0,0) );
 
@@ -124,7 +125,7 @@ namespace orxonox
             this->MapNode_->setOrientation( this->getWorldEntity()->getOrientation() );
 //Vector3 v = this->getRVWorldPosition();
             //this->line_->setPoint(1, Vector3(0,v.y,0) );
-            this->line_->setPoint(1, Vector3( 0, (int) -Map::getSingletonPtr()->movablePlane_->getDistance( this->getRVWorldPosition() ) ,0 ));
+            this->line_->setPoint(1, Vector3( 0, static_cast<float>(static_cast<int>( -Map::getSingletonPtr()->movablePlane_->getDistance( this->getRVWorldPosition() ) ) ) ,0 ));
             this->line_->update();
             if( Map::getSingletonPtr()->playerShipNode_ )
                 this->LineNode_->setDirection( Map::getSingletonPtr()->playerShipNode_->getLocalAxes().GetColumn(1) ,Ogre::Node::TS_WORLD,Vector3::UNIT_Y);
@@ -155,5 +156,14 @@ namespace orxonox
         const WorldEntity* object = this->getWorldEntity();
         validate(object);
         return object->getWorldOrientation() * object->getVelocity();
+    }
+
+    void RadarViewable::validate(const WorldEntity* object) const
+    {
+        if (!object)
+        {
+            COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
+            assert(0);
+        }
     }
 }

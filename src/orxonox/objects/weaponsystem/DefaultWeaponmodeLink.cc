@@ -30,7 +30,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "WeaponSystem.h"
 
 namespace orxonox

@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Definition of BaseItem (base-class for items/pickups).
+    @brief Definition of DroppedItem
 */
 
 #ifndef _DroppedItem_H__
@@ -36,9 +36,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/Tickable.h"
-#include "objects/worldentities/StaticEntity.h"
 #include "tools/Timer.h"
+#include "interfaces/Tickable.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {

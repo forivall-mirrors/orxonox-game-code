@@ -27,7 +27,6 @@
  */
 
 #include "ScriptController.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -37,9 +36,5 @@ namespace orxonox
     ScriptController::ScriptController(BaseObject* creator) : ArtificialController(creator)
     {
         RegisterObject(ScriptController);
-    }
-
-    ScriptController::~ScriptController()
-    {
     }
 }

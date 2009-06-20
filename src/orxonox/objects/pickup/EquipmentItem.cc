@@ -32,7 +32,6 @@
 */
 
 #include "EquipmentItem.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -44,9 +43,5 @@ namespace orxonox
     EquipmentItem::EquipmentItem(BaseObject* creator) : BaseItem(creator)
     {
         RegisterObject(EquipmentItem);
-    }
-    //! Deconstructor.
-    EquipmentItem::~EquipmentItem()
-    {
     }
 }

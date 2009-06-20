@@ -20,39 +20,30 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-/**
-@file
-@brief
-    Different definitions of input processing.
-*/
+#ifndef _TeamColourable_H__
+#define _TeamColourable_H__
 
-#ifndef _CalibratorCallback_H__
-#define _CalibratorCallback_H__
+#include "OrxonoxPrereqs.h"
 
-#include "core/CorePrereqs.h"
-#include "InputInterfaces.h"
+#include "util/UtilPrereqs.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _CoreExport CalibratorCallback : public KeyHandler
+    class _OrxonoxExport TeamColourable : virtual public OrxonoxClass
     {
-    public:
-        CalibratorCallback()  { }
-        ~CalibratorCallback() { }
+        public:
+            virtual void setTeamColour(const ColourValue& colour) = 0;
 
-    private:
-        void keyPressed (const KeyEvent& evt);
-        void keyReleased(const KeyEvent& evt) { }
-        void keyHeld    (const KeyEvent& evt) { }
-
-        void updateInput(float dt) { }
+        protected:
+            TeamColourable();
     };
 }
 
-#endif /* _CalibratorCallback_H__ */
+#endif /* _TeamColourable_H__ */

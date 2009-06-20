@@ -27,16 +27,15 @@
  */
 
 /**
-    @file NotificationManager.cc
+    @file
     @brief Implementation of the NotificationManager class.
 */
 
 #include "NotificationManager.h"
 
-#include "core/CoreIncludes.h"
-
 #include <set>
 
+#include "core/CoreIncludes.h"
 #include "Notification.h"
 #include "NotificationQueue.h"
 

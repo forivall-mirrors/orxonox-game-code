@@ -36,9 +36,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <CEGUIForwardRefs.h>
 #include "core/BaseObject.h"
-
-namespace CEGUI { class Window; class WindowManager; class Image; }
 
 // tolua_begin
 namespace orxonox

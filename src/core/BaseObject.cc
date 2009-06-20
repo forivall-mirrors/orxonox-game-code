@@ -35,15 +35,16 @@
 
 #include <tinyxml/tinyxml.h>
 
+#include "util/String.h"
 #include "CoreIncludes.h"
+#include "Event.h"
 #include "EventIncludes.h"
 #include "Functor.h"
-#include "XMLPort.h"
+#include "Iterator.h"
+#include "Template.h"
 #include "XMLFile.h"
 #include "XMLNameListener.h"
-#include "Template.h"
-#include "util/String.h"
-#include "util/mbool.h"
+#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -292,8 +293,8 @@ namespace orxonox
 
     void BaseObject::processEvent(Event& event)
     {
-        SetEvent(BaseObject, "activity", setActive, event);
-        SetEvent(BaseObject, "visibility", setVisible, event);
+        ORXONOX_SET_EVENT(BaseObject, "activity", setActive, event);
+        ORXONOX_SET_EVENT(BaseObject, "visibility", setVisible, event);
     }
 
     void BaseObject::setMainStateName(const std::string& name)

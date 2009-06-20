@@ -30,7 +30,7 @@
 #define _PawnManager_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/Tickable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

@@ -31,10 +31,9 @@
 #include "core/CoreIncludes.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/worldentities/pawns/Pawn.h"
-
+#include "objects/worldentities/pawns/TeamBaseMatchBase.h"
 #include "objects/gametypes/TeamDeathmatch.h"
 #include "objects/controllers/WaypointPatrolController.h"
-#include "objects/worldentities/pawns/TeamBaseMatchBase.h"
 
 namespace orxonox
 {

@@ -53,7 +53,6 @@
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
-#include "core/Iterator.h"
 #include "packet/Chat.h"
 #include "packet/Packet.h"
 #include "packet/Welcome.h"

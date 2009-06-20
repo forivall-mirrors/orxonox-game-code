@@ -33,6 +33,7 @@
 */
 
 #include "SimpleInputState.h"
+#include "core/Executor.h"
 
 namespace orxonox
 {
@@ -146,5 +147,17 @@ namespace orxonox
 
         // inform InputManager that there might be changes in EMPTY_HANDLER situation
         bHandlersChanged_ = true;
+    }
+
+    void SimpleInputState::onEnter()
+    {
+        if (executorOnEnter_)
+            (*executorOnEnter_)();
+    }
+
+    void SimpleInputState::onLeave()
+    {
+        if (executorOnLeave_)
+            (*executorOnLeave_)();
     }
 }

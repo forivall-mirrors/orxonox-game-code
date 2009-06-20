@@ -27,7 +27,7 @@
  */
 
 #include "DebugFPSText.h"
-#include <OgreTextAreaOverlayElement.h>
+
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
@@ -50,6 +50,6 @@ namespace orxonox
         SUPER(DebugFPSText, tick, dt);
 
         float fps = Game::getInstance().getAvgFPS();
-        this->setCaption(convertToString(fps));
+        this->setCaption(multi_cast<std::string>(fps));
     }
 }

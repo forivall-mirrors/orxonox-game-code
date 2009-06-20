@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "ParticleEmitter.h"
 #include "tools/Timer.h"
+#include "ParticleEmitter.h"
 
 namespace orxonox
 {

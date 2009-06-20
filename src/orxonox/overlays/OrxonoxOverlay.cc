@@ -214,11 +214,11 @@ namespace orxonox
             float angle = this->angle_.valueDegrees();
             if (angle < 0.0)
                 angle = -angle;
-            angle -= 180.0 * (int)(angle / 180.0);
+            angle -= 180.0f * (int)(angle / 180.0);
 
             // take the reverse if angle is about 90 degrees
             float tempAspect;
-            if (angle > 89.0 && angle < 91.0)
+            if (angle > 89.0f && angle < 91.0f)
             {
                 tempAspect = 1.0 / this->windowAspectRatio_;
                 rotState_ = Vertical;
@@ -230,14 +230,14 @@ namespace orxonox
             }
             else
             {
-                tempAspect = 1.0;
+                tempAspect = 1.0f;
                 rotState_ = Inbetween;
             }
 
             // note: this is only an approximation that is mostly valid when the
             // magnitude of the width is about the magnitude of the height.
             // Correctly we would have to take the square root of width*height
-            this->sizeCorrection_.x = 2.0 / (tempAspect + 1.0);
+            this->sizeCorrection_.x = 2.0f / (tempAspect + 1.0f);
             this->sizeCorrection_.y = tempAspect * this->sizeCorrection_.x;
         }
         else

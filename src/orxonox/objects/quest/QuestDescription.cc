@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestDescription.cc
+    @file
     @brief Implementation of the QuestDescription class.
 */
 
@@ -35,6 +35,7 @@
 #include "QuestDescription.h"
 
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "QuestNotification.h"
 
 namespace orxonox

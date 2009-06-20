@@ -28,11 +28,10 @@
 
 #include "ConeCollisionShape.h"
 
-#include "BulletCollision/CollisionShapes/btConeShape.h"
+#include <BulletCollision/CollisionShapes/btConeShape.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "tools/BulletConversions.h"
 
 namespace orxonox
 {

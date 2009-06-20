@@ -54,21 +54,17 @@
 
 #include "CorePrereqs.h"
 
-#include <set>
-#include <map>
-#include <vector>
-#include <string>
-#include <utility>
-#include <typeinfo>
-#include <cstdlib>
 #include <cassert>
+#include <map>
+#include <set>
+#include <string>
+#include <typeinfo>
 
-#include "MetaObjectList.h"
-#include "Iterator.h"
-#include "Super.h"
-#include "Functor.h"
 #include "util/Debug.h"
-#include "util/String.h"
+#include "MetaObjectList.h"
+#include "ObjectList.h"
+#include "ObjectListBase.h"
+#include "Super.h"
 
 namespace orxonox
 {
@@ -222,8 +218,6 @@ namespace orxonox
             inline bool hasConfigValues() const { return this->bHasConfigValues_; }
             /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
             inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
-            /** @brief Returns true if this class has at least one construction callback Functor registered. */
-            inline bool hasConstructionCallback() const { return this->bHasConstructionCallback_; }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
@@ -251,9 +245,6 @@ namespace orxonox
             ConsoleCommand* getConsoleCommand(const std::string& name) const;
             ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
 
-            void addConstructionCallback(Functor* functor);
-            void removeConstructionCallback(Functor* functor);
-
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
 
             static void destroyAllIdentifiers();
@@ -275,9 +266,6 @@ namespace orxonox
             inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
-
-            bool bHasConstructionCallback_;                                //!< True if at least one Functor is registered to get informed when an object of type T is created.
-            std::vector<Functor*> constructionCallbacks_;                  //!< All construction callback Functors of this class.
 
             ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
@@ -382,7 +370,7 @@ namespace orxonox
         @return The unique Identifier
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
+    inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         // check if the static field has already been filled
         if (ClassIdentifier<T>::classIdentifier_s == 0)
@@ -397,7 +385,7 @@ namespace orxonox
         @return The Identifier
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
+    inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
     {
         ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
         identifier->setName(name);
@@ -434,17 +422,10 @@ namespace orxonox
         @param object The object to add
     */
     template <class T>
-    void ClassIdentifier<T>::addObject(T* object)
+    inline void ClassIdentifier<T>::addObject(T* object)
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
-        if (this->bHasConstructionCallback_)
-        {
-            // Call all registered callbacks that a new object of type T has been created.
-            // Do NOT deliver a T* pointer here because it's way too risky (object not yet fully created).
-            for (unsigned int i = 0; i < this->constructionCallbacks_.size(); ++i)
-                (*constructionCallbacks_[i])();
-        }
     }
 
     /**

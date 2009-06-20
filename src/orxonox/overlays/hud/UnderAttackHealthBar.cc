@@ -46,7 +46,7 @@ namespace orxonox
 
         this->text_ = new OverlayText(this);
         this->text_->setFont("Monofur");
-        this->text_->setTextSize(0.04);
+        this->text_->setTextSize(0.04f);
         this->text_->setAlignmentString("center");
         this->text_->setColour(ColourValue::White);
         this->text_->setPickPoint(Vector2(0.5, 0));

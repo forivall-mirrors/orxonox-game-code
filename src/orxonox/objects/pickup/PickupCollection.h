@@ -36,12 +36,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <map>
 #include <deque>
+#include <map>
 #include <string>
 
 #include "util/Math.h"
-
 #include "ModifierType.h"
 
 namespace orxonox

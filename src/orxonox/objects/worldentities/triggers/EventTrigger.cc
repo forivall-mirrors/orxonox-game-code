@@ -50,7 +50,7 @@ namespace orxonox
     {
         SUPER(EventTrigger, processEvent, event);
 
-        SetEvent(EventTrigger, "trigger", trigger, event);
+        ORXONOX_SET_EVENT(EventTrigger, "trigger", trigger, event);
     }
 
     bool EventTrigger::isTriggered(TriggerMode mode)

@@ -28,13 +28,10 @@
 
 #include "CollisionShape.h"
 
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
+#include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "tools/BulletConversions.h"
-
 #include "objects/worldentities/WorldEntity.h"
 #include "CompoundCollisionShape.h"
 #include "WorldEntityCollisionShape.h"
@@ -128,8 +125,8 @@ namespace orxonox
 
     bool CollisionShape::hasTransform() const
     {
-        return (!this->position_.positionEquals(Vector3(0, 0, 0), 0.001) ||
-                !this->orientation_.equals(Quaternion(1,0,0,0), Degree(0.1)));
+        return (!this->position_.positionEquals(Vector3(0, 0, 0), 0.001f) ||
+                !this->orientation_.equals(Quaternion(1,0,0,0), Degree(0.1f)));
     }
 
     void CollisionShape::setScale3D(const Vector3& scale)

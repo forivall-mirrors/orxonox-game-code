@@ -28,11 +28,8 @@
 
 #include "DistanceTrigger.h"
 
-#include <OgreNode.h>
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "orxonox/objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox

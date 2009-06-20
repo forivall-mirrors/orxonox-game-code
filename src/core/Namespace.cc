@@ -27,6 +27,9 @@
  */
 
 #include "Namespace.h"
+
+#include <set>
+
 #include "NamespaceNode.h"
 #include "CoreIncludes.h"
 #include "XMLPort.h"

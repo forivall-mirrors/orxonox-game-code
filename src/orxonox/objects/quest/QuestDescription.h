@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestDescription.h
+    @file
     @brief Definition of the QuestDescription class.
 */
 
@@ -37,9 +37,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "core/BaseObject.h"
-#include "core/XMLPort.h"
 
 // tolua_begin
 namespace orxonox

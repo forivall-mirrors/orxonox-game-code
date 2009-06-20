@@ -59,8 +59,31 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
+namespace Ogre
+{
+    class Radian;
+    class Degree;
+    class Vector2;
+    class Vector3;
+    class Vector4;
+    class Matrix3;
+    class Matrix4;
+    class Quaternion;
+    class ColourValue;
+}
+
 namespace orxonox
 {
+    using Ogre::Radian;
+    using Ogre::Degree;
+    using Ogre::Vector2;
+    using Ogre::Vector3;
+    using Ogre::Vector4;
+    using Ogre::Matrix3;
+    using Ogre::Matrix4;
+    using Ogre::Quaternion;
+    using Ogre::ColourValue;
+
     class Exception;
     class ExprParser;
     class IntVector2;

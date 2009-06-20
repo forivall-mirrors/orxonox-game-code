@@ -28,7 +28,6 @@
  */
 
 #include "Munition.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox

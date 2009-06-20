@@ -35,7 +35,7 @@
 #include "ExtendedInputState.h"
 
 #include <cassert>
-#include "util/Debug.h"
+#include "core/Executor.h"
 
 namespace orxonox
 {
@@ -455,5 +455,17 @@ namespace orxonox
             setInputDeviceEnabled(2 + i, (joyStickHandlers_[i].size() != 0));
 
         this->bHandlersChanged_ = true;
+    }
+
+    void ExtendedInputState::onEnter()
+    {
+        if (executorOnEnter_)
+            (*executorOnEnter_)();
+    }
+
+    void ExtendedInputState::onLeave()
+    {
+        if (executorOnLeave_)
+            (*executorOnLeave_)();
     }
 }

@@ -32,9 +32,9 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-
-#include "objects/worldentities/StaticEntity.h"
+#include <string>
 #include "core/XMLNameListener.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {

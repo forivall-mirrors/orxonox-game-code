@@ -27,42 +27,54 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
 )
 ADD_SUBDIRECTORY(gamestates)
 ADD_SUBDIRECTORY(gui)
+ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(objects)
 ADD_SUBDIRECTORY(overlays)
-ADD_SUBDIRECTORY(tools)
 ADD_SUBDIRECTORY(sound)
-GET_ALL_HEADER_FILES(ORXONOX_HDR_FILES)
-SET(ORXONOX_FILES ${ORXONOX_SRC_FILES} ${ORXONOX_HDR_FILES})
+ADD_SUBDIRECTORY(tools)
 
-GENERATE_SOURCE_GROUPS(${ORXONOX_FILES})
-GENERATE_TOLUA_BINDINGS(Orxonox ORXONOX_FILES INPUTFILES gui/GUIManager.h objects/quest/QuestManager.h objects/quest/QuestDescription.h objects/pickup/PickupInventory.h objects/pickup/BaseItem.h)
+# Translate argument
+IF(ORXONOX_USE_WINMAIN)
+  SET(ORXONOX_WIN32 WIN32)
+ENDIF()
 
-ADD_EXECUTABLE(orxonox ${ORXONOX_FILES})
+ORXONOX_ADD_EXECUTABLE(orxonox
+  FIND_HEADER_FILES
+  TOLUA_FILES
+    gui/GUIManager.h
+    objects/pickup/BaseItem.h
+    objects/pickup/PickupInventory.h
+    objects/quest/QuestDescription.h
+    objects/quest/QuestManager.h
+  PCH_FILE
+    OrxonoxPrecompiledHeaders.h
+  PCH_NO_DEFAULT
+  # When defined as WIN32 this removes the console window on Windows
+  ${ORXONOX_WIN32}
+  LINK_LIBRARIES
+    ${OGRE_LIBRARY}
+    ${CEGUI_LIBRARY}
+    ${LUA_LIBRARIES}
+    ${CEGUILUA_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${OPENAL_LIBRARY}
+    ${ALUT_LIBRARY}
+    ${VORBISFILE_LIBRARY}
+    ${VORBIS_LIBRARY}
+    ${OGG_LIBRARY}
+    ogreceguirenderer_orxonox
+    tinyxml++_orxonox
+    tolua++_orxonox
+    bullet_orxonox
+    util
+    core
+    network
+  SOURCE_FILES ${ORXONOX_SRC_FILES}
+)
+
 GET_TARGET_PROPERTY(_exec_loc orxonox LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
 SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
-
-TARGET_LINK_LIBRARIES(orxonox
-  ${OGRE_LIBRARY}
-  ${CEGUI_LIBRARY}
-  ${LUA_LIBRARIES}
-  ${CEGUILUA_LIBRARY}
-  ${Boost_SYSTEM_LIBRARY}
-  ${OPENAL_LIBRARY}
-  ${ALUT_LIBRARY}
-  ${VORBISFILE_LIBRARY}
-  ${VORBIS_LIBRARY}
-  ${OGG_LIBRARY}
-  ogreceguirenderer_orxonox
-  tinyxml++_orxonox
-  tolua++_orxonox
-  bullet_orxonox
-  util
-  core
-  network
-)
-
-ORXONOX_INSTALL(orxonox)
 
 
 # When using Visual Studio we want to use the output directory as working
@@ -80,5 +92,5 @@ IF(MSVC)
   ENDIF()
   STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
          VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox.vcproj.user" "${CMAKE_CURRENT_BINARY_DIR}/orxonox.vcproj.user")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox.vcproj.user")
 ENDIF(MSVC)

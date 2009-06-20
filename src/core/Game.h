@@ -36,10 +36,15 @@
 #define _Game_H__
 
 #include "CorePrereqs.h"
+
 #include <cassert>
 #include <list>
 #include <map>
+#include <string>
 #include <vector>
+#include <boost/shared_ptr.hpp>
+#include <boost/preprocessor/cat.hpp>
+
 #include "OrxonoxClass.h"
 
 /**
@@ -48,7 +53,7 @@
     and every following paramter is a constructor argument (which is usually non existent)
 */
 #define AddGameState(classname, ...) \
-    static bool MACRO_CONCATENATE(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(__VA_ARGS__))
+    static bool BOOST_PP_CAT(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(__VA_ARGS__))
 
 // tolua_begin
 namespace orxonox
@@ -105,10 +110,9 @@ namespace orxonox
         void unloadState(GameState* state);
 
         std::vector<GameState*>         activeStates_;
-        GameStateTreeNode*              rootStateNode_;
-        GameStateTreeNode*              activeStateNode_;
-        std::vector<GameStateTreeNode*> requestedStateNodes_;
-        std::vector<GameStateTreeNode*> allStateNodes_;
+        boost::shared_ptr<GameStateTreeNode> rootStateNode_;
+        boost::shared_ptr<GameStateTreeNode> activeStateNode_;
+        std::vector<boost::shared_ptr<GameStateTreeNode> > requestedStateNodes_;
 
         Core*                           core_;
         Clock*                          gameClock_;

@@ -28,20 +28,19 @@
 
 #include "Level.h"
 
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "core/Loader.h"
-#include "core/XMLFile.h"
-#include "core/Template.h"
+#include "util/Math.h"
 #include "core/Core.h"
+#include "core/CoreIncludes.h"
+#include "core/Loader.h"
+#include "core/Template.h"
+#include "core/XMLFile.h"
+#include "core/XMLPort.h"
 
-#include "LevelManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 #include "sound/SoundBase.h"
-
-#include "util/Math.h"
+#include "LevelManager.h"
 
 namespace orxonox
 {

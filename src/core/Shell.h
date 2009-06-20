@@ -31,7 +31,9 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include <list>
+#include <string>
 #include <vector>
 
 #include "OrxonoxClass.h"

@@ -29,14 +29,11 @@
 #ifndef _DistanceTrigger_H__
 #define _DistanceTrigger_H__
 
-#include "PlayerTrigger.h"
+#include "OrxonoxPrereqs.h"
 
 #include <set>
-
 #include "core/ClassTreeMask.h"
-#include "core/BaseObject.h"
-
-#include "orxonox/objects/worldentities/ControllableEntity.h"
+#include "PlayerTrigger.h"
 
 namespace orxonox
 {

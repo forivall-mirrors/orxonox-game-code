@@ -27,7 +27,6 @@
  */
 
 #include "Item.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -35,9 +34,5 @@ namespace orxonox
     Item::Item(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Item);
-    }
-
-    Item::~Item()
-    {
     }
 }

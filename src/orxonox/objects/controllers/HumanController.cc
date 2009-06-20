@@ -191,4 +191,12 @@ namespace orxonox
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->dropItems();
     }
+
+    Pawn* HumanController::getLocalControllerEntityAsPawn()
+    {
+        if (HumanController::localController_s)
+            return dynamic_cast<Pawn*>(HumanController::localController_s->getControllableEntity());
+        else
+            return NULL;
+    }
 }

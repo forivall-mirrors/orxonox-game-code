@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             Item(BaseObject* creator);
-            virtual ~Item();
+            virtual ~Item() {}
     };
 }
 

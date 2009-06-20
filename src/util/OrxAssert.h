@@ -20,19 +20,33 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#include "Teamcolourable.h"
-#include "core/CoreIncludes.h"
+/**
+@file
+@brief
+    Declaration of custom assertion facilities
+*/
 
-namespace orxonox
-{
-    Teamcolourable::Teamcolourable()
-    {
-        RegisterRootObject(Teamcolourable);
-    }
-}
+#ifndef _OrxAssert_H__
+#define _OrxAssert_H__
+
+#include "UtilPrereqs.h"
+
+#include <cassert>
+#include "OutputHandler.h"
+
+// define an assert macro that can display a message
+#ifndef NDEBUG
+#define OrxAssert(Assertion, ErrorMessage) \
+    Assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(1) << ErrorMessage << std::endl); \
+    assert(Assertion)
+#else
+#define OrxAssert(condition, errorMessage)  ((void)0)
+#endif
+
+#endif /* _OrxAssert_H__ */

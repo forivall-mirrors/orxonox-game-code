@@ -34,7 +34,6 @@
 
 #include "InputCommands.h"
 #include "util/Math.h"
-#include "core/CommandExecutor.h"
 
 namespace orxonox
 {

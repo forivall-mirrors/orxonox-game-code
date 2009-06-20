@@ -21,29 +21,41 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
- *
  */
 
-#ifndef _Teamcolourable_H__
-#define _Teamcolourable_H__
+/**
+@file
+@brief
+    std::sring to Ogre::UTFString conversion functions
+*/
 
-#include "OrxonoxPrereqs.h"
+#ifndef _UTFStringConversions_H__
+#define _UTFStringConversions_H__
 
-#include "util/Math.h"
-#include "core/OrxonoxClass.h"
+#include "UtilPrereqs.h"
+#include <OgreUTFString.h>
 
 namespace orxonox
 {
-    class _OrxonoxExport Teamcolourable : virtual public OrxonoxClass
+    template <>
+    struct ConverterExplicit<std::string, Ogre::UTFString>
     {
-        public:
-            virtual void setTeamColour(const ColourValue& colour) = 0;
-
-        protected:
-            Teamcolourable();
+        //! Converts an std::string into an Ogre::UTFString
+        inline static bool convert(Ogre::UTFString* output, const std::string& input)
+        {
+            Ogre::UTFString::code_point cp;
+            for (unsigned int i = 0; i < input.size(); ++i)
+            {
+              cp = input[i];
+              cp &= 0xFF;
+              output->append(1, cp);
+            }
+            return true;
+        }
     };
 }
 
-#endif /* _Teamcolourable_H__ */
+#endif /* _UTFStringConversions_H__ */

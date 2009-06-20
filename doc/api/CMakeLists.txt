@@ -49,8 +49,9 @@ IF (DOXYGEN_FOUND)
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/doxy.config @ONLY)
     # use (configured) doxy.config from (out of place) BUILD tree:
     SET(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/doxy.config)
+    SET(DOXY_LOGFILE ${CMAKE_CURRENT_BINARY_DIR}/doxy.log)
   ELSE()
-    MESSAGE(STATUS "Warning: Could not find dox.config.in in the root directory.")
+    MESSAGE(FATAL_ERROR "Warning: Could not find dox.config.in in the root directory.")
   ENDIF()
   
   ADD_CUSTOM_TARGET(doc ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG})
@@ -63,10 +64,10 @@ IF (DOXYGEN_FOUND)
     IF(HTML_HELP_COMPILER)      
       SET(TMP ${DOXY_OUTPUT_DIR}/html/index.hhp)
       STRING(REGEX REPLACE "/" "\\\\" HHP_FILE ${TMP})
-      ADD_CUSTOM_TARGET(chmdoc ${HTML_HELP_COMPILER} ${HHP_FILE})
-      ADD_DEPENDENCIES(chmdoc doc)
+      ADD_CUSTOM_TARGET(doc_chm ${HTML_HELP_COMPILER} ${HHP_FILE})
+      ADD_DEPENDENCIES(doc_chm doc)
       # Adding a dependency somehow adds doc target as default build target
-      SET_TARGET_PROPERTIES(doc chmdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+      SET_TARGET_PROPERTIES(doc doc_chm PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
     ENDIF(HTML_HELP_COMPILER)
   ENDIF (WIN32) 
 
@@ -77,7 +78,7 @@ IF (DOXYGEN_FOUND)
     DESTINATION ${ORXONOX_DOC_INSTALL_PATH}/api
     OPTIONAL
   )
-  # Install command always needs the directory to work
+  # Install command always needs the directory
   IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/html)
     FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html)
   ENDIF()

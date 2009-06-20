@@ -28,10 +28,10 @@
 
 #include "GlobalShader.h"
 
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
-#include "util/Exception.h"
 
 namespace orxonox
 {

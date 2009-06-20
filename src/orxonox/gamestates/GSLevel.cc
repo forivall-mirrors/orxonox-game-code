@@ -32,25 +32,26 @@
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
-#include "core/Loader.h"
-#include "core/XMLFile.h"
-#include "core/CommandExecutor.h"
-#include "core/ConsoleCommand.h"
+#include "core/Clock.h"
 #include "core/CommandLine.h"
+#include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "objects/Tickable.h"
+#include "core/Core.h"
+#include "core/Loader.h"
+#include "core/XMLFile.h"
+
+#include "interfaces/Tickable.h"
 #include "objects/Radar.h"
+#include "objects/quest/QuestManager.h"
+#include "overlays/notifications/NotificationManager.h"
+#include "gui/GUIManager.h"
 #include "CameraManager.h"
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
-#include "gui/GUIManager.h"
-#include "objects/quest/QuestManager.h"
-#include "overlays/notifications/NotificationManager.h"
 
 namespace orxonox
 {
@@ -147,14 +148,14 @@ namespace orxonox
     {
         if (show)
         {
-            GUIManager::getInstancePtr()->showGUI("inGameTest");
-            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            GUIManager::getInstance().showGUI("inGameTest");
+            GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
         }
         else
         {
-            GUIManager::getInstancePtr()->executeCode("hideGUI(\"inGameTest\")");
-            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            GUIManager::getInstance().executeCode("hideGUI(\"inGameTest\")");
+            GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().requestLeaveState("guiMouseOnly");
         }
     }

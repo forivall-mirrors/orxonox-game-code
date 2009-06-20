@@ -62,8 +62,6 @@
 
 #include "UtilPrereqs.h"
 
-#include <stdio.h>
-
 #include "OutputHandler.h"
 
 namespace orxonox
@@ -72,7 +70,7 @@ namespace orxonox
         @brief Returns the soft debug level, stored in the only existing instance of the OutputHandler class, configured in the config-file.
         @return The soft debug level
     */
-    static inline int getSoftDebugLevel()
+    inline int getSoftDebugLevel()
     {
         return OutputHandler::getSoftDebugLevel();
     }

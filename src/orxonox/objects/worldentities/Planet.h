@@ -31,12 +31,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgreMesh.h>
-
+#include <string>
 #include "tools/BillboardSet.h"
 #include "tools/Mesh.h"
 #include "MovableEntity.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {
@@ -107,7 +105,7 @@ namespace orxonox
             Mesh mesh_;
             float atmosphereSize;
             float imageSize;
-            Ogre::Mesh::LodDistanceList distList;
+            std::vector<float> distList;
             BillboardSet billboard_;
             bool bCastShadows_;
 

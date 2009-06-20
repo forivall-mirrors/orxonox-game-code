@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <string>
 #include "tools/Timer.h"
-
 #include "BillboardProjectile.h"
 
 namespace orxonox

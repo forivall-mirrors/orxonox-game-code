@@ -33,10 +33,10 @@
 */
 
 #include "GameState.h"
-#include <cassert>
+
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "Clock.h"
+#include "util/OrxAssert.h"
 
 namespace orxonox
 {

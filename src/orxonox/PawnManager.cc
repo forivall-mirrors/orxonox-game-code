@@ -31,7 +31,6 @@
 #include "core/CoreIncludes.h"
 #include "objects/worldentities/pawns/Pawn.h"
 
-
 namespace orxonox
 {
     PawnManager* PawnManager::singletonRef_s = 0;

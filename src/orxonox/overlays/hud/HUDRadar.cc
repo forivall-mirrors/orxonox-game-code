@@ -34,13 +34,11 @@
 
 #include "util/Math.h"
 #include "util/String.h"
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/Radar.h"
+#include "tools/TextureGenerator.h"
 #include "objects/worldentities/WorldEntity.h"
 #include "objects/worldentities/pawns/Pawn.h"
-#include "tools/TextureGenerator.h"
 
 namespace orxonox
 {

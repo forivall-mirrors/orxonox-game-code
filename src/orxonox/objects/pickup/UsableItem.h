@@ -35,7 +35,6 @@
 #define _UsableItem_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "BaseItem.h"
 
 namespace orxonox
@@ -48,7 +47,7 @@ namespace orxonox
     {
     public:
         UsableItem(BaseObject* creator);
-        virtual ~UsableItem();
+        virtual ~UsableItem() { }
 
         /**
             @brief Method invoked when the item is being used.

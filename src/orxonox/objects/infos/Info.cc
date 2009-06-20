@@ -27,7 +27,6 @@
  */
 
 #include "Info.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox

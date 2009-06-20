@@ -30,7 +30,8 @@
 #define _GSMainMenu_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
+
+#include "util/OgreForwardRefs.h"
 #include "core/GameState.h"
 
 namespace orxonox

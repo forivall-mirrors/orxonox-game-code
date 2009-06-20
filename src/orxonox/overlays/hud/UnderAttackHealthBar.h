@@ -31,8 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "HUDHealthBar.h"
+#include "util/Math.h"
 #include "tools/Timer.h"
+#include "HUDHealthBar.h"
 
 namespace orxonox
 {

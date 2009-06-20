@@ -30,11 +30,7 @@
 #define _BillboardSet_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <string>
-#include <OgrePrerequisites.h>
-
-#include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
@@ -51,7 +47,7 @@ namespace orxonox
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
-            inline Ogre::SceneManager* getSceneManager()
+            inline Ogre::SceneManager* getSceneManager() const
                 { return this->scenemanager_; }
 
             const std::string& getName() const;
@@ -68,9 +64,10 @@ namespace orxonox
         private:
             void destroyBillboardSet();
 
-            static unsigned int billboardSetCounter_s;
             Ogre::BillboardSet* billboardSet_;
             Ogre::SceneManager* scenemanager_;
+
+            static unsigned int billboardSetCounter_s;
     };
 }
 

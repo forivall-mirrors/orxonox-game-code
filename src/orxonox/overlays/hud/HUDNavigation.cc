@@ -28,6 +28,7 @@
 
 #include "HUDNavigation.h"
 
+#include <string>
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
@@ -35,7 +36,6 @@
 #include "util/Math.h"
 #include "util/String.h"
 #include "util/Convert.h"
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Radar.h"

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddQuestHint.h
+    @file
     @brief Definition of the AddQuestHint class.
 */
 
@@ -37,7 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "QuestEffect.h"
 
 namespace orxonox

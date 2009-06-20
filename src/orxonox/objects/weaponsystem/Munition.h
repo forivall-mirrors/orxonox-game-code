@@ -33,7 +33,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
-
 #include "core/BaseObject.h"
 #include "tools/Timer.h"
 

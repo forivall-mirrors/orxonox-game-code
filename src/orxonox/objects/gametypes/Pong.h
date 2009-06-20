@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "Deathmatch.h"
 #include "tools/Timer.h"
+#include "Deathmatch.h"
 
 namespace orxonox
 {

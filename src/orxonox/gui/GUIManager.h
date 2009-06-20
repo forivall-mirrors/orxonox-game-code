@@ -21,30 +21,29 @@
  *
  *   Author:
  *      Reto Grieder
- *   Co-authors:
  *      Benjamin Knecht
+ *   Co-authors:
+ *      ...
  *
  */
 
 /**
-    @file
-    @brief Declaration of the GUIManager class.
+@file
+@brief
+    Declaration of the GUIManager class.
 */
 
 #ifndef _GUIManager_H__
 #define _GUIManager_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <CEGUIForwardRefs.h>
-#include <CEGUIInputEvent.h>
-#include <CEGUISystem.h>
-#include "core/input/InputInterfaces.h"
-#include <map>
-#include "overlays/GUIOverlay.h"
 
-// Forward declaration
-namespace CEGUI { class DefaultLogger; }
+#include <map>
+#include <string>
+#include <CEGUIForwardRefs.h>
+
+#include "util/OgreForwardRefs.h"
+#include "core/input/InputInterfaces.h"
 
 // tolua_begin
 namespace orxonox
@@ -88,8 +87,8 @@ namespace orxonox
         void showGUI(const std::string& name);
         void executeCode(const std::string& str);
 
-        bool registerOverlay(std::string name, GUIOverlay* overlay); //!< Register a GUIOverlay with the GUIManager.
-        GUIOverlay* getOverlay(std::string name); // Get the GUIOverlay of the GUI with the given name.
+        bool registerOverlay(const std::string& name, GUIOverlay* overlay); //!< Register a GUIOverlay with the GUIManager.
+        GUIOverlay* getOverlay(const std::string& name); // Get the GUIOverlay of the GUI with the given name.
 
         void setCamera(Ogre::Camera* camera);
 
@@ -104,26 +103,20 @@ namespace orxonox
         void loadLuaCode();
 
         // keyHandler functions
-        void keyPressed (const KeyEvent& evt)
-            { guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text); }
-        void keyReleased(const KeyEvent& evt)
-            { guiSystem_->injectKeyUp(evt.key); }
+        void keyPressed (const KeyEvent& evt);
+        void keyReleased(const KeyEvent& evt);
         void keyHeld    (const KeyEvent& evt) { }
 
         // mouseHandler functions
         void mouseButtonPressed (MouseButtonCode::ByEnum id);
         void mouseButtonReleased(MouseButtonCode::ByEnum id);
         void mouseButtonHeld    (MouseButtonCode::ByEnum id) { }
-        void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
-            { guiSystem_->injectMouseMove(rel.x, rel.y); }
-        void mouseScrolled      (int abs, int rel)
-            { guiSystem_->injectMouseWheelChange(rel);}
+        void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+        void mouseScrolled      (int abs, int rel);
 
         void updateInput(float dt)  { }
         void updateKey  (float dt)  { }
         void updateMouse(float dt)  { }
-
-        static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
         Ogre::RenderWindow*         renderWindow_;      //!< Ogre's render window to give CEGUI access to it
         CEGUI::OgreCEGUIRenderer*   guiRenderer_;       //!< CEGUI's interface to the Ogre Engine

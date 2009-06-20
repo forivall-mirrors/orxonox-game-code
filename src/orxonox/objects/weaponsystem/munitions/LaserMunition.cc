@@ -27,7 +27,6 @@
  */
 
 #include "LaserMunition.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox

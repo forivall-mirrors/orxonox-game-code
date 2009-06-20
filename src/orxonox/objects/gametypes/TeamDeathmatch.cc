@@ -30,8 +30,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "objects/Teamcolourable.h"
+#include "interfaces/TeamColourable.h"
 #include "objects/worldentities/TeamSpawnPoint.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -52,10 +53,10 @@ namespace orxonox
 
         static ColourValue colours[] =
         {
-            ColourValue(1.0, 0.3, 0.3),
-            ColourValue(0.3, 0.3, 1.0),
-            ColourValue(0.3, 1.0, 0.3),
-            ColourValue(1.0, 1.0, 0.0)
+            ColourValue(1.0f, 0.3f, 0.3f),
+            ColourValue(0.3f, 0.3f, 1.0f),
+            ColourValue(0.3f, 1.0f, 0.3f),
+            ColourValue(1.0f, 1.0f, 0.0f)
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 
@@ -137,7 +138,7 @@ namespace orxonox
 
         if (teamSpawnPoints.size() > 0)
         {
-            unsigned int randomspawn = (unsigned int)rnd(teamSpawnPoints.size());
+            unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); ++it)
             {
@@ -167,9 +168,9 @@ namespace orxonox
                 std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
                 for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
                 {
-                    if ((*it)->isA(Class(Teamcolourable)))
+                    if ((*it)->isA(Class(TeamColourable)))
                     {
-                        Teamcolourable* tc = dynamic_cast<Teamcolourable*>(*it);
+                        TeamColourable* tc = dynamic_cast<TeamColourable*>(*it);
                         tc->setTeamColour(this->teamcolours_[it_player->second]);
                     }
                 }

@@ -28,10 +28,8 @@
 
 #include "BillboardProjectile.h"
 
-#include <OgreBillboardSet.h>
-
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "objects/Scene.h"
 
 namespace orxonox
@@ -45,7 +43,7 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
-            this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5, 0.5, 0.7, 0.8), 1);
+            this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5f, 0.5f, 0.7f, 0.8f), 1);
             this->attachOgreObject(this->billboard_.getBillboardSet());
         }
 

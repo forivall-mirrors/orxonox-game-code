@@ -28,6 +28,7 @@
 
 #include "LevelManager.h"
 
+#include <map>
 #include "PlayerManager.h"
 #include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"

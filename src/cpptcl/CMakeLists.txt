@@ -30,19 +30,18 @@ SET(CPPTCL_FILES
   details/methods.h
   details/methods_v.h
 )
-GENERATE_SOURCE_GROUPS(${CPPTCL_FILES})
 
 # No warnings needed from third party libraries
 REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
 ADD_COMPILER_FLAGS("-w")
 
-IF(MSVC)
-  ADD_LIBRARY(cpptcl_orxonox STATIC ${CPPTCL_FILES})
-ELSE()
-  ADD_LIBRARY(cpptcl_orxonox SHARED ${CPPTCL_FILES})
-  ORXONOX_INSTALL(cpptcl_orxonox)
-ENDIF()
-
-TARGET_LINK_LIBRARIES(cpptcl_orxonox ${TCL_LIBRARY})
-
-SET_TARGET_PROPERTIES(cpptcl_orxonox PROPERTIES VERSION 1.1.3)
+ORXONOX_ADD_LIBRARY(cpptcl_orxonox
+  ORXONOX_EXTERNAL
+  NO_DLL_INTERFACE
+  VERSION
+    1.1.3
+  LINK_LIBRARIES
+    ${TCL_LIBRARY}
+  SOURCE_FILES
+    ${CPPTCL_FILES}
+)

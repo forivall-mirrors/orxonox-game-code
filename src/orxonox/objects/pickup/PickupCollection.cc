@@ -33,12 +33,10 @@
 
 #include "PickupCollection.h"
 
-#include "BaseItem.h"
+#include "core/CoreIncludes.h"
 #include "EquipmentItem.h"
 #include "PassiveItem.h"
 #include "UsableItem.h"
-
-#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

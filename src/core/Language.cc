@@ -36,8 +36,8 @@
 #include <fstream>
 #include <boost/filesystem.hpp>
 
-#include "Core.h"
 #include "util/Debug.h"
+#include "Core.h"
 
 namespace orxonox
 {

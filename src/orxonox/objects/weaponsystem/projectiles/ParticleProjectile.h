@@ -30,10 +30,7 @@
 #define _ParticleProjectile_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "BillboardProjectile.h"
-#include "tools/ParticleInterface.h"
-#include "util/Math.h"
 
 namespace orxonox
 {

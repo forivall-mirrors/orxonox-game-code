@@ -30,6 +30,7 @@
 #define _EventTarget_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include "core/BaseObject.h"
 #include "core/XMLNameListener.h"
 

@@ -246,13 +246,12 @@ namespace orxonox
     class Shader;
     template <class T>
     class Timer;
-    class DynamicLines;
-    class DynamicRenderable;
 
     // overlays
     class BarColour;
     class DebugFPSText;
     class DebugRTRText;
+    class GUIOverlay;
     class HUDBar;
     class HUDNavigation;
     class HUDRadar;
@@ -287,14 +286,14 @@ namespace orxonox
 
 namespace Ogre
 {
-    // some got forgotten in OgrePrerequisites
-    class BorderPanelOverlayElement;
-    class PanelOverlayElement;
-    class TextAreaOverlayElement;
+    // OGRE Wiki adapted code
+    class DynamicLines;
+    class DynamicRenderable;
 }
 
 namespace CEGUI
 {
+    class DefaultLogger;
     class LuaScriptModule;
 
     class OgreCEGUIRenderer;
@@ -303,7 +302,6 @@ namespace CEGUI
 }
 
 // Bullet Physics Engine
-
 class btTransform;
 class btVector3;
 
@@ -323,7 +321,13 @@ class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btSequentialImpulseConstraintSolver;
 
-// lua
+// ALUT
+typedef struct ALCcontext_struct ALCcontext;
+typedef struct ALCdevice_struct ALCdevice;
+typedef unsigned int ALuint;
+typedef int ALint;
+
+// Lua
 struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

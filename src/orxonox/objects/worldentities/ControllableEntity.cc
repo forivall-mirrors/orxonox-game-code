@@ -29,12 +29,12 @@
 #include "ControllableEntity.h"
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "core/Template.h"
 
 #include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"

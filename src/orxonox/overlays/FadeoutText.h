@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "overlays/OverlayText.h"
-#include "objects/Tickable.h"
 #include "tools/Timer.h"
+#include "interfaces/Tickable.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {

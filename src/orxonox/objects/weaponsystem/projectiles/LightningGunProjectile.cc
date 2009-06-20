@@ -28,12 +28,8 @@
 
 #include "LightningGunProjectile.h"
 
-#include <OgreBillboardSet.h>
-
-#include "core/GameMode.h"
-#include "core/CoreIncludes.h"
-#include "objects/Scene.h"
 #include "util/Convert.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -45,7 +41,7 @@ namespace orxonox
 
         this->textureIndex_ = 1;
         this->maxTextureIndex_ = 8;
-        this->textureTimer_.setTimer(0.01, true, this, createExecutor(createFunctor(&LightningGunProjectile::changeTexture)));
+        this->textureTimer_.setTimer(0.01f, true, this, createExecutor(createFunctor(&LightningGunProjectile::changeTexture)));
         
         registerVariables();
     }

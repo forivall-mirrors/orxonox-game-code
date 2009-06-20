@@ -28,45 +28,45 @@
 
 #include "HUDTimer.h"
 
-#include "core/CoreIncludes.h"
 #include "util/Convert.h"
+#include "core/CoreIncludes.h"
 #include "objects/worldentities/ControllableEntity.h"
 #include "objects/gametypes/Gametype.h"
 
 namespace orxonox
 {
-  CreateFactory(HUDTimer);
+    CreateFactory(HUDTimer);
 
-  HUDTimer::HUDTimer(BaseObject* creator) : OverlayText(creator)
-  {
-    RegisterObject(HUDTimer);
-
-    this->owner_ = 0;
-  }
-
-  HUDTimer::~HUDTimer()
-  {
-  }
-
-  void HUDTimer::tick(float dt)
-  {
-    SUPER(HUDTimer, tick, dt);
-
-    Gametype* gametype = this->getGametype();
-    
-    if(gametype)
+    HUDTimer::HUDTimer(BaseObject* creator) : OverlayText(creator)
     {
-      if (gametype->getTimerIsActive())
-      {
-        this->setCaption(convertToString((int)gametype->getTime() + 1));
-      }
+        RegisterObject(HUDTimer);
+
+        this->owner_ = 0;
     }
-  }
 
-  void HUDTimer::changedOwner()
-  {
-    SUPER(HUDTimer, changedOwner);
+    HUDTimer::~HUDTimer()
+    {
+    }
 
-    this->owner_ = dynamic_cast<ControllableEntity*>(this->getOwner());
-  }
+    void HUDTimer::tick(float dt)
+    {
+        SUPER(HUDTimer, tick, dt);
+
+        Gametype* gametype = this->getGametype();
+
+        if (gametype)
+        {
+            if (gametype->getTimerIsActive())
+            {
+                this->setCaption(convertToString((int)gametype->getTime() + 1));
+            }
+        }
+    }
+
+    void HUDTimer::changedOwner()
+    {
+        SUPER(HUDTimer, changedOwner);
+
+        this->owner_ = dynamic_cast<ControllableEntity*>(this->getOwner());
+    }
 }

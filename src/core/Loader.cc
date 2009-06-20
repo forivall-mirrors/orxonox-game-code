@@ -31,17 +31,15 @@
 #include <tinyxml/ticpp.h>
 #include <boost/filesystem.hpp>
 
-#include "XMLFile.h"
-#include "BaseObject.h"
-#include "Identifier.h"
-#include "Iterator.h"
-#include "ObjectList.h"
-#include "CoreIncludes.h"
-#include "LuaBind.h"
-#include "Namespace.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "BaseObject.h"
 #include "Core.h"
+#include "Iterator.h"
+#include "ObjectList.h"
+#include "LuaBind.h"
+#include "Namespace.h"
+#include "XMLFile.h"
 
 namespace orxonox
 {

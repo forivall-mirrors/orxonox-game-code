@@ -36,6 +36,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <string>
 #include "core/BaseObject.h"
 
 // tolua_begin

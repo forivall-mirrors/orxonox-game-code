@@ -38,7 +38,7 @@
 #define _Clock_H__
 
 #include "CorePrereqs.h"
-#include <OgrePrerequisites.h>
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
@@ -52,11 +52,11 @@ namespace orxonox
 
         unsigned long long getMicroseconds()   const { return tickTime_; }
         unsigned long long getMilliseconds()   const { return tickTime_ / 1000; }
-        int                getSeconds()        const { return tickTime_ / 1000000; }
-        float              getSecondsPrecise() const { return (float)tickTime_ / 1000000.0f; }
+        unsigned long      getSeconds()        const { return static_cast<long> (tickTime_ / 1000000); }
+        float              getSecondsPrecise() const { return static_cast<float>(tickTime_ / 1000000.0f); }
 
         float              getDeltaTime()      const { return tickDtFloat_; }
-        int                getDeltaTimeMicroseconds() const { return tickDt_; }
+        long               getDeltaTimeMicroseconds() const { return tickDt_; }
 
         unsigned long long getRealMicroseconds() const;
 
@@ -66,7 +66,7 @@ namespace orxonox
         Ogre::Timer*       timer_;
         unsigned long long storedTime_;
         unsigned long long tickTime_;
-        int                tickDt_;
+        long               tickDt_;
         float              tickDtFloat_;
         unsigned long      lastTimersTime_;
     };

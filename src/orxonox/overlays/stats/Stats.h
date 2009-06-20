@@ -29,15 +29,11 @@
 #ifndef _Stats_H__
 #define _Stats_H__
 
-
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <OgreBorderPanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 
+#include "util/OgreForwardRefs.h"
+#include "interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
-#include "objects/Tickable.h"
-
 
 namespace orxonox
 {

@@ -28,14 +28,12 @@
 
 #include "ExplosionChunk.h"
 
-#include <OgreParticleSystem.h>
-
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
+#include "core/GameMode.h"
+#include "util/Exception.h"
 #include "objects/Scene.h"
 #include "tools/ParticleInterface.h"
-#include "util/Exception.h"
 
 namespace orxonox
 {
@@ -152,12 +150,12 @@ namespace orxonox
 
             Vector3 change(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1));
             change.normalise();
-            change *= rnd(0.4, 0.8);
+            change *= rnd(0.4f, 0.8f);
             Vector3 velocity = this->getVelocity();
             velocity.normalise();
             velocity += change;
             velocity.normalise();
-            velocity *= length * rnd(0.8, 1.0);
+            velocity *= length * rnd(0.8f, 1.0f);
 
             this->setVelocity(velocity);
         }

@@ -34,6 +34,8 @@
 #ifndef _ModifierType_H__
 #define _ModifierType_H__
 
+#include "OrxonoxPrereqs.h"
+
 namespace orxonox
 {
     namespace ModifierType

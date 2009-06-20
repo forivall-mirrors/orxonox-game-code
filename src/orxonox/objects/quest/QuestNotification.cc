@@ -27,10 +27,7 @@
  */
 
 #include "QuestNotification.h"
-
 #include "core/CoreIncludes.h"
-
-#include "orxonox/overlays/notifications/Notification.h"
 
 namespace orxonox {
 

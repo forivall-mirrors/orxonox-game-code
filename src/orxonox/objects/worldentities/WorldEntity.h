@@ -32,14 +32,13 @@
 
 #include "OrxonoxPrereqs.h"
 
-#ifdef NDEBUG
-#include <OgreSceneNode.h>
-#else
-#include <OgrePrerequisites.h>
+#ifdef ORXONOX_RELEASE
+#  include <OgreSceneNode.h>
 #endif
-#include "LinearMath/btMotionState.h"
+#include <LinearMath/btMotionState.h>
 
 #include "util/Math.h"
+#include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
 
@@ -74,6 +73,22 @@ namespace orxonox
         friend class Scene;
 
         public:
+            // Define our own transform space enum to avoid Ogre includes here
+            /**
+            @brief
+                Enumeration denoting the spaces which a transform can be relative to.
+            */
+            enum TransformSpace
+            {
+                //! Transform is relative to the local space
+                Local,
+                //! Transform is relative to the space of the parent node
+                Parent,
+                //! Transform is relative to world space
+                World
+            };
+
+        public:
             WorldEntity(BaseObject* creator);
             virtual ~WorldEntity();
 
@@ -96,8 +111,8 @@ namespace orxonox
             const Vector3& getPosition() const;
             const Vector3& getWorldPosition() const;
 
-            void translate(const Vector3& distance, TransformSpace::Enum relativeTo = TransformSpace::Parent);
-            inline void translate(float x, float y, float z, TransformSpace::Enum relativeTo = TransformSpace::Parent)
+            void translate(const Vector3& distance, TransformSpace relativeTo = WorldEntity::Parent);
+            inline void translate(float x, float y, float z, TransformSpace relativeTo = WorldEntity::Parent)
                 { this->translate(Vector3(x, y, z), relativeTo); }
 
             virtual inline const Vector3& getVelocity() const
@@ -113,20 +128,20 @@ namespace orxonox
             const Quaternion& getOrientation() const;
             const Quaternion& getWorldOrientation() const;
 
-            void rotate(const Quaternion& rotation, TransformSpace::Enum relativeTo = TransformSpace::Local);
-            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            void rotate(const Quaternion& rotation, TransformSpace relativeTo = WorldEntity::Local);
+            inline void rotate(const Vector3& axis, const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, axis), relativeTo); }
 
-            inline void yaw(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            inline void yaw(const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_Y), relativeTo); }
-            inline void pitch(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            inline void pitch(const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_X), relativeTo); }
-            inline void roll(const Degree& angle, TransformSpace::Enum relativeTo = TransformSpace::Local)
+            inline void roll(const Degree& angle, TransformSpace relativeTo = WorldEntity::Local)
                 { this->rotate(Quaternion(angle, Vector3::UNIT_Z), relativeTo); }
 
-            void lookAt(const Vector3& target, TransformSpace::Enum relativeTo = TransformSpace::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            void setDirection(const Vector3& direction, TransformSpace::Enum relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
-            inline void setDirection(float x, float y, float z, TransformSpace::Enum relativeTo = TransformSpace::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
+            void lookAt(const Vector3& target, TransformSpace relativeTo = WorldEntity::Parent, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            void setDirection(const Vector3& direction, TransformSpace relativeTo = WorldEntity::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
+            inline void setDirection(float x, float y, float z, TransformSpace relativeTo = WorldEntity::Local, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->setDirection(Vector3(x, y, z), relativeTo, localDirectionVector); }
 
             virtual void setScale3D(const Vector3& scale);
@@ -156,8 +171,18 @@ namespace orxonox
             inline const std::set<WorldEntity*>& getAttachedObjects() const
                 { return this->children_; }
 
-            void attachOgreObject(Ogre::MovableObject* object);
-            void detachOgreObject(Ogre::MovableObject* object);
+            void attachOgreObject(Ogre::MovableObject*  object);
+            void attachOgreObject(Ogre::BillboardSet*   object);
+            void attachOgreObject(Ogre::Camera*         object);
+            void attachOgreObject(Ogre::Entity*         object);
+            void attachOgreObject(Ogre::ParticleSystem* object);
+
+            void detachOgreObject(Ogre::MovableObject*  object);
+            void detachOgreObject(Ogre::BillboardSet*   object);
+            void detachOgreObject(Ogre::Camera*         object);
+            void detachOgreObject(Ogre::Entity*         object);
+            void detachOgreObject(Ogre::ParticleSystem* object);
+
             Ogre::MovableObject* detachOgreObject(const Ogre::String& name);
 
             inline void attachToParent(WorldEntity* parent)
@@ -426,7 +451,7 @@ namespace orxonox
     };
 
     // Inline heavily used functions for release builds. In debug, we better avoid including OgreSceneNode here.
-#ifdef NDEBUG
+#ifdef ORXONOX_RELEASE
     inline const Vector3& WorldEntity::getPosition() const
         { return this->node_->getPosition(); }
     inline const Quaternion& WorldEntity::getOrientation() const

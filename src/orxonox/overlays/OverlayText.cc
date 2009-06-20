@@ -30,14 +30,21 @@
 
 #include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <boost/static_assert.hpp>
 
 #include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
+
 namespace orxonox
 {
     CreateFactory(OverlayText);
+
+    BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Left   == (int)OverlayText::Left);
+    BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Center == (int)OverlayText::Center);
+    BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Right  == (int)OverlayText::Right);
 
     OverlayText::OverlayText(BaseObject* creator)
         : OrxonoxOverlay(creator)
@@ -75,20 +82,14 @@ namespace orxonox
         XMLPortParam(OverlayText, "spacewidth", setSpaceWidth,      getSpaceWidth,      xmlElement, mode);
     }
 
-    void OverlayText::setFont(const std::string& font)
-    {
-        if (font != "")
-            this->text_->setFontName(font);
-    }
-
     void OverlayText::setAlignmentString(const std::string& alignment)
     {
         if (alignment == "right")
-            this->setAlignment(Ogre::TextAreaOverlayElement::Right);
+            this->setAlignment(OverlayText::Right);
         else if (alignment == "center")
-            this->setAlignment(Ogre::TextAreaOverlayElement::Center);
+            this->setAlignment(OverlayText::Center);
         else // "left" and default
-            this->setAlignment(Ogre::TextAreaOverlayElement::Left);
+            this->setAlignment(OverlayText::Left);
     }
 
     std::string OverlayText::getAlignmentString() const
@@ -118,5 +119,52 @@ namespace orxonox
             this->overlay_->setScale(size_.y, size_.y);
 
         positionChanged();
+    }
+
+    void OverlayText::setCaption(const std::string& caption)
+    {
+        this->text_->setCaption(caption);
+        this->changedCaption();
+    }
+    std::string OverlayText::getCaption() const
+    {
+        return this->text_->getCaption();
+    }
+
+    void OverlayText::setFont(const std::string& font)
+    {
+        if (font != "")
+            this->text_->setFontName(font);
+    }
+    const std::string& OverlayText::getFont() const
+    {
+        return this->text_->getFontName();
+    }
+
+    void OverlayText::setSpaceWidth(float width)
+    {
+        this->text_->setSpaceWidth(width);
+    }
+    float OverlayText::getSpaceWidth() const
+    {
+        return this->text_->getSpaceWidth();
+    }
+
+    void OverlayText::setColour(const ColourValue& colour)
+    {
+        this->text_->setColour(colour); this->changedColour();
+    }
+    const ColourValue& OverlayText::getColour() const
+    {
+        return this->text_->getColour();
+    }
+
+    void OverlayText::setAlignment(OverlayText::Alignment alignment)
+    {
+        this->text_->setAlignment(static_cast<Ogre::TextAreaOverlayElement::Alignment>(alignment));
+    }
+    OverlayText::Alignment OverlayText::getAlignment() const
+    {
+        return static_cast<OverlayText::Alignment>(this->text_->getAlignment());
     }
 }

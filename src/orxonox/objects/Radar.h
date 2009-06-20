@@ -27,8 +27,8 @@
  */
 
 /**
-    @file
-    @brief
+@file
+@brief
 */
 
 #ifndef _Radar_H__
@@ -38,10 +38,10 @@
 
 #include <map>
 #include <string>
-#include "core/Iterator.h"
-#include "core/OrxonoxClass.h"
-#include "objects/Tickable.h"
-#include "RadarViewable.h"
+
+#include "core/ObjectListIterator.h"
+#include "interfaces/RadarViewable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

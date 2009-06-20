@@ -17,27 +17,7 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET_SOURCE_FILES(UTIL_FILES
-  CRC32.h
-  Clipboard.h
-  Convert.h
-  Debug.h
-  Exception.h
-  ExprParser.h
-  Math.h
-  MathConvert.h
-  MultiType.h
-  MultiTypeValue.h
-  OrxEnum.h
-  OutputBuffer.h
-  OutputHandler.h
-  SignalHandler.h
-  Sleep.h
-  String.h
-  SubString.h
-  UtilPrereqs.h
-  mbool.h
-  
+SET_SOURCE_FILES(UTIL_SRC_FILES
   Clipboard.cc
   CRC32.cc
   Exception.cc
@@ -51,30 +31,18 @@ SET_SOURCE_FILES(UTIL_FILES
   String.cc
   SubString.cc
 )
-#GET_ALL_HEADER_FILES(UTIL_HDR_FILES)
-#SET(UTIL_FILES ${UTIL_SRC_FILES} ${UTIL_HDR_FILES})
-GENERATE_SOURCE_GROUPS(${UTIL_FILES})
-# Also add OrxonoxConfig to have it least somewhere in the IDE
-LIST(APPEND UTIL_FILES
-  ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h
-  ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
-  ${CMAKE_BINARY_DIR}/src/SpecialConfig.h
-  ${CMAKE_SOURCE_DIR}/src/SpecialConfig.h.in
-)
-SOURCE_GROUP("" FILES
-  ${CMAKE_BINARY_DIR}/src/OrxonoxConfig.h
-  ${CMAKE_SOURCE_DIR}/src/OrxonoxConfig.h.in
-  ${CMAKE_BINARY_DIR}/src/SpecialConfig.h
-  ${CMAKE_SOURCE_DIR}/src/SpecialConfig.h.in
-)
 
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
   # Get around displaying a few hundred lines of warning code
   SET_SOURCE_FILES_PROPERTIES(MultiType.cc PROPERTIES COMPILE_FLAGS "-w")
 ENDIF()
 
-ADD_LIBRARY(util SHARED ${UTIL_FILES})
-SET_TARGET_PROPERTIES(util PROPERTIES DEFINE_SYMBOL "UTIL_SHARED_BUILD")
-TARGET_LINK_LIBRARIES(util ${OGRE_LIBRARY})
-
-ORXONOX_INSTALL(util)
+ORXONOX_ADD_LIBRARY(util
+  FIND_HEADER_FILES
+  DEFINE_SYMBOL
+    "UTIL_SHARED_BUILD"
+  LINK_LIBRARIES
+    ${OGRE_LIBRARY}
+  SOURCE_FILES
+    ${UTIL_SRC_FILES}
+)

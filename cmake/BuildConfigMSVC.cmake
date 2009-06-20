@@ -23,9 +23,30 @@
  #    Sets the right compiler and linker flags for the Microsoft Compiler.
  #
 
+################### Compiler Version ####################
+
+# We make use of variadic macros, which is only supported by MSVC 8 and above
+IF(MSVC_VERSION LESS 1400)
+  MESSAGE(FATAL_ERROR "Microsoft Visual Studio versions below 8 (2005) are not supported because of missing compiler extensions.")
+ENDIF()
+
+
 ######################## Options ########################
 
-OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" FALSE)
+# Currently VLD has a problem with MSVC9 although it actually is supported
+IF(MSVC8)
+  OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" off)
+ENDIF()
+# Make sure the value is "on" or "off" for vld.ini
+IF(VISUAL_LEAK_DETECTOR_ENABLE)
+  SET(VISUAL_LEAK_DETECTOR_ENABLE on)
+ELSE()
+  SET(VISUAL_LEAK_DETECTOR_ENABLE off)
+ENDIF()
+
+# Orxonox only supports MSVC 8 and above, which gets asserted above
+SET(PCH_COMPILER_SUPPORT TRUE)
+
 
 #################### Compiler Flags #####################
 
@@ -46,7 +67,7 @@ ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"      CACHE)
 ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 
 # Overwrite CMake default flags here.
-SET_COMPILER_FLAGS("-MDd -Od -ZI -D_DEBUG -Gm -RTC1" Debug          CACHE)
+SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -Gm -RTC1" Debug          CACHE)
 SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"      Release        CACHE)
 SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP2"      RelWithDebInfo CACHE)
 SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"      MinSizeRel     CACHE)
@@ -74,6 +95,7 @@ ENDIF()
 # "<type> needs to have dll-interface to be used by clients'
 # Happens on STL member variables which are not public
 ADD_COMPILER_FLAGS("-w44251" CACHE)
+ADD_COMPILER_FLAGS("-w44275" CACHE) # For inheritance
 
 # Multiple assignment operators specified
 ADD_COMPILER_FLAGS("-w44522" CACHE)

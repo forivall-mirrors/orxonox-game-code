@@ -28,8 +28,6 @@
 
 #include "InputBuffer.h"
 
-#include <iostream>
-
 #include "util/Clipboard.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -56,7 +54,7 @@ namespace orxonox
         setConfigValues();
     }
 
-    InputBuffer::InputBuffer(const std::string allowedChars)
+    InputBuffer::InputBuffer(const std::string& allowedChars)
     {
         RegisterRootObject(InputBuffer);
 

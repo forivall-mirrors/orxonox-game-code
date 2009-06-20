@@ -42,7 +42,6 @@
 #define _Clipboard_H__
 
 #include "UtilPrereqs.h"
-
 #include <string>
 
 namespace orxonox

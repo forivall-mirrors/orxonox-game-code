@@ -33,13 +33,11 @@
 
 #include "ParticleEmitter.h"
 
-#include <OgreParticleSystem.h>
-
-#include "tools/ParticleInterface.h"
 #include "util/Exception.h"
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/XMLPort.h"
+#include "tools/ParticleInterface.h"
 #include "objects/Scene.h"
 
 namespace orxonox

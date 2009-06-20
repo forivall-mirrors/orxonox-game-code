@@ -30,18 +30,27 @@
 #define _Light_H__
 
 #include "OrxonoxPrereqs.h"
-#include "StaticEntity.h"
 
 #include <string>
-#include <OgreLight.h>
-
 #include "util/Math.h"
-#include "objects/Teamcolourable.h"
+#include "interfaces/TeamColourable.h"
+#include "StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Light : public StaticEntity, public Teamcolourable
+    class _OrxonoxExport Light : public StaticEntity, public TeamColourable
     {
+        public:
+            enum LightTypes // Copy from the Ogre enum
+            {
+                /// Point light sources give off light equally in all directions, so require only position not direction
+                LT_POINT,
+                /// Directional lights simulate parallel light beams from a distant source, hence have direction but no position
+                LT_DIRECTIONAL,
+                /// Spotlights simulate a cone of light from a source so require position and direction, plus extra values for falloff
+                LT_SPOTLIGHT
+            };
+
         public:
             Light(BaseObject* creator);
             virtual ~Light();
@@ -54,9 +63,9 @@ namespace orxonox
             inline Ogre::Light* getLight()
                 { return this->light_; }
 
-            inline void setType(Ogre::Light::LightTypes type)
+            inline void setType(Light::LightTypes type)
                 { this->type_ = type; this->updateType(); }
-            inline Ogre::Light::LightTypes getType() const
+            inline Light::LightTypes getType() const
                 { return this->type_; }
 
             inline void setDiffuseColour(const ColourValue& colour)
@@ -132,7 +141,7 @@ namespace orxonox
             void updateSpotlightRange();
 
             Ogre::Light* light_;
-            Ogre::Light::LightTypes type_;
+            LightTypes type_;
             ColourValue diffuse_;
             ColourValue specular_;
             Vector4 attenuation_;

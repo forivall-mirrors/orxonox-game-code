@@ -30,6 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {

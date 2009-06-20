@@ -27,7 +27,7 @@
  */
 
 /**
-    @file QuestEffectBeacon.h
+    @file
     @brief Definition of the QuestEffectBeacon class.
 */
 
@@ -36,6 +36,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <list>
 #include "orxonox/objects/worldentities/StaticEntity.h"
 
 namespace orxonox

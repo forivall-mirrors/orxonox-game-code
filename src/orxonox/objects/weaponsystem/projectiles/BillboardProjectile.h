@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "Projectile.h"
-#include "tools/BillboardSet.h"
 #include "util/Math.h"
+#include "tools/BillboardSet.h"
+#include "Projectile.h"
 
 namespace orxonox
 {

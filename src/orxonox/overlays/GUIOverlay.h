@@ -29,13 +29,10 @@
 #ifndef _GUIOverlay_H__
 #define _GUIOverlay_H__
 
-
-#include "OrxonoxOverlay.h"
 #include "OrxonoxPrereqs.h"
 
-#include <OgrePrerequisites.h>
-
-#include "core/XMLPort.h"
+#include <string>
+#include "OrxonoxOverlay.h"
 
 namespace orxonox
 {

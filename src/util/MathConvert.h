@@ -49,7 +49,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::Vector2, std::string>
     {
-        static bool convert(std::string* output, const orxonox::Vector2& input)
+        FORCEINLINE static bool convert(std::string* output, const orxonox::Vector2& input)
         {
             std::ostringstream ostream;
             if (ostream << input.x << "," << input.y)
@@ -65,7 +65,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::Vector3, std::string>
     {
-        static bool convert(std::string* output, const orxonox::Vector3& input)
+        FORCEINLINE static bool convert(std::string* output, const orxonox::Vector3& input)
         {
             std::ostringstream ostream;
             if (ostream << input.x << "," << input.y << "," << input.z)
@@ -81,7 +81,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::Vector4, std::string>
     {
-        static bool convert(std::string* output, const orxonox::Vector4& input)
+        FORCEINLINE static bool convert(std::string* output, const orxonox::Vector4& input)
         {
             std::ostringstream ostream;
             if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
@@ -97,7 +97,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::Quaternion, std::string>
     {
-        static bool convert(std::string* output, const orxonox::Quaternion& input)
+        FORCEINLINE static bool convert(std::string* output, const orxonox::Quaternion& input)
         {
             std::ostringstream ostream;
             if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
@@ -113,7 +113,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<orxonox::ColourValue, std::string>
     {
-        static bool convert(std::string* output, const orxonox::ColourValue& input)
+        FORCEINLINE static bool convert(std::string* output, const orxonox::ColourValue& input)
         {
             std::ostringstream ostream;
             if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
@@ -155,7 +155,7 @@ namespace orxonox
     template <class ToType>
     struct ConverterFallback<orxonox::Radian, ToType>
     {
-        static bool convert(ToType* output, const orxonox::Radian& input)
+        FORCEINLINE static bool convert(ToType* output, const orxonox::Radian& input)
         {
             return convertValue<Ogre::Real, ToType>(output, input.valueRadians());
         }
@@ -165,7 +165,7 @@ namespace orxonox
     template <class ToType>
     struct ConverterFallback<orxonox::Degree, ToType>
     {
-        static bool convert(ToType* output, const orxonox::Degree& input)
+        FORCEINLINE static bool convert(ToType* output, const orxonox::Degree& input)
         {
             return convertValue<Ogre::Real, ToType>(output, input.valueDegrees());
         }
@@ -175,7 +175,7 @@ namespace orxonox
     template <class FromType>
     struct ConverterFallback<FromType, orxonox::Radian>
     {
-        static bool convert(orxonox::Radian* output, const FromType& input)
+        FORCEINLINE static bool convert(orxonox::Radian* output, const FromType& input)
         {
             float temp;
             if (convertValue(&temp, input))
@@ -192,7 +192,7 @@ namespace orxonox
     template <class FromType>
     struct ConverterFallback<FromType, orxonox::Degree>
     {
-        static bool convert(orxonox::Degree* output, const FromType& input)
+        FORCEINLINE static bool convert(orxonox::Degree* output, const FromType& input)
         {
             float temp;
             if (convertValue(&temp, input))

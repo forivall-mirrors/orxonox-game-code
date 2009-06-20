@@ -33,7 +33,6 @@
 */
 
 #include "PlayerTrigger.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox

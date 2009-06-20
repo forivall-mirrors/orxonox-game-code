@@ -27,7 +27,7 @@
  */
 
 /**
-    @file AddReward.h
+    @file
     @brief Definition of the AddReward class.
 */
 
@@ -37,8 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-
-#include "core/XMLPort.h"
 #include "QuestEffect.h"
 
 namespace orxonox

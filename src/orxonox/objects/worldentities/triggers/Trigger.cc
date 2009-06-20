@@ -28,13 +28,10 @@
 
 #include "Trigger.h"
 
-#include <OgreBillboard.h>
-#include <OgreBillboardSet.h>
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "core/XMLPort.h"
 #include "core/GameMode.h"
+#include "core/XMLPort.h"
 #include "objects/Scene.h"
 
 namespace orxonox
@@ -236,7 +233,7 @@ namespace orxonox
   bool Trigger::switchState()
   {
     if (( (this->latestState_ & 2) && this->bStayActive_ && (this->remainingActivations_ <= 0))
-     || (!(this->latestState_ & 2))                      && (this->remainingActivations_ == 0))
+     || (!(this->latestState_ & 2)                       && (this->remainingActivations_ == 0)))
       return false;
     else
     {

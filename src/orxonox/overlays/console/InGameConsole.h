@@ -31,18 +31,15 @@
 
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include <OgreBorderPanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 
+#include <string>
+#include "util/OgreForwardRefs.h"
 #include "core/Shell.h"
-#include "core/OrxonoxClass.h"
-#include "tools/WindowEventListener.h"
-
+#include "interfaces/WindowEventListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : virtual public OrxonoxClass, public ShellListener, public WindowEventListener
+    class _OrxonoxExport InGameConsole : public ShellListener, public WindowEventListener
     {
     public: // functions
         InGameConsole();
@@ -59,8 +56,6 @@ namespace orxonox
 
         static void openConsole();
         static void closeConsole();
-
-        static Ogre::UTFString convert2UTF(const std::string& text);
 
     private: // functions
         InGameConsole(const InGameConsole& other);

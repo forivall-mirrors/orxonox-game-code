@@ -28,17 +28,17 @@
 
 #include "GSMainMenu.h"
 
-//#include <OgreViewport.h>
 #include <OgreSceneManager.h>
-#include "core/Clock.h"
-#include "core/ConsoleCommand.h"
-#include "core/Game.h"
+
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "core/Game.h"
+#include "core/Clock.h"
+#include "core/ConsoleCommand.h"
 #include "objects/Scene.h"
-#include "GraphicsManager.h"
+#include "gui/GUIManager.h"
 #include "sound/SoundMainMenu.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {

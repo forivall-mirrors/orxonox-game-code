@@ -36,6 +36,7 @@
 #define _HalfAxis_H__
 
 #include "core/CorePrereqs.h"
+
 #include "Button.h"
 #include "InputCommands.h"
 

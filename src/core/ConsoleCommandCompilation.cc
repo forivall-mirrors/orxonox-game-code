@@ -27,9 +27,14 @@
  */
 
 #include "ConsoleCommandCompilation.h"
-#include "ConsoleCommand.h"
+
+#include <fstream>
+#include <set>
+#include <string>
+
 #include "util/Debug.h"
 #include "util/ExprParser.h"
+#include "ConsoleCommand.h"
 
 namespace orxonox
 {
@@ -164,7 +169,7 @@ namespace orxonox
             {
                 COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << "'" << std::endl;
             }
-            return expr.getResult();
+            return static_cast<float>(expr.getResult());
         }
         else
         {

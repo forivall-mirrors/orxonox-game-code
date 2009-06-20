@@ -74,7 +74,7 @@ namespace orxonox
     {
         SUPER(ParticleSpawner, processEvent, event);
 
-        SetEvent(ParticleSpawner, "spawn", spawn, event);
+        ORXONOX_SET_EVENT(ParticleSpawner, "spawn", spawn, event);
     }
 
     void ParticleSpawner::configure(float lifetime, float startdelay, float destroydelay, bool autodestroy)

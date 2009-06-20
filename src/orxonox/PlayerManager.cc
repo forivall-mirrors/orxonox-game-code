@@ -28,11 +28,11 @@
 
 #include "PlayerManager.h"
 
-#include "LevelManager.h"
-#include "core/GameMode.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
+#include "LevelManager.h"
 
 namespace orxonox
 {

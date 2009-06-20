@@ -29,7 +29,6 @@
 #include "FadingBillboard.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
 #include "core/XMLPort.h"
 
 namespace orxonox

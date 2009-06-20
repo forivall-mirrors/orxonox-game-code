@@ -37,9 +37,9 @@
 
 #include "core/CorePrereqs.h"
 
-#include "ois/OISKeyboard.h"
-#include "ois/OISMouse.h"
-#include "ois/OISJoyStick.h"
+#include <ois/OISKeyboard.h>
+#include <ois/OISMouse.h>
+#include <ois/OISJoyStick.h>
 #include "util/Math.h"
 
 namespace orxonox

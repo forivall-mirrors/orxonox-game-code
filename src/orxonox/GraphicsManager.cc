@@ -51,7 +51,6 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "SpecialConfig.h"
-#include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/String.h"
 #include "util/SubString.h"
@@ -62,8 +61,11 @@
 #include "core/Core.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "tools/WindowEventListener.h"
 #include "tools/ParticleInterface.h"
+#include "interfaces/WindowEventListener.h"
+
+// HACK!
+#include "overlays/map/Map.h"
 
 namespace orxonox
 {
@@ -87,8 +89,6 @@ namespace orxonox
         , renderWindow_(0)
         , viewport_(0)
         , ogreWindowEventListener_(0)
-        , avgTickTime_(0.0f)
-        , avgFramesPerSecond_(0.0f)
     {
         RegisterObject(GraphicsManager);
 
@@ -143,6 +143,9 @@ namespace orxonox
             // destroy render window
 //            Ogre::RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
 //            renderer->destroyRenderWindow("Orxonox");
+
+            // HACK! This fixes an exit crash
+            Map::hackDestroyMap();
 
             // unload all compositors
             Ogre::CompositorManager::getSingleton().removeAll();

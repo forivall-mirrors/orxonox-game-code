@@ -28,11 +28,9 @@
 
 #include "PongScore.h"
 
-#include <OgreTextAreaOverlayElement.h>
-
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Convert.h"
 #include "objects/gametypes/Pong.h"
 #include "objects/infos/PlayerInfo.h"
 

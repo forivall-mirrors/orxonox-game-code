@@ -32,10 +32,15 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "network/synchronisable/Synchronisable.h"
-#include "core/BaseObject.h"
+#include <list>
+#include <set>
+#include <string>
+
 #include "util/Math.h"
-#include "objects/Tickable.h"
+#include "util/OgreForwardRefs.h"
+#include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {

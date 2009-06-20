@@ -31,12 +31,11 @@
 
 #include "CorePrereqs.h"
 
-#include <iostream>
+#include <cassert>
 #include <string>
 #include <list>
 #include <map>
 
-#include "util/Math.h"
 #include "util/OrxEnum.h"
 
 namespace orxonox

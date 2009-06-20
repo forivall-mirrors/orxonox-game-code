@@ -30,8 +30,9 @@
 #define _ReplenishingMunition_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponsystem/Munition.h"
+
 #include "tools/Timer.h"
+#include "objects/weaponsystem/Munition.h"
 
 namespace orxonox
 {

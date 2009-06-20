@@ -33,15 +33,17 @@
 
 #include "ParticleInterface.h"
 
+#include <cassert>
+#include <string>
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 #include <OgreSceneManager.h>
-#include <cassert>
 
-#include "GraphicsManager.h"
-#include "core/GameMode.h"
-#include "core/CoreIncludes.h"
 #include "util/Convert.h"
+#include "util/Math.h"
+#include "core/CoreIncludes.h"
+#include "core/GameMode.h"
+#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -131,7 +133,7 @@ namespace orxonox
         else
             return 0;
     }
-    Ogre::ParticleAffector* ParticleInterface::getAffector(unsigned int affectorNr) const
+    Ogre::ParticleAffector* ParticleInterface::getAffector(unsigned int affectorNr)
     {
         if (this->particleSystem_ && (affectorNr < this->particleSystem_->getNumAffectors()))
             return this->particleSystem_->getAffector(affectorNr);

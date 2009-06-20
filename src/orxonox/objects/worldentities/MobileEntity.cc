@@ -29,14 +29,10 @@
 #include "MobileEntity.h"
 
 #include <OgreSceneNode.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 
-#include "util/Debug.h"
-#include "util/MathConvert.h"
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "objects/Scene.h"
 
 namespace orxonox
@@ -95,7 +91,7 @@ namespace orxonox
                 this->angularVelocity_.y += angularAcceleration_.y * dt;
                 this->angularVelocity_.z += angularAcceleration_.z * dt;
                 // Calculate new orientation with quaternion derivative. This is about 30% faster than with angle/axis method.
-                float mult = dt * 0.5;
+                float mult = dt * 0.5f;
                 // TODO: this could be optimized by writing it out. The calls currently create 4 new Quaternions!
                 Quaternion newOrientation(0.0f, this->angularVelocity_.x * mult, this->angularVelocity_.y * mult, this->angularVelocity_.z * mult);
                 newOrientation = this->node_->getOrientation() + newOrientation * this->node_->getOrientation();

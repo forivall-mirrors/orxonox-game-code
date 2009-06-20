@@ -30,6 +30,10 @@
 #define _ControllableEntity_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <list>
+#include <string>
+#include "util/Math.h"
 #include "MobileEntity.h"
 
 namespace orxonox

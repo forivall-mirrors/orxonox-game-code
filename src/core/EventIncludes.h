@@ -32,19 +32,19 @@
 #include "CorePrereqs.h"
 #include "Executor.h"
 
-#define SetEvent(classname, eventname, functionname, event) \
-    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject)
+#define ORXONOX_SET_EVENT(classname, eventname, functionname, event) \
+    ORXONOX_SET_EVENT_GENERIC(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject)
 
-#define SetEventTemplate(classname, eventname, functionname, event, ...) \
-    SetEventGenericTemplate(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject, __VA_ARGS__)
+#define ORXONOX_SET_EVENT_TEMPLATE(classname, eventname, functionname, event, ...) \
+    ORXONOX_SET_EVENT_GENERIC_TEMPLATE(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject, __VA_ARGS__)
 
-#define SetSubclassEvent(classname, eventname, functionname, event, subclassname) \
-    SetEventGeneric(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname)
+#define ORXONOX_SET_SUBCLASS_EVENT(classname, eventname, functionname, event, subclassname) \
+    ORXONOX_SET_EVENT_GENERIC(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname)
 
-#define SetSubclassEventTemplate(classname, eventname, functionname, event, subclassname, ...) \
-    SetEventGenericTemplate(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname, __VA_ARGS__)
+#define ORXONOX_SET_SUBCLASS_EVENT_TEMPLATE(classname, eventname, functionname, event, subclassname, ...) \
+    ORXONOX_SET_EVENT_GENERIC_TEMPLATE(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname, __VA_ARGS__)
 
-#define SetEventGeneric(containername, classname, eventname, functionname, event, subclassname) \
+#define ORXONOX_SET_EVENT_GENERIC(containername, classname, eventname, functionname, event, subclassname) \
     orxonox::EventContainer* containername = this->getEventContainer(eventname); \
     if (!containername) \
     { \
@@ -56,7 +56,7 @@
     event.castedOriginator_ = dynamic_cast<subclassname*>(event.originator_); \
     containername->process(this, event)
 
-#define SetEventGenericTemplate(containername, classname, eventname, functionname, event, subclassname, ...) \
+#define ORXONOX_SET_EVENT_GENERIC_TEMPLATE(containername, classname, eventname, functionname, event, subclassname, ...) \
     orxonox::EventContainer* containername = this->getEventContainer(eventname); \
     if (!containername) \
     { \

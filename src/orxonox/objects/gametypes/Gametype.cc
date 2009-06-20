@@ -28,19 +28,19 @@
 
 #include "Gametype.h"
 
-#include <cstdlib>
-#include <ctime>
-
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Template.h"
 #include "core/GameMode.h"
-#include "overlays/OverlayGroup.h"
+
 #include "objects/infos/PlayerInfo.h"
 #include "objects/infos/Bot.h"
-#include "objects/worldentities/pawns/Spectator.h"
-#include "objects/worldentities/SpawnPoint.h"
 #include "objects/worldentities/Camera.h"
+#include "objects/worldentities/ControllableEntity.h"
+#include "objects/worldentities/SpawnPoint.h"
+#include "objects/worldentities/pawns/Spectator.h"
+#include "objects/worldentities/pawns/Pawn.h"
+#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
@@ -286,7 +286,7 @@ namespace orxonox
     {
         if (this->spawnpoints_.size() > 0)
         {
-            unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
+            unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(this->spawnpoints_.size())));
             unsigned int index = 0;
             for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
             {

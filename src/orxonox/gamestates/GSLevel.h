@@ -30,6 +30,8 @@
 #define _GSLevel_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <string>
 #include "core/OrxonoxClass.h"
 #include "core/GameState.h"
 
@@ -47,7 +49,6 @@ namespace orxonox
         void update(const Clock& time);
 
         static void showIngameGUI(bool show);
-        static void setLevel(std::string levelName);
 
         static XMLFile* startFile_s;
 
@@ -68,7 +69,7 @@ namespace orxonox
         CameraManager*        cameraManager_;           //!< camera manager for this level
         LevelManager*         levelManager_;            //!< global level manager
         PlayerManager*        playerManager_;           //!< player manager for this level
-        QuestManager*          questManager_;
+        QuestManager*         questManager_;
         NotificationManager*  notificationManager_;
 
         //##### ConfigValues #####

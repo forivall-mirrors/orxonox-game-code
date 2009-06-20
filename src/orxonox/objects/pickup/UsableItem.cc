@@ -32,7 +32,6 @@
 */
 
 #include "UsableItem.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -44,9 +43,5 @@ namespace orxonox
     UsableItem::UsableItem(BaseObject* creator) : BaseItem(creator) 
     {
         RegisterObject(UsableItem);
-    }
-    //! Deconstructor.
-    UsableItem::~UsableItem()
-    {
     }
 }

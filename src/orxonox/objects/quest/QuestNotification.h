@@ -32,8 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
-#include "orxonox/overlays/notifications/Notification.h"
+#include "overlays/notifications/Notification.h"
 
 namespace orxonox {
 

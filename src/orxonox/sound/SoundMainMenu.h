@@ -26,13 +26,13 @@
  *
  */
 
-#ifndef _SOUNDMAINMENU_H__
-#define _SOUNDMAINMENU_H__
+#ifndef _SoundMainMenu_H__
+#define _SoundMainMenu_H__
+
+#include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "core/OrxonoxClass.h"
-#include "OrxonoxPrereqs.h"
 #include "SoundBase.h"
 
 namespace orxonox
@@ -47,4 +47,5 @@ namespace orxonox
             std::string filename_;
     };
 }
-#endif
+
+#endif /* _SoundMainMenu_H__ */

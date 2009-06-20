@@ -26,17 +26,6 @@
 
 #include "CreateLines.h"
 
-#include <string>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
-
-#include "util/Convert.h"
-#include "util/Debug.h"
-#include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-
 #include "overlays/OverlayText.h"
 #include "overlays/stats/Stats.h"
 

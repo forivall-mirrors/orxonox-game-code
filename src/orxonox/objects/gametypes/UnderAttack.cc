@@ -28,11 +28,10 @@
 
 #include "UnderAttack.h"
 
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "util/Convert.h"
 #include "network/Host.h"
-
 #include "objects/worldentities/pawns/Destroyer.h"
 #include "objects/infos/PlayerInfo.h"
 

@@ -31,7 +31,6 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
-#include "core/EventIncludes.h"
 #include "EventTarget.h"
 
 namespace orxonox

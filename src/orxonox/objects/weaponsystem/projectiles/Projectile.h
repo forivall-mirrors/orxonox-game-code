@@ -31,9 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/worldentities/MovableEntity.h"
-#include "objects/worldentities/pawns/Pawn.h"
 #include "tools/Timer.h"
+#include "interfaces/PawnListener.h"
+#include "objects/worldentities/MovableEntity.h"
 
 namespace orxonox
 {

@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
 #include <vector>
-
 #include "Deathmatch.h"
 
 namespace orxonox

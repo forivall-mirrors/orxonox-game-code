@@ -30,7 +30,6 @@
 #define _ScriptController_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "ArtificialController.h"
 
 namespace orxonox
@@ -39,9 +38,7 @@ namespace orxonox
     {
         public:
             ScriptController(BaseObject* creator);
-            virtual ~ScriptController();
-
-        protected:
+            virtual ~ScriptController() { }
 
         private:
     };

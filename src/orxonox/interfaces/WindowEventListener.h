@@ -26,15 +26,32 @@
  *
  */
 
-#include "TimeFactorListener.h"
-#include "core/CoreIncludes.h"
+#ifndef _WindowEventListener_H__
+#define _WindowEventListener_H__
+
+#include "OrxonoxPrereqs.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    float TimeFactorListener::timefactor_s = 1.0f;
-
-    TimeFactorListener::TimeFactorListener()
+    /**
+        @brief Interface for receiving window events.
+    */
+    class _OrxonoxExport WindowEventListener : virtual public OrxonoxClass
     {
-        RegisterRootObject(TimeFactorListener);
-    }
+        public:
+            WindowEventListener();
+            virtual ~WindowEventListener() { }
+
+            /** Window has moved position */
+            virtual void windowMoved() { }
+
+            /** Window has resized */
+            virtual void windowResized(unsigned int newWidth, unsigned int newHeight) { }
+
+            /** Window has lost/gained focus */
+            virtual void windowFocusChanged() { }
+    };
 }
+
+#endif /* _WindowEventListener_H__ */

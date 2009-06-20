@@ -28,12 +28,12 @@
 
 #include "IRC.h"
 
-#include <boost/thread/thread.hpp>
-#include "ConsoleCommand.h"
-#include "TclThreadManager.h"
-#include "CoreIncludes.h"
-#include "util/Convert.h"
+#include <cpptcl/cpptcl.h>
 
+#include "util/Convert.h"
+#include "ConsoleCommand.h"
+#include "CoreIncludes.h"
+#include "TclThreadManager.h"
 
 namespace orxonox
 {

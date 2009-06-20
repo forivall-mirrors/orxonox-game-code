@@ -37,7 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include "BaseItem.h"
-
 namespace orxonox
 {
     /**
@@ -48,7 +47,7 @@ namespace orxonox
     {
     public:
         EquipmentItem(BaseObject* creator);
-        virtual ~EquipmentItem();
+        virtual ~EquipmentItem() {}
     };
 }
 

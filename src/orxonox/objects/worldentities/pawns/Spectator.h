@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "util/Math.h"
 #include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox

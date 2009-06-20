@@ -31,9 +31,8 @@
 
 #include "core/CorePrereqs.h"
 
-#include <string>
 #include <list>
-
+#include <string>
 #include "core/OrxonoxClass.h"
 #include "InputInterfaces.h"
 
@@ -79,7 +78,7 @@ namespace orxonox
         public:
             InputBuffer();
             ~InputBuffer();
-            InputBuffer(const std::string allowedChars);
+            InputBuffer(const std::string& allowedChars);
 
             void setConfigValues();
 
@@ -144,7 +143,7 @@ namespace orxonox
             void updated();
             void updated(const char& update, bool bSingleInput);
 
-            inline std::string get() const
+            inline const std::string& get() const
                 { return this->buffer_; }
             inline unsigned int getSize() const
                 { return this->buffer_.size(); }

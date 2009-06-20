@@ -28,23 +28,23 @@
 
 #include "PickupInventory.h"
 
-#include "EquipmentItem.h"
-#include "PassiveItem.h"
-#include "UsableItem.h"
-
-#include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h"
-
-#include "gui/GUIManager.h"
-#include "objects/controllers/HumanController.h"
-#include "objects/worldentities/pawns/Pawn.h"
-
 #include <CEGUIImage.h>
 #include <CEGUIImageset.h>
 #include <CEGUIImagesetManager.h>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUITabControl.h>
+
+#include "core/ConsoleCommand.h"
+#include "core/input/InputManager.h"
+#include "gui/GUIManager.h"
+#include "objects/controllers/HumanController.h"
+#include "objects/worldentities/pawns/Pawn.h"
+
+#include "EquipmentItem.h"
+#include "PassiveItem.h"
+#include "UsableItem.h"
+
 
 namespace orxonox
 {
@@ -85,14 +85,14 @@ namespace orxonox
     void PickupInventory::toggleInventory()
     {
         if(PickupInventory::getSingleton()->isVisible()) {
-            GUIManager::getInstancePtr()->executeCode("hideGUI(\"PickupInventory\")");
-            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
+            GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().requestLeaveState("guiMouseOnly");
         }
         else
         {
-            GUIManager::getInstancePtr()->showGUI("PickupInventory");
-            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            GUIManager::getInstance().showGUI("PickupInventory");
+            GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
         }
         PickupInventory::getSingleton()->setVisible(!PickupInventory::getSingleton()->isVisible());

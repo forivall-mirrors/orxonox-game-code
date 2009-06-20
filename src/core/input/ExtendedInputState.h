@@ -37,7 +37,6 @@
 #include "core/CorePrereqs.h"
 
 #include <vector>
-
 #include "InputInterfaces.h"
 #include "InputState.h"
 
@@ -87,6 +86,9 @@ namespace orxonox
 
         void numberOfJoySticksChanged(unsigned int n);
         void update();
+
+        void onEnter();
+        void onLeave();
 
         std::vector<KeyHandler*>                    keyHandlers_;
         std::vector<MouseHandler*>                  mouseHandlers_;

@@ -35,9 +35,7 @@
 #define _Util_String_H__
 
 #include "UtilPrereqs.h"
-
 #include <string>
-#include <sstream>
 
 namespace orxonox
 {

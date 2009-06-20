@@ -24,14 +24,14 @@
  *   Co-authors:
  *      ...
  */
-#ifndef _SOUNDMANGER_H__
-#define _SOUNDMANGER_H__
-
-#include <AL/al.h>
-#include <AL/alc.h>
+#ifndef _SoundManager_H__
+#define _SoundManager_H__
 
 #include "OrxonoxPrereqs.h"
-#include "orxonox/objects/Tickable.h"
+
+#include <cassert>
+#include <list>
+#include "interfaces/Tickable.h"
 
 namespace orxonox
 {
@@ -48,8 +48,10 @@ namespace orxonox
         ~SoundManager();
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
-        virtual void tick(float dt);
+        void tick(float dt);
         bool isSoundAvailable();
+
+        static SoundManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         static ALCdevice* device_s;
@@ -57,7 +59,8 @@ namespace orxonox
         std::list<SoundBase*> soundlist_;
         bool soundavailable_;
 
+        static SoundManager* singletonRef_s;
     }; // class SoundManager
 } // namespace orxonox
 
-#endif // _SOUNDMANAGER_H__
+#endif /* _SoundManager_H__ */

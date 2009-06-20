@@ -27,7 +27,7 @@
  */
  
 /**
-    @file LocalQuest.h
+    @file
     @brief Definition of the LocalQuest class.
 */
 
@@ -37,9 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
-#include <string>
-
-#include "core/XMLPort.h"
 #include "Quest.h"
 
 namespace orxonox

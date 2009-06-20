@@ -30,9 +30,8 @@
 #include "StaticEntity.h"
 
 #include <OgreSceneNode.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-
-#include "util/Exception.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include "util/OrxAssert.h"
 #include "core/CoreIncludes.h"
 
 namespace orxonox

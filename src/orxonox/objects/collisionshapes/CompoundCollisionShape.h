@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
 #include <cassert>
+#include <map>
 #include "CollisionShape.h"
 
 namespace orxonox

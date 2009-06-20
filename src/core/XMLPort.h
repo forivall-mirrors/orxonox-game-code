@@ -43,13 +43,16 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include <string>
 #include <tinyxml/ticpp.h>
+
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/MultiType.h"
-#include "XMLIncludes.h"
+#include "util/OrxAssert.h"
+#include "Factory.h"
+#include "Identifier.h"
 #include "Executor.h"
-#include "CoreIncludes.h"
 #include "BaseObject.h"
 
 // ------------
@@ -175,7 +178,7 @@
     @brief This is the generic XMLPort param macro, which is used by all six specialized macros above.
 */
 #define XMLPortParamGeneric(containername, classname, objectclass, object, paramname, loadexecutor, saveexecutor, xmlelement, mode) \
-    orxonox::XMLPortClassParamContainer<objectclass>* containername = (orxonox::XMLPortClassParamContainer<objectclass>*)(ClassIdentifier<classname>::getIdentifier()->getXMLPortParamContainer(paramname)); \
+    orxonox::XMLPortClassParamContainer<objectclass>* containername = static_cast<orxonox::XMLPortClassParamContainer<objectclass>*>(ClassIdentifier<classname>::getIdentifier()->getXMLPortParamContainer(paramname)); \
     if (!containername) \
     { \
         containername = new orxonox::XMLPortClassParamContainer<objectclass>(std::string(paramname), ClassIdentifier<classname>::getIdentifier(), loadexecutor, saveexecutor); \
@@ -544,10 +547,10 @@ namespace orxonox
                         {
                             for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
-                                Identifier* identifier = ClassByString(child->Value());
+                                Identifier* identifier = Factory::getIdentifier(child->Value());
                                 if (identifier)
                                 {
-                                    if (identifier->isA(Class(O)))
+                                    if (identifier->isA(ClassIdentifier<O>::getIdentifier()))
                                     {
                                         if (identifier->isLoadable())
                                         {
@@ -605,7 +608,7 @@ namespace orxonox
                                     }
                                     else
                                     {
-                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << Class(O)->getName() << "'." << std::endl;
+                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << ClassIdentifier<O>::getIdentifier()->getName() << "'." << std::endl;
                                     }
                                 }
                                 else
@@ -625,7 +628,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << ClassIdentifier<O>::getIdentifier()->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }

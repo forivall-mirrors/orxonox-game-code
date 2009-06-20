@@ -30,8 +30,9 @@
 #define _HsW01_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/weaponsystem/WeaponMode.h"
+
 #include "tools/Timer.h"
+#include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {

@@ -35,7 +35,6 @@
 #define _HealthImmediate_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "objects/pickup/PassiveItem.h"
 
 namespace orxonox

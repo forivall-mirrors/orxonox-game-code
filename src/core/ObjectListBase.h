@@ -37,9 +37,10 @@
 #ifndef _ObjectListBase_H__
 #define _ObjectListBase_H__
 
-#include <vector>
-
 #include "CorePrereqs.h"
+
+#include <vector>
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -138,9 +139,9 @@ namespace orxonox
             inline Identifier* getIdentifier() const { return this->identifier_; }
 
         private:
-            Identifier* identifier_;               //!< The Iterator owning this list
-            ObjectListBaseElement* first_;         //!< The first element in the list
-            ObjectListBaseElement* last_;          //!< The last element in the list
+            Identifier* identifier_;                 //!< The Iterator owning this list
+            ObjectListBaseElement* first_;           //!< The first element in the list
+            ObjectListBaseElement* last_;            //!< The last element in the list
             std::vector<void*> iterators_;           //!< A list of Iterators pointing on an element in this list
             std::vector<void*> objectListIterators_; //!< A list of ObjectListIterators pointing on an element in this list
     };

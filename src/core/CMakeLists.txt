@@ -62,27 +62,29 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   TclThreadManager.cc
 )
 ADD_SUBDIRECTORY(input)
-GET_ALL_HEADER_FILES(CORE_HDR_FILES)
-SET(CORE_FILES ${CORE_SRC_FILES} ${CORE_HDR_FILES})
 
-GENERATE_SOURCE_GROUPS(${CORE_FILES})
-GENERATE_TOLUA_BINDINGS(Core CORE_FILES INPUTFILES LuaBind.h CommandExecutor.h Game.h)
-
-ADD_LIBRARY(core SHARED ${CORE_FILES})
-
-SET_TARGET_PROPERTIES(core PROPERTIES DEFINE_SYMBOL "CORE_SHARED_BUILD")
-TARGET_LINK_LIBRARIES(core
-  ${OGRE_LIBRARY}
-  ${Boost_THREAD_LIBRARY}
-  ${Boost_FILESYSTEM_LIBRARY}
-  ${Boost_SYSTEM_LIBRARY}
-  ${Boost_DATE_TIME_LIBRARY} # MSVC only
-  ${LUA_LIBRARIES}
-  cpptcl_orxonox
-  ois_orxonox
-  tinyxml++_orxonox
-  tolua++_orxonox
-  util
+ORXONOX_ADD_LIBRARY(core
+  FIND_HEADER_FILES
+  TOLUA_FILES
+    CommandExecutor.h
+    Game.h
+    LuaBind.h
+  DEFINE_SYMBOL
+    "CORE_SHARED_BUILD"
+  PCH_FILE
+    CorePrecompiledHeaders.h
+  LINK_LIBRARIES
+    ${OGRE_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_DATE_TIME_LIBRARY} # MSVC only
+    ${LUA_LIBRARIES}
+    cpptcl_orxonox
+    ois_orxonox
+    tinyxml++_orxonox
+    tolua++_orxonox
+    util
+  SOURCE_FILES
+    ${CORE_SRC_FILES}
 )
-
-ORXONOX_INSTALL(core)

@@ -28,14 +28,15 @@
 
 #include "Mesh.h"
 
+#include <cassert>
 #include <sstream>
+#include <string>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
-#include <cassert>
 
-#include "core/GameMode.h"
 #include "util/Convert.h"
 #include "util/String.h"
+#include "core/GameMode.h"
 
 namespace orxonox
 {

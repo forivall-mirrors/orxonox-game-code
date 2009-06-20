@@ -32,8 +32,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "interfaces/Tickable.h"
 #include "HUDBar.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {
@@ -41,7 +41,7 @@ namespace orxonox
     {
     public:
         HUDSpeedBar(BaseObject* creator);
-        ~HUDSpeedBar();
+        virtual ~HUDSpeedBar();
 
         virtual void tick(float dt);
         virtual void changedOwner();

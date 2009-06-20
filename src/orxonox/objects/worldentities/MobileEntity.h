@@ -31,8 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "util/Math.h"
+#include "interfaces/Tickable.h"
 #include "WorldEntity.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {

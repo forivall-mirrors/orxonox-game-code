@@ -30,10 +30,9 @@
 #define _CommandLine_H__
 
 #include "CorePrereqs.h"
+
 #include <map>
-#include "util/Convert.h"
-#include "util/Debug.h"
-#include "util/Exception.h"
+#include "util/OrxAssert.h"
 #include "util/MultiType.h"
 
 #define SetCommandLineArgument(name, defaultValue) \

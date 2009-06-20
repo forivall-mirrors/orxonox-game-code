@@ -46,9 +46,8 @@
 
 #include "CorePrereqs.h"
 
+#include "Identifier.h"
 #include "ObjectListBase.h"
-#include "ObjectListIterator.h"
-#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -303,8 +302,5 @@ namespace orxonox
 
     typedef Iterator<OrxonoxClass> BaseIterator;
 }
-
-// Include ObjectList.h so the user only has to include one file: Iterator.h
-#include "ObjectList.h"
 
 #endif /* _Iterator_H__ */

@@ -32,9 +32,10 @@
 */
 
 #include "Factory.h"
+
+#include "util/Debug.h"
 #include "Identifier.h"
 #include "BaseObject.h"
-#include "util/Debug.h"
 
 namespace orxonox
 {

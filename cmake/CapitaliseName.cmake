@@ -19,16 +19,15 @@
  #
  #  Author:
  #    Reto Grieder
- #  Description:
- #    Helps configuring the INSTALL command in more global way.
- #  Parameters:
- #    Specifiy the targets as additional parameter.
+ #  Examples:
+ #    "orxonox"  --> "Orxonox"
+ #    "ORXONOX"  --> "ORXONOX"
+ #    "1orxonox" --> "1orxonox"
  #
 
-FUNCTION(ORXONOX_INSTALL)
-  INSTALL(TARGETS ${ARGN}
-    RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
-    LIBRARY DESTINATION ${ORXONOX_LIBRARY_INSTALL_PATH}
-    #ARCHIVE DESTINATION ${ORXONOX_ARCHIVE_INSTALL_PATH}
-  )
-ENDFUNCTION(ORXONOX_INSTALL)
+FUNCTION(CAPITALISE_NAME _name _output_var)
+  STRING(SUBSTRING "${_name}" 0 1 _first_letter)
+  STRING(TOUPPER "${_first_letter}" _first_letter)
+  STRING(REGEX REPLACE "^.(.*)$" "\\1" _rest "${_name}")
+  SET(${_output_var} "${_first_letter}${_rest}" PARENT_SCOPE)
+ENDFUNCTION(CAPITALISE_NAME)

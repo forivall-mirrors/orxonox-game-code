@@ -31,15 +31,13 @@
 
 #include "CorePrereqs.h"
 
-#include <queue>
-#include <map>
 #include <list>
-
-#include <boost/thread/mutex.hpp>
+#include <map>
+#include <string>
 #include <boost/thread/condition.hpp>
+#include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 
-#include <cpptcl/cpptcl.h>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

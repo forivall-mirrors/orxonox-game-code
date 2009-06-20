@@ -32,7 +32,6 @@
 #include "CorePrereqs.h"
 
 #include <vector>
-
 #include "ClassTreeMask.h"
 
 namespace orxonox

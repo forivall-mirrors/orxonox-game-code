@@ -27,19 +27,14 @@
  */
 
 /**
-    @file NotificationOverlay.cc
+    @file
     @brief Implementation of the NotificationOverlay class.
 */
 
 #include "NotificationOverlay.h"
 
-#include <OgreOverlayManager.h>
-#include <OgreTextAreaOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
-
-#include "core/CoreIncludes.h"
 #include "util/Exception.h"
-
+#include "core/CoreIncludes.h"
 #include "Notification.h"
 #include "NotificationQueue.h"
 
@@ -52,6 +47,7 @@ namespace orxonox
     */
     NotificationOverlay::NotificationOverlay(BaseObject* creator) : OverlayText(creator)
     {
+        RegisterObject(NotificationOverlay);
         this->initialize();
     }
 
@@ -86,8 +82,6 @@ namespace orxonox
     */
     void NotificationOverlay::initialize(void)
     {
-        RegisterObject(NotificationOverlay);
-        
         this->queue_ = NULL;
     }
     
@@ -132,7 +126,7 @@ namespace orxonox
     @brief
         Clips the input message so that it meets the requirements for the maximal length of Notifications given by the NotificationQueue.
     */
-    const std::string NotificationOverlay::clipMessage(const std::string & message)
+    std::string NotificationOverlay::clipMessage(const std::string & message)
     {
         if(message.length() <= (unsigned int)this->queue_->getNotificationLength()) //!< If the message is not too long.
             return message;

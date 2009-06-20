@@ -31,9 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <list>
-#include <map>
 #include <cassert>
+#include <list>
 
 namespace orxonox
 {
@@ -56,6 +55,7 @@ namespace orxonox
             void activateNextLevel();
 
             std::list<Level*> levels_s;
+
             static LevelManager* singletonRef_s;
     };
 }

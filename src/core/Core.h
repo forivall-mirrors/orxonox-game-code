@@ -28,9 +28,10 @@
  */
 
 /**
-    @file
-    @brief Declaration of the Core class.
-
+@file
+@brief
+    Declaration of the Core class.
+@details
     The Core class is a singleton, only used to configure some variables
     in the core through the config-file.
 */
@@ -44,20 +45,25 @@
 #include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
-// boost::filesystem header has quite a large tail, use forward declaration
-namespace boost { namespace filesystem
-{
-    struct path_traits;
-    template<class String, class Traits> class basic_path;
-    typedef basic_path< std::string, path_traits> path;
-} }
-
 namespace orxonox
 {
-    //! The Core class is a singleton, only used to configure some config-values.
+    /**
+    @brief
+        The Core class is a singleton used to configure the program basics.
+    @details
+        The class provides information about the media, config and log path.
+        It determines those by the use of platform specific functions.
+    */
     class _CoreExport Core : public OrxonoxClass
     {
         public:
+            /**
+            @brief
+                Determines the executable path, checks for build directory runs, creates
+                the output directories and sets up the other core library singletons.
+            @throws
+                GeneralException
+            */
             Core();
             ~Core();
 
@@ -75,15 +81,21 @@ namespace orxonox
 
             static void tsetMediaPath(const std::string& path)
             { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
+            //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getMediaPath();
+            //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getConfigPath();
+            //! Returns the path to the log files as boost::filesystem::path
             static const boost::filesystem::path& getLogPath();
+            //! Returns the path to the data files as std::string
             static std::string getMediaPathString();
+            //! Returns the path to the config files as std::string
             static std::string getConfigPathString();
+            //! Returns the path to the log files as std::string
             static std::string getLogPathString();
 
         private:
-            Core(const Core&);
+            Core(const Core&); //!< Don't use (undefined symbol)
 
             void checkDevBuild();
             void setExecutablePath();

@@ -30,7 +30,6 @@
 #define _Util_CRC_H__
 
 #include "UtilPrereqs.h"
-#include <iostream>
 
 namespace orxonox
 {

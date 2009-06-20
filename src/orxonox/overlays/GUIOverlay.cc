@@ -27,11 +27,14 @@
  */
 
 #include "GUIOverlay.h"
+
 #include <string>
 #include <sstream>
-#include "core/input/InputManager.h"
 
-#include "../gui/GUIManager.h"
+#include "core/input/InputManager.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "gui/GUIManager.h"
 
 namespace orxonox
 {
@@ -52,7 +55,7 @@ namespace orxonox
 
         XMLPortParam(GUIOverlay, "guiname", setGUIName, getGUIName, xmlElement, mode);
         
-        GUIManager::getInstancePtr()->registerOverlay(this->guiName_, this);
+        GUIManager::getInstance().registerOverlay(this->guiName_, this);
     }
 
     void GUIOverlay::changedVisibility()
@@ -65,14 +68,14 @@ namespace orxonox
             std::stringstream out;
             out << (long)this;
             str = out.str();
-            GUIManager::getInstancePtr()->executeCode("showCursor()");
+            GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");
-            GUIManager::getInstancePtr()->executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
+            GUIManager::getInstance().executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
         }
         else
         {
-            GUIManager::getInstancePtr()->executeCode("hideGUI(\"" + this->guiName_ + "\")");
-            GUIManager::getInstancePtr()->executeCode("hideCursor()");
+            GUIManager::getInstance().executeCode("hideGUI(\"" + this->guiName_ + "\")");
+            GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().requestLeaveState("guiMouseOnly");
         }
     }

@@ -31,8 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
-#include "objects/Tickable.h"
 
 namespace orxonox
 {
@@ -40,7 +40,7 @@ namespace orxonox
     {
     public:
         DebugFPSText(BaseObject* creator);
-        ~DebugFPSText();
+        virtual ~DebugFPSText();
 
         virtual void tick(float dt);
     };

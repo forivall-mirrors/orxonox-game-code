@@ -30,10 +30,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/Pawn.h"
 
 #include "Weapon.h"
-#include "WeaponSlot.h"
 #include "WeaponSystem.h"
 #include "DefaultWeaponmodeLink.h"
 

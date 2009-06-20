@@ -31,9 +31,10 @@
 #define _Weapon_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/worldentities/StaticEntity.h"
 
+#include <map>
 #include "tools/Timer.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file Notification.h
+    @file
     @brief Definition of the Notification class.
 */
 
@@ -37,7 +37,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include "core/BaseObject.h"
 
 namespace orxonox

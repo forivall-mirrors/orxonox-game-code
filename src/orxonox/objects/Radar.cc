@@ -27,17 +27,18 @@
  */
 
 /**
-    @file
-    @brief
+@file
+@brief
 */
 
 #include "Radar.h"
-#include <cfloat>
+
 #include <cassert>
-#include "core/CoreIncludes.h"
+
+//#include "util/Math.h"
 #include "core/ConsoleCommand.h"
-#include "core/Iterator.h"
-#include "RadarListener.h"
+#include "core/ObjectList.h"
+#include "interfaces/RadarListener.h"
 
 namespace orxonox
 {

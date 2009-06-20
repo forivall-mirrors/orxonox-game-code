@@ -42,11 +42,11 @@
 
 #include "CorePrereqs.h"
 
+#include "util/Debug.h"
 #include "Identifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
-#include "Functor.h"
-#include "util/Debug.h"
+#include "ObjectList.h"
 
 
 /**
@@ -127,13 +127,5 @@
 */
 #define ClassByID(networkID) \
     orxonox::Factory::getIdentifier(networkID)
-
-/**
-    @brief Registers a member function as callback when an object of 'type' is created.
-    @param
-*/
-#define RegisterConstructionCallback(ThisClassName, TargetClassName, FunctionName) \
-    orxonox::ClassIdentifier<TargetClassName>::getIdentifier()->addConstructionCallback( \
-        orxonox::createFunctor(&ThisClassName::FunctionName)->setObject(this))
 
 #endif /* _CoreIncludes_H__ */

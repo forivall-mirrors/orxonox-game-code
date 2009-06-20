@@ -27,16 +27,15 @@
  */
 
 /**
-    @file AddReward.cc
+    @file
     @brief Implementation of the AddReward class.
 */
 
 #include "AddReward.h"
 
 #include "core/CoreIncludes.h"
-
-#include "orxonox/objects/infos/PlayerInfo.h"
-#include "Rewardable.h"
+#include "core/XMLPort.h"
+#include "interfaces/Rewardable.h"
 
 namespace orxonox
 {

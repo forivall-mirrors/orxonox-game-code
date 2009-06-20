@@ -71,9 +71,9 @@ namespace orxonox
 
 
         ExprParser(const std::string& str);
-        std::string& getRemains() { return  this->remains_; }
-        double       getResult()  { return  this->result_; }
-        bool         getSuccess() { return !this->failed_; }
+        const std::string& getRemains() { return  this->remains_; }
+        double             getResult()  { return  this->result_; }
+        bool               getSuccess() { return !this->failed_; }
 
     private:
         double parse_expr_1();

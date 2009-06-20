@@ -30,7 +30,6 @@
 #define _SphereCollisionShape_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "CollisionShape.h"
 
 namespace orxonox

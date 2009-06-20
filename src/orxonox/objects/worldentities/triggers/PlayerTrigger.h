@@ -36,7 +36,6 @@
 #define _PlayerTrigger_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "Trigger.h"
 
 namespace orxonox

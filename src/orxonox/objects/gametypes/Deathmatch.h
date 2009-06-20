@@ -30,7 +30,6 @@
 #define _Deathmatch_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "Gametype.h"
 
 namespace orxonox
