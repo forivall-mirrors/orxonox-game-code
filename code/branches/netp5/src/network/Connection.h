@@ -52,14 +52,9 @@ namespace orxonox
 {
     const int NETWORK_PORT = 55556;
     const int NETWORK_MAX_CONNECTIONS = 50;
-    const int NETWORK_WAIT_TIMEOUT = 1;
+    const int NETWORK_WAIT_TIMEOUT = 0;
     const int NETWORK_DEFAULT_CHANNEL = 0;
-
-//   struct _NetworkExport ClientList{
-//     ENetEvent *event;
-//     int ID;
-//     ClientList *next;
-//   };
+    const int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
 
   class _NetworkExport Connection{
   public:
@@ -78,7 +73,7 @@ namespace orxonox
     
     void processQueue();
     virtual void addClient(ENetEvent* event)=0;
-    virtual void disconnectClient(ENetEvent* event)=0;
+    virtual void disconnectPeer(ENetEvent* event)=0;
     virtual bool processPacket(ENetEvent* event){ packet::Packet *p = packet::Packet::createPacket(event->packet, event->peer); return p->process(); }
     
     ENetHost *host_;

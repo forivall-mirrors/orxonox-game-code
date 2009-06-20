@@ -59,7 +59,7 @@ namespace orxonox
     static bool addPacket(ENetPacket *packet, unsigned int ID);
     static bool addPacketAll(ENetPacket *packet);
     virtual void disconnectClient(ClientInformation *client);
-    void disconnectClient( ENetEvent* event );
+    void disconnectPeer( ENetEvent* event );
     void disconnectClient(int clientID);
   protected:
     ServerConnection();

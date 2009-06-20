@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <OgreTimer.h>
 
 #include "util/Debug.h"
 #include "util/Math.h"
@@ -47,6 +48,8 @@ namespace orxonox
   {
     assert(instance_==0);
     Connection::instance_=this;
+    enet_initialize();
+    atexit(enet_deinitialize);
   }
 
   Connection::~Connection(){
@@ -71,8 +74,9 @@ namespace orxonox
     ENetEvent event;
     
     assert(this->host_);
+    Ogre::Timer timer;
 
-    if( enet_host_service( this->host_, &event, NETWORK_WAIT_TIMEOUT ) > 0 )
+    while( timer.getMilliseconds()<NETWORK_MAX_QUEUE_PROCESS_TIME && enet_host_service( this->host_, &event, NETWORK_WAIT_TIMEOUT ) > 0 )
     {
       switch(event.type){
         // log handling ================
@@ -80,7 +84,7 @@ namespace orxonox
           addClient( &event );
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
-          disconnectClient( &event );
+          disconnectPeer( &event );
           break;
         case ENET_EVENT_TYPE_RECEIVE:
           processPacket( &event );

@@ -136,8 +136,6 @@ namespace orxonox
             Pawn* lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
-            unsigned int fire_;
-            unsigned int firehack_;
             bool bReload_;
 
             std::string spawnparticlesource_;

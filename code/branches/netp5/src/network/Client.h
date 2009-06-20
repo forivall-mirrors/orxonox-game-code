@@ -60,11 +60,10 @@ namespace orxonox
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : public Host{
+  class _NetworkExport Client : public Host, public ClientConnection{
   public:
     Client();
     Client(const std::string& address, int port);
-    Client(const char *address, int port);
     ~Client();
 
     bool establishConnection();
@@ -73,7 +72,6 @@ namespace orxonox
     bool processChat(const std::string& message, unsigned int playerID);
     virtual bool chat(const std::string& message);
     virtual bool broadcast(const std::string& message) { return false; }
-    //bool sendChat(packet::Chat *chat);
 
     void update(const Clock& time);
 
@@ -81,9 +79,7 @@ namespace orxonox
     Client(const Client& copy); // not used
     virtual bool isServer_(){return false;}
 
-    ClientConnection client_connection;
     GamestateClient gamestate;
-    bool isConnected;
     bool isSynched_;
 
     bool gameStateFailure_;

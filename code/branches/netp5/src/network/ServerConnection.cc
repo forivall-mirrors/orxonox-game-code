@@ -52,8 +52,6 @@ namespace orxonox
   }
 
   bool ServerConnection::openListener() {
-    enet_initialize();
-    atexit(enet_deinitialize);
     this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, 0, 0);
     if ( this->host_ == NULL )
       return false;
@@ -90,11 +88,11 @@ namespace orxonox
   
   void ServerConnection::disconnectClient(ClientInformation *client)
   {
-    disconnectPeer( client->getPeer() );
+    Connection::disconnectPeer( client->getPeer() );
     delete client;
   }
   
-  void ServerConnection::disconnectClient( ENetEvent* event )
+  void ServerConnection::disconnectPeer( ENetEvent* event )
   {
     COUT(4) << "removing client from list" << std::endl;
     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
@@ -114,7 +112,7 @@ namespace orxonox
     ENetEvent event;
     ClientInformation *temp = ClientInformation::getBegin();
     while(temp!=0){
-      disconnectPeer( temp->getPeer() );
+      disconnectPeer( &event );
       temp = temp->next();
     }
     temp = ClientInformation::getBegin();

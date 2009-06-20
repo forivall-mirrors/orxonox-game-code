@@ -65,6 +65,7 @@ FunctionCalls::~FunctionCalls()
 
 
 bool FunctionCalls::process(){
+  printf("process function calls\n");
   assert(isDataENetAllocated());
   uint8_t* temp = data_+sizeof(uint32_t); //skip packetid
   this->nrOfCalls_ = *(uint32_t*)temp;

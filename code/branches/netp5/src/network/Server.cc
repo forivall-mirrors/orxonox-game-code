@@ -143,15 +143,17 @@ namespace orxonox
   * @param time time since last tick
   */
   void Server::update(const Clock& time) {
-    ServerConnection::processQueue();
+    Connection::processQueue();
     gamestates_->processGamestates();
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
-    if(timeSinceLastUpdate_>=NETWORK_PERIOD){
+    if(timeSinceLastUpdate_>=NETWORK_PERIOD)
+    {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       updateGamestate();
       FunctionCallManager::sendCalls();
     }
+    sendPackets(); // flush the enet queue
   }
 
   bool Server::queuePacket(ENetPacket *packet, int clientID){

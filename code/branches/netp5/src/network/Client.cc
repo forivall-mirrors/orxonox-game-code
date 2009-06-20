@@ -49,22 +49,18 @@
 #include "packet/Packet.h"
 #include "FunctionCallManager.h"
 
-// #include "packet/Acknowledgement.h"
-
 namespace orxonox
 {
-//   SetConsoleCommandShortcut(Client, chat);
 
 
   /**
   * Constructor for the Client class
   * initializes the address and the port to default localhost:NETWORK_PORT
   */
-  Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
-    // set server address to localhost
-    isConnected=false;
-    isSynched_=false;
-    gameStateFailure_=false;
+  Client::Client():
+      isSynched_(false),
+      gameStateFailure_(false)
+  {
   }
 
   /**
@@ -72,25 +68,14 @@ namespace orxonox
   * @param address the server address
   * @param port port of the application on the server
   */
-  Client::Client(const std::string& address, int port) : client_connection(port, address){
-    isConnected=false;
-    isSynched_=false;
-    gameStateFailure_=false;
-  }
-
-  /**
-  * Constructor for the Client class
-  * @param address the server address
-  * @param port port of the application on the server
-  */
-  Client::Client(const char *address, int port) : client_connection(port, address){
-    isConnected=false;
-    isSynched_=false;
-    gameStateFailure_=false;
+  Client::Client(const std::string& address, int port):
+      isSynched_(false),
+      gameStateFailure_(false)
+  {
   }
 
   Client::~Client(){
-    if(isConnected)
+    if ( ClientConnection::isConnected() )
       closeConnection();
   }
 
@@ -100,10 +85,7 @@ namespace orxonox
   */
   bool Client::establishConnection(){
     Synchronisable::setClient(true);
-    isConnected=client_connection.createConnection();
-    if(!isConnected)
-      COUT(1) << "could not create connection laber" << std::endl;
-    return isConnected;
+    return ClientConnection::establishConnection();
   }
 
   /**
@@ -111,12 +93,13 @@ namespace orxonox
   * @return true/false
   */
   bool Client::closeConnection(){
-    isConnected=false;
-    return client_connection.closeConnection();
+    return ClientConnection::closeConnection();
   }
 
   bool Client::queuePacket(ENetPacket *packet, int clientID){
-    return client_connection.addPacket(packet);
+    bool b = ClientConnection::addPacket(packet);
+    assert(b);
+    return b;
   }
 
   bool Client::processChat(const std::string& message, unsigned int playerID){
@@ -142,10 +125,12 @@ namespace orxonox
   void Client::update(const Clock& time){
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
-    if(timeSinceLastUpdate_>=NETWORK_PERIOD){
+    if(timeSinceLastUpdate_>=NETWORK_PERIOD)
+    {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       //     COUT(3) << ".";
-      if(client_connection.isConnected() && isSynched_){
+      if ( isConnected() && isSynched_ )
+      {
         COUT(4) << "popping partial gamestate: " << std::endl;
         packet::Gamestate *gs = gamestate.getGamestate();
         //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
@@ -158,18 +143,9 @@ namespace orxonox
         FunctionCallManager::sendCalls();
       }
     }
+    sendPackets(); // flush the enet queue
     
-    ENetEvent *event;
-    // stop if the packet queue is empty
-    while(!(client_connection.queueEmpty())){
-      event = client_connection.getEvent();
-      COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-      packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
-      // note: packet commits suicide here except for the GameState. That is then deleted by a GamestateHandler
-      bool b = packet->process();
-      assert(b);
-      delete event;
-    }
+    Connection::processQueue();
     if(gamestate.processGamestates())
     {
       if(!isSynched_)
