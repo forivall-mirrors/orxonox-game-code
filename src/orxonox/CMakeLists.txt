@@ -48,7 +48,6 @@ ORXONOX_ADD_EXECUTABLE(orxonox
     objects/quest/QuestManager.h
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
-  PCH_NO_DEFAULT
   # When defined as WIN32 this removes the console window on Windows
   ${ORXONOX_WIN32}
   LINK_LIBRARIES
