@@ -72,6 +72,8 @@ namespace orxonox
       isSynched_(false),
       gameStateFailure_(false)
   {
+      setPort( port );
+      setServerAddress( address );
   }
 
   Client::~Client(){
