@@ -53,7 +53,6 @@ namespace packet{
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
-//! Static mutex for any packetMap_ access
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
@@ -212,6 +211,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 
   // Data was created by ENet
   p->bDataENetAllocated_ = true;
+  p->enetPacket_ = packet;
 
   return p;
 }
@@ -229,7 +229,7 @@ void Packet::deletePacket(ENetPacket *enetPacket){
   it->second->enetPacket_ = 0;
   delete it->second;
   packetMap_.erase(it);
-  COUT(4) << "PacketMap size: " << packetMap_.size() << std::endl;
+  COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet

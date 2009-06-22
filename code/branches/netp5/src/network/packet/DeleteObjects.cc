@@ -89,6 +89,7 @@ bool DeleteObjects::process(){
     COUT(4) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
     Synchronisable::deleteObject( *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) );
   }
+  delete this;
   return true;
 }
 

@@ -74,7 +74,7 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
     NetworkFunctionBase(std::string name);
     ~NetworkFunctionBase();
     
-    virtual void         setNetworkID(uint32_t id)       { this->networkID_ = id; }
+    virtual void        setNetworkID(uint32_t id)       { this->networkID_ = id; }
     inline uint32_t     getNetworkID() const            { return this->networkID_; }
     inline std::string  getName() const                 { return name_; }
     static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
