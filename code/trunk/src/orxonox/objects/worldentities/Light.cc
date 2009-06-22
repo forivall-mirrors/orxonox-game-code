@@ -126,13 +126,13 @@ namespace orxonox
 
     void Light::updateAttenuation()
     {
-        if (this->light_ && this->type_ != Ogre::Light::LT_DIRECTIONAL)
+        if (this->light_ && this->type_ != Light::LT_DIRECTIONAL)
             this->light_->setAttenuation(this->attenuation_.x, this->attenuation_.y, this->attenuation_.z, this->attenuation_.w);
     }
 
     void Light::updateSpotlightRange()
     {
-        if (this->light_ && this->type_ == Ogre::Light::LT_SPOTLIGHT)
+        if (this->light_ && this->type_ == Light::LT_SPOTLIGHT)
             this->light_->setSpotlightRange(Degree(this->spotlightRange_.x), Degree(this->spotlightRange_.y), this->spotlightRange_.z);
     }
 
@@ -168,9 +168,9 @@ namespace orxonox
         {
             this->light_->setType(static_cast<Ogre::Light::LightTypes>(this->type_));
 
-            if (this->type_ != Ogre::Light::LT_DIRECTIONAL)
+            if (this->type_ != Light::LT_DIRECTIONAL)
                 this->updateAttenuation();
-            if (this->type_ == Ogre::Light::LT_SPOTLIGHT)
+            if (this->type_ == Light::LT_SPOTLIGHT)
                 this->updateSpotlightRange();
         }
     }

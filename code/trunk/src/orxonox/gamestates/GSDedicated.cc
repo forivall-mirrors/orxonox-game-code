@@ -59,8 +59,8 @@ namespace orxonox
         , server_(0)
         , timeSinceLastUpdate_(0)
         , closeThread_(false)
-        , inputIterator_(0)
         , cleanLine_(true)
+        , inputIterator_(0)
         , cursorX_(0)
         , cursorY_(0)
     {
@@ -116,8 +116,8 @@ namespace orxonox
         }
         else
         {
-            usleep((unsigned int)((NETWORK_PERIOD - timeSinceLastUpdate_)*1000*1000 ));
-            usleep(NETWORK_PERIOD*1000*1000); // NOTE: this is to throttle the non-network framerate
+            msleep(static_cast<unsigned int>((NETWORK_PERIOD - timeSinceLastUpdate_)*1000));
+            msleep(static_cast<unsigned int>(NETWORK_PERIOD*1000)); // NOTE: this is to throttle the non-network framerate
 //            COUT(0) << "sleeping for " << (int)((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000) << " usec" << endl;
         }
         processQueue();
