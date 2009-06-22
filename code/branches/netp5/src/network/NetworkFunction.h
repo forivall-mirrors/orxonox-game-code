@@ -74,7 +74,7 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
     NetworkFunctionBase(std::string name);
     ~NetworkFunctionBase();
     
-    inline void         setNetworkID(uint32_t id)       { this->networkID_ = id; }
+    virtual void         setNetworkID(uint32_t id)       { this->networkID_ = id; }
     inline uint32_t     getNetworkID() const            { return this->networkID_; }
     inline std::string  getName() const                 { return name_; }
     static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
@@ -104,6 +104,7 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
     inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4){ (*this->functor_)(mt1, mt2, mt3, mt4); }
     inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5){ (*this->functor_)(mt1, mt2, mt3, mt4, mt5); }
     
+    virtual void setNetworkID( uint32_t id ){ NetworkFunctionBase::setNetworkID( id ); idMap_[id] = this; }
     static inline NetworkFunctionStatic* getNetworkFunction( uint32_t id){ assert( idMap_.find(id)!=idMap_.end() ); return idMap_[id]; }
     static NetworkFunctionStatic* getFunction( uint32_t id ){ assert( idMap_.find(id) != idMap_.end() ); return idMap_[id]; }
     static NetworkFunctionStatic* getFunction( const NetworkFunctionPointer& p ){ assert( functorMap_.find(p) != functorMap_.end() ); return functorMap_[p]; }
@@ -122,6 +123,7 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
     NetworkMemberFunctionBase(std::string name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunctionBase();
     
+    virtual void setNetworkID( uint32_t id ){ NetworkFunctionBase::setNetworkID( id ); idMap_[id] = this; }
     static inline NetworkMemberFunctionBase* getNetworkFunction( uint32_t id){ assert( idMap_.find(id)!=idMap_.end() ); return idMap_[id]; }
     static NetworkMemberFunctionBase* getFunction( uint32_t id ){ assert( idMap_.find(id) != idMap_.end() ); return idMap_[id]; }
     static NetworkMemberFunctionBase* getFunction( const NetworkFunctionPointer& p ){ assert( functorMap_.find(p) != functorMap_.end() ); return functorMap_[p]; }
