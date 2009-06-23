@@ -199,7 +199,8 @@ namespace Tcl
 }
 
 // Boost
-namespace boost { 
+namespace boost
+{ 
     namespace filesystem
     {
         struct path_traits;

@@ -27,14 +27,11 @@
  */
 
 #include "ThreadPool.h"
-
 #include <cassert>
-
 
 namespace orxonox
 {
-    
-    
+
     ThreadPool::ThreadPool()
     {
     }
@@ -60,6 +57,7 @@ namespace orxonox
                 ++i;
             }
         }
+        return i;
     }
     unsigned int ThreadPool::setNrOfThreads( unsigned int nr )
     {

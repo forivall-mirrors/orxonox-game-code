@@ -29,22 +29,20 @@
 #ifndef _Thread_H__
 #define _Thread_H__
 
-
 #include "CorePrereqs.h"
 
  namespace orxonox
 {
-    
-    class Thread
+    class _CoreExport Thread
     {
     public:
         Thread();
         virtual ~Thread();
-        
-        inline  bool isWorking(){ return this->isWorking_; }
+
+        inline bool isWorking() { return this->isWorking_; }
         void waitUntilFinished();
         bool evaluateFunctor( Functor* functor );
-        
+
     private:
         void            threadLoop();
         
@@ -54,8 +52,7 @@
         boost::thread*  workerThread_;
         boost::mutex*   communicationMutex_;
     };
-    
-}
 
+ }
 
-#endif
+#endif /* _Thread_H__ */

@@ -29,14 +29,14 @@
 #ifndef _ThreadPool_H__
 #define _ThreadPool_H__
 
-#include <vector>
+#include "CorePrereqs.h"
 
+#include <vector>
 #include "Thread.h"
 
  namespace orxonox
 {
-    
-    class ThreadPool
+    class _CoreExport ThreadPool
     {
     public:
         ThreadPool();
@@ -50,11 +50,9 @@
         void synchronise();
         
     private:
-        std::vector<Thread>     threadPool_;
+        std::vector<Thread> threadPool_;
         
     };
-    
 }
 
-
-#endif
+#endif /* _ThreadPool_H__ */

@@ -34,8 +34,8 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread_time.hpp>
 
-#include "core/Functor.h"
 #include "util/Sleep.h"
+#include "Functor.h"
 
 namespace orxonox
 {
