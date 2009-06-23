@@ -102,6 +102,7 @@ namespace orxonox
         delete this->originalTerminalSettings_;
 #endif
         //inputThread_->join();
+        delete this->inputThread_;
 
         GameMode::setHasServer(false);
     }
