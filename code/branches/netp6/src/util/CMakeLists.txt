@@ -30,6 +30,8 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
   Sleep.cc
   String.cc
   SubString.cc
+  Thread.cc
+  ThreadPool.cc
 )
 
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
