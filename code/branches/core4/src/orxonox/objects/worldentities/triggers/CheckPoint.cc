@@ -84,7 +84,7 @@ namespace orxonox
     {
         DistanceTrigger::triggered(bIsTriggered);
 
-        Asteroids* gametype = dynamic_cast<Asteroids*>(this->getGametype());
+        Asteroids* gametype = orxonox_cast<Asteroids>(this->getGametype());
         if (gametype)
         {
             gametype->addTime(addTime_);

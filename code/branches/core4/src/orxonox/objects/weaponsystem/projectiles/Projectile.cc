@@ -125,7 +125,7 @@ namespace orxonox
             if (this->owner_)
                 dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
 
-            Pawn* victim = dynamic_cast<Pawn*>(otherObject);
+            Pawn* victim = orxonox_cast<Pawn>(otherObject);
             if (victim)
                 victim->damage(dmg, this->owner_);
         }

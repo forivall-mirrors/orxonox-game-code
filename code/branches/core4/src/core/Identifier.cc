@@ -46,12 +46,14 @@ namespace orxonox
     // ###############################
     // ###       Identifier        ###
     // ###############################
-    int Identifier::hierarchyCreatingCounter_s = 0; // Set the static member variable hierarchyCreatingCounter_s to zero (this static member variable is ok: it's used in main(), not before)
+    int Identifier::hierarchyCreatingCounter_s = 0;
+    unsigned int Identifier::classIDCounter_s = 0;
 
     /**
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
     */
     Identifier::Identifier()
+        : classID_(classIDCounter_s++)
     {
         this->objects_ = new ObjectListBase(this);
 
@@ -66,9 +68,8 @@ namespace orxonox
         this->children_ = new std::set<const Identifier*>();
         this->directChildren_ = new std::set<const Identifier*>();
 
-        // Use a static variable because the classID gets created before main() and that's why we should avoid static member variables
-        static unsigned int classIDcounter_s = 0;
-        this->classID_ = classIDcounter_s++;
+        // Default network ID is the class ID
+        this->networkID_ = this->classID_;
     }
 
     /**
@@ -243,8 +244,8 @@ namespace orxonox
     */
     void Identifier::setNetworkID(uint32_t id)
     {
-        Factory::changeNetworkID(this, this->classID_, id);
-        this->classID_ = id;
+        Factory::changeNetworkID(this, this->networkID_, id);
+        this->networkID_ = id;
     }
 
     /**

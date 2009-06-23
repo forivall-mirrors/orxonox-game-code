@@ -132,7 +132,7 @@ namespace orxonox
         SUPER(PongScore, changedOwner);
 
         if (this->getOwner() && this->getOwner()->getGametype())
-            this->owner_ = dynamic_cast<Pong*>(this->getOwner()->getGametype());
+            this->owner_ = orxonox_cast<Pong>(this->getOwner()->getGametype());
         else
             this->owner_ = 0;
     }

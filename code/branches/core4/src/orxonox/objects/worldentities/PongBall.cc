@@ -230,8 +230,8 @@ namespace orxonox
         if (!this->bat_)
             this->bat_ = new PongBat*[2];
         if (this->batID_[0] != OBJECTID_UNKNOWN)
-            this->bat_[0] = dynamic_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[0]));
+            this->bat_[0] = orxonox_cast<PongBat>(Synchronisable::getSynchronisable(this->batID_[0]));
         if (this->batID_[1] != OBJECTID_UNKNOWN)
-            this->bat_[1] = dynamic_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[1]));
+            this->bat_[1] = orxonox_cast<PongBat>(Synchronisable::getSynchronisable(this->batID_[1]));
     }
 }

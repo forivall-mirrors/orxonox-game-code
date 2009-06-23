@@ -143,7 +143,7 @@ namespace orxonox
 
         if (player && player->getController() && player->getController()->isA(Class(PongAI)))
         {
-            PongAI* ai = dynamic_cast<PongAI*>(player->getController());
+            PongAI* ai = orxonox_cast<PongAI>(player->getController());
             ai->setPongBall(this->ball_);
         }
     }

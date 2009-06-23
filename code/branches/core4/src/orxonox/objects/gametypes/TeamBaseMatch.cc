@@ -53,7 +53,7 @@ namespace orxonox
     // Change the control of the defeated base and respawn it with its initial health
     bool TeamBaseMatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
-        TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
+        TeamBaseMatchBase* base = orxonox_cast<TeamBaseMatchBase>(victim);
         if (base)
         {
             if (!originator)
@@ -86,7 +86,7 @@ namespace orxonox
     // if the player is in the same team as the base, he can't make any damage to it
     bool TeamBaseMatch::allowPawnDamage(Pawn* victim, Pawn* originator)
     {
-        TeamBaseMatchBase* base = dynamic_cast<TeamBaseMatchBase*>(victim);
+        TeamBaseMatchBase* base = orxonox_cast<TeamBaseMatchBase>(victim);
         if (base)
         {
             std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.find(base);

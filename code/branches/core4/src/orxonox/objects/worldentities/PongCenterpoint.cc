@@ -72,7 +72,7 @@ namespace orxonox
     {
         if (this->getGametype() && this->getGametype()->isA(Class(Pong)))
         {
-            Pong* pong_gametype = dynamic_cast<Pong*>(this->getGametype());
+            Pong* pong_gametype = orxonox_cast<Pong>(this->getGametype());
             pong_gametype->setCenterpoint(this);
         }
     }

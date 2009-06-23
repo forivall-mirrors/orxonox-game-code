@@ -125,7 +125,7 @@ namespace orxonox
         {
             if ((*it)->isA(Class(TeamSpawnPoint)))
             {
-                TeamSpawnPoint* tsp = dynamic_cast<TeamSpawnPoint*>(*it);
+                TeamSpawnPoint* tsp = orxonox_cast<TeamSpawnPoint>(*it);
                 if (tsp && (int)tsp->getTeamNumber() != desiredTeamNr)
                 {
                     teamSpawnPoints.erase(it++);
@@ -170,7 +170,7 @@ namespace orxonox
                 {
                     if ((*it)->isA(Class(TeamColourable)))
                     {
-                        TeamColourable* tc = dynamic_cast<TeamColourable*>(*it);
+                        TeamColourable* tc = orxonox_cast<TeamColourable>(*it);
                         tc->setTeamColour(this->teamcolours_[it_player->second]);
                     }
                 }

@@ -53,7 +53,7 @@
         containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
         this->addEventContainer(eventname, containername); \
     } \
-    event.castedOriginator_ = dynamic_cast<subclassname*>(event.originator_); \
+    event.castedOriginator_ = orxonox::orxonox_cast<subclassname>(event.originator_); \
     containername->process(this, event)
 
 #define ORXONOX_SET_EVENT_GENERIC_TEMPLATE(containername, classname, eventname, functionname, event, subclassname, ...) \
@@ -65,7 +65,7 @@
         containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
         this->addEventContainer(eventname, containername); \
     } \
-    event.castedOriginator_ = dynamic_cast<subclassname*>(event.originator_); \
+    event.castedOriginator_ = orxonox::orxonox_cast<subclassname>(event.originator_); \
     containername->process(this, event)
 
 #endif /* _EventIncludes_H__ */

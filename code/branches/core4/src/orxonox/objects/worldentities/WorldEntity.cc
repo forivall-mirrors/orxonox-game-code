@@ -209,7 +209,7 @@ namespace orxonox
     {
         if (this->parentID_ != OBJECTID_UNKNOWN)
         {
-            WorldEntity* parent = dynamic_cast<WorldEntity*>(Synchronisable::getSynchronisable(this->parentID_));
+            WorldEntity* parent = orxonox_cast<WorldEntity>(Synchronisable::getSynchronisable(this->parentID_));
             if (parent)
                 this->attachToParent(parent);
         }

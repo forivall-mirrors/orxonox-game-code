@@ -160,7 +160,7 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
         {
-            Pawn* pawn = dynamic_cast<Pawn*>(HumanController::localController_s->controllableEntity_);
+            Pawn* pawn = orxonox_cast<Pawn>(HumanController::localController_s->controllableEntity_);
             if (pawn)
                 pawn->kill();
             else if (HumanController::localController_s->player_)
@@ -195,7 +195,7 @@ namespace orxonox
     Pawn* HumanController::getLocalControllerEntityAsPawn()
     {
         if (HumanController::localController_s)
-            return dynamic_cast<Pawn*>(HumanController::localController_s->getControllableEntity());
+            return orxonox_cast<Pawn>(HumanController::localController_s->getControllableEntity());
         else
             return NULL;
     }

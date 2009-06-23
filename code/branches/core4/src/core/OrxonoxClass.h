@@ -49,6 +49,9 @@ namespace orxonox
     */
     class _CoreExport OrxonoxClass
     {
+        template <class T>
+        friend class ClassIdentifier;
+
         public:
             OrxonoxClass();
             virtual ~OrxonoxClass();
@@ -100,10 +103,30 @@ namespace orxonox
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
 
+            /**
+            @brief
+                Returns a valid pointer of any derived type that is
+                registered in the class hierarchy.
+            @return
+                Returns NULL if the no pointer was found.
+            */
+            template <class T>
+            FORCEINLINE T* getDerivedPointer(unsigned int classID) const
+            {
+                for (int i = this->objectPointers_.size() - 1; i >= 0; --i)
+                {
+                    if (this->objectPointers_[i].first == classID)
+                        return reinterpret_cast<T*>(this->objectPointers_[i].second);
+                }
+                return NULL;
+            }
+
         private:
             Identifier* identifier_;                   //!< The Identifier of the object
             std::set<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList* metaList_;                 //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
+            //! 'Fast map' that holds this-pointers of all derived types
+            std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };
 }
 

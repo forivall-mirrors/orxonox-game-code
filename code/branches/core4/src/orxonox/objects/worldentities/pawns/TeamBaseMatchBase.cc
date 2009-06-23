@@ -44,7 +44,7 @@ namespace orxonox
 
         this->state_ = BaseState::uncontrolled;
 
-        TeamBaseMatch* gametype = dynamic_cast<TeamBaseMatch*>(this->getGametype());
+        TeamBaseMatch* gametype = orxonox_cast<TeamBaseMatch>(this->getGametype());
         if (gametype)
         {
             gametype->addBase(this);
@@ -57,7 +57,7 @@ namespace orxonox
     {
         this->fireEvent();
 
-        TeamDeathmatch* gametype = dynamic_cast<TeamDeathmatch*>(this->getGametype());
+        TeamDeathmatch* gametype = orxonox_cast<TeamDeathmatch>(this->getGametype());
         if (!gametype)
             return;
 
@@ -83,7 +83,7 @@ namespace orxonox
         {
             if ((*it)->isA(Class(TeamColourable)))
             {
-                TeamColourable* tc = dynamic_cast<TeamColourable*>(*it);
+                TeamColourable* tc = orxonox_cast<TeamColourable>(*it);
                 tc->setTeamColour(colour);
             }
         }

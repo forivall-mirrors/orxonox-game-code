@@ -85,6 +85,6 @@ namespace orxonox
     {
         SUPER(GametypeStatus, changedOwner);
 
-        this->owner_ = dynamic_cast<PlayerInfo*>(this->getOwner());
+        this->owner_ = orxonox_cast<PlayerInfo>(this->getOwner());
     }
 }

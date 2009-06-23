@@ -72,7 +72,7 @@ namespace orxonox
     searchcreatorID:
     if (creator)
     {
-        Synchronisable* synchronisable_creator = dynamic_cast<Synchronisable*>(creator);
+        Synchronisable* synchronisable_creator = orxonox_cast<Synchronisable>(creator);
         if (synchronisable_creator && synchronisable_creator->objectMode_)
         {
             this->creatorID = synchronisable_creator->getObjectID();
@@ -160,12 +160,12 @@ namespace orxonox
         return 0;
       }
       else
-        creator = dynamic_cast<BaseObject*>(synchronisable_creator);
+        creator = orxonox_cast<BaseObject>(synchronisable_creator);
     }
     assert(getSynchronisable(header.getObjectID())==0);   //make sure no object with this id exists
     BaseObject *bo = id->fabricate(creator);
     assert(bo);
-    Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
+    Synchronisable *no = orxonox_cast<Synchronisable>(bo);
     assert(no);
     no->objectID=header.getObjectID();
     no->creatorID=header.getCreatorID(); //TODO: remove this

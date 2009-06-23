@@ -185,7 +185,7 @@ namespace orxonox
         if (this->controllableEntityID_ != OBJECTID_UNKNOWN)
         {
             Synchronisable* temp = Synchronisable::getSynchronisable(this->controllableEntityID_);
-            ControllableEntity* entity = dynamic_cast<ControllableEntity*>(temp);
+            ControllableEntity* entity = orxonox_cast<ControllableEntity>(temp);
             this->startControl(entity);
         }
         else
@@ -198,7 +198,7 @@ namespace orxonox
     {
         if (this->gtinfoID_ != OBJECTID_UNKNOWN)
         {
-            this->gtinfo_ = dynamic_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
+            this->gtinfo_ = orxonox_cast<GametypeInfo>(Synchronisable::getSynchronisable(this->gtinfoID_));
 
             if (!this->gtinfo_)
                 this->gtinfoID_ = OBJECTID_UNKNOWN;

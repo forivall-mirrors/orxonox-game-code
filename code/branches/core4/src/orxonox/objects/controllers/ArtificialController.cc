@@ -180,18 +180,18 @@ namespace orxonox
 
         if (entity1->getXMLController())
         {
-            WaypointPatrolController* wpc = dynamic_cast<WaypointPatrolController*>(entity1->getXMLController());
+            WaypointPatrolController* wpc = orxonox_cast<WaypointPatrolController>(entity1->getXMLController());
             if (wpc)
                 team1 = wpc->getTeam();
         }
         if (entity2->getXMLController())
         {
-            WaypointPatrolController* wpc = dynamic_cast<WaypointPatrolController*>(entity2->getXMLController());
+            WaypointPatrolController* wpc = orxonox_cast<WaypointPatrolController>(entity2->getXMLController());
             if (wpc)
                 team2 = wpc->getTeam();
         }
 
-        TeamDeathmatch* tdm = dynamic_cast<TeamDeathmatch*>(gametype);
+        TeamDeathmatch* tdm = orxonox_cast<TeamDeathmatch>(gametype);
         if (tdm)
         {
             if (entity1->getPlayer())
@@ -202,7 +202,7 @@ namespace orxonox
         }
 
         TeamBaseMatchBase* base = 0;
-        base = dynamic_cast<TeamBaseMatchBase*>(entity1);
+        base = orxonox_cast<TeamBaseMatchBase>(entity1);
         if (base)
         {
             switch (base->getState())
@@ -218,7 +218,7 @@ namespace orxonox
                     team1 = -1;
             }
         }
-        base = dynamic_cast<TeamBaseMatchBase*>(entity2);
+        base = orxonox_cast<TeamBaseMatchBase>(entity2);
         if (base)
         {
             switch (base->getState())

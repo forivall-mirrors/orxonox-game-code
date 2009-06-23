@@ -223,10 +223,13 @@ namespace orxonox
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
             /** @brief Returns the network ID to identify a class through the network. @return the network ID */
-            inline const uint32_t getNetworkID() const { return this->classID_; }
+            inline const uint32_t getNetworkID() const { return this->networkID_; }
 
             /** @brief Sets the network ID to a new value. @param id The new value */
             void setNetworkID(uint32_t id);
+
+            /** @brief Returns the unique ID of the class */
+            FORCEINLINE unsigned int getClassID() const { return this->classID_; }
 
             void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
@@ -304,7 +307,9 @@ namespace orxonox
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            uint32_t classID_;                                             //!< The network ID to identify a class through the network
+            uint32_t networkID_;                                           //!< The network ID to identify a class through the network
+            const unsigned int classID_;                                   //!< Uniquely identifies a class (might not be the same as the networkID_)
+            static unsigned int classIDCounter_s;                          //!< Static counter for the unique classIDs
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
@@ -426,6 +431,8 @@ namespace orxonox
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+        // Add pointer of type T to the map in the OrxonoxClass instance that enables "dynamic_casts"
+        object->objectPointers_.push_back(std::make_pair(this->getClassID(), reinterpret_cast<void*>(object)));
     }
 
     /**
@@ -443,6 +450,31 @@ namespace orxonox
         if (updateChildren)
             for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
                 (*it)->updateConfigValues(false);
+    }
+
+
+    // ###############################
+    // ###      orxonox_cast       ###
+    // ###############################
+    /**
+    @brief
+        Casts on object of type OrxonoxClass to any derived type that is
+        registered in the class hierarchy.
+    @return
+        Returns NULL if the cast is not possible
+    @note
+        In case of NULL return (and using MSVC), a dynamic_cast might still be possible if
+        a class forgot to register its objects.
+        Also note that the function is implemented differently for GCC/MSVC.
+    */
+    template <class T, class U>
+    FORCEINLINE T* orxonox_cast(U* source)
+    {
+#ifdef ORXONOX_COMPILER_MSVC
+        return source->template getDerivedPointer<T>(ClassIdentifier<T>::getIdentifier()->getClassID());
+#else
+        return dynamic_cast<T*>(source);
+#endif
     }
 
 
@@ -538,7 +570,7 @@ namespace orxonox
                 // Check if the creation was successful
                 if (newObject)
                 {
-                    return dynamic_cast<T*>(newObject);
+                    return orxonox_cast<T>(newObject);
                 }
                 else
                 {

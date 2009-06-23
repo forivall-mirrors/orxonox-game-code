@@ -67,6 +67,6 @@ namespace orxonox
     {
         SUPER(HUDTimer, changedOwner);
 
-        this->owner_ = dynamic_cast<ControllableEntity*>(this->getOwner());
+        this->owner_ = orxonox_cast<ControllableEntity>(this->getOwner());
     }
 }

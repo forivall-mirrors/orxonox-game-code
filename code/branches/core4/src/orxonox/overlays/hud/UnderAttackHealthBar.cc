@@ -72,12 +72,12 @@ namespace orxonox
     {
         SUPER(UnderAttackHealthBar, changedOwner);
 
-        PlayerInfo* player = dynamic_cast<PlayerInfo*>(this->getOwner());
+        PlayerInfo* player = orxonox_cast<PlayerInfo>(this->getOwner());
         if (player)
         {
             this->owner_ = player;
 
-            UnderAttack* ua = dynamic_cast<UnderAttack*>(player->getGametype());
+            UnderAttack* ua = orxonox_cast<UnderAttack>(player->getGametype());
             if (ua)
             {
                 this->setOwner(ua->getDestroyer());
