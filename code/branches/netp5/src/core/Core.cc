@@ -46,6 +46,8 @@
 #    define WIN32_LEAN_AND_MEAN
 #  endif
 #  include <windows.h>
+#  undef min
+#  undef max
 #elif defined(ORXONOX_PLATFORM_APPLE)
 #  include <sys/param.h>
 #  include <mach-o/dyld.h>

@@ -34,42 +34,44 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <list>
+#include <locale>
 #include <map>
+#include <queue>
 #include <set>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <vector>
 
 
 #ifdef ORXONOX_COMPILER_MSVC
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#undef max
-#undef min
+#include <OgreMath.h>
+#include <OgreVector2.h>
+#include <OgreVector3.h>
+#include <OgreVector4.h>
+#include <OgreQuaternion.h>
+#include <OgreColourValue.h>
 
-#include <ois/OISKeyboard.h>
-#include <ois/OISMouse.h>
-#include <ois/OISJoyStick.h>
-#include <tinyxml/ticpp.h>
+#include <boost/shared_ptr.hpp> // 12
+#include <boost/preprocessor/cat.hpp> // 12
 // Included by both filesystem and thread but still relatively small
-#include <boost/iterator/iterator_facade.hpp>
+#include <boost/iterator/iterator_facade.hpp> // 10
+
+// Just in case some header included windows.h
+#undef min
+#undef max
 
 #endif /* ORXONOX_COMPILER_MSVC */
 
 
-#include "util/Convert.h"
 #include "util/Debug.h"
-#include "util/Exception.h"
 #include "util/Math.h"
-#include "util/mbool.h"
 #include "util/MultiType.h"
-#include "util/OrxAssert.h"
-#include "util/OrxEnum.h"
-#include "util/String.h"
 #include "util/SubString.h"
 
 

@@ -41,7 +41,12 @@
 // Windows //
 /////////////
 
+#ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
+#undef min
+#undef max
 #include "Debug.h"
 
 namespace orxonox
