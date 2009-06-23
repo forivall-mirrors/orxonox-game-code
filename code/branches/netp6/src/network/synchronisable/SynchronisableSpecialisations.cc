@@ -72,10 +72,6 @@ namespace orxonox{
     registerVariable(variable.x, mode, cb, bidirectional);
     registerVariable(variable.y, mode, cb, bidirectional);
   }
-//   template <> void Synchronisable::registerVariable( Vector2& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
-//   {
-//     registerVariable( (const ColourValue&)variable, mode, cb, bidirectional);
-//   }
   
   template <> void Synchronisable::registerVariable( const Vector3& variable, uint8_t mode, NetworkCallbackBase* cb, bool bidirectional)
   {
