@@ -29,6 +29,7 @@
 #include "FunctionIDs.h"
 
 #include <cassert>
+#include <cstring>
 #include <queue>
 #include <string>
 

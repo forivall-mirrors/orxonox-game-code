@@ -33,6 +33,7 @@
 #include "network/NetworkPrereqs.h"
 
 #include <cassert>
+#include <cstring>
 #include "util/Serialise.h"
 #include "core/GameMode.h"
 #include "network/synchronisable/NetworkCallbackManager.h"

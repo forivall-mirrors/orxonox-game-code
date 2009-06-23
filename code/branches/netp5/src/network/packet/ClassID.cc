@@ -29,6 +29,8 @@
 #include "ClassID.h"
 
 #include <cassert>
+#include <cstdlib>
+#include <cstring>
 #include <map>
 #include <queue>
 #include <string>

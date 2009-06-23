@@ -32,6 +32,7 @@
 #include "NetworkPrereqs.h"
 
 #include <cassert>
+#include <cstring>
 #include <map>
 #include <string>
 #include <boost/preprocessor/cat.hpp>

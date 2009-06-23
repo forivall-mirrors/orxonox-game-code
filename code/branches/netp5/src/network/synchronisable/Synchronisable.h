@@ -32,6 +32,7 @@
 #include "network/NetworkPrereqs.h"
 
 #include <cassert>
+#include <cstring>
 #include <vector>
 #include <map>
 #include <queue>

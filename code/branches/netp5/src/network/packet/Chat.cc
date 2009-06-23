@@ -28,6 +28,7 @@
 
 #include "Chat.h"
 
+#include <cstring>
 #include <string>
 #include "network/Host.h"
 

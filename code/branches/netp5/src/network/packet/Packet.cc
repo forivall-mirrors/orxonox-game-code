@@ -30,6 +30,7 @@
 #include "Packet.h"
 
 #include <cassert>
+#include <cstring>
 #include <enet/enet.h>
 #include <boost/static_assert.hpp>
 

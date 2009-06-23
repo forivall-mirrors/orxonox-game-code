@@ -30,6 +30,7 @@
 
 #include "Synchronisable.h"
 
+#include <cstdlib>
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "network/Host.h"

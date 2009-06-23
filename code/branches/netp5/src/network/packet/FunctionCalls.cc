@@ -29,6 +29,7 @@
 #include "FunctionCalls.h"
 
 #include <cassert>
+#include <cstring>
 #include "util/MultiType.h"
 #include "network/NetworkFunction.h"
 

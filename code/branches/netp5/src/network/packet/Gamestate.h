@@ -33,6 +33,7 @@
 #include "network/NetworkPrereqs.h"
 
 #include <cassert>
+#include <cstring>
 #include <list>
 
 #include "util/CRC32.h"
