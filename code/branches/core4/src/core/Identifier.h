@@ -348,7 +348,8 @@ namespace orxonox
         public:
             static ClassIdentifier<T> *getIdentifier();
             static ClassIdentifier<T> *getIdentifier(const std::string& name);
-            void addObject(T* object);
+
+            bool initialiseObject(T* object, const std::string& className, bool bRootClass);
 
             void updateConfigValues(bool updateChildren = true) const;
 
@@ -427,12 +428,37 @@ namespace orxonox
         @param object The object to add
     */
     template <class T>
-    inline void ClassIdentifier<T>::addObject(T* object)
+    bool ClassIdentifier<T>::initialiseObject(T* object, const std::string& className, bool bRootClass)
     {
-        COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
-        object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
-        // Add pointer of type T to the map in the OrxonoxClass instance that enables "dynamic_casts"
-        object->objectPointers_.push_back(std::make_pair(this->getClassID(), reinterpret_cast<void*>(object)));
+        if (bRootClass)
+            COUT(5) << "*** Register Root-Object: " << className << std::endl;
+        else
+            COUT(5) << "*** Register Object: " << className << std::endl;
+
+        object->identifier_ = this;
+        if (Identifier::isCreatingHierarchy())
+        {
+            if (bRootClass && !object->parents_)
+                object->parents_ = new std::set<const Identifier*>();
+
+            if (object->parents_)
+            {
+                this->initializeClassHierarchy(object->parents_, bRootClass);
+                object->parents_->insert(object->parents_->end(), this);
+            }
+
+            object->setConfigValues();
+            return true;
+        }
+        else
+        {
+            COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
+            object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+
+            // Add pointer of type T to the map in the OrxonoxClass instance that enables "dynamic_casts"
+            object->objectPointers_.push_back(std::make_pair(this->getClassID(), reinterpret_cast<void*>(object)));
+            return false;
+        }
     }
 
     /**

@@ -37,8 +37,8 @@
 #include <string>
 #include <boost/preprocessor/cat.hpp>
 
-#include "core/OrxonoxClass.h"
 #include "core/Functor.h"
+#include "core/Identifier.h"
 #include "FunctionCallManager.h"
 #include "synchronisable/Synchronisable.h"
 

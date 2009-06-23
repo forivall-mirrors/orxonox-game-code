@@ -62,19 +62,6 @@ namespace orxonox
             /** @brief Returns the Identifier of the object. @return The Identifier */
             inline Identifier* getIdentifier() const { return this->identifier_; }
 
-            /** @brief Sets the Identifier of the object. Used by the RegisterObject-macro. */
-            inline void setIdentifier(Identifier* identifier) { this->identifier_ = identifier; }
-
-            /** @brief Returns the list of all parents of the object. @return The list */
-            inline std::set<const Identifier*>* getParents() const { return this->parents_; }
-
-            /** @brief Creates the parents-list. */
-            inline void createParents() { this->parents_ = new std::set<const Identifier*>(); }
-
-            /** @brief Returns the MetaObjectList of the object, containing a link to all ObjectLists and ObjectListElements the object is registered in. @return The list */
-            inline MetaObjectList& getMetaList() { return (*this->metaList_); }
-
-
             bool isA(const Identifier* identifier);
             bool isExactlyA(const Identifier* identifier);
             bool isChildOf(const Identifier* identifier);
