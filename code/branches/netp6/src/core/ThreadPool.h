@@ -26,34 +26,32 @@
  *
  */
 
-#ifndef _Thread_H__
-#define _Thread_H__
+#ifndef _ThreadPool_H__
+#define _ThreadPool_H__
 
+#include <vector>
 
-#include "UtilPrereqs.h"
-#include "core/CorePrereqs.h"
+#include "Thread.h"
 
  namespace orxonox
 {
     
-    class Thread
+    class ThreadPool
     {
     public:
-        Thread();
-        virtual ~Thread();
+        ThreadPool();
+        virtual ~ThreadPool();
         
-        inline  bool isWorking(){ return this->isWorking_; }
-        void waitUntilFinished();
-        bool evaluateFunctor( Functor* functor );
+        void addThreads( unsigned int nr );
+        unsigned int removeThreads( unsigned int nr );
+        unsigned int setNrOfThreads( unsigned int nr );
+        
+        bool passFunction( Functor* functor, bool addThread=false );
+        void synchronise();
         
     private:
-        void            threadLoop();
+        std::vector<Thread>     threadPool_;
         
-        Functor*        functor_;
-        bool            isWorking_;
-        bool            stopThread_;
-        boost::thread*  workerThread_;
-        boost::mutex*   communicationMutex_;
     };
     
 }

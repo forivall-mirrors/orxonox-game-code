@@ -59,11 +59,6 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-namespace boost
-{
-    class thread;
-    class mutex;
-}
 
 namespace Ogre
 {
@@ -100,8 +95,6 @@ namespace orxonox
     class OutputHandler;
     class SignalHandler;
     class SubString;
-    class Thread;
-    class ThreadPool;
 }
 
 #endif /* _UtilPrereqs_H__ */

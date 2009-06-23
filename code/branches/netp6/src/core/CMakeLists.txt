@@ -60,6 +60,10 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Shell.cc
   TclBind.cc
   TclThreadManager.cc
+  
+  # multithreading
+  Thread.cc
+  ThreadPool.cc
 )
 ADD_SUBDIRECTORY(input)
 
