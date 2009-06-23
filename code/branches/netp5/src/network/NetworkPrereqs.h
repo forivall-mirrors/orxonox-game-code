@@ -113,6 +113,7 @@ namespace orxonox
   struct PacketEnvelope;
   struct QueueItem;
   struct syncData;
+  class TrafficControl;
   class obj;
   class objInfo;
 
@@ -127,6 +128,16 @@ namespace orxonox
     class NetworkIDs;
     class Packet;
     class Welcome;
+  }
+
+  namespace PacketFlag
+  {
+    enum Enum
+    {
+      Reliable   = 1,
+      Unsequence = 2,
+      NoAllocate = 4
+    };
   }
 }
 

@@ -31,25 +31,30 @@
 
 #include <cassert>
 #include <enet/enet.h>
+#include <boost/static_assert.hpp>
 
-#include "network/ClientInformation.h"
-
+#include "util/Debug.h"
 #include "Acknowledgement.h"
-#include "DeleteObjects.h"
 #include "Chat.h"
 #include "ClassID.h"
+#include "DeleteObjects.h"
 #include "FunctionCalls.h"
 #include "FunctionIDs.h"
 #include "Gamestate.h"
 #include "Welcome.h"
 #include "network/Host.h"
-#include "core/CoreIncludes.h"
+#include "network/ClientInformation.h"
 
 namespace orxonox{
 
 namespace packet{
 
-#define PACKET_FLAG_DEFAULT ENET_PACKET_FLAG_NO_ALLOCATE
+// Make sure we assume the right values
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Reliable)   == static_cast<int>(ENET_PACKET_FLAG_RELIABLE));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Unsequence) == static_cast<int>(ENET_PACKET_FLAG_UNSEQUENCED));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate) == static_cast<int>(ENET_PACKET_FLAG_NO_ALLOCATE));
+
+#define PACKET_FLAG_DEFAULT PacketFlag::NoAllocate
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
@@ -102,7 +107,7 @@ Packet::~Packet(){
     // In this case ENet allocated data_ and will destroy it.
   }
   else if (this->data_) {
-    // This destructor was probably called as a consequence to ENet executing our callback.
+    // This destructor was probably called as a consequence of ENet executing our callback.
     // It simply serves us to be able to deallocate the packet content (data_) ourselves since
     // we have created it in the first place.
     delete[] this->data_;

@@ -31,11 +31,9 @@
 
 #include "NetworkPrereqs.h"
 
-#include <string>
-
+#include "core/CorePrereqs.h"
 #include "Host.h"
 #include "ServerConnection.h"
-#include "GamestateManager.h"
 
 namespace orxonox
 {

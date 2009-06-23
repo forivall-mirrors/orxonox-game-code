@@ -26,22 +26,20 @@
  *
  */
 
-#ifndef NETWORKFUNCTION_H
-#define NETWORKFUNCTION_H
+#ifndef _NetworkFunction_H__
+#define _NetworkFunction_H__
 
 #include "NetworkPrereqs.h"
-#include "core/OrxonoxClass.h"
 
-#include <string>
-#include <map>
 #include <cassert>
+#include <map>
+#include <string>
 #include <boost/preprocessor/cat.hpp>
-#include "util/MultiType.h"
-#include "core/Functor.h"
-#include "synchronisable/Synchronisable.h"
-#include "OrxonoxConfig.h"
-#include "FunctionCallManager.h"
 
+#include "core/OrxonoxClass.h"
+#include "core/Functor.h"
+#include "FunctionCallManager.h"
+#include "synchronisable/Synchronisable.h"
 
 namespace orxonox
 {
@@ -71,15 +69,15 @@ struct _NetworkExport NetworkFunctionPointer {
 
 class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
   public:
-    NetworkFunctionBase(std::string name);
+    NetworkFunctionBase(const std::string& name);
     ~NetworkFunctionBase();
     
     virtual void        setNetworkID(uint32_t id)       { this->networkID_ = id; }
     inline uint32_t     getNetworkID() const            { return this->networkID_; }
-    inline std::string  getName() const                 { return name_; }
+    inline const std::string& getName() const           { return name_; }
     static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
     
-    static inline void setNetworkID(std::string name, uint32_t id){ assert( nameMap_.find(name)!=nameMap_.end() ); nameMap_[name]->setNetworkID(id); }
+    static inline void setNetworkID(const std::string& name, uint32_t id){ assert( nameMap_.find(name)!=nameMap_.end() ); nameMap_[name]->setNetworkID(id); }
     
   protected:
     static std::map<uint32_t, bool> isStaticMap_;
@@ -94,7 +92,7 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
 
 class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
   public:
-    NetworkFunctionStatic(FunctorStatic* functor, std::string name, const NetworkFunctionPointer& p);
+    NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p);
     ~NetworkFunctionStatic();
     
     inline void call(){ (*this->functor_)(); }
@@ -120,7 +118,7 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
 
 class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
   public:
-    NetworkMemberFunctionBase(std::string name, const NetworkFunctionPointer& p);
+    NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunctionBase();
     
     virtual void setNetworkID( uint32_t id ){ NetworkFunctionBase::setNetworkID( id ); idMap_[id] = this; }
@@ -144,7 +142,7 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
 
 template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase {
   public:
-    NetworkMemberFunction(FunctorMember<T>* functor, std::string name, const NetworkFunctionPointer& p);
+    NetworkMemberFunction(FunctorMember<T>* functor, const std::string& name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunction();
     
     inline void call(uint32_t objectID)
@@ -182,7 +180,7 @@ template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase
     FunctorMember<T>* functor_;
 };
 
-template <class T> NetworkMemberFunction<T>::NetworkMemberFunction(FunctorMember<T>* functor, std::string name, const NetworkFunctionPointer& p):
+template <class T> NetworkMemberFunction<T>::NetworkMemberFunction(FunctorMember<T>* functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkMemberFunctionBase(name, p), functor_(functor)
 {
 }
@@ -200,7 +198,7 @@ template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
 //     *((uint32_t*)destptr+i) = p2>>32*i;
 }
 
-template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, std::string name )
+template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, const std::string& name )
 {
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
@@ -208,7 +206,7 @@ template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, std::str
   return 0;
 }
 
-template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT ptr, std::string name )
+template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT ptr, const std::string& name )
 {
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
@@ -238,4 +236,4 @@ template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT pt
 
 }
 
-#endif
+#endif /* _NetworkFunction_H__ */

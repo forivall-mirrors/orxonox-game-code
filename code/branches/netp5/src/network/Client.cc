@@ -38,15 +38,15 @@
 //
 //
 
-#include <cassert>
-#include <enet/enet.h>
-
 #include "Client.h"
-#include "Host.h"
-#include "synchronisable/Synchronisable.h"
+
+#include <cassert>
+
+#include "util/Debug.h"
 #include "core/Clock.h"
-#include "core/CoreIncludes.h"
-#include "packet/Packet.h"
+#include "synchronisable/Synchronisable.h"
+#include "packet/Chat.h"
+#include "packet/Gamestate.h"
 #include "FunctionCallManager.h"
 
 namespace orxonox

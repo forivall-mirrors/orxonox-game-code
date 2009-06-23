@@ -26,21 +26,21 @@
  *
  */
 
-
-
 #include "FunctionIDs.h"
-#include "network/NetworkFunction.h"
-#include <enet/enet.h>
-#include "core/CoreIncludes.h"
-#include <string>
+
 #include <cassert>
 #include <queue>
+#include <string>
+
+#include "util/Debug.h"
+#include "core/ObjectList.h"
+#include "network/NetworkFunction.h"
 
 namespace orxonox {
 namespace packet {
 
 
-#define PACKET_FLAGS_FUNCTIONIDS  ENET_PACKET_FLAG_RELIABLE
+#define PACKET_FLAGS_FUNCTIONIDS  PacketFlag::Reliable
 #define _PACKETID                 0
 
 

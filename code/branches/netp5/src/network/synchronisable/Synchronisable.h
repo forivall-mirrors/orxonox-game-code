@@ -31,17 +31,15 @@
 
 #include "network/NetworkPrereqs.h"
 
-#include <list>
+#include <cassert>
 #include <vector>
 #include <map>
 #include <queue>
-#include <cassert>
-#include <string>
-#include "util/Math.h"
+
 #include "util/mbool.h"
 #include "core/OrxonoxClass.h"
-#include "NetworkCallback.h"
 #include "SynchronisableVariable.h"
+#include "NetworkCallback.h"
 
 /*#define REGISTERDATA(varname, ...) \
     registerVariable((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)

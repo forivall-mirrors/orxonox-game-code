@@ -29,10 +29,11 @@
 #include "ServerConnection.h"
 
 #include <cassert>
+#include <string>
+#include <enet/enet.h>
 
+#include "util/Debug.h"
 #include "ClientInformation.h"
-
-#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -49,6 +50,14 @@ namespace orxonox
     if ( this->bListening_ )
       closeListener();
     delete this->bindAddress_;
+  }
+
+  void ServerConnection::setBindAddress( const std::string& bindAddress ) {
+    enet_address_set_host (this->bindAddress_, bindAddress.c_str());
+  }
+
+  void ServerConnection::setPort( unsigned int port ) {
+      this->bindAddress_->port = port;
   }
 
   bool ServerConnection::openListener() {

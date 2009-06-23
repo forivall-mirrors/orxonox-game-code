@@ -27,8 +27,10 @@
  *
  */
 
-#include "network/synchronisable/Synchronisable.h"
 #include <string>
+#include "util/Math.h"
+#include "Synchronisable.h"
+#include "SynchronisableVariable.h"
 
 // ================ template spezialisation
   

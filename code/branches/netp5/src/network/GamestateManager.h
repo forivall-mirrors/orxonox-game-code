@@ -41,16 +41,14 @@
 #define _GamestateManager_H__
 
 #include "NetworkPrereqs.h"
-#include "GamestateHandler.h"
-#include "TrafficControl.h"
-#include <map>
 
-#include "packet/Gamestate.h"
+#include <map>
+#include "GamestateHandler.h"
 
 namespace orxonox
 {
 
-    const int KEEP_GAMESTATES = 10;
+  const int KEEP_GAMESTATES = 10;
 
   /**
   * This Class implements a manager for gamestates:

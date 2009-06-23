@@ -41,28 +41,22 @@
 #include "Server.h"
 
 #include <enet/enet.h>
-#include <iostream>
 #include <cassert>
+#include <string>
 
-
-// #include "ConnectionManager.h"
-#include "ClientConnectionListener.h"
-#include "GamestateManager.h"
-#include "ClientInformation.h"
-#include "util/Sleep.h"
+#include "util/Debug.h"
 #include "core/Clock.h"
-#include "core/ConsoleCommand.h"
-#include "core/CoreIncludes.h"
+#include "core/ObjectList.h"
 #include "packet/Chat.h"
-#include "packet/Packet.h"
-#include "packet/Welcome.h"
-#include "packet/DeleteObjects.h"
 #include "packet/ClassID.h"
-#include "util/Convert.h"
-#include "ChatListener.h"
-#include "FunctionCallManager.h"
+#include "packet/DeleteObjects.h"
 #include "packet/FunctionIDs.h"
-
+#include "packet/Gamestate.h"
+#include "packet/Welcome.h"
+#include "ChatListener.h"
+#include "ClientInformation.h"
+#include "FunctionCallManager.h"
+#include "GamestateManager.h"
 
 namespace orxonox
 {

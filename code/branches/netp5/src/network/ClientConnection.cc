@@ -28,9 +28,8 @@
 
 #include "ClientConnection.h"
 
-#include <iostream>
 #include <cassert>
-
+#include <enet/enet.h>
 #include "util/Debug.h"
 
 namespace orxonox
@@ -42,8 +41,8 @@ namespace orxonox
 
 
   ClientConnection::ClientConnection():
-    server_(NULL),
-    established_(false)
+    established_(false),
+    server_(NULL)
   {
     this->serverAddress_ = new ENetAddress();
     //set standard address and port
@@ -55,6 +54,14 @@ namespace orxonox
     if(this->established_)
       closeConnection();
     delete this->serverAddress_; // surely was created
+  }
+
+  void ClientConnection::setServerAddress( const std::string& serverAddress ) {
+    enet_address_set_host (this->serverAddress_, serverAddress.c_str());
+  }
+
+  void ClientConnection::setPort( unsigned int port ) {
+    this->serverAddress_->port = port;
   }
 
   bool ClientConnection::establishConnection()

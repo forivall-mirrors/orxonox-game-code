@@ -32,12 +32,7 @@
 
 #include "PacketBuffer.h"
 
-#include <enet/enet.h>
-#include <iostream>
-#include <queue>
-#include <string>
-#include <boost/bind.hpp>
-#include <boost/thread/mutex.hpp>
+//#include <iostream>
 #include <boost/thread/recursive_mutex.hpp>
 
 namespace orxonox

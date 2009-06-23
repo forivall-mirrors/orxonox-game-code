@@ -41,7 +41,6 @@
 #define _ServerConnection_H__
 
 #include "NetworkPrereqs.h"
-
 #include "Connection.h"
 
 namespace orxonox
@@ -51,8 +50,8 @@ namespace orxonox
   public:
     ~ServerConnection();
     
-    void setBindAddress( const std::string& bindAddress ){ enet_address_set_host (this->bindAddress_, bindAddress.c_str()); }
-    void setPort( unsigned int port ){ this->bindAddress_->port = port; }
+    void setBindAddress( const std::string& bindAddress );
+    void setPort( unsigned int port );
     
     bool openListener();
     bool closeListener();

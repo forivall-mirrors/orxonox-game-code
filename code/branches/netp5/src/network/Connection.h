@@ -42,12 +42,6 @@
 
 #include "NetworkPrereqs.h"
 
-#include <string>
-#include <map>
-#include <enet/enet.h>
-
-#include "packet/Packet.h"
-
 namespace orxonox
 {
     const unsigned int NETWORK_PORT = 55556;
@@ -58,7 +52,7 @@ namespace orxonox
 
   class _NetworkExport Connection{
   public:
-    ~Connection();
+    virtual ~Connection();
     
     static bool addPacket(ENetPacket *packet, ENetPeer *peer);
     bool sendPackets();
@@ -68,13 +62,13 @@ namespace orxonox
     Connection();
     static Connection* getInstance(){ return Connection::instance_; }
     
-    int service(ENetEvent* event){ return enet_host_service( this->host_, event, NETWORK_WAIT_TIMEOUT ); }
-    void disconnectPeer(ENetPeer *peer){ enet_peer_disconnect(peer, 0); }
+    int service(ENetEvent* event);
+    void disconnectPeer(ENetPeer *peer);
     
     void processQueue();
     virtual void addClient(ENetEvent* event)=0;
     virtual void disconnectPeer(ENetEvent* event)=0;
-    virtual bool processPacket(ENetEvent* event){ packet::Packet *p = packet::Packet::createPacket(event->packet, event->peer); return p->process(); }
+    virtual bool processPacket(ENetEvent* event);
     
     ENetHost *host_;
   private:

@@ -27,20 +27,17 @@
  */
 
 
-#ifndef NETWORK_PACKETGAMESTATE_H
-#define NETWORK_PACKETGAMESTATE_H
+#ifndef _Gamestate_H__
+#define _Gamestate_H__
 
 #include "network/NetworkPrereqs.h"
 
-#include "Packet.h"
-#include "network/TrafficControl.h"
-#include <string.h>
-#include <map>
-#include <vector>
 #include <cassert>
-#ifndef NDEBUG
+#include <list>
+
 #include "util/CRC32.h"
-#endif
+#include "network/TrafficControl.h"
+#include "Packet.h"
 
 namespace orxonox {
 
@@ -137,4 +134,4 @@ class _NetworkExport Gamestate: public Packet{
 
 }
 
-#endif
+#endif /* _Gamestate_H__ */

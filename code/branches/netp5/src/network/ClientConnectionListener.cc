@@ -27,8 +27,10 @@
  */
 
 #include "ClientConnectionListener.h"
+
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
+#include "ClientInformation.h"
 
 namespace orxonox{
 

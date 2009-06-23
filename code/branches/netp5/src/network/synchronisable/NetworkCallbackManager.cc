@@ -26,7 +26,6 @@
  *
  */
  
-
 #include "NetworkCallbackManager.h"
 #include "NetworkCallback.h"
 

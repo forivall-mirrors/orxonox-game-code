@@ -28,16 +28,10 @@
 
 #include "Connection.h"
 
-#include <iostream>
 #include <cassert>
+#include <enet/enet.h>
 #include <OgreTimer.h>
-
-#include "util/Debug.h"
-#include "util/Math.h"
-#include "util/Sleep.h"
-#include "ClientInformation.h"
-#include "synchronisable/Synchronisable.h"
-#include "packet/ClassID.h"
+#include "packet/Packet.h"
 
 namespace orxonox
 {
@@ -54,6 +48,14 @@ namespace orxonox
 
   Connection::~Connection(){
     Connection::instance_=0;
+  }
+
+  int Connection::service(ENetEvent* event) {
+    return enet_host_service( this->host_, event, NETWORK_WAIT_TIMEOUT );
+  }
+
+  void Connection::disconnectPeer(ENetPeer *peer) {
+    enet_peer_disconnect(peer, 0);
   }
 
   bool Connection::addPacket(ENetPacket *packet, ENetPeer *peer) {
@@ -93,6 +95,11 @@ namespace orxonox
           break;
       }
     }
+  }
+
+  bool Connection::processPacket(ENetEvent* event) {
+    packet::Packet *p = packet::Packet::createPacket(event->packet, event->peer);
+    return p->process();
   }
 
 }

@@ -29,8 +29,6 @@
 #ifndef _ClientConnection_H__
 #define _ClientConnection_H__
 
-#include <string>
-
 #include "NetworkPrereqs.h"
 #include "Connection.h"
 
@@ -40,10 +38,10 @@ namespace orxonox
   class _NetworkExport ClientConnection: public Connection{
   public:
     ClientConnection();
-    ~ClientConnection();
+    virtual ~ClientConnection();
     
-    void setServerAddress( const std::string& serverAddress ){ enet_address_set_host (this->serverAddress_, serverAddress.c_str()); }
-    void setPort( unsigned int port ){ this->serverAddress_->port = port; }
+    void setServerAddress( const std::string& serverAddress );
+    void setPort( unsigned int port );
     
     ENetEvent *getEvent();
     // check wheter the packet queue is empty
@@ -65,12 +63,6 @@ namespace orxonox
     // clientlist
     ENetPeer *server_;
 };
-
-
-
-
-
-
 
 
 }

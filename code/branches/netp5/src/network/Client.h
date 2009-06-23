@@ -44,12 +44,9 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
-
-#include "Host.h"
-#include "packet/Chat.h"
 #include "ClientConnection.h"
 #include "GamestateClient.h"
-
+#include "Host.h"
 
 namespace orxonox
 {
