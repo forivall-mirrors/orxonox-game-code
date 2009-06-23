@@ -205,8 +205,13 @@
     */
 
     // SUPER-macro: Calls Parent::functionname() where Parent is the direct parent of classname
-    #define SUPER(classname, functionname, ...) \
-        SUPER_##functionname(classname, functionname, __VA_ARGS__)
+    #ifdef ORXONOX_COMPILER_MSVC
+        #define SUPER(classname, functionname, ...) \
+            __super::functionname(__VA_ARGS__)
+    #else
+        #define SUPER(classname, functionname, ...) \
+            SUPER_##functionname(classname, functionname, __VA_ARGS__)
+    #endif
 
     // helper macro: for functions without arguments
     #define SUPER_NOARGS(classname, functionname) \
