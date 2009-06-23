@@ -28,7 +28,6 @@
 
 #include "SynchronisableVariable.h"
 
-
 namespace orxonox{
 
 uint8_t SynchronisableVariableBase::state_ = 0;

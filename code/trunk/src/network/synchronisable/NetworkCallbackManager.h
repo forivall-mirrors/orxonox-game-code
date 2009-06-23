@@ -27,10 +27,11 @@
  */
 
 
-#ifndef _NETWORK_CALLBACKMANAGER__
-#define _NETWORK_CALLBACKMANAGER__
+#ifndef _NetworkCallbackManager_H__
+#define _NetworkCallbackManager_H__
 
 #include "network/NetworkPrereqs.h"
+
 #include <set>
 #include <queue>
 
@@ -51,4 +52,4 @@ namespace orxonox{
 }
 
 
-#endif
+#endif /* _NetworkCallbackManager_H__ */

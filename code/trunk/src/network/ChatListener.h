@@ -30,8 +30,6 @@
 #define _NETWORK_ChatListener__
 
 #include "NetworkPrereqs.h"
-
-#include "ClientInformation.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

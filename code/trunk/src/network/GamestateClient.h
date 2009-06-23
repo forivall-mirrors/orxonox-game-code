@@ -40,11 +40,10 @@
 #ifndef _GamestateClient_H__
 #define _GamestateClient_H__
 
-#include <map>
-//
 #include "NetworkPrereqs.h"
+
+#include <map>
 #include "core/CorePrereqs.h"
-#include "packet/Gamestate.h"
 #include "GamestateHandler.h"
 
 const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;

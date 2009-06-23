@@ -25,11 +25,10 @@
  *      ...
  *
  */
-#ifndef NETWORKPACKET_H
-#define NETWORKPACKET_H
+#ifndef _NETWORK_Packet_H__
+#define _NETWORK_Packet_H__
 
 #include "network/NetworkPrereqs.h"
-
 #include <map>
 
 namespace orxonox {
@@ -101,4 +100,4 @@ class _NetworkExport Packet{
 
 } //namespace orxonox
 
-#endif
+#endif /* _NETWORK_Packet_H__ */

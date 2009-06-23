@@ -26,11 +26,13 @@
  *
  */
 
-#include <cassert>
-
 #include "Host.h"
+
+#include <cassert>
+#include <string>
+
 #include "core/ConsoleCommand.h"
-#include "packet/Packet.h"
+#include "core/ObjectList.h"
 #include "ChatListener.h"
 
 namespace orxonox {

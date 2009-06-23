@@ -28,15 +28,15 @@
 
 
 #include "DeleteObjects.h"
-#include <enet/enet.h>
-#include "network/synchronisable/Synchronisable.h"
-#include "core/CoreIncludes.h"
+
 #include <cassert>
+#include "util/Debug.h"
+#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox {
 namespace packet {
 
-#define PACKET_FLAG_DELETE  ENET_PACKET_FLAG_RELIABLE
+#define PACKET_FLAG_DELETE  PacketFlag::Reliable
 #define _PACKETID           0
 #define _QUANTITY           _PACKETID + sizeof(ENUM::Type)
 #define _OBJECTIDS          _QUANTITY + sizeof(uint32_t)
@@ -89,6 +89,7 @@ bool DeleteObjects::process(){
     COUT(4) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
     Synchronisable::deleteObject( *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) );
   }
+  delete this;
   return true;
 }
 

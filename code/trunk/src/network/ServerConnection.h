@@ -27,7 +27,7 @@
  */
 
 //
-// C++ Interface: Client
+// C++ Interface: ServerConnection
 //
 // Description:
 //
@@ -37,53 +37,44 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
-#ifndef _Client_H__
-#define _Client_H__
+#ifndef _ServerConnection_H__
+#define _ServerConnection_H__
 
 #include "NetworkPrereqs.h"
-
-#include <string>
-#include "ClientConnection.h"
-#include "GamestateClient.h"
-#include "Host.h"
+#include "Connection.h"
 
 namespace orxonox
 {
-  /**
-  Client *client;
-  * The network/Client class
-  * This class implements all necessary function for the network communication
-  * It is the root class of the network module
-  *
-  */
-  class _NetworkExport Client : public Host, public ClientConnection{
+
+  class _NetworkExport ServerConnection : public Connection{
   public:
-    Client();
-    Client(const std::string& address, int port);
-    ~Client();
-
-    bool establishConnection();
-    bool closeConnection();
-    bool queuePacket(ENetPacket *packet, int clientID);
-    bool processChat(const std::string& message, unsigned int playerID);
-    virtual bool chat(const std::string& message);
-    virtual bool broadcast(const std::string& message) { return false; }
-
-    void update(const Clock& time);
+    ~ServerConnection();
+    
+    void setBindAddress( const std::string& bindAddress );
+    void setPort( unsigned int port );
+    
+    bool openListener();
+    bool closeListener();
+    static bool addPacket(ENetPacket *packet, unsigned int ID);
+    static bool addPacketAll(ENetPacket *packet);
+    virtual void disconnectClient(ClientInformation *client);
+    void disconnectPeer( ENetEvent* event );
+    void disconnectClient(int clientID);
+  protected:
+    ServerConnection();
+    void disconnectClients();
 
   private:
-    Client(const Client& copy); // not used
-    virtual bool isServer_(){return false;}
+    int getClientID(ENetPeer* peer);
+    int getClientID(ENetAddress* address);
+    ENetPeer* getClientPeer(int clientID);
 
-    GamestateClient gamestate;
-    bool isSynched_;
+    ENetAddress* bindAddress_;
 
-    bool gameStateFailure_;
-    float timeSinceLastUpdate_;
+    bool bListening_;
+
   };
-
 
 }
 
-#endif /* _Client_H__ */
+#endif /* _ServerConnection_H__ */

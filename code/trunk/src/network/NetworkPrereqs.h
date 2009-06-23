@@ -88,7 +88,7 @@ namespace orxonox
   class ClientConnectionListener;
   class ClientFrameListener;
   class ClientInformation;
-  class ConnectionManager;
+  class Connection;
   class FunctionCallManager;
   class GamestateClient;
   class GamestateManager;
@@ -103,6 +103,7 @@ namespace orxonox
   struct NetworkFunctionPointer;
   class PacketBuffer;
   class Server;
+  class ServerConnection;
   class ServerFrameListener;
   class Synchronisable;
   class SynchronisableVariableBase;
@@ -112,6 +113,7 @@ namespace orxonox
   struct PacketEnvelope;
   struct QueueItem;
   struct syncData;
+  class TrafficControl;
   class obj;
   class objInfo;
 
@@ -126,6 +128,16 @@ namespace orxonox
     class NetworkIDs;
     class Packet;
     class Welcome;
+
+    namespace PacketFlag
+    {
+      enum Enum
+      {
+        Reliable   = 1,
+        Unsequence = 2,
+        NoAllocate = 4
+      };
+    }
   }
 }
 

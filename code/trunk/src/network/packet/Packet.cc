@@ -30,34 +30,35 @@
 #include "Packet.h"
 
 #include <cassert>
+#include <cstring>
 #include <enet/enet.h>
-#include <boost/bind.hpp>
-#include <boost/thread/recursive_mutex.hpp>
+#include <boost/static_assert.hpp>
 
-#include "network/ConnectionManager.h"
-#include "network/ClientInformation.h"
-
+#include "util/Debug.h"
 #include "Acknowledgement.h"
-#include "DeleteObjects.h"
 #include "Chat.h"
 #include "ClassID.h"
+#include "DeleteObjects.h"
 #include "FunctionCalls.h"
 #include "FunctionIDs.h"
 #include "Gamestate.h"
 #include "Welcome.h"
 #include "network/Host.h"
-#include "core/CoreIncludes.h"
+#include "network/ClientInformation.h"
 
 namespace orxonox{
 
 namespace packet{
 
-#define PACKET_FLAG_DEFAULT ENET_PACKET_FLAG_NO_ALLOCATE
+// Make sure we assume the right values
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Reliable)   == static_cast<int>(ENET_PACKET_FLAG_RELIABLE));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Unsequence) == static_cast<int>(ENET_PACKET_FLAG_UNSEQUENCED));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate) == static_cast<int>(ENET_PACKET_FLAG_NO_ALLOCATE));
+
+#define PACKET_FLAG_DEFAULT PacketFlag::NoAllocate
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
-//! Static mutex for any packetMap_ access
-static boost::recursive_mutex packetMap_mutex_g;
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
@@ -107,7 +108,7 @@ Packet::~Packet(){
     // In this case ENet allocated data_ and will destroy it.
   }
   else if (this->data_) {
-    // This destructor was probably called as a consequence to ENet executing our callback.
+    // This destructor was probably called as a consequence of ENet executing our callback.
     // It simply serves us to be able to deallocate the packet content (data_) ourselves since
     // we have created it in the first place.
     delete[] this->data_;
@@ -141,7 +142,6 @@ bool Packet::send(){
     {
       // Assures we don't create a packet and destroy it right after in another thread
       // without having a reference in the packetMap_
-      boost::recursive_mutex::scoped_lock lock(packetMap_mutex_g);
       packetMap_[(size_t)(void*)enetPacket_] = this;
     }
   }
@@ -217,6 +217,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 
   // Data was created by ENet
   p->bDataENetAllocated_ = true;
+  p->enetPacket_ = packet;
 
   return p;
 }
@@ -227,7 +228,6 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     data we allocated ourselves.
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
-  boost::recursive_mutex::scoped_lock lock(packetMap_mutex_g);
   // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
   std::map<size_t, Packet*>::iterator it = packetMap_.find((size_t)enetPacket);
   assert(it != packetMap_.end());
@@ -235,7 +235,7 @@ void Packet::deletePacket(ENetPacket *enetPacket){
   it->second->enetPacket_ = 0;
   delete it->second;
   packetMap_.erase(it);
-  COUT(4) << "PacketMap size: " << packetMap_.size() << std::endl;
+  COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet

@@ -25,13 +25,11 @@
  *      ...
  *
  */
-#ifndef NETWORKCLASSID_H
-#define NETWORKCLASSID_H
 
-#include "../NetworkPrereqs.h"
+#ifndef _NETWORK_ClassID_H__
+#define _NETWORK_ClassID_H__
 
-#include <string>
-
+#include "network/NetworkPrereqs.h"
 #include "Packet.h"
 
 namespace orxonox {
@@ -57,4 +55,4 @@ private:
 } //namespace packet
 } //namespace orxonox
 
-#endif
+#endif /* _NETWORK_ClassID_H__ */

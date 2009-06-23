@@ -28,14 +28,12 @@
 
 #include "GamestateClient.h"
 
-#include <cassert>
-#include <zlib.h>
-
-#include "core/CoreIncludes.h"
-#include "core/BaseObject.h"
+#include "util/Debug.h"
+#include "core/ObjectList.h"
 #include "synchronisable/Synchronisable.h"
 #include "synchronisable/NetworkCallbackManager.h"
 #include "packet/Acknowledgement.h"
+#include "packet/Gamestate.h"
 
 
 namespace orxonox

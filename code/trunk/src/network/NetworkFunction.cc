@@ -27,8 +27,7 @@
  */
 
 #include "NetworkFunction.h"
-#include <string>
-#include "synchronisable/Synchronisable.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -41,7 +40,7 @@ namespace orxonox
   std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
   std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
 
-  NetworkFunctionBase::NetworkFunctionBase(std::string name)
+  NetworkFunctionBase::NetworkFunctionBase(const std::string& name)
   {
     RegisterRootObject(NetworkFunctionBase);
     
@@ -57,7 +56,7 @@ namespace orxonox
   
   
   
-  NetworkFunctionStatic::NetworkFunctionStatic(FunctorStatic* functor, std::string name, const NetworkFunctionPointer& p):
+  NetworkFunctionStatic::NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
     RegisterObject(NetworkFunctionStatic);
@@ -74,7 +73,7 @@ namespace orxonox
   
   
   
-  NetworkMemberFunctionBase::NetworkMemberFunctionBase(std::string name, const NetworkFunctionPointer& p):
+  NetworkMemberFunctionBase::NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
     RegisterObject(NetworkMemberFunctionBase);

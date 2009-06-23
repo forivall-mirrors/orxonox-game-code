@@ -34,10 +34,12 @@
 
 #include "NetworkPrereqs.h"
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <list>
 #include <map>
+#include <queue>
 #include <set>
 #include <sstream>
 #include <string>
@@ -46,24 +48,19 @@
 
 #ifdef ORXONOX_COMPILER_MSVC
 
+#include <OgreMath.h>
+#include <OgreVector2.h>
+#include <OgreVector3.h>
+#include <OgreVector4.h>
+#include <OgreQuaternion.h>
+#include <OgreColourValue.h>
+
 #define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
 #undef max
 #undef min
 
-// Too larg PCH file if you include this and only 10% faster
-//#include <boost/thread/recursive_mutex.hpp>
-
-#include "util/CRC32.h"
 #include "util/Debug.h"
-#include "util/Math.h"
-#include "util/mbool.h"
-#include "util/MultiType.h"
-#include "util/String.h"
-
-#include "core/Core.h"
-#include "core/CoreIncludes.h"
-#include "core/Functor.h"
-#include "core/GameMode.h"
+#include "core/Identifier.h"
 
 #endif /* ORXONOX_COMPILER_MSVC */

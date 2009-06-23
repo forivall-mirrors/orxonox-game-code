@@ -27,7 +27,6 @@
  */
 
 #include "ChatListener.h"
-
 #include "core/CoreIncludes.h"
 
 namespace orxonox

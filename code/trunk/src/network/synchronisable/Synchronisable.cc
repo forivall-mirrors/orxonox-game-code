@@ -30,16 +30,11 @@
 
 #include "Synchronisable.h"
 
-#include <cstring>
-#include <string>
-#include <iostream>
-#include <cassert>
-
+#include <cstdlib>
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
-// #include "core/Identifier.h"
-
 #include "network/Host.h"
+
 namespace orxonox
 {
 

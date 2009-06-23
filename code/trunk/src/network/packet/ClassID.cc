@@ -26,23 +26,22 @@
  *
  */
 
-
-
 #include "ClassID.h"
-#include <enet/enet.h>
-#include "core/CoreIncludes.h"
-#include "core/Factory.h"
-#include <cstring>
-#include <string>
+
 #include <cassert>
+#include <cstdlib>
+#include <cstring>
 #include <map>
 #include <queue>
+#include <string>
+
+#include "core/CoreIncludes.h"
 
 namespace orxonox {
 namespace packet {
 
 
-#define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
+#define PACKET_FLAGS_CLASSID  PacketFlag::Reliable
 #define _PACKETID             0
 
 

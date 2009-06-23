@@ -26,11 +26,10 @@
  *
  */
 
-
 #include "Acknowledgement.h"
-#include "network/Host.h"
+
+#include "util/Debug.h"
 #include "network/GamestateHandler.h"
-#include "core/CoreIncludes.h"
 
 namespace orxonox {
 namespace packet {
