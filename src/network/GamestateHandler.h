@@ -25,13 +25,11 @@
  *      ...
  *
  */
-#ifndef NETWORKGAMESTATEHANDLER_H
-#define NETWORKGAMESTATEHANDLER_H
 
-#include <string>
+#ifndef _GamestateHandler_H__
+#define _GamestateHandler_H__
 
 #include "NetworkPrereqs.h"
-#include "packet/Chat.h"
 
 namespace orxonox {
 
@@ -57,4 +55,4 @@ class _NetworkExport GamestateHandler{
 
 }
 
-#endif
+#endif /* _GamestateHandler_H__ */

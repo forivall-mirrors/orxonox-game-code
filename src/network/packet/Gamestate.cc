@@ -27,17 +27,14 @@
  */
 
 #include "Gamestate.h"
-#include <enet/enet.h>
+
 #include <zlib.h>
-#include <cassert>
-#include "../GamestateHandler.h"
-#include "../synchronisable/Synchronisable.h"
-#include "../TrafficControl.h"
+
+#include "util/Debug.h"
 #include "core/GameMode.h"
-#include "core/CoreIncludes.h"
-
-
-
+#include "core/ObjectList.h"
+#include "network/synchronisable/Synchronisable.h"
+#include "network/GamestateHandler.h"
 
 namespace orxonox {
 
@@ -45,7 +42,7 @@ namespace packet {
 
 #define GAMESTATE_START(data) (data + GamestateHeader::getSize())
 
-#define PACKET_FLAG_GAMESTATE  ENET_PACKET_FLAG_RELIABLE
+#define PACKET_FLAG_GAMESTATE  PacketFlag::Reliable
 
 
 Gamestate::Gamestate()

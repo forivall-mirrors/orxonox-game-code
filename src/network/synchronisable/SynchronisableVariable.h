@@ -27,18 +27,15 @@
  */
 
 
-#ifndef _NETWORK_SYNCHRONISABLEVARIABLE__
-#define _NETWORK_SYNCHRONISABLEVARIABLE__
+#ifndef _SynchronisableVariable_H__
+#define _SynchronisableVariable_H__
 
 #include "network/NetworkPrereqs.h"
 
-#include <string>
 #include <cassert>
+#include <cstring>
 #include "util/Serialise.h"
-#include "core/Core.h"
-#include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "network/synchronisable/NetworkCallback.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
 
 namespace orxonox{
@@ -252,4 +249,4 @@ namespace orxonox{
 }
 
 
-#endif
+#endif /* _SynchronisableVariable_H__ */

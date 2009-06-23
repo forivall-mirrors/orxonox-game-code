@@ -25,83 +25,44 @@
  *      ...
  *
  */
-
-//
-// C++ Interface: ClientConnection
-//
-// Description:
-//
-//
-// Author:  Oliver Scheuss, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+ 
 #ifndef _ClientConnection_H__
 #define _ClientConnection_H__
 
 #include "NetworkPrereqs.h"
-
-#include <string>
-#include "PacketBuffer.h"
-
-namespace boost { class thread; }
+#include "Connection.h"
 
 namespace orxonox
 {
 
-    const int NETWORK_PORT = 55556;
-    const int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
-    const int NETWORK_CLIENT_WAIT_TIME = 10;
-    const int NETWORK_CLIENT_CONNECT_TIMEOUT = 3000; // miliseconds
-    const int NETWORK_CLIENT_CHANNELS = 2;
-
-
-  class _NetworkExport ClientConnection{
+  class _NetworkExport ClientConnection: public Connection{
   public:
-    ClientConnection(int port, const std::string& address);
-    ClientConnection(int port, const char* address);
-    ~ClientConnection();
+    ClientConnection();
+    virtual ~ClientConnection();
+    
+    void setServerAddress( const std::string& serverAddress );
+    void setPort( unsigned int port );
+    
     ENetEvent *getEvent();
     // check wheter the packet queue is empty
     bool queueEmpty();
     // create a new listener thread
-    bool createConnection();
-    bool closeConnection();
+    virtual bool establishConnection();
+    virtual bool closeConnection();
     // add a packet to queue for the server
     bool addPacket(ENetPacket *packet);
-    // send out all queued packets
-    bool sendPackets();
-    // send out all queued packets and save result in event
-    //bool sendPackets(ENetEvent *event);
-    bool waitEstablished(int milisec);
-    inline bool isConnected(){return established;}
-    inline bool checkConnection(){ return !quit_ && isConnected(); }
+    inline bool isConnected(){ return this->established_; }
   private:
-    ClientConnection(const ClientConnection& copy); // not used
-    bool processData(ENetEvent *event);
-    // implementation of the listener
-    void receiverThread(); //thread2
-    //packetbuffer
-    bool establishConnection();
+    virtual void addClient(ENetEvent* event);
+    virtual void disconnectPeer(ENetEvent* event);
+    
     bool disconnectConnection();
-    PacketBuffer buffer;
     // enet stuff
-    ENetHost *client;
-    ENetAddress *serverAddress;
-    // quit-variable (communication with threads)
-    bool quit_;
-    bool established;
+    ENetAddress *serverAddress_;
+    bool established_;
     // clientlist
-    ENetPeer *server;
-    boost::thread *receiverThread_;
+    ENetPeer *server_;
 };
-
-
-
-
-
-
 
 
 }

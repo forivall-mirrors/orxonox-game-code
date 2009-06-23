@@ -58,8 +58,6 @@ namespace orxonox
 
         PawnManager::touch();
         this->bAlive_ = true;
-        this->fire_ = 0x0;
-        this->firehack_ = 0x0;
         this->bReload_ = false;
 
         this->health_ = 0;
@@ -121,7 +119,6 @@ namespace orxonox
         registerVariable(this->bAlive_,        variableDirection::toclient);
         registerVariable(this->health_,        variableDirection::toclient);
         registerVariable(this->initialHealth_, variableDirection::toclient);
-        registerVariable(this->fire_,          variableDirection::toserver);
         registerVariable(this->bReload_,       variableDirection::toserver);
     }
 
@@ -129,18 +126,6 @@ namespace orxonox
     {
         SUPER(Pawn, tick, dt);
 
-//        if (this->weaponSystem_ && GameMode::isMaster())
-//        {
-//            for (unsigned int firemode = 0; firemode < WeaponSystem::MAX_FIRE_MODES; firemode++)
-//                if (this->fire_ & WeaponSystem::getFiremodeMask(firemode))
-//                    this->weaponSystem_->fire(firemode);
-//
-//            if (this->bReload_)
-//                this->weaponSystem_->reload();
-//        }
-//
-//        this->fire_ = this->firehack_;
-//        this->firehack_ = 0x0;
         this->bReload_ = false;
 
         if (GameMode::isMaster())

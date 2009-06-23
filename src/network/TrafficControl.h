@@ -24,18 +24,15 @@
  *   Co-authors:
  *      ...
  *
+
  */
-#ifndef NETWORK_TRAFFICCONTROL_H
-#define NETWORK_TRAFFICCONTROL_H
+#ifndef _TrafficControl_H__
+#define _TrafficControl_H__
 
 #include "NetworkPrereqs.h"
 
-#include <string>
 #include <list>
 #include <map>
-#include <utility>
-#include <algorithm>
-#include "core/OrxonoxClass.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox {
@@ -142,5 +139,4 @@ class TrafficControl : public ClientConnectionListener {
 
 }
 
-#endif
-
+#endif /* _TrafficControl_H__ */

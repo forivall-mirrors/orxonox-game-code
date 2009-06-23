@@ -25,11 +25,10 @@
  *      ...
  *
  */
-#ifndef NETWORKWELCOME_H
-#define NETWORKWELCOME_H
+#ifndef _NETWORK_Welcome_H__
+#define _NETWORK_Welcome_H__
 
-#include "../NetworkPrereqs.h"
-
+#include "network/NetworkPrereqs.h"
 #include "Packet.h"
 
 namespace orxonox {
@@ -55,4 +54,4 @@ private:
 } //namespace packet
 } //namespace orxonox
 
-#endif
+#endif /* _NETWORK_Welcome_H__ */

@@ -39,9 +39,7 @@
 //
 
 #include "ClientInformation.h"
-
 #include <enet/enet.h>
-#include <iostream> //debug
 
 namespace orxonox
 {

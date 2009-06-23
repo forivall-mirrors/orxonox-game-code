@@ -28,12 +28,12 @@
 
 #include "TrafficControl.h"
 
-#include "synchronisable/Synchronisable.h"
-#include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-
 #include <cassert>
 #include <boost/bind.hpp>
+
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
+#include "synchronisable/Synchronisable.h"
 
 namespace orxonox {
 

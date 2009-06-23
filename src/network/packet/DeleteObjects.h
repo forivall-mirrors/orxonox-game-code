@@ -25,13 +25,11 @@
  *      ...
  *
  */
-#ifndef NETWORKPACKETDELETEOBJECTS_H
-#define NETWORKPACKETDELETEOBJECTS_H
+#ifndef _DeleteObjects_H__
+#define _DeleteObjects_H__
 
-#include "../NetworkPrereqs.h"
-
+#include "network/NetworkPrereqs.h"
 #include "Packet.h"
-
 
 namespace orxonox {
 namespace packet {
@@ -56,4 +54,4 @@ private:
 } //namespace packet
 } //namespace orxonox
 
-#endif
+#endif /* _DeleteObjects_H__ */

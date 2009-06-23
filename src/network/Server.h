@@ -31,10 +31,9 @@
 
 #include "NetworkPrereqs.h"
 
-#include <string>
-
+#include "core/CorePrereqs.h"
 #include "Host.h"
-#include "GamestateManager.h"
+#include "ServerConnection.h"
 
 namespace orxonox
 {
@@ -43,12 +42,11 @@ namespace orxonox
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public Host{
+  class _NetworkExport Server : public Host, public ServerConnection{
   public:
     Server();
     Server(int port);
     Server(int port, const std::string& bindAddress);
-    Server(int port, const char *bindAddress);
     ~Server();
 
     void open();
@@ -59,17 +57,14 @@ namespace orxonox
     unsigned int getPing(unsigned int clientID);
     double getPacketLoss(unsigned int clientID);
   protected:
-    void processQueue();
     void updateGamestate();
   private:
     virtual bool isServer_(){return true;}
     unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
 
-    bool addClient(ENetEvent *event);
+    void addClient(ENetEvent *event);
     bool createClient(int clientID);
-    bool disconnectClient(ENetEvent *event);
-    void disconnectClient(int clientID);
     void disconnectClient( ClientInformation *client);
     bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
@@ -77,9 +72,8 @@ namespace orxonox
     virtual bool chat(const std::string& message);
     virtual bool broadcast(const std::string& message);
     bool sendChat(const std::string& message, unsigned int clientID);
+    void syncClassid(unsigned int clientID);
 
-    //void processChat( chat *data, int clientId);
-    ConnectionManager *connection;
     GamestateManager *gamestates_;
 
 

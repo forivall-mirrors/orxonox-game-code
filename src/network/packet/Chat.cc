@@ -28,20 +28,20 @@
 
 #include "Chat.h"
 
-#include <enet/enet.h>
-#include <cassert>
+#include <cstring>
+#include <string>
 #include "network/Host.h"
 
 namespace orxonox {
 namespace packet {
   
-#define   PACKET_FLAGS_CHAT ENET_PACKET_FLAG_RELIABLE
+#define   PACKET_FLAGS_CHAT PacketFlag::Reliable
 #define   _PACKETID         0
 const int _PLAYERID     =   _PACKETID + sizeof(ENUM::Type);
 #define   _MESSAGELENGTH    _PLAYERID + sizeof(uint32_t)
 #define   _MESSAGE          _MESSAGELENGTH + sizeof(uint32_t)
 
-Chat::Chat( std::string message, unsigned int playerID )
+Chat::Chat( const std::string& message, unsigned int playerID )
  : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_CHAT;

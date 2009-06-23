@@ -40,17 +40,14 @@
 
 #include "GamestateManager.h"
 
-#include <utility>
-#include <iostream>
-#include <zlib.h>
 #include <cassert>
 
-#include "core/CoreIncludes.h"
-#include "core/BaseObject.h"
+#include "util/Debug.h"
 #include "ClientInformation.h"
-#include "synchronisable/Synchronisable.h"
-#include "synchronisable/NetworkCallbackManager.h"
 #include "packet/Acknowledgement.h"
+#include "packet/Gamestate.h"
+#include "synchronisable/NetworkCallbackManager.h"
+#include "TrafficControl.h"
 
 namespace orxonox
 {

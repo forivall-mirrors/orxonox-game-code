@@ -25,15 +25,15 @@
  *      ...
  *
  */
-#ifndef NETWORKACKNOLEDGEMENT_H
-#define NETWORKACKNOLEDGEMENT_H
 
-#include "../NetworkPrereqs.h"
+#ifndef _Acknowledgement_H__
+#define _Acknowledgement_H__
+
+#include "network/NetworkPrereqs.h"
 #include "Packet.h"
 
-const unsigned int ACKID_NACK = 0;
-
 namespace orxonox {
+const unsigned int ACKID_NACK = 0;
 namespace packet {
 /**
 	@author
@@ -55,4 +55,4 @@ private:
 } //namespace packet
 } //namespace orxonox
 
-#endif
+#endif /* _Acknowledgement_H__ */

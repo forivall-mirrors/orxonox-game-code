@@ -46,10 +46,15 @@
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 
-// Certain headers might define min and max macros
-#if defined(max) || defined(min) || defined(sgn) || defined(clamp) || defined(square) || defined(mod)
-#  error An inline math function was overridden by a macro
-#endif
+// Certain headers might define unwanted macros...
+#undef max
+#undef min
+#undef sgn
+#undef clamp
+#undef sqrt
+#undef square
+#undef mod
+#undef rnd
 
 namespace orxonox
 {

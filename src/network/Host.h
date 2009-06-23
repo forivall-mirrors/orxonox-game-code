@@ -25,13 +25,11 @@
  *      ...
  *
  */
-#ifndef NETWORKHOST_H
-#define NETWORKHOST_H
 
-#include <string>
+#ifndef _NETWORK_Host_H__
+#define _NETWORK_Host_H__
 
 #include "NetworkPrereqs.h"
-#include "packet/Chat.h"
 
 namespace orxonox {
 
@@ -85,4 +83,4 @@ class _NetworkExport Host{
 
 }
 
-#endif
+#endif /* _NETWORK_Host_H__ */

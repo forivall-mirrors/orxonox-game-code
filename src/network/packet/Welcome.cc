@@ -28,18 +28,17 @@
  *
  */
 
-
 #include "Welcome.h"
-#include <enet/enet.h>
+
 #include <cassert>
+#include "util/Debug.h"
 #include "network/Host.h"
 #include "network/synchronisable/Synchronisable.h"
-#include "core/CoreIncludes.h"
 
 namespace orxonox {
 namespace packet {
 
-#define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
+#define PACKET_FLAGS_CLASSID  PacketFlag::Reliable
 #define _PACKETID             0
 #define _CLIENTID             _PACKETID + sizeof(ENUM::Type)
 #define _ENDIANTEST           _CLIENTID + sizeof(uint32_t)

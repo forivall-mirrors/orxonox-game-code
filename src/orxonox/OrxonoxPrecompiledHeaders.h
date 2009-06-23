@@ -34,6 +34,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <cassert>
 #include <deque>
 #include <fstream>
 #include <iostream>
@@ -83,8 +84,6 @@
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/OgreForwardRefs.h"
-#include "util/OrxAssert.h"
-#include "util/String.h"
 #include "util/SubString.h"
 
 #include "core/BaseObject.h"

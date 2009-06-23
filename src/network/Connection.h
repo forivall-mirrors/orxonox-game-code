@@ -27,7 +27,7 @@
  */
 
 //
-// C++ Interface: Client
+// C++ Interface: Connection
 //
 // Description:
 //
@@ -37,53 +37,47 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
-#ifndef _Client_H__
-#define _Client_H__
+#ifndef _Connection_H__
+#define _Connection_H__
 
 #include "NetworkPrereqs.h"
 
-#include <string>
-#include "ClientConnection.h"
-#include "GamestateClient.h"
-#include "Host.h"
-
 namespace orxonox
 {
-  /**
-  Client *client;
-  * The network/Client class
-  * This class implements all necessary function for the network communication
-  * It is the root class of the network module
-  *
-  */
-  class _NetworkExport Client : public Host, public ClientConnection{
+    const unsigned int NETWORK_PORT = 55556;
+    const unsigned int NETWORK_MAX_CONNECTIONS = 50;
+    const unsigned int NETWORK_WAIT_TIMEOUT = 0;
+    const unsigned int NETWORK_DEFAULT_CHANNEL = 0;
+    const unsigned int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
+
+  class _NetworkExport Connection{
   public:
-    Client();
-    Client(const std::string& address, int port);
-    ~Client();
+    virtual ~Connection();
+    
+    static bool addPacket(ENetPacket *packet, ENetPeer *peer);
+    bool sendPackets();
+    ENetHost* getHost(){ return this->host_; }
 
-    bool establishConnection();
-    bool closeConnection();
-    bool queuePacket(ENetPacket *packet, int clientID);
-    bool processChat(const std::string& message, unsigned int playerID);
-    virtual bool chat(const std::string& message);
-    virtual bool broadcast(const std::string& message) { return false; }
-
-    void update(const Clock& time);
-
+  protected:
+    Connection();
+    static Connection* getInstance(){ return Connection::instance_; }
+    
+    int service(ENetEvent* event);
+    void disconnectPeer(ENetPeer *peer);
+    
+    void processQueue();
+    virtual void addClient(ENetEvent* event)=0;
+    virtual void disconnectPeer(ENetEvent* event)=0;
+    virtual bool processPacket(ENetEvent* event);
+    
+    ENetHost *host_;
   private:
-    Client(const Client& copy); // not used
-    virtual bool isServer_(){return false;}
+    ENetAddress *bindAddress_;
 
-    GamestateClient gamestate;
-    bool isSynched_;
+    static Connection *instance_;
 
-    bool gameStateFailure_;
-    float timeSinceLastUpdate_;
   };
-
 
 }
 
-#endif /* _Client_H__ */
+#endif /* _Connection_H__ */

@@ -28,17 +28,15 @@
 
 #include "FunctionCalls.h"
 
-#include <enet/enet.h>
 #include <cassert>
 #include <cstring>
-#include "network/Host.h"
-#include "network/NetworkFunction.h"
 #include "util/MultiType.h"
+#include "network/NetworkFunction.h"
 
 namespace orxonox {
 namespace packet {
   
-#define   PACKET_FLAGS_FUNCTIONCALLS ENET_PACKET_FLAG_RELIABLE
+#define   PACKET_FLAGS_FUNCTIONCALLS PacketFlag::Reliable
 #define   _PACKETID         0
 const unsigned int FUNCTIONCALLS_MEM_ALLOCATION = 1000;
     
