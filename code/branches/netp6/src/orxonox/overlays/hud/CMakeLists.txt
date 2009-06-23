@@ -1,0 +1,16 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  HUDBar.cc
+  HUDNavigation.cc
+  HUDRadar.cc
+  HUDSpeedBar.cc
+  HUDHealthBar.cc
+  HUDTimer.cc
+  ChatOverlay.cc
+  GametypeStatus.cc
+  AnnounceMessage.cc
+  KillMessage.cc
+  DeathMessage.cc
+  PongScore.cc
+  UnderAttackHealthBar.cc
+  TeamBaseMatchScore.cc
+)
