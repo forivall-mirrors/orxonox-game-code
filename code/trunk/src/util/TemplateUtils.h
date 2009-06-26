@@ -38,6 +38,20 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        Use TypeStripper to get rid of the const and the reference of type T
+    @note
+        Main use of this is when trying to instantiate type T as T().
+    */
+    template <class T> struct TypeStripper
+        { typedef T RawType; };
+    template <class T> struct TypeStripper<const T>
+        { typedef T RawType; };
+    template <class T> struct TypeStripper<const T&>
+        { typedef T RawType; };
+
+
     ///////////////////////////////////////////////////
     // Static detection of implicit type conversions //
     ///////////////////////////////////////////////////
