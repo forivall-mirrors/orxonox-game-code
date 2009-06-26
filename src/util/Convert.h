@@ -236,11 +236,11 @@ namespace orxonox
     template <class FromType, class ToType>
     struct ConverterExplicit
     {
+        enum { probe = ImplicitConversion<FromType, ToType>::exists };
         FORCEINLINE static bool convert(ToType* output, const FromType& input)
         {
             // Try implict cast and probe first. If a simple cast is not possible, it will not compile
             // We therefore have to out source it into another template function
-            const bool probe = ImplicitConversion<FromType, ToType>::exists;
             return convertImplicitely(output, input, detail::Int2Type<probe>());
         }
     };
