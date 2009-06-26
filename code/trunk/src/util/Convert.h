@@ -43,52 +43,7 @@
 
 #include "Debug.h"
 #include "String.h"
-
-// GCC generates warnings when implicitely casting from float to int for instance.
-// This is however exactly what convertValue does, so we need to suppress these warnings.
-// They only occur when using the ImplicitConversion template.
-#ifdef ORXONOX_COMPILER_GCC
-#  pragma GCC system_header
-#endif
-
-
-///////////////////////////////////////////////
-// Static detection for conversion functions //
-///////////////////////////////////////////////
-
-/* The idea to use the sizeof() operator on return functions to determine function existance
-   is described in 'Modern C++ design' by Alexandrescu (2001). */
-
-// disable warnings about possible loss of data
-#ifdef ORXONOX_COMPILER_MSVC
-#  pragma warning(push)
-#  pragma warning(disable:4244)
-#endif
-
-namespace orxonox
-{
-    template <class FromType, class ToType>
-    class ImplicitConversion
-    {
-    private:
-        ImplicitConversion(); ImplicitConversion(const ImplicitConversion&); ~ImplicitConversion();
-        // Gets chosen only if there is an implicit conversion from FromType to ToType.
-        static char test(ToType);
-        // Accepts any argument. Why do we not use a template? The reason is that with templates,
-        // the function above is only taken iff it is an exact type match. But since we want to
-        // check for implicit conversion, we have to use the ellipsis.
-        static long long test(...);
-        static FromType object; // helper object to handle private c'tor and d'tor
-    public:
-        // test(object) only has 'long long' return type iff the compiler doesn't choose test(...)
-        enum { exists = (sizeof(test(object)) == sizeof(char)) };
-    };
-}
-
-#ifdef ORXONOX_COMPILER_MSVC
-#  pragma warning(pop)
-#endif
-
+#include "TemplateUtils.h"
 
 ////////////////////////////////////
 //// ACTUAL CONVERSION SEQUENCE ////
