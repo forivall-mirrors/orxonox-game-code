@@ -318,7 +318,7 @@ namespace orxonox
             /** @brief Current content gets overridden with default zero value */
             inline void                       resetValue()                    { if (this->value_) this->value_->reset(); }
 
-            template <typename T> inline void setType()                       { this->assignValue(TypeStripper<T>::RawType());        } /** @brief Resets the value and changes the internal type to T. */
+            template <typename T> inline void setType()                       { this->assignValue(typename TypeStripper<T>::RawType()); } /** @brief Resets the value and changes the internal type to T. */
             inline void                       setType(const MultiType& other) { this->setType(other.getType());                         } /** @brief Resets the value and changes the internal type to the type of the other MultiType. */
             inline void                       setType(MT_Type type)           { this->reset(); this->convert(type); this->resetValue(); } /** @brief Resets the value and changes the internal type to the given type. */
 
