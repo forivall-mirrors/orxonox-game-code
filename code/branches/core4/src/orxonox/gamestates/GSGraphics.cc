@@ -56,7 +56,7 @@
 
 namespace orxonox
 {
-    AddGameState(GSGraphics, "graphics", false);
+    AddGameState(GSGraphics, "graphics", true);
 
     GSGraphics::GSGraphics(const std::string& name, bool countTickTime)
         : GameState(name, countTickTime)
@@ -197,7 +197,7 @@ namespace orxonox
     */
     void GSGraphics::toggleGUI()
     {
-            GUIManager::getInstance().executeCode("toggleGUI()");
+        GUIManager::getInstance().executeCode("toggleGUI()");
     }
 
     /**

@@ -117,7 +117,8 @@ namespace orxonox
         Core*                           core_;
         Clock*                          gameClock_;
 
-        bool                            abort_;
+        bool                            bChangingState_;
+        bool                            bAbort_;
 
         // variables for time statistics
         uint64_t                        statisticsStartTime_;

@@ -67,6 +67,7 @@ int main(int argc, char** argv)
         " ioConsole"
         );
 
+        orxonox.requestState("root");
         orxonox.run();
 
         // destroy the GameStates created pre-mainly

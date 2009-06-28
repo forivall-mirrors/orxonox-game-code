@@ -76,22 +76,22 @@ namespace orxonox
         };
 
     public:
-        GameState(const std::string& name, bool countTicktime = true);
+        GameState(const std::string& name, bool ignoreTicktime = false);
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
         State getActivity()          const { return this->activity_; }
         GameState* getParent()       const { return this->parent_; }
 
-        bool getCountTickTime()      const { return this->bCountTickTime_; }
+        bool ignoreTickTime()        const { return this->bIgnoreTickTime_; }
 
         void addChild(GameState* state);
         void removeChild(GameState* state);
 
     protected:
-        virtual void activate() = 0;
-        virtual void deactivate() = 0;
-        virtual void update(const Clock& time) = 0;
+        virtual void activate() { }
+        virtual void deactivate() { }
+        virtual void update(const Clock& time) { }
 
     private:
         void setParent(GameState* state) { this->parent_ = state; }
@@ -102,7 +102,7 @@ namespace orxonox
 
         const std::string                        name_;
         State                                    activity_;
-        const bool                               bCountTickTime_;
+        const bool                               bIgnoreTickTime_;
         GameState*                               parent_;
         std::map<std::string, GameState*>        children_;
     };

@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    AddGameState(GSRoot, "root", false);
+    AddGameState(GSRoot, "root", true);
     SetCommandLineSwitch(console);
     // Shortcuts for easy direct loading
     SetCommandLineSwitch(server);
