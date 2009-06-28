@@ -55,6 +55,6 @@ namespace orxonox
     {
         SUPER(DeathMessage, changedOwner);
 
-        this->owner_ = orxonox_cast<PlayerInfo>(this->getOwner());
+        this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
     }
 }

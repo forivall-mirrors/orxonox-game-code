@@ -98,39 +98,39 @@ namespace orxonox
     {
         Identifier* idDE1 = Class(MovableEntity);
         BaseObject* oDE1 = idDE1->fabricate(this);
-        this->debrisEntity1_ = orxonox_cast<MovableEntity>(oDE1);
+        this->debrisEntity1_ = orxonox_cast<MovableEntity*>(oDE1);
 
         Identifier* idDE2 = Class(MovableEntity);
         BaseObject* oDE2 = idDE2->fabricate(this);
-        this->debrisEntity2_ = orxonox_cast<MovableEntity>(oDE2);
+        this->debrisEntity2_ = orxonox_cast<MovableEntity*>(oDE2);
 
         Identifier* idDE3 = Class(MovableEntity);
         BaseObject* oDE3 = idDE3 ->fabricate(this);
-        this->debrisEntity3_ = orxonox_cast<MovableEntity>(oDE3);
+        this->debrisEntity3_ = orxonox_cast<MovableEntity*>(oDE3);
 
         Identifier* idDE4 = Class(MovableEntity);
         BaseObject* oDE4 = idDE4->fabricate(this);
-        this->debrisEntity4_ = orxonox_cast<MovableEntity>(oDE4);
+        this->debrisEntity4_ = orxonox_cast<MovableEntity*>(oDE4);
 
         Identifier* idD1 = Class(Model);
         BaseObject* oD1 = idD1->fabricate(this);
-        this->debris1_ = orxonox_cast<Model>(oD1);
+        this->debris1_ = orxonox_cast<Model*>(oD1);
 
         Identifier* idD2 = Class(Model);
         BaseObject* oD2 = idD2->fabricate(this);
-        this->debris2_ = orxonox_cast<Model>(oD2);
+        this->debris2_ = orxonox_cast<Model*>(oD2);
 
         Identifier* idD3 = Class(Model);
         BaseObject* oD3 = idD3->fabricate(this);
-        this->debris3_ = orxonox_cast<Model>(oD3);
+        this->debris3_ = orxonox_cast<Model*>(oD3);
 
         Identifier* idD4 = Class(Model);
         BaseObject* oD4 = idD4->fabricate(this);
-        this->debris4_ = orxonox_cast<Model>(oD4);
+        this->debris4_ = orxonox_cast<Model*>(oD4);
 
         Identifier* id6 = Class(StaticEntity);
         BaseObject* object4 = id6->fabricate(this);
-        this->explosion_ = orxonox_cast<StaticEntity>(object4);
+        this->explosion_ = orxonox_cast<StaticEntity*>(object4);
 
         this->debrisSmoke1_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
         this->debrisSmoke2_ =  new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
@@ -201,20 +201,20 @@ namespace orxonox
         {
             Identifier* idf1 = Class(Model);
             BaseObject* obj1 = idf1->fabricate(this);
-            Model* part1 = orxonox_cast<Model>(obj1);
+            Model* part1 = orxonox_cast<Model*>(obj1);
 
 
             Identifier* idf2 = Class(Model);
             BaseObject* obj2 = idf2->fabricate(this);
-            Model* part2 = orxonox_cast<Model>(obj2);
+            Model* part2 = orxonox_cast<Model*>(obj2);
 
             Identifier* idf3 = Class(MovableEntity);
             BaseObject* obj3 = idf3->fabricate(this);
-            MovableEntity* partEntity1 = orxonox_cast<MovableEntity>(obj3);
+            MovableEntity* partEntity1 = orxonox_cast<MovableEntity*>(obj3);
 
             Identifier* idf4 = Class(MovableEntity);
             BaseObject* obj4 = idf4->fabricate(this);
-            MovableEntity* partEntity2 = orxonox_cast<MovableEntity>(obj4);
+            MovableEntity* partEntity2 = orxonox_cast<MovableEntity*>(obj4);
 
             partEntity1->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10,100));
             partEntity1->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());

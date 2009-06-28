@@ -266,7 +266,7 @@ namespace orxonox
         // just do this in case the entity wasn't yet synchronized when the corresponding PlayerInfo got our objectID
         if (this->playerID_ != OBJECTID_UNKNOWN)
         {
-            this->player_ = orxonox_cast<PlayerInfo>(Synchronisable::getSynchronisable(this->playerID_));
+            this->player_ = orxonox_cast<PlayerInfo*>(Synchronisable::getSynchronisable(this->playerID_));
             if (this->player_ && (this->player_->getControllableEntity() != this))
                 this->player_->startControl(this);
         }

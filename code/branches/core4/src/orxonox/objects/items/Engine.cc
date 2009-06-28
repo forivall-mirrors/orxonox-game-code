@@ -137,7 +137,7 @@ namespace orxonox
         {
             Synchronisable* object = Synchronisable::getSynchronisable(this->shipID_);
             if (object)
-                this->addToSpaceShip(orxonox_cast<SpaceShip>(object));
+                this->addToSpaceShip(orxonox_cast<SpaceShip*>(object));
         }
     }
 

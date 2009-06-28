@@ -238,7 +238,7 @@ namespace orxonox
             COUT(1) << "Error: GUIOverlay has no owner. " << std::endl;
             return NULL;
         }
-        player = orxonox_cast<PlayerInfo>(obj);
+        player = orxonox_cast<PlayerInfo*>(obj);
     
         QuestContainer* root = NULL;
         QuestContainer* current = NULL;

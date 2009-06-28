@@ -64,6 +64,6 @@ namespace orxonox
     {
         SUPER(HUDSpeedBar, changedOwner);
 
-        this->owner_ = orxonox_cast<SpaceShip>(this->getOwner());
+        this->owner_ = orxonox_cast<SpaceShip*>(this->getOwner());
     }
 }

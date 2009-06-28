@@ -358,7 +358,7 @@ Ogre::MaterialPtr Map::init()
         SUPER(Map, changedOwner);
         //COUT(0) << "shipptr" << this->getOwner()->getReverseCamera() << std::endl;
 
-        ControllableEntity* entity = orxonox_cast<ControllableEntity>(this->getOwner());
+        ControllableEntity* entity = orxonox_cast<ControllableEntity*>(this->getOwner());
         if(entity && entity->getReverseCamera())
         {
             //COUT(0) << "foo";

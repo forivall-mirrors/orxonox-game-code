@@ -119,7 +119,7 @@ namespace orxonox
     // Iterate through all objects
     for (ClassTreeMaskObjectIterator it = this->targetMask_.begin(); it != this->targetMask_.end(); ++it)
     {
-      WorldEntity* entity = orxonox_cast<WorldEntity>(*it);
+      WorldEntity* entity = orxonox_cast<WorldEntity*>(*it);
       if (!entity)
         continue;
 
@@ -130,7 +130,7 @@ namespace orxonox
         // If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
         if(this->isForPlayer())
         {
-          Pawn* player = orxonox_cast<Pawn>(entity);
+          Pawn* player = orxonox_cast<Pawn*>(entity);
           this->setTriggeringPlayer(player);
         }
 

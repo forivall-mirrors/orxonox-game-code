@@ -84,12 +84,12 @@ namespace orxonox
         Synchronisable* parent = Synchronisable::getSynchronisable(this->parentID_);
         // Parent can either be a WorldEntity or a CompoundCollisionShape. The reason is that the
         // internal collision shape (which is compound) of a WE doesn't get synchronised.
-        CompoundCollisionShape* parentCCS = orxonox_cast<CompoundCollisionShape>(parent);
+        CompoundCollisionShape* parentCCS = orxonox_cast<CompoundCollisionShape*>(parent);
         if (parentCCS)
             parentCCS->attach(this);
         else
         {
-            WorldEntity* parentWE = orxonox_cast<WorldEntity>(parent);
+            WorldEntity* parentWE = orxonox_cast<WorldEntity*>(parent);
             if (parentWE)
                 parentWE->attachCollisionShape(this);
         }
@@ -102,7 +102,7 @@ namespace orxonox
 
         this->parent_ = newParent;
 
-        WorldEntityCollisionShape* parentWECCS = orxonox_cast<WorldEntityCollisionShape>(newParent);
+        WorldEntityCollisionShape* parentWECCS = orxonox_cast<WorldEntityCollisionShape*>(newParent);
         if (parentWECCS)
             this->parentID_ = parentWECCS->getWorldEntityOwner()->getObjectID();
         else

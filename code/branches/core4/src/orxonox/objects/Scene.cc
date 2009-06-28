@@ -325,9 +325,9 @@ namespace orxonox
     {
         // get the WorldEntity pointers
         WorldEntity* object0 = (WorldEntity*)colObj0->getUserPointer();
-        assert(orxonox_cast<WorldEntity>(object0));
+        assert(orxonox_cast<WorldEntity*>(object0));
         WorldEntity* object1 = (WorldEntity*)colObj1->getUserPointer();
-        assert(orxonox_cast<WorldEntity>(object1));
+        assert(orxonox_cast<WorldEntity*>(object1));
 
         // false means that bullet will assume we didn't modify the contact
         bool modified = false;

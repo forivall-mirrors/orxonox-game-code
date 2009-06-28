@@ -117,7 +117,7 @@ namespace orxonox
         SUPER(TeamBaseMatchScore, changedOwner);
 
         if (this->getOwner() && this->getOwner()->getGametype())
-            this->owner_ = orxonox_cast<TeamBaseMatch>(this->getOwner()->getGametype());
+            this->owner_ = orxonox_cast<TeamBaseMatch*>(this->getOwner()->getGametype());
         else
             this->owner_ = 0;
     }

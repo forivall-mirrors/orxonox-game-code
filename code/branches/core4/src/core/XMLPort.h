@@ -564,7 +564,7 @@ namespace orxonox
                                                     assert(newObject);
                                                     newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
 
-                                                    O* castedObject = orxonox_cast<O>(newObject);
+                                                    O* castedObject = orxonox_cast<O*>(newObject);
                                                     assert(castedObject);
 
                                                     if (this->bLoadBefore_)

@@ -120,7 +120,7 @@ namespace orxonox
 
 std::cout << "Load Gametype: " << this->gametype_ << std::endl;
 
-        Gametype* rootgametype = orxonox_cast<Gametype>(identifier->fabricate(this));
+        Gametype* rootgametype = orxonox_cast<Gametype*>(identifier->fabricate(this));
         this->setGametype(rootgametype);
 
 std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << std::endl;

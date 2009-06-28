@@ -110,7 +110,7 @@ namespace orxonox
         if (this->target_ || this->targetname_ == "")
             return;
 
-        WorldEntity* entity = orxonox_cast<WorldEntity>(object);
+        WorldEntity* entity = orxonox_cast<WorldEntity*>(object);
         if (entity && entity->getName() == this->targetname_)
         {
             this->target_ = entity;
