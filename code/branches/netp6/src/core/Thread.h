@@ -31,6 +31,10 @@
 
 #include "CorePrereqs.h"
 
+namespace boost{
+  class recursive_mutex;
+}
+
  namespace orxonox
 {
     class _CoreExport Thread
@@ -39,18 +43,20 @@
         Thread();
         virtual ~Thread();
 
-        inline bool isWorking() { return this->isWorking_; }
+        bool isWorking();
         void waitUntilFinished();
-        bool evaluateFunctor( Functor* functor );
+        bool evaluateExecutor( Executor* executor );
 
     private:
         void            threadLoop();
         
-        Functor*        functor_;
+        Executor*       executor_;
         bool            isWorking_;
         bool            stopThread_;
         boost::thread*  workerThread_;
-        boost::mutex*   communicationMutex_;
+        boost::mutex*   executorMutex_;
+        boost::mutex*     isWorkingMutex_;
+        boost::mutex*   stopThreadMutex_;
     };
 
  }

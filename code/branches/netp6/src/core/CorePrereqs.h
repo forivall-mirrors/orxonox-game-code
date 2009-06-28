@@ -188,7 +188,7 @@ namespace orxonox
 
     // multithreading
     class Thread;
-    class ThreadGroup;
+    class ThreadPool;
 }
 
 // CppTcl

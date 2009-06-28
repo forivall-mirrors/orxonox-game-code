@@ -35,7 +35,7 @@
 #include <boost/thread/thread_time.hpp>
 
 #include "util/Sleep.h"
-#include "Functor.h"
+#include "Executor.h"
 
 namespace orxonox
 {
@@ -43,50 +43,74 @@ namespace orxonox
     
     
     Thread::Thread():
-        functor_(0),
+        executor_(0),
         isWorking_(false),
         stopThread_(false)
     {
-        this->communicationMutex_ = new boost::mutex;
+        this->executorMutex_ = new boost::mutex;
+        this->isWorkingMutex_ = new boost::mutex;
+        this->stopThreadMutex_ = new boost::mutex;
         this->workerThread_ = new boost::thread( boost::bind(&Thread::threadLoop, this) );
     }
     
     Thread::~Thread()
     {
+        this->stopThreadMutex_->lock();
         this->stopThread_ = true;
+        this->stopThreadMutex_->unlock();
         if( !this->workerThread_->timed_join( THREAD_WAIT_BEFORE_DETACH ) )
             assert(0); // this should not happen
         delete this->workerThread_;
-        delete this->communicationMutex_;
+        delete this->executorMutex_;
+        delete this->stopThreadMutex_;
+        delete this->isWorkingMutex_;
     }
     
-    bool Thread::evaluateFunctor( Functor* functor )
+    bool Thread::isWorking()
     {
-        if( this->communicationMutex_->try_lock() )
-        {
-            this->functor_ = functor;
-            this->communicationMutex_->unlock();
-            return true;
-        }
-        else
-            return false;
+      this->isWorkingMutex_->lock();
+      bool isWorking = this->isWorking_;
+      this->isWorkingMutex_->unlock();
+      return isWorking;
+    }
+    
+    bool Thread::evaluateExecutor( Executor* executor )
+    {
+        this->isWorkingMutex_->lock();
+        this->isWorking_=true;
+        this->isWorkingMutex_->unlock();
+        this->executorMutex_->lock();
+        this->executor_ = executor;
+        this->executorMutex_->unlock();
+        return true;
     }
     
     void Thread::threadLoop()
     {
-        while( !this->stopThread_ )
+        bool stopThread = false;
+        while( !stopThread )
         {
-            this->communicationMutex_->lock();
-            if( this->functor_ )
+            this->executorMutex_->lock();
+            Executor* executor = this->executor_;
+            this->executorMutex_->unlock();
+            if( executor )
             {
-                (*this->functor_)();
-                this->communicationMutex_->unlock();
+                (*executor)();
+                this->executorMutex_->lock();
+                delete this->executor_;
+                this->executor_ = 0;
+                this->executorMutex_->unlock();
+                this->isWorkingMutex_->lock();
+                this->isWorking_=false;
+                this->isWorkingMutex_->unlock();
             }
             else
             {
-                this->communicationMutex_->unlock();
                 this->workerThread_->yield();
             }
+            this->stopThreadMutex_->lock();
+            stopThread = this->stopThread_;
+            this->stopThreadMutex_->unlock();
         }
     }
     
@@ -95,9 +119,9 @@ namespace orxonox
         bool stillWorking = true;
         while( stillWorking )
         {
-            this->communicationMutex_->lock();
+            this->isWorkingMutex_->lock();
             stillWorking = this->isWorking_;
-            this->communicationMutex_->unlock();
+            this->isWorkingMutex_->unlock();
             if( stillWorking )
                 msleep( 1 );
         }

@@ -33,6 +33,7 @@
 
 #include "core/CorePrereqs.h"
 #include "Host.h"
+#include "GamestateManager.h"
 #include "ServerConnection.h"
 
 namespace orxonox
@@ -42,7 +43,7 @@ namespace orxonox
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public Host, public ServerConnection{
+  class _NetworkExport Server : public Host, public ServerConnection, public GamestateManager{
   public:
     Server();
     Server(int port);
@@ -62,7 +63,7 @@ namespace orxonox
     virtual bool isServer_(){return true;}
     unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
-
+    
     void addClient(ENetEvent *event);
     bool createClient(int clientID);
     void disconnectClient( ClientInformation *client);
@@ -74,9 +75,7 @@ namespace orxonox
     bool sendChat(const std::string& message, unsigned int clientID);
     void syncClassid(unsigned int clientID);
 
-    GamestateManager *gamestates_;
-
-
+    ThreadPool* threadPool_;
     float timeSinceLastUpdate_;
   };
 

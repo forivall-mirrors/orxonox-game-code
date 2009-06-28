@@ -32,7 +32,6 @@
 #include "CorePrereqs.h"
 
 #include <vector>
-#include "Thread.h"
 
  namespace orxonox
 {
@@ -46,11 +45,11 @@
         unsigned int removeThreads( unsigned int nr );
         unsigned int setNrOfThreads( unsigned int nr );
         
-        bool passFunction( Functor* functor, bool addThread=false );
+        bool passFunction( Executor* executor, bool addThread=false );
         void synchronise();
         
     private:
-        std::vector<Thread> threadPool_;
+        std::vector<Thread*> threadPool_;
         
     };
 }

@@ -246,8 +246,10 @@ namespace orxonox
     if(!doSync(id, mode))
       return 0;
     uint32_t tempsize = 0;
+#ifndef NDEBUG
     if (this->classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
+#endif
 
     if (this->classID == static_cast<uint32_t>(-1))
         this->classID = this->getIdentifier()->getNetworkID();

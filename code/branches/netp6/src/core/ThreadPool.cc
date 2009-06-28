@@ -27,6 +27,7 @@
  */
 
 #include "ThreadPool.h"
+#include "Thread.h"
 #include <cassert>
 
 namespace orxonox
@@ -38,24 +39,30 @@ namespace orxonox
     
     ThreadPool::~ThreadPool()
     {
+        unsigned int a = this->setNrOfThreads(0);
+        assert(a == 0);
     }
     
     void ThreadPool::addThreads( unsigned int nr )
     {
         for( unsigned int i=0; i<nr; i++ )
-            this->threadPool_.push_back(Thread());
+            this->threadPool_.push_back(new Thread());
     }
     unsigned int ThreadPool::removeThreads( unsigned int nr )
     {
         unsigned int i=0;
-        std::vector<Thread>::iterator it;
-        for( it = this->threadPool_.begin(); it != threadPool_.end() && i<nr; ++it )
+        std::vector<Thread*>::iterator it;
+        for( it = this->threadPool_.begin(); it != threadPool_.end() && i<nr; )
         {
-            if( ! it->isWorking() )
+            if( ! (*it)->isWorking() )
             {
-                this->threadPool_.erase( it++ );
+                Thread* temp = *it;
+                it=this->threadPool_.erase( it );
+                delete temp;
                 ++i;
             }
+            else
+              ++it;
         }
         return i;
     }
@@ -73,14 +80,14 @@ namespace orxonox
         }
     }
     
-    bool ThreadPool::passFunction( Functor* functor, bool addThread )
+    bool ThreadPool::passFunction( Executor* executor, bool addThread )
     {
-        std::vector<Thread>::iterator it;
+        std::vector<Thread*>::iterator it;
         for ( it=this->threadPool_.begin(); it!=this->threadPool_.end(); ++it )
         {
-            if ( ! it->isWorking() )
+            if ( ! (*it)->isWorking() )
             {
-                bool b = it->evaluateFunctor( functor );
+                bool b = (*it)->evaluateExecutor( executor );
                 assert(b); // if b is false then there is some code error
                 return true;
             }
@@ -88,7 +95,8 @@ namespace orxonox
         if ( addThread )
         {
             addThreads( 1 );
-            this->threadPool_.back().evaluateFunctor( functor ); // access the last element
+            bool b = this->threadPool_.back()->evaluateExecutor( executor ); // access the last element
+            assert(b);
             return true;
         }
         else
@@ -97,10 +105,10 @@ namespace orxonox
     
     void ThreadPool::synchronise()
     {
-        std::vector<Thread>::iterator it;
+        std::vector<Thread*>::iterator it;
         for ( it=this->threadPool_.begin(); it!=this->threadPool_.end(); ++it )
         {
-            it->waitUntilFinished();
+            (*it)->waitUntilFinished();
         }
     }
 

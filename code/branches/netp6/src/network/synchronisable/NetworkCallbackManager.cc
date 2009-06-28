@@ -43,8 +43,8 @@ namespace orxonox{
     std::set<NetworkCallbackBase*>::iterator it = callbackSet_.find(cb);
     if (it != callbackSet_.end())
     {
-      delete (*it);
       callbackSet_.erase(it);
+      delete cb;
     }
   }
   

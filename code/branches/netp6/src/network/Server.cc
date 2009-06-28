@@ -47,6 +47,8 @@
 #include "util/Debug.h"
 #include "core/Clock.h"
 #include "core/ObjectList.h"
+#include "core/Executor.h"
+#include "core/ThreadPool.h"
 #include "packet/Chat.h"
 #include "packet/ClassID.h"
 #include "packet/DeleteObjects.h"
@@ -67,14 +69,14 @@ namespace orxonox
   *
   */
   Server::Server() {
-    timeSinceLastUpdate_=0;
-    gamestates_ = new GamestateManager();
+    this->timeSinceLastUpdate_=0;
+    this->threadPool_ = new ThreadPool();
   }
 
   Server::Server(int port){
     this->setPort( port );
-    timeSinceLastUpdate_=0;
-    gamestates_ = new GamestateManager();
+    this->timeSinceLastUpdate_=0;
+    this->threadPool_ = new ThreadPool();
   }
 
   /**
@@ -85,16 +87,15 @@ namespace orxonox
   Server::Server(int port, const std::string& bindAddress) {
     this->setPort( port );
     this->setBindAddress( bindAddress );
-    timeSinceLastUpdate_=0;
-    gamestates_ = new GamestateManager();
+    this->timeSinceLastUpdate_=0;
+    this->threadPool_ = new ThreadPool();
   }
 
   /**
   * @brief Destructor
   */
   Server::~Server(){
-    if(gamestates_)
-      delete gamestates_;
+    delete this->threadPool_;
   }
 
   /**
@@ -137,15 +138,26 @@ namespace orxonox
   * @param time time since last tick
   */
   void Server::update(const Clock& time) {
+    // receive incoming packets
     Connection::processQueue();
-    gamestates_->processGamestates();
+    // process incoming gamestates
+    GamestateManager::processGamestates();
+    
+    // pass sendFunctionCalls to worker thread pool
+    ExecutorStatic* functioncalls = createExecutor( createFunctor(&FunctionCallManager::sendCalls) );
+    this->threadPool_->passFunction( functioncalls, true );
+    
+    this->threadPool_->synchronise();
+    
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
     if(timeSinceLastUpdate_>=NETWORK_PERIOD)
     {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
+//       ExecutorMember<GamestateManager>* updategamestate = createExecutor( createFunctor(&GamestateManager::updateGamestate);
+//       updategamestate->setObject( static_cast<GamestateManager*>(this) );
+//       this->threadPool_->passFunction( updategamestate );
       updateGamestate();
-      FunctionCallManager::sendCalls();
     }
     sendPackets(); // flush the enet queue
   }
@@ -174,10 +186,10 @@ namespace orxonox
   * takes a new snapshot of the gamestate and sends it to the clients
   */
   void Server::updateGamestate() {
-//     if( ClientInformation::getBegin()==NULL )
+    if( ClientInformation::getBegin()==NULL )
       //no client connected
-//       return;
-    gamestates_->update();
+      return;
+    GamestateManager::update();
     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
@@ -196,40 +208,38 @@ namespace orxonox
   * sends the gamestate
   */
   bool Server::sendGameState() {
-    COUT(5) << "Server: starting function sendGameState" << std::endl;
-    ClientInformation *temp = ClientInformation::getBegin();
-    bool added=false;
-    while(temp != NULL){
-      if( !(temp->getSynched()) ){
-        COUT(5) << "Server: not sending gamestate" << std::endl;
-        temp=temp->next();
-        if(!temp)
-          break;
-        //think this works without continue
-        continue;
-      }
-      COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
-      COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
-      int gid = temp->getGamestateID(); //get gamestate id
-      int cid = temp->getID(); //get client id
-      COUT(5) << "Server: got acked (gamestate) ID from clientlist: " << gid << std::endl;
-      packet::Gamestate *gs = gamestates_->popGameState(cid);
-      if(gs==NULL){
-        COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
-        temp = temp->next();
-        continue;
-      }
-      //std::cout << "adding gamestate" << std::endl;
-      gs->setClientID(cid);
-      if ( !gs->send() ){
-        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
-        temp->addFailure();
-      }else
-        temp->resetFailures();
-      added=true;
-      temp=temp->next();
-      // gs gets automatically deleted by enet callback
-    }
+//     COUT(5) << "Server: starting function sendGameState" << std::endl;
+//     ClientInformation *temp = ClientInformation::getBegin();
+//     bool added=false;
+//     while(temp != NULL){
+//       if( !(temp->getSynched()) ){
+//         COUT(5) << "Server: not sending gamestate" << std::endl;
+//         temp=temp->next();
+//         if(!temp)
+//           break;
+//         continue;
+//       }
+//       COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
+//       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
+//       int cid = temp->getID(); //get client id
+//       packet::Gamestate *gs = GamestateManager::popGameState(cid);
+//       if(gs==NULL){
+//         COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
+//         temp = temp->next();
+//         continue;
+//       }
+//       //std::cout << "adding gamestate" << std::endl;
+//       gs->setClientID(cid);
+//       if ( !gs->send() ){
+//         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
+//         temp->addFailure();
+//       }else
+//         temp->resetFailures();
+//       added=true;
+//       temp=temp->next();
+//       // gs gets automatically deleted by enet callback
+//     }
+    GamestateManager::sendGamestates();
     return true;
   }
 
@@ -323,7 +333,7 @@ namespace orxonox
   
   void Server::disconnectClient( ClientInformation *client ){
     ServerConnection::disconnectClient( client );
-    gamestates_->removeClient(client);
+    GamestateManager::removeClient(client);
 // inform all the listeners
     ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
     while(listener){
