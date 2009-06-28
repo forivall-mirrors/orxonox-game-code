@@ -36,12 +36,12 @@
 
 namespace orxonox
 {
-    AddGameState(GSServer, "server");
+    DeclareGameState(GSServer, "server", false, true);
 
     SetCommandLineArgument(port, 55556).shortcut("p").information("0-65535");
 
-    GSServer::GSServer(const std::string& name)
-        : GameState(name)
+    GSServer::GSServer(const GameStateConstrParams& params)
+        : GameState(params)
         , server_(0)
     {
     }

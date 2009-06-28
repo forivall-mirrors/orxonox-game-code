@@ -33,10 +33,10 @@
 
 namespace orxonox
 {
-    AddGameState(GSStandalone, "standalone");
+    DeclareGameState(GSStandalone, "standalone", false, true);
 
-    GSStandalone::GSStandalone(const std::string& name)
-        : GameState(name)
+    GSStandalone::GSStandalone(const GameStateConstrParams& params)
+        : GameState(params)
     {
     }
 

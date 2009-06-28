@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport GSStandalone : public GameState
     {
     public:
-        GSStandalone(const std::string& name);
+        GSStandalone(const GameStateConstrParams& params);
         ~GSStandalone();
 
         void activate();

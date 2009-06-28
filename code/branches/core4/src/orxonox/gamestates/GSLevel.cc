@@ -55,15 +55,15 @@
 
 namespace orxonox
 {
-    AddGameState(GSLevel, "level");
+    DeclareGameState(GSLevel, "level", false, true);
 
     SetCommandLineArgument(level, "").shortcut("l");
     SetConsoleCommand(GSLevel, showIngameGUI, true);
 
     XMLFile* GSLevel::startFile_s = NULL;
 
-    GSLevel::GSLevel(const std::string& name)
-        : GameState(name)
+    GSLevel::GSLevel(const GameStateConstrParams& params)
+        : GameState(params)
         , keyBinder_(0)
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)

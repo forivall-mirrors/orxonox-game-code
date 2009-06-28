@@ -35,10 +35,10 @@
 
 namespace orxonox
 {
-    AddGameState(GSIOConsole, "ioConsole");
+    DeclareGameState(GSIOConsole, "ioConsole", false, false);
 
-    GSIOConsole::GSIOConsole(const std::string& name)
-        : GameState(name)
+    GSIOConsole::GSIOConsole(const GameStateConstrParams& params)
+        : GameState(params)
     {
     }
 

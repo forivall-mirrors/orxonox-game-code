@@ -69,10 +69,7 @@ int main(int argc, char** argv)
 
         orxonox.requestState("root");
         orxonox.run();
-
-        // destroy the GameStates created pre-mainly
-        orxonox::Game::destroyStates();
-    } // orxonox gets destroyed right here!
+    }
 
     // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
     // Needs to be done after Game destructor because of ~OrxonoxClass

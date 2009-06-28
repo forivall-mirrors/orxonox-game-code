@@ -53,14 +53,9 @@ namespace orxonox
     using boost::shared_ptr;
     using boost::weak_ptr;
 
-    std::map<std::string, GameState*> Game::allStates_s;
-    Game* Game::singletonRef_s = 0;
-
     static void stop_game()
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
-    // Add an empty gamestate that serves as internal root state
-    AddGameState(GameState, "emptyRootGameState");
 
     struct _CoreExport GameStateTreeNode
     {
@@ -69,22 +64,27 @@ namespace orxonox
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
+    std::map<std::string, Game::GameStateInfo> Game::gameStateDeclarations_s;
+    Game* Game::singletonRef_s = 0;
+
     /**
     @brief
         Non-initialising constructor.
     */
     Game::Game(int argc, char** argv)
     {
-        assert(singletonRef_s == 0);
+        if (singletonRef_s != 0)
+        {
+            COUT(0) << "Error: The Game singleton cannot be recreated! Shutting down." << std::endl;
+            abort();
+        }
         singletonRef_s = this;
 
         this->bAbort_ = false;
         bChangingState_ = false;
-        // The empty root state is ALWAYS loaded!
-        this->rootStateNode_ = shared_ptr<GameStateTreeNode>(new GameStateTreeNode());
-        this->rootStateNode_->state_ = getState("emptyRootGameState");
-        this->activeStateNode_ = this->rootStateNode_;
-        this->activeStates_.push_back(this->rootStateNode_->state_);
+
+        // Create an empty root state
+        declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
 
         // reset statistics
         this->statisticsStartTime_ = 0;
@@ -97,9 +97,27 @@ namespace orxonox
         // Set up a basic clock to keep time
         this->gameClock_ = new Clock();
 
+        // Create the Core
         this->core_ = new orxonox::Core();
         this->core_->initialise(argc, argv);
 
+        // After the core has been created, we can safely instantiate the GameStates
+        for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
+            it != gameStateDeclarations_s.end(); ++it)
+        {
+            // Only create the states appropriate for the game mode
+            //if (GameMode::showsGraphics || !it->second.bGraphicsMode)
+            GameStateConstrParams params = { it->second.stateName, it->second.bIgnoreTickTime };
+            gameStates_[getLowercase(it->second.stateName)] = GameStateFactory::fabricate(it->second.className, params);
+        }
+
+        // The empty root state is ALWAYS loaded!
+        this->rootStateNode_ = shared_ptr<GameStateTreeNode>(new GameStateTreeNode());
+        this->rootStateNode_->state_ = getState("emptyRootGameState");
+        this->activeStateNode_ = this->rootStateNode_;
+        this->activeStates_.push_back(this->rootStateNode_->state_);
+
+        // Do this after Core creation!
         RegisterRootObject(Game);
         this->setConfigValues();
     }
@@ -109,13 +127,19 @@ namespace orxonox
     */
     Game::~Game()
     {
-        // Destroy pretty much everyhting left
-        delete this->core_;
+        // Destroy the GameStates (note that the nodes still point to them, but doesn't matter)
+        for (std::map<std::string, GameState*>::const_iterator it = gameStates_.begin();
+            it != gameStates_.end(); ++it)
+            delete it->second;
 
+        // Destroy the Core and with it almost everything
+        delete this->core_;
         delete this->gameClock_;
 
-        assert(singletonRef_s);
-        singletonRef_s = 0;
+        // Also, take care of the GameStateFactories
+        GameStateFactory::destroyFactories();
+
+        // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
     void Game::setConfigValues()
@@ -164,7 +188,7 @@ namespace orxonox
             uint64_t currentTime = this->gameClock_->getMicroseconds();
 
             // STATISTICS
-            statisticsTickInfo tickInfo = {currentTime, 0};
+            StatisticsTickInfo tickInfo = {currentTime, 0};
             statisticsTickTimes_.push_back(tickInfo);
             this->periodTime_ += this->gameClock_->getDeltaTimeMicroseconds();
 
@@ -239,7 +263,7 @@ namespace orxonox
             // STATISTICS
             if (this->periodTime_ > statisticsRefreshCycle_)
             {
-                std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
+                std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
                 assert(it != this->statisticsTickTimes_.end());
                 int64_t lastTime = currentTime - this->statisticsAvgLength_;
                 if ((int64_t)it->tickTime < lastTime)
@@ -355,8 +379,8 @@ namespace orxonox
 
     GameState* Game::getState(const std::string& name)
     {
-        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(getLowercase(name));
-        if (it != allStates_s.end())
+        std::map<std::string, GameState*>::const_iterator it = gameStates_.find(getLowercase(name));
+        if (it != gameStates_.end())
             return it->second;
         else
         {
@@ -447,23 +471,19 @@ namespace orxonox
         this->bChangingState_ = false;
     }
 
-    /*static*/ bool Game::addGameState(GameState* state)
-    {
-        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(getLowercase(state->getName()));
-        if (it == allStates_s.end())
-            allStates_s[getLowercase(state->getName())] = state;
-        else
-            ThrowException(GameState, "Cannot add two GameStates with the same name to 'Game'.");
+    std::map<std::string, Game::GameStateFactory*> Game::GameStateFactory::factories_s;
 
-        // just a required dummy return value
-        return true;
+    /*static*/ GameState* Game::GameStateFactory::fabricate(const std::string& className, const GameStateConstrParams& params)
+    {
+        std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.find(className);
+        assert(it != factories_s.end());
+        return it->second->fabricate(params);
     }
 
-    /*static*/ void Game::destroyStates()
+    /*static*/ void Game::GameStateFactory::destroyFactories()
     {
-        // Delete all GameStates created by the macros
-        for (std::map<std::string, GameState*>::const_iterator it = allStates_s.begin(); it != allStates_s.end(); ++it)
+        for (std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.begin(); it != factories_s.end(); ++it)
             delete it->second;
-        allStates_s.clear();
+        factories_s.clear();
     }
 }

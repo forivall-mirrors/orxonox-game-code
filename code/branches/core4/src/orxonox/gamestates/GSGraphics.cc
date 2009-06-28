@@ -56,10 +56,10 @@
 
 namespace orxonox
 {
-    AddGameState(GSGraphics, "graphics", true);
+    DeclareGameState(GSGraphics, "graphics", true, true);
 
-    GSGraphics::GSGraphics(const std::string& name, bool countTickTime)
-        : GameState(name, countTickTime)
+    GSGraphics::GSGraphics(const GameStateConstrParams& params)
+        : GameState(params)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)

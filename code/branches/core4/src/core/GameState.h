@@ -44,6 +44,16 @@ namespace orxonox
 {
     /**
     @brief
+        Helper class to group construction parameters for better genericity.
+    */
+    struct GameStateConstrParams
+    {
+        std::string name;
+        bool bIgnoreTickTime;
+    };
+
+    /**
+    @brief
         An implementation of a tree to manage game states.
         This leads to a certain hierarchy that is created at runtime.
         To actually use the structure, you will have to derive from it and
@@ -76,7 +86,7 @@ namespace orxonox
         };
 
     public:
-        GameState(const std::string& name, bool ignoreTicktime = false);
+        GameState(const GameStateConstrParams& params);
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
