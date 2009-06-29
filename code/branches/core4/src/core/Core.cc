@@ -97,7 +97,7 @@ namespace orxonox
         {
         }
 
-        void CoreConfiguration::initialise()
+        void initialise()
         {
             RegisterRootObject(CoreConfiguration);
             this->setConfigValues();
