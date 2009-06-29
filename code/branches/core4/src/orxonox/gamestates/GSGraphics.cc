@@ -107,9 +107,8 @@ namespace orxonox
 
         setConfigValues();
 
-        // initialise graphics manager. Doesn't load the render window yet!
+        // Load OGRE including the render window
         this->graphicsManager_ = new GraphicsManager();
-        this->graphicsManager_->initialise();
 
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
