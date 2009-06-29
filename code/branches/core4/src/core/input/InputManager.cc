@@ -69,7 +69,7 @@ namespace orxonox
     SetConsoleCommand(InputManager, grabMouse, true);
     SetConsoleCommand(InputManager, ungrabMouse, true);
 #endif
-    SetCommandLineSwitch(keyboard_no_grab);
+    SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
 
     EmptyHandler InputManager::EMPTY_HANDLER;
     InputManager* InputManager::singletonRef_s = 0;

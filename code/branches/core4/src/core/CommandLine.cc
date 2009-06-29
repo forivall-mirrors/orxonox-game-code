@@ -28,6 +28,7 @@
 
 #include "CommandLine.h"
 
+#include <sstream>
 #include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
@@ -230,7 +231,7 @@ namespace orxonox
         catch (const ArgumentException& ex)
         {
             COUT(0) << "Could not parse command line (including additional files): " << ex.what() << std::endl;
-            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
+            COUT(0) << CommandLine::getUsageInformation() << std::endl;
             throw GeneralException("");
         }
     }
@@ -271,14 +272,38 @@ namespace orxonox
 
     std::string CommandLine::getUsageInformation()
     {
-        CommandLine* inst = &_getInstance();
-        std::string infoStr;
-        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst->cmdLineArgs_.begin();
-            it != inst->cmdLineArgs_.end(); ++it)
+        CommandLine& inst = _getInstance();
+        std::ostringstream infoStr;
+
+        // determine maximum name size
+        size_t maxNameSize = 0;
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst.cmdLineArgs_.begin();
+            it != inst.cmdLineArgs_.end(); ++it)
         {
-            infoStr += "[--" + it->second->getName() + " " + it->second->getInformation() + "] ";
+            maxNameSize = std::max(it->second->getName().size(), maxNameSize);
         }
-        return infoStr;
+
+        infoStr << "Usage: orxonox [options]" << std::endl;
+        infoStr << "Available options:" << std::endl;
+
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst.cmdLineArgs_.begin();
+            it != inst.cmdLineArgs_.end(); ++it)
+        {
+            if (it->second->getShortcut() != "")
+                infoStr << " [-" << it->second->getShortcut() << "] ";
+            else
+                infoStr << "      ";
+            infoStr << "--" << it->second->getName() << " ";
+            if (it->second->getValue().getType() != MT_bool)
+                infoStr << "ARG ";
+            else
+                infoStr << "    ";
+            // fill with the necessary amount of blanks
+            infoStr << std::string(maxNameSize - it->second->getName().size(), ' ');
+            infoStr << ": " << it->second->getInformation();
+            infoStr << std::endl;
+        }
+        return infoStr.str();
     }
 
     /**

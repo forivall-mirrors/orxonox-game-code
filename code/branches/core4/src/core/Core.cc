@@ -79,10 +79,12 @@ namespace orxonox
     //! Static pointer to the singleton
     Core* Core::singletonRef_s  = 0;
 
-    SetCommandLineArgument(mediaPath, "").information("PATH");
-    SetCommandLineOnlyArgument(writingPathSuffix, "").information("DIR");
-    SetCommandLineArgument(settingsFile, "orxonox.ini");
-    SetCommandLineArgument(limitToCPU, 0).information("0: off | #cpu");
+    SetCommandLineArgument(mediaPath, "").information("Path to the media/data files");
+    SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
+    SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
+#ifdef ORXONOX_PLATFORM_WINDOWS
+    SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one cpu/core (1, 2, 3, etc.). 0 turns it off (default)");
+#endif
 
     /**
     @brief
@@ -262,12 +264,14 @@ namespace orxonox
         // Parse additional options file now that we know its path
         CommandLine::parseFile();
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
         // the timer though).
         int limitToCPU = CommandLine::getValue("limitToCPU");
         if (limitToCPU > 0)
             setThreadAffinity(static_cast<unsigned int>(limitToCPU));
+#endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_ = new ConfigFileManager();
@@ -422,10 +426,11 @@ namespace orxonox
     */
     void Core::setThreadAffinity(int limitToCPU)
     {
+#ifdef ORXONOX_PLATFORM_WINDOWS
+
         if (limitToCPU <= 0)
             return;
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
         unsigned int coreNr = limitToCPU - 1;
         // Get the current process core mask
         DWORD procMask;

@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(level, "").shortcut("l");
+    SetCommandLineArgument(level, "").shortcut("l").information("Default level file (overrides LevelManager::defaultLevelName_ configValue)");
 
     LevelManager* LevelManager::singletonRef_s = 0;
 
@@ -54,7 +54,7 @@ namespace orxonox
         // check override
         if (!CommandLine::getArgument("level")->hasDefaultValue())
         {
-            ModifyConfigValue(defaultLevelName_, tset, CommandLine::getValue("mediaPath").getString());
+            ModifyConfigValue(defaultLevelName_, tset, CommandLine::getValue("level").getString());
         }
     }
 

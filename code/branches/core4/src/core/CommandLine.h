@@ -79,7 +79,7 @@ namespace orxonox
         const std::string& getName() const { return name_; }
 
         //! Returns the shortcut (example: "-p 22" for "--port 22") of the argument.
-        //! Evaluates to "" if none there is none.
+        //! Evaluates to "" if there is none.
         const std::string& getShortcut() const { return shortcut_; }
         //! Sets the shortcut for the argument
         CommandLineArgument& shortcut(const std::string& shortcut)
@@ -212,6 +212,9 @@ namespace orxonox
     {
         OrxAssert(!_getInstance().existsArgument(name),
             "Cannot add a command line argument with name '" + name + "' twice.");
+        OrxAssert(MultiType(defaultValue).getType() != MT_bool || MultiType(defaultValue).getBool() != true,
+               "Boolean command line arguments with positive default values are not supported." << std::endl
+            << "Please use SetCommandLineSwitch and adjust your argument: " << name);
 
         return *(_getInstance().cmdLineArgs_[name] = new CommandLineArgument(name, defaultValue, bCommandLineOnly));
     }

@@ -41,12 +41,12 @@
 namespace orxonox
 {
     DeclareGameState(GSRoot, "root", true, false);
-    SetCommandLineSwitch(console);
+    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
     // Shortcuts for easy direct loading
-    SetCommandLineSwitch(server);
-    SetCommandLineSwitch(client);
-    SetCommandLineSwitch(dedicated);
-    SetCommandLineSwitch(standalone);
+    SetCommandLineSwitch(server).information("Start in server mode");
+    SetCommandLineSwitch(client).information("Start in client mode");
+    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
+    SetCommandLineSwitch(standalone).information("Start in standalone mode");
 
     GSRoot::GSRoot(const GameStateConstrParams& params)
         : GameState(params)

@@ -39,7 +39,7 @@ namespace orxonox
 {
     DeclareGameState(GSClient, "client", false, true);
 
-    SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
+    SetCommandLineArgument(ip, "127.0.0.1").information("Sever IP as strin in the form #.#.#.#");
 
     GSClient::GSClient(const GameStateConstrParams& params)
         : GameState(params)
