@@ -33,7 +33,6 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Clock.h"
-#include "core/CommandLine.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -56,8 +55,6 @@
 namespace orxonox
 {
     DeclareGameState(GSLevel, "level", false, true);
-
-    SetCommandLineArgument(level, "").shortcut("l");
     SetConsoleCommand(GSLevel, showIngameGUI, true);
 
     XMLFile* GSLevel::startFile_s = NULL;
@@ -241,12 +238,7 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        std::string levelName;
-        CommandLine::getValue("level", &levelName);
-        if (levelName == "")
-            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + LevelManager::getInstance().getStartLevel());
-        else
-            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + levelName);
+        startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + LevelManager::getInstance().getDefaultLevel());
         Loader::open(startFile_s);
     }
 

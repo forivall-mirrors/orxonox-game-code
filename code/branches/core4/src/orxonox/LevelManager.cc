@@ -39,6 +39,8 @@
 
 namespace orxonox
 {
+    SetCommandLineArgument(level, "").shortcut("l");
+
     LevelManager* LevelManager::singletonRef_s = 0;
 
     LevelManager::LevelManager()
@@ -52,7 +54,7 @@ namespace orxonox
         // check override
         if (!CommandLine::getArgument("level")->hasDefaultValue())
         {
-            ModifyConfigValue(startLevelName_, tset, CommandLine::getValue("mediaPath").getString());
+            ModifyConfigValue(defaultLevelName_, tset, CommandLine::getValue("mediaPath").getString());
         }
     }
 
@@ -64,7 +66,7 @@ namespace orxonox
 
     void LevelManager::setConfigValues()
     {
-        SetConfigValue(startLevelName_, "presentation_dm.oxw")
+        SetConfigValue(defaultLevelName_, "presentation_dm.oxw")
             .description("Sets the preselection of the level in the main menu.");
     }
 
@@ -112,13 +114,13 @@ namespace orxonox
         }
     }
 
-    void LevelManager::setStartLevel(const std::string& levelName)
+    void LevelManager::setDefaultLevel(const std::string& levelName)
     {
-        ModifyConfigValue(startLevelName_, set, levelName);
+        ModifyConfigValue(defaultLevelName_, set, levelName);
     }
 
-    const std::string& LevelManager::getStartLevel()
+    const std::string& LevelManager::getDefaultLevel()
     {
-        return startLevelName_;
+        return defaultLevelName_;
     }
 }
