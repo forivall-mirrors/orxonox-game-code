@@ -109,8 +109,8 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
     # This is just the best possible opportunity to address this dependency issue
     GET_GCC_COMPILER_FLAGS(${_target_name} _pch_gcc_flags)
     # Make sure we recompile the pch file even if only the flags change
-    IF(NOT "${_pch_gcc_flags}" STREQUAL "${_INTERNAL_PCH_GCC_FLAGS}")
-      SET(_INTERNAL_PCH_GCC_FLAGS "${_pch_gcc_flags}" CACHE INTERNAL "")
+    IF(NOT "${_pch_gcc_flags}" STREQUAL "${_INTERNAL_${_target_name}_PCH_GCC_FLAGS}")
+      SET(_INTERNAL_${_target_name}_PCH_GCC_FLAGS "${_pch_gcc_flags}" CACHE INTERNAL "")
       FILE(WRITE ${_pch_dep_helper_file} "/* ${_pch_gcc_flags} */")
     ENDIF()
 
@@ -152,8 +152,8 @@ FUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET _target_name)
         COMMAND ${CMAKE_CXX_COMPILER}
         ARGS ${pchsupport_compiler_cxx_arg1} ${_pch_gcc_flags} -c -x c++-header -o ${_pch_file} ${_pch_header_file}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        DEPENDS ${_pch_header_file} ${_pch_dep_helper_file}
-        IMPLICIT_DEPENDS ${_pch_header_file}
+        DEPENDS ${_pch_dep_helper_file}
+        IMPLICIT_DEPENDS CXX ${_pch_header_file}
         VERBATIM
       )
 

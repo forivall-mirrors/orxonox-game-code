@@ -52,10 +52,11 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
     SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES COMPILE_FLAGS "-w")
   ENDIF()
 
-  # Create temporary package file
+  # Create temporary package file and implicit dependencies
   FILE(REMOVE ${_tolua_pkgfile})
   FOREACH(_tolua_inputfile ${_tolua_inputfiles})
     FILE(APPEND ${_tolua_pkgfile} "\$cfile \"${_tolua_inputfile}\"\n")
+    LIST(APPEND _implicit_dependencies CXX ${_tolua_inputfile})
   ENDFOREACH(_tolua_inputfile)
 
   ADD_CUSTOM_COMMAND(
@@ -66,9 +67,9 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
                                -H ${_tolua_hfile}
                                -s ${TOLUA_PARSER_SOURCE}
                                   ${_tolua_pkgfile}
-    DEPENDS              ${TOLUA_PARSER_DEPENDENCIES}
-    IMPLICIT_DEPENDS CXX ${_tolua_inputfiles}
-    WORKING_DIRECTORY    ${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}
+    DEPENDS           ${TOLUA_PARSER_DEPENDENCIES}
+    IMPLICIT_DEPENDS  ${_implicit_dependencies}
+    WORKING_DIRECTORY ${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}
     COMMENT "Generating tolua bind files for package ${_tolua_package}"
   )
 ENDFUNCTION(GENERATE_TOLUA_BINDINGS)
