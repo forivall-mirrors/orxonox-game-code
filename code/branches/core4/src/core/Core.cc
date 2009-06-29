@@ -228,7 +228,11 @@ namespace orxonox
 
     Core::Core(int argc, char** argv)
     {
-        assert(Core::singletonRef_s == 0);
+        if (singletonRef_s != 0)
+        {
+            COUT(0) << "Error: The Core singleton cannot be recreated! Shutting down." << std::endl;
+            abort();
+        }
         Core::singletonRef_s = this;
 
         // We need the variables very soon. But don't configure them yet!
@@ -263,13 +267,14 @@ namespace orxonox
         // the timer though).
         int limitToCPU = CommandLine::getValue("limitToCPU");
         if (limitToCPU > 0)
-            setThreadAffinity((unsigned int)limitToCPU);
+            setThreadAffinity(static_cast<unsigned int>(limitToCPU));
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_ = new ConfigFileManager();
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLine::getValue("settingsFile").getString());
 
+        // Required as well for the config values
         this->languageInstance_ = new Language();
 
         // Do this soon after the ConfigFileManager has been created to open up the
@@ -307,13 +312,12 @@ namespace orxonox
         CommandLine::destroyAllArguments();
         // Also delete external console command that don't belong to an Identifier
         CommandExecutor::destroyExternalCommands();
-
         // Clean up class hierarchy stuff (identifiers, XMLPort, configValues, consoleCommand)
         Identifier::destroyAllIdentifiers();
 
-        assert(Core::singletonRef_s);
-        Core::singletonRef_s = 0;
         delete this->signalHandler_;
+
+        // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
     /**
