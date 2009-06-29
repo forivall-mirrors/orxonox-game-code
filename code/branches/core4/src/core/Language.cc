@@ -193,7 +193,7 @@ namespace orxonox
         @param language The name of the language
         @return The filename
     */
-    const std::string Language::getFilename(const std::string& language)
+    std::string Language::getFilename(const std::string& language)
     {
         return std::string("translation_" + language + ".lang");
     }

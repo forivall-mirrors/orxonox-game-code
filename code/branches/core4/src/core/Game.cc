@@ -57,15 +57,49 @@ namespace orxonox
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
-    struct _CoreExport GameStateTreeNode
+    std::map<std::string, Game::GameStateInfo> Game::gameStateDeclarations_s;
+    Game* Game::singletonRef_s = 0;
+
+
+    /**
+    @brief
+        Represents one node of the game state tree.
+    */
+    struct GameStateTreeNode
     {
         GameState* state_;
         weak_ptr<GameStateTreeNode> parent_;
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
-    std::map<std::string, Game::GameStateInfo> Game::gameStateDeclarations_s;
-    Game* Game::singletonRef_s = 0;
+
+    /**
+    @brief
+        Another helper class for the Game singleton: we cannot derive
+        Game from OrxonoxClass because we need to handle the Identifier
+        destruction in the Core destructor.
+    */
+    class GameConfiguration : public OrxonoxClass
+    {
+    public:
+        GameConfiguration()
+        {
+            RegisterRootObject(GameConfiguration);
+            this->setConfigValues();
+        }
+
+        void setConfigValues()
+        {
+            SetConfigValue(statisticsRefreshCycle_, 250000)
+                .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+            SetConfigValue(statisticsAvgLength_, 1000000)
+                .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
+        }
+
+        unsigned int statisticsRefreshCycle_;
+        unsigned int statisticsAvgLength_;
+    };
+
 
     /**
     @brief
@@ -98,8 +132,7 @@ namespace orxonox
         this->gameClock_ = new Clock();
 
         // Create the Core
-        this->core_ = new orxonox::Core();
-        this->core_->initialise(argc, argv);
+        this->core_ = new Core(argc, argv);
 
         // After the core has been created, we can safely instantiate the GameStates
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
@@ -117,9 +150,8 @@ namespace orxonox
         this->activeStateNode_ = this->rootStateNode_;
         this->activeStates_.push_back(this->rootStateNode_->state_);
 
-        // Do this after Core creation!
-        RegisterRootObject(Game);
-        this->setConfigValues();
+        // Do this after the Core creation!
+        this->configuration_ = new GameConfiguration();
     }
 
     /**
@@ -127,6 +159,9 @@ namespace orxonox
     */
     Game::~Game()
     {
+        // Destroy the configuration helper class instance
+        delete this->configuration_;
+
         // Destroy the GameStates (note that the nodes still point to them, but doesn't matter)
         for (std::map<std::string, GameState*>::const_iterator it = gameStates_.begin();
             it != gameStates_.end(); ++it)
@@ -136,18 +171,10 @@ namespace orxonox
         delete this->core_;
         delete this->gameClock_;
 
-        // Also, take care of the GameStateFactories
+        // Take care of the GameStateFactories
         GameStateFactory::destroyFactories();
 
         // Don't assign singletonRef_s with NULL! Recreation is not supported
-    }
-
-    void Game::setConfigValues()
-    {
-        SetConfigValue(statisticsRefreshCycle_, 250000)
-            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
-        SetConfigValue(statisticsAvgLength_, 1000000)
-            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
     }
 
     /**
@@ -244,11 +271,11 @@ namespace orxonox
             }
 
             // STATISTICS
-            if (this->periodTime_ > statisticsRefreshCycle_)
+            if (this->periodTime_ > this->configuration_->statisticsRefreshCycle_)
             {
                 std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
                 assert(it != this->statisticsTickTimes_.end());
-                int64_t lastTime = currentTime - this->statisticsAvgLength_;
+                int64_t lastTime = currentTime - this->configuration_->statisticsAvgLength_;
                 if ((int64_t)it->tickTime < lastTime)
                 {
                     do
@@ -265,7 +292,7 @@ namespace orxonox
                 this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
                 this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
-                this->periodTime_ -= this->statisticsRefreshCycle_;
+                this->periodTime_ -= this->configuration_->statisticsRefreshCycle_;
             }
         }
 

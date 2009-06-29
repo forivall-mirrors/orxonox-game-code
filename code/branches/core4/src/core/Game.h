@@ -46,7 +46,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
-#include "OrxonoxClass.h"
+#include "util/String.h"
 
 /**
 @def
@@ -56,19 +56,19 @@
 #define DeclareGameState(className, stateName, bIgnoreTickTime, bGraphicsMode) \
     static bool BOOST_PP_CAT(bGameStateDummy_##className, __LINE__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
 
-// tolua_begin
 namespace orxonox
 {
+    class GameConfiguration;
+
     /**
     @brief
         Main class responsible for running the game.
     */
-    class _CoreExport Game : public OrxonoxClass
+    class _CoreExport Game
     {
     public:
         Game(int argc, char** argv);
         ~Game();
-        void setConfigValues();
 
         void setStateHierarchy(const std::string& str);
         GameState* getState(const std::string& name);
@@ -140,6 +140,7 @@ namespace orxonox
 
         Core*                           core_;
         Clock*                          gameClock_;
+        GameConfiguration*              configuration_;
 
         bool                            bChangingState_;
         bool                            bAbort_;
@@ -151,10 +152,6 @@ namespace orxonox
         uint32_t                        periodTickTime_;
         float                           avgFPS_;
         float                           avgTickTime_;
-
-        // config values
-        unsigned int                    statisticsRefreshCycle_;
-        unsigned int                    statisticsAvgLength_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
