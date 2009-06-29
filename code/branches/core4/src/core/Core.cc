@@ -87,7 +87,7 @@ namespace orxonox
     Core* Core::singletonRef_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("PATH");
-    SetCommandLineArgument(writingPathSuffix, "").information("DIR");
+    SetCommandLineOnlyArgument(writingPathSuffix, "").information("DIR");
     SetCommandLineArgument(settingsFile, "orxonox.ini");
     SetCommandLineArgument(limitToCPU, 0).information("0: off | #cpu");
 
@@ -102,15 +102,7 @@ namespace orxonox
     void Core::initialise(int argc, char** argv)
     {
         // Parse command line arguments fist
-        try
-        {
-            CommandLine::parseAll(argc, argv);
-        }
-        catch (ArgumentException& ex)
-        {
-            COUT(1) << ex.what() << std::endl;
-            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-        }
+        CommandLine::parseCommandLine(argc, argv);
 
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
@@ -136,6 +128,8 @@ namespace orxonox
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
         OutputHandler::getOutStream().setLogPath(Core::getLogPathString());
+
+        CommandLine::parseFile();
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_ = new ConfigFileManager();
