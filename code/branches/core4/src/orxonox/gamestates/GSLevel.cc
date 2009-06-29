@@ -70,7 +70,6 @@ namespace orxonox
         , guiKeysOnlyInputState_(0)
         , radar_(0)
         , cameraManager_(0)
-        , levelManager_(0)
     {
         RegisterObject(GSLevel);
 
@@ -119,9 +118,6 @@ namespace orxonox
 
         if (GameMode::isMaster())
         {
-            // create the global LevelManager
-            this->levelManager_ = new LevelManager();
-
             this->loadLevel();
         }
 
@@ -201,12 +197,6 @@ namespace orxonox
             this->cameraManager_ = 0;
         }
 
-        if (this->levelManager_)
-        {
-            delete this->levelManager_;
-            this->levelManager_ = 0;
-        }
-
         if (this->playerManager_)
         {
             delete this->playerManager_;
@@ -254,7 +244,7 @@ namespace orxonox
         std::string levelName;
         CommandLine::getValue("level", &levelName);
         if (levelName == "")
-            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + Game::getInstance().getLevel());
+            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + LevelManager::getInstance().getStartLevel());
         else
             startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + levelName);
         Loader::open(startFile_s);

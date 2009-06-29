@@ -29,6 +29,10 @@
 #include "LevelManager.h"
 
 #include <map>
+
+#include "core/CommandLine.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "PlayerManager.h"
 #include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
@@ -41,12 +45,27 @@ namespace orxonox
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
+
+        RegisterRootObject(LevelManager);
+        this->setConfigValues();
+
+        // check override
+        if (!CommandLine::getArgument("level")->hasDefaultValue())
+        {
+            ModifyConfigValue(startLevelName_, tset, CommandLine::getValue("mediaPath").getString());
+        }
     }
 
     LevelManager::~LevelManager()
     {
         assert(singletonRef_s != 0);
         singletonRef_s = 0;
+    }
+
+    void LevelManager::setConfigValues()
+    {
+        SetConfigValue(startLevelName_, "presentation_dm.oxw")
+            .description("Sets the preselection of the level in the main menu.");
     }
 
     void LevelManager::requestActivity(Level* level)
@@ -91,5 +110,15 @@ namespace orxonox
             for (std::map<unsigned int, PlayerInfo*>::const_iterator it = PlayerManager::getInstance().getClients().begin(); it != PlayerManager::getInstance().getClients().end(); ++it)
                 this->levels_s.front()->playerEntered(it->second);
         }
+    }
+
+    void LevelManager::setStartLevel(const std::string& levelName)
+    {
+        ModifyConfigValue(startLevelName_, set, levelName);
+    }
+
+    const std::string& LevelManager::getStartLevel()
+    {
+        return startLevelName_;
     }
 }

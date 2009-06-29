@@ -67,7 +67,6 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     CommandExecutor.h
-    Game.h
     LuaBind.h
   DEFINE_SYMBOL
     "CORE_SHARED_BUILD"

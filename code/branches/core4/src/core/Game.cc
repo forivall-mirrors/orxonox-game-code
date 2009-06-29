@@ -148,23 +148,6 @@ namespace orxonox
             .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
         SetConfigValue(statisticsAvgLength_, 1000000)
             .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
-        SetConfigValue(levelName_, "presentation_dm.oxw")
-            .description("Sets the preselection of the level in the main menu.");
-    }
-
-    void Game::setLevel(std::string levelName)
-    {
-        ModifyConfigValue(levelName_, set, levelName);
-    }
-
-    std::string Game::getLevel()
-    {
-        std::string levelName;
-        CommandLine::getValue("level", &levelName);
-        if (levelName == "")
-            return levelName_;
-        else
-            return levelName;
     }
 
     /**

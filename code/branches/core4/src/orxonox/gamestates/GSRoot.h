@@ -51,9 +51,11 @@ namespace orxonox
         float getTimeFactor() { return this->timeFactor_; }
 
     private:
-        float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
+        float                 timeFactor_;              //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
+
+        LevelManager*         levelManager_;            //!< global level manager
 
         // console commands
         ConsoleCommand*       ccSetTimeFactor_;

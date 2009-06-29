@@ -63,12 +63,8 @@ namespace orxonox
     @brief
         Main class responsible for running the game.
     */
-    class _CoreExport Game
-    // tolua_end
-        : public OrxonoxClass
-    // tolua_begin
+    class _CoreExport Game : public OrxonoxClass
     {
-    //tolua_end
     public:
         Game(int argc, char** argv);
         ~Game();
@@ -93,10 +89,7 @@ namespace orxonox
 
         template <class T>
         static bool declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bConsoleMode);
-        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; } //tolua_export
-
-        void setLevel(std::string levelName); //tolua_export
-        std::string getLevel(); //tolua_export
+        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         class _CoreExport GameStateFactory
@@ -162,11 +155,10 @@ namespace orxonox
         // config values
         unsigned int                    statisticsRefreshCycle_;
         unsigned int                    statisticsAvgLength_;
-        std::string                     levelName_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
-    }; // tolua_export
+    };
 
     template <class T>
     /*static*/ bool Game::declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bGraphicsMode)
@@ -192,6 +184,6 @@ namespace orxonox
         // just a required dummy return value
         return true;
     }
-} // tolua_export
+}
 
 #endif /* _Game_H__ */
