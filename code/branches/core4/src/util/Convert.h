@@ -42,7 +42,7 @@
 #include <typeinfo>
 
 #include "Debug.h"
-#include "String.h"
+#include "StringUtils.h"
 
 // GCC generates warnings when implicitely casting from float to int for instance.
 // This is however exactly what convertValue does, so we need to suppress these warnings.

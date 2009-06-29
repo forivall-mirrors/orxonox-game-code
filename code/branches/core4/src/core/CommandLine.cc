@@ -33,7 +33,7 @@
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "Core.h"
 

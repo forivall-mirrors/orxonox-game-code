@@ -33,7 +33,7 @@
 #include <OgreTextAreaOverlayElement.h>
 #include <boost/static_assert.hpp>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 

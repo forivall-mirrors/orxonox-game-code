@@ -33,7 +33,7 @@
 #include <cpptcl/cpptcl.h>
 
 #include "util/Debug.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "TclThreadManager.h"

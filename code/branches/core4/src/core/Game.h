@@ -46,7 +46,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 
 /**
 @def

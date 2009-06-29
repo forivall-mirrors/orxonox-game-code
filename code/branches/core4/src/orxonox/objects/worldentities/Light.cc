@@ -32,7 +32,7 @@
 #include <OgreLight.h>
 #include <boost/static_assert.hpp>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"

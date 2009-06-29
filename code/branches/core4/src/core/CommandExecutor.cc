@@ -29,7 +29,7 @@
 #include "CommandExecutor.h"
 
 #include "util/Debug.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "Identifier.h"
 #include "Language.h"

@@ -31,7 +31,7 @@
     @brief Implementation of several string manipulation functions.
 */
 
-#include "String.h"
+#include "StringUtils.h"
 
 #include <cctype>
 #include "Convert.h"

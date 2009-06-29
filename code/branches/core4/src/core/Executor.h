@@ -34,7 +34,7 @@
 
 #include "util/Debug.h"
 #include "util/Math.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "Functor.h"
 

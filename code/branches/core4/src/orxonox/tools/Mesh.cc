@@ -35,7 +35,7 @@
 #include <OgreSceneManager.h>
 
 #include "util/Convert.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/GameMode.h"
 
 namespace orxonox

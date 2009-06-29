@@ -37,7 +37,7 @@ extern "C" {
 #include <boost/filesystem.hpp>
 
 #include "util/Debug.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "ToluaBindCore.h"
 #include "Core.h"
 

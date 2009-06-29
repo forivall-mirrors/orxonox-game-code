@@ -37,7 +37,7 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 

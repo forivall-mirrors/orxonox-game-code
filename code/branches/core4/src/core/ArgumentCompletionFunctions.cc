@@ -33,7 +33,7 @@
 #include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
 #include "TclThreadManager.h"

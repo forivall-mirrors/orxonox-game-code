@@ -32,7 +32,7 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "Core.h"
