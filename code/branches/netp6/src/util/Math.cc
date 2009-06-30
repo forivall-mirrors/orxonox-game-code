@@ -135,10 +135,10 @@ namespace orxonox
             else
                 return orxonox::Vector2(0, 1);
         }
-      
+        
         float cos_value = clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1);
         float sin_value = sqrt( 1 - cos_value*cos_value );
-      
+        
         if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
             return orxonox::Vector2( sin_value, cos_value );
         else
@@ -175,16 +175,19 @@ namespace orxonox
             else
                 return orxonox::Vector2(0, 1);
         }
-        float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
+        //float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
+        
+        float cos_value = clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1);
+        float sin_value = sqrt( 1 - cos_value*cos_value );
 
         float distancelength = distance.length();
         if (distancelength == 0) return orxonox::Vector2(0, 0);
         float radius = acos(clamp<float>(mydirection.dotProduct(distance) / distancelength, -1, 1)) / Ogre::Math::PI;
 
         if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
-            return orxonox::Vector2(sin(angle) * radius, cos(angle) * radius);
+            return orxonox::Vector2( sin_value * radius, cos_value * radius);
         else
-            return orxonox::Vector2(-sin(angle) * radius, cos(angle) * radius);
+            return orxonox::Vector2( -sin_value * radius, cos_value * radius);
     }
 
     /**
