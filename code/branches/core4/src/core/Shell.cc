@@ -77,6 +77,10 @@ namespace orxonox
         this->outputBuffer_.registerListener(this);
         OutputHandler::getOutStream().setOutputBuffer(&this->outputBuffer_);
 
+        // Get a config file for the command history
+        this->commandHistoryConfigFileType_ = ConfigFileManager::getInstance().getNewConfigFileType();
+        ConfigFileManager::getInstance().setFilename(this->commandHistoryConfigFileType_, "commandHistory.ini");
+
         this->setConfigValues();
 
         Core::setSoftDebugLevel(OutputHandler::LD_Shell, level);
@@ -92,9 +96,11 @@ namespace orxonox
 
     void Shell::setConfigValues()
     {
-        SetConfigValue(maxHistoryLength_, 100).callback(this, &Shell::commandHistoryLengthChanged);
-        SetConfigValue(historyOffset_, 0).callback(this, &Shell::commandHistoryOffsetChanged);
-        SetConfigValueVector(commandHistory_, std::vector<std::string>());
+        SetConfigValueGeneric(commandHistoryConfigFileType_, maxHistoryLength_, 100)
+            .callback(this, &Shell::commandHistoryLengthChanged);
+        SetConfigValueGeneric(commandHistoryConfigFileType_, historyOffset_, 0)
+            .callback(this, &Shell::commandHistoryOffsetChanged);
+        SetConfigValueVectorGeneric(commandHistoryConfigFileType_, commandHistory_, std::vector<std::string>());
     }
 
     void Shell::commandHistoryOffsetChanged()
