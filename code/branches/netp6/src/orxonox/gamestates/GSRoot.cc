@@ -36,6 +36,7 @@
 #include "tools/Timer.h"
 #include "interfaces/TimeFactorListener.h"
 #include "interfaces/Tickable.h"
+#include "network/NetworkFunction.h"
 
 namespace orxonox
 {
@@ -59,6 +60,7 @@ namespace orxonox
 
     GSRoot::~GSRoot()
     {
+        NetworkFunctionBase::destroyAllNetworkFunctions();
     }
 
     void GSRoot::activate()

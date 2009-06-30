@@ -80,6 +80,8 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
     
     static inline void setNetworkID(const std::string& name, uint32_t id){ assert( nameMap_.find(name)!=nameMap_.end() ); nameMap_[name]->setNetworkID(id); }
     
+    static void destroyAllNetworkFunctions();
+    
   protected:
     static std::map<uint32_t, bool> isStaticMap_;
     
