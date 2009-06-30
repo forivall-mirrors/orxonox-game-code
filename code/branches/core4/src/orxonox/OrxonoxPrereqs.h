@@ -294,6 +294,7 @@ namespace Ogre
 namespace CEGUI
 {
     class DefaultLogger;
+    class Logger;
     class LuaScriptModule;
 
     class OgreCEGUIRenderer;

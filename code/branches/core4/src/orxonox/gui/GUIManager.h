@@ -122,7 +122,7 @@ namespace orxonox
         CEGUI::OgreCEGUIRenderer*   guiRenderer_;       //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*    resourceProvider_;  //!< CEGUI's resource provider
         CEGUI::LuaScriptModule*     scriptModule_;      //!< CEGUI's script module to use Lua
-        CEGUI::DefaultLogger*       ceguiLogger_;       //!< CEGUI's logger to be able to log CEGUI errors in our log
+        CEGUI::Logger*              ceguiLogger_;       //!< CEGUI's logger to be able to log CEGUI errors in our log
         CEGUI::System*              guiSystem_;         //!< CEGUI's main system
         lua_State*                  luaState_;          //!< Lua state, access point to the Lua engine
 
