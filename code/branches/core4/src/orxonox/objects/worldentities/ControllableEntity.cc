@@ -78,7 +78,7 @@ namespace orxonox
 
 
         this->setConfigValues();
-        this->setPriority( priority::very_high );
+        this->setPriority( Priority::VeryHigh );
         this->registerVariables();
     }
 
@@ -237,7 +237,7 @@ namespace orxonox
             if (!GameMode::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
-                this->setObjectMode(objectDirection::bidirectional);
+                this->setObjectMode(ObjectDirection::Bidirectional);
             }
         }
 
@@ -253,7 +253,7 @@ namespace orxonox
         this->playerID_ = OBJECTID_UNKNOWN;
         this->bHasLocalController_ = false;
         this->bHasHumanController_ = false;
-        this->setObjectMode(objectDirection::toclient);
+        this->setObjectMode(ObjectDirection::ToClient);
 
         this->changedPlayer();
 
@@ -367,24 +367,24 @@ namespace orxonox
 
     void ControllableEntity::registerVariables()
     {
-        registerVariable(this->cameraPositionTemplate_,  variableDirection::toclient);
-        registerVariable(this->hudtemplate_,             variableDirection::toclient);
+        registerVariable(this->cameraPositionTemplate_,  VariableDirection::ToClient);
+        registerVariable(this->hudtemplate_,             VariableDirection::ToClient);
 
-        registerVariable(this->server_position_,         variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
-        registerVariable(this->server_linear_velocity_,  variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity));
-        registerVariable(this->server_orientation_,      variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
-        registerVariable(this->server_angular_velocity_, variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity));
+        registerVariable(this->server_position_,         VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
+        registerVariable(this->server_linear_velocity_,  VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerLinearVelocity));
+        registerVariable(this->server_orientation_,      VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
+        registerVariable(this->server_angular_velocity_, VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerAngularVelocity));
 
-        registerVariable(this->server_overwrite_,        variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
-        registerVariable(this->client_overwrite_,        variableDirection::toserver);
+        registerVariable(this->server_overwrite_,        VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
+        registerVariable(this->client_overwrite_,        VariableDirection::ToServer);
 
-        registerVariable(this->client_position_,         variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
-        registerVariable(this->client_linear_velocity_,  variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientLinearVelocity));
-        registerVariable(this->client_orientation_,      variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
-        registerVariable(this->client_angular_velocity_, variableDirection::toserver, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
+        registerVariable(this->client_position_,         VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
+        registerVariable(this->client_linear_velocity_,  VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientLinearVelocity));
+        registerVariable(this->client_orientation_,      VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
+        registerVariable(this->client_angular_velocity_, VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
         
 
-        registerVariable(this->playerID_,                variableDirection::toclient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
+        registerVariable(this->playerID_,                VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
     }
 
     void ControllableEntity::processServerPosition()

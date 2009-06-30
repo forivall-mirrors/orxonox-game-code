@@ -65,12 +65,12 @@ namespace orxonox
                 int teamnr = this->getTeam(originator->getPlayer());
                 if (teamnr == 0)
                 {
-                    base->setState(BaseState::controlTeam1);
+                    base->setState(BaseState::ControlTeam1);
                     this->gtinfo_.sendAnnounceMessage("The red team captured a base");
                 }
                 if (teamnr == 1)
                 {
-                    base->setState(BaseState::controlTeam2);
+                    base->setState(BaseState::ControlTeam2);
                     this->gtinfo_.sendAnnounceMessage("The blue team captured a base");
                 }
             }
@@ -106,13 +106,13 @@ namespace orxonox
 
             switch (base->getState())
             {
-                case BaseState::controlTeam1:
+                case BaseState::ControlTeam1:
                     teamnrbase = 0;
                     break;
-                case BaseState::controlTeam2:
+                case BaseState::ControlTeam2:
                     teamnrbase = 1;
                     break;
-                case BaseState::uncontrolled:
+                case BaseState::Uncontrolled:
                 default:
                     teamnrbase = -1;
             }
@@ -154,11 +154,11 @@ namespace orxonox
 
         for (std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.begin(); it != this->bases_.end(); ++it)
         {
-            if((*it)->getState() == BaseState::controlTeam1)
+            if((*it)->getState() == BaseState::ControlTeam1)
             {
                 amountControlled++;
             }
-            if((*it)->getState() == BaseState::controlTeam2)
+            if((*it)->getState() == BaseState::ControlTeam2)
             {
                 amountControlled2++;
             }
@@ -240,9 +240,9 @@ namespace orxonox
 
         for (std::set<TeamBaseMatchBase*>::const_iterator it = this->bases_.begin(); it != this->bases_.end(); ++it)
         {
-            if ((*it)->getState() == BaseState::controlTeam1 && team == 0)
+            if ((*it)->getState() == BaseState::ControlTeam1 && team == 0)
                 count++;
-            if ((*it)->getState() == BaseState::controlTeam2 && team == 1)
+            if ((*it)->getState() == BaseState::ControlTeam2 && team == 1)
                 count++;
         }
 
@@ -252,7 +252,7 @@ namespace orxonox
     void TeamBaseMatch::addBase(TeamBaseMatchBase* base)
     {
         this->bases_.insert(base);
-        base->setState(BaseState::uncontrolled);
+        base->setState(BaseState::Uncontrolled);
     }
 
     TeamBaseMatchBase* TeamBaseMatch::getBase(unsigned int index) const

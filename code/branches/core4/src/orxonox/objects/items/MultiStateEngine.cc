@@ -81,7 +81,7 @@ namespace orxonox
 
     void MultiStateEngine::registerVariables()
     {
-        registerVariable(this->state_, variableDirection::toserver);
+        registerVariable(this->state_, VariableDirection::ToServer);
     }
 
     void MultiStateEngine::tick(float dt)
@@ -90,7 +90,7 @@ namespace orxonox
         {
             if (this->getShip()->hasLocalController())
             {
-                this->setObjectMode(objectDirection::bidirectional);
+                this->setObjectMode(ObjectDirection::Bidirectional);
 
                 const Vector3& direction = this->getDirection();
                 const Vector3& velocity = this->getShip()->getLocalVelocity();

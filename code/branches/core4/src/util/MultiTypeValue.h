@@ -53,7 +53,7 @@ namespace orxonox
     {
     public:
         /** @brief Constructor: Assigns the value and the type identifier. */
-        MT_Value(const T& value, MT_Type type) : MT_ValueBase(type), value_(value) {}
+        MT_Value(const T& value, MT_Type::Value type) : MT_ValueBase(type), value_(value) {}
 
         /** @brief Creates a copy of itself. */
         inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_, this->type_); }

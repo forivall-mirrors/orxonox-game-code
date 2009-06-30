@@ -50,7 +50,7 @@ namespace orxonox
     unsigned int ParticleInterface::counter_s = 0;
     ParticleInterface* ParticleInterface::currentParticleInterface_s = 0;
 
-    ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel)
+    ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::Value detaillevel)
     {
         RegisterObject(ParticleInterface);
 

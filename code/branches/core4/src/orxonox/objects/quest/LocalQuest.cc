@@ -175,20 +175,20 @@ namespace orxonox
     @throws
         Throws an Exception if player is NULL.
     */
-    questStatus::Enum LocalQuest::getStatus(const PlayerInfo* player) const
+    QuestStatus::Value LocalQuest::getStatus(const PlayerInfo* player) const
     {
         if(player == NULL) //!< No player has no defined status.
         {
             ThrowException(Argument, "The input PlayerInfo* is NULL.");
         }
 
-        std::map<const PlayerInfo*, questStatus::Enum>::const_iterator it = this->playerStatus_.find(player);
+        std::map<const PlayerInfo*, QuestStatus::Value>::const_iterator it = this->playerStatus_.find(player);
         if (it != this->playerStatus_.end()) //!< If there is a player in the map.
         {
             return it->second;
         }
         
-        return questStatus::inactive; //!< If the player is not yet in the map, that means the status of the quest form him is 'inactive'.
+        return QuestStatus::Inactive; //!< If the player is not yet in the map, that means the status of the quest form him is 'inactive'.
     }
 
     /**
@@ -202,7 +202,7 @@ namespace orxonox
     @return
         Returns false if player is NULL.
     */
-    bool LocalQuest::setStatus(PlayerInfo* player, const questStatus::Enum & status)
+    bool LocalQuest::setStatus(PlayerInfo* player, const QuestStatus::Value & status)
     {
         if(player == NULL) //!< We can't set a status for no player.
         {

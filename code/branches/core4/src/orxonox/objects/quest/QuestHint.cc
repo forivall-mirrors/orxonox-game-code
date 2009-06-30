@@ -94,13 +94,13 @@ namespace orxonox
         }
 
         //! Find the player.
-        std::map<const PlayerInfo*, questHintStatus::Enum>::const_iterator it = this->playerStatus_.find(player);
+        std::map<const PlayerInfo*, QuestHintStatus::Value>::const_iterator it = this->playerStatus_.find(player);
         if (it != this->playerStatus_.end()) //!< If the player is in the map.
         {
             return it->second;
         }
         
-        return questStatus::inactive;
+        return QuestStatus::Inactive;
     }
 
     /**
@@ -117,7 +117,7 @@ namespace orxonox
         {
             if(!(this->isActive(player)))  //!< If the hint is already active, activation is pointless.
             {
-                this->playerStatus_[player] = questHintStatus::active;
+                this->playerStatus_[player] = QuestHintStatus::Active;
                 
                 this->getDescription()->sendAddHintNotification();
                 return true;

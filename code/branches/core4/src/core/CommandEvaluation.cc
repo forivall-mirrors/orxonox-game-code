@@ -38,7 +38,7 @@ namespace orxonox
     CommandEvaluation::CommandEvaluation()
     {
         this->initialize("");
-        this->state_ = CS_Uninitialized;
+        this->state_ = CommandState::Uninitialized;
     }
 
     void CommandEvaluation::initialize(const std::string& command)
@@ -63,7 +63,7 @@ namespace orxonox
         this->argument_ = "";
 
         this->errorMessage_ = "";
-        this->state_ = CS_Empty;
+        this->state_ = CommandState::Empty;
     }
 
     bool CommandEvaluation::isValid() const
@@ -103,11 +103,11 @@ namespace orxonox
         {
             switch (this->state_)
             {
-                case CS_Uninitialized:
+                case CommandState::Uninitialized:
                     break;
-                case CS_Empty:
+                case CommandState::Empty:
                     break;
-                case CS_ShortcutOrIdentifier:
+                case CommandState::ShortcutOrIdentifier:
                     if (this->function_)
                     {
                         if (this->function_->getParamCount() == 0)
@@ -118,7 +118,7 @@ namespace orxonox
                     else if (this->functionclass_)
                         return (this->command_ = this->functionclass_->getName() + " ");
                     break;
-                case CS_Function:
+                case CommandState::Function:
                     if (this->function_)
                     {
                         if (this->function_->getParamCount() == 0)
@@ -127,8 +127,8 @@ namespace orxonox
                             return (this->command_ = this->functionclass_->getName() + " " + this->function_->getName() + " ");
                     }
                     break;
-                case CS_ParamPreparation:
-                case CS_Params:
+                case CommandState::ParamPreparation:
+                case CommandState::Params:
                 {
                     if (this->argument_ == "" && this->possibleArgument_ == "")
                         break;
@@ -148,9 +148,9 @@ namespace orxonox
                     return (this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + " " + this->argument_ + whitespace);
                     break;
                 }
-                case CS_Finished:
+                case CommandState::Finished:
                     break;
-                case CS_Error:
+                case CommandState::Error:
                     break;
             }
         }
@@ -162,10 +162,10 @@ namespace orxonox
     {
         switch (this->state_)
         {
-            case CS_Uninitialized:
+            case CommandState::Uninitialized:
                 break;
-            case CS_Empty:
-            case CS_ShortcutOrIdentifier:
+            case CommandState::Empty:
+            case CommandState::ShortcutOrIdentifier:
                 if (this->listOfPossibleFunctions_.size() == 0)
                     return CommandEvaluation::dump(this->listOfPossibleIdentifiers_);
                 else if (this->listOfPossibleIdentifiers_.size() == 0)
@@ -173,20 +173,20 @@ namespace orxonox
                 else
                     return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
                 break;
-            case CS_Function:
+            case CommandState::Function:
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
-            case CS_ParamPreparation:
-            case CS_Params:
+            case CommandState::ParamPreparation:
+            case CommandState::Params:
                 if (this->listOfPossibleArguments_.size() > 0)
                     return CommandEvaluation::dump(this->listOfPossibleArguments_);
                 else
                     return CommandEvaluation::dump(this->function_);
-            case CS_Finished:
+            case CommandState::Finished:
                 if (this->function_)
                     return CommandEvaluation::dump(this->function_);
                 break;
-            case CS_Error:
+            case CommandState::Error:
                 return this->errorMessage_;
                 break;
         }
@@ -199,7 +199,7 @@ namespace orxonox
         this->bEvaluatedParams_ = false;
 
         for (unsigned int i = 0; i < MAX_FUNCTOR_ARGUMENTS; i++)
-            this->param_[i] = MT_null;
+            this->param_[i] = MT_Type::Null;
 
         if (!this->isValid())
             return;
@@ -229,7 +229,7 @@ namespace orxonox
         if (index < MAX_FUNCTOR_ARGUMENTS)
             return this->param_[index];
 
-        return MT_null;
+        return MT_Type::Null;
     }
 
     bool CommandEvaluation::hasReturnvalue() const
@@ -237,7 +237,7 @@ namespace orxonox
         if (this->function_)
             return this->function_->hasReturnvalue();
 
-        return MT_null;
+        return MT_Type::Null;
     }
 
     MultiType CommandEvaluation::getReturnvalue() const

@@ -52,7 +52,7 @@ namespace orxonox
     {
         RegisterObject(QuestEffectBeacon);
         
-        this->status_ = QuestEffectBeaconStatus::active;
+        this->status_ = QuestEffectBeaconStatus::Active;
         this->times_ = INFINITE_TIME;
     }
 
@@ -161,11 +161,11 @@ namespace orxonox
         
         if(activate)
         {
-        this->status_ = QuestEffectBeaconStatus::active;
+        this->status_ = QuestEffectBeaconStatus::Active;
         return true;
         }
         
-        this->status_ = QuestEffectBeaconStatus::inactive;
+        this->status_ = QuestEffectBeaconStatus::Inactive;
         return true;
     }
     
@@ -189,7 +189,7 @@ namespace orxonox
         this->times_ = this->times_ - 1; //!< Decrement number of times the QuestEffectBeacon can be executed.
         if(this->getTimes() == 0) //!< Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
         {
-            this->status_ = QuestEffectBeaconStatus::inactive;
+            this->status_ = QuestEffectBeaconStatus::Inactive;
         }
         
         return true;

@@ -44,7 +44,7 @@ namespace orxonox
 {
     namespace PlayerState
     {
-        enum Enum
+        enum Value
         {
             Uninitialized,
             Joined,
@@ -56,7 +56,7 @@ namespace orxonox
     struct Player
     {
         PlayerInfo* info_;
-        PlayerState::Enum state_;
+        PlayerState::Value state_;
         int frags_;
         int killed_;
     };

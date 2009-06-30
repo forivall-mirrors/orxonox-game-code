@@ -66,17 +66,17 @@ namespace orxonox
         void useItem();                                                             //!< Use the first usable item.
         void useItem(UsableItem* item);                                             //!< Use a usable item.
 
-        void addAdditiveModifier(ModifierType::Enum type, float value);             //!< Add an additive modifier.
-        void addMultiplicativeModifier(ModifierType::Enum type, float value);       //!< Add a multiplicative modifier.
+        void addAdditiveModifier(ModifierType::Value type, float value);             //!< Add an additive modifier.
+        void addMultiplicativeModifier(ModifierType::Value type, float value);       //!< Add a multiplicative modifier.
 
-        float getAdditiveModifier(ModifierType::Enum type);                         //!< Get total additive modifier.
-        float getMultiplicativeModifier(ModifierType::Enum type);                   //!< Get total multiplicative modifier.
+        float getAdditiveModifier(ModifierType::Value type);                         //!< Get total additive modifier.
+        float getMultiplicativeModifier(ModifierType::Value type);                   //!< Get total multiplicative modifier.
 
-        void removeAdditiveModifier(ModifierType::Enum type, float value);          //!< Remove an additive modifier.
-        void removeMultiplicativeModifier(ModifierType::Enum type, float value);    //!< Remove a multiplicative modifier.
+        void removeAdditiveModifier(ModifierType::Value type, float value);          //!< Remove an additive modifier.
+        void removeMultiplicativeModifier(ModifierType::Value type, float value);    //!< Remove a multiplicative modifier.
 
-        float processModifiers(ModifierType::Enum type, float inputValue, bool addBeforeMultiplication = false);        //!< Apply the modifiers to a float.
-        Vector3 processModifiers(ModifierType::Enum type, Vector3 inputValue, bool addBeforeMultiplication = false);    //!< Apply the modifiers to a Vector3.
+        float processModifiers(ModifierType::Value type, float inputValue, bool addBeforeMultiplication = false);        //!< Apply the modifiers to a float.
+        Vector3 processModifiers(ModifierType::Value type, Vector3 inputValue, bool addBeforeMultiplication = false);    //!< Apply the modifiers to a Vector3.
 
         /**
             @brief Get the map of contained items.
@@ -112,8 +112,8 @@ namespace orxonox
 
         bool bBlockRemovals_;   //!< Whether to block direct removals through remove().
 
-        std::multimap<ModifierType::Enum, float> additiveModifiers_;        //!< Contains additive modifiers (indexed by ModifierType).
-        std::multimap<ModifierType::Enum, float> multiplicativeModifiers_;  //!< Contains multiplicative modifiers (indexed by ModifierType).
+        std::multimap<ModifierType::Value, float> additiveModifiers_;        //!< Contains additive modifiers (indexed by ModifierType).
+        std::multimap<ModifierType::Value, float> multiplicativeModifiers_;  //!< Contains multiplicative modifiers (indexed by ModifierType).
 
         std::multimap<std::string, BaseItem*> items_;                       //!< Map of items in the collection (indexed by pickupIdentifier of the items).
     };

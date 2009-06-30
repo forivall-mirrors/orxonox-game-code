@@ -140,7 +140,7 @@ namespace orxonox
 
     void CommandExecutor::parseIfNeeded(const std::string& command)
     {
-        if (CommandExecutor::getEvaluation().state_ == CS_Uninitialized)
+        if (CommandExecutor::getEvaluation().state_ == CommandState::Uninitialized)
         {
             CommandExecutor::parse(command);
         }
@@ -168,12 +168,12 @@ namespace orxonox
 
         switch (CommandExecutor::getEvaluation().state_)
         {
-            case CS_Uninitialized:
+            case CommandState::Uninitialized:
             {
                 // Impossible
                 break;
             }
-            case CS_Empty:
+            case CommandState::Empty:
             {
                 if (CommandExecutor::argumentsGiven() == 0)
                 {
@@ -183,11 +183,11 @@ namespace orxonox
                 }
                 else
                 {
-                    CommandExecutor::getEvaluation().state_ = CS_ShortcutOrIdentifier;
+                    CommandExecutor::getEvaluation().state_ = CommandState::ShortcutOrIdentifier;
                     // Move on to next case
                 }
             }
-            case CS_ShortcutOrIdentifier:
+            case CommandState::ShortcutOrIdentifier:
             {
                 if (CommandExecutor::argumentsGiven() > 1)
                 {
@@ -198,21 +198,21 @@ namespace orxonox
                     if (CommandExecutor::getEvaluation().function_)
                     {
                         // It's a shortcut
-                        CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                        CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                         CommandExecutor::getEvaluation().functionclass_ = 0;
                         // Move on to next case
                     }
                     else if (CommandExecutor::getEvaluation().functionclass_)
                     {
                         // It's a functionname
-                        CommandExecutor::getEvaluation().state_ = CS_Function;
+                        CommandExecutor::getEvaluation().state_ = CommandState::Function;
                         CommandExecutor::getEvaluation().function_ = 0;
                         // Move on to next case
                     }
                     else
                     {
                         // The first argument is bad
-                        CommandExecutor::getEvaluation().state_ = CS_Error;
+                        CommandExecutor::getEvaluation().state_ = CommandState::Error;
                         AddLanguageEntry("commandexecutorunknownfirstargument", "is not a shortcut nor a classname");
                         CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(0) + " " + GetLocalisation("commandexecutorunknownfirstargument") + ".";
                         return;
@@ -237,7 +237,7 @@ namespace orxonox
                             // Unfinished shortcut
                             CommandExecutor::getEvaluation().bCommandChanged_ = true;
                         }
-                        CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                        CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                         CommandExecutor::getEvaluation().functionclass_ = 0;
                         CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().function_->getName();
                         if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
@@ -257,7 +257,7 @@ namespace orxonox
                             // Unfinished classname
                             CommandExecutor::getEvaluation().bCommandChanged_ = true;
                         }
-                        CommandExecutor::getEvaluation().state_ = CS_Function;
+                        CommandExecutor::getEvaluation().state_ = CommandState::Function;
                         CommandExecutor::getEvaluation().function_ = 0;
                         CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " ";
                         // Move on to next case
@@ -265,7 +265,7 @@ namespace orxonox
                     else if (num_identifiers == 0 && num_functions == 0)
                     {
                         // No possibilities
-                        CommandExecutor::getEvaluation().state_ = CS_Error;
+                        CommandExecutor::getEvaluation().state_ = CommandState::Error;
                         AddLanguageEntry("commandexecutorunknownfirstargumentstart", "There is no command or classname starting with");
                         CommandExecutor::getEvaluation().errorMessage_ = "Error: " + GetLocalisation("commandexecutorunknownfirstargumentstart") + " " + CommandExecutor::getArgument(0) + ".";
                         return;
@@ -284,7 +284,7 @@ namespace orxonox
                     }
                 }
             }
-            case CS_Function:
+            case CommandState::Function:
             {
                 if (CommandExecutor::getEvaluation().functionclass_)
                 {
@@ -297,13 +297,13 @@ namespace orxonox
                         if (CommandExecutor::getEvaluation().function_)
                         {
                             // It's a function
-                            CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                            CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                             // Move on to next case
                         }
                         else
                         {
                             // The second argument is bad
-                            CommandExecutor::getEvaluation().state_ = CS_Error;
+                            CommandExecutor::getEvaluation().state_ = CommandState::Error;
                             AddLanguageEntry("commandexecutorunknownsecondargument", "is not a function of");
                             CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(1) + " " + GetLocalisation("commandexecutorunknownsecondargument") + " " + CommandExecutor::getEvaluation().functionclass_->getName() + ".";
                             return;
@@ -325,7 +325,7 @@ namespace orxonox
                                 // Unfinished function
                                 CommandExecutor::getEvaluation().bCommandChanged_ = true;
                             }
-                            CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                            CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                             CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " " + CommandExecutor::getEvaluation().function_->getName();
                             if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
                             {
@@ -337,7 +337,7 @@ namespace orxonox
                         else if (num_functions == 0)
                         {
                             // No possibilities
-                            CommandExecutor::getEvaluation().state_ = CS_Error;
+                            CommandExecutor::getEvaluation().state_ = CommandState::Error;
                             AddLanguageEntry("commandexecutorunknownsecondargumentstart", "has no function starting with");
                             CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getEvaluation().functionclass_->getName() + " " + GetLocalisation("commandexecutorunknownsecondargumentstart") + " " + CommandExecutor::getArgument(1) + ".";
                             return;
@@ -354,14 +354,14 @@ namespace orxonox
                 }
                 else
                 {
-                    // There is no classname - move on to CS_ParamPreparation
+                    // There is no classname - move on to CommandState::ParamPreparation
                 }
             }
-            case CS_ParamPreparation:
+            case CommandState::ParamPreparation:
             {
                 if (CommandExecutor::getEvaluation().function_->getParamCount() == 0 || CommandExecutor::enoughArgumentsGiven(CommandExecutor::getEvaluation().function_))
                 {
-                    CommandExecutor::getEvaluation().state_ = CS_Finished;
+                    CommandExecutor::getEvaluation().state_ = CommandState::Finished;
                     return;
                 }
                 else
@@ -371,7 +371,7 @@ namespace orxonox
                         argumentNumber -= 1;
 
                     CommandExecutor::createListOfPossibleArguments(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
-                    CommandExecutor::getEvaluation().state_ = CS_Params;
+                    CommandExecutor::getEvaluation().state_ = CommandState::Params;
 
                     if (CommandExecutor::getEvaluation().bCommandChanged_)
                     {
@@ -380,20 +380,20 @@ namespace orxonox
                     }
                 }
             }
-            case CS_Params:
+            case CommandState::Params:
             {
                 if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 1)
                 {
                     // There is exactly one possible argument
                     CommandExecutor::getEvaluation().argument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).getString();
                     CommandExecutor::getEvaluation().possibleArgument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).getString();
-                    CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                    CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                     return;
                 }
                 else if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 0)
                 {
                     // The user tries something new - we let him do
-                    CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                    CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                     CommandExecutor::getEvaluation().argument_ = CommandExecutor::getLastArgument();
                     return;
                 }
@@ -408,16 +408,16 @@ namespace orxonox
 
                     CommandExecutor::getEvaluation().argument_ = CommandExecutor::getCommonBegin(CommandExecutor::getEvaluation().listOfPossibleArguments_);
                     CommandExecutor::getEvaluation().possibleArgument_ = CommandExecutor::getPossibleArgument(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
-                    CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                    CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                     return;
                 }
             }
-            case CS_Finished:
+            case CommandState::Finished:
             {
                 // Nothing more to do
                 break;
             }
-            case CS_Error:
+            case CommandState::Error:
             {
                 // Bad, very bad
                 break;

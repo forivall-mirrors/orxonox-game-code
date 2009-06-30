@@ -53,7 +53,7 @@ namespace orxonox
         virtual bool addParamCommand(ParamCommand* command) { return false; }
         void parse();
         void readConfigValue(ConfigFileType configFile);
-        bool execute(KeybindMode::Enum mode, float abs = 1.0f, float rel = 1.0f);
+        bool execute(KeybindMode::Value mode, float abs = 1.0f, float rel = 1.0f);
 
         //! Container to allow for better configValue support
         ConfigValueContainer* configContainer_;
@@ -78,7 +78,7 @@ namespace orxonox
         void parseError(std::string message, bool serious);
     };
 
-    inline bool Button::execute(KeybindMode::Enum mode, float abs, float rel)
+    inline bool Button::execute(KeybindMode::Value mode, float abs, float rel)
     {
         // execute all the parsed commands in the string
         for (unsigned int iCommand = 0; iCommand < nCommands_[mode]; iCommand++)

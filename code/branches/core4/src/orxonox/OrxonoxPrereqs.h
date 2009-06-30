@@ -64,12 +64,12 @@ namespace orxonox
 {
     namespace LODParticle
     {
-        enum LOD
+        enum Value
         {
-            off = 0,
-            low = 1,
-            normal = 2,
-            high = 3
+            Off = 0,
+            Low = 1,
+            Normal = 2,
+            High = 3
         };
     }
 

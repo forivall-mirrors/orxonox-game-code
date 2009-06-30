@@ -112,21 +112,21 @@ namespace orxonox
 
     void Engine::registerVariables()
     {
-        registerVariable(this->shipID_, variableDirection::toclient, new NetworkCallback<Engine>(this, &Engine::networkcallback_shipID));
+        registerVariable(this->shipID_, VariableDirection::ToClient, new NetworkCallback<Engine>(this, &Engine::networkcallback_shipID));
 
-        registerVariable(this->speedFactor_, variableDirection::toclient);
-        registerVariable(this->boostFactor_, variableDirection::toclient);
+        registerVariable(this->speedFactor_, VariableDirection::ToClient);
+        registerVariable(this->boostFactor_, VariableDirection::ToClient);
 
-        registerVariable(this->maxSpeedFront_,     variableDirection::toclient);
-        registerVariable(this->maxSpeedBack_,      variableDirection::toclient);
-        registerVariable(this->maxSpeedLeftRight_, variableDirection::toclient);
-        registerVariable(this->maxSpeedUpDown_,    variableDirection::toclient);
+        registerVariable(this->maxSpeedFront_,     VariableDirection::ToClient);
+        registerVariable(this->maxSpeedBack_,      VariableDirection::ToClient);
+        registerVariable(this->maxSpeedLeftRight_, VariableDirection::ToClient);
+        registerVariable(this->maxSpeedUpDown_,    VariableDirection::ToClient);
 
-        registerVariable(this->accelerationFront_,     variableDirection::toclient);
-        registerVariable(this->accelerationBrake_,     variableDirection::toclient);
-        registerVariable(this->accelerationBack_,      variableDirection::toclient);
-        registerVariable(this->accelerationLeftRight_, variableDirection::toclient);
-        registerVariable(this->accelerationUpDown_,    variableDirection::toclient);
+        registerVariable(this->accelerationFront_,     VariableDirection::ToClient);
+        registerVariable(this->accelerationBrake_,     VariableDirection::ToClient);
+        registerVariable(this->accelerationBack_,      VariableDirection::ToClient);
+        registerVariable(this->accelerationLeftRight_, VariableDirection::ToClient);
+        registerVariable(this->accelerationUpDown_,    VariableDirection::ToClient);
     }
 
     void Engine::networkcallback_shipID()

@@ -58,7 +58,7 @@ namespace orxonox
       bool checkDistance();
 
     protected:
-      virtual bool isTriggered(TriggerMode mode);
+      virtual bool isTriggered(TriggerMode::Value mode);
       virtual void notifyMaskUpdate() {}
 
       ClassTreeMask targetMask_;

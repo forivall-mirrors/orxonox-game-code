@@ -90,11 +90,11 @@ namespace orxonox
             virtual bool isFailable(const PlayerInfo* player) const; //!< Checks whether the Quest can be failed.
             virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
-            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+            virtual QuestStatus::Value getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
+            virtual bool setStatus(PlayerInfo* player, const QuestStatus::Value & status); //!< Sets the status for a specific player.
 
         private:
-            std::map<const PlayerInfo*, questStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
+            std::map<const PlayerInfo*, QuestStatus::Value> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
 
     };
 

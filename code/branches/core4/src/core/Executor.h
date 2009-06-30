@@ -174,7 +174,7 @@ namespace orxonox
                 { return this->functor_->getParamCount(); }
             inline bool hasReturnvalue() const
                 { return this->functor_->hasReturnvalue(); }
-            inline FunctionType getType() const
+            inline FunctionType::Value getType() const
                 { return this->functor_->getType(); }
             inline const MultiType& getReturnvalue() const
                 { return this->functor_->getReturnvalue(); }
@@ -200,7 +200,7 @@ namespace orxonox
                 if (index < MAX_FUNCTOR_ARGUMENTS)
                     return this->defaultValue_[index];
 
-                return MT_null;
+                return MT_Type::Null;
             }
 
             bool allDefaultValuesSet() const;

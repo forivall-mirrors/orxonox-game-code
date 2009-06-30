@@ -43,7 +43,7 @@ namespace orxonox
         /**
             @brief Gives the available types for modifiers.
         */
-        enum Enum
+        enum Value
         {
             Unknown = 0,
             Damage,

@@ -53,7 +53,7 @@ namespace orxonox
     {
         if (bParsingFile && this->bCommandLineOnly_)
             ThrowException(Argument, "Command line argument '" + getName() + "' is not allowed in files.");
-        if (value_.getType() == MT_bool)
+        if (value_.getType() == MT_Type::Bool)
         {
             // simulate command line switch
             bool temp;
@@ -294,7 +294,7 @@ namespace orxonox
             else
                 infoStr << "      ";
             infoStr << "--" << it->second->getName() << " ";
-            if (it->second->getValue().getType() != MT_bool)
+            if (it->second->getValue().getType() != MT_Type::Bool)
                 infoStr << "ARG ";
             else
                 infoStr << "    ";

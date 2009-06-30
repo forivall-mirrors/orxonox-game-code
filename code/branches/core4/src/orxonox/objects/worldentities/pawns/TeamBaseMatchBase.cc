@@ -42,7 +42,7 @@ namespace orxonox
     {
         RegisterObject(TeamBaseMatchBase);
 
-        this->state_ = BaseState::uncontrolled;
+        this->state_ = BaseState::Uncontrolled;
 
         TeamBaseMatch* gametype = orxonox_cast<TeamBaseMatch*>(this->getGametype());
         if (gametype)
@@ -65,13 +65,13 @@ namespace orxonox
 
         switch (this->state_)
         {
-            case BaseState::controlTeam1:
+            case BaseState::ControlTeam1:
                 colour = gametype->getTeamColour(0);
                 break;
-            case BaseState::controlTeam2:
+            case BaseState::ControlTeam2:
                 colour = gametype->getTeamColour(1);
                 break;
-            case BaseState::uncontrolled:
+            case BaseState::Uncontrolled:
             default:
                 colour = ColourValue(0.5, 0.5, 0.5, 1.0);
                 break;
