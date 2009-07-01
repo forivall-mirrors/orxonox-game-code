@@ -59,8 +59,6 @@
 
 #include <boost/shared_ptr.hpp> // 12
 #include <boost/preprocessor/cat.hpp> // 12
-// Included by both filesystem and thread but still relatively small
-#include <boost/iterator/iterator_facade.hpp> // 10
 
 // Just in case some header included windows.h
 #undef min

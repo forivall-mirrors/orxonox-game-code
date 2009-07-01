@@ -149,7 +149,6 @@ namespace orxonox
     template <class T>
     class SubclassIdentifier;
     class TclBind;
-    struct TclInterpreterBundle;
     class TclThreadManager;
     class Template;
     class Tickable;
@@ -206,7 +205,7 @@ namespace boost
         struct path_traits;
         template <class String, class Traits> class basic_path;
         typedef basic_path<std::string, path_traits> path;
-    } 
+    }
     class thread;
     class mutex;
 }
