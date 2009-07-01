@@ -186,7 +186,7 @@ namespace orxonox
         // reinitialise all joy stick binings (doesn't overwrite the old ones)
         for (unsigned int iDev = 0; iDev < numberOfJoySticks_; iDev++)
         {
-            std::string deviceNumber = convertToString(iDev);
+            std::string deviceNumber = multi_cast<std::string>(iDev);
             // joy stick buttons
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
             {

@@ -43,7 +43,7 @@ namespace orxonox
 
     std::string getUniqueNumberString()
     {
-        return convertToString(getUniqueNumber());
+        return multi_cast<std::string>(getUniqueNumber());
     }
 
     /**

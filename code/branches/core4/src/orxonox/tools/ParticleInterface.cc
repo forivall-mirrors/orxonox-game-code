@@ -68,7 +68,7 @@ namespace orxonox
         {
             try
             {
-                this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+                this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + multi_cast<std::string>(ParticleInterface::counter_s++), templateName);
                 this->setSpeedFactor(1.0f);
             }
             catch (...)

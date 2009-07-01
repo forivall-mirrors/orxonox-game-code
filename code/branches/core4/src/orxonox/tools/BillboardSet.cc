@@ -73,7 +73,7 @@ namespace orxonox
         {
             if (GameMode::showsGraphics())
             {
-                this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
+                this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + multi_cast<std::string>(BillboardSet::billboardSetCounter_s++), count);
                 this->billboardSet_->createBillboard(position);
                 this->billboardSet_->setMaterialName(file);
             }
@@ -96,7 +96,7 @@ namespace orxonox
         {
             if (GameMode::showsGraphics())
             {
-                this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
+                this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + multi_cast<std::string>(BillboardSet::billboardSetCounter_s++), count);
                 this->billboardSet_->createBillboard(position, colour);
                 this->billboardSet_->setMaterialName(file);
             }

@@ -67,7 +67,7 @@ namespace orxonox
         {
             try
             {
-                this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+                this->entity_ = this->scenemanager_->createEntity("Mesh" + multi_cast<std::string>(Mesh::meshCounter_s++), meshsource);
                 this->entity_->setCastShadows(this->bCastShadows_);
 
                 this->entity_->setNormaliseNormals(true);

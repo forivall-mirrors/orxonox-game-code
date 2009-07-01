@@ -219,7 +219,7 @@ namespace orxonox
         this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + convertToString(i)));
+            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + multi_cast<std::string>(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
             this->consoleOverlayTextAreas_[i]->setFontName("MonofurConsole");
             this->consoleOverlayTextAreas_[i]->setCharHeight(18);

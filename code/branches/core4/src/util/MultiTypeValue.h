@@ -138,14 +138,14 @@ namespace orxonox
         inline operator long double()          const { return getConvertedValue<T, long double>         (this->value_, 0); }     /** @brief Returns the current value, converted to the requested type. */
         inline operator bool()                 const { return getConvertedValue<T, bool>                (this->value_, 0); }     /** @brief Returns the current value, converted to the requested type. */
         inline operator void*()                const { return getConvertedValue<T, void*>               (this->value_, 0); }     /** @brief Returns the current value, converted to the requested type. */
-        inline operator std::string()          const { return getConvertedValue<T, std::string>         (this->value_, zeroise<std::string         >()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::Vector2()     const { return getConvertedValue<T, orxonox::Vector2>    (this->value_, zeroise<orxonox::Vector2    >()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::Vector3()     const { return getConvertedValue<T, orxonox::Vector3>    (this->value_, zeroise<orxonox::Vector3    >()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::Vector4()     const { return getConvertedValue<T, orxonox::Vector4>    (this->value_, zeroise<orxonox::Vector4    >()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::ColourValue() const { return getConvertedValue<T, orxonox::ColourValue>(this->value_, zeroise<orxonox::ColourValue>()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::Quaternion()  const { return getConvertedValue<T, orxonox::Quaternion> (this->value_, zeroise<orxonox::Quaternion >()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::Radian()      const { return getConvertedValue<T, orxonox::Radian>     (this->value_, zeroise<orxonox::Radian     >()); } /** @brief Returns the current value, converted to the requested type. */
-        inline operator orxonox::Degree()      const { return getConvertedValue<T, orxonox::Degree>     (this->value_, zeroise<orxonox::Degree     >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator std::string()          const { return getConvertedValue<T, std::string>         (this->value_, NilValue<std::string         >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::Vector2()     const { return getConvertedValue<T, orxonox::Vector2>    (this->value_, NilValue<orxonox::Vector2    >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::Vector3()     const { return getConvertedValue<T, orxonox::Vector3>    (this->value_, NilValue<orxonox::Vector3    >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::Vector4()     const { return getConvertedValue<T, orxonox::Vector4>    (this->value_, NilValue<orxonox::Vector4    >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::ColourValue() const { return getConvertedValue<T, orxonox::ColourValue>(this->value_, NilValue<orxonox::ColourValue>()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::Quaternion()  const { return getConvertedValue<T, orxonox::Quaternion> (this->value_, NilValue<orxonox::Quaternion >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::Radian()      const { return getConvertedValue<T, orxonox::Radian>     (this->value_, NilValue<orxonox::Radian     >()); } /** @brief Returns the current value, converted to the requested type. */
+        inline operator orxonox::Degree()      const { return getConvertedValue<T, orxonox::Degree>     (this->value_, NilValue<orxonox::Degree     >()); } /** @brief Returns the current value, converted to the requested type. */
 
         /** @brief Puts the current value on the stream */
         inline void toString(std::ostream& outstream) const { outstream << this->value_; }

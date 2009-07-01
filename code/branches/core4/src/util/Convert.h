@@ -360,20 +360,6 @@ namespace orxonox
         return output;
     }
 
-    // convert to string Shortcut
-    template <class FromType>
-    FORCEINLINE std::string convertToString(FromType value)
-    {
-        return getConvertedValue<FromType, std::string>(value);
-    }
-
-    // convert from string Shortcut
-    template <class ToType>
-    FORCEINLINE ToType convertFromString(std::string str)
-    {
-        return getConvertedValue<std::string, ToType>(str);
-    }
-
     ////////////////////////////////
     // Special string conversions //
     ////////////////////////////////
