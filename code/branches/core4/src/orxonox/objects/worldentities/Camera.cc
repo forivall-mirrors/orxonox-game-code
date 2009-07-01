@@ -28,6 +28,7 @@
 
 #include "Camera.h"
 
+#include <algorithm>
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -103,7 +104,7 @@ namespace orxonox
         if (this->bDrag_)
         {
             // this stuff here may need some adjustments
-            float coeff = min(1.0f, 15.0f * dt);
+            float coeff = std::min(1.0f, 15.0f * dt);
 
             Vector3 offset = this->getWorldPosition() - this->cameraNode_->_getDerivedPosition();
             this->cameraNode_->translate(coeff * offset);

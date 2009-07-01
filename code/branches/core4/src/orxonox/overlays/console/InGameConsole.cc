@@ -29,6 +29,7 @@
 
 #include "InGameConsole.h"
 
+#include <algorithm>
 #include <string>
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
@@ -424,7 +425,7 @@ namespace orxonox
         this->desiredTextWidth_ = (int) (this->windowW_ * this->relativeWidth) - 12;
 
         if (LINES > 0)
-            this->maxCharsPerLine_ = max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH));
+            this->maxCharsPerLine_ = std::max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH));
         else
             this->maxCharsPerLine_ = 10;
 

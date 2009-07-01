@@ -28,6 +28,8 @@
 
 #include "Pawn.h"
 
+#include <algorithm>
+
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
@@ -151,7 +153,7 @@ namespace orxonox
 
     void Pawn::setHealth(float health)
     {
-        this->health_ = min(health, this->maxHealth_);
+        this->health_ = std::min(health, this->maxHealth_);
     }
 
     void Pawn::damage(float damage, Pawn* originator)

@@ -32,6 +32,9 @@
 
 #include "CorePrereqs.h"
 
+#include <algorithm>
+#include <string>
+
 #include "util/Debug.h"
 #include "util/Math.h"
 #include "util/StringUtils.h"
@@ -100,7 +103,7 @@
             } \
             COUT(5) << tokens[i]; \
         } \
-        COUT(5) << ") and " << max((int)paramCount - (int)tokens.size(), 0) << " default values ("; \
+        COUT(5) << ") and " << std::max((int)paramCount - (int)tokens.size(), 0) << " default values ("; \
         for (unsigned int i = tokens.size(); i < paramCount; i++) \
         { \
             param[i] = this->defaultValue_[i]; \

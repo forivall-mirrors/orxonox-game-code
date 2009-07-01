@@ -80,24 +80,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the smaller of two values.
-    */
-    template <typename T>
-    inline T min(T a, T b)
-    {
-        return (a <= b) ? a : b;
-    }
-
-    /**
-        @brief Returns the greater of two values.
-    */
-    template <typename T>
-    inline T max(T a, T b)
-    {
-        return (a >= b) ? a : b;
-    }
-
-    /**
         @brief Keeps a value between a lower and an upper limit.
         @param x The value
         @param min The lower limit

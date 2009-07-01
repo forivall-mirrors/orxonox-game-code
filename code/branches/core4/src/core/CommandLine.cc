@@ -28,6 +28,7 @@
 
 #include "CommandLine.h"
 
+#include <algorithm>
 #include <sstream>
 #include <boost/filesystem.hpp>
 

@@ -28,6 +28,7 @@
 
 #include "Backlight.h"
 
+#include <algorithm>
 #include <OgreRibbonTrail.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -174,7 +175,7 @@ namespace orxonox
 
     void Backlight::stopturnonoff()
     {
-        this->postprocessingtime_ = max(0.0f, this->lifetime_ - this->turnofftime_);
+        this->postprocessingtime_ = std::max(0.0f, this->lifetime_ - this->turnofftime_);
 
         FadingBillboard::stopturnonoff();
 
