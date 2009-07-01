@@ -89,6 +89,7 @@ namespace orxonox
     TclThreadManager* TclThreadManager::singletonRef_s = 0;
 
     TclThreadManager::TclThreadManager(Tcl::interpreter* interpreter)
+        : orxonoxInterpreterBundle_(new TclInterpreterBundle())
     {
         RegisterRootObject(TclThreadManager);
 
@@ -112,6 +113,8 @@ namespace orxonox
                 threadID = this->interpreterBundles_.begin()->first;
         }
         this->destroy(threadID);
+
+        delete this->orxonoxInterpreterBundle_;
 
         singletonRef_s = 0;
     }
