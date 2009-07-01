@@ -84,6 +84,8 @@ namespace orxonox
 #endif
 
         this->server_ = new Server(CommandLine::getValue("port"));
+        if( this->commandLine_ )
+          delete[] this->commandLine_;
         COUT(0) << "Loading scene in server mode" << std::endl;
 
         server_->open();
@@ -110,17 +112,17 @@ namespace orxonox
     void GSDedicated::update(const Clock& time)
     {
         timeSinceLastUpdate_ += time.getDeltaTime();
-        if (timeSinceLastUpdate_ >= NETWORK_PERIOD)
+        //if (timeSinceLastUpdate_ >= NETWORK_PERIOD)
         {
             timeSinceLastUpdate_ -= static_cast<unsigned int>(timeSinceLastUpdate_ / NETWORK_PERIOD) * NETWORK_PERIOD;
             server_->update(time);
         }
-        else
+        /*else
         {
             msleep(static_cast<unsigned int>((NETWORK_PERIOD - timeSinceLastUpdate_)*1000));
             msleep(static_cast<unsigned int>(NETWORK_PERIOD*1000)); // NOTE: this is to throttle the non-network framerate
 //            COUT(0) << "sleeping for " << (int)((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000) << " usec" << endl;
-        }
+        }*/
         processQueue();
         printLine();
     }
@@ -194,7 +196,8 @@ namespace orxonox
 //                             boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                             std::cout << endl << CommandExecutor::hint( std::string((const char*)this->commandLine_,inputIterator_) ) << endl;
                             strncpy((char*)this->commandLine_, CommandExecutor::complete( std::string((const char*)this->commandLine_,inputIterator_) ).c_str(), MAX_COMMAND_LENGTH);
-                            inputIterator_ = strlen((const char*)this->commandLine_);
+                            this->inputIterator_ = strlen((const char*)this->commandLine_);
+                            this->cursorX_ = this->inputIterator_;
                             break;
                         }
                         case '\033': // 1. escape character
