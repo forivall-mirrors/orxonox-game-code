@@ -121,8 +121,7 @@ namespace orxonox
         renderWindow->getCustomAttribute("WINDOW", &windowHnd);
 
         // Calls the InputManager which sets up the input devices.
-        inputManager_ = new InputManager();
-        inputManager_->initialise(windowHnd, renderWindow->getWidth(), renderWindow->getHeight(), true);
+        inputManager_ = new InputManager(windowHnd, renderWindow->getWidth(), renderWindow->getHeight());
 
         // load master key bindings
         masterInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("master", true);

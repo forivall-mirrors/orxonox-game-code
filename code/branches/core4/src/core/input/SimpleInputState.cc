@@ -60,12 +60,6 @@ namespace orxonox
         update();
     }
 
-    void SimpleInputState::keyPressed(const KeyEvent& evt)
-    {
-        if (keyHandler_)
-            keyHandler_->keyPressed(evt);
-    }
-
     /**
     @brief
         Adds a joy stick handler.

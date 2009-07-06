@@ -5,6 +5,7 @@ ADD_SOURCE_FILES(CORE_SRC_FILES
   InputBuffer.cc
   InputCommands.cc
   InputManager.cc
+  JoyStick.cc
   JoyStickDeviceNumberListener.cc
   KeyBinder.cc
   KeyDetector.cc

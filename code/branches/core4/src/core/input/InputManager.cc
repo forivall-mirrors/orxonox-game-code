@@ -39,6 +39,7 @@
 #include <cassert>
 #include <ois/OISException.h>
 #include <ois/OISInputManager.h>
+#include <boost/foreach.hpp>
 
 #include "util/Convert.h"
 #include "util/Exception.h"
@@ -55,6 +56,7 @@
 #include "SimpleInputState.h"
 #include "ExtendedInputState.h"
 #include "JoyStickDeviceNumberListener.h"
+#include "JoyStick.h"
 
 // HACK (include this as last, X11 seems to define some macros...)
 #ifdef ORXONOX_PLATFORM_LINUX
@@ -105,11 +107,10 @@ namespace orxonox
         Constructor only sets member fields to initial zero values
         and registers the class in the class hierarchy.
     */
-    InputManager::InputManager()
+    InputManager::InputManager(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight)
         : inputSystem_(0)
         , keyboard_(0)
         , mouse_(0)
-        , joySticksSize_(0)
         , devicesNum_(0)
         , windowHnd_(0)
         , internalState_(Uninitialised)
@@ -124,6 +125,8 @@ namespace orxonox
         singletonRef_s = this;
 
         setConfigValues();
+
+        initialise(windowHnd, windowWidth, windowHeight);
     }
 
     /**
@@ -132,18 +135,6 @@ namespace orxonox
     */
     void InputManager::setConfigValues()
     {
-        SetConfigValue(calibrationFilename_, "joystick_calibration.ini")
-            .description("Ini filename for the the joy stick calibration data.")
-            .callback(this, &InputManager::_calibrationFileCallback);
-    }
-
-    /**
-    @brief
-        Callback for the joy stick calibration config file. @see setConfigValues.
-    */
-    void InputManager::_calibrationFileCallback()
-    {
-        ConfigFileManager::getInstance().setFilename(ConfigFileType::JoyStickCalibration, calibrationFilename_);
     }
 
     /**
@@ -156,10 +147,8 @@ namespace orxonox
         The width of the render window
     @param windowHeight
         The height of the render window
-    @param joyStickSupport
-        Whether or not to load the joy sticks as well
     */
-    void InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight, bool joyStickSupport)
+    void InputManager::initialise(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight)
     {
         CCOUT(3) << "Initialising Input System..." << std::endl;
 
@@ -210,19 +199,12 @@ namespace orxonox
                 ThrowException(InitialisationFailed, "Could not initialise the input system: " << ex.what());
             }
 
-            _initialiseMouse();
+            _initialiseMouse(windowWidth, windowHeight);
 
-            if (joyStickSupport)
-                _initialiseJoySticks();
-            // Do this anyway to also inform when a joystick was detached.
-            _configureJoySticks();
-
-            // Set mouse/joystick region
-            if (mouse_)
-                setWindowExtents(windowWidth, windowHeight);
+            _initialiseJoySticks();
 
             // clear all buffers
-            _clearBuffers();
+            clearBuffers();
 
             internalState_ |= OISReady;
 
@@ -297,7 +279,7 @@ namespace orxonox
     @return
         False if mouse stays uninitialised, true otherwise.
     */
-    void InputManager::_initialiseMouse()
+    void InputManager::_initialiseMouse(unsigned int windowWidth, unsigned int windowHeight)
     {
         if (mouse_ != 0)
         {
@@ -312,6 +294,9 @@ namespace orxonox
                 // register our listener in OIS.
                 mouse_->setEventCallback(this);
                 CCOUT(ORX_DEBUG) << "Created OIS mouse" << std::endl;
+
+                // Set mouse region
+                setWindowExtents(windowWidth, windowHeight);
             }
             else
             {
@@ -334,147 +319,37 @@ namespace orxonox
     */
     void InputManager::_initialiseJoySticks()
     {
-        if (joySticksSize_ > 0)
+        if (!this->joySticks_.empty())
         {
             CCOUT(2) << "Warning: Joy sticks already initialised, skipping." << std::endl;
             return;
         }
-        if (inputSystem_->getNumberOfDevices(OIS::OISJoyStick) > 0)
-        {
-            for (int i = 0; i < inputSystem_->getNumberOfDevices(OIS::OISJoyStick); i++)
-            {
-                try
-                {
-                    OIS::JoyStick* stig = static_cast<OIS::JoyStick*>
-                        (inputSystem_->createInputObject(OIS::OISJoyStick, true));
-                    CCOUT(ORX_DEBUG) << "Created OIS joy stick with ID " << stig->getID() << std::endl;
-                    joySticks_.push_back(stig);
-                    // register our listener in OIS.
-                    stig->setEventCallback(this);
-                }
-                catch (OIS::Exception ex)
-                {
-                    CCOUT(ORX_WARNING) << "Warning: Failed to create OIS joy number" << i << "\n"
-                        << "OIS error message: \"" << ex.eText << "\"" << std::endl;
-                }
-            }
-        }
-    }
 
-    /**
-    @brief
-        Helper function that loads the config value vector of one coefficient
-    */
-    void loadCalibration(std::vector<int>& list, const std::string& sectionName, const std::string& valueName, size_t size, int defaultValue)
-    {
-        list.resize(size);
-        unsigned int configValueVectorSize = ConfigFileManager::getInstance().getVectorSize(ConfigFileType::JoyStickCalibration, sectionName, valueName);
-        if (configValueVectorSize > size)
-            configValueVectorSize = size;
-
-        for (unsigned int i = 0; i < configValueVectorSize; ++i)
-        {
-            list[i] = multi_cast<int>(ConfigFileManager::getInstance().getValue(
-                ConfigFileType::JoyStickCalibration, sectionName, valueName, i, multi_cast<std::string>(defaultValue), false));
-        }
-
-        // fill the rest with default values
-        for (unsigned int i = configValueVectorSize; i < size; ++i)
-        {
-            list[i] = defaultValue;
-        }
-    }
-
-    /**
-    @brief
-        Sets the size of all the different lists that are dependent on the number
-        of joy stick devices created and loads the joy stick calibration.
-    @remarks
-        No matter whether there are a mouse and/or keyboard, they will always
-        occupy 2 places in the device number dependent lists.
-    */
-    void InputManager::_configureJoySticks()
-    {
-        joySticksSize_ = joySticks_.size();
-        devicesNum_    = 2 + joySticksSize_;
-        joyStickIDs_         .resize(joySticksSize_);
-        joyStickButtonsDown_ .resize(joySticksSize_);
-        povStates_           .resize(joySticksSize_);
-        sliderStates_        .resize(joySticksSize_);
-        joyStickMinValues_   .resize(joySticksSize_);
-        joyStickMaxValues_   .resize(joySticksSize_);
-        joyStickMiddleValues_.resize(joySticksSize_);
-        joyStickCalibrations_.resize(joySticksSize_);
-
-        for (unsigned int iJoyStick = 0; iJoyStick < joySticksSize_; iJoyStick++)
-        {
-            // Generate some sort of execution unique id per joy stick
-            std::string id = "JoyStick_";
-            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Button))  + "_";
-            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Axis))    + "_";
-            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Slider))  + "_";
-            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_POV))     + "_";
-            id += multi_cast<std::string>(joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Vector3)) + "_";
-            id += joySticks_[iJoyStick]->vendor();
-            for (unsigned int i = 0; i < iJoyStick; ++i)
-            {
-                if (id == joyStickIDs_[i])
-                {
-                    // Two joysticks are probably equal --> add the index as well
-                    id += "_" + multi_cast<std::string>(iJoyStick);
-                }
-            }
-            joyStickIDs_[iJoyStick] = id;
-
-            size_t axes = sliderAxes + (size_t)this->joySticks_[iJoyStick]->getNumberOfComponents(OIS::OIS_Axis);
-            loadCalibration(joyStickMinValues_[iJoyStick], id, "MinValue", axes, -32768);
-            loadCalibration(joyStickMaxValues_[iJoyStick], id, "MaxValue", axes,  32768);
-            loadCalibration(joyStickMiddleValues_[iJoyStick], id, "MiddleValue", axes,      0);
-        }
-
-        _evaluateCalibration();
-
+        devicesNum_ = 2 + inputSystem_->getNumberOfDevices(OIS::OISJoyStick);
         // state management
         activeStatesTriggered_.resize(devicesNum_);
 
-        // inform all states
-        for (std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.begin();
-            it != inputStatesByName_.end(); ++it)
+        for (int i = 0; i < inputSystem_->getNumberOfDevices(OIS::OISJoyStick); i++)
         {
-            it->second->setNumOfJoySticks(joySticksSize_);
+            try
+            {
+                joySticks_.push_back(new JoyStick(activeStatesTriggered_[2 + i], i));
+            }
+            catch (std::exception ex)
+            {
+                CCOUT(2) << "Warning: Failed to create joy stick: " << ex.what() << std::endl;
+            }
         }
 
         // inform all JoyStick Device Number Listeners
         for (ObjectList<JoyStickDeviceNumberListener>::iterator it = ObjectList<JoyStickDeviceNumberListener>::begin(); it; ++it)
-            it->JoyStickDeviceNumberChanged(joySticksSize_);
-
-    }
-
-    void InputManager::_evaluateCalibration()
-    {
-        for (unsigned int iJoyStick = 0; iJoyStick < this->joySticksSize_; ++iJoyStick)
-        {
-            for (unsigned int i = 0; i < this->joyStickMinValues_[iJoyStick].size(); i++)
-            {
-                this->joyStickCalibrations_[iJoyStick].middleValue[i] = this->joyStickMiddleValues_[iJoyStick][i];
-                this->joyStickCalibrations_[iJoyStick].negativeCoeff[i] = - 1.0f / (this->joyStickMinValues_[iJoyStick][i] - this->joyStickMiddleValues_[iJoyStick][i]);
-                this->joyStickCalibrations_[iJoyStick].positiveCoeff[i] =   1.0f / (this->joyStickMaxValues_[iJoyStick][i] - this->joyStickMiddleValues_[iJoyStick][i]);
-            }
-        }
+            it->JoyStickDeviceNumberChanged(joySticks_.size());
     }
 
     void InputManager::_startCalibration()
     {
-        for (unsigned int iJoyStick = 0; iJoyStick < this->joySticksSize_; ++iJoyStick)
-        {
-            // Set initial values
-            for (unsigned int i = 0; i < this->joyStickMinValues_[iJoyStick].size(); ++i)
-                this->joyStickMinValues_[iJoyStick][i] = INT_MAX;
-            for (unsigned int i = 0; i < this->joyStickMaxValues_[iJoyStick].size(); ++i)
-                this->joyStickMaxValues_[iJoyStick][i] = INT_MIN;
-            for (unsigned int i = 0; i < this->joyStickMiddleValues_[iJoyStick].size(); ++i)
-                this->joyStickMiddleValues_[iJoyStick][i] = 0;
-        }
+        BOOST_FOREACH(JoyStick* stick, joySticks_)
+            stick->startCalibration();
 
         getInstance().internalState_ |= Calibrating;
         getInstance().requestEnterState("calibrator");
@@ -482,43 +357,8 @@ namespace orxonox
 
     void InputManager::_completeCalibration()
     {
-        for (unsigned int iJoyStick = 0; iJoyStick < this->joySticksSize_; ++iJoyStick)
-        {
-            // Get the middle positions now
-            unsigned int iAxis = 0;
-            for (unsigned int i = 0; i < sliderAxes/2; ++i)
-            {
-                this->joyStickMiddleValues_[iJoyStick][iAxis++] = this->joySticks_[iJoyStick]->getJoyStickState().mSliders[i].abX;
-                this->joyStickMiddleValues_[iJoyStick][iAxis++] = this->joySticks_[iJoyStick]->getJoyStickState().mSliders[i].abY;
-            }
-            // Note: joyStickMiddleValues_[iJoyStick] was already correctly resized in _configureJoySticks()
-            assert(joySticks_[iJoyStick]->getJoyStickState().mAxes.size() == joyStickMiddleValues_[iJoyStick].size() - sliderAxes);
-            for (unsigned int i = 0; i < joyStickMiddleValues_[iJoyStick].size() - sliderAxes; ++i)
-            {
-                this->joyStickMiddleValues_[iJoyStick][iAxis++] = this->joySticks_[iJoyStick]->getJoyStickState().mAxes[i].abs;
-            }
-
-            for (unsigned int i = 0; i < joyStickMinValues_[iJoyStick].size(); ++i)
-            {
-                // Minimum values
-                if (joyStickMinValues_[iJoyStick][i] == INT_MAX)
-                    joyStickMinValues_[iJoyStick][i] = -32768;
-                ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                    this->joyStickIDs_[iJoyStick], "MinValue", i, multi_cast<std::string>(joyStickMinValues_[iJoyStick][i]), false);
-
-                // Maximum values
-                if (joyStickMaxValues_[iJoyStick][i] == INT_MIN)
-                    joyStickMaxValues_[iJoyStick][i] = 32767;
-                ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                    this->joyStickIDs_[iJoyStick], "MaxValue", i, multi_cast<std::string>(joyStickMaxValues_[iJoyStick][i]), false);
-
-                // Middle values
-                ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                    this->joyStickIDs_[iJoyStick], "MiddleValue", i, multi_cast<std::string>(joyStickMiddleValues_[iJoyStick][i]), false);
-            }
-        }
-
-        _evaluateCalibration();
+        BOOST_FOREACH(JoyStick* stick, joySticks_)
+            stick->stopCalibration();
 
         // restore old input state
         requestLeaveState("calibrator");
@@ -624,27 +464,19 @@ namespace orxonox
     */
     void InputManager::_destroyJoySticks()
     {
-        if (joySticksSize_ > 0)
+        assert(inputSystem_);
+        while (!joySticks_.empty())
         {
-            assert(inputSystem_);
-            for (unsigned int i = 0; i < joySticksSize_; i++)
+            try
             {
-                try
-                {
-                    if (joySticks_[i] != 0)
-                        inputSystem_->destroyInputObject(joySticks_[i]);
-                }
-                catch (...)
-                {
-                    CCOUT(1) << "Joy stick destruction failed! Potential resource leak!" << std::endl;
-                }
+                delete joySticks_.back();
             }
-
-            joySticks_.clear();
-            // don't use _configureNumberOfJoySticks(), might mess with registered handler if
-            // downgrading from 2 to 1 joystick
-            //_configureNumberOfJoySticks();
-            joySticksSize_ = 0;
+            catch (...)
+            {
+                CCOUT(1) << "Joy stick destruction failed! Potential resource leak!" << std::endl;
+            }
+            joySticks_.pop_back();
+            devicesNum_ = 2;
         }
         CCOUT(4) << "Joy sticks destroyed." << std::endl;
     }
@@ -668,24 +500,6 @@ namespace orxonox
         delete state;
     }
 
-    void InputManager::_clearBuffers()
-    {
-        keysDown_.clear();
-        keyboardModifiers_ = 0;
-        mouseButtonsDown_.clear();
-        for (unsigned int i = 0; i < joySticksSize_; ++i)
-        {
-            joyStickButtonsDown_[i].clear();
-            for (int j = 0; j < 4; ++j)
-            {
-                sliderStates_[i].sliderStates[j].x = 0;
-                sliderStates_[i].sliderStates[j].y = 0;
-                povStates_[i][j] = 0;
-            }
-        }
-    }
-
-
     // ############################################################
     // #####                     Reloading                    #####
     // ##########                                        ##########
@@ -695,10 +509,8 @@ namespace orxonox
     @brief
         Public interface. Only reloads immediately if the call stack doesn't
         include the update() method.
-    @param joyStickSupport
-        Whether or not to initialise joy sticks as well.
     */
-    void InputManager::reloadInputSystem(bool joyStickSupport)
+    void InputManager::reloadInputSystem()
     {
         if (internalState_ & Ticking)
         {
@@ -706,14 +518,9 @@ namespace orxonox
             // caused by a user clicking on a GUI item. The backtrace would then
             // include an OIS method. So it would be a very bad thing to destroy it..
             internalState_ |= ReloadRequest;
-            // Misuse of internalState_: We can easily store the joyStickSupport bool.
-            // use Uninitialised as 0 value in order to make use of the overloaded |= operator
-            internalState_ |= joyStickSupport ? JoyStickSupport : Uninitialised;
         }
         else if (internalState_ & OISReady)
-        {
-            _reload(joyStickSupport);
-        }
+            _reload();
         else
         {
             CCOUT(2) << "Warning: Cannot reload OIS. May not yet be initialised or"
@@ -725,7 +532,7 @@ namespace orxonox
     @brief
         Internal reload method. Destroys the OIS devices and loads them again.
     */
-    void InputManager::_reload(bool joyStickSupport)
+    void InputManager::_reload()
     {
         try
         {
@@ -746,9 +553,9 @@ namespace orxonox
             inputSystem_ = 0;
 
             // clear all buffers containing input information
-            _clearBuffers();
+            clearBuffers();
 
-            initialise(windowHnd_, mouseWidth, mouseHeight, joyStickSupport);
+            initialise(windowHnd_, mouseWidth, mouseHeight);
 
             CCOUT(3) << "Reloading done." << std::endl;
         }
@@ -775,9 +582,8 @@ namespace orxonox
             return;
         else if (internalState_ & ReloadRequest)
         {
-            _reload(internalState_ & JoyStickSupport);
+            _reload();
             internalState_ &= ~ReloadRequest;
-            internalState_ &= ~JoyStickSupport;
         }
 
         // check for states to leave
@@ -810,13 +616,8 @@ namespace orxonox
                 if ((*it)->getPriority() == 0)
                 {
                     // Get smallest possible priority between 1 and maxStateStackSize_s
-#if defined( __MINGW32__ ) // Avoid the strange mingw-stl bug with const_reverse_iterator
                     for(std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
                         rit != activeStates_.rend(); ++rit)
-#else
-                    for(std::map<int, InputState*>::const_reverse_iterator rit = activeStates_.rbegin();
-                        rit != activeStates_.rend(); ++rit)
-#endif
                     {
                         if (rit->first < InputStatePriority::HighPriority)
                         {
@@ -867,8 +668,8 @@ namespace orxonox
             keyboard_->capture();
         if (mouse_)
             mouse_->capture();
-        for (unsigned  int i = 0; i < joySticksSize_; i++)
-            joySticks_[i]->capture();
+        BOOST_FOREACH(JoyStick* stick, joySticks_)
+            stick->capture();
 
         if (!(internalState_ & Calibrating))
         {
@@ -887,14 +688,6 @@ namespace orxonox
                 for (unsigned int iState = 0; iState < activeStatesTriggered_[Mouse].size(); ++iState)
                     activeStatesTriggered_[Mouse][iState]->mouseButtonHeld(mouseButtonsDown_[iButton]);
             }
-
-            // call all the handlers for the held joy stick button events
-            for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
-                for (unsigned int iButton   = 0; iButton   < joyStickButtonsDown_[iJoyStick].size(); iButton++)
-                {
-                    for (unsigned int iState = 0; iState < activeStatesTriggered_[JoyStick0 + iJoyStick].size(); ++iState)
-                        activeStatesTriggered_[JoyStick0 + iJoyStick][iState]->joyStickButtonHeld(iJoyStick, joyStickButtonsDown_[iJoyStick][iButton]);
-                }
 
             // update the handlers for each active handler
             for (unsigned int i = 0; i < devicesNum_; ++i)
@@ -922,13 +715,8 @@ namespace orxonox
         {
             bool occupied = false;
             activeStatesTriggered_[i].clear();
-#if defined( __MINGW32__ ) // Avoid the strange mingw-stl bug with const_reverse_iterator
-            for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin(); rit != activeStates_.rend(); ++rit)
-            {
-#else
             for (std::map<int, InputState*>::const_reverse_iterator rit = activeStates_.rbegin(); rit != activeStates_.rend(); ++rit)
             {
-#endif
                 if (rit->second->isInputDeviceEnabled(i) && (!occupied || rit->second->bAlwaysGetsInput_))
                 {
                     activeStatesTriggered_[i].push_back(rit->second);
@@ -959,10 +747,11 @@ namespace orxonox
     */
     void InputManager::clearBuffers()
     {
-        this->keysDown_.clear();
-        this->mouseButtonsDown_.clear();
-        for (unsigned int i = 0; i < this->joySticksSize_; ++i)
-            this->joyStickButtonsDown_[i].clear();
+        keysDown_.clear();
+        keyboardModifiers_ = 0;
+        mouseButtonsDown_.clear();
+        BOOST_FOREACH(JoyStick* stick, joySticks_)
+            stick->clearBuffer();
     }
 
 
@@ -1123,140 +912,24 @@ namespace orxonox
     }
 
 
-    // ###### Joy Stick Events ######
+    // ############################################################
+    // #####                Friend functions                  #####
+    // ##########                                        ##########
+    // ############################################################
 
     /**
     @brief
-        Returns the joy stick ID (orxonox) according to a OIS::JoyStickEvent
+        Checks whether there is already a joy stick with the given ID string.
+    @return
+        Returns true if ID is ok (unique), false otherwise.
     */
-    inline unsigned int InputManager::_getJoystick(const OIS::JoyStickEvent& arg)
+    bool InputManager::checkJoyStickID(const std::string& idString)
     {
-        // use the device to identify which one called the method
-        OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
-        unsigned int iJoyStick = 0;
-        while (joySticks_[iJoyStick] != joyStick)
-            iJoyStick++;
-        // assert: Unknown joystick fired an event.
-        assert(iJoyStick != joySticksSize_);
-        return iJoyStick;
-    }
-
-    bool InputManager::buttonPressed(const OIS::JoyStickEvent &arg, int button)
-    {
-        unsigned int iJoyStick = _getJoystick(arg);
-
-        // check whether the button already is in the list (can happen when focus was lost)
-        std::vector<JoyStickButtonCode::ByEnum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
-        unsigned int iButton = 0;
-        while (iButton < buttonsDown.size() && buttonsDown[iButton] != button)
-            iButton++;
-        if (iButton == buttonsDown.size())
-            buttonsDown.push_back((JoyStickButtonCode::ByEnum)button);
-
-        for (unsigned int iState = 0; iState < activeStatesTriggered_[2 + iJoyStick].size(); ++iState)
-            activeStatesTriggered_[2 + iJoyStick][iState]->joyStickButtonPressed(iJoyStick, (JoyStickButtonCode::ByEnum)button);
-
-        return true;
-    }
-
-    bool InputManager::buttonReleased(const OIS::JoyStickEvent &arg, int button)
-    {
-        unsigned int iJoyStick = _getJoystick(arg);
-
-        // remove the button from the joyStickButtonsDown_ list
-        std::vector<JoyStickButtonCode::ByEnum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
-        for (unsigned int iButton = 0; iButton < buttonsDown.size(); iButton++)
+        BOOST_FOREACH(JoyStick* stick, joySticks_)
         {
-            if (buttonsDown[iButton] == button)
-            {
-                buttonsDown.erase(buttonsDown.begin() + iButton);
-                break;
-            }
+            if (stick->getIDString() == idString)
+                return false;
         }
-
-        for (unsigned int iState = 0; iState < activeStatesTriggered_[2 + iJoyStick].size(); ++iState)
-            activeStatesTriggered_[2 + iJoyStick][iState]->joyStickButtonReleased(iJoyStick, (JoyStickButtonCode::ByEnum)button);
-
-        return true;
-    }
-
-    /**
-    @brief
-        Calls the states for a particular axis with our enumeration.
-        Used by OIS sliders and OIS axes.
-    */
-    void InputManager::_fireAxis(unsigned int iJoyStick, int axis, int value)
-    {
-        if (internalState_ & Calibrating)
-        {
-            if (value < joyStickMinValues_[iJoyStick][axis])
-                joyStickMinValues_[iJoyStick][axis] = value;
-            if (value > joyStickMaxValues_[iJoyStick][axis])
-                joyStickMaxValues_[iJoyStick][axis] = value;
-        }
-        else
-        {
-            float fValue = static_cast<float>(value - joyStickCalibrations_[iJoyStick].middleValue[axis]);
-            if (fValue > 0.0f)
-                fValue *= joyStickCalibrations_[iJoyStick].positiveCoeff[axis];
-            else
-                fValue *= joyStickCalibrations_[iJoyStick].negativeCoeff[axis];
-
-            for (unsigned int iState = 0; iState < activeStatesTriggered_[2 + iJoyStick].size(); ++iState)
-                activeStatesTriggered_[2 + iJoyStick][iState]->joyStickAxisMoved(iJoyStick, axis, fValue);
-        }
-    }
-
-    bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
-    {
-        unsigned int iJoyStick = _getJoystick(arg);
-
-        // keep in mind that the first 8 axes are reserved for the sliders
-        _fireAxis(iJoyStick, axis + sliderAxes, arg.state.mAxes[axis].abs);
-
-        return true;
-    }
-
-    bool InputManager::sliderMoved(const OIS::JoyStickEvent &arg, int id)
-    {
-        unsigned int iJoyStick = _getJoystick(arg);
-
-        if (sliderStates_[iJoyStick].sliderStates[id].x != arg.state.mSliders[id].abX)
-            _fireAxis(iJoyStick, id * 2, arg.state.mSliders[id].abX);
-        else if (sliderStates_[iJoyStick].sliderStates[id].y != arg.state.mSliders[id].abY)
-            _fireAxis(iJoyStick, id * 2 + 1, arg.state.mSliders[id].abY);
-
-        return true;
-    }
-
-    bool InputManager::povMoved(const OIS::JoyStickEvent &arg, int id)
-    {
-        unsigned int iJoyStick = _getJoystick(arg);
-
-        // translate the POV into 8 simple buttons
-
-        int lastState = povStates_[iJoyStick][id];
-        if (lastState & OIS::Pov::North)
-            buttonReleased(arg, 32 + id * 4 + 0);
-        if (lastState & OIS::Pov::South)
-            buttonReleased(arg, 32 + id * 4 + 1);
-        if (lastState & OIS::Pov::East)
-            buttonReleased(arg, 32 + id * 4 + 2);
-        if (lastState & OIS::Pov::West)
-            buttonReleased(arg, 32 + id * 4 + 3);
-
-        povStates_[iJoyStick].povStates[id] = arg.state.mPOV[id].direction;
-
-        int currentState = povStates_[iJoyStick][id];
-        if (currentState & OIS::Pov::North)
-            buttonPressed(arg, 32 + id * 4 + 0);
-        if (currentState & OIS::Pov::South)
-            buttonPressed(arg, 32 + id * 4 + 1);
-        if (currentState & OIS::Pov::East)
-            buttonPressed(arg, 32 + id * 4 + 2);
-        if (currentState & OIS::Pov::West)
-            buttonPressed(arg, 32 + id * 4 + 3);
-
         return true;
     }
 
@@ -1335,7 +1008,7 @@ namespace orxonox
                 }
             }
             inputStatesByName_[name] = state;
-            state->setNumOfJoySticks(numberOfJoySticks());
+            state->JoyStickDeviceNumberChanged(numberOfJoySticks());
             state->setName(name);
             state->bAlwaysGetsInput_ = bAlwaysGetsInput;
             state->bTransparent_ = bTransparent;
@@ -1501,9 +1174,9 @@ namespace orxonox
     @brief
         Reloads the input system
     */
-    void InputManager::reload(bool joyStickSupport)
+    void InputManager::reload()
     {
-        getInstance().reloadInputSystem(joyStickSupport);
+        getInstance().reloadInputSystem();
     }
 
 

@@ -53,34 +53,6 @@
 
 namespace orxonox
 {
-    /**
-    @brief
-        Helper class to realise a vector<int[4]>
-    */
-    class POVStates
-    {
-    public:
-        int& operator[](unsigned int index) { return povStates[index]; }
-        int povStates[4];
-    };
-
-    /**
-    @brief
-        Helper class to realise a vector< {int[4], int[4]} >
-    */
-    class SliderStates
-    {
-    public:
-        IntVector2 sliderStates[4];
-    };
-
-    struct JoyStickCalibration
-    {
-        int middleValue[24];
-        float positiveCoeff[24];
-        float negativeCoeff[24];
-    };
-
     struct InputStatePriority : OrxEnum<InputStatePriority>
     {
         OrxEnumConstructors(InputStatePriority);
@@ -100,10 +72,11 @@ namespace orxonox
     */
     class _CoreExport InputManager
         : public OrxonoxClass,
-        public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
+        public OIS::KeyListener, public OIS::MouseListener
     {
         // --> setConfigValues is private
         friend class ClassIdentifier<InputManager>;
+        friend class JoyStick;
 
     public:
         enum InputManagerState
@@ -114,21 +87,20 @@ namespace orxonox
             Ticking          = 0x04,
             Calibrating      = 0x08,
             ReloadRequest    = 0x10,
-            JoyStickSupport  = 0x20 // used with ReloadRequest to store a bool
         };
 
-        InputManager ();
+        InputManager (size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
         ~InputManager();
 
-        void initialise(size_t windowHnd, int windowWidth, int windowHeight, bool joyStickSupport = true);
+        void initialise(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
 
-        void reloadInputSystem(bool joyStickSupport = true);
+        void reloadInputSystem();
 
         void clearBuffers();
 
         unsigned int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
         unsigned int  numberOfMice()      { return mouse_    ? 1 : 0; }
-        unsigned int  numberOfJoySticks() { return joySticksSize_; }
+        unsigned int  numberOfJoySticks() { return joySticks_.size(); }
 
         void setWindowExtents(const int width, const int height);
         void setKeyDetectorCallback(const std::string& command);
@@ -155,11 +127,14 @@ namespace orxonox
 
         // console commands
         static void calibrate();
-        static void reload(bool joyStickSupport = true);
+        static void reload();
 
     public: // variables
         static EmptyHandler                 EMPTY_HANDLER;
-        static const unsigned int           sliderAxes = 8;
+
+    private: // functions for friends
+        OIS::InputManager* getInputSystem() { return this->inputSystem_; }
+        bool checkJoyStickID(const std::string&);
 
     private: // functions
         // don't mess with a Singleton
@@ -167,7 +142,7 @@ namespace orxonox
 
         // Intenal methods
         void _initialiseKeyboard();
-        void _initialiseMouse();
+        void _initialiseMouse(unsigned int windowWidth, unsigned int windowHeight);
         void _initialiseJoySticks();
         void _configureJoySticks();
 
@@ -180,9 +155,8 @@ namespace orxonox
         void _destroyMouse();
         void _destroyJoySticks();
         void _destroyState(InputState* state);
-        void _clearBuffers();
 
-        void _reload(bool joyStickSupport);
+        void _reload();
 
         void _fireAxis(unsigned int iJoyStick, int axis, int value);
         unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
@@ -196,13 +170,6 @@ namespace orxonox
         bool mouseMoved    (const OIS::MouseEvent    &arg);
         bool keyPressed    (const OIS::KeyEvent      &arg);
         bool keyReleased   (const OIS::KeyEvent      &arg);
-        bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
-        bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
-        bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
-        bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
-        bool povMoved      (const OIS::JoyStickEvent &arg, int id);
-        // don't remove that! Or else add OIS as dependency library to orxonox.
-        bool vector3Moved  (const OIS::JoyStickEvent &arg, int id) { return true; }
 
         void setConfigValues();
         void _calibrationFileCallback();
@@ -211,9 +178,7 @@ namespace orxonox
         OIS::InputManager*                  inputSystem_;          //!< OIS input manager
         OIS::Keyboard*                      keyboard_;             //!< OIS mouse
         OIS::Mouse*                         mouse_;                //!< OIS keyboard
-        std::vector<OIS::JoyStick*>         joySticks_;            //!< OIS joy sticks
-        unsigned int                        joySticksSize_;
-        std::vector<std::string>            joyStickIDs_;          //!< Execution unique identification strings for the joy sticks
+        std::vector<JoyStick*>              joySticks_;            //!< Orxonox joy sticks
         unsigned int                        devicesNum_;
         size_t                              windowHnd_;            //!< Render window handle
         InputManagerState                   internalState_;        //!< Current internal state
@@ -233,23 +198,10 @@ namespace orxonox
         std::vector<std::vector<InputState*> > activeStatesTriggered_;
         std::vector<InputState*>            activeStatesTicked_;
 
-        // joystick calibration
-        std::vector<std::vector<int> >      joyStickMinValues_;
-        std::vector<std::vector<int> >      joyStickMaxValues_;
-        std::vector<std::vector<int> >      joyStickMiddleValues_;
-        std::vector<ConfigValueContainer*>  calibrationConfigValueContainers_;
-        std::vector<JoyStickCalibration>    joyStickCalibrations_; 
-
         unsigned int                        keyboardModifiers_;    //!< Bit mask representing keyboard modifiers.
-        std::vector<POVStates>              povStates_;            //!< Keeps track of the joy stick POV states.
-        std::vector<SliderStates>           sliderStates_;         //!< Keeps track of the possibly two slider axes.
 
         std::vector<Key>                    keysDown_;
-        std::vector<MouseButtonCode::ByEnum>      mouseButtonsDown_;
-        std::vector<std::vector<JoyStickButtonCode::ByEnum> >  joyStickButtonsDown_;
-
-        // ConfigValues
-        std::string                         calibrationFilename_;  //!< Joy stick calibration ini filename
+        std::vector<MouseButtonCode::ByEnum> mouseButtonsDown_;
 
         static InputManager*                singletonRef_s;
     };

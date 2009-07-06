@@ -118,6 +118,12 @@ namespace orxonox
         }
     }
 
+    inline void SimpleInputState::keyPressed(const KeyEvent& evt)
+    {
+        if (keyHandler_)
+            keyHandler_->keyPressed(evt);
+    }
+
     inline void SimpleInputState::keyReleased(const KeyEvent& evt)
     {
         if (keyHandler_)

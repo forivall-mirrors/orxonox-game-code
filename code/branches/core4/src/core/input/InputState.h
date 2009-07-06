@@ -39,10 +39,11 @@
 #include <string>
 #include <vector>
 #include "InputInterfaces.h"
+#include "JoyStickDeviceNumberListener.h"
 
 namespace orxonox
 {
-    class _CoreExport InputState
+    class _CoreExport InputState : public JoyStickDeviceNumberListener
     {
         friend class InputManager;
 
@@ -110,7 +111,7 @@ namespace orxonox
         Executor*                                   executorOnLeave_;
 
     private:
-        void setNumOfJoySticks(unsigned int n)
+        void JoyStickDeviceNumberChanged(unsigned int n)
         {
             bInputDeviceEnabled_.resize(n + 2);
             numberOfJoySticksChanged(n);
