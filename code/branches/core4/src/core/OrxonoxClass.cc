@@ -77,42 +77,42 @@ namespace orxonox
 
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */
-    bool OrxonoxClass::isA(const SubclassIdentifier<class B>* identifier)
+    template <class B> bool OrxonoxClass::isA(const SubclassIdentifier<B>* identifier)
         { return this->getIdentifier()->isA(identifier->getIdentifier()); }
     /** @brief Returns true if the objects class is exactly of the given type. */
-    bool OrxonoxClass::isExactlyA(const SubclassIdentifier<class B>* identifier)
+    template <class B> bool OrxonoxClass::isExactlyA(const SubclassIdentifier<B>* identifier)
         { return this->getIdentifier()->isExactlyA(identifier->getIdentifier()); }
     /** @brief Returns true if the objects class is a child of the given type. */
-    bool OrxonoxClass::isChildOf(const SubclassIdentifier<class B>* identifier)
+    template <class B> bool OrxonoxClass::isChildOf(const SubclassIdentifier<B>* identifier)
         { return this->getIdentifier()->isChildOf(identifier->getIdentifier()); }
     /** @brief Returns true if the objects class is a direct child of the given type. */
-    bool OrxonoxClass::isDirectChildOf(const SubclassIdentifier<class B>* identifier)
+    template <class B> bool OrxonoxClass::isDirectChildOf(const SubclassIdentifier<B>* identifier)
         { return this->getIdentifier()->isDirectChildOf(identifier->getIdentifier()); }
     /** @brief Returns true if the objects class is a parent of the given type. */
-    bool OrxonoxClass::isParentOf(const SubclassIdentifier<class B>* identifier)
+    template <class B> bool OrxonoxClass::isParentOf(const SubclassIdentifier<B>* identifier)
         { return this->getIdentifier()->isParentOf(identifier->getIdentifier()); }
     /** @brief Returns true if the objects class is a direct parent of the given type. */
-    bool OrxonoxClass::isDirectParentOf(const SubclassIdentifier<class B>* identifier)
+    template <class B> bool OrxonoxClass::isDirectParentOf(const SubclassIdentifier<B>* identifier)
         { return this->getIdentifier()->isDirectParentOf(identifier->getIdentifier()); }
 
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */
-    bool OrxonoxClass::isA(const SubclassIdentifier<class B> identifier)
+    template <class B> bool OrxonoxClass::isA(const SubclassIdentifier<B> identifier)
         { return this->getIdentifier()->isA(identifier.getIdentifier()); }
     /** @brief Returns true if the objects class is exactly of the given type. */
-    bool OrxonoxClass::isExactlyA(const SubclassIdentifier<class B> identifier)
+    template <class B> bool OrxonoxClass::isExactlyA(const SubclassIdentifier<B> identifier)
         { return this->getIdentifier()->isExactlyA(identifier.getIdentifier()); }
     /** @brief Returns true if the objects class is a child of the given type. */
-    bool OrxonoxClass::isChildOf(const SubclassIdentifier<class B> identifier)
+    template <class B> bool OrxonoxClass::isChildOf(const SubclassIdentifier<B> identifier)
         { return this->getIdentifier()->isChildOf(identifier.getIdentifier()); }
     /** @brief Returns true if the objects class is a direct child of the given type. */
-    bool OrxonoxClass::isDirectChildOf(const SubclassIdentifier<class B> identifier)
+    template <class B> bool OrxonoxClass::isDirectChildOf(const SubclassIdentifier<B> identifier)
         { return this->getIdentifier()->isDirectChildOf(identifier.getIdentifier()); }
     /** @brief Returns true if the objects class is a parent of the given type. */
-    bool OrxonoxClass::isParentOf(const SubclassIdentifier<class B> identifier)
+    template <class B> bool OrxonoxClass::isParentOf(const SubclassIdentifier<B> identifier)
         { return this->getIdentifier()->isParentOf(identifier.getIdentifier()); }
     /** @brief Returns true if the objects class is a direct parent of the given type. */
-    bool OrxonoxClass::isDirectParentOf(const SubclassIdentifier<class B> identifier)
+    template <class B> bool OrxonoxClass::isDirectParentOf(const SubclassIdentifier<B> identifier)
         { return this->getIdentifier()->isDirectParentOf(identifier.getIdentifier()); }
 
 
