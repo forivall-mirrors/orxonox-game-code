@@ -54,7 +54,6 @@
 #include "KeyDetector.h"
 #include "InputState.h"
 #include "SimpleInputState.h"
-#include "ExtendedInputState.h"
 #include "JoyStickDeviceNumberListener.h"
 #include "JoyStick.h"
 

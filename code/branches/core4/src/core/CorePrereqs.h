@@ -173,7 +173,6 @@ namespace orxonox
     class BufferedParamCommand;
     class Button;
     class CalibratorCallback;
-    class ExtendedInputState;
     class HalfAxis;
     class InputBuffer;
     class InputManager;
