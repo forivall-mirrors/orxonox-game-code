@@ -1,6 +1,5 @@
 ADD_SOURCE_FILES(CORE_SRC_FILES
   Button.cc
-  ExtendedInputState.cc
   HalfAxis.cc
   InputBuffer.cc
   InputCommands.cc
