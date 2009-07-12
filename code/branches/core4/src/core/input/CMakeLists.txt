@@ -4,9 +4,11 @@ ADD_SOURCE_FILES(CORE_SRC_FILES
   InputBuffer.cc
   InputCommands.cc
   InputManager.cc
+  InputState.cc
   JoyStick.cc
-  JoyStickDeviceNumberListener.cc
+  JoyStickQuantityListener.cc
   KeyBinder.cc
+  Keyboard.cc
   KeyDetector.cc
-  SimpleInputState.cc
+  Mouse.cc
 )

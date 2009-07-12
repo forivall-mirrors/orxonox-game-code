@@ -28,25 +28,17 @@
 
 /**
 @file
-@brief 
+@brief
+    Implementation of the JoyStickQuantityListener class.
 */
 
-#ifndef _JoyStickDeviceNumberListener_H__
-#define _JoyStickDeviceNumberListener_H__
-
-#include "core/CorePrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "JoyStickQuantityListener.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _CoreExport JoyStickDeviceNumberListener : virtual public OrxonoxClass
+    JoyStickQuantityListener::JoyStickQuantityListener()
     {
-    public:
-        JoyStickDeviceNumberListener();
-        virtual ~JoyStickDeviceNumberListener() { }
-
-        virtual void JoyStickDeviceNumberChanged(unsigned int value) = 0;
-    };
+        RegisterObject(JoyStickQuantityListener);
+    }
 }
-
-#endif /* _JoyStickDeviceNumberListener_H__ */

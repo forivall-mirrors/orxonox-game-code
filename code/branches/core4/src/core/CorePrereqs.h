@@ -175,17 +175,20 @@ namespace orxonox
     class CalibratorCallback;
     class HalfAxis;
     class InputBuffer;
+    class InputDevice;
+    template <class Traits>
+    class InputDeviceTemplated;
+    class InputHandler;
     class InputManager;
     class InputState;
     class JoyStick;
-    class JoyStickHandler;
-    class MouseHandler;
+    class Mouse;
+    class Keyboard;
     class KeyBinder;
     class KeyDetector;
-    class KeyHandler;
     class ParamCommand;
     class SimpleCommand;
-    class SimpleInputState;
+
 }
 
 // CppTcl

@@ -31,7 +31,7 @@
 #include <OgreSceneManager.h>
 
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
+#include "core/input/InputState.h"
 #include "core/Game.h"
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
@@ -56,9 +56,9 @@ namespace orxonox
 
     void GSMainMenu::activate()
     {
-        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("mainMenu");
+        inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setHandler(GUIManager::getInstancePtr());
-        inputState_->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
+        inputState_->setJoyStickHandler(&InputHandler::EMPTY);
 
         // create an empty Scene
         this->scene_ = new Scene(0);

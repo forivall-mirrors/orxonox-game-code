@@ -183,24 +183,24 @@ namespace orxonox
     }
 
 
-    void InputBuffer::processKey(const KeyEvent &evt)
+    void InputBuffer::processKey(const KeyEvent& evt)
     {
-        if (evt.isModifierDown(KeyboardModifier::Alt) && evt.key == KeyCode::Tab)
+        if (evt.isModifierDown(KeyboardModifier::Alt) && evt.getKeyCode() == KeyCode::Tab)
             return;
 
         for (std::list<BaseInputBufferListenerTuple*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            if ((*it)->trueKeyFalseChar_ && ((*it)->key_ == evt.key))
+            if ((*it)->trueKeyFalseChar_ && ((*it)->key_ == evt.getKeyCode()))
                 (*it)->callFunction();
         }
 
         if (evt.isModifierDown(KeyboardModifier::Ctrl))
         {
-            if (evt.key == KeyCode::V)
+            if (evt.getKeyCode() == KeyCode::V)
                 this->insert(fromClipboard());
-            else if (evt.key == KeyCode::C)
+            else if (evt.getKeyCode() == KeyCode::C)
                 toClipboard(this->buffer_);
-            else if (evt.key == KeyCode::X)
+            else if (evt.getKeyCode() == KeyCode::X)
             {
                 toClipboard(this->buffer_);
                 this->clear();
@@ -208,23 +208,23 @@ namespace orxonox
         }
         else if (evt.isModifierDown(KeyboardModifier::Shift))
         {
-            if (evt.key == KeyCode::Insert)
+            if (evt.getKeyCode() == KeyCode::Insert)
                 this->insert(fromClipboard());
-            else if (evt.key == KeyCode::Delete)
+            else if (evt.getKeyCode() == KeyCode::Delete)
             {
                 toClipboard(this->buffer_);
                 this->clear();
             }
         }
 
-        this->insert((char)evt.text);
+        this->insert((char)evt.getText());
     }
 
     /**
         @brief This update() function is called by the InputManager if the InputBuffer is active.
         @param dt Delta time
     */
-    void InputBuffer::updateInput(float dt)
+    void InputBuffer::keyboardUpdated(float dt)
     {
         timeSinceKeyPressed_ += dt;
         if (keysToRepeat_ < 10 && timeSinceKeyPressed_ > keyRepeatDeleay_)
@@ -238,9 +238,9 @@ namespace orxonox
         }
     }
 
-    void InputBuffer::keyPressed(const KeyEvent &evt)
+    void InputBuffer::buttonPressed(const KeyEvent& evt)
     {
-        lastKey_ = evt.key;
+        lastKey_ = evt.getKeyCode();
         timeSinceKeyPressed_ = 0.0;
         timeSinceKeyRepeated_ = keyRepeatDeleay_;
         keysToRepeat_ = 0;
@@ -248,9 +248,9 @@ namespace orxonox
         processKey(evt);
     }
 
-    void InputBuffer::keyHeld(const KeyEvent& evt)
+    void InputBuffer::buttonHeld(const KeyEvent& evt)
     {
-        if (evt.key == lastKey_)
+        if (evt.getKeyCode() == lastKey_)
         {
             while (keysToRepeat_)
             {

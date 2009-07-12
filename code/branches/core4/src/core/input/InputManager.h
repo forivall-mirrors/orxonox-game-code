@@ -36,20 +36,16 @@
 #ifndef _InputManager_H__
 #define _InputManager_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
-#include <ois/OISKeyboard.h>
-#include <ois/OISMouse.h>
-#include <ois/OISJoyStick.h>
 
 #include "util/Math.h"
 #include "util/OrxEnum.h"
 #include "core/OrxonoxClass.h"
-#include "InputInterfaces.h"
 
 namespace orxonox
 {
@@ -70,13 +66,10 @@ namespace orxonox
     @brief
         Captures and distributes mouse and keyboard input.
     */
-    class _CoreExport InputManager
-        : public OrxonoxClass,
-        public OIS::KeyListener, public OIS::MouseListener
+    class _CoreExport InputManager : public OrxonoxClass
     {
         // --> setConfigValues is private
         friend class ClassIdentifier<InputManager>;
-        friend class JoyStick;
 
     public:
         enum InputManagerState
@@ -98,21 +91,21 @@ namespace orxonox
 
         void clearBuffers();
 
-        unsigned int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
-        unsigned int  numberOfMice()      { return mouse_    ? 1 : 0; }
-        unsigned int  numberOfJoySticks() { return joySticks_.size(); }
-
         void setWindowExtents(const int width, const int height);
         void setKeyDetectorCallback(const std::string& command);
 
-        template <class T>
-        T* createInputState(const std::string& name, bool bAlwaysGetsInput = false, bool bTransparent = false, InputStatePriority priority = InputStatePriority::Dynamic);
+        InputState* createInputState(const std::string& name, bool bAlwaysGetsInput = false, bool bTransparent = false, InputStatePriority priority = InputStatePriority::Dynamic);
 
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
         bool requestDestroyState   (const std::string& name);
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
+
+        OIS::InputManager* getInputSystem() { return this->inputSystem_; }
+        bool checkJoyStickID(const std::string& idString) const;
+        unsigned int getJoyStickQuantity() const
+            { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
 
 #ifdef ORXONOX_PLATFORM_LINUX
         // HACK!
@@ -129,62 +122,35 @@ namespace orxonox
         static void calibrate();
         static void reload();
 
-    public: // variables
-        static EmptyHandler                 EMPTY_HANDLER;
-
-    private: // functions for friends
-        OIS::InputManager* getInputSystem() { return this->inputSystem_; }
-        bool checkJoyStickID(const std::string&);
-
     private: // functions
         // don't mess with a Singleton
-        InputManager (const InputManager&);
+        InputManager(const InputManager&);
 
         // Intenal methods
         void _initialiseKeyboard();
         void _initialiseMouse(unsigned int windowWidth, unsigned int windowHeight);
         void _initialiseJoySticks();
-        void _configureJoySticks();
 
-        void _loadCalibration();
         void _startCalibration();
-        void _completeCalibration();
-        void _evaluateCalibration();
+        void _stopCalibration();
 
-        void _destroyKeyboard();
-        void _destroyMouse();
-        void _destroyJoySticks();
         void _destroyState(InputState* state);
 
         void _reload();
 
-        void _fireAxis(unsigned int iJoyStick, int axis, int value);
-        unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
-
         void _updateActiveStates();
         bool _configureInputState(InputState* state, const std::string& name, bool bAlwaysGetsInput, bool bTransparent, int priority);
 
-        // input events
-        bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
-        bool mouseReleased (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
-        bool mouseMoved    (const OIS::MouseEvent    &arg);
-        bool keyPressed    (const OIS::KeyEvent      &arg);
-        bool keyReleased   (const OIS::KeyEvent      &arg);
-
         void setConfigValues();
-        void _calibrationFileCallback();
 
     private: // variables
         OIS::InputManager*                  inputSystem_;          //!< OIS input manager
-        OIS::Keyboard*                      keyboard_;             //!< OIS mouse
-        OIS::Mouse*                         mouse_;                //!< OIS keyboard
-        std::vector<JoyStick*>              joySticks_;            //!< Orxonox joy sticks
-        unsigned int                        devicesNum_;
+        std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
         size_t                              windowHnd_;            //!< Render window handle
         InputManagerState                   internalState_;        //!< Current internal state
 
         // some internally handled states and handlers
-        SimpleInputState*                   stateEmpty_;
+        InputState*                         stateEmpty_;
         KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         InputBuffer*                        calibratorCallbackBuffer_;
 
@@ -195,44 +161,10 @@ namespace orxonox
         std::set<InputState*>               stateDestroyRequests_; //!< Request to destroy a state
 
         std::map<int, InputState*>          activeStates_;
-        std::vector<std::vector<InputState*> > activeStatesTriggered_;
         std::vector<InputState*>            activeStatesTicked_;
-
-        unsigned int                        keyboardModifiers_;    //!< Bit mask representing keyboard modifiers.
-
-        std::vector<Key>                    keysDown_;
-        std::vector<MouseButtonCode::ByEnum> mouseButtonsDown_;
 
         static InputManager*                singletonRef_s;
     };
-
-    /**
-    @brief
-        Creates a new InputState by type, name and priority.
-        
-        You will have to use this method because the
-        c'tors and d'tors are private.
-    @remarks
-        The InputManager will take care of the state completely. That also
-        means it gets deleted when the InputManager is destroyed!
-    @param name
-        Name of the InputState when referenced as string
-    @param priority
-        Priority matters when multiple states are active. You can specify any
-        number, but 1 - 99 is preferred (99 means high).
-    */
-    template <class T>
-    T* InputManager::createInputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
-    {
-        T* state = new T;
-        if (_configureInputState(state, name, bAlwaysGetsInput, bTransparent, priority))
-            return state;
-        else
-        {
-            delete state;
-            return 0;
-        }
-    }
 }
 
 #endif /* _InputManager_H__ */

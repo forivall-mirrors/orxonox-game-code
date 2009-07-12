@@ -72,9 +72,9 @@ namespace orxonox
         }
     }
 
-    void KeyDetector::JoyStickDeviceNumberChanged(unsigned int value)
+    void KeyDetector::JoyStickQuantityChanged(unsigned int value)
     {
-        KeyBinder::JoyStickDeviceNumberChanged(value);
+        KeyBinder::JoyStickQuantityChanged(value);
         setCallbackCommand(callbackCommand_);
     }
 }

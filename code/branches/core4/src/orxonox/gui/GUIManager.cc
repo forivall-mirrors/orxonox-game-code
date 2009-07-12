@@ -365,11 +365,12 @@ namespace orxonox
 
     void GUIManager::keyPressed(const KeyEvent& evt)
     {
-        guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text);
+        guiSystem_->injectKeyDown(evt.getKeyCode());
+        guiSystem_->injectChar(evt.getText());
     }
     void GUIManager::keyReleased(const KeyEvent& evt)
     {
-        guiSystem_->injectKeyUp(evt.key);
+        guiSystem_->injectKeyUp(evt.getKeyCode());
     }
 
     /**
@@ -381,7 +382,7 @@ namespace orxonox
         This function is inherited by MouseHandler and injects the event into CEGUI.
         It is for CEGUI to process the event.
     */
-    void GUIManager::mouseButtonPressed(MouseButtonCode::ByEnum id)
+    void GUIManager::buttonPressed(MouseButtonCode::ByEnum id)
     {
         try
         {
@@ -403,7 +404,7 @@ namespace orxonox
         This function is inherited by MouseHandler and injects the event into CEGUI.
         It is for CEGUI to process the event.
     */
-    void GUIManager::mouseButtonReleased(MouseButtonCode::ByEnum id)
+    void GUIManager::buttonReleased(MouseButtonCode::ByEnum id)
     {
         try
         {

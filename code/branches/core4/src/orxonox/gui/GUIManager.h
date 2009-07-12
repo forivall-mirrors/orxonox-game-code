@@ -43,7 +43,7 @@
 #include <CEGUIForwardRefs.h>
 
 #include "util/OgreForwardRefs.h"
-#include "core/input/InputInterfaces.h"
+#include "core/input/InputHandler.h"
 
 // tolua_begin
 namespace orxonox
@@ -61,7 +61,7 @@ namespace orxonox
     */
     class _OrxonoxExport GUIManager
 // tolua_end
-        : public KeyHandler, public MouseHandler
+        : public InputHandler
 // tolua_begin
     {
 // tolua_end
@@ -105,18 +105,12 @@ namespace orxonox
         // keyHandler functions
         void keyPressed (const KeyEvent& evt);
         void keyReleased(const KeyEvent& evt);
-        void keyHeld    (const KeyEvent& evt) { }
 
         // mouseHandler functions
-        void mouseButtonPressed (MouseButtonCode::ByEnum id);
-        void mouseButtonReleased(MouseButtonCode::ByEnum id);
-        void mouseButtonHeld    (MouseButtonCode::ByEnum id) { }
-        void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
-        void mouseScrolled      (int abs, int rel);
-
-        void updateInput(float dt)  { }
-        void updateKey  (float dt)  { }
-        void updateMouse(float dt)  { }
+        void buttonPressed (MouseButtonCode::ByEnum id);
+        void buttonReleased(MouseButtonCode::ByEnum id);
+        void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+        void mouseScrolled (int abs, int rel);
 
         Ogre::RenderWindow*         renderWindow_;      //!< Ogre's render window to give CEGUI access to it
         CEGUI::OgreCEGUIRenderer*   guiRenderer_;       //!< CEGUI's interface to the Ogre Engine

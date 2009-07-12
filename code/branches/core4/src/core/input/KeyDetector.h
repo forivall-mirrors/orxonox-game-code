@@ -35,7 +35,7 @@
 #ifndef _KeyDetector_H__
 #define _KeyDetector_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
 #include <string>
 #include "KeyBinder.h"
@@ -48,7 +48,7 @@ namespace orxonox
         KeyDetector();
         ~KeyDetector();
         void setCallbackCommand(const std::string& command);
-        void JoyStickDeviceNumberChanged(unsigned int value);
+        void JoyStickQuantityChanged(unsigned int value);
 
     private:
         std::string callbackCommand_;

@@ -26,12 +26,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Implementation of the JoyStick wrapper class.
-*/
-
 #include "JoyStick.h"
 
 #include <ois/OISJoyStick.h>
@@ -53,70 +47,46 @@ namespace orxonox
     */
     void loadCalibration(std::vector<int>& list, const std::string& sectionName, const std::string& valueName, size_t size, int defaultValue);
 
-    JoyStick::JoyStick(const std::vector<InputState*>& states, unsigned int id)
-        : id_(id)
-        , bCalibrating_(false)
-        , inputStates_(states)
+    JoyStick::JoyStick(unsigned int id)
+        : super(id)
     {
         RegisterRootObject(JoyStick);
         this->setConfigValues();
-
-        OIS::InputManager* system = InputManager::getInstance().getInputSystem();
-        oisJoyStick_ = static_cast<OIS::JoyStick*>(system->createInputObject(OIS::OISJoyStick, true));
-        oisJoyStick_->setEventCallback(this);
+        // Initialise POV and Slider states
+        this->clearBuffersImpl();
 
         idString_ = "JoyStick_";
-        std::string name = oisJoyStick_->vendor();
+        std::string name = oisDevice_->vendor();
         replaceCharacters(name, ' ', '_');
         idString_ += name + "_";
-        idString_ += multi_cast<std::string>(oisJoyStick_->getNumberOfComponents(OIS::OIS_Button))  + "_";
-        idString_ += multi_cast<std::string>(oisJoyStick_->getNumberOfComponents(OIS::OIS_Axis))    + "_";
-        idString_ += multi_cast<std::string>(oisJoyStick_->getNumberOfComponents(OIS::OIS_Slider))  + "_";
-        idString_ += multi_cast<std::string>(oisJoyStick_->getNumberOfComponents(OIS::OIS_POV));
-        //idString_ += multi_cast<std::string>(oisJoyStick_->getNumberOfComponents(OIS::OIS_Vector3));
+        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Button))  + "_";
+        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis))    + "_";
+        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Slider))  + "_";
+        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_POV));
+        //idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Vector3));
 
         if (InputManager::getInstance().checkJoyStickID(idString_) == false)
         {
             // Make the ID unique for this execution time.
-            idString_ += "_" + multi_cast<std::string>(id_);
+            idString_ += "_" + multi_cast<std::string>(this->getDeviceID());
         }
 
         COUT(4) << "Created OIS joy stick with ID " << idString_ << std::endl;
 
         // Load calibration
-        size_t axes = sliderAxes_s + static_cast<size_t>(oisJoyStick_->getNumberOfComponents(OIS::OIS_Axis));
+        size_t axes = sliderAxes_s + static_cast<size_t>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis));
         loadCalibration(configMinValues_,  idString_, "MinValue",  axes,  -32768);
         loadCalibration(configMaxValues_,  idString_, "MaxValue",  axes,   32768);
         loadCalibration(configZeroValues_, idString_, "ZeroValue", axes, 0);
         this->evaluateCalibration();
     }
 
-    JoyStick::~JoyStick()
-    {
-        try
-        {
-            OIS::InputManager* system = InputManager::getInstance().getInputSystem();
-            system->destroyInputObject(oisJoyStick_);
-        }
-        catch (...)
-        {
-            COUT(1) << "Joy stick destruction failed! Potential resource leak!" << std::endl;
-        }
-    }
-
-    /**
-    @brief
-        Callback for the joy stick calibration config file. @see setConfigValues.
-    */
+    //!< Callback for the joy stick calibration config file.
     void JoyStick::calibrationFileCallback()
     {
         ConfigFileManager::getInstance().setFilename(ConfigFileType::JoyStickCalibration, calibrationFilename_);
     }
 
-    /**
-    @brief
-        Sets the configurable values.
-    */
     void JoyStick::setConfigValues()
     {
         SetConfigValue(calibrationFilename_, "joystick_calibration.ini")
@@ -139,15 +109,12 @@ namespace orxonox
 
         // fill the rest with default values
         for (unsigned int i = configValueVectorSize; i < size; ++i)
-        {
             list[i] = defaultValue;
-        }
     }
 
-    void JoyStick::startCalibration()
+    //! Called by InputDevice when calibration mode has started
+    void JoyStick::calibrationStarted()
     {
-        bCalibrating_ = true;
-
         // Set initial values
         BOOST_FOREACH(int& minVal, configMinValues_)
             minVal = INT_MAX;
@@ -157,19 +124,20 @@ namespace orxonox
             zeroVal = 0;
     }
 
-    void JoyStick::stopCalibration()
+    //! Called by InputDevice when calibration mode has stopped
+    void JoyStick::calibrationStopped()
     {
         // Get the middle positions now
         unsigned int iAxis = 0;
         for (unsigned int i = 0; i < sliderAxes_s/2; ++i)
         {
-            configZeroValues_[iAxis++] = oisJoyStick_->getJoyStickState().mSliders[i].abX;
-            configZeroValues_[iAxis++] = oisJoyStick_->getJoyStickState().mSliders[i].abY;
+            configZeroValues_[iAxis++] = oisDevice_->getJoyStickState().mSliders[i].abX;
+            configZeroValues_[iAxis++] = oisDevice_->getJoyStickState().mSliders[i].abY;
         }
-        // Note: joyStickMiddleValues_[iJoyStick] was already correctly resised in loadCalibration()
-        assert(oisJoyStick_->getJoyStickState().mAxes.size() == configZeroValues_.size() - sliderAxes_s);
+        // Note: joyStickZeroValues_[iJoyStick] was already correctly resised in loadCalibration()
+        assert(oisDevice_->getJoyStickState().mAxes.size() == configZeroValues_.size() - sliderAxes_s);
         for (unsigned int i = 0; i < configZeroValues_.size() - sliderAxes_s; ++i)
-            configZeroValues_[iAxis++] = oisJoyStick_->getJoyStickState().mAxes[i].abs;
+            configZeroValues_[iAxis++] = oisDevice_->getJoyStickState().mAxes[i].abs;
 
         for (unsigned int i = 0; i < configMinValues_.size(); ++i)
         {
@@ -191,10 +159,9 @@ namespace orxonox
         }
 
         this->evaluateCalibration();
-
-        bCalibrating_ = false;
     }
 
+    //! Evaluates the accumulated values during calibration
     void JoyStick::evaluateCalibration()
     {
         for (unsigned int i = 0; i < configMinValues_.size(); i++)
@@ -205,9 +172,9 @@ namespace orxonox
         }
     }
 
-    void JoyStick::clearBuffer()
+    // TODO: What do we really need to reset here?
+    void JoyStick::clearBuffersImpl()
     {
-        pressedButtons_.clear();
         for (int j = 0; j < 4; ++j)
         {
             povStates_[j] = 0;
@@ -216,62 +183,10 @@ namespace orxonox
         }
     }
 
-
-    // ###### Events ######
-
-    void JoyStick::capture()
-    {
-        oisJoyStick_->capture();
-
-        // call all the handlers for the held joy stick button events
-        for (unsigned int iButton = 0; iButton < pressedButtons_.size(); iButton++)
-        {
-            BOOST_FOREACH(InputState* state, inputStates_)
-                state->joyStickButtonHeld(id_, pressedButtons_[iButton]);
-        }
-    }
-
-    bool JoyStick::buttonPressed(const OIS::JoyStickEvent &arg, int button)
-    {
-        // check whether the button already is in the list (can happen when focus was lost)
-        unsigned int iButton = 0;
-        while (iButton < pressedButtons_.size() && pressedButtons_[iButton] != button)
-            iButton++;
-        if (iButton == pressedButtons_.size())
-            pressedButtons_.push_back(static_cast<JoyStickButtonCode::ByEnum>(button));
-
-        BOOST_FOREACH(InputState* state, inputStates_)
-            state->joyStickButtonPressed(id_, static_cast<JoyStickButtonCode::ByEnum>(button));
-
-        return true;
-    }
-
-    bool JoyStick::buttonReleased(const OIS::JoyStickEvent &arg, int button)
-    {
-        // remove the button from the pressedButtons_ list
-        for (unsigned int iButton = 0; iButton < pressedButtons_.size(); iButton++)
-        {
-            if (static_cast<int>(pressedButtons_[iButton]) == button)
-            {
-                pressedButtons_.erase(pressedButtons_.begin() + iButton);
-                break;
-            }
-        }
-
-        BOOST_FOREACH(InputState* state, inputStates_)
-            state->joyStickButtonPressed(id_, static_cast<JoyStickButtonCode::ByEnum>(button));
-
-        return true;
-    }
-
-    /**
-    @brief
-        Calls the states for a particular axis with our enumeration.
-        Used by OIS sliders and OIS axes.
-    */
+    //! Generic method to forward axis events
     void JoyStick::fireAxis(int axis, int value)
     {
-        if (bCalibrating_)
+        if (this->isCalibrating())
         {
             if (value < configMinValues_[axis])
                 configMinValues_[axis] = value;
@@ -287,10 +202,11 @@ namespace orxonox
                 fValue *= negativeCoeffs_[axis];
 
             BOOST_FOREACH(InputState* state, inputStates_)
-                state->joyStickAxisMoved(id_, axis, fValue);
+                state->joyStickAxisMoved(this->getDeviceID(), axis, fValue);
         }
     }
 
+    //! OIS joy stick axis event handler
     bool JoyStick::axisMoved(const OIS::JoyStickEvent &arg, int axis)
     {
         // keep in mind that the first 8 axes are reserved for the sliders
@@ -299,6 +215,7 @@ namespace orxonox
         return true;
     }
 
+    //! A Slider always has an X and an Y direction!
     bool JoyStick::sliderMoved(const OIS::JoyStickEvent &arg, int id)
     {
         if (sliderStates_[id][0] != arg.state.mSliders[id].abX)
@@ -309,6 +226,7 @@ namespace orxonox
         return true;
     }
 
+    //! A POV is the big button that can point in all directions (but only in one at once)
     bool JoyStick::povMoved(const OIS::JoyStickEvent &arg, int id)
     {
         // translate the POV into 8 simple buttons

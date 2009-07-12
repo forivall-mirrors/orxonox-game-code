@@ -35,7 +35,7 @@
 #ifndef _Button_H__
 #define _Button_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
 #include <string>
 #include <vector>

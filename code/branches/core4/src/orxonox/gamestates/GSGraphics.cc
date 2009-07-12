@@ -37,8 +37,10 @@
 #include <boost/filesystem.hpp>
 #include <OgreRenderWindow.h>
 
+#include "util/Convert.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Clock.h"
+#include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
@@ -46,7 +48,7 @@
 #include "core/GameMode.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
-#include "core/input/SimpleInputState.h"
+#include "core/input/InputState.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 #include "overlays/console/InGameConsole.h"
@@ -124,7 +126,7 @@ namespace orxonox
         inputManager_ = new InputManager(windowHnd, renderWindow->getWidth(), renderWindow->getHeight());
 
         // load master key bindings
-        masterInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("master", true);
+        masterInputState_ = InputManager::getInstance().createInputState("master", true);
         masterKeyBinder_ = new KeyBinder();
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
         masterInputState_->setKeyHandler(masterKeyBinder_);
@@ -243,8 +245,8 @@ namespace orxonox
     void GSGraphics::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
         // OIS needs this under linux even if we only use relative input measurement.
-        if (this->inputManager_)
-            this->inputManager_->setWindowExtents(newWidth, newHeight);
+        // HACK:
+        CommandExecutor::execute("setWindowExtents_s " + multi_cast<std::string>(newWidth) + " " + multi_cast<std::string>(newHeight));
     }
 
     /**

@@ -39,6 +39,7 @@
 
 #include "CorePrereqs.h"
 #include <set>
+#include <vector>
 
 namespace orxonox
 {

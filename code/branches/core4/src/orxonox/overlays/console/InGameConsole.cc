@@ -48,7 +48,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
+#include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
 
 namespace orxonox
@@ -157,8 +157,8 @@ namespace orxonox
         {
             if (bHidesAllInput_)
             {
-                inputState_->setMouseHandler(&InputManager::EMPTY_HANDLER);
-                inputState_->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
+                inputState_->setMouseHandler(&InputHandler::EMPTY);
+                inputState_->setJoyStickHandler(&InputHandler::EMPTY);
             }
             else
             {
@@ -174,7 +174,7 @@ namespace orxonox
     void InGameConsole::initialise(int windowWidth, int windowHeight)
     {
         // create the corresponding input state
-        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", false, false, InputStatePriority::Console);
+        inputState_ = InputManager::getInstance().createInputState("console", false, false, InputStatePriority::Console);
         inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
         bHidesAllInputChanged();
 

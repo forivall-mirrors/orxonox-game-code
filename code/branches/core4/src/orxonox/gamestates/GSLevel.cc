@@ -30,7 +30,7 @@
 #include "GSLevel.h"
 
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
+#include "core/input/InputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
@@ -89,15 +89,15 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            gameInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game");
+            gameInputState_ = InputManager::getInstance().createInputState("game");
             keyBinder_ = new KeyBinder();
             keyBinder_->loadBindings("keybindings.ini");
             gameInputState_->setHandler(keyBinder_);
 
-            guiMouseOnlyInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("guiMouseOnly");
+            guiMouseOnlyInputState_ = InputManager::getInstance().createInputState("guiMouseOnly");
             guiMouseOnlyInputState_->setMouseHandler(GUIManager::getInstancePtr());
 
-            guiKeysOnlyInputState_ = InputManager::getInstance().createInputState<SimpleInputState>("guiKeysOnly");
+            guiKeysOnlyInputState_ = InputManager::getInstance().createInputState("guiKeysOnly");
             guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
 
             // create the global CameraManager

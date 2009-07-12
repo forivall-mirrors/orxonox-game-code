@@ -100,7 +100,7 @@ namespace orxonox
         Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
 
         // input related
-        SimpleInputState* inputState_;
+        InputState* inputState_;
 
         // config values
         float relativeWidth;

@@ -99,7 +99,7 @@ namespace orxonox
         this->configFile_ = ConfigFileType::NoType;
 
         // initialise joy sticks separatly to allow for reloading
-        numberOfJoySticks_ = InputManager::getInstance().numberOfJoySticks();
+        numberOfJoySticks_ = InputManager::getInstance().getJoyStickQuantity();
         initialiseJoyStickBindings();
 
         // collect all Buttons and HalfAxes
@@ -151,7 +151,7 @@ namespace orxonox
                 allHalfAxes_[i]->buttonThreshold_ = this->buttonThreshold_;
     }
 
-    void KeyBinder::JoyStickDeviceNumberChanged(unsigned int value)
+    void KeyBinder::JoyStickQuantityChanged(unsigned int value)
     {
         unsigned int oldValue = numberOfJoySticks_;
         numberOfJoySticks_ = value;
@@ -310,7 +310,7 @@ namespace orxonox
         }
     }
 
-    void KeyBinder::updateMouse(float dt)
+    void KeyBinder::mouseUpdated(float dt)
     {
         if (bDeriveMouseInput_)
         {
@@ -363,7 +363,7 @@ namespace orxonox
         }
     }
 
-    void KeyBinder::updateJoyStick(float dt, unsigned int joyStick)
+    void KeyBinder::joyStickUpdated(unsigned int joyStick, float dt)
     {
         for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
         {
@@ -479,31 +479,32 @@ namespace orxonox
                 mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
     }
 
-    void KeyBinder::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)
+    void KeyBinder::axisMoved(unsigned int device, unsigned int axisID, float value)
     {
-        int i = axis * 2;
+        int i = axisID * 2;
+        JoyStickAxisVector& axis = joyStickAxes_[device];
         if (value < 0)
         {
-            joyStickAxes_[joyStickID][i].absVal_ = -value;
-            joyStickAxes_[joyStickID][i].relVal_ = -value;
-            joyStickAxes_[joyStickID][i].hasChanged_ = true;
-            if (joyStickAxes_[joyStickID][i + 1].absVal_ > 0.0f)
+            axis[i].absVal_ = -value;
+            axis[i].relVal_ = -value;
+            axis[i].hasChanged_ = true;
+            if (axis[i + 1].absVal_ > 0.0f)
             {
-                joyStickAxes_[joyStickID][i + 1].absVal_ = -0.0f;
-                joyStickAxes_[joyStickID][i + 1].relVal_ = -0.0f;
-                joyStickAxes_[joyStickID][i + 1].hasChanged_ = true;
+                axis[i + 1].absVal_ = -0.0f;
+                axis[i + 1].relVal_ = -0.0f;
+                axis[i + 1].hasChanged_ = true;
             }
         }
         else
         {
-            joyStickAxes_[joyStickID][i + 1].absVal_ = value;
-            joyStickAxes_[joyStickID][i + 1].relVal_ = value;
-            joyStickAxes_[joyStickID][i + 1].hasChanged_ = true;
-            if (joyStickAxes_[joyStickID][i].absVal_ > 0.0f)
+            axis[i + 1].absVal_ = value;
+            axis[i + 1].relVal_ = value;
+            axis[i + 1].hasChanged_ = true;
+            if (axis[i].absVal_ > 0.0f)
             {
-                joyStickAxes_[joyStickID][i].absVal_ = -0.0f;
-                joyStickAxes_[joyStickID][i].relVal_ = -0.0f;
-                joyStickAxes_[joyStickID][i].hasChanged_ = true;
+                axis[i].absVal_ = -0.0f;
+                axis[i].relVal_ = -0.0f;
+                axis[i].hasChanged_ = true;
             }
         }
     }

@@ -74,7 +74,7 @@ namespace orxonox
         SoundManager*         soundManager_;        //!< Keeps track of SoundBase objects
 
         KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings
-        SimpleInputState*     masterInputState_;    //!< Special input state for master input
+        InputState*           masterInputState_;    //!< Special input state for master input
         XMLFile*              debugOverlay_;
         ConsoleCommand*       ccToggleGUI_;         //!< Console command to toggle GUI
     };

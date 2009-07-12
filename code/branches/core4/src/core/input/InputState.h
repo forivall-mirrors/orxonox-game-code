@@ -26,105 +26,135 @@
  *
  */
 
-/**
-@file
-@brief 
-*/
-
 #ifndef _InputState_H__
 #define _InputState_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
+#include <cassert>
 #include <string>
 #include <vector>
-#include "InputInterfaces.h"
-#include "JoyStickDeviceNumberListener.h"
+
+#include "InputHandler.h"
+#include "JoyStickQuantityListener.h"
 
 namespace orxonox
 {
-    class _CoreExport InputState : public JoyStickDeviceNumberListener
+    class _CoreExport InputState : public JoyStickQuantityListener
     {
         friend class InputManager;
 
+        static const InputDeviceEnumerator::Value keyboardIndex_s      = InputDeviceEnumerator::Keyboard;
+        static const InputDeviceEnumerator::Value mouseIndex_s         = InputDeviceEnumerator::Mouse;
+        static const InputDeviceEnumerator::Value firstJoyStickIndex_s = InputDeviceEnumerator::FirstJoyStick;
+
     public:
+        void setKeyHandler     (InputHandler* handler)
+            { handlers_[keyboardIndex_s] = handler; bExpired_ = true; }
+        void setMouseHandler   (InputHandler* handler)
+            { handlers_[mouseIndex_s]    = handler; bExpired_ = true; }
+        bool setJoyStickHandler(InputHandler* handler, unsigned int joyStick);
+        bool setJoyStickHandler(InputHandler* handler);
+        bool setHandler        (InputHandler* handler);
+
         const std::string& getName() const { return name_; }
         int getPriority()            const { return priority_; }
 
-        bool isInputDeviceEnabled(unsigned int device)
-        {
-            if (device < bInputDeviceEnabled_.size())
-                return bInputDeviceEnabled_[device];
-            else
-                return false;
-        }
+        bool isInputDeviceEnabled(unsigned int device);
 
-        bool handlersChanged() { return this->bHandlersChanged_; }
-        void resetHandlersChanged() { bHandlersChanged_ = false; }
+        bool hasExpired()      { return this->bExpired_; }
+        void resetExpiration() { bExpired_ = false; }
 
-        virtual void onEnter() = 0;
-        virtual void onLeave() = 0;
+        void update(float dt, unsigned int device);
+        void update(float dt);
 
-        virtual void registerOnEnter(Executor* executor)      { executorOnEnter_ = executor; }
-        virtual void unRegisterOnEnter()                      { executorOnEnter_ = 0; }
-        virtual void registerOnLeave(Executor* executor)      { executorOnLeave_ = executor; }
-        virtual void unRegisterOnLeave()                      { executorOnLeave_ = 0; }
+        template <typename EventType, class Traits>
+        void buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button);
 
-        virtual void updateInput(float dt, unsigned int device) = 0;
-        virtual void updateInput(float dt) = 0;
+        void mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+        void mouseScrolled(int abs, int rel);
+        void joyStickAxisMoved(unsigned int device, unsigned int axis, float value);
 
-        virtual void keyPressed (const KeyEvent& evt) = 0;
-        virtual void keyReleased(const KeyEvent& evt) = 0;
-        virtual void keyHeld    (const KeyEvent& evt) = 0;
-
-        virtual void mouseButtonPressed (MouseButtonCode::ByEnum id) = 0;
-        virtual void mouseButtonReleased(MouseButtonCode::ByEnum id) = 0;
-        virtual void mouseButtonHeld    (MouseButtonCode::ByEnum id) = 0;
-        virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
-        virtual void mouseScrolled      (int abs, int rel) = 0;
-
-        virtual void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
-        virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
-        virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
-        virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
-
-    protected:
-        InputState()
-            : bHandlersChanged_(false)
-            , executorOnEnter_(0)
-            , executorOnLeave_(0)
-            , priority_(0)
-            , bAlwaysGetsInput_(false)
-            , bTransparent_(false)
-        { }
-        virtual ~InputState() { }
-
-        virtual void numberOfJoySticksChanged(unsigned int n) = 0;
-        void setInputDeviceEnabled(unsigned int device, bool bEnabled)
-        {
-            if (device < bInputDeviceEnabled_.size())
-                bInputDeviceEnabled_[device] = bEnabled;
-        }
-
-        bool bHandlersChanged_;
-        Executor*                                   executorOnEnter_;
-        Executor*                                   executorOnLeave_;
+        // Functors
+        void entered();
+        void left();
+        void setEnterFunctor(Functor* functor) { this->enterFunctor_ = functor; }
+        void setLeaveFunctor(Functor* functor) { this->leaveFunctor_ = functor; }
 
     private:
-        void JoyStickDeviceNumberChanged(unsigned int n)
-        {
-            bInputDeviceEnabled_.resize(n + 2);
-            numberOfJoySticksChanged(n);
-        }
-        void setName(const std::string& name)  { name_ = name; }
-        void setPriority(int priority)         { priority_ = priority; }
+        InputState();
+        ~InputState() { }
 
-        std::string                                 name_;
-        int                                         priority_;
-        std::vector<bool>                           bInputDeviceEnabled_;
-        bool                                        bAlwaysGetsInput_;
-        bool                                        bTransparent_;
+        void JoyStickQuantityChanged(unsigned int n);
+
+        void setName(const std::string& name) { name_ = name; }
+        void setPriority(int priority)        { priority_ = priority; }
+
+        std::string                 name_;
+        int                         priority_;
+        bool                        bAlwaysGetsInput_;
+        bool                        bTransparent_;
+        bool                        bExpired_;
+        std::vector<InputHandler*>  handlers_;
+        InputHandler*               joyStickHandlerAll_;
+        Functor*                    enterFunctor_;
+        Functor*                    leaveFunctor_;
     };
+
+    inline void InputState::update(float dt)
+    {
+        for (unsigned int i = 0; i < handlers_.size(); ++i)
+            if (handlers_[i] != NULL)
+                handlers_[i]->allDevicesUpdated(dt);
+    }
+
+    inline void InputState::update(float dt, unsigned int device)
+    {
+        switch (device)
+        {
+        case InputDeviceEnumerator::Keyboard:
+            if (handlers_[keyboardIndex_s] != NULL)
+                handlers_[keyboardIndex_s]->keyboardUpdated(dt);
+            break;
+
+        case InputDeviceEnumerator::Mouse:
+            if (handlers_[mouseIndex_s] != NULL)
+                handlers_[mouseIndex_s]->mouseUpdated(dt);
+            break;
+
+        default: // joy sticks
+            if (handlers_[device] != NULL)
+                handlers_[device]->joyStickUpdated(device - firstJoyStickIndex_s, dt);
+            break;
+        }
+    }
+
+    template <typename EventType, class Traits>
+    inline void InputState::buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button)
+    {
+        assert(device < handlers_.size());
+        if (handlers_[device] != NULL)
+            handlers_[device]->buttonEvent(device, button, EventType());
+    }
+
+    inline void InputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    {
+        if (handlers_[mouseIndex_s] != NULL)
+            handlers_[mouseIndex_s]->mouseMoved(abs, rel, clippingSize);
+    }
+
+    inline void InputState::mouseScrolled(int abs, int rel)
+    {
+        if (handlers_[mouseIndex_s] != NULL)
+            handlers_[mouseIndex_s]->mouseScrolled(abs, rel);
+    }
+
+    inline void InputState::joyStickAxisMoved(unsigned int device, unsigned int axis, float value)
+    {
+        assert(device < handlers_.size());
+        if (handlers_[device] != NULL)
+            handlers_[device]->axisMoved(device - firstJoyStickIndex_s, axis, value);
+    }
 }
 
 #endif /* _InputState_H__ */
