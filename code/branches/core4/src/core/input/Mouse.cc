@@ -33,12 +33,13 @@
 #include "InputState.h"
 #include "core/ConsoleCommand.h"
 
+// HACK (include this as last, X11 seems to define some macros...)
+#ifdef ORXONOX_PLATFORM_LINUX
+#  include <ois/linux/LinuxMouse.h>
+#endif
+
 namespace orxonox
 {
-    // HACK:
-    SetConsoleCommand(Mouse, setMouseClipping_s, false);
-    Mouse* Mouse::instancePointer_s = NULL;
-
     Mouse::Mouse(unsigned int id, unsigned int windowWidth, unsigned int windowHeight)
         : super(id)
     {
@@ -85,4 +86,33 @@ namespace orxonox
 
         return true;
     }
+
+    // ############################################################
+    // #####                   ugly hacks                     #####
+    // ##########                                        ##########
+    // ############################################################
+
+    // HACK:
+    SetConsoleCommand(Mouse, setMouseClipping_s, false);
+#ifdef ORXONOX_PLATFORM_LINUX
+    SetConsoleCommand(Mouse, grabMouse, true);
+    SetConsoleCommand(Mouse, ungrabMouse, true);
+#endif
+    Mouse* Mouse::instancePointer_s = NULL;
+
+#ifdef ORXONOX_PLATFORM_LINUX
+    void Mouse::grabMouse()
+    {
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(instancePointer_s->oisDevice_);
+        assert(linuxMouse);
+        linuxMouse->grab(true);
+    }
+
+    void Mouse::ungrabMouse()
+    {
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(instancePointer_s->oisDevice_);
+        assert(linuxMouse);
+        linuxMouse->grab(false);
+    }
+#endif
 }

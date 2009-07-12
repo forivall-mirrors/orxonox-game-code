@@ -107,12 +107,6 @@ namespace orxonox
         unsigned int getJoyStickQuantity() const
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
 
-#ifdef ORXONOX_PLATFORM_LINUX
-        // HACK!
-        static void grabMouse();
-        static void ungrabMouse();
-#endif
-
         void update(const Clock& time);
 
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }

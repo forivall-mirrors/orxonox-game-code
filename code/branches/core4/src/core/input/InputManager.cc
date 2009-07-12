@@ -60,19 +60,10 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 
-// HACK (include this as last, X11 seems to define some macros...)
-#ifdef ORXONOX_PLATFORM_LINUX
-#  include <ois/linux/LinuxMouse.h>
-#endif
-
 namespace orxonox
 {
     SetConsoleCommand(InputManager, calibrate, true);
     SetConsoleCommand(InputManager, reload, false);
-#ifdef ORXONOX_PLATFORM_LINUX
-    SetConsoleCommand(InputManager, grabMouse, true);
-    SetConsoleCommand(InputManager, ungrabMouse, true);
-#endif
     SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
 
     InputHandler InputHandler::EMPTY;
@@ -913,26 +904,4 @@ namespace orxonox
     {
         getInstance().reloadInputSystem();
     }
-
-
-    // ############################################################
-    // #####                   ugly hacks                     #####
-    // ##########                                        ##########
-    // ############################################################
-
-#ifdef ORXONOX_PLATFORM_LINUX
-    void InputManager::grabMouse()
-    {
-        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(singletonRef_s->mouse_);
-        assert(linuxMouse);
-        linuxMouse->grab(true);
-    }
-
-    void InputManager::ungrabMouse()
-    {
-        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(singletonRef_s->mouse_);
-        assert(linuxMouse);
-        linuxMouse->grab(false);
-    }
-#endif
 }

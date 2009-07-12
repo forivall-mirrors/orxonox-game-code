@@ -61,10 +61,15 @@ namespace orxonox
         unsigned int getClippingWidth() const;
         unsigned int getClippingHeight() const;
 
-        // HACK:
+        // HACK!
         static void setMouseClipping_s(unsigned int width, unsigned int height)
             { instancePointer_s->setMouseClipping(width, height); }
         void setConfigValues() { }
+#ifdef ORXONOX_PLATFORM_LINUX
+        // HACK!
+        static void grabMouse();
+        static void ungrabMouse();
+#endif
 
     private:
         // TODO: Do we need to reset the mouse position?
