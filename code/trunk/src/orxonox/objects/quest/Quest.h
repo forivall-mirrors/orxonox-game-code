@@ -42,18 +42,16 @@
 
 namespace orxonox
 {
-    namespace questStatus
+    namespace QuestStatus
     {
-
         //!Different states of a Quest.
-        enum Enum
+        enum Value
         {
-            inactive,
-            active,
-            failed,
-            completed
+            Inactive,
+            Active,
+            Failed,
+            Completed
         };
-
     }
 
     /**
@@ -132,8 +130,8 @@ namespace orxonox
             inline std::list<QuestEffect*> & getCompleteEffectList(void)
                 { return this->completeEffects_; }
 
-            virtual questStatus::Enum getStatus(const PlayerInfo* player) const = 0; //!< Returns the status of the Quest for a specific player.
-            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
+            virtual QuestStatus::Value getStatus(const PlayerInfo* player) const = 0; //!< Returns the status of the Quest for a specific player.
+            virtual bool setStatus(PlayerInfo* player, const QuestStatus::Value & status) = 0; //!< Changes the status for a specific player.
             
         private:
             Quest* parentQuest_; //!< Pointer to the parentquest.

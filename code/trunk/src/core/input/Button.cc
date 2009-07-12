@@ -36,7 +36,7 @@
 
 #include "util/Convert.h"
 #include "util/SubString.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandEvaluation.h"
@@ -126,7 +126,7 @@ namespace orxonox
                 SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
                     '\\', false, '"', false, '(', ')', false, '\0');
 
-                KeybindMode::Enum mode = KeybindMode::None;
+                KeybindMode::Value mode = KeybindMode::None;
                 float paramModifier = 1.0f;
                 std::string commandStr = "";
 

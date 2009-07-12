@@ -33,7 +33,7 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "tools/TextureGenerator.h"

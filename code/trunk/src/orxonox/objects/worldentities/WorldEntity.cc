@@ -174,31 +174,31 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
-        registerVariable(this->mainStateName_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedMainState));
+        registerVariable(this->mainStateName_,  VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedMainState));
 
-        registerVariable(this->bActive_,        variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
-        registerVariable(this->bVisible_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
+        registerVariable(this->bActive_,        VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
+        registerVariable(this->bVisible_,       VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));
 
-        registerVariable(this->getScale3D(),    variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
+        registerVariable(this->getScale3D(),    VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::scaleChanged));
 
         // Physics stuff
-        registerVariable(this->mass_,           variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
-        registerVariable(this->restitution_,    variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::restitutionChanged));
-        registerVariable(this->angularFactor_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularFactorChanged));
-        registerVariable(this->linearDamping_,  variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::linearDampingChanged));
-        registerVariable(this->angularDamping_, variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularDampingChanged));
-        registerVariable(this->friction_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
+        registerVariable(this->mass_,           VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::massChanged));
+        registerVariable(this->restitution_,    VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::restitutionChanged));
+        registerVariable(this->angularFactor_,  VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularFactorChanged));
+        registerVariable(this->linearDamping_,  VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::linearDampingChanged));
+        registerVariable(this->angularDamping_, VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularDampingChanged));
+        registerVariable(this->friction_,       VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
         registerVariable(this->bCollisionCallbackActive_,
-                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionCallbackActivityChanged));
+                                                VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionCallbackActivityChanged));
         registerVariable(this->bCollisionResponseActive_,
-                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionResponseActivityChanged));
+                                                VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionResponseActivityChanged));
         registerVariable((int&)this->collisionTypeSynchronised_,
-                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
+                                                VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionTypeChanged));
         registerVariable(this->bPhysicsActiveSynchronised_,
-                                                variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
+                                                VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::physicsActivityChanged));
 
         // Attach to parent if necessary
-        registerVariable(this->parentID_,       variableDirection::toclient, new NetworkCallback<WorldEntity>(this, &WorldEntity::networkcallback_parentChanged));
+        registerVariable(this->parentID_,       VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::networkcallback_parentChanged));
     }
 
     /**

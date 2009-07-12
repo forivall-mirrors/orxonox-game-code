@@ -42,11 +42,12 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
-#include "OrxonoxClass.h"
 #include "util/OutputHandler.h"
 
 namespace orxonox
 {
+    class CoreConfiguration;
+
     /**
     @brief
         The Core class is a singleton used to configure the program basics.
@@ -54,7 +55,7 @@ namespace orxonox
         The class provides information about the media, config and log path.
         It determines those by the use of platform specific functions.
     */
-    class _CoreExport Core : public OrxonoxClass
+    class _CoreExport Core
     {
         public:
             /**
@@ -64,10 +65,9 @@ namespace orxonox
             @throws
                 GeneralException
             */
-            Core();
+            Core(int argc, char** argv);
             ~Core();
 
-            void initialise(int argc, char** argv);
             void setConfigValues();
 
             void update(const Clock& time);
@@ -79,8 +79,7 @@ namespace orxonox
             static const std::string& getLanguage();
             static void  resetLanguage();
 
-            static void tsetMediaPath(const std::string& path)
-            { assert(singletonRef_s); singletonRef_s->_tsetMediaPath(path); }
+            static void tsetMediaPath(const std::string& path);
             //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getMediaPath();
             //! Returns the path to the config files as boost::filesystem::path
@@ -102,13 +101,6 @@ namespace orxonox
             void createDirectories();
             void setThreadAffinity(int limitToCPU);
 
-            void resetLanguageIntern();
-            void initializeRandomNumberGenerator();
-            void debugLevelChanged();
-            void languageChanged();
-            void mediaPathChanged();
-            void _tsetMediaPath(const std::string& path);
-
             // Singletons
             ConfigFileManager*    configFileManager_;
             Language*             languageInstance_;
@@ -118,15 +110,8 @@ namespace orxonox
             TclBind*              tclBind_;
             TclThreadManager*     tclThreadManager_;
 
-            int softDebugLevel_;                            //!< The debug level
-            int softDebugLevelConsole_;                     //!< The debug level for the console
-            int softDebugLevelLogfile_;                     //!< The debug level for the logfile
-            int softDebugLevelShell_;                       //!< The debug level for the ingame shell
-            std::string language_;                          //!< The language
-            bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-            std::string mediaPathString_;                   //!< Path to the data/media file folder as string
             bool isDevBuild_;                               //!< True for builds in the build directory (not installed)
-            bool loaded_;                                   //!< Only true if constructor was interrupted
+            CoreConfiguration*    configuration_;
 
             static Core* singletonRef_s;
     };

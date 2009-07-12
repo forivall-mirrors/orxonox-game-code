@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport GSLevel : public GameState, public OrxonoxClass
     {
     public:
-        GSLevel(const std::string& name);
+        GSLevel(const GameStateConstrParams& params);
         ~GSLevel();
         void setConfigValues();
 
@@ -67,7 +67,6 @@ namespace orxonox
         SimpleInputState*     guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
         Radar*                radar_;                   //!< represents the Radar (not the HUD part)
         CameraManager*        cameraManager_;           //!< camera manager for this level
-        LevelManager*         levelManager_;            //!< global level manager
         PlayerManager*        playerManager_;           //!< player manager for this level
         QuestManager*         questManager_;
         NotificationManager*  notificationManager_;

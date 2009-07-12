@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport GSClient : public GameState
     {
     public:
-        GSClient(const std::string& name);
+        GSClient(const GameStateConstrParams& params);
         ~GSClient();
 
         void activate();

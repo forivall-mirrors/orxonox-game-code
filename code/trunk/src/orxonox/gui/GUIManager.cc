@@ -52,7 +52,9 @@ extern "C" {
 #   include <CEGUILua.h>
 #endif
 
+#include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/OrxAssert.h"
 #include "core/Core.h"
 #include "core/Clock.h"
 #include "ToluaBindCore.h"
@@ -61,6 +63,28 @@ extern "C" {
 
 namespace orxonox
 {
+    class CEGUILogger : public CEGUI::DefaultLogger
+    {
+    public:
+	    void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
+        {
+            int orxonoxLevel;
+            switch (level)
+            {
+                case CEGUI::Errors:      orxonoxLevel = 1; break;
+                case CEGUI::Warnings:    orxonoxLevel = 2; break;
+                case CEGUI::Standard:    orxonoxLevel = 4; break;
+                case CEGUI::Informative: orxonoxLevel = 5; break;
+                case CEGUI::Insane:      orxonoxLevel = 6; break;
+                default: OrxAssert(false, "CEGUI log level out of range, inpect immediately!");
+            }
+            OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
+                << "CEGUI: " << message << std::endl;
+
+            CEGUI::DefaultLogger::logEvent(message, level);
+        }
+    };
+
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
     GUIManager* GUIManager::singletonRef_s = 0;
 
@@ -139,7 +163,7 @@ namespace orxonox
                 this->luaState_ = this->scriptModule_->getLuaState();
 
                 // Create our own logger to specify the filepath
-                this->ceguiLogger_ = new DefaultLogger();
+                this->ceguiLogger_ = new CEGUILogger();
                 this->ceguiLogger_->setLogFilename(Core::getLogPathString() + "cegui.log");
                 // set the log level according to ours (translate by subtracting 1)
                 this->ceguiLogger_->setLoggingLevel(

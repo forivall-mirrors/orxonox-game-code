@@ -56,14 +56,14 @@ namespace orxonox
             inline const std::string& getSource() const
                 { return this->source_; }
 
-            inline void setLOD(LODParticle::LOD level)
+            inline void setLOD(LODParticle::Value level)
                 { this->LOD_ = level; this->LODchanged(); }
-            inline LODParticle::LOD getLOD() const
+            inline LODParticle::Value getLOD() const
                 { return this->LOD_; }
 
         protected:
             inline void setLODxml(unsigned int level)
-                { this->LOD_ = (LODParticle::LOD)level; this->LODchanged(); }
+                { this->LOD_ = (LODParticle::Value)level; this->LODchanged(); }
             inline unsigned int getLODxml() const
                 { return (unsigned int)this->LOD_; }
 
@@ -72,7 +72,7 @@ namespace orxonox
 
             ParticleInterface* particles_;
             std::string        source_;
-            LODParticle::LOD   LOD_;
+            LODParticle::Value   LOD_;
     };
 }
 

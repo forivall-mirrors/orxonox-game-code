@@ -29,24 +29,45 @@
 #include "LevelManager.h"
 
 #include <map>
+
+#include "core/CommandLine.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "PlayerManager.h"
 #include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
 
 namespace orxonox
 {
+    SetCommandLineArgument(level, "").shortcut("l").information("Default level file (overrides LevelManager::defaultLevelName_ configValue)");
+
     LevelManager* LevelManager::singletonRef_s = 0;
 
     LevelManager::LevelManager()
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
+
+        RegisterRootObject(LevelManager);
+        this->setConfigValues();
+
+        // check override
+        if (!CommandLine::getArgument("level")->hasDefaultValue())
+        {
+            ModifyConfigValue(defaultLevelName_, tset, CommandLine::getValue("level").getString());
+        }
     }
 
     LevelManager::~LevelManager()
     {
         assert(singletonRef_s != 0);
         singletonRef_s = 0;
+    }
+
+    void LevelManager::setConfigValues()
+    {
+        SetConfigValue(defaultLevelName_, "presentation_dm.oxw")
+            .description("Sets the preselection of the level in the main menu.");
     }
 
     void LevelManager::requestActivity(Level* level)
@@ -91,5 +112,15 @@ namespace orxonox
             for (std::map<unsigned int, PlayerInfo*>::const_iterator it = PlayerManager::getInstance().getClients().begin(); it != PlayerManager::getInstance().getClients().end(); ++it)
                 this->levels_s.front()->playerEntered(it->second);
         }
+    }
+
+    void LevelManager::setDefaultLevel(const std::string& levelName)
+    {
+        ModifyConfigValue(defaultLevelName_, set, levelName);
+    }
+
+    const std::string& LevelManager::getDefaultLevel()
+    {
+        return defaultLevelName_;
     }
 }

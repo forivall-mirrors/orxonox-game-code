@@ -56,7 +56,7 @@ namespace orxonox
 
     void BoxCollisionShape::registerVariables()
     {
-        registerVariable(this->halfExtents_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->halfExtents_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void BoxCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)

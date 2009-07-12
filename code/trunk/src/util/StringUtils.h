@@ -31,8 +31,8 @@
     @brief Declaration of several string manipulation functions, used in many parts of the game.
 */
 
-#ifndef _Util_String_H__
-#define _Util_String_H__
+#ifndef _StringUtils_H__
+#define _StringUtils_H__
 
 #include "UtilPrereqs.h"
 #include <string>
@@ -78,4 +78,4 @@ namespace orxonox
     _UtilExport size_t      getNextCommentPosition(const std::string& str, size_t start = 0);
 }
 
-#endif /* _Util_String_H__ */
+#endif /* _StringUtils_H__ */

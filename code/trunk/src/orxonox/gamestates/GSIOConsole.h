@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport GSIOConsole : public GameState
     {
     public:
-        GSIOConsole(const std::string& name);
+        GSIOConsole(const GameStateConstrParams& params);
         ~GSIOConsole();
 
         void activate();

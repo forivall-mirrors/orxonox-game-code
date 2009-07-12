@@ -36,7 +36,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/Debug.h"
-#include "core/Identifier.h"
+#include "util/Exception.h"
 #include "core/Game.h"
 
 /*
@@ -49,10 +49,14 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 int main(int argc, char** argv)
 #endif
 {
-    {
-        orxonox::Game orxonox(argc, argv);
+    using namespace orxonox;
 
-        orxonox.setStateHierarchy(
+    Game* game = 0;
+    try
+    {
+        game = new Game(argc, argv);
+
+        game->setStateHierarchy(
         "root"
         " graphics"
         "  mainMenu"
@@ -67,15 +71,23 @@ int main(int argc, char** argv)
         " ioConsole"
         );
 
-        orxonox.run();
+        game->requestState("root");
+    }
+    catch (const std::exception& ex)
+    {
+        COUT(0) << "Orxonox failed to initialise: " << ex.what() << std::endl;
+        COUT(0) << "Terminating program." << std::endl;
+        return 1;
+    }
+    catch (...)
+    {
+        COUT(0) << "Orxonox failed to initialise: " << std::endl;
+        COUT(0) << "Terminating program." << std::endl;
+        return 1;
+    }
 
-        // destroy the GameStates created pre-mainly
-        orxonox::Game::destroyStates();
-    } // orxonox gets destroyed right here!
-
-    // Clean up class hierarchy stuff (identifiers, xmlport, configvalue, consolecommand)
-    // Needs to be done after Game destructor because of ~OrxonoxClass
-    orxonox::Identifier::destroyAllIdentifiers();
+    game->run();
+    delete game;
 
     return 0;
 }

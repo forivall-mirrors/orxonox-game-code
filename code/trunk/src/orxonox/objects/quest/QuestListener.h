@@ -42,18 +42,16 @@
 
 namespace orxonox
 {
-    namespace questListenerMode
+    namespace QuestListenerMode
     {
-
         //! The mode of the QuestListener.
-        enum Enum
+        enum Value
         {
-            all,
-            start,
-            fail,
-            complete
+            All,
+            Start,
+            Fail,
+            Complete
         };
-
     }
 
     /**
@@ -92,7 +90,7 @@ namespace orxonox
         bool execute(void); //!< Executes the QuestListener, resp. fires an Event.
         
     private:
-        questListenerMode::Enum mode_; //!< The mode of the QuestListener.
+        QuestListenerMode::Value mode_; //!< The mode of the QuestListener.
         Quest* quest_; //!< A pointer to the Quest the QuestListener is reacting to.
     
     };

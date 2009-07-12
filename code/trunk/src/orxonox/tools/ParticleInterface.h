@@ -44,7 +44,7 @@ namespace orxonox
     class _OrxonoxExport ParticleInterface : public TimeFactorListener
     {
         public:
-            ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel);
+            ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::Value detaillevel);
             virtual ~ParticleInterface();
 
             inline Ogre::ParticleSystem* getParticleSystem()

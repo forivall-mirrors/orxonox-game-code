@@ -62,7 +62,7 @@ std::map<size_t, Packet *> Packet::packetMap_;
 
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
-  packetDirection_ = ENUM::Outgoing;
+  packetDirection_ = Direction::Outgoing;
   clientID_=0;
   data_=0;
   enetPacket_=0;
@@ -75,7 +75,7 @@ void blub(ENetPacket *packet){
 
 Packet::Packet(uint8_t *data, unsigned int clientID){
   flags_ = PACKET_FLAG_DEFAULT;
-  packetDirection_ = ENUM::Incoming;
+  packetDirection_ = Direction::Incoming;
   clientID_=clientID;
   data_=data;
   enetPacket_=0;
@@ -124,7 +124,7 @@ Packet::~Packet(){
 }
 
 bool Packet::send(){
-  if(packetDirection_ != ENUM::Outgoing && packetDirection_ != ENUM::Bidirectional ){
+  if(packetDirection_ != Direction::Outgoing && packetDirection_ != Direction::Bidirectional ){
     assert(0);
     return false;
   }
@@ -146,16 +146,16 @@ bool Packet::send(){
     }
   }
 #ifndef NDEBUG
-  switch( *(ENUM::Type *)(data_ + _PACKETID) )
+  switch( *(Type::Value *)(data_ + _PACKETID) )
   {
-    case ENUM::Acknowledgement:
-    case ENUM::Chat:
-    case ENUM::ClassID:
-    case ENUM::Gamestate:
-    case ENUM::Welcome:
-    case ENUM::DeleteObjects:
-    case ENUM::FunctionIDs:
-    case ENUM::FunctionCalls:
+    case Type::Acknowledgement:
+    case Type::Chat:
+    case Type::ClassID:
+    case Type::Gamestate:
+    case Type::Welcome:
+    case Type::DeleteObjects:
+    case Type::FunctionIDs:
+    case Type::FunctionCalls:
       break;
     default:
       assert(0); //there was some error, if this is the case
@@ -174,39 +174,39 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   assert(ClientInformation::findClient(&peer->address)->getID() != (unsigned int)-2 || !Host::isServer());
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p = 0;
-  COUT(6) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
-  switch( *(ENUM::Type *)(data + _PACKETID) )
+  COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
+  switch( *(Type::Value *)(data + _PACKETID) )
   {
-    case ENUM::Acknowledgement:
+    case Type::Acknowledgement:
       COUT(5) << "ack" << std::endl;
       p = new Acknowledgement( data, clientID );
       break;
-    case ENUM::Chat:
+    case Type::Chat:
       COUT(5) << "chat" << std::endl;
       p = new Chat( data, clientID );
       break;
-    case ENUM::ClassID:
+    case Type::ClassID:
       COUT(5) << "classid" << std::endl;
       p = new ClassID( data, clientID );
       break;
-    case ENUM::Gamestate:
+    case Type::Gamestate:
       COUT(5) << "gamestate" << std::endl;
       // TODO: remove brackets
       p = new Gamestate( data, clientID );
       break;
-    case ENUM::Welcome:
+    case Type::Welcome:
       COUT(5) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
       break;
-    case ENUM::DeleteObjects:
+    case Type::DeleteObjects:
       COUT(5) << "deleteobjects" << std::endl;
       p = new DeleteObjects( data, clientID );
       break;
-    case ENUM::FunctionCalls:
+    case Type::FunctionCalls:
       COUT(5) << "functionCalls" << std::endl;
       p = new FunctionCalls( data, clientID );
       break;
-    case ENUM::FunctionIDs:
+    case Type::FunctionIDs:
       COUT(5) << "functionIDs" << std::endl;
       p = new FunctionIDs( data, clientID );
       break;

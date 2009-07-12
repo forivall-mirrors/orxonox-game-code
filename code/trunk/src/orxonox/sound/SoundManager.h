@@ -54,7 +54,7 @@ namespace orxonox
         static SoundManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
-        static ALCdevice* device_s;
+        ALCdevice* device_;
         ALCcontext* context_;
         std::list<SoundBase*> soundlist_;
         bool soundavailable_;

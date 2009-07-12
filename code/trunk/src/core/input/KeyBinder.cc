@@ -95,8 +95,8 @@ namespace orxonox
             mouseAxes_[i].groupName_ = "MouseAxes";
         }
 
-        // Get a new ConfigFileType from the ConfigFileManager
-        this->configFile_ = ConfigFileManager::getInstance().getNewConfigFileType();
+        // We might not even load any bindings at all (KeyDetector for instance)
+        this->configFile_ = ConfigFileType::NoType;
 
         // initialise joy sticks separatly to allow for reloading
         numberOfJoySticks_ = InputManager::getInstance().numberOfJoySticks();
@@ -186,7 +186,7 @@ namespace orxonox
         // reinitialise all joy stick binings (doesn't overwrite the old ones)
         for (unsigned int iDev = 0; iDev < numberOfJoySticks_; iDev++)
         {
-            std::string deviceNumber = convertToString(iDev);
+            std::string deviceNumber = multi_cast<std::string>(iDev);
             // joy stick buttons
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
             {
@@ -248,6 +248,12 @@ namespace orxonox
 
         if (filename.empty())
             return;
+
+        if (this->configFile_ == ConfigFileType::NoType)
+        {
+            // Get a new ConfigFileType from the ConfigFileManager
+            this->configFile_ = ConfigFileManager::getInstance().getNewConfigFileType();
+        }
 
         ConfigFileManager::getInstance().setFilename(this->configFile_, filename);
 

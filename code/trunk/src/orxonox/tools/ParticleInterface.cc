@@ -50,7 +50,7 @@ namespace orxonox
     unsigned int ParticleInterface::counter_s = 0;
     ParticleInterface* ParticleInterface::currentParticleInterface_s = 0;
 
-    ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel)
+    ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::Value detaillevel)
     {
         RegisterObject(ParticleInterface);
 
@@ -68,7 +68,7 @@ namespace orxonox
         {
             try
             {
-                this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+                this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + multi_cast<std::string>(ParticleInterface::counter_s++), templateName);
                 this->setSpeedFactor(1.0f);
             }
             catch (...)

@@ -35,7 +35,7 @@
 
 #include <tinyxml/tinyxml.h>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "CoreIncludes.h"
 #include "Event.h"
 #include "EventIncludes.h"

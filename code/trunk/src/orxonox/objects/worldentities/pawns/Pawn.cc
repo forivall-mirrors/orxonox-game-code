@@ -28,6 +28,8 @@
 
 #include "Pawn.h"
 
+#include <algorithm>
+
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
@@ -116,10 +118,10 @@ namespace orxonox
 
     void Pawn::registerVariables()
     {
-        registerVariable(this->bAlive_,        variableDirection::toclient);
-        registerVariable(this->health_,        variableDirection::toclient);
-        registerVariable(this->initialHealth_, variableDirection::toclient);
-        registerVariable(this->bReload_,       variableDirection::toserver);
+        registerVariable(this->bAlive_,        VariableDirection::ToClient);
+        registerVariable(this->health_,        VariableDirection::ToClient);
+        registerVariable(this->initialHealth_, VariableDirection::ToClient);
+        registerVariable(this->bReload_,       VariableDirection::ToServer);
     }
 
     void Pawn::tick(float dt)
@@ -151,7 +153,7 @@ namespace orxonox
 
     void Pawn::setHealth(float health)
     {
-        this->health_ = min(health, this->maxHealth_);
+        this->health_ = std::min(health, this->maxHealth_);
     }
 
     void Pawn::damage(float damage, Pawn* originator)

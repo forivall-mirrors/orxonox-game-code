@@ -37,6 +37,7 @@
 
 #include <fstream>
 #include <boost/filesystem.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
@@ -52,7 +53,7 @@
 
 #include "SpecialConfig.h"
 #include "util/Exception.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
@@ -69,6 +70,8 @@
 
 namespace orxonox
 {
+    using boost::shared_ptr;
+
     class _OrxonoxExport OgreWindowEventListener : public Ogre::WindowEventListener
     {
         void windowResized     (Ogre::RenderWindow* rw);
@@ -88,39 +91,44 @@ namespace orxonox
         , ogreLogger_(0)
         , renderWindow_(0)
         , viewport_(0)
-        , ogreWindowEventListener_(0)
+        , ogreWindowEventListener_(new OgreWindowEventListener())
     {
         RegisterObject(GraphicsManager);
 
         assert(singletonRef_s == 0);
         singletonRef_s = this;
 
-        this->loaded_ = false;
-
         this->setConfigValues();
-    }
 
-    void GraphicsManager::initialise()
-    {
         // Ogre setup procedure
         setupOgre();
-        // load all the required plugins for Ogre
-        loadOgrePlugins();
-        // read resource declaration file
-        this->declareResources();
-        // Reads ogre config and creates the render window
-        this->loadRenderer();
 
-        // TODO: Spread this
-        this->initialiseResources();
+        try
+        {
+            // load all the required plugins for Ogre
+            loadOgrePlugins();
+            // read resource declaration file
+            this->declareResources();
+            // Reads ogre config and creates the render window
+            this->loadRenderer();
 
-        // add console commands
-        FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
-        functor1->setObject(this);
-        ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
-        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
+            // TODO: Spread this
+            this->initialiseResources();
 
-        this->loaded_ = true;
+            // add console commands
+            FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
+            functor1->setObject(this);
+            ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
+            CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
+        }
+        catch (...)
+        {
+            // clean up
+            delete this->ogreRoot_;
+            delete this->ogreLogger_;
+            delete this->ogreWindowEventListener_;
+            throw;
+        }
     }
 
     /**
@@ -129,35 +137,22 @@ namespace orxonox
     */
     GraphicsManager::~GraphicsManager()
     {
-        if (this->loaded_)
-        {
-            delete this->ccPrintScreen_;
+/*
+        delete this->ccPrintScreen_;
+*/
 
-            if (this->ogreWindowEventListener_)
-            {
-                // remove our WindowEventListener first to avoid bad calls after the window has been destroyed
-                Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this->ogreWindowEventListener_);
-                delete this->ogreWindowEventListener_;
-            }
+        // HACK! This fixes an exit crash
+        Map::hackDestroyMap();
+        // unload all compositors (this is only necessary because we don't yet destroy all resources!)
+        Ogre::CompositorManager::getSingleton().removeAll();
 
-            // destroy render window
-//            Ogre::RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
-//            renderer->destroyRenderWindow("Orxonox");
+        // Delete OGRE main control organ
+        delete this->ogreRoot_;
 
-            // HACK! This fixes an exit crash
-            Map::hackDestroyMap();
+        // delete the logManager (since we have created it in the first place).
+        delete this->ogreLogger_;
 
-            // unload all compositors
-            Ogre::CompositorManager::getSingleton().removeAll();
-
-            // Delete OGRE main control organ
-            delete this->ogreRoot_;
-
-            // delete the ogre log and the logManager (since we have created it in the first place).
-            this->ogreLogger_->getDefaultLog()->removeListener(this);
-            this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
-            delete this->ogreLogger_;
-        }
+        delete this->ogreWindowEventListener_;
 
         assert(singletonRef_s);
         singletonRef_s = 0;
@@ -193,29 +188,26 @@ namespace orxonox
 
     void GraphicsManager::update(const Clock& time)
     {
-        if (this->loaded_)
-        {
-            Ogre::FrameEvent evt;
-            evt.timeSinceLastFrame = time.getDeltaTime();
-            evt.timeSinceLastEvent = time.getDeltaTime(); // note: same time, but shouldn't matter anyway
+        Ogre::FrameEvent evt;
+        evt.timeSinceLastFrame = time.getDeltaTime();
+        evt.timeSinceLastEvent = time.getDeltaTime(); // note: same time, but shouldn't matter anyway
 
-            // don't forget to call _fireFrameStarted to OGRE to make sure
-            // everything goes smoothly
-            ogreRoot_->_fireFrameStarted(evt);
+        // don't forget to call _fireFrameStarted to OGRE to make sure
+        // everything goes smoothly
+        ogreRoot_->_fireFrameStarted(evt);
 
-            // Pump messages in all registered RenderWindows
-            // This calls the WindowEventListener objects.
-            Ogre::WindowEventUtilities::messagePump();
-            // make sure the window stays active even when not focused
-            // (probably only necessary on windows)
-            this->renderWindow_->setActive(true);
+        // Pump messages in all registered RenderWindows
+        // This calls the WindowEventListener objects.
+        Ogre::WindowEventUtilities::messagePump();
+        // make sure the window stays active even when not focused
+        // (probably only necessary on windows)
+        this->renderWindow_->setActive(true);
 
-            // render
-            ogreRoot_->_updateAllRenderTargets();
+        // render
+        ogreRoot_->_updateAllRenderTargets();
 
-            // again, just to be sure OGRE works fine
-            ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
-        }
+        // again, just to be sure OGRE works fine
+        ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
     }
 
     void GraphicsManager::setCamera(Ogre::Camera* camera)
@@ -247,12 +239,12 @@ namespace orxonox
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
-        ogreLogger_ = new Ogre::LogManager();
+        std::auto_ptr<Ogre::LogManager> logger(new Ogre::LogManager());
         COUT(4) << "Ogre LogManager created" << std::endl;
 
         // create our own log that we can listen to
         Ogre::Log *myLog;
-        myLog = ogreLogger_->createLog(ogreLogFilepath.string(), true, false, false);
+        myLog = logger->createLog(ogreLogFilepath.string(), true, false, false);
         COUT(4) << "Ogre Log created" << std::endl;
 
         myLog->setLogDetail(Ogre::LL_BOREME);
@@ -271,6 +263,8 @@ namespace orxonox
 
         // Leave plugins file empty. We're going to do that part manually later
         ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
+        // In case that new Root failed the logger gets destroyed because of the std::auto_ptr
+        ogreLogger_ = logger.release();
 
         COUT(3) << "Ogre set up done." << std::endl;
     }
@@ -347,13 +341,12 @@ namespace orxonox
 
         if (!ogreRoot_->restoreConfig())
             if (!ogreRoot_->showConfigDialog())
-                ThrowException(InitialisationFailed, "Could not show Ogre configuration dialogue.");
+                ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue failed.");
 
         CCOUT(4) << "Creating render window" << std::endl;
 
         this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
 
-        this->ogreWindowEventListener_ = new OgreWindowEventListener();
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_);
 
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);

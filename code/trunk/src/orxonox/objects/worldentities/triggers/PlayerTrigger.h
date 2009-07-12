@@ -69,7 +69,7 @@ namespace orxonox
            { return this->isForPlayer_; }
             
     protected:
-        virtual bool isTriggered(TriggerMode mode) = 0;
+        virtual bool isTriggered(TriggerMode::Value mode) = 0;
         
         /**
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.

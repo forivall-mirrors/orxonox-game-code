@@ -41,6 +41,7 @@ ENDIF()
 ORXONOX_ADD_EXECUTABLE(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
+    LevelManager.h
     gui/GUIManager.h
     objects/pickup/BaseItem.h
     objects/pickup/PickupInventory.h

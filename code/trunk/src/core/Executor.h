@@ -32,9 +32,12 @@
 
 #include "CorePrereqs.h"
 
+#include <algorithm>
+#include <string>
+
 #include "util/Debug.h"
 #include "util/Math.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "Functor.h"
 
@@ -100,7 +103,7 @@
             } \
             COUT(5) << tokens[i]; \
         } \
-        COUT(5) << ") and " << max((int)paramCount - (int)tokens.size(), 0) << " default values ("; \
+        COUT(5) << ") and " << std::max((int)paramCount - (int)tokens.size(), 0) << " default values ("; \
         for (unsigned int i = tokens.size(); i < paramCount; i++) \
         { \
             param[i] = this->defaultValue_[i]; \
@@ -174,7 +177,7 @@ namespace orxonox
                 { return this->functor_->getParamCount(); }
             inline bool hasReturnvalue() const
                 { return this->functor_->hasReturnvalue(); }
-            inline FunctionType getType() const
+            inline FunctionType::Value getType() const
                 { return this->functor_->getType(); }
             inline const MultiType& getReturnvalue() const
                 { return this->functor_->getReturnvalue(); }
@@ -200,7 +203,7 @@ namespace orxonox
                 if (index < MAX_FUNCTOR_ARGUMENTS)
                     return this->defaultValue_[index];
 
-                return MT_null;
+                return MT_Type::Null;
             }
 
             bool allDefaultValuesSet() const;

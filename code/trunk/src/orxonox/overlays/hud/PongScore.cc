@@ -82,13 +82,13 @@ namespace orxonox
             if (player1)
             {
                 name1 = player1->getName();
-                score1 = convertToString(this->owner_->getScore(player1));
+                score1 = multi_cast<std::string>(this->owner_->getScore(player1));
             }
 
             if (player2)
             {
                 name2 = player2->getName();
-                score2 = convertToString(this->owner_->getScore(player2));
+                score2 = multi_cast<std::string>(this->owner_->getScore(player2));
             }
 
             std::string output1;

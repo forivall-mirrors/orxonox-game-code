@@ -32,7 +32,7 @@
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "tools/DynamicLines.h"
 #include "objects/worldentities/WorldEntity.h"

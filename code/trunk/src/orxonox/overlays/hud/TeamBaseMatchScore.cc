@@ -70,11 +70,11 @@ namespace orxonox
 
         if (this->owner_)
         {
-            std::string bases1 = "(" + convertToString(this->owner_->getTeamBases(0)) + ")";
-            std::string bases2 = "(" + convertToString(this->owner_->getTeamBases(1)) + ")";
+            std::string bases1 = "(" + multi_cast<std::string>(this->owner_->getTeamBases(0)) + ")";
+            std::string bases2 = "(" + multi_cast<std::string>(this->owner_->getTeamBases(1)) + ")";
 
-            std::string score1 = convertToString(this->owner_->getTeamPoints(0));
-            std::string score2 = convertToString(this->owner_->getTeamPoints(1));
+            std::string score1 = multi_cast<std::string>(this->owner_->getTeamPoints(0));
+            std::string score2 = multi_cast<std::string>(this->owner_->getTeamPoints(1));
 
             std::string output1;
             if (this->bShowLeftTeam_)

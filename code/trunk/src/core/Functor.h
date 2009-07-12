@@ -34,18 +34,21 @@
 
 #include "util/Debug.h"
 #include "util/MultiType.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 
 namespace orxonox
 {
     const unsigned int MAX_FUNCTOR_ARGUMENTS = 5;
 
-    enum FunctionType
+    namespace FunctionType
     {
-        FT_MEMBER,
-        FT_CONSTMEMBER,
-        FT_STATIC
-    };
+        enum Value
+        {
+            Member,
+            ConstMember,
+            Static
+        };
+    }
 
 
     template <class T>
@@ -97,11 +100,11 @@ namespace orxonox
             Functor() {}
             virtual ~Functor() {}
 
-            virtual void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
+            virtual void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
             inline unsigned int getParamCount() const { return this->numParams_; }
             inline bool hasReturnvalue() const { return this->hasReturnValue_; }
-            inline FunctionType getType() const { return this->type_; }
+            inline FunctionType::Value getType() const { return this->type_; }
             inline const MultiType& getReturnvalue() const { return this->returnedValue_; }
 
             const std::string& getTypenameParam(unsigned int param) const { return (param < 5) ? this->typeParam_[param] : BLANKSTRING; }
@@ -112,7 +115,7 @@ namespace orxonox
         protected:
             unsigned int numParams_;
             bool hasReturnValue_;
-            FunctionType type_;
+            FunctionType::Value type_;
             MultiType returnedValue_;
 
             std::string typeReturnvalue_;
@@ -123,7 +126,7 @@ namespace orxonox
     {
         public:
             virtual ~FunctorStatic() {}
-            virtual void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
+            virtual void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
     };
 
     template <class T>
@@ -138,10 +141,10 @@ namespace orxonox
             }
             virtual ~FunctorMember() {}
 
-            virtual void operator()(T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
-            virtual void operator()(const T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
+            virtual void operator()(T* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
+            virtual void operator()(const T* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
-            virtual void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null)
+            virtual void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
             {
                 if (this->bConstObject_)
                 {
@@ -321,14 +324,14 @@ namespace orxonox
             { \
                 this->numParams_ = numparams; \
                 this->hasReturnValue_ = returnvalue; \
-                this->type_ = FT_STATIC; \
+                this->type_ = FunctionType::Static; \
                 this->functionPointer_ = functionPointer; \
                 \
                 FUNCTOR_TYPENAME_PARAMS(numparams); \
                 FUNCTOR_TYPENAME_RETURN(returnvalue); \
             } \
     \
-            void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
+            void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
@@ -362,16 +365,16 @@ namespace orxonox
             { \
                 this->numParams_ = numparams; \
                 this->hasReturnValue_ = returnvalue; \
-                this->type_ = FT_MEMBER; \
+                this->type_ = FunctionType::Member; \
                 this->functionPointer_ = functionPointer; \
             } \
     \
-            void operator()(T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
+            void operator()(T* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
     \
-            void operator()(const T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
+            void operator()(const T* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) \
             { \
                 COUT(1) << "An error occurred in Functor.h:" << std::endl; \
                 COUT(1) << "Error: Function is not const." << std::endl; \
@@ -395,16 +398,16 @@ namespace orxonox
             { \
                 this->numParams_ = numparams; \
                 this->hasReturnValue_ = returnvalue; \
-                this->type_ = FT_CONSTMEMBER; \
+                this->type_ = FunctionType::ConstMember; \
                 this->functionPointer_ = functionPointer; \
             } \
     \
-            void operator()(T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
+            void operator()(T* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
     \
-            void operator()(const T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
+            void operator()(const T* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \

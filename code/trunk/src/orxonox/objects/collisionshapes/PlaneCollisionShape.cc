@@ -57,8 +57,8 @@ namespace orxonox
 
     void PlaneCollisionShape::registerVariables()
     {
-        registerVariable(this->normal_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
-        registerVariable(this->offset_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->normal_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->offset_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void PlaneCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)

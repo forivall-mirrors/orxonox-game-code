@@ -33,7 +33,7 @@
 #include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
 #include "TclThreadManager.h"
@@ -142,7 +142,7 @@ namespace orxonox
             ArgumentCompletionList threads;
 
             for (std::list<unsigned int>::const_iterator it = threadnumbers.begin(); it != threadnumbers.end(); ++it)
-                threads.push_back(ArgumentCompletionListElement(getConvertedValue<unsigned int, std::string>(*it)));
+                threads.push_back(ArgumentCompletionListElement(multi_cast<std::string>(*it)));
 
             return threads;
         }

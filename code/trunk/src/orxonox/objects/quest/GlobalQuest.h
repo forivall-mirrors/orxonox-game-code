@@ -96,13 +96,13 @@ namespace orxonox
             virtual bool isFailable(const PlayerInfo* player) const; //!< Checks whether the Quest can be failed.
             virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
-            virtual questStatus::Enum getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
+            virtual QuestStatus::Value getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
             
-            virtual bool setStatus(PlayerInfo* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+            virtual bool setStatus(PlayerInfo* player, const QuestStatus::Value & status); //!< Sets the status for a specific player.
 
         private:
             std::set<PlayerInfo*> players_; //!< The set of players which possess this Quest.
-            questStatus::Enum status_; //!< The status of this Quest.
+            QuestStatus::Value status_; //!< The status of this Quest.
             std::list<QuestEffect*> rewards_; //!< Reward QuestEffects only invoked on the player completing the Quest.
             
             bool addRewardEffect(QuestEffect* effect); //!< Adds a reward QuestEffect to the list of reward QuestEffects.

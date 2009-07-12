@@ -50,21 +50,21 @@
 namespace orxonox
 {
 
-  namespace objectDirection{
-    enum objectdirection{
-      toclient=0x1,
-      toserver=0x2,
-      bidirectional=0x3
+  namespace ObjectDirection{
+    enum Value{
+      ToClient=0x1,
+      ToServer=0x2,
+      Bidirectional=0x3
     };
   }
 
-  namespace priority{
-    enum prio{
-      very_high   = -100,
-      high        = -15,
-      normal      = 0,
-      low         = 15,
-      very_low    = 100
+  namespace Priority{
+    enum Value{
+      VeryHigh    = -100,
+      High        = -15,
+      Normal      = 0,
+      Low         = 15,
+      VeryLow     = 100
     };
   }
 

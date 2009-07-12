@@ -56,10 +56,10 @@
 
 namespace orxonox
 {
-    AddGameState(GSGraphics, "graphics", false);
+    DeclareGameState(GSGraphics, "graphics", true, true);
 
-    GSGraphics::GSGraphics(const std::string& name, bool countTickTime)
-        : GameState(name, countTickTime)
+    GSGraphics::GSGraphics(const GameStateConstrParams& params)
+        : GameState(params)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
@@ -107,9 +107,8 @@ namespace orxonox
 
         setConfigValues();
 
-        // initialise graphics manager. Doesn't load the render window yet!
+        // Load OGRE including the render window
         this->graphicsManager_ = new GraphicsManager();
-        this->graphicsManager_->initialise();
 
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
@@ -197,7 +196,7 @@ namespace orxonox
     */
     void GSGraphics::toggleGUI()
     {
-            GUIManager::getInstance().executeCode("toggleGUI()");
+        GUIManager::getInstance().executeCode("toggleGUI()");
     }
 
     /**

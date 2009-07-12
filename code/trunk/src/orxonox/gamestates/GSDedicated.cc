@@ -50,12 +50,12 @@ namespace orxonox
 {
     const unsigned int MAX_COMMAND_LENGTH = 255;
     
-    AddGameState(GSDedicated, "dedicated");
+    DeclareGameState(GSDedicated, "dedicated", false, false);
     
     termios* GSDedicated::originalTerminalSettings_;
 
-    GSDedicated::GSDedicated(const std::string& name)
-        : GameState(name)
+    GSDedicated::GSDedicated(const GameStateConstrParams& params)
+        : GameState(params)
         , server_(0)
         , timeSinceLastUpdate_(0)
         , closeThread_(false)

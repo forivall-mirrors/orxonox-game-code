@@ -43,7 +43,7 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::normal);
+            this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::Normal);
             this->attachOgreObject(this->particles_->getParticleSystem());
             this->particles_->setKeepParticlesInLocalSpace(0);
 

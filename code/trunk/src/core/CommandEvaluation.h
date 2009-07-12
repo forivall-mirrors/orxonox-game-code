@@ -40,17 +40,20 @@
 
 namespace orxonox
 {
-    enum CommandState
+    namespace CommandState
     {
-        CS_Uninitialized,
-        CS_Empty,
-        CS_ShortcutOrIdentifier,
-        CS_Function,
-        CS_ParamPreparation,
-        CS_Params,
-        CS_Finished,
-        CS_Error
-    };
+        enum Value
+        {
+            Uninitialized,
+            Empty,
+            ShortcutOrIdentifier,
+            Function,
+            ParamPreparation,
+            Params,
+            Finished,
+            Error
+        };
+    }
 
     class _CoreExport CommandEvaluation
     {
@@ -111,7 +114,7 @@ namespace orxonox
             std::string argument_;
 
             std::string errorMessage_;
-            CommandState state_;
+            CommandState::Value state_;
 
             bool bEvaluatedParams_;
             MultiType param_[5];

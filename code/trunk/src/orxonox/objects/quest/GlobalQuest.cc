@@ -146,7 +146,7 @@ namespace orxonox
         {
             return false;
         }
-        return (this->isInactive(player) && !(this->status_ == questStatus::completed || this->status_ == questStatus::failed));
+        return (this->isInactive(player) && !(this->status_ == QuestStatus::Completed || this->status_ == QuestStatus::Failed));
     }
 
     /**
@@ -188,7 +188,7 @@ namespace orxonox
     @throws
         Throws an Exception if player is NULL.
     */
-    questStatus::Enum GlobalQuest::getStatus(const PlayerInfo* player) const
+    QuestStatus::Value GlobalQuest::getStatus(const PlayerInfo* player) const
     {
         if(player == NULL) //!< We don't want NULL-Pointers!
         {
@@ -202,7 +202,7 @@ namespace orxonox
             return this->status_;
         }
 
-        return questStatus::inactive;
+        return QuestStatus::Inactive;
     }
 
     /**
@@ -216,7 +216,7 @@ namespace orxonox
     @return
         Returns false if player is NULL.
     */
-    bool GlobalQuest::setStatus(PlayerInfo* player, const questStatus::Enum & status)
+    bool GlobalQuest::setStatus(PlayerInfo* player, const QuestStatus::Value & status)
     {
         if(player == NULL) //!< We don't want NULL-Pointers!
         {

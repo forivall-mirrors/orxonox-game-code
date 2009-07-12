@@ -114,13 +114,13 @@ namespace orxonox
 
     void Scene::registerVariables()
     {
-        registerVariable(this->skybox_,             variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
-        registerVariable(this->ambientLight_,       variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
-        registerVariable(this->negativeWorldRange_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_negativeWorldRange));
-        registerVariable(this->positiveWorldRange_, variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_positiveWorldRange));
-        registerVariable(this->gravity_,            variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_gravity));
-        registerVariable(this->bHasPhysics_,        variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
-        registerVariable(this->bShadows_,           variableDirection::toclient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyShadows));
+        registerVariable(this->skybox_,             VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applySkybox));
+        registerVariable(this->ambientLight_,       VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyAmbientLight));
+        registerVariable(this->negativeWorldRange_, VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_negativeWorldRange));
+        registerVariable(this->positiveWorldRange_, VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_positiveWorldRange));
+        registerVariable(this->gravity_,            VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_gravity));
+        registerVariable(this->bHasPhysics_,        VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
+        registerVariable(this->bShadows_,           VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyShadows));
     }
 
     void Scene::setNegativeWorldRange(const Vector3& range)

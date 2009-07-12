@@ -37,7 +37,7 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
@@ -71,7 +71,7 @@ namespace orxonox
         RegisterObject(HUDBar);
 
         // create new material
-        std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
+        std::string materialname = "barmaterial" + multi_cast<std::string>(materialcount_s++);
         Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
         material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();

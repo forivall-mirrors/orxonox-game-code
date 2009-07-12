@@ -56,7 +56,6 @@ namespace orxonox
         ~GraphicsManager();
 
         void setConfigValues();
-        void initialise();
 
         void update(const Clock& time);
 
@@ -92,13 +91,11 @@ namespace orxonox
         void printScreen();
 
     private:
-        bool                loaded_;
-
         Ogre::Root*         ogreRoot_;                 //!< Ogre's root
         Ogre::LogManager*   ogreLogger_;
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
-        OgreWindowEventListener* ogreWindowEventListener_;
+        OgreWindowEventListener* ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 
         // config values
         unsigned int        detailLevelParticle_;      //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)

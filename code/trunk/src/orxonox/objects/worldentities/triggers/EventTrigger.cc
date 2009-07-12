@@ -53,7 +53,7 @@ namespace orxonox
         ORXONOX_SET_EVENT(EventTrigger, "trigger", trigger, event);
     }
 
-    bool EventTrigger::isTriggered(TriggerMode mode)
+    bool EventTrigger::isTriggered(TriggerMode::Value mode)
     {
         if (Trigger::isTriggered(mode))
             return this->bEventTriggered_;

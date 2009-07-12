@@ -56,8 +56,8 @@ namespace orxonox
 
     void ConeCollisionShape::registerVariables()
     {
-        registerVariable(this->radius_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
-        registerVariable(this->height_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->radius_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->height_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void ConeCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)

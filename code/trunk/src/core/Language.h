@@ -113,7 +113,7 @@ namespace orxonox
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
     class _CoreExport Language
     {
-        friend class Core;
+        friend class CoreConfiguration;
 
         public:
             Language();
@@ -129,7 +129,7 @@ namespace orxonox
             void readDefaultLanguageFile();
             void readTranslatedLanguageFile();
             void writeDefaultLanguageFile() const;
-            static const std::string getFilename(const std::string& language);
+            static std::string getFilename(const std::string& language);
             LanguageEntry* createEntry(const LanguageEntryLabel& label, const std::string& entry);
 
             std::string defaultLanguage_;                           //!< The default language

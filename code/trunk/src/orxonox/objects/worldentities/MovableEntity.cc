@@ -51,7 +51,7 @@ namespace orxonox
 
         this->continuousResynchroTimer_ = 0;
 
-        this->setPriority(priority::low);
+        this->setPriority(Priority::Low);
 
         this->registerVariables();
     }
@@ -88,11 +88,11 @@ namespace orxonox
 
     void MovableEntity::registerVariables()
     {
-        registerVariable(this->linearVelocity_,        variableDirection::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::processLinearVelocity));
-        registerVariable(this->angularVelocity_,       variableDirection::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::processAngularVelocity));
+        registerVariable(this->linearVelocity_,        VariableDirection::ToClient, new NetworkCallback<MovableEntity>(this, &MovableEntity::processLinearVelocity));
+        registerVariable(this->angularVelocity_,       VariableDirection::ToClient, new NetworkCallback<MovableEntity>(this, &MovableEntity::processAngularVelocity));
 
-        registerVariable(this->overwrite_position_,    variableDirection::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwritePosition));
-        registerVariable(this->overwrite_orientation_, variableDirection::toclient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
+        registerVariable(this->overwrite_position_,    VariableDirection::ToClient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwritePosition));
+        registerVariable(this->overwrite_orientation_, VariableDirection::ToClient, new NetworkCallback<MovableEntity>(this, &MovableEntity::overwriteOrientation));
     }
 
     void MovableEntity::clientConnected(unsigned int clientID)

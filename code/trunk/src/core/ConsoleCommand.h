@@ -70,7 +70,7 @@ namespace orxonox
 {
     namespace AccessLevel
     {
-        enum Level
+        enum Value
         {
             None,
             User,
@@ -105,9 +105,9 @@ namespace orxonox
             inline ConsoleCommand& defaultValue(unsigned int index, const MultiType& param)
                 { this->Executor::setDefaultValue(index, param); return (*this); }
 
-            inline ConsoleCommand& accessLevel(AccessLevel::Level level)
+            inline ConsoleCommand& accessLevel(AccessLevel::Value level)
                 { this->accessLevel_ = level; return (*this); }
-            inline AccessLevel::Level getAccessLevel() const
+            inline AccessLevel::Value getAccessLevel() const
                 { return this->accessLevel_; }
 
             ConsoleCommand& argumentCompleter(unsigned int param, ArgumentCompleter* completer);
@@ -129,9 +129,9 @@ namespace orxonox
                 return *this;
             }
 
-            inline ConsoleCommand& keybindMode(KeybindMode::Enum mode)
+            inline ConsoleCommand& keybindMode(KeybindMode::Value mode)
                 { this->keybindMode_ = mode; return *this; }
-            inline KeybindMode::Enum getKeybindMode() const
+            inline KeybindMode::Value getKeybindMode() const
                 { return this->keybindMode_; }
 
             inline ConsoleCommand& inputConfiguredParam(int index)
@@ -140,11 +140,11 @@ namespace orxonox
                 { return this->inputConfiguredParam_; }
 
         private:
-            AccessLevel::Level accessLevel_;
+            AccessLevel::Value accessLevel_;
             ArgumentCompleter* argumentCompleter_[5];
             ArgumentCompletionList argumentList_;
 
-            KeybindMode::Enum keybindMode_;
+            KeybindMode::Value keybindMode_;
             int inputConfiguredParam_;
     };
 

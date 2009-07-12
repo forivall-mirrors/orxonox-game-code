@@ -45,7 +45,7 @@ namespace orxonox
   {
     RegisterObject(Trigger);
 
-    this->mode_ = TM_EventTriggerAND;
+    this->mode_ = TriggerMode::EventTriggerAND;
 
     this->bFirstTick_ = true;
     this->bActive_ = false;
@@ -162,7 +162,7 @@ namespace orxonox
     this->fireEvent(bIsTriggered);
   }
 
-  bool Trigger::isTriggered(TriggerMode mode)
+  bool Trigger::isTriggered(TriggerMode::Value mode)
   {
 //    if (this->bUpdating_)
 //      return this->bTriggered_;
@@ -174,13 +174,13 @@ namespace orxonox
 
       switch (mode)
       {
-        case TM_EventTriggerAND:
+        case TriggerMode::EventTriggerAND:
           returnval = checkAnd();
           break;
-        case TM_EventTriggerOR:
+        case TriggerMode::EventTriggerOR:
           returnval = checkOr();
           break;
-        case TM_EventTriggerXOR:
+        case TriggerMode::EventTriggerXOR:
           returnval = checkXor();
           break;
         default:
@@ -269,20 +269,20 @@ namespace orxonox
   void Trigger::setMode(const std::string& modeName)
   {
     if (modeName == "and")
-      this->setMode(TM_EventTriggerAND);
+      this->setMode(TriggerMode::EventTriggerAND);
     else if (modeName == "or")
-      this->setMode(TM_EventTriggerOR);
+      this->setMode(TriggerMode::EventTriggerOR);
     else if (modeName == "xor")
-      this->setMode(TM_EventTriggerXOR);
+      this->setMode(TriggerMode::EventTriggerXOR);
   }
 
   std::string Trigger::getModeString() const
   {
-    if (this->mode_ == TM_EventTriggerAND)
+    if (this->mode_ == TriggerMode::EventTriggerAND)
       return std::string("and");
-    else if (this->mode_ == TM_EventTriggerOR)
+    else if (this->mode_ == TriggerMode::EventTriggerOR)
       return std::string("or");
-    else if (this->mode_ == TM_EventTriggerXOR)
+    else if (this->mode_ == TriggerMode::EventTriggerXOR)
       return std::string("xor");
     else
       return std::string("and");
