@@ -36,6 +36,7 @@
 #include <map>
 #include <string>
 #include <boost/preprocessor/cat.hpp>
+#include <boost/static_assert.hpp>
 
 #include "core/OrxonoxClass.h"
 #include "core/Functor.h"
@@ -45,9 +46,9 @@
 namespace orxonox
 {
 
-#ifdef ORXONOX_COMPILER_GCC
+#if defined(ORXONOX_COMPILER_GCC) && defined(ORXONOX_ARCH_32)
 static const unsigned int MAX_FUNCTION_POINTER_SIZE = 8;
-#else //ORXONOX_COMPILER_GCC
+#else
 static const unsigned int MAX_FUNCTION_POINTER_SIZE = 16;
 #endif //ORXONOX_COMPILER_GCC
 static const unsigned int MAX_FUNCTION_POINTER_INTS = (MAX_FUNCTION_POINTER_SIZE-1)/4+1;
@@ -56,7 +57,7 @@ struct _NetworkExport NetworkFunctionPointer {
   uint32_t pointer[MAX_FUNCTION_POINTER_INTS];
   bool operator<(const NetworkFunctionPointer& b) const
   {
-#ifdef ORXONOX_COMPILER_GCC
+#if defined(ORXONOX_COMPILER_GCC) && defined(ORXONOX_ARCH_32)
     return pointer[0]<b.pointer[0] ? true : pointer[1]<b.pointer[1];
 #else //ORXONOX_COMPILER_GCC
     return pointer[0]<b.pointer[0] ? true : ( pointer[1]<b.pointer[1] ? true : ( pointer[2]<b.pointer[2] ? true : pointer[3]<b.pointer[3] ) );
@@ -194,7 +195,8 @@ template <class T> NetworkMemberFunction<T>::~NetworkMemberFunction()
 
 template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
 {
-  memset((uint8_t*)&destptr + sizeof(T), 0, sizeof(NetworkFunctionPointer)-sizeof(T));
+  if( sizeof(NetworkFunctionPointer)-sizeof(T) > 0)
+    memset((uint8_t*)&destptr + sizeof(T), 0, sizeof(NetworkFunctionPointer)-sizeof(T));
   T p2 = ptr;
   memcpy( &destptr, &p2, sizeof(T) );
 //   for(unsigned int i=0; i<(sizeof(T)-1/4)+1; i++)
@@ -203,6 +205,7 @@ template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
 
 template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, const std::string& name )
 {
+  BOOST_STATIC_ASSERT( sizeof(T)<=sizeof(NetworkFunctionPointer) ); // if this fails your compiler uses bigger pointers for static functions than defined above
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
   new NetworkFunctionStatic( createFunctor(ptr), name, destptr );
@@ -211,6 +214,7 @@ template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, const st
 
 template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT ptr, const std::string& name )
 {
+  BOOST_STATIC_ASSERT( sizeof(PT)<=sizeof(NetworkFunctionPointer) ); // if this fails your compiler uses bigger pointers for a specific kind of member functions than defined above
   NetworkFunctionPointer destptr;
   copyPtr( ptr, destptr );
   new NetworkMemberFunction<T>( createFunctor(ptr), name, destptr );
