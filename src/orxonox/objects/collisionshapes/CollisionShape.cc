@@ -76,7 +76,7 @@ namespace orxonox
 
     void CollisionShape::registerVariables()
     {
-        registerVariable(this->parentID_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::parentChanged));
+        registerVariable(this->parentID_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::parentChanged));
     }
 
     void CollisionShape::parentChanged()

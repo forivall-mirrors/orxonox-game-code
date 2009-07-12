@@ -172,7 +172,7 @@ namespace orxonox
              //prints gametime
             if ( gameTime_ <= timesequence_ && gameTime_ > 0)
             {
-                std::string message = convertToString(timesequence_) + " seconds left!";
+                std::string message = multi_cast<std::string>(timesequence_) + " seconds left!";
 /*
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);

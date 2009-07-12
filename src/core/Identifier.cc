@@ -35,7 +35,7 @@
 
 #include <ostream>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "ConfigValueContainer.h"
 #include "ConsoleCommand.h"
 #include "Factory.h"

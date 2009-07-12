@@ -301,7 +301,7 @@ namespace orxonox
     */
     bool Quest::isInactive(const PlayerInfo* player) const
     {
-        return this->getStatus(player) == questStatus::inactive;
+        return this->getStatus(player) == QuestStatus::Inactive;
     }
 
     /**
@@ -317,7 +317,7 @@ namespace orxonox
     bool Quest::isActive(const PlayerInfo* player) const
     {
 
-        return this->getStatus(player) == questStatus::active;
+        return this->getStatus(player) == QuestStatus::Active;
     }
 
     /**
@@ -332,7 +332,7 @@ namespace orxonox
     */
     bool Quest::isFailed(const PlayerInfo* player) const
     {
-        return this->getStatus(player) == questStatus::failed;
+        return this->getStatus(player) == QuestStatus::Failed;
     }
 
     /**
@@ -347,7 +347,7 @@ namespace orxonox
     */
     bool Quest::isCompleted(const PlayerInfo* player) const
     {
-        return this->getStatus(player) == questStatus::completed;
+        return this->getStatus(player) == QuestStatus::Completed;
     }
     
     /**
@@ -361,7 +361,7 @@ namespace orxonox
     bool Quest::fail(PlayerInfo* player)
     {
         QuestListener::advertiseStatusChange(this->listeners_, "fail"); //!< Tells the QuestListeners, that the status has changed to failed.
-        this->setStatus(player, questStatus::failed);
+        this->setStatus(player, QuestStatus::Failed);
         
         COUT(4) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." <<std::endl;
         
@@ -380,7 +380,7 @@ namespace orxonox
     bool Quest::complete(PlayerInfo* player)
     {
         QuestListener::advertiseStatusChange(this->listeners_, "complete"); //!< Tells the QuestListeners, that the status has changed to completed.
-        this->setStatus(player, questStatus::completed);
+        this->setStatus(player, QuestStatus::Completed);
         
         COUT(4) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." <<std::endl;
         
@@ -408,7 +408,7 @@ namespace orxonox
         
         QuestListener::advertiseStatusChange(this->listeners_, "start"); //!< Tells the QuestListeners, that the status has changed to active.
         
-        this->setStatus(player, questStatus::active);
+        this->setStatus(player, QuestStatus::Active);
         
         this->getDescription()->sendAddQuestNotification();
         return true;

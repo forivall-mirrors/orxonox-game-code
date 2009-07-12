@@ -55,7 +55,7 @@ namespace orxonox
     {
         this->materialBase_ = material;    
     
-        BillboardProjectile::setMaterial(material + convertToString(this->textureIndex_));
+        BillboardProjectile::setMaterial(material + multi_cast<std::string>(this->textureIndex_));
     }
 
     void LightningGunProjectile::changeTexture()

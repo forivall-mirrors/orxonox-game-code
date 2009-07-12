@@ -59,6 +59,21 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
+
+namespace orxonox
+{
+    class Exception;
+    class ExprParser;
+    class IntVector2;
+    class IntVector3;
+    class MultiType;
+    class OutputBuffer;
+    class OutputBufferListener;
+    class OutputHandler;
+    class SignalHandler;
+    class SubString;
+}
+
 namespace Ogre
 {
     class Radian;
@@ -71,7 +86,6 @@ namespace Ogre
     class Quaternion;
     class ColourValue;
 }
-
 namespace orxonox
 {
     using Ogre::Radian;
@@ -83,17 +97,12 @@ namespace orxonox
     using Ogre::Matrix4;
     using Ogre::Quaternion;
     using Ogre::ColourValue;
+}
 
-    class Exception;
-    class ExprParser;
-    class IntVector2;
-    class IntVector3;
-    class MultiType;
-    class OutputBuffer;
-    class OutputBufferListener;
-    class OutputHandler;
-    class SignalHandler;
-    class SubString;
+namespace Loki
+{
+    class ScopeGuardImplBase;
+    typedef const ScopeGuardImplBase& ScopeGuard;
 }
 
 #endif /* _UtilPrereqs_H__ */

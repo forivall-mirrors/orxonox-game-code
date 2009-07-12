@@ -92,8 +92,8 @@ namespace orxonox
 
     void Spectator::registerVariables()
     {
-        registerVariable(this->bGreetingFlareVisible_, variableDirection::toclient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
-        registerVariable(this->bGreeting_,             variableDirection::toserver, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
+        registerVariable(this->bGreetingFlareVisible_, VariableDirection::ToClient, new NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
+        registerVariable(this->bGreeting_,             VariableDirection::ToServer, new NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
     }
 
     void Spectator::changedGreeting()
@@ -144,7 +144,7 @@ namespace orxonox
     {
         ControllableEntity::setPlayer(player);
 
-//        this->setObjectMode(objectDirection::toclient);
+//        this->setObjectMode(ObjectDirection::ToClient);
     }
 
     void Spectator::startLocalHumanControl()

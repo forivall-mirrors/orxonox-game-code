@@ -36,9 +36,10 @@
 #include <string>
 #include <vector>
 
-#include "OrxonoxClass.h"
-#include "input/InputBuffer.h"
 #include "util/OutputBuffer.h"
+#include "input/InputBuffer.h"
+#include "OrxonoxClass.h"
+#include "ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -143,6 +144,8 @@ namespace orxonox
             unsigned int historyPosition_;
             unsigned int historyOffset_;
             bool bAddOutputLevel_;
+
+            ConfigFileType commandHistoryConfigFileType_;
 
             static Shell* singletonRef_s;
     };

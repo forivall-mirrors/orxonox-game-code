@@ -40,12 +40,15 @@
 
 namespace orxonox
 {
-  enum TriggerMode
+  namespace TriggerMode
   {
-    TM_EventTriggerAND,
-    TM_EventTriggerOR,
-    TM_EventTriggerXOR,
-  };
+    enum Value
+    {
+      EventTriggerAND,
+      EventTriggerOR,
+      EventTriggerXOR,
+    };
+  }
 
   class _OrxonoxExport Trigger : public StaticEntity, public Tickable
   {
@@ -63,9 +66,9 @@ namespace orxonox
       const Trigger* getTrigger(unsigned int index) const;
 
       void setMode(const std::string& modeName);
-      inline void setMode(TriggerMode mode)
+      inline void setMode(TriggerMode::Value mode)
         { this->mode_ = mode; }
-      inline TriggerMode getMode() const
+      inline TriggerMode::Value getMode() const
         { return mode_; }
 
       inline void setInvert(bool bInvert)
@@ -102,7 +105,7 @@ namespace orxonox
 
     protected:
       inline bool isTriggered() { return this->isTriggered(this->mode_); }
-      virtual bool isTriggered(TriggerMode mode);
+      virtual bool isTriggered(TriggerMode::Value mode);
       virtual void triggered(bool bIsTriggered);
 
     private:
@@ -117,7 +120,7 @@ namespace orxonox
       bool bTriggered_;
       bool bFirstTick_;
 
-      TriggerMode mode_;
+      TriggerMode::Value mode_;
       bool bInvertMode_;
       bool bSwitch_;
       bool bStayActive_;

@@ -67,7 +67,7 @@ namespace orxonox
         catch (std::exception const &e)
         {   COUT(1) << "Error while initializing Tcl (IRC): " << e.what();   }
 
-        this->nickname_ = "orx" + getConvertedValue<int, std::string>((unsigned int)rand());
+        this->nickname_ = "orx" + multi_cast<std::string>(static_cast<unsigned int>(rand()));
         TclThreadManager::execute(threadID, "set nickname " + this->nickname_);
         TclThreadManager::execute(threadID, "source irc.tcl");
     }

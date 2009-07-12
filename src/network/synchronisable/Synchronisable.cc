@@ -64,7 +64,7 @@ namespace orxonox
     // set dataSize to 0
     this->dataSize_ = 0;
     // set standard priority
-    this->setPriority( priority::normal );
+    this->setPriority( Priority::Normal );
 
     // get creator id
     this->creatorID = OBJECTID_UNKNOWN;

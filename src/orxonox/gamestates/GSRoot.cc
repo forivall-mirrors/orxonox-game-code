@@ -36,19 +36,20 @@
 #include "tools/Timer.h"
 #include "interfaces/TimeFactorListener.h"
 #include "interfaces/Tickable.h"
+#include "LevelManager.h"
 
 namespace orxonox
 {
-    AddGameState(GSRoot, "root", false);
-    SetCommandLineSwitch(console);
+    DeclareGameState(GSRoot, "root", true, false);
+    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
     // Shortcuts for easy direct loading
-    SetCommandLineSwitch(server);
-    SetCommandLineSwitch(client);
-    SetCommandLineSwitch(dedicated);
-    SetCommandLineSwitch(standalone);
+    SetCommandLineSwitch(server).information("Start in server mode");
+    SetCommandLineSwitch(client).information("Start in client mode");
+    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
+    SetCommandLineSwitch(standalone).information("Start in standalone mode");
 
-    GSRoot::GSRoot(const std::string& name, bool countTickTime)
-        : GameState(name, countTickTime)
+    GSRoot::GSRoot(const GameStateConstrParams& params)
+        : GameState(params)
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
@@ -81,6 +82,9 @@ namespace orxonox
             this->ccPause_ = createConsoleCommand(functor, "pause");
             CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
         }
+
+        // create the global LevelManager
+        this->levelManager_ = new LevelManager();
 
         // Load level directly?
         bool loadLevel = false;
@@ -128,6 +132,8 @@ namespace orxonox
             this->ccPause_ = 0;
         }
 */
+
+        delete this->levelManager_;
     }
 
     void GSRoot::update(const Clock& time)

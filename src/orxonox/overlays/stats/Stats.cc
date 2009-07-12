@@ -32,7 +32,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreBorderPanelOverlayElement.h>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 

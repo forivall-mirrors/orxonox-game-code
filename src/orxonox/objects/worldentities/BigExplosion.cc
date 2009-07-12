@@ -55,7 +55,7 @@ namespace orxonox
         this->firstTick_ = true;
 */
         this->bStop_ = false;
-        this->LOD_ = LODParticle::normal;
+        this->LOD_ = LODParticle::Normal;
 
 /*      this->stf_ = "setTimeFactor ";
         this->timeFactor_ =  1;
@@ -306,8 +306,8 @@ namespace orxonox
 
     void BigExplosion::registerVariables()
     {
-        registerVariable((int&)(this->LOD_), variableDirection::toclient, new NetworkCallback<BigExplosion>(this, &BigExplosion::LODchanged));
-        registerVariable(this->bStop_,       variableDirection::toclient, new NetworkCallback<BigExplosion>(this, &BigExplosion::checkStop));
+        registerVariable((int&)(this->LOD_), VariableDirection::ToClient, new NetworkCallback<BigExplosion>(this, &BigExplosion::LODchanged));
+        registerVariable(this->bStop_,       VariableDirection::ToClient, new NetworkCallback<BigExplosion>(this, &BigExplosion::checkStop));
     }
 
     void BigExplosion::LODchanged()

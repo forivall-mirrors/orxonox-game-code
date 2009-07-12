@@ -28,18 +28,20 @@
 
 #include "CommandLine.h"
 
+#include <algorithm>
+#include <sstream>
 #include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "Core.h"
 
 namespace orxonox
 {
-    SetCommandLineArgument(optionsFile, "start.ini").shortcut("o");
+    SetCommandLineOnlyArgument(optionsFile, "start.ini").shortcut("o");
 
     /**
     @brief
@@ -48,9 +50,11 @@ namespace orxonox
         Bools are treated specially. That is necessary
         so that you can have simple command line switches.
     */
-    void CommandLineArgument::parse(const std::string& value)
+    void CommandLineArgument::parse(const std::string& value, bool bParsingFile)
     {
-        if (value_.getType() == MT_bool)
+        if (bParsingFile && this->bCommandLineOnly_)
+            ThrowException(Argument, "Command line argument '" + getName() + "' is not allowed in files.");
+        if (value_.getType() == MT_Type::Bool)
         {
             // simulate command line switch
             bool temp;
@@ -65,9 +69,7 @@ namespace orxonox
                 this->value_ = true;
             }
             else
-            {
                 ThrowException(Argument, "Could not read command line argument '" + getName() + "'.");
-            }
         }
         else
         {
@@ -125,104 +127,113 @@ namespace orxonox
     @param arguments
         Vector of space separated strings.
     */
-    void CommandLine::_parse(const std::vector<std::string>& arguments)
+    void CommandLine::_parse(const std::vector<std::string>& arguments, bool bParsingFile)
     {
-        // why this? See bFirstTimeParse_ declaration.
-        if (bFirstTimeParse_)
+        try
         {
-            // first shove all the shortcuts in a map
-            for (std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
-                it != cmdLineArgs_.end(); ++it)
+            // why this? See bFirstTimeParse_ declaration.
+            if (bFirstTimeParse_)
             {
-                OrxAssert(cmdLineArgsShortcut_.find(it->second->getShortcut()) == cmdLineArgsShortcut_.end(),
-                    "Cannot have two command line shortcut with the same name.");
-                if (it->second->getShortcut() != "")
-                    cmdLineArgsShortcut_[it->second->getShortcut()] = it->second;
-            }
-            bFirstTimeParse_ = false;
-        }
-
-        std::string name;
-        std::string shortcut;
-        std::string value;
-        for (unsigned int i = 0; i < arguments.size(); ++i)
-        {
-            if (arguments[i].size() != 0)
-            {
-                // sure not ""
-                if (arguments[i][0] == '-')
+                // first shove all the shortcuts in a map
+                for (std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
+                    it != cmdLineArgs_.end(); ++it)
                 {
-                    // start with "-"
-                    if (arguments[i].size() == 1)
-                    {
-                        // argument[i] is "-", probably a minus sign
-                        value += "- ";
-                    }
-                    else if (arguments[i][1] <= 57 && arguments[i][1] >= 48)
-                    {
-                        // negative number as a value
-                        value += arguments[i] + " ";
-                    }
-                    else
-                    {
-                        // can be shortcut or full name argument
+                    OrxAssert(cmdLineArgsShortcut_.find(it->second->getShortcut()) == cmdLineArgsShortcut_.end(),
+                        "Cannot have two command line shortcut with the same name.");
+                    if (it->second->getShortcut() != "")
+                        cmdLineArgsShortcut_[it->second->getShortcut()] = it->second;
+                }
+                bFirstTimeParse_ = false;
+            }
 
-                        // save old data first
-                        value = removeTrailingWhitespaces(value);
-                        if (name != "")
+            std::string name;
+            std::string shortcut;
+            std::string value;
+            for (unsigned int i = 0; i < arguments.size(); ++i)
+            {
+                if (arguments[i].size() != 0)
+                {
+                    // sure not ""
+                    if (arguments[i][0] == '-')
+                    {
+                        // start with "-"
+                        if (arguments[i].size() == 1)
                         {
-                            checkFullArgument(name, value);
-                            name = "";
-                            assert(shortcut == "");
+                            // argument[i] is "-", probably a minus sign
+                            value += "- ";
                         }
-                        else if (shortcut != "")
+                        else if (arguments[i][1] <= 57 && arguments[i][1] >= 48)
                         {
-                            checkShortcut(shortcut, value);
-                            shortcut = "";
-                            assert(name == "");
-                        }
-
-                        if (arguments[i][1] == '-')
-                        {
-                            // full name argument with "--name"
-                            name = arguments[i].substr(2);
+                            // negative number as a value
+                            value += arguments[i] + " ";
                         }
                         else
                         {
-                            // shortcut with "-s"
-                            shortcut = arguments[i].substr(1);
+                            // can be shortcut or full name argument
+
+                            // save old data first
+                            value = removeTrailingWhitespaces(value);
+                            if (name != "")
+                            {
+                                checkFullArgument(name, value, bParsingFile);
+                                name = "";
+                                assert(shortcut == "");
+                            }
+                            else if (shortcut != "")
+                            {
+                                checkShortcut(shortcut, value, bParsingFile);
+                                shortcut = "";
+                                assert(name == "");
+                            }
+
+                            if (arguments[i][1] == '-')
+                            {
+                                // full name argument with "--name"
+                                name = arguments[i].substr(2);
+                            }
+                            else
+                            {
+                                // shortcut with "-s"
+                                shortcut = arguments[i].substr(1);
+                            }
+
+                            // reset value string
+                            value = "";
+                        }
+                    }
+                    else
+                    {
+                        // value string
+
+                        if (name == "" && shortcut == "")
+                        {
+                            ThrowException(Argument, "Expected \"-\" or \"-\" in command line arguments.\n");
                         }
 
-                        // reset value string
-                        value = "";
+                        // Concatenate strings as long as there's no new argument by "-" or "--"
+                        value += arguments[i] + ' ';
                     }
-                }
-                else
-                {
-                    // value string
-
-                    if (name == "" && shortcut == "")
-                    {
-                        ThrowException(Argument, "Expected \"-\" or \"-\" in command line arguments.\n");
-                    }
-
-                    // Concatenate strings as long as there's no new argument by "-" or "--"
-                    value += arguments[i] + ' ';
                 }
             }
-        }
 
-        // parse last argument
-        value = removeTrailingWhitespaces(value);
-        if (name != "")
-        {
-            checkFullArgument(name, value);
-            assert(shortcut == "");
+            // parse last argument
+            value = removeTrailingWhitespaces(value);
+            if (name != "")
+            {
+                checkFullArgument(name, value, bParsingFile);
+                assert(shortcut == "");
+            }
+            else if (shortcut != "")
+            {
+                checkShortcut(shortcut, value, bParsingFile);
+                assert(name == "");
+            }
         }
-        else if (shortcut != "")
+        catch (const ArgumentException& ex)
         {
-            checkShortcut(shortcut, value);
-            assert(name == "");
+            COUT(0) << "Could not parse command line (including additional files): " << ex.what() << std::endl;
+            COUT(0) << CommandLine::getUsageInformation() << std::endl;
+            throw GeneralException("");
         }
     }
 
@@ -234,13 +245,13 @@ namespace orxonox
     @param value
         String containing the value
     */
-    void CommandLine::checkFullArgument(const std::string& name, const std::string& value)
+    void CommandLine::checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.find(name);
         if (it == cmdLineArgs_.end())
             ThrowException(Argument, "Command line argument '" + name + "' does not exist.");
 
-        it->second->parse(value);
+        it->second->parse(value, bParsingFile);
     }
 
     /**
@@ -251,25 +262,49 @@ namespace orxonox
     @param value
         String containing the value
     */
-    void CommandLine::checkShortcut(const std::string& shortcut, const std::string& value)
+    void CommandLine::checkShortcut(const std::string& shortcut, const std::string& value, bool bParsingFile)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgsShortcut_.find(shortcut);
         if (it == cmdLineArgsShortcut_.end())
             ThrowException(Argument, "Command line shortcut '" + shortcut + "' does not exist.");
 
-        it->second->parse(value);
+        it->second->parse(value, bParsingFile);
     }
 
     std::string CommandLine::getUsageInformation()
     {
-        CommandLine* inst = &_getInstance();
-        std::string infoStr;
-        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst->cmdLineArgs_.begin();
-            it != inst->cmdLineArgs_.end(); ++it)
+        CommandLine& inst = _getInstance();
+        std::ostringstream infoStr;
+
+        // determine maximum name size
+        size_t maxNameSize = 0;
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst.cmdLineArgs_.begin();
+            it != inst.cmdLineArgs_.end(); ++it)
         {
-            infoStr += "[--" + it->second->getName() + " " + it->second->getInformation() + "] ";
+            maxNameSize = std::max(it->second->getName().size(), maxNameSize);
         }
-        return infoStr;
+
+        infoStr << "Usage: orxonox [options]" << std::endl;
+        infoStr << "Available options:" << std::endl;
+
+        for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst.cmdLineArgs_.begin();
+            it != inst.cmdLineArgs_.end(); ++it)
+        {
+            if (it->second->getShortcut() != "")
+                infoStr << " [-" << it->second->getShortcut() << "] ";
+            else
+                infoStr << "      ";
+            infoStr << "--" << it->second->getName() << " ";
+            if (it->second->getValue().getType() != MT_Type::Bool)
+                infoStr << "ARG ";
+            else
+                infoStr << "    ";
+            // fill with the necessary amount of blanks
+            infoStr << std::string(maxNameSize - it->second->getName().size(), ' ');
+            infoStr << ": " << it->second->getInformation();
+            infoStr << std::endl;
+        }
+        return infoStr.str();
     }
 
     /**
@@ -294,16 +329,22 @@ namespace orxonox
 
     /**
     @brief
-        Parses both command line and start.ini for CommandLineArguments.
+        Parses only the command line for CommandLineArguments.
     */
-    void CommandLine::_parseAll(int argc, char** argv)
+    void CommandLine::_parseCommandLine(int argc, char** argv)
     {
-        // parse command line first
         std::vector<std::string> args;
         for (int i = 1; i < argc; ++i)
             args.push_back(argv[i]);
-        this->_parse(args);
+        this->_parse(args, false);
+    }
 
+    /**
+    @brief
+        Parses start.ini (or the file specified with --optionsFile) for CommandLineArguments.
+    */
+    void CommandLine::_parseFile()
+    {
         std::string filename = CommandLine::getValue("optionsFile").getString();
         boost::filesystem::path filepath(Core::getConfigPath() / filename);
 
@@ -311,7 +352,7 @@ namespace orxonox
         // They will not overwrite the arguments given directly
         std::ifstream file;
         file.open(filepath.string().c_str());
-        args.clear();
+        std::vector<std::string> args;
         if (file)
         {
             while (!file.eof())
@@ -331,14 +372,6 @@ namespace orxonox
             file.close();
         }
 
-        try
-        {
-            _parse(args);
-        }
-        catch (orxonox::ArgumentException& ex)
-        {
-            COUT(1) << "An Exception occured while parsing " << filename << std::endl;
-            throw(ex);
-        }
+        _parse(args, true);
     }
 }

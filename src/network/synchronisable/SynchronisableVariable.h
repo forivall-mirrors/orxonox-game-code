@@ -40,14 +40,16 @@
 
 namespace orxonox{
   
-  namespace variableDirection{
-    enum syncdirection{
-      toclient=0x1,
-      toserver=0x2
+  namespace VariableDirection{
+    enum Value{
+      ToClient=0x1,
+      ToServer=0x2
     };
-    enum bidirectional{
-      serverMaster=0x1,
-      clientMaster=0x2
+  }
+  namespace Bidirectionality{
+    enum Value{
+      ServerMaster=0x1,
+      ClientMaster=0x2
     };
   }
   
@@ -68,7 +70,7 @@ namespace orxonox{
   class SynchronisableVariable: public SynchronisableVariableBase
   {
     public:
-      SynchronisableVariable(T& variable, uint8_t syncDirection=variableDirection::toclient, NetworkCallbackBase *cb=0);
+      SynchronisableVariable(T& variable, uint8_t syncDirection=VariableDirection::ToClient, NetworkCallbackBase *cb=0);
       virtual ~SynchronisableVariable();
 
       virtual inline uint8_t getMode(){ return mode_; }
@@ -87,7 +89,7 @@ namespace orxonox{
   class SynchronisableVariableBidirectional: public SynchronisableVariable<T>
   {
     public:
-      SynchronisableVariableBidirectional(T& variable, uint8_t master=variableDirection::serverMaster, NetworkCallbackBase *cb=0);
+      SynchronisableVariableBidirectional(T& variable, uint8_t master=Bidirectionality::ServerMaster, NetworkCallbackBase *cb=0);
       virtual ~SynchronisableVariableBidirectional();
       
       virtual inline uint8_t getMode(){ return 0x3; } //this basically is a hack ^^

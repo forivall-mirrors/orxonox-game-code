@@ -45,33 +45,30 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/preprocessor/cat.hpp>
 
-#include "OrxonoxClass.h"
+#include "util/Debug.h"
+#include "util/StringUtils.h"
 
 /**
 @def
     Adds a new GameState to the Game. The second parameter is the name as string
     and every following paramter is a constructor argument (which is usually non existent)
 */
-#define AddGameState(classname, ...) \
-    static bool BOOST_PP_CAT(bGameStateDummy_##classname, __LINE__) = orxonox::Game::addGameState(new classname(__VA_ARGS__))
+#define DeclareGameState(className, stateName, bIgnoreTickTime, bGraphicsMode) \
+    static bool BOOST_PP_CAT(bGameStateDummy_##className, __LINE__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
 
-// tolua_begin
 namespace orxonox
 {
+    class GameConfiguration;
+
     /**
     @brief
         Main class responsible for running the game.
     */
     class _CoreExport Game
-    // tolua_end
-        : public OrxonoxClass
-    // tolua_begin
     {
-    //tolua_end
     public:
         Game(int argc, char** argv);
         ~Game();
-        void setConfigValues();
 
         void setStateHierarchy(const std::string& str);
         GameState* getState(const std::string& name);
@@ -90,15 +87,41 @@ namespace orxonox
 
         void addTickTime(uint32_t length);
 
-        static bool addGameState(GameState* state);
-        static void destroyStates();
-        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; } //tolua_export
-
-        void setLevel(std::string levelName); //tolua_export
-        std::string getLevel(); //tolua_export
+        template <class T>
+        static bool declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bConsoleMode);
+        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
-        struct statisticsTickInfo
+        class _CoreExport GameStateFactory
+        {
+        public:
+            virtual ~GameStateFactory() { }
+            static GameState* fabricate(const std::string& className, const GameStateConstrParams& params);
+            template <class T>
+            static void createFactory(const std::string& className)
+                { factories_s[className] = new TemplateGameStateFactory<T>(); }
+            static void destroyFactories();
+        private:
+            virtual GameState* fabricate(const GameStateConstrParams& params) = 0;
+            static std::map<std::string, GameStateFactory*> factories_s;
+        };
+        template <class T>
+        class TemplateGameStateFactory : public GameStateFactory
+        {
+        public:
+            GameState* fabricate(const GameStateConstrParams& params)
+                { return new T(params); }
+        };
+
+        struct GameStateInfo
+        {
+            std::string stateName;
+            std::string className;
+            bool bIgnoreTickTime;
+            bool bGraphicsMode;
+        };
+
+        struct StatisticsTickInfo
         {
             uint64_t    tickTime;
             uint32_t    tickLength;
@@ -109,33 +132,55 @@ namespace orxonox
         void loadState(GameState* state);
         void unloadState(GameState* state);
 
-        std::vector<GameState*>         activeStates_;
+        std::map<std::string, GameState*>    gameStates_;
+        std::vector<GameState*>              activeStates_;
         boost::shared_ptr<GameStateTreeNode> rootStateNode_;
         boost::shared_ptr<GameStateTreeNode> activeStateNode_;
         std::vector<boost::shared_ptr<GameStateTreeNode> > requestedStateNodes_;
 
         Core*                           core_;
         Clock*                          gameClock_;
+        GameConfiguration*              configuration_;
 
-        bool                            abort_;
+        bool                            bChangingState_;
+        bool                            bAbort_;
 
         // variables for time statistics
         uint64_t                        statisticsStartTime_;
-        std::list<statisticsTickInfo>   statisticsTickTimes_;
+        std::list<StatisticsTickInfo>   statisticsTickTimes_;
         uint32_t                        periodTime_;
         uint32_t                        periodTickTime_;
         float                           avgFPS_;
         float                           avgTickTime_;
 
-        // config values
-        unsigned int                    statisticsRefreshCycle_;
-        unsigned int                    statisticsAvgLength_;
-        std::string                     levelName_;
-
-        static std::map<std::string, GameState*> allStates_s;
+        static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
-        // tolua_begin
     };
+
+    template <class T>
+    /*static*/ bool Game::declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bGraphicsMode)
+    {
+        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(getLowercase(stateName));
+        if (it == gameStateDeclarations_s.end())
+        {
+            GameStateInfo& info = gameStateDeclarations_s[getLowercase(stateName)];
+            info.stateName = stateName;
+            info.className = className;
+            info.bIgnoreTickTime = bIgnoreTickTime;
+            info.bGraphicsMode = bGraphicsMode;
+        }
+        else
+        {
+            COUT(0) << "Error: Cannot declare two GameStates with the same name." << std::endl;
+            COUT(0) << "       Ignoring second one ('" << stateName << "')." << std::endl;
+        }
+
+        // Create a factory to delay GameState creation
+        GameStateFactory::createFactory<T>(className);
+
+        // just a required dummy return value
+        return true;
+    }
 }
-//tolua_end
+
 #endif /* _Game_H__ */

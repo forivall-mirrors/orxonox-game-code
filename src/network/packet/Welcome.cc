@@ -40,7 +40,7 @@ namespace packet {
 
 #define PACKET_FLAGS_CLASSID  PacketFlag::Reliable
 #define _PACKETID             0
-#define _CLIENTID             _PACKETID + sizeof(ENUM::Type)
+#define _CLIENTID             _PACKETID + sizeof(Type::Value)
 #define _ENDIANTEST           _CLIENTID + sizeof(uint32_t)
 
   Welcome::Welcome( uint32_t clientID, uint32_t shipID )
@@ -50,7 +50,7 @@ namespace packet {
   assert(getSize());
   data_=new uint8_t[ getSize() ];
   assert(data_);
-  *(packet::ENUM::Type *)(data_ + _PACKETID ) = packet::ENUM::Welcome;
+  *(packet::Type::Value *)(data_ + _PACKETID ) = packet::Type::Welcome;
   *(uint32_t *)(data_ + _CLIENTID ) = static_cast<uint32_t>(clientID);
   *(uint32_t *)(data_ + _ENDIANTEST ) = 0xFEDC4321;
 }
@@ -69,7 +69,7 @@ uint8_t *Welcome::getData(){
 }
 
 unsigned int Welcome::getSize() const{
-  return sizeof(packet::ENUM::Type) + 2*sizeof(uint32_t);
+  return sizeof(packet::Type::Value) + 2*sizeof(uint32_t);
 }
 
 bool Welcome::process(){

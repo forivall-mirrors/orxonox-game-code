@@ -44,9 +44,9 @@ namespace orxonox
     @brief
         Constructor only initialises variables and sets the name permanently.
     */
-    GameState::GameState(const std::string& name, bool countTickTime)
-        : name_(name)
-        , bCountTickTime_(countTickTime)
+    GameState::GameState(const GameStateConstrParams& params)
+        : name_(params.name)
+        , bIgnoreTickTime_(params.bIgnoreTickTime)
         , parent_(0)
     {
         this->activity_.activating   = false;

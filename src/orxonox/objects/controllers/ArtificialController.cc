@@ -207,13 +207,13 @@ namespace orxonox
         {
             switch (base->getState())
             {
-                case BaseState::controlTeam1:
+                case BaseState::ControlTeam1:
                     team1 = 0;
                     break;
-                case BaseState::controlTeam2:
+                case BaseState::ControlTeam2:
                     team1 = 1;
                     break;
-                case BaseState::uncontrolled:
+                case BaseState::Uncontrolled:
                 default:
                     team1 = -1;
             }
@@ -223,13 +223,13 @@ namespace orxonox
         {
             switch (base->getState())
             {
-                case BaseState::controlTeam1:
+                case BaseState::ControlTeam1:
                     team2 = 0;
                     break;
-                case BaseState::controlTeam2:
+                case BaseState::ControlTeam2:
                     team2 = 1;
                     break;
-                case BaseState::uncontrolled:
+                case BaseState::Uncontrolled:
                 default:
                     team2 = -1;
             }

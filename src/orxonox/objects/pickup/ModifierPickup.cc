@@ -86,7 +86,7 @@ namespace orxonox
     {
         if (this->addTo(pawn))
         {
-            std::map<ModifierType::Enum, float>::iterator it;
+            std::map<ModifierType::Value, float>::iterator it;
 
             for (it = this->additiveModifiers_.begin(); it != this->additiveModifiers_.end(); it++)
             {
@@ -123,7 +123,7 @@ namespace orxonox
     {
         if (this->removeFrom(pawn))
         {
-            std::map<ModifierType::Enum, float>::iterator it;
+            std::map<ModifierType::Value, float>::iterator it;
 
             for (it = this->additiveModifiers_.begin(); it != this->additiveModifiers_.end(); it++)
             {
@@ -157,9 +157,9 @@ namespace orxonox
         @param type ModifierType for which to return the modifier.
         @return Returns the additive modifier for type (or 0 if not exists).
     */
-    float ModifierPickup::getAdditiveModifier(ModifierType::Enum type) const
+    float ModifierPickup::getAdditiveModifier(ModifierType::Value type) const
     {
-        std::map<ModifierType::Enum, float>::const_iterator it = this->additiveModifiers_.find(type);
+        std::map<ModifierType::Value, float>::const_iterator it = this->additiveModifiers_.find(type);
         if (it != this->additiveModifiers_.end())
             return (*it).second;
         else
@@ -170,9 +170,9 @@ namespace orxonox
         @param type ModifierType for which to return the modifier.
         @return Returns the multiplicative modifier for type (or 1 if not exists).
     */
-    float ModifierPickup::getMultiplicativeModifier(ModifierType::Enum type) const
+    float ModifierPickup::getMultiplicativeModifier(ModifierType::Value type) const
     {
-        std::map<ModifierType::Enum, float>::const_iterator it = this->multiplicativeModifiers_.find(type);
+        std::map<ModifierType::Value, float>::const_iterator it = this->multiplicativeModifiers_.find(type);
         if (it != this->multiplicativeModifiers_.end())
             return (*it).second;
         else
@@ -183,10 +183,10 @@ namespace orxonox
         @param type ModifierType for which to return the modifier.
         @param value The new additive modifier for type.
     */
-    void ModifierPickup::setAdditiveModifier(ModifierType::Enum type, float value)
+    void ModifierPickup::setAdditiveModifier(ModifierType::Value type, float value)
     {
         if (this->additiveModifiers_.find(type) == this->additiveModifiers_.end())
-            this->additiveModifiers_.insert( std::pair<ModifierType::Enum, float>(type, value) );
+            this->additiveModifiers_.insert( std::pair<ModifierType::Value, float>(type, value) );
         else
             this->additiveModifiers_[type] = value;
     }
@@ -195,10 +195,10 @@ namespace orxonox
         @param type ModifierType for which to return the modifier.
         @param value The new multiplicative modifier for type.
     */
-    void ModifierPickup::setMultiplicativeModifier(ModifierType::Enum type, float value)
+    void ModifierPickup::setMultiplicativeModifier(ModifierType::Value type, float value)
     {
         if (this->multiplicativeModifiers_.find(type) == this->multiplicativeModifiers_.end())
-            this->multiplicativeModifiers_.insert( std::pair<ModifierType::Enum, float>(type, value) );
+            this->multiplicativeModifiers_.insert( std::pair<ModifierType::Value, float>(type, value) );
         else
             this->multiplicativeModifiers_[type] = value;
     }

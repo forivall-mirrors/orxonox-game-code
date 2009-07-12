@@ -131,7 +131,7 @@ namespace orxonox
 
     namespace PacketFlag
     {
-      enum Enum
+      enum Value
       {
         Reliable   = 1,
         Unsequence = 2,

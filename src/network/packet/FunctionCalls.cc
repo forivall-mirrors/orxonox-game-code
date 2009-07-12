@@ -48,7 +48,7 @@ FunctionCalls::FunctionCalls()
   nrOfCalls_ = 0;
   currentMemBlocks_ = 1;
   data_=new uint8_t[ FUNCTIONCALLS_MEM_ALLOCATION ];
-  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::FunctionCalls;
+  *(Type::Value *)(data_ + _PACKETID ) = Type::FunctionCalls;
   *(uint32_t*)(data_+sizeof(uint32_t)) = 0; // set nrOfCalls to 0
 }
 

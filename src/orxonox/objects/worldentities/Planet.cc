@@ -156,11 +156,11 @@ namespace orxonox
 
     void Planet::registerVariables()
     {
-        registerVariable(this->atmosphere_, variableDirection::toclient);
-        registerVariable(this->meshSrc_, variableDirection::toclient, new NetworkCallback<Planet>(this, &Planet::changedMesh));
-        registerVariable(this->bCastShadows_, variableDirection::toclient, new NetworkCallback<Planet>(this, &Planet::changedShadows));
-        registerVariable(this->atmosphereSize, variableDirection::toclient);
-        registerVariable(this->imageSize, variableDirection::toclient);
+        registerVariable(this->atmosphere_, VariableDirection::ToClient);
+        registerVariable(this->meshSrc_, VariableDirection::ToClient, new NetworkCallback<Planet>(this, &Planet::changedMesh));
+        registerVariable(this->bCastShadows_, VariableDirection::ToClient, new NetworkCallback<Planet>(this, &Planet::changedShadows));
+        registerVariable(this->atmosphereSize, VariableDirection::ToClient);
+        registerVariable(this->imageSize, VariableDirection::ToClient);
     }
 
     void Planet::changedVisibility()

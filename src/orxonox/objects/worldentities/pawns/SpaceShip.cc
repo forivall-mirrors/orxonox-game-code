@@ -89,9 +89,9 @@ namespace orxonox
 
     void SpaceShip::registerVariables()
     {
-        registerVariable(this->primaryThrust_,  variableDirection::toclient);
-        registerVariable(this->auxilaryThrust_, variableDirection::toclient);
-        registerVariable(this->rotationThrust_, variableDirection::toclient);
+        registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
+        registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
+        registerVariable(this->rotationThrust_, VariableDirection::ToClient);
     }
 
     void SpaceShip::setConfigValues()

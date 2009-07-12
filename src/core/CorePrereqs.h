@@ -73,7 +73,7 @@ namespace orxonox
 
     namespace KeybindMode
     {
-        enum Enum
+        enum Value
         {
             OnPress,
             OnHold,
@@ -164,6 +164,7 @@ namespace orxonox
 
     // game states
     class Game;
+    struct GameStateConstrParams;
     class GameState;
     struct GameStateTreeNode;
 

@@ -93,7 +93,7 @@ namespace orxonox
     {
         boost::mutex::scoped_lock bundles_lock(TclThreadManager::getInstance().bundlesMutex_);
         TclThreadManager::getInstance().threadCounter_++;
-        std::string name = getConvertedValue<unsigned int, std::string>(TclThreadManager::getInstance().threadCounter_);
+        std::string name = multi_cast<std::string>(TclThreadManager::getInstance().threadCounter_);
 
         TclInterpreterBundle* bundle = new TclInterpreterBundle;
         bundle->id_ = TclThreadManager::getInstance().threadCounter_;
@@ -191,7 +191,7 @@ namespace orxonox
         output += "\t\t";
         {
             boost::mutex::scoped_lock queue_lock(TclThreadManager::getInstance().orxonoxInterpreterBundle_.queueMutex_);
-            output += getConvertedValue<unsigned int, std::string>(TclThreadManager::getInstance().orxonoxInterpreterBundle_.queue_.size());
+            output += multi_cast<std::string>(TclThreadManager::getInstance().orxonoxInterpreterBundle_.queue_.size());
         }
         output += "\t\t";
         output += "busy";
@@ -200,11 +200,11 @@ namespace orxonox
         boost::mutex::scoped_lock bundles_lock(TclThreadManager::getInstance().bundlesMutex_);
         for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = TclThreadManager::getInstance().interpreterBundles_.begin(); it != TclThreadManager::getInstance().interpreterBundles_.end(); ++it)
         {
-            std::string output = getConvertedValue<unsigned int, std::string>((*it).first);
+            std::string output = multi_cast<std::string>((*it).first);
             output += "\t\t";
             {
                 boost::mutex::scoped_lock queue_lock((*it).second->queueMutex_);
-                output += getConvertedValue<unsigned int, std::string>((*it).second->queue_.size());
+                output += multi_cast<std::string>((*it).second->queue_.size());
             }
             output += "\t\t";
             {
@@ -341,7 +341,7 @@ namespace orxonox
         }
         else
         {
-            this->error("Error: No Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(threadID) + " existing.");
+            this->error("Error: No Tcl-interpreter with ID " + multi_cast<std::string>(threadID) + " existing.");
             return 0;
         }
     }
@@ -354,7 +354,7 @@ namespace orxonox
             if (it != list.begin())
                 output += " ";
 
-            output += getConvertedValue<unsigned int, std::string>(*it);
+            output += multi_cast<std::string>(*it);
         }
         return output;
     }
@@ -443,7 +443,7 @@ namespace orxonox
             boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
             if (bundle->queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
             {
-                this->error("Error: Queue of Tcl-interpreter " + getConvertedValue<unsigned int, std::string>(threadID) + " is full, couldn't add command.");
+                this->error("Error: Queue of Tcl-interpreter " + multi_cast<std::string>(threadID) + " is full, couldn't add command.");
                 return;
             }
 
@@ -491,7 +491,7 @@ namespace orxonox
 
         if (std::find(target->queriers_.begin(), target->queriers_.end(), target->id_) != target->queriers_.end())
         {
-            this->error("Error: Circular query (" + this->dumpList(target->queriers_) + " -> " + getConvertedValue<unsigned int, std::string>(target->id_) + "), couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target->id_) + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(querier->id_) + ".");
+            this->error("Error: Circular query (" + this->dumpList(target->queriers_) + " -> " + multi_cast<std::string>(target->id_) + "), couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target->id_) + " from other interpreter with ID " + multi_cast<std::string>(querier->id_) + ".");
             return false;
         }
 
@@ -584,7 +584,7 @@ namespace orxonox
                     }
                     else
                     {
-                        this->error("Error: Couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(threadID) + ", interpreter is busy right now.");
+                        this->error("Error: Couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(threadID) + ", interpreter is busy right now.");
                     }
                 }
 
@@ -664,11 +664,11 @@ namespace orxonox
         }
         catch (Tcl::tcl_error const &e)
         {
-            TclThreadManager::getInstance().error("Tcl (ID " + getConvertedValue<unsigned int, std::string>(interpreterBundle->id_) + ") error: " + e.what());
+            TclThreadManager::getInstance().error("Tcl (ID " + multi_cast<std::string>(interpreterBundle->id_) + ") error: " + e.what());
         }
         catch (std::exception const &e)
         {
-            TclThreadManager::getInstance().error("Error while executing Tcl (ID " + getConvertedValue<unsigned int, std::string>(interpreterBundle->id_) + "): " + e.what());
+            TclThreadManager::getInstance().error("Error while executing Tcl (ID " + multi_cast<std::string>(interpreterBundle->id_) + "): " + e.what());
         }
 
         boost::mutex::scoped_lock finished_lock(interpreterBundle->finishedMutex_);

@@ -31,7 +31,7 @@
     @brief Implementation of several string manipulation functions.
 */
 
-#include "String.h"
+#include "StringUtils.h"
 
 #include <cctype>
 #include "Convert.h"
@@ -43,7 +43,7 @@ namespace orxonox
 
     std::string getUniqueNumberString()
     {
-        return convertToString(getUniqueNumber());
+        return multi_cast<std::string>(getUniqueNumber());
     }
 
     /**

@@ -33,7 +33,6 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Clock.h"
-#include "core/CommandLine.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -55,22 +54,19 @@
 
 namespace orxonox
 {
-    AddGameState(GSLevel, "level");
-
-    SetCommandLineArgument(level, "").shortcut("l");
+    DeclareGameState(GSLevel, "level", false, true);
     SetConsoleCommand(GSLevel, showIngameGUI, true);
 
     XMLFile* GSLevel::startFile_s = NULL;
 
-    GSLevel::GSLevel(const std::string& name)
-        : GameState(name)
+    GSLevel::GSLevel(const GameStateConstrParams& params)
+        : GameState(params)
         , keyBinder_(0)
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
         , radar_(0)
         , cameraManager_(0)
-        , levelManager_(0)
     {
         RegisterObject(GSLevel);
 
@@ -119,9 +115,6 @@ namespace orxonox
 
         if (GameMode::isMaster())
         {
-            // create the global LevelManager
-            this->levelManager_ = new LevelManager();
-
             this->loadLevel();
         }
 
@@ -201,12 +194,6 @@ namespace orxonox
             this->cameraManager_ = 0;
         }
 
-        if (this->levelManager_)
-        {
-            delete this->levelManager_;
-            this->levelManager_ = 0;
-        }
-
         if (this->playerManager_)
         {
             delete this->playerManager_;
@@ -251,12 +238,7 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        std::string levelName;
-        CommandLine::getValue("level", &levelName);
-        if (levelName == "")
-            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + Game::getInstance().getLevel());
-        else
-            startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + levelName);
+        startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + LevelManager::getInstance().getDefaultLevel());
         Loader::open(startFile_s);
     }
 

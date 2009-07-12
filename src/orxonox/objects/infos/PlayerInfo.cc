@@ -76,10 +76,10 @@ namespace orxonox
 
     void PlayerInfo::registerVariables()
     {
-        registerVariable(this->name_,                 variableDirection::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
-        registerVariable(this->controllableEntityID_, variableDirection::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
-        registerVariable(this->bReadyToSpawn_,        variableDirection::toserver);
-        registerVariable(this->gtinfoID_,             variableDirection::toclient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedgtinfoID));
+        registerVariable(this->name_,                 VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
+        registerVariable(this->controllableEntityID_, VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
+        registerVariable(this->bReadyToSpawn_,        VariableDirection::ToServer);
+        registerVariable(this->gtinfoID_,             VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedgtinfoID));
     }
 
     void PlayerInfo::changedName()

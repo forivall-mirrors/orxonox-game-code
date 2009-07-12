@@ -76,48 +76,172 @@
 
 namespace orxonox
 {
-    //! Path to the parent directory of the ones above if program was installed with relativ pahts
-    static boost::filesystem::path rootPath_g;
-    static boost::filesystem::path executablePath_g;            //!< Path to the executable
-    static boost::filesystem::path mediaPath_g;                 //!< Path to the media file folder
-    static boost::filesystem::path configPath_g;                //!< Path to the config file folder
-    static boost::filesystem::path logPath_g;                   //!< Path to the log file folder
-
     //! Static pointer to the singleton
     Core* Core::singletonRef_s  = 0;
 
-    SetCommandLineArgument(mediaPath, "").information("PATH");
-    SetCommandLineArgument(writingPathSuffix, "").information("DIR");
-    SetCommandLineArgument(settingsFile, "orxonox.ini");
-    SetCommandLineArgument(limitToCPU, 0).information("0: off | #cpu");
+    SetCommandLineArgument(mediaPath, "").information("Path to the media/data files");
+    SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
+    SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
+#ifdef ORXONOX_PLATFORM_WINDOWS
+    SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one cpu/core (1, 2, 3, etc.). 0 turns it off (default)");
+#endif
 
-    Core::Core()
+    /**
+    @brief
+        Helper class for the Core singleton: we cannot derive
+        Core from OrxonoxClass because we need to handle the Identifier
+        destruction in the Core destructor.
+    */
+    class CoreConfiguration : public OrxonoxClass
     {
-        RegisterRootObject(Core);
+    public:
+        CoreConfiguration()
+        {
+        }
 
-        assert(Core::singletonRef_s == 0);
+        void initialise()
+        {
+            RegisterRootObject(CoreConfiguration);
+            this->setConfigValues();
+
+            // Possible media path override by the command line
+            if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
+                tsetMediaPath(CommandLine::getValue("mediaPath"));
+        }
+
+        /**
+            @brief Function to collect the SetConfigValue-macro calls.
+        */
+        void setConfigValues()
+        {
+#ifdef NDEBUG
+            const unsigned int defaultLevelConsole = 1;
+            const unsigned int defaultLevelLogfile = 3;
+            const unsigned int defaultLevelShell   = 1;
+#else
+            const unsigned int defaultLevelConsole = 3;
+            const unsigned int defaultLevelLogfile = 4;
+            const unsigned int defaultLevelShell   = 3;
+#endif
+            SetConfigValue(softDebugLevelConsole_, defaultLevelConsole)
+                .description("The maximal level of debug output shown in the console")
+                .callback(this, &CoreConfiguration::debugLevelChanged);
+            SetConfigValue(softDebugLevelLogfile_, defaultLevelLogfile)
+                .description("The maximal level of debug output shown in the logfile")
+                .callback(this, &CoreConfiguration::debugLevelChanged);
+            SetConfigValue(softDebugLevelShell_, defaultLevelShell)
+                .description("The maximal level of debug output shown in the ingame shell")
+                .callback(this, &CoreConfiguration::debugLevelChanged);
+
+            SetConfigValue(language_, Language::getLanguage().defaultLanguage_)
+                .description("The language of the ingame text")
+                .callback(this, &CoreConfiguration::languageChanged);
+            SetConfigValue(bInitializeRandomNumberGenerator_, true)
+                .description("If true, all random actions are different each time you start the game")
+                .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
+
+            SetConfigValue(mediaPathString_, mediaPath_.string())
+                .description("Relative path to the game data.")
+                .callback(this, &CoreConfiguration::mediaPathChanged);
+        }
+
+        /**
+            @brief Callback function if the debug level has changed.
+        */
+        void debugLevelChanged()
+        {
+            // softDebugLevel_ is the maximum of the 3 variables
+            this->softDebugLevel_ = this->softDebugLevelConsole_;
+            if (this->softDebugLevelLogfile_ > this->softDebugLevel_)
+                this->softDebugLevel_ = this->softDebugLevelLogfile_;
+            if (this->softDebugLevelShell_ > this->softDebugLevel_)
+                this->softDebugLevel_ = this->softDebugLevelShell_;
+
+            OutputHandler::setSoftDebugLevel(OutputHandler::LD_All,     this->softDebugLevel_);
+            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Console, this->softDebugLevelConsole_);
+            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Logfile, this->softDebugLevelLogfile_);
+            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Shell,   this->softDebugLevelShell_);
+        }
+
+        /**
+            @brief Callback function if the language has changed.
+        */
+        void languageChanged()
+        {
+            // Read the translation file after the language was configured
+            Language::getLanguage().readTranslatedLanguageFile();
+        }
+
+        /**
+        @brief
+            Callback function if the media path has changed.
+        */
+        void mediaPathChanged()
+        {
+            mediaPath_ = boost::filesystem::path(this->mediaPathString_);
+        }
+
+        /**
+            @brief Sets the language in the config-file back to the default.
+        */
+        void resetLanguage()
+        {
+            ResetConfigValue(language_);
+        }
+
+        /**
+        @brief
+            Temporary sets the media path
+        @param path
+            The new media path
+        */
+        void tsetMediaPath(const std::string& path)
+        {
+            ModifyConfigValue(mediaPathString_, tset, path);
+        }
+
+        void initializeRandomNumberGenerator()
+        {
+            static bool bInitialized = false;
+            if (!bInitialized && this->bInitializeRandomNumberGenerator_)
+            {
+                srand(static_cast<unsigned int>(time(0)));
+                rand();
+                bInitialized = true;
+            }
+        }
+
+        int softDebugLevel_;                            //!< The debug level
+        int softDebugLevelConsole_;                     //!< The debug level for the console
+        int softDebugLevelLogfile_;                     //!< The debug level for the logfile
+        int softDebugLevelShell_;                       //!< The debug level for the ingame shell
+        std::string language_;                          //!< The language
+        bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
+        std::string mediaPathString_;                   //!< Path to the data/media file folder as string
+
+        //! Path to the parent directory of the ones above if program was installed with relativ pahts
+        boost::filesystem::path rootPath_;
+        boost::filesystem::path executablePath_;        //!< Path to the executable
+        boost::filesystem::path mediaPath_;             //!< Path to the media file folder
+        boost::filesystem::path configPath_;            //!< Path to the config file folder
+        boost::filesystem::path logPath_;               //!< Path to the log file folder
+    };
+
+
+    Core::Core(int argc, char** argv)
+    {
+        if (singletonRef_s != 0)
+        {
+            COUT(0) << "Error: The Core singleton cannot be recreated! Shutting down." << std::endl;
+            abort();
+        }
         Core::singletonRef_s = this;
-    }
 
-    void Core::initialise(int argc, char** argv)
-    {
-        // Parse command line arguments fist
-        try
-        {
-            CommandLine::parseAll(argc, argv);
-        }
-        catch (ArgumentException& ex)
-        {
-            COUT(1) << ex.what() << std::endl;
-            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-        }
+        // We need the variables very soon. But don't configure them yet!
+        this->configuration_ = new CoreConfiguration();
 
-        // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
-        // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
-        // the timer though).
-        int limitToCPU = CommandLine::getValue("limitToCPU");
-        if (limitToCPU > 0)
-            setThreadAffinity((unsigned int)limitToCPU);
+        // Parse command line arguments first
+        CommandLine::parseCommandLine(argc, argv);
 
         // Determine and set the location of the executable
         setExecutablePath();
@@ -132,28 +256,34 @@ namespace orxonox
         // create a signal handler (only active for linux)
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_ = new SignalHandler();
-        this->signalHandler_->doCatch(executablePath_g.string(), Core::getLogPathString() + "orxonox_crash.log");
+        this->signalHandler_->doCatch(configuration_->executablePath_.string(), Core::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
         OutputHandler::getOutStream().setLogPath(Core::getLogPathString());
+
+        // Parse additional options file now that we know its path
+        CommandLine::parseFile();
+
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
+        // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
+        // the timer though).
+        int limitToCPU = CommandLine::getValue("limitToCPU");
+        if (limitToCPU > 0)
+            setThreadAffinity(static_cast<unsigned int>(limitToCPU));
+#endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_ = new ConfigFileManager();
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLine::getValue("settingsFile").getString());
 
+        // Required as well for the config values
         this->languageInstance_ = new Language();
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
-        this->setConfigValues();
-
-        // Possible media path override by the command line
-        if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
-        {
-            //std::string mediaPath = CommandLine::getValue("mediaPath");
-            Core::tsetMediaPath(CommandLine::getValue("mediaPath"));
-        }
+        this->configuration_->initialise();
 
         // Create the lua interface
         this->luaBind_ = new LuaBind();
@@ -167,8 +297,6 @@ namespace orxonox
 
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
-        
-        this->loaded_ = true;
     }
 
     /**
@@ -176,12 +304,11 @@ namespace orxonox
     */
     Core::~Core()
     {
-        this->loaded_ = false;
-
         delete this->shell_;
         delete this->tclThreadManager_;
         delete this->tclBind_;
         delete this->luaBind_;
+        delete this->configuration_;
         delete this->languageInstance_;
         delete this->configFileManager_;
 
@@ -189,93 +316,31 @@ namespace orxonox
         CommandLine::destroyAllArguments();
         // Also delete external console command that don't belong to an Identifier
         CommandExecutor::destroyExternalCommands();
+        // Clean up class hierarchy stuff (identifiers, XMLPort, configValues, consoleCommand)
+        Identifier::destroyAllIdentifiers();
 
-        assert(Core::singletonRef_s);
-        Core::singletonRef_s = 0;
         delete this->signalHandler_;
+
+        // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
     /**
-        @brief Function to collect the SetConfigValue-macro calls.
-    */
-    void Core::setConfigValues()
-    {
-#ifdef NDEBUG
-        const unsigned int defaultLevelConsole = 1;
-        const unsigned int defaultLevelLogfile = 3;
-        const unsigned int defaultLevelShell   = 1;
-#else
-        const unsigned int defaultLevelConsole = 3;
-        const unsigned int defaultLevelLogfile = 4;
-        const unsigned int defaultLevelShell   = 3;
-#endif
-        SetConfigValue(softDebugLevelConsole_, defaultLevelConsole)
-            .description("The maximal level of debug output shown in the console").callback(this, &Core::debugLevelChanged);
-        SetConfigValue(softDebugLevelLogfile_, defaultLevelLogfile)
-            .description("The maximal level of debug output shown in the logfile").callback(this, &Core::debugLevelChanged);
-        SetConfigValue(softDebugLevelShell_, defaultLevelShell)
-            .description("The maximal level of debug output shown in the ingame shell").callback(this, &Core::debugLevelChanged);
-
-        SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(this, &Core::languageChanged);
-        SetConfigValue(bInitializeRandomNumberGenerator_, true).description("If true, all random actions are different each time you start the game").callback(this, &Core::initializeRandomNumberGenerator);
-
-        SetConfigValue(mediaPathString_, mediaPath_g.string())
-            .description("Relative path to the game data.").callback(this, &Core::mediaPathChanged);
-    }
-
-    /**
-        @brief Callback function if the debug level has changed.
-    */
-    void Core::debugLevelChanged()
-    {
-        // softDebugLevel_ is the maximum of the 3 variables
-        this->softDebugLevel_ = this->softDebugLevelConsole_;
-        if (this->softDebugLevelLogfile_ > this->softDebugLevel_)
-            this->softDebugLevel_ = this->softDebugLevelLogfile_;
-        if (this->softDebugLevelShell_ > this->softDebugLevel_)
-            this->softDebugLevel_ = this->softDebugLevelShell_;
-
-        OutputHandler::setSoftDebugLevel(OutputHandler::LD_All,     this->softDebugLevel_);
-        OutputHandler::setSoftDebugLevel(OutputHandler::LD_Console, this->softDebugLevelConsole_);
-        OutputHandler::setSoftDebugLevel(OutputHandler::LD_Logfile, this->softDebugLevelLogfile_);
-        OutputHandler::setSoftDebugLevel(OutputHandler::LD_Shell,   this->softDebugLevelShell_);
-    }
-
-    /**
-        @brief Callback function if the language has changed.
-    */
-    void Core::languageChanged()
-    {
-        // Read the translation file after the language was configured
-        Language::getLanguage().readTranslatedLanguageFile();
-    }
-
-    /**
-    @brief
-        Callback function if the media path has changed.
-    */
-    void Core::mediaPathChanged()
-    {
-        mediaPath_g = boost::filesystem::path(this->mediaPathString_);
-    }
-
-    /**
-        @brief Returns the softDebugLevel for the given device (returns a default-value if the class ist right about to be created).
+        @brief Returns the softDebugLevel for the given device (returns a default-value if the class is right about to be created).
         @param device The device
         @return The softDebugLevel
     */
-    int Core::getSoftDebugLevel(OutputHandler::OutputDevice device)
+    /*static*/ int Core::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
         switch (device)
         {
         case OutputHandler::LD_All:
-            return Core::getInstance().softDebugLevel_;
+            return Core::getInstance().configuration_->softDebugLevel_;
         case OutputHandler::LD_Console:
-            return Core::getInstance().softDebugLevelConsole_;
+            return Core::getInstance().configuration_->softDebugLevelConsole_;
         case OutputHandler::LD_Logfile:
-            return Core::getInstance().softDebugLevelLogfile_;
+            return Core::getInstance().configuration_->softDebugLevelLogfile_;
         case OutputHandler::LD_Shell:
-            return Core::getInstance().softDebugLevelShell_;
+            return Core::getInstance().configuration_->softDebugLevelShell_;
         default:
             assert(0);
             return 2;
@@ -287,93 +352,67 @@ namespace orxonox
         @param device The device
         @param level The level
     */
-     void Core::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
-     {
+    /*static*/ void Core::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
+    {
         if (device == OutputHandler::LD_All)
-            Core::getInstance().softDebugLevel_ = level;
+            Core::getInstance().configuration_->softDebugLevel_ = level;
         else if (device == OutputHandler::LD_Console)
-            Core::getInstance().softDebugLevelConsole_ = level;
+            Core::getInstance().configuration_->softDebugLevelConsole_ = level;
         else if (device == OutputHandler::LD_Logfile)
-            Core::getInstance().softDebugLevelLogfile_ = level;
+            Core::getInstance().configuration_->softDebugLevelLogfile_ = level;
         else if (device == OutputHandler::LD_Shell)
-            Core::getInstance().softDebugLevelShell_ = level;
+            Core::getInstance().configuration_->softDebugLevelShell_ = level;
 
         OutputHandler::setSoftDebugLevel(device, level);
-     }
+    }
 
     /**
         @brief Returns the configured language.
     */
-    const std::string& Core::getLanguage()
+    /*static*/ const std::string& Core::getLanguage()
     {
-        return Core::getInstance().language_;
+        return Core::getInstance().configuration_->language_;
     }
 
     /**
         @brief Sets the language in the config-file back to the default.
     */
-    void Core::resetLanguage()
+    /*static*/ void Core::resetLanguage()
     {
-        Core::getInstance().resetLanguageIntern();
+        Core::getInstance().configuration_->resetLanguage();
     }
 
-    /**
-        @brief Sets the language in the config-file back to the default.
-    */
-    void Core::resetLanguageIntern()
+    /*static*/ void Core::tsetMediaPath(const std::string& path)
     {
-        ResetConfigValue(language_);
-    }
-
-    /**
-    @brief
-        Temporary sets the media path
-    @param path
-        The new media path
-    */
-    void Core::_tsetMediaPath(const std::string& path)
-    {
-        ModifyConfigValue(mediaPathString_, tset, path);
+        getInstance().configuration_->tsetMediaPath(path);
     }
 
     /*static*/ const boost::filesystem::path& Core::getMediaPath()
     {
-        return mediaPath_g;
+        return getInstance().configuration_->mediaPath_;
     }
     /*static*/ std::string Core::getMediaPathString()
     {
-        return mediaPath_g.string() + '/';
+        return getInstance().configuration_->mediaPath_.string() + '/';
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
     {
-        return configPath_g;
+        return getInstance().configuration_->configPath_;
     }
     /*static*/ std::string Core::getConfigPathString()
     {
-        return configPath_g.string() + '/';
+        return getInstance().configuration_->configPath_.string() + '/';
     }
 
     /*static*/ const boost::filesystem::path& Core::getLogPath()
     {
-        return logPath_g;
+        return getInstance().configuration_->logPath_;
     }
     /*static*/ std::string Core::getLogPathString()
     {
-        return logPath_g.string() + '/';
+        return getInstance().configuration_->logPath_.string() + '/';
     }
-
-    void Core::initializeRandomNumberGenerator()
-    {
-        static bool bInitialized = false;
-        if (!bInitialized && this->bInitializeRandomNumberGenerator_)
-        {
-            srand(static_cast<unsigned int>(time(0)));
-            rand();
-            bInitialized = true;
-        }
-    }
-
 
     /**
     @note
@@ -387,10 +426,11 @@ namespace orxonox
     */
     void Core::setThreadAffinity(int limitToCPU)
     {
+#ifdef ORXONOX_PLATFORM_WINDOWS
+
         if (limitToCPU <= 0)
             return;
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
         unsigned int coreNr = limitToCPU - 1;
         // Get the current process core mask
         DWORD procMask;
@@ -464,9 +504,9 @@ namespace orxonox
         buffer[ret] = 0;
 #endif
 
-        executablePath_g = boost::filesystem::path(buffer);
+        configuration_->executablePath_ = boost::filesystem::path(buffer);
 #ifndef ORXONOX_PLATFORM_APPLE
-        executablePath_g = executablePath_g.branch_path(); // remove executable name
+        configuration_->executablePath_ = configuration_->executablePath_.branch_path(); // remove executable name
 #endif
     }
 
@@ -480,33 +520,34 @@ namespace orxonox
     */
     void Core::checkDevBuild()
     {
-        if (boost::filesystem::exists(executablePath_g / "orxonox_dev_build.keep_me"))
+        if (boost::filesystem::exists(configuration_->executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::isDevBuild_ = true;
-            mediaPath_g  = ORXONOX_MEDIA_DEV_PATH;
-            configPath_g = ORXONOX_CONFIG_DEV_PATH;
-            logPath_g    = ORXONOX_LOG_DEV_PATH;
+            configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
+            configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
+            configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;
         }
         else
         {
 #ifdef INSTALL_COPYABLE // --> relative paths
             // Also set the root path
             boost::filesystem::path relativeExecutablePath(ORXONOX_RUNTIME_INSTALL_PATH);
-            rootPath_g = executablePath_g;
-            while (!boost::filesystem::equivalent(rootPath_g / relativeExecutablePath, executablePath_g) && !rootPath_g.empty())
-                rootPath_g = rootPath_g.branch_path();
-            if (rootPath_g.empty())
+            configuration_->rootPath_ = configuration_->executablePath_;
+            while (!boost::filesystem::equivalent(configuration_->rootPath_ / relativeExecutablePath, configuration_->executablePath_)
+                   && !configuration_->rootPath_.empty())
+                configuration_->rootPath_ = configuration_->rootPath_.branch_path();
+            if (configuration_->rootPath_.empty())
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
             // Using paths relative to the install prefix, complete them
-            mediaPath_g  = rootPath_g / ORXONOX_MEDIA_INSTALL_PATH;
-            configPath_g = rootPath_g / ORXONOX_CONFIG_INSTALL_PATH;
-            logPath_g    = rootPath_g / ORXONOX_LOG_INSTALL_PATH;
+            configuration_->mediaPath_  = configuration_->rootPath_ / ORXONOX_MEDIA_INSTALL_PATH;
+            configuration_->configPath_ = configuration_->rootPath_ / ORXONOX_CONFIG_INSTALL_PATH;
+            configuration_->logPath_    = configuration_->rootPath_ / ORXONOX_LOG_INSTALL_PATH;
 #else
             // There is no root path, so don't set it at all
 
-            mediaPath_g  = ORXONOX_MEDIA_INSTALL_PATH;
+            configuration_->mediaPath_  = ORXONOX_MEDIA_INSTALL_PATH;
 
             // Get user directory
 #  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
@@ -519,8 +560,8 @@ namespace orxonox
             boost::filesystem::path userDataPath(userDataPathPtr);
             userDataPath /= ".orxonox";
 
-            configPath_g = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
-            logPath_g    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
+            configuration_->configPath_ = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
+            configuration_->logPath_    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
 #endif
         }
 
@@ -528,8 +569,8 @@ namespace orxonox
         if (!CommandLine::getArgument("writingPathSuffix")->hasDefaultValue())
         {
             std::string directory(CommandLine::getValue("writingPathSuffix").getString());
-            configPath_g = configPath_g / directory;
-            logPath_g    = logPath_g    / directory;
+            configuration_->configPath_ = configuration_->configPath_ / directory;
+            configuration_->logPath_    = configuration_->logPath_    / directory;
         }
     }
 
@@ -543,8 +584,8 @@ namespace orxonox
     void Core::createDirectories()
     {
         std::vector<std::pair<boost::filesystem::path, std::string> > directories;
-        directories.push_back(std::make_pair(boost::filesystem::path(configPath_g), "config"));
-        directories.push_back(std::make_pair(boost::filesystem::path(logPath_g), "log"));
+        directories.push_back(std::make_pair(boost::filesystem::path(configuration_->configPath_), "config"));
+        directories.push_back(std::make_pair(boost::filesystem::path(configuration_->logPath_), "log"));
 
         for (std::vector<std::pair<boost::filesystem::path, std::string> >::iterator it = directories.begin();
             it != directories.end(); ++it)

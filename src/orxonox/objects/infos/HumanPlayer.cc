@@ -78,11 +78,11 @@ namespace orxonox
 
     void HumanPlayer::registerVariables()
     {
-        registerVariable(this->synchronize_nick_, variableDirection::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
+        registerVariable(this->synchronize_nick_, VariableDirection::ToServer, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_changednick));
 
-        registerVariable(this->clientID_,           variableDirection::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
-        registerVariable(this->server_initialized_, variableDirection::toclient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_initialized));
-        registerVariable(this->client_initialized_, variableDirection::toserver, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_initialized));
+        registerVariable(this->clientID_,           VariableDirection::ToClient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_clientIDchanged));
+        registerVariable(this->server_initialized_, VariableDirection::ToClient, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_server_initialized));
+        registerVariable(this->client_initialized_, VariableDirection::ToServer, new NetworkCallback<HumanPlayer>(this, &HumanPlayer::networkcallback_client_initialized));
     }
 
     void HumanPlayer::configvaluecallback_changednick()
@@ -115,7 +115,7 @@ namespace orxonox
             this->client_initialized_ = true;
 
             if (!GameMode::isMaster())
-                this->setObjectMode(objectDirection::bidirectional);
+                this->setObjectMode(ObjectDirection::Bidirectional);
             else
                 this->setName(this->nick_);
 

@@ -43,14 +43,12 @@ namespace orxonox
 {
     namespace QuestEffectBeaconStatus
     {
-
         //! The status of the beacon, can be either active or inactive.
-        enum Enum
+        enum Value
         {
-            inactive,
-            active
+            Inactive,
+            Active
         };
-
     }
 
     /**
@@ -97,7 +95,7 @@ namespace orxonox
             @return Returns true if the QuestEffectBeacon is active, fals if not.
             */
             inline bool isActive(void)
-            { return this->status_ == QuestEffectBeaconStatus::active; }
+            { return this->status_ == QuestEffectBeaconStatus::Active; }
             
             bool setActive(bool activate); //!< Set the status of the QuestEffectBeacon.
             
@@ -116,7 +114,7 @@ namespace orxonox
             
             std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
             int times_; //!< Number of times the beacon can be exectued.
-            QuestEffectBeaconStatus::Enum status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
+            QuestEffectBeaconStatus::Value status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
             
             bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
             bool addEffect(QuestEffect* effect); //!< Add a QuestEffect to the QuestEffectBeacon.

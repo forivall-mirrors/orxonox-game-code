@@ -129,13 +129,13 @@ namespace orxonox
 
         void timerCallback(Pawn* pawn);     //!< Method called when the timer runs out.
     private:
-        float getAdditiveModifier(ModifierType::Enum type) const;               //!< Get the additive modifier for a given ModifierType.
-        float getMultiplicativeModifier(ModifierType::Enum type) const;         //!< Get the multiplicative modifier for a given ModifierType.
-        void setAdditiveModifier(ModifierType::Enum type, float value);         //!< Set the additive modifier for a given ModifierType.
-        void setMultiplicativeModifier(ModifierType::Enum type, float value);   //!< Set the multiplicative modifier for a given ModifierType
+        float getAdditiveModifier(ModifierType::Value type) const;               //!< Get the additive modifier for a given ModifierType.
+        float getMultiplicativeModifier(ModifierType::Value type) const;         //!< Get the multiplicative modifier for a given ModifierType.
+        void setAdditiveModifier(ModifierType::Value type, float value);         //!< Set the additive modifier for a given ModifierType.
+        void setMultiplicativeModifier(ModifierType::Value type, float value);   //!< Set the multiplicative modifier for a given ModifierType
 
-        std::map<ModifierType::Enum, float> additiveModifiers_;                 //!< Map of additive modifiers, indexed by ModifierType.
-        std::map<ModifierType::Enum, float> multiplicativeModifiers_;           //!< Map of multiplicative modifiers, indexed by ModifierType.
+        std::map<ModifierType::Value, float> additiveModifiers_;                 //!< Map of additive modifiers, indexed by ModifierType.
+        std::map<ModifierType::Value, float> multiplicativeModifiers_;           //!< Map of multiplicative modifiers, indexed by ModifierType.
 
         float duration_;                                                        //!< Duration of this pickup's effect (0 for unlimited).
         Timer<ModifierPickup> timer_;                                           //!< Timer used if the pickup's effect has a time limit.

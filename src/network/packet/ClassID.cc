@@ -73,7 +73,7 @@ ClassID::ClassID( ) : Packet(){
   this->data_=new uint8_t[ packetSize ];
   //set the appropriate packet id
   assert(this->data_);
-  *(ENUM::Type *)(this->data_ + _PACKETID ) = ENUM::ClassID;
+  *(Type::Value *)(this->data_ + _PACKETID ) = Type::ClassID;
   
   uint8_t *temp=data_+sizeof(uint32_t);
   // save the number of all classes

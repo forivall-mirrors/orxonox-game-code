@@ -34,7 +34,7 @@ ENDIF()
 ######################## Options ########################
 
 # Currently VLD has a problem with MSVC9 although it actually is supported
-IF(MSVC8)
+IF(MSVC80)
   OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" off)
 ENDIF()
 # Make sure the value is "on" or "off" for vld.ini

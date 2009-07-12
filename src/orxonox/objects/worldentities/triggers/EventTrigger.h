@@ -46,7 +46,7 @@ namespace orxonox
                 { this->bEventTriggered_ = bTriggered; this->tick(0); }
 
         protected:
-            virtual bool isTriggered(TriggerMode mode);
+            virtual bool isTriggered(TriggerMode::Value mode);
 
         private:
             bool bEventTriggered_;

@@ -69,7 +69,7 @@ namespace orxonox
             else if (!gtinfo->hasEnded())
             {
                 if (gtinfo->isStartCountdownRunning())
-                    this->setCaption(convertToString((int)ceil(gtinfo->getStartCountdown())));
+                    this->setCaption(multi_cast<std::string>((int)ceil(gtinfo->getStartCountdown())));
                 else if (ce->isA(Class(Spectator)))
                     this->setCaption("Press [Fire] to respawn");
                 else

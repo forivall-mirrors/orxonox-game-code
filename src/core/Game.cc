@@ -57,15 +57,49 @@ namespace orxonox
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
-    struct _CoreExport GameStateTreeNode
+    std::map<std::string, Game::GameStateInfo> Game::gameStateDeclarations_s;
+    Game* Game::singletonRef_s = 0;
+
+
+    /**
+    @brief
+        Represents one node of the game state tree.
+    */
+    struct GameStateTreeNode
     {
         GameState* state_;
         weak_ptr<GameStateTreeNode> parent_;
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
-    std::map<std::string, GameState*> Game::allStates_s;
-    Game* Game::singletonRef_s = 0;
+
+    /**
+    @brief
+        Another helper class for the Game singleton: we cannot derive
+        Game from OrxonoxClass because we need to handle the Identifier
+        destruction in the Core destructor.
+    */
+    class GameConfiguration : public OrxonoxClass
+    {
+    public:
+        GameConfiguration()
+        {
+            RegisterRootObject(GameConfiguration);
+            this->setConfigValues();
+        }
+
+        void setConfigValues()
+        {
+            SetConfigValue(statisticsRefreshCycle_, 250000)
+                .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+            SetConfigValue(statisticsAvgLength_, 1000000)
+                .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
+        }
+
+        unsigned int statisticsRefreshCycle_;
+        unsigned int statisticsAvgLength_;
+    };
+
 
     /**
     @brief
@@ -73,10 +107,18 @@ namespace orxonox
     */
     Game::Game(int argc, char** argv)
     {
-        assert(singletonRef_s == 0);
+        if (singletonRef_s != 0)
+        {
+            COUT(0) << "Error: The Game singleton cannot be recreated! Shutting down." << std::endl;
+            abort();
+        }
         singletonRef_s = this;
 
-        this->abort_ = false;
+        this->bAbort_ = false;
+        bChangingState_ = false;
+
+        // Create an empty root state
+        declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
 
         // reset statistics
         this->statisticsStartTime_ = 0;
@@ -86,15 +128,30 @@ namespace orxonox
         this->avgFPS_ = 0.0f;
         this->avgTickTime_ = 0.0f;
 
-
         // Set up a basic clock to keep time
         this->gameClock_ = new Clock();
 
-        this->core_ = new orxonox::Core();
-        this->core_->initialise(argc, argv);
+        // Create the Core
+        this->core_ = new Core(argc, argv);
 
-        RegisterRootObject(Game);
-        this->setConfigValues();
+        // After the core has been created, we can safely instantiate the GameStates
+        for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
+            it != gameStateDeclarations_s.end(); ++it)
+        {
+            // Only create the states appropriate for the game mode
+            //if (GameMode::showsGraphics || !it->second.bGraphicsMode)
+            GameStateConstrParams params = { it->second.stateName, it->second.bIgnoreTickTime };
+            gameStates_[getLowercase(it->second.stateName)] = GameStateFactory::fabricate(it->second.className, params);
+        }
+
+        // The empty root state is ALWAYS loaded!
+        this->rootStateNode_ = shared_ptr<GameStateTreeNode>(new GameStateTreeNode());
+        this->rootStateNode_->state_ = getState("emptyRootGameState");
+        this->activeStateNode_ = this->rootStateNode_;
+        this->activeStates_.push_back(this->rootStateNode_->state_);
+
+        // Do this after the Core creation!
+        this->configuration_ = new GameConfiguration();
     }
 
     /**
@@ -102,38 +159,22 @@ namespace orxonox
     */
     Game::~Game()
     {
-        // Destroy pretty much everyhting left
-        delete this->core_;
+        // Destroy the configuration helper class instance
+        delete this->configuration_;
 
+        // Destroy the GameStates (note that the nodes still point to them, but doesn't matter)
+        for (std::map<std::string, GameState*>::const_iterator it = gameStates_.begin();
+            it != gameStates_.end(); ++it)
+            delete it->second;
+
+        // Destroy the Core and with it almost everything
+        delete this->core_;
         delete this->gameClock_;
 
-        assert(singletonRef_s);
-        singletonRef_s = 0;
-    }
+        // Take care of the GameStateFactories
+        GameStateFactory::destroyFactories();
 
-    void Game::setConfigValues()
-    {
-        SetConfigValue(statisticsRefreshCycle_, 250000)
-            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
-        SetConfigValue(statisticsAvgLength_, 1000000)
-            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
-        SetConfigValue(levelName_, "presentation_dm.oxw")
-            .description("Sets the preselection of the level in the main menu.");
-    }
-
-    void Game::setLevel(std::string levelName)
-    {
-        ModifyConfigValue(levelName_, set, levelName);
-    }
-
-    std::string Game::getLevel()
-    {
-        std::string levelName;
-        CommandLine::getValue("level", &levelName);
-        if (levelName == "")
-            return levelName_;
-        else
-            return levelName;
+        // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
     /**
@@ -146,63 +187,110 @@ namespace orxonox
     */
     void Game::run()
     {
-        // Always start with the ROOT state
-        this->requestedStateNodes_.push_back(this->rootStateNode_);
-        this->activeStateNode_ = this->rootStateNode_;
-        this->loadState(this->rootStateNode_->state_);
+        if (this->requestedStateNodes_.empty())
+            COUT(0) << "Warning: Starting game without requesting GameState. This automatically terminates the program." << std::endl;
 
         // START GAME
         this->gameClock_->capture(); // first delta time should be about 0 seconds
-        while (!this->abort_ && !this->activeStates_.empty())
+        while (!this->bAbort_ && (!this->activeStates_.empty() || this->requestedStateNodes_.size() > 0))
         {
             this->gameClock_->capture();
             uint64_t currentTime = this->gameClock_->getMicroseconds();
 
             // STATISTICS
-            statisticsTickInfo tickInfo = {currentTime, 0};
+            StatisticsTickInfo tickInfo = {currentTime, 0};
             statisticsTickTimes_.push_back(tickInfo);
             this->periodTime_ += this->gameClock_->getDeltaTimeMicroseconds();
 
             // UPDATE STATE STACK
-            while (this->requestedStateNodes_.size() > 1)
+            while (this->requestedStateNodes_.size() > 0)
             {
-                // Note: this->requestedStateNodes_.front() is the currently active state node
-                std::vector<shared_ptr<GameStateTreeNode> >::iterator it = this->requestedStateNodes_.begin() + 1;
-                if (*it == this->activeStateNode_->parent_.lock())
+                shared_ptr<GameStateTreeNode> requestedStateNode = this->requestedStateNodes_.front();
+                assert(this->activeStateNode_);
+                if (!this->activeStateNode_->parent_.expired() && requestedStateNode == this->activeStateNode_->parent_.lock())
                     this->unloadState(this->activeStateNode_->state_);
                 else // has to be child
-                    this->loadState((*it)->state_);
-                this->activeStateNode_ = *it;
+                {
+                    try
+                    {
+                        this->loadState(requestedStateNode->state_);
+                    }
+                    catch (const std::exception& ex)
+                    {
+                        COUT(1) << "Error: Loading GameState '" << requestedStateNode->state_->getName() << "' failed: " << ex.what() << std::endl;
+                        // All scheduled operations have now been rendered inert --> flush them and issue a warning
+                        if (this->requestedStateNodes_.size() > 1)
+                            COUT(1) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << std::endl;
+                        this->requestedStateNodes_.clear();
+                        break;
+                    }
+                }
+                this->activeStateNode_ = requestedStateNode;
                 this->requestedStateNodes_.erase(this->requestedStateNodes_.begin());
             }
 
-            // UPDATE, bottom to top in the stack
-            this->core_->update(*this->gameClock_);
-            for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin();
+            // UPDATE, Core first
+            try
+            {
+                this->core_->update(*this->gameClock_);
+            }
+            catch (...)
+            {
+                COUT(0) << "An exception occured while ticking the Core. This should really never happen!" << std::endl;
+                COUT(0) << "Closing the program." << std::endl;
+                this->stop();
+                break;
+            }
+
+            // UPDATE, GameStates bottom to top in the stack
+            // Note: The first element is the empty root state, which doesn't need ticking
+            for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin() + 1;
                 it != this->activeStates_.end(); ++it)
             {
-                // Add tick time for most of the states
-                uint64_t timeBeforeTick;
-                if ((*it)->getCountTickTime())
-                    timeBeforeTick = this->gameClock_->getRealMicroseconds();
-                
-                (*it)->update(*this->gameClock_);
+                bool threwException = false;
+                try
+                {
+                    // Add tick time for most of the states
+                    uint64_t timeBeforeTick;
+                    if (!(*it)->ignoreTickTime())
+                        timeBeforeTick = this->gameClock_->getRealMicroseconds();
+                    (*it)->update(*this->gameClock_);
+                    if (!(*it)->ignoreTickTime())
+                        this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
+                }
+                catch (const std::exception& ex)
+                {
+                    threwException = true;
+                    COUT(0) << "Exception while ticking: " << ex.what() << std::endl;
+                }
+                catch (...)
+                {
+                    threwException = true;
+                }
+                if (threwException)
+                {
+                    COUT(1) << "An exception occured while ticking GameState '" << (*it)->getName() << "'. This should really never happen!" << std::endl;
+                    COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
+                    if ((*it)->getParent() != NULL)
+                        this->requestState((*it)->getParent()->getName());
+                    else
+                        this->stop();
+                    break;
+                }
 
-                if ((*it)->getCountTickTime())
-                    this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
             }
 
             // STATISTICS
-            if (this->periodTime_ > statisticsRefreshCycle_)
+            if (this->periodTime_ > this->configuration_->statisticsRefreshCycle_)
             {
-                std::list<statisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
+                std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
                 assert(it != this->statisticsTickTimes_.end());
-                int64_t lastTime = currentTime - this->statisticsAvgLength_;
+                int64_t lastTime = currentTime - this->configuration_->statisticsAvgLength_;
                 if ((int64_t)it->tickTime < lastTime)
                 {
                     do
                     {
-                        assert(this->periodTickTime_ > it->tickLength);
+                        assert(this->periodTickTime_ >= it->tickLength);
                         this->periodTickTime_ -= it->tickLength;
                         ++it;
                         assert(it != this->statisticsTickTimes_.end());
@@ -214,20 +302,20 @@ namespace orxonox
                 this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
                 this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
-                this->periodTime_ -= this->statisticsRefreshCycle_;
+                this->periodTime_ -= this->configuration_->statisticsRefreshCycle_;
             }
         }
 
         // UNLOAD all remaining states
-        while (!this->activeStates_.empty())
+        while (this->activeStates_.size() > 1)
             this->unloadState(this->activeStates_.back());
-        this->activeStateNode_.reset();
+        this->activeStateNode_ = this->rootStateNode_;
         this->requestedStateNodes_.clear();
     }
 
     void Game::stop()
     {
-        this->abort_ = true;
+        this->bAbort_ = true;
     }
 
     void Game::addTickTime(uint32_t length)
@@ -243,15 +331,20 @@ namespace orxonox
     void Game::requestState(const std::string& name)
     {
         GameState* state = this->getState(name);
-        if (state == NULL || this->activeStateNode_ == NULL)
+        if (state == NULL)
             return;
 
-        shared_ptr<GameStateTreeNode> requestedNode;
+        //if (this->bChangingState_)
+        //{
+        //    COUT(2) << "Warning: Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << std::endl;
+        //    return;
+        //}
 
-        // this->requestedStateNodes_.back() is the currently active state
-        shared_ptr<GameStateTreeNode> lastRequestedNode = this->requestedStateNodes_.back();
-
-        // Already the active node?
+        shared_ptr<GameStateTreeNode> lastRequestedNode;
+        if (this->requestedStateNodes_.empty())
+            lastRequestedNode = this->activeStateNode_;
+        else
+            lastRequestedNode = this->requestedStateNodes_.back();
         if (state == lastRequestedNode->state_)
         {
             COUT(2) << "Warning: Requesting the currently active state! Ignoring." << std::endl;
@@ -259,28 +352,33 @@ namespace orxonox
         }
 
         // Check children first
+        std::vector<shared_ptr<GameStateTreeNode> > requestedNodes;
         for (unsigned int i = 0; i < lastRequestedNode->children_.size(); ++i)
         {
             if (lastRequestedNode->children_[i]->state_ == state)
             {
-                requestedNode = lastRequestedNode->children_[i];
+                requestedNodes.push_back(lastRequestedNode->children_[i]);
                 break;
             }
         }
 
-        // Check parent and all its grand parents
-        shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
-        while (requestedNode == NULL && currentNode != NULL)
+        if (requestedNodes.empty())
         {
-            if (currentNode->state_ == state)
-                requestedNode = currentNode;
-            currentNode = currentNode->parent_.lock();
+            // Check parent and all its grand parents
+            shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
+            while (currentNode != NULL)
+            {
+                if (currentNode->state_ == state)
+                    break;
+                currentNode = currentNode->parent_.lock();
+                requestedNodes.push_back(currentNode);
+            }
         }
 
-        if (requestedNode == NULL)
+        if (requestedNodes.empty())
             COUT(1) << "Error: Requested GameState transition is not allowed. Ignoring." << std::endl;
         else
-            this->requestedStateNodes_.push_back(requestedNode);
+            this->requestedStateNodes_.insert(requestedStateNodes_.end(), requestedNodes.begin(), requestedNodes.end());
     }
 
     void Game::requestStates(const std::string& names)
@@ -292,16 +390,21 @@ namespace orxonox
 
     void Game::popState()
     {
-        if (this->activeStateNode_ != NULL && this->requestedStateNodes_.back()->parent_.lock())
-            this->requestState(this->requestedStateNodes_.back()->parent_.lock()->state_->getName());
+        shared_ptr<GameStateTreeNode> lastRequestedNode;
+        if (this->requestedStateNodes_.empty())
+            lastRequestedNode = this->activeStateNode_;
         else
-            COUT(2) << "Warning: Could not pop GameState. Ignoring." << std::endl;
+            lastRequestedNode = this->requestedStateNodes_.back();
+        if (lastRequestedNode != this->rootStateNode_)
+            this->requestState(lastRequestedNode->parent_.lock()->state_->getName());
+        else
+            COUT(2) << "Warning: Can't pop the internal dummy root GameState" << std::endl;
     }
 
     GameState* Game::getState(const std::string& name)
     {
-        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(getLowercase(name));
-        if (it != allStates_s.end())
+        std::map<std::string, GameState*>::const_iterator it = gameStates_.find(getLowercase(name));
+        if (it != gameStates_.end())
             return it->second;
         else
         {
@@ -324,60 +427,39 @@ namespace orxonox
             startPos = pos;
             while(pos < str.size() && str[pos] != ' ')
                 ++pos;
-            stateStrings.push_back(std::pair<std::string, unsigned>(
-                str.substr(startPos, pos - startPos), indentation));
+            stateStrings.push_back(std::make_pair(str.substr(startPos, pos - startPos), indentation));
         }
         unsigned int currentLevel = 0;
-        shared_ptr<GameStateTreeNode> currentNode;
+        shared_ptr<GameStateTreeNode> currentNode = this->rootStateNode_;
         for (std::vector<std::pair<std::string, unsigned> >::const_iterator it = stateStrings.begin(); it != stateStrings.end(); ++it)
         {
             std::string newStateName = it->first;
-            unsigned newLevel = it->second;
+            unsigned newLevel = it->second + 1; // empty root is 0
             GameState* newState = this->getState(newStateName);
             if (!newState)
-                ThrowException(GameState, std::string("GameState with name '") + newStateName + "' not found!");
-            if (newLevel == 0)
+                ThrowException(GameState, "GameState with name '" << newStateName << "' not found!");
+            if (newState == this->rootStateNode_->state_)
+                ThrowException(GameState, "You shouldn't use 'emptyRootGameState' in the hierarchy...");
+            shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
+            newNode->state_ = newState;
+
+            if (newLevel <= currentLevel)
             {
-                // root
-                if (this->rootStateNode_ != NULL)
-                    ThrowException(GameState, "No two root GameStates are allowed!");
-                shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
-                newNode->state_ = newState;
-                this->rootStateNode_ = newNode;
-                currentNode = this->rootStateNode_;
+                do
+                    currentNode = currentNode->parent_.lock();
+                while (newLevel <= --currentLevel);
             }
-            else if (currentNode)
+            if (newLevel == currentLevel + 1)
             {
-                shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
-                newNode->state_ = newState;
-                if (newLevel < currentLevel)
-                {
-                    // Get down the hierarchy
-                    do
-                        currentNode = currentNode->parent_.lock();
-                    while (newLevel < --currentLevel);
-                }
-                if (newLevel == currentLevel)
-                {
-                    // same level
-                    newNode->parent_ = currentNode->parent_;
-                    newNode->parent_.lock()->children_.push_back(newNode);
-                }
-                else if (newLevel == currentLevel + 1)
-                {
-                    // child
-                    newNode->parent_ = currentNode;
-                    currentNode->children_.push_back(newNode);
-                }
-                else
-                    ThrowException(GameState, "Indentation error while parsing the hierarchy.");
-                currentNode = newNode;
-                currentLevel = newLevel;
+                // Add the child
+                newNode->parent_ = currentNode;
+                currentNode->children_.push_back(newNode);
+                currentNode->state_->addChild(newNode->state_);
             }
             else
-            {
-                ThrowException(GameState, "No root GameState specified!");
-            }
+                ThrowException(GameState, "Indentation error while parsing the hierarchy.");
+            currentNode = newNode;
+            currentLevel = newLevel;
         }
     }
 
@@ -385,39 +467,47 @@ namespace orxonox
 
     void Game::loadState(GameState* state)
     {
+        this->bChangingState_ = true;
+        state->activate();
         if (!this->activeStates_.empty())
             this->activeStates_.back()->activity_.topState = false;
-        state->activate();
-        state->activity_.topState = true;
         this->activeStates_.push_back(state);
+        state->activity_.topState = true;
+        this->bChangingState_ = false;
     }
 
     void Game::unloadState(orxonox::GameState* state)
     {
+        this->bChangingState_ = true;
         state->activity_.topState = false;
-        state->deactivate();
         this->activeStates_.pop_back();
         if (!this->activeStates_.empty())
             this->activeStates_.back()->activity_.topState = true;
+        try
+        {
+            state->deactivate();
+        }
+        catch (const std::exception& ex)
+        {
+            COUT(2) << "Warning: Unloading GameState '" << state->getName() << "' threw an exception: " << ex.what() << std::endl;
+            COUT(2) << "         There might be potential resource leaks involved! To avoid this, improve exception-safety." << std::endl;
+        }
+        this->bChangingState_ = false;
     }
 
-    /*static*/ bool Game::addGameState(GameState* state)
-    {
-        std::map<std::string, GameState*>::const_iterator it = allStates_s.find(getLowercase(state->getName()));
-        if (it == allStates_s.end())
-            allStates_s[getLowercase(state->getName())] = state;
-        else
-            ThrowException(GameState, "Cannot add two GameStates with the same name to 'Game'.");
+    std::map<std::string, Game::GameStateFactory*> Game::GameStateFactory::factories_s;
 
-        // just a required dummy return value
-        return true;
+    /*static*/ GameState* Game::GameStateFactory::fabricate(const std::string& className, const GameStateConstrParams& params)
+    {
+        std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.find(className);
+        assert(it != factories_s.end());
+        return it->second->fabricate(params);
     }
 
-    /*static*/ void Game::destroyStates()
+    /*static*/ void Game::GameStateFactory::destroyFactories()
     {
-        // Delete all GameStates created by the macros
-        for (std::map<std::string, GameState*>::const_iterator it = allStates_s.begin(); it != allStates_s.end(); ++it)
+        for (std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.begin(); it != factories_s.end(); ++it)
             delete it->second;
-        allStates_s.clear();
+        factories_s.clear();
     }
 }

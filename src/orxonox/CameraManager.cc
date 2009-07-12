@@ -31,7 +31,7 @@
 #include <OgreViewport.h>
 #include <OgreCompositorManager.h>
 
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/GameMode.h"
 #include "core/ObjectList.h"
 #include "tools/Shader.h"

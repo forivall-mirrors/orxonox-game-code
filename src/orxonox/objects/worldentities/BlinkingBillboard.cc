@@ -65,9 +65,9 @@ namespace orxonox
 
     void BlinkingBillboard::registerVariables()
     {
-//        registerVariable(this->amplitude_, variableDirection::toclient);
-//        registerVariable(this->frequency_, variableDirection::toclient);
-//        registerVariable(this->phase_,     variableDirection::toclient);
+//        registerVariable(this->amplitude_, VariableDirection::ToClient);
+//        registerVariable(this->frequency_, VariableDirection::ToClient);
+//        registerVariable(this->phase_,     VariableDirection::ToClient);
     }
 
     void BlinkingBillboard::tick(float dt)

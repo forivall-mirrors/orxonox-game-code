@@ -140,7 +140,7 @@ namespace orxonox
     return false;
   }
 
-  bool DistanceTrigger::isTriggered(TriggerMode mode)
+  bool DistanceTrigger::isTriggered(TriggerMode::Value mode)
   {
     if (Trigger::isTriggered(mode))
     {

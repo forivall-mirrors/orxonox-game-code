@@ -47,7 +47,7 @@ namespace orxonox
             ThrowException(AbortLoading, "Can't create ExplosionChunk, no scene or no scene manager given.");
 
         this->bStop_ = false;
-        this->LOD_ = LODParticle::normal;
+        this->LOD_ = LODParticle::Normal;
 
         if ( GameMode::showsGraphics() )
         {
@@ -103,8 +103,8 @@ namespace orxonox
 
     void ExplosionChunk::registerVariables()
     {
-        registerVariable((int&)(this->LOD_), variableDirection::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::LODchanged));
-        registerVariable(this->bStop_,       variableDirection::toclient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::checkStop));
+        registerVariable((int&)(this->LOD_), VariableDirection::ToClient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::LODchanged));
+        registerVariable(this->bStop_,       VariableDirection::ToClient, new NetworkCallback<ExplosionChunk>(this, &ExplosionChunk::checkStop));
     }
 
     void ExplosionChunk::LODchanged()

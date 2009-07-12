@@ -37,11 +37,11 @@ namespace orxonox
 {
     namespace BaseState
     {
-        enum Enum
+        enum Value
         {
-            uncontrolled,
-            controlTeam1,
-            controlTeam2,
+            Uncontrolled,
+            ControlTeam1,
+            ControlTeam2,
         };
     }
 
@@ -57,7 +57,7 @@ namespace orxonox
 
 
             // Set the state of a base to whatever the argument of the function is
-            void setState(BaseState::Enum state)
+            void setState(BaseState::Value state)
             {
                 this->state_ = state;
                 this->changeTeamColour();
@@ -65,7 +65,7 @@ namespace orxonox
 
 
             // Get the state of a base as a return value
-            BaseState::Enum getState() const
+            BaseState::Value getState() const
             {
                 return this->state_;
             }
@@ -74,7 +74,7 @@ namespace orxonox
         protected:
             void changeTeamColour();
 
-            BaseState::Enum state_;
+            BaseState::Value state_;
     };
 }
 

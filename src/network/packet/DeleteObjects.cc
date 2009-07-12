@@ -38,7 +38,7 @@ namespace packet {
 
 #define PACKET_FLAG_DELETE  PacketFlag::Reliable
 #define _PACKETID           0
-#define _QUANTITY           _PACKETID + sizeof(ENUM::Type)
+#define _QUANTITY           _PACKETID + sizeof(Type::Value)
 #define _OBJECTIDS          _QUANTITY + sizeof(uint32_t)
   
 DeleteObjects::DeleteObjects()
@@ -61,11 +61,11 @@ bool DeleteObjects::fetchIDs(){
   if(number==0)
     return false;
   COUT(4) << "sending DeleteObjects: ";
-  unsigned int size = sizeof(ENUM::Type) + sizeof(uint32_t)*(number+1);
+  unsigned int size = sizeof(Type::Value) + sizeof(uint32_t)*(number+1);
   data_ = new uint8_t[size];
   uint8_t *tdata = data_;
-  *reinterpret_cast<ENUM::Type*>(tdata) = ENUM::DeleteObjects;
-  tdata += sizeof(ENUM::Type);
+  *reinterpret_cast<Type::Value*>(tdata) = Type::DeleteObjects;
+  tdata += sizeof(Type::Value);
   *(uint32_t *)tdata = number;
   tdata += sizeof(uint32_t);
   for(unsigned int i=0; i<number; i++){

@@ -52,7 +52,7 @@ namespace orxonox
             ThrowException(AbortLoading, "Can't create ParticleEmitter, no scene or no scene manager given.");
 
         this->particles_ = 0;
-        this->LOD_ = LODParticle::normal;
+        this->LOD_ = LODParticle::Normal;
 
         this->registerVariables();
     }
@@ -70,14 +70,14 @@ namespace orxonox
     {
         SUPER(ParticleEmitter, XMLPort, xmlelement, mode);
 
-        XMLPortParam(ParticleEmitter, "lod",    setLODxml, getLODxml, xmlelement, mode).defaultValues(LODParticle::normal);
+        XMLPortParam(ParticleEmitter, "lod",    setLODxml, getLODxml, xmlelement, mode).defaultValues(LODParticle::Normal);
         XMLPortParam(ParticleEmitter, "source", setSource, getSource, xmlelement, mode);
     }
 
     void ParticleEmitter::registerVariables()
     {
-        registerVariable(this->source_, variableDirection::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
-        registerVariable((int&)(this->LOD_),    variableDirection::toclient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
+        registerVariable(this->source_, VariableDirection::ToClient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::sourceChanged));
+        registerVariable((int&)(this->LOD_),    VariableDirection::ToClient, new NetworkCallback<ParticleEmitter>(this, &ParticleEmitter::LODchanged));
     }
 
     void ParticleEmitter::changedVisibility()

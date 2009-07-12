@@ -46,9 +46,9 @@ namespace orxonox
             virtual void tick(float dt);
             void registerVariables();
 
-            inline void setLOD(LODParticle::LOD level)
+            inline void setLOD(LODParticle::Value level)
                 { this->LOD_ = level; this->LODchanged(); }
-            inline LODParticle::LOD getLOD() const
+            inline LODParticle::Value getLOD() const
                 { return this->LOD_; }
 
         private:
@@ -97,7 +97,7 @@ namespace orxonox
             ParticleInterface*    explosionSmoke_;
             ParticleInterface*    explosionFire_;
 
-            LODParticle::LOD      LOD_;
+            LODParticle::Value      LOD_;
             Timer<BigExplosion> destroyTimer_;
     };
 }

@@ -41,7 +41,7 @@
 namespace orxonox
 {
     typedef std::pair<std::multimap<std::string, BaseItem*>::iterator, std::multimap<std::string, BaseItem*>::iterator> item_range;
-    typedef std::pair<std::multimap<ModifierType::Enum, float>::iterator, std::multimap<ModifierType::Enum, float>::iterator> modifier_range;
+    typedef std::pair<std::multimap<ModifierType::Value, float>::iterator, std::multimap<ModifierType::Value, float>::iterator> modifier_range;
 
     //! Constructor
     PickupCollection::PickupCollection()
@@ -199,22 +199,22 @@ namespace orxonox
         @param type ModifierType to add.
         @param value Value for the modifier.
     */
-    void PickupCollection::addAdditiveModifier(ModifierType::Enum type, float value)
+    void PickupCollection::addAdditiveModifier(ModifierType::Value type, float value)
     {
-        this->additiveModifiers_.insert( std::pair<ModifierType::Enum, float>(type, value) );
+        this->additiveModifiers_.insert( std::pair<ModifierType::Value, float>(type, value) );
     }
     /**
         @brief Get the total amount of an additive modifier.
         @param type Type for which to get the total.
         @return Returns the sum of the additive modifiers of the type.
     */
-    float PickupCollection::getAdditiveModifier(ModifierType::Enum type)
+    float PickupCollection::getAdditiveModifier(ModifierType::Value type)
     {
         float v = 0.0f;
 
         modifier_range range = this->additiveModifiers_.equal_range(type);
 
-        for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
+        for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
         {
             v += (*it).second;
         }
@@ -226,10 +226,10 @@ namespace orxonox
         @param type Type of modifier.
         @param value Value which is to be removed.
     */
-    void PickupCollection::removeAdditiveModifier(ModifierType::Enum type, float value)
+    void PickupCollection::removeAdditiveModifier(ModifierType::Value type, float value)
     {
         modifier_range range = this->additiveModifiers_.equal_range(type);
-        for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
+        for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
         {
             if ((*it).second == value)
             {
@@ -243,21 +243,21 @@ namespace orxonox
         @param type ModifierType to add.
         @param value Value for the modifier.
     */
-    void PickupCollection::addMultiplicativeModifier(ModifierType::Enum type, float value)
+    void PickupCollection::addMultiplicativeModifier(ModifierType::Value type, float value)
     {
-        this->multiplicativeModifiers_.insert( std::pair<ModifierType::Enum, float>(type, value) );
+        this->multiplicativeModifiers_.insert( std::pair<ModifierType::Value, float>(type, value) );
     }
     /**
         @brief Get the total amount of a multiplicative modifier.
         @param type Type for which to get the total.
         @return Returns the product of the multiplicative modifiers of the type.
     */
-    float PickupCollection::getMultiplicativeModifier(ModifierType::Enum type)
+    float PickupCollection::getMultiplicativeModifier(ModifierType::Value type)
     {
         float v = 1.0f;
 
         modifier_range range = this->multiplicativeModifiers_.equal_range(type);
-        for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
+        for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
         {
             v *= (*it).second;
         }
@@ -269,10 +269,10 @@ namespace orxonox
         @param type Type of modifier.
         @param value Value which is to be removed.
     */
-    void PickupCollection::removeMultiplicativeModifier(ModifierType::Enum type, float value)
+    void PickupCollection::removeMultiplicativeModifier(ModifierType::Value type, float value)
     {
         modifier_range range = this->multiplicativeModifiers_.equal_range(type);
-        for (std::multimap<ModifierType::Enum, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
+        for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
         {
             if ((*it).second == value)
             {
@@ -288,7 +288,7 @@ namespace orxonox
         @param addBeforeMultiplication Whether to apply the additive modifier before the multiplicative one (default: false).
         @return Returns the value after being processed.
     */
-    float PickupCollection::processModifiers(ModifierType::Enum type, float inputValue, bool addBeforeMultiplication)
+    float PickupCollection::processModifiers(ModifierType::Value type, float inputValue, bool addBeforeMultiplication)
     {
         float outputValue = inputValue;
 
@@ -309,7 +309,7 @@ namespace orxonox
         @param addBeforeMultiplication Whether to apply the additive modifier before the multiplicative one (default: false).
         @return Returns the value after being processed.
     */
-    Vector3 PickupCollection::processModifiers(ModifierType::Enum type, Vector3 inputValue, bool addBeforeMultiplication)
+    Vector3 PickupCollection::processModifiers(ModifierType::Value type, Vector3 inputValue, bool addBeforeMultiplication)
     {
         Vector3 outputValue = inputValue;
 

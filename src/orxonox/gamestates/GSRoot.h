@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport GSRoot : public GameState
     {
     public:
-        GSRoot(const std::string& name, bool countTickTime);
+        GSRoot(const GameStateConstrParams& params);
         ~GSRoot();
 
         void activate();
@@ -51,9 +51,11 @@ namespace orxonox
         float getTimeFactor() { return this->timeFactor_; }
 
     private:
-        float                 timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
+        float                 timeFactor_;              //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
+
+        LevelManager*         levelManager_;            //!< global level manager
 
         // console commands
         ConsoleCommand*       ccSetTimeFactor_;

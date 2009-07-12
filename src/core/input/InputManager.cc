@@ -42,7 +42,7 @@
 
 #include "util/Convert.h"
 #include "util/Exception.h"
-#include "util/Debug.h"
+#include "util/ScopeGuard.h"
 #include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -69,7 +69,7 @@ namespace orxonox
     SetConsoleCommand(InputManager, grabMouse, true);
     SetConsoleCommand(InputManager, ungrabMouse, true);
 #endif
-    SetCommandLineSwitch(keyboard_no_grab);
+    SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
 
     EmptyHandler InputManager::EMPTY_HANDLER;
     InputManager* InputManager::singletonRef_s = 0;
@@ -176,9 +176,12 @@ namespace orxonox
             // Fill parameter list
             windowHndStr << (unsigned int)windowHnd_;
             paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+#if defined(ORXONOX_PLATFORM_WINDOWS)
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-#if defined ORXONOX_PLATFORM_LINUX
+            //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+            //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+#elif defined(ORXONOX_PLATFORM_LINUX)
             paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
             paramList.insert(std::make_pair(std::string("x11_mouse_grab"), "true"));
             paramList.insert(std::make_pair(std::string("x11_mouse_hide"), "true"));
@@ -190,16 +193,28 @@ namespace orxonox
                 paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("true")));
 #endif
 
-            inputSystem_ = OIS::InputManager::createInputSystem(paramList);
-            CCOUT(ORX_DEBUG) << "Created OIS input system" << std::endl;
+            try
+            {
+                inputSystem_ = OIS::InputManager::createInputSystem(paramList);
+                // Exception-safety
+                Loki::ScopeGuard guard = Loki::MakeGuard(OIS::InputManager::destroyInputSystem, inputSystem_);
+                CCOUT(ORX_DEBUG) << "Created OIS input system" << std::endl;
 
-            _initialiseKeyboard();
+                _initialiseKeyboard();
+
+                // Nothing below should throw anymore, dismiss the guard
+                guard.Dismiss();
+            }
+            catch (OIS::Exception& ex)
+            {
+                ThrowException(InitialisationFailed, "Could not initialise the input system: " << ex.what());
+            }
 
             _initialiseMouse();
 
             if (joyStickSupport)
                 _initialiseJoySticks();
-            // Do this anyway to also inform everything when a joystick was detached.
+            // Do this anyway to also inform when a joystick was detached.
             _configureJoySticks();
 
             // Set mouse/joystick region
@@ -272,7 +287,7 @@ namespace orxonox
         }
         else
         {
-            ThrowException(InitialisationFailed, "No keyboard found!");
+            ThrowException(InitialisationFailed, "InputManager: No keyboard found, cannot proceed!");
         }
     }
 
@@ -300,13 +315,13 @@ namespace orxonox
             }
             else
             {
-                CCOUT(ORX_WARNING) << "Warning: No mouse found!" << std::endl;
+                CCOUT(ORX_WARNING) << "Warning: No mouse found! Proceeding without mouse support." << std::endl;
             }
         }
         catch (OIS::Exception ex)
         {
             CCOUT(ORX_WARNING) << "Warning: Failed to create an OIS mouse\n"
-                << "OIS error message: \"" << ex.eText << "\"" << std::endl;
+                << "OIS error message: \"" << ex.eText << "\"\n Proceeding without mouse support." << std::endl;
             mouse_ = 0;
         }
     }
@@ -343,10 +358,6 @@ namespace orxonox
                         << "OIS error message: \"" << ex.eText << "\"" << std::endl;
                 }
             }
-        }
-        else
-        {
-            //CCOUT(ORX_WARNING) << "Warning: Joy stick support requested, but no joy stick was found" << std::endl;
         }
     }
 
@@ -527,43 +538,40 @@ namespace orxonox
     {
         if (internalState_ != Uninitialised)
         {
+            CCOUT(3) << "Destroying ..." << std::endl;
+
+            // kick all active states 'nicely'
+            for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
+                rit != activeStates_.rend(); ++rit)
+            {
+                (*rit).second->onLeave();
+            }
+
+            // Destroy calibrator helper handler and state
+            delete keyDetector_;
+            requestDestroyState("calibrator");
+            // Destroy KeyDetector and state
+            delete calibratorCallbackBuffer_;
+            requestDestroyState("detector");
+            // destroy the empty InputState
+            _destroyState(this->stateEmpty_);
+
+            // destroy all user InputStates
+            while (inputStatesByName_.size() > 0)
+                _destroyState((*inputStatesByName_.rbegin()).second);
+
+            // destroy the devices
+            _destroyKeyboard();
+            _destroyMouse();
+            _destroyJoySticks();
+
             try
             {
-                CCOUT(3) << "Destroying ..." << std::endl;
-
-                // kick all active states 'nicely'
-                for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
-                    rit != activeStates_.rend(); ++rit)
-                {
-                    (*rit).second->onLeave();
-                }
-
-                // Destroy calibrator helper handler and state
-                delete keyDetector_;
-                requestDestroyState("calibrator");
-                // Destroy KeyDetector and state
-                delete calibratorCallbackBuffer_;
-                requestDestroyState("detector");
-                // destroy the empty InputState
-                _destroyState(this->stateEmpty_);
-
-                // destroy all user InputStates
-                while (inputStatesByName_.size() > 0)
-                    _destroyState((*inputStatesByName_.rbegin()).second);
-
-                // destroy the devices
-                _destroyKeyboard();
-                _destroyMouse();
-                _destroyJoySticks();
-
                 OIS::InputManager::destroyInputSystem(inputSystem_);
-
-                CCOUT(3) << "Destroying done." << std::endl;
             }
-            catch (OIS::Exception& ex)
+            catch (...)
             {
-                CCOUT(1) << "An exception has occured while destroying:\n" << ex.what()
-                         << "This could lead to a possible memory/resource leak!" << std::endl;
+                CCOUT(1) << "OIS::InputManager destruction failed! Potential resource leak!" << std::endl;
             }
         }
 
@@ -577,10 +585,17 @@ namespace orxonox
     void InputManager::_destroyKeyboard()
     {
         assert(inputSystem_);
-        if (keyboard_)
-            inputSystem_->destroyInputObject(keyboard_);
-        keyboard_ = 0;
-        CCOUT(4) << "Keyboard destroyed." << std::endl;
+        try
+        {
+            if (keyboard_)
+                inputSystem_->destroyInputObject(keyboard_);
+            keyboard_ = 0;
+            CCOUT(4) << "Keyboard destroyed." << std::endl;
+        }
+        catch (...)
+        {
+            CCOUT(1) << "Keyboard destruction failed! Potential resource leak!" << std::endl;
+        }
     }
 
     /**
@@ -590,10 +605,17 @@ namespace orxonox
     void InputManager::_destroyMouse()
     {
         assert(inputSystem_);
-        if (mouse_)
-            inputSystem_->destroyInputObject(mouse_);
-        mouse_ = 0;
-        CCOUT(4) << "Mouse destroyed." << std::endl;
+        try
+        {
+            if (mouse_)
+                inputSystem_->destroyInputObject(mouse_);
+            mouse_ = 0;
+            CCOUT(4) << "Mouse destroyed." << std::endl;
+        }
+        catch (...)
+        {
+            CCOUT(1) << "Mouse destruction failed! Potential resource leak!" << std::endl;
+        }
     }
 
     /**
@@ -606,8 +628,17 @@ namespace orxonox
         {
             assert(inputSystem_);
             for (unsigned int i = 0; i < joySticksSize_; i++)
-                if (joySticks_[i] != 0)
-                    inputSystem_->destroyInputObject(joySticks_[i]);
+            {
+                try
+                {
+                    if (joySticks_[i] != 0)
+                        inputSystem_->destroyInputObject(joySticks_[i]);
+                }
+                catch (...)
+                {
+                    CCOUT(1) << "Joy stick destruction failed! Potential resource leak!" << std::endl;
+                }
+            }
 
             joySticks_.clear();
             // don't use _configureNumberOfJoySticks(), might mess with registered handler if

@@ -67,6 +67,7 @@ namespace orxonox
 
         //! Needed for compatibility with std::exception
         virtual ~Exception() throw() { }
+        const char* what() const throw();
 
         //! Returns a full description with type, line, file and function
         virtual const std::string& getFullDescription() const;
@@ -80,9 +81,6 @@ namespace orxonox
         virtual const std::string& getFunctionName()    const { return this->functionName_; }
         //! Returns the filename in which the exception occurred.
         virtual const std::string& getFilename()        const { return this->filename_; }
-
-        //! Returns a full description of the error.
-        const char* what() const throw() { return getFullDescription().c_str(); }
 
     protected:
         std::string description_;             //!< User typed text about why the exception occurred
@@ -151,7 +149,7 @@ namespace orxonox
 @param description
     Exception description as string
 */
-#define ThrowException(type, description, ...) \
+#define ThrowException(type, description) \
     throw orxonox::exceptionThrowerHelper(type##Exception(static_cast<std::ostringstream&>(std::ostringstream().flush() << description).str(), __LINE__, __FILE__, __FUNCTIONNAME__))
 
 } /* namespace orxonox */

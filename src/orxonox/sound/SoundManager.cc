@@ -38,7 +38,6 @@
 namespace orxonox
 {
     SoundManager* SoundManager::singletonRef_s = NULL;
-    ALCdevice* SoundManager::device_s = NULL;
 
     /**
      * Default constructor
@@ -48,6 +47,7 @@ namespace orxonox
         assert(singletonRef_s == NULL);
         singletonRef_s = this;
 
+        this->device_ = NULL;
         this->soundavailable_ = true;
         if(!alutInitWithoutContext(NULL,NULL))
         {
@@ -56,13 +56,11 @@ namespace orxonox
         }
         else
         {
-            if(SoundManager::device_s == NULL)
-            {
-                COUT(3) << "Sound: OpenAL: Open sound device..." << std::endl;
-                SoundManager::device_s = alcOpenDevice(NULL);
-            }
+            assert(this->device_ == NULL);
+            COUT(3) << "Sound: OpenAL: Open sound device..." << std::endl;
+            this->device_ = alcOpenDevice(NULL);
 
-            if(SoundManager::device_s == NULL)
+            if(this->device_ == NULL)
             {
                 COUT(2) << "Sound: OpenAL: Could not open sound device" << std::endl;
                 this->soundavailable_ = false;
@@ -70,7 +68,7 @@ namespace orxonox
             else
             {
                 COUT(3) << "Sound: OpenAL: Sound device opened" << std::endl;
-                this->context_ = alcCreateContext(SoundManager::device_s, NULL);
+                this->context_ = alcCreateContext(this->device_, NULL);
                 if(this->context_ == NULL)
                 {
                     COUT(2) << "Sound: OpenAL: Could not create sound context" << std::endl;
@@ -98,7 +96,7 @@ namespace orxonox
         singletonRef_s = NULL;
 
         alcDestroyContext(this->context_);
-        alcCloseDevice(SoundManager::device_s);
+        alcCloseDevice(this->device_);
         alutExit();
     }
 

@@ -98,7 +98,7 @@ namespace orxonox
 
     //    while (textColumns_.size() < numberOfColumns)
     //    {
-    //        Ogre::TextAreaOverlayElement* tempTextArea = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + convertToString(lineIndex) + convertToString(colIndex)));
+    //        Ogre::TextAreaOverlayElement* tempTextArea = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "StatsLineTextArea" + getName() + multi_cast<std::string>(lineIndex) + multi_cast<std::string>(colIndex)));
     //        textColumns_.push_back(tempTextArea);
     //        this->background_->addChild(tempTextArea);
 

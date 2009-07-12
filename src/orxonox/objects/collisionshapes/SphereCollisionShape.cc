@@ -55,7 +55,7 @@ namespace orxonox
 
     void SphereCollisionShape::registerVariables()
     {
-        registerVariable(this->radius_, variableDirection::toclient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
+        registerVariable(this->radius_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
     }
 
     void SphereCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)

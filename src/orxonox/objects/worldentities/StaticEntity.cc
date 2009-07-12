@@ -42,7 +42,7 @@ namespace orxonox
     {
         RegisterObject(StaticEntity);
         
-        this->setPriority(priority::very_low);
+        this->setPriority(Priority::VeryLow);
 
         this->registerVariables();
     }
@@ -53,8 +53,8 @@ namespace orxonox
 
     void StaticEntity::registerVariables()
     {
-        registerVariable(this->getPosition(),    variableDirection::toclient, new NetworkCallback<StaticEntity>(this, &StaticEntity::positionChanged));
-        registerVariable(this->getOrientation(), variableDirection::toclient, new NetworkCallback<StaticEntity>(this, &StaticEntity::orientationChanged));
+        registerVariable(this->getPosition(),    VariableDirection::ToClient, new NetworkCallback<StaticEntity>(this, &StaticEntity::positionChanged));
+        registerVariable(this->getOrientation(), VariableDirection::ToClient, new NetworkCallback<StaticEntity>(this, &StaticEntity::orientationChanged));
     }
 
 

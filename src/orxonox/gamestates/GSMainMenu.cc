@@ -42,10 +42,10 @@
 
 namespace orxonox
 {
-    AddGameState(GSMainMenu, "mainMenu");
+    DeclareGameState(GSMainMenu, "mainMenu", false, true);
 
-    GSMainMenu::GSMainMenu(const std::string& name)
-        : GameState(name)
+    GSMainMenu::GSMainMenu(const GameStateConstrParams& params)
+        : GameState(params)
         , inputState_(0)
     {
     }
@@ -66,7 +66,7 @@ namespace orxonox
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
 
         // show main menu
-        GUIManager::getInstance().showGUI("mainmenu_2");
+        GUIManager::getInstance().showGUI("mainmenu_3");
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 

@@ -71,7 +71,7 @@ namespace orxonox
         registerVariable( this->speed_ );
         registerVariable( this->relMercyOffset_ );
         registerVariable( this->batID_[0] );
-        registerVariable( this->batID_[1], variableDirection::toclient, new NetworkCallback<PongBall>( this, &PongBall::applyBats) );
+        registerVariable( this->batID_[1], VariableDirection::ToClient, new NetworkCallback<PongBall>( this, &PongBall::applyBats) );
     }
 
     void PongBall::tick(float dt)

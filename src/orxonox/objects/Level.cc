@@ -86,9 +86,9 @@ namespace orxonox
 
     void Level::registerVariables()
     {
-        registerVariable(this->xmlfilename_, variableDirection::toclient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
-        registerVariable(this->name_,        variableDirection::toclient, new NetworkCallback<Level>(this, &Level::changedName));
-        registerVariable(this->description_, variableDirection::toclient);
+        registerVariable(this->xmlfilename_, VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        registerVariable(this->name_,        VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::changedName));
+        registerVariable(this->description_, VariableDirection::ToClient);
     }
 
     void Level::networkcallback_applyXMLFile()

@@ -28,7 +28,7 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
   OutputHandler.cc
   SignalHandler.cc
   Sleep.cc
-  String.cc
+  StringUtils.cc
   SubString.cc
 )
 

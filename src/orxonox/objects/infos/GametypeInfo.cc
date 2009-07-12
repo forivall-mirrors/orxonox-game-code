@@ -60,11 +60,11 @@ namespace orxonox
 
     void GametypeInfo::registerVariables()
     {
-        registerVariable(this->bStarted_,               variableDirection::toclient);
-        registerVariable(this->bEnded_,                 variableDirection::toclient);
-        registerVariable(this->startCountdown_,         variableDirection::toclient);
-        registerVariable(this->bStartCountdownRunning_, variableDirection::toclient);
-        registerVariable(this->hudtemplate_,            variableDirection::toclient);
+        registerVariable(this->bStarted_,               VariableDirection::ToClient);
+        registerVariable(this->bEnded_,                 VariableDirection::ToClient);
+        registerVariable(this->startCountdown_,         VariableDirection::ToClient);
+        registerVariable(this->bStartCountdownRunning_, VariableDirection::ToClient);
+        registerVariable(this->hudtemplate_,            VariableDirection::ToClient);
     }
 
     void GametypeInfo::sendAnnounceMessage(const std::string& message)

@@ -41,7 +41,7 @@
 
 #include "util/Convert.h"
 #include "util/Exception.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -71,12 +71,12 @@ namespace orxonox
 
         // create the Ogre::Overlay
         overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
-            + convertToString(hudOverlayCounter_s++));
+            + multi_cast<std::string>(hudOverlayCounter_s++));
 
         // create background panel (can be used to show any picture)
         this->background_ = static_cast<Ogre::PanelOverlayElement*>(
             Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
-            "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
+            "OrxonoxOverlay_background_" + multi_cast<std::string>(hudOverlayCounter_s++)));
         this->overlay_->add2D(this->background_);
 
         // Get aspect ratio from the render window. Later on, we get informed automatically

@@ -51,7 +51,7 @@ namespace orxonox
     class _OrxonoxExport GSGraphics : public GameState, public WindowEventListener
     {
     public:
-        GSGraphics(const std::string& name, bool countTickTime);
+        GSGraphics(const GameStateConstrParams& params);
         ~GSGraphics();
         void setConfigValues();
 

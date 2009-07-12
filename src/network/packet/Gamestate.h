@@ -46,7 +46,7 @@ namespace packet {
 
 class _NetworkExport GamestateHeader{
   public:
-    GamestateHeader(uint8_t *data){ assert(data); data_ = data; *(uint32_t*)data_ = ENUM::Gamestate; }
+    GamestateHeader(uint8_t *data){ assert(data); data_ = data; *(uint32_t*)data_ = Type::Gamestate; }
     GamestateHeader(uint8_t *data, GamestateHeader* h)
     { assert(data); data_=data; memcpy(data_, h->data_, getSize()); }
     static inline uint32_t getSize()

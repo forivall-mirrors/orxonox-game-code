@@ -50,7 +50,7 @@ namespace orxonox
     {
         RegisterObject(QuestListener);
         
-        this->mode_ = questListenerMode::all;
+        this->mode_ = QuestListenerMode::All;
         this->quest_ = NULL;
     }
     
@@ -131,24 +131,24 @@ namespace orxonox
     {
         if(mode == "all")
         {
-            this->mode_ = questListenerMode::all;
+            this->mode_ = QuestListenerMode::All;
         }
         else if(mode == "start")
         {
-            this->mode_ = questListenerMode::start;
+            this->mode_ = QuestListenerMode::Start;
         }
         else if(mode == "fail")
         {
-            this->mode_ = questListenerMode::fail;
+            this->mode_ = QuestListenerMode::Fail;
         }
         else if(mode == "complete")
         {
-            this->mode_ = questListenerMode::complete;
+            this->mode_ = QuestListenerMode::Complete;
         }
         else
         {
             COUT(2) << "QuestListener with invalid mode '" << mode << "' created. Mode set to 'all'." << std::endl;
-        this->mode_ = questListenerMode::all;
+        this->mode_ = QuestListenerMode::All;
         return false;
         }
         
@@ -163,19 +163,19 @@ namespace orxonox
     */
     std::string QuestListener::getMode(void)
     {
-        if(this->mode_ == questListenerMode::all)
+        if(this->mode_ == QuestListenerMode::All)
         {
             return "all";
         }
-        else if(this->mode_ == questListenerMode::start)
+        else if(this->mode_ == QuestListenerMode::Start)
         {
             return "start";
         }
-        else if(this->mode_ == questListenerMode::fail)
+        else if(this->mode_ == QuestListenerMode::Fail)
         {
             return "fail";
         }
-        else if(this->mode_ == questListenerMode::complete)
+        else if(this->mode_ == QuestListenerMode::Complete)
         {
             return "complete";
         }

@@ -63,7 +63,7 @@ namespace orxonox
         {
             std::ostringstream fullDesc;
 
-            fullDesc << this->getTypeName() << "_EXCEPTION";
+            fullDesc << this->getTypeName() << "Exception";
 
             if (this->filename_ != "")
             {
@@ -85,5 +85,11 @@ namespace orxonox
         }
 
         return fullDescription_;
+    }
+
+    //! Returns the error description
+    const char* Exception::what() const throw()
+    {
+        return getDescription().c_str();
     }
 }

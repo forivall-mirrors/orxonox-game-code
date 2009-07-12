@@ -34,7 +34,7 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -141,8 +141,8 @@ namespace orxonox
 
         // set text
         int dist = (int) getDist2Focus();
-        navText_->setCaption(convertToString(dist));
-        float textLength = convertToString(dist).size() * navText_->getCharHeight() * 0.3;
+        navText_->setCaption(multi_cast<std::string>(dist));
+        float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3;
 
 /*
         Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;

@@ -32,7 +32,7 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "util/String.h"
+#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "Core.h"
@@ -123,9 +123,9 @@ namespace orxonox
     std::string ConfigFileEntryVectorValue::getFileEntry() const
     {
         if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_ + "[" + getConvertedValue<unsigned int, std::string>(this->index_, "0") + "]" + "=" + this->value_);
+            return (this->name_ + "[" + multi_cast<std::string>(this->index_) + "]" + "=" + this->value_);
         else
-            return (this->name_ + "[" + getConvertedValue<unsigned int, std::string>(this->index_, "0") + "]=" + this->value_ + " " + this->additionalComment_);
+            return (this->name_ + "[" + multi_cast<std::string>(this->index_) + "]=" + this->value_ + " " + this->additionalComment_);
     }
 
 

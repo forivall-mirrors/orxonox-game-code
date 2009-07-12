@@ -37,7 +37,7 @@ namespace packet {
   
 #define   PACKET_FLAGS_CHAT PacketFlag::Reliable
 #define   _PACKETID         0
-const int _PLAYERID     =   _PACKETID + sizeof(ENUM::Type);
+const int _PLAYERID     =   _PACKETID + sizeof(Type::Value);
 #define   _MESSAGELENGTH    _PLAYERID + sizeof(uint32_t)
 #define   _MESSAGE          _MESSAGELENGTH + sizeof(uint32_t)
 
@@ -47,7 +47,7 @@ Chat::Chat( const std::string& message, unsigned int playerID )
   flags_ = flags_ | PACKET_FLAGS_CHAT;
   messageLength_ = message.length()+1;
   data_=new unsigned char[ getSize() ];
-  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::Chat;
+  *(Type::Value *)(data_ + _PACKETID ) = Type::Chat;
   *(unsigned int *)(data_ + _PLAYERID ) = playerID;
   *(unsigned int *)(data_ + _MESSAGELENGTH ) = messageLength_;
   memcpy( data_+_MESSAGE, (void *)message.c_str(), messageLength_ );

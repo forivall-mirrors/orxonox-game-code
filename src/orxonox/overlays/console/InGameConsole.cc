@@ -29,6 +29,7 @@
 
 #include "InGameConsole.h"
 
+#include <algorithm>
 #include <string>
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
@@ -218,7 +219,7 @@ namespace orxonox
         this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + convertToString(i)));
+            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + multi_cast<std::string>(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
             this->consoleOverlayTextAreas_[i]->setFontName("MonofurConsole");
             this->consoleOverlayTextAreas_[i]->setCharHeight(18);
@@ -424,7 +425,7 @@ namespace orxonox
         this->desiredTextWidth_ = (int) (this->windowW_ * this->relativeWidth) - 12;
 
         if (LINES > 0)
-            this->maxCharsPerLine_ = max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH));
+            this->maxCharsPerLine_ = std::max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH));
         else
             this->maxCharsPerLine_ = 10;
 

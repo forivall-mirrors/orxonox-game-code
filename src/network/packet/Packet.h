@@ -35,13 +35,15 @@ namespace orxonox {
 
 namespace packet{
 
-namespace ENUM{
-  enum Direction{
+namespace Direction{
+  enum Value{
     Incoming,
     Outgoing,
     Bidirectional
   };
-  enum Type{
+}
+namespace Type{
+  enum Value{
     Acknowledgement,
     Chat,
     ClassID,
@@ -83,7 +85,7 @@ class _NetworkExport Packet{
 
     uint32_t flags_;
     unsigned int clientID_;
-    ENUM::Direction packetDirection_;
+    Direction::Value packetDirection_;
     /** Pointer to the data. Be careful when deleting it because it might
         point to a location that was allocated by ENet.
         See bDataENetAllocated_ */

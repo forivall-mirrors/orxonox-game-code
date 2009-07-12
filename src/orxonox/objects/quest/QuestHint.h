@@ -41,16 +41,14 @@
 
 namespace orxonox
 {
-    namespace questHintStatus
+    namespace QuestHintStatus
     {
-
         //! The state of the hint.
-        enum Enum
+        enum Value
         {
-            inactive,
-            active
+            Inactive,
+            Active
         };
-
     }
 
     /**
@@ -90,7 +88,7 @@ namespace orxonox
 
         private:
             Quest* quest_; //!< The Quest the QuestHint belongs to.
-            std::map<const PlayerInfo*, questHintStatus::Enum> playerStatus_; //!< List of the states for each player, with the Player-pointer as key.
+            std::map<const PlayerInfo*, QuestHintStatus::Value> playerStatus_; //!< List of the states for each player, with the Player-pointer as key.
 
     };
 
