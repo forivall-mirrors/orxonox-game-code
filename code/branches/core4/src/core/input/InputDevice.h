@@ -112,7 +112,7 @@ namespace orxonox
         InputDeviceTemplated(unsigned int id)
             : InputDevice(id)
         {
-            OIS::InputManager* system = InputManager::getInstance().getInputSystem();
+            OIS::InputManager* system = InputManager::getInstance().getOISInputManager();
             oisDevice_ = static_cast<OISDeviceClass*>(system->createInputObject(OISDeviceValue, true));
             oisDevice_->setEventCallback(static_cast<DeviceClass*>(this));
             COUT(4) << "Instantiated a " << this->getClassName() << std::endl;
@@ -122,7 +122,7 @@ namespace orxonox
         {
             try
             {
-                InputManager::getInstance().getInputSystem()->destroyInputObject(oisDevice_);
+                InputManager::getInstance().getOISInputManager()->destroyInputObject(oisDevice_);
             }
             catch (...)
             {

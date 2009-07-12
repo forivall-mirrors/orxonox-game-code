@@ -95,7 +95,7 @@ namespace orxonox
             CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
         }
 
-        InputManager::getInstance().requestEnterState("mainMenu");
+        InputManager::getInstance().enterState("mainMenu");
 
         this->ambient_ = new SoundMainMenu();
         this->ambient_->play(true);
@@ -105,8 +105,8 @@ namespace orxonox
     {
         delete this->ambient_;
 
-        InputManager::getInstance().requestLeaveState("mainMenu");
-        InputManager::getInstance().requestDestroyState("mainMenu");
+        InputManager::getInstance().leaveState("mainMenu");
+        InputManager::getInstance().destroyState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
         GraphicsManager::getInstance().setCamera(0);

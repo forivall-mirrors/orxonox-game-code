@@ -69,14 +69,14 @@ namespace orxonox
             out << (long)this;
             str = out.str();
             GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().requestEnterState("guiMouseOnly");
+            InputManager::getInstance().enterState("guiMouseOnly");
             GUIManager::getInstance().executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
         }
         else
         {
             GUIManager::getInstance().executeCode("hideGUI(\"" + this->guiName_ + "\")");
             GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().requestLeaveState("guiMouseOnly");
+            InputManager::getInstance().leaveState("guiMouseOnly");
         }
     }
 

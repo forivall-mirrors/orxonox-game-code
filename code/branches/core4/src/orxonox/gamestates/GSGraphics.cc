@@ -149,7 +149,7 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
 
         // enable master input
-        InputManager::getInstance().requestEnterState("master");
+        InputManager::getInstance().enterState("master");
     }
 
     /**
@@ -169,7 +169,7 @@ namespace orxonox
 */
 
         masterInputState_->setHandler(0);
-        InputManager::getInstance().requestDestroyState("master");
+        InputManager::getInstance().destroyState("master");
         delete this->masterKeyBinder_;
 
         delete this->guiManager_;

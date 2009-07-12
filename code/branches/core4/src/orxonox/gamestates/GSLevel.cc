@@ -133,7 +133,7 @@ namespace orxonox
             InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);
 
             // level is loaded: we can start capturing the input
-            InputManager::getInstance().requestEnterState("game");
+            InputManager::getInstance().enterState("game");
         }
     }
 
@@ -143,13 +143,13 @@ namespace orxonox
         {
             GUIManager::getInstance().showGUI("inGameTest");
             GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().requestEnterState("guiMouseOnly");
+            InputManager::getInstance().enterState("guiMouseOnly");
         }
         else
         {
             GUIManager::getInstance().executeCode("hideGUI(\"inGameTest\")");
             GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().requestLeaveState("guiMouseOnly");
+            InputManager::getInstance().leaveState("guiMouseOnly");
         }
     }
 
@@ -177,7 +177,7 @@ namespace orxonox
         //Loader::close();
 
         if (GameMode::showsGraphics())
-            InputManager::getInstance().requestLeaveState("game");
+            InputManager::getInstance().leaveState("game");
 
         if (GameMode::isMaster())
             this->unloadLevel();
@@ -217,7 +217,7 @@ namespace orxonox
             gameInputState_->setHandler(0);
             guiMouseOnlyInputState_->setHandler(0);
             guiKeysOnlyInputState_->setHandler(0);
-            InputManager::getInstance().requestDestroyState("game");
+            InputManager::getInstance().destroyState("game");
             if (this->keyBinder_)
             {
                 delete this->keyBinder_;
@@ -285,7 +285,7 @@ namespace orxonox
                 if (bound)
                 {
                     COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-                    InputManager::getInstance().requestEnterState("detector");
+                    InputManager::getInstance().enterState("detector");
                     bindingString = command;
                     bTemporarySaved = bTemporary;
                     bound = false;
@@ -300,7 +300,7 @@ namespace orxonox
                     std::string name = command.substr(this->keyDetectorCallbackCode_.size());
                     COUT(0) << "Binding string \"" << bindingString << "\" on key '" << name << "'" << std::endl;
                     this->keyBinder_->setBinding(bindingString, name, bTemporarySaved);
-                    InputManager::getInstance().requestLeaveState("detector");
+                    InputManager::getInstance().leaveState("detector");
                     bound = true;
                 }
                 // else: A key was pressed within the same tick, ignore it.

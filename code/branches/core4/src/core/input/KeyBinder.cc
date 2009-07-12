@@ -56,6 +56,9 @@ namespace orxonox
         mousePosition_[0] = 0;
         mousePosition_[1] = 0;
 
+        joyStickButtons_.reserve(1000);
+        joyStickAxes_.reserve(1000);
+
         RegisterRootObject(KeyBinder);
 
         // intialise all buttons and half axes to avoid creating everything with 'new'

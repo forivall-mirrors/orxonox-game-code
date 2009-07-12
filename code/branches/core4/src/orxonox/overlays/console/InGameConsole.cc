@@ -97,7 +97,7 @@ namespace orxonox
         this->deactivate();
 
         // destroy the input state previously created (InputBuffer gets destroyed by the Shell)
-        InputManager::getInstance().requestDestroyState("console");
+        InputManager::getInstance().destroyState("console");
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)
@@ -506,7 +506,7 @@ namespace orxonox
         if (!this->bActive_)
         {
             this->bActive_ = true;
-            InputManager::getInstance().requestEnterState("console");
+            InputManager::getInstance().enterState("console");
             Shell::getInstance().registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
@@ -528,7 +528,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
-            InputManager::getInstance().requestLeaveState("console");
+            InputManager::getInstance().leaveState("console");
             Shell::getInstance().unregisterListener(this);
 
             // scroll up

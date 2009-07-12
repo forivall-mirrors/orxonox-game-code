@@ -43,119 +43,93 @@
 #include <string>
 #include <vector>
 
-#include "util/Math.h"
-#include "util/OrxEnum.h"
 #include "core/OrxonoxClass.h"
+#include "InputState.h"
 
 namespace orxonox
 {
-    struct InputStatePriority : OrxEnum<InputStatePriority>
-    {
-        OrxEnumConstructors(InputStatePriority);
-
-        static const int Empty        = -1;
-        static const int Dynamic      = 0;
-
-        static const int HighPriority = 1000;
-        static const int Console      = HighPriority + 0;
-        static const int Calibrator   = HighPriority + 1;
-        static const int Detector     = HighPriority + 2;
-    };
-
     /**
     @brief
         Captures and distributes mouse and keyboard input.
     */
     class _CoreExport InputManager : public OrxonoxClass
     {
-        // --> setConfigValues is private
-        friend class ClassIdentifier<InputManager>;
-
     public:
-        enum InputManagerState
+        enum State
         {
-            Uninitialised    = 0x00,
-            OISReady         = 0x01,
-            InternalsReady   = 0x02,
-            Ticking          = 0x04,
-            Calibrating      = 0x08,
-            ReloadRequest    = 0x10,
+            Nothing       = 0x00,
+            Bad           = 0x02,
+            Ticking       = 0x04,
+            Calibrating   = 0x08,
+            ReloadRequest = 0x10,
         };
 
         InputManager (size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
         ~InputManager();
+        void setConfigValues();
 
-        void initialise(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
-
-        void reloadInputSystem();
-
+        void update(const Clock& time);
         void clearBuffers();
+        void calibrate();
+        void reload();
 
-        void setWindowExtents(const int width, const int height);
-        void setKeyDetectorCallback(const std::string& command);
-
+        //-------------------------------
+        // Input States
+        //-------------------------------
         InputState* createInputState(const std::string& name, bool bAlwaysGetsInput = false, bool bTransparent = false, InputStatePriority priority = InputStatePriority::Dynamic);
+        InputState* getState(const std::string& name);
+        bool enterState     (const std::string& name);
+        bool leaveState     (const std::string& name);
+        bool destroyState   (const std::string& name);
 
-        InputState* getState       (const std::string& name);
-        InputState* getCurrentState();
-        bool requestDestroyState   (const std::string& name);
-        bool requestEnterState     (const std::string& name);
-        bool requestLeaveState     (const std::string& name);
-
-        OIS::InputManager* getInputSystem() { return this->inputSystem_; }
+        //-------------------------------
+        // Various getters and setters
+        //-------------------------------
+        void setKeyDetectorCallback(const std::string& command);
         bool checkJoyStickID(const std::string& idString) const;
         unsigned int getJoyStickQuantity() const
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
-
-        void update(const Clock& time);
+        OIS::InputManager* getOISInputManager()
+            { return this->oisInputManager_; }
 
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
-        static InputManager* getInstancePtr() { return singletonRef_s; }
-
-        // console commands
-        static void calibrate();
-        static void reload();
 
     private: // functions
         // don't mess with a Singleton
         InputManager(const InputManager&);
 
         // Intenal methods
-        void _initialiseKeyboard();
-        void _initialiseMouse(unsigned int windowWidth, unsigned int windowHeight);
-        void _initialiseJoySticks();
+        void loadDevices(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
+        void loadMouse(unsigned int windowWidth, unsigned int windowHeight);
+        void loadJoySticks();
+        void destroyDevices();
 
-        void _startCalibration();
-        void _stopCalibration();
+        void stopCalibration();
 
-        void _destroyState(InputState* state);
+        void destroyStateInternal(InputState* state);
+        void updateActiveStates();
+        bool configureInputState(InputState* state, const std::string& name, bool bAlwaysGetsInput, bool bTransparent, int priority);
 
-        void _reload();
-
-        void _updateActiveStates();
-        bool _configureInputState(InputState* state, const std::string& name, bool bAlwaysGetsInput, bool bTransparent, int priority);
-
-        void setConfigValues();
+        void reloadInternal();
 
     private: // variables
-        OIS::InputManager*                  inputSystem_;          //!< OIS input manager
+        State                               internalState_;        //!< Current internal state
+        OIS::InputManager*                  oisInputManager_;      //!< OIS input manager
         std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
         size_t                              windowHnd_;            //!< Render window handle
-        InputManagerState                   internalState_;        //!< Current internal state
 
         // some internally handled states and handlers
-        InputState*                         stateEmpty_;
+        InputState*                         emptyState_;
         KeyDetector*                        keyDetector_;          //!< KeyDetector instance
-        InputBuffer*                        calibratorCallbackBuffer_;
+        InputBuffer*                        calibratorCallbackHandler_;
 
-        std::map<std::string, InputState*>  inputStatesByName_;
+        std::map<std::string, InputState*>  statesByName_;
+        std::map<int, InputState*>          activeStates_;
+        std::vector<InputState*>            activeStatesTicked_;
 
         std::set<InputState*>               stateEnterRequests_;   //!< Request to enter a new state
         std::set<InputState*>               stateLeaveRequests_;   //!< Request to leave a running state
         std::set<InputState*>               stateDestroyRequests_; //!< Request to destroy a state
-
-        std::map<int, InputState*>          activeStates_;
-        std::vector<InputState*>            activeStatesTicked_;
 
         static InputManager*                singletonRef_s;
     };

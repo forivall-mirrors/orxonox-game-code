@@ -35,11 +35,25 @@
 #include <string>
 #include <vector>
 
+#include "util/OrxEnum.h"
 #include "InputHandler.h"
 #include "JoyStickQuantityListener.h"
 
 namespace orxonox
 {
+    struct InputStatePriority : OrxEnum<InputStatePriority>
+    {
+        OrxEnumConstructors(InputStatePriority);
+
+        static const int Empty        = -1;
+        static const int Dynamic      = 0;
+
+        static const int HighPriority = 1000;
+        static const int Console      = HighPriority + 0;
+        static const int Calibrator   = HighPriority + 1;
+        static const int Detector     = HighPriority + 2;
+    };
+
     class _CoreExport InputState : public JoyStickQuantityListener
     {
         friend class InputManager;
