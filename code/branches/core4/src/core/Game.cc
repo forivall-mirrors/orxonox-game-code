@@ -247,6 +247,7 @@ namespace orxonox
             for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin() + 1;
                 it != this->activeStates_.end(); ++it)
             {
+                bool threwException = false;
                 try
                 {
                     // Add tick time for most of the states
@@ -257,7 +258,16 @@ namespace orxonox
                     if (!(*it)->ignoreTickTime())
                         this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
                 }
+                catch (const std::exception& ex)
+                {
+                    threwException = true;
+                    COUT(0) << "Exception while ticking: " << ex.what() << std::endl;
+                }
                 catch (...)
+                {
+                    threwException = true;
+                }
+                if (threwException)
                 {
                     COUT(1) << "An exception occured while ticking GameState '" << (*it)->getName() << "'. This should really never happen!" << std::endl;
                     COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
@@ -342,29 +352,33 @@ namespace orxonox
         }
 
         // Check children first
-        shared_ptr<GameStateTreeNode> requestedNode;
+        std::vector<shared_ptr<GameStateTreeNode> > requestedNodes;
         for (unsigned int i = 0; i < lastRequestedNode->children_.size(); ++i)
         {
             if (lastRequestedNode->children_[i]->state_ == state)
             {
-                requestedNode = lastRequestedNode->children_[i];
+                requestedNodes.push_back(lastRequestedNode->children_[i]);
                 break;
             }
         }
 
-        // Check parent and all its grand parents
-        shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
-        while (requestedNode == NULL && currentNode != NULL)
+        if (requestedNodes.empty())
         {
-            if (currentNode->state_ == state)
-                requestedNode = currentNode;
-            currentNode = currentNode->parent_.lock();
+            // Check parent and all its grand parents
+            shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
+            while (currentNode != NULL)
+            {
+                if (currentNode->state_ == state)
+                    break;
+                currentNode = currentNode->parent_.lock();
+                requestedNodes.push_back(currentNode);
+            }
         }
 
-        if (requestedNode == NULL)
+        if (requestedNodes.empty())
             COUT(1) << "Error: Requested GameState transition is not allowed. Ignoring." << std::endl;
         else
-            this->requestedStateNodes_.push_back(requestedNode);
+            this->requestedStateNodes_.insert(requestedStateNodes_.end(), requestedNodes.begin(), requestedNodes.end());
     }
 
     void Game::requestStates(const std::string& names)
