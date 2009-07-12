@@ -43,7 +43,7 @@ namespace orxonox
         : public InputDeviceTemplated<MouseTraits>
         , public OIS::MouseListener
     {
-        friend InputDeviceTemplated<MouseTraits>;
+        friend class InputDeviceTemplated<MouseTraits>;
         //! Super class alias
         typedef InputDeviceTemplated<MouseTraits> super;
 

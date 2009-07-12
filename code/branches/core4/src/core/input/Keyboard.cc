@@ -42,7 +42,8 @@ namespace orxonox
         if(arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
             modifiers_ |= KeyboardModifier::Shift; // shift key
 
-        super::buttonPressed(KeyEvent(arg));
+        KeyEvent evt(arg);
+        super::buttonPressed(evt);
         return true;
     }
 
@@ -57,7 +58,8 @@ namespace orxonox
         if(arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
             modifiers_ &= ~KeyboardModifier::Shift; // shift key
 
-        super::buttonReleased(KeyEvent(arg));
+        KeyEvent evt(arg);
+        super::buttonReleased(evt);
         return true;
     }
 }

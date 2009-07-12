@@ -45,7 +45,7 @@ namespace orxonox
         : public InputDeviceTemplated<KeyboardTraits>
         , public OIS::KeyListener
     {
-        friend InputDeviceTemplated<KeyboardTraits>;
+        friend class InputDeviceTemplated<KeyboardTraits>;
         //! Super class alias
         typedef InputDeviceTemplated<KeyboardTraits> super;
 
