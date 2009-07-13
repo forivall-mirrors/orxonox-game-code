@@ -84,8 +84,6 @@ namespace orxonox
 #endif
 
         this->server_ = new Server(CommandLine::getValue("port"));
-        if( this->commandLine_ )
-          delete[] this->commandLine_;
         COUT(0) << "Loading scene in server mode" << std::endl;
 
         server_->open();
@@ -103,8 +101,12 @@ namespace orxonox
         resetTerminalMode();
         delete this->originalTerminalSettings_;
 #endif
-        //inputThread_->join();
+        COUT(0) << "Press enter to end the game..." << std::endl;
+        inputThread_->join();
         delete this->inputThread_;
+
+        if (this->commandLine_ )
+          delete[] this->commandLine_;
 
         GameMode::setHasServer(false);
     }
