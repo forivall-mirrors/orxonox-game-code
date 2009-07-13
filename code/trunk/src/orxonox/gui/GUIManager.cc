@@ -154,7 +154,7 @@ namespace orxonox
                 renderWindow_ = renderWindow;
 
                 // Note: No SceneManager specified yet
-                this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, true, 3000);
+                this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
                 this->resourceProvider_ = guiRenderer_->createResourceProvider();
                 this->resourceProvider_->setDefaultResourceGroup("GUI");
 
