@@ -34,6 +34,15 @@
 
 namespace orxonox
 {
+    struct MouseTraits
+    {
+        typedef Mouse DeviceClass;
+        typedef OIS::Mouse OISDeviceClass;
+        typedef MouseButtonCode::ByEnum ButtonType;
+        typedef MouseButtonCode::ByEnum ButtonTypeParam;
+        static const OIS::Type OISDeviceValue = OIS::OISMouse;
+    };
+
     /**
     @brief
         Wraps around an OIS::Mouse and forwards the input events to
@@ -90,6 +99,8 @@ namespace orxonox
         }
 
         bool mouseMoved(const OIS::MouseEvent &arg);
+
+        static std::string getClassNameImpl() { return "Mouse"; }
 
         // HACK:
         static Mouse* instancePointer_s;

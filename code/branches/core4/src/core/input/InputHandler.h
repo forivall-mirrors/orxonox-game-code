@@ -40,6 +40,63 @@
 
 namespace orxonox
 {
+    namespace ButtonEvent
+    {
+        //! Helper enum to deploy events with the help of templates
+        enum Value
+        {
+            Press,
+            Release,
+            Hold
+        };
+
+        //! Enables function overloading with integer values
+        template <ButtonEvent::Value Event>
+        struct EnumToType { };
+        typedef EnumToType<Press>   TPress;
+        typedef EnumToType<Release> TRelease;
+        typedef EnumToType<Hold>    THold;
+    }
+
+    namespace KeyboardModifier
+    {
+        //! Keyboard modifiers (shift, ctrl and alt)
+        enum Enum
+        {
+            Shift = 0x0000001,
+            Ctrl  = 0x0000010,
+            Alt   = 0x0000100
+        };
+    }
+
+    //! Event argument for key events
+    class _CoreExport KeyEvent
+    {
+    public:
+        KeyEvent(const OIS::KeyEvent& evt)
+            : key_(static_cast<KeyCode::ByEnum>(evt.key))
+            , text_(evt.text)
+            , modifiers_(0)
+        { }
+        bool operator==(const KeyEvent& rhs) const
+            { return rhs.key_ == key_; }
+        bool operator!=(const KeyEvent& rhs) const
+            { return rhs.key_ != key_; }
+        void setModifiers(int modifiers)
+            { modifiers_ = modifiers; }
+
+        bool isModifierDown(KeyboardModifier::Enum modifier) const
+            { return static_cast<KeyboardModifier::Enum>(modifier & modifiers_); }
+        KeyCode::ByEnum getKeyCode() const
+            { return key_; }
+        unsigned int getText() const { return text_; }
+
+    private:
+        KeyCode::ByEnum key_;
+        unsigned int text_;
+        int modifiers_;
+    };
+
     /**
     @brief
     */

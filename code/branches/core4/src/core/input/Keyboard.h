@@ -30,10 +30,20 @@
 #define _Core_Keyboard_H__
 
 #include "InputPrereqs.h"
+#include "InputHandler.h"
 #include "InputDevice.h"
 
 namespace orxonox
 {
+    struct KeyboardTraits
+    {
+        typedef Keyboard DeviceClass;
+        typedef OIS::Keyboard OISDeviceClass;
+        typedef KeyEvent ButtonType;
+        typedef KeyEvent& ButtonTypeParam;
+        static const OIS::Type OISDeviceValue = OIS::OISKeyboard;
+    };
+
     /**
     @brief
         Wraps around an OIS::Mouse and forwards the input events to
@@ -61,6 +71,8 @@ namespace orxonox
 
         bool keyPressed(const OIS::KeyEvent& arg);
         bool keyReleased(const OIS::KeyEvent& arg);
+
+        static std::string getClassNameImpl() { return "Keyboard"; }
 
         //! Bit mask representing keyboard modifiers
         int modifiers_;

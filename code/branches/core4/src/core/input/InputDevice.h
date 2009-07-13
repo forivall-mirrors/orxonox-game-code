@@ -137,7 +137,7 @@ namespace orxonox
 
         std::string getClassName()
         {
-            return InputDeviceNames::values[OISDeviceValue];
+            return DeviceClass::getClassNameImpl();
         }
 
         void update(const Clock& time)
