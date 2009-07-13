@@ -41,7 +41,7 @@
 #include <iomanip>
 #include <boost/bind.hpp>
 
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
 #include <termios.h>
 #endif
 
@@ -64,8 +64,6 @@ namespace orxonox
         , cursorX_(0)
         , cursorY_(0)
     {
-        this->commandLine_ = new unsigned char[MAX_COMMAND_LENGTH];
-//         memset( this->commandLine_, 0, MAX_COMMAND_LENGTH );
     }
 
     GSDedicated::~GSDedicated()
@@ -95,7 +93,7 @@ namespace orxonox
         delete this->server_;
         
         closeThread_ = true;
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         std::cout << "\033[0G\033[K";
         std::cout.flush();
         resetTerminalMode();
@@ -104,9 +102,6 @@ namespace orxonox
         COUT(0) << "Press enter to end the game..." << std::endl;
         inputThread_->join();
         delete this->inputThread_;
-
-        if (this->commandLine_ )
-          delete[] this->commandLine_;
 
         GameMode::setHasServer(false);
     }
@@ -131,6 +126,8 @@ namespace orxonox
     
     void GSDedicated::inputThread()
     {
+        this->commandLine_ = new unsigned char[MAX_COMMAND_LENGTH];
+//         memset( this->commandLine_, 0, MAX_COMMAND_LENGTH );
         unsigned char c;
         unsigned int  escapeChar=0;
         while(!closeThread_)
@@ -212,11 +209,13 @@ namespace orxonox
                 }
             }
         }
+
+        delete[] this->commandLine_;
     }
     
     void GSDedicated::printLine()
     {
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         // set cursor to the begining of the line and erase the line
         std::cout << "\033[0G\033[K";
 //         boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
@@ -256,7 +255,7 @@ namespace orxonox
     
     void GSDedicated::setTerminalMode()
     {
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         termios new_settings;
      
         tcgetattr(0,this->originalTerminalSettings_);
@@ -273,7 +272,7 @@ namespace orxonox
     
     void GSDedicated::resetTerminalMode()
     {
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         tcsetattr(0, TCSANOW, GSDedicated::originalTerminalSettings_);
 #endif
     }
