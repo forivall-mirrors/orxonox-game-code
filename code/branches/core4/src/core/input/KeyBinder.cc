@@ -39,7 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
 #include "InputCommands.h"
-#include "InputManager.h"
 
 namespace orxonox
 {
@@ -102,7 +101,7 @@ namespace orxonox
         this->configFile_ = ConfigFileType::NoType;
 
         // initialise joy sticks separatly to allow for reloading
-        numberOfJoySticks_ = InputManager::getInstance().getJoyStickQuantity();
+        numberOfJoySticks_ = this->getJoyStickList().size();
         initialiseJoyStickBindings();
 
         // collect all Buttons and HalfAxes
@@ -154,10 +153,10 @@ namespace orxonox
                 allHalfAxes_[i]->buttonThreshold_ = this->buttonThreshold_;
     }
 
-    void KeyBinder::JoyStickQuantityChanged(unsigned int value)
+    void KeyBinder::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
         unsigned int oldValue = numberOfJoySticks_;
-        numberOfJoySticks_ = value;
+        numberOfJoySticks_ = joyStickList.size();
 
         // initialise joy stick bindings
         initialiseJoyStickBindings();

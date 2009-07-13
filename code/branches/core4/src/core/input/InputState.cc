@@ -31,16 +31,22 @@
 
 namespace orxonox
 {
-    InputState::InputState()
-        : priority_(0)
-        , bAlwaysGetsInput_(false)
-        , bTransparent_(false)
+    InputState::InputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
+        : name_(name)
+        , bAlwaysGetsInput_(bAlwaysGetsInput)
+        , bTransparent_(bTransparent)
         , bExpired_(true)
         , handlers_(2)
         , joyStickHandlerAll_(0)
         , enterFunctor_(0)
         , leaveFunctor_(0)
     {
+        if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
+            priority_ = priority;
+        else
+            priority_ = 0;
+
+        handlers_.resize(InputDeviceEnumerator::FirstJoyStick + JoyStickQuantityListener::getJoyStickList().size(), NULL);
     }
 
     bool InputState::isInputDeviceEnabled(unsigned int device)
@@ -51,10 +57,10 @@ namespace orxonox
             return false;
     }
 
-    void InputState::JoyStickQuantityChanged(unsigned int n)
+    void InputState::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
         unsigned int oldSize = handlers_.size();
-        handlers_.resize(InputDeviceEnumerator::FirstJoyStick + n, NULL);
+        handlers_.resize(InputDeviceEnumerator::FirstJoyStick + joyStickList.size(), NULL);
 
         for (unsigned int i = oldSize; i < handlers_.size(); ++i)
             handlers_[i] = joyStickHandlerAll_;

@@ -48,7 +48,7 @@ namespace orxonox
         KeyDetector();
         ~KeyDetector();
         void setCallbackCommand(const std::string& command);
-        void JoyStickQuantityChanged(unsigned int value);
+        void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
 
     private:
         std::string callbackCommand_;

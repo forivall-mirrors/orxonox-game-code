@@ -96,18 +96,17 @@ namespace orxonox
         void setLeaveFunctor(Functor* functor) { this->leaveFunctor_ = functor; }
 
     private:
-        InputState();
+        InputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority);
         ~InputState() { }
 
-        void JoyStickQuantityChanged(unsigned int n);
+        void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
 
-        void setName(const std::string& name) { name_ = name; }
-        void setPriority(int priority)        { priority_ = priority; }
+        void setPriority(int priority) { priority_ = priority; }
 
-        std::string                 name_;
+        const std::string           name_;
+        const bool                  bAlwaysGetsInput_;
+        const bool                  bTransparent_;
         int                         priority_;
-        bool                        bAlwaysGetsInput_;
-        bool                        bTransparent_;
         bool                        bExpired_;
         std::vector<InputHandler*>  handlers_;
         InputHandler*               joyStickHandlerAll_;

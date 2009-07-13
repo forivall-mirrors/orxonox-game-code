@@ -259,8 +259,10 @@ namespace orxonox
         }
 
         // inform all JoyStick Device Number Listeners
-        for (ObjectList<JoyStickQuantityListener>::iterator it = ObjectList<JoyStickQuantityListener>::begin(); it; ++it)
-            it->JoyStickQuantityChanged(devices_.size() - InputDeviceEnumerator::FirstJoyStick);
+        std::vector<JoyStick*> joyStickList;
+        for (unsigned int i = InputDeviceEnumerator::FirstJoyStick; i < devices_.size(); ++i)
+            joyStickList.push_back(static_cast<JoyStick*>(devices_[i]));
+        JoyStickQuantityListener::changeJoyStickQuantity(joyStickList);
     }
 
     void InputManager::setKeyDetectorCallback(const std::string& command)
@@ -571,7 +573,6 @@ namespace orxonox
             return 0;
         if (statesByName_.find(name) == statesByName_.end())
         {
-            InputState* state = new InputState;
             if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
             {
                 // Make sure we don't add two high priority states with the same priority
@@ -582,17 +583,12 @@ namespace orxonox
                     {
                         COUT(2) << "Warning: Could not add an InputState with the same priority '"
                             << static_cast<int>(priority) << "' != 0." << std::endl;
-                        return false;
+                        return 0;
                     }
                 }
             }
+            InputState* state = new InputState(name, bAlwaysGetsInput, bTransparent, priority);
             statesByName_[name] = state;
-            state->JoyStickQuantityChanged(devices_.size() - InputDeviceEnumerator::FirstJoyStick);
-            state->setName(name);
-            state->bAlwaysGetsInput_ = bAlwaysGetsInput;
-            state->bTransparent_ = bTransparent;
-            if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
-                state->setPriority(priority);
 
             return state;
         }

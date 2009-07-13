@@ -27,12 +27,24 @@
  */
 
 #include "JoyStickQuantityListener.h"
+
 #include "core/CoreIncludes.h"
+#include "core/ObjectList.h"
 
 namespace orxonox
 {
+    std::vector<JoyStick*> JoyStickQuantityListener::joyStickList_s;
+
     JoyStickQuantityListener::JoyStickQuantityListener()
     {
         RegisterObject(JoyStickQuantityListener);
+    }
+
+    //! Calls all registered objects and sets the static variable
+    /*static*/ void JoyStickQuantityListener::changeJoyStickQuantity(const std::vector<JoyStick*>& joyStickList)
+    {
+        joyStickList_s = joyStickList;
+        for (ObjectList<JoyStickQuantityListener>::iterator it = ObjectList<JoyStickQuantityListener>::begin(); it; ++it)
+            it->JoyStickQuantityChanged(joyStickList);
     }
 }

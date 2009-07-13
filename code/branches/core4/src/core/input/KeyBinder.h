@@ -75,7 +75,7 @@ namespace orxonox
 
         void buttonThresholdChanged();
         // from JoyStickQuantityListener interface
-        virtual void JoyStickQuantityChanged(unsigned int value);
+        virtual void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
         void initialiseJoyStickBindings();
         void compilePointerLists();
 

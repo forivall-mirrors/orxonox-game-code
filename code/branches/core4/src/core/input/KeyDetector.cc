@@ -72,9 +72,9 @@ namespace orxonox
         }
     }
 
-    void KeyDetector::JoyStickQuantityChanged(unsigned int value)
+    void KeyDetector::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
-        KeyBinder::JoyStickQuantityChanged(value);
+        KeyBinder::JoyStickQuantityChanged(joyStickList);
         setCallbackCommand(callbackCommand_);
     }
 }
