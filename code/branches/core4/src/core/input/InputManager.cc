@@ -29,9 +29,8 @@
 /**
 @file
 @brief
-    Implementation of the InputManager that captures all the input from OIS
-    and redirects it to handlers.
- */
+    Implementation of the InputManager and a static variable from the InputHandler.
+*/
 
 #include "InputManager.h"
 
@@ -59,9 +58,6 @@
 
 namespace orxonox
 {
-    // TODO: Add console commands again as member commands
-    //SetConsoleCommand(InputManager, calibrate, true);
-    //SetConsoleCommand(InputManager, reload, false);
     SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
 
     // Abuse of this source file for the InputHandler
@@ -69,19 +65,13 @@ namespace orxonox
 
     InputManager* InputManager::singletonRef_s = 0;
 
-    /**
-    @brief
-        Defines the |= operator for easier use.
-    */
+    //! Defines the |= operator for easier use.
     inline InputManager::State operator|=(InputManager::State& lval, InputManager::State rval)
     {
         return (lval = (InputManager::State)(lval | rval));
     }
 
-    /**
-    @brief
-        Defines the &= operator for easier use.
-    */
+    //! Defines the &= operator for easier use.
     inline InputManager::State operator&=(InputManager::State& lval, int rval)
     {
         return (lval = (InputManager::State)(lval & rval));
@@ -91,11 +81,6 @@ namespace orxonox
     // #####                  Initialisation                  #####
     // ##########                                        ##########
     // ############################################################
-    /**
-    @brief
-        Constructor only sets member fields to initial zero values
-        and registers the class in the class hierarchy.
-    */
     InputManager::InputManager(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight)
         : internalState_(Bad)
         , oisInputManager_(0)
@@ -156,10 +141,6 @@ namespace orxonox
         CCOUT(4) << "Construction complete." << std::endl;
     }
 
-    /**
-    @brief
-        Sets the configurable values.
-    */
     void InputManager::setConfigValues()
     {
     }
@@ -167,7 +148,7 @@ namespace orxonox
     /**
     @brief
         Creates the OIS::InputMananger, the keyboard, the mouse and
-        the joysticks and assigns the key bindings.
+        the joys ticks. If either of the first two fail, this method throws an exception.
     @param windowHnd
         The window handle of the render window
     @param windowWidth
@@ -243,6 +224,7 @@ namespace orxonox
         CCOUT(3) << "Input devices loaded." << std::endl;
     }
 
+    //! Creates a new orxonox::Mouse
     void InputManager::loadMouse(unsigned int windowWidth, unsigned int windowHeight)
     {
         if (oisInputManager_->getNumberOfDevices(OIS::OISMouse) > 0)
@@ -261,12 +243,7 @@ namespace orxonox
             CCOUT(ORX_WARNING) << "Warning: No mouse found! Proceeding without mouse support." << std::endl;
     }
 
-    /**
-    @brief
-        Creates all joy sticks and sets the event handler.
-    @return
-        False joy stick stay uninitialised, true otherwise.
-    */
+    //! Creates as many joy sticks as are available.
     void InputManager::loadJoySticks()
     {
         for (int i = 0; i < oisInputManager_->getNumberOfDevices(OIS::OISJoyStick); i++)
@@ -286,12 +263,6 @@ namespace orxonox
             it->JoyStickQuantityChanged(devices_.size() - InputDeviceEnumerator::FirstJoyStick);
     }
 
-    /**
-    @brief
-        Checks whether there is already a joy stick with the given ID string.
-    @return
-        Returns true if ID is ok (unique), false otherwise.
-    */
     bool InputManager::checkJoyStickID(const std::string& idString) const
     {
         for (unsigned int i = InputDeviceEnumerator::FirstJoyStick; i < devices_.size(); ++i)
@@ -300,12 +271,6 @@ namespace orxonox
         return true;
     }
 
-    /**
-    @brief
-        Sets the the name of the command used by the KeyDetector as callback.
-    @param command
-        Command name as string
-    */
     void InputManager::setKeyDetectorCallback(const std::string& command)
     {
         this->keyDetector_->setCallbackCommand(command);
@@ -316,11 +281,6 @@ namespace orxonox
     // ##########                                        ##########
     // ############################################################
 
-    /**
-    @brief
-        Destroys all the created input devices and states.
-    */
-    // TODO: export this to be used with reload()
     InputManager::~InputManager()
     {
         CCOUT(4) << "Destroying..." << std::endl;
@@ -345,6 +305,12 @@ namespace orxonox
         singletonRef_s = 0;
     }
 
+    /**
+    @brief
+        Destoys all input devices (joy sticks, mouse, keyboard and OIS::InputManager)
+    @throw
+        Method does not throw
+    */
     void InputManager::destroyDevices()
     {
         CCOUT(3) << "Destroying devices..." << std::endl;
@@ -387,11 +353,6 @@ namespace orxonox
     // ##########                                        ##########
     // ############################################################
 
-    /**
-    @brief
-        Public interface. Only reloads immediately if the call stack doesn't
-        include the update() method.
-    */
     void InputManager::reload()
     {
         if (internalState_ & Ticking)
@@ -407,10 +368,7 @@ namespace orxonox
             reloadInternal();
     }
 
-    /**
-    @brief
-        Internal reload method. Destroys the OIS devices and loads them again.
-    */
+    //! Internal reload method. Destroys the OIS devices and loads them again.
     void InputManager::reloadInternal()
     {
         CCOUT(3) << "Reloading ..." << std::endl;
@@ -437,12 +395,6 @@ namespace orxonox
     // ##########                                        ##########
     // ############################################################
 
-    /**
-    @brief
-        Updates the states and the InputState situation.
-    @param time
-        Clock holding the current time.
-    */
     void InputManager::update(const Clock& time)
     {
         if (internalState_ & Bad)
@@ -580,10 +532,6 @@ namespace orxonox
             activeStatesTicked_.push_back(*it);
     }
 
-    /**
-    @brief
-        Clears all buffers that store what keys/buttons are being pressed at the moment.
-    */
     void InputManager::clearBuffers()
     {
         BOOST_FOREACH(InputDevice* device, devices_)
@@ -591,10 +539,6 @@ namespace orxonox
                 device->clearBuffers();
     }
 
-    /**
-    @brief
-        Starts joy stick calibration.
-    */
     void InputManager::calibrate()
     {
         COUT(0) << "Move all joy stick axes fully in all directions." << std::endl
@@ -608,6 +552,7 @@ namespace orxonox
         enterState("calibrator");
     }
 
+    //! Tells all devices to stop the calibration and evaluate it. Buffers are being cleared as well!
     void InputManager::stopCalibration()
     {
         BOOST_FOREACH(InputDevice* device, devices_)
@@ -626,55 +571,13 @@ namespace orxonox
     // ##########                                        ##########
     // ############################################################
 
-    /**
-    @brief
-        Creates a new InputState by type, name and priority.
-        
-        You will have to use this method because the
-        c'tors and d'tors are private.
-    @remarks
-        The InputManager will take care of the state completely. That also
-        means it gets deleted when the InputManager is destroyed!
-    @param name
-        Name of the InputState when referenced as string
-    @param priority
-        Priority matters when multiple states are active. You can specify any
-        number, but 1 - 99 is preferred (99 means high).
-    */
     InputState* InputManager::createInputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
     {
-        InputState* state = new InputState;
-        if (configureInputState(state, name, bAlwaysGetsInput, bTransparent, priority))
-            return state;
-        else
-        {
-            delete state;
-            return 0;
-        }
-    }
-
-    /**
-    @brief
-        Adds a new key handler.
-    @param handler
-        Pointer to the handler object.
-    @param name
-        Unique name of the handler.
-    @param priority
-        Determines which InputState gets the input. Higher is better.
-        Use 0 to handle it implicitely by the order of activation.
-        Otherwise numbers larger than maxStateStackSize_s have to be used!
-    @return
-        True if added, false if name or priority already existed.
-    */
-    bool InputManager::configureInputState(InputState* state, const std::string& name, bool bAlwaysGetsInput, bool bTransparent, int priority)
-    {
         if (name == "")
-            return false;
-        if (!state)
-            return false;
+            return 0;
         if (statesByName_.find(name) == statesByName_.end())
         {
+            InputState* state = new InputState;
             if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
             {
                 // Make sure we don't add two high priority states with the same priority
@@ -684,7 +587,7 @@ namespace orxonox
                     if (it->second->getPriority() == priority)
                     {
                         COUT(2) << "Warning: Could not add an InputState with the same priority '"
-                            << priority << "' != 0." << std::endl;
+                            << static_cast<int>(priority) << "' != 0." << std::endl;
                         return false;
                     }
                 }
@@ -696,23 +599,16 @@ namespace orxonox
             state->bTransparent_ = bTransparent;
             if (priority >= InputStatePriority::HighPriority || priority == InputStatePriority::Empty)
                 state->setPriority(priority);
-            return true;
+
+            return state;
         }
         else
         {
             COUT(2) << "Warning: Could not add an InputState with the same name '" << name << "'." << std::endl;
-            return false;
+            return 0;
         }
     }
 
-    /**
-    @brief
-        Returns the pointer to the requested InputState.
-    @param name
-        Unique name of the state.
-    @return
-        Pointer to the instance, 0 if name was not found.
-    */
     InputState* InputManager::getState(const std::string& name)
     {
         std::map<std::string, InputState*>::iterator it = statesByName_.find(name);
@@ -722,15 +618,6 @@ namespace orxonox
             return 0;
     }
 
-    /**
-    @brief
-        Activates a specific input state.
-        It might not be really activated if the priority is too low!
-    @param name
-        Unique name of the state.
-    @return
-        False if name was not found, true otherwise.
-    */
     bool InputManager::enterState(const std::string& name)
     {
         // get pointer from the map with all stored handlers
@@ -753,14 +640,6 @@ namespace orxonox
         return false;
     }
 
-    /**
-    @brief
-        Deactivates a specific input state.
-    @param name
-        Unique name of the state.
-    @return
-        False if name was not found, true otherwise.
-    */
     bool InputManager::leaveState(const std::string& name)
     {
         if (name == "empty")
@@ -783,17 +662,6 @@ namespace orxonox
         return false;
     }
 
-    /**
-    @brief
-        Removes and destroys an input state.
-    @param name
-        Name of the handler.
-    @return
-        True if removal was successful, false if name was not found.
-    @remarks
-        You can't remove the internal states "empty", "calibrator" and "detector".
-        The removal process is being postponed if InputManager::update() is currently running.
-    */
     bool InputManager::destroyState(const std::string& name)
     {
         if (name == "empty")
@@ -823,10 +691,7 @@ namespace orxonox
         return false;
     }
 
-    /**
-    @brief
-        Destroys an InputState internally
-    */
+    //! Destroys an InputState internally.
     void InputManager::destroyStateInternal(InputState* state)
     {
         assert(state && !(this->internalState_ & Ticking));
