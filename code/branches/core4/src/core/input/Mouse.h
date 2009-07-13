@@ -34,6 +34,7 @@
 
 namespace orxonox
 {
+    //! Template parameter collection for the base class
     struct MouseTraits
     {
         typedef Mouse DeviceClass;
@@ -57,7 +58,8 @@ namespace orxonox
         typedef InputDeviceTemplated<MouseTraits> super;
 
     public:
-        Mouse(unsigned int id, unsigned int windowWidth, unsigned int windowHeight);
+        //! Only sets the clipping size. Initialising is done in the base class.
+        Mouse(unsigned int id, OIS::InputManager* oisInputManager, unsigned int windowWidth, unsigned int windowHeight);
         ~Mouse() { }
 
         /**
@@ -67,7 +69,9 @@ namespace orxonox
             This method has to be called every time the size of the window changes.
         */
         void setMouseClipping(unsigned int width, unsigned int height);
+        // Returns the width of the mouse window
         unsigned int getClippingWidth() const;
+        // Returns the height of the mouse window
         unsigned int getClippingHeight() const;
 
         // HACK!
@@ -76,14 +80,12 @@ namespace orxonox
         void setConfigValues() { }
 #ifdef ORXONOX_PLATFORM_LINUX
         // HACK!
+        // TODO: Make this a feature rather than a hack
         static void grabMouse();
         static void ungrabMouse();
 #endif
 
     private:
-        // TODO: Do we need to reset the mouse position?
-        void clearBuffersImpl() { }
-
         //! OIS event handler
         bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
         {
@@ -100,6 +102,7 @@ namespace orxonox
 
         bool mouseMoved(const OIS::MouseEvent &arg);
 
+        // Returns the class name as string
         static std::string getClassNameImpl() { return "Mouse"; }
 
         // HACK:

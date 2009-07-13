@@ -29,7 +29,8 @@
 /**
 @file
 @brief
-    Declarations of various interface classes for the input management.
+    Declarations of all key/button/axis code enumeration and string literals
+    and an input device enumeration.
 */
 
 #ifndef _InputPrereqs_H__
@@ -51,7 +52,7 @@ namespace orxonox
     {
         const unsigned int numberOfKeys = 0xEE; // 238
 
-        // note: KeyCode comments were directly copied from OISKeyboard.h
+        //! Key codes as enumeration
         enum ByEnum
         {
             Unassigned    = OIS::KC_UNASSIGNED,
@@ -201,7 +202,7 @@ namespace orxonox
             MediaSelect   = OIS::KC_MEDIASELECT      // Media Select
         };
         
-        // Names as string. Has no real linkage!
+        //! Key codes as strings
         const char* const ByString[] =
         {
             "Unassigned",
@@ -306,6 +307,7 @@ namespace orxonox
     {
         const unsigned int numberOfButtons = 8;
 
+        //! Mouse button codes as enumeration
         enum ByEnum
         {
             Left    = OIS::MB_Left,
@@ -318,7 +320,7 @@ namespace orxonox
             Button7 = OIS::MB_Button7,
         };
 
-        // Names as string. Has no real linkage!
+        // Mouse button codes as strings
         const char* const ByString[] =
         {
             "Left",
@@ -336,13 +338,14 @@ namespace orxonox
     {
         const unsigned int numberOfAxes = 2;
 
+        // Mouse axis codes as enumeration
         enum ByEnum
         {
             X,
             Y
         };
 
-        // Names as string. Has no real linkage!
+        // Mouse axis codes as strings
         const char* const ByString[] =
         {
             "X",
@@ -355,6 +358,7 @@ namespace orxonox
     {
         const unsigned int numberOfButtons = 64;
 
+        // Joy stick button codes as enumeration
         enum ByEnum
         {
             Button0       =  0, Button1       =  1, Button2       =  2, Button3       =  3,
@@ -379,7 +383,7 @@ namespace orxonox
             POV3NorthEast = 60, POV3SouthEast = 61, POV3NorthWest = 62, POV3SouthWest = 63,
         };
 
-        // Names as string. Has no real linkage!
+        // Joy stick button codes as strings
         const char* const ByString[] =
         {
             "Button00",      "Button01",      "Button02",      "Button03",
@@ -405,6 +409,7 @@ namespace orxonox
     {
         const unsigned int numberOfAxes = 24;
 
+        // Joy stick axis codes as enumeration
         enum ByEnum
         {
             Slider0 =  0, Slider1 =  1, Slider2 =  2, Slider3 =  3,
@@ -415,7 +420,7 @@ namespace orxonox
             Axis12  = 20, Axis13  = 21, Axis14  = 22, Axis15  = 23
         };
 
-        // Names as string. Has no real linkage!
+        // Joy stick axis codes as strings
         const char* const ByString[] =
         {
             "Slider0", "Slider1", "Slider2", "Slider3",
@@ -434,6 +439,7 @@ namespace orxonox
 
     namespace InputDeviceEnumerator
     {
+        //! Used to access the devices in an array
         enum Value
         {
             Keyboard = 0,

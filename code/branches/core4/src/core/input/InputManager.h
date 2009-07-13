@@ -160,13 +160,6 @@ namespace orxonox
         //-------------------------------
         //! Sets the the name of the command used by the KeyDetector as callback.
         void setKeyDetectorCallback(const std::string& command);
-        /**
-        @brief
-            Checks whether there is already a joy stick with the given ID string.
-        @return
-            Returns true if ID is ok (unique), false otherwise.
-        */
-        bool checkJoyStickID(const std::string& idString) const;
         //! Returns the number of joy stick that have been created since the c'tor or last call to reload().
         unsigned int getJoyStickQuantity() const
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }

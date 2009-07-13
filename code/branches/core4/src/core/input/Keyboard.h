@@ -30,11 +30,13 @@
 #define _Core_Keyboard_H__
 
 #include "InputPrereqs.h"
+
 #include "InputHandler.h"
 #include "InputDevice.h"
 
 namespace orxonox
 {
+    //! Template parameter collection for the base class
     struct KeyboardTraits
     {
         typedef Keyboard DeviceClass;
@@ -60,18 +62,24 @@ namespace orxonox
         typedef InputDeviceTemplated<KeyboardTraits> super;
 
     public:
-        Keyboard(unsigned int id) : super(id), modifiers_(0) { }
+        //! Only resets the keyboard modifiers. Initialising is done in the base class.
+        Keyboard(unsigned int id, OIS::InputManager* oisInputManager) : super(id, oisInputManager), modifiers_(0) { }
         ~Keyboard() { }
 
     private:
-        // TODO: Do we need to reset the modifiers?
-        void clearBuffersImpl() { }
+        //! Resets the keyboard modifiers
+        void clearBuffersImpl() { this->modifiers_ = 0; }
         //! Translates the KeyHandle to a KeyEvent
-        KeyEvent& getButtonEventArg(KeyEvent& button) { button.setModifiers(modifiers_); return button; }
+        KeyEvent& getButtonEventArg(KeyEvent& button)
+        {
+            button.setModifiers(modifiers_);
+            return button;
+        }
 
         bool keyPressed(const OIS::KeyEvent& arg);
         bool keyReleased(const OIS::KeyEvent& arg);
 
+        //! Returns the class name as string
         static std::string getClassNameImpl() { return "Keyboard"; }
 
         //! Bit mask representing keyboard modifiers

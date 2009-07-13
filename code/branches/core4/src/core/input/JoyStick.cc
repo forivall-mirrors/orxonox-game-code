@@ -29,7 +29,6 @@
 #include "JoyStick.h"
 
 #include <ois/OISJoyStick.h>
-#include <ois/OISInputManager.h>
 #include <boost/foreach.hpp>
 
 #include "core/ConfigFileManager.h"
@@ -37,18 +36,16 @@
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 #include "InputState.h"
-#include "InputManager.h"
 
 namespace orxonox
 {
-    /**
-    @brief
-        Helper function that loads the config value vector of one coefficient
-    */
+    //! Helper function that loads the config value vector of one coefficient
     void loadCalibration(std::vector<int>& list, const std::string& sectionName, const std::string& valueName, size_t size, int defaultValue);
 
-    JoyStick::JoyStick(unsigned int id)
-        : super(id)
+    std::vector<std::string> JoyStick::idStrings_s;
+
+    JoyStick::JoyStick(unsigned int id, OIS::InputManager* oisInputManager)
+        : super(id, oisInputManager)
     {
         RegisterRootObject(JoyStick);
         this->setConfigValues();
@@ -65,10 +62,15 @@ namespace orxonox
         idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_POV));
         //idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Vector3));
 
-        if (InputManager::getInstance().checkJoyStickID(idString_) == false)
+
+        BOOST_FOREACH(std::string& idString, idStrings_s)
         {
-            // Make the ID unique for this execution time.
-            idString_ += "_" + multi_cast<std::string>(this->getDeviceID());
+            if (idString_ == idString)
+            {
+                // Make the ID unique for this execution time.
+                idString_ += "_" + multi_cast<std::string>(this->getDeviceID());
+                break;
+            }
         }
 
         COUT(4) << "Created OIS joy stick with ID " << idString_ << std::endl;
@@ -81,7 +83,7 @@ namespace orxonox
         this->evaluateCalibration();
     }
 
-    //!< Callback for the joy stick calibration config file.
+    //! Callback for the joy stick calibration config file.
     void JoyStick::calibrationFileCallback()
     {
         ConfigFileManager::getInstance().setFilename(ConfigFileType::JoyStickCalibration, calibrationFilename_);
@@ -172,15 +174,11 @@ namespace orxonox
         }
     }
 
-    // TODO: What do we really need to reset here?
+    //! Resets the pov states
     void JoyStick::clearBuffersImpl()
     {
         for (int j = 0; j < 4; ++j)
-        {
             povStates_[j] = 0;
-            sliderStates_[j][0] = 0;
-            sliderStates_[j][1] = 0;
-        }
     }
 
     //! Generic method to forward axis events

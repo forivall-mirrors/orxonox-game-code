@@ -29,7 +29,6 @@
 #include "Mouse.h"
 
 #include <ois/OISMouse.h>
-#include <boost/foreach.hpp>
 #include "InputState.h"
 #include "core/ConsoleCommand.h"
 
@@ -40,8 +39,8 @@
 
 namespace orxonox
 {
-    Mouse::Mouse(unsigned int id, unsigned int windowWidth, unsigned int windowHeight)
-        : super(id)
+    Mouse::Mouse(unsigned int id, OIS::InputManager* oisInputManager, unsigned int windowWidth, unsigned int windowHeight)
+        : super(id, oisInputManager)
     {
         this->setMouseClipping(windowWidth, windowHeight);
         // HACK:
@@ -73,15 +72,15 @@ namespace orxonox
             IntVector2 abs(e.state.X.abs, e.state.Y.abs);
             IntVector2 rel(e.state.X.rel, e.state.Y.rel);
             IntVector2 clippingSize(e.state.width, e.state.height);
-            BOOST_FOREACH(InputState* state, inputStates_)
-                state->mouseMoved(abs, rel, clippingSize);
+            for (unsigned int i = 0; i < inputStates_.size(); ++i)
+                inputStates_[i]->mouseMoved(abs, rel, clippingSize);
         }
 
         // check for mouse scrolled event
         if (e.state.Z.rel != 0)
         {
-            BOOST_FOREACH(InputState* state, inputStates_)
-                state->mouseScrolled(e.state.Z.abs, e.state.Z.rel);
+            for (unsigned int i = 0; i < inputStates_.size(); ++i)
+                inputStates_[i]->mouseScrolled(e.state.Z.abs, e.state.Z.rel);
         }
 
         return true;

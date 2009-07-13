@@ -26,12 +26,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Implementation of the JoyStickQuantityListener class.
-*/
-
 #include "JoyStickQuantityListener.h"
 #include "core/CoreIncludes.h"
 

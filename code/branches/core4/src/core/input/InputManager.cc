@@ -200,7 +200,7 @@ namespace orxonox
             CCOUT(ORX_DEBUG) << "Created OIS input manager." << std::endl;
 
             if (oisInputManager_->getNumberOfDevices(OIS::OISKeyboard) > 0)
-                devices_[InputDeviceEnumerator::Keyboard] = new Keyboard(InputDeviceEnumerator::Keyboard);
+                devices_[InputDeviceEnumerator::Keyboard] = new Keyboard(InputDeviceEnumerator::Keyboard, oisInputManager_);
             else
                 ThrowException(InitialisationFailed, "InputManager: No keyboard found, cannot proceed!");
 
@@ -231,7 +231,7 @@ namespace orxonox
         {
             try
             {
-                devices_[InputDeviceEnumerator::Mouse] = new Mouse(InputDeviceEnumerator::Mouse, windowWidth, windowHeight);
+                devices_[InputDeviceEnumerator::Mouse] = new Mouse(InputDeviceEnumerator::Mouse, oisInputManager_, windowWidth, windowHeight);
             }
             catch (const OIS::Exception& ex)
             {
@@ -250,7 +250,7 @@ namespace orxonox
         {
             try
             {
-                devices_.push_back(new JoyStick(InputDeviceEnumerator::FirstJoyStick + i));
+                devices_.push_back(new JoyStick(InputDeviceEnumerator::FirstJoyStick + i, oisInputManager_));
             }
             catch (std::exception ex)
             {
@@ -261,14 +261,6 @@ namespace orxonox
         // inform all JoyStick Device Number Listeners
         for (ObjectList<JoyStickQuantityListener>::iterator it = ObjectList<JoyStickQuantityListener>::begin(); it; ++it)
             it->JoyStickQuantityChanged(devices_.size() - InputDeviceEnumerator::FirstJoyStick);
-    }
-
-    bool InputManager::checkJoyStickID(const std::string& idString) const
-    {
-        for (unsigned int i = InputDeviceEnumerator::FirstJoyStick; i < devices_.size(); ++i)
-            if (static_cast<JoyStick*>(devices_[i])->getIDString() == idString)
-                return false;
-        return true;
     }
 
     void InputManager::setKeyDetectorCallback(const std::string& command)
@@ -564,6 +556,8 @@ namespace orxonox
         internalState_ &= ~Calibrating;
         // Clear buffers to prevent button hold events
         this->clearBuffers();
+
+        COUT(0) << "Calibration has been stored." << std::endl;
     }
 
     // ############################################################

@@ -39,12 +39,14 @@
 
 namespace orxonox
 {
+    //! Derive from this class to get informed when joy sticks get added/removed
     class _CoreExport JoyStickQuantityListener : virtual public OrxonoxClass
     {
     public:
         JoyStickQuantityListener();
         virtual ~JoyStickQuantityListener() { }
 
+        //! Called when joy sticks get added/removed
         virtual void JoyStickQuantityChanged(unsigned int value) = 0;
     };
 }

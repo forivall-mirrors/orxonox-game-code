@@ -26,12 +26,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Declarations of various interface classes for the input management.
-*/
-
 #ifndef _InputHandler_H__
 #define _InputHandler_H__
 
@@ -99,6 +93,13 @@ namespace orxonox
 
     /**
     @brief
+        Base class for all input handlers like KeyBinder, InputBuffer, etc.
+
+        Derive from this class if you wish to receive input events.
+        But keep in mind that this is pointless wihtout first having an InputState.
+    @note
+        The definitions for the button events with the weird arguments are simply
+        to avoid redunant code in the input devices.
     */
     class _CoreExport InputHandler
     {
@@ -139,6 +140,7 @@ namespace orxonox
 
         virtual void allDevicesUpdated(float dt) { }
 
+        //! Use this input handler if you want to occupy a device in an input state.
         static InputHandler EMPTY;
     };
 }
