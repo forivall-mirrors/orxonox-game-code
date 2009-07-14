@@ -90,9 +90,9 @@ namespace orxonox
         bool stopThread = false;
         while( !stopThread )
         {
-            this->executorMutex_->lock();
+            //this->executorMutex_->lock();
             Executor* executor = this->executor_;
-            this->executorMutex_->unlock();
+            //this->executorMutex_->unlock();
             if( executor )
             {
                 (*executor)();
@@ -108,9 +108,9 @@ namespace orxonox
             {
                 this->workerThread_->yield();
             }
-            this->stopThreadMutex_->lock();
+            //this->stopThreadMutex_->lock();
             stopThread = this->stopThread_;
-            this->stopThreadMutex_->unlock();
+            //this->stopThreadMutex_->unlock();
         }
     }
     
