@@ -92,16 +92,16 @@ namespace orxonox
     }
 
 #ifdef ORXONOX_PLATFORM_LINUX
-    void Mouse::grabMouse()
+    void Mouse::grab()
     {
-        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(instancePointer_s->oisDevice_);
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(oisDevice_);
         assert(linuxMouse);
         linuxMouse->grab(true);
     }
 
-    void Mouse::ungrabMouse()
+    void Mouse::ungrab()
     {
-        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(instancePointer_s->oisDevice_);
+        OIS::LinuxMouse* linuxMouse = dynamic_cast<OIS::LinuxMouse*>(oisDevice_);
         assert(linuxMouse);
         linuxMouse->grab(false);
     }

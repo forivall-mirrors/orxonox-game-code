@@ -38,6 +38,7 @@
 #define _OrxonoxClass_H__
 
 #include "CorePrereqs.h"
+
 #include <set>
 #include <vector>
 

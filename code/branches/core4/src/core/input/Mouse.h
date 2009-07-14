@@ -67,8 +67,8 @@ namespace orxonox
 
 #ifdef ORXONOX_PLATFORM_LINUX
         // TODO: Make this a feature rather than a hack
-        void grabMouse();
-        void ungrabMouse();
+        void grab();
+        void ungrab();
 #endif
 
     private:

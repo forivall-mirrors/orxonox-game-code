@@ -68,7 +68,7 @@ namespace orxonox
     public:
 	    void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
         {
-            int orxonoxLevel;
+            int orxonoxLevel = CEGUI::Standard;
             switch (level)
             {
                 case CEGUI::Errors:      orxonoxLevel = 1; break;
