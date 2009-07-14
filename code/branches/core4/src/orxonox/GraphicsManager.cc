@@ -62,8 +62,8 @@
 #include "core/Core.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
+#include "core/WindowEventListener.h"
 #include "tools/ParticleInterface.h"
-#include "interfaces/WindowEventListener.h"
 
 // HACK!
 #include "overlays/map/Map.h"

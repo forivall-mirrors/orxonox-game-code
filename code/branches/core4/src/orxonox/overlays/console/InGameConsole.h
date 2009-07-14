@@ -35,7 +35,7 @@
 #include <string>
 #include "util/OgreForwardRefs.h"
 #include "core/Shell.h"
-#include "interfaces/WindowEventListener.h"
+#include "core/WindowEventListener.h"
 
 namespace orxonox
 {

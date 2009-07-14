@@ -39,7 +39,6 @@
 #include "TeamColourable.h"
 #include "Tickable.h"
 #include "TimeFactorListener.h"
-#include "WindowEventListener.h"
 
 #include "core/CoreIncludes.h"
 
@@ -99,17 +98,6 @@ namespace orxonox
     Tickable::Tickable()
     {
         RegisterRootObject(Tickable);
-    }
-
-    //----------------------------
-    // WindowEventListener
-    //----------------------------
-    /**
-        @brief Constructor for the WindowEventListener.
-    */
-    WindowEventListener::WindowEventListener()
-    {
-        RegisterRootObject(WindowEventListener);
     }
 
     //----------------------------

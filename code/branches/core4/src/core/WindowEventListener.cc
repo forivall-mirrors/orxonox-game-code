@@ -26,32 +26,13 @@
  *
  */
 
-#ifndef _WindowEventListener_H__
-#define _WindowEventListener_H__
-
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "WindowEventListener.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {
-    /**
-        @brief Interface for receiving window events.
-    */
-    class _OrxonoxExport WindowEventListener : virtual public OrxonoxClass
+    WindowEventListener::WindowEventListener()
     {
-        public:
-            WindowEventListener();
-            virtual ~WindowEventListener() { }
-
-            /** Window has moved position */
-            virtual void windowMoved() { }
-
-            /** Window has resized */
-            virtual void windowResized(unsigned int newWidth, unsigned int newHeight) { }
-
-            /** Window has lost/gained focus */
-            virtual void windowFocusChanged() { }
-    };
+        RegisterRootObject(WindowEventListener);
+    }
 }
-
-#endif /* _WindowEventListener_H__ */
