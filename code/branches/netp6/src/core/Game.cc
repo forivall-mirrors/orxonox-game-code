@@ -156,6 +156,9 @@ namespace orxonox
 
         // START GAME
         this->gameClock_->capture(); // first delta time should be about 0 seconds
+        // A first item is required for the fps limiter
+        statisticsTickInfo tickInfo = {0, 0};
+        statisticsTickTimes_.push_back(tickInfo);
         while (!this->abort_ && !this->activeStates_.empty())
         {
             uint64_t currentTime = this->gameClock_->getRealMicroseconds();
