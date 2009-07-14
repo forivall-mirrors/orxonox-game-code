@@ -29,38 +29,37 @@
 #include "Mouse.h"
 
 #include <ois/OISMouse.h>
-#include "InputState.h"
 #include "core/ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include "InputState.h"
 
-// HACK (include this as last, X11 seems to define some macros...)
 #ifdef ORXONOX_PLATFORM_LINUX
-#  include <ois/linux/LinuxMouse.h>
+// include this as last, X11 seems to define some macros...
+#include <ois/linux/LinuxMouse.h>
 #endif
 
 namespace orxonox
 {
-    Mouse::Mouse(unsigned int id, OIS::InputManager* oisInputManager, unsigned int windowWidth, unsigned int windowHeight)
+    Mouse::Mouse(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
     {
-        this->setMouseClipping(windowWidth, windowHeight);
-        // HACK:
-        instancePointer_s = this;
-    }
+        RegisterRootObject(Mouse);
+        this->windowResized(this->getWindowHeight(), this->getWindowHeight());
 
-    void Mouse::setMouseClipping(unsigned int width, unsigned int height)
-    {
-        oisDevice_->getMouseState().width  = width;
-        oisDevice_->getMouseState().height = height;
-    }
-
-    unsigned int Mouse::getClippingWidth() const
-    {
-        return oisDevice_->getMouseState().width;
-    }
-
-    unsigned int Mouse::getClippingHeight() const
-    {
-        return oisDevice_->getMouseState().height;
+#ifdef ORXONOX_PLATFORM_LINUX
+        {
+            // Mouse grab console command
+            FunctorMember<Mouse>* functor = createFunctor(&Mouse::grab);
+            functor->setObject(this);
+            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "grab"), false);
+        }
+        {
+            // Mouse ungrab console command
+            FunctorMember<Mouse>* functor = createFunctor(&Mouse::ungrab);
+            functor->setObject(this);
+            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "ungrab"), false);
+        }
+#endif
     }
 
     //! OIS event handler
@@ -86,18 +85,11 @@ namespace orxonox
         return true;
     }
 
-    // ############################################################
-    // #####                   ugly hacks                     #####
-    // ##########                                        ##########
-    // ############################################################
-
-    // HACK:
-    SetConsoleCommand(Mouse, setMouseClipping_s, false);
-#ifdef ORXONOX_PLATFORM_LINUX
-    SetConsoleCommand(Mouse, grabMouse, true);
-    SetConsoleCommand(Mouse, ungrabMouse, true);
-#endif
-    Mouse* Mouse::instancePointer_s = NULL;
+    void Mouse::windowResized(unsigned int newWidth, unsigned int newHeight)
+    {
+        oisDevice_->getMouseState().width  = newWidth;
+        oisDevice_->getMouseState().height = newHeight;
+    }
 
 #ifdef ORXONOX_PLATFORM_LINUX
     void Mouse::grabMouse()

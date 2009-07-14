@@ -43,7 +43,7 @@ namespace orxonox
     class _CoreExport JoyStickQuantityListener : virtual public OrxonoxClass
     {
         friend InputManager;
-    public:
+    protected:
         JoyStickQuantityListener();
         virtual ~JoyStickQuantityListener() { }
 

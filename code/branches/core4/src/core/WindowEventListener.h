@@ -37,10 +37,18 @@ namespace orxonox
     //! Interface for receiving window events like resize, moved and focusChanged
     class _CoreExport WindowEventListener : virtual public OrxonoxClass
     {
-        public:
+        friend class OgreWindowEventListener;
+
+        protected:
             WindowEventListener();
             virtual ~WindowEventListener() { }
 
+            //! Returns the current render window width
+            unsigned int getWindowWidth() const { return windowWidth_s; }
+            //! Returns the current render window height
+            unsigned int getWindowHeight() const { return windowHeight_s; }
+
+        private:
             //! Window has been moved
             virtual void windowMoved() { }
 
@@ -49,6 +57,14 @@ namespace orxonox
 
             //! Window has lost/gained focus
             virtual void windowFocusChanged() { }
+
+            static void moveWindow();
+            static void resizeWindow(unsigned int newWidth, unsigned int newHeight);
+            static void changeWindowFocus();
+
+            //! Static variable that holds the latest distributed information
+            static unsigned int windowWidth_s;
+            static unsigned int windowHeight_s;
     };
 }
 

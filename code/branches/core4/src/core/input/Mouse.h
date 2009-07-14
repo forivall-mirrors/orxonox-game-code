@@ -30,7 +30,9 @@
 #define _Core_Mouse_H__
 
 #include "InputPrereqs.h"
+
 #include "InputDevice.h"
+#include "core/WindowEventListener.h"
 
 namespace orxonox
 {
@@ -52,6 +54,7 @@ namespace orxonox
     class _CoreExport Mouse
         : public InputDeviceTemplated<MouseTraits>
         , public OIS::MouseListener
+        , public WindowEventListener
     {
         friend class InputDeviceTemplated<MouseTraits>;
         //! Super class alias
@@ -59,30 +62,13 @@ namespace orxonox
 
     public:
         //! Only sets the clipping size. Initialising is done in the base class.
-        Mouse(unsigned int id, OIS::InputManager* oisInputManager, unsigned int windowWidth, unsigned int windowHeight);
+        Mouse(unsigned int id, OIS::InputManager* oisInputManager);
         ~Mouse() { }
 
-        /**
-        @brief
-            Adjusts the mouse window metrics.
-
-            This method has to be called every time the size of the window changes.
-        */
-        void setMouseClipping(unsigned int width, unsigned int height);
-        // Returns the width of the mouse window
-        unsigned int getClippingWidth() const;
-        // Returns the height of the mouse window
-        unsigned int getClippingHeight() const;
-
-        // HACK!
-        static void setMouseClipping_s(unsigned int width, unsigned int height)
-            { instancePointer_s->setMouseClipping(width, height); }
-        void setConfigValues() { }
 #ifdef ORXONOX_PLATFORM_LINUX
-        // HACK!
         // TODO: Make this a feature rather than a hack
-        static void grabMouse();
-        static void ungrabMouse();
+        void grabMouse();
+        void ungrabMouse();
 #endif
 
     private:
@@ -102,11 +88,10 @@ namespace orxonox
 
         bool mouseMoved(const OIS::MouseEvent &arg);
 
+        void windowResized(unsigned int newWidth, unsigned int newHeight);
+
         // Returns the class name as string
         static std::string getClassNameImpl() { return "Mouse"; }
-
-        // HACK:
-        static Mouse* instancePointer_s;
     };
 }
 

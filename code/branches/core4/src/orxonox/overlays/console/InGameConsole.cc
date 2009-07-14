@@ -171,7 +171,7 @@ namespace orxonox
     /**
         @brief Initializes the InGameConsole.
     */
-    void InGameConsole::initialise(int windowWidth, int windowHeight)
+    void InGameConsole::initialise()
     {
         // create the corresponding input state
         inputState_ = InputManager::getInstance().createInputState("console", false, false, InputStatePriority::Console);
@@ -247,7 +247,7 @@ namespace orxonox
         // comment following line to disable noise
         this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
 
-        this->windowResized(windowWidth, windowHeight);
+        this->windowResized(this->getWindowWidth(), this->getWindowWidth());
 
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border makes the panel bigger

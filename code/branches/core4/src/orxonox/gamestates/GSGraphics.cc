@@ -38,12 +38,10 @@
 #include <OgreRenderWindow.h>
 
 #include "util/Convert.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/Clock.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
-#include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/input/InputManager.h"
@@ -71,20 +69,9 @@ namespace orxonox
         , masterInputState_(0)
         , debugOverlay_(0)
     {
-        RegisterRootObject(GSGraphics);
     }
 
     GSGraphics::~GSGraphics()
-    {
-    }
-
-    /**
-    @brief
-        this function does nothing
-
-        Indeed. Here goes nothing.
-    */
-    void GSGraphics::setConfigValues()
     {
     }
 
@@ -107,8 +94,6 @@ namespace orxonox
     {
         GameMode::setShowsGraphics(true);
 
-        setConfigValues();
-
         // Load OGRE including the render window
         this->graphicsManager_ = new GraphicsManager();
 
@@ -123,7 +108,7 @@ namespace orxonox
         renderWindow->getCustomAttribute("WINDOW", &windowHnd);
 
         // Calls the InputManager which sets up the input devices.
-        inputManager_ = new InputManager(windowHnd, renderWindow->getWidth(), renderWindow->getHeight());
+        inputManager_ = new InputManager(windowHnd);
 
         // load master key bindings
         masterInputState_ = InputManager::getInstance().createInputState("master", true);
@@ -136,7 +121,7 @@ namespace orxonox
 
         // Load the InGameConsole
         console_ = new InGameConsole();
-        console_->initialise(renderWindow->getWidth(), renderWindow->getHeight());
+        console_->initialise();
 
         // load the CEGUI interface
         guiManager_ = new GUIManager();
@@ -232,34 +217,4 @@ namespace orxonox
         // Render
         this->graphicsManager_->update(time);
     }
-
-    /**
-    @brief
-        Window has resized.
-    @param rw
-        The render window it occured in
-    @note
-        GraphicsManager has a render window stored itself. This is the same
-        as rw. But we have to be careful when using multiple render windows!
-    */
-    void GSGraphics::windowResized(unsigned int newWidth, unsigned int newHeight)
-    {
-        // OIS needs this under linux even if we only use relative input measurement.
-        // HACK:
-        CommandExecutor::execute("setWindowExtents_s " + multi_cast<std::string>(newWidth) + " " + multi_cast<std::string>(newHeight));
-    }
-
-    /**
-    @brief
-        Window focus has changed.
-    @param rw
-        The render window it occured in
-    */
-    void GSGraphics::windowFocusChanged()
-    {
-        // instruct InputManager to clear the buffers (core library so we cannot use the interface)
-        if (this->inputManager_)
-            this->inputManager_->clearBuffers();
-    }
-
 }

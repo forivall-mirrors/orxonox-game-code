@@ -81,7 +81,7 @@ namespace orxonox
     // #####                  Initialisation                  #####
     // ##########                                        ##########
     // ############################################################
-    InputManager::InputManager(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight)
+    InputManager::InputManager(size_t windowHnd)
         : internalState_(Bad)
         , oisInputManager_(0)
         , devices_(2)
@@ -99,7 +99,7 @@ namespace orxonox
 
         this->setConfigValues();
 
-        this->loadDevices(windowHnd, windowWidth, windowHeight);
+        this->loadDevices(windowHnd);
 
         // Lowest priority empty InputState
         emptyState_ = createInputState("empty", false, false, InputStatePriority::Empty);
@@ -156,7 +156,7 @@ namespace orxonox
     @param windowHeight
         The height of the render window
     */
-    void InputManager::loadDevices(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight)
+    void InputManager::loadDevices(size_t windowHnd)
     {
         CCOUT(3) << "Loading input devices..." << std::endl;
 
@@ -215,7 +215,7 @@ namespace orxonox
         }
 
         // TODO: Remove the two parameters
-        this->loadMouse(windowWidth, windowHeight);
+        this->loadMouse();
         this->loadJoySticks();
 
         // Reorder states in case some joy sticks were added/removed
@@ -225,13 +225,13 @@ namespace orxonox
     }
 
     //! Creates a new orxonox::Mouse
-    void InputManager::loadMouse(unsigned int windowWidth, unsigned int windowHeight)
+    void InputManager::loadMouse()
     {
         if (oisInputManager_->getNumberOfDevices(OIS::OISMouse) > 0)
         {
             try
             {
-                devices_[InputDeviceEnumerator::Mouse] = new Mouse(InputDeviceEnumerator::Mouse, oisInputManager_, windowWidth, windowHeight);
+                devices_[InputDeviceEnumerator::Mouse] = new Mouse(InputDeviceEnumerator::Mouse, oisInputManager_);
             }
             catch (const OIS::Exception& ex)
             {
@@ -367,17 +367,8 @@ namespace orxonox
     {
         CCOUT(3) << "Reloading ..." << std::endl;
 
-        // Save mouse clipping size
-        int clippingWidth = 800;
-        int clippingHeight = 600;
-        if (devices_[InputDeviceEnumerator::Mouse])
-        {
-            int clippingWidth  = static_cast<Mouse*>(devices_[InputDeviceEnumerator::Mouse])->getClippingWidth();
-            int clippingHeight = static_cast<Mouse*>(devices_[InputDeviceEnumerator::Mouse])->getClippingHeight();
-        }
-
         this->destroyDevices();
-        this->loadDevices(windowHnd_, clippingWidth, clippingHeight);
+        this->loadDevices(windowHnd_);
 
         internalState_ &= ~Bad;
         internalState_ &= ~ReloadRequest;
@@ -560,6 +551,12 @@ namespace orxonox
         this->clearBuffers();
 
         COUT(0) << "Calibration has been stored." << std::endl;
+    }
+
+    //! Gets called by WindowEventListener upon focus change --> clear buffers 
+    void InputManager::windowFocusChanged()
+    {
+        this->clearBuffers();
     }
 
     // ############################################################

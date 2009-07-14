@@ -31,8 +31,34 @@
 
 namespace orxonox
 {
+    unsigned int WindowEventListener::windowWidth_s  = 0;
+    unsigned int WindowEventListener::windowHeight_s = 0;
+
     WindowEventListener::WindowEventListener()
     {
         RegisterRootObject(WindowEventListener);
+    }
+
+    //! Calls all registered objects
+    /*static*/ void WindowEventListener::moveWindow()
+    {
+        for (ObjectList<WindowEventListener>::iterator it = ObjectList<WindowEventListener>::begin(); it; ++it)
+            it->windowMoved();
+    }
+
+    //! Calls all registered objects and sets the static variables
+    /*static*/ void WindowEventListener::resizeWindow(unsigned int newWidth, unsigned int newHeight)
+    {
+        windowWidth_s = newWidth;
+        windowHeight_s = newHeight;
+        for (ObjectList<WindowEventListener>::iterator it = ObjectList<WindowEventListener>::begin(); it; ++it)
+            it->windowResized(newWidth, newHeight);
+    }
+
+    //! Calls all registered objects
+    /*static*/ void WindowEventListener::changeWindowFocus()
+    {
+        for (ObjectList<WindowEventListener>::iterator it = ObjectList<WindowEventListener>::begin(); it; ++it)
+            it->windowFocusChanged();
     }
 }

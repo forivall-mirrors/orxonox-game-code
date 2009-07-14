@@ -152,7 +152,7 @@ namespace orxonox
     struct TclInterpreterBundle;
     class TclThreadManager;
     class Template;
-    class Tickable;
+    class WindowEventListener;
     class XMLFile;
     class XMLNameListener;
     template <class T, class O>

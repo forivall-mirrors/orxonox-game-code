@@ -36,9 +36,7 @@
 #define _GSGraphics_H__
 
 #include "OrxonoxPrereqs.h"
-
 #include "core/GameState.h"
-#include "core/WindowEventListener.h"
 
 namespace orxonox
 {
@@ -48,12 +46,11 @@ namespace orxonox
 
         This game state is only left out if we start a dedicated server where no graphics are present.
     */
-    class _OrxonoxExport GSGraphics : public GameState, public WindowEventListener
+    class _OrxonoxExport GSGraphics : public GameState
     {
     public:
         GSGraphics(const GameStateConstrParams& params);
         ~GSGraphics();
-        void setConfigValues();
 
         void activate();
         void deactivate();
@@ -62,10 +59,6 @@ namespace orxonox
         void toggleGUI();
 
     private:
-        // Window events from WindowEventListener
-        void windowResized(unsigned int newWidth, unsigned int newHeight);
-        void windowFocusChanged();
-
         // managed singletons
         InputManager*         inputManager_;        //!< Reference to input management
         InGameConsole*        console_;

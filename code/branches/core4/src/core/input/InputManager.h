@@ -36,7 +36,7 @@
 #include <string>
 #include <vector>
 
-#include "core/OrxonoxClass.h"
+#include "core/WindowEventListener.h"
 #include "InputState.h"
 
 namespace orxonox
@@ -61,7 +61,7 @@ namespace orxonox
         - Keyboard construction is mandatory , mouse and joy sticks are not.
           If the OIS::InputManager or the Keyboard fail, an exception is thrown.
     */
-    class _CoreExport InputManager : public OrxonoxClass
+    class _CoreExport InputManager : public WindowEventListener
     {
     public:
         //! Represents internal states of the InputManager.
@@ -81,7 +81,7 @@ namespace orxonox
             If either the OIS input system and/or the keyboard could not be created,
             the constructor fails with an std::exception.
         */
-        InputManager(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
+        InputManager(size_t windowHnd);
         //! Destroys all devices AND all input states!
         ~InputManager();
         void setConfigValues();
@@ -175,8 +175,8 @@ namespace orxonox
         InputManager(const InputManager&);
 
         // Intenal methods
-        void loadDevices(size_t windowHnd, unsigned int windowWidth, unsigned int windowHeight);
-        void loadMouse(unsigned int windowWidth, unsigned int windowHeight);
+        void loadDevices(size_t windowHnd);
+        void loadMouse();
         void loadJoySticks();
         void destroyDevices();
 
@@ -185,6 +185,9 @@ namespace orxonox
 
         void destroyStateInternal(InputState* state);
         void updateActiveStates();
+
+        // From WindowEventListener
+        void windowFocusChanged();
 
     private: // variables
         State                               internalState_;        //!< Current internal state

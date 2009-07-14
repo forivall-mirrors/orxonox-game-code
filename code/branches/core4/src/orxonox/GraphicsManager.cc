@@ -74,10 +74,14 @@ namespace orxonox
 
     class _OrxonoxExport OgreWindowEventListener : public Ogre::WindowEventListener
     {
-        void windowResized     (Ogre::RenderWindow* rw);
-        void windowFocusChange (Ogre::RenderWindow* rw);
-        void windowClosed      (Ogre::RenderWindow* rw);
-        //void windowMoved       (Ogre::RenderWindow* rw);
+        void windowResized     (Ogre::RenderWindow* rw)
+            { orxonox::WindowEventListener::resizeWindow(rw->getWidth(), rw->getHeight()); }
+        void windowFocusChange (Ogre::RenderWindow* rw)
+            { orxonox::WindowEventListener::changeWindowFocus(); }
+        void windowClosed      (Ogre::RenderWindow* rw)
+            { orxonox::Game::getInstance().stop(); }
+        void windowMoved       (Ogre::RenderWindow* rw)
+            { orxonox::WindowEventListener::moveWindow(); }
     };
 
     GraphicsManager* GraphicsManager::singletonRef_s = 0;
@@ -416,25 +420,5 @@ namespace orxonox
         assert(this->renderWindow_);
        
         this->renderWindow_->writeContentsToTimestampedFile(Core::getLogPathString() + "screenShot_", ".jpg");
-    }
-
-
-    /****** OgreWindowEventListener ******/
-
-    void OgreWindowEventListener::windowResized(Ogre::RenderWindow* rw)
-    {
-        for (ObjectList<orxonox::WindowEventListener>::iterator it
-            = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
-            it->windowResized(rw->getWidth(), rw->getHeight());
-    }
-    void OgreWindowEventListener::windowFocusChange(Ogre::RenderWindow* rw)
-    {
-        for (ObjectList<orxonox::WindowEventListener>::iterator it
-            = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
-            it->windowFocusChanged();
-    }
-    void OgreWindowEventListener::windowClosed(Ogre::RenderWindow* rw)
-    {
-        Game::getInstance().stop();
     }
 }
