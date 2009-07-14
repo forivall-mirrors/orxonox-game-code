@@ -72,8 +72,9 @@ namespace orxonox
 {
     using boost::shared_ptr;
 
-    class _OrxonoxExport OgreWindowEventListener : public Ogre::WindowEventListener
+    class OgreWindowEventListener : public Ogre::WindowEventListener
     {
+    public:
         void windowResized     (Ogre::RenderWindow* rw)
             { orxonox::WindowEventListener::resizeWindow(rw->getWidth(), rw->getHeight()); }
         void windowFocusChange (Ogre::RenderWindow* rw)
@@ -350,6 +351,7 @@ namespace orxonox
         CCOUT(4) << "Creating render window" << std::endl;
 
         this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
+        this->ogreWindowEventListener_->windowResized(renderWindow_);
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_);
 
