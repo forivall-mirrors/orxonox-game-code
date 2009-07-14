@@ -39,6 +39,7 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/Sleep.h"
 #include "util/SubString.h"
 #include "Clock.h"
 #include "CommandLine.h"
@@ -119,6 +120,8 @@ namespace orxonox
             .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
         SetConfigValue(levelName_, "presentation_dm.oxw")
             .description("Sets the preselection of the level in the main menu.");
+      SetConfigValue(FPSLimit_, 50)
+            .description("Sets the desired framerate (0 for no limit).");
     }
 
     void Game::setLevel(std::string levelName)
@@ -155,8 +158,15 @@ namespace orxonox
         this->gameClock_->capture(); // first delta time should be about 0 seconds
         while (!this->abort_ && !this->activeStates_.empty())
         {
+            uint64_t currentTime = this->gameClock_->getRealMicroseconds();
+
+            uint64_t nextTickTime = statisticsTickTimes_.back().tickTime + 1000000.f/this->FPSLimit_;
+            if( currentTime < nextTickTime )
+            {
+                usleep( nextTickTime - currentTime );
+                continue;
+            }
             this->gameClock_->capture();
-            uint64_t currentTime = this->gameClock_->getMicroseconds();
 
             // STATISTICS
             statisticsTickInfo tickInfo = {currentTime, 0};

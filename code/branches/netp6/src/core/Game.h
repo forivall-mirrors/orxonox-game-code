@@ -130,6 +130,7 @@ namespace orxonox
         // config values
         unsigned int                    statisticsRefreshCycle_;
         unsigned int                    statisticsAvgLength_;
+        unsigned int                    FPSLimit_;
         std::string                     levelName_;
 
         static std::map<std::string, GameState*> allStates_s;
