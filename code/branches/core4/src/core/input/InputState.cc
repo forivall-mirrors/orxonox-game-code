@@ -31,6 +31,7 @@
 
 namespace orxonox
 {
+    //! Sets priority of it's a high priority and resizes the handler list
     InputState::InputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
         : name_(name)
         , bAlwaysGetsInput_(bAlwaysGetsInput)
@@ -46,7 +47,7 @@ namespace orxonox
         else
             priority_ = 0;
 
-        handlers_.resize(InputDeviceEnumerator::FirstJoyStick + JoyStickQuantityListener::getJoyStickList().size(), NULL);
+        handlers_.resize(InputDeviceEnumerator::FirstJoyStick + this->getJoyStickList().size(), NULL);
     }
 
     bool InputState::isInputDeviceEnabled(unsigned int device)
@@ -57,6 +58,7 @@ namespace orxonox
             return false;
     }
 
+    //! Called by JoyStickQuantityListener upon joy stick adding/removal
     void InputState::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
         unsigned int oldSize = handlers_.size();
@@ -68,16 +70,6 @@ namespace orxonox
         bExpired_ = true;
     }
 
-    /**
-    @brief
-        Adds a joy stick handler.
-    @param handler
-        Pointer to the handler object.
-    @param joyStickID
-        ID of the joy stick
-    @return
-        True if added, false otherwise.
-    */
     bool InputState::setJoyStickHandler(InputHandler* handler, unsigned int joyStick)
     {
         unsigned device = joyStick + firstJoyStickIndex_s;
@@ -89,36 +81,19 @@ namespace orxonox
         return true;
     }
 
-    /**
-    @brief
-        Adds a joy stick handler.
-    @param handler
-        Pointer to the handler object.
-    @return
-        True if added, false if handler already existed.
-    */
-    bool InputState::setJoyStickHandler(InputHandler* handler)
+    void InputState::setJoyStickHandler(InputHandler* handler)
     {
         joyStickHandlerAll_ = handler;
         for (unsigned int i = firstJoyStickIndex_s; i < handlers_.size(); ++i)
             handlers_[i] = handler;
         bExpired_ = true;
-        return true;
     }
 
-    /**
-    @brief
-        Adds a handler of any kind. dynamic_cast determines to which list it is added.
-    @param handler
-        Pointer to the handler object.
-    @return
-        True if added, false if handler already existed.
-    */
-    bool InputState::setHandler(InputHandler* handler)
+    void InputState::setHandler(InputHandler* handler)
     {
         setKeyHandler(handler);
         setMouseHandler(handler);
-        return setJoyStickHandler(handler);
+        setJoyStickHandler(handler);
     }
 
     void InputState::entered()
