@@ -58,7 +58,8 @@ namespace orxonox
     {
         if (GameMode::isMaster())
         {
-            COUT(3) << "client connected" << std::endl;
+            if (clientID != 0)
+                COUT(3) << "client connected" << std::endl;
 
             // create new HumanPlayer instance
             HumanPlayer* player = new HumanPlayer(0);
