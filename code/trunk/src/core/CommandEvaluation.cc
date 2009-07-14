@@ -83,7 +83,7 @@ namespace orxonox
             return true;
         }
 
-        if (!this->bCommandChanged_ || removeTrailingWhitespaces(this->command_) == removeTrailingWhitespaces(this->originalCommand_))
+        if (!this->bCommandChanged_ || nocaseCmp(removeTrailingWhitespaces(this->command_), removeTrailingWhitespaces(this->originalCommand_)) == 0)
         {
             COUT(4) << "CE_execute: " << this->command_ << "\n";
 
