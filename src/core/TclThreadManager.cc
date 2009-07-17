@@ -576,11 +576,11 @@ namespace orxonox
                     {
                         this->debug("TclThread_query: " + command);
                         try
-                        {   output = (std::string)target->interpreter_->eval(command);   }
+                        {   output = static_cast<std::string>(target->interpreter_->eval(command));   }
                         catch (Tcl::tcl_error const &e)
-                        {   this->error("Tcl error: " + (std::string)e.what());   }
+                        {   this->error("Tcl error: " + static_cast<std::string>(e.what()));   }
                         catch (std::exception const &e)
-                        {   this->error("Error while executing Tcl: " + (std::string)e.what());   }
+                        {   this->error("Error while executing Tcl: " + static_cast<std::string>(e.what()));   }
                     }
                     else
                     {

@@ -121,7 +121,7 @@ namespace orxonox
         if( this->MapNode_ )
         {
             this->MapNode_->setPosition( this->getRVWorldPosition() );
-            this->MapNode_->translate( this->getRVOrientedVelocity(), (Ogre::Node::TransformSpace)3 );
+            this->MapNode_->translate( this->getRVOrientedVelocity(), static_cast<Ogre::Node::TransformSpace>(3) );
             this->MapNode_->setOrientation( this->getWorldEntity()->getOrientation() );
 //Vector3 v = this->getRVWorldPosition();
             //this->line_->setPoint(1, Vector3(0,v.y,0) );

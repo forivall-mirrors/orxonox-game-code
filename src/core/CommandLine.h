@@ -195,7 +195,7 @@ namespace orxonox
     template <>
     inline void CommandLine::getValue<std::string>(const std::string& name, std::string* value)
     {
-        *value = (std::string)(getArgument(name)->getValue().getString());
+        *value = getArgument(name)->getValue().getString();
     }
 
     /**

@@ -99,7 +99,7 @@ namespace orxonox
                 { return this->bActive_; }
             /** @brief Returns the remaining time until the Timer calls the function. @return The remaining time */
             inline float getRemainingTime() const
-                { return (float)this->time_ / 1000000.0f; }
+                { return static_cast<float>(this->time_ / 1000000.0f); }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
             inline void addTime(float time)
                 { if (time > 0.0f) this->time_ += (long long)(time * 1000000.0f); }

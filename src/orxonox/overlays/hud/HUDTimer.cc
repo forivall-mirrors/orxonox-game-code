@@ -58,7 +58,7 @@ namespace orxonox
         {
             if (gametype->getTimerIsActive())
             {
-                this->setCaption(multi_cast<std::string>((int)gametype->getTime() + 1));
+                this->setCaption(multi_cast<std::string>(static_cast<int>(gametype->getTime()) + 1));
             }
         }
     }

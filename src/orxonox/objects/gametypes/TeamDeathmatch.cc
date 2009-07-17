@@ -70,7 +70,7 @@ namespace orxonox
         std::vector<unsigned int> playersperteam(this->teams_, 0);
 
         for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
-            if (it->second < (int)this->teams_ && it->second >= 0)
+            if (it->second < static_cast<int>(this->teams_) && it->second >= 0)
                 playersperteam[it->second]++;
 
         unsigned int minplayers = (unsigned int)-1;
@@ -126,7 +126,7 @@ namespace orxonox
             if ((*it)->isA(Class(TeamSpawnPoint)))
             {
                 TeamSpawnPoint* tsp = dynamic_cast<TeamSpawnPoint*>(*it);
-                if (tsp && (int)tsp->getTeamNumber() != desiredTeamNr)
+                if (tsp && static_cast<int>(tsp->getTeamNumber()) != desiredTeamNr)
                 {
                     teamSpawnPoints.erase(it++);
                     continue;
@@ -159,7 +159,7 @@ namespace orxonox
 
         // Set the team colour
         std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
-        if (it_player != this->teamnumbers_.end() && it_player->second >= 0 && it_player->second < (int)this->teamcolours_.size())
+        if (it_player != this->teamnumbers_.end() && it_player->second >= 0 && it_player->second < static_cast<int>(this->teamcolours_.size()))
         {
             if (pawn)
             {

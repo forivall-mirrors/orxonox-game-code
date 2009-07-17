@@ -280,7 +280,7 @@ namespace orxonox
         }
         else
         {
-            callMemberNetworkFunction(Pawn, doFire, this->getObjectID(), 0, ((uint8_t)firemode));
+            callMemberNetworkFunction(Pawn, doFire, this->getObjectID(), 0, firemode);
             if (this->weaponSystem_)
                 this->weaponSystem_->fire(firemode);
         }

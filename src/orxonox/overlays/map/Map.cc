@@ -331,7 +331,7 @@ Ogre::MaterialPtr Map::init()
                 //this->CamNodeHelper_ = this->CamNode_->createChildSceneNode();
                 //this->CamNodeHelper_->attachObject(this->Cam_);
                     this->Cam_->setPosition(0, 0, DISTANCE);
-                    this->Cam_->pitch( (Degree)PITCH );
+                    this->Cam_->pitch( static_cast<Degree>(PITCH) );
                     this->Cam_->lookAt(Vector3(0,0,0));
                 //this->Cam_->setAutoTracking(true, this->playerShipNode_);
                 }
@@ -424,25 +424,25 @@ Ogre::MaterialPtr Map::init()
             return;
 
 /*
-        singletonMap_s->CamNode_->setOrientation(singletonMap_s->CamNode_->getOrientation() * Quaternion( (Degree)(-value.y * singletonMap_s->mouseLookSpeed_) , singletonMap_s->playerShipNode_->getLocalAxes().GetColumn(1) ));
+        singletonMap_s->CamNode_->setOrientation(singletonMap_s->CamNode_->getOrientation() * Quaternion( static_cast<Degree>(-value.y * singletonMap_s->mouseLookSpeed_) , singletonMap_s->playerShipNode_->getLocalAxes().GetColumn(1) ));
 
         Map::singletonMap_s->CamNodeHelper_->setDirection(Vector3::UNIT_Y, Ogre::Node::TS_PARENT, Vector3::UNIT_Y);
         Map::singletonMap_s->CamNodeHelper_->lookAt(Vector3(0,0,0), Ogre::Node::TS_PARENT);
 */
-        singletonMap_s->CamNode_->yaw( (Degree)(-value.y * singletonMap_s->mouseLookSpeed_), Ogre::Node::TS_PARENT);
+        singletonMap_s->CamNode_->yaw( static_cast<Degree>(-value.y * singletonMap_s->mouseLookSpeed_), Ogre::Node::TS_PARENT);
     }
 
     void Map::rotatePitch(const Vector2& value)
     {
         if(!( Map::singletonMap_s && Map::singletonMap_s->CamNode_ ))
             return;
-            //singletonMap_s->Cam_->setOrientation(singletonMap_s->Cam_->getOrientation() * Quaternion( (Degree)(-value.y * singletonMap_s->mouseLookSpeed_) , Vector3::UNIT_X));
-/*        singletonMap_s->CamNode_->setOrientation(singletonMap_s->CamNode_->getOrientation() * Quaternion( (Degree)(-value.y * singletonMap_s->mouseLookSpeed_) , singletonMap_s->playerShipNode_->getLocalAxes().GetColumn(0) ));
+            //singletonMap_s->Cam_->setOrientation(singletonMap_s->Cam_->getOrientation() * Quaternion( static_cast<Degree>(-value.y * singletonMap_s->mouseLookSpeed_) , Vector3::UNIT_X));
+/*        singletonMap_s->CamNode_->setOrientation(singletonMap_s->CamNode_->getOrientation() * Quaternion( static_cast<Degree>(-value.y * singletonMap_s->mouseLookSpeed_) , singletonMap_s->playerShipNode_->getLocalAxes().GetColumn(0) ));
 
         Map::singletonMap_s->CamNodeHelper_->setDirection(Vector3::UNIT_Y, Ogre::Node::TS_PARENT, Vector3::UNIT_Y);
         Map::singletonMap_s->CamNodeHelper_->lookAt(Vector3(0,0,0), Ogre::Node::TS_PARENT);
 */
-        singletonMap_s->CamNode_->pitch( (Degree)(value.y * singletonMap_s->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+        singletonMap_s->CamNode_->pitch( static_cast<Degree>(value.y * singletonMap_s->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
 
     }
 

@@ -72,7 +72,7 @@ namespace orxonox
 
         // create new material
         std::string materialname = "barmaterial" + multi_cast<std::string>(materialcount_s++);
-        Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
+        Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialname, "General"));
         material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
         this->textureUnitState_->setTextureName("bar2.tga");

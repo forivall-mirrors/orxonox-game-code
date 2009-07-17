@@ -121,7 +121,7 @@ namespace orxonox
     template <typename T>
     inline int round(T x)
     {
-        return (int)(x + 0.5);
+        return static_cast<int>(x + 0.5);
     }
 
     /**
