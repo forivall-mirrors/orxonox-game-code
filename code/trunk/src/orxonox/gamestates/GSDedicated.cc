@@ -118,7 +118,7 @@ namespace orxonox
         {
             msleep(static_cast<unsigned int>((NETWORK_PERIOD - timeSinceLastUpdate_)*1000));
             msleep(static_cast<unsigned int>(NETWORK_PERIOD*1000)); // NOTE: this is to throttle the non-network framerate
-//            COUT(0) << "sleeping for " << (int)((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000) << " usec" << endl;
+//            COUT(0) << "sleeping for " << static_cast<int>((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000) << " usec" << endl;
         }
         processQueue();
         printLine();

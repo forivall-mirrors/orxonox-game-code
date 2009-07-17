@@ -82,7 +82,7 @@ namespace orxonox
         if (this->owner_)
         {
             this->setValue(this->owner_->getHealth() / this->owner_->getInitialHealth());
-            this->textoverlay_->setCaption(multi_cast<std::string>((int)this->owner_->getHealth()));
+            this->textoverlay_->setCaption(multi_cast<std::string>(static_cast<int>(this->owner_->getHealth())));
         }
 
         if (this->bUseBarColour_)

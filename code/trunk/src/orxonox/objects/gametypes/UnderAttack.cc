@@ -50,7 +50,7 @@ namespace orxonox
         this->setHUDTemplate("UnderAttackHUD");
 
         this->setConfigValues();
-        this->timesequence_ = (int) this->gameTime_;
+        this->timesequence_ = static_cast<this->gameTime_);
     }
 
     void UnderAttack::setConfigValues()

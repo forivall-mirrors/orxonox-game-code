@@ -286,7 +286,7 @@ namespace orxonox
                 std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
                 assert(it != this->statisticsTickTimes_.end());
                 int64_t lastTime = currentTime - this->configuration_->statisticsAvgLength_;
-                if ((int64_t)it->tickTime < lastTime)
+                if (static_cast<int64_t>(it->tickTime) < lastTime)
                 {
                     do
                     {
@@ -294,7 +294,7 @@ namespace orxonox
                         this->periodTickTime_ -= it->tickLength;
                         ++it;
                         assert(it != this->statisticsTickTimes_.end());
-                    } while ((int64_t)it->tickTime < lastTime);
+                    } while (static_cast<int64_t>(it->tickTime) < lastTime);
                     this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), it);
                 }
 

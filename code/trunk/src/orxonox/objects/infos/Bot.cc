@@ -51,7 +51,7 @@ namespace orxonox
 
         this->setConfigValues();
 
-        this->setName(this->names_[(size_t)(rnd() * this->names_.size())]);
+        this->setName(this->names_[static_cast<size_t>(rnd() * this->names_.size())]);
 
         if (this->getGametype())
             this->getGametype()->playerEntered(this);

@@ -214,7 +214,7 @@ namespace orxonox
             float angle = this->angle_.valueDegrees();
             if (angle < 0.0)
                 angle = -angle;
-            angle -= 180.0f * (int)(angle / 180.0);
+            angle -= 180.0f * static_caste<int>(angle / 180.0);
 
             // take the reverse if angle is about 90 degrees
             float tempAspect;
@@ -276,7 +276,7 @@ namespace orxonox
         float angle = this->angle_.valueRadians();
         if (angle < 0.0)
             angle = -angle;
-        angle -= Ogre::Math::PI * (int)(angle / (Ogre::Math::PI));
+        angle -= Ogre::Math::PI * static_cast<int>(angle / (Ogre::Math::PI));
         if (angle > Ogre::Math::PI * 0.5)
             angle = Ogre::Math::PI - angle;
 

@@ -128,7 +128,7 @@ namespace orxonox
         this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
         this->inputBuffer_->registerListener(this, &Shell::backspace, '\b', true);
         this->inputBuffer_->registerListener(this, &Shell::deletechar, KeyCode::Delete);
-        this->inputBuffer_->registerListener(this, &Shell::exit, (char)27, true);
+        this->inputBuffer_->registerListener(this, &Shell::exit, static_cast<char>(27), true);
         this->inputBuffer_->registerListener(this, &Shell::cursor_right, KeyCode::Right);
         this->inputBuffer_->registerListener(this, &Shell::cursor_left, KeyCode::Left);
         this->inputBuffer_->registerListener(this, &Shell::cursor_end, KeyCode::End);
@@ -148,9 +148,9 @@ namespace orxonox
     {
         Shell& instance = Shell::getInstance();
 
-        for (int i = instance.historyOffset_; i < (int)instance.commandHistory_.size(); ++i)
+        for (unsigned int i = instance.historyOffset_; i < instance.commandHistory_.size(); ++i)
             instance.addLine(instance.commandHistory_[i], -1);
-        for (int i =  0; i < (int)instance.historyOffset_; ++i)
+        for (unsigned int i =  0; i < instance.historyOffset_; ++i)
             instance.addLine(instance.commandHistory_[i], -1);
     }
 

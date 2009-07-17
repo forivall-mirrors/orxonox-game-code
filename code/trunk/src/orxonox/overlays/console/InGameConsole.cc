@@ -331,7 +331,7 @@ namespace orxonox
             pos = maxCharsPerLine_;
 
         this->consoleOverlayCursor_->setCaption(std::string(pos,' ') + cursorSymbol_);
-        this->consoleOverlayCursor_->setTop((int) this->windowH_ * this->relativeHeight - 24);
+        this->consoleOverlayCursor_->setTop(static_cast<int>(this->windowH_ * this->relativeHeight) - 24);
     }
 
     /**
@@ -415,24 +415,24 @@ namespace orxonox
     {
         this->windowW_ = newWidth;
         this->windowH_ = newHeight;
-        this->consoleOverlayBorder_->setWidth((int) this->windowW_* this->relativeWidth);
-        this->consoleOverlayBorder_->setHeight((int) this->windowH_ * this->relativeHeight);
-        this->consoleOverlayNoise_->setWidth((int) this->windowW_ * this->relativeWidth - 10);
-        this->consoleOverlayNoise_->setHeight((int) this->windowH_ * this->relativeHeight - 5);
+        this->consoleOverlayBorder_->setWidth(static_cast<int>(this->windowW_* this->relativeWidth));
+        this->consoleOverlayBorder_->setHeight(static_cast<int>(this->windowH_ * this->relativeHeight));
+        this->consoleOverlayNoise_->setWidth(static_cast<int>(this->windowW_ * this->relativeWidth) - 10);
+        this->consoleOverlayNoise_->setHeight(static_cast<int>(this->windowH_ * this->relativeHeight) - 5);
         this->consoleOverlayNoise_->setTiling(consoleOverlayNoise_->getWidth() / (50.0f * this->noiseSize_), consoleOverlayNoise_->getHeight() / (50.0f * this->noiseSize_));
 
         // now adjust the text lines...
-        this->desiredTextWidth_ = (int) (this->windowW_ * this->relativeWidth) - 12;
+        this->desiredTextWidth_ = static_cast<int>(this->windowW_ * this->relativeWidth) - 12;
 
         if (LINES > 0)
-            this->maxCharsPerLine_ = std::max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH));
+            this->maxCharsPerLine_ = std::max(10U, static_cast<unsigned int>(static_cast<float>(this->desiredTextWidth_) / CHAR_WIDTH));
         else
             this->maxCharsPerLine_ = 10;
 
         for (int i = 0; i < LINES; i++)
         {
             this->consoleOverlayTextAreas_[i]->setWidth(this->desiredTextWidth_);
-            this->consoleOverlayTextAreas_[i]->setTop((int) this->windowH_ * this->relativeHeight - 24 - 14*i);
+            this->consoleOverlayTextAreas_[i]->setTop(static_cast<int>(this->windowH_ * this->relativeHeight) - 24 - 14*i);
         }
 
         this->linesChanged();
