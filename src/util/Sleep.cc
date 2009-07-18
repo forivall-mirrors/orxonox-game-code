@@ -47,8 +47,8 @@ namespace orxonox
 {
     void usleep(unsigned long microseconds)
     {
-        if (microseconds < 1000)
-            COUT(2) << "Warning: Windows cannot sleep less than 1ms, ignoring" << std::endl;
+        //if (microseconds < 1000)
+        //    COUT(2) << "Warning: Windows cannot sleep less than 1ms, ignoring" << std::endl;
         Sleep(microseconds / 1000);
     }
 
