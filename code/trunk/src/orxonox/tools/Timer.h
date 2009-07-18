@@ -102,13 +102,13 @@ namespace orxonox
                 { return static_cast<float>(this->time_ / 1000000.0f); }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
             inline void addTime(float time)
-                { if (time > 0.0f) this->time_ += (long long)(time * 1000000.0f); }
+                { if (time > 0.0f) this->time_ += static_cast<long long>(time * 1000000.0f); }
             /** @brief Decreases the remaining time of the Timer. @param time The amount of time to remove */
             inline void removeTime(float time)
-                { if (time > 0.0f) this->time_ -= (long long)(time * 1000000.0f); }
+                { if (time > 0.0f) this->time_ -= static_cast<long long>(time * 1000000.0f); }
             /** @brief Sets the interval of the Timer. @param interval The interval */
             inline void setInterval(float interval)
-                { this->interval_ = (long long)(interval * 1000000.0f); }
+                { this->interval_ = static_cast<long long>(interval * 1000000.0f); }
             /** @brief Sets bLoop to a given value. @param bLoop True = loop */
             inline void setLoop(bool bLoop)
                 { this->bLoop_ = bLoop; }

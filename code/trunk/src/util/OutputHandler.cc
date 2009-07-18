@@ -96,7 +96,7 @@ namespace orxonox
     */
     void OutputHandler::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
     {
-        OutputHandler::getOutStream().softDebugLevel_[(unsigned int)device] = level;
+        OutputHandler::getOutStream().softDebugLevel_[static_cast<unsigned int>(device)] = level;
     }
 
     /**
@@ -106,7 +106,7 @@ namespace orxonox
     */
     int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        return OutputHandler::getOutStream().softDebugLevel_[(unsigned int)device];
+        return OutputHandler::getOutStream().softDebugLevel_[static_cast<unsigned int>(device)];
     }
 
     /**

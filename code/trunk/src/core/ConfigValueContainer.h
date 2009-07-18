@@ -68,7 +68,10 @@ namespace orxonox
             inline ConfigValueCallback(void (T::*function) (void)) : function_(function) {}
             inline virtual ~ConfigValueCallback() {}
             inline virtual void call(void* object)
-                { if (!Identifier::isCreatingHierarchy()) { (((T*)object)->*this->function_)(); } }
+            {
+                if (!Identifier::isCreatingHierarchy())
+                    (static_cast<T*>(object)->*this->function_)();
+            }
 
         private:
             void (T::*function_) (void);

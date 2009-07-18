@@ -173,7 +173,7 @@ namespace orxonox
       return true;
     }
 
-    assert(curid==(unsigned int)GAMESTATEID_INITIAL || curid<gamestateID);
+    assert(curid==GAMESTATEID_INITIAL || curid<gamestateID);
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; ){

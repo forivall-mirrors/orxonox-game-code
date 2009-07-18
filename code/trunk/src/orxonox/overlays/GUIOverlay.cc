@@ -66,7 +66,7 @@ namespace orxonox
         {
             std::string str;
             std::stringstream out;
-            out << static_cast<long>(this);
+            out << reinterpret_cast<long>(this);
             str = out.str();
             GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().requestEnterState("guiMouseOnly");

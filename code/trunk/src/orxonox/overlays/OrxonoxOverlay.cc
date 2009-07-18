@@ -81,7 +81,7 @@ namespace orxonox
 
         // Get aspect ratio from the render window. Later on, we get informed automatically
         Ogre::RenderWindow* defaultWindow = GraphicsManager::getInstance().getRenderWindow();
-        this->windowAspectRatio_ = (float)defaultWindow->getWidth() / defaultWindow->getHeight();
+        this->windowAspectRatio_ = static_cast<float>(defaultWindow->getWidth()) / defaultWindow->getHeight();
         this->sizeCorrectionChanged();
 
         this->changedVisibility();
@@ -182,7 +182,7 @@ namespace orxonox
     */
     void OrxonoxOverlay::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
-        this->windowAspectRatio_ = newWidth/(float)newHeight;
+        this->windowAspectRatio_ = static_cast<float>(newWidth) / newHeight;
         this->sizeCorrectionChanged();
     }
 
@@ -214,7 +214,7 @@ namespace orxonox
             float angle = this->angle_.valueDegrees();
             if (angle < 0.0)
                 angle = -angle;
-            angle -= 180.0f * static_caste<int>(angle / 180.0);
+            angle -= 180.0f * static_cast<int>(angle / 180.0);
 
             // take the reverse if angle is about 90 degrees
             float tempAspect;

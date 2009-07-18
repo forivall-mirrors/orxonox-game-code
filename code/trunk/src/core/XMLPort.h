@@ -92,7 +92,7 @@
     The macro will then store "value" in the variable or read it when saving.
 */
 #define XMLPortParamVariable(classname, paramname, variable, xmlelement, mode) \
-    XMLPortVariableHelperClass xmlcontainer##variable##dummy((void*)&variable); \
+    XMLPortVariableHelperClass xmlcontainer##variable##dummy(static_cast<void*>(&variable)); \
     static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##loadexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getLoader(variable)), std::string( #classname ) + "::" + #variable + "loader")); \
     static ExecutorMember<orxonox::XMLPortVariableHelperClass>* xmlcontainer##variable##saveexecutor = static_cast<ExecutorMember<orxonox::XMLPortVariableHelperClass>*>(orxonox::createExecutor(orxonox::createFunctor(orxonox::XMLPortVariableHelperClass::getSaver (variable)), std::string( #classname ) + "::" + #variable + "saver" )); \
     XMLPortParamGeneric(xmlcontainer##variable, classname, orxonox::XMLPortVariableHelperClass, &xmlcontainer##variable##dummy, paramname, xmlcontainer##variable##loadexecutor, xmlcontainer##variable##saveexecutor, xmlelement, mode)
@@ -560,7 +560,7 @@ namespace orxonox
                                                 {
                                                     COUT(4) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
 
-                                                    BaseObject* newObject = identifier->fabricate((BaseObject*)object);
+                                                    BaseObject* newObject = identifier->fabricate(static_cast<BaseObject*>(object));
                                                     assert(newObject);
                                                     newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
 
@@ -570,11 +570,11 @@ namespace orxonox
                                                     if (this->bLoadBefore_)
                                                     {
                                                         newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ")" << std::endl;
                                                     }
                                                     else
                                                     {
-                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
+                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ")" << std::endl;
                                                     }
 
                                                     COUT(5) << object->getLoaderIndentation();
@@ -670,11 +670,11 @@ namespace orxonox
 
             template <class T>
             void load(const T& value)
-                { *((T*)this->variable_) = value; }
+                { *static_cast<T*>(this->variable_) = value; }
 
             template <class T>
             const T& save()
-                { return *((T*)this->variable_); }
+                { return *static_cast<T*>(this->variable_); }
 
             template <class T>
             static void (XMLPortVariableHelperClass::*getLoader(const T& var))(const T& value)

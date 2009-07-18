@@ -277,17 +277,17 @@ namespace orxonox
 
     std::string TclThreadManager::tcl_query(int querierID, Tcl::object const &args)
     {
-        return TclThreadManager::getInstance().evalQuery((unsigned int)querierID, stripEnclosingBraces(args.get()));
+        return TclThreadManager::getInstance().evalQuery(static_cast<unsigned int>(querierID), stripEnclosingBraces(args.get()));
     }
 
     std::string TclThreadManager::tcl_crossquery(int querierID, int threadID, Tcl::object const &args)
     {
-        return TclThreadManager::getInstance().evalQuery((unsigned int)querierID, (unsigned int)threadID, stripEnclosingBraces(args.get()));
+        return TclThreadManager::getInstance().evalQuery(static_cast<unsigned int>(querierID), static_cast<unsigned int>(threadID), stripEnclosingBraces(args.get()));
     }
 
     bool TclThreadManager::tcl_running(int threadID)
     {
-        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle((unsigned int)threadID);
+        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(static_cast<unsigned int>(threadID));
         if (bundle)
         {
             boost::mutex::scoped_lock running_lock(bundle->runningMutex_);
@@ -555,7 +555,7 @@ namespace orxonox
                     bool successfullyLocked = false;
                     try
                     {
-                        if (querierID == 0 || std::find(querier->queriers_.begin(), querier->queriers_.end(), (unsigned int)0) != querier->queriers_.end())
+                        if (querierID == 0 || std::find(querier->queriers_.begin(), querier->queriers_.end(), 0U) != querier->queriers_.end())
                             successfullyLocked = interpreter_lock.try_lock();
                         else
                         {
@@ -630,7 +630,7 @@ namespace orxonox
 #else
             boost::try_mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_.interpreterMutex_);
 #endif
-            unsigned long maxtime = (unsigned long)(time.getDeltaTime() * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
+            unsigned long maxtime = static_cast<unsigned long>(time.getDeltaTime() * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
             Ogre::Timer timer;
             while (!this->queueIsEmpty())
             {

@@ -140,7 +140,7 @@ namespace orxonox
         }
 
         // set text
-        int dist = (int) getDist2Focus();
+        int dist = static_cast<int>(getDist2Focus());
         navText_->setCaption(multi_cast<std::string>(dist));
         float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3;
 

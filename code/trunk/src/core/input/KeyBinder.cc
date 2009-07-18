@@ -443,13 +443,13 @@ namespace orxonox
 
                     if (mousePosition_[i] < 0)
                     {
-                        mouseAxes_[2*i + 0].absVal_ =  -mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
-                        mouseAxes_[2*i + 1].absVal_ =  0.0f;
+                        mouseAxes_[2*i + 0].absVal_ = -mouseSensitivity_ * mousePosition_[i] / mouseClippingSize_;
+                        mouseAxes_[2*i + 1].absVal_ = 0.0f;
                     }
                     else
                     {
-                        mouseAxes_[2*i + 0].absVal_ =  0.0f;
-                        mouseAxes_[2*i + 1].absVal_ =   mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
+                        mouseAxes_[2*i + 0].absVal_ = 0.0f;
+                        mouseAxes_[2*i + 1].absVal_ =  mouseSensitivity_ * mousePosition_[i] / mouseClippingSize_;
                     }
                 }
             }
@@ -459,9 +459,9 @@ namespace orxonox
         for (int i = 0; i < 2; i++)
         {
             if (rel[i] < 0)
-                mouseAxes_[0 + 2*i].relVal_ = -((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
+                mouseAxes_[0 + 2*i].relVal_ = -mouseSensitivity_ * rel[i] / mouseClippingSize_;
             else
-                mouseAxes_[1 + 2*i].relVal_ =  ((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
+                mouseAxes_[1 + 2*i].relVal_ =  mouseSensitivity_ * rel[i] / mouseClippingSize_;
         }
     }
 
@@ -473,10 +473,10 @@ namespace orxonox
     {
         if (rel < 0)
             for (int i = 0; i < -rel/mouseWheelStepSize_; i++)
-                mouseButtons_[8].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
+                mouseButtons_[8].execute(KeybindMode::OnPress, static_cast<float>(abs)/mouseWheelStepSize_);
         else
             for (int i = 0; i < rel/mouseWheelStepSize_; i++)
-                mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
+                mouseButtons_[9].execute(KeybindMode::OnPress, static_cast<float>(abs)/mouseWheelStepSize_);
     }
 
     void KeyBinder::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)

@@ -92,7 +92,7 @@ namespace orxonox
     /**
         @brief Destructor: Destroys the TextAreas.
     */
-    InGameConsole::~InGameConsole(void)
+    InGameConsole::~InGameConsole()
     {
         this->deactivate();
 

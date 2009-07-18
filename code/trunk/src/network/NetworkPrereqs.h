@@ -60,9 +60,9 @@
 //-----------------------------------------------------------------------
 namespace orxonox
 {
-  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
-  static const unsigned int CLIENTID_UNKNOWN    = (unsigned int)-2;
-  static const uint32_t     OBJECTID_UNKNOWN    = (uint32_t)(-1);
+  static const unsigned int GAMESTATEID_INITIAL = static_cast<unsigned int>(-1);
+  static const unsigned int CLIENTID_UNKNOWN    = static_cast<unsigned int>(-2);
+  static const uint32_t     OBJECTID_UNKNOWN    = static_cast<uint32_t>(-1);
 }
 
 //-----------------------------------------------------------------------

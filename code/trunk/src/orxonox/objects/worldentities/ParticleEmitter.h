@@ -65,7 +65,7 @@ namespace orxonox
             inline void setLODxml(unsigned int level)
                 { this->LOD_ = static_cast<LODParticle::Value>(level); this->LODchanged(); }
             inline unsigned int getLODxml() const
-                { return (unsigned int)this->LOD_; }
+                { return static_cast<unsigned int>(this->LOD_); }
 
             void sourceChanged();
             void LODchanged();

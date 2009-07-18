@@ -192,7 +192,7 @@ namespace orxonox
                         {
 //                             boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                             std::cout << endl << CommandExecutor::hint( std::string((const char*)this->commandLine_,inputIterator_) ) << endl;
-                            strncpy((char*)this->commandLine_, CommandExecutor::complete( std::string((const char*)this->commandLine_,inputIterator_) ).c_str(), MAX_COMMAND_LENGTH);
+                            strncpy(reinterpret_cast<char*>(this->commandLine_), CommandExecutor::complete( std::string(reinterpret_cast<char*>(this->commandLine_),inputIterator_) ).c_str(), MAX_COMMAND_LENGTH);
                             inputIterator_ = strlen((const char*)this->commandLine_);
                             break;
                         }
@@ -274,7 +274,7 @@ namespace orxonox
     
     void GSDedicated::insertCharacter( unsigned int position, char c )
     {
-//         std::cout << endl << (unsigned int)c << endl;
+//         std::cout << endl << static_cast<unsigned int>(c) << endl;
         // check that we do not exceed MAX_COMMAND_LENGTH
         if( inputIterator_+1 < MAX_COMMAND_LENGTH )
         {

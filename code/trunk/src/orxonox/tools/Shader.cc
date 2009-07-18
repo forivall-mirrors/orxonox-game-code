@@ -164,17 +164,17 @@ namespace orxonox
         {
             if (pointer->first)
             {
-                if ((*((float*)pointer->second)) != value)
+                if ((*static_cast<float*>(pointer->second)) != value)
                 {
-                    (*((float*)pointer->second)) = value;
+                    (*static_cast<float*>(pointer->second)) = value;
                     return true;
                 }
             }
             else
             {
-                if ((*((int*)pointer->second)) != (int)value)
+                if ((*static_cast<int*>(pointer->second)) != static_cast<int>(value))
                 {
-                    (*((int*)pointer->second)) = (int)value;
+                    (*static_cast<int*>(pointer->second)) = static_cast<int>(value);
                     return true;
                 }
             }
@@ -189,17 +189,17 @@ namespace orxonox
         {
             if (pointer->first)
             {
-                if ((*((float*)pointer->second)) != (float)value)
+                if ((*static_cast<float*>(pointer->second)) != static_cast<float>(value))
                 {
-                    (*((float*)pointer->second)) = (float)value;
+                    (*static_cast<float*>(pointer->second)) = static_cast<float>(value);
                     return true;
                 }
             }
             else
             {
-                if ((*((int*)pointer->second)) != value)
+                if ((*static_cast<int*>(pointer->second)) != value)
                 {
-                    (*((int*)pointer->second)) = value;
+                    (*static_cast<int*>(pointer->second)) = value;
                     return true;
                 }
             }
@@ -213,9 +213,9 @@ namespace orxonox
         if (pointer)
         {
             if (pointer->first)
-                return (*((float*)pointer->second));
+                return (*static_cast<float*>(pointer->second));
             else
-                return static_cast<float>(*((int*)pointer->second));
+                return static_cast<float>(*static_cast<int*>(pointer->second));
         }
         else
             return 0;
@@ -308,8 +308,8 @@ namespace orxonox
                         for (Ogre::GpuConstantDefinitionMap::const_iterator definition_iterator = constant_definitions.begin(); definition_iterator != constant_definitions.end(); ++definition_iterator)
                         {
                             void* temp = (definition_iterator->second.isFloat())
-                                            ? (void*)parameter_pointer->getFloatPointer(definition_iterator->second.physicalIndex)
-                                            : (void*)parameter_pointer->getIntPointer(definition_iterator->second.physicalIndex);
+                                            ? static_cast<void*>(parameter_pointer->getFloatPointer(definition_iterator->second.physicalIndex))
+                                            : static_cast<void*>(parameter_pointer->getIntPointer(definition_iterator->second.physicalIndex));
                             ParameterPointer parameter_pointer = ParameterPointer(definition_iterator->second.isFloat(), temp);
 
                             TechniqueVector& technique_vector = Shader::parameters_s[material];

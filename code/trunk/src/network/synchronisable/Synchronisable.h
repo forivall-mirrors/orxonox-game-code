@@ -43,7 +43,7 @@
 #include "NetworkCallback.h"
 
 /*#define REGISTERDATA(varname, ...) \
-    registerVariable((void*)&varname, sizeof(varname), DATA, __VA_ARGS__)
+    registerVariable(static_cast<void*>(&varname), sizeof(varname), DATA, __VA_ARGS__)
 #define REGISTERSTRING(stringname, ...) \
     registerVariable(&stringname, stringname.length()+1, STRING, __VA_ARGS__)*/
 

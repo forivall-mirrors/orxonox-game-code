@@ -135,7 +135,7 @@ namespace orxonox
         if (this->bActive_)
         {
             // If active: Decrease the timer by the duration of the last frame
-            this->time_ -= (long long)(time.getDeltaTimeMicroseconds() * this->getTimeFactor());
+            this->time_ -= static_cast<long long>(time.getDeltaTimeMicroseconds() * this->getTimeFactor());
 
             if (this->time_ <= 0)
             {

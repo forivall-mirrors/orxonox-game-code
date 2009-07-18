@@ -174,7 +174,7 @@ namespace orxonox
             std::ostringstream windowHndStr;
 
             // Fill parameter list
-            windowHndStr << (unsigned int)windowHnd_;
+            windowHndStr << static_cast<unsigned int>(windowHnd);
             paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 #if defined(ORXONOX_PLATFORM_WINDOWS)
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));

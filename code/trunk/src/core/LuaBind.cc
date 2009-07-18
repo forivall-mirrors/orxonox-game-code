@@ -123,7 +123,7 @@ namespace orxonox
 #if LUA_VERSION_NUM != 501
   const char * LuaBind::lua_Chunkreader(lua_State *L, void *data, size_t *size)
   {
-    LoadS* ls = ((LoadS*)data);
+    LoadS* ls = static_cast<LoadS*>(data);
     if (ls->size == 0) return NULL;
     *size = ls->size;
     ls->size = 0;

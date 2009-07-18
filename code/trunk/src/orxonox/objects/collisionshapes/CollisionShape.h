@@ -62,7 +62,7 @@ namespace orxonox
 
             virtual void setScale3D(const Vector3& scale);
             virtual void setScale(float scale);
-            inline const Vector3& getScale3D(void) const
+            inline const Vector3& getScale3D() const
                 { return this->scale_; }
 
             void updateShape();

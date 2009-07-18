@@ -65,7 +65,7 @@ namespace orxonox
             {
                 EmptyClipboard();
                 HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE, text.size() + 1);
-                char* buffer = (char*)GlobalLock(clipbuffer);
+                char* buffer = static_cast<char*>(GlobalLock(clipbuffer));
                 strcpy(buffer, text.c_str());
                 GlobalUnlock(clipbuffer);
                 SetClipboardData(CF_TEXT, clipbuffer);
@@ -93,7 +93,7 @@ namespace orxonox
             if (OpenClipboard(0))
             {
                 HANDLE hData = GetClipboardData(CF_TEXT);
-                std::string output = (char*)GlobalLock(hData);
+                std::string output = static_cast<char*>(GlobalLock(hData));
                 GlobalUnlock(hData);
                 CloseClipboard();
 

@@ -227,7 +227,7 @@ namespace orxonox
 
     std::string Shell::getFromHistory() const
     {
-        unsigned int index = mod(((int)this->historyOffset_) - ((int)this->historyPosition_), this->maxHistoryLength_);
+        unsigned int index = mod(static_cast<int>(this->historyOffset_) - static_cast<int>(this->historyPosition_), this->maxHistoryLength_);
         if (index < this->commandHistory_.size() && this->historyPosition_ != 0)
             return this->commandHistory_[index];
         else
@@ -248,7 +248,7 @@ namespace orxonox
             if (this->finishedLastLine_)
             {
                 if (this->bAddOutputLevel_)
-                    output.insert(0, 1, (char)OutputHandler::getOutStream().getOutputLevel());
+                    output.insert(0, 1, static_cast<char>(OutputHandler::getOutStream().getOutputLevel()));
 
                 this->lines_.insert(this->lines_.begin(), output);
 

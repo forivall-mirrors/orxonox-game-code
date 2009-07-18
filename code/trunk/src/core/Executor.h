@@ -103,7 +103,7 @@
             } \
             COUT(5) << tokens[i]; \
         } \
-        COUT(5) << ") and " << std::max((int)paramCount - (int)tokens.size(), 0) << " default values ("; \
+        COUT(5) << ") and " << std::max(static_cast<int>(paramCount) - static_cast<int>(tokens.size()), 0) << " default values ("; \
         for (unsigned int i = tokens.size(); i < paramCount; i++) \
         { \
             param[i] = this->defaultValue_[i]; \

@@ -142,7 +142,7 @@ bool Packet::send(){
     {
       // Assures we don't create a packet and destroy it right after in another thread
       // without having a reference in the packetMap_
-      packetMap_[(size_t)(void*)enetPacket_] = this;
+      packetMap_[reinterpret_cast<size_t>(enetPacket_)] = this;
     }
   }
 #ifndef NDEBUG
@@ -171,7 +171,7 @@ bool Packet::send(){
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   uint8_t *data = packet->data;
-  assert(ClientInformation::findClient(&peer->address)->getID() != (unsigned int)-2 || !Host::isServer());
+  assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p = 0;
   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
@@ -229,7 +229,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
   // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
-  std::map<size_t, Packet*>::iterator it = packetMap_.find((size_t)enetPacket);
+  std::map<size_t, Packet*>::iterator it = packetMap_.find(reinterpret_cast<size_t>(enetPacket));
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;
