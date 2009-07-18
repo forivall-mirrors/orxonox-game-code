@@ -39,6 +39,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
 #include "InputCommands.h"
+#include "JoyStick.h"
 
 namespace orxonox
 {
@@ -47,8 +48,7 @@ namespace orxonox
         Constructor that does as little as necessary.
     */
     KeyBinder::KeyBinder()
-        : numberOfJoySticks_(0)
-        , deriveTime_(0.0f)
+        : deriveTime_(0.0f)
     {
         mouseRelative_[0] = 0;
         mouseRelative_[1] = 0;
@@ -81,14 +81,14 @@ namespace orxonox
                 nameSuffix = MouseButtonCode::ByString[i];
             else
                 nameSuffix = mouseWheelNames[i - MouseButtonCode::numberOfButtons];
-            mouseButtons_[i].name_ = std::string("Mouse") + nameSuffix;
+            mouseButtons_[i].name_ = nameSuffix;
             mouseButtons_[i].paramCommandBuffer_ = &paramCommandBuffer_;
             mouseButtons_[i].groupName_ = "MouseButtons";
         }
         // mouse axes
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
         {
-            mouseAxes_[i].name_ = std::string("Mouse") + MouseAxisCode::ByString[i / 2];
+            mouseAxes_[i].name_ = MouseAxisCode::ByString[i / 2];
             if (i & 1)
                 mouseAxes_[i].name_ += "Pos";
             else
@@ -101,11 +101,7 @@ namespace orxonox
         this->configFile_ = ConfigFileType::NoType;
 
         // initialise joy sticks separatly to allow for reloading
-        numberOfJoySticks_ = this->getJoyStickList().size();
-        initialiseJoyStickBindings();
-
-        // collect all Buttons and HalfAxes
-        compilePointerLists();
+        this->JoyStickQuantityChanged(this->getJoyStickList());
 
         // set them here to use allHalfAxes_
         setConfigValues();
@@ -155,8 +151,8 @@ namespace orxonox
 
     void KeyBinder::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
-        unsigned int oldValue = numberOfJoySticks_;
-        numberOfJoySticks_ = joyStickList.size();
+        unsigned int oldValue = joySticks_.size();
+        joySticks_ = joyStickList;
 
         // initialise joy stick bindings
         initialiseJoyStickBindings();
@@ -167,7 +163,7 @@ namespace orxonox
         // load the bindings if required
         if (configFile_ != ConfigFileType::NoType)
         {
-            for (unsigned int iDev = oldValue; iDev < numberOfJoySticks_; ++iDev)
+            for (unsigned int iDev = oldValue; iDev < joySticks_.size(); ++iDev)
             {
                 for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; ++i)
                     joyStickButtons_[iDev][i].readConfigValue(this->configFile_);
@@ -182,30 +178,30 @@ namespace orxonox
 
     void KeyBinder::initialiseJoyStickBindings()
     {
-        this->joyStickAxes_.resize(numberOfJoySticks_);
-        this->joyStickButtons_.resize(numberOfJoySticks_);
+        this->joyStickAxes_.resize(joySticks_.size());
+        this->joyStickButtons_.resize(joySticks_.size());
 
         // reinitialise all joy stick binings (doesn't overwrite the old ones)
-        for (unsigned int iDev = 0; iDev < numberOfJoySticks_; iDev++)
+        for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
-            std::string deviceNumber = multi_cast<std::string>(iDev);
+            std::string deviceName = joySticks_[iDev]->getDeviceName();
             // joy stick buttons
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
             {
-                joyStickButtons_[iDev][i].name_ = std::string("JoyStick") + deviceNumber + JoyStickButtonCode::ByString[i];
+                joyStickButtons_[iDev][i].name_ = JoyStickButtonCode::ByString[i];
                 joyStickButtons_[iDev][i].paramCommandBuffer_ = &paramCommandBuffer_;
-                joyStickButtons_[iDev][i].groupName_ = std::string("JoyStick") + deviceNumber + "Buttons";
+                joyStickButtons_[iDev][i].groupName_ = "JoyStickButtons_" + deviceName;
             }
             // joy stick axes
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                joyStickAxes_[iDev][i].name_ = std::string("JoyStick") + deviceNumber + JoyStickAxisCode::ByString[i >> 1];
+                joyStickAxes_[iDev][i].name_ = JoyStickAxisCode::ByString[i / 2];
                 if (i & 1)
                     joyStickAxes_[iDev][i].name_ += "Pos";
                 else
                     joyStickAxes_[iDev][i].name_ += "Neg";
                 joyStickAxes_[iDev][i].paramCommandBuffer_ = &paramCommandBuffer_;
-                joyStickAxes_[iDev][i].groupName_ = std::string("JoyStick") + deviceNumber + "Axes";
+                joyStickAxes_[iDev][i].groupName_ = "JoyStickAxes_" + deviceName;
             }
         }
     }
@@ -218,21 +214,21 @@ namespace orxonox
         // Note: Don't include the dummy keys which don't actually exist in OIS but have a number
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
             if (!keys_[i].name_.empty())
-                allButtons_[keys_[i].name_] = keys_ + i;
+                allButtons_[keys_[i].groupName_ + "." + keys_[i].name_] = keys_ + i;
         for (unsigned int i = 0; i < numberOfMouseButtons_; i++)
-            allButtons_[mouseButtons_[i].name_] = mouseButtons_ + i;
+            allButtons_[mouseButtons_[i].groupName_ + "." + mouseButtons_[i].name_] = mouseButtons_ + i;
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
         {
-            allButtons_[mouseAxes_[i].name_] = mouseAxes_ + i;
+            allButtons_[mouseAxes_[i].groupName_ + "." + mouseAxes_[i].name_] = mouseAxes_ + i;
             allHalfAxes_.push_back(mouseAxes_ + i);
         }
-        for (unsigned int iDev = 0; iDev < numberOfJoySticks_; iDev++)
+        for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
-                allButtons_[joyStickButtons_[iDev][i].name_] = &(joyStickButtons_[iDev][i]);
+                allButtons_[joyStickButtons_[iDev][i].groupName_ + "." + joyStickButtons_[iDev][i].name_] = &(joyStickButtons_[iDev][i]);
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                allButtons_[joyStickAxes_[iDev][i].name_] = &(joyStickAxes_[iDev][i]);
+                allButtons_[joyStickAxes_[iDev][i].groupName_ + "." + joyStickAxes_[iDev][i].name_] = &(joyStickAxes_[iDev][i]);
                 allHalfAxes_.push_back(&(joyStickAxes_[iDev][i]));
             }
         }
@@ -302,7 +298,7 @@ namespace orxonox
 
     void KeyBinder::resetJoyStickAxes()
     {
-        for (unsigned int iDev = 0; iDev < numberOfJoySticks_; ++iDev)
+        for (unsigned int iDev = 0; iDev < joySticks_.size(); ++iDev)
         {
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {

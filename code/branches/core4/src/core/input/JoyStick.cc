@@ -42,7 +42,7 @@ namespace orxonox
     //! Helper function that loads the config value vector of one coefficient
     void loadCalibration(std::vector<int>& list, const std::string& sectionName, const std::string& valueName, size_t size, int defaultValue);
 
-    std::vector<std::string> JoyStick::idStrings_s;
+    std::vector<std::string> JoyStick::deviceNames_s;
 
     JoyStick::JoyStick(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
@@ -52,34 +52,38 @@ namespace orxonox
         // Initialise POV and Slider states
         this->clearBuffersImpl();
 
-        idString_ = "JoyStick_";
-        std::string name = oisDevice_->vendor();
-        replaceCharacters(name, ' ', '_');
-        idString_ += name + "_";
-        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Button))  + "_";
-        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis))    + "_";
-        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Slider))  + "_";
-        idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_POV));
-        //idString_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Vector3));
-
-
-        BOOST_FOREACH(std::string& idString, idStrings_s)
+        // Generate unique name
+        if (oisDevice_->vendor().empty())
+            deviceName_ = "Unknown_";
+        else
         {
-            if (idString_ == idString)
+            std::string name = oisDevice_->vendor();
+            replaceCharacters(name, ' ', '_');
+            deviceName_ = name + "_";
+        }
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Button))  + "_";
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis))    + "_";
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Slider))  + "_";
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_POV));
+        //deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Vector3));
+
+        BOOST_FOREACH(std::string& idString, deviceNames_s)
+        {
+            if (deviceName_ == idString)
             {
                 // Make the ID unique for this execution time.
-                idString_ += "_" + multi_cast<std::string>(this->getDeviceID());
+                deviceName_ += "_" + multi_cast<std::string>(this->getDeviceName());
                 break;
             }
         }
 
-        COUT(4) << "Created OIS joy stick with ID " << idString_ << std::endl;
+        COUT(4) << "Created OIS joy stick with ID " << deviceName_ << std::endl;
 
         // Load calibration
         size_t axes = sliderAxes_s + static_cast<size_t>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis));
-        loadCalibration(configMinValues_,  idString_, "MinValue",  axes,  -32768);
-        loadCalibration(configMaxValues_,  idString_, "MaxValue",  axes,   32768);
-        loadCalibration(configZeroValues_, idString_, "ZeroValue", axes, 0);
+        loadCalibration(configMinValues_,  deviceName_, "MinValue",  axes,  -32768);
+        loadCalibration(configMaxValues_,  deviceName_, "MaxValue",  axes,   32768);
+        loadCalibration(configZeroValues_, deviceName_, "ZeroValue", axes, 0);
         this->evaluateCalibration();
     }
 
@@ -147,17 +151,17 @@ namespace orxonox
             if (configMinValues_[i] == INT_MAX)
                 configMinValues_[i] = -32768;
             ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                idString_, "MinValue", i, multi_cast<std::string>(configMinValues_[i]), false);
+                deviceName_, "MinValue", i, multi_cast<std::string>(configMinValues_[i]), false);
 
             // Maximum values
             if (configMaxValues_[i] == INT_MIN)
                 configMaxValues_[i] = 32767;
             ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                idString_, "MaxValue", i, multi_cast<std::string>(configMaxValues_[i]), false);
+                deviceName_, "MaxValue", i, multi_cast<std::string>(configMaxValues_[i]), false);
 
             // Middle values
             ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                idString_, "ZeroValue", i, multi_cast<std::string>(configZeroValues_[i]), false);
+                deviceName_, "ZeroValue", i, multi_cast<std::string>(configZeroValues_[i]), false);
         }
 
         this->evaluateCalibration();

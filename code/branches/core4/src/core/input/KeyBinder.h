@@ -96,7 +96,7 @@ namespace orxonox
 
     protected: // variables
         //! Currently active joy sticks
-        unsigned int numberOfJoySticks_;
+        std::vector<JoyStick*>  joySticks_;
 
         //! Actual key bindings for keys on the keyboard
         Button keys_            [KeyCode::numberOfKeys];

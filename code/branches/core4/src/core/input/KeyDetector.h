@@ -26,12 +26,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Different definitions of input processing.
-*/
-
 #ifndef _KeyDetector_H__
 #define _KeyDetector_H__
 
