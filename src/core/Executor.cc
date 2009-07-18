@@ -98,15 +98,15 @@ namespace orxonox
                     return false;
 
             // assign all given arguments to the multitypes
-            for (unsigned int i = 0; i < std::min(tokens.size(), (unsigned int)MAX_FUNCTOR_ARGUMENTS); i++)
+            for (unsigned int i = 0; i < std::min(tokens.size(), MAX_FUNCTOR_ARGUMENTS); i++)
                 param[i] = tokens[i];
 
             // fill the remaining multitypes with default values
-            for (unsigned int i = tokens.size(); i < std::min(paramCount, (unsigned int)MAX_FUNCTOR_ARGUMENTS); i++)
+            for (unsigned int i = tokens.size(); i < std::min(paramCount, MAX_FUNCTOR_ARGUMENTS); i++)
                 param[i] = this->defaultValue_[i];
 
             // evaluate the param types through the functor
-            for (unsigned int i = 0; i < std::min(paramCount, (unsigned int)MAX_FUNCTOR_ARGUMENTS); i++)
+            for (unsigned int i = 0; i < std::min(paramCount, MAX_FUNCTOR_ARGUMENTS); i++)
                 this->functor_->evaluateParam(i, param[i]);
 
             return true;

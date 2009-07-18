@@ -571,7 +571,7 @@ namespace orxonox
             return it->second;
         else
         {
-            COUT(1) << "ConfigFileManager: Can't find a config file for type with ID " << (int)type << std::endl;
+            COUT(1) << "ConfigFileManager: Can't find a config file for type with ID " << static_cast<int>(type) << std::endl;
             COUT(1) << "Using " << DEFAULT_CONFIG_FILE << " file." << std::endl;
             this->setFilename(type, DEFAULT_CONFIG_FILE);
             return getFile(type);

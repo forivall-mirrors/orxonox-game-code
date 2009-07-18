@@ -397,7 +397,7 @@ namespace orxonox
         std::string timeString = std::ctime(&time);
         timeString.erase(timeString.length()-1);
         std::ostringstream stream;
-        stream << (unsigned long)notification;
+        stream << reinterpret_cast<unsigned long>(notification);
         std::string addressString = stream.str() ;
         container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
 

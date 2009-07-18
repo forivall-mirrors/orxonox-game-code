@@ -124,7 +124,7 @@ namespace orxonox
             return false;
 
         size_t quotecount = 0;
-        size_t quote = (size_t)-1;
+        size_t quote = static_cast<size_t>(-1);
         while ((quote = getNextQuote(str, quote + 1)) < pos)
         {
             if (quote == pos)

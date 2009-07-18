@@ -324,9 +324,9 @@ namespace orxonox
                                              int index0, const btCollisionObject* colObj1, int partId1, int index1)
     {
         // get the WorldEntity pointers
-        WorldEntity* object0 = (WorldEntity*)colObj0->getUserPointer();
+        WorldEntity* object0 = static_cast<WorldEntity*>(colObj0->getUserPointer());
         assert(dynamic_cast<WorldEntity*>(object0));
-        WorldEntity* object1 = (WorldEntity*)colObj1->getUserPointer();
+        WorldEntity* object1 = static_cast<WorldEntity*>(colObj1->getUserPointer());
         assert(dynamic_cast<WorldEntity*>(object1));
 
         // false means that bullet will assume we didn't modify the contact

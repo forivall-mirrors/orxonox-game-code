@@ -128,7 +128,7 @@ namespace orxonox
     */
     std::string NotificationOverlay::clipMessage(const std::string & message)
     {
-        if(message.length() <= (unsigned int)this->queue_->getNotificationLength()) //!< If the message is not too long.
+        if(message.length() <= static_cast<unsigned int>(this->queue_->getNotificationLength())) //!< If the message is not too long.
             return message;
         return message.substr(0, this->queue_->getNotificationLength());
     }

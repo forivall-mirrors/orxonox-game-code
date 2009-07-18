@@ -50,7 +50,7 @@ Chat::Chat( const std::string& message, unsigned int playerID )
   *(Type::Value *)(data_ + _PACKETID ) = Type::Chat;
   *(unsigned int *)(data_ + _PLAYERID ) = playerID;
   *(unsigned int *)(data_ + _MESSAGELENGTH ) = messageLength_;
-  memcpy( data_+_MESSAGE, (void *)message.c_str(), messageLength_ );
+  memcpy( data_+_MESSAGE, static_cast<void*>(const_cast<char*>(message.c_str())), messageLength_ );
 }
 
 Chat::Chat( uint8_t* data, unsigned int clientID )

@@ -73,7 +73,7 @@ namespace orxonox
             if (it->second < static_cast<int>(this->teams_) && it->second >= 0)
                 playersperteam[it->second]++;
 
-        unsigned int minplayers = (unsigned int)-1;
+        unsigned int minplayers = static_cast<unsigned int>(-1);
         size_t minplayersteam = 0;
         for (size_t i = 0; i < this->teams_; ++i)
         {

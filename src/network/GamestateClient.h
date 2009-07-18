@@ -46,7 +46,7 @@
 #include "core/CorePrereqs.h"
 #include "GamestateHandler.h"
 
-const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
+const unsigned int GAMESTATEID_INITIAL = static_cast<unsigned int>(-1);
 
 namespace orxonox
 {

@@ -84,7 +84,7 @@ namespace orxonox
             return;
 
         Vector3 myposition = this->getControllableEntity()->getPosition();
-        float shortestsqdistance = (unsigned int)-1;
+        float shortestsqdistance = static_cast<unsigned int>(-1);
 
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
         {

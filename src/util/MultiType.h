@@ -302,7 +302,7 @@ namespace orxonox
             inline bool                                   setValue(const orxonox::Degree& value);
             inline bool                                   setValue(const char* value);
             /** @brief Assigns a pointer. */
-            template <typename V> inline bool             setValue(V* value)               { if (this->value_) { return this->value_->setValue((void*)value); } else { return this->assignValue((void*)value); } }
+            template <typename V> inline bool             setValue(V* value)               { if (this->value_) { return this->value_->setValue(static_cast<void*>(const_cast<typename TypeStripper<V>::RawType*>(value))); } else { return this->assignValue(static_cast<void*>(const_cast<typename TypeStripper<V>::RawType*>(value))); } }
             /** @brief Assigns the value of the other MultiType and converts it to the current type. */
             bool                                          setValue(const MultiType& other) { if (this->value_) { return this->value_->assimilate(other); } else { if (other.value_) { this->value_ = other.value_->clone(); } return true; } }
             /** @brief Changes the type to T and assigns the new value (which might be of another type than T - it gets converted). */
@@ -334,9 +334,9 @@ namespace orxonox
             std::string                       getTypename()               const;
             
             /** @brief Saves the value of the MT to a bytestream (pointed at by mem) and increases mem pointer by size of MT */
-            inline void                       exportData(uint8_t*& mem) const { assert(sizeof(MT_Type::Value)<=8); *(uint8_t*)(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
+            inline void                       exportData(uint8_t*& mem) const { assert(sizeof(MT_Type::Value)<=8); *static_cast<uint8_t*>(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
             /** @brief Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT */
-            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type::Value)<=8); this->setType(static_cast<MT_Type::Value>(*(uint8_t*)mem)); mem+=sizeof(uint8_t); this->value_->importData(mem); }
+            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type::Value)<=8); this->setType(static_cast<MT_Type::Value>(*static_cast<uint8_t*>(mem))); mem+=sizeof(uint8_t); this->value_->importData(mem); }
             /** @brief Saves the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
             inline uint8_t*&                  operator << (uint8_t*& mem) { importData(mem); return mem; }
             /** @brief Loads the value of the MT to a bytestream and increases pointer to bytestream by size of MT */
@@ -370,7 +370,7 @@ namespace orxonox
             operator orxonox::Radian()       const;
             operator orxonox::Degree()       const;
             /** @brief Returns the current value, converted to a T* pointer. */
-            template <class T> operator T*() const { return ((T*)this->operator void*()); }
+            template <class T> operator T*() const { return (static_cast<T*>(this->operator void*())); }
 
             inline bool getValue(char*                 value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
             inline bool getValue(unsigned char*        value) const { if (this->value_) { return this->value_->getValue(value); } return false; } /** @brief Assigns the value to the given pointer. The value gets converted if the types don't match. */
@@ -419,7 +419,7 @@ namespace orxonox
             inline orxonox::Quaternion      getQuaternion()       const { return this->operator orxonox::Quaternion();  } /** @brief Returns the current value, converted to the requested type. */
             inline orxonox::Radian          getRadian()           const { return this->operator orxonox::Radian();      } /** @brief Returns the current value, converted to the requested type. */
             inline orxonox::Degree          getDegree()           const { return this->operator orxonox::Degree();      } /** @brief Returns the current value, converted to the requested type. */
-            template <typename T> inline T* getPointer()          const { return ((T*)this->getVoid());                 } /** @brief Returns the current value, converted to a T* pointer. */
+            template <typename T> inline T* getPointer()          const { return static_cast<T*>(this->getVoid());      } /** @brief Returns the current value, converted to a T* pointer. */
 
         private:
             inline bool assignValue(const char& value)                 { if (this->value_ && this->value_->type_ == MT_Type::Char)             { return this->value_->setValue(value); } else { this->changeValueContainer<char>(value);                 return true; } } /** @brief Assigns a new value by changing type and creating a new container. */

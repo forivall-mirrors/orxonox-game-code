@@ -78,7 +78,7 @@ namespace orxonox
             }
         }
 
-        this->setDetailLevel((unsigned int)detaillevel);
+        this->setDetailLevel(static_cast<unsigned int>(detaillevel));
     }
 
     ParticleInterface::~ParticleInterface()
@@ -184,7 +184,7 @@ namespace orxonox
 
     void ParticleInterface::detailLevelChanged(unsigned int newlevel)
     {
-        if (newlevel >= (unsigned int)this->detaillevel_)
+        if (newlevel >= static_cast<unsigned int>(this->detaillevel_))
             this->bAllowedByLOD_ = true;
         else
             this->bAllowedByLOD_ = false;

@@ -37,7 +37,7 @@
 
 namespace orxonox {
 
-  static const unsigned int SCHED_PRIORITY_OFFSET = (unsigned int)-1;
+  static const unsigned int SCHED_PRIORITY_OFFSET = static_cast<unsigned int>(-1);
 
   objInfo::objInfo(uint32_t ID, uint32_t creatorID, int32_t curGsID, int32_t diffGsID, uint32_t size, unsigned int prioperm, unsigned int priosched)
   {

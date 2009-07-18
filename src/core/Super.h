@@ -90,7 +90,7 @@
         { \
             static void check() \
             { \
-                SuperFunctionCondition<functionnumber, T, 0, templatehack2>::apply((T*)0); \
+                SuperFunctionCondition<functionnumber, T, 0, templatehack2>::apply(static_cast<T*>(0)); \
                 SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::check(); \
             } \
             \
@@ -148,7 +148,7 @@
             {
                 // This call to the apply-function is the whole check. By calling the function with
                 // a T* pointer, the right function get's called.
-                SuperFunctionCondition<functionnumber, T, 0, templatehack2>::apply((T*)0);
+                SuperFunctionCondition<functionnumber, T, 0, templatehack2>::apply(static_cast<T*>(0));
 
                 // Go go the check for of next super-function (functionnumber + 1)
                 SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::check();

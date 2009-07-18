@@ -353,7 +353,7 @@ namespace orxonox
         if (needed_magazines <= 0 && !this->bStackMunition_)
             return false;
 
-        if (amount <= (unsigned int)needed_magazines)
+        if (amount <= static_cast<unsigned int>(needed_magazines))
         {
             // We need more magazines than we get, so just add them
             this->magazines_ += amount;

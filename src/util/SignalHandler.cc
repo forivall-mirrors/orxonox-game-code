@@ -202,7 +202,7 @@ namespace orxonox
         dup2( gdbOut[1], STDOUT_FILENO );
         dup2( gdbErr[1], STDERR_FILENO );
 
-        execlp( "sh", "sh", "-c", "gdb", (void*)NULL);
+        execlp( "sh", "sh", "-c", "gdb", static_cast<void*>(NULL));
       }
 
       char cmd[256];

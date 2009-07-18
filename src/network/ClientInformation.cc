@@ -165,21 +165,21 @@ namespace orxonox
   }
 
   double ClientInformation::getPacketLoss(){
-    return ((double)this->peer_->packetLoss)/ENET_PEER_PACKET_LOSS_SCALE;
+    return static_cast<double>(this->peer_->packetLoss)/ENET_PEER_PACKET_LOSS_SCALE;
   }
 
   unsigned int ClientInformation::getGamestateID() {
     if(this)
       return gamestateID_;
     else
-      return (unsigned int)-1;
+      return static_cast<unsigned int>(-1);
   }
 
   unsigned int ClientInformation::getPartialGamestateID() {
     if(this)
       return partialGamestateID_;
     else
-      return (unsigned int)-1;
+      return static_cast<unsigned int>(-1);
   }
 
   ClientInformation *ClientInformation::insertBack(ClientInformation *ins) {
@@ -196,7 +196,7 @@ namespace orxonox
   }
 
   bool ClientInformation::removeClient(unsigned int clientID) {
-    if((unsigned int)clientID==CLIENTID_UNKNOWN)
+    if(clientID==CLIENTID_UNKNOWN)
       return false;
     ClientInformation *temp = head_;
     while(temp!=0 && temp->getID()!=clientID)

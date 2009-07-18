@@ -217,7 +217,7 @@ namespace orxonox
             }
         }
 
-        this->insert((char)evt.text);
+        this->insert(static_cast<char>(evt.text));
     }
 
     /**

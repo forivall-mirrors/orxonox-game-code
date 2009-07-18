@@ -83,10 +83,10 @@ namespace orxonox
                 { return (0x1 << firemode); }
 
             static const unsigned int MAX_FIRE_MODES = 8;
-            static const unsigned int FIRE_MODE_UNASSIGNED = (unsigned int)-1;
+            static const unsigned int FIRE_MODE_UNASSIGNED = static_cast<unsigned int>(-1);
 
             static const unsigned int MAX_WEAPON_MODES = 8;
-            static const unsigned int WEAPON_MODE_UNASSIGNED = (unsigned int)-1;
+            static const unsigned int WEAPON_MODE_UNASSIGNED = static_cast<unsigned int>(-1);
 
         private:
             std::map<unsigned int, WeaponSet *> weaponSets_;

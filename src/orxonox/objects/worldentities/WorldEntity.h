@@ -147,7 +147,7 @@ namespace orxonox
             virtual void setScale3D(const Vector3& scale);
             inline void setScale3D(float x, float y, float z)
                 { this->setScale3D(Vector3(x, y, z)); }
-            const Vector3& getScale3D(void) const;
+            const Vector3& getScale3D() const;
             const Vector3& getWorldScale3D() const;
 
             inline void setScale(float scale)
@@ -456,7 +456,7 @@ namespace orxonox
         { return this->node_->getPosition(); }
     inline const Quaternion& WorldEntity::getOrientation() const
         { return this->node_->getOrientation(); }
-    inline const Vector3& WorldEntity::getScale3D(void) const
+    inline const Vector3& WorldEntity::getScale3D() const
         { return this->node_->getScale(); }
 #endif
 
