@@ -33,6 +33,7 @@
 
 #include <cassert>
 #include <list>
+#include <string>
 #include "core/OrxonoxClass.h"
 
 // tolua_begin

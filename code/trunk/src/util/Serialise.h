@@ -407,13 +407,14 @@ namespace orxonox{
 
     template <> inline void loadAndIncrease( const std::string& variable, uint8_t*& mem )
     {
-        *(std::string*)( &variable ) = std::string((const char *)mem);
+        *(std::string*)( &variable ) = (const char *)mem;
         mem += variable.length()+1;
     }
 
     template <> inline bool checkEquality( const std::string& variable, uint8_t* mem )
     {
-        return std::string((const char*)mem)==variable;
+        //return std::string((const char*)mem)==variable;
+        return (const char*)mem==variable;
     }
 
 // =========== Degree

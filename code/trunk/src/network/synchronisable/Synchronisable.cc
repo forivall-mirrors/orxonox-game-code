@@ -95,12 +95,12 @@ namespace orxonox
       // remove object from the static objectMap
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID);
-      // delete all Synchronisable Variables from syncList ( which are also in stringList )
-      for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
-        delete (*it);
-      syncList.clear();
-      stringList.clear();
     }
+    // delete all Synchronisable Variables from syncList ( which are also in stringList )
+    for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
+      delete (*it);
+    syncList.clear();
+    stringList.clear();
     std::map<uint32_t, Synchronisable*>::iterator it;
     it = objectMap_.find(objectID);
     if (it != objectMap_.end())
@@ -246,8 +246,10 @@ namespace orxonox
     if(!doSync(id, mode))
       return 0;
     uint32_t tempsize = 0;
+#ifndef NDEBUG
     if (this->classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
+#endif
 
     if (this->classID == static_cast<uint32_t>(-1))
         this->classID = this->getIdentifier()->getNetworkID();

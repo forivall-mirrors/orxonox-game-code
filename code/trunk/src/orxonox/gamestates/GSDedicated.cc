@@ -41,7 +41,7 @@
 #include <iomanip>
 #include <boost/bind.hpp>
 
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
 #include <termios.h>
 #endif
 
@@ -57,15 +57,12 @@ namespace orxonox
     GSDedicated::GSDedicated(const GameStateConstrParams& params)
         : GameState(params)
         , server_(0)
-        , timeSinceLastUpdate_(0)
         , closeThread_(false)
         , cleanLine_(true)
         , inputIterator_(0)
         , cursorX_(0)
         , cursorY_(0)
     {
-        this->commandLine_ = new unsigned char[MAX_COMMAND_LENGTH];
-//         memset( this->commandLine_, 0, MAX_COMMAND_LENGTH );
     }
 
     GSDedicated::~GSDedicated()
@@ -95,37 +92,30 @@ namespace orxonox
         delete this->server_;
         
         closeThread_ = true;
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         std::cout << "\033[0G\033[K";
         std::cout.flush();
         resetTerminalMode();
         delete this->originalTerminalSettings_;
 #endif
-        //inputThread_->join();
+        COUT(0) << "Press enter to end the game..." << std::endl;
+        inputThread_->join();
+        delete this->inputThread_;
 
         GameMode::setHasServer(false);
     }
 
     void GSDedicated::update(const Clock& time)
     {
-        timeSinceLastUpdate_ += time.getDeltaTime();
-        if (timeSinceLastUpdate_ >= NETWORK_PERIOD)
-        {
-            timeSinceLastUpdate_ -= static_cast<unsigned int>(timeSinceLastUpdate_ / NETWORK_PERIOD) * NETWORK_PERIOD;
-            server_->update(time);
-        }
-        else
-        {
-            msleep(static_cast<unsigned int>((NETWORK_PERIOD - timeSinceLastUpdate_)*1000));
-            msleep(static_cast<unsigned int>(NETWORK_PERIOD*1000)); // NOTE: this is to throttle the non-network framerate
-//            COUT(0) << "sleeping for " << static_cast<int>((NETWORK_PERIOD - timeSinceLastUpdate_) * 1000 * 1000) << " usec" << endl;
-        }
+        server_->update(time);
         processQueue();
         printLine();
     }
     
     void GSDedicated::inputThread()
     {
+        this->commandLine_ = new unsigned char[MAX_COMMAND_LENGTH];
+//         memset( this->commandLine_, 0, MAX_COMMAND_LENGTH );
         unsigned char c;
         unsigned int  escapeChar=0;
         while(!closeThread_)
@@ -193,7 +183,8 @@ namespace orxonox
 //                             boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                             std::cout << endl << CommandExecutor::hint( std::string((const char*)this->commandLine_,inputIterator_) ) << endl;
                             strncpy(reinterpret_cast<char*>(this->commandLine_), CommandExecutor::complete( std::string(reinterpret_cast<char*>(this->commandLine_),inputIterator_) ).c_str(), MAX_COMMAND_LENGTH);
-                            inputIterator_ = strlen((const char*)this->commandLine_);
+                            this->inputIterator_ = strlen((const char*)this->commandLine_);
+                            this->cursorX_ = this->inputIterator_;
                             break;
                         }
                         case '\033': // 1. escape character
@@ -206,11 +197,13 @@ namespace orxonox
                 }
             }
         }
+
+        delete[] this->commandLine_;
     }
     
     void GSDedicated::printLine()
     {
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         // set cursor to the begining of the line and erase the line
         std::cout << "\033[0G\033[K";
 //         boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
@@ -250,7 +243,7 @@ namespace orxonox
     
     void GSDedicated::setTerminalMode()
     {
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         termios new_settings;
      
         tcgetattr(0,this->originalTerminalSettings_);
@@ -267,7 +260,7 @@ namespace orxonox
     
     void GSDedicated::resetTerminalMode()
     {
-#ifndef ORXONOX_PLATFORM_WINDOWS
+#ifdef ORXONOX_PLATFORM_UNIX
         tcsetattr(0, TCSANOW, GSDedicated::originalTerminalSettings_);
 #endif
     }

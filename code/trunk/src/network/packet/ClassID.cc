@@ -141,7 +141,7 @@ bool ClassID::process(){
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     classname = temp+2*sizeof(uint32_t);
     id=ClassByString( std::string((const char*)classname) );
-    COUT(0) << "processing classid: " << networkID << " name: " << classname << " id: " << id << std::endl;
+    COUT(3) << "processing classid: " << networkID << " name: " << classname << " id: " << id << std::endl;
     if(id==NULL){
       COUT(0) << "Recieved a bad classname" << endl;
       abort();

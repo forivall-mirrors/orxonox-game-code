@@ -131,7 +131,7 @@ bool FunctionIDs::process(){
     networkID = *(uint32_t*)temp;
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     functionname = temp+2*sizeof(uint32_t);
-    COUT(0) << "processing functionid: " << networkID << " name: " << functionname << std::endl;
+    COUT(3) << "processing functionid: " << networkID << " name: " << functionname << std::endl;
     NetworkFunctionBase::setNetworkID((const char*)functionname, networkID);
     temp += 2*sizeof(uint32_t) + stringsize;
   }

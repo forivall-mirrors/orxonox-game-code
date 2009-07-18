@@ -44,6 +44,7 @@
 
 #include <map>
 #include "GamestateHandler.h"
+#include "core/CorePrereqs.h"
 
 namespace orxonox
 {
@@ -72,22 +73,24 @@ namespace orxonox
     bool add(packet::Gamestate *gs, unsigned int clientID);
     bool processGamestates();
     bool update();
-    packet::Gamestate *popGameState(unsigned int clientID);
+    void sendGamestates();
+//     packet::Gamestate *popGameState(unsigned int clientID);
+    void finishGamestate( unsigned int clientID, packet::Gamestate** destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate );
 
     bool getSnapshot();
 
     bool ack(unsigned int gamestateID, unsigned int clientID);
     void removeClient(ClientInformation *client);
-    private:
+  private:
     bool processGamestate(packet::Gamestate *gs);
 
     std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> > gamestateMap_;
-    //std::map<int, packet::Gamestate*> gamestateMap; //map gsID to gamestate*
-    //std::map<int, int> gamestateUsed; // save the number of clients, that use the specific gamestate
     std::map<unsigned int, packet::Gamestate*> gamestateQueue;
     packet::Gamestate *reference;
     TrafficControl *trafficControl_;
     unsigned int id_;
+//     boost::mutex* threadMutex_;
+    ThreadPool*   /*thread*/Pool_;
   };
 
 }

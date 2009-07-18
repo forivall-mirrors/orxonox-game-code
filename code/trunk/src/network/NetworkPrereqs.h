@@ -101,7 +101,6 @@ namespace orxonox
   class NetworkMemberFunctionBase;
   template <class T> class NetworkMemeberFunction;
   struct NetworkFunctionPointer;
-  class PacketBuffer;
   class Server;
   class ServerConnection;
   class ServerFrameListener;

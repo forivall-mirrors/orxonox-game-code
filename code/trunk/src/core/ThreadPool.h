@@ -20,62 +20,38 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
  */
 
-/**
-@file
-@brief
-    Compilation of the most often used header files in the core library for MSVC
-*/
+#ifndef _ThreadPool_H__
+#define _ThreadPool_H__
 
 #include "CorePrereqs.h"
 
-#include <cassert>
-#include <fstream>
-#include <iostream>
-#include <list>
-#include <locale>
-#include <map>
-#include <queue>
-#include <set>
-#include <sstream>
-#include <stack>
-#include <string>
 #include <vector>
 
+ namespace orxonox
+{
+    class _CoreExport ThreadPool
+    {
+    public:
+        ThreadPool();
+        virtual ~ThreadPool();
+        
+        void addThreads( unsigned int nr );
+        unsigned int removeThreads( unsigned int nr );
+        unsigned int setNrOfThreads( unsigned int nr );
+        
+        bool passFunction( Executor* executor, bool addThread=false );
+        void synchronise();
+        
+    private:
+        std::vector<Thread*> threadPool_;
+        
+    };
+}
 
-#ifdef ORXONOX_COMPILER_MSVC
-
-#include <OgreMath.h>
-#include <OgreVector2.h>
-#include <OgreVector3.h>
-#include <OgreVector4.h>
-#include <OgreQuaternion.h>
-#include <OgreColourValue.h>
-
-#include <boost/shared_ptr.hpp> // 12
-#include <boost/preprocessor/cat.hpp> // 12
-
-// Just in case some header included windows.h
-#undef min
-#undef max
-
-#endif /* ORXONOX_COMPILER_MSVC */
-
-
-#include "util/Debug.h"
-#include "util/Math.h"
-#include "util/MultiType.h"
-#include "util/SubString.h"
-
-
-#ifdef ORXONOX_COMPILER_MSVC
-
-// A change would trigger an 80% Core rebuild anyway
-#include "Identifier.h"
-
-#endif /*ORXONOX_COMPILER_MSVC */
+#endif /* _ThreadPool_H__ */

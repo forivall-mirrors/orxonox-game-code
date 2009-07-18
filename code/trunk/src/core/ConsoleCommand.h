@@ -31,6 +31,8 @@
 
 #include "CorePrereqs.h"
 
+#include <boost/preprocessor/cat.hpp>
+
 #include "ArgumentCompletionFunctions.h"
 #include "CommandExecutor.h"
 #include "Executor.h"
@@ -38,29 +40,27 @@
 
 
 #define SetConsoleCommand(classname, function, bCreateShortcut) \
-    SetConsoleCommandAliasMulti(classname, function, #function, 0, bCreateShortcut)
+    SetConsoleCommandGeneric(classname, function, #function, bCreateShortcut)
 #define SetConsoleCommandAlias(classname, function, name, bCreateShortcut) \
-    SetConsoleCommandAliasMulti(classname, function, name, 0, bCreateShortcut)
-#define SetConsoleCommandAliasMulti(classname, function, name, number, bCreateShortcut) \
-    SetConsoleCommandGeneric(classname##function##consolecommand__##number, classname, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name), bCreateShortcut)
+    SetConsoleCommandGeneric(classname, function, name, bCreateShortcut)
 
-#define SetConsoleCommandGeneric(fakevariable, classname, command, bCreateShortcut) \
-    orxonox::ConsoleCommand& fakevariable = orxonox::ClassIdentifier<classname>::getIdentifier(#classname)->addConsoleCommand(command, bCreateShortcut)
+#define SetConsoleCommandGeneric(classname, function, name, bCreateShortcut) \
+    orxonox::ConsoleCommand& BOOST_PP_CAT(classname##function##consolecommand__, __LINE__) = orxonox::ClassIdentifier<classname>::getIdentifier(#classname)->addConsoleCommand(orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name), bCreateShortcut)
 
 
 #define SetConsoleCommandShortcut(classname, function) \
-    SetConsoleCommandShortcutAliasMulti(classname, function, #function, 0)
+    SetConsoleCommandShortcutAliasGeneric(classname, function, #function)
 #define SetConsoleCommandShortcutAlias(classname, function, name) \
-    SetConsoleCommandShortcutAliasMulti(classname, function, name, 0)
-#define SetConsoleCommandShortcutAliasMulti(classname, function, name, number) \
-    SetConsoleCommandShortcutGeneric(function##consolecommand__##number, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name))
+    SetConsoleCommandShortcutAliasGeneric(classname, function, name)
+#define SetConsoleCommandShortcutAliasGeneric(classname, function, name) \
+    SetConsoleCommandShortcutGeneric(BOOST_PP_CAT(function##consolecommand__, __LINE__), orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name))
 
 #define SetConsoleCommandShortcutExtern(function) \
-    SetConsoleCommandShortcutExternAliasMulti(function, #function, 0)
+    SetConsoleCommandShortcutExternAliasGeneric(function, #function)
 #define SetConsoleCommandShortcutExternAlias(function, name) \
-    SetConsoleCommandShortcutExternAliasMulti(function, name, 0)
-#define SetConsoleCommandShortcutExternAliasMulti(function, name, number) \
-    SetConsoleCommandShortcutGeneric(function##consolecommand__##number, orxonox::createConsoleCommand(orxonox::createFunctor(&function), name))
+    SetConsoleCommandShortcutExternAliasGeneric(function, name)
+#define SetConsoleCommandShortcutExternAliasGeneric(function, name) \
+    SetConsoleCommandShortcutGeneric(BOOST_PP_CAT(function##consolecommand__, __LINE__), orxonox::createConsoleCommand(orxonox::createFunctor(&function), name))
 
 #define SetConsoleCommandShortcutGeneric(fakevariable, command) \
     orxonox::ConsoleCommand& fakevariable = orxonox::CommandExecutor::addConsoleCommandShortcut(command, true)

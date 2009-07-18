@@ -65,7 +65,6 @@ namespace orxonox
         void deleteCharacter( unsigned int position );
         
         Server*                 server_;
-        float                   timeSinceLastUpdate_;
         
         boost::thread           *inputThread_;
         boost::recursive_mutex  inputLineMutex_;

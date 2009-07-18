@@ -55,6 +55,13 @@ namespace orxonox
   }
   
   
+  void NetworkFunctionBase::destroyAllNetworkFunctions()
+  {
+    std::map<std::string, NetworkFunctionBase*>::iterator it;
+    for( it=NetworkFunctionBase::nameMap_.begin(); it!=NetworkFunctionBase::nameMap_.end(); ++it )
+      delete it->second;
+  }
+  
   
   NetworkFunctionStatic::NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
