@@ -95,12 +95,12 @@ namespace orxonox
       // remove object from the static objectMap
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID);
-      // delete all Synchronisable Variables from syncList ( which are also in stringList )
-      for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
-        delete (*it);
-      syncList.clear();
-      stringList.clear();
     }
+    // delete all Synchronisable Variables from syncList ( which are also in stringList )
+    for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
+      delete (*it);
+    syncList.clear();
+    stringList.clear();
     std::map<uint32_t, Synchronisable*>::iterator it;
     it = objectMap_.find(objectID);
     if (it != objectMap_.end())

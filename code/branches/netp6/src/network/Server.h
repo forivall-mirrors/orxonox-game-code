@@ -75,7 +75,6 @@ namespace orxonox
     bool sendChat(const std::string& message, unsigned int clientID);
     void syncClassid(unsigned int clientID);
 
-    ThreadPool* threadPool_;
     float timeSinceLastUpdate_;
   };
 

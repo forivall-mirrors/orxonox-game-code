@@ -48,7 +48,6 @@
 #include "core/Clock.h"
 #include "core/ObjectList.h"
 #include "core/Executor.h"
-#include "core/ThreadPool.h"
 #include "packet/Chat.h"
 #include "packet/ClassID.h"
 #include "packet/DeleteObjects.h"
@@ -70,13 +69,11 @@ namespace orxonox
   */
   Server::Server() {
     this->timeSinceLastUpdate_=0;
-    this->threadPool_ = new ThreadPool();
   }
 
   Server::Server(int port){
     this->setPort( port );
     this->timeSinceLastUpdate_=0;
-    this->threadPool_ = new ThreadPool();
   }
 
   /**
@@ -88,14 +85,12 @@ namespace orxonox
     this->setPort( port );
     this->setBindAddress( bindAddress );
     this->timeSinceLastUpdate_=0;
-    this->threadPool_ = new ThreadPool();
   }
 
   /**
   * @brief Destructor
   */
   Server::~Server(){
-    delete this->threadPool_;
   }
 
   /**
@@ -140,26 +135,24 @@ namespace orxonox
   void Server::update(const Clock& time) {
     // receive incoming packets
     Connection::processQueue();
-    // process incoming gamestates
-    GamestateManager::processGamestates();
     
-    // pass sendFunctionCalls to worker thread pool
-    ExecutorStatic* functioncalls = createExecutor( createFunctor(&FunctionCallManager::sendCalls) );
-    this->threadPool_->passFunction( functioncalls, true );
-    
-    this->threadPool_->synchronise();
-    
-    //this steers our network frequency
-    timeSinceLastUpdate_+=time.getDeltaTime();
-    if(timeSinceLastUpdate_>=NETWORK_PERIOD)
+    if ( ClientInformation::hasClients() )
     {
-      timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-//       ExecutorMember<GamestateManager>* updategamestate = createExecutor( createFunctor(&GamestateManager::updateGamestate);
-//       updategamestate->setObject( static_cast<GamestateManager*>(this) );
-//       this->threadPool_->passFunction( updategamestate );
-      updateGamestate();
+      // process incoming gamestates
+      GamestateManager::processGamestates();
+      
+      // send function calls to clients
+      FunctionCallManager::sendCalls();
+      
+      //this steers our network frequency
+      timeSinceLastUpdate_+=time.getDeltaTime();
+      if(timeSinceLastUpdate_>=NETWORK_PERIOD)
+      {
+        timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
+        updateGamestate();
+      }
+      sendPackets(); // flush the enet queue
     }
-    sendPackets(); // flush the enet queue
   }
 
   bool Server::queuePacket(ENetPacket *packet, int clientID){

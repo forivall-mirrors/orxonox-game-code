@@ -98,6 +98,8 @@ namespace orxonox
   }
 
   bool GamestateManager::processGamestates(){
+    if( this->gamestateQueue.empty() )
+        return true;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
@@ -140,7 +142,6 @@ namespace orxonox
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
       int cid = temp->getID(); //get client id
       
-      packet::Gamestate *gs;
       unsigned int gID = temp->getGamestateID();
       if(!reference)
         return;
@@ -241,7 +242,7 @@ namespace orxonox
     }
 
     assert(curid==(unsigned int)GAMESTATEID_INITIAL || curid<gamestateID);
-    COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
+    COUT(5) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; ){
       delete it->second;
