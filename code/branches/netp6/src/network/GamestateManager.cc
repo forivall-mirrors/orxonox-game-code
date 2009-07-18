@@ -42,7 +42,7 @@
 
 #include <cassert>
 #include <queue>
-#include <boost/thread/mutex.hpp>
+// #include <boost/thread/mutex.hpp>
 
 #include "util/Debug.h"
 #include "core/Executor.h"
@@ -59,8 +59,8 @@ namespace orxonox
   reference(0), id_(0)
   {
     trafficControl_ = new TrafficControl();
-    threadMutex_ = new boost::mutex();
-    threadPool_ = new ThreadPool();
+//     threadMutex_ = new boost::mutex();
+//     threadPool_ = new ThreadPool();
   }
 
   GamestateManager::~GamestateManager()
@@ -77,8 +77,8 @@ namespace orxonox
         delete (*it2).second;
     }
     delete this->trafficControl_;
-    delete this->threadMutex_;
-    delete this->threadPool_;
+//     delete this->threadMutex_;
+//     delete this->threadPool_;
   }
 
   bool GamestateManager::update(){
@@ -157,19 +157,19 @@ namespace orxonox
       }
       
       clientGamestates.push(0);
-//       finishGamestate( cid, clientGamestates.back(), client, reference );
+      finishGamestate( cid, &clientGamestates.back(), client, reference );
       //FunctorMember<GamestateManager>* functor = 
-      ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate) );
-      executor->setObject(this);
-      executor->setDefaultValues( cid, &clientGamestates.back(), client, reference );
+//       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate) );
+//       executor->setObject(this);
+//       executor->setDefaultValues( cid, &clientGamestates.back(), client, reference );
 //       (*static_cast<Executor*>(executor))();
-      this->threadPool_->passFunction( executor, true );
+//       this->threadPool_->passFunction( executor, true );
 //       (*functor)( cid, &(clientGamestates.back()), client, reference );
       
       temp = temp->next();
     }
     
-    threadPool_->synchronise();
+//     threadPool_->synchronise();
     
     while( !clientGamestates.empty() )
     {
@@ -190,9 +190,9 @@ namespace orxonox
 //     packet::Gamestate *gs = new packet::Gamestate(*gamestate);
 //     packet::Gamestate *gs = new packet::Gamestate();
 //     gs->collectData( id_, 0x1 );
-    this->threadMutex_->lock();
+//     this->threadMutex_->lock();
     gamestateMap_[clientID][gamestate->getID()]=gs;
-    this->threadMutex_->unlock();
+//     this->threadMutex_->unlock();
     
     if(base)
     {

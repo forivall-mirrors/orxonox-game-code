@@ -89,8 +89,8 @@ namespace orxonox
     packet::Gamestate *reference;
     TrafficControl *trafficControl_;
     unsigned int id_;
-    boost::mutex* threadMutex_;
-    ThreadPool*   threadPool_;
+//     boost::mutex* threadMutex_;
+    ThreadPool*   /*thread*/Pool_;
   };
 
 }
