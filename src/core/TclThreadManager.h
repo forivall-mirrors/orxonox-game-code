@@ -31,38 +31,16 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include <list>
 #include <map>
 #include <string>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/thread.hpp>
-
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    struct _CoreExport TclInterpreterBundle
-    {
-        unsigned int id_;
-
-        std::list<std::string> queue_;
-        boost::mutex queueMutex_;
-
-        Tcl::interpreter* interpreter_;
-        std::string interpreterName_;
-        boost::try_mutex interpreterMutex_;
-
-        std::list<unsigned int> queriers_;
-        boost::mutex queriersMutex_;
-
-        bool running_;
-        boost::mutex runningMutex_;
-
-        bool finished_;
-        boost::mutex finishedMutex_;
-        boost::condition finishedCondition_;
-    };
+    // Internal struct
+    struct TclInterpreterBundle;
 
     class _CoreExport TclThreadManager : public OrxonoxClass
     {
@@ -100,6 +78,7 @@ namespace orxonox
             static bool tcl_running(int threadID);
 
             Tcl::interpreter* createNewTclInterpreter(const std::string& threadID);
+            Tcl::interpreter* getTclInterpreter(unsigned int threadID);
             TclInterpreterBundle* getInterpreterBundle(unsigned int threadID);
             std::string dumpList(const std::list<unsigned int>& list);
 
@@ -118,16 +97,8 @@ namespace orxonox
             std::string evalQuery(unsigned int querierID, unsigned int threadID, const std::string& command);
 
             unsigned int threadCounter_;
-            TclInterpreterBundle orxonoxInterpreterBundle_;
+            TclInterpreterBundle* orxonoxInterpreterBundle_;
             std::map<unsigned int, TclInterpreterBundle*> interpreterBundles_;
-            boost::mutex bundlesMutex_;
-            boost::condition fullQueueCondition_;
-            boost::condition orxonoxEvalCondition_;
-#if (BOOST_VERSION >= 103500)
-            boost::thread::id threadID_;
-#else
-            boost::thread threadID_;
-#endif
 
             static TclThreadManager* singletonRef_s;
     };

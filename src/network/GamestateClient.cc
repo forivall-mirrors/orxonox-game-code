@@ -51,6 +51,11 @@ namespace orxonox
   }
 
   GamestateClient::~GamestateClient() {
+      std::map<unsigned int, packet::Gamestate *>::iterator it;
+      for ( it = this->gamestateMap_.begin(); it != this->gamestateMap_.end(); ++it )
+          delete (*it).second;
+      if( this->tempGamestate_ )
+          delete this->tempGamestate_;
   }
 
   bool GamestateClient::ack(unsigned int gamestateID, unsigned int clientID){

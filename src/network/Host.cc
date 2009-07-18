@@ -73,21 +73,6 @@ bool Host::addPacket(ENetPacket *packet, int clientID){
     return false;
 }
 
-
-// bool Host::chat(std::string& message){
-//   if(!instance_)
-//     return false;
-//   packet::Chat *c = new packet::Chat(message, getPlayerID());
-//   return instance_->sendChat(c);
-// }
-
-// bool Host::receiveChat(packet::Chat *message, unsigned int clientID){
-//   if(instance_)
-//     return instance_->processChat(message, clientID);
-//   else
-//     return false;
-// }
-
 /**
  * This function returns the ID of the player
  * @return playerID

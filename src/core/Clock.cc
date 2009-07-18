@@ -58,7 +58,7 @@ namespace orxonox
         tickDt_ = timersTime - lastTimersTime_;
         tickDtFloat_ = static_cast<float>(tickDt_) / 1000000.0f;
 
-        if (timersTime > 0x7FFFFFF0)
+        if (timersTime > 0xFFFFFFFF/4)
         {
             // Ogre timer will overflow at 2^32 microseconds if unsigned long is 32 bit
             storedTime_ += timersTime;
@@ -73,6 +73,6 @@ namespace orxonox
 
     unsigned long long Clock::getRealMicroseconds() const
     {
-        return this->timer_->getMicroseconds();
+        return this->timer_->getMicroseconds() + this->storedTime_;
     }
 }

@@ -33,6 +33,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
+#include "network/NetworkFunction.h"
 #include "tools/Timer.h"
 #include "interfaces/TimeFactorListener.h"
 #include "interfaces/Tickable.h"
@@ -60,6 +61,7 @@ namespace orxonox
 
     GSRoot::~GSRoot()
     {
+        NetworkFunctionBase::destroyAllNetworkFunctions();
     }
 
     void GSRoot::activate()

@@ -86,6 +86,7 @@ namespace orxonox
     static ClientInformation *findClient(unsigned int clientID, bool look_backwards=false);
     static ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
     static ClientInformation *getBegin(){return head_;}
+    static bool hasClients(){ return ClientInformation::head_!=0; }
 
     bool setSynched(bool s);
     bool getSynched();

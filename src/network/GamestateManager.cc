@@ -41,8 +41,12 @@
 #include "GamestateManager.h"
 
 #include <cassert>
+#include <queue>
+// #include <boost/thread/mutex.hpp>
 
 #include "util/Debug.h"
+#include "core/Executor.h"
+#include "core/ThreadPool.h"
 #include "ClientInformation.h"
 #include "packet/Acknowledgement.h"
 #include "packet/Gamestate.h"
@@ -55,15 +59,26 @@ namespace orxonox
   reference(0), id_(0)
   {
     trafficControl_ = new TrafficControl();
+//     threadMutex_ = new boost::mutex();
+//     threadPool_ = new ThreadPool();
   }
 
   GamestateManager::~GamestateManager()
   {
     if( this->reference )
-      delete this->reference;
-    for( std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateQueue.begin(); it != gamestateQueue.end(); it++ )
+        delete this->reference;std::map<unsigned int, packet::Gamestate*>::iterator it;
+    for( it = gamestateQueue.begin(); it != gamestateQueue.end(); ++it )
       delete (*it).second;
-    delete trafficControl_;
+    std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator it1;
+    std::map<unsigned int, packet::Gamestate*>::iterator it2;
+    for( it1 = gamestateMap_.begin(); it1 != gamestateMap_.end(); ++it1 )
+    {
+      for( it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
+        delete (*it2).second;
+    }
+    delete this->trafficControl_;
+//     delete this->threadMutex_;
+//     delete this->threadPool_;
   }
 
   bool GamestateManager::update(){
@@ -83,6 +98,8 @@ namespace orxonox
   }
 
   bool GamestateManager::processGamestates(){
+    if( this->gamestateQueue.empty() )
+        return true;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
@@ -108,32 +125,81 @@ namespace orxonox
     }
     return true;
   }
+  
+  void GamestateManager::sendGamestates()
+  {
+    ClientInformation *temp = ClientInformation::getBegin();
+    std::queue<packet::Gamestate*> clientGamestates;
+    while(temp != NULL){
+      if( !(temp->getSynched()) ){
+        COUT(5) << "Server: not sending gamestate" << std::endl;
+        temp=temp->next();
+        if(!temp)
+          break;
+        continue;
+      }
+      COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
+      COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
+      int cid = temp->getID(); //get client id
+      
+      unsigned int gID = temp->getGamestateID();
+      if(!reference)
+        return;
+      
+      packet::Gamestate *client=0;
+      if(gID != GAMESTATEID_INITIAL){
+        assert(gamestateMap_.find(cid)!=gamestateMap_.end());
+        std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateMap_[cid].find(gID);
+        if(it!=gamestateMap_[cid].end())
+        {
+          client = it->second;
+        }
+      }
+      
+      clientGamestates.push(0);
+      finishGamestate( cid, &clientGamestates.back(), client, reference );
+      //FunctorMember<GamestateManager>* functor = 
+//       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate) );
+//       executor->setObject(this);
+//       executor->setDefaultValues( cid, &clientGamestates.back(), client, reference );
+//       (*static_cast<Executor*>(executor))();
+//       this->threadPool_->passFunction( executor, true );
+//       (*functor)( cid, &(clientGamestates.back()), client, reference );
+      
+      temp = temp->next();
+    }
+    
+//     threadPool_->synchronise();
+    
+    while( !clientGamestates.empty() )
+    {
+      if(clientGamestates.front())
+        clientGamestates.front()->send();
+      clientGamestates.pop();
+    }
+  }
 
 
-  packet::Gamestate *GamestateManager::popGameState(unsigned int clientID) {
+  void GamestateManager::finishGamestate( unsigned int clientID, packet::Gamestate** destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate ) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
-    packet::Gamestate *gs;
-    unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
-    if(!reference)
-      return 0;
-    gs = reference->doSelection(clientID, 10000);
     // save the (undiffed) gamestate in the clients gamestate map
-    gamestateMap_[clientID][gs->getID()]=gs;
     //chose wheather the next gamestate is the first or not
-    packet::Gamestate *client=0;
-    if(gID != GAMESTATEID_INITIAL){
-      assert(gamestateMap_.find(clientID)!=gamestateMap_.end());
-      std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateMap_[clientID].find(gID);
-      if(it!=gamestateMap_[clientID].end())
-      {
-        client = it->second;
-      }
-    }
-    if(client){
+    
+    packet::Gamestate *gs = gamestate->doSelection(clientID, 20000);
+//     packet::Gamestate *gs = new packet::Gamestate(*gamestate);
+//     packet::Gamestate *gs = new packet::Gamestate();
+//     gs->collectData( id_, 0x1 );
+//     this->threadMutex_->lock();
+    gamestateMap_[clientID][gamestate->getID()]=gs;
+//     this->threadMutex_->unlock();
+    
+    if(base)
+    {
+        
 //       COUT(3) << "diffing" << std::endl;
 //       packet::Gamestate* gs1  = gs;
-      packet::Gamestate *diffed = gs->diff(client);
+      packet::Gamestate *diffed = gs->diff(base);
       //packet::Gamestate *gs2 = diffed->undiff(gs);
 //       assert(*gs == *gs2);
       gs = diffed;
@@ -142,17 +208,19 @@ namespace orxonox
 //       assert(*gs1==*gs2);
     }
     else{
-//       COUT(3) << "not diffing" << std::endl;
       gs = new packet::Gamestate(*gs);
     }
+    
+    
     bool b = gs->compressData();
     assert(b);
-    COUT(4) << "sending gamestate with id " << gs->getID();
-    if(gs->isDiffed())
-    COUT(4) << " and baseid " << gs->getBaseID() << endl;
-    else
-    COUT(4) << endl;
-    return gs;
+//     COUT(4) << "sending gamestate with id " << gs->getID();
+//     if(gamestate->isDiffed())
+//     COUT(4) << " and baseid " << gs->getBaseID() << endl;
+//     else
+//     COUT(4) << endl;
+    gs->setClientID(clientID);
+    *destgamestate = gs;
   }
 
 
@@ -174,7 +242,7 @@ namespace orxonox
     }
 
     assert(curid==GAMESTATEID_INITIAL || curid<gamestateID);
-    COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
+    COUT(5) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; ){
       delete it->second;

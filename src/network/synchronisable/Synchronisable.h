@@ -42,10 +42,6 @@
 #include "SynchronisableVariable.h"
 #include "NetworkCallback.h"
 
-/*#define REGISTERDATA(varname, ...) \
-    registerVariable(static_cast<void*>(&varname), sizeof(varname), DATA, __VA_ARGS__)
-#define REGISTERSTRING(stringname, ...) \
-    registerVariable(&stringname, stringname.length()+1, STRING, __VA_ARGS__)*/
 
 namespace orxonox
 {

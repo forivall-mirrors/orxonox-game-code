@@ -245,6 +245,8 @@ namespace orxonox
             ExecutorMember(FunctorMember<T>* functor, const std::string& name = "") : Executor(functor, name) {}
             virtual ~ExecutorMember() {}
 
+            using Executor::operator();
+
             inline void operator()(T* object) const
                 { (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline void operator()(T* object, const MultiType& param1) const
@@ -276,6 +278,8 @@ namespace orxonox
                 { ((FunctorMember<T>*)this->functor_)->setObject(object); }
             inline void setObject(const T* object) const
                 { ((FunctorMember<T>*)this->functor_)->setObject(object); }
+
+            using Executor::parse;
 
             bool parse(T* object, const std::string& params, const std::string& delimiter = " ") const
             {

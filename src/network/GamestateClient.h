@@ -72,7 +72,6 @@ namespace orxonox
     unsigned int           last_gamestate_;
     std::map<unsigned int, packet::Gamestate *> gamestateMap_;
     packet::Gamestate *tempGamestate_; // we save the received gamestates here during processQueue
-    unsigned char *shipCache_;
 
   };
 

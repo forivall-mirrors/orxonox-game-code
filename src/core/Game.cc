@@ -39,6 +39,7 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/Sleep.h"
 #include "util/SubString.h"
 #include "Clock.h"
 #include "CommandLine.h"
@@ -94,10 +95,13 @@ namespace orxonox
                 .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
             SetConfigValue(statisticsAvgLength_, 1000000)
                 .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
+            SetConfigValue(fpsLimit_, 50)
+                .description("Sets the desired framerate (0 for no limit).");
         }
 
         unsigned int statisticsRefreshCycle_;
         unsigned int statisticsAvgLength_;
+        unsigned int fpsLimit_;
     };
 
 
@@ -191,11 +195,22 @@ namespace orxonox
             COUT(0) << "Warning: Starting game without requesting GameState. This automatically terminates the program." << std::endl;
 
         // START GAME
-        this->gameClock_->capture(); // first delta time should be about 0 seconds
+        // first delta time should be about 0 seconds
+        this->gameClock_->capture();
+        // A first item is required for the fps limiter
+        StatisticsTickInfo tickInfo = {0, 0};
+        statisticsTickTimes_.push_back(tickInfo);
         while (!this->bAbort_ && (!this->activeStates_.empty() || this->requestedStateNodes_.size() > 0))
         {
+            uint64_t currentTime = this->gameClock_->getRealMicroseconds();
+
+            uint64_t nextTickTime = statisticsTickTimes_.back().tickTime + static_cast<uint64_t>(1000000.0f / configuration_->fpsLimit_);
+            if (currentTime < nextTickTime)
+            {
+                usleep(nextTickTime - currentTime);
+                continue;
+            }
             this->gameClock_->capture();
-            uint64_t currentTime = this->gameClock_->getMicroseconds();
 
             // STATISTICS
             StatisticsTickInfo tickInfo = {currentTime, 0};

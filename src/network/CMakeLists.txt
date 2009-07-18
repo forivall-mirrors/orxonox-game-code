@@ -30,7 +30,6 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   GamestateHandler.cc
   NetworkFunction.cc
   Host.cc
-  PacketBuffer.cc
   Server.cc
   ServerConnection.cc
   TrafficControl.cc

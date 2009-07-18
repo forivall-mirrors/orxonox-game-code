@@ -30,7 +30,6 @@
 
 #include <cassert>
 #include <enet/enet.h>
-#include <OgreTimer.h>
 #include "packet/Packet.h"
 
 namespace orxonox
@@ -76,9 +75,8 @@ namespace orxonox
     ENetEvent event;
     
     assert(this->host_);
-    Ogre::Timer timer;
 
-    while( timer.getMilliseconds()<NETWORK_MAX_QUEUE_PROCESS_TIME && enet_host_service( this->host_, &event, NETWORK_WAIT_TIMEOUT ) > 0 )
+    while( enet_host_service( this->host_, &event, NETWORK_WAIT_TIMEOUT ) > 0 )
     {
       switch(event.type){
         // log handling ================

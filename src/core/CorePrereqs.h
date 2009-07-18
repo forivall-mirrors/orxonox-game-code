@@ -149,7 +149,6 @@ namespace orxonox
     template <class T>
     class SubclassIdentifier;
     class TclBind;
-    struct TclInterpreterBundle;
     class TclThreadManager;
     class Template;
     class Tickable;
@@ -186,6 +185,10 @@ namespace orxonox
     class ParamCommand;
     class SimpleCommand;
     class SimpleInputState;
+
+    // multithreading
+    class Thread;
+    class ThreadPool;
 }
 
 // CppTcl
@@ -196,12 +199,17 @@ namespace Tcl
 }
 
 // Boost
-namespace boost { namespace filesystem
-{
-    struct path_traits;
-    template <class String, class Traits> class basic_path;
-    typedef basic_path<std::string, path_traits> path;
-} }
+namespace boost
+{ 
+    namespace filesystem
+    {
+        struct path_traits;
+        template <class String, class Traits> class basic_path;
+        typedef basic_path<std::string, path_traits> path;
+    }
+    class thread;
+    class mutex;
+}
 
 // TinyXML and TinyXML++
 class TiXmlString;

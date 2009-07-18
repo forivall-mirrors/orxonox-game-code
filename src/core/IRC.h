@@ -58,7 +58,7 @@ namespace orxonox
             IRC(const IRC& other);
             ~IRC() {}
 
-            TclInterpreterBundle* bundle_;
+            Tcl::interpreter* interpreter_;
             std::string nickname_;
     };
 }

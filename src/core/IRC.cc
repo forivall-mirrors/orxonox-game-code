@@ -46,21 +46,21 @@ namespace orxonox
     IRC::IRC()
     {
         RegisterRootObject(IRC);
-        this->bundle_ = 0;
+        this->interpreter_ = 0;
     }
 
     void IRC::initialize()
     {
         unsigned int threadID = IRC_TCL_THREADID;
         TclThreadManager::createID(threadID);
-        this->bundle_ = TclThreadManager::getInstance().getInterpreterBundle(threadID);
+        this->interpreter_ = TclThreadManager::getInstance().getTclInterpreter(threadID);
 
         try
         {
-            this->bundle_->interpreter_->def("orxonox::irc::say", IRC::tcl_say, Tcl::variadic());
-            this->bundle_->interpreter_->def("orxonox::irc::privmsg", IRC::tcl_privmsg, Tcl::variadic());
-            this->bundle_->interpreter_->def("orxonox::irc::action", IRC::tcl_action, Tcl::variadic());
-            this->bundle_->interpreter_->def("orxonox::irc::info", IRC::tcl_info, Tcl::variadic());
+            this->interpreter_->def("orxonox::irc::say", IRC::tcl_say, Tcl::variadic());
+            this->interpreter_->def("orxonox::irc::privmsg", IRC::tcl_privmsg, Tcl::variadic());
+            this->interpreter_->def("orxonox::irc::action", IRC::tcl_action, Tcl::variadic());
+            this->interpreter_->def("orxonox::irc::info", IRC::tcl_info, Tcl::variadic());
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl (IRC) error: " << e.what();   }
@@ -80,7 +80,7 @@ namespace orxonox
 
     bool IRC::eval(const std::string& command)
     {
-        if (!IRC::getInstance().bundle_)
+        if (!IRC::getInstance().interpreter_)
         {
             IRC::getInstance().initialize();
             COUT(1) << "Error: IRC client wasn't yet initialized, please try again." << std::endl;
@@ -89,7 +89,7 @@ namespace orxonox
 
         try
         {
-            IRC::getInstance().bundle_->interpreter_->eval(command);
+            IRC::getInstance().interpreter_->eval(command);
             return true;
         }
         catch (Tcl::tcl_error const &e)

@@ -116,7 +116,10 @@ namespace orxonox{
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()
   {
     if (this->callback_ != 0)
+    {
       NetworkCallbackManager::deleteCallback(this->callback_); //safe call for deletion
+      // this is neccessary because for example for a Vector3 all 3 components of the vector use the same callback
+    }
   }
 
   template <class T> inline uint32_t SynchronisableVariable<T>::getData(uint8_t*& mem, uint8_t mode)
