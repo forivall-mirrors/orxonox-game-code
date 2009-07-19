@@ -117,7 +117,7 @@ namespace orxonox
         TclThreadManager::singletonPtr_s = 0;
 
         delete this->interpreterBundlesMutex_;
-        delete this->mainInterpreterMutex_;
+//        delete this->mainInterpreterMutex_; // <-- temporary disabled to avoid crash if a thread is still actively queriyng
         delete this->messageQueue_;
     }
 
