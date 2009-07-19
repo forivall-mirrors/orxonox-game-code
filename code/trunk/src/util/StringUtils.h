@@ -76,6 +76,8 @@ namespace orxonox
     _UtilExport std::string getComment(const std::string& str);
     _UtilExport size_t      getCommentPosition(const std::string& str);
     _UtilExport size_t      getNextCommentPosition(const std::string& str, size_t start = 0);
+
+    _UtilExport size_t      replaceCharacters(std::string& str, char target, char replacement);
 }
 
 #endif /* _StringUtils_H__ */

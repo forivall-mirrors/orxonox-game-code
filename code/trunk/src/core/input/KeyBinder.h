@@ -35,17 +35,17 @@
 #ifndef _KeyBinder_H__
 #define _KeyBinder_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
 #include <cassert>
 #include <string>
 #include <vector>
 
-#include "InputInterfaces.h"
+#include "InputHandler.h"
 #include "Button.h"
 #include "HalfAxis.h"
 #include "InputCommands.h"
-#include "JoyStickDeviceNumberListener.h"
+#include "JoyStickQuantityListener.h"
 
 namespace orxonox
 {
@@ -54,8 +54,7 @@ namespace orxonox
         Handles mouse, keyboard and joy stick input while in the actual game mode.
         Manages the key bindings.
     */
-    class _CoreExport KeyBinder : public KeyHandler, public MouseHandler, public JoyStickHandler,
-                                  public JoyStickDeviceNumberListener
+    class _CoreExport KeyBinder : public InputHandler, public JoyStickQuantityListener
     {
     public:
         KeyBinder ();
@@ -68,37 +67,36 @@ namespace orxonox
         void resetJoyStickAxes();
 
     protected: // functions
-        void updateInput(float dt);
-        void updateKey(float dt) { }
-        void updateMouse(float dt);
-        void updateJoyStick(float dt, unsigned int joyStick);
+        void allDevicesUpdated(float dt);
+        void mouseUpdated(float dt);
+        void joyStickUpdated(unsigned int joyStick, float dt);
         // internal
         void tickHalfAxis(HalfAxis& halfAxis);
 
         void buttonThresholdChanged();
-        // from JoyStickDeviceNumberListener interface
-        virtual void JoyStickDeviceNumberChanged(unsigned int value);
+        // from JoyStickQuantityListener interface
+        virtual void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
         void initialiseJoyStickBindings();
         void compilePointerLists();
 
-        void keyPressed (const KeyEvent& evt);
-        void keyReleased(const KeyEvent& evt);
-        void keyHeld    (const KeyEvent& evt);
+        void buttonPressed (const KeyEvent& evt);
+        void buttonReleased(const KeyEvent& evt);
+        void buttonHeld    (const KeyEvent& evt);
 
-        void mouseButtonPressed (MouseButtonCode::ByEnum id);
-        void mouseButtonReleased(MouseButtonCode::ByEnum id);
-        void mouseButtonHeld    (MouseButtonCode::ByEnum id);
-        void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
-        void mouseScrolled      (int abs, int rel);
+        void buttonPressed (MouseButtonCode::ByEnum button);
+        void buttonReleased(MouseButtonCode::ByEnum button);
+        void buttonHeld    (MouseButtonCode::ByEnum button);
+        void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+        void mouseScrolled (int abs, int rel);
 
-        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
-        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
-        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
-        void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value);
+        void buttonPressed (unsigned int device, JoyStickButtonCode::ByEnum button);
+        void buttonReleased(unsigned int device, JoyStickButtonCode::ByEnum button);
+        void buttonHeld    (unsigned int device, JoyStickButtonCode::ByEnum button);
+        void axisMoved     (unsigned int device, unsigned int axis, float value);
 
     protected: // variables
         //! Currently active joy sticks
-        unsigned int numberOfJoySticks_;
+        std::vector<JoyStick*>  joySticks_;
 
         //! Actual key bindings for keys on the keyboard
         Button keys_            [KeyCode::numberOfKeys];
@@ -171,36 +169,36 @@ namespace orxonox
         static const int mouseClippingSize_ = 1024;
     };
 
-    inline void KeyBinder::keyPressed (const KeyEvent& evt)
-    { assert(!keys_[evt.key].name_.empty()); keys_[evt.key].execute(KeybindMode::OnPress); }
+    inline void KeyBinder::buttonPressed (const KeyEvent& evt)
+    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnPress); }
 
-    inline void KeyBinder::keyReleased(const KeyEvent& evt)
-    { assert(!keys_[evt.key].name_.empty()); keys_[evt.key].execute(KeybindMode::OnRelease); }
+    inline void KeyBinder::buttonReleased(const KeyEvent& evt)
+    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnRelease); }
 
-    inline void KeyBinder::keyHeld    (const KeyEvent& evt)
-    { assert(!keys_[evt.key].name_.empty()); keys_[evt.key].execute(KeybindMode::OnHold); }
-
-
-    inline void KeyBinder::mouseButtonPressed (MouseButtonCode::ByEnum id)
-    { mouseButtons_[id].execute(KeybindMode::OnPress); }
-
-    inline void KeyBinder::mouseButtonReleased(MouseButtonCode::ByEnum id)
-    { mouseButtons_[id].execute(KeybindMode::OnRelease); }
-
-    inline void KeyBinder::mouseButtonHeld    (MouseButtonCode::ByEnum id)
-    { mouseButtons_[id].execute(KeybindMode::OnHold); }
+    inline void KeyBinder::buttonHeld    (const KeyEvent& evt)
+    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnHold); }
 
 
-    inline void KeyBinder::joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
-    { joyStickButtons_[joyStickID][id].execute(KeybindMode::OnPress); }
+    inline void KeyBinder::buttonPressed (MouseButtonCode::ByEnum button)
+    { mouseButtons_[button].execute(KeybindMode::OnPress); }
 
-    inline void KeyBinder::joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
-    { joyStickButtons_[joyStickID][id].execute(KeybindMode::OnRelease); }
+    inline void KeyBinder::buttonReleased(MouseButtonCode::ByEnum button)
+    { mouseButtons_[button].execute(KeybindMode::OnRelease); }
 
-    inline void KeyBinder::joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
-    { joyStickButtons_[joyStickID][id].execute(KeybindMode::OnHold); }
+    inline void KeyBinder::buttonHeld    (MouseButtonCode::ByEnum button)
+    { mouseButtons_[button].execute(KeybindMode::OnHold); }
 
-    inline void KeyBinder::updateInput(float dt)
+
+    inline void KeyBinder::buttonPressed (unsigned int device, JoyStickButtonCode::ByEnum button)
+    { joyStickButtons_[device][button].execute(KeybindMode::OnPress); }
+
+    inline void KeyBinder::buttonReleased(unsigned int device, JoyStickButtonCode::ByEnum button)
+    { joyStickButtons_[device][button].execute(KeybindMode::OnRelease); }
+
+    inline void KeyBinder::buttonHeld    (unsigned int device, JoyStickButtonCode::ByEnum button)
+    { joyStickButtons_[device][button].execute(KeybindMode::OnHold); }
+
+    inline void KeyBinder::allDevicesUpdated(float dt)
     {
         // execute all buffered bindings (additional parameter)
         for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)

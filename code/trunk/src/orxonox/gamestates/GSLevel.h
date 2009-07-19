@@ -62,9 +62,9 @@ namespace orxonox
         void keybindInternal(const std::string& command, bool bTemporary);
 
         KeyBinder*            keyBinder_;               //!< tool that loads and manages the input bindings
-        SimpleInputState*     gameInputState_;          //!< input state for normal ingame playing
-        SimpleInputState*     guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
-        SimpleInputState*     guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
+        InputState*           gameInputState_;          //!< input state for normal ingame playing
+        InputState*           guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
+        InputState*           guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
         Radar*                radar_;                   //!< represents the Radar (not the HUD part)
         CameraManager*        cameraManager_;           //!< camera manager for this level
         PlayerManager*        playerManager_;           //!< player manager for this level

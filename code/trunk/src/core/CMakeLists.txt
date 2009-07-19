@@ -30,6 +30,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   LuaBind.cc
   ObjectListBase.cc
   OrxonoxClass.cc
+  WindowEventListener.cc
 
   # command
   ArgumentCompletionFunctions.cc

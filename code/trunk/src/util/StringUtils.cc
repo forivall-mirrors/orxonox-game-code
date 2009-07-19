@@ -489,4 +489,25 @@ namespace orxonox
 
         return std::string::npos;
     }
+
+    /**
+        @brief Replaces individual charaters
+        @param str String to be manipulated
+        @param target Character to be replaced
+        @param replacement Replacement character
+        @return Number of replacements
+    */
+    _UtilExport size_t replaceCharacters(std::string& str, char target, char replacement)
+    {
+        size_t j = 0;
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            if (str[i] == target)
+            {
+                str[i] = replacement;
+                ++j;
+            }
+        }
+        return j;
+    }
 }

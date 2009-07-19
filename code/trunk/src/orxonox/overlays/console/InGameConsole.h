@@ -35,7 +35,7 @@
 #include <string>
 #include "util/OgreForwardRefs.h"
 #include "core/Shell.h"
-#include "interfaces/WindowEventListener.h"
+#include "core/WindowEventListener.h"
 
 namespace orxonox
 {
@@ -45,7 +45,7 @@ namespace orxonox
         InGameConsole();
         ~InGameConsole();
 
-        void initialise(int windowWidth, int windowHeight);
+        void initialise();
         void destroy();
         void setConfigValues();
 
@@ -100,7 +100,7 @@ namespace orxonox
         Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
 
         // input related
-        SimpleInputState* inputState_;
+        InputState* inputState_;
 
         // config values
         float relativeWidth;

@@ -154,7 +154,7 @@ namespace orxonox
     class TclThreadList;
     class TclThreadManager;
     class Template;
-    class Tickable;
+    class WindowEventListener;
     class XMLFile;
     class XMLNameListener;
     template <class T, class O>
@@ -175,19 +175,22 @@ namespace orxonox
     class BufferedParamCommand;
     class Button;
     class CalibratorCallback;
-    class ExtendedInputState;
     class HalfAxis;
     class InputBuffer;
+    class InputDevice;
+    template <class Traits>
+    class InputDeviceTemplated;
+    class InputHandler;
     class InputManager;
     class InputState;
-    class JoyStickHandler;
-    class MouseHandler;
+    class JoyStick;
+    class Mouse;
+    class Keyboard;
     class KeyBinder;
     class KeyDetector;
-    class KeyHandler;
     class ParamCommand;
     class SimpleCommand;
-    class SimpleInputState;
+
 
     // multithreading
     class Thread;

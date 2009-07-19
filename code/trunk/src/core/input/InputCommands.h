@@ -35,7 +35,7 @@
 #ifndef _InputCommands_H__
 #define _InputCommands_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 #include "core/CommandEvaluation.h"
 
 namespace orxonox

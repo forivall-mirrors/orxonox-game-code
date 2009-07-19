@@ -26,16 +26,10 @@
  *
  */
 
-/**
-@file
-@brief
-    Different definitions of input processing.
-*/
-
 #ifndef _KeyDetector_H__
 #define _KeyDetector_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
 #include <string>
 #include "KeyBinder.h"
@@ -48,7 +42,7 @@ namespace orxonox
         KeyDetector();
         ~KeyDetector();
         void setCallbackCommand(const std::string& command);
-        void JoyStickDeviceNumberChanged(unsigned int value);
+        void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
 
     private:
         std::string callbackCommand_;

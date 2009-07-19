@@ -46,7 +46,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -80,8 +79,7 @@ namespace orxonox
         this->overlay_->add2D(this->background_);
 
         // Get aspect ratio from the render window. Later on, we get informed automatically
-        Ogre::RenderWindow* defaultWindow = GraphicsManager::getInstance().getRenderWindow();
-        this->windowAspectRatio_ = static_cast<float>(defaultWindow->getWidth()) / defaultWindow->getHeight();
+        this->windowAspectRatio_ = static_cast<float>(this->getWindowWidth()) / this->getWindowHeight();
         this->sizeCorrectionChanged();
 
         this->changedVisibility();

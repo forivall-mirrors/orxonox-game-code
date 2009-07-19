@@ -26,12 +26,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Implementation of the different input handlers.
-*/
-
 #include "KeyDetector.h"
 
 #include "util/Debug.h"
@@ -67,14 +61,14 @@ namespace orxonox
         clearBindings();
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
         {
-            it->second->bindingString_ = callbackCommand_ + it->second->name_;
+            it->second->bindingString_ = callbackCommand_ + it->second->groupName_ + "." + it->second->name_;
             it->second->parse();
         }
     }
 
-    void KeyDetector::JoyStickDeviceNumberChanged(unsigned int value)
+    void KeyDetector::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
-        KeyBinder::JoyStickDeviceNumberChanged(value);
+        KeyBinder::JoyStickQuantityChanged(joyStickList);
         setCallbackCommand(callbackCommand_);
     }
 }

@@ -26,19 +26,25 @@
  *
  */
 
-/**
-@file
-@brief
-    Implementation of the JoyStickDeviceNumberListener class.
-*/
+#include "JoyStickQuantityListener.h"
 
-#include "JoyStickDeviceNumberListener.h"
 #include "core/CoreIncludes.h"
+#include "core/ObjectList.h"
 
 namespace orxonox
 {
-    JoyStickDeviceNumberListener::JoyStickDeviceNumberListener()
+    std::vector<JoyStick*> JoyStickQuantityListener::joyStickList_s;
+
+    JoyStickQuantityListener::JoyStickQuantityListener()
     {
-        RegisterObject(JoyStickDeviceNumberListener);
+        RegisterObject(JoyStickQuantityListener);
+    }
+
+    //! Calls all registered objects and sets the static variable
+    /*static*/ void JoyStickQuantityListener::changeJoyStickQuantity(const std::vector<JoyStick*>& joyStickList)
+    {
+        joyStickList_s = joyStickList;
+        for (ObjectList<JoyStickQuantityListener>::iterator it = ObjectList<JoyStickQuantityListener>::begin(); it; ++it)
+            it->JoyStickQuantityChanged(joyStickList);
     }
 }
