@@ -1,0 +1,31 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  WorldEntity.cc
+  StaticEntity.cc
+  MovableEntity.cc
+  MobileEntity.cc
+  ControllableEntity.cc
+
+  Attacher.cc
+  Backlight.cc
+  Billboard.cc
+  BlinkingBillboard.cc
+  BigExplosion.cc
+  ExplosionChunk.cc
+  FadingBillboard.cc
+  Light.cc
+  Camera.cc
+  CameraPosition.cc
+  Model.cc
+  ParticleEmitter.cc
+  ParticleSpawner.cc
+  Planet.cc
+  SpawnPoint.cc
+  TeamSpawnPoint.cc
+  PongCenterpoint.cc
+  PongBall.cc
+  PongBat.cc
+  ForceField.cc
+)
+
+ADD_SUBDIRECTORY(pawns)
+ADD_SUBDIRECTORY(triggers)
