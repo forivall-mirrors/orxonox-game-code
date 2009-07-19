@@ -124,7 +124,7 @@ namespace orxonox
     ENetEvent event;
     ClientInformation *temp = ClientInformation::getBegin();
     while(temp!=0){
-      disconnectPeer( &event );
+      disconnectClient( temp );
       temp = temp->next();
     }
     temp = ClientInformation::getBegin();
