@@ -32,7 +32,7 @@
     Compilation of the most often used header files in the network library
 */
 
-#include "NetworkPrereqs.h"
+#include "OrxonoxConfig.h"
 
 #include <cassert>
 #include <fstream>

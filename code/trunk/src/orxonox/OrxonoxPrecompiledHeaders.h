@@ -32,7 +32,7 @@
     Compilation of the most often used header files in the orxonox executable
 */
 
-#include "OrxonoxPrereqs.h"
+#include "OrxonoxConfig.h"
 
 #include <cassert>
 #include <deque>

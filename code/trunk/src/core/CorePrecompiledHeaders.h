@@ -32,7 +32,7 @@
     Compilation of the most often used header files in the core library for MSVC
 */
 
-#include "CorePrereqs.h"
+#include "OrxonoxConfig.h"
 
 #include <cassert>
 #include <fstream>
