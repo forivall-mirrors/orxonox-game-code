@@ -73,7 +73,9 @@ ENDIF()
 OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
 
 # Use WinMain() or main()?
-OPTION(ORXONOX_USE_WINMAIN "Use WinMain (doesn't show console) or main" FALSE)
+IF(WIN32)
+  OPTION(ORXONOX_USE_WINMAIN "Use WinMain (doesn't show console) or main" FALSE)
+ENDIF()
 
 ################# OGRE Plugins ##################
 

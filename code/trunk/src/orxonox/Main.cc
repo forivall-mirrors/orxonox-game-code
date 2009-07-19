@@ -34,6 +34,14 @@
 */
 
 #include "OrxonoxPrereqs.h"
+#include "SpecialConfig.h"
+
+#ifdef ORXONOX_USE_WINMAIN
+# ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
+# endif
+#include <windows.h>
+#endif
 
 #include "util/Debug.h"
 #include "util/Exception.h"
@@ -54,7 +62,12 @@ int main(int argc, char** argv)
     Game* game = 0;
     try
     {
-        game = new Game(argc, argv);
+#ifndef ORXONOX_USE_WINMAIN
+        std::string strCmdLine;
+        for (int i = 1; i < argc; ++i)
+            strCmdLine += argv[i] + std::string(" ");
+#endif
+        game = new Game(strCmdLine);
 
         game->setStateHierarchy(
         "root"

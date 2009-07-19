@@ -141,7 +141,7 @@ namespace orxonox
     public:
 
         //! Parse redirection to internal member method.
-        static void parseCommandLine(int argc, char** argv) { _getInstance()._parseCommandLine(argc, argv); }
+        static void parseCommandLine(const std::string& cmdLine) { _getInstance()._parseCommandLine(cmdLine); }
         static void parseFile() { _getInstance()._parseFile(); }
 
         static std::string getUsageInformation();
@@ -173,7 +173,7 @@ namespace orxonox
 
         static CommandLine& _getInstance();
 
-        void _parseCommandLine(int argc, char** argv);
+        void _parseCommandLine(const std::string& cmdLine);
         void _parseFile();
         void _parse(const std::vector<std::string>& arguments, bool bParsingFile);
         void checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile);
