@@ -28,6 +28,7 @@
 
 #include "JoyStick.h"
 
+#include <climits>
 #include <ois/OISJoyStick.h>
 #include <boost/foreach.hpp>
 
