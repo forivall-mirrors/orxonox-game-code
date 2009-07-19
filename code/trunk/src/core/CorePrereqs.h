@@ -149,6 +149,9 @@ namespace orxonox
     template <class T>
     class SubclassIdentifier;
     class TclBind;
+    struct TclInterpreterBundle;
+    template <class T>
+    class TclThreadList;
     class TclThreadManager;
     class Template;
     class Tickable;
@@ -200,7 +203,7 @@ namespace Tcl
 
 // Boost
 namespace boost
-{ 
+{
     namespace filesystem
     {
         struct path_traits;
@@ -209,6 +212,8 @@ namespace boost
     }
     class thread;
     class mutex;
+    class shared_mutex;
+    class condition_variable;
 }
 
 // TinyXML and TinyXML++
