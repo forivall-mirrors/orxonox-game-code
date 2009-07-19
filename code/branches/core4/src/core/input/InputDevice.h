@@ -180,7 +180,7 @@ namespace orxonox
 
     protected:
         //! Common code for all button pressed events (updates pressed buttons list and calls the input states)
-        void buttonPressed(ButtonTypeParam button)
+        FORCEINLINE void buttonPressed(ButtonTypeParam button)
         {
             // check whether the button already is in the list (can happen when focus was lost)
             unsigned int iButton = 0;
@@ -197,7 +197,7 @@ namespace orxonox
         }
 
         //! Common code for all button released events (updates pressed buttons list and calls the input states)
-        void buttonReleased(ButtonTypeParam button)
+        FORCEINLINE void buttonReleased(ButtonTypeParam button)
         {
             // remove the button from the pressedButtons_ list
             for (unsigned int iButton = 0; iButton < pressedButtons_.size(); iButton++)

@@ -419,7 +419,8 @@ namespace orxonox
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        guiSystem_->injectMouseMove(static_cast<float>(rel.x), static_cast<float>(rel.y));
+        //guiSystem_->injectMouseMove(static_cast<float>(rel.x), static_cast<float>(rel.y));
+        guiSystem_->injectMousePosition(static_cast<float>(abs.x), static_cast<float>(abs.y));
     }
     void GUIManager::mouseScrolled(int abs, int rel)
     {

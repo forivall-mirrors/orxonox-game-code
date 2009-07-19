@@ -44,7 +44,7 @@ namespace orxonox
         : super(id, oisInputManager)
     {
         RegisterRootObject(Mouse);
-        this->windowResized(this->getWindowHeight(), this->getWindowHeight());
+        this->windowResized(this->getWindowWidth(), this->getWindowHeight());
 
 #ifdef ORXONOX_PLATFORM_LINUX
         {

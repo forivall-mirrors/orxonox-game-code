@@ -173,14 +173,14 @@ namespace orxonox
         Functor*                    leaveFunctor_;          //!< Functor to be executed on leave
     };
 
-    inline void InputState::update(float dt)
+    FORCEINLINE void InputState::update(float dt)
     {
         for (unsigned int i = 0; i < handlers_.size(); ++i)
             if (handlers_[i] != NULL)
                 handlers_[i]->allDevicesUpdated(dt);
     }
 
-    inline void InputState::update(float dt, unsigned int device)
+    FORCEINLINE void InputState::update(float dt, unsigned int device)
     {
         switch (device)
         {
@@ -202,26 +202,26 @@ namespace orxonox
     }
 
     template <typename EventType, class Traits>
-    inline void InputState::buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button)
+    FORCEINLINE void InputState::buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)
             handlers_[device]->buttonEvent(device, button, EventType());
     }
 
-    inline void InputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    FORCEINLINE void InputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
         if (handlers_[mouseIndex_s] != NULL)
             handlers_[mouseIndex_s]->mouseMoved(abs, rel, clippingSize);
     }
 
-    inline void InputState::mouseScrolled(int abs, int rel)
+    FORCEINLINE void InputState::mouseScrolled(int abs, int rel)
     {
         if (handlers_[mouseIndex_s] != NULL)
             handlers_[mouseIndex_s]->mouseScrolled(abs, rel);
     }
 
-    inline void InputState::joyStickAxisMoved(unsigned int device, unsigned int axis, float value)
+    FORCEINLINE void InputState::joyStickAxisMoved(unsigned int device, unsigned int axis, float value)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)
