@@ -56,7 +56,7 @@ namespace orxonox
                 @brief Gets called every frame.
                 @param dt The time since the last frame in seconds
             */
-            virtual void tick(float dt) = 0;
+            virtual void tick(float dt) { }
 
         protected:
             Tickable();

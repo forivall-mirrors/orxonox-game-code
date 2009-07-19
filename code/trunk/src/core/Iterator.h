@@ -239,7 +239,7 @@ namespace orxonox
             inline T* operator*() const
             {
                 if (this->element_)
-                    return dynamic_cast<T*>(this->element_->objectBase_);
+                    return orxonox_cast<T*>(this->element_->objectBase_);
                 else
                     return 0;
             }
@@ -251,7 +251,7 @@ namespace orxonox
             inline T* operator->() const
             {
                 if (this->element_)
-                    return dynamic_cast<T*>(this->element_->objectBase_);
+                    return orxonox_cast<T*>(this->element_->objectBase_);
                 else
                     return 0;
             }

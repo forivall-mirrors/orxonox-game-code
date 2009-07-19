@@ -197,7 +197,7 @@ namespace orxonox
                 if (identifier)
                 {
                     BaseObject* object = identifier->fabricate(this);
-                    this->engine_ = dynamic_cast<Engine*>(object);
+                    this->engine_ = orxonox_cast<Engine*>(object);
 
                     if (this->engine_)
                     {
