@@ -93,7 +93,7 @@ namespace orxonox
     {
         SUPER(HUDHealthBar, changedOwner);
 
-        this->owner_ = dynamic_cast<Pawn*>(this->getOwner());
+        this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
     }
 
     void HUDHealthBar::changedOverlayGroup()

@@ -65,7 +65,7 @@ namespace orxonox
         {
             Identifier* ident = Class(UsableItem);
             if(this->currentUsable_ == NULL && item->isA(ident))
-                this->currentUsable_ = dynamic_cast<UsableItem*>(item);
+                this->currentUsable_ = orxonox_cast<UsableItem*>(item);
 
             this->items_.insert( std::pair<std::string, BaseItem*> (item->getPickupIdentifier(), item) );
             return true;
@@ -335,7 +335,7 @@ namespace orxonox
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
             if ((*it).second->isA(ident))
-                ret.push_back(dynamic_cast<EquipmentItem*>((*it).second));
+                ret.push_back(orxonox_cast<EquipmentItem*>((*it).second));
         }
 
         return ret;
@@ -352,7 +352,7 @@ namespace orxonox
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
             if ((*it).second->isA(ident))
-                ret.push_back(dynamic_cast<PassiveItem*>((*it).second));
+                ret.push_back(orxonox_cast<PassiveItem*>((*it).second));
         }
 
         return ret;
@@ -369,7 +369,7 @@ namespace orxonox
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
             if ((*it).second->isA(ident))
-                ret.push_back(dynamic_cast<UsableItem*>((*it).second));
+                ret.push_back(orxonox_cast<UsableItem*>((*it).second));
         }
 
         return ret;

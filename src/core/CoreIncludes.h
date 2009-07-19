@@ -55,34 +55,16 @@
     @param bRootClass True if the class is directly derived from OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    this->setIdentifier(orxonox::ClassIdentifier<ClassName>::getIdentifier(#ClassName)); \
-    if (orxonox::Identifier::isCreatingHierarchy()) \
-    { \
-        if (this->getParents()) \
-        { \
-            orxonox::ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeClassHierarchy(this->getParents(), bRootClass); \
-            this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
-        } \
-        this->setConfigValues(); \
+    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initialiseObject(this, #ClassName, bRootClass)) \
         return; \
-    } \
-    orxonox::ClassIdentifier<ClassName>::getIdentifier()->addObject(this)
-
-/**
-    @brief Intern macro, containing the specific part of RegisterRootObject.
-    @param ClassName The name of the class
-*/
-#define InternRegisterRootObject(ClassName) \
-    if (orxonox::Identifier::isCreatingHierarchy() && !this->getParents()) \
-        this->createParents(); \
-    InternRegisterObject(ClassName, true)
+    else \
+        ((void)0)
 
 /**
     @brief RegisterObject - with and without debug output.
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    COUT(5) << "*** Register Object: " << #ClassName << std::endl; \
     InternRegisterObject(ClassName, false)
 
 /**
@@ -90,8 +72,7 @@
     @param ClassName The name of the class
 */
 #define RegisterRootObject(ClassName) \
-    COUT(5) << "*** Register Root-Object: " << #ClassName << std::endl; \
-    InternRegisterRootObject(ClassName)
+    InternRegisterObject(ClassName, true)
 
 /**
     @brief Creates the entry in the Factory.
@@ -114,18 +95,26 @@
 #define Class(ClassName) \
     orxonox::ClassIdentifier<ClassName>::getIdentifier()
 
-/**
-    @brief Returns the Identifier with a given name through the factory.
-    @param String The name of the class
-*/
-#define ClassByString(String) \
-    orxonox::Factory::getIdentifier(String)
 
-/**
-    @brief Returns the Identifier with a given network ID through the factory.
-    @param networkID The network ID of the class
-*/
-#define ClassByID(networkID) \
-    orxonox::Factory::getIdentifier(networkID)
+namespace orxonox
+{
+    /**
+        @brief Returns the Identifier with a given name through the factory.
+        @param String The name of the class
+    */
+    inline Identifier* ClassByString(const std::string& name)
+    {
+        return Factory::getIdentifier(name);
+    }
+
+    /**
+        @brief Returns the Identifier with a given network ID through the factory.
+        @param networkID The network ID of the class
+    */
+    inline Identifier* ClassByID(uint32_t id)
+    {
+        return Factory::getIdentifier(id);
+    }
+}
 
 #endif /* _CoreIncludes_H__ */

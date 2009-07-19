@@ -85,7 +85,7 @@ namespace orxonox
         // Load the GUI image as soon as the PickupSpawner gets loaded
         //  = less delays while running
         BaseObject* newObject = this->itemTemplate_->getBaseclassIdentifier()->fabricate(this);
-        BaseItem* asItem = dynamic_cast<BaseItem*>(newObject);
+        BaseItem* asItem = orxonox_cast<BaseItem*>(newObject);
         if (asItem)
         {
             asItem->addTemplate(this->itemTemplate_);
@@ -153,7 +153,7 @@ namespace orxonox
         if (this->isActive() && this->itemTemplate_ && this->itemTemplate_->getBaseclassIdentifier())
         {
             BaseObject* newObject = this->itemTemplate_->getBaseclassIdentifier()->fabricate(this);
-            BaseItem* asItem = dynamic_cast<BaseItem*>(newObject);
+            BaseItem* asItem = orxonox_cast<BaseItem*>(newObject);
             if (asItem)
             {
                 asItem->setPickupIdentifier(this->itemTemplateName_);

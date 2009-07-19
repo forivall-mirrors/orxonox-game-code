@@ -39,7 +39,7 @@ namespace orxonox
     {
         RegisterObject(Destroyer);
 
-        UnderAttack* gametype = dynamic_cast<UnderAttack*>(this->getGametype());
+        UnderAttack* gametype = orxonox_cast<UnderAttack*>(this->getGametype());
         if (gametype)
         {
             gametype->addDestroyer(this);

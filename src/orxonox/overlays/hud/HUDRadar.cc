@@ -163,6 +163,6 @@ namespace orxonox
     {
         SUPER(HUDRadar, changedOwner);
 
-        this->owner_ = dynamic_cast<Pawn*>(this->getOwner());
+        this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
     }
 }
