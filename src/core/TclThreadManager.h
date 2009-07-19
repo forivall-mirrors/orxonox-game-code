@@ -37,14 +37,6 @@
 
 #include "OrxonoxClass.h"
 
-namespace boost
-{
-    // forward declarations
-    class mutex;
-    class shared_mutex;
-    class condition_variable;
-}
-
 namespace orxonox
 {
     class _CoreExport TclThreadManager : public OrxonoxClass
