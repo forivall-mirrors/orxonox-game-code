@@ -31,7 +31,7 @@ MESSAGE(STATUS "Using library package for the dependencies.")
 
 # Include paths and other special treatments
 SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut-1.1.0)
-SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost-1.37.0)
+SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost-1.39.0)
 SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui-0.6.2)
 SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx-2007.aug)
 SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet-1.2)
