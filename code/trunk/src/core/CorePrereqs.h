@@ -212,6 +212,8 @@ namespace boost
     }
     class thread;
     class mutex;
+    class shared_mutex;
+    class condition_variable;
 }
 
 // TinyXML and TinyXML++
