@@ -42,7 +42,7 @@ namespace orxonox
     class _CoreExport TclThreadManager : public OrxonoxClass
     {
         friend class TclBind;
-        friend void tclThread(TclInterpreterBundle* bundle, std::string command);
+        friend _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
 
         public:
             TclThreadManager(Tcl::interpreter* interpreter);
