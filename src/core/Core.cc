@@ -228,7 +228,7 @@ namespace orxonox
     };
 
 
-    Core::Core(int argc, char** argv)
+    Core::Core(const std::string& cmdLine)
     {
         if (singletonRef_s != 0)
         {
@@ -241,7 +241,7 @@ namespace orxonox
         this->configuration_ = new CoreConfiguration();
 
         // Parse command line arguments first
-        CommandLine::parseCommandLine(argc, argv);
+        CommandLine::parseCommandLine(cmdLine);
 
         // Determine and set the location of the executable
         setExecutablePath();

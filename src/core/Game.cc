@@ -109,7 +109,7 @@ namespace orxonox
     @brief
         Non-initialising constructor.
     */
-    Game::Game(int argc, char** argv)
+    Game::Game(const std::string& cmdLine)
     {
         if (singletonRef_s != 0)
         {
@@ -136,7 +136,7 @@ namespace orxonox
         this->gameClock_ = new Clock();
 
         // Create the Core
-        this->core_ = new Core(argc, argv);
+        this->core_ = new Core(cmdLine);
 
         // After the core has been created, we can safely instantiate the GameStates
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();

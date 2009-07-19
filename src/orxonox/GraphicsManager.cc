@@ -277,7 +277,7 @@ namespace orxonox
 
         boost::filesystem::path folder(ogrePluginsFolder_);
         // Do some SubString magic to get the comma separated list of plugins
-        SubString plugins(ogrePlugins_, ",", " ", false, 92, false, 34, false, 40, 41, false, '\0');
+        SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '(', ')', false, '\0');
         // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
             ogreRoot_->loadPlugin((folder / plugins[i]).file_string());

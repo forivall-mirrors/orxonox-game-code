@@ -67,7 +67,7 @@ namespace orxonox
     class _CoreExport Game
     {
     public:
-        Game(int argc, char** argv);
+        Game(const std::string& cmdLine);
         ~Game();
 
         void setStateHierarchy(const std::string& str);

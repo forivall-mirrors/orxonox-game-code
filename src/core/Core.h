@@ -65,7 +65,7 @@ namespace orxonox
             @throws
                 GeneralException
             */
-            Core(int argc, char** argv);
+            Core(const std::string& cmdLine);
             ~Core();
 
             void setConfigValues();
