@@ -1,0 +1,9 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  BoxCollisionShape.cc
+  CollisionShape.cc
+  CompoundCollisionShape.cc
+  ConeCollisionShape.cc
+  PlaneCollisionShape.cc
+  SphereCollisionShape.cc
+  WorldEntityCollisionShape.cc
+)
