@@ -32,35 +32,29 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
-#include <list>
 #include <map>
 #include <string>
-#include "core/OrxonoxClass.h"
+
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    // Internal struct
-    struct TclInterpreterBundle;
-
     class _CoreExport TclThreadManager : public OrxonoxClass
     {
-        friend class IRC;
         friend class TclBind;
+        friend void tclThread(TclInterpreterBundle* bundle, std::string command);
 
         public:
             TclThreadManager(Tcl::interpreter* interpreter);
-            ~TclThreadManager();
+            virtual ~TclThreadManager();
 
-            static TclThreadManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+            static TclThreadManager& getInstance() { assert(TclThreadManager::singletonPtr_s); return *TclThreadManager::singletonPtr_s; }
 
-            static unsigned int create();
-            static unsigned int createID(unsigned int threadID);
-            static void destroy(unsigned int threadID);
-            static void execute(unsigned int threadID, const std::string& command);
-            static std::string query(unsigned int threadID, const std::string& command);
-            static void status();
-            static void dump(unsigned int threadID);
-            static void flush(unsigned int threadID);
+            static unsigned int      create();
+            static Tcl::interpreter* createWithId(unsigned int id);
+            static void              destroy(unsigned int id);
+            static void              execute(unsigned int target_id, const std::string& command);
+            static std::string       query(unsigned int target_id, const std::string& command);
 
             void error(const std::string& error);
             void debug(const std::string& error);
@@ -70,40 +64,30 @@ namespace orxonox
             std::list<unsigned int> getThreadList() const;
 
         private:
-            TclThreadManager(const TclThreadManager& other);
+            static void tcl_execute(const Tcl::object& args);
+            static void tcl_crossexecute(int target_id, const Tcl::object& args);
+            static std::string tcl_query(int source_id, const Tcl::object& args);
+            static std::string tcl_crossquery(int source_id, int target_id, const Tcl::object& args);
+            static bool tcl_running(int id);
 
-            static void tcl_execute(Tcl::object const &args);
-            static std::string tcl_query(int querierID, Tcl::object const &args);
-            static std::string tcl_crossquery(int querierID, int threadID, Tcl::object const &args);
-            static bool tcl_running(int threadID);
+            void _execute(unsigned int target_id, const std::string& command);
+            std::string _query(unsigned int source_id, unsigned int target_id, const std::string& command, bool bUseCommandExecutor = false);
 
-            Tcl::interpreter* createNewTclInterpreter(const std::string& threadID);
-            Tcl::interpreter* getTclInterpreter(unsigned int threadID);
-            TclInterpreterBundle* getInterpreterBundle(unsigned int threadID);
+            TclInterpreterBundle* getInterpreterBundle(unsigned int id);
             std::string dumpList(const std::list<unsigned int>& list);
 
-            void pushCommandToQueue(const std::string& command);
-            void forceCommandToFrontOfQueue(const std::string& command);
-            std::string popCommandFromQueue();
-            bool queueIsEmpty();
+            std::string eval(TclInterpreterBundle* bundle, const std::string& command);
 
-            void pushCommandToQueue(unsigned int threadID, const std::string& command);
-            std::string popCommandFromQueue(unsigned int threadID);
-            bool queueIsEmpty(unsigned int threadID);
+            static TclThreadManager* singletonPtr_s;                            ///< Singleton pointer
 
-            bool updateQueriersList(TclInterpreterBundle* querier, TclInterpreterBundle* target);
-
-            std::string evalQuery(unsigned int querierID, const std::string& command);
-            std::string evalQuery(unsigned int querierID, unsigned int threadID, const std::string& command);
-
-            unsigned int threadCounter_;
-            TclInterpreterBundle* orxonoxInterpreterBundle_;
-            std::map<unsigned int, TclInterpreterBundle*> interpreterBundles_;
-
-            static TclThreadManager* singletonRef_s;
+            unsigned int numInterpreterBundles_;                                ///< Number of created Tcl-interpreters (only used for auto-numbered interpreters, not affected by @ref createWithId)
+            std::map<unsigned int, TclInterpreterBundle*> interpreterBundles_;  ///< A map containing all Tcl-interpreters
+            boost::shared_mutex* interpreterBundlesMutex_;                      ///< A mutex used to synchronize threads when accessing @ref interpreterBundles_
+            TclThreadList<std::string>* messageQueue_;                          ///< A queue to pass messages from Tcl-threads to the main thread
+            boost::mutex* mainInterpreterMutex_;                                ///< A mutex to synchronize queries to the main interpreter
     };
 
-    _CoreExport void tclThread(TclInterpreterBundle* interpreterBundle, std::string command);
+    _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
 }
 
 #endif /* _TclThreadManager_H__ */

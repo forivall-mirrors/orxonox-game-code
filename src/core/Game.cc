@@ -245,11 +245,21 @@ namespace orxonox
             }
 
             // UPDATE, Core first
+            bool threwException = false;
             try
             {
                 this->core_->update(*this->gameClock_);
             }
+            catch (const std::exception& ex)
+            {
+                threwException = true;
+                COUT(0) << "Exception while ticking the Core: " << ex.what() << std::endl;
+            }
             catch (...)
+            {
+                threwException = true;
+            }
+            if (threwException)
             {
                 COUT(0) << "An exception occured while ticking the Core. This should really never happen!" << std::endl;
                 COUT(0) << "Closing the program." << std::endl;
