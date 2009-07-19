@@ -176,10 +176,10 @@ namespace orxonox
         windowHndStr << (unsigned int)windowHnd_;
         paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 #if defined(ORXONOX_PLATFORM_WINDOWS)
-        paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
-        paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-        paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
-        paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+        //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+        //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
+        //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+        //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
 #elif defined(ORXONOX_PLATFORM_LINUX)
         paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
         paramList.insert(std::make_pair(std::string("x11_mouse_grab"), "true"));
