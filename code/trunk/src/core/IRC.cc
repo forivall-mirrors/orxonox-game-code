@@ -52,8 +52,7 @@ namespace orxonox
     void IRC::initialize()
     {
         unsigned int threadID = IRC_TCL_THREADID;
-        TclThreadManager::createID(threadID);
-        this->interpreter_ = TclThreadManager::getInstance().getTclInterpreter(threadID);
+        this->interpreter_ = TclThreadManager::createWithId(threadID);
 
         try
         {
