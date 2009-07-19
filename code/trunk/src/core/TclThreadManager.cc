@@ -29,22 +29,23 @@
 #include "TclThreadManager.h"
 
 #include <boost/bind.hpp>
+#include <boost/thread/condition.hpp>
+#include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/shared_mutex.hpp>
 #include <OgreTimer.h>
 #include <cpptcl/cpptcl.h>
 
 #include "util/Convert.h"
+#include "util/Debug.h"
 #include "Clock.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "CoreIncludes.h"
 #include "TclBind.h"
-#include "TclThreadList.h"
 
 namespace orxonox
 {
+    const unsigned int TCLTHREADMANAGER_MAX_QUEUE_LENGTH = 100;
     const float TCLTHREADMANAGER_MAX_CPU_USAGE = 0.50f;
 
     SetConsoleCommandShortcutAlias(TclThreadManager, execute, "tclexecute").argumentCompleter(0, autocompletion::tclthreads());
@@ -53,462 +54,317 @@ namespace orxonox
     SetConsoleCommand(TclThreadManager, destroy, false).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, execute, false).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, query,   false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, status,  false);
+    SetConsoleCommand(TclThreadManager, dump,    false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, flush,   false).argumentCompleter(0, autocompletion::tclthreads());
 
-    /**
-        @brief A struct containing all informations about a Tcl-interpreter
-    */
     struct TclInterpreterBundle
     {
-        TclInterpreterBundle()
-        {
-            this->lock_ = new boost::unique_lock<boost::mutex>(this->mutex_, boost::defer_lock);
-            this->bRunning_ = true;
-        }
+        unsigned int id_;
 
-        ~TclInterpreterBundle()
-        {
-            delete this->lock_;
-        }
+        std::list<std::string> queue_;
+        boost::mutex queueMutex_;
 
-        unsigned int                      id_;             ///< The id of the interpreter
-        Tcl::interpreter*                 interpreter_;    ///< The Tcl-interpreter
-        boost::mutex                      mutex_;          ///< A mutex to lock the interpreter while it's being used
-        boost::unique_lock<boost::mutex>* lock_;           ///< The corresponding lock for the mutex
-        TclThreadList<std::string>        queue_;          ///< The command queue for commands passed by execute(command)
-        TclThreadList<unsigned int>       queriers_;       ///< A list containing the id's of all other threads sending a query to this interpreter (to avoid circular queries and deadlocks)
-        bool                              bRunning_;       ///< This variable stays true until destroy() gets called
+        Tcl::interpreter* interpreter_;
+        std::string interpreterName_;
+        boost::try_mutex interpreterMutex_;
+
+        std::list<unsigned int> queriers_;
+        boost::mutex queriersMutex_;
+
+        bool running_;
+        boost::mutex runningMutex_;
+
+        bool finished_;
+        boost::mutex finishedMutex_;
+        boost::condition finishedCondition_;
     };
 
-    TclThreadManager* TclThreadManager::singletonPtr_s = 0;
 
-    /**
-        @brief Constructor
-        @param interpreter A pointer to the standard Tcl-interpreter (see @ref TclBind)
-    */
+    static boost::thread::id threadID_g;
+    static boost::mutex bundlesMutex_g;
+    static boost::condition fullQueueCondition_g;
+    static boost::condition orxonoxEvalCondition_g;
+
+    TclThreadManager* TclThreadManager::singletonRef_s = 0;
+
     TclThreadManager::TclThreadManager(Tcl::interpreter* interpreter)
+        : orxonoxInterpreterBundle_(new TclInterpreterBundle())
     {
         RegisterRootObject(TclThreadManager);
 
-        assert(TclThreadManager::singletonPtr_s == 0);
-        TclThreadManager::singletonPtr_s = this;
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
 
-        this->numInterpreterBundles_ = 0;
-
-        this->interpreterBundlesMutex_ = new boost::shared_mutex();
-        this->mainInterpreterMutex_ = new boost::mutex();
-        this->messageQueue_ = new TclThreadList<std::string>();
-
-        TclInterpreterBundle* newbundle = new TclInterpreterBundle();
-        newbundle->id_ = 0;
-        newbundle->interpreter_ = interpreter;
-        newbundle->lock_->lock();
-
-        {
-            boost::unique_lock<boost::shared_mutex> lock(*this->interpreterBundlesMutex_);
-            this->interpreterBundles_[0] = newbundle;
-        }
+        this->threadCounter_ = 0;
+        this->orxonoxInterpreterBundle_->id_ = 0;
+        this->orxonoxInterpreterBundle_->interpreter_ = interpreter;
+        threadID_g = boost::this_thread::get_id();
     }
 
-    /**
-        @brief Destructor
-    */
     TclThreadManager::~TclThreadManager()
     {
-        TclThreadManager::singletonPtr_s = 0;
-
-        delete this->interpreterBundlesMutex_;
-        delete this->mainInterpreterMutex_;
-        delete this->messageQueue_;
-    }
-
-    /**
-        @brief The "main loop" of the TclThreadManager. Creates new threads if needed and handles queries and queued commands for the main interpreter.
-    */
-    void TclThreadManager::update(const Clock& time)
-    {
-        // Get the bundle of the main interpreter (0)
-        TclInterpreterBundle* bundle = this->getInterpreterBundle(0);
-        if (bundle)
+        unsigned int threadID;
         {
-            // Unlock the mutex to allow other threads accessing the main interpreter
-            bundle->lock_->unlock();
-
-            // Lock the main interpreter mutex once to synchronize with threads that want to query the main interpreter
-            {
-                boost::unique_lock<boost::mutex> lock(*this->mainInterpreterMutex_);
-            }
-
-            // Lock the mutex again to gain exclusive access to the interpreter for the rest of the mainloop
-            bundle->lock_->lock();
-
-            // Execute commands in the queues of the threaded interpreters
-            {
-                boost::shared_lock<boost::shared_mutex> lock(*this->interpreterBundlesMutex_);
-                for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = this->interpreterBundles_.begin(); it != this->interpreterBundles_.end(); ++it)
-                {
-                    if (it->first == 0)
-                        continue; // We'll handle the default interpreter later (and without threads of course)
-
-                    TclInterpreterBundle* bundle = it->second;
-                    if (!bundle->queue_.empty())
-                    {
-                        // There are commands in the queue
-                        try
-                        {
-                            if (!bundle->lock_->owns_lock() && bundle->lock_->try_lock())
-                            {
-                                // We sucessfully obtained a lock for the interpreter
-                                std::string command;
-                                if (bundle->queue_.try_pop_front(&command))
-                                {
-                                    // Start a thread to execute the command
-                                    boost::thread(boost::bind(&tclThread, bundle, command));
-                                }
-                                else
-                                {
-                                    // Somehow the queue become empty (maybe multiple consumers) - unlock the mutex
-                                    bundle->lock_->unlock();
-                                }
-                            }
-                        }
-                        catch (...)
-                        {
-                            // A lock error occurred - this is possible if the lock gets locked between !bundle->lock_->owns_lock() and bundle->lock_->try_lock()
-                            // This isn't too bad, just continue
-                        }
-                    }
-                }
-            }
-
-            // Execute commands in the message queue
-            if (!this->messageQueue_->empty())
-            {
-                std::string command;
-                while (true)
-                {
-                    // Pop the front value from the list (break the loop if there are no elements in the list)
-                    if (!this->messageQueue_->try_pop_front(&command))
-                        break;
-
-                    // Execute the command
-                    CommandExecutor::execute(command, false);
-                }
-            }
-
-            // Execute commands in the queue of the main interpreter
-            if (!bundle->queue_.empty())
-            {
-                // Calculate the time we have until we reach the maximal cpu usage
-                unsigned long maxtime = (unsigned long)(time.getDeltaTime() * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
-
-                Ogre::Timer timer;
-                std::string command;
-
-                while (timer.getMicroseconds() < maxtime)
-                {
-                    // Pop the front value from the list (break the loop if there are no elements in the list)
-                    if (!bundle->queue_.try_pop_front(&command))
-                        break;
-
-                    // Execute the command
-                    CommandExecutor::execute(command, false);
-                }
-            }
+            boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
+            if (this->interpreterBundles_.begin() == this->interpreterBundles_.end())
+                return;
+            else
+                threadID = this->interpreterBundles_.begin()->first;
         }
+        this->destroy(threadID);
+
+        delete this->orxonoxInterpreterBundle_;
+
+        singletonRef_s = 0;
     }
 
-    /**
-        @brief Creates a new Tcl-interpreter.
-    */
     unsigned int TclThreadManager::create()
     {
-        TclThreadManager::getInstance().numInterpreterBundles_++;
-        TclThreadManager::createWithId(TclThreadManager::getInstance().numInterpreterBundles_);
-        COUT(0) << "Created new Tcl-interpreter with ID " << TclThreadManager::getInstance().numInterpreterBundles_ << std::endl;
-        return TclThreadManager::getInstance().numInterpreterBundles_;
+        boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
+        TclThreadManager::getInstance().threadCounter_++;
+        std::string name = multi_cast<std::string>(TclThreadManager::getInstance().threadCounter_);
+
+        TclInterpreterBundle* bundle = new TclInterpreterBundle;
+        bundle->id_ = TclThreadManager::getInstance().threadCounter_;
+        bundle->interpreter_ = TclThreadManager::getInstance().createNewTclInterpreter(name);
+        bundle->interpreterName_ = name;
+        bundle->running_ = true;
+        bundle->finished_ = true;
+
+        TclThreadManager::getInstance().interpreterBundles_[TclThreadManager::getInstance().threadCounter_] = bundle;
+        COUT(0) << "Created new Tcl-interpreter with ID " << TclThreadManager::getInstance().threadCounter_ << std::endl;
+        return TclThreadManager::getInstance().threadCounter_;
     }
 
-    /**
-        @brief Creates a new Tcl-interpreter with a given id.
-
-        Use with caution - if the id collides with an already existing interpreter, this call will fail.
-        This will also be a problem, if the auto-numbered interpreters (by using create()) reach an id
-        which was previously used in this function. Use high numbers to be safe.
-    */
-    Tcl::interpreter* TclThreadManager::createWithId(unsigned int id)
+    unsigned int TclThreadManager::createID(unsigned int threadID)
     {
-        TclInterpreterBundle* newbundle = new TclInterpreterBundle();
-        newbundle->id_ = id;
-        newbundle->interpreter_ = new Tcl::interpreter(TclBind::getInstance().getTclLibPath());
-
-        // Initialize the new interpreter
-        try
-        {
-            std::string id_string = getConvertedValue<unsigned int, std::string>(id);
-
-            // Define the functions which are implemented in C++
-            newbundle->interpreter_->def("orxonox::execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::query",        TclThreadManager::tcl_query,        Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::crossquery",   TclThreadManager::tcl_crossquery,   Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::running",      TclThreadManager::tcl_running);
-
-            // Create threadspecific shortcuts for the functions above
-            newbundle->interpreter_->def("execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
-            newbundle->interpreter_->def("crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->eval("proc query       args     { orxonox::query " + id_string + " $args }");
-            newbundle->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery " + id_string + " $id $args }");
-
-            // Define a variable containing the thread id
-            newbundle->interpreter_->eval("set id " + id_string);
-
-            // Use our own exit function to avoid shutting down the whole program instead of just the interpreter
-            newbundle->interpreter_->eval("rename exit tcl::exit");
-            newbundle->interpreter_->eval("proc exit {} { execute TclThreadManager destroy " + id_string + " }");
-
-            // Redefine some native functions
-            newbundle->interpreter_->eval("redef_puts");
-
-//            newbundle->interpreter_->eval("rename while tcl::while");
-//            newbundle->interpreter_->eval("proc while {test command} { tcl::while {[uplevel 1 expr $test]} {uplevel 1 $command} }"); // (\"$test\" && [orxonox::running " + id + "]])
-//            newbundle->interpreter_->eval("rename for tcl::for");
-//            newbundle->interpreter_->eval("proc for {start test next command} { uplevel tcl::for \"$start\" \"$test\" \"$next\" \"$command\" }");
-        }
-        catch (const Tcl::tcl_error& e)
-        {   newbundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id << "): " << e.what() << std::endl;   }
-        catch (const std::exception& e)
-        {   newbundle->interpreter_ = 0; COUT(1) << "Error while creating Tcl-interpreter (" << id << "): " << e.what() << std::endl;   }
-        catch (...)
-        {   newbundle->interpreter_ = 0; COUT(1) << "An error occurred while creating a new Tcl-interpreter (" << id << ")" << std::endl;   }
-
-        {
-            // Add the new bundle to the map
-            boost::unique_lock<boost::shared_mutex> lock(*TclThreadManager::getInstance().interpreterBundlesMutex_);
-            TclThreadManager::getInstance().interpreterBundles_[id] = newbundle;
-        }
-
-        return newbundle->interpreter_;
+        unsigned int temp = TclThreadManager::getInstance().threadCounter_;
+        TclThreadManager::getInstance().threadCounter_ = threadID - 1;
+        TclThreadManager::create();
+        TclThreadManager::getInstance().threadCounter_ = temp;
+        return threadID;
     }
 
-    /**
-        @brief Stops and destroys a given Tcl-interpreter
-    */
-    void TclThreadManager::destroy(unsigned int id)
+    void TclThreadManager::destroy(unsigned int threadID)
     {
-        // TODO
-        // Not yet implemented
-    }
-
-    /**
-        @brief Sends a command to the queue of a given Tcl-interpreter
-        @param id The id of the target interpreter
-        @param command The command to be sent
-    */
-    void TclThreadManager::execute(unsigned int target_id, const std::string& command)
-    {
-        TclThreadManager::getInstance()._execute(target_id, command);
-    }
-
-    /**
-        @brief This function can be called from Tcl to execute a console command.
-
-        Commands which shall be executed are put into a queue and processed as soon as the
-        main thread feels ready to do so. The queue may also be full which results in a temporary
-        suspension of the calling thread until the queue gets ready again.
-    */
-    void TclThreadManager::tcl_execute(const Tcl::object& args)
-    {
-        TclThreadManager::getInstance()._execute(0, stripEnclosingBraces(args.get()));
-    }
-
-    /**
-        @brief This function can be called from Tcl to send a command to the queue of any interpreter.
-        @param target_id The id of the target thread
-    */
-    void TclThreadManager::tcl_crossexecute(int target_id, const Tcl::object& args)
-    {
-        TclThreadManager::getInstance()._execute(static_cast<unsigned int>(target_id), stripEnclosingBraces(args.get()));
-    }
-
-    /**
-        @brief Sends a command to the queue of a given Tcl-interpreter
-        @param id The id of the target interpreter
-        @param command The command to be sent
-    */
-    void TclThreadManager::_execute(unsigned int target_id, const std::string& command)
-    {
-        TclInterpreterBundle* bundle = this->getInterpreterBundle(target_id);
+        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID);
         if (bundle)
-            bundle->queue_.push_back(command);
-    }
-
-
-    /**
-        @brief Sends a query to a given Tcl-interpreter and waits for the result
-        @param id The id of the target interpreter
-        @param command The command to be sent
-        @return The result of the command
-    */
-    std::string TclThreadManager::query(unsigned int target_id, const std::string& command)
-    {
-        return TclThreadManager::getInstance()._query(0, target_id, command);
-    }
-
-    /**
-        @brief This function can be called from Tcl to send a query to the main thread.
-        @param source_id The id of the calling thread
-
-        A query waits for the result of the command. This means, the calling thread will be blocked until
-        the main thread answers the query. In return, the main thread sends the result of the console
-        command back to Tcl.
-    */
-    std::string TclThreadManager::tcl_query(int source_id, const Tcl::object& args)
-    {
-        return TclThreadManager::getInstance()._query(static_cast<unsigned int>(source_id), 0, stripEnclosingBraces(args.get()), true);
-    }
-
-    /**
-        @brief This function can be called from Tcl to send a query to another thread.
-        @param source_id The id of the calling thread
-        @param target_id The id of the target thread
-    */
-    std::string TclThreadManager::tcl_crossquery(int source_id, int target_id, const Tcl::object& args)
-    {
-        return TclThreadManager::getInstance()._query(static_cast<unsigned int>(source_id), static_cast<unsigned int>(target_id), stripEnclosingBraces(args.get()));
-    }
-
-    /**
-        @brief This function performs a query to any Tcl interpreter
-        @param source_id The id of the calling thread
-        @param target_id The id of the target thread
-        @param command The command to send as a query
-        @param bUseCommandExecutor Only used if the target_id is 0 (which references the main interpreter). In this case it means if the command should be passed to the CommandExecutor (true) or to the main Tcl interpreter (false). This is true when called by tcl_query and false when called by tcl_crossquery.
-    */
-    std::string TclThreadManager::_query(unsigned int source_id, unsigned int target_id, const std::string& command, bool bUseCommandExecutor)
-    {
-        TclInterpreterBundle* source_bundle = this->getInterpreterBundle(source_id);
-        TclInterpreterBundle* target_bundle = this->getInterpreterBundle(target_id);
-        std::string output;
-
-        if (source_bundle && target_bundle)
         {
-            // At this point we assume the mutex of source_bundle to be locked (because it's executing this query right now an waits for the return value)
-            // We can safely use it's querier list (because there's no other place in the code using the list except this query - and the interpreter can't start more than one query)
-
-            if ((source_bundle->id_ == target_bundle->id_) || source_bundle->queriers_.is_in(target_bundle->id_))
             {
-                // This query would lead to a deadlock - return with an error
-                this->error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + " " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
-                            + " -> " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + "), couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) + ".");
+                boost::mutex::scoped_lock running_lock(bundle->runningMutex_);
+                bundle->running_ = false;
+            }
+            while (true)
+            {
+                {
+                    boost::mutex::scoped_lock finished_lock(bundle->finishedMutex_);
+                    if (bundle->finished_)
+                    {
+                        boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
+                        boost::mutex::scoped_try_lock interpreter_lock(bundle->interpreterMutex_);
+                        try
+                        {
+                            while (!interpreter_lock.try_lock())
+                            {
+                                orxonoxEvalCondition_g.notify_one();
+                                boost::this_thread::yield();
+                            }
+                        } catch (...) {}
+                        delete bundle->interpreter_;
+                        delete bundle;
+                        TclThreadManager::getInstance().interpreterBundles_.erase(threadID);
+                        break;
+                    }
+                }
+
+                orxonoxEvalCondition_g.notify_one();
+                boost::this_thread::yield();
+            }
+
+            COUT(0) << "Destroyed Tcl-interpreter with ID " << threadID << std::endl;
+        }
+    }
+
+    void TclThreadManager::execute(unsigned int threadID, const std::string& _command)
+    {
+        std::string command = stripEnclosingBraces(_command);
+
+        if (threadID == 0)
+            TclThreadManager::getInstance().pushCommandToQueue(command);
+        else
+            TclThreadManager::getInstance().pushCommandToQueue(threadID, command);
+    }
+
+    std::string TclThreadManager::query(unsigned int threadID, const std::string& command)
+    {
+        return TclThreadManager::getInstance().evalQuery(TclThreadManager::getInstance().orxonoxInterpreterBundle_->id_, threadID, command);
+    }
+
+    void TclThreadManager::status()
+    {
+        COUT(0) << "Thread ID" << '\t' << "Queue size" << '\t' << "State" << std::endl;
+
+        std::string output = "Orxonox";
+        output += "\t\t";
+        {
+            boost::mutex::scoped_lock queue_lock(TclThreadManager::getInstance().orxonoxInterpreterBundle_->queueMutex_);
+            output += multi_cast<std::string>(TclThreadManager::getInstance().orxonoxInterpreterBundle_->queue_.size());
+        }
+        output += "\t\t";
+        output += "busy";
+        COUT(0) << output << std::endl;
+
+        boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
+        for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = TclThreadManager::getInstance().interpreterBundles_.begin(); it != TclThreadManager::getInstance().interpreterBundles_.end(); ++it)
+        {
+            std::string output = multi_cast<std::string>((*it).first);
+            output += "\t\t";
+            {
+                boost::mutex::scoped_lock queue_lock((*it).second->queueMutex_);
+                output += multi_cast<std::string>((*it).second->queue_.size());
+            }
+            output += "\t\t";
+            {
+                boost::mutex::scoped_try_lock interpreter_lock((*it).second->interpreterMutex_);
+                if (interpreter_lock.try_lock())
+                    output += "ready";
+                else
+                    output += "busy";
+            }
+            COUT(0) << output << std::endl;
+        }
+    }
+
+    void TclThreadManager::dump(unsigned int threadID)
+    {
+        TclInterpreterBundle* bundle = 0;
+        if (threadID == 0)
+        {
+            bundle = TclThreadManager::getInstance().orxonoxInterpreterBundle_;
+            COUT(0) << "Queue dump of Orxonox:" << std::endl;
+        }
+        else
+        {
+            if ((bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID)))
+            {
+                COUT(0) << "Queue dump of Tcl-thread " << threadID << ":" << std::endl;
             }
             else
-            {
-                boost::unique_lock<boost::mutex> lock(target_bundle->mutex_, boost::try_to_lock);
-                boost::unique_lock<boost::mutex> mainlock(*this->mainInterpreterMutex_, boost::defer_lock);
-
-                if (!lock.owns_lock() && source_bundle->id_ != 0)
-                {
-                    // We couldn't obtain the try_lock immediately and we're not the main interpreter - wait until the lock becomes possible (note: the main interpreter won't wait and instead returns an error - see below)
-                    if (target_bundle->id_ == 0)
-                    {
-                        // We're querying the main interpreter - use the main interpreter mutex to synchronize
-                        mainlock.lock();
-                        lock.lock();
-                    }
-                    else
-                    {
-                        // We're querying a threaded interpreter - no synchronization needed
-                        lock.lock();
-                    }
-                }
-
-                if (lock.owns_lock())
-                {
-                    // Now the mutex of target_bundle is also locked an we can update the querier list
-                    target_bundle->queriers_.insert(target_bundle->queriers_.getList().begin(), source_bundle->queriers_.getList().begin(), source_bundle->queriers_.getList().end());
-                    target_bundle->queriers_.push_back(source_bundle->id_);
-
-                    // Perform the query (note: this happens in the main thread because we need the returnvalue)
-                    if (target_bundle->id_ == 0 && bUseCommandExecutor)
-                    {
-                        // It's a query to the CommandExecutor
-                        this->debug("TclThread_query -> CE: " + command);
-                        if (!CommandExecutor::execute(command, false))
-                            this->error("Error: Can't execute command \"" + command + "\"!");
-
-                        if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-                            output = CommandExecutor::getLastEvaluation().getReturnvalue().getString();
-                    }
-                    else
-                    {
-                        // It's a query to a Tcl interpreter
-                        this->debug("TclThread_query: " + command);
-
-                        output = this->eval(target_bundle, command);
-                    }
-
-                    // Clear the queriers list of the target
-                    target_bundle->queriers_.clear();
-
-                    // Unlock the mutex of the target_bundle
-                    lock.unlock();
-
-                    // Finally unlock the main interpreter lock if necessary
-                    if (mainlock.owns_lock())
-                        mainlock.unlock();
-                }
-                else
-                {
-                    // This happens if the main thread tries to query a busy interpreter
-                    // To avoid a lock of the main thread, we simply don't proceed with the query in this case
-                    this->error("Error: Couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) + ", interpreter is busy right now.");
-                }
-            }
-
+                return;
         }
 
-        return output;
+        boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+        unsigned int index = 0;
+        for (std::list<std::string>::const_iterator it = bundle->queue_.begin(); it != bundle->queue_.end(); ++it)
+        {
+            index++;
+            COUT(0) << index << ": " << (*it) << std::endl;
+        }
     }
 
-    /**
-        @brief This function can be called from Tcl to ask if the thread is still suposed to be running.
-        @param id The id of the thread in question
-    */
-    bool TclThreadManager::tcl_running(int id)
+    void TclThreadManager::flush(unsigned int threadID)
     {
-        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(static_cast<unsigned int>(id));
-        if (bundle)
-            return bundle->bRunning_;
+        TclInterpreterBundle* bundle = 0;
+        if (threadID == 0)
+            bundle = TclThreadManager::getInstance().orxonoxInterpreterBundle_;
         else
-            return false;
+            if (!(bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID)))
+                return;
+
+        boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+        bundle->queue_.clear();
+        if (threadID == 0)
+        {
+            COUT(0) << "Flushed queue of Orxonox Tcl-interpreter." << std::endl;
+        }
+        else
+        {
+            COUT(0) << "Flushed queue of Tcl-interpreter " << threadID << "." << std::endl;
+        }
     }
 
-    /**
-        @brief Returns the interpreter bundle with the given id.
-        @param id The id of the interpreter
-        @return The interpreter or 0 if the id doesn't exist
-    */
-    TclInterpreterBundle* TclThreadManager::getInterpreterBundle(unsigned int id)
+    void TclThreadManager::tcl_execute(Tcl::object const &args)
     {
-        boost::shared_lock<boost::shared_mutex> lock(*this->interpreterBundlesMutex_);
+        TclThreadManager::getInstance().pushCommandToQueue(stripEnclosingBraces(args.get()));
+    }
 
-        std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = this->interpreterBundles_.find(id);
+    std::string TclThreadManager::tcl_query(int querierID, Tcl::object const &args)
+    {
+        return TclThreadManager::getInstance().evalQuery(static_cast<unsigned int>(querierID), stripEnclosingBraces(args.get()));
+    }
+
+    std::string TclThreadManager::tcl_crossquery(int querierID, int threadID, Tcl::object const &args)
+    {
+        return TclThreadManager::getInstance().evalQuery(static_cast<unsigned int>(querierID), static_cast<unsigned int>(threadID), stripEnclosingBraces(args.get()));
+    }
+
+    bool TclThreadManager::tcl_running(int threadID)
+    {
+        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(static_cast<unsigned int>(threadID));
+        if (bundle)
+        {
+            boost::mutex::scoped_lock running_lock(bundle->runningMutex_);
+            return bundle->running_;
+        }
+        return false;
+    }
+
+    Tcl::interpreter* TclThreadManager::createNewTclInterpreter(const std::string& threadID)
+    {
+        Tcl::interpreter* i = 0;
+        i = new Tcl::interpreter(TclBind::getInstance().getTclLibPath());
+
+        try
+        {
+            i->def("orxonox::query", TclThreadManager::tcl_query, Tcl::variadic());
+            i->def("orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
+            i->def("orxonox::execute", TclThreadManager::tcl_execute, Tcl::variadic());
+            i->def("orxonox::running", TclThreadManager::tcl_running);
+
+            i->def("execute", TclThreadManager::tcl_execute, Tcl::variadic());
+            i->eval("proc query args { orxonox::query " + threadID + " $args }");
+            i->eval("proc crossquery {id args} { orxonox::crossquery " + threadID + " $id $args }");
+            i->eval("set id " + threadID);
+
+            i->eval("rename exit tcl::exit");
+            i->eval("proc exit {} { orxonox TclThreadManager destroy " + threadID + " }");
+
+            i->eval("redef_puts");
+
+//            i->eval("rename while tcl::while");
+//            i->eval("proc while {test command} { tcl::while {[uplevel 1 expr $test]} {uplevel 1 $command} }"); // (\"$test\" && [orxonox::running " + threadID + "]])
+//            i->eval("rename for tcl::for");
+//            i->eval("proc for {start test next command} { uplevel tcl::for \"$start\" \"$test\" \"$next\" \"$command\" }");
+        }
+        catch (Tcl::tcl_error const &e)
+        {   COUT(1) << "Tcl error while creating Tcl-interpreter (" << threadID << "): " << e.what() << std::endl;   }
+        catch (std::exception const &e)
+        {   COUT(1) << "Error while creating Tcl-interpreter (" << threadID << "): " << e.what() << std::endl;   }
+
+        return i;
+    }
+
+    TclInterpreterBundle* TclThreadManager::getInterpreterBundle(unsigned int threadID)
+    {
+        boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
+        std::map<unsigned int, TclInterpreterBundle*>::iterator it = this->interpreterBundles_.find(threadID);
         if (it != this->interpreterBundles_.end())
         {
-            return it->second;
+            return (*it).second;
         }
         else
         {
-            this->error("Error: No Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(id) + " existing.");
+            this->error("Error: No Tcl-interpreter with ID " + multi_cast<std::string>(threadID) + " existing.");
             return 0;
         }
     }
 
-    /**
-        @brief Returns a string containing all elements of a unsigned-integer-list separated by spaces.
-    */
+    Tcl::interpreter* TclThreadManager::getTclInterpreter(unsigned int threadID)
+    {
+        return this->getInterpreterBundle(threadID)->interpreter_;
+    }
+
     std::string TclThreadManager::dumpList(const std::list<unsigned int>& list)
     {
         std::string output = "";
@@ -517,82 +373,285 @@ namespace orxonox
             if (it != list.begin())
                 output += " ";
 
-            output += getConvertedValue<unsigned int, std::string>(*it);
+            output += multi_cast<std::string>(*it);
         }
         return output;
     }
 
-    /**
-        @brief Returns a list with the numbers of all existing Tcl-interpreters.
+    void TclThreadManager::error(const std::string& error)
+    {
+        if (boost::this_thread::get_id() != threadID_g)
+        {
+            boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_->queueMutex_);
+            if (this->orxonoxInterpreterBundle_->queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
+            {
+                boost::this_thread::yield();
+                return;
+            }
+        }
 
-        This function is used by the auto completion function.
-    */
+        this->forceCommandToFrontOfQueue("error " + error);
+    }
+
+    void TclThreadManager::debug(const std::string& error)
+    {
+        if (boost::this_thread::get_id() != threadID_g)
+        {
+            boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_->queueMutex_);
+            if (this->orxonoxInterpreterBundle_->queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
+            {
+                boost::this_thread::yield();
+                return;
+            }
+        }
+
+        this->forceCommandToFrontOfQueue("debug " + error);
+    }
+
+    void TclThreadManager::pushCommandToQueue(const std::string& command)
+    {
+        boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_->queueMutex_);
+        while (this->orxonoxInterpreterBundle_->queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
+            fullQueueCondition_g.wait(queue_lock);
+
+        this->orxonoxInterpreterBundle_->queue_.push_back(command);
+    }
+
+    void TclThreadManager::forceCommandToFrontOfQueue(const std::string& command)
+    {
+        boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_->queueMutex_);
+        this->orxonoxInterpreterBundle_->queue_.push_front(command);
+    }
+
+    std::string TclThreadManager::popCommandFromQueue()
+    {
+        boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_->queueMutex_);
+        std::string temp = this->orxonoxInterpreterBundle_->queue_.front();
+        this->orxonoxInterpreterBundle_->queue_.pop_front();
+        fullQueueCondition_g.notify_one();
+        return temp;
+    }
+
+    bool TclThreadManager::queueIsEmpty()
+    {
+        boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_->queueMutex_);
+        return this->orxonoxInterpreterBundle_->queue_.empty();
+    }
+
+    void TclThreadManager::pushCommandToQueue(unsigned int threadID, const std::string& command)
+    {
+        TclInterpreterBundle* bundle = this->getInterpreterBundle(threadID);
+        if (bundle)
+        {
+            boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+            if (bundle->queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
+            {
+                this->error("Error: Queue of Tcl-interpreter " + multi_cast<std::string>(threadID) + " is full, couldn't add command.");
+                return;
+            }
+
+            bundle->queue_.push_back(command);
+        }
+    }
+
+    std::string TclThreadManager::popCommandFromQueue(unsigned int threadID)
+    {
+        TclInterpreterBundle* bundle = this->getInterpreterBundle(threadID);
+        if (bundle)
+        {
+            boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+            std::string temp = bundle->queue_.front();
+            bundle->queue_.pop_front();
+            return temp;
+        }
+        return "";
+    }
+
+    bool TclThreadManager::queueIsEmpty(unsigned int threadID)
+    {
+        TclInterpreterBundle* bundle = this->getInterpreterBundle(threadID);
+        if (bundle)
+        {
+            boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+            return bundle->queue_.empty();
+        }
+        return true;
+    }
+
+    bool TclThreadManager::updateQueriersList(TclInterpreterBundle* querier, TclInterpreterBundle* target)
+    {
+        if (querier == target)
+            return false;
+
+        boost::mutex::scoped_lock queriers_lock(target->queriersMutex_);
+
+        {
+            boost::mutex::scoped_lock queriers_lock(querier->queriersMutex_);
+            target->queriers_.insert(target->queriers_.end(), querier->queriers_.begin(), querier->queriers_.end());
+        }
+
+        target->queriers_.insert(target->queriers_.end(), querier->id_);
+
+        if (std::find(target->queriers_.begin(), target->queriers_.end(), target->id_) != target->queriers_.end())
+        {
+            this->error("Error: Circular query (" + this->dumpList(target->queriers_) + " -> " + multi_cast<std::string>(target->id_) + "), couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target->id_) + " from other interpreter with ID " + multi_cast<std::string>(querier->id_) + ".");
+            return false;
+        }
+
+        return true;
+    }
+
+    std::string TclThreadManager::evalQuery(unsigned int querierID, const std::string& command)
+    {
+        TclInterpreterBundle* querier = this->getInterpreterBundle(querierID);
+        std::string output = "";
+        if (querier)
+        {
+            if (this->updateQueriersList(querier, this->orxonoxInterpreterBundle_))
+            {
+                boost::mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_->interpreterMutex_);
+                orxonoxEvalCondition_g.wait(interpreter_lock);
+
+                if (!CommandExecutor::execute(command, false))
+                    this->error("Error: Can't execute command \"" + command + "\"!");
+
+                if (CommandExecutor::getLastEvaluation().hasReturnvalue())
+                    output = CommandExecutor::getLastEvaluation().getReturnvalue().getString();
+            }
+
+            boost::mutex::scoped_lock queriers_lock(this->orxonoxInterpreterBundle_->queriersMutex_);
+            this->orxonoxInterpreterBundle_->queriers_.clear();
+        }
+        return output;
+    }
+
+    std::string TclThreadManager::evalQuery(unsigned int querierID, unsigned int threadID, const std::string& command)
+    {
+        TclInterpreterBundle* target = 0;
+        if (threadID)
+            target = this->getInterpreterBundle(threadID);
+        else
+            target = this->orxonoxInterpreterBundle_;
+
+        std::string output = "";
+        if (target)
+        {
+            TclInterpreterBundle* querier = 0;
+            if (querierID)
+                querier = this->getInterpreterBundle(querierID);
+            else
+                querier = this->orxonoxInterpreterBundle_;
+
+            if (querier)
+            {
+                if (this->updateQueriersList(querier, target))
+                {
+                    boost::mutex::scoped_try_lock interpreter_lock(target->interpreterMutex_);
+                    bool successfullyLocked = false;
+                    try
+                    {
+                        if (querierID == 0 || std::find(querier->queriers_.begin(), querier->queriers_.end(), 0U) != querier->queriers_.end())
+                            successfullyLocked = interpreter_lock.try_lock();
+                        else
+                        {
+                            while (!interpreter_lock.try_lock())
+                            {
+                                boost::this_thread::yield();
+                            }
+
+                            successfullyLocked = true;
+                        }
+                    } catch (...) {}
+
+                    if (successfullyLocked)
+                    {
+                        this->debug("TclThread_query: " + command);
+                        try
+                        {   output = static_cast<std::string>(target->interpreter_->eval(command));   }
+                        catch (Tcl::tcl_error const &e)
+                        {   this->error("Tcl error: " + static_cast<std::string>(e.what()));   }
+                        catch (std::exception const &e)
+                        {   this->error("Error while executing Tcl: " + static_cast<std::string>(e.what()));   }
+                    }
+                    else
+                    {
+                        this->error("Error: Couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(threadID) + ", interpreter is busy right now.");
+                    }
+                }
+
+                boost::mutex::scoped_lock queriers_lock(target->queriersMutex_);
+                target->queriers_.clear();
+            }
+        }
+        return output;
+    }
+
+    void TclThreadManager::update(const Clock& time)
+    {
+        {
+            orxonoxEvalCondition_g.notify_one();
+            boost::this_thread::yield();
+        }
+
+        {
+            boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
+            for (std::map<unsigned int, TclInterpreterBundle*>::iterator it = this->interpreterBundles_.begin(); it != this->interpreterBundles_.end(); ++it)
+            {
+                boost::mutex::scoped_lock queue_lock((*it).second->queueMutex_);
+                if (!(*it).second->queue_.empty())
+                {
+                    std::string command = (*it).second->queue_.front();
+                    (*it).second->queue_.pop_front();
+                    {
+                        boost::mutex::scoped_lock finished_lock((*it).second->finishedMutex_);
+                        (*it).second->finished_ = false;
+                    }
+                    boost::thread(boost::bind(&tclThread, (*it).second, command));
+                }
+            }
+        }
+
+        {
+            boost::mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_->interpreterMutex_);
+            unsigned long maxtime = static_cast<unsigned long>(time.getDeltaTime() * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
+            Ogre::Timer timer;
+            while (!this->queueIsEmpty())
+            {
+                CommandExecutor::execute(this->popCommandFromQueue(), false);
+                if (timer.getMicroseconds() > maxtime)
+                    break;
+            }
+        }
+    }
+
     std::list<unsigned int> TclThreadManager::getThreadList() const
     {
-        boost::shared_lock<boost::shared_mutex> lock(*this->interpreterBundlesMutex_);
-
+        boost::mutex::scoped_lock bundles_lock(bundlesMutex_g);
         std::list<unsigned int> threads;
         for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = this->interpreterBundles_.begin(); it != this->interpreterBundles_.end(); ++it)
-            if (it->first > 0 && it->first <= this->numInterpreterBundles_) // only list autonumbered interpreters (created with create()) - exclude the default interpreter 0 and all manually numbered interpreters)
-                threads.push_back(it->first);
+            threads.push_back((*it).first);
         return threads;
     }
 
-    /**
-        @brief A helper function to print errors in a thread safe manner.
-    */
-    void TclThreadManager::error(const std::string& error)
-    {
-        this->messageQueue_->push_back("error " + error);
-    }
-
-    /**
-        @brief A helper function to print debug information in a thread safe manner.
-    */
-    void TclThreadManager::debug(const std::string& error)
-    {
-        this->messageQueue_->push_back("debug " + error);
-    }
-
-    /**
-        @brief Evaluates a Tcl command without throwing exceptions (which may rise problems on certain machines).
-        @return The Tcl return value
-
-        Errors are reported through the @ref error function.
-    */
-    std::string TclThreadManager::eval(TclInterpreterBundle* bundle, const std::string& command)
-    {
-        Tcl_Interp* interpreter = bundle->interpreter_->get();
-        int cc = Tcl_Eval(interpreter, command.c_str());
-
-        Tcl::details::result result(interpreter);
-
-        if (cc != TCL_OK)
-        {
-            this->error("Tcl error (execute, ID " + getConvertedValue<unsigned int, std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
-            return "";
-        }
-        else
-        {
-            return result;
-        }
-    }
-
-    ////////////////
-    // The Thread //
-    ////////////////
-
-    /**
-        @brief The main function of the thread. Executes a Tcl command.
-        @param bundle The interpreter bundle containing all necessary variables
-        @param command the Command to execute
-    */
-    void tclThread(TclInterpreterBundle* bundle, std::string command)
+    void tclThread(TclInterpreterBundle* interpreterBundle, std::string command)
     {
         TclThreadManager::getInstance().debug("TclThread_execute: " + command);
+        boost::mutex::scoped_lock interpreter_lock(interpreterBundle->interpreterMutex_);
+        try
+        {
+            interpreterBundle->interpreter_->eval(command);
+        }
+        catch (Tcl::tcl_error const &e)
+        {
+            TclThreadManager::getInstance().error("Tcl (ID " + multi_cast<std::string>(interpreterBundle->id_) + ") error: " + e.what());
+        }
+        catch (std::exception const &e)
+        {
+            TclThreadManager::getInstance().error("Error while executing Tcl (ID " + multi_cast<std::string>(interpreterBundle->id_) + "): " + e.what());
+        }
 
-        TclThreadManager::getInstance().eval(bundle, command);
-
-        bundle->lock_->unlock();
+        boost::mutex::scoped_lock finished_lock(interpreterBundle->finishedMutex_);
+        interpreterBundle->finished_ = true;
+        interpreterBundle->finishedCondition_.notify_all();
     }
 }
