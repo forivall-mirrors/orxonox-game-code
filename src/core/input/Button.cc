@@ -59,7 +59,6 @@ namespace orxonox
         nCommands_[1]=0;
         nCommands_[2]=0;
         this->configContainer_ = 0;
-        clear();
     }
 
     Button::~Button()
@@ -82,10 +81,6 @@ namespace orxonox
                 delete[] commands_[j];
                 commands_[j] = 0;
                 nCommands_[j] = 0;
-            }
-            else
-            {
-                commands_[j] = 0;
             }
         }
     }

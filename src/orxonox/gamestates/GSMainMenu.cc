@@ -31,7 +31,7 @@
 #include <OgreSceneManager.h>
 
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
+#include "core/input/InputState.h"
 #include "core/Game.h"
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
@@ -56,9 +56,9 @@ namespace orxonox
 
     void GSMainMenu::activate()
     {
-        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("mainMenu");
+        inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setHandler(GUIManager::getInstancePtr());
-        inputState_->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
+        inputState_->setJoyStickHandler(&InputHandler::EMPTY);
 
         // create an empty Scene
         this->scene_ = new Scene(0);
@@ -95,7 +95,7 @@ namespace orxonox
             CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
         }
 
-        InputManager::getInstance().requestEnterState("mainMenu");
+        InputManager::getInstance().enterState("mainMenu");
 
         this->ambient_ = new SoundMainMenu();
         this->ambient_->play(true);
@@ -105,8 +105,8 @@ namespace orxonox
     {
         delete this->ambient_;
 
-        InputManager::getInstance().requestLeaveState("mainMenu");
-        InputManager::getInstance().requestDestroyState("mainMenu");
+        InputManager::getInstance().leaveState("mainMenu");
+        InputManager::getInstance().destroyState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
         GraphicsManager::getInstance().setCamera(0);

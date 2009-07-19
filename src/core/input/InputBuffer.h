@@ -29,12 +29,12 @@
 #ifndef _InputBuffer_H__
 #define _InputBuffer_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 
 #include <list>
 #include <string>
 #include "core/OrxonoxClass.h"
-#include "InputInterfaces.h"
+#include "InputHandler.h"
 
 namespace orxonox
 {
@@ -73,7 +73,7 @@ namespace orxonox
         void (T::*function_)();
     };
 
-    class _CoreExport InputBuffer : public KeyHandler, public OrxonoxClass
+    class _CoreExport InputBuffer : public InputHandler, public OrxonoxClass
     {
         public:
             InputBuffer();
@@ -164,13 +164,11 @@ namespace orxonox
         private:
             bool charIsAllowed(const char& input);
 
-            void keyPressed (const KeyEvent& evt);
-            void keyReleased(const KeyEvent& evt) { }
-            void keyHeld    (const KeyEvent& evt);
-            void processKey (const KeyEvent &e);
+            void buttonPressed(const KeyEvent& evt);
+            void buttonHeld   (const KeyEvent& evt);
+            void processKey   (const KeyEvent& evt);
 
-            void updateInput(float dt);
-            void updateKey(float dt) { }
+            void keyboardUpdated(float dt);
 
             std::string buffer_;
             std::list<BaseInputBufferListenerTuple*> listeners_;

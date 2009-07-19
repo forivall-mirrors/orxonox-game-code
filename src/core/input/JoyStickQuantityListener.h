@@ -31,22 +31,34 @@
 @brief 
 */
 
-#ifndef _JoyStickDeviceNumberListener_H__
-#define _JoyStickDeviceNumberListener_H__
+#ifndef _JoyStickQuantityListener_H__
+#define _JoyStickQuantityListener_H__
 
-#include "core/CorePrereqs.h"
+#include "InputPrereqs.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _CoreExport JoyStickDeviceNumberListener : virtual public OrxonoxClass
+    //! Derive from this class to get informed when joy sticks get added/removed
+    class _CoreExport JoyStickQuantityListener : virtual public OrxonoxClass
     {
-    public:
-        JoyStickDeviceNumberListener();
-        virtual ~JoyStickDeviceNumberListener() { }
+        friend class InputManager;
+    protected:
+        JoyStickQuantityListener();
+        virtual ~JoyStickQuantityListener() { }
 
-        virtual void JoyStickDeviceNumberChanged(unsigned int value) = 0;
+        //! Returns a list with all JoySticks currently loaded
+        const std::vector<JoyStick*>& getJoyStickList() const { return joyStickList_s; }
+
+    private:
+        //! Called whenever joy sticks get added/removed
+        virtual void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList) = 0;
+
+        static void changeJoyStickQuantity(const std::vector<JoyStick*>& joyStickList);
+
+        //! Static variable that holds the latest distributed information
+        static std::vector<JoyStick*> joyStickList_s;
     };
 }
 
-#endif /* _JoyStickDeviceNumberListener_H__ */
+#endif /* _JoyStickQuantityListener_H__ */

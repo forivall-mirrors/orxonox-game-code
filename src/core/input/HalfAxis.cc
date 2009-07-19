@@ -48,10 +48,6 @@ namespace orxonox
             delete[] paramCommands_;
             nParamCommands_ = 0;
         }
-        else
-        {
-            nParamCommands_ = 0; nParamCommands_ = 0;
-        }
     }
 
     bool HalfAxis::addParamCommand(ParamCommand* command)

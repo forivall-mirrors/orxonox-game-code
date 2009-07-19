@@ -48,7 +48,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
+#include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
 
 namespace orxonox
@@ -97,7 +97,7 @@ namespace orxonox
         this->deactivate();
 
         // destroy the input state previously created (InputBuffer gets destroyed by the Shell)
-        InputManager::getInstance().requestDestroyState("console");
+        InputManager::getInstance().destroyState("console");
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)
@@ -157,8 +157,8 @@ namespace orxonox
         {
             if (bHidesAllInput_)
             {
-                inputState_->setMouseHandler(&InputManager::EMPTY_HANDLER);
-                inputState_->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
+                inputState_->setMouseHandler(&InputHandler::EMPTY);
+                inputState_->setJoyStickHandler(&InputHandler::EMPTY);
             }
             else
             {
@@ -171,10 +171,10 @@ namespace orxonox
     /**
         @brief Initializes the InGameConsole.
     */
-    void InGameConsole::initialise(int windowWidth, int windowHeight)
+    void InGameConsole::initialise()
     {
         // create the corresponding input state
-        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", false, false, InputStatePriority::Console);
+        inputState_ = InputManager::getInstance().createInputState("console", false, false, InputStatePriority::Console);
         inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
         bHidesAllInputChanged();
 
@@ -247,7 +247,7 @@ namespace orxonox
         // comment following line to disable noise
         this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
 
-        this->windowResized(windowWidth, windowHeight);
+        this->windowResized(this->getWindowWidth(), this->getWindowWidth());
 
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border makes the panel bigger
@@ -506,7 +506,7 @@ namespace orxonox
         if (!this->bActive_)
         {
             this->bActive_ = true;
-            InputManager::getInstance().requestEnterState("console");
+            InputManager::getInstance().enterState("console");
             Shell::getInstance().registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
@@ -528,7 +528,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
-            InputManager::getInstance().requestLeaveState("console");
+            InputManager::getInstance().leaveState("console");
             Shell::getInstance().unregisterListener(this);
 
             // scroll up

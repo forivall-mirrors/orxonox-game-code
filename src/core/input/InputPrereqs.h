@@ -29,26 +29,30 @@
 /**
 @file
 @brief
-    Declarations of various interface classes for the input management.
+    Declarations of all key/button/axis code enumeration and string literals
+    and an input device enumeration.
 */
 
-#ifndef _InputInterfaces_H__
-#define _InputInterfaces_H__
+#ifndef _InputPrereqs_H__
+#define _InputPrereqs_H__
 
 #include "core/CorePrereqs.h"
 
 #include <ois/OISKeyboard.h>
 #include <ois/OISMouse.h>
 #include <ois/OISJoyStick.h>
-#include "util/Math.h"
 
 namespace orxonox
 {
+    //-----------------------------------------------------------------------
+    // Code enumerations
+    //-----------------------------------------------------------------------
+
     namespace KeyCode
     {
         const unsigned int numberOfKeys = 0xEE; // 238
 
-        // note: KeyCode comments were directly copied from OISKeyboard.h
+        //! Key codes as enumeration
         enum ByEnum
         {
             Unassigned    = OIS::KC_UNASSIGNED,
@@ -198,7 +202,7 @@ namespace orxonox
             MediaSelect   = OIS::KC_MEDIASELECT      // Media Select
         };
         
-        // Names as string. Has no real linkage!
+        //! Key codes as strings
         const char* const ByString[] =
         {
             "Unassigned",
@@ -298,10 +302,12 @@ namespace orxonox
         };
     }
 
+
     namespace MouseButtonCode
     {
         const unsigned int numberOfButtons = 8;
 
+        //! Mouse button codes as enumeration
         enum ByEnum
         {
             Left    = OIS::MB_Left,
@@ -314,7 +320,7 @@ namespace orxonox
             Button7 = OIS::MB_Button7,
         };
 
-        // Names as string. Has no real linkage!
+        // Mouse button codes as strings
         const char* const ByString[] =
         {
             "Left",
@@ -332,13 +338,14 @@ namespace orxonox
     {
         const unsigned int numberOfAxes = 2;
 
+        // Mouse axis codes as enumeration
         enum ByEnum
         {
             X,
             Y
         };
 
-        // Names as string. Has no real linkage!
+        // Mouse axis codes as strings
         const char* const ByString[] =
         {
             "X",
@@ -346,10 +353,12 @@ namespace orxonox
         };
     }
 
+
     namespace JoyStickButtonCode
     {
         const unsigned int numberOfButtons = 64;
 
+        // Joy stick button codes as enumeration
         enum ByEnum
         {
             Button0       =  0, Button1       =  1, Button2       =  2, Button3       =  3,
@@ -374,7 +383,7 @@ namespace orxonox
             POV3NorthEast = 60, POV3SouthEast = 61, POV3NorthWest = 62, POV3SouthWest = 63,
         };
 
-        // Names as string. Has no real linkage!
+        // Joy stick button codes as strings
         const char* const ByString[] =
         {
             "Button00",      "Button01",      "Button02",      "Button03",
@@ -400,6 +409,7 @@ namespace orxonox
     {
         const unsigned int numberOfAxes = 24;
 
+        // Joy stick axis codes as enumeration
         enum ByEnum
         {
             Slider0 =  0, Slider1 =  1, Slider2 =  2, Slider3 =  3,
@@ -410,7 +420,7 @@ namespace orxonox
             Axis12  = 20, Axis13  = 21, Axis14  = 22, Axis15  = 23
         };
 
-        // Names as string. Has no real linkage!
+        // Joy stick axis codes as strings
         const char* const ByString[] =
         {
             "Slider0", "Slider1", "Slider2", "Slider3",
@@ -422,135 +432,21 @@ namespace orxonox
         };
     }
 
-    namespace KeyboardModifier
+
+    //-----------------------------------------------------------------------
+    // Miscellaneous
+    //-----------------------------------------------------------------------
+
+    namespace InputDeviceEnumerator
     {
-        enum Enum
+        //! Used to access the devices in an array
+        enum Value
         {
-            Shift = 0x0000001,
-            Ctrl  = 0x0000010,
-            Alt   = 0x0000100
+            Keyboard = 0,
+            Mouse = 1,
+            FirstJoyStick = 2
         };
     }
-    
-    namespace InputDevice
-    {
-        enum Enum
-        {
-            Keyboard,
-            Mouse,
-            JoyStick0,
-            JoyStick1,
-            JoyStick2,
-            JoyStick3
-            // note: No problem if there are more joy sticks. This enum is just for convenience.
-        };
-    }
-
-    struct _CoreExport Key
-    {
-        Key(const OIS::KeyEvent& evt) : key((KeyCode::ByEnum)evt.key), text(evt.text) { }
-        KeyCode::ByEnum key;
-        unsigned int text;
-    };
-
-    class _CoreExport KeyEvent
-    {
-    public:
-        KeyEvent(KeyCode::ByEnum key, unsigned int text) : key(key), text(text) { }
-        KeyEvent(const OIS::KeyEvent& evt, unsigned int mod)
-            : key((KeyCode::ByEnum)evt.key), text(evt.text), modifiers(mod) { }
-        KeyEvent(const Key& key, unsigned int mod) : key(key.key), text(key.text), modifiers(mod) { }
-        bool isModifierDown(KeyboardModifier::Enum modifier) const
-            { return (KeyboardModifier::Enum)modifier&modifiers; }
-
-        const KeyCode::ByEnum key;
-        unsigned int text;
-        unsigned int modifiers;
-    };
-
-
-    class _CoreExport InputHandler
-    {
-    public:
-        virtual ~InputHandler() { }
-        virtual void updateInput(float dt) = 0;
-    };
-
-    /**
-    @brief
-        Interface class used for key input listeners.
-    */
-    class _CoreExport KeyHandler : virtual public InputHandler
-    {
-    public:
-        virtual ~KeyHandler() { }
-        virtual void keyPressed (const KeyEvent& evt) = 0;
-        virtual void keyReleased(const KeyEvent& evt) = 0;
-        virtual void keyHeld    (const KeyEvent& evt) = 0;
-        virtual void updateKey    (float dt) = 0;
-    };
-
-    /**
-    @brief
-        Interface class used for mouse input listeners.
-    */
-    class _CoreExport MouseHandler : virtual public InputHandler
-    {
-    public:
-        virtual ~MouseHandler() { }
-        virtual void mouseButtonPressed (MouseButtonCode::ByEnum id) = 0;
-        virtual void mouseButtonReleased(MouseButtonCode::ByEnum id) = 0;
-        virtual void mouseButtonHeld    (MouseButtonCode::ByEnum id) = 0;
-        virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
-        virtual void mouseScrolled      (int abs, int rel)     = 0;
-        virtual void updateMouse          (float dt) = 0;
-    };
-
-
-    /**
-    @brief
-        Interface class used for joy stick input listeners.
-    */
-    class _CoreExport JoyStickHandler : virtual public InputHandler
-    {
-    public:
-        virtual ~JoyStickHandler() { }
-        virtual void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
-        virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
-        virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
-        virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
-        virtual void updateJoyStick          (float dt, unsigned int joyStick) = 0;
-    };
-
-    class _CoreExport EmptyHandler : public KeyHandler, public MouseHandler, public JoyStickHandler
-    {
-        friend class InputManager;
-    private:
-        EmptyHandler() { }
-        EmptyHandler(EmptyHandler&);
-        virtual ~EmptyHandler() { }
-
-        void updateInput(float dt) { }
-        void updateJoyStick(float dt, unsigned int joyStick) { }
-        void updateMouse(float dt) { }
-        void updateKey(float dt) { }
-
-        void keyPressed (const KeyEvent& evt) { }
-        void keyReleased(const KeyEvent& evt) { }
-        void keyHeld    (const KeyEvent& evt) { }
-
-        void mouseButtonPressed (MouseButtonCode::ByEnum id) { }
-        void mouseButtonReleased(MouseButtonCode::ByEnum id) { }
-        void mouseButtonHeld    (MouseButtonCode::ByEnum id) { }
-        void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) { }
-        void mouseScrolled      (int abs, int rel) { }
-
-        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) { }
-        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id) { }
-        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) { }
-        void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) { }
-    };
-
 }
 
-#endif /* _InputInterfaces_H__ */
+#endif /* _InputPrereqs_H__ */

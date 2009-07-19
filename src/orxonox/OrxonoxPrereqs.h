@@ -91,6 +91,7 @@ namespace orxonox
     // objects
     class Level;
     class Scene;
+    class Tickable;
 
     class AddQuest;
     class AddQuestHint;

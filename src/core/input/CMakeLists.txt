@@ -1,12 +1,14 @@
 ADD_SOURCE_FILES(CORE_SRC_FILES
   Button.cc
-  ExtendedInputState.cc
   HalfAxis.cc
   InputBuffer.cc
   InputCommands.cc
   InputManager.cc
-  JoyStickDeviceNumberListener.cc
+  InputState.cc
+  JoyStick.cc
+  JoyStickQuantityListener.cc
   KeyBinder.cc
+  Keyboard.cc
   KeyDetector.cc
-  SimpleInputState.cc
+  Mouse.cc
 )

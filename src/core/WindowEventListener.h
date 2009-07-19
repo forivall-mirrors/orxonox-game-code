@@ -29,28 +29,42 @@
 #ifndef _WindowEventListener_H__
 #define _WindowEventListener_H__
 
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "CorePrereqs.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    /**
-        @brief Interface for receiving window events.
-    */
-    class _OrxonoxExport WindowEventListener : virtual public OrxonoxClass
+    //! Interface for receiving window events like resize, moved and focusChanged
+    class _CoreExport WindowEventListener : virtual public OrxonoxClass
     {
-        public:
+        friend class OgreWindowEventListener;
+
+        protected:
             WindowEventListener();
             virtual ~WindowEventListener() { }
 
-            /** Window has moved position */
+            //! Returns the current render window width
+            unsigned int getWindowWidth() const { return windowWidth_s; }
+            //! Returns the current render window height
+            unsigned int getWindowHeight() const { return windowHeight_s; }
+
+        private:
+            //! Window has been moved
             virtual void windowMoved() { }
 
-            /** Window has resized */
+            //! Window has resized
             virtual void windowResized(unsigned int newWidth, unsigned int newHeight) { }
 
-            /** Window has lost/gained focus */
+            //! Window has lost/gained focus
             virtual void windowFocusChanged() { }
+
+            static void moveWindow();
+            static void resizeWindow(unsigned int newWidth, unsigned int newHeight);
+            static void changeWindowFocus();
+
+            //! Static variable that holds the latest distributed information
+            static unsigned int windowWidth_s;
+            static unsigned int windowHeight_s;
     };
 }
 

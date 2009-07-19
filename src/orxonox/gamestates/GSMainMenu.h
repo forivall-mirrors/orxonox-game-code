@@ -52,7 +52,7 @@ namespace orxonox
         void startDedicated();
 
     private:
-        SimpleInputState* inputState_;
+        InputState*       inputState_;
         Scene*            scene_;
         Ogre::Camera*     camera_;
 
