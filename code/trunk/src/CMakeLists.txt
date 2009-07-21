@@ -30,9 +30,6 @@ ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
 # Tolua binding speedup if required
 ADD_COMPILER_FLAGS("-DTOLUA_RELEASE" ORXONOX_RELEASE)
 
-# Default linking is SHARED
-SET(ORXONOX_DEFAULT_LINK SHARED)
-
 ################ OrxonoxConfig.h ################
 
 # Check endianness

@@ -111,7 +111,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # First part (pre target) of precompiled header files
-  IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
+  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE AND _arg_PCH_FILE)
     # Provide convenient option to control PCH
     STRING(TOUPPER "${_target_name}" _target_name_upper)
     IF(_arg_PCH_NO_DEFAULT)
