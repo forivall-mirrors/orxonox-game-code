@@ -76,7 +76,7 @@
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 
-#include "TemplateUtils.h"
+#include "TypeTraits.h"
 
 namespace orxonox
 {
@@ -302,7 +302,13 @@ namespace orxonox
             inline bool                                   setValue(const orxonox::Degree& value);
             inline bool                                   setValue(const char* value);
             /** @brief Assigns a pointer. */
-            template <typename V> inline bool             setValue(V* value)               { if (this->value_) { return this->value_->setValue(static_cast<void*>(const_cast<typename TypeStripper<V>::RawType*>(value))); } else { return this->assignValue(static_cast<void*>(const_cast<typename TypeStripper<V>::RawType*>(value))); } }
+            template <typename V> inline bool setValue(V* value)
+            {
+                if (this->value_)
+                    return this->value_->setValue(static_cast<void*>(const_cast<typename Loki::TypeTraits<V>::UnqualifiedType*>(value)));
+                else
+                    return this->assignValue     (static_cast<void*>(const_cast<typename Loki::TypeTraits<V>::UnqualifiedType*>(value)));
+            }
             /** @brief Assigns the value of the other MultiType and converts it to the current type. */
             bool                                          setValue(const MultiType& other) { if (this->value_) { return this->value_->assimilate(other); } else { if (other.value_) { this->value_ = other.value_->clone(); } return true; } }
             /** @brief Changes the type to T and assigns the new value (which might be of another type than T - it gets converted). */
@@ -321,9 +327,9 @@ namespace orxonox
             /** @brief Current content gets overridden with default zero value */
             inline void                       resetValue()                    { if (this->value_) this->value_->reset(); }
 
-            template <typename T> inline void setType()                       { this->assignValue(typename TypeStripper<T>::RawType()); } /** @brief Resets the value and changes the internal type to T. */
-            inline void                       setType(const MultiType& other) { this->setType(other.getType());                         } /** @brief Resets the value and changes the internal type to the type of the other MultiType. */
-            inline void                       setType(MT_Type::Value type)    { this->reset(); this->convert(type); this->resetValue(); } /** @brief Resets the value and changes the internal type to the given type. */
+            template <typename T> inline void setType()                       { this->assignValue(typename Loki::TypeTraits<T>::UnqualifiedReferredType()); } /** @brief Resets the value and changes the internal type to T. */
+            inline void                       setType(const MultiType& other) { this->setType(other.getType());                                             } /** @brief Resets the value and changes the internal type to the type of the other MultiType. */
+            inline void                       setType(MT_Type::Value type)    { this->reset(); this->convert(type); this->resetValue();                     } /** @brief Resets the value and changes the internal type to the given type. */
 
             /** @brief Returns the current type. */
             inline MT_Type::Value             getType()                   const { return (this->value_) ? this->value_->type_ : MT_Type::Null; }

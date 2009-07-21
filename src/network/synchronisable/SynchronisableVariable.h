@@ -35,7 +35,7 @@
 #include <cassert>
 #include <cstring>
 #include "util/Serialise.h"
-#include "util/TemplateUtils.h"
+#include "util/TypeTraits.h"
 #include "core/GameMode.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
 
@@ -78,7 +78,7 @@ namespace orxonox{
       virtual inline uint32_t getData(uint8_t*& mem, uint8_t mode);
       virtual inline void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false);
       virtual inline uint32_t getSize(uint8_t mode);
-      virtual inline void* getReference(){ return static_cast<void*>(const_cast<typename TypeStripper<T>::RawType*>(&this->variable_)); }
+      virtual inline void* getReference(){ return static_cast<void*>(const_cast<typename Loki::TypeTraits<T>::UnqualifiedType*>(&this->variable_)); }
     protected:
       
       T& variable_;
@@ -181,7 +181,7 @@ namespace orxonox{
         if( this->varBuffer_ != this->variable_ )
         {
           this->varReference_++;
-          memcpy(static_cast<void*>(const_cast<typename TypeStripper<T>::RawType*>(&this->varBuffer_)), &this->variable_, sizeof(this->variable_));
+          memcpy(static_cast<void*>(const_cast<typename Loki::TypeTraits<T>::UnqualifiedType*>(&this->varBuffer_)), &this->variable_, sizeof(this->variable_));
         }
       }
   // write the reference number to the stream
@@ -214,7 +214,7 @@ namespace orxonox{
           else
           {
             mem += sizeof(varReference_);
-            memcpy(static_cast<void*>(const_cast<typename TypeStripper<T>::RawType*>(&this->varBuffer_)), &this->variable_, sizeof(T));
+            memcpy(static_cast<void*>(const_cast<typename Loki::TypeTraits<T>::UnqualifiedType*>(&this->varBuffer_)), &this->variable_, sizeof(T));
             if ( this->callback_ != 0 )
               callback = true;
           }
