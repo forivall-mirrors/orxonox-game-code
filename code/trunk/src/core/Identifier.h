@@ -61,6 +61,7 @@
 #include <typeinfo>
 
 #include "util/Debug.h"
+#include "util/TypeTraits.h"
 #include "MetaObjectList.h"
 #include "ObjectList.h"
 #include "ObjectListBase.h"
@@ -482,32 +483,6 @@ namespace orxonox
     // ###############################
     // ###      orxonox_cast       ###
     // ###############################
-    //! Helper struct to have orxonox_cast<T*> instead of orxonox_cast<T>
-    template <class T, class U>
-    struct OrxonoxCaster
-    {
-        static T* cast(U* source)
-        {
-            // If you see this function in a compiler error description, it means
-            // you were misusing orxonox_cast. You must always cast to a pointer type!
-            *****T();
-        }
-    };
-
-    //! Helper struct to have orxonox_cast<T*> instead of orxonox_cast<T*>
-    template <class T, class U>
-    struct OrxonoxCaster<T*, U>
-    {
-        FORCEINLINE static T* cast(U* source)
-        {
-#ifdef ORXONOX_COMPILER_MSVC
-            return source->template getDerivedPointer<T>(ClassIdentifier<T>::getIdentifier()->getClassID());
-#else
-            return dynamic_cast<T*>(source);
-#endif
-        }
-    };
-
     /**
     @brief
         Casts on object of type OrxonoxClass to any derived type that is
@@ -522,7 +497,12 @@ namespace orxonox
     template <class T, class U>
     FORCEINLINE T orxonox_cast(U* source)
     {
-        return OrxonoxCaster<T, U>::cast(source);
+#ifdef ORXONOX_COMPILER_MSVC
+        typedef Loki::TypeTraits<T>::PointeeType ClassType;
+        return source->template getDerivedPointer<ClassType>(ClassIdentifier<ClassType>::getIdentifier()->getClassID());
+#else
+        return dynamic_cast<T>(source);
+#endif
     }
 
 
