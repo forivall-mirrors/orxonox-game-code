@@ -24,7 +24,7 @@
  #    This also includes handling the OGRE plugins and the media directory.
  #
 
-################# Misc Options ##################
+################# Misc Settings #################
 
 # Standard path suffixes, might not hold everywhere though
 SET(DEFAULT_RUNTIME_PATH bin)
@@ -69,13 +69,6 @@ ELSE()
   MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 ENDIF()
 
-# Enable expensive optimisations: Use this for a binary release build
-OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
-
-# Use WinMain() or main()?
-IF(WIN32)
-  OPTION(ORXONOX_USE_WINMAIN "Use WinMain (doesn't show console) or main" FALSE)
-ENDIF()
 
 ################# OGRE Plugins ##################
 
@@ -121,9 +114,6 @@ IF(USER_SCRIPT_BUILD_CONFIG)
     INCLUDE(${CMAKE_MODULE_PATH}/${USER_SCRIPT_BUILD_CONFIG})
   ENDIF()
 ENDIF(USER_SCRIPT_BUILD_CONFIG)
-
-
-################# Test options ##################
 
 
 ############# Installation Settings #############
@@ -186,7 +176,26 @@ SET(CMAKE_INSTALL_RPATH ${ORXONOX_LIBRARY_INSTALL_PATH})
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 
-######## Static/Dynamic linking defines #########
+################ Various options ################
+
+# Enable expensive optimisations: Use this for a binary release build
+OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
+
+# Use WinMain() or main()?
+IF(WIN32)
+  OPTION(ORXONOX_USE_WINMAIN "Use WinMain (doesn't show console) or main" FALSE)
+ENDIF()
+
+# Global switch to disable Precompiled Header Files
+IF(PCH_COMPILER_SUPPORT)
+  OPTION(PCH_ENABLE "Global PCH switch" TRUE)
+ENDIF()
+
+
+############ Static/Dynamic linking #############
+
+# Default linking is SHARED
+SET(ORXONOX_DEFAULT_LINK SHARED)
 
 # Disable Boost auto linking completely
 ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
