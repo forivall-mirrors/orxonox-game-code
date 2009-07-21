@@ -207,7 +207,7 @@ namespace orxonox
             // Successful initialisation
             guard.Dismiss();
         }
-        catch (std::exception& ex)
+        catch (const std::exception& ex)
         {
             oisInputManager_ = NULL;
             internalState_ |= Bad;
@@ -233,9 +233,9 @@ namespace orxonox
             {
                 devices_[InputDeviceEnumerator::Mouse] = new Mouse(InputDeviceEnumerator::Mouse, oisInputManager_);
             }
-            catch (const OIS::Exception& ex)
+            catch (const std::exception& ex)
             {
-                CCOUT(2) << "Warning: Failed to create Mouse:" << ex.eText << std::endl
+                CCOUT(2) << "Warning: Failed to create Mouse:" << ex.what() << std::endl
                          << "Proceeding without mouse support." << std::endl;
             }
         }
@@ -252,7 +252,7 @@ namespace orxonox
             {
                 devices_.push_back(new JoyStick(InputDeviceEnumerator::FirstJoyStick + i, oisInputManager_));
             }
-            catch (std::exception ex)
+            catch (const std::exception& ex)
             {
                 CCOUT(2) << "Warning: Failed to create joy stick: " << ex.what() << std::endl;
             }
