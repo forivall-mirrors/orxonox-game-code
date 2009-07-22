@@ -332,7 +332,7 @@ Ogre::MaterialPtr Map::init()
                 //this->CamNodeHelper_->attachObject(this->Cam_);
                     this->Cam_->setPosition(0, 0, DISTANCE);
                     this->Cam_->pitch( static_cast<Degree>(PITCH) );
-                    this->Cam_->lookAt(Vector3(0,0,0));
+                    this->Cam_->lookAt(this->playerShipNode_->getPosition());
                 //this->Cam_->setAutoTracking(true, this->playerShipNode_);
                 }
             }
