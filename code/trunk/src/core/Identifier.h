@@ -457,7 +457,7 @@ namespace orxonox
             object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
 
             // Add pointer of type T to the map in the OrxonoxClass instance that enables "dynamic_casts"
-            object->objectPointers_.push_back(std::make_pair(this->getClassID(), reinterpret_cast<void*>(object)));
+            object->objectPointers_.push_back(std::make_pair(this->getClassID(), static_cast<void*>(object)));
             return false;
         }
     }
@@ -495,10 +495,10 @@ namespace orxonox
         Also note that the function is implemented differently for GCC/MSVC.
     */
     template <class T, class U>
-    FORCEINLINE T orxonox_cast(U* source)
+    FORCEINLINE T orxonox_cast(U source)
     {
 #ifdef ORXONOX_COMPILER_MSVC
-        typedef Loki::TypeTraits<T>::PointeeType ClassType;
+        typedef Loki::TypeTraits<typename Loki::TypeTraits<T>::PointeeType>::NonConstType ClassType;
         return source->template getDerivedPointer<ClassType>(ClassIdentifier<ClassType>::getIdentifier()->getClassID());
 #else
         return dynamic_cast<T>(source);
