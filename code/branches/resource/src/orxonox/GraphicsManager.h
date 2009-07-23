@@ -59,10 +59,6 @@ namespace orxonox
 
         void update(const Clock& time);
 
-        void detailLevelParticleChanged();
-        inline unsigned int getDetailLevelParticle() const
-            { return this->detailLevelParticle_; }
-
         inline Ogre::Viewport* getViewport()
             { return this->viewport_; }
         inline Ogre::RenderWindow* getRenderWindow()
@@ -98,7 +94,6 @@ namespace orxonox
         OgreWindowEventListener* ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 
         // config values
-        unsigned int        detailLevelParticle_;      //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
         std::string         resourceFile_;             //!< resources file name
         std::string         ogreConfigFile_;           //!< ogre config file name
         std::string         ogrePluginsFolder_;        //!< Folder where the Ogre plugins are located
