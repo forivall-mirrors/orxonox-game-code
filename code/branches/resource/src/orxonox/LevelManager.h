@@ -54,7 +54,9 @@ namespace orxonox
             Level* getActiveLevel();
 
             void setDefaultLevel(const std::string& levelName); //tolua_export
-            const std::string& getDefaultLevel(); //tolua_export
+            const std::string& getDefaultLevel() const; //tolua_export
+            void compileAvailableLevelList(); //tolua_export
+            std::string getAvailableLevelListItem(unsigned int index) const; //tolua_export
 
             static LevelManager* getInstancePtr() { return singletonRef_s; }
             static LevelManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
@@ -65,6 +67,7 @@ namespace orxonox
             void activateNextLevel();
 
             std::list<Level*> levels_s;
+            std::vector<std::string> availableLevels_;
 
             // config values
             std::string defaultLevelName_;

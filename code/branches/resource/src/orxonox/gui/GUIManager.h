@@ -46,7 +46,6 @@
 #include "util/OgreForwardRefs.h"
 #include "core/input/InputHandler.h"
 
-// tolua_begin
 namespace orxonox
 {
     /**
@@ -60,12 +59,8 @@ namespace orxonox
         Since the GUI needs user input, the GUIManager implements the functions needed to act as a key and/or mouse handler.
         Those input events are then injected into CEGUI in Lua.
     */
-    class _OrxonoxExport GUIManager
-// tolua_end
-        : public InputHandler
-// tolua_begin
+    class _OrxonoxExport GUIManager : public InputHandler
     {
-// tolua_end
     public:
         GUIManager(Ogre::RenderWindow* renderWindow);
         ~GUIManager();
@@ -77,13 +72,11 @@ namespace orxonox
 
         void setCamera(Ogre::Camera* camera);
 
-        static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
+        static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
         static GUIManager* getInstancePtr() { return singletonRef_s; }
 
-        void getLevelList(); //tolua_export
-
     private:
-        GUIManager(const GUIManager& instance);                 //!< private constructor (this is a singleton class)
+        GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 
         void loadLuaCode();
 
@@ -107,7 +100,7 @@ namespace orxonox
 
         static GUIManager*       singletonRef_s;    //!< Singleton reference to GUIManager
 
-    }; // tolua_export
-} // tolua_export
+    };
+}
 
 #endif /* _GUIManager_H__ */

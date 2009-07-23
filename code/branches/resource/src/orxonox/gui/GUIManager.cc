@@ -60,7 +60,6 @@ extern "C" {
 #include "core/Clock.h"
 #include "ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
-#include "core/Loader.h"
 
 namespace orxonox
 {
@@ -87,6 +86,7 @@ namespace orxonox
     };
 
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
+
     GUIManager* GUIManager::singletonRef_s = 0;
 
     /**
@@ -156,7 +156,7 @@ namespace orxonox
     @brief
         Destructor of the GUIManager
 
-        Basically shuts down CEGUI and destroys the Lua engine and afterwards the interface to the Ogre engine.
+        Basically shuts down CEGUI (member smart pointers) but first unloads our Tolua modules.
     */
     GUIManager::~GUIManager()
     {
@@ -173,32 +173,17 @@ namespace orxonox
     @brief
         Calls main Lua script
     @todo
-        Replace loadGUI.lua with loadGUI_2.lua after merging this back to trunk.
-        However CEGUI is able to execute a startup script. We could maybe put this call in this startup code.
-
         This function calls the main Lua script for our GUI.
 
         Additionally we set the datapath variable in Lua. This is needed so Lua can access the data used for the GUI.
     */
     void GUIManager::loadLuaCode()
     {
-        try
-        {
-            // set datapath for GUI data
-            lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
-            lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
-            // call main Lua script
-            this->scriptModule_->executeScriptFile("loadGUI_3.lua", "GUI");
-        }
-        catch (CEGUI::Exception& ex)
-        {
-#if CEGUI_VERSION_MINOR < 6
-            throw GeneralException(ex.getMessage().c_str());
-#else
-            throw GeneralException(ex.getMessage().c_str(), ex.getLine(),
-                ex.getFileName().c_str(), ex.getName().c_str());
-#endif
-        }
+        // set datapath for GUI data
+        lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
+        lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
+        // call main Lua script
+        this->scriptModule_->executeScriptFile("loadGUI_3.lua", "GUI");
     }
 
     /**
@@ -215,27 +200,6 @@ namespace orxonox
     {
         assert(guiSystem_);
         guiSystem_->injectTimePulse(time.getDeltaTime());
-    }
-
-    /**
-
-    */
-    void GUIManager::getLevelList()
-    {
-        lua_State* L = this->scriptModule_->getLuaState();
-        lua_newtable(L);
-
-        std::vector<std::string> list = Loader::getLevelList();
-
-        int j = 1;
-        for (std::vector<std::string>::iterator i = list.begin(); i != list.end(); i++)
-        {
-            lua_pushnumber(L,j);
-            lua_pushstring(L,i->c_str());
-            lua_settable(L,-3);
-            j++;
-        }
-        lua_setglobal(L, "levellist");
     }
 
     /**

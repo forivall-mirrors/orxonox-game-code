@@ -29,10 +29,12 @@
 #include "LevelManager.h"
 
 #include <map>
+#include <boost/filesystem.hpp>
 
 #include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
+#include "core/Loader.h"
 #include "PlayerManager.h"
 #include "objects/Level.h"
 #include "objects/infos/HumanPlayer.h"
@@ -119,8 +121,35 @@ namespace orxonox
         ModifyConfigValue(defaultLevelName_, set, levelName);
     }
 
-    const std::string& LevelManager::getDefaultLevel()
+    const std::string& LevelManager::getDefaultLevel() const
     {
         return defaultLevelName_;
+    }
+
+    std::string LevelManager::getAvailableLevelListItem(unsigned int index) const
+    {
+        if (index >= availableLevels_.size())
+            return std::string();
+        else
+            return availableLevels_[index];
+    }
+
+    void LevelManager::compileAvailableLevelList()
+    {
+        availableLevels_.clear();
+
+        boost::filesystem::directory_iterator file(Core::getMediaPathString() + "levels");
+        boost::filesystem::directory_iterator end;
+
+        while (file != end)
+        {
+            if (!boost::filesystem::is_directory(*file) && file->string()[file->string().length()-1] != '~')
+            {
+                std::string filename = file->path().leaf();
+                if (filename.length() > 4)
+                    availableLevels_.push_back(filename.substr(0,filename.length()-4));
+            }
+            ++file;
+        }
     }
 }
