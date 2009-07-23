@@ -14,4 +14,4 @@ todo:
 	static (sync once) & triggerSync
 
 REMARKS:
-	try to sort the bytestream before copy (putt all 0's in one place)
+	try to sort the bytestream before copy (put all 0's in one place)
