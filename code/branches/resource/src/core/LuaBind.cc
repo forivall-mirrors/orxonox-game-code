@@ -38,7 +38,6 @@ extern "C" {
 
 #include "util/Debug.h"
 #include "util/StringUtils.h"
-#include "ToluaBindCore.h"
 #include "Core.h"
 
 namespace orxonox
@@ -64,10 +63,21 @@ namespace orxonox
     luaopen_io(luaState_);
     luaopen_debug(luaState_);
 #endif
-    tolua_Core_open(luaState_);
+
+    // Open all available tolua interfaces
+    this->openToluaInterfaces(luaState_);
+
     output_ = "";
     isRunning_ = false;
   }
+
+  LuaBind::~LuaBind()
+  {
+    this->closeToluaInterfaces(luaState_);
+
+    assert(singletonRef_s);
+    LuaBind::singletonRef_s = NULL;
+  };
 
   void LuaBind::luaPrint(const std::string& str)
   {
@@ -312,6 +322,28 @@ namespace orxonox
     }
 
     return output;
+  }
+
+  void LuaBind::addToluaInterface(int (*function)(lua_State*), const std::string& name)
+  {
+    toluaInterfaces_.push_back(std::make_pair(name, function));
+    // Apply changes to our own lua state as well 
+    (*function)(luaState_);
+  }
+
+  void LuaBind::openToluaInterfaces(lua_State* state)
+  {
+    for (unsigned int i = 0; i < toluaInterfaces_.size(); ++i)
+      (*toluaInterfaces_[i].second)(state);
+  }
+
+  void LuaBind::closeToluaInterfaces(lua_State* state)
+  {
+    for (unsigned int i = 0; i < toluaInterfaces_.size(); ++i)
+    {
+      lua_pushnil(state);
+      lua_setglobal(state, toluaInterfaces_[i].first.c_str());
+    }
   }
 
 }

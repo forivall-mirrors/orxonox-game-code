@@ -57,7 +57,7 @@ namespace orxonox
 
     public:
       LuaBind();
-      inline ~LuaBind() { assert(singletonRef_s); LuaBind::singletonRef_s = NULL; };
+      ~LuaBind();
 
       inline static LuaBind& getInstance() { assert(singletonRef_s); return *LuaBind::singletonRef_s; } // tolua_export
 
@@ -82,6 +82,10 @@ namespace orxonox
     inline void setIncludePath(const std::string& includepath)
         { this->includePath_ = includepath; }
 
+    void addToluaInterface(int (*function)(lua_State*), const std::string& name);
+    void openToluaInterfaces(lua_State* state);
+    void closeToluaInterfaces(lua_State* state);
+
     private:
       static LuaBind* singletonRef_s;
 
@@ -90,6 +94,7 @@ namespace orxonox
       lua_State* luaState_;
       bool isRunning_;
       std::string includePath_;
+      std::vector<std::pair<std::string, int (*)(lua_State *L)> > toluaInterfaces_;
 
   }; // tolua_export
 } // tolua_export

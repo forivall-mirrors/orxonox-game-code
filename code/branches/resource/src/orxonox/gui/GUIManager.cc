@@ -58,8 +58,7 @@ extern "C" {
 #include "util/OrxAssert.h"
 #include "core/Core.h"
 #include "core/Clock.h"
-#include "ToluaBindCore.h"
-#include "ToluaBindOrxonox.h"
+#include "core/LuaBind.h"
 
 namespace orxonox
 {
@@ -135,8 +134,7 @@ namespace orxonox
             guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
             // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
-            tolua_Core_open(this->scriptModule_->getLuaState());
-            tolua_Orxonox_open(this->scriptModule_->getLuaState());
+            LuaBind::getInstance().openToluaInterfaces(this->luaState_);
 
             // initialise the basic lua code
             this->loadLuaCode();
@@ -161,10 +159,7 @@ namespace orxonox
     GUIManager::~GUIManager()
     {
         // destroy our own tolua interfaces
-        lua_pushnil(luaState_);
-        lua_setglobal(luaState_, "Orxonox");
-        lua_pushnil(luaState_);
-        lua_setglobal(luaState_, "Core");
+        LuaBind::getInstance().closeToluaInterfaces(this->luaState_);
 
         singletonRef_s = 0;
     }
