@@ -286,41 +286,13 @@ namespace orxonox
 
     /**
     @brief
-        Registers a GUIOverlay with the GUIManager so that the GUIOverlay can be accessed by it's name through the GUIManager.
-    @param name
-        The name of the GUI.
-    @param overlay
-        A pointer to the GUIOverlay of the GUI.
-    @return
-        Returns false if the Overlay was already present.
-    */
-    bool GUIManager::registerOverlay(const std::string& name, GUIOverlay* overlay)
-    {
-        return (this->guiOverlays_.insert(std::pair<std::string, GUIOverlay*>(name, overlay))).second;
-    }
-
-    /**
-    @brief
-        Get the GUIOverlay of the GUI with the given name.
-    @param name
-        The name of the GUI.
-    @return
-        Returns a pointer to the GUIOverlay.
-    */
-    GUIOverlay* GUIManager::getOverlay(const std::string& name)
-    {
-        return (this->guiOverlays_.find(name))->second;
-    }
-
-    /**
-    @brief
         Tells the GUIManager which SceneManager to use
     @param camera
         The current camera on which the GUI should be displayed on.
 
         In fact the GUIManager needs the SceneManager and not the Camera to display the GUI.
         This means the GUI is not bound to a camera but rather to the SceneManager.
-        Hidding the GUI when needed can therefore not be solved by just NOT setting the current camera.
+        Hiding the GUI when needed can therefore not be resolved by just NOT setting the current camera.
     */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {

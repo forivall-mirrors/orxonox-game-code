@@ -87,9 +87,6 @@ namespace orxonox
         void showGUI(const std::string& name);
         void executeCode(const std::string& str);
 
-        bool registerOverlay(const std::string& name, GUIOverlay* overlay); //!< Register a GUIOverlay with the GUIManager.
-        GUIOverlay* getOverlay(const std::string& name); // Get the GUIOverlay of the GUI with the given name.
-
         void setCamera(Ogre::Camera* camera);
 
         static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
@@ -121,8 +118,6 @@ namespace orxonox
         lua_State*                  luaState_;          //!< Lua state, access point to the Lua engine
 
         State                       state_;             //!< reflects state of the GUIManager
-
-        std::map<std::string, GUIOverlay*> guiOverlays_;//!< A list of all GUIOverlay's.
 
         static GUIManager*          singletonRef_s;     //!< Singleton reference to GUIManager
 

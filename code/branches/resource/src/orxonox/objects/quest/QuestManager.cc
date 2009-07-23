@@ -35,7 +35,6 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "gui/GUIManager.h"
 
 #include "objects/infos/PlayerInfo.h"
 #include "objects/infos/PlayerInfo.h"
@@ -224,7 +223,10 @@ namespace orxonox
     */
     QuestContainer* QuestManager::getQuestTree(std::string & name)
     {
-        GUIOverlay* gui = GUIManager::getInstance().getOverlay(name);
+        GUIOverlay* gui = NULL;
+        for (ObjectList<GUIOverlay>::iterator it = ObjectList<GUIOverlay>::begin(); it != ObjectList<GUIOverlay>::end(); ++it)
+            if (it->getGUIName() == name)
+                gui = *it;
 
         PlayerInfo* player;
         if(gui == NULL)
