@@ -124,8 +124,7 @@ namespace orxonox
         console_->initialise();
 
         // load the CEGUI interface
-        guiManager_ = new GUIManager();
-        guiManager_->initialise(renderWindow);
+        guiManager_ = new GUIManager(renderWindow);
 
         // add console command to toggle GUI
         FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::toggleGUI);

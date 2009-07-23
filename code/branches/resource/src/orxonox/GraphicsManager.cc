@@ -36,6 +36,7 @@
 #include "GraphicsManager.h"
 
 #include <fstream>
+#include <memory>
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
 
