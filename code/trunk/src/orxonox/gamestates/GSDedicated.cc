@@ -97,8 +97,9 @@ namespace orxonox
         std::cout.flush();
         resetTerminalMode();
         delete this->originalTerminalSettings_;
-#endif
+#else
         COUT(0) << "Press enter to end the game..." << std::endl;
+#endif
         inputThread_->join();
         delete this->inputThread_;
 
@@ -120,7 +121,8 @@ namespace orxonox
         unsigned int  escapeChar=0;
         while(!closeThread_)
         {
-            c = getchar();
+            size_t count = read(STDIN_FILENO, &c, 1);
+            if (count == 1)
             {
 //                 boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                 if ( inputIterator_>=MAX_COMMAND_LENGTH-1 && c!='\n' )
@@ -250,8 +252,8 @@ namespace orxonox
         new_settings = *this->originalTerminalSettings_;
         new_settings.c_lflag &= ~( ICANON | ECHO );
 //         new_settings.c_lflag |= ( ISIG | IEXTEN );
-        new_settings.c_cc[VTIME] = 0;
-        new_settings.c_cc[VMIN] = 1;
+        new_settings.c_cc[VTIME] = 1;
+        new_settings.c_cc[VMIN] = 0;
         tcsetattr(0,TCSANOW,&new_settings);
         COUT(0) << endl;
 //       atexit(&GSDedicated::resetTerminalMode);
