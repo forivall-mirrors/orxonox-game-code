@@ -92,7 +92,8 @@ namespace orxonox
     */
     void GSGraphics::activate()
     {
-        GameMode::setShowsGraphics(true);
+        // Load OGRE, CEGUI and OIS
+        Core::getInstance().loadGraphics();
 
         // Load OGRE including the render window
         this->graphicsManager_ = new GraphicsManager();
@@ -169,7 +170,8 @@ namespace orxonox
 
         delete graphicsManager_;
 
-        GameMode::setShowsGraphics(false);
+        // Unload OGRE, CEGUI and OIS
+        Core::getInstance().loadGraphics();
     }
 
     /**

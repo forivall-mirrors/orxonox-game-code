@@ -67,6 +67,7 @@
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "Factory.h"
+#include "GameMode.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaBind.h"
@@ -229,6 +230,7 @@ namespace orxonox
 
 
     Core::Core(const std::string& cmdLine)
+        : bGraphicsLoaded_(false)
     {
         if (singletonRef_s != 0)
         {
@@ -314,7 +316,7 @@ namespace orxonox
 
         // Destroy command line arguments
         CommandLine::destroyAllArguments();
-        // Also delete external console command that don't belong to an Identifier
+        // Also delete external console commands that don't belong to an Identifier
         CommandExecutor::destroyExternalCommands();
         // Clean up class hierarchy stuff (identifiers, XMLPort, configValues, consoleCommand)
         Identifier::destroyAllIdentifiers();
@@ -322,6 +324,24 @@ namespace orxonox
         delete this->signalHandler_;
 
         // Don't assign singletonRef_s with NULL! Recreation is not supported
+    }
+
+    void Core::loadGraphics()
+    {
+        if (bGraphicsLoaded_)
+            return;
+
+        GameMode::setShowsGraphics(true);
+        bGraphicsLoaded_ = true;
+    }
+
+    void Core::unloadGraphics()
+    {
+        if (!bGraphicsLoaded_)
+            return;
+
+        bGraphicsLoaded_ = false;
+        GameMode::setShowsGraphics(false);
     }
 
     /**

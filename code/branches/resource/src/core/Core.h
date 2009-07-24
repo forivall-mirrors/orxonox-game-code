@@ -72,6 +72,9 @@ namespace orxonox
 
             void update(const Clock& time);
 
+            void loadGraphics();
+            void unloadGraphics();
+
             static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
             static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
@@ -110,7 +113,8 @@ namespace orxonox
             TclBind*              tclBind_;
             TclThreadManager*     tclThreadManager_;
 
-            bool isDevBuild_;                               //!< True for builds in the build directory (not installed)
+            bool                  isDevBuild_;          //!< True for builds in the build directory (not installed)
+            bool                  bGraphicsLoaded_;
             CoreConfiguration*    configuration_;
 
             static Core* singletonRef_s;
