@@ -4,7 +4,7 @@
 # Check package version info
 # MAJOR: Interface breaking change somewhere (library version changed, etc.)
 # MINOR: Bug fix or small conformant changes
-SET(DEPENDENCY_VERSION_REQUIRED 2)
+SET(DEPENDENCY_VERSION_REQUIRED 3)
 IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
   SET(DEPENDENCY_VERSION 1.0)
 ELSE()
@@ -30,19 +30,19 @@ ENDIF()
 MESSAGE(STATUS "Using library package for the dependencies.")
 
 # Include paths and other special treatments
-SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut-1.1.0)
-SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost-1.39.0)
-SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui-0.6.2)
-SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx-2007.aug)
-SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet-1.2)
-SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua-5.1.4)
-SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg-1.1.3)
-SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis-1.2.0)
-SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre-1.4.9)
+SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut)
+SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost)
+SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui)
+SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
+SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
+SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
+SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg)
+SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis)
+SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre)
 SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
-SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal-1.1)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl-8.5.7/include)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib-1.2.3/include)
+SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal)
+LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl/include)
+LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
 
 ### INSTALL ###
 
