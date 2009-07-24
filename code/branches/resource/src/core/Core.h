@@ -89,12 +89,18 @@ namespace orxonox
             static const boost::filesystem::path& getConfigPath();
             //! Returns the path to the log files as boost::filesystem::path
             static const boost::filesystem::path& getLogPath();
+            //! Returns the path to the root folder as boost::filesystem::path
+            static const boost::filesystem::path& getRootPath();
             //! Returns the path to the data files as std::string
             static std::string getMediaPathString();
             //! Returns the path to the config files as std::string
             static std::string getConfigPathString();
             //! Returns the path to the log files as std::string
             static std::string getLogPathString();
+            //! Returns the path to the root folder as std::string
+            static std::string getRootPathString();
+
+            static bool isDevelopmentRun() { return getInstance().bDevRun_; }
 
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
@@ -113,7 +119,7 @@ namespace orxonox
             TclBind*              tclBind_;
             TclThreadManager*     tclThreadManager_;
 
-            bool                  isDevBuild_;          //!< True for builds in the build directory (not installed)
+            bool                  bDevRun_;             //!< True for runs in the build directory (not installed)
             bool                  bGraphicsLoaded_;
             CoreConfiguration*    configuration_;
 

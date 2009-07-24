@@ -32,12 +32,13 @@
 #include <string>
 #include <cpptcl/cpptcl.h>
 
+#include "SpecialConfig.h"
 #include "util/Debug.h"
 #include "util/StringUtils.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
+#include "Core.h"
 #include "TclThreadManager.h"
-#include "SpecialConfig.h"
 
 namespace orxonox
 {
@@ -101,14 +102,18 @@ namespace orxonox
 
     Tcl::interpreter* TclBind::createTclInterpreter()
     {
+        Tcl::interpreter* interpreter;
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-        Tcl::interpreter* interpreter = new Tcl::interpreter(ORXONOX_TCL_LIBRARY_PATH);
+        if (true)//Core::isDevelopmentRun())
+            interpreter = new Tcl::interpreter(std::string(ORXONOX_DEP_LIB_PATH) + "/tcl");
+        else
+            interpreter = new Tcl::interpreter(Core::getRootPathString() + "lib/tcl");
 #else
-        Tcl::interpreter* interpreter = new Tcl::interpreter();
+        interpreter = new Tcl::interpreter();
 #endif
         try
         {
-            interpreter->eval("source " + TclBind::getInstance().tclDataPath_ + "/init.tcl");
+            interpreter->eval("source \"" + TclBind::getInstance().tclDataPath_ + "/init.tcl\"");
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }

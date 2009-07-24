@@ -230,7 +230,8 @@ namespace orxonox
 
 
     Core::Core(const std::string& cmdLine)
-        : bGraphicsLoaded_(false)
+        : bDevRun_(false)
+        , bGraphicsLoaded_(false)
     {
         if (singletonRef_s != 0)
         {
@@ -434,6 +435,15 @@ namespace orxonox
         return getInstance().configuration_->logPath_.string() + '/';
     }
 
+    /*static*/ const boost::filesystem::path& Core::getRootPath()
+    {
+        return getInstance().configuration_->rootPath_;
+    }
+    /*static*/ std::string Core::getRootPathString()
+    {
+        return getInstance().configuration_->rootPath_.string() + '/';
+    }
+
     /**
     @note
         The code of this function has been copied and adjusted from OGRE, an open source graphics engine.
@@ -543,7 +553,7 @@ namespace orxonox
         if (boost::filesystem::exists(configuration_->executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
-            Core::isDevBuild_ = true;
+            Core::bDevRun_ = true;
             configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
             configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
             configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;

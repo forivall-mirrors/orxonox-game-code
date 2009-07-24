@@ -87,8 +87,11 @@ namespace orxonox
     const char ORXONOX_CONFIG_DEV_PATH[]      = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@";
     const char ORXONOX_LOG_DEV_PATH[]         = "@CMAKE_LOG_OUTPUT_DIRECTORY@";
 #endif
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+    const char ORXONOX_DEP_LIB_PATH[]         = "@DEP_LIBRARY_DIR@";
+#endif
 
-    /* OGRE Plugins */
+    // OGRE PLUGINS
 #ifdef NDEBUG
     const char ORXONOX_OGRE_PLUGINS[] = "@OGRE_PLUGINS_RELEASE@";
 #  ifdef DEPENDENCY_PACKAGE_ENABLE
@@ -103,11 +106,6 @@ namespace orxonox
 #  else
     const char ORXONOX_OGRE_PLUGINS_FOLDER[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
 #  endif
-#endif
-
-    /* Tcl */
-#ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ORXONOX_TCL_LIBRARY_PATH[] = "@TCL_LIBRARY_DIR@";
 #endif
 }
 
