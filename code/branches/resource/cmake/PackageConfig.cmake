@@ -41,8 +41,10 @@ SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis-1.2.0)
 SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre-1.4.9)
 SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
 SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal-1.1)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl-8.5.2/include)
+LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl-8.5.7/include)
 LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib-1.2.3/include)
+
+SET(TCL_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/tcl)
 
 ### INSTALL ###
 # On Windows, DLLs have to be in the executable folder, install them

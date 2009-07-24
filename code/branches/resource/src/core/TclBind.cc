@@ -37,6 +37,7 @@
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "TclThreadManager.h"
+#include "SpecialConfig.h"
 
 namespace orxonox
 {
@@ -50,7 +51,7 @@ namespace orxonox
         assert(singletonRef_s == 0);
         singletonRef_s = this;
         this->interpreter_ = 0;
-        this->bSetTclLibPath_ = false;
+        this->bSetTclDataPath_ = false;
         this->setDataPath(datapath);
     }
 
@@ -64,17 +65,18 @@ namespace orxonox
     void TclBind::setDataPath(const std::string& datapath)
     {
         // String has POSIX slashes
-        this->tclLibPath_ = datapath + "tcl" + TCL_VERSION + '/';
-        this->bSetTclLibPath_ = true;
+        this->tclDataPath_ = datapath + "tcl" + '/';
+        this->bSetTclDataPath_ = true;
 
-        this->createTclInterpreter();
+        this->initializeTclInterpreter();
     }
 
-    void TclBind::createTclInterpreter()
+    void TclBind::initializeTclInterpreter()
     {
-        if (this->bSetTclLibPath_ && !this->interpreter_)
+        if (this->bSetTclDataPath_ && !this->interpreter_)
         {
-            this->interpreter_ = new Tcl::interpreter(this->tclLibPath_);
+            this->interpreter_ = this->createTclInterpreter();
+
             this->interpreter_->def("orxonox::query", TclBind::tcl_query, Tcl::variadic());
             this->interpreter_->def("orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
             this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
@@ -87,24 +89,35 @@ namespace orxonox
                 this->interpreter_->eval("proc crossexecute {id args} { orxonox::crossquery 0 $id [join $args] }");
                 this->interpreter_->eval("set id 0");
                 this->interpreter_->eval("rename exit tcl::exit; proc exit {} { execute exit }");
-                this->interpreter_->eval("redef_puts");
             }
             catch (Tcl::tcl_error const &e)
             {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
             catch (std::exception const &e)
             {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+            catch (...)
+            {   COUT(1) << "Error while creating Tcl-interpreter." << std::endl;   }
         }
     }
 
-    void TclBind::createNewTclInterpreter()
+    Tcl::interpreter* TclBind::createTclInterpreter()
     {
-        if (this->interpreter_)
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+        Tcl::interpreter* interpreter = new Tcl::interpreter(ORXONOX_TCL_LIBRARY_PATH);
+#else
+        Tcl::interpreter* interpreter = new Tcl::interpreter();
+#endif
+        try
         {
-            delete this->interpreter_;
-            this->interpreter_ = 0;
+            interpreter->eval("source " + TclBind::getInstance().tclDataPath_ + "/init.tcl");
         }
+        catch (Tcl::tcl_error const &e)
+        {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+        catch (std::exception const &e)
+        {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+        catch (...)
+        {   COUT(1) << "Error while creating Tcl-interpreter." << std::endl;   }
 
-        this->createTclInterpreter();
+        return interpreter;
     }
 
     std::string TclBind::tcl_query(Tcl::object const &args)

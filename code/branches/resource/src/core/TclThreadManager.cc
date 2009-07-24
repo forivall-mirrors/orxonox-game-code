@@ -239,7 +239,7 @@ namespace orxonox
     {
         TclInterpreterBundle* newbundle = new TclInterpreterBundle();
         newbundle->id_ = id;
-        newbundle->interpreter_ = new Tcl::interpreter(TclBind::getInstance().getTclLibPath());
+        newbundle->interpreter_ = TclBind::createTclInterpreter();
 
         // Initialize the new interpreter
         try
@@ -267,8 +267,6 @@ namespace orxonox
             newbundle->interpreter_->eval("proc exit {} { execute TclThreadManager destroy " + id_string + " }");
 
             // Redefine some native functions
-            newbundle->interpreter_->eval("redef_puts");
-
 //            newbundle->interpreter_->eval("rename while tcl::while");
 //            newbundle->interpreter_->eval("proc while {test command} { tcl::while {[uplevel 1 expr $test]} {uplevel 1 $command} }"); // (\"$test\" && [orxonox::running " + id + "]])
 //            newbundle->interpreter_->eval("rename for tcl::for");

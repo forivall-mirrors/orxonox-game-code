@@ -48,9 +48,9 @@ namespace orxonox
             static void bgerror(std::string error);
 
             void setDataPath(const std::string& datapath);
-            std::string getTclLibPath() const { return this->tclLibPath_; }
-            void createTclInterpreter();
-            void createNewTclInterpreter();
+            const std::string& getTclDataPath() const { return this->tclDataPath_; }
+            void initializeTclInterpreter();
+            static Tcl::interpreter* createTclInterpreter();
             Tcl::interpreter* getTclInterpreter() const { return this->interpreter_; }
 
             static std::string tcl_query(Tcl::object const &args);
@@ -62,8 +62,8 @@ namespace orxonox
             TclBind(const TclBind& other);
 
             Tcl::interpreter* interpreter_;
-            std::string tclLibPath_;
-            bool bSetTclLibPath_;
+            std::string tclDataPath_;
+            bool bSetTclDataPath_;
 
             static TclBind* singletonRef_s;
     };
