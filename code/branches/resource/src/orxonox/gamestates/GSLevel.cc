@@ -39,6 +39,8 @@
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/Core.h"
+#include "core/GraphicsManager.h"
+#include "core/GUIManager.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 
@@ -46,9 +48,7 @@
 #include "objects/Radar.h"
 #include "objects/quest/QuestManager.h"
 #include "overlays/notifications/NotificationManager.h"
-#include "gui/GUIManager.h"
 #include "CameraManager.h"
-#include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
 

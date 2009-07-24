@@ -56,9 +56,9 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
-#include "core/Core.h"
-#include "core/Clock.h"
-#include "core/LuaBind.h"
+#include "Core.h"
+#include "Clock.h"
+#include "LuaBind.h"
 
 namespace orxonox
 {

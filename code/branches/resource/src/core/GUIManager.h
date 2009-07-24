@@ -36,7 +36,7 @@
 #ifndef _GUIManager_H__
 #define _GUIManager_H__
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 
 #include <map>
 #include <string>
@@ -44,7 +44,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "util/OgreForwardRefs.h"
-#include "core/input/InputHandler.h"
+#include "input/InputHandler.h"
 
 namespace orxonox
 {
@@ -59,7 +59,7 @@ namespace orxonox
         Since the GUI needs user input, the GUIManager implements the functions needed to act as a key and/or mouse handler.
         Those input events are then injected into CEGUI in Lua.
     */
-    class _OrxonoxExport GUIManager : public InputHandler
+    class _CoreExport GUIManager : public InputHandler
     {
     public:
         GUIManager(Ogre::RenderWindow* renderWindow);

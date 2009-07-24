@@ -35,10 +35,10 @@
 #include "core/Game.h"
 #include "core/Clock.h"
 #include "core/ConsoleCommand.h"
+#include "core/GraphicsManager.h"
+#include "core/GUIManager.h"
 #include "objects/Scene.h"
-#include "gui/GUIManager.h"
 #include "sound/SoundMainMenu.h"
-#include "GraphicsManager.h"
 
 namespace orxonox
 {

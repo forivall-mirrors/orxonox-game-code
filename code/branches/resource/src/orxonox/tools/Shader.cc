@@ -40,7 +40,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "GraphicsManager.h"
+#include "core/GraphicsManager.h"
 
 namespace orxonox
 {

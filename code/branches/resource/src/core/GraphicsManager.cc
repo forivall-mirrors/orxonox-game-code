@@ -56,18 +56,14 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "core/Clock.h"
-#include "core/ConsoleCommand.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/CoreIncludes.h"
-#include "core/Core.h"
-#include "core/Game.h"
-#include "core/GameMode.h"
-#include "core/WindowEventListener.h"
-#include "tools/ParticleInterface.h"
-
-// HACK!
-#include "overlays/map/Map.h"
+#include "Clock.h"
+#include "ConsoleCommand.h"
+#include "ConfigValueIncludes.h"
+#include "CoreIncludes.h"
+#include "Core.h"
+#include "Game.h"
+#include "GameMode.h"
+#include "WindowEventListener.h"
 
 namespace orxonox
 {
@@ -147,8 +143,6 @@ namespace orxonox
         delete this->ccPrintScreen_;
 */
 
-        // HACK! This fixes an exit crash
-        Map::hackDestroyMap();
         // unload all compositors (this is only necessary because we don't yet destroy all resources!)
         Ogre::CompositorManager::getSingleton().removeAll();
 

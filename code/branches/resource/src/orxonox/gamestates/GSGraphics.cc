@@ -44,15 +44,18 @@
 #include "core/Core.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
+#include "core/GraphicsManager.h"
+#include "core/GUIManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/InputState.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 #include "overlays/console/InGameConsole.h"
-#include "gui/GUIManager.h"
 #include "sound/SoundManager.h"
-#include "GraphicsManager.h"
+
+// HACK:
+#include "overlays/map/Map.h"
 
 namespace orxonox
 {
@@ -167,6 +170,9 @@ namespace orxonox
 
         delete this->inputManager_;
         this->inputManager_ = 0;
+
+        // HACK:
+        Map::hackDestroyMap();
 
         delete graphicsManager_;
 

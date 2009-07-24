@@ -33,11 +33,11 @@
 
 #include "util/StringUtils.h"
 #include "core/GameMode.h"
+#include "core/GUIManager.h"
 #include "core/ObjectList.h"
 #include "tools/Shader.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/Scene.h"
-#include "gui/GUIManager.h"
 
 namespace orxonox
 {

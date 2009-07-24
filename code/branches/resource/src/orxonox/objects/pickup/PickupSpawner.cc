@@ -36,9 +36,9 @@
 #include "BaseItem.h"
 
 #include "core/CoreIncludes.h"
+#include "core/GUIManager.h"     // HACK; see below
 #include "core/Template.h"
 #include "core/XMLPort.h"
-#include "gui/GUIManager.h"     // HACK; see below
 #include "objects/worldentities/pawns/Pawn.h"
 #include "PickupInventory.h"    // HACK; Only for hack, remove later
 

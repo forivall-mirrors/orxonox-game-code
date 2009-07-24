@@ -33,8 +33,8 @@
 
 #include "core/input/InputManager.h"
 #include "core/CoreIncludes.h"
+#include "core/GUIManager.h"
 #include "core/XMLPort.h"
-#include "gui/GUIManager.h"
 
 namespace orxonox
 {

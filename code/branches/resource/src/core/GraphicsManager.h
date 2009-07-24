@@ -36,12 +36,12 @@
 #ifndef _GraphicsManager_H__
 #define _GraphicsManager_H__
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 
 #include <cassert>
 #include <string>
 #include <OgreLog.h>
-#include "core/OrxonoxClass.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -49,7 +49,7 @@ namespace orxonox
     @brief
         Graphics engine manager class
     */
-    class _OrxonoxExport GraphicsManager : public OrxonoxClass, public Ogre::LogListener
+    class _CoreExport GraphicsManager : public OrxonoxClass, public Ogre::LogListener
     {
     public:
         GraphicsManager();
