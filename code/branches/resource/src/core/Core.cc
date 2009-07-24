@@ -141,9 +141,13 @@ namespace orxonox
                 .description("If true, all random actions are different each time you start the game")
                 .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
 
-            SetConfigValue(mediaPathString_, mediaPath_.string())
-                .description("Relative path to the game data.")
-                .callback(this, &CoreConfiguration::mediaPathChanged);
+            // Only show this config value for development builds
+            if (Core::isDevelopmentRun())
+            {
+                SetConfigValue(mediaPathString_, mediaPath_.string())
+                    .description("Relative path to the game data.")
+                    .callback(this, &CoreConfiguration::mediaPathChanged);
+            }
         }
 
         /**
@@ -198,7 +202,16 @@ namespace orxonox
         */
         void tsetMediaPath(const std::string& path)
         {
-            ModifyConfigValue(mediaPathString_, tset, path);
+            if (Core::isDevelopmentRun())
+            {
+                ModifyConfigValue(mediaPathString_, tset, path);
+            }
+            else
+            {
+                // Manual 'config' value without the file entry
+                mediaPathString_ = path;
+                this->mediaPathChanged();
+            }
         }
 
         void initializeRandomNumberGenerator()
