@@ -147,7 +147,7 @@ namespace orxonox
             COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
 
         // update listener orientation
-        Quaternion orient = camera->getOrientation();
+        const Quaternion& orient = camera->getOrientation();
         Vector3 up = orient.xAxis(); // just a wild guess
         Vector3 at = orient.zAxis();
 
