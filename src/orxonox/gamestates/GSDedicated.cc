@@ -121,8 +121,12 @@ namespace orxonox
         unsigned int  escapeChar=0;
         while(!closeThread_)
         {
+#ifdef ORXONOX_PLATFORM_UNIX
             size_t count = read(STDIN_FILENO, &c, 1);
             if (count == 1)
+#else
+            c = getchar();
+#endif
             {
 //                 boost::recursive_mutex::scoped_lock(this->inputLineMutex_);
                 if ( inputIterator_>=MAX_COMMAND_LENGTH-1 && c!='\n' )
