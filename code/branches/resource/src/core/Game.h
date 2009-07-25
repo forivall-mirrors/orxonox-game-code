@@ -132,6 +132,12 @@ namespace orxonox
         void loadState(GameState* state);
         void unloadState(GameState* state);
 
+        // Main loop structuring
+        void updateGameStateStack();
+        void updateGameStates();
+        void updateStatistics();
+        void updateFPSLimiter();
+
         std::map<std::string, GameState*>    gameStates_;
         std::vector<GameState*>              activeStates_;
         boost::shared_ptr<GameStateTreeNode> rootStateNode_;
@@ -152,6 +158,8 @@ namespace orxonox
         uint32_t                        periodTickTime_;
         float                           avgFPS_;
         float                           avgTickTime_;
+        int                             excessSleepTime_;
+        unsigned int                    minimumSleepTime_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
