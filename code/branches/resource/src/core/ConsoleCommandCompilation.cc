@@ -93,11 +93,11 @@ namespace orxonox
     {
         if (newline)
         {
-            COUT(0) << text << std::endl;
+            COUT(0) << stripEnclosingBraces(text) << std::endl;
         }
         else
         {
-            COUT(0) << text;
+            COUT(0) << stripEnclosingBraces(text);
         }
     }
 

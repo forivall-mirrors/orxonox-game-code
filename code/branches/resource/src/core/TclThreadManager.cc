@@ -256,8 +256,9 @@ namespace orxonox
             // Create threadspecific shortcuts for the functions above
             newbundle->interpreter_->def("execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
             newbundle->interpreter_->def("crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->eval("proc query       args     { orxonox::query " + id_string + " $args }");
+            newbundle->interpreter_->eval("proc query      {args}    { orxonox::query " + id_string + " $args }");
             newbundle->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery " + id_string + " $id $args }");
+            newbundle->interpreter_->eval("proc running    {}        { return [orxonox::running " + id_string + "] }");
 
             // Define a variable containing the thread id
             newbundle->interpreter_->eval("set id " + id_string);
@@ -267,10 +268,10 @@ namespace orxonox
             newbundle->interpreter_->eval("proc exit {} { execute TclThreadManager destroy " + id_string + " }");
 
             // Redefine some native functions
-//            newbundle->interpreter_->eval("rename while tcl::while");
-//            newbundle->interpreter_->eval("proc while {test command} { tcl::while {[uplevel 1 expr $test]} {uplevel 1 $command} }"); // (\"$test\" && [orxonox::running " + id + "]])
-//            newbundle->interpreter_->eval("rename for tcl::for");
-//            newbundle->interpreter_->eval("proc for {start test next command} { uplevel tcl::for \"$start\" \"$test\" \"$next\" \"$command\" }");
+            newbundle->interpreter_->eval("rename while tcl::while");
+            newbundle->interpreter_->eval("rename orxonox::while while");
+            newbundle->interpreter_->eval("rename for tcl::for");
+            newbundle->interpreter_->eval("rename orxonox::for for");
         }
         catch (const Tcl::tcl_error& e)
         {   newbundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id << "): " << e.what() << std::endl;   }
@@ -295,6 +296,11 @@ namespace orxonox
     {
         // TODO
         // Not yet implemented
+        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(id);
+        if (bundle)
+        {
+            bundle->bRunning_ = false;
+        }
     }
 
     /**

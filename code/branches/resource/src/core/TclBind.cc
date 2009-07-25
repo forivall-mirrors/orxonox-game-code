@@ -85,9 +85,10 @@ namespace orxonox
 
             try
             {
-                this->interpreter_->eval("proc query args { orxonox::query [join $args] }");
-                this->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery 0 $id [join $args] }");
-                this->interpreter_->eval("proc crossexecute {id args} { orxonox::crossquery 0 $id [join $args] }");
+                this->interpreter_->eval("proc query        {args}    { orxonox::query $args }");
+                this->interpreter_->eval("proc crossquery   {id args} { orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("proc crossexecute {id args} { orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("proc running      {}        { return 1 }");
                 this->interpreter_->eval("set id 0");
                 this->interpreter_->eval("rename exit tcl::exit; proc exit {} { execute exit }");
             }
@@ -104,7 +105,7 @@ namespace orxonox
     {
         Tcl::interpreter* interpreter;
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-        if (true)//Core::isDevelopmentRun())
+        if (Core::isDevelopmentRun())
             interpreter = new Tcl::interpreter(std::string(ORXONOX_DEP_LIB_PATH) + "/tcl");
         else
             interpreter = new Tcl::interpreter(Core::getRootPathString() + "lib/tcl");
