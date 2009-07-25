@@ -70,7 +70,8 @@ namespace orxonox
 
             void setConfigValues();
 
-            void update(const Clock& time);
+            bool preUpdate(const Clock& time) throw();
+            bool postUpdate(const Clock& time) throw();
 
             void loadGraphics();
             void unloadGraphics();
@@ -118,6 +119,10 @@ namespace orxonox
             SignalHandler*        signalHandler_;
             TclBind*              tclBind_;
             TclThreadManager*     tclThreadManager_;
+            // graphical
+            InputManager*         inputManager_;        //!< Interface to OIS
+            GUIManager*           guiManager_;          //!< Interface to GUI
+            GraphicsManager*      graphicsManager_;     //!< Interface to OGRE
 
             bool                  bDevRun_;             //!< True for runs in the build directory (not installed)
             bool                  bGraphicsLoaded_;

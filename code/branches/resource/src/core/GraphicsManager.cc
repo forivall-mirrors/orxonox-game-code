@@ -195,8 +195,15 @@ namespace orxonox
         // (probably only necessary on windows)
         this->renderWindow_->setActive(true);
 
-        // render
+        // Time before rendering
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
+
+        // Render frame
         ogreRoot_->_updateAllRenderTargets();
+
+        uint64_t timeAfterTick = time.getRealMicroseconds();
+        // Subtract the time used for rendering from the tick time counter
+        Game::getInstance().subtractTickTime(timeAfterTick - timeBeforeTick);
 
         // again, just to be sure OGRE works fine
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted

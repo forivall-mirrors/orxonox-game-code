@@ -244,25 +244,9 @@ namespace orxonox
                 this->requestedStateNodes_.erase(this->requestedStateNodes_.begin());
             }
 
-            // UPDATE, Core first
-            bool threwException = false;
-            try
+            // UPDATE, Core preUpdate (doesn't throw)
+            if (!this->core_->preUpdate(*this->gameClock_))
             {
-                this->core_->update(*this->gameClock_);
-            }
-            catch (const std::exception& ex)
-            {
-                threwException = true;
-                COUT(0) << "Exception while ticking the Core: " << ex.what() << std::endl;
-            }
-            catch (...)
-            {
-                threwException = true;
-            }
-            if (threwException)
-            {
-                COUT(0) << "An exception occured while ticking the Core. This should really never happen!" << std::endl;
-                COUT(0) << "Closing the program." << std::endl;
                 this->stop();
                 break;
             }
@@ -272,29 +256,25 @@ namespace orxonox
             for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin() + 1;
                 it != this->activeStates_.end(); ++it)
             {
-                bool threwException = false;
+                std::string exceptionMessage;
                 try
                 {
                     // Add tick time for most of the states
                     uint64_t timeBeforeTick;
-                    if (!(*it)->ignoreTickTime())
+                    if ((*it)->ignoreTickTime())
                         timeBeforeTick = this->gameClock_->getRealMicroseconds();
                     (*it)->update(*this->gameClock_);
-                    if (!(*it)->ignoreTickTime())
-                        this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
+                    if ((*it)->ignoreTickTime())
+                        this->subtractTickTime(static_cast<int32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
                 }
                 catch (const std::exception& ex)
-                {
-                    threwException = true;
-                    COUT(0) << "Exception while ticking: " << ex.what() << std::endl;
-                }
+                { exceptionMessage = ex.what(); }
                 catch (...)
+                { exceptionMessage = "Unknown exception"; }
+                if (!exceptionMessage.empty())
                 {
-                    threwException = true;
-                }
-                if (threwException)
-                {
-                    COUT(1) << "An exception occured while ticking GameState '" << (*it)->getName() << "'. This should really never happen!" << std::endl;
+                    COUT(1) << "An exception occurred while updating '" << (*it)->getName() << "': " << exceptionMessage << std::endl;
+                    COUT(1) << "This should really never happen!" << std::endl;
                     COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
                     if ((*it)->getParent() != NULL)
                         this->requestState((*it)->getParent()->getName());
@@ -303,6 +283,13 @@ namespace orxonox
                     break;
                 }
 
+            }
+
+            // UPDATE, Core postUpdate (doesn't throw)
+            if (!this->core_->postUpdate(*this->gameClock_))
+            {
+                this->stop();
+                break;
             }
 
             // STATISTICS
@@ -343,11 +330,11 @@ namespace orxonox
         this->bAbort_ = true;
     }
 
-    void Game::addTickTime(uint32_t length)
+    void Game::subtractTickTime(int32_t length)
     {
         assert(!this->statisticsTickTimes_.empty());
-        this->statisticsTickTimes_.back().tickLength += length;
-        this->periodTickTime_+=length;
+        this->statisticsTickTimes_.back().tickLength -= length;
+        this->periodTickTime_ -= length;
     }
 
 

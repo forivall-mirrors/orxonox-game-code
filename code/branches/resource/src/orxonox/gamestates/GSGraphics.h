@@ -60,10 +60,7 @@ namespace orxonox
 
     private:
         // managed singletons
-        InputManager*         inputManager_;        //!< Reference to input management
         InGameConsole*        console_;
-        GUIManager*           guiManager_;          //!< Interface to GUI
-        GraphicsManager*      graphicsManager_;     //!< Interface to Ogre
         SoundManager*         soundManager_;        //!< Keeps track of SoundBase objects
 
         KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings

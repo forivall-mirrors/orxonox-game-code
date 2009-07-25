@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <boost/filesystem.hpp>
+#include <OgreRenderWindow.h>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -68,12 +69,15 @@
 #include "CoreIncludes.h"
 #include "Factory.h"
 #include "GameMode.h"
+#include "GraphicsManager.h"
+#include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaBind.h"
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
+#include "input/InputManager.h"
 
 namespace orxonox
 {
@@ -345,6 +349,20 @@ namespace orxonox
         if (bGraphicsLoaded_)
             return;
 
+        // Load OGRE including the render window
+        this->graphicsManager_ = new GraphicsManager();
+
+        // The render window width and height are used to set up the mouse movement.
+        size_t windowHnd = 0;
+        Ogre::RenderWindow* renderWindow = GraphicsManager::getInstance().getRenderWindow();
+        renderWindow->getCustomAttribute("WINDOW", &windowHnd);
+
+        // Calls the InputManager which sets up the input devices.
+        inputManager_ = new InputManager(windowHnd);
+
+        // load the CEGUI interface
+        guiManager_ = new GUIManager(renderWindow);
+
         GameMode::setShowsGraphics(true);
         bGraphicsLoaded_ = true;
     }
@@ -353,6 +371,10 @@ namespace orxonox
     {
         if (!bGraphicsLoaded_)
             return;
+
+        delete this->guiManager_;
+        delete this->inputManager_;
+        delete graphicsManager_;
 
         bGraphicsLoaded_ = false;
         GameMode::setShowsGraphics(false);
@@ -645,8 +667,49 @@ namespace orxonox
         }
     }
 
-    void Core::update(const Clock& time)
+    bool Core::preUpdate(const Clock& time) throw()
     {
-        this->tclThreadManager_->update(time);
+        std::string exceptionMessage;
+        try
+        {
+            // process input events
+            this->inputManager_->update(time);
+            // process gui events
+            this->guiManager_->update(time);
+            // process thread commands
+            this->tclThreadManager_->update(time);
+        }
+        catch (const std::exception& ex)
+        { exceptionMessage = ex.what(); }
+        catch (...)
+        { exceptionMessage = "Unknown exception"; }
+        if (!exceptionMessage.empty())
+        {
+            COUT(0) << "An exception occurred in the Core preUpdate: " << exceptionMessage << std::endl;
+            COUT(0) << "This should really never happen! Closing the program." << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    bool Core::postUpdate(const Clock& time) throw()
+    {
+        std::string exceptionMessage;
+        try
+        {
+            // Render (doesn't throw)
+            this->graphicsManager_->update(time);
+        }
+        catch (const std::exception& ex)
+        { exceptionMessage = ex.what(); }
+        catch (...)
+        { exceptionMessage = "Unknown exception"; }
+        if (!exceptionMessage.empty())
+        {
+            COUT(0) << "An exception occurred in the Core postUpdate: " << exceptionMessage << std::endl;
+            COUT(0) << "This should really never happen! Closing the program." << std::endl;
+            return false;
+        }
+        return true;
     }
 }

@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    DeclareGameState(GSRoot, "root", true, false);
+    DeclareGameState(GSRoot, "root", false, false);
     SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
     // Shortcuts for easy direct loading
     SetCommandLineSwitch(server).information("Start in server mode");
@@ -154,8 +154,6 @@ namespace orxonox
             Game::getInstance().requestState("ioConsole");
         }
 
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
-
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
             it->tick(time);
 
@@ -170,11 +168,6 @@ namespace orxonox
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
             it->tick(leveldt * this->timeFactor_);
         /*** HACK *** HACK ***/
-
-        uint64_t timeAfterTick = time.getRealMicroseconds();
-
-        // Also add our tick time
-        Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
     }
 
     /**

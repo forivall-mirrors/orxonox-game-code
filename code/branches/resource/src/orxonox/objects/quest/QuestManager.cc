@@ -322,7 +322,7 @@ namespace orxonox
         else
         {
             container->status = "";
-            COUT(1) << "An error occured. A Quest of un-specified status wanted to be displayed." << std::endl;
+            COUT(1) << "An error occurred. A Quest of un-specified status wanted to be displayed." << std::endl;
         }
         
         std::list<Quest*> quests = quest->getSubQuestList();

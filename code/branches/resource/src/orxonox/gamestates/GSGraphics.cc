@@ -34,17 +34,12 @@
 
 #include "GSGraphics.h"
 
-#include <boost/filesystem.hpp>
-#include <OgreRenderWindow.h>
-
 #include "util/Convert.h"
 #include "core/Clock.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Core.h"
 #include "core/Game.h"
-#include "core/GameMode.h"
-#include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
@@ -59,14 +54,11 @@
 
 namespace orxonox
 {
-    DeclareGameState(GSGraphics, "graphics", true, true);
+    DeclareGameState(GSGraphics, "graphics", false, true);
 
     GSGraphics::GSGraphics(const GameStateConstrParams& params)
         : GameState(params)
-        , inputManager_(0)
         , console_(0)
-        , guiManager_(0)
-        , graphicsManager_(0)
         , soundManager_(0)
         , masterKeyBinder_(0)
         , masterInputState_(0)
@@ -98,22 +90,10 @@ namespace orxonox
         // Load OGRE, CEGUI and OIS
         Core::getInstance().loadGraphics();
 
-        // Load OGRE including the render window
-        this->graphicsManager_ = new GraphicsManager();
-
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
-        this->debugOverlay_ = new XMLFile((Core::getMediaPath() / "overlay" / "debug.oxo").string());
+        this->debugOverlay_ = new XMLFile(Core::getMediaPathString() + "overlay/debug.oxo");
         Loader::open(debugOverlay_);
-
-        // The render window width and height are used to set up the mouse movement.
-        size_t windowHnd = 0;
-        Ogre::RenderWindow* renderWindow = GraphicsManager::getInstance().getRenderWindow();
-        renderWindow->getCustomAttribute("WINDOW", &windowHnd);
-
-        // Calls the InputManager which sets up the input devices.
-        inputManager_ = new InputManager(windowHnd);
-
         // load master key bindings
         masterInputState_ = InputManager::getInstance().createInputState("master", true);
         masterKeyBinder_ = new KeyBinder();
@@ -126,9 +106,6 @@ namespace orxonox
         // Load the InGameConsole
         console_ = new InGameConsole();
         console_->initialise();
-
-        // load the CEGUI interface
-        guiManager_ = new GUIManager(renderWindow);
 
         // add console command to toggle GUI
         FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::toggleGUI);
@@ -160,7 +137,6 @@ namespace orxonox
         InputManager::getInstance().destroyState("master");
         delete this->masterKeyBinder_;
 
-        delete this->guiManager_;
         delete this->console_;
 
         Loader::unload(this->debugOverlay_);
@@ -168,13 +144,8 @@ namespace orxonox
 
         delete this->soundManager_;
 
-        delete this->inputManager_;
-        this->inputManager_ = 0;
-
-        // HACK:
+        // HACK: (destroys a resource smart pointer)
         Map::hackDestroyMap();
-
-        delete graphicsManager_;
 
         // Unload OGRE, CEGUI and OIS
         Core::getInstance().loadGraphics();
@@ -209,19 +180,6 @@ namespace orxonox
             Game::getInstance().requestState("mainMenu");
         }
 
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
-
-        this->inputManager_->update(time);
         this->console_->update(time);
-
-        uint64_t timeAfterTick = time.getRealMicroseconds();
-
-        // Also add our tick time
-        Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
-
-        // Process gui events
-        this->guiManager_->update(time);
-        // Render
-        this->graphicsManager_->update(time);
     }
 }

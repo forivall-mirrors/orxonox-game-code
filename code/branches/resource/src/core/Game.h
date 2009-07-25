@@ -85,7 +85,7 @@ namespace orxonox
         float getAvgTickTime() { return this->avgTickTime_; }
         float getAvgFPS()      { return this->avgFPS_; }
 
-        void addTickTime(uint32_t length);
+        void subtractTickTime(int32_t length);
 
         template <class T>
         static bool declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bConsoleMode);
