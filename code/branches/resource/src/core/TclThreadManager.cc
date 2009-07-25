@@ -247,31 +247,31 @@ namespace orxonox
             std::string id_string = getConvertedValue<unsigned int, std::string>(id);
 
             // Define the functions which are implemented in C++
-            newbundle->interpreter_->def("orxonox::execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::query",        TclThreadManager::tcl_query,        Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::crossquery",   TclThreadManager::tcl_crossquery,   Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::running",      TclThreadManager::tcl_running);
+            newbundle->interpreter_->def("::orxonox::execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
+            newbundle->interpreter_->def("::orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
+            newbundle->interpreter_->def("::orxonox::query",        TclThreadManager::tcl_query,        Tcl::variadic());
+            newbundle->interpreter_->def("::orxonox::crossquery",   TclThreadManager::tcl_crossquery,   Tcl::variadic());
+            newbundle->interpreter_->def("::orxonox::running",      TclThreadManager::tcl_running);
 
             // Create threadspecific shortcuts for the functions above
             newbundle->interpreter_->def("execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
             newbundle->interpreter_->def("crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->eval("proc query      {args}    { orxonox::query " + id_string + " $args }");
-            newbundle->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery " + id_string + " $id $args }");
-            newbundle->interpreter_->eval("proc running    {}        { return [orxonox::running " + id_string + "] }");
+            newbundle->interpreter_->eval("proc query      {args}    { ::orxonox::query " + id_string + " $args }");
+            newbundle->interpreter_->eval("proc crossquery {id args} { ::orxonox::crossquery " + id_string + " $id $args }");
+            newbundle->interpreter_->eval("proc running    {}        { return [::orxonox::running " + id_string + "] }");
 
             // Define a variable containing the thread id
             newbundle->interpreter_->eval("set id " + id_string);
 
             // Use our own exit function to avoid shutting down the whole program instead of just the interpreter
-            newbundle->interpreter_->eval("rename exit tcl::exit");
+            newbundle->interpreter_->eval("rename exit ::tcl::exit");
             newbundle->interpreter_->eval("proc exit {} { execute TclThreadManager destroy " + id_string + " }");
 
             // Redefine some native functions
-            newbundle->interpreter_->eval("rename while tcl::while");
-            newbundle->interpreter_->eval("rename orxonox::while while");
-            newbundle->interpreter_->eval("rename for tcl::for");
-            newbundle->interpreter_->eval("rename orxonox::for for");
+            newbundle->interpreter_->eval("rename while ::tcl::while");
+            newbundle->interpreter_->eval("rename ::orxonox::while while");
+            newbundle->interpreter_->eval("rename for ::tcl::for");
+            newbundle->interpreter_->eval("rename ::orxonox::for for");
         }
         catch (const Tcl::tcl_error& e)
         {   newbundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id << "): " << e.what() << std::endl;   }

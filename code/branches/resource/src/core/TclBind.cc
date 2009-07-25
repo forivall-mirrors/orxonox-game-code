@@ -78,19 +78,19 @@ namespace orxonox
         {
             this->interpreter_ = this->createTclInterpreter();
 
-            this->interpreter_->def("orxonox::query", TclBind::tcl_query, Tcl::variadic());
-            this->interpreter_->def("orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
+            this->interpreter_->def("::orxonox::query", TclBind::tcl_query, Tcl::variadic());
+            this->interpreter_->def("::orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
             this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
-            this->interpreter_->def("orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
+            this->interpreter_->def("::orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
 
             try
             {
-                this->interpreter_->eval("proc query        {args}    { orxonox::query $args }");
-                this->interpreter_->eval("proc crossquery   {id args} { orxonox::crossquery 0 $id $args }");
-                this->interpreter_->eval("proc crossexecute {id args} { orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("proc query        {args}    { ::orxonox::query $args }");
+                this->interpreter_->eval("proc crossquery   {id args} { ::orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("proc crossexecute {id args} { ::orxonox::crossquery 0 $id $args }");
                 this->interpreter_->eval("proc running      {}        { return 1 }");
                 this->interpreter_->eval("set id 0");
-                this->interpreter_->eval("rename exit tcl::exit; proc exit {} { execute exit }");
+                this->interpreter_->eval("rename exit ::tcl::exit; proc exit {} { execute exit }");
             }
             catch (Tcl::tcl_error const &e)
             {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
