@@ -35,8 +35,8 @@ namespace orxonox
 {
     DeclareGameState(GSStandalone, "standalone", false, true);
 
-    GSStandalone::GSStandalone(const GameStateConstrParams& params)
-        : GameState(params)
+    GSStandalone::GSStandalone(const GameStateInfo& info)
+        : GameState(info)
     {
     }
 

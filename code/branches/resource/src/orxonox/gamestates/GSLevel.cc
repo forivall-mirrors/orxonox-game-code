@@ -59,8 +59,8 @@ namespace orxonox
 
     XMLFile* GSLevel::startFile_s = NULL;
 
-    GSLevel::GSLevel(const GameStateConstrParams& params)
-        : GameState(params)
+    GSLevel::GSLevel(const GameStateInfo& info)
+        : GameState(info)
         , keyBinder_(0)
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)

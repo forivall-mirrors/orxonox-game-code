@@ -52,8 +52,8 @@ namespace orxonox
     SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
     SetCommandLineSwitch(standalone).information("Start in standalone mode");
 
-    GSRoot::GSRoot(const GameStateConstrParams& params)
-        : GameState(params)
+    GSRoot::GSRoot(const GameStateInfo& info)
+        : GameState(info)
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
@@ -173,6 +173,9 @@ namespace orxonox
     /**
     @brief
         Changes the speed of Orxonox
+    @remark
+        This function is a hack when placed here!
+        Timefactor should be related to the scene (level or so), not the game
     */
     void GSRoot::setTimeFactor(float factor)
     {

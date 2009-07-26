@@ -56,8 +56,8 @@ namespace orxonox
 {
     DeclareGameState(GSGraphics, "graphics", false, true);
 
-    GSGraphics::GSGraphics(const GameStateConstrParams& params)
-        : GameState(params)
+    GSGraphics::GSGraphics(const GameStateInfo& info)
+        : GameState(info)
         , console_(0)
         , soundManager_(0)
         , masterKeyBinder_(0)
@@ -87,9 +87,6 @@ namespace orxonox
     */
     void GSGraphics::activate()
     {
-        // Load OGRE, CEGUI and OIS
-        Core::getInstance().loadGraphics();
-
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
         this->debugOverlay_ = new XMLFile(Core::getMediaPathString() + "overlay/debug.oxo");
@@ -146,9 +143,6 @@ namespace orxonox
 
         // HACK: (destroys a resource smart pointer)
         Map::hackDestroyMap();
-
-        // Unload OGRE, CEGUI and OIS
-        Core::getInstance().loadGraphics();
     }
 
     /**

@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport GSServer : public GameState
     {
     public:
-        GSServer(const GameStateConstrParams& params);
+        GSServer(const GameStateInfo& info);
         ~GSServer();
 
         void activate();

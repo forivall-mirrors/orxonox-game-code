@@ -40,7 +40,7 @@ namespace orxonox
 {
     class _CoreExport GameMode
     {
-        friend class Core;
+        friend class Game;
 
         public:
             static bool showsGraphics() { return bShowsGraphics_s; }
@@ -58,8 +58,10 @@ namespace orxonox
             GameMode(const GameMode& inst);
             ~GameMode();
 
-            static void setShowsGraphics(bool val) { bShowsGraphics_s = val; updateIsMaster(); }
-            static void updateIsMaster  ()         { bIsMaster_s      = (bHasServer_s || bIsStandalone_s); }
+            static void updateIsMaster()
+            {
+                bIsMaster_s = (bHasServer_s || bIsStandalone_s);
+            }
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server

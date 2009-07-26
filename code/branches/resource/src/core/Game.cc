@@ -47,6 +47,7 @@
 #include "Core.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
+#include "GameMode.h"
 #include "GameState.h"
 
 namespace orxonox
@@ -58,7 +59,7 @@ namespace orxonox
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
-    std::map<std::string, Game::GameStateInfo> Game::gameStateDeclarations_s;
+    std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonRef_s = 0;
 
 
@@ -142,8 +143,7 @@ namespace orxonox
         {
             // Only create the states appropriate for the game mode
             //if (GameMode::showsGraphics || !it->second.bGraphicsMode)
-            GameStateConstrParams params = { it->second.stateName, it->second.bIgnoreTickTime };
-            gameStates_[getLowercase(it->second.stateName)] = GameStateFactory::fabricate(it->second.className, params);
+            gameStates_[getLowercase(it->second.stateName)] = GameStateFactory::fabricate(it->second);
         }
 
         // The empty root state is ALWAYS loaded!
@@ -291,10 +291,10 @@ namespace orxonox
             {
                 // Add tick time for most of the states
                 uint64_t timeBeforeTick;
-                if ((*it)->ignoreTickTime())
+                if ((*it)->getInfo().bIgnoreTickTime)
                     timeBeforeTick = this->gameClock_->getRealMicroseconds();
                 (*it)->update(*this->gameClock_);
-                if ((*it)->ignoreTickTime())
+                if ((*it)->getInfo().bIgnoreTickTime)
                     this->subtractTickTime(static_cast<int32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
             }
             catch (const std::exception& ex)
@@ -516,9 +516,30 @@ namespace orxonox
 
     /*** Internal ***/
 
+    void Game::loadGraphics()
+    {
+        if (!GameMode::bShowsGraphics_s)
+        {
+            core_->loadGraphics();
+            GameMode::bShowsGraphics_s = true;
+        }
+    }
+
+    void Game::unloadGraphics()
+    {
+        if (GameMode::bShowsGraphics_s)
+        {
+            core_->unloadGraphics();
+            GameMode::bShowsGraphics_s = false;
+        }
+    }
+
     void Game::loadState(GameState* state)
     {
         this->bChangingState_ = true;
+        // If state requires graphics, load it
+        if (state->getInfo().bGraphicsMode)
+            this->loadGraphics();
         state->activate();
         if (!this->activeStates_.empty())
             this->activeStates_.back()->activity_.topState = false;
@@ -537,6 +558,12 @@ namespace orxonox
         try
         {
             state->deactivate();
+            // Check if graphis is still required
+            bool graphicsRequired = false;
+            for (unsigned i = 0; i < activeStates_.size(); ++i)
+                graphicsRequired |= activeStates_[i]->getInfo().bGraphicsMode;
+            if (!graphicsRequired)
+                this->unloadGraphics();
         }
         catch (const std::exception& ex)
         {
@@ -548,11 +575,11 @@ namespace orxonox
 
     std::map<std::string, Game::GameStateFactory*> Game::GameStateFactory::factories_s;
 
-    /*static*/ GameState* Game::GameStateFactory::fabricate(const std::string& className, const GameStateConstrParams& params)
+    /*static*/ GameState* Game::GameStateFactory::fabricate(const GameStateInfo& info)
     {
-        std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.find(className);
+        std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.find(info.className);
         assert(it != factories_s.end());
-        return it->second->fabricate(params);
+        return it->second->fabricateInternal(info);
     }
 
     /*static*/ void Game::GameStateFactory::destroyFactories()

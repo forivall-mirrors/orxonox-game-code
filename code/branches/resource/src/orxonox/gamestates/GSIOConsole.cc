@@ -37,8 +37,8 @@ namespace orxonox
 {
     DeclareGameState(GSIOConsole, "ioConsole", false, false);
 
-    GSIOConsole::GSIOConsole(const GameStateConstrParams& params)
-        : GameState(params)
+    GSIOConsole::GSIOConsole(const GameStateInfo& info)
+        : GameState(info)
     {
     }
 

@@ -44,8 +44,8 @@ namespace orxonox
 {
     DeclareGameState(GSMainMenu, "mainMenu", false, true);
 
-    GSMainMenu::GSMainMenu(const GameStateConstrParams& params)
-        : GameState(params)
+    GSMainMenu::GSMainMenu(const GameStateInfo& info)
+        : GameState(info)
         , inputState_(0)
     {
     }

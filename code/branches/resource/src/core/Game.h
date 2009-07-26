@@ -60,6 +60,15 @@ namespace orxonox
 {
     class GameConfiguration;
 
+    //! Helper object required before GameStates are being constructed
+    struct GameStateInfo
+    {
+        std::string stateName;
+        std::string className;
+        bool bIgnoreTickTime;
+        bool bGraphicsMode;
+    };
+
     /**
     @brief
         Main class responsible for running the game.
@@ -96,29 +105,21 @@ namespace orxonox
         {
         public:
             virtual ~GameStateFactory() { }
-            static GameState* fabricate(const std::string& className, const GameStateConstrParams& params);
+            static GameState* fabricate(const GameStateInfo& info);
             template <class T>
             static void createFactory(const std::string& className)
                 { factories_s[className] = new TemplateGameStateFactory<T>(); }
             static void destroyFactories();
         private:
-            virtual GameState* fabricate(const GameStateConstrParams& params) = 0;
+            virtual GameState* fabricateInternal(const GameStateInfo& info) = 0;
             static std::map<std::string, GameStateFactory*> factories_s;
         };
         template <class T>
         class TemplateGameStateFactory : public GameStateFactory
         {
         public:
-            GameState* fabricate(const GameStateConstrParams& params)
-                { return new T(params); }
-        };
-
-        struct GameStateInfo
-        {
-            std::string stateName;
-            std::string className;
-            bool bIgnoreTickTime;
-            bool bGraphicsMode;
+            GameState* fabricateInternal(const GameStateInfo& info)
+                { return new T(info); }
         };
 
         struct StatisticsTickInfo
@@ -128,6 +129,9 @@ namespace orxonox
         };
 
         Game(Game&); // don't mess with singletons
+
+        void loadGraphics();
+        void unloadGraphics();
 
         void loadState(GameState* state);
         void unloadState(GameState* state);

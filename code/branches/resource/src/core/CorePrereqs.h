@@ -169,8 +169,8 @@ namespace orxonox
 
     // game states
     class Game;
-    struct GameStateConstrParams;
     class GameState;
+    struct GameStateInfo;
     struct GameStateTreeNode;
 
     // input

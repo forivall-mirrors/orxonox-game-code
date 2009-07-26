@@ -49,7 +49,7 @@ namespace orxonox
     class _OrxonoxExport GSGraphics : public GameState
     {
     public:
-        GSGraphics(const GameStateConstrParams& params);
+        GSGraphics(const GameStateInfo& info);
         ~GSGraphics();
 
         void activate();

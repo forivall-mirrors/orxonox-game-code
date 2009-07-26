@@ -363,7 +363,6 @@ namespace orxonox
         // load the CEGUI interface
         guiManager_ = new GUIManager(renderWindow);
 
-        GameMode::setShowsGraphics(true);
         bGraphicsLoaded_ = true;
     }
 
@@ -377,7 +376,6 @@ namespace orxonox
         delete graphicsManager_;
 
         bGraphicsLoaded_ = false;
-        GameMode::setShowsGraphics(false);
     }
 
     /**

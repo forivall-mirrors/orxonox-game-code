@@ -37,6 +37,7 @@
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
+#include "Game.h"
 
 namespace orxonox
 {
@@ -44,9 +45,8 @@ namespace orxonox
     @brief
         Constructor only initialises variables and sets the name permanently.
     */
-    GameState::GameState(const GameStateConstrParams& params)
-        : name_(params.name)
-        , bIgnoreTickTime_(params.bIgnoreTickTime)
+    GameState::GameState(const GameStateInfo& info)
+        : info_(info)
         , parent_(0)
     {
         this->activity_.activating   = false;
@@ -64,6 +64,11 @@ namespace orxonox
     GameState::~GameState()
     {
         OrxAssert(this->activity_.active == false, "Deleting an active GameState is a very bad idea..");
+    }
+
+    const std::string& GameState::getName() const
+    {
+        return info_.stateName;
     }
 
     /**
@@ -106,7 +111,7 @@ namespace orxonox
             this->children_.erase(it);
         else
         {
-            ThrowException(GameState, "Game state '" + name_ + "' doesn't have a child named '"
+            ThrowException(GameState, "Game state '" + this->getName() + "' doesn't have a child named '"
                 + state->getName() + "'.");
         }
     }
