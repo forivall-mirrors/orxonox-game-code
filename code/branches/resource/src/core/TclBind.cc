@@ -160,7 +160,7 @@ namespace orxonox
         {
             try
             {
-                std::string output = TclBind::getInstance().interpreter_->eval(tclcode);
+                std::string output = TclBind::getInstance().interpreter_->eval("uplevel #0 " + tclcode);
                 if (output != "")
                 {
                     COUT(0) << "tcl> " << output << std::endl;
