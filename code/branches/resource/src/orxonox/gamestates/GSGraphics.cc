@@ -67,6 +67,7 @@ namespace orxonox
         // load master key bindings
         masterInputState_ = InputManager::getInstance().createInputState("master", true);
         masterKeyBinder_ = new KeyBinder();
+        masterInputState_->setKeyHandler(masterKeyBinder_);
     }
 
     GSGraphics::~GSGraphics()
@@ -98,7 +99,6 @@ namespace orxonox
         Loader::open(debugOverlay_);
 
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
-        masterInputState_->setKeyHandler(masterKeyBinder_);
 
         // Load the SoundManager
         soundManager_ = new SoundManager();

@@ -389,11 +389,11 @@ namespace orxonox
             return;
         }
 
-        //if (this->bChangingState_)
-        //{
-        //    COUT(2) << "Warning: Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << std::endl;
-        //    return;
-        //}
+        if (this->bChangingState_)
+        {
+            COUT(2) << "Warning: Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << std::endl;
+            return;
+        }
 
         shared_ptr<GameStateTreeNode> lastRequestedNode;
         if (this->requestedStateNodes_.empty())

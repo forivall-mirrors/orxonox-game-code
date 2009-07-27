@@ -29,7 +29,6 @@
 #include "GSRoot.h"
 
 #include "core/Clock.h"
-#include "core/CommandLine.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
@@ -45,12 +44,6 @@
 namespace orxonox
 {
     DeclareGameState(GSRoot, "root", false, false);
-    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
-    // Shortcuts for easy direct loading
-    SetCommandLineSwitch(server).information("Start in server mode");
-    SetCommandLineSwitch(client).information("Start in client mode");
-    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
-    SetCommandLineSwitch(standalone).information("Start in standalone mode");
 
     GSRoot::GSRoot(const GameStateInfo& info)
         : GameState(info)
@@ -94,36 +87,6 @@ namespace orxonox
 
         // create the global LevelManager
         this->levelManager_ = new LevelManager();
-
-        // Load level directly?
-        bool loadLevel = false;
-        if (CommandLine::getValue("standalone").getBool())
-        {
-            Game::getInstance().requestStates("graphics, standalone, level");
-            loadLevel = true;
-        }
-        if (CommandLine::getValue("server").getBool())
-        {
-            Game::getInstance().requestStates("graphics, server, level");
-            loadLevel = true;
-        }
-        if (CommandLine::getValue("client").getBool())
-        {
-            Game::getInstance().requestStates("graphics, client, level");
-            loadLevel = true;
-        }
-        if (CommandLine::getValue("dedicated").getBool())
-        {
-            Game::getInstance().requestStates("dedicated, level");
-            loadLevel = true;
-        }
-        
-        // Determine where to start otherwise
-        if (!loadLevel && !CommandLine::getValue("console").getBool())
-        {
-            // Also load graphics
-            Game::getInstance().requestState("graphics");
-        }
     }
 
     void GSRoot::deactivate()
