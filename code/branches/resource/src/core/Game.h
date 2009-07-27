@@ -46,7 +46,6 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
-#include "util/StringUtils.h"
 
 /**
 @def
@@ -75,6 +74,7 @@ namespace orxonox
     */
     class _CoreExport Game
     {
+        typedef boost::shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
     public:
         Game(const std::string& cmdLine);
         ~Game();
@@ -133,8 +133,9 @@ namespace orxonox
         void loadGraphics();
         void unloadGraphics();
 
-        void loadState(GameState* state);
-        void unloadState(GameState* state);
+        bool checkState(const std::string& name) const;
+        void loadState(const std::string& name);
+        void unloadState(const std::string& name);
 
         // Main loop structuring
         void updateGameStateStack();
@@ -142,28 +143,28 @@ namespace orxonox
         void updateStatistics();
         void updateFPSLimiter();
 
-        std::map<std::string, GameState*>    gameStates_;
-        std::vector<GameState*>              activeStates_;
-        boost::shared_ptr<GameStateTreeNode> rootStateNode_;
-        boost::shared_ptr<GameStateTreeNode> activeStateNode_;
-        std::vector<boost::shared_ptr<GameStateTreeNode> > requestedStateNodes_;
+        std::map<std::string, GameState*>  constructedStates_;
+        std::vector<GameState*>            loadedStates_;
+        GameStateTreeNodePtr               rootStateNode_;
+        GameStateTreeNodePtr               loadedTopStateNode_;
+        std::vector<GameStateTreeNodePtr > requestedStateNodes_;
 
-        Core*                           core_;
-        Clock*                          gameClock_;
-        GameConfiguration*              configuration_;
+        Core*                              core_;
+        Clock*                             gameClock_;
+        GameConfiguration*                 configuration_;
 
-        bool                            bChangingState_;
-        bool                            bAbort_;
+        bool                               bChangingState_;
+        bool                               bAbort_;
 
         // variables for time statistics
-        uint64_t                        statisticsStartTime_;
-        std::list<StatisticsTickInfo>   statisticsTickTimes_;
-        uint32_t                        periodTime_;
-        uint32_t                        periodTickTime_;
-        float                           avgFPS_;
-        float                           avgTickTime_;
-        int                             excessSleepTime_;
-        unsigned int                    minimumSleepTime_;
+        uint64_t                           statisticsStartTime_;
+        std::list<StatisticsTickInfo>      statisticsTickTimes_;
+        uint32_t                           periodTime_;
+        uint32_t                           periodTickTime_;
+        float                              avgFPS_;
+        float                              avgTickTime_;
+        int                                excessSleepTime_;
+        unsigned int                       minimumSleepTime_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonRef_s;        //!< Pointer to the Singleton
@@ -172,10 +173,10 @@ namespace orxonox
     template <class T>
     /*static*/ bool Game::declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bGraphicsMode)
     {
-        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(getLowercase(stateName));
+        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(stateName);
         if (it == gameStateDeclarations_s.end())
         {
-            GameStateInfo& info = gameStateDeclarations_s[getLowercase(stateName)];
+            GameStateInfo& info = gameStateDeclarations_s[stateName];
             info.stateName = stateName;
             info.className = className;
             info.bIgnoreTickTime = bIgnoreTickTime;

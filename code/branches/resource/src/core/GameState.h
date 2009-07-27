@@ -81,11 +81,7 @@ namespace orxonox
 
         const std::string& getName()   const;
         State getActivity()            const { return activity_; }
-        GameState* getParent()         const { return parent_; }
         const GameStateInfo& getInfo() const { return info_; }
-
-        void addChild(GameState* state);
-        void removeChild(GameState* state);
 
     protected:
         virtual void activate() { }
@@ -93,16 +89,13 @@ namespace orxonox
         virtual void update(const Clock& time) { }
 
     private:
-        void setParent(GameState* state) { this->parent_ = state; }
         void setActivity(State activity);
         void activateInternal();
         void deactivateInternal();
         void updateInternal(const Clock& time);
 
-        const GameStateInfo&                     info_;
-        State                                    activity_;
-        GameState*                               parent_;
-        std::map<std::string, GameState*>        children_;
+        const GameStateInfo& info_;
+        State                activity_;
     };
 }
 

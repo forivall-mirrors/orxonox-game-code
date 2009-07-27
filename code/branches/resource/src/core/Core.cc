@@ -670,10 +670,13 @@ namespace orxonox
         std::string exceptionMessage;
         try
         {
-            // process input events
-            this->inputManager_->update(time);
-            // process gui events
-            this->guiManager_->update(time);
+            if (this->bGraphicsLoaded_)
+            {
+                // process input events
+                this->inputManager_->update(time);
+                // process gui events
+                this->guiManager_->update(time);
+            }
             // process thread commands
             this->tclThreadManager_->update(time);
         }
@@ -695,8 +698,11 @@ namespace orxonox
         std::string exceptionMessage;
         try
         {
-            // Render (doesn't throw)
-            this->graphicsManager_->update(time);
+            if (this->bGraphicsLoaded_)
+            {
+                // Render (doesn't throw)
+                this->graphicsManager_->update(time);
+            }
         }
         catch (const std::exception& ex)
         { exceptionMessage = ex.what(); }

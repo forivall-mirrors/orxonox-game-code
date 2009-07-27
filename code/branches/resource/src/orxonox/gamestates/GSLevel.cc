@@ -54,7 +54,7 @@
 
 namespace orxonox
 {
-    DeclareGameState(GSLevel, "level", false, true);
+    DeclareGameState(GSLevel, "level", false, false);
     SetConsoleCommand(GSLevel, showIngameGUI, true);
 
     XMLFile* GSLevel::startFile_s = NULL;

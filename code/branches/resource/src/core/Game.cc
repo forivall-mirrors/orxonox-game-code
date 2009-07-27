@@ -69,7 +69,7 @@ namespace orxonox
     */
     struct GameStateTreeNode
     {
-        GameState* state_;
+        std::string name_;
         weak_ptr<GameStateTreeNode> parent_;
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
@@ -137,20 +137,19 @@ namespace orxonox
         // Create the Core
         this->core_ = new Core(cmdLine);
 
-        // After the core has been created, we can safely instantiate the GameStates
+        // After the core has been created, we can safely instantiate the GameStates that don't require graphics
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
             it != gameStateDeclarations_s.end(); ++it)
         {
-            // Only create the states appropriate for the game mode
-            //if (GameMode::showsGraphics || !it->second.bGraphicsMode)
-            gameStates_[getLowercase(it->second.stateName)] = GameStateFactory::fabricate(it->second);
+            if (!it->second.bGraphicsMode)
+                constructedStates_[it->second.stateName] = GameStateFactory::fabricate(it->second);
         }
 
         // The empty root state is ALWAYS loaded!
         this->rootStateNode_ = shared_ptr<GameStateTreeNode>(new GameStateTreeNode());
-        this->rootStateNode_->state_ = getState("emptyRootGameState");
-        this->activeStateNode_ = this->rootStateNode_;
-        this->activeStates_.push_back(this->rootStateNode_->state_);
+        this->rootStateNode_->name_ = "emptyRootGameState";
+        this->loadedTopStateNode_ = this->rootStateNode_;
+        this->loadedStates_.push_back(this->getState(rootStateNode_->name_));
 
         // Do this after the Core creation!
         this->configuration_ = new GameConfiguration();
@@ -165,8 +164,8 @@ namespace orxonox
         delete this->configuration_;
 
         // Destroy the GameStates (note that the nodes still point to them, but doesn't matter)
-        for (std::map<std::string, GameState*>::const_iterator it = gameStates_.begin();
-            it != gameStates_.end(); ++it)
+        for (std::map<std::string, GameState*>::const_iterator it = constructedStates_.begin();
+            it != constructedStates_.end(); ++it)
             delete it->second;
 
         // Destroy the Core and with it almost everything
@@ -207,7 +206,7 @@ namespace orxonox
         // A first item is required for the fps limiter
         StatisticsTickInfo tickInfo = {0, 0};
         statisticsTickTimes_.push_back(tickInfo);
-        while (!this->bAbort_ && (!this->activeStates_.empty() || this->requestedStateNodes_.size() > 0))
+        while (!this->bAbort_ && (!this->loadedStates_.empty() || this->requestedStateNodes_.size() > 0))
         {
             // Generate the dt
             this->gameClock_->capture();
@@ -245,9 +244,9 @@ namespace orxonox
         }
 
         // UNLOAD all remaining states
-        while (this->activeStates_.size() > 1)
-            this->unloadState(this->activeStates_.back());
-        this->activeStateNode_ = this->rootStateNode_;
+        while (this->loadedStates_.size() > 1)
+            this->unloadState(this->loadedStates_.back()->getName());
+        this->loadedTopStateNode_ = this->rootStateNode_;
         this->requestedStateNodes_.clear();
     }
 
@@ -256,18 +255,18 @@ namespace orxonox
         while (this->requestedStateNodes_.size() > 0)
         {
             shared_ptr<GameStateTreeNode> requestedStateNode = this->requestedStateNodes_.front();
-            assert(this->activeStateNode_);
-            if (!this->activeStateNode_->parent_.expired() && requestedStateNode == this->activeStateNode_->parent_.lock())
-                this->unloadState(this->activeStateNode_->state_);
+            assert(this->loadedTopStateNode_);
+            if (!this->loadedTopStateNode_->parent_.expired() && requestedStateNode == this->loadedTopStateNode_->parent_.lock())
+                this->unloadState(loadedTopStateNode_->name_);
             else // has to be child
             {
                 try
                 {
-                    this->loadState(requestedStateNode->state_);
+                    this->loadState(requestedStateNode->name_);
                 }
                 catch (const std::exception& ex)
                 {
-                    COUT(1) << "Error: Loading GameState '" << requestedStateNode->state_->getName() << "' failed: " << ex.what() << std::endl;
+                    COUT(1) << "Error: Loading GameState '" << requestedStateNode->name_ << "' failed: " << ex.what() << std::endl;
                     // All scheduled operations have now been rendered inert --> flush them and issue a warning
                     if (this->requestedStateNodes_.size() > 1)
                         COUT(1) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << std::endl;
@@ -275,7 +274,7 @@ namespace orxonox
                     break;
                 }
             }
-            this->activeStateNode_ = requestedStateNode;
+            this->loadedTopStateNode_ = requestedStateNode;
             this->requestedStateNodes_.erase(this->requestedStateNodes_.begin());
         }
     }
@@ -283,8 +282,8 @@ namespace orxonox
     void Game::updateGameStates()
     {
         // Note: The first element is the empty root state, which doesn't need ticking
-        for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin() + 1;
-            it != this->activeStates_.end(); ++it)
+        for (std::vector<GameState*>::const_iterator it = this->loadedStates_.begin() + 1;
+            it != this->loadedStates_.end(); ++it)
         {
             std::string exceptionMessage;
             try
@@ -306,8 +305,11 @@ namespace orxonox
                 COUT(1) << "An exception occurred while updating '" << (*it)->getName() << "': " << exceptionMessage << std::endl;
                 COUT(1) << "This should really never happen!" << std::endl;
                 COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
-                if ((*it)->getParent() != NULL)
-                    this->requestState((*it)->getParent()->getName());
+                shared_ptr<GameStateTreeNode> current = this->loadedTopStateNode_;
+                while (current->name_ != (*it)->getName() && current)
+                    current = current->parent_.lock();
+                if (current && current->parent_.lock())
+                    this->requestState(current->parent_.lock()->name_);
                 else
                     this->stop();
                 break;
@@ -381,9 +383,11 @@ namespace orxonox
 
     void Game::requestState(const std::string& name)
     {
-        GameState* state = this->getState(name);
-        if (state == NULL)
+        if (!this->checkState(name))
+        {
+            COUT(2) << "Warning: GameState named '" << name << "' doesn't exist!" << std::endl;
             return;
+        }
 
         //if (this->bChangingState_)
         //{
@@ -393,10 +397,10 @@ namespace orxonox
 
         shared_ptr<GameStateTreeNode> lastRequestedNode;
         if (this->requestedStateNodes_.empty())
-            lastRequestedNode = this->activeStateNode_;
+            lastRequestedNode = this->loadedTopStateNode_;
         else
             lastRequestedNode = this->requestedStateNodes_.back();
-        if (state == lastRequestedNode->state_)
+        if (name == lastRequestedNode->name_)
         {
             COUT(2) << "Warning: Requesting the currently active state! Ignoring." << std::endl;
             return;
@@ -406,7 +410,7 @@ namespace orxonox
         std::vector<shared_ptr<GameStateTreeNode> > requestedNodes;
         for (unsigned int i = 0; i < lastRequestedNode->children_.size(); ++i)
         {
-            if (lastRequestedNode->children_[i]->state_ == state)
+            if (lastRequestedNode->children_[i]->name_ == name)
             {
                 requestedNodes.push_back(lastRequestedNode->children_[i]);
                 break;
@@ -419,7 +423,7 @@ namespace orxonox
             shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
             while (currentNode != NULL)
             {
-                if (currentNode->state_ == state)
+                if (currentNode->name_ == name)
                     break;
                 currentNode = currentNode->parent_.lock();
                 requestedNodes.push_back(currentNode);
@@ -443,23 +447,27 @@ namespace orxonox
     {
         shared_ptr<GameStateTreeNode> lastRequestedNode;
         if (this->requestedStateNodes_.empty())
-            lastRequestedNode = this->activeStateNode_;
+            lastRequestedNode = this->loadedTopStateNode_;
         else
             lastRequestedNode = this->requestedStateNodes_.back();
         if (lastRequestedNode != this->rootStateNode_)
-            this->requestState(lastRequestedNode->parent_.lock()->state_->getName());
+            this->requestState(lastRequestedNode->parent_.lock()->name_);
         else
             COUT(2) << "Warning: Can't pop the internal dummy root GameState" << std::endl;
     }
 
     GameState* Game::getState(const std::string& name)
     {
-        std::map<std::string, GameState*>::const_iterator it = gameStates_.find(getLowercase(name));
-        if (it != gameStates_.end())
+        std::map<std::string, GameState*>::const_iterator it = constructedStates_.find(name);
+        if (it != constructedStates_.end())
             return it->second;
         else
         {
-            COUT(1) << "Error: Could not find GameState '" << name << "'. Ignoring." << std::endl;
+            std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(name);
+            if (it != gameStateDeclarations_s.end())
+                COUT(1) << "Error: GameState '" << name << "' has not yet been loaded." << std::endl;
+            else
+                COUT(1) << "Error: Could not find GameState '" << name << "'." << std::endl;
             return 0;
         }
     }
@@ -486,13 +494,12 @@ namespace orxonox
         {
             std::string newStateName = it->first;
             unsigned newLevel = it->second + 1; // empty root is 0
-            GameState* newState = this->getState(newStateName);
-            if (!newState)
+            if (!this->checkState(newStateName))
                 ThrowException(GameState, "GameState with name '" << newStateName << "' not found!");
-            if (newState == this->rootStateNode_->state_)
+            if (newStateName == this->rootStateNode_->name_)
                 ThrowException(GameState, "You shouldn't use 'emptyRootGameState' in the hierarchy...");
             shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
-            newNode->state_ = newState;
+            newNode->name_ = newStateName;
 
             if (newLevel <= currentLevel)
             {
@@ -505,7 +512,6 @@ namespace orxonox
                 // Add the child
                 newNode->parent_ = currentNode;
                 currentNode->children_.push_back(newNode);
-                currentNode->state_->addChild(newNode->state_);
             }
             else
                 ThrowException(GameState, "Indentation error while parsing the hierarchy.");
@@ -522,6 +528,18 @@ namespace orxonox
         {
             core_->loadGraphics();
             GameMode::bShowsGraphics_s = true;
+
+            // Construct all the GameStates that require graphics
+            for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
+                it != gameStateDeclarations_s.end(); ++it)
+            {
+                if (it->second.bGraphicsMode)
+                {
+                    if (!constructedStates_.insert(std::make_pair(
+                        it->second.stateName, GameStateFactory::fabricate(it->second))).second)
+                        assert(false); // GameState was already created!
+                }
+            }
         }
     }
 
@@ -529,45 +547,68 @@ namespace orxonox
     {
         if (GameMode::bShowsGraphics_s)
         {
+            // Destroy all the GameStates that require graphics
+            for (std::map<std::string, GameState*>::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
+            {
+                if (it->second->getInfo().bGraphicsMode)
+                {
+                    delete it->second;
+                    it = constructedStates_.erase(it);
+                }
+                else
+                    ++it;
+            }
+
             core_->unloadGraphics();
             GameMode::bShowsGraphics_s = false;
         }
     }
 
-    void Game::loadState(GameState* state)
+    bool Game::checkState(const std::string& name) const
+    {
+        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(name);
+        if (it == gameStateDeclarations_s.end())
+            return false;
+        else
+            return true;
+    }
+
+    void Game::loadState(const std::string& name)
     {
         this->bChangingState_ = true;
         // If state requires graphics, load it
-        if (state->getInfo().bGraphicsMode)
+        if (gameStateDeclarations_s[name].bGraphicsMode)
             this->loadGraphics();
+        GameState* state = this->getState(name);
         state->activate();
-        if (!this->activeStates_.empty())
-            this->activeStates_.back()->activity_.topState = false;
-        this->activeStates_.push_back(state);
+        if (!this->loadedStates_.empty())
+            this->loadedStates_.back()->activity_.topState = false;
+        this->loadedStates_.push_back(state);
         state->activity_.topState = true;
         this->bChangingState_ = false;
     }
 
-    void Game::unloadState(orxonox::GameState* state)
+    void Game::unloadState(const std::string& name)
     {
+        GameState* state = this->getState(name);
         this->bChangingState_ = true;
         state->activity_.topState = false;
-        this->activeStates_.pop_back();
-        if (!this->activeStates_.empty())
-            this->activeStates_.back()->activity_.topState = true;
+        this->loadedStates_.pop_back();
+        if (!this->loadedStates_.empty())
+            this->loadedStates_.back()->activity_.topState = true;
         try
         {
             state->deactivate();
             // Check if graphis is still required
             bool graphicsRequired = false;
-            for (unsigned i = 0; i < activeStates_.size(); ++i)
-                graphicsRequired |= activeStates_[i]->getInfo().bGraphicsMode;
+            for (unsigned i = 0; i < loadedStates_.size(); ++i)
+                graphicsRequired |= loadedStates_[i]->getInfo().bGraphicsMode;
             if (!graphicsRequired)
                 this->unloadGraphics();
         }
         catch (const std::exception& ex)
         {
-            COUT(2) << "Warning: Unloading GameState '" << state->getName() << "' threw an exception: " << ex.what() << std::endl;
+            COUT(2) << "Warning: Unloading GameState '" << name << "' threw an exception: " << ex.what() << std::endl;
             COUT(2) << "         There might be potential resource leaks involved! To avoid this, improve exception-safety." << std::endl;
         }
         this->bChangingState_ = false;

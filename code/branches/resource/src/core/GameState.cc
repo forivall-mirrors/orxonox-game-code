@@ -47,7 +47,6 @@ namespace orxonox
     */
     GameState::GameState(const GameStateInfo& info)
         : info_(info)
-        , parent_(0)
     {
         this->activity_.activating   = false;
         this->activity_.active       = false;
@@ -69,51 +68,6 @@ namespace orxonox
     const std::string& GameState::getName() const
     {
         return info_.stateName;
-    }
-
-    /**
-    @brief
-        Adds a child to the current tree. The Child can contain children of its own.
-        But you cannot a state tree that already has an active state.
-    @param state
-        The state to be added.
-    */
-    void GameState::addChild(GameState* state)
-    {
-        assert(state != NULL);
-
-        std::map<std::string, GameState*>::const_iterator it = this->children_.find(state->getName());
-        if (it == this->children_.end())
-        {
-            this->children_[state->getName()] = state;
-            // mark us as parent
-            state->setParent(this);
-        }
-        else
-        {
-            ThrowException(GameState, "Cannot add two children with the same name");
-        }
-    }
-
-    /**
-    @brief
-        Removes a child by instance. This splits the tree in two parts,
-        each of them functional on its own.
-    @param state
-        GameState by instance pointer
-    */
-    void GameState::removeChild(GameState* state)
-    {
-        assert(state != NULL);
-
-        std::map<std::string, GameState*>::iterator it = this->children_.find(state->getName());
-        if (it != this->children_.end())
-            this->children_.erase(it);
-        else
-        {
-            ThrowException(GameState, "Game state '" + this->getName() + "' doesn't have a child named '"
-                + state->getName() + "'.");
-        }
     }
 
     void GameState::activateInternal()
