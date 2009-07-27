@@ -32,6 +32,7 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include <list>
 #include <map>
 #include <string>
 

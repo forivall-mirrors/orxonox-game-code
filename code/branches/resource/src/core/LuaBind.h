@@ -39,6 +39,7 @@
 
 #include <cassert>
 #include <string>
+#include <vector>
 extern "C" {
 #include <lua.h>
 }

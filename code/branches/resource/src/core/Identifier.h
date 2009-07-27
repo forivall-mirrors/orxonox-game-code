@@ -501,7 +501,10 @@ namespace orxonox
         FORCEINLINE static T* cast(U* source)
         {
 #ifdef ORXONOX_COMPILER_MSVC
-            return source->template getDerivedPointer<T>(ClassIdentifier<T>::getIdentifier()->getClassID());
+            if (source != NULL)
+                return source->template getDerivedPointer<T>(ClassIdentifier<T>::getIdentifier()->getClassID());
+            else
+                return NULL;
 #else
             return dynamic_cast<T*>(source);
 #endif

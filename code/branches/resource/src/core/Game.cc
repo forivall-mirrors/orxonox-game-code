@@ -553,7 +553,7 @@ namespace orxonox
                 if (it->second->getInfo().bGraphicsMode)
                 {
                     delete it->second;
-                    it = constructedStates_.erase(it);
+                    constructedStates_.erase(it++);
                 }
                 else
                     ++it;
