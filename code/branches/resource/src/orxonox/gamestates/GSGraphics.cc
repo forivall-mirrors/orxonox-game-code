@@ -64,10 +64,15 @@ namespace orxonox
         , masterInputState_(0)
         , debugOverlay_(0)
     {
+        // load master key bindings
+        masterInputState_ = InputManager::getInstance().createInputState("master", true);
+        masterKeyBinder_ = new KeyBinder();
     }
 
     GSGraphics::~GSGraphics()
     {
+        InputManager::getInstance().destroyState("master");
+        delete this->masterKeyBinder_;
     }
 
     /**
@@ -91,9 +96,7 @@ namespace orxonox
         COUT(3) << "Loading Debug Overlay..." << std::endl;
         this->debugOverlay_ = new XMLFile(Core::getMediaPathString() + "overlay/debug.oxo");
         Loader::open(debugOverlay_);
-        // load master key bindings
-        masterInputState_ = InputManager::getInstance().createInputState("master", true);
-        masterKeyBinder_ = new KeyBinder();
+
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
         masterInputState_->setKeyHandler(masterKeyBinder_);
 
@@ -129,10 +132,6 @@ namespace orxonox
             this->ccToggleGUI_ = 0;
         }
 */
-
-        masterInputState_->setHandler(0);
-        InputManager::getInstance().destroyState("master");
-        delete this->masterKeyBinder_;
 
         delete this->console_;
 

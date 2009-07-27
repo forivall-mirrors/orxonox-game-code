@@ -48,14 +48,6 @@ namespace orxonox
         : GameState(info)
         , inputState_(0)
     {
-    }
-
-    GSMainMenu::~GSMainMenu()
-    {
-    }
-
-    void GSMainMenu::activate()
-    {
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setHandler(GUIManager::getInstancePtr());
         inputState_->setJoyStickHandler(&InputHandler::EMPTY);
@@ -64,7 +56,18 @@ namespace orxonox
         this->scene_ = new Scene(0);
         // and a Camera
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
+    }
 
+    GSMainMenu::~GSMainMenu()
+    {
+        InputManager::getInstance().destroyState("mainMenu");
+
+        this->scene_->getSceneManager()->destroyCamera(this->camera_);
+        delete this->scene_;
+    }
+
+    void GSMainMenu::activate()
+    {
         // show main menu
         GUIManager::getInstance().showGUI("mainmenu_4");
         GUIManager::getInstance().setCamera(this->camera_);
@@ -106,12 +109,9 @@ namespace orxonox
         delete this->ambient_;
 
         InputManager::getInstance().leaveState("mainMenu");
-        InputManager::getInstance().destroyState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
         GraphicsManager::getInstance().setCamera(0);
-        this->scene_->getSceneManager()->destroyCamera(this->camera_);
-        delete this->scene_;
 
 /*
         if (this->ccStartGame_)
