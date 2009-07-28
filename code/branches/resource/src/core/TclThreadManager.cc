@@ -623,7 +623,7 @@ namespace orxonox
         TclThreadManager::debug("TclThread_source: " + file);
 
         // Prepare the command-line arguments
-        int argc = 2;
+        const int argc = 2;
         char* argv[argc];
         argv[0] = "tclthread";
         argv[1] = const_cast<char*>(file.c_str());

@@ -38,7 +38,7 @@
 
 #include "OrxonoxClass.h"
 
-class Tcl_Interp;
+struct Tcl_Interp;
 
 namespace orxonox
 {
