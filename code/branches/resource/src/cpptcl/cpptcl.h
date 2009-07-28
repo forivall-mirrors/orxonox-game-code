@@ -467,7 +467,6 @@ class interpreter
 {
 public:
      interpreter();
-     interpreter(std::string const &libpath);
      interpreter(Tcl_Interp *, bool owner = true);
      ~interpreter();
      

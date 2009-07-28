@@ -103,27 +103,38 @@ namespace orxonox
 
     Tcl::interpreter* TclBind::createTclInterpreter()
     {
-        Tcl::interpreter* interpreter;
-#ifdef DEPENDENCY_PACKAGE_ENABLE
-        if (Core::isDevelopmentRun())
-            interpreter = new Tcl::interpreter(std::string(ORXONOX_DEP_LIB_PATH) + "/tcl");
-        else
-            interpreter = new Tcl::interpreter(Core::getRootPathString() + "lib/tcl");
-#else
-        interpreter = new Tcl::interpreter();
-#endif
+        Tcl::interpreter* interpreter = new Tcl::interpreter();
+        std::string libpath = TclBind::getTclLibraryPath();
+
         try
         {
+            if (libpath != "")
+                interpreter->eval("set tcl_library \"" + libpath + "\"");
+
+            Tcl_Init(interpreter->get());
+
             interpreter->eval("source \"" + TclBind::getInstance().tclDataPath_ + "/init.tcl\"");
         }
         catch (Tcl::tcl_error const &e)
-        {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+        {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
         catch (std::exception const &e)
-        {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+        {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
         catch (...)
-        {   COUT(1) << "Error while creating Tcl-interpreter." << std::endl;   }
+        {   COUT(1) << "Error while creating Tcl-interpreter." << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
 
         return interpreter;
+    }
+
+    std::string TclBind::getTclLibraryPath()
+    {
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+        if (Core::isDevelopmentRun())
+            return (std::string(ORXONOX_DEP_LIB_PATH) + "/tcl");
+        else
+            return (Core::getRootPathString() + "lib/tcl");
+#else
+        return "";
+#endif
     }
 
     std::string TclBind::tcl_query(Tcl::object const &args)

@@ -27,32 +27,3 @@
       {
            Tcl_SetResult(interp, const_cast<char*>(e.what()), TCL_VOLATILE);
            return TCL_ERROR;
-@@ -858,6 +858,18 @@
-      owner_ = true;
- }
- 
-+interpreter::interpreter(string const &libpath)
-+{
-+     interp_ =  Tcl_CreateInterp();
-+     owner_ = true;
-+
-+     try
-+     {
-+        this->eval("set tcl_library \"" + libpath + "\"");
-+        Tcl_Init(this->interp_);
-+     } catch (...) {}
-+}
-+
- interpreter::interpreter(Tcl_Interp *interp, bool owner)
- {
-      interp_ =  interp;
---- cpptcl.h	Wed Jan 28 20:56:11 2009
-+++ cpptcl.h	Sat Jan 24 12:52:54 2009
-@@ -467,6 +467,7 @@
- {
- public:
-      interpreter();
-+     interpreter(std::string const &libpath);
-      interpreter(Tcl_Interp *, bool owner = true);
-      ~interpreter();
-      

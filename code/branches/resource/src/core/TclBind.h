@@ -49,6 +49,8 @@ namespace orxonox
 
             void setDataPath(const std::string& datapath);
             const std::string& getTclDataPath() const { return this->tclDataPath_; }
+            static std::string getTclLibraryPath();
+
             void initializeTclInterpreter();
             static Tcl::interpreter* createTclInterpreter();
             Tcl::interpreter* getTclInterpreter() const { return this->interpreter_; }
