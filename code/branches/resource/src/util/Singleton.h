@@ -30,6 +30,7 @@
 #define __Util_Singleton_H__
 
 #include "UtilPrereqs.h"
+#include <cassert>
 
 namespace orxonox
 {
@@ -49,7 +50,7 @@ namespace orxonox
         //! Returns a reference to the singleton instance
         static T& getInstance()
         {
-            assert(T::singletonPtr_s != NULL);
+            assert(T::singletonPtr_s != 0);
             return *T::singletonPtr_s;
         }
 
@@ -57,15 +58,15 @@ namespace orxonox
         //! Constructor sets the singleton instance pointer
         Singleton()
         {
-            assert(T::singletonPtr_s == NULL);
+            assert(T::singletonPtr_s == 0);
             T::singletonPtr_s = static_cast<T*>(this);
         }
 
         //! Constructor resets the singleton instance pointer
         ~Singleton()
         {
-            assert(T::singletonPtr_s != NULL);
-            T::singletonPtr_s = NULL;
+            assert(T::singletonPtr_s != 0);
+            T::singletonPtr_s = 0;
         }
 
     private:
