@@ -61,7 +61,7 @@ namespace orxonox
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
-    Game* Game::singletonRef_s = 0;
+    Game* Game::singletonPtr_s = 0;
 
 
     /**
@@ -113,13 +113,6 @@ namespace orxonox
     */
     Game::Game(const std::string& cmdLine)
     {
-        if (singletonRef_s != 0)
-        {
-            COUT(0) << "Error: The Game singleton cannot be recreated! Shutting down." << std::endl;
-            abort();
-        }
-        singletonRef_s = this;
-
         this->bAbort_ = false;
         bChangingState_ = false;
 
@@ -162,7 +155,6 @@ namespace orxonox
     */
     Game::~Game()
     {
-        // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
     /**

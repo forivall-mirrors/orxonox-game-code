@@ -36,14 +36,16 @@
 #include <map>
 #include <string>
 
+#include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
 struct Tcl_Interp;
 
 namespace orxonox
 {
-    class _CoreExport TclThreadManager : public OrxonoxClass
+    class _CoreExport TclThreadManager : public Singleton<TclThreadManager>, public OrxonoxClass
     {
+        friend class Singleton<TclThreadManager>;
         friend class TclBind;
         friend _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
         friend _CoreExport void sourceThread(std::string file);
@@ -52,8 +54,6 @@ namespace orxonox
         public:
             TclThreadManager(Tcl::interpreter* interpreter);
             virtual ~TclThreadManager();
-
-            static TclThreadManager& getInstance() { assert(TclThreadManager::singletonPtr_s); return *TclThreadManager::singletonPtr_s; }
 
             static unsigned int      create();
             static Tcl::interpreter* createWithId(unsigned int id);

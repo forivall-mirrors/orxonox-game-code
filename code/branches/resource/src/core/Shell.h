@@ -59,13 +59,12 @@ namespace orxonox
             virtual void exit() {}
     };
 
-    class _CoreExport Shell : virtual public OrxonoxClass, public OutputBufferListener
+    class _CoreExport Shell : public Singleton<Shell>, virtual public OrxonoxClass, public OutputBufferListener
     {
+        friend class Singleton<Shell>;
         public:
             Shell();
             virtual ~Shell();
-
-            static Shell& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
             static void clearShell();
             static void history();
@@ -147,7 +146,7 @@ namespace orxonox
 
             ConfigFileType commandHistoryConfigFileType_;
 
-            static Shell* singletonRef_s;
+            static Shell* singletonPtr_s;
     };
 }
 

@@ -46,7 +46,7 @@
 namespace orxonox
 {
     //! Pointer to the current (and single) instance of this class.
-    /*static*/ QuestManager* QuestManager::singletonRef_s = NULL;
+    /*static*/ QuestManager* QuestManager::singletonPtr_s = NULL;
 
     /**
     @brief
@@ -57,9 +57,6 @@ namespace orxonox
     QuestManager::QuestManager()
     {
         RegisterRootObject(QuestManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
     }
 
     /**
@@ -69,18 +66,6 @@ namespace orxonox
     QuestManager::~QuestManager()
     {
 
-    }
-
-    /**
-    @brief
-        Returns a reference to the current (and single) instance of the QuestManager, and creates one if there isn't one to begin with.
-    @return
-        Returns a reference to the single instance of the Quest Manager.
-    */
-    /*static*/ QuestManager & QuestManager::getInstance()
-    {
-        assert(singletonRef_s);
-        return *singletonRef_s;
     }
 
     /**

@@ -45,6 +45,7 @@
 #include <boost/scoped_ptr.hpp>
 #include "util/OutputHandler.h"
 #include "util/ScopeGuard.h"
+#include "util/Singleton.h"
 
 namespace orxonox
 {
@@ -57,10 +58,13 @@ namespace orxonox
     @details
         The class provides information about the media, config and log path.
         It determines those by the use of platform specific functions.
+    @remark
+        You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core
+    class _CoreExport Core : public Singleton<Core>
     {
         typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
+        friend class Singleton<Core>;
 
         public:
             /**
@@ -80,8 +84,6 @@ namespace orxonox
 
             void loadGraphics();
             void unloadGraphics();
-
-            static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
 
             static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
@@ -135,7 +137,7 @@ namespace orxonox
             bool                          bDevRun_;             //!< True for runs in the build directory (not installed)
             bool                          bGraphicsLoaded_;
 
-            static Core* singletonRef_s;
+            static Core* singletonPtr_s;
     };
 }
 

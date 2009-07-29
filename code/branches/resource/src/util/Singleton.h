@@ -39,8 +39,8 @@ namespace orxonox
 
         Usage:
         Inherit publicly from Singleton<MyClass> and provide access to
-        MyClass::singletonRef_s.
-        This can be done with a friend declaration.
+        MyClass::singletonPtr_s.
+        This can easily be done with a friend declaration.
     */
     template <class T>
     class Singleton
@@ -49,22 +49,23 @@ namespace orxonox
         //! Returns a reference to the singleton instance
         static T& getInstance()
         {
-            assert(T::singletonRef_s != NULL);
-            return *T::singletonRef_s;
+            assert(T::singletonPtr_s != NULL);
+            return *T::singletonPtr_s;
         }
 
     protected:
-        // Constructor sets the singleton instance pointer
+        //! Constructor sets the singleton instance pointer
         Singleton()
         {
-            assert(T::singletonRef_s == NULL);
-            T::singletonRef_s = static_cast<T*>(this);
+            assert(T::singletonPtr_s == NULL);
+            T::singletonPtr_s = static_cast<T*>(this);
         }
-        // Constructor resets the singleton instance pointer
+
+        //! Constructor resets the singleton instance pointer
         ~Singleton()
         {
-            assert(T::singletonRef_s != NULL);
-            T::singletonRef_s = NULL;
+            assert(T::singletonPtr_s != NULL);
+            T::singletonPtr_s = NULL;
         }
 
     private:

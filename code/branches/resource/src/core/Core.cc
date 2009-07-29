@@ -82,7 +82,7 @@
 namespace orxonox
 {
     //! Static pointer to the singleton
-    Core* Core::singletonRef_s  = 0;
+    Core* Core::singletonPtr_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("Path to the media/data files");
     SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
@@ -138,7 +138,7 @@ namespace orxonox
                 .description("The maximal level of debug output shown in the ingame shell")
                 .callback(this, &CoreConfiguration::debugLevelChanged);
 
-            SetConfigValue(language_, Language::getLanguage().defaultLanguage_)
+            SetConfigValue(language_, Language::getInstance().defaultLanguage_)
                 .description("The language of the ingame text")
                 .callback(this, &CoreConfiguration::languageChanged);
             SetConfigValue(bInitializeRandomNumberGenerator_, true)
@@ -178,7 +178,7 @@ namespace orxonox
         void languageChanged()
         {
             // Read the translation file after the language was configured
-            Language::getLanguage().readTranslatedLanguageFile();
+            Language::getInstance().readTranslatedLanguageFile();
         }
 
         /**
@@ -251,17 +251,10 @@ namespace orxonox
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
         // Cleanup guard for external console commands that don't belong to an Identifier
         , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
+        , configuration_(new CoreConfiguration()) // Don't yet create config values!
         , bDevRun_(false)
         , bGraphicsLoaded_(false)
-        , configuration_(new CoreConfiguration()) // Don't yet create config values!
     {
-        if (singletonRef_s != 0)
-        {
-            COUT(0) << "Error: The Core singleton cannot be recreated! Shutting down." << std::endl;
-            abort();
-        }
-        Core::singletonRef_s = this;
-
         // Parse command line arguments first
         CommandLine::parseCommandLine(cmdLine);
 
@@ -327,9 +320,6 @@ namespace orxonox
     */
     Core::~Core()
     {
-        // Don't assign singletonRef_s with NULL! Recreation is not supported
-        // The is quite simply because of the pre-main code that uses heap allocation
-        // And we correctly deallocate these resources in this destructor.
     }
 
     void Core::loadGraphics()

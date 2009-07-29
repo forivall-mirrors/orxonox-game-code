@@ -33,16 +33,16 @@
 
 #include <cassert>
 #include <string>
+#include "util/Singleton.h"
 
 namespace orxonox
 {
-    class _CoreExport TclBind
+    class _CoreExport TclBind : public Singleton<TclBind>
     {
+        friend class Singleton<TclBind>;
         public:
             TclBind(const std::string& datapath);
             ~TclBind();
-
-            static TclBind& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
             static std::string tcl(const std::string& tclcode);
             static void bgerror(std::string error);
@@ -67,7 +67,7 @@ namespace orxonox
             std::string tclDataPath_;
             bool bSetTclDataPath_;
 
-            static TclBind* singletonRef_s;
+            static TclBind* singletonPtr_s;
     };
 }
 

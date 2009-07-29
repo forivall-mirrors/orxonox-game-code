@@ -86,7 +86,7 @@ namespace orxonox
 
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
-    GUIManager* GUIManager::singletonRef_s = 0;
+    GUIManager* GUIManager::singletonPtr_s = 0;
 
     /**
     @brief
@@ -104,9 +104,6 @@ namespace orxonox
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
-
         using namespace CEGUI;
 
         COUT(3) << "Initialising CEGUI." << std::endl;
@@ -160,8 +157,6 @@ namespace orxonox
     {
         // destroy our own tolua interfaces
         LuaBind::getInstance().closeToluaInterfaces(this->luaState_);
-
-        singletonRef_s = 0;
     }
 
     /**

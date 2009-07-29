@@ -47,6 +47,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
+#include "util/Singleton.h"
 
 /**
 @def
@@ -74,9 +75,12 @@ namespace orxonox
     /**
     @brief
         Main class responsible for running the game.
+    @remark
+        You should only create this singleton once because it owns the Core class! (see remark there)
     */
-    class _CoreExport Game
+    class _CoreExport Game : public Singleton<Game>
     {
+        friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
         typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
         typedef boost::shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
@@ -103,7 +107,6 @@ namespace orxonox
 
         template <class T>
         static bool declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bConsoleMode);
-        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         class _CoreExport GameStateFactory
@@ -174,7 +177,7 @@ namespace orxonox
         unsigned int                       minimumSleepTime_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
-        static Game* singletonRef_s;        //!< Pointer to the Singleton
+        static Game* singletonPtr_s;        //!< Pointer to the Singleton
     };
 
     template <class T>

@@ -44,13 +44,16 @@ extern "C" {
 #include <lua.h>
 }
 
+#include "util/Singleton.h"
+
 // tolua_begin
 namespace orxonox
 {
-  class _CoreExport LuaBind
+  class _CoreExport LuaBind : public Singleton<LuaBind>
   {
-
 // tolua_end
+    friend class Singleton<LuaBind>;
+
     struct LoadS {
       const char *s;
       size_t size;
@@ -60,7 +63,7 @@ namespace orxonox
       LuaBind();
       ~LuaBind();
 
-      inline static LuaBind& getInstance() { assert(singletonRef_s); return *LuaBind::singletonRef_s; } // tolua_export
+      static LuaBind& getInstance() { return Singleton<LuaBind>::getInstance(); } // tolua_export
 
     void loadFile(const std::string& filename, bool luaTags);
     void loadString(const std::string& code);
@@ -88,7 +91,7 @@ namespace orxonox
     void closeToluaInterfaces(lua_State* state);
 
     private:
-      static LuaBind* singletonRef_s;
+      static LuaBind* singletonPtr_s;
 
       std::string luaSource_;
       std::string output_;

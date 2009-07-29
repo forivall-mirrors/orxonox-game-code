@@ -44,13 +44,10 @@ namespace orxonox
 {
     SetCommandLineArgument(level, "").shortcut("l").information("Default level file (overrides LevelManager::defaultLevelName_ configValue)");
 
-    LevelManager* LevelManager::singletonRef_s = 0;
+    LevelManager* LevelManager::singletonPtr_s = 0;
 
     LevelManager::LevelManager()
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
-
         RegisterRootObject(LevelManager);
         this->setConfigValues();
 
@@ -63,8 +60,6 @@ namespace orxonox
 
     LevelManager::~LevelManager()
     {
-        assert(singletonRef_s != 0);
-        singletonRef_s = 0;
     }
 
     void LevelManager::setConfigValues()

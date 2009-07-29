@@ -34,6 +34,8 @@
 #include <cassert>
 #include <list>
 #include <string>
+
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
@@ -41,8 +43,9 @@ namespace orxonox
 {
     class _OrxonoxExport LevelManager
     // tolua_end
-        : public OrxonoxClass
+        : public Singleton<LevelManager>, public OrxonoxClass
     { // tolua_export
+            friend class Singleton<LevelManager>;
         public:
             LevelManager();
             virtual ~LevelManager();
@@ -58,8 +61,8 @@ namespace orxonox
             void compileAvailableLevelList(); //tolua_export
             std::string getAvailableLevelListItem(unsigned int index) const; //tolua_export
 
-            static LevelManager* getInstancePtr() { return singletonRef_s; }
-            static LevelManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
+            static LevelManager* getInstancePtr() { return singletonPtr_s; }
+            static LevelManager& getInstance()    { return Singleton<LevelManager>::getInstance(); } // tolua_export
 
         private:
             LevelManager(const LevelManager&);
@@ -72,7 +75,7 @@ namespace orxonox
             // config values
             std::string defaultLevelName_;
 
-            static LevelManager* singletonRef_s;
+            static LevelManager* singletonPtr_s;
     }; // tolua_export
 } // tolua_export
 

@@ -82,7 +82,7 @@ namespace orxonox
             { orxonox::WindowEventListener::moveWindow(); }
     };
 
-    GraphicsManager* GraphicsManager::singletonRef_s = 0;
+    GraphicsManager* GraphicsManager::singletonPtr_s = 0;
 
     /**
     @brief
@@ -96,9 +96,6 @@ namespace orxonox
         , ogreWindowEventListener_(new OgreWindowEventListener())
     {
         RegisterObject(GraphicsManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
 
         this->setConfigValues();
 
@@ -153,9 +150,6 @@ namespace orxonox
         delete this->ogreLogger_;
 
         delete this->ogreWindowEventListener_;
-
-        assert(singletonRef_s);
-        singletonRef_s = 0;
     }
 
     void GraphicsManager::setConfigValues()

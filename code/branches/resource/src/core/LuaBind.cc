@@ -42,13 +42,10 @@ extern "C" {
 
 namespace orxonox
 {
-  LuaBind* LuaBind::singletonRef_s = NULL;
+  LuaBind* LuaBind::singletonPtr_s = NULL;
 
   LuaBind::LuaBind()
   {
-    assert(LuaBind::singletonRef_s == 0);
-    LuaBind::singletonRef_s = this;
-
     this->includePath_ = Core::getMediaPathString();
 
     luaState_ = lua_open();
@@ -74,9 +71,6 @@ namespace orxonox
   LuaBind::~LuaBind()
   {
     this->closeToluaInterfaces(luaState_);
-
-    assert(singletonRef_s);
-    LuaBind::singletonRef_s = NULL;
   };
 
   void LuaBind::luaPrint(const std::string& str)

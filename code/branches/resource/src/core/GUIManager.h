@@ -44,6 +44,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "util/OgreForwardRefs.h"
+#include "util/Singleton.h"
 #include "input/InputHandler.h"
 
 namespace orxonox
@@ -59,8 +60,9 @@ namespace orxonox
         Since the GUI needs user input, the GUIManager implements the functions needed to act as a key and/or mouse handler.
         Those input events are then injected into CEGUI in Lua.
     */
-    class _CoreExport GUIManager : public InputHandler
+    class _CoreExport GUIManager : public Singleton<GUIManager>, public InputHandler
     {
+        friend class Singleton<GUIManager>;
     public:
         GUIManager(Ogre::RenderWindow* renderWindow);
         ~GUIManager();
@@ -72,8 +74,7 @@ namespace orxonox
 
         void setCamera(Ogre::Camera* camera);
 
-        static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
-        static GUIManager* getInstancePtr() { return singletonRef_s; }
+        static GUIManager* getInstancePtr() { return singletonPtr_s; }
 
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
@@ -98,7 +99,7 @@ namespace orxonox
         CEGUI::Logger*           ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
         lua_State*               luaState_;         //!< Lua state, access point to the Lua engine
 
-        static GUIManager*       singletonRef_s;    //!< Singleton reference to GUIManager
+        static GUIManager*       singletonPtr_s;    //!< Singleton reference to GUIManager
 
     };
 }

@@ -41,7 +41,7 @@ namespace orxonox
 {
     const char* const DEFAULT_CONFIG_FILE = "default.ini";
 
-    ConfigFileManager* ConfigFileManager::singletonRef_s = 0;
+    ConfigFileManager* ConfigFileManager::singletonPtr_s = 0;
 
     SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
@@ -481,17 +481,12 @@ namespace orxonox
     ConfigFileManager::ConfigFileManager()
          : mininmalFreeType_(ConfigFileType::numberOfReservedTypes)
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
     }
 
     ConfigFileManager::~ConfigFileManager()
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); )
             delete (it++)->second;
-
-        assert(singletonRef_s != 0);
-        singletonRef_s = 0;
     }
 
     void ConfigFileManager::setFilename(ConfigFileType type, const std::string& filename)

@@ -30,12 +30,15 @@
 #define _PawnManager_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include "util/Singleton.h"
 #include "interfaces/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PawnManager : public Tickable
+    class _OrxonoxExport PawnManager : protected Singleton<PawnManager>, public Tickable
     {
+            friend class Singleton<PawnManager>;
         public:
             static void touch();
 
@@ -45,7 +48,7 @@ namespace orxonox
             PawnManager();
             virtual ~PawnManager();
 
-            static PawnManager* singletonRef_s;
+            static PawnManager* singletonPtr_s;
     };
 }
 

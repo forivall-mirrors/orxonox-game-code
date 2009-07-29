@@ -41,6 +41,7 @@
 #include <cassert>
 #include <string>
 #include <OgreLog.h>
+#include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
 namespace orxonox
@@ -49,8 +50,9 @@ namespace orxonox
     @brief
         Graphics engine manager class
     */
-    class _CoreExport GraphicsManager : public OrxonoxClass, public Ogre::LogListener
+    class _CoreExport GraphicsManager : public Singleton<GraphicsManager>, public OrxonoxClass, public Ogre::LogListener
     {
+        friend class Singleton<GraphicsManager>;
     public:
         GraphicsManager();
         ~GraphicsManager();
@@ -65,9 +67,6 @@ namespace orxonox
             { return this->renderWindow_; }
 
         void setCamera(Ogre::Camera* camera);
-
-        inline static GraphicsManager& getInstance()
-            { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         GraphicsManager(GraphicsManager&); // don't mess with singletons
@@ -106,7 +105,7 @@ namespace orxonox
         // console commands
         ConsoleCommand*     ccPrintScreen_;
 
-        static GraphicsManager* singletonRef_s;        //!< Pointer to the Singleton
+        static GraphicsManager* singletonPtr_s;        //!< Pointer to the Singleton
     };
 }
 

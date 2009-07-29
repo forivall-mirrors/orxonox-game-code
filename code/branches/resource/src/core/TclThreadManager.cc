@@ -90,9 +90,6 @@ namespace orxonox
     {
         RegisterRootObject(TclThreadManager);
 
-        assert(TclThreadManager::singletonPtr_s == 0);
-        TclThreadManager::singletonPtr_s = this;
-
         this->numInterpreterBundles_ = 0;
 
         this->interpreterBundlesMutex_ = new boost::shared_mutex();
@@ -115,8 +112,6 @@ namespace orxonox
     */
     TclThreadManager::~TclThreadManager()
     {
-        TclThreadManager::singletonPtr_s = 0;
-
         delete this->interpreterBundlesMutex_;
 //        delete this->mainInterpreterMutex_; // <-- temporary disabled to avoid crash if a thread is still actively queriyng
         delete this->messageQueue_;

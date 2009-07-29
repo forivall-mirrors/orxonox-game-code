@@ -45,12 +45,10 @@ namespace orxonox
     SetConsoleCommandShortcut(TclBind, tcl);
     SetConsoleCommandShortcut(TclBind, bgerror);
 
-    TclBind* TclBind::singletonRef_s = 0;
+    TclBind* TclBind::singletonPtr_s = 0;
 
     TclBind::TclBind(const std::string& datapath)
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
         this->interpreter_ = 0;
         this->bSetTclDataPath_ = false;
         this->setDataPath(datapath);
@@ -60,7 +58,6 @@ namespace orxonox
     {
         if (this->interpreter_)
             delete this->interpreter_;
-        singletonRef_s = 0;
     }
 
     void TclBind::setDataPath(const std::string& datapath)

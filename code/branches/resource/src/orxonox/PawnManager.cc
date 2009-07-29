@@ -33,25 +33,20 @@
 
 namespace orxonox
 {
-    PawnManager* PawnManager::singletonRef_s = 0;
+    PawnManager* PawnManager::singletonPtr_s = 0;
 
     PawnManager::PawnManager()
     {
         RegisterRootObject(PawnManager);
-
-        assert(PawnManager::singletonRef_s == 0);
-        PawnManager::singletonRef_s = this;
     }
 
     PawnManager::~PawnManager()
     {
-        assert(PawnManager::singletonRef_s != 0);
-        PawnManager::singletonRef_s = 0;
     }
 
     void PawnManager::touch()
     {
-        if (!PawnManager::singletonRef_s)
+        if (!PawnManager::singletonPtr_s)
             new PawnManager();
     }
 

@@ -41,22 +41,16 @@
 
 namespace orxonox
 {
-    CameraManager* CameraManager::singletonRef_s = 0;
+    CameraManager* CameraManager::singletonPtr_s = 0;
 
     CameraManager::CameraManager(Ogre::Viewport* viewport)
         : viewport_(viewport)
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
-
         this->fallbackCamera_ = 0;
     }
 
     CameraManager::~CameraManager()
     {
-        assert(singletonRef_s != 0);
-        singletonRef_s = 0;
-
         if (this->fallbackCamera_)
             this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
     }
