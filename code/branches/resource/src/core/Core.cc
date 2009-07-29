@@ -247,8 +247,13 @@ namespace orxonox
 
 
     Core::Core(const std::string& cmdLine)
-        : bDevRun_(false)
+        // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
+        : identifierDestroyer_(Identifier::destroyAllIdentifiers)
+        // Cleanup guard for external console commands that don't belong to an Identifier
+        , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
+        , bDevRun_(false)
         , bGraphicsLoaded_(false)
+        , configuration_(new CoreConfiguration()) // Don't yet create config values!
     {
         if (singletonRef_s != 0)
         {
@@ -256,9 +261,6 @@ namespace orxonox
             abort();
         }
         Core::singletonRef_s = this;
-
-        // We need the variables very soon. But don't configure them yet!
-        this->configuration_ = new CoreConfiguration();
 
         // Parse command line arguments first
         CommandLine::parseCommandLine(cmdLine);
@@ -275,7 +277,7 @@ namespace orxonox
 
         // create a signal handler (only active for linux)
         // This call is placed as soon as possible, but after the directories are set
-        this->signalHandler_ = new SignalHandler();
+        this->signalHandler_.reset(new SignalHandler());
         this->signalHandler_->doCatch(configuration_->executablePath_.string(), Core::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
@@ -294,54 +296,40 @@ namespace orxonox
 #endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
-        this->configFileManager_ = new ConfigFileManager();
+        this->configFileManager_.reset(new ConfigFileManager());
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLine::getValue("settingsFile").getString());
 
         // Required as well for the config values
-        this->languageInstance_ = new Language();
+        this->languageInstance_.reset(new Language());
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         this->configuration_->initialise();
 
         // Create the lua interface
-        this->luaBind_ = new LuaBind();
+        this->luaBind_.reset(new LuaBind());
 
         // initialise Tcl
-        this->tclBind_ = new TclBind(Core::getMediaPathString());
-        this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
+        this->tclBind_.reset(new TclBind(Core::getMediaPathString()));
+        this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
         // create a shell
-        this->shell_ = new Shell();
+        this->shell_.reset(new Shell());
 
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
     }
 
     /**
-        @brief Sets the bool to true to avoid static functions accessing a deleted object.
+    @brief
+        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
     */
     Core::~Core()
     {
-        delete this->shell_;
-        delete this->tclThreadManager_;
-        delete this->tclBind_;
-        delete this->luaBind_;
-        delete this->configuration_;
-        delete this->languageInstance_;
-        delete this->configFileManager_;
-
-        // Destroy command line arguments
-        CommandLine::destroyAllArguments();
-        // Also delete external console commands that don't belong to an Identifier
-        CommandExecutor::destroyExternalCommands();
-        // Clean up class hierarchy stuff (identifiers, XMLPort, configValues, consoleCommand)
-        Identifier::destroyAllIdentifiers();
-
-        delete this->signalHandler_;
-
         // Don't assign singletonRef_s with NULL! Recreation is not supported
+        // The is quite simply because of the pre-main code that uses heap allocation
+        // And we correctly deallocate these resources in this destructor.
     }
 
     void Core::loadGraphics()
@@ -350,18 +338,21 @@ namespace orxonox
             return;
 
         // Load OGRE including the render window
-        this->graphicsManager_ = new GraphicsManager();
+        scoped_ptr<GraphicsManager> graphicsManager(new GraphicsManager());
 
         // The render window width and height are used to set up the mouse movement.
         size_t windowHnd = 0;
-        Ogre::RenderWindow* renderWindow = GraphicsManager::getInstance().getRenderWindow();
-        renderWindow->getCustomAttribute("WINDOW", &windowHnd);
+        graphicsManager->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
 
         // Calls the InputManager which sets up the input devices.
-        inputManager_ = new InputManager(windowHnd);
+        scoped_ptr<InputManager> inputManager(new InputManager(windowHnd));
 
         // load the CEGUI interface
-        guiManager_ = new GUIManager(renderWindow);
+        guiManager_.reset(new GUIManager(graphicsManager->getRenderWindow()));
+
+        // Dismiss scoped pointers
+        graphicsManager_.swap(graphicsManager);
+        inputManager_.swap(inputManager);
 
         bGraphicsLoaded_ = true;
     }
@@ -371,9 +362,9 @@ namespace orxonox
         if (!bGraphicsLoaded_)
             return;
 
-        delete this->guiManager_;
-        delete this->inputManager_;
-        delete graphicsManager_;
+        this->guiManager_.reset();;
+        this->inputManager_.reset();;
+        this->graphicsManager_.reset();
 
         bGraphicsLoaded_ = false;
     }

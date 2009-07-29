@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
@@ -58,6 +59,8 @@
 namespace orxonox
 {
     class GameConfiguration;
+    using boost::scoped_ptr;
+    using boost::shared_ptr;
 
     //! Helper object required before GameStates are being constructed
     struct GameStateInfo
@@ -74,13 +77,15 @@ namespace orxonox
     */
     class _CoreExport Game
     {
+        typedef std::vector<shared_ptr<GameState> > GameStateVector;
+        typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
         typedef boost::shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
     public:
         Game(const std::string& cmdLine);
         ~Game();
 
         void setStateHierarchy(const std::string& str);
-        GameState* getState(const std::string& name);
+        shared_ptr<GameState> getState(const std::string& name);
 
         void run();
         void stop();
@@ -105,21 +110,20 @@ namespace orxonox
         {
         public:
             virtual ~GameStateFactory() { }
-            static GameState* fabricate(const GameStateInfo& info);
+            static shared_ptr<GameState> fabricate(const GameStateInfo& info);
             template <class T>
             static void createFactory(const std::string& className)
-                { factories_s[className] = new TemplateGameStateFactory<T>(); }
-            static void destroyFactories();
+                { factories_s[className].reset(new TemplateGameStateFactory<T>()); }
         private:
-            virtual GameState* fabricateInternal(const GameStateInfo& info) = 0;
-            static std::map<std::string, GameStateFactory*> factories_s;
+            virtual shared_ptr<GameState> fabricateInternal(const GameStateInfo& info) = 0;
+            static std::map<std::string, shared_ptr<GameStateFactory> > factories_s;
         };
         template <class T>
         class TemplateGameStateFactory : public GameStateFactory
         {
         public:
-            GameState* fabricateInternal(const GameStateInfo& info)
-                { return new T(info); }
+            shared_ptr<GameState> fabricateInternal(const GameStateInfo& info)
+                { return shared_ptr<GameState>(new T(info)); }
         };
 
         struct StatisticsTickInfo
@@ -143,15 +147,18 @@ namespace orxonox
         void updateStatistics();
         void updateFPSLimiter();
 
-        std::map<std::string, GameState*>  constructedStates_;
-        std::vector<GameState*>            loadedStates_;
+        // ScopeGuard helper function
+        void resetChangingState() { this->bChangingState_ = false; }
+
+        scoped_ptr<Clock>                  gameClock_;
+        scoped_ptr<Core>                   core_;
+        scoped_ptr<GameConfiguration>      configuration_;
+
+        GameStateMap                       constructedStates_;
+        GameStateVector                    loadedStates_;
         GameStateTreeNodePtr               rootStateNode_;
         GameStateTreeNodePtr               loadedTopStateNode_;
-        std::vector<GameStateTreeNodePtr > requestedStateNodes_;
-
-        Core*                              core_;
-        Clock*                             gameClock_;
-        GameConfiguration*                 configuration_;
+        std::vector<GameStateTreeNodePtr>  requestedStateNodes_;
 
         bool                               bChangingState_;
         bool                               bAbort_;

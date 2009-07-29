@@ -42,11 +42,14 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include <boost/scoped_ptr.hpp>
 #include "util/OutputHandler.h"
+#include "util/ScopeGuard.h"
 
 namespace orxonox
 {
     class CoreConfiguration;
+    using boost::scoped_ptr;
 
     /**
     @brief
@@ -57,6 +60,8 @@ namespace orxonox
     */
     class _CoreExport Core
     {
+        typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
+
         public:
             /**
             @brief
@@ -111,22 +116,24 @@ namespace orxonox
             void createDirectories();
             void setThreadAffinity(int limitToCPU);
 
-            // Singletons
-            ConfigFileManager*    configFileManager_;
-            Language*             languageInstance_;
-            LuaBind*              luaBind_;
-            Shell*                shell_;
-            SignalHandler*        signalHandler_;
-            TclBind*              tclBind_;
-            TclThreadManager*     tclThreadManager_;
+            // Mind the order for the destruction!
+            scoped_ptr<SignalHandler>     signalHandler_;
+            SimpleScopeGuard              identifierDestroyer_;
+            SimpleScopeGuard              consoleCommandDestroyer_;
+            scoped_ptr<ConfigFileManager> configFileManager_;
+            scoped_ptr<Language>          languageInstance_;
+            scoped_ptr<CoreConfiguration> configuration_;
+            scoped_ptr<LuaBind>           luaBind_;
+            scoped_ptr<TclBind>           tclBind_;
+            scoped_ptr<TclThreadManager>  tclThreadManager_;
+            scoped_ptr<Shell>             shell_;
             // graphical
-            InputManager*         inputManager_;        //!< Interface to OIS
-            GUIManager*           guiManager_;          //!< Interface to GUI
-            GraphicsManager*      graphicsManager_;     //!< Interface to OGRE
+            scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
+            scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
+            scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
 
-            bool                  bDevRun_;             //!< True for runs in the build directory (not installed)
-            bool                  bGraphicsLoaded_;
-            CoreConfiguration*    configuration_;
+            bool                          bDevRun_;             //!< True for runs in the build directory (not installed)
+            bool                          bGraphicsLoaded_;
 
             static Core* singletonRef_s;
     };

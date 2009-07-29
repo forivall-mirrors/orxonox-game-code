@@ -39,6 +39,7 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/ScopeGuard.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"
 #include "Clock.h"
@@ -132,10 +133,10 @@ namespace orxonox
         this->declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
 
         // Set up a basic clock to keep time
-        this->gameClock_ = new Clock();
+        this->gameClock_.reset(new Clock());
 
         // Create the Core
-        this->core_ = new Core(cmdLine);
+        this->core_.reset(new Core(cmdLine));
 
         // After the core has been created, we can safely instantiate the GameStates that don't require graphics
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
@@ -152,29 +153,15 @@ namespace orxonox
         this->loadedStates_.push_back(this->getState(rootStateNode_->name_));
 
         // Do this after the Core creation!
-        this->configuration_ = new GameConfiguration();
+        this->configuration_.reset(new GameConfiguration());
     }
 
     /**
     @brief
+        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
     */
     Game::~Game()
     {
-        // Destroy the configuration helper class instance
-        delete this->configuration_;
-
-        // Destroy the GameStates (note that the nodes still point to them, but doesn't matter)
-        for (std::map<std::string, GameState*>::const_iterator it = constructedStates_.begin();
-            it != constructedStates_.end(); ++it)
-            delete it->second;
-
-        // Destroy the Core and with it almost everything
-        delete this->core_;
-        delete this->gameClock_;
-
-        // Take care of the GameStateFactories
-        GameStateFactory::destroyFactories();
-
         // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
@@ -282,7 +269,7 @@ namespace orxonox
     void Game::updateGameStates()
     {
         // Note: The first element is the empty root state, which doesn't need ticking
-        for (std::vector<GameState*>::const_iterator it = this->loadedStates_.begin() + 1;
+        for (GameStateVector::const_iterator it = this->loadedStates_.begin() + 1;
             it != this->loadedStates_.end(); ++it)
         {
             std::string exceptionMessage;
@@ -456,9 +443,9 @@ namespace orxonox
             COUT(2) << "Warning: Can't pop the internal dummy root GameState" << std::endl;
     }
 
-    GameState* Game::getState(const std::string& name)
+    shared_ptr<GameState> Game::getState(const std::string& name)
     {
-        std::map<std::string, GameState*>::const_iterator it = constructedStates_.find(name);
+        GameStateMap::const_iterator it = constructedStates_.find(name);
         if (it != constructedStates_.end())
             return it->second;
         else
@@ -468,7 +455,7 @@ namespace orxonox
                 COUT(1) << "Error: GameState '" << name << "' has not yet been loaded." << std::endl;
             else
                 COUT(1) << "Error: Could not find GameState '" << name << "'." << std::endl;
-            return 0;
+            return shared_ptr<GameState>();
         }
     }
 
@@ -527,6 +514,7 @@ namespace orxonox
         if (!GameMode::bShowsGraphics_s)
         {
             core_->loadGraphics();
+            Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
             GameMode::bShowsGraphics_s = true;
 
             // Construct all the GameStates that require graphics
@@ -535,11 +523,14 @@ namespace orxonox
             {
                 if (it->second.bGraphicsMode)
                 {
+                    // Game state loading failure is serious --> don't catch
+                    shared_ptr<GameState> gameState = GameStateFactory::fabricate(it->second);
                     if (!constructedStates_.insert(std::make_pair(
-                        it->second.stateName, GameStateFactory::fabricate(it->second))).second)
+                        it->second.stateName, gameState)).second)
                         assert(false); // GameState was already created!
                 }
             }
+            graphicsUnloader.Dismiss();
         }
     }
 
@@ -548,13 +539,10 @@ namespace orxonox
         if (GameMode::bShowsGraphics_s)
         {
             // Destroy all the GameStates that require graphics
-            for (std::map<std::string, GameState*>::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
+            for (GameStateMap::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
             {
                 if (it->second->getInfo().bGraphicsMode)
-                {
-                    delete it->second;
                     constructedStates_.erase(it++);
-                }
                 else
                     ++it;
             }
@@ -576,57 +564,57 @@ namespace orxonox
     void Game::loadState(const std::string& name)
     {
         this->bChangingState_ = true;
+        LOKI_ON_BLOCK_EXIT_OBJ(*this, &Game::resetChangingState);
+
         // If state requires graphics, load it
-        if (gameStateDeclarations_s[name].bGraphicsMode)
+        Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
+        if (gameStateDeclarations_s[name].bGraphicsMode && !GameMode::showsGraphics())
             this->loadGraphics();
-        GameState* state = this->getState(name);
+        else
+            graphicsUnloader.Dismiss();
+
+        shared_ptr<GameState> state = this->getState(name);
         state->activate();
         if (!this->loadedStates_.empty())
             this->loadedStates_.back()->activity_.topState = false;
         this->loadedStates_.push_back(state);
         state->activity_.topState = true;
-        this->bChangingState_ = false;
+
+        graphicsUnloader.Dismiss();
     }
 
     void Game::unloadState(const std::string& name)
     {
-        GameState* state = this->getState(name);
         this->bChangingState_ = true;
-        state->activity_.topState = false;
-        this->loadedStates_.pop_back();
-        if (!this->loadedStates_.empty())
-            this->loadedStates_.back()->activity_.topState = true;
         try
         {
+            shared_ptr<GameState> state = this->getState(name);
+            state->activity_.topState = false;
+            this->loadedStates_.pop_back();
+            if (!this->loadedStates_.empty())
+                this->loadedStates_.back()->activity_.topState = true;
             state->deactivate();
-            // Check if graphis is still required
-            bool graphicsRequired = false;
-            for (unsigned i = 0; i < loadedStates_.size(); ++i)
-                graphicsRequired |= loadedStates_[i]->getInfo().bGraphicsMode;
-            if (!graphicsRequired)
-                this->unloadGraphics();
         }
         catch (const std::exception& ex)
         {
             COUT(2) << "Warning: Unloading GameState '" << name << "' threw an exception: " << ex.what() << std::endl;
             COUT(2) << "         There might be potential resource leaks involved! To avoid this, improve exception-safety." << std::endl;
         }
+        // Check if graphics is still required
+        bool graphicsRequired = false;
+        for (unsigned i = 0; i < loadedStates_.size(); ++i)
+            graphicsRequired |= loadedStates_[i]->getInfo().bGraphicsMode;
+        if (!graphicsRequired)
+            this->unloadGraphics();
         this->bChangingState_ = false;
     }
 
-    std::map<std::string, Game::GameStateFactory*> Game::GameStateFactory::factories_s;
+    std::map<std::string, shared_ptr<Game::GameStateFactory> > Game::GameStateFactory::factories_s;
 
-    /*static*/ GameState* Game::GameStateFactory::fabricate(const GameStateInfo& info)
+    /*static*/ shared_ptr<GameState> Game::GameStateFactory::fabricate(const GameStateInfo& info)
     {
-        std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.find(info.className);
+        std::map<std::string, shared_ptr<Game::GameStateFactory> >::const_iterator it = factories_s.find(info.className);
         assert(it != factories_s.end());
         return it->second->fabricateInternal(info);
-    }
-
-    /*static*/ void Game::GameStateFactory::destroyFactories()
-    {
-        for (std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.begin(); it != factories_s.end(); ++it)
-            delete it->second;
-        factories_s.clear();
     }
 }
