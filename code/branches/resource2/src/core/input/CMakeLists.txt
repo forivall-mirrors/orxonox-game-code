@@ -1,0 +1,14 @@
+ADD_SOURCE_FILES(CORE_SRC_FILES
+  Button.cc
+  HalfAxis.cc
+  InputBuffer.cc
+  InputCommands.cc
+  InputManager.cc
+  InputState.cc
+  JoyStick.cc
+  JoyStickQuantityListener.cc
+  KeyBinder.cc
+  Keyboard.cc
+  KeyDetector.cc
+  Mouse.cc
+)
