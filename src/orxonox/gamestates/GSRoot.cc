@@ -29,11 +29,13 @@
 #include "GSRoot.h"
 
 #include "core/Clock.h"
-#include "core/CommandLine.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
+#include "core/LuaBind.h"
 #include "network/NetworkFunction.h"
+#include "ToluaBindCore.h"
+#include "ToluaBindOrxonox.h"
 #include "tools/Timer.h"
 #include "interfaces/TimeFactorListener.h"
 #include "interfaces/Tickable.h"
@@ -41,22 +43,20 @@
 
 namespace orxonox
 {
-    DeclareGameState(GSRoot, "root", true, false);
-    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
-    // Shortcuts for easy direct loading
-    SetCommandLineSwitch(server).information("Start in server mode");
-    SetCommandLineSwitch(client).information("Start in client mode");
-    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
-    SetCommandLineSwitch(standalone).information("Start in standalone mode");
+    DeclareGameState(GSRoot, "root", false, false);
 
-    GSRoot::GSRoot(const GameStateConstrParams& params)
-        : GameState(params)
+    GSRoot::GSRoot(const GameStateInfo& info)
+        : GameState(info)
         , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
     {
         this->ccSetTimeFactor_ = 0;
         this->ccPause_ = 0;
+
+        // Tell LuaBind about all tolua interfaces
+        LuaBind::getInstance().addToluaInterface(&tolua_Core_open, "Core");
+        LuaBind::getInstance().addToluaInterface(&tolua_Orxonox_open, "Orxonox");
     }
 
     GSRoot::~GSRoot()
@@ -87,36 +87,6 @@ namespace orxonox
 
         // create the global LevelManager
         this->levelManager_ = new LevelManager();
-
-        // Load level directly?
-        bool loadLevel = false;
-        if (CommandLine::getValue("standalone").getBool())
-        {
-            Game::getInstance().requestStates("graphics, standalone, level");
-            loadLevel = true;
-        }
-        if (CommandLine::getValue("server").getBool())
-        {
-            Game::getInstance().requestStates("graphics, server, level");
-            loadLevel = true;
-        }
-        if (CommandLine::getValue("client").getBool())
-        {
-            Game::getInstance().requestStates("graphics, client, level");
-            loadLevel = true;
-        }
-        if (CommandLine::getValue("dedicated").getBool())
-        {
-            Game::getInstance().requestStates("dedicated, level");
-            loadLevel = true;
-        }
-        
-        // Determine where to start otherwise
-        if (!loadLevel && !CommandLine::getValue("console").getBool())
-        {
-            // Also load graphics
-            Game::getInstance().requestState("graphics");
-        }
     }
 
     void GSRoot::deactivate()
@@ -147,8 +117,6 @@ namespace orxonox
             Game::getInstance().requestState("ioConsole");
         }
 
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
-
         for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
             it->tick(time);
 
@@ -163,16 +131,14 @@ namespace orxonox
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
             it->tick(leveldt * this->timeFactor_);
         /*** HACK *** HACK ***/
-
-        uint64_t timeAfterTick = time.getRealMicroseconds();
-
-        // Also add our tick time
-        Game::getInstance().addTickTime(timeAfterTick - timeBeforeTick);
     }
 
     /**
     @brief
         Changes the speed of Orxonox
+    @remark
+        This function is a hack when placed here!
+        Timefactor should be related to the scene (level or so), not the game
     */
     void GSRoot::setTimeFactor(float factor)
     {

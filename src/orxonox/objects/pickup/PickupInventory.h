@@ -42,12 +42,10 @@
 // tolua_begin
 namespace orxonox
 {
-// tolua_end
     /**
         @brief Static class for the inventory GUI window.
         @author Daniel 'Huty' Haggenmueller
     */
-// tolua_begin
     class _OrxonoxExport PickupInventory
     {
 // tolua_end

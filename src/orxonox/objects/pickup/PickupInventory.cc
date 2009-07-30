@@ -36,8 +36,8 @@
 #include <elements/CEGUITabControl.h>
 
 #include "core/ConsoleCommand.h"
+#include "core/GUIManager.h"
 #include "core/input/InputManager.h"
-#include "gui/GUIManager.h"
 #include "objects/controllers/HumanController.h"
 #include "objects/worldentities/pawns/Pawn.h"
 

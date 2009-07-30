@@ -47,7 +47,7 @@ namespace orxonox
     class _OrxonoxExport GSDedicated : public GameState
     {
     public:
-        GSDedicated(const GameStateConstrParams& params);
+        GSDedicated(const GameStateInfo& info);
         ~GSDedicated();
 
         void activate();

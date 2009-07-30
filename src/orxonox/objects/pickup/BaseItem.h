@@ -50,10 +50,7 @@ namespace orxonox
         @author
             Daniel 'Huty' Haggenmueller
     */
-    class _OrxonoxExport BaseItem
-// tolua_end
-        : public BaseObject
-// tolua_begin
+    class _OrxonoxExport BaseItem : public BaseObject
     {
 // tolua_end
     public:

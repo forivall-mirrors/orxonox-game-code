@@ -33,18 +33,17 @@
 
 #include <cassert>
 #include <map>
+#include "util/Singleton.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PlayerManager : public ClientConnectionListener
+    class _OrxonoxExport PlayerManager : public Singleton<PlayerManager>, public ClientConnectionListener
     {
+            friend class Singleton<PlayerManager>;
         public:
             PlayerManager();
             virtual ~PlayerManager();
-
-            inline static PlayerManager& getInstance()
-                { assert(singletonRef_s); return *singletonRef_s; }
 
             PlayerInfo* getClient(unsigned int clientID) const;
             inline const std::map<unsigned int, PlayerInfo*>& getClients() const
@@ -56,7 +55,7 @@ namespace orxonox
 
             std::map<unsigned int, PlayerInfo*> clients_;
 
-            static PlayerManager* singletonRef_s;
+            static PlayerManager* singletonPtr_s;
     };
 }
 

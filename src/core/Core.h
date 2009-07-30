@@ -42,11 +42,15 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include <boost/scoped_ptr.hpp>
 #include "util/OutputHandler.h"
+#include "util/ScopeGuard.h"
+#include "util/Singleton.h"
 
 namespace orxonox
 {
     class CoreConfiguration;
+    using boost::scoped_ptr;
 
     /**
     @brief
@@ -54,9 +58,14 @@ namespace orxonox
     @details
         The class provides information about the media, config and log path.
         It determines those by the use of platform specific functions.
+    @remark
+        You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core
+    class _CoreExport Core : public Singleton<Core>
     {
+        typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
+        friend class Singleton<Core>;
+
         public:
             /**
             @brief
@@ -70,9 +79,11 @@ namespace orxonox
 
             void setConfigValues();
 
-            void update(const Clock& time);
+            bool preUpdate(const Clock& time) throw();
+            bool postUpdate(const Clock& time) throw();
 
-            static Core& getInstance() { assert(Core::singletonRef_s); return *Core::singletonRef_s; }
+            void loadGraphics();
+            void unloadGraphics();
 
             static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
@@ -86,12 +97,18 @@ namespace orxonox
             static const boost::filesystem::path& getConfigPath();
             //! Returns the path to the log files as boost::filesystem::path
             static const boost::filesystem::path& getLogPath();
+            //! Returns the path to the root folder as boost::filesystem::path
+            static const boost::filesystem::path& getRootPath();
             //! Returns the path to the data files as std::string
             static std::string getMediaPathString();
             //! Returns the path to the config files as std::string
             static std::string getConfigPathString();
             //! Returns the path to the log files as std::string
             static std::string getLogPathString();
+            //! Returns the path to the root folder as std::string
+            static std::string getRootPathString();
+
+            static bool isDevelopmentRun() { return getInstance().bDevRun_; }
 
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
@@ -101,19 +118,26 @@ namespace orxonox
             void createDirectories();
             void setThreadAffinity(int limitToCPU);
 
-            // Singletons
-            ConfigFileManager*    configFileManager_;
-            Language*             languageInstance_;
-            LuaBind*              luaBind_;
-            Shell*                shell_;
-            SignalHandler*        signalHandler_;
-            TclBind*              tclBind_;
-            TclThreadManager*     tclThreadManager_;
+            // Mind the order for the destruction!
+            scoped_ptr<SignalHandler>     signalHandler_;
+            SimpleScopeGuard              identifierDestroyer_;
+            SimpleScopeGuard              consoleCommandDestroyer_;
+            scoped_ptr<ConfigFileManager> configFileManager_;
+            scoped_ptr<Language>          languageInstance_;
+            scoped_ptr<CoreConfiguration> configuration_;
+            scoped_ptr<LuaBind>           luaBind_;
+            scoped_ptr<TclBind>           tclBind_;
+            scoped_ptr<TclThreadManager>  tclThreadManager_;
+            scoped_ptr<Shell>             shell_;
+            // graphical
+            scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
+            scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
+            scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
 
-            bool isDevBuild_;                               //!< True for builds in the build directory (not installed)
-            CoreConfiguration*    configuration_;
+            bool                          bDevRun_;             //!< True for runs in the build directory (not installed)
+            bool                          bGraphicsLoaded_;
 
-            static Core* singletonRef_s;
+            static Core* singletonPtr_s;
     };
 }
 

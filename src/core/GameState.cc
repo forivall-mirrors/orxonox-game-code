@@ -37,6 +37,7 @@
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
+#include "Game.h"
 
 namespace orxonox
 {
@@ -44,10 +45,8 @@ namespace orxonox
     @brief
         Constructor only initialises variables and sets the name permanently.
     */
-    GameState::GameState(const GameStateConstrParams& params)
-        : name_(params.name)
-        , bIgnoreTickTime_(params.bIgnoreTickTime)
-        , parent_(0)
+    GameState::GameState(const GameStateInfo& info)
+        : info_(info)
     {
         this->activity_.activating   = false;
         this->activity_.active       = false;
@@ -66,49 +65,9 @@ namespace orxonox
         OrxAssert(this->activity_.active == false, "Deleting an active GameState is a very bad idea..");
     }
 
-    /**
-    @brief
-        Adds a child to the current tree. The Child can contain children of its own.
-        But you cannot a state tree that already has an active state.
-    @param state
-        The state to be added.
-    */
-    void GameState::addChild(GameState* state)
+    const std::string& GameState::getName() const
     {
-        assert(state != NULL);
-
-        std::map<std::string, GameState*>::const_iterator it = this->children_.find(state->getName());
-        if (it == this->children_.end())
-        {
-            this->children_[state->getName()] = state;
-            // mark us as parent
-            state->setParent(this);
-        }
-        else
-        {
-            ThrowException(GameState, "Cannot add two children with the same name");
-        }
-    }
-
-    /**
-    @brief
-        Removes a child by instance. This splits the tree in two parts,
-        each of them functional on its own.
-    @param state
-        GameState by instance pointer
-    */
-    void GameState::removeChild(GameState* state)
-    {
-        assert(state != NULL);
-
-        std::map<std::string, GameState*>::iterator it = this->children_.find(state->getName());
-        if (it != this->children_.end())
-            this->children_.erase(it);
-        else
-        {
-            ThrowException(GameState, "Game state '" + name_ + "' doesn't have a child named '"
-                + state->getName() + "'.");
-        }
+        return info_.stateName;
     }
 
     void GameState::activateInternal()

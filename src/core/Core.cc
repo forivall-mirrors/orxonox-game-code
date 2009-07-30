@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <boost/filesystem.hpp>
+#include <OgreRenderWindow.h>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -67,17 +68,21 @@
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "Factory.h"
+#include "GameMode.h"
+#include "GraphicsManager.h"
+#include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaBind.h"
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
+#include "input/InputManager.h"
 
 namespace orxonox
 {
     //! Static pointer to the singleton
-    Core* Core::singletonRef_s  = 0;
+    Core* Core::singletonPtr_s  = 0;
 
     SetCommandLineArgument(mediaPath, "").information("Path to the media/data files");
     SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
@@ -133,16 +138,20 @@ namespace orxonox
                 .description("The maximal level of debug output shown in the ingame shell")
                 .callback(this, &CoreConfiguration::debugLevelChanged);
 
-            SetConfigValue(language_, Language::getLanguage().defaultLanguage_)
+            SetConfigValue(language_, Language::getInstance().defaultLanguage_)
                 .description("The language of the ingame text")
                 .callback(this, &CoreConfiguration::languageChanged);
             SetConfigValue(bInitializeRandomNumberGenerator_, true)
                 .description("If true, all random actions are different each time you start the game")
                 .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
 
-            SetConfigValue(mediaPathString_, mediaPath_.string())
-                .description("Relative path to the game data.")
-                .callback(this, &CoreConfiguration::mediaPathChanged);
+            // Only show this config value for development builds
+            if (Core::isDevelopmentRun())
+            {
+                SetConfigValue(mediaPathString_, mediaPath_.string())
+                    .description("Relative path to the game data.")
+                    .callback(this, &CoreConfiguration::mediaPathChanged);
+            }
         }
 
         /**
@@ -169,7 +178,7 @@ namespace orxonox
         void languageChanged()
         {
             // Read the translation file after the language was configured
-            Language::getLanguage().readTranslatedLanguageFile();
+            Language::getInstance().readTranslatedLanguageFile();
         }
 
         /**
@@ -197,7 +206,16 @@ namespace orxonox
         */
         void tsetMediaPath(const std::string& path)
         {
-            ModifyConfigValue(mediaPathString_, tset, path);
+            if (Core::isDevelopmentRun())
+            {
+                ModifyConfigValue(mediaPathString_, tset, path);
+            }
+            else
+            {
+                // Manual 'config' value without the file entry
+                mediaPathString_ = path;
+                this->mediaPathChanged();
+            }
         }
 
         void initializeRandomNumberGenerator()
@@ -229,17 +247,14 @@ namespace orxonox
 
 
     Core::Core(const std::string& cmdLine)
+        // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
+        : identifierDestroyer_(Identifier::destroyAllIdentifiers)
+        // Cleanup guard for external console commands that don't belong to an Identifier
+        , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
+        , configuration_(new CoreConfiguration()) // Don't yet create config values!
+        , bDevRun_(false)
+        , bGraphicsLoaded_(false)
     {
-        if (singletonRef_s != 0)
-        {
-            COUT(0) << "Error: The Core singleton cannot be recreated! Shutting down." << std::endl;
-            abort();
-        }
-        Core::singletonRef_s = this;
-
-        // We need the variables very soon. But don't configure them yet!
-        this->configuration_ = new CoreConfiguration();
-
         // Parse command line arguments first
         CommandLine::parseCommandLine(cmdLine);
 
@@ -255,7 +270,7 @@ namespace orxonox
 
         // create a signal handler (only active for linux)
         // This call is placed as soon as possible, but after the directories are set
-        this->signalHandler_ = new SignalHandler();
+        this->signalHandler_.reset(new SignalHandler());
         this->signalHandler_->doCatch(configuration_->executablePath_.string(), Core::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
@@ -274,54 +289,74 @@ namespace orxonox
 #endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
-        this->configFileManager_ = new ConfigFileManager();
+        this->configFileManager_.reset(new ConfigFileManager());
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLine::getValue("settingsFile").getString());
 
         // Required as well for the config values
-        this->languageInstance_ = new Language();
+        this->languageInstance_.reset(new Language());
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         this->configuration_->initialise();
 
         // Create the lua interface
-        this->luaBind_ = new LuaBind();
+        this->luaBind_.reset(new LuaBind());
 
         // initialise Tcl
-        this->tclBind_ = new TclBind(Core::getMediaPathString());
-        this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
+        this->tclBind_.reset(new TclBind(Core::getMediaPathString()));
+        this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
         // create a shell
-        this->shell_ = new Shell();
+        this->shell_.reset(new Shell());
 
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
     }
 
     /**
-        @brief Sets the bool to true to avoid static functions accessing a deleted object.
+    @brief
+        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
     */
     Core::~Core()
     {
-        delete this->shell_;
-        delete this->tclThreadManager_;
-        delete this->tclBind_;
-        delete this->luaBind_;
-        delete this->configuration_;
-        delete this->languageInstance_;
-        delete this->configFileManager_;
+    }
 
-        // Destroy command line arguments
-        CommandLine::destroyAllArguments();
-        // Also delete external console command that don't belong to an Identifier
-        CommandExecutor::destroyExternalCommands();
-        // Clean up class hierarchy stuff (identifiers, XMLPort, configValues, consoleCommand)
-        Identifier::destroyAllIdentifiers();
+    void Core::loadGraphics()
+    {
+        if (bGraphicsLoaded_)
+            return;
 
-        delete this->signalHandler_;
+        // Load OGRE including the render window
+        scoped_ptr<GraphicsManager> graphicsManager(new GraphicsManager());
 
-        // Don't assign singletonRef_s with NULL! Recreation is not supported
+        // The render window width and height are used to set up the mouse movement.
+        size_t windowHnd = 0;
+        graphicsManager->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
+
+        // Calls the InputManager which sets up the input devices.
+        scoped_ptr<InputManager> inputManager(new InputManager(windowHnd));
+
+        // load the CEGUI interface
+        guiManager_.reset(new GUIManager(graphicsManager->getRenderWindow()));
+
+        // Dismiss scoped pointers
+        graphicsManager_.swap(graphicsManager);
+        inputManager_.swap(inputManager);
+
+        bGraphicsLoaded_ = true;
+    }
+
+    void Core::unloadGraphics()
+    {
+        if (!bGraphicsLoaded_)
+            return;
+
+        this->guiManager_.reset();;
+        this->inputManager_.reset();;
+        this->graphicsManager_.reset();
+
+        bGraphicsLoaded_ = false;
     }
 
     /**
@@ -412,6 +447,15 @@ namespace orxonox
     /*static*/ std::string Core::getLogPathString()
     {
         return getInstance().configuration_->logPath_.string() + '/';
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getRootPath()
+    {
+        return getInstance().configuration_->rootPath_;
+    }
+    /*static*/ std::string Core::getRootPathString()
+    {
+        return getInstance().configuration_->rootPath_.string() + '/';
     }
 
     /**
@@ -523,7 +567,7 @@ namespace orxonox
         if (boost::filesystem::exists(configuration_->executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
-            Core::isDevBuild_ = true;
+            Core::bDevRun_ = true;
             configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
             configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
             configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;
@@ -602,8 +646,55 @@ namespace orxonox
         }
     }
 
-    void Core::update(const Clock& time)
+    bool Core::preUpdate(const Clock& time) throw()
     {
-        this->tclThreadManager_->update(time);
+        std::string exceptionMessage;
+        try
+        {
+            if (this->bGraphicsLoaded_)
+            {
+                // process input events
+                this->inputManager_->update(time);
+                // process gui events
+                this->guiManager_->update(time);
+            }
+            // process thread commands
+            this->tclThreadManager_->update(time);
+        }
+        catch (const std::exception& ex)
+        { exceptionMessage = ex.what(); }
+        catch (...)
+        { exceptionMessage = "Unknown exception"; }
+        if (!exceptionMessage.empty())
+        {
+            COUT(0) << "An exception occurred in the Core preUpdate: " << exceptionMessage << std::endl;
+            COUT(0) << "This should really never happen! Closing the program." << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    bool Core::postUpdate(const Clock& time) throw()
+    {
+        std::string exceptionMessage;
+        try
+        {
+            if (this->bGraphicsLoaded_)
+            {
+                // Render (doesn't throw)
+                this->graphicsManager_->update(time);
+            }
+        }
+        catch (const std::exception& ex)
+        { exceptionMessage = ex.what(); }
+        catch (...)
+        { exceptionMessage = "Unknown exception"; }
+        if (!exceptionMessage.empty())
+        {
+            COUT(0) << "An exception occurred in the Core postUpdate: " << exceptionMessage << std::endl;
+            COUT(0) << "This should really never happen! Closing the program." << std::endl;
+            return false;
+        }
+        return true;
     }
 }

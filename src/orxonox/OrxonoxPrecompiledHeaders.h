@@ -89,9 +89,8 @@
 #include "core/BaseObject.h"
 //#include "core/ConfigValueIncludes.h" // 19
 //#include "core/ConsoleCommand.h" // 15
-#include "core/Core.h"
+//#include "core/Core.h" // ?, but not many times
 #include "core/CoreIncludes.h"
-#include "core/GameMode.h"
 #include "core/XMLPort.h"
 
 #include "network/synchronisable/Synchronisable.h"

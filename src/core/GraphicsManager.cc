@@ -36,6 +36,7 @@
 #include "GraphicsManager.h"
 
 #include <fstream>
+#include <memory>
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -55,18 +56,14 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "core/Clock.h"
-#include "core/ConsoleCommand.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/CoreIncludes.h"
-#include "core/Core.h"
-#include "core/Game.h"
-#include "core/GameMode.h"
-#include "core/WindowEventListener.h"
-#include "tools/ParticleInterface.h"
-
-// HACK!
-#include "overlays/map/Map.h"
+#include "Clock.h"
+#include "ConsoleCommand.h"
+#include "ConfigValueIncludes.h"
+#include "CoreIncludes.h"
+#include "Core.h"
+#include "Game.h"
+#include "GameMode.h"
+#include "WindowEventListener.h"
 
 namespace orxonox
 {
@@ -85,7 +82,7 @@ namespace orxonox
             { orxonox::WindowEventListener::moveWindow(); }
     };
 
-    GraphicsManager* GraphicsManager::singletonRef_s = 0;
+    GraphicsManager* GraphicsManager::singletonPtr_s = 0;
 
     /**
     @brief
@@ -99,9 +96,6 @@ namespace orxonox
         , ogreWindowEventListener_(new OgreWindowEventListener())
     {
         RegisterObject(GraphicsManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
 
         this->setConfigValues();
 
@@ -146,8 +140,6 @@ namespace orxonox
         delete this->ccPrintScreen_;
 */
 
-        // HACK! This fixes an exit crash
-        Map::hackDestroyMap();
         // unload all compositors (this is only necessary because we don't yet destroy all resources!)
         Ogre::CompositorManager::getSingleton().removeAll();
 
@@ -158,9 +150,6 @@ namespace orxonox
         delete this->ogreLogger_;
 
         delete this->ogreWindowEventListener_;
-
-        assert(singletonRef_s);
-        singletonRef_s = 0;
     }
 
     void GraphicsManager::setConfigValues()
@@ -181,14 +170,6 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
-        SetConfigValue(detailLevelParticle_, 2)
-            .description("O: off, 1: low, 2: normal, 3: high").callback(this, &GraphicsManager::detailLevelParticleChanged);
-    }
-
-    void GraphicsManager::detailLevelParticleChanged()
-    {
-        for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
-            it->detailLevelChanged(this->detailLevelParticle_);
     }
 
     void GraphicsManager::update(const Clock& time)
@@ -208,8 +189,15 @@ namespace orxonox
         // (probably only necessary on windows)
         this->renderWindow_->setActive(true);
 
-        // render
+        // Time before rendering
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
+
+        // Render frame
         ogreRoot_->_updateAllRenderTargets();
+
+        uint64_t timeAfterTick = time.getRealMicroseconds();
+        // Subtract the time used for rendering from the tick time counter
+        Game::getInstance().subtractTickTime(timeAfterTick - timeBeforeTick);
 
         // again, just to be sure OGRE works fine
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted

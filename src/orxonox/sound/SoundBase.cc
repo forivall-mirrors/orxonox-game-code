@@ -64,19 +64,19 @@ namespace orxonox
 
     void SoundBase::update() {
         if(this->entity_ != NULL && alIsSource(this->source_)) {
-            Vector3 pos = this->entity_->getPosition();
+            const Vector3& pos = this->entity_->getPosition();
             alSource3f(this->source_, AL_POSITION, pos.x, pos.y, pos.z);
             ALenum error = alGetError();
             if(error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound position" << std::endl;
 
-            Vector3 vel = this->entity_->getVelocity();
+            const Vector3& vel = this->entity_->getVelocity();
             alSource3f(this->source_, AL_VELOCITY, vel.x, vel.y, vel.z);
             error = alGetError();
             if(error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound velocity" << std::endl;
 
-            Quaternion orient = this->entity_->getOrientation();
+            const Quaternion& orient = this->entity_->getOrientation();
             Vector3 at = orient.zAxis();
             alSource3f(this->source_, AL_DIRECTION, at.x, at.y, at.z);
             error = alGetError();
@@ -189,7 +189,7 @@ namespace orxonox
 
         if(ov_open(f, &vf, NULL, 0) < 0)
         {
-            COUT(2) << "Sound: libvorbisfile: File seems not to be an Ogg Vorbis bitstream" << std::endl;
+            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
             ov_clear(&vf);
             return AL_NONE;
         }

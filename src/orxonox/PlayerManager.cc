@@ -36,22 +36,17 @@
 
 namespace orxonox
 {
-    PlayerManager* PlayerManager::singletonRef_s = 0;
+    PlayerManager* PlayerManager::singletonPtr_s = 0;
 
     PlayerManager::PlayerManager()
     {
         RegisterRootObject(PlayerManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
 
         this->getConnectedClients();
     }
 
     PlayerManager::~PlayerManager()
     {
-        assert(singletonRef_s);
-        singletonRef_s = 0;
     }
 
     void PlayerManager::clientConnected(unsigned int clientID)

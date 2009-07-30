@@ -63,7 +63,7 @@ namespace orxonox
     // Abuse of this source file for the InputHandler
     InputHandler InputHandler::EMPTY;
 
-    InputManager* InputManager::singletonRef_s = 0;
+    InputManager* InputManager::singletonPtr_s = 0;
 
     //! Defines the |= operator for easier use.
     inline InputManager::State operator|=(InputManager::State& lval, InputManager::State rval)
@@ -91,9 +91,6 @@ namespace orxonox
         , calibratorCallbackHandler_(0)
     {
         RegisterRootObject(InputManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
 
         CCOUT(4) << "Constructing..." << std::endl;
 
@@ -137,8 +134,8 @@ namespace orxonox
             this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "reload"), false);
         }
 
-        internalState_ = Nothing;
         CCOUT(4) << "Construction complete." << std::endl;
+        internalState_ = Nothing;
     }
 
     void InputManager::setConfigValues()
@@ -296,7 +293,6 @@ namespace orxonox
             this->destroyDevices();
 
         CCOUT(4) << "Destruction complete." << std::endl;
-        singletonRef_s = 0;
     }
 
     /**

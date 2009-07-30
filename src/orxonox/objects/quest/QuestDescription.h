@@ -53,10 +53,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestDescription
+    class _OrxonoxExport QuestDescription : public BaseObject
+    {
 // tolua_end
-        : public BaseObject
-    { // tolua_export
         public:
             QuestDescription(BaseObject* creator);
             virtual ~QuestDescription();

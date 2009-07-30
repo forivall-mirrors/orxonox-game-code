@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport GSLevel : public GameState, public OrxonoxClass
     {
     public:
-        GSLevel(const GameStateConstrParams& params);
+        GSLevel(const GameStateInfo& info);
         ~GSLevel();
         void setConfigValues();
 

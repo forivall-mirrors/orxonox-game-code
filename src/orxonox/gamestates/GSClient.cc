@@ -41,8 +41,8 @@ namespace orxonox
 
     SetCommandLineArgument(ip, "127.0.0.1").information("Sever IP as strin in the form #.#.#.#");
 
-    GSClient::GSClient(const GameStateConstrParams& params)
-        : GameState(params)
+    GSClient::GSClient(const GameStateInfo& info)
+        : GameState(info)
         , client_(0)
     {
     }

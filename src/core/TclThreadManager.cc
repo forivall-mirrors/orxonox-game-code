@@ -53,6 +53,7 @@ namespace orxonox
     SetConsoleCommand(TclThreadManager, destroy, false).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, execute, false).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, query,   false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, source,  false).argumentCompleter(0, autocompletion::tclthreads());
 
     /**
         @brief A struct containing all informations about a Tcl-interpreter
@@ -89,9 +90,6 @@ namespace orxonox
     {
         RegisterRootObject(TclThreadManager);
 
-        assert(TclThreadManager::singletonPtr_s == 0);
-        TclThreadManager::singletonPtr_s = this;
-
         this->numInterpreterBundles_ = 0;
 
         this->interpreterBundlesMutex_ = new boost::shared_mutex();
@@ -114,8 +112,6 @@ namespace orxonox
     */
     TclThreadManager::~TclThreadManager()
     {
-        TclThreadManager::singletonPtr_s = 0;
-
         delete this->interpreterBundlesMutex_;
 //        delete this->mainInterpreterMutex_; // <-- temporary disabled to avoid crash if a thread is still actively queriyng
         delete this->messageQueue_;
@@ -239,47 +235,9 @@ namespace orxonox
     {
         TclInterpreterBundle* newbundle = new TclInterpreterBundle();
         newbundle->id_ = id;
-        newbundle->interpreter_ = new Tcl::interpreter(TclBind::getInstance().getTclLibPath());
+        newbundle->interpreter_ = TclBind::createTclInterpreter();
 
-        // Initialize the new interpreter
-        try
-        {
-            std::string id_string = getConvertedValue<unsigned int, std::string>(id);
-
-            // Define the functions which are implemented in C++
-            newbundle->interpreter_->def("orxonox::execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::query",        TclThreadManager::tcl_query,        Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::crossquery",   TclThreadManager::tcl_crossquery,   Tcl::variadic());
-            newbundle->interpreter_->def("orxonox::running",      TclThreadManager::tcl_running);
-
-            // Create threadspecific shortcuts for the functions above
-            newbundle->interpreter_->def("execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
-            newbundle->interpreter_->def("crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
-            newbundle->interpreter_->eval("proc query       args     { orxonox::query " + id_string + " $args }");
-            newbundle->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery " + id_string + " $id $args }");
-
-            // Define a variable containing the thread id
-            newbundle->interpreter_->eval("set id " + id_string);
-
-            // Use our own exit function to avoid shutting down the whole program instead of just the interpreter
-            newbundle->interpreter_->eval("rename exit tcl::exit");
-            newbundle->interpreter_->eval("proc exit {} { execute TclThreadManager destroy " + id_string + " }");
-
-            // Redefine some native functions
-            newbundle->interpreter_->eval("redef_puts");
-
-//            newbundle->interpreter_->eval("rename while tcl::while");
-//            newbundle->interpreter_->eval("proc while {test command} { tcl::while {[uplevel 1 expr $test]} {uplevel 1 $command} }"); // (\"$test\" && [orxonox::running " + id + "]])
-//            newbundle->interpreter_->eval("rename for tcl::for");
-//            newbundle->interpreter_->eval("proc for {start test next command} { uplevel tcl::for \"$start\" \"$test\" \"$next\" \"$command\" }");
-        }
-        catch (const Tcl::tcl_error& e)
-        {   newbundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id << "): " << e.what() << std::endl;   }
-        catch (const std::exception& e)
-        {   newbundle->interpreter_ = 0; COUT(1) << "Error while creating Tcl-interpreter (" << id << "): " << e.what() << std::endl;   }
-        catch (...)
-        {   newbundle->interpreter_ = 0; COUT(1) << "An error occurred while creating a new Tcl-interpreter (" << id << ")" << std::endl;   }
+        TclThreadManager::initialize(newbundle);
 
         {
             // Add the new bundle to the map
@@ -290,6 +248,48 @@ namespace orxonox
         return newbundle->interpreter_;
     }
 
+    void TclThreadManager::initialize(TclInterpreterBundle* bundle)
+    {
+        std::string id_string = getConvertedValue<unsigned int, std::string>(bundle->id_);
+
+        // Initialize the new interpreter
+        try
+        {
+            // Define the functions which are implemented in C++
+            bundle->interpreter_->def("::orxonox::execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
+            bundle->interpreter_->def("::orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
+            bundle->interpreter_->def("::orxonox::query",        TclThreadManager::tcl_query,        Tcl::variadic());
+            bundle->interpreter_->def("::orxonox::crossquery",   TclThreadManager::tcl_crossquery,   Tcl::variadic());
+            bundle->interpreter_->def("::orxonox::running",      TclThreadManager::tcl_running);
+
+            // Create threadspecific shortcuts for the functions above
+            bundle->interpreter_->def("execute",      TclThreadManager::tcl_execute,      Tcl::variadic());
+            bundle->interpreter_->def("crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
+            bundle->interpreter_->eval("proc query      {args}    { ::orxonox::query " + id_string + " $args }");
+            bundle->interpreter_->eval("proc crossquery {id args} { ::orxonox::crossquery " + id_string + " $id $args }");
+            bundle->interpreter_->eval("proc running    {}        { return [::orxonox::running " + id_string + "] }");
+
+            // Define a variable containing the thread id
+            bundle->interpreter_->eval("set id " + id_string);
+
+            // Use our own exit function to avoid shutting down the whole program instead of just the interpreter
+            bundle->interpreter_->eval("rename exit ::tcl::exit");
+            bundle->interpreter_->eval("proc exit {} { execute TclThreadManager destroy " + id_string + " }");
+
+            // Redefine some native functions
+            bundle->interpreter_->eval("rename while ::tcl::while");
+            bundle->interpreter_->eval("rename ::orxonox::while while");
+            bundle->interpreter_->eval("rename for ::tcl::for");
+            bundle->interpreter_->eval("rename ::orxonox::for for");
+        }
+        catch (const Tcl::tcl_error& e)
+        {   bundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id_string << "): " << e.what() << std::endl;   }
+        catch (const std::exception& e)
+        {   bundle->interpreter_ = 0; COUT(1) << "Error while creating Tcl-interpreter (" << id_string << "): " << e.what() << std::endl;   }
+        catch (...)
+        {   bundle->interpreter_ = 0; COUT(1) << "An error occurred while creating a new Tcl-interpreter (" << id_string << ")" << std::endl;   }
+    }
+
     /**
         @brief Stops and destroys a given Tcl-interpreter
     */
@@ -297,6 +297,11 @@ namespace orxonox
     {
         // TODO
         // Not yet implemented
+        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(id);
+        if (bundle)
+        {
+            bundle->bRunning_ = false;
+        }
     }
 
     /**
@@ -398,7 +403,7 @@ namespace orxonox
             if ((source_bundle->id_ == target_bundle->id_) || source_bundle->queriers_.is_in(target_bundle->id_))
             {
                 // This query would lead to a deadlock - return with an error
-                this->error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + " " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
+                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + " " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
                             + " -> " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
                             + "), couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
                             + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) + ".");
@@ -434,9 +439,9 @@ namespace orxonox
                     if (target_bundle->id_ == 0 && bUseCommandExecutor)
                     {
                         // It's a query to the CommandExecutor
-                        this->debug("TclThread_query -> CE: " + command);
+                        TclThreadManager::debug("TclThread_query -> CE: " + command);
                         if (!CommandExecutor::execute(command, false))
-                            this->error("Error: Can't execute command \"" + command + "\"!");
+                            TclThreadManager::error("Error: Can't execute command \"" + command + "\"!");
 
                         if (CommandExecutor::getLastEvaluation().hasReturnvalue())
                             output = CommandExecutor::getLastEvaluation().getReturnvalue().getString();
@@ -444,9 +449,9 @@ namespace orxonox
                     else
                     {
                         // It's a query to a Tcl interpreter
-                        this->debug("TclThread_query: " + command);
+                        TclThreadManager::debug("TclThread_query: " + command);
 
-                        output = this->eval(target_bundle, command);
+                        output = TclThreadManager::eval(target_bundle, command, "query");
                     }
 
                     // Clear the queriers list of the target
@@ -463,13 +468,21 @@ namespace orxonox
                 {
                     // This happens if the main thread tries to query a busy interpreter
                     // To avoid a lock of the main thread, we simply don't proceed with the query in this case
-                    this->error("Error: Couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) + ", interpreter is busy right now.");
+                    TclThreadManager::error("Error: Couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) + ", interpreter is busy right now.");
                 }
             }
 
         }
 
         return output;
+    }
+
+    /**
+        @brief Creates a non-interactive Tcl-interpreter which executes a file.
+    */
+    void TclThreadManager::source(const std::string& file)
+    {
+        boost::thread(boost::bind(&sourceThread, file));
     }
 
     /**
@@ -501,7 +514,7 @@ namespace orxonox
         }
         else
         {
-            this->error("Error: No Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(id) + " existing.");
+            TclThreadManager::error("Error: No Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(id) + " existing.");
             return 0;
         }
     }
@@ -543,7 +556,7 @@ namespace orxonox
     */
     void TclThreadManager::error(const std::string& error)
     {
-        this->messageQueue_->push_back("error " + error);
+        TclThreadManager::getInstance().messageQueue_->push_back("error " + error);
     }
 
     /**
@@ -551,7 +564,7 @@ namespace orxonox
     */
     void TclThreadManager::debug(const std::string& error)
     {
-        this->messageQueue_->push_back("debug " + error);
+        TclThreadManager::getInstance().messageQueue_->push_back("debug " + error);
     }
 
     /**
@@ -560,7 +573,7 @@ namespace orxonox
 
         Errors are reported through the @ref error function.
     */
-    std::string TclThreadManager::eval(TclInterpreterBundle* bundle, const std::string& command)
+    std::string TclThreadManager::eval(TclInterpreterBundle* bundle, const std::string& command, const std::string& action)
     {
         Tcl_Interp* interpreter = bundle->interpreter_->get();
         int cc = Tcl_Eval(interpreter, command.c_str());
@@ -569,7 +582,7 @@ namespace orxonox
 
         if (cc != TCL_OK)
         {
-            this->error("Tcl error (execute, ID " + getConvertedValue<unsigned int, std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
+            TclThreadManager::error("Tcl error (" + action + ", ID " + getConvertedValue<unsigned int, std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
             return "";
         }
         else
@@ -589,10 +602,71 @@ namespace orxonox
     */
     void tclThread(TclInterpreterBundle* bundle, std::string command)
     {
-        TclThreadManager::getInstance().debug("TclThread_execute: " + command);
+        TclThreadManager::debug("TclThread_execute: " + command);
 
-        TclThreadManager::getInstance().eval(bundle, command);
+        TclThreadManager::eval(bundle, command, "execute");
 
         bundle->lock_->unlock();
+    }
+
+    /**
+        @brief The main function of a non-interactive source thread. Executes the file.
+        @param file The name of the file that should be executed by the non-interactive interpreter.
+    */
+    void sourceThread(std::string file)
+    {
+        TclThreadManager::debug("TclThread_source: " + file);
+
+        // Prepare the command-line arguments
+        const int argc = 2;
+        char* argv[argc];
+        argv[0] = "tclthread";
+        argv[1] = const_cast<char*>(file.c_str());
+
+        // Start the Tcl-command Tcl_Main with the Tcl_OrxonoxAppInit hook
+        Tcl_Main(argc, argv, Tcl_OrxonoxAppInit);
+
+//        Tcl::object object(file);
+//        int cc = Tcl_FSEvalFile(bundle->interpreter_->get(), object.get_object());
+//        Tcl::details::result result(bundle->interpreter_->get());
+//        if (cc != TCL_OK)
+//            TclThreadManager::error("Tcl error (source, ID " + getConvertedValue<unsigned int, std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
+//
+//        // Unlock the mutex
+//        bundle->lock_->unlock();
+    }
+
+    /**
+        @brief A tcl-init hook to inject the non-interactive Tcl-interpreter into the TclThreadManager.
+    */
+    int Tcl_OrxonoxAppInit(Tcl_Interp* interp)
+    {
+        // Create a new interpreter bundle
+        unsigned int id = TclThreadManager::create();
+        TclInterpreterBundle* bundle = TclThreadManager::getInstance().getInterpreterBundle(id);
+
+        // Replace the default interpreter in the bundle with the non-interactive one (passed as an argument to this function)
+        if (bundle->interpreter_)
+            delete bundle->interpreter_;
+        bundle->interpreter_ = new Tcl::interpreter(interp, true);
+
+        // Initialize the non-interactive interpreter (like in @ref TclBind::createTclInterpreter but exception safe)
+        std::string libpath = TclBind::getTclLibraryPath();
+        if (libpath != "")
+            TclThreadManager::eval(bundle, "set tcl_library \"" + libpath + "\"", "source");
+        int cc = Tcl_Init(interp);
+        TclThreadManager::eval(bundle, "source \"" + TclBind::getInstance().getTclDataPath() + "/init.tcl\"", "source");
+
+        // Initialize the non-interactive interpreter also with the thread-specific stuff
+        TclThreadManager::initialize(bundle);
+
+        // Lock the mutex (this will be locked until the thread finishes - no chance to interact with the interpreter)
+        bundle->lock_->lock();
+
+        // Return to Tcl_Main
+        if (!bundle->interpreter_)
+            return TCL_ERROR;
+        else
+            return cc;
     }
 }

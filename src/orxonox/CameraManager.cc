@@ -33,30 +33,24 @@
 
 #include "util/StringUtils.h"
 #include "core/GameMode.h"
+#include "core/GUIManager.h"
 #include "core/ObjectList.h"
 #include "tools/Shader.h"
 #include "objects/worldentities/Camera.h"
 #include "objects/Scene.h"
-#include "gui/GUIManager.h"
 
 namespace orxonox
 {
-    CameraManager* CameraManager::singletonRef_s = 0;
+    CameraManager* CameraManager::singletonPtr_s = 0;
 
     CameraManager::CameraManager(Ogre::Viewport* viewport)
         : viewport_(viewport)
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
-
         this->fallbackCamera_ = 0;
     }
 
     CameraManager::~CameraManager()
     {
-        assert(singletonRef_s != 0);
-        singletonRef_s = 0;
-
         if (this->fallbackCamera_)
             this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
     }

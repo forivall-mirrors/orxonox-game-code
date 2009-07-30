@@ -36,12 +36,13 @@
 #ifndef _GraphicsManager_H__
 #define _GraphicsManager_H__
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 
 #include <cassert>
 #include <string>
 #include <OgreLog.h>
-#include "core/OrxonoxClass.h"
+#include "util/Singleton.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -49,8 +50,9 @@ namespace orxonox
     @brief
         Graphics engine manager class
     */
-    class _OrxonoxExport GraphicsManager : public OrxonoxClass, public Ogre::LogListener
+    class _CoreExport GraphicsManager : public Singleton<GraphicsManager>, public OrxonoxClass, public Ogre::LogListener
     {
+        friend class Singleton<GraphicsManager>;
     public:
         GraphicsManager();
         ~GraphicsManager();
@@ -59,19 +61,12 @@ namespace orxonox
 
         void update(const Clock& time);
 
-        void detailLevelParticleChanged();
-        inline unsigned int getDetailLevelParticle() const
-            { return this->detailLevelParticle_; }
-
         inline Ogre::Viewport* getViewport()
             { return this->viewport_; }
         inline Ogre::RenderWindow* getRenderWindow()
             { return this->renderWindow_; }
 
         void setCamera(Ogre::Camera* camera);
-
-        inline static GraphicsManager& getInstance()
-            { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         GraphicsManager(GraphicsManager&); // don't mess with singletons
@@ -98,7 +93,6 @@ namespace orxonox
         OgreWindowEventListener* ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 
         // config values
-        unsigned int        detailLevelParticle_;      //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
         std::string         resourceFile_;             //!< resources file name
         std::string         ogreConfigFile_;           //!< ogre config file name
         std::string         ogrePluginsFolder_;        //!< Folder where the Ogre plugins are located
@@ -111,7 +105,7 @@ namespace orxonox
         // console commands
         ConsoleCommand*     ccPrintScreen_;
 
-        static GraphicsManager* singletonRef_s;        //!< Pointer to the Singleton
+        static GraphicsManager* singletonPtr_s;        //!< Pointer to the Singleton
     };
 }
 

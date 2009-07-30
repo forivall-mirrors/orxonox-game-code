@@ -36,10 +36,10 @@
 
     Usage:
      - Set the entry with the default string:
-       Language::getLanguage()->addEntry("label of the entry", "the string to translate");
+       Language::getInstance()->addEntry("label of the entry", "the string to translate");
 
      - Get the localisation of the entry in the configured language:
-       std::cout << Language::getLanguage()->getLocalisation("name of the entry") << std::endl;
+       std::cout << Language::getInstance()->getLocalisation("name of the entry") << std::endl;
 */
 
 #ifndef _Language_H__
@@ -50,12 +50,13 @@
 #include <map>
 #include <string>
 #include <cassert>
+#include "util/Singleton.h"
 
 #define AddLanguageEntry(label, fallbackstring) \
-    orxonox::Language::getLanguage().addEntry(label, fallbackstring)
+    orxonox::Language::getInstance().addEntry(label, fallbackstring)
 
 #define GetLocalisation(label) \
-    orxonox::Language::getLanguage().getLocalisation(label)
+    orxonox::Language::getInstance().getLocalisation(label)
 
 
 namespace orxonox
@@ -111,15 +112,15 @@ namespace orxonox
     // ###         Language        ###
     // ###############################
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
-    class _CoreExport Language
+    class _CoreExport Language : public Singleton<Language>
     {
+        friend class Singleton<Language>;
         friend class CoreConfiguration;
 
         public:
             Language();
             ~Language();
 
-            static Language& getLanguage() { assert(singletonRef_s); return *singletonRef_s; }
             void addEntry(const LanguageEntryLabel& label, const std::string& entry);
             const std::string& getLocalisation(const LanguageEntryLabel& label) const;
 
@@ -136,7 +137,7 @@ namespace orxonox
             std::string defaultLocalisation_;                       //!< The returned string, if an entry unavailable entry is requested
             std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their labels
 
-            static Language* singletonRef_s;
+            static Language* singletonPtr_s;
     };
 }
 

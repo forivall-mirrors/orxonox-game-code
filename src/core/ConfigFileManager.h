@@ -37,6 +37,7 @@
 #include <map>
 
 #include "util/OrxEnum.h"
+#include "util/Singleton.h"
 
 namespace orxonox
 {
@@ -266,8 +267,9 @@ namespace orxonox
     ///////////////////////
     // ConfigFileManager //
     ///////////////////////
-    class _CoreExport ConfigFileManager
+    class _CoreExport ConfigFileManager : public Singleton<ConfigFileManager>
     {
+        friend class Singleton<ConfigFileManager>;
         public:
             ConfigFileManager();
             ~ConfigFileManager();
@@ -304,8 +306,6 @@ namespace orxonox
             void updateConfigValues();
             void updateConfigValues(ConfigFileType type);
 
-            static ConfigFileManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
-
         private:
             ConfigFileManager(const ConfigFileManager&);
 
@@ -314,7 +314,7 @@ namespace orxonox
             std::map<ConfigFileType, ConfigFile*> configFiles_;
             unsigned int mininmalFreeType_;
 
-            static ConfigFileManager* singletonRef_s;
+            static ConfigFileManager* singletonPtr_s;
     };
 }
 

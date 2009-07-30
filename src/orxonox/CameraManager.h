@@ -40,11 +40,13 @@
 #include <cassert>
 #include <list>
 #include "util/OgreForwardRefs.h"
+#include "util/Singleton.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager
+    class _OrxonoxExport CameraManager : public Singleton<CameraManager>
     {
+            friend class Singleton<CameraManager>;
         public:
             CameraManager(Ogre::Viewport* viewport);
             ~CameraManager();
@@ -56,8 +58,7 @@ namespace orxonox
 
             void useCamera(Ogre::Camera* camera);
 
-            static CameraManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
-            static CameraManager* getInstancePtr() { return singletonRef_s; }
+            static CameraManager* getInstancePtr() { return singletonPtr_s; }
 
         private:
             CameraManager(const CameraManager&); // don't use
@@ -66,7 +67,7 @@ namespace orxonox
             Ogre::Viewport*       viewport_;
             Ogre::Camera*         fallbackCamera_;
 
-            static CameraManager* singletonRef_s;
+            static CameraManager* singletonPtr_s;
     };
 }
 

@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport GSRoot : public GameState
     {
     public:
-        GSRoot(const GameStateConstrParams& params);
+        GSRoot(const GameStateInfo& info);
         ~GSRoot();
 
         void activate();

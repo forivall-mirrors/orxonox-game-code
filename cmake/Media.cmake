@@ -44,15 +44,8 @@ ENDIF()
 
 ################ Installation #################
 
-# Try no to copy both tcl script file libraries
-IF(TCL_LIBRARY MATCHES "85|8\\.5")
-  SET(TCL_EXCLUDE_PATTERN "tcl8\\.4")
-ELSEIF(TCL_LIBRARY MATCHES "84|8\\.4")
-  SET(TCL_EXCLUDE_PATTERN "tcl8\\.5")
-ENDIF()
-
 INSTALL(
   DIRECTORY ${CMAKE_MEDIA_OUTPUT_DIRECTORY}/
   DESTINATION ${ORXONOX_MEDIA_INSTALL_PATH}
-  REGEX "\\.svn$|_svn$|backToPNG|${TCL_EXCLUDE_PATTERN}" EXCLUDE
+  REGEX "\\.svn$|_svn$|backToPNG" EXCLUDE
 )

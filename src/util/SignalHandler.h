@@ -39,6 +39,7 @@
 #include <cassert>
 #include <list>
 #include <string>
+#include "Singleton.h"
 
 namespace orxonox
 {
@@ -66,12 +67,12 @@ namespace orxonox
     typedef std::list<SignalRec> SignalRecList;
     typedef std::list<SignalCallbackRec> SignalCallbackList;
 
-    class SignalHandler
+    class SignalHandler : public Singleton<SignalHandler>
     {
+        friend class Singleton<SignalHandler>;
     public:
-        SignalHandler()  { assert(SignalHandler::singletonRef_s == 0); SignalHandler::singletonRef_s = this; }
-        ~SignalHandler() { assert(SignalHandler::singletonRef_s != 0); SignalHandler::singletonRef_s = NULL; }
-        inline static SignalHandler& getInstance() { assert(SignalHandler::singletonRef_s); return *SignalHandler::singletonRef_s; }
+        SignalHandler()  { }
+        ~SignalHandler() { }
 
         void registerCallback( SignalCallback cb, void * someData );
 
@@ -86,7 +87,7 @@ namespace orxonox
 
         SignalCallbackList callbackList;
 
-        static SignalHandler* singletonRef_s;
+        static SignalHandler* singletonPtr_s;
 
         std::string appName;
         std::string filename;
@@ -97,18 +98,18 @@ namespace orxonox
 
 namespace orxonox
 {
-    class _UtilExport SignalHandler
+    class _UtilExport SignalHandler : public Singleton<SignalHandler>
     {
+        friend class Singleton<SignalHandler>;
     public:
-        SignalHandler()  { assert(SignalHandler::singletonRef_s == 0); SignalHandler::singletonRef_s = this; }
-        ~SignalHandler() { assert(SignalHandler::singletonRef_s != 0); SignalHandler::singletonRef_s = 0; }
-        inline static SignalHandler& getInstance() { assert(SignalHandler::singletonRef_s); return *SignalHandler::singletonRef_s; }
+        SignalHandler()  { }
+        ~SignalHandler() { }
         void doCatch( const std::string & appName, const std::string & filename ) {}
         void dontCatch() {}
         void registerCallback( SignalCallback cb, void * someData ) {}
 
     private:
-        static SignalHandler* singletonRef_s;
+        static SignalHandler* singletonPtr_s;
     };
 }
 

@@ -54,8 +54,8 @@ namespace orxonox
     
     termios* GSDedicated::originalTerminalSettings_;
 
-    GSDedicated::GSDedicated(const GameStateConstrParams& params)
-        : GameState(params)
+    GSDedicated::GSDedicated(const GameStateInfo& info)
+        : GameState(info)
         , server_(0)
         , closeThread_(false)
         , cleanLine_(true)

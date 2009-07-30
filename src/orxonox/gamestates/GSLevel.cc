@@ -39,6 +39,8 @@
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/Core.h"
+#include "core/GraphicsManager.h"
+#include "core/GUIManager.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 
@@ -46,21 +48,19 @@
 #include "objects/Radar.h"
 #include "objects/quest/QuestManager.h"
 #include "overlays/notifications/NotificationManager.h"
-#include "gui/GUIManager.h"
 #include "CameraManager.h"
-#include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
 
 namespace orxonox
 {
-    DeclareGameState(GSLevel, "level", false, true);
+    DeclareGameState(GSLevel, "level", false, false);
     SetConsoleCommand(GSLevel, showIngameGUI, true);
 
     XMLFile* GSLevel::startFile_s = NULL;
 
-    GSLevel::GSLevel(const GameStateConstrParams& params)
-        : GameState(params)
+    GSLevel::GSLevel(const GameStateInfo& info)
+        : GameState(info)
         , keyBinder_(0)
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)

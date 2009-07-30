@@ -39,6 +39,7 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/ScopeGuard.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"
 #include "Clock.h"
@@ -47,6 +48,7 @@
 #include "Core.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
+#include "GameMode.h"
 #include "GameState.h"
 
 namespace orxonox
@@ -58,8 +60,8 @@ namespace orxonox
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
 
-    std::map<std::string, Game::GameStateInfo> Game::gameStateDeclarations_s;
-    Game* Game::singletonRef_s = 0;
+    std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
+    Game* Game::singletonPtr_s = 0;
 
 
     /**
@@ -68,7 +70,7 @@ namespace orxonox
     */
     struct GameStateTreeNode
     {
-        GameState* state_;
+        std::string name_;
         weak_ptr<GameStateTreeNode> parent_;
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
@@ -111,74 +113,48 @@ namespace orxonox
     */
     Game::Game(const std::string& cmdLine)
     {
-        if (singletonRef_s != 0)
-        {
-            COUT(0) << "Error: The Game singleton cannot be recreated! Shutting down." << std::endl;
-            abort();
-        }
-        singletonRef_s = this;
-
         this->bAbort_ = false;
         bChangingState_ = false;
 
-        // Create an empty root state
-        declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        minimumSleepTime_ = 1000/*us*/;
+#else
+        minimumSleepTime_ = 0/*us*/;
+#endif
 
-        // reset statistics
-        this->statisticsStartTime_ = 0;
-        this->statisticsTickTimes_.clear();
-        this->periodTickTime_ = 0;
-        this->periodTime_ = 0;
-        this->avgFPS_ = 0.0f;
-        this->avgTickTime_ = 0.0f;
+        // Create an empty root state
+        this->declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
 
         // Set up a basic clock to keep time
-        this->gameClock_ = new Clock();
+        this->gameClock_.reset(new Clock());
 
         // Create the Core
-        this->core_ = new Core(cmdLine);
+        this->core_.reset(new Core(cmdLine));
 
-        // After the core has been created, we can safely instantiate the GameStates
+        // After the core has been created, we can safely instantiate the GameStates that don't require graphics
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
             it != gameStateDeclarations_s.end(); ++it)
         {
-            // Only create the states appropriate for the game mode
-            //if (GameMode::showsGraphics || !it->second.bGraphicsMode)
-            GameStateConstrParams params = { it->second.stateName, it->second.bIgnoreTickTime };
-            gameStates_[getLowercase(it->second.stateName)] = GameStateFactory::fabricate(it->second.className, params);
+            if (!it->second.bGraphicsMode)
+                constructedStates_[it->second.stateName] = GameStateFactory::fabricate(it->second);
         }
 
         // The empty root state is ALWAYS loaded!
         this->rootStateNode_ = shared_ptr<GameStateTreeNode>(new GameStateTreeNode());
-        this->rootStateNode_->state_ = getState("emptyRootGameState");
-        this->activeStateNode_ = this->rootStateNode_;
-        this->activeStates_.push_back(this->rootStateNode_->state_);
+        this->rootStateNode_->name_ = "emptyRootGameState";
+        this->loadedTopStateNode_ = this->rootStateNode_;
+        this->loadedStates_.push_back(this->getState(rootStateNode_->name_));
 
         // Do this after the Core creation!
-        this->configuration_ = new GameConfiguration();
+        this->configuration_.reset(new GameConfiguration());
     }
 
     /**
     @brief
+        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
     */
     Game::~Game()
     {
-        // Destroy the configuration helper class instance
-        delete this->configuration_;
-
-        // Destroy the GameStates (note that the nodes still point to them, but doesn't matter)
-        for (std::map<std::string, GameState*>::const_iterator it = gameStates_.begin();
-            it != gameStates_.end(); ++it)
-            delete it->second;
-
-        // Destroy the Core and with it almost everything
-        delete this->core_;
-        delete this->gameClock_;
-
-        // Take care of the GameStateFactories
-        GameStateFactory::destroyFactories();
-
-        // Don't assign singletonRef_s with NULL! Recreation is not supported
     }
 
     /**
@@ -194,148 +170,179 @@ namespace orxonox
         if (this->requestedStateNodes_.empty())
             COUT(0) << "Warning: Starting game without requesting GameState. This automatically terminates the program." << std::endl;
 
+        // reset statistics
+        this->statisticsStartTime_ = 0;
+        this->statisticsTickTimes_.clear();
+        this->periodTickTime_ = 0;
+        this->periodTime_ = 0;
+        this->avgFPS_ = 0.0f;
+        this->avgTickTime_ = 0.0f;
+        this->excessSleepTime_ = 0;
+
         // START GAME
         // first delta time should be about 0 seconds
         this->gameClock_->capture();
         // A first item is required for the fps limiter
         StatisticsTickInfo tickInfo = {0, 0};
         statisticsTickTimes_.push_back(tickInfo);
-        while (!this->bAbort_ && (!this->activeStates_.empty() || this->requestedStateNodes_.size() > 0))
+        while (!this->bAbort_ && (!this->loadedStates_.empty() || this->requestedStateNodes_.size() > 0))
         {
-            uint64_t currentTime = this->gameClock_->getRealMicroseconds();
-
-            uint64_t nextTickTime = statisticsTickTimes_.back().tickTime + static_cast<uint64_t>(1000000.0f / configuration_->fpsLimit_);
-            if (currentTime < nextTickTime)
-            {
-                usleep(nextTickTime - currentTime);
-                continue;
-            }
+            // Generate the dt
             this->gameClock_->capture();
 
-            // STATISTICS
-            StatisticsTickInfo tickInfo = {currentTime, 0};
+            // Statistics init
+            StatisticsTickInfo tickInfo = {gameClock_->getMicroseconds(), 0};
             statisticsTickTimes_.push_back(tickInfo);
             this->periodTime_ += this->gameClock_->getDeltaTimeMicroseconds();
 
-            // UPDATE STATE STACK
-            while (this->requestedStateNodes_.size() > 0)
-            {
-                shared_ptr<GameStateTreeNode> requestedStateNode = this->requestedStateNodes_.front();
-                assert(this->activeStateNode_);
-                if (!this->activeStateNode_->parent_.expired() && requestedStateNode == this->activeStateNode_->parent_.lock())
-                    this->unloadState(this->activeStateNode_->state_);
-                else // has to be child
-                {
-                    try
-                    {
-                        this->loadState(requestedStateNode->state_);
-                    }
-                    catch (const std::exception& ex)
-                    {
-                        COUT(1) << "Error: Loading GameState '" << requestedStateNode->state_->getName() << "' failed: " << ex.what() << std::endl;
-                        // All scheduled operations have now been rendered inert --> flush them and issue a warning
-                        if (this->requestedStateNodes_.size() > 1)
-                            COUT(1) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << std::endl;
-                        this->requestedStateNodes_.clear();
-                        break;
-                    }
-                }
-                this->activeStateNode_ = requestedStateNode;
-                this->requestedStateNodes_.erase(this->requestedStateNodes_.begin());
-            }
+            // Update the GameState stack if required
+            this->updateGameStateStack();
 
-            // UPDATE, Core first
-            bool threwException = false;
-            try
+            // Core preUpdate (doesn't throw)
+            if (!this->core_->preUpdate(*this->gameClock_))
             {
-                this->core_->update(*this->gameClock_);
-            }
-            catch (const std::exception& ex)
-            {
-                threwException = true;
-                COUT(0) << "Exception while ticking the Core: " << ex.what() << std::endl;
-            }
-            catch (...)
-            {
-                threwException = true;
-            }
-            if (threwException)
-            {
-                COUT(0) << "An exception occured while ticking the Core. This should really never happen!" << std::endl;
-                COUT(0) << "Closing the program." << std::endl;
                 this->stop();
                 break;
             }
 
-            // UPDATE, GameStates bottom to top in the stack
-            // Note: The first element is the empty root state, which doesn't need ticking
-            for (std::vector<GameState*>::const_iterator it = this->activeStates_.begin() + 1;
-                it != this->activeStates_.end(); ++it)
-            {
-                bool threwException = false;
-                try
-                {
-                    // Add tick time for most of the states
-                    uint64_t timeBeforeTick;
-                    if (!(*it)->ignoreTickTime())
-                        timeBeforeTick = this->gameClock_->getRealMicroseconds();
-                    (*it)->update(*this->gameClock_);
-                    if (!(*it)->ignoreTickTime())
-                        this->addTickTime(static_cast<uint32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
-                }
-                catch (const std::exception& ex)
-                {
-                    threwException = true;
-                    COUT(0) << "Exception while ticking: " << ex.what() << std::endl;
-                }
-                catch (...)
-                {
-                    threwException = true;
-                }
-                if (threwException)
-                {
-                    COUT(1) << "An exception occured while ticking GameState '" << (*it)->getName() << "'. This should really never happen!" << std::endl;
-                    COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
-                    if ((*it)->getParent() != NULL)
-                        this->requestState((*it)->getParent()->getName());
-                    else
-                        this->stop();
-                    break;
-                }
+            // Update the GameStates bottom up in the stack
+            this->updateGameStates();
 
+            // Core postUpdate (doesn't throw)
+            if (!this->core_->postUpdate(*this->gameClock_))
+            {
+                this->stop();
+                break;
             }
 
-            // STATISTICS
-            if (this->periodTime_ > this->configuration_->statisticsRefreshCycle_)
-            {
-                std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
-                assert(it != this->statisticsTickTimes_.end());
-                int64_t lastTime = currentTime - this->configuration_->statisticsAvgLength_;
-                if (static_cast<int64_t>(it->tickTime) < lastTime)
-                {
-                    do
-                    {
-                        assert(this->periodTickTime_ >= it->tickLength);
-                        this->periodTickTime_ -= it->tickLength;
-                        ++it;
-                        assert(it != this->statisticsTickTimes_.end());
-                    } while (static_cast<int64_t>(it->tickTime) < lastTime);
-                    this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), it);
-                }
+            // Evaluate statistics
+            this->updateStatistics();
 
-                uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-                this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
-                this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
-
-                this->periodTime_ -= this->configuration_->statisticsRefreshCycle_;
-            }
+            // Limit framerate
+            this->updateFPSLimiter();
         }
 
         // UNLOAD all remaining states
-        while (this->activeStates_.size() > 1)
-            this->unloadState(this->activeStates_.back());
-        this->activeStateNode_ = this->rootStateNode_;
+        while (this->loadedStates_.size() > 1)
+            this->unloadState(this->loadedStates_.back()->getName());
+        this->loadedTopStateNode_ = this->rootStateNode_;
         this->requestedStateNodes_.clear();
+    }
+
+    void Game::updateGameStateStack()
+    {
+        while (this->requestedStateNodes_.size() > 0)
+        {
+            shared_ptr<GameStateTreeNode> requestedStateNode = this->requestedStateNodes_.front();
+            assert(this->loadedTopStateNode_);
+            if (!this->loadedTopStateNode_->parent_.expired() && requestedStateNode == this->loadedTopStateNode_->parent_.lock())
+                this->unloadState(loadedTopStateNode_->name_);
+            else // has to be child
+            {
+                try
+                {
+                    this->loadState(requestedStateNode->name_);
+                }
+                catch (const std::exception& ex)
+                {
+                    COUT(1) << "Error: Loading GameState '" << requestedStateNode->name_ << "' failed: " << ex.what() << std::endl;
+                    // All scheduled operations have now been rendered inert --> flush them and issue a warning
+                    if (this->requestedStateNodes_.size() > 1)
+                        COUT(1) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << std::endl;
+                    this->requestedStateNodes_.clear();
+                    break;
+                }
+            }
+            this->loadedTopStateNode_ = requestedStateNode;
+            this->requestedStateNodes_.erase(this->requestedStateNodes_.begin());
+        }
+    }
+
+    void Game::updateGameStates()
+    {
+        // Note: The first element is the empty root state, which doesn't need ticking
+        for (GameStateVector::const_iterator it = this->loadedStates_.begin() + 1;
+            it != this->loadedStates_.end(); ++it)
+        {
+            std::string exceptionMessage;
+            try
+            {
+                // Add tick time for most of the states
+                uint64_t timeBeforeTick;
+                if ((*it)->getInfo().bIgnoreTickTime)
+                    timeBeforeTick = this->gameClock_->getRealMicroseconds();
+                (*it)->update(*this->gameClock_);
+                if ((*it)->getInfo().bIgnoreTickTime)
+                    this->subtractTickTime(static_cast<int32_t>(this->gameClock_->getRealMicroseconds() - timeBeforeTick));
+            }
+            catch (const std::exception& ex)
+            { exceptionMessage = ex.what(); }
+            catch (...)
+            { exceptionMessage = "Unknown exception"; }
+            if (!exceptionMessage.empty())
+            {
+                COUT(1) << "An exception occurred while updating '" << (*it)->getName() << "': " << exceptionMessage << std::endl;
+                COUT(1) << "This should really never happen!" << std::endl;
+                COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
+                shared_ptr<GameStateTreeNode> current = this->loadedTopStateNode_;
+                while (current->name_ != (*it)->getName() && current)
+                    current = current->parent_.lock();
+                if (current && current->parent_.lock())
+                    this->requestState(current->parent_.lock()->name_);
+                else
+                    this->stop();
+                break;
+            }
+        }
+    }
+
+    void Game::updateStatistics()
+    {
+        // Add the tick time of this frame (rendering time has already been subtracted)
+        uint64_t currentTime = gameClock_->getMicroseconds();
+        uint64_t currentRealTime = gameClock_->getRealMicroseconds();
+        this->statisticsTickTimes_.back().tickLength += currentRealTime - currentTime;
+        this->periodTickTime_ += currentRealTime - currentTime;
+        if (this->periodTime_ > this->configuration_->statisticsRefreshCycle_)
+        {
+            std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
+            assert(it != this->statisticsTickTimes_.end());
+            int64_t lastTime = currentTime - this->configuration_->statisticsAvgLength_;
+            if (static_cast<int64_t>(it->tickTime) < lastTime)
+            {
+                do
+                {
+                    assert(this->periodTickTime_ >= it->tickLength);
+                    this->periodTickTime_ -= it->tickLength;
+                    ++it;
+                    assert(it != this->statisticsTickTimes_.end());
+                } while (static_cast<int64_t>(it->tickTime) < lastTime);
+                this->statisticsTickTimes_.erase(this->statisticsTickTimes_.begin(), it);
+            }
+
+            uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
+            this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
+            this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
+
+            this->periodTime_ -= this->configuration_->statisticsRefreshCycle_;
+        }
+    }
+
+    void Game::updateFPSLimiter()
+    {
+        // Why configuration_->fpsLimit_ - 1? No idea, but otherwise the fps rate is always (from 10 to 200!) one frame too high
+        uint32_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / (configuration_->fpsLimit_ - 1));
+        uint64_t currentRealTime = gameClock_->getRealMicroseconds();
+        while (currentRealTime < nextTime - minimumSleepTime_)
+        {
+            usleep(nextTime - currentRealTime);
+            currentRealTime = gameClock_->getRealMicroseconds();
+        }
+        // Integrate excess to avoid steady state error
+        excessSleepTime_ = currentRealTime - nextTime;
+        // Anti windup
+        if (excessSleepTime_ > 50000) // 20ms is about the maximum time Windows would sleep for too long
+            excessSleepTime_ = 50000;
     }
 
     void Game::stop()
@@ -343,11 +350,11 @@ namespace orxonox
         this->bAbort_ = true;
     }
 
-    void Game::addTickTime(uint32_t length)
+    void Game::subtractTickTime(int32_t length)
     {
         assert(!this->statisticsTickTimes_.empty());
-        this->statisticsTickTimes_.back().tickLength += length;
-        this->periodTickTime_+=length;
+        this->statisticsTickTimes_.back().tickLength -= length;
+        this->periodTickTime_ -= length;
     }
 
 
@@ -355,22 +362,24 @@ namespace orxonox
 
     void Game::requestState(const std::string& name)
     {
-        GameState* state = this->getState(name);
-        if (state == NULL)
+        if (!this->checkState(name))
+        {
+            COUT(2) << "Warning: GameState named '" << name << "' doesn't exist!" << std::endl;
             return;
+        }
 
-        //if (this->bChangingState_)
-        //{
-        //    COUT(2) << "Warning: Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << std::endl;
-        //    return;
-        //}
+        if (this->bChangingState_)
+        {
+            COUT(2) << "Warning: Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << std::endl;
+            return;
+        }
 
         shared_ptr<GameStateTreeNode> lastRequestedNode;
         if (this->requestedStateNodes_.empty())
-            lastRequestedNode = this->activeStateNode_;
+            lastRequestedNode = this->loadedTopStateNode_;
         else
             lastRequestedNode = this->requestedStateNodes_.back();
-        if (state == lastRequestedNode->state_)
+        if (name == lastRequestedNode->name_)
         {
             COUT(2) << "Warning: Requesting the currently active state! Ignoring." << std::endl;
             return;
@@ -380,7 +389,7 @@ namespace orxonox
         std::vector<shared_ptr<GameStateTreeNode> > requestedNodes;
         for (unsigned int i = 0; i < lastRequestedNode->children_.size(); ++i)
         {
-            if (lastRequestedNode->children_[i]->state_ == state)
+            if (lastRequestedNode->children_[i]->name_ == name)
             {
                 requestedNodes.push_back(lastRequestedNode->children_[i]);
                 break;
@@ -393,7 +402,7 @@ namespace orxonox
             shared_ptr<GameStateTreeNode> currentNode = lastRequestedNode;
             while (currentNode != NULL)
             {
-                if (currentNode->state_ == state)
+                if (currentNode->name_ == name)
                     break;
                 currentNode = currentNode->parent_.lock();
                 requestedNodes.push_back(currentNode);
@@ -417,24 +426,28 @@ namespace orxonox
     {
         shared_ptr<GameStateTreeNode> lastRequestedNode;
         if (this->requestedStateNodes_.empty())
-            lastRequestedNode = this->activeStateNode_;
+            lastRequestedNode = this->loadedTopStateNode_;
         else
             lastRequestedNode = this->requestedStateNodes_.back();
         if (lastRequestedNode != this->rootStateNode_)
-            this->requestState(lastRequestedNode->parent_.lock()->state_->getName());
+            this->requestState(lastRequestedNode->parent_.lock()->name_);
         else
             COUT(2) << "Warning: Can't pop the internal dummy root GameState" << std::endl;
     }
 
-    GameState* Game::getState(const std::string& name)
+    shared_ptr<GameState> Game::getState(const std::string& name)
     {
-        std::map<std::string, GameState*>::const_iterator it = gameStates_.find(getLowercase(name));
-        if (it != gameStates_.end())
+        GameStateMap::const_iterator it = constructedStates_.find(name);
+        if (it != constructedStates_.end())
             return it->second;
         else
         {
-            COUT(1) << "Error: Could not find GameState '" << name << "'. Ignoring." << std::endl;
-            return 0;
+            std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(name);
+            if (it != gameStateDeclarations_s.end())
+                COUT(1) << "Error: GameState '" << name << "' has not yet been loaded." << std::endl;
+            else
+                COUT(1) << "Error: Could not find GameState '" << name << "'." << std::endl;
+            return shared_ptr<GameState>();
         }
     }
 
@@ -460,13 +473,12 @@ namespace orxonox
         {
             std::string newStateName = it->first;
             unsigned newLevel = it->second + 1; // empty root is 0
-            GameState* newState = this->getState(newStateName);
-            if (!newState)
+            if (!this->checkState(newStateName))
                 ThrowException(GameState, "GameState with name '" << newStateName << "' not found!");
-            if (newState == this->rootStateNode_->state_)
+            if (newStateName == this->rootStateNode_->name_)
                 ThrowException(GameState, "You shouldn't use 'emptyRootGameState' in the hierarchy...");
             shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
-            newNode->state_ = newState;
+            newNode->name_ = newStateName;
 
             if (newLevel <= currentLevel)
             {
@@ -479,7 +491,6 @@ namespace orxonox
                 // Add the child
                 newNode->parent_ = currentNode;
                 currentNode->children_.push_back(newNode);
-                currentNode->state_->addChild(newNode->state_);
             }
             else
                 ThrowException(GameState, "Indentation error while parsing the hierarchy.");
@@ -490,49 +501,112 @@ namespace orxonox
 
     /*** Internal ***/
 
-    void Game::loadState(GameState* state)
+    void Game::loadGraphics()
     {
-        this->bChangingState_ = true;
-        state->activate();
-        if (!this->activeStates_.empty())
-            this->activeStates_.back()->activity_.topState = false;
-        this->activeStates_.push_back(state);
-        state->activity_.topState = true;
-        this->bChangingState_ = false;
+        if (!GameMode::bShowsGraphics_s)
+        {
+            core_->loadGraphics();
+            Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
+            GameMode::bShowsGraphics_s = true;
+
+            // Construct all the GameStates that require graphics
+            for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
+                it != gameStateDeclarations_s.end(); ++it)
+            {
+                if (it->second.bGraphicsMode)
+                {
+                    // Game state loading failure is serious --> don't catch
+                    shared_ptr<GameState> gameState = GameStateFactory::fabricate(it->second);
+                    if (!constructedStates_.insert(std::make_pair(
+                        it->second.stateName, gameState)).second)
+                        assert(false); // GameState was already created!
+                }
+            }
+            graphicsUnloader.Dismiss();
+        }
     }
 
-    void Game::unloadState(orxonox::GameState* state)
+    void Game::unloadGraphics()
+    {
+        if (GameMode::bShowsGraphics_s)
+        {
+            // Destroy all the GameStates that require graphics
+            for (GameStateMap::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
+            {
+                if (it->second->getInfo().bGraphicsMode)
+                    constructedStates_.erase(it++);
+                else
+                    ++it;
+            }
+
+            core_->unloadGraphics();
+            GameMode::bShowsGraphics_s = false;
+        }
+    }
+
+    bool Game::checkState(const std::string& name) const
+    {
+        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(name);
+        if (it == gameStateDeclarations_s.end())
+            return false;
+        else
+            return true;
+    }
+
+    void Game::loadState(const std::string& name)
     {
         this->bChangingState_ = true;
-        state->activity_.topState = false;
-        this->activeStates_.pop_back();
-        if (!this->activeStates_.empty())
-            this->activeStates_.back()->activity_.topState = true;
+        LOKI_ON_BLOCK_EXIT_OBJ(*this, &Game::resetChangingState);
+
+        // If state requires graphics, load it
+        Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
+        if (gameStateDeclarations_s[name].bGraphicsMode && !GameMode::showsGraphics())
+            this->loadGraphics();
+        else
+            graphicsUnloader.Dismiss();
+
+        shared_ptr<GameState> state = this->getState(name);
+        state->activate();
+        if (!this->loadedStates_.empty())
+            this->loadedStates_.back()->activity_.topState = false;
+        this->loadedStates_.push_back(state);
+        state->activity_.topState = true;
+
+        graphicsUnloader.Dismiss();
+    }
+
+    void Game::unloadState(const std::string& name)
+    {
+        this->bChangingState_ = true;
         try
         {
+            shared_ptr<GameState> state = this->getState(name);
+            state->activity_.topState = false;
+            this->loadedStates_.pop_back();
+            if (!this->loadedStates_.empty())
+                this->loadedStates_.back()->activity_.topState = true;
             state->deactivate();
         }
         catch (const std::exception& ex)
         {
-            COUT(2) << "Warning: Unloading GameState '" << state->getName() << "' threw an exception: " << ex.what() << std::endl;
+            COUT(2) << "Warning: Unloading GameState '" << name << "' threw an exception: " << ex.what() << std::endl;
             COUT(2) << "         There might be potential resource leaks involved! To avoid this, improve exception-safety." << std::endl;
         }
+        // Check if graphics is still required
+        bool graphicsRequired = false;
+        for (unsigned i = 0; i < loadedStates_.size(); ++i)
+            graphicsRequired |= loadedStates_[i]->getInfo().bGraphicsMode;
+        if (!graphicsRequired)
+            this->unloadGraphics();
         this->bChangingState_ = false;
     }
 
-    std::map<std::string, Game::GameStateFactory*> Game::GameStateFactory::factories_s;
+    std::map<std::string, shared_ptr<Game::GameStateFactory> > Game::GameStateFactory::factories_s;
 
-    /*static*/ GameState* Game::GameStateFactory::fabricate(const std::string& className, const GameStateConstrParams& params)
+    /*static*/ shared_ptr<GameState> Game::GameStateFactory::fabricate(const GameStateInfo& info)
     {
-        std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.find(className);
+        std::map<std::string, shared_ptr<Game::GameStateFactory> >::const_iterator it = factories_s.find(info.className);
         assert(it != factories_s.end());
-        return it->second->fabricate(params);
-    }
-
-    /*static*/ void Game::GameStateFactory::destroyFactories()
-    {
-        for (std::map<std::string, GameStateFactory*>::const_iterator it = factories_s.begin(); it != factories_s.end(); ++it)
-            delete it->second;
-        factories_s.clear();
+        return it->second->fabricateInternal(info);
     }
 }

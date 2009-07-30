@@ -45,7 +45,15 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "core/CommandLine.h"
 #include "core/Game.h"
+
+SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
+// Shortcuts for easy direct loading
+SetCommandLineSwitch(server).information("Start in server mode");
+SetCommandLineSwitch(client).information("Start in client mode");
+SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
+SetCommandLineSwitch(standalone).information("Start in standalone mode");
 
 /*
 @brief
@@ -85,6 +93,20 @@ int main(int argc, char** argv)
         );
 
         game->requestState("root");
+
+        // Some development hacks (not really, but in the future, this calls won't make sense anymore)
+        if (CommandLine::getValue("standalone").getBool())
+            Game::getInstance().requestStates("graphics, standalone, level");
+        else if (CommandLine::getValue("server").getBool())
+            Game::getInstance().requestStates("graphics, server, level");
+        else if (CommandLine::getValue("client").getBool())
+            Game::getInstance().requestStates("graphics, client, level");
+        else if (CommandLine::getValue("dedicated").getBool())
+            Game::getInstance().requestStates("dedicated, level");
+        else if (CommandLine::getValue("console").getBool())
+            Game::getInstance().requestStates("ioConsole");
+        else
+            Game::getInstance().requestStates("graphics, mainMenu");
     }
     catch (const std::exception& ex)
     {

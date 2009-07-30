@@ -43,10 +43,11 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
-#include "util/StringUtils.h"
+#include "util/Singleton.h"
 
 /**
 @def
@@ -59,19 +60,36 @@
 namespace orxonox
 {
     class GameConfiguration;
+    using boost::scoped_ptr;
+    using boost::shared_ptr;
+
+    //! Helper object required before GameStates are being constructed
+    struct GameStateInfo
+    {
+        std::string stateName;
+        std::string className;
+        bool bIgnoreTickTime;
+        bool bGraphicsMode;
+    };
 
     /**
     @brief
         Main class responsible for running the game.
+    @remark
+        You should only create this singleton once because it owns the Core class! (see remark there)
     */
-    class _CoreExport Game
+    class _CoreExport Game : public Singleton<Game>
     {
+        friend class Singleton<Game>;
+        typedef std::vector<shared_ptr<GameState> > GameStateVector;
+        typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
+        typedef boost::shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
     public:
         Game(const std::string& cmdLine);
         ~Game();
 
         void setStateHierarchy(const std::string& str);
-        GameState* getState(const std::string& name);
+        shared_ptr<GameState> getState(const std::string& name);
 
         void run();
         void stop();
@@ -85,40 +103,30 @@ namespace orxonox
         float getAvgTickTime() { return this->avgTickTime_; }
         float getAvgFPS()      { return this->avgFPS_; }
 
-        void addTickTime(uint32_t length);
+        void subtractTickTime(int32_t length);
 
         template <class T>
         static bool declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bConsoleMode);
-        static Game& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
     private:
         class _CoreExport GameStateFactory
         {
         public:
             virtual ~GameStateFactory() { }
-            static GameState* fabricate(const std::string& className, const GameStateConstrParams& params);
+            static shared_ptr<GameState> fabricate(const GameStateInfo& info);
             template <class T>
             static void createFactory(const std::string& className)
-                { factories_s[className] = new TemplateGameStateFactory<T>(); }
-            static void destroyFactories();
+                { factories_s[className].reset(new TemplateGameStateFactory<T>()); }
         private:
-            virtual GameState* fabricate(const GameStateConstrParams& params) = 0;
-            static std::map<std::string, GameStateFactory*> factories_s;
+            virtual shared_ptr<GameState> fabricateInternal(const GameStateInfo& info) = 0;
+            static std::map<std::string, shared_ptr<GameStateFactory> > factories_s;
         };
         template <class T>
         class TemplateGameStateFactory : public GameStateFactory
         {
         public:
-            GameState* fabricate(const GameStateConstrParams& params)
-                { return new T(params); }
-        };
-
-        struct GameStateInfo
-        {
-            std::string stateName;
-            std::string className;
-            bool bIgnoreTickTime;
-            bool bGraphicsMode;
+            shared_ptr<GameState> fabricateInternal(const GameStateInfo& info)
+                { return shared_ptr<GameState>(new T(info)); }
         };
 
         struct StatisticsTickInfo
@@ -129,41 +137,56 @@ namespace orxonox
 
         Game(Game&); // don't mess with singletons
 
-        void loadState(GameState* state);
-        void unloadState(GameState* state);
+        void loadGraphics();
+        void unloadGraphics();
 
-        std::map<std::string, GameState*>    gameStates_;
-        std::vector<GameState*>              activeStates_;
-        boost::shared_ptr<GameStateTreeNode> rootStateNode_;
-        boost::shared_ptr<GameStateTreeNode> activeStateNode_;
-        std::vector<boost::shared_ptr<GameStateTreeNode> > requestedStateNodes_;
+        bool checkState(const std::string& name) const;
+        void loadState(const std::string& name);
+        void unloadState(const std::string& name);
 
-        Core*                           core_;
-        Clock*                          gameClock_;
-        GameConfiguration*              configuration_;
+        // Main loop structuring
+        void updateGameStateStack();
+        void updateGameStates();
+        void updateStatistics();
+        void updateFPSLimiter();
 
-        bool                            bChangingState_;
-        bool                            bAbort_;
+        // ScopeGuard helper function
+        void resetChangingState() { this->bChangingState_ = false; }
+
+        scoped_ptr<Clock>                  gameClock_;
+        scoped_ptr<Core>                   core_;
+        scoped_ptr<GameConfiguration>      configuration_;
+
+        GameStateMap                       constructedStates_;
+        GameStateVector                    loadedStates_;
+        GameStateTreeNodePtr               rootStateNode_;
+        GameStateTreeNodePtr               loadedTopStateNode_;
+        std::vector<GameStateTreeNodePtr>  requestedStateNodes_;
+
+        bool                               bChangingState_;
+        bool                               bAbort_;
 
         // variables for time statistics
-        uint64_t                        statisticsStartTime_;
-        std::list<StatisticsTickInfo>   statisticsTickTimes_;
-        uint32_t                        periodTime_;
-        uint32_t                        periodTickTime_;
-        float                           avgFPS_;
-        float                           avgTickTime_;
+        uint64_t                           statisticsStartTime_;
+        std::list<StatisticsTickInfo>      statisticsTickTimes_;
+        uint32_t                           periodTime_;
+        uint32_t                           periodTickTime_;
+        float                              avgFPS_;
+        float                              avgTickTime_;
+        int                                excessSleepTime_;
+        unsigned int                       minimumSleepTime_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
-        static Game* singletonRef_s;        //!< Pointer to the Singleton
+        static Game* singletonPtr_s;        //!< Pointer to the Singleton
     };
 
     template <class T>
     /*static*/ bool Game::declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bGraphicsMode)
     {
-        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(getLowercase(stateName));
+        std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(stateName);
         if (it == gameStateDeclarations_s.end())
         {
-            GameStateInfo& info = gameStateDeclarations_s[getLowercase(stateName)];
+            GameStateInfo& info = gameStateDeclarations_s[stateName];
             info.stateName = stateName;
             info.className = className;
             info.bIgnoreTickTime = bIgnoreTickTime;

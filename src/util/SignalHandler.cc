@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    SignalHandler* SignalHandler::singletonRef_s = NULL;
+    SignalHandler* SignalHandler::singletonPtr_s = NULL;
 }
 
 #ifdef ORXONOX_PLATFORM_LINUX
@@ -121,7 +121,7 @@ namespace orxonox
           break;
       }
       // if the signalhandler has already been destroyed then don't do anything
-      if( SignalHandler::singletonRef_s == 0 )
+      if( SignalHandler::singletonPtr_s == 0 )
       {
         COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "can't write backtrace because SignalHandler already destroyed" << std::endl;
         exit(EXIT_FAILURE);

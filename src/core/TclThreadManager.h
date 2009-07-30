@@ -32,32 +32,38 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include <list>
 #include <map>
 #include <string>
 
+#include "util/Singleton.h"
 #include "OrxonoxClass.h"
+
+struct Tcl_Interp;
 
 namespace orxonox
 {
-    class _CoreExport TclThreadManager : public OrxonoxClass
+    class _CoreExport TclThreadManager : public Singleton<TclThreadManager>, public OrxonoxClass
     {
+        friend class Singleton<TclThreadManager>;
         friend class TclBind;
         friend _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
+        friend _CoreExport void sourceThread(std::string file);
+        friend _CoreExport int Tcl_OrxonoxAppInit(Tcl_Interp* interp);
 
         public:
             TclThreadManager(Tcl::interpreter* interpreter);
             virtual ~TclThreadManager();
-
-            static TclThreadManager& getInstance() { assert(TclThreadManager::singletonPtr_s); return *TclThreadManager::singletonPtr_s; }
 
             static unsigned int      create();
             static Tcl::interpreter* createWithId(unsigned int id);
             static void              destroy(unsigned int id);
             static void              execute(unsigned int target_id, const std::string& command);
             static std::string       query(unsigned int target_id, const std::string& command);
+            static void              source(const std::string& file);
 
-            void error(const std::string& error);
-            void debug(const std::string& error);
+            static void error(const std::string& error);
+            static void debug(const std::string& error);
 
             void update(const Clock& time);
 
@@ -76,7 +82,8 @@ namespace orxonox
             TclInterpreterBundle* getInterpreterBundle(unsigned int id);
             std::string dumpList(const std::list<unsigned int>& list);
 
-            std::string eval(TclInterpreterBundle* bundle, const std::string& command);
+            static void initialize(TclInterpreterBundle* bundle);
+            static std::string eval(TclInterpreterBundle* bundle, const std::string& command, const std::string& action);
 
             static TclThreadManager* singletonPtr_s;                            ///< Singleton pointer
 
@@ -88,6 +95,8 @@ namespace orxonox
     };
 
     _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
+    _CoreExport void sourceThread(std::string file);
+    _CoreExport int Tcl_OrxonoxAppInit(Tcl_Interp* interp);
 }
 
 #endif /* _TclThreadManager_H__ */

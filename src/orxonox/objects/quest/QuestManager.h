@@ -39,6 +39,8 @@
 #include <list>
 #include <map>
 #include <string>
+
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
@@ -70,17 +72,16 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestManager
-// tolua_end
-        : public OrxonoxClass
-// tolua_begin
+    class _OrxonoxExport QuestManager : public Singleton<QuestManager>, public orxonox::OrxonoxClass
     {
 // tolua_end
+            friend class Singleton<QuestManager>;
         public:
             QuestManager();
             virtual ~QuestManager();
 
-            static QuestManager& getInstance(); // tolua_export //!< Returns a reference to the single instance of the Quest Manager.
+            //! Returns a reference to the single instance of the Quest Manager.
+            static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
             bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
@@ -91,7 +92,7 @@ namespace orxonox
             QuestContainer* getQuestTree(std::string & name); // tolua_export
 
         private:
-            static QuestManager* singletonRef_s;
+            static QuestManager* singletonPtr_s;
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.

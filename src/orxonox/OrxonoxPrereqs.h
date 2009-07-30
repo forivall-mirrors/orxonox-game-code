@@ -73,10 +73,6 @@ namespace orxonox
         };
     }
 
-    class GraphicsManager;
-    class OgreWindowEventListener;
-    class Settings;
-
     class RadarViewable;
     class Radar;
     class RadarListener;
@@ -276,9 +272,6 @@ namespace orxonox
     class Scoreboard;
     class Map;
 
-    //gui
-    class GUIManager;
-
     //sound
     class SoundBase;
     class SoundManager;
@@ -290,17 +283,6 @@ namespace Ogre
     // OGRE Wiki adapted code
     class DynamicLines;
     class DynamicRenderable;
-}
-
-namespace CEGUI
-{
-    class DefaultLogger;
-    class Logger;
-    class LuaScriptModule;
-
-    class OgreCEGUIRenderer;
-    class OgreCEGUIResourceProvider;
-    class OgreCEGUITexture;
 }
 
 // Bullet Physics Engine
@@ -328,8 +310,5 @@ typedef struct ALCcontext_struct ALCcontext;
 typedef struct ALCdevice_struct ALCdevice;
 typedef unsigned int ALuint;
 typedef int ALint;
-
-// Lua
-struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

@@ -37,16 +37,13 @@
 
 namespace orxonox
 {
-    SoundManager* SoundManager::singletonRef_s = NULL;
+    SoundManager* SoundManager::singletonPtr_s = NULL;
 
     /**
      * Default constructor
      */
     SoundManager::SoundManager()
     {
-        assert(singletonRef_s == NULL);
-        singletonRef_s = this;
-
         this->device_ = NULL;
         this->soundavailable_ = true;
         if(!alutInitWithoutContext(NULL,NULL))
@@ -92,9 +89,6 @@ namespace orxonox
 
     SoundManager::~SoundManager()
     {
-        assert(singletonRef_s != NULL);
-        singletonRef_s = NULL;
-
         alcDestroyContext(this->context_);
         alcCloseDevice(this->device_);
         alutExit();
@@ -147,7 +141,7 @@ namespace orxonox
             COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
 
         // update listener orientation
-        Quaternion orient = camera->getOrientation();
+        const Quaternion& orient = camera->getOrientation();
         Vector3 up = orient.xAxis(); // just a wild guess
         Vector3 at = orient.zAxis();
 

@@ -39,6 +39,8 @@
 #include <ctime>
 #include <map>
 #include <string>
+
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -51,16 +53,15 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport NotificationManager : public OrxonoxClass
+    class _OrxonoxExport NotificationManager : public Singleton<NotificationManager>, public OrxonoxClass
     {
+            friend class Singleton<NotificationManager>;
         public:
             NotificationManager();
             virtual ~NotificationManager();
 
             static const std::string ALL;
             static const std::string NONE;
-
-            static NotificationManager & getInstance(); //! Returns a reference to the single instance of the NotificationManager.
 
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
             bool registerQueue(NotificationQueue* queue); //!< Registers a NotificationQueue within the NotificationManager.
@@ -87,7 +88,7 @@ namespace orxonox
                 { return this->getNotifications(queue, map, std::time(0)-timeDelay, std::time(0)); }
 
         private:
-            static NotificationManager* singletonRef_s;
+            static NotificationManager* singletonPtr_s;
 
             int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that  no key appears twice.
 

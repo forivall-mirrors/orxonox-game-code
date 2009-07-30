@@ -499,7 +499,10 @@ namespace orxonox
     {
 #ifdef ORXONOX_COMPILER_MSVC
         typedef Loki::TypeTraits<typename Loki::TypeTraits<T>::PointeeType>::NonConstType ClassType;
-        return source->template getDerivedPointer<ClassType>(ClassIdentifier<ClassType>::getIdentifier()->getClassID());
+        if (source != NULL)
+            return source->template getDerivedPointer<ClassType>(ClassIdentifier<ClassType>::getIdentifier()->getClassID());
+        else
+            return NULL;
 #else
         return dynamic_cast<T>(source);
 #endif
