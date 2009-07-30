@@ -31,6 +31,7 @@
 
 #include <cassert>
 #include <list>
+#include "util/Singleton.h"
 #include "interfaces/Tickable.h"
 
 namespace orxonox
@@ -41,8 +42,9 @@ namespace orxonox
      * function every tick. It is a singleton.
      *
      */
-    class _OrxonoxExport SoundManager : public Tickable 
+    class _OrxonoxExport SoundManager : public Singleton<SoundManager>, public Tickable
     {
+        friend class Singleton<SoundManager>;
     public:
         SoundManager();
         ~SoundManager();
@@ -51,15 +53,13 @@ namespace orxonox
         void tick(float dt);
         bool isSoundAvailable();
 
-        static SoundManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
-
     private:
         ALCdevice* device_;
         ALCcontext* context_;
         std::list<SoundBase*> soundlist_;
         bool soundavailable_;
 
-        static SoundManager* singletonRef_s;
+        static SoundManager* singletonPtr_s;
     }; // class SoundManager
 } // namespace orxonox
 

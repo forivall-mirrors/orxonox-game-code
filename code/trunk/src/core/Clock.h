@@ -26,14 +26,6 @@
  *
  */
 
-/**
-    @file
-    @brief Declaration of the Core class.
-
-    The Core class is a singleton, only used to configure some variables
-    in the core through the config-file.
-*/
-
 #ifndef _Clock_H__
 #define _Clock_H__
 

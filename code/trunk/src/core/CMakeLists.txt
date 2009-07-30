@@ -26,6 +26,8 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Game.cc
   GameMode.cc
   GameState.cc
+  GraphicsManager.cc
+  GUIManager.cc
   Language.cc
   LuaBind.cc
   ObjectListBase.cc
@@ -79,12 +81,15 @@ ORXONOX_ADD_LIBRARY(core
     CorePrecompiledHeaders.h
   LINK_LIBRARIES
     ${OGRE_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_DATE_TIME_LIBRARY} # MSVC only
+    ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
+    ${Boost_THREAD_LIBRARY}
+    ${Boost_DATE_TIME_LIBRARY} # Thread dependency
+    ${CEGUI_LIBRARY}
+    ${CEGUILUA_LIBRARY}
     ${LUA_LIBRARIES}
     cpptcl_orxonox
+    ogreceguirenderer_orxonox
     ois_orxonox
     tinyxml++_orxonox
     tolua++_orxonox

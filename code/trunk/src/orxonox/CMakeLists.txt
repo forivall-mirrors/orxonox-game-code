@@ -19,14 +19,12 @@
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraManager.cc
-  GraphicsManager.cc
   LevelManager.cc
   Main.cc
   PawnManager.cc
   PlayerManager.cc
 )
 ADD_SUBDIRECTORY(gamestates)
-ADD_SUBDIRECTORY(gui)
 ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(objects)
 ADD_SUBDIRECTORY(overlays)
@@ -42,7 +40,6 @@ ORXONOX_ADD_EXECUTABLE(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
     LevelManager.h
-    gui/GUIManager.h
     objects/pickup/BaseItem.h
     objects/pickup/PickupInventory.h
     objects/quest/QuestDescription.h
@@ -52,17 +49,16 @@ ORXONOX_ADD_EXECUTABLE(orxonox
   # When defined as WIN32 this removes the console window on Windows
   ${ORXONOX_WIN32}
   LINK_LIBRARIES
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
+    ${Boost_THREAD_LIBRARY}
+    ${Boost_DATE_TIME_LIBRARY} # Thread dependency
     ${OGRE_LIBRARY}
-    ${CEGUI_LIBRARY}
-    ${LUA_LIBRARIES}
-    ${CEGUILUA_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
     ${OPENAL_LIBRARY}
     ${ALUT_LIBRARY}
     ${VORBISFILE_LIBRARY}
     ${VORBIS_LIBRARY}
     ${OGG_LIBRARY}
-    ogreceguirenderer_orxonox
     tinyxml++_orxonox
     tolua++_orxonox
     bullet_orxonox

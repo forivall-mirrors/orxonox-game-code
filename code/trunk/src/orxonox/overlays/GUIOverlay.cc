@@ -33,8 +33,8 @@
 
 #include "core/input/InputManager.h"
 #include "core/CoreIncludes.h"
+#include "core/GUIManager.h"
 #include "core/XMLPort.h"
-#include "gui/GUIManager.h"
 
 namespace orxonox
 {
@@ -54,8 +54,6 @@ namespace orxonox
         SUPER(GUIOverlay, XMLPort, xmlElement, mode);
 
         XMLPortParam(GUIOverlay, "guiname", setGUIName, getGUIName, xmlElement, mode);
-        
-        GUIManager::getInstance().registerOverlay(this->guiName_, this);
     }
 
     void GUIOverlay::changedVisibility()

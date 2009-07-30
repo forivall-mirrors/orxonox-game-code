@@ -35,7 +35,6 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "gui/GUIManager.h"
 
 #include "objects/infos/PlayerInfo.h"
 #include "objects/infos/PlayerInfo.h"
@@ -47,7 +46,7 @@
 namespace orxonox
 {
     //! Pointer to the current (and single) instance of this class.
-    /*static*/ QuestManager* QuestManager::singletonRef_s = NULL;
+    /*static*/ QuestManager* QuestManager::singletonPtr_s = NULL;
 
     /**
     @brief
@@ -58,9 +57,6 @@ namespace orxonox
     QuestManager::QuestManager()
     {
         RegisterRootObject(QuestManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
     }
 
     /**
@@ -70,18 +66,6 @@ namespace orxonox
     QuestManager::~QuestManager()
     {
 
-    }
-
-    /**
-    @brief
-        Returns a reference to the current (and single) instance of the QuestManager, and creates one if there isn't one to begin with.
-    @return
-        Returns a reference to the single instance of the Quest Manager.
-    */
-    /*static*/ QuestManager & QuestManager::getInstance()
-    {
-        assert(singletonRef_s);
-        return *singletonRef_s;
     }
 
     /**
@@ -224,7 +208,10 @@ namespace orxonox
     */
     QuestContainer* QuestManager::getQuestTree(std::string & name)
     {
-        GUIOverlay* gui = GUIManager::getInstance().getOverlay(name);
+        GUIOverlay* gui = NULL;
+        for (ObjectList<GUIOverlay>::iterator it = ObjectList<GUIOverlay>::begin(); it != ObjectList<GUIOverlay>::end(); ++it)
+            if (it->getGUIName() == name)
+                gui = *it;
 
         PlayerInfo* player;
         if(gui == NULL)
@@ -320,7 +307,7 @@ namespace orxonox
         else
         {
             container->status = "";
-            COUT(1) << "An error occured. A Quest of un-specified status wanted to be displayed." << std::endl;
+            COUT(1) << "An error occurred. A Quest of un-specified status wanted to be displayed." << std::endl;
         }
         
         std::list<Quest*> quests = quest->getSubQuestList();

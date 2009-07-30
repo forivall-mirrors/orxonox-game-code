@@ -33,14 +33,17 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+
 #include "util/OgreForwardRefs.h"
+#include "util/Singleton.h"
 #include "core/Shell.h"
 #include "core/WindowEventListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public ShellListener, public WindowEventListener
+    class _OrxonoxExport InGameConsole : public Singleton<InGameConsole>, public ShellListener, public WindowEventListener
     {
+        friend class Singleton<InGameConsole>;
     public: // functions
         InGameConsole();
         ~InGameConsole();
@@ -50,9 +53,6 @@ namespace orxonox
         void setConfigValues();
 
         void update(const Clock& time);
-
-        static InGameConsole& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
-        static InGameConsole* getInstancePtr() { return singletonRef_s; }
 
         static void openConsole();
         static void closeConsole();
@@ -111,7 +111,7 @@ namespace orxonox
         char cursorSymbol_;
         bool bHidesAllInput_;
 
-        static InGameConsole* singletonRef_s;
+        static InGameConsole* singletonPtr_s;
     };
 }
 

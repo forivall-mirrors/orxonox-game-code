@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 
+#include "util/Singleton.h"
 #include "core/WindowEventListener.h"
 #include "InputState.h"
 
@@ -61,8 +62,9 @@ namespace orxonox
         - Keyboard construction is mandatory , mouse and joy sticks are not.
           If the OIS::InputManager or the Keyboard fail, an exception is thrown.
     */
-    class _CoreExport InputManager : public WindowEventListener
+    class _CoreExport InputManager : public Singleton<InputManager>, public WindowEventListener
     {
+        friend class Singleton<InputManager>;
     public:
         //! Represents internal states of the InputManager.
         enum State
@@ -167,9 +169,6 @@ namespace orxonox
         OIS::InputManager* getOISInputManager()
             { return this->oisInputManager_; }
 
-        //! Returns a reference to the singleton instance
-        static InputManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
-
     private: // functions
         // don't mess with a Singleton
         InputManager(const InputManager&);
@@ -210,7 +209,7 @@ namespace orxonox
         std::set<InputState*>               stateLeaveRequests_;   //!< Requests to leave a running state
         std::set<InputState*>               stateDestroyRequests_; //!< Requests to destroy a state
 
-        static InputManager*                singletonRef_s;        //!< Pointer reference to the singleton
+        static InputManager*                singletonPtr_s;        //!< Pointer reference to the singleton
     };
 }
 

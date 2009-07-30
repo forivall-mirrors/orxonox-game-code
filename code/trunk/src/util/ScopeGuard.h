@@ -123,10 +123,10 @@ namespace Loki
             fun_();
         }
 
-    protected:
         ScopeGuardImpl0(F fun) : fun_(fun) 
         {}
 
+    protected:
         F fun_;
     };
 
@@ -170,10 +170,10 @@ namespace Loki
             fun_(p1_);
         }
 
-    protected:
         ScopeGuardImpl1(F fun, P1 p1) : fun_(fun), p1_(p1) 
         {}
 
+    protected:
         F fun_;
         const P1 p1_;
     };
@@ -218,10 +218,10 @@ namespace Loki
             fun_(p1_, p2_);
         }
 
-    protected:
         ScopeGuardImpl2(F fun, P1 p1, P2 p2) : fun_(fun), p1_(p1), p2_(p2) 
         {}
 
+    protected:
         F fun_;
         const P1 p1_;
         const P2 p2_;
@@ -267,10 +267,10 @@ namespace Loki
             fun_(p1_, p2_, p3_);
         }
 
-    protected:
         ScopeGuardImpl3(F fun, P1 p1, P2 p2, P3 p3) : fun_(fun), p1_(p1), p2_(p2), p3_(p3) 
         {}
 
+    protected:
         F fun_;
         const P1 p1_;
         const P2 p2_;
@@ -318,11 +318,11 @@ namespace Loki
             fun_( p1_, p2_, p3_, p4_ );
         }
 
-    protected:
         ScopeGuardImpl4( F fun, P1 p1, P2 p2, P3 p3, P4 p4 ) :
              fun_( fun ), p1_( p1 ), p2_( p2 ), p3_( p3 ), p4_( p4 )
         {}
 
+    protected:
         F fun_;
         const P1 p1_;
         const P2 p2_;
@@ -371,11 +371,11 @@ namespace Loki
             fun_( p1_, p2_, p3_, p4_, p5_ );
         }
 
-    protected:
         ScopeGuardImpl5( F fun, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5 ) :
              fun_( fun ), p1_( p1 ), p2_( p2 ), p3_( p3 ), p4_( p4 ), p5_( p5 )
         {}
 
+    protected:
         F fun_;
         const P1 p1_;
         const P2 p2_;
@@ -425,10 +425,10 @@ namespace Loki
             (obj_.*memFun_)();
         }
 
-    protected:
         ObjScopeGuardImpl0(Obj& obj, MemFun memFun) : obj_(obj), memFun_(memFun) 
         {}
 
+    protected:
         Obj& obj_;
         MemFun memFun_;
     };
@@ -487,10 +487,10 @@ namespace Loki
             (obj_.*memFun_)(p1_);
         }
 
-    protected:
         ObjScopeGuardImpl1(Obj& obj, MemFun memFun, P1 p1) : obj_(obj), memFun_(memFun), p1_(p1) 
         {}
         
+    protected:
         Obj& obj_;
         MemFun memFun_;
         const P1 p1_;
@@ -550,10 +550,10 @@ namespace Loki
             (obj_.*memFun_)(p1_, p2_);
         }
 
-    protected:
         ObjScopeGuardImpl2(Obj& obj, MemFun memFun, P1 p1, P2 p2) : obj_(obj), memFun_(memFun), p1_(p1), p2_(p2) 
         {}
 
+    protected:
         Obj& obj_;
         MemFun memFun_;
         const P1 p1_;
@@ -615,11 +615,11 @@ namespace Loki
             ( obj_.*memFun_ )( p1_, p2_, p3_ );
         }
 
-    protected:
         ObjScopeGuardImpl3( Obj & obj, MemFun memFun, P1 p1, P2 p2, P3 p3 ) :
              obj_( obj ), memFun_( memFun ), p1_( p1 ), p2_( p2 ), p3_( p3 )
         {}
 
+    protected:
         Obj& obj_;
         MemFun memFun_;
         const P1 p1_;

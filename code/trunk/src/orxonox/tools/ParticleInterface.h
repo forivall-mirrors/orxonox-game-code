@@ -46,6 +46,7 @@ namespace orxonox
         public:
             ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::Value detaillevel);
             virtual ~ParticleInterface();
+            void setConfigValues();
 
             inline Ogre::ParticleSystem* getParticleSystem()
                 { return this->particleSystem_; }
@@ -76,7 +77,6 @@ namespace orxonox
             inline bool isVisible() const
                 { return this->bVisible_; }
 
-            void detailLevelChanged(unsigned int newlevel);
             void setDetailLevel(unsigned int level);
 
             inline void storeThisAsCurrentParticleInterface()
@@ -89,14 +89,18 @@ namespace orxonox
 
         private:
             void updateVisibility();
+            void detailLevelChanged();
 
             Ogre::ParticleSystem*     particleSystem_;
             Ogre::SceneManager*       scenemanager_;
             bool                      bVisible_;
             bool                      bEnabled_;
             bool                      bAllowedByLOD_;
-            unsigned int              detaillevel_;     //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
+            unsigned int              detaillevel_;       //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
             float                     speedFactor_;
+
+            // config values
+            unsigned int              globalDetailLevel_; //!< Global maximum detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
 
             static ParticleInterface* currentParticleInterface_s;
             static unsigned int       counter_s;

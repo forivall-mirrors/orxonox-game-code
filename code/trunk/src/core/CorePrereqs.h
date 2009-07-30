@@ -122,6 +122,8 @@ namespace orxonox
     template <class T>
     class FunctorMember;
     class FunctorStatic;
+    class GraphicsManager;
+    class GUIManager;
     class Identifier;
     class IRC;
     template <class T>
@@ -143,6 +145,7 @@ namespace orxonox
     class ObjectListElement;
     template <class T>
     class ObjectListIterator;
+    class OgreWindowEventListener;
     class OrxonoxClass;
     class Shell;
     class ShellListener;
@@ -166,8 +169,8 @@ namespace orxonox
 
     // game states
     class Game;
-    struct GameStateConstrParams;
     class GameState;
+    struct GameStateInfo;
     struct GameStateTreeNode;
 
     // input
@@ -218,6 +221,21 @@ namespace boost
     class shared_mutex;
     class condition_variable;
 }
+
+// CEGUI
+namespace CEGUI
+{
+    class DefaultLogger;
+    class Logger;
+    class LuaScriptModule;
+
+    class OgreCEGUIRenderer;
+    class OgreCEGUIResourceProvider;
+    class OgreCEGUITexture;
+}
+
+// Lua
+struct lua_State;
 
 // TinyXML and TinyXML++
 class TiXmlString;

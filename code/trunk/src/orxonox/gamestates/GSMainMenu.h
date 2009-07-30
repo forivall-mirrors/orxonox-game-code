@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport GSMainMenu : public GameState
     {
     public:
-        GSMainMenu(const GameStateConstrParams& params);
+        GSMainMenu(const GameStateInfo& info);
         ~GSMainMenu();
 
         void activate();

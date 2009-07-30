@@ -56,10 +56,10 @@ namespace orxonox
 
         try
         {
-            this->interpreter_->def("orxonox::irc::say", IRC::tcl_say, Tcl::variadic());
-            this->interpreter_->def("orxonox::irc::privmsg", IRC::tcl_privmsg, Tcl::variadic());
-            this->interpreter_->def("orxonox::irc::action", IRC::tcl_action, Tcl::variadic());
-            this->interpreter_->def("orxonox::irc::info", IRC::tcl_info, Tcl::variadic());
+            this->interpreter_->def("::orxonox::irc::say", IRC::tcl_say, Tcl::variadic());
+            this->interpreter_->def("::orxonox::irc::privmsg", IRC::tcl_privmsg, Tcl::variadic());
+            this->interpreter_->def("::orxonox::irc::action", IRC::tcl_action, Tcl::variadic());
+            this->interpreter_->def("::orxonox::irc::info", IRC::tcl_info, Tcl::variadic());
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl (IRC) error: " << e.what();   }

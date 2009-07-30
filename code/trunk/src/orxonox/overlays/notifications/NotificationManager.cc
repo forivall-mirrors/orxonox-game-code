@@ -45,7 +45,7 @@ namespace orxonox
     const std::string NotificationManager::ALL = "all";
     const std::string NotificationManager::NONE = "none";
 
-    NotificationManager* NotificationManager::singletonRef_s = NULL;
+    NotificationManager* NotificationManager::singletonPtr_s = NULL;
 
     /**
     @brief
@@ -54,9 +54,6 @@ namespace orxonox
     NotificationManager::NotificationManager()
     {
         RegisterRootObject(NotificationManager);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
 
         this->highestIndex_ = 0;
     }
@@ -69,18 +66,6 @@ namespace orxonox
     {
     }
 
-    /**
-    @brief
-        Returns the current (and single) instance of the NotificationManager. Creates one, if there isn't one to begin with.
-    @return
-        Returns a reference to the single instance of the NotificationManager.
-    */
-    /*static*/ NotificationManager & NotificationManager::getInstance()
-    {
-        assert(singletonRef_s);
-        return *singletonRef_s;
-    }
-    
     /**
     @brief
         Registers a Notification within the NotificationManager and makes sure that the Notification is displayed in all the NotificationQueues associated with its sender.

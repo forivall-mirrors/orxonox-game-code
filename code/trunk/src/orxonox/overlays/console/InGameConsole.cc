@@ -59,7 +59,7 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, openConsole, true);
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
-    InGameConsole* InGameConsole::singletonRef_s = 0;
+    InGameConsole* InGameConsole::singletonPtr_s = 0;
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
@@ -74,9 +74,6 @@ namespace orxonox
         , inputState_(0)
     {
         RegisterObject(InGameConsole);
-
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
 
         this->bActive_ = false;
         this->cursor_ = 0.0f;
@@ -130,8 +127,6 @@ namespace orxonox
 
         if (this->consoleOverlay_)
             Ogre::OverlayManager::getSingleton().destroy(consoleOverlay_);
-
-        singletonRef_s = 0;
     }
 
     /**

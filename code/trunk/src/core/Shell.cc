@@ -50,13 +50,10 @@ namespace orxonox
     SetConsoleCommandShortcut(OutputHandler, info);
     SetConsoleCommandShortcut(OutputHandler, debug);
 
-    Shell* Shell::singletonRef_s = 0;
+    Shell* Shell::singletonPtr_s = 0;
 
     Shell::Shell()
     {
-        assert(singletonRef_s == 0);
-        singletonRef_s = this;
-
         int level = Core::getSoftDebugLevel(OutputHandler::LD_Shell);
         Core::setSoftDebugLevel(OutputHandler::LD_Shell, -1);
 
@@ -91,7 +88,6 @@ namespace orxonox
         OutputHandler::getOutStream().setOutputBuffer(0);
         if (this->inputBuffer_)
             delete this->inputBuffer_;
-        singletonRef_s = 0;
     }
 
     void Shell::setConfigValues()

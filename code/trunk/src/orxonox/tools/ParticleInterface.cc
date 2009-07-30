@@ -42,8 +42,8 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
-#include "GraphicsManager.h"
 
 namespace orxonox
 {
@@ -88,6 +88,12 @@ namespace orxonox
             this->particleSystem_->removeAllEmitters();
             this->scenemanager_->destroyParticleSystem(this->particleSystem_);
         }
+    }
+
+    void ParticleInterface::setConfigValues()
+    {
+        SetConfigValue(globalDetailLevel_, 2)
+            .description("O: off, 1: low, 2: normal, 3: high").callback(this, &ParticleInterface::detailLevelChanged);
     }
 
     Ogre::ParticleEmitter* ParticleInterface::createNewEmitter()
@@ -179,12 +185,12 @@ namespace orxonox
     {
         this->detaillevel_ = level;
         if (GameMode::showsGraphics())
-            this->detailLevelChanged(GraphicsManager::getInstance().getDetailLevelParticle());
+            this->detailLevelChanged();
     }
 
-    void ParticleInterface::detailLevelChanged(unsigned int newlevel)
+    void ParticleInterface::detailLevelChanged()
     {
-        if (newlevel >= static_cast<unsigned int>(this->detaillevel_))
+        if (this->globalDetailLevel_ >= this->detaillevel_)
             this->bAllowedByLOD_ = true;
         else
             this->bAllowedByLOD_ = false;

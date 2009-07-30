@@ -80,7 +80,7 @@ namespace orxonox
     
     /**
     @brief
-        Makes all QuestListener in the list aware that a certain status change has occured and executes them if the status change affects them.
+        Makes all QuestListener in the list aware that a certain status change has occurred and executes them if the status change affects them.
     @param listeners
         The list of QuestListeners that have to be made aware of the status change.
     @param status
@@ -181,7 +181,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "An unforseen, never to happen, Error has occured. This is impossible!" << std::endl;
+            COUT(1) << "An unforseen, never to happen, Error has occurred. This is impossible!" << std::endl;
         return "";
         }
     }
