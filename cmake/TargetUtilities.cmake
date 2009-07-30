@@ -74,7 +74,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
-                  PCH_NO_DEFAULT)
+                  PCH_NO_DEFAULT NO_INSTALL)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
                   TOLUA_FILES     PCH_FILE  PCH_EXCLUDE)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
