@@ -27,8 +27,6 @@ INCLUDE(TargetUtilities)
 ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 # OIS dynamic linking requires macro definition, at least for Windows
 ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
-# Tolua binding speedup if required
-ADD_COMPILER_FLAGS("-DTOLUA_RELEASE" ORXONOX_RELEASE)
 
 ################ OrxonoxConfig.h ################
 
