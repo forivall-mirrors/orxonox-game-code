@@ -1,0 +1,22 @@
+<?lua
+  include("overlay/stats.oxo")
+  include("overlay/hudtemplates3.oxo")
+?>
+
+<?lua
+  include("levels/templates/spaceship_assff.oxt")
+  include("levels/templates/spaceship_pirate.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+    <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshippirate />
+  </Scene>
+</Level>

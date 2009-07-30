@@ -1,0 +1,59 @@
+A VERY ABBREVIATED INTRO TO IRK
+===============================
+
+All IRK commands are found within the ::irk namespace.
+
+To open a connection with an IRC server, use:
+
+   set conn [irk::connect twisted panda1]
+
+This opens a connection to the server named 'twisted' (This is
+actually the server twisted.ma.us.dal.net) with the nickname
+'panda1'. It also saves the connection token in the variable 'conn'
+for later use.
+
+If you're behind a SOCKS5 firewall, you can configure IRK to use a
+SOCKS5 proxy:
+
+   irk::config -sockproxy <proxyhost> -sockport <port>
+
+Do this before attempting to open connections to servers outside the
+firewall. After this step all communication with remote IRC servers
+goes through the SOCKS5 proxy. At present it is not possible to have
+connections simultaneously to IRC servers inside and outside the firewall.
+
+You can open any number of connections to different servers at the
+same time, limited only by the resources available on the host
+machine. Most IRC servers disallow opening two or more connections
+from the same user to a single server.
+
+Next, to join a channel, type:
+
+   irk::join $conn #mycoolchannel
+
+You can join any number of channels (no limits except those imposed by
+the server).
+
+To talk to a channel, do:
+
+   irk::say $conn #mycoolchannel {Wow, I'm on IRC!}
+
+The message "Wow, I'm on IRC!" (without the quotes) is sent to the
+channel #mycoolchannel.
+
+You can also send a private message to a specific nickname, via:
+
+   irk::say $conn somenick {Hey, I'm talking to you}
+
+To leave a channel use irk::leave. To close a connection with a server
+use irk::close. Read lib/irkcommand.tcl for all the commands
+provided. Full documentation will be provided eventually.
+
+The above API is likely to be subsumed by a more OO API that will look
+something like this:
+
+   set conn [irk::connect twisted panda1]
+   set mychan [$conn join #mycoolchannel]
+   $mychan say {Wow, I'm on IRC!}
+   set somenick [$conn user somenick]
+   $somenick say {Hey, I'm taling to you}
