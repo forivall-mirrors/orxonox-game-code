@@ -51,6 +51,10 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
   IF(CMAKE_COMPILER_IS_GNU)
     SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES COMPILE_FLAGS "-w")
   ENDIF()
+  # Tolua binding speedup if required
+  IF(ORXONOX_RELEASE)
+    SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES COMPILE_FLAGS "-DTOLUA_RELEASE")
+  ENDIF()
 
   # Create temporary package file and implicit dependencies
   FILE(REMOVE ${_tolua_pkgfile})
