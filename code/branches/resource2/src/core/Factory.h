@@ -60,7 +60,7 @@ namespace orxonox
         public:
             static Identifier* getIdentifier(const std::string& name);
             static Identifier* getIdentifier(const uint32_t id);
-            static void add(const std::string& name, Identifier* identifier);
+            static void add(const std::string& name, BaseFactory* factory);
             static void changeNetworkID(Identifier* identifier, const uint32_t oldID, const uint32_t newID);
             static void cleanNetworkIDs();
             static void createClassHierarchy();
@@ -68,7 +68,7 @@ namespace orxonox
             static Factory* getFactoryPointer();    // avoid overriding order problem in the static intialisation process
 
             /** @brief Returns the factory-map. */
-            static const std::map<std::string, Identifier*>& getFacbtoryMap()
+            static const std::map<std::string, Identifier*>& getFactoryMap()
                 { return Factory::getFactoryPointer()->identifierStringMap_; }
             /** @brief Returns the begin-iterator of the factory-map. */
             static std::map<std::string, Identifier*>::const_iterator getFactoryMapBegin()
@@ -84,6 +84,7 @@ namespace orxonox
 
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
             std::map<uint32_t, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
+            std::map<std::string, BaseFactory*> factoryMap_;
     };
 
     // ###############################
@@ -94,6 +95,7 @@ namespace orxonox
     {
         public:
             virtual BaseObject* fabricate(BaseObject* creator) = 0;
+            virtual Identifier* createIdentifier(const std::string& name) = 0;
             virtual ~BaseFactory() {};
     };
 }

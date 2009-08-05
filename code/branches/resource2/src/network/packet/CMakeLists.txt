@@ -1,5 +1,4 @@
 ADD_SOURCE_FILES(NETWORK_SRC_FILES
-  Packet.cc
   Acknowledgement.cc
   Chat.cc
   ClassID.cc
@@ -7,5 +6,19 @@ ADD_SOURCE_FILES(NETWORK_SRC_FILES
   FunctionIDs.cc
   FunctionCalls.cc
   Gamestate.cc
+  Packet.cc
   Welcome.cc
+)
+
+ADD_SOURCE_FILES(NETWORK_HDR_FILES
+  Acknowledgement.h
+  Chat.cc
+  Chat.h
+  ClassID.h
+  DeleteObjects.h
+  FunctionCalls.h
+  FunctionIDs.h
+  Gamestate.h
+  Packet.h
+  Welcome.h
 )

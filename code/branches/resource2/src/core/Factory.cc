@@ -72,10 +72,9 @@ namespace orxonox
         @param name The name of the identifier
         @param identifier The identifier to add
     */
-    void Factory::add(const std::string& name, Identifier* identifier)
+    void Factory::add(const std::string& name, BaseFactory* factory)
     {
-        getFactoryPointer()->identifierStringMap_[name] = identifier;
-        getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
+        getFactoryPointer()->factoryMap_[name] = factory;
     }
 
     /**
@@ -104,16 +103,20 @@ namespace orxonox
     void Factory::createClassHierarchy()
     {
         COUT(3) << "*** Factory: Create class-hierarchy" << std::endl;
-        std::map<std::string, Identifier*>::iterator it;
-        it = getFactoryPointer()->identifierStringMap_.begin();
-        (*getFactoryPointer()->identifierStringMap_.begin()).second->startCreatingHierarchy();
-        for (it = getFactoryPointer()->identifierStringMap_.begin(); it != getFactoryPointer()->identifierStringMap_.end(); ++it)
+        std::map<std::string, BaseFactory*>::iterator it;
+        it = getFactoryPointer()->factoryMap_.begin();
+        Identifier::startCreatingHierarchy();
+        for (it = getFactoryPointer()->factoryMap_.begin(); it != getFactoryPointer()->factoryMap_.end(); ++it)
         {
+            // Create the corresponding identifier first
+            Identifier* identifier = it->second->createIdentifier(it->first);
+            getFactoryPointer()->identifierStringMap_[it->first] = identifier;
+            getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
-            BaseObject* temp = (*it).second->fabricate(0);
+            BaseObject* temp = identifier->fabricate(0);
             delete temp;
         }
-        (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();
+        Identifier::stopCreatingHierarchy();
         COUT(3) << "*** Factory: Finished class-hierarchy creation" << std::endl;
     }
 
