@@ -53,20 +53,16 @@ namespace orxonox
     template <class T>
     class ClassFactory : public BaseFactory
     {
-        friend class Factory;
-
         public:
             static bool create(const std::string& name, bool bLoadable = true);
             BaseObject* fabricate(BaseObject* creator);
 
         private:
-            ClassFactory(bool bLoadable) : bLoadable_(bLoadable) {}
-            ClassFactory(const ClassFactory& factory);      // Don't copy
+            ClassFactory() {}                               // Don't create
+            ClassFactory(const ClassFactory& factory) {}    // Don't copy
             virtual ~ClassFactory() {}                      // Don't delete
 
-            Identifier* createIdentifier(const std::string& name);
-
-            bool bLoadable_;
+            static T* createNewObject(BaseObject* creator);
     };
 
     /**
@@ -79,7 +75,9 @@ namespace orxonox
     bool ClassFactory<T>::create(const std::string& name, bool bLoadable)
     {
         COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
-        Factory::add(name, new ClassFactory<T>(bLoadable));
+        ClassIdentifier<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
+        ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
+        Factory::add(name, ClassIdentifier<T>::getIdentifier());
 
         return true;
     }
@@ -91,18 +89,17 @@ namespace orxonox
     template <class T>
     inline BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
     {
-        return new T(creator);
+        return ClassFactory<T>::createNewObject(creator);
     }
 
     /**
+        @brief Creates and returns a new object of class T; this is a wrapper for the new operator.
+        @return The new object
     */
     template <class T>
-    inline Identifier* ClassFactory<T>::createIdentifier(const std::string& name)
+    inline T* ClassFactory<T>::createNewObject(BaseObject* creator)
     {
-        Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
-        identifier->addFactory(this);
-        identifier->setLoadable(this->bLoadable_);
-        return identifier;
+        return new T(creator);
     }
 }
 
