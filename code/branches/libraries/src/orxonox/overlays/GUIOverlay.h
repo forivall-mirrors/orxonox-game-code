@@ -45,7 +45,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-            inline void setGUIName(const std::string& name) { this->guiName_ = name; }
+            void setGUIName(const std::string& name);
             inline const std::string& getGUIName() const { return this->guiName_; }
 
             virtual void changedVisibility();

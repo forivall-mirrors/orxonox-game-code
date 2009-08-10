@@ -37,8 +37,6 @@
 #include "core/CoreIncludes.h"
 
 #include "objects/infos/PlayerInfo.h"
-#include "objects/infos/PlayerInfo.h"
-#include "overlays/GUIOverlay.h"
 #include "Quest.h"
 #include "QuestHint.h"
 #include "QuestItem.h"
@@ -202,37 +200,25 @@ namespace orxonox
 
     /**
     @brief
-        
+
     @param name
     @return
     */
     QuestContainer* QuestManager::getQuestTree(std::string & name)
     {
-        GUIOverlay* gui = NULL;
-        for (ObjectList<GUIOverlay>::iterator it = ObjectList<GUIOverlay>::begin(); it != ObjectList<GUIOverlay>::end(); ++it)
-            if (it->getGUIName() == name)
-                gui = *it;
+        PlayerInfo* player = this->players_[name];
+        if(player == NULL)
+        {
+            COUT(1) << "Error: GUIOverlay with name '" << name << "' has no player." << std::endl;
+            return NULL;
+        }
 
-        PlayerInfo* player;
-        if(gui == NULL)
-        {
-            COUT(1) << "Error: No GUIOverlay with the given name '" << name << "' present." << std::endl;
-            return NULL;
-        }
-        BaseObject* obj = gui->getOwner();
-        if(obj == NULL)
-        {
-            COUT(1) << "Error: GUIOverlay has no owner. " << std::endl;
-            return NULL;
-        }
-        player = orxonox_cast<PlayerInfo*>(obj);
-    
         QuestContainer* root = NULL;
         QuestContainer* current = NULL;
-        
+
         std::list<Quest*>* rootQuests = new std::list<Quest*>();
         getRootQuests(player, *rootQuests);
-        
+
         for(std::list<Quest*>::iterator it = rootQuests->begin(); it != rootQuests->end(); it++)
         {
             QuestContainer* container = addSubQuest(*it, player);
@@ -245,7 +231,7 @@ namespace orxonox
             {
                 current->next = container;
             }
-            
+
             current = container;
 
         }
@@ -259,7 +245,7 @@ namespace orxonox
 
     /**
     @brief
-        
+
     @param player
     @param list
     @return
@@ -278,7 +264,7 @@ namespace orxonox
 
     /**
     @brief
-        
+
     @param quest
     @param player
     @return
@@ -309,7 +295,7 @@ namespace orxonox
             container->status = "";
             COUT(1) << "An error occurred. A Quest of un-specified status wanted to be displayed." << std::endl;
         }
-        
+
         std::list<Quest*> quests = quest->getSubQuestList();
         QuestContainer* current = NULL;
         QuestContainer* first = NULL;
@@ -328,20 +314,20 @@ namespace orxonox
                 {
                     current->next = subContainer;
                 }
-                
+
                 current = subContainer;
             }
         }
         if(current != NULL)
             current->next = NULL;
         container->subQuests = first;
-        
+
         return container;
     }
 
     /**
     @brief
-        
+
     @param quest
     @param player
     @return
@@ -367,7 +353,7 @@ namespace orxonox
                 {
                     current->next = hint;
                 }
-                
+
                 current = hint;
             }
         }

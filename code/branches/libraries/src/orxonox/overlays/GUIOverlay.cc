@@ -35,6 +35,8 @@
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/XMLPort.h"
+#include "objects/quest/QuestManager.h"
+#include "objects/infos/PlayerInfo.h"
 
 namespace orxonox
 {
@@ -78,4 +80,9 @@ namespace orxonox
         }
     }
 
+    void GUIOverlay::setGUIName(const std::string& name)
+    {
+        this->guiName_ = name;
+        QuestManager::getInstance().setPlayer(name, orxonox_cast<PlayerInfo*>(this->getOwner()));
+    }
 }

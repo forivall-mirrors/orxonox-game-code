@@ -91,11 +91,17 @@ namespace orxonox
 
             QuestContainer* getQuestTree(std::string & name); // tolua_export
 
+            inline void setPlayer(const std::string& guiname, PlayerInfo* player)
+                { this->players_[guiname] = player; }
+            inline PlayerInfo* getPlayer(const std::string& guiname) const
+                { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; }
+
         private:
             static QuestManager* singletonPtr_s;
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
+            std::map<std::string, PlayerInfo*> players_; //!< Stores the player (owner) for each gui
 
             void getRootQuests(const PlayerInfo* player, std::list<Quest*> & list);
             HintContainer* addHints(Quest* quest, const PlayerInfo* player);
