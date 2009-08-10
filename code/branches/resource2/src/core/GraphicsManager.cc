@@ -36,19 +36,14 @@
 #include "GraphicsManager.h"
 
 #include <fstream>
-#include <memory>
 #include <boost/filesystem.hpp>
-#include <boost/shared_ptr.hpp>
 
-#include <OgreCompositorManager.h>
-#include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
 #include <OgreLogManager.h>
 #include <OgreException.h>
 #include <OgreRenderWindow.h>
 #include <OgreRenderSystem.h>
-#include <OgreTextureManager.h>
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
@@ -67,8 +62,6 @@
 
 namespace orxonox
 {
-    using boost::shared_ptr;
-
     class OgreWindowEventListener : public Ogre::WindowEventListener
     {
     public:
@@ -88,10 +81,8 @@ namespace orxonox
     @brief
         Non-initialising constructor.
     */
-    GraphicsManager::GraphicsManager()
-        : ogreRoot_(0)
-        , ogreLogger_(0)
-        , renderWindow_(0)
+    GraphicsManager::GraphicsManager(bool bLoadRenderer)
+        : renderWindow_(0)
         , viewport_(0)
         , ogreWindowEventListener_(new OgreWindowEventListener())
     {
@@ -99,63 +90,28 @@ namespace orxonox
 
         this->setConfigValues();
 
-        // Ogre setup procedure
-        setupOgre();
+        // Ogre setup procedure (creating Ogre::Root)
+        this->loadOgreRoot();
+        // load all the required plugins for Ogre
+        this->loadOgrePlugins();
 
-        try
+        if (bLoadRenderer)
         {
-            // load all the required plugins for Ogre
-            loadOgrePlugins();
-            // read resource declaration file
-            this->declareResources();
-            // Reads ogre config and creates the render window
+            // Reads the ogre config and creates the render window
             this->loadRenderer();
-
-            // TODO: Spread this
-            this->initialiseResources();
-
-            // add console commands
-            FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
-            functor1->setObject(this);
-            ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
-            CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
-        }
-        catch (...)
-        {
-            // clean up
-            delete this->ogreRoot_;
-            delete this->ogreLogger_;
-            delete this->ogreWindowEventListener_;
-            throw;
         }
     }
 
     /**
     @brief
-        Destroys all the Ogre related objects
+        Destruction is done by the member scoped_ptrs.
     */
     GraphicsManager::~GraphicsManager()
     {
-/*
-        delete this->ccPrintScreen_;
-*/
-
-        // unload all compositors (this is only necessary because we don't yet destroy all resources!)
-        Ogre::CompositorManager::getSingleton().removeAll();
-
-        // Delete OGRE main control organ
-        delete this->ogreRoot_;
-
-        // delete the logManager (since we have created it in the first place).
-        delete this->ogreLogger_;
-
-        delete this->ogreWindowEventListener_;
     }
 
     void GraphicsManager::setConfigValues()
     {
-        SetConfigValue(resourceFile_,    "resources.cfg")
-            .description("Location of the resources file in the data path.");
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
         SetConfigValue(ogrePluginsFolder_, ORXONOX_OGRE_PLUGINS_FOLDER)
@@ -170,6 +126,114 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Normal");
         SetConfigValue(ogreLogLevelCritical_, 2)
             .description("Corresponding orxonox debug level for ogre Critical");
+    }
+
+    /**
+    @brief
+        Loads the renderer and creates the render window if not yet done so.
+    @remarks
+        This operation is irreversible without recreating the GraphicsManager!
+    */
+    void GraphicsManager::upgradeToGraphics()
+    {
+        if (renderWindow_ == NULL)
+        {
+            this->loadRenderer();
+        }
+    }
+
+    /**
+    @brief
+        Creates the Ogre Root object and sets up the ogre log.
+    */
+    void GraphicsManager::loadOgreRoot()
+    {
+        COUT(3) << "Setting up Ogre..." << std::endl;
+
+        if (ogreConfigFile_ == "")
+        {
+            COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
+            ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
+        }
+        if (ogreLogFile_ == "")
+        {
+            COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
+            ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
+        }
+
+        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() / this->ogreConfigFile_);
+        boost::filesystem::path ogreLogFilepath(Core::getLogPath() / this->ogreLogFile_);
+
+        // create a new logManager
+        // Ogre::Root will detect that we've already created a Log
+        ogreLogger_.reset(new Ogre::LogManager());
+        COUT(4) << "Ogre LogManager created" << std::endl;
+
+        // create our own log that we can listen to
+        Ogre::Log *myLog;
+        myLog = ogreLogger_->createLog(ogreLogFilepath.string(), true, false, false);
+        COUT(4) << "Ogre Log created" << std::endl;
+
+        myLog->setLogDetail(Ogre::LL_BOREME);
+        myLog->addListener(this);
+
+        COUT(4) << "Creating Ogre Root..." << std::endl;
+
+        // check for config file existence because Ogre displays (caught) exceptions if not
+        if (!boost::filesystem::exists(ogreConfigFilepath))
+        {
+            // create a zero sized file
+            std::ofstream creator;
+            creator.open(ogreConfigFilepath.string().c_str());
+            creator.close();
+        }
+
+        // Leave plugins file empty. We're going to do that part manually later
+        ogreRoot_.reset(new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string()));
+
+        COUT(3) << "Ogre set up done." << std::endl;
+    }
+
+    void GraphicsManager::loadOgrePlugins()
+    {
+        // just to make sure the next statement doesn't segfault
+        if (ogrePluginsFolder_ == "")
+            ogrePluginsFolder_ = ".";
+
+        boost::filesystem::path folder(ogrePluginsFolder_);
+        // Do some SubString magic to get the comma separated list of plugins
+        SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '(', ')', false, '\0');
+        // Use backslash paths on Windows! file_string() already does that though.
+        for (unsigned int i = 0; i < plugins.size(); ++i)
+            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
+    }
+
+    void GraphicsManager::loadRenderer()
+    {
+        CCOUT(4) << "Configuring Renderer" << std::endl;
+
+        if (!ogreRoot_->restoreConfig())
+            if (!ogreRoot_->showConfigDialog())
+                ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue failed.");
+
+        CCOUT(4) << "Creating render window" << std::endl;
+
+        this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
+        // Propagate the size of the new winodw
+        this->ogreWindowEventListener_->windowResized(renderWindow_);
+
+        Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
+
+        // create a full screen default viewport
+        // Note: This may throw when adding a viewport with an existing z-order!
+        //       But in our case we only have one viewport for now anyway, therefore
+        //       no ScopeGuards or anything to handle exceptions.
+        this->viewport_ = this->renderWindow_->addViewport(0, 0);
+
+        // add console commands
+        FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
+        ccPrintScreen_ = createConsoleCommand(functor1->setObject(this), "printScreen");
+        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
     void GraphicsManager::update(const Clock& time)
@@ -206,167 +270,6 @@ namespace orxonox
     void GraphicsManager::setCamera(Ogre::Camera* camera)
     {
         this->viewport_->setCamera(camera);
-    }
-
-    /**
-    @brief
-        Creates the Ogre Root object and sets up the ogre log.
-    */
-    void GraphicsManager::setupOgre()
-    {
-        COUT(3) << "Setting up Ogre..." << std::endl;
-
-        if (ogreConfigFile_ == "")
-        {
-            COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
-            ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
-        }
-        if (ogreLogFile_ == "")
-        {
-            COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
-            ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
-        }
-
-        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() / this->ogreConfigFile_);
-        boost::filesystem::path ogreLogFilepath(Core::getLogPath() / this->ogreLogFile_);
-
-        // create a new logManager
-        // Ogre::Root will detect that we've already created a Log
-        std::auto_ptr<Ogre::LogManager> logger(new Ogre::LogManager());
-        COUT(4) << "Ogre LogManager created" << std::endl;
-
-        // create our own log that we can listen to
-        Ogre::Log *myLog;
-        myLog = logger->createLog(ogreLogFilepath.string(), true, false, false);
-        COUT(4) << "Ogre Log created" << std::endl;
-
-        myLog->setLogDetail(Ogre::LL_BOREME);
-        myLog->addListener(this);
-
-        COUT(4) << "Creating Ogre Root..." << std::endl;
-
-        // check for config file existence because Ogre displays (caught) exceptions if not
-        if (!boost::filesystem::exists(ogreConfigFilepath))
-        {
-            // create a zero sized file
-            std::ofstream creator;
-            creator.open(ogreConfigFilepath.string().c_str());
-            creator.close();
-        }
-
-        // Leave plugins file empty. We're going to do that part manually later
-        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
-        // In case that new Root failed the logger gets destroyed because of the std::auto_ptr
-        ogreLogger_ = logger.release();
-
-        COUT(3) << "Ogre set up done." << std::endl;
-    }
-
-    void GraphicsManager::loadOgrePlugins()
-    {
-        // just to make sure the next statement doesn't segfault
-        if (ogrePluginsFolder_ == "")
-            ogrePluginsFolder_ = ".";
-
-        boost::filesystem::path folder(ogrePluginsFolder_);
-        // Do some SubString magic to get the comma separated list of plugins
-        SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '(', ')', false, '\0');
-        // Use backslash paths on Windows! file_string() already does that though.
-        for (unsigned int i = 0; i < plugins.size(); ++i)
-            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
-    }
-
-    void GraphicsManager::declareResources()
-    {
-        CCOUT(4) << "Declaring Resources" << std::endl;
-        //TODO: Specify layout of data file and maybe use xml-loader
-        //TODO: Work with ressource groups (should be generated by a special loader)
-
-        if (resourceFile_ == "")
-        {
-            COUT(2) << "Warning: Ogre resource file set to \"\". Defaulting to resources.cfg" << std::endl;
-            ModifyConfigValue(resourceFile_, tset, "resources.cfg");
-        }
-
-        // Load resource paths from data file using configfile ressource type
-        Ogre::ConfigFile cf;
-        try
-        {
-            cf.load((Core::getMediaPath() / resourceFile_).string());
-        }
-        catch (...)
-        {
-            //COUT(1) << ex.getFullDescription() << std::endl;
-            COUT(0) << "Have you forgotten to set the data path in orxnox.ini?" << std::endl;
-            throw;
-        }
-
-        // Go through all sections & settings in the file
-        Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-
-        std::string secName, typeName, archName;
-        while (seci.hasMoreElements())
-        {
-            try
-            {
-                secName = seci.peekNextKey();
-                Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-                Ogre::ConfigFile::SettingsMultiMap::iterator i;
-                for (i = settings->begin(); i != settings->end(); ++i)
-                {
-                    typeName = i->first; // for instance "FileSystem" or "Zip"
-                    archName = i->second; // name (and location) of archive
-
-                    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                        (Core::getMediaPath() / archName).string(), typeName, secName);
-                }
-            }
-            catch (Ogre::Exception& ex)
-            {
-                COUT(1) << ex.getFullDescription() << std::endl;
-            }
-        }
-    }
-
-    void GraphicsManager::loadRenderer()
-    {
-        CCOUT(4) << "Configuring Renderer" << std::endl;
-
-        if (!ogreRoot_->restoreConfig())
-            if (!ogreRoot_->showConfigDialog())
-                ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue failed.");
-
-        CCOUT(4) << "Creating render window" << std::endl;
-
-        this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
-        this->ogreWindowEventListener_->windowResized(renderWindow_);
-
-        Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_);
-
-        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-
-        // create a full screen default viewport
-        this->viewport_ = this->renderWindow_->addViewport(0, 0);
-    }
-
-    void GraphicsManager::initialiseResources()
-    {
-        CCOUT(4) << "Initialising resources" << std::endl;
-        //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
-        //try
-        //{
-            Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-            /*Ogre::StringVector str = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
-            for (unsigned int i = 0; i < str.size(); i++)
-            {
-            Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(str[i]);
-            }*/
-        //}
-        //catch (...)
-        //{
-        //    CCOUT(2) << "Error: There was a serious error when initialising the resources." << std::endl;
-        //    throw;
-        //}
     }
 
     /**
