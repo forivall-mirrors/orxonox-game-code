@@ -222,11 +222,6 @@ namespace orxonox
     class UnderAttack;
     class Pong;
 
-    class Scores;
-    class CreateLines;
-    class Scoreboard;
-    class Stats;
-
     // collision
     class CollisionShape;
     class SphereCollisionShape;
@@ -256,6 +251,7 @@ namespace orxonox
     class HUDTimer;
     class InGameConsole;
     class Notification;
+    class NotificationListener;
     class NotificationManager;
     class NotificationOverlay;
     class NotificationQueue;
@@ -267,9 +263,11 @@ namespace orxonox
     class AnnounceMessage;
     class KillMessage;
     class DeathMessage;
+    class Map;
+
     class CreateLines;
     class Scoreboard;
-    class Map;
+    class Stats;
 
     //sound
     class SoundBase;

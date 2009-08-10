@@ -35,7 +35,7 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "Notification.h"
+#include "objects/quest/notifications/Notification.h"
 #include "NotificationQueue.h"
 
 namespace orxonox
@@ -64,7 +64,7 @@ namespace orxonox
     NotificationOverlay::NotificationOverlay(NotificationQueue* queue, Notification* notification) : OverlayText(NULL)
     {
         this->initialize();
-        
+
         if(notification == NULL || queue == NULL) //!> If either notification or queue are not given an Exception is thrown.
         {
             ThrowException(Argument, "There were NULL-Pointer arguments in NotificationOverlay creation.");
@@ -72,10 +72,10 @@ namespace orxonox
 
         this->queue_ = queue;
         this->defineOverlay();
-        
+
         this->processNotification(notification);
     }
-    
+
     /**
     @brief
         Initializes and Registers the object.
@@ -84,7 +84,7 @@ namespace orxonox
     {
         this->queue_ = NULL;
     }
-    
+
     /**
     @brief
         Set some Overlay-specific values.

@@ -47,7 +47,7 @@
 #include "interfaces/Tickable.h"
 #include "objects/Radar.h"
 #include "objects/quest/QuestManager.h"
-#include "overlays/notifications/NotificationManager.h"
+#include "objects/quest/notifications/NotificationManager.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"

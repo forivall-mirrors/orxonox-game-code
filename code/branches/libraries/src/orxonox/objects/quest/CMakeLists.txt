@@ -17,3 +17,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   QuestManager.cc
   QuestNotification.cc
 )
+
+ADD_SUBDIRECTORY(notifications)

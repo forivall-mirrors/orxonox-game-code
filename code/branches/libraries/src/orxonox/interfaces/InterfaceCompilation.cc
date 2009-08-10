@@ -39,6 +39,7 @@
 #include "TeamColourable.h"
 #include "Tickable.h"
 #include "TimeFactorListener.h"
+#include "NotificationListener.h"
 
 #include "core/CoreIncludes.h"
 
@@ -106,5 +107,13 @@ namespace orxonox
     Rewardable::Rewardable()
     {
         RegisterObject(Rewardable);
+    }
+
+    //----------------------------
+    // NotificationListener
+    //----------------------------
+    NotificationListener::NotificationListener()
+    {
+        RegisterObject(NotificationListener);
     }
 }

@@ -44,6 +44,7 @@
 #include "util/Math.h"
 #include "interfaces/Tickable.h"
 #include "overlays/OverlayGroup.h"
+#include "interfaces/NotificationListener.h"
 
 namespace orxonox
 {
@@ -56,7 +57,7 @@ namespace orxonox
         time_t time; //!< The time the Notification was sent and thus first displayed.
         std::string name; //!< The name of the overlay.
     };
-    
+
     //! Struct to allow ordering of NotificationOverlayContainers.
     struct NotificationOverlayContainerCompare {
         bool operator() (const NotificationOverlayContainer* const & a, const NotificationOverlayContainer* const & b) const
@@ -83,20 +84,20 @@ namespace orxonox
         Damian 'Mozork' Frick
     */
 
-    class _OrxonoxExport NotificationQueue : public OverlayGroup, public Tickable
+    class _OrxonoxExport NotificationQueue : public OverlayGroup, public Tickable, public NotificationListener
     {
-    
+
         public:
             NotificationQueue(BaseObject* creator);
             virtual ~NotificationQueue();
-            
+
             virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode); //!< Method for creating a NotificationQueue object through XML.
-            
+
             virtual void tick(float dt); //!< To update from time to time.
-            
+
             void update(void); //!< Updates the queue.
             void update(Notification* notification, const std::time_t & time); //!< Adds a Notification to the queue.
-            
+
             /**
             @brief Returns the maximum number of Notifications displayed.
             @return Returns maximum size.
@@ -139,7 +140,7 @@ namespace orxonox
             */
             inline const std::string & getFont() const
                 { return this->font_; }
-                
+
             /**
             @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
             @return Retuns a set of string holding the different targets.
@@ -147,16 +148,16 @@ namespace orxonox
             inline const std::set<std::string> & getTargetsSet()
                 { return this->targets_; }
             bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
-            
+
             /**
             @brief Sets the position of the NotificationQueue.
             @param pos The position.
             */
-            inline void setPosition(Vector2 pos) 
+            inline void setPosition(Vector2 pos)
                 { this->position_ = pos; this->positionChanged(); }
 
             void scroll(const Vector2 pos); //!< Scrolls the NotificationQueue, meaning all NotificationOverlays are moved the input vector.
-            
+
         private:
             static const int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const int DEFAULT_LENGTH = 64; //!< The default maximum number of Notifications displayed.
@@ -165,43 +166,43 @@ namespace orxonox
 
             static const std::string DEFAULT_FONT; //!< The default font.
             static const Vector2 DEFAULT_POSITION; //!< the default position.
-        
+
             int maxSize_; //!< The maximal number of Notifications displayed.
             int size_; //!< The number of Notifications displayed.
             int notificationLength_; //!< The maximal number of characters a Notification-message is allowed to have.
             int displayTime_; //!< The time a Notification is displayed.
             Vector2 position_; //!< The position of the NotificationQueue.
-            
+
             std::set<std::string> targets_; //!< The targets the Queue displays Notifications of.
-            
+
             float fontSize_; //!< The font size.
             std::string font_; //!< The font.
-            
+
             std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare> containers_; //!< Multiset, because the ordering is based on, not necessarily unique, timestamps.
             std::map<Notification*, NotificationOverlayContainer*> overlays_; //!< Mapping notifications to their corresponding overlay containers, for easier association and finding.
-            
+
             float tickTime_; //!< Helper variable, to not have to check for overlays that have been displayed too long, every tick.
             NotificationOverlayContainer timeLimit_; //!< Helper object to check against to determine whether Notifications have expired.
-            
+
             void initialize(void); //!< Initializes the object.
             void setDefaults(void); //!< Helper method to set the default values.
-            
+
             bool setMaxSize(int size); //!< Sets the maximum number of displayed Notifications.
             bool setNotificationLength(int length); //!< Sets the maximum number of characters a Notification message displayed by this queue is allowed to have.
             bool setDisplayTime(int time); //!< Sets the maximum number of seconds a Notification is displayed.
-            
+
             bool setTargets(const std::string & targets); //!< Set the targets of this queue.
-            
+
             bool setFontSize(float size); //!< Set the font size.
             bool setFont(const std::string & font); //!< Set the font.
 
             void positionChanged(void); //!< Aligns all the Notifications to the position of the NotificationQueue.
-            
+
             void addNotification(Notification* notification, const std::time_t & time); //!< Add a notification to the queue.
             bool removeContainer(NotificationOverlayContainer* container); //!< Remove a container from the queue.
-            
+
             void clear(void); //!< Clear the queue.
-    
+
     };
 
 }

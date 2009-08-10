@@ -25,20 +25,20 @@
  *      ...
  *
  */
- 
+
 #ifndef _QuestNotification_H__
 #define _QuestNotification_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "overlays/notifications/Notification.h"
+#include "notifications/Notification.h"
 
 namespace orxonox {
 
     /**
     @brief
-        
+
     @author
         Damian 'Mozork' Frick
     */
@@ -48,14 +48,14 @@ namespace orxonox {
             QuestNotification(BaseObject* creator);
             QuestNotification(const std::string & message);
             virtual ~QuestNotification();
-            
+
             bool send(void);
-     
+
         private:
             static const std::string SENDER;
-            
+
             void initialize(void);
- 
+
     };
 
 }
