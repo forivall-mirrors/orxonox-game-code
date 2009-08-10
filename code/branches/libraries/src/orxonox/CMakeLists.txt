@@ -69,7 +69,6 @@ ORXONOX_ADD_LIBRARY(orxonox
 )
 
 ORXONOX_ADD_EXECUTABLE(orxonox-main
-  FIND_HEADER_FILES
   # When defined as WIN32 this removes the console window on Windows
   ${ORXONOX_WIN32}
   LINK_LIBRARIES
