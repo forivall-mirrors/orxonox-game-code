@@ -23,6 +23,8 @@
  #    Adds a library or an executable like ADD_LIBRARY/ADD_EXECUTABLE, but
  #    accepts a lot more input information. Simply supply the keywords
  #    described below in any order you wish.
+ #    The output is then stored in "_arg_ARGNAME" where ARGNAME is the the
+ #    name of the switch or list.
  #
  #    Switches: (when given --> TRUE, FALSE otherwise)
  #      FIND_HEADER_FILES: Searches the current directory for all header files
@@ -35,6 +37,8 @@
  #      WIN32:             Inherited from ADD_EXECUTABLE
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
+ #      NO_INSTALL:        Do not install the target at all
+ #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
  #      VERSION:           Set version to the binary
