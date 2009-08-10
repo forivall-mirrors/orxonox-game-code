@@ -18,12 +18,15 @@
  #
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
-  CameraManager.cc
-  InGameConsole.cc
-  LevelManager.cc
   Main.cc
+
+  CameraManager.cc
+  LevelManager.cc
   PawnManager.cc
   PlayerManager.cc
+
+  InGameConsole.cc
+  Map.cc
 )
 ADD_SUBDIRECTORY(gamestates)
 ADD_SUBDIRECTORY(interfaces)

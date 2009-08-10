@@ -50,7 +50,7 @@
 #include "sound/SoundManager.h"
 
 // HACK:
-#include "overlays/map/Map.h"
+#include "Map.h"
 
 namespace orxonox
 {
