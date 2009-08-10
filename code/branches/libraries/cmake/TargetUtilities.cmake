@@ -43,6 +43,7 @@
  #      TOLUA_FILES:       Files with tolua interface
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
+ #      OUTPUT_NAME:       If you want a different name than the target name
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
@@ -76,7 +77,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
                   PCH_NO_DEFAULT NO_INSTALL)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
-                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE)
+                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE OUTPUT_NAME)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
@@ -165,6 +166,11 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${_arg_VERSION})
   ELSEIF(NOT _arg_ORXONOX_EXTERNAL)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${ORXONOX_VERSION})
+  ENDIF()
+
+  # OUTPUT_NAME
+  IF(_arg_OUTPUT_NAME )
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES OUTPUT_NAME  ${_arg_OUTPUT_NAME})
   ENDIF()
 
   # Second part of precompiled header files

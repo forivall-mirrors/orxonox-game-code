@@ -26,27 +26,20 @@
  *      ...
  *
  */
- 
+
 /**
 @file
 @brief
-    Entry point of the program.
+    The main function of Orxonox.
 */
 
 #include "OrxonoxPrereqs.h"
 #include "SpecialConfig.h"
 
-#ifdef ORXONOX_USE_WINMAIN
-# ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-# endif
-#include <windows.h>
-#endif
-
-#include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
+#include "Main.h"
 
 SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
 // Shortcuts for easy direct loading
@@ -55,27 +48,15 @@ SetCommandLineSwitch(client).information("Start in client mode");
 SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
 SetCommandLineSwitch(standalone).information("Start in standalone mode");
 
-/*
-@brief
-    Main method. Game starts here (except for static initialisations).
-*/
-#ifdef ORXONOX_USE_WINMAIN
-INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
-#else
-int main(int argc, char** argv)
-#endif
+namespace orxonox
 {
-    using namespace orxonox;
-
-    Game* game = 0;
-    try
+    /**
+    @brief
+        Main method. Game starts here (except for static initialisations).
+    */
+    int main(const std::string& strCmdLine)
     {
-#ifndef ORXONOX_USE_WINMAIN
-        std::string strCmdLine;
-        for (int i = 1; i < argc; ++i)
-            strCmdLine += argv[i] + std::string(" ");
-#endif
-        game = new Game(strCmdLine);
+        Game* game = new Game(strCmdLine);
 
         game->setStateHierarchy(
         "root"
@@ -107,22 +88,10 @@ int main(int argc, char** argv)
             Game::getInstance().requestStates("ioConsole");
         else
             Game::getInstance().requestStates("graphics, mainMenu");
-    }
-    catch (const std::exception& ex)
-    {
-        COUT(0) << "Orxonox failed to initialise: " << ex.what() << std::endl;
-        COUT(0) << "Terminating program." << std::endl;
-        return 1;
-    }
-    catch (...)
-    {
-        COUT(0) << "Orxonox failed to initialise: " << std::endl;
-        COUT(0) << "Terminating program." << std::endl;
-        return 1;
-    }
 
-    game->run();
-    delete game;
+        game->run();
+        delete game;
 
-    return 0;
+        return 0;
+    }
 }

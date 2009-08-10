@@ -39,8 +39,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#define ORXONOX_NO_EXPORTS // This is an executable that needs no exports
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !(defined(ORXONOX_STATIC_BUILD) || defined(ORXONOX_NO_EXPORTS))
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef ORXONOX_SHARED_BUILD
 #    define _OrxonoxExport __declspec(dllexport)
 #  else

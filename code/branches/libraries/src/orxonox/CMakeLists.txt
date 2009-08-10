@@ -36,7 +36,7 @@ IF(ORXONOX_USE_WINMAIN)
   SET(ORXONOX_WIN32 WIN32)
 ENDIF()
 
-ORXONOX_ADD_EXECUTABLE(orxonox
+ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
     LevelManager.h
@@ -44,10 +44,10 @@ ORXONOX_ADD_EXECUTABLE(orxonox
     objects/pickup/PickupInventory.h
     objects/quest/QuestDescription.h
     objects/quest/QuestManager.h
+  DEFINE_SYMBOL
+    "ORXONOX_SHARED_BUILD"
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
-  # When defined as WIN32 this removes the console window on Windows
-  ${ORXONOX_WIN32}
   LINK_LIBRARIES
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
@@ -68,7 +68,18 @@ ORXONOX_ADD_EXECUTABLE(orxonox
   SOURCE_FILES ${ORXONOX_SRC_FILES}
 )
 
-GET_TARGET_PROPERTY(_exec_loc orxonox LOCATION)
+ORXONOX_ADD_EXECUTABLE(orxonox-main
+  FIND_HEADER_FILES
+  # When defined as WIN32 this removes the console window on Windows
+  ${ORXONOX_WIN32}
+  LINK_LIBRARIES
+    orxonox
+  SOURCE_FILES
+    Orxonox.cc
+  OUTPUT_NAME orxonox
+)
+
+GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
 SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
 
