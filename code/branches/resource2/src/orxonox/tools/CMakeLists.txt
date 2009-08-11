@@ -4,6 +4,8 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   DynamicRenderable.cc
   Mesh.cc
   ParticleInterface.cc
+  ResourceCollection.cc
+  ResourceLocation.cc
   Shader.cc
   TextureGenerator.cc
   Timer.cc
