@@ -239,35 +239,13 @@ namespace orxonox
     class Timer;
 
     // overlays
-    class BarColour;
-    class DebugFPSText;
-    class DebugRTRText;
-    class GUIOverlay;
-    class HUDBar;
-    class HUDNavigation;
-    class HUDRadar;
-    class HUDSpeedBar;
-    class HUDHealthBar;
-    class HUDTimer;
-    class InGameConsole;
+    class OverlayGroup;
+    class OrxonoxOverlay;
     class Notification;
     class NotificationListener;
     class NotificationManager;
-    class NotificationOverlay;
-    class NotificationQueue;
-    class OrxonoxOverlay;
-    class OverlayGroup;
-    class OverlayText;
-    class FadeoutText;
-    class GametypeStatus;
-    class AnnounceMessage;
-    class KillMessage;
-    class DeathMessage;
+    class InGameConsole;
     class Map;
-
-    class CreateLines;
-    class Scoreboard;
-    class Stats;
 
     //sound
     class SoundBase;
