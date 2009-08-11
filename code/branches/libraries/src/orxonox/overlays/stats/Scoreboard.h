@@ -28,7 +28,7 @@
 #define _Scoreboard_H__
 
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <string>
 #include <vector>
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Scoreboard : public OrxonoxOverlay, public Tickable
+    class _OverlaysExport Scoreboard : public OrxonoxOverlay, public Tickable
     {
     public: // functions
         Scoreboard(BaseObject* creator);

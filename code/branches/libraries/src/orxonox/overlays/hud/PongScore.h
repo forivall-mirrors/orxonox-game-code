@@ -29,14 +29,14 @@
 #ifndef _PongScore_H__
 #define _PongScore_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PongScore : public OverlayText, public Tickable
+    class _OverlaysExport PongScore : public OverlayText, public Tickable
     {
         public:
             PongScore(BaseObject* creator);

@@ -29,14 +29,14 @@
 #ifndef _DebugRTRText_H__
 #define _DebugRTRText_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport DebugRTRText : public OverlayText, public Tickable
+    class _OverlaysExport DebugRTRText : public OverlayText, public Tickable
     {
     public:
         DebugRTRText(BaseObject* creator);

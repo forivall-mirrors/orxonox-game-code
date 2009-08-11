@@ -31,7 +31,7 @@
 #ifndef _HUDBar_H__
 #define _HUDBar_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <map>
 #include <vector>
@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport BarColour : public BaseObject
+    class _OverlaysExport BarColour : public BaseObject
     {
     public:
         BarColour(BaseObject* creator);
@@ -63,7 +63,7 @@ namespace orxonox
     };
 
 
-    class _OrxonoxExport HUDBar : public OrxonoxOverlay
+    class _OverlaysExport HUDBar : public OrxonoxOverlay
     {
     public:
         HUDBar(BaseObject* creator);

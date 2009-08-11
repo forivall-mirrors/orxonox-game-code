@@ -30,14 +30,14 @@
 #ifndef _HUDSpeedBar_H__
 #define _HUDSpeedBar_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "interfaces/Tickable.h"
 #include "HUDBar.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
+    class _OverlaysExport HUDSpeedBar : public HUDBar, public Tickable
     {
     public:
         HUDSpeedBar(BaseObject* creator);

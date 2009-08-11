@@ -29,7 +29,7 @@
 #ifndef _FadeoutText_H__
 #define _FadeoutText_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "tools/Timer.h"
 #include "interfaces/Tickable.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport FadeoutText : public OverlayText, public Tickable
+    class _OverlaysExport FadeoutText : public OverlayText, public Tickable
     {
         public:
             FadeoutText(BaseObject* creator);

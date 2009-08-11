@@ -29,14 +29,14 @@
 #ifndef _TeamBaseMatchScore_H__
 #define _TeamBaseMatchScore_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport TeamBaseMatchScore : public OverlayText, public Tickable
+    class _OverlaysExport TeamBaseMatchScore : public OverlayText, public Tickable
     {
         public:
             TeamBaseMatchScore(BaseObject* creator);

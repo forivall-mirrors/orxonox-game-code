@@ -27,11 +27,11 @@
 #ifndef _CreateLines_H__
 #define _CreateLines_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CreateLines
+    class _OverlaysExport CreateLines
     {
 
     public: // functions

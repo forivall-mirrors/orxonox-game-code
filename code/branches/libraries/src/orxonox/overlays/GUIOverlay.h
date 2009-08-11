@@ -29,14 +29,14 @@
 #ifndef _GUIOverlay_H__
 #define _GUIOverlay_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <string>
 #include "OrxonoxOverlay.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GUIOverlay : public OrxonoxOverlay
+    class _OverlaysExport GUIOverlay : public OrxonoxOverlay
     {
         public:
 

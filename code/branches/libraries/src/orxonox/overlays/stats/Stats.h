@@ -29,7 +29,7 @@
 #ifndef _Stats_H__
 #define _Stats_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "util/OgreForwardRefs.h"
 #include "interfaces/Tickable.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Stats : public OrxonoxOverlay, public Tickable
+    class _OverlaysExport Stats : public OrxonoxOverlay, public Tickable
     {
     public: // functions
         Stats(BaseObject* creator);

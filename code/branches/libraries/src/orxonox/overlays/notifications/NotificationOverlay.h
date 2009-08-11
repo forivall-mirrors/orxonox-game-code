@@ -35,7 +35,7 @@
 #ifndef _NotificationOverlay_H__
 #define _NotificationOverlay_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <string>
 #include "orxonox/overlays/OverlayText.h"
@@ -49,14 +49,14 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport NotificationOverlay : public OverlayText
+    class _OverlaysExport NotificationOverlay : public OverlayText
     {
 
         public:
             NotificationOverlay(BaseObject* creator);
             NotificationOverlay(NotificationQueue* queue, Notification* notification);
             virtual ~NotificationOverlay();
-            
+
             bool processNotification(Notification* notification); //!< Processes the input Notification.
 
             /**
@@ -65,7 +65,7 @@ namespace orxonox
             */
             inline void setFontSize(float size)
                 { this->setTextSize(size); }
-        
+
         protected:
             std::string clipMessage(const std::string & message); //!< Clips the input message if too long.
 
