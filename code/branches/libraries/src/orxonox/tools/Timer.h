@@ -170,7 +170,7 @@ namespace orxonox
     };
 
     //! The StaticTimer is a callback-object, calling a static function after a given time-interval.
-    class StaticTimer : public TimerBase
+    class _OrxonoxExport StaticTimer : public TimerBase
     {
         public:
             StaticTimer() {}

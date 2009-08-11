@@ -36,7 +36,7 @@
 namespace Ogre
 {
     /// Abstract base class providing mechanisms for dynamically growing hardware buffers.
-    class DynamicRenderable : public SimpleRenderable
+    class _OrxonoxExport DynamicRenderable : public SimpleRenderable
     {
     public:
         /// Constructor

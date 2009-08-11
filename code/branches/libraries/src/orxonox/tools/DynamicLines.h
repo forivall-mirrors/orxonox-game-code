@@ -36,7 +36,7 @@
 
 namespace Ogre
 {
-    class DynamicLines : public DynamicRenderable
+    class _OrxonoxExport DynamicLines : public DynamicRenderable
     {
         typedef RenderOperation::OperationType OperationType;
 
