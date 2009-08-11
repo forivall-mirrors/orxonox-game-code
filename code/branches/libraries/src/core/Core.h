@@ -113,9 +113,8 @@ namespace orxonox
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
 
-            void checkDevBuild();
-            void setExecutablePath();
-            void createDirectories();
+            void setFixedPaths();
+            void setConfigurablePaths();
             void setThreadAffinity(int limitToCPU);
 
             // Mind the order for the destruction!

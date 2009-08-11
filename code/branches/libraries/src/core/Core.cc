@@ -240,6 +240,7 @@ namespace orxonox
         //! Path to the parent directory of the ones above if program was installed with relativ pahts
         boost::filesystem::path rootPath_;
         boost::filesystem::path executablePath_;        //!< Path to the executable
+        boost::filesystem::path pluginPath_;            //!< Path to the plugins
         boost::filesystem::path mediaPath_;             //!< Path to the media file folder
         boost::filesystem::path configPath_;            //!< Path to the config file folder
         boost::filesystem::path logPath_;               //!< Path to the log file folder
@@ -255,18 +256,16 @@ namespace orxonox
         , bDevRun_(false)
         , bGraphicsLoaded_(false)
     {
-        // Parse command line arguments first
+        // Set the hard coded fixed paths
+        this->setFixedPaths();
+
+        // TODO: Load plugins
+
+        // Parse command line arguments AFTER the plugins have been loaded (static code!)
         CommandLine::parseCommandLine(cmdLine);
 
-        // Determine and set the location of the executable
-        setExecutablePath();
-
-        // Determine whether we have an installed or a binary dir run
-        // The latter occurs when simply running from the build directory
-        checkDevBuild();
-
-        // Make sure the directories we write in exist or else make them
-        createDirectories();
+        // Set configurable paths like log, config and media
+        this->setConfigurablePaths();
 
         // create a signal handler (only active for linux)
         // This call is placed as soon as possible, but after the directories are set
@@ -506,10 +505,19 @@ namespace orxonox
 
     /**
     @brief
-        Compares the executable path with the working directory
+        Retrievs the executable path and sets all hard coded fixed path (currently only plugin path)
+        Also checks for "orxonox_dev_build.keep_me" in the executable diretory.
+        If found it means that this is not an installed run, hence we
+        don't write the logs and config files to ~/.orxonox
+    @throw
+        GeneralException
     */
-    void Core::setExecutablePath()
+    void Core::setFixedPaths()
     {
+        //////////////////////////
+        // FIND EXECUTABLE PATH //
+        //////////////////////////
+
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // get executable module
         TCHAR buffer[1024];
@@ -552,29 +560,22 @@ namespace orxonox
 #ifndef ORXONOX_PLATFORM_APPLE
         configuration_->executablePath_ = configuration_->executablePath_.branch_path(); // remove executable name
 #endif
-    }
 
-    /**
-    @brief
-        Checks for "orxonox_dev_build.keep_me" in the executable diretory.
-        If found it means that this is not an installed run, hence we
-        don't write the logs and config files to ~/.orxonox
-    @throws
-        GeneralException
-    */
-    void Core::checkDevBuild()
-    {
+        /////////////////////
+        // SET PLUGIN PATH //
+        /////////////////////
+
         if (boost::filesystem::exists(configuration_->executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::bDevRun_ = true;
-            configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
-            configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
-            configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;
+            configuration_->pluginPath_ = ORXONOX_PLUGIN_DEV_PATH;
         }
         else
         {
+
 #ifdef INSTALL_COPYABLE // --> relative paths
+
             // Also set the root path
             boost::filesystem::path relativeExecutablePath(ORXONOX_RUNTIME_INSTALL_PATH);
             configuration_->rootPath_ = configuration_->executablePath_;
@@ -584,12 +585,44 @@ namespace orxonox
             if (configuration_->rootPath_.empty())
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
+            // Plugin path is fixed as well
+            configuration_->pluginPath_ = configuration_->rootPath_ / ORXONOX_PLUGIN_INSTALL_PATH;
+
+#else
+
+            // There is no root path, so don't set it at all
+            // Plugin path is fixed as well
+            configuration_->pluginPath_ = ORXONOX_PLUGIN_INSTALL_PATH;
+
+#endif
+        }
+    }
+
+    /**
+    @brief
+        Sets config, log and media path and creates folders if necessary.
+    @throws
+        GeneralException
+    */
+    void Core::setConfigurablePaths()
+    {
+        if (Core::isDevelopmentRun())
+        {
+            configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
+            configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
+            configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;
+        }
+        else
+        {
+
+#ifdef INSTALL_COPYABLE // --> relative paths
+
             // Using paths relative to the install prefix, complete them
             configuration_->mediaPath_  = configuration_->rootPath_ / ORXONOX_MEDIA_INSTALL_PATH;
             configuration_->configPath_ = configuration_->rootPath_ / ORXONOX_CONFIG_INSTALL_PATH;
             configuration_->logPath_    = configuration_->rootPath_ / ORXONOX_LOG_INSTALL_PATH;
+
 #else
-            // There is no root path, so don't set it at all
 
             configuration_->mediaPath_  = ORXONOX_MEDIA_INSTALL_PATH;
 
@@ -606,7 +639,9 @@ namespace orxonox
 
             configuration_->configPath_ = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
             configuration_->logPath_    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
+
 #endif
+
         }
 
         // Option to put all the config and log files in a separate folder
@@ -616,17 +651,8 @@ namespace orxonox
             configuration_->configPath_ = configuration_->configPath_ / directory;
             configuration_->logPath_    = configuration_->logPath_    / directory;
         }
-    }
 
-    /*
-    @brief
-        Checks for the log and the config directory and creates them
-        if necessary. Otherwise me might have problems opening those files.
-    @throws
-        orxonox::GeneralException if the directory to be created is a file.
-    */
-    void Core::createDirectories()
-    {
+        // Create directories to avoid problems when opening files in non existent folders.
         std::vector<std::pair<boost::filesystem::path, std::string> > directories;
         directories.push_back(std::make_pair(boost::filesystem::path(configuration_->configPath_), "config"));
         directories.push_back(std::make_pair(boost::filesystem::path(configuration_->logPath_), "log"));
