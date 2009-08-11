@@ -279,7 +279,7 @@ namespace orxonox
             size_t pluginextensionlength = pluginextension.size();
 
             // Search in the directory of our executable
-            boost::filesystem::path searchpath = this->getRootPath() / ORXONOX_PLUGIN_INSTALL_PATH;
+            boost::filesystem::path searchpath = this->configuration_->pluginPath_;
 
             boost::filesystem::directory_iterator file(searchpath);
             boost::filesystem::directory_iterator end;
