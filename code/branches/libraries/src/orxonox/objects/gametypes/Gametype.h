@@ -37,7 +37,7 @@
 
 #include "core/BaseObject.h"
 #include "core/Identifier.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "objects/infos/GametypeInfo.h"
 
 namespace orxonox
@@ -132,7 +132,7 @@ namespace orxonox
             virtual void removeTime(float t);
 
             inline  void startTimer()
-            { 
+            {
                 this->time_ = this->timeLimit_;
                 this->timerIsActive_ = true;
             }

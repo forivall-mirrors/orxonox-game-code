@@ -33,7 +33,7 @@
 
 #include "util/Math.h"
 #include "tools/Timer.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "Billboard.h"
 
 namespace orxonox

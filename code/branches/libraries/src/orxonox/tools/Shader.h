@@ -36,7 +36,7 @@
 #include <vector>
 
 #include "util/OgreForwardRefs.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {

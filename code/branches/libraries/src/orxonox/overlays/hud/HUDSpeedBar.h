@@ -32,7 +32,7 @@
 
 #include "overlays/OverlaysPrereqs.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "HUDBar.h"
 
 namespace orxonox

@@ -20,36 +20,43 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _PawnManager_H__
-#define _PawnManager_H__
+/**
+@file
+@brief
+    Compiles all the interfaces in the tools library with mostly just a constructor.
+*/
 
-#include "OrxonoxPrereqs.h"
+#include "Tickable.h"
+#include "TimeFactorListener.h"
 
-#include "util/Singleton.h"
-#include "tools/interfaces/Tickable.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PawnManager : protected Singleton<PawnManager>, public Tickable
+    //----------------------------
+    // TimeFactorListener
+    //----------------------------
+    float TimeFactorListener::timefactor_s = 1.0f;
+
+    TimeFactorListener::TimeFactorListener()
     {
-            friend class Singleton<PawnManager>;
-        public:
-            static void touch();
+        RegisterRootObject(TimeFactorListener);
+    }
 
-            virtual void tick(float dt);
-
-        private:
-            PawnManager();
-            virtual ~PawnManager();
-
-            static PawnManager* singletonPtr_s;
-    };
+    //----------------------------
+    // Tickable
+    //----------------------------
+    /**
+        @brief Constructor: Registers the object in the Tickable-list
+    */
+    Tickable::Tickable()
+    {
+        RegisterRootObject(Tickable);
+    }
 }
-
-#endif /* _PawnManager_H__ */

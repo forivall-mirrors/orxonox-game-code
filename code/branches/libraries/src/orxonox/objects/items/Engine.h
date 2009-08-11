@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "Item.h"
 
 namespace orxonox

@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 
 
 typedef int TYPE;
@@ -49,7 +49,7 @@ namespace orxonox
 
       void setConfigValues();
       void registerVariables();
-      
+
       static void call(unsigned int clientID);
       void call2(unsigned int clientID, std::string s1, std::string s2, std::string s3, std::string s4);
       virtual void tick(float dt);
@@ -64,7 +64,7 @@ namespace orxonox
       void checkU2();
       void checkU3();
       void checkU4();
-      
+
       //signed functions
       void setS1(TYPE value){ s1 = value; }
       void setS2(TYPE value){ s2 = value; }
@@ -74,12 +74,12 @@ namespace orxonox
       void checkS2();
       void checkS3();
       void checkS4();
-      
+
       static void printV1(){ instance_->checkU1(); }
       static void printV2(){ instance_->checkU2(); }
       static void printV3(){ instance_->checkU3(); }
       static void printV4(){ instance_->checkU4(); }
-      
+
       void printBlaBla(std::string s1, std::string s2, std::string s3, std::string s4, std::string s5);
 
     private:
@@ -87,12 +87,12 @@ namespace orxonox
       UTYPE u2;
       UTYPE u3;
       UTYPE u4;
-      
+
       TYPE s1;
       TYPE s2;
       TYPE s3;
       TYPE s4;
-      
+
       static Test* instance_;
   };
 }

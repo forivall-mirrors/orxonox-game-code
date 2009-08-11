@@ -69,6 +69,7 @@ ORXONOX_ADD_LIBRARY(orxonox
     util
     core
     network
+    tools
   SOURCE_FILES ${ORXONOX_SRC_FILES}
 )
 

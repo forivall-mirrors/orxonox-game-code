@@ -32,7 +32,7 @@
 
 #include <string>
 #include <vector>
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox

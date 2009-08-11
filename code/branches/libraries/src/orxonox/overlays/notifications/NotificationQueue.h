@@ -42,7 +42,7 @@
 #include <string>
 
 #include "util/Math.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayGroup.h"
 #include "interfaces/NotificationListener.h"
 

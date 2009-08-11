@@ -37,8 +37,8 @@
 #include "ToluaBindCore.h"
 #include "ToluaBindOrxonox.h"
 #include "tools/Timer.h"
-#include "interfaces/TimeFactorListener.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/TimeFactorListener.h"
+#include "tools/interfaces/Tickable.h"
 #include "LevelManager.h"
 
 namespace orxonox

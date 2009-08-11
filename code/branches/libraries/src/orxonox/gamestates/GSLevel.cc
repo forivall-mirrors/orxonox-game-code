@@ -44,7 +44,7 @@
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "objects/Radar.h"
 #include "objects/quest/QuestManager.h"
 #include "objects/quest/notifications/NotificationManager.h"

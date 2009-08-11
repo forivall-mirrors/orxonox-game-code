@@ -64,7 +64,7 @@
 
 #include "core/Executor.h"
 #include "core/OrxonoxClass.h"
-#include "interfaces/TimeFactorListener.h"
+#include "tools/interfaces/TimeFactorListener.h"
 
 namespace orxonox
 {

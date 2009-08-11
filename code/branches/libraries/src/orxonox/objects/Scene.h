@@ -40,7 +40,7 @@
 #include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {
