@@ -1,6 +1,9 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   OrxonoxOverlay.cc
   OverlayGroup.cc
+)
+
+SET_SOURCE_FILES(OVERLAYS_SRC_FILES
   OverlayText.cc
   FadeoutText.cc
   GUIOverlay.cc
@@ -11,3 +14,14 @@ ADD_SUBDIRECTORY(hud)
 ADD_SUBDIRECTORY(notifications)
 ADD_SUBDIRECTORY(stats)
 
+ORXONOX_ADD_LIBRARY(overlays
+  PLUGIN
+  FIND_HEADER_FILES
+  DEFINE_SYMBOL
+    "OVERLAYS_SHARED_BUILD"
+  PCH_FILE
+    ../OrxonoxPrecompiledHeaders.h
+  LINK_LIBRARIES
+    orxonox
+  SOURCE_FILES ${OVERLAYS_SRC_FILES}
+)

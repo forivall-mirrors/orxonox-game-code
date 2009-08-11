@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   CreateLines.cc
   Scoreboard.cc
   Stats.cc
