@@ -111,6 +111,8 @@ namespace orxonox
     class ConfigValueContainer;
     class ConsoleCommand;
     class Core;
+    class DynLib;
+    class DynLibManager;
     struct Event;
     class EventContainer;
     class Executor;

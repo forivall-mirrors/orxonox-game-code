@@ -39,6 +39,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <cstdio>
+#include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 #include <OgreRenderWindow.h>
 
@@ -67,6 +68,7 @@
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
+#include "DynLibManager.h"
 #include "Factory.h"
 #include "GameMode.h"
 #include "GraphicsManager.h"
@@ -78,6 +80,13 @@
 #include "TclBind.h"
 #include "TclThreadManager.h"
 #include "input/InputManager.h"
+
+// Boost 1.36 has some issues with deprecated functions that have been omitted
+#if (BOOST_VERSION == 103600)
+#  define BOOST_LEAF_FUNCTION filename
+#else
+#  define BOOST_LEAF_FUNCTION leaf
+#endif
 
 namespace orxonox
 {
@@ -259,7 +268,51 @@ namespace orxonox
         // Set the hard coded fixed paths
         this->setFixedPaths();
 
-        // TODO: Load plugins
+        // Create a new dynamic library manager
+        this->dynLibManager_.reset(new DynLibManager());
+
+        // Load plugins
+        try
+        {
+            // We search for helper files with the following extension
+            std::string pluginextension = ".plugin";
+            size_t pluginextensionlength = pluginextension.size();
+
+            // Search in the directory of our executable
+            boost::filesystem::path searchpath = this->getRootPath() / ORXONOX_PLUGIN_INSTALL_PATH;
+
+            boost::filesystem::directory_iterator file(searchpath);
+            boost::filesystem::directory_iterator end;
+
+            // Iterate through all files
+            while (file != end)
+            {
+                std::string filename = file->BOOST_LEAF_FUNCTION();
+
+                // Check if the file ends with the exension in question
+                if (filename.size() > pluginextensionlength)
+                {
+                    if (filename.substr(filename.size() - pluginextensionlength) == pluginextension)
+                    {
+                        // We've found a helper file - now load the library with the same name
+                        std::string library = filename.substr(0, filename.size() - pluginextensionlength);
+                        boost::filesystem::path librarypath = searchpath / library;
+
+                        this->dynLibManager_->load(librarypath.string());
+                    }
+                }
+
+                ++file;
+            }
+        }
+        catch (const std::exception& e)
+        {
+            COUT(1) << "An error occurred while loading plugins: " << e.what() << std::endl;
+        }
+        catch (...)
+        {
+            COUT(1) << "An error occurred while loading plugins." << std::endl;
+        }
 
         // Parse command line arguments AFTER the plugins have been loaded (static code!)
         CommandLine::parseCommandLine(cmdLine);

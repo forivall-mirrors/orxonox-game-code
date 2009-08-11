@@ -34,6 +34,7 @@
  #      NO_DLL_INTERFACE:  Link statically with MSVC
  #      NO_SOURCE_GROUPS:  Don't create msvc source groups
  #      STATIC/SHARED:     Inherited from ADD_LIBRARY
+ #      PLUGIN:            For dynamic plugin libraries
  #      WIN32:             Inherited from ADD_EXECUTABLE
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
@@ -79,7 +80,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
-                  PCH_NO_DEFAULT NO_INSTALL)
+                  PCH_NO_DEFAULT     NO_INSTALL        PLUGIN)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
                   TOLUA_FILES     PCH_FILE  PCH_EXCLUDE OUTPUT_NAME)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
@@ -146,13 +147,27 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
+  # PLUGIN A
+  IF(_arg_PLUGIN)
+    SET(_arg_PLUGIN MODULE)
+    SET(_arg_SHARED)
+    SET(_arg_STATIC)
+  ENDIF()
+
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")
-    ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED}
+    ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED} ${_arg_PLUGIN}
                 ${_arg_EXCLUDE_FROM_ALL} ${_${_target_name}_files})
   ELSE()
     ADD_EXECUTABLE(${_target_name} ${_arg_WIN32} ${_arg_EXCLUDE_FROM_ALL}
                    ${_${_target_name}_files})
+  ENDIF()
+
+  # PLUGIN B
+  IF (_arg_PLUGIN)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY})
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY})
+    ADD_PLUGIN(${_target_name})
   ENDIF()
 
   # LINK_LIBRARIES
@@ -173,7 +188,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # OUTPUT_NAME
-  IF(_arg_OUTPUT_NAME )
+  IF(_arg_OUTPUT_NAME)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES OUTPUT_NAME  ${_arg_OUTPUT_NAME})
   ENDIF()
 
@@ -183,11 +198,37 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   IF(NOT _arg_STATIC AND NOT _arg_NO_INSTALL)
+    SET(_library_destination ${ORXONOX_LIBRARY_INSTALL_PATH})
+    IF (_arg_PLUGIN)
+      SET(_library_destination ${ORXONOX_PLUGIN_INSTALL_PATH})
+    ENDIF()
+
     INSTALL(TARGETS ${_target_name}
       RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
-      LIBRARY DESTINATION ${ORXONOX_LIBRARY_INSTALL_PATH}
+      LIBRARY DESTINATION ${_library_destination}
       #ARCHIVE DESTINATION ${ORXONOX_ARCHIVE_INSTALL_PATH}
     )
   ENDIF()
 
 ENDFUNCTION(TU_ADD_TARGET)
+
+
+# Creates a helper file with name <name_of_the_library>.plugin
+# This helps finding dynamically loadable plugins at runtime
+
+FUNCTION(ADD_PLUGIN _name)
+  # We use the properties to get the name because the librarys name may differ from
+  # the targets name (for example orxonox <-> liborxonox)
+
+  GET_TARGET_PROPERTY(_target_loc ${_name} LOCATION)
+  GET_FILENAME_COMPONENT(_target_name ${_target_loc} NAME_WE)
+
+  SET(_plugin_filename "${CMAKE_PLUGIN_OUTPUT_DIRECTORY}/${_target_name}.plugin")
+
+  FILE(WRITE ${_plugin_filename})
+
+  INSTALL(
+    FILES ${_plugin_filename}
+    DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+  )
+ENDFUNCTION(ADD_PLUGIN)

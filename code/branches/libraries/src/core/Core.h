@@ -118,6 +118,7 @@ namespace orxonox
             void setThreadAffinity(int limitToCPU);
 
             // Mind the order for the destruction!
+            scoped_ptr<DynLibManager>     dynLibManager_;
             scoped_ptr<SignalHandler>     signalHandler_;
             SimpleScopeGuard              identifierDestroyer_;
             SimpleScopeGuard              consoleCommandDestroyer_;
