@@ -36,6 +36,8 @@
 
 #include "OrxonoxConfig.h"
 
+#include "tools/ToolsPrereqs.h"
+
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
@@ -61,17 +63,6 @@
 
 namespace orxonox
 {
-    namespace LODParticle
-    {
-        enum Value
-        {
-            Off = 0,
-            Low = 1,
-            Normal = 2,
-            High = 3
-        };
-    }
-
     class RadarViewable;
     class Radar;
     class RadarListener;
@@ -229,15 +220,6 @@ namespace orxonox
     class PlaneCollisionShape;
     class WorldEntityCollisionShape;
 
-    // tools
-    class BillboardSet;
-    class Light;
-    class Mesh;
-    class ParticleInterface;
-    class Shader;
-    template <class T>
-    class Timer;
-
     // overlays
     class OverlayGroup;
     class OrxonoxOverlay;
@@ -251,13 +233,6 @@ namespace orxonox
     class SoundBase;
     class SoundManager;
     class SoundMainMenu;
-}
-
-namespace Ogre
-{
-    // OGRE Wiki adapted code
-    class DynamicLines;
-    class DynamicRenderable;
 }
 
 // Bullet Physics Engine

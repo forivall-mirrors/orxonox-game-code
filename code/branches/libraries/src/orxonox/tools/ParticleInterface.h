@@ -29,7 +29,7 @@
 #ifndef _ParticleInterface_H__
 #define _ParticleInterface_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/TimeFactorListener.h"
@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleInterface : public TimeFactorListener
+    class _ToolsExport ParticleInterface : public TimeFactorListener
     {
         public:
             ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::Value detaillevel);

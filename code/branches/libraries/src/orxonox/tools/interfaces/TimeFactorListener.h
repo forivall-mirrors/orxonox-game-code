@@ -29,12 +29,12 @@
 #ifndef _TimeFactorListener_H__
 #define _TimeFactorListener_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
+    class _ToolsExport TimeFactorListener : virtual public OrxonoxClass
     {
         friend class GSRoot;
 

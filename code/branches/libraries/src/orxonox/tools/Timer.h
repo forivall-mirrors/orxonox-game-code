@@ -60,7 +60,7 @@
 #ifndef _Timer_H__
 #define _Timer_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 
 #include "core/Executor.h"
 #include "core/OrxonoxClass.h"
@@ -74,7 +74,7 @@ namespace orxonox
     void executeDelayedCommand(StaticTimer* timer, const std::string& command);
 
     //! TimerBase is the parent of the Timer class.
-    class _OrxonoxExport TimerBase : public TimeFactorListener
+    class _ToolsExport TimerBase : public TimeFactorListener
     {
         public:
             ~TimerBase();
@@ -170,7 +170,7 @@ namespace orxonox
     };
 
     //! The StaticTimer is a callback-object, calling a static function after a given time-interval.
-    class _OrxonoxExport StaticTimer : public TimerBase
+    class _ToolsExport StaticTimer : public TimerBase
     {
         public:
             StaticTimer() {}

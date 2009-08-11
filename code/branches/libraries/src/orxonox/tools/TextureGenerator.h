@@ -34,7 +34,7 @@
 #ifndef _TextureGenerator_H__
 #define _TextureGenerator_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 
 #include <map>
 #include <string>
@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport TextureGenerator
+    class _ToolsExport TextureGenerator
     {
     public:
         static const std::string& getMaterialName(const std::string& textureName, const ColourValue& colour);
