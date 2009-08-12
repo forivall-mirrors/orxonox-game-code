@@ -26,29 +26,35 @@
  *
  */
 
-#ifndef _GSServer_H__
-#define _GSServer_H__
+/**
+  @file
+  @brief Contains all the necessary forward declarations for all classes and structs.
+*/
 
-#include "gamestates/GamestatesPrereqs.h"
+#ifndef _GamestatesPrereqs_H__
+#define _GamestatesPrereqs_H__
 
-#include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
+#include "OrxonoxConfig.h"
 
-namespace orxonox
-{
-    class _GamestatesExport GSServer : public GameState
-    {
-    public:
-        GSServer(const GameStateInfo& info);
-        ~GSServer();
+#include "OrxonoxPrereqs.h"
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
+//-----------------------------------------------------------------------
+// Shared library settings
+//-----------------------------------------------------------------------
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#  ifdef GAMESTATES_SHARED_BUILD
+#    define _GamestatesExport __declspec(dllexport)
+#  else
+#    if defined( __MINGW32__ )
+#      define _GamestatesExport
+#    else
+#      define _GamestatesExport __declspec(dllimport)
+#    endif
+#  endif
+#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _GamestatesExport  __attribute__ ((visibility("default")))
+#else
+#  define _GamestatesExport
+#endif
 
-    private:
-        Server* server_;
-    };
-}
-
-#endif /* _GSServer_H__ */
+#endif /* _GamestatesPrereqs_H__ */

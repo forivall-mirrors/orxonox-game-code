@@ -29,14 +29,14 @@
 #ifndef _GSMainMenu_H__
 #define _GSMainMenu_H__
 
-#include "OrxonoxPrereqs.h"
+#include "gamestates/GamestatesPrereqs.h"
 
 #include "util/OgreForwardRefs.h"
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSMainMenu : public GameState
+    class _GamestatesExport GSMainMenu : public GameState
     {
     public:
         GSMainMenu(const GameStateInfo& info);

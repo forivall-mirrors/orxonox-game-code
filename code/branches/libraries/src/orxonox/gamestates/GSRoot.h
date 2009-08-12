@@ -29,12 +29,12 @@
 #ifndef _GSRoot_H__
 #define _GSRoot_H__
 
-#include "OrxonoxPrereqs.h"
+#include "gamestates/GamestatesPrereqs.h"
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public GameState
+    class _GamestatesExport GSRoot : public GameState
     {
     public:
         GSRoot(const GameStateInfo& info);
