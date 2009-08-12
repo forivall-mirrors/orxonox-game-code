@@ -29,8 +29,8 @@ Torus Knot Software Ltd.
 
 // 08/11/2009: Small adjustments for Orxonox by Fabian 'x3n' Landau
 
-#ifndef _DynLibManager_H__
-#define _DynLibManager_H__
+#ifndef _Core_DynLibManager_H__
+#define _Core_DynLibManager_H__
 
 #include "CorePrereqs.h"
 #include "util/Singleton.h"
@@ -84,4 +84,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Core_DynLibManager_H__ */
