@@ -149,14 +149,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # PLUGIN A
   IF(_arg_PLUGIN)
-    SET(_arg_PLUGIN MODULE)
-    SET(_arg_SHARED)
+    SET(_arg_SHARED MODULE)
     SET(_arg_STATIC)
   ENDIF()
 
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")
-    ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED} ${_arg_PLUGIN}
+    ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED}
                 ${_arg_EXCLUDE_FROM_ALL} ${_${_target_name}_files})
   ELSE()
     ADD_EXECUTABLE(${_target_name} ${_arg_WIN32} ${_arg_EXCLUDE_FROM_ALL}
@@ -166,7 +165,6 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # PLUGIN B
   IF (_arg_PLUGIN)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY})
-    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY})
     ADD_PLUGIN(${_target_name})
   ENDIF()
 
@@ -206,7 +204,6 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     INSTALL(TARGETS ${_target_name}
       RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
       LIBRARY DESTINATION ${_library_destination}
-      #ARCHIVE DESTINATION ${ORXONOX_ARCHIVE_INSTALL_PATH}
     )
   ENDIF()
 
@@ -216,19 +213,33 @@ ENDFUNCTION(TU_ADD_TARGET)
 # Creates a helper file with name <name_of_the_library>.plugin
 # This helps finding dynamically loadable plugins at runtime
 
-FUNCTION(ADD_PLUGIN _name)
+FUNCTION(ADD_PLUGIN _target)
   # We use the properties to get the name because the librarys name may differ from
-  # the targets name (for example orxonox <-> liborxonox)
+  # the target name (for example orxonox <-> liborxonox)
 
-  GET_TARGET_PROPERTY(_target_loc ${_name} LOCATION)
+  GET_TARGET_PROPERTY(_target_loc ${_target} LOCATION)
   GET_FILENAME_COMPONENT(_target_name ${_target_loc} NAME_WE)
 
-  SET(_plugin_filename "${CMAKE_PLUGIN_OUTPUT_DIRECTORY}/${_target_name}.plugin")
+  IF(CMAKE_CONFIGURATION_TYPES)
+    FOREACH(_config ${CMAKE_CONFIGURATION_TYPES})
+      SET(_plugin_filename ${CMAKE_PLUGIN_OUTPUT_DIRECTORY}/${_config}/${_target_name}.plugin)
 
-  FILE(WRITE ${_plugin_filename})
+      FILE(WRITE ${_plugin_filename})
 
-  INSTALL(
-    FILES ${_plugin_filename}
-    DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
-  )
+      INSTALL(
+        FILES ${_plugin_filename}
+        DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+        CONFIGURATIONS ${_config}
+      )
+    ENDFOREACH()
+  ELSE()
+    SET(_plugin_filename ${CMAKE_PLUGIN_OUTPUT_DIRECTORY}/${_target_name}.plugin)
+
+    FILE(WRITE ${_plugin_filename})
+
+    INSTALL(
+      FILES ${_plugin_filename}
+      DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+    )
+  ENDIF()
 ENDFUNCTION(ADD_PLUGIN)
