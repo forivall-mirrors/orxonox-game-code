@@ -298,7 +298,7 @@ namespace orxonox
                         std::string library = filename.substr(0, filename.size() - pluginextensionlength);
                         boost::filesystem::path librarypath = searchpath / library;
 
-                        this->dynLibManager_->load(librarypath.string());
+                        DynLibManager::getInstance().load(librarypath.string());
                     }
                 }
 
