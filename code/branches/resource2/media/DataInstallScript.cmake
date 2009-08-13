@@ -28,10 +28,10 @@
  #
 
 # Write some comment
-FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr "\n\n\n <!-- ----------------------------------------- -->")
-FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- Content from the external media directory -->")
-FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- ----------------------------------------- -->\n\n")
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr "\n\n\n <!-- ---------------------------------------- -->")
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- Content from the external data directory -->")
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- ---------------------------------------- -->\n\n")
 
 # Append the external file
-FILE(READ   @EXTERNAL_MEDIA_DIRECTORY@/resources.oxr _external_file)
-FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr ${_external_file})
+FILE(READ   @EXTERNAL_DATA_DIRECTORY@/resources.oxr _external_file)
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr ${_external_file})

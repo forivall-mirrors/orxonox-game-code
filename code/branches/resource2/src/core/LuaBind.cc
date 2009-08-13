@@ -46,7 +46,7 @@ namespace orxonox
 
   LuaBind::LuaBind()
   {
-    this->includePath_ = Core::getMediaPathString();
+    this->includePath_ = Core::getDataPathString();
 
     luaState_ = lua_open();
     luaSource_ = "";

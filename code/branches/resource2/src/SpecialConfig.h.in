@@ -76,19 +76,16 @@ namespace orxonox { namespace specialConfig
     const char defaultLibraryPath[] = "@DEFAULT_LIBRARY_PATH@";
     const char defaultArchivePath[] = "@DEFAULT_ARCHIVE_PATH@";
     const char defaultDocPath[]     = "@DEFAULT_DOC_PATH@";
-    const char defaultMediaPath[]   = "@DEFAULT_MEDIA_PATH@";
+    const char defaultDataPath[]    = "@DEFAULT_DATA_PATH@";
     const char defaultConfigPath[]  = "@DEFAULT_CONFIG_PATH@";
     const char defaultLogPath[]     = "@DEFAULT_LOG_PATH@";
 
     // INSTALLATION PATHS
-    const char runtimeInstallDirectory[]    = "@RUNTIME_INSTALL_DIRECTORY@";
-    const char mediaInstallDirectory[]      = "@MEDIA_INSTALL_DIRECTORY@";
-    const char configInstallDirectory[]     = "@CONFIG_INSTALL_DIRECTORY@";
-    const char logInstallDirectory[]        = "@LOG_INSTALL_DIRECTORY@";
+    const char dataInstallDirectory[]       = "@DATA_INSTALL_DIRECTORY@";
 
     // DEVELOPMENT RUN PATHS
-    const char mediaDevDirectory[]          = "@MEDIA_DIRECTORY@";
-    const char externalMediaDevDirectory[]  = "@EXTERNAL_MEDIA_DIRECTORY@";
+    const char dataDevDirectory[]           = "@DATA_DIRECTORY@";
+    const char externalDataDevDirectory[]   = "@EXTERNAL_DATA_DIRECTORY@";
 #ifdef CMAKE_CONFIGURATION_TYPES
     const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
     const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@/"    BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);

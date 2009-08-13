@@ -84,7 +84,7 @@ namespace orxonox
     //! Static pointer to the singleton
     Core* Core::singletonPtr_s  = 0;
 
-    SetCommandLineArgument(externalMediaPath, "").information("Path to the external media files");
+    SetCommandLineArgument(externalDataPath, "").information("Path to the external data files");
     SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -109,12 +109,12 @@ namespace orxonox
             RegisterRootObject(CoreConfiguration);
             this->setConfigValues();
 
-            // External media directory only exists for dev runs
+            // External data directory only exists for dev runs
             if (Core::isDevelopmentRun())
             {
-                // Possible media path override by the command line
-                if (!CommandLine::getArgument("externalMediaPath")->hasDefaultValue())
-                    tsetExternalMediaPath(CommandLine::getValue("externalMediaPath"));
+                // Possible data path override by the command line
+                if (!CommandLine::getArgument("externalDataPath")->hasDefaultValue())
+                    tsetExternalDataPath(CommandLine::getValue("externalDataPath"));
             }
         }
 
@@ -187,13 +187,13 @@ namespace orxonox
 
         /**
         @brief
-            Temporary sets the media path
+            Temporary sets the data path
         @param path
-            The new media path
+            The new data path
         */
-        void tsetExternalMediaPath(const std::string& path)
+        void tsetExternalDataPath(const std::string& path)
         {
-            mediaPath_ = boost::filesystem::path(path);
+            dataPath_ = boost::filesystem::path(path);
         }
 
         void initializeRandomNumberGenerator()
@@ -217,8 +217,8 @@ namespace orxonox
         //! Path to the parent directory of the ones above if program was installed with relativ pahts
         boost::filesystem::path rootPath_;
         boost::filesystem::path executablePath_;        //!< Path to the executable
-        boost::filesystem::path mediaPath_;             //!< Path to the media file folder
-        boost::filesystem::path externalMediaPath_;     //!< Path to the media file folder
+        boost::filesystem::path dataPath_;              //!< Path to the data file folder
+        boost::filesystem::path externalDataPath_;      //!< Path to the external data file folder
         boost::filesystem::path configPath_;            //!< Path to the config file folder
         boost::filesystem::path logPath_;               //!< Path to the log file folder
     };
@@ -282,7 +282,7 @@ namespace orxonox
         this->luaBind_.reset(new LuaBind());
 
         // initialise Tcl
-        this->tclBind_.reset(new TclBind(Core::getMediaPathString()));
+        this->tclBind_.reset(new TclBind(Core::getDataPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
         // create a shell
@@ -400,27 +400,27 @@ namespace orxonox
         Core::getInstance().configuration_->resetLanguage();
     }
 
-    /*static*/ void Core::tsetExternalMediaPath(const std::string& path)
+    /*static*/ void Core::tsetExternalDataPath(const std::string& path)
     {
-        getInstance().configuration_->tsetExternalMediaPath(path);
+        getInstance().configuration_->tsetExternalDataPath(path);
     }
 
-    /*static*/ const boost::filesystem::path& Core::getMediaPath()
+    /*static*/ const boost::filesystem::path& Core::getDataPath()
     {
-        return getInstance().configuration_->mediaPath_;
+        return getInstance().configuration_->dataPath_;
     }
-    /*static*/ std::string Core::getMediaPathString()
+    /*static*/ std::string Core::getDataPathString()
     {
-        return getInstance().configuration_->mediaPath_.string() + '/';
+        return getInstance().configuration_->dataPath_.string() + '/';
     }
 
-    /*static*/ const boost::filesystem::path& Core::getExternalMediaPath()
+    /*static*/ const boost::filesystem::path& Core::getExternalDataPath()
     {
-        return getInstance().configuration_->externalMediaPath_;
+        return getInstance().configuration_->externalDataPath_;
     }
-    /*static*/ std::string Core::getExternalMediaPathString()
+    /*static*/ std::string Core::getExternalDataPathString()
     {
-        return getInstance().configuration_->externalMediaPath_.string() + '/';
+        return getInstance().configuration_->externalDataPath_.string() + '/';
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
@@ -560,8 +560,8 @@ namespace orxonox
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::bDevRun_ = true;
-            configuration_->mediaPath_  = specialConfig::mediaDevDirectory;
-            configuration_->externalMediaPath_ = specialConfig::externalMediaDevDirectory;
+            configuration_->dataPath_  = specialConfig::dataDevDirectory;
+            configuration_->externalDataPath_ = specialConfig::externalDataDevDirectory;
             configuration_->configPath_ = specialConfig::configDevDirectory;
             configuration_->logPath_    = specialConfig::logDevDirectory;
         }
@@ -578,13 +578,13 @@ namespace orxonox
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
             // Using paths relative to the install prefix, complete them
-            configuration_->mediaPath_  = configuration_->rootPath_ / specialConfig::defaultMediaPath;
+            configuration_->dataPath_  = configuration_->rootPath_ / specialConfig::defaultDataPath;
             configuration_->configPath_ = configuration_->rootPath_ / specialConfig::defaultConfigPath;
             configuration_->logPath_    = configuration_->rootPath_ / specialConfig::defaultLogPath;
 #else
             // There is no root path, so don't set it at all
 
-            configuration_->mediaPath_  = specialConfig::mediaInstallDirectory;
+            configuration_->dataPath_  = specialConfig::dataInstallDirectory;
 
             // Get user directory
 #  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */

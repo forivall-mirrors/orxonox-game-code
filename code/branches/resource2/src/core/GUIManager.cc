@@ -170,7 +170,7 @@ namespace orxonox
     void GUIManager::loadLuaCode()
     {
         // set datapath for GUI data
-        lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
+        lua_pushfstring(this->scriptModule_->getLuaState(), Core::getDataPathString().c_str());
         lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
         // call main Lua script
         this->scriptModule_->executeScriptFile("loadGUI_3.lua", "GUI");

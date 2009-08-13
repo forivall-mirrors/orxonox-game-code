@@ -45,8 +45,8 @@ INCLUDE(LibraryConfig)
 # General build and compiler options and configurations
 INCLUDE(BuildConfig)
 
-# Configure media directory location and installation
-ADD_SUBDIRECTORY(media)
+# Configure data directory location and installation
+ADD_SUBDIRECTORY(data)
 
 # Create the actual project
 ADD_SUBDIRECTORY(src)

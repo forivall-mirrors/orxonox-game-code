@@ -134,7 +134,7 @@ namespace orxonox
     {
         availableLevels_.clear();
 
-        boost::filesystem::directory_iterator file(Core::getMediaPathString() + "levels");
+        boost::filesystem::directory_iterator file(Core::getDataPathString() + "levels");
         boost::filesystem::directory_iterator end;
 
         while (file != end)

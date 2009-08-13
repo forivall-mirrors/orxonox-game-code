@@ -20,28 +20,28 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    Finds the external media directory and configures the media installation.
- #    Default search paths are: ../../media and ../media_extern
+ #    Finds the external data directory and configures the data installation.
+ #    Default search paths are: ../../data and ../data_extern
  #
 
-# For dev runs we've got two media directory. The one from the other repository root folder
-# is called EXTERNAL_MEDIA
-SET(MEDIA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-SET(MEDIA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+# For dev runs we've got two data directory. The one from the other repository root folder
+# is called EXTERNAL_DATA
+SET(DATA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+SET(DATA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 
-# Specify media directory
-GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../${DEFAULT_MEDIA_PATH} ABSOLUTE)
-FIND_PATH(EXTERNAL_MEDIA_DIRECTORY resources.oxr
+# Specify data directory
+GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../${DEFAULT_DATA_PATH} ABSOLUTE)
+FIND_PATH(EXTERNAL_DATA_DIRECTORY resources.oxr
   PATHS
-    ${CMAKE_SOURCE_DIR}/media_extern
+    ${CMAKE_SOURCE_DIR}/data_extern
     ${_search_path_1}
   NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH
 )
 
-IF(NOT EXTERNAL_MEDIA_DIRECTORY)
-  MESSAGE(STATUS "Warning: External media directory not found. If you want to compile while downloading the media files, you will have to recompile about four files afterwards and relink everything. \\n You can specify your own folder with the MEDIA_DIRECTORY variable. Default location for the path is orxonox_root/media_extern")
+IF(NOT EXTERNAL_DATA_DIRECTORY)
+  MESSAGE(STATUS "Warning: External data directory not found. If you want to compile while downloading the data files, you will have to recompile about four files afterwards and relink everything. \\n You can specify your own folder with the DATA_DIRECTORY variable. Default location for the path is orxonox_root/data_extern")
   # Temporary override to the default location.
-  SET(EXTERNAL_MEDIA_DIRECTORY ${CMAKE_SOURCE_DIR}/media_extern)
+  SET(EXTERNAL_DATA_DIRECTORY ${CMAKE_SOURCE_DIR}/data_extern)
 ENDIF()
 
 
@@ -49,17 +49,17 @@ ENDIF()
 
 # Internal directory
 INSTALL(
-  DIRECTORY ${MEDIA_DIRECTORY}/
-  DESTINATION ${MEDIA_INSTALL_DIRECTORY}
+  DIRECTORY ${DATA_DIRECTORY}/
+  DESTINATION ${DATA_INSTALL_DIRECTORY}
   REGEX "\\.svn$|_svn$|CMakeLists.txt|InstallScript.cmake" EXCLUDE
 )
 # External directory
 INSTALL(
-  DIRECTORY ${EXTERNAL_MEDIA_DIRECTORY}/
-  DESTINATION ${MEDIA_INSTALL_DIRECTORY}
+  DIRECTORY ${EXTERNAL_DATA_DIRECTORY}/
+  DESTINATION ${DATA_INSTALL_DIRECTORY}
   REGEX "\\.svn$|_svn$|resources\\.oxr" EXCLUDE
 )
 # Configure the install scripts (variables not available during installation)
-CONFIGURE_FILE(MediaInstallScript.cmake ${CMAKE_CURRENT_BINARY_DIR}/MediaInstallScript.cmake @ONLY)
+CONFIGURE_FILE(DataInstallScript.cmake ${CMAKE_CURRENT_BINARY_DIR}/DataInstallScript.cmake @ONLY)
 # Join both resources.oxr files
-INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/MediaInstallScript.cmake)
+INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/DataInstallScript.cmake)
