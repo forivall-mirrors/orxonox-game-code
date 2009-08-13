@@ -29,12 +29,12 @@
 #ifndef _GSStandalone_H__
 #define _GSStandalone_H__
 
-#include "gamestates/GamestatesPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _GamestatesExport GSStandalone : public GameState
+    class _GameStatesExport GSStandalone : public GameState
     {
     public:
         GSStandalone(const GameStateInfo& info);

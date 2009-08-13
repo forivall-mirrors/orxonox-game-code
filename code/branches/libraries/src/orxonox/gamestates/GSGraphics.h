@@ -35,7 +35,7 @@
 #ifndef _GSGraphics_H__
 #define _GSGraphics_H__
 
-#include "gamestates/GamestatesPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 #include "core/GameState.h"
 
 namespace orxonox
@@ -46,7 +46,7 @@ namespace orxonox
 
         This game state is only left out if we start a dedicated server where no graphics are present.
     */
-    class _GamestatesExport GSGraphics : public GameState
+    class _GameStatesExport GSGraphics : public GameState
     {
     public:
         GSGraphics(const GameStateInfo& info);

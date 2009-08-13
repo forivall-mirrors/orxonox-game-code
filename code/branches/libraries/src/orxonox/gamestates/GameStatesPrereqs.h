@@ -31,8 +31,8 @@
   @brief Contains all the necessary forward declarations for all classes and structs.
 */
 
-#ifndef _GamestatesPrereqs_H__
-#define _GamestatesPrereqs_H__
+#ifndef _GameStatesPrereqs_H__
+#define _GameStatesPrereqs_H__
 
 #include "OrxonoxConfig.h"
 
@@ -43,18 +43,18 @@
 //-----------------------------------------------------------------------
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef GAMESTATES_SHARED_BUILD
-#    define _GamestatesExport __declspec(dllexport)
+#    define _GameStatesExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _GamestatesExport
+#      define _GameStatesExport
 #    else
-#      define _GamestatesExport __declspec(dllimport)
+#      define _GameStatesExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _GamestatesExport  __attribute__ ((visibility("default")))
+#  define _GameStatesExport  __attribute__ ((visibility("default")))
 #else
-#  define _GamestatesExport
+#  define _GameStatesExport
 #endif
 
-#endif /* _GamestatesPrereqs_H__ */
+#endif /* _GameStatesPrereqs_H__ */

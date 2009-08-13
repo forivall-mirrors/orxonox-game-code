@@ -29,14 +29,14 @@
 #ifndef _GSClient_H__
 #define _GSClient_H__
 
-#include "gamestates/GamestatesPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
 
 namespace orxonox
 {
-    class _GamestatesExport GSClient : public GameState
+    class _GameStatesExport GSClient : public GameState
     {
     public:
         GSClient(const GameStateInfo& info);

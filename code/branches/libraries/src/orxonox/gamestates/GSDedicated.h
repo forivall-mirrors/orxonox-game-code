@@ -29,7 +29,7 @@
 #ifndef _GSDedicated_H__
 #define _GSDedicated_H__
 
-#include "gamestates/GamestatesPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
@@ -44,7 +44,7 @@ struct termios;
 namespace orxonox
 {
 
-    class _GamestatesExport GSDedicated : public GameState
+    class _GameStatesExport GSDedicated : public GameState
     {
     public:
         GSDedicated(const GameStateInfo& info);
