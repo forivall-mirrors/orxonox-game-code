@@ -114,9 +114,9 @@ namespace orxonox
     {
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsFolder_, ORXONOX_OGRE_PLUGINS_FOLDER)
+        SetConfigValue(ogrePluginsDirectory_, specialConfig::ogrePluginsDirectory)
             .description("Folder where the Ogre plugins are located.");
-        SetConfigValue(ogrePlugins_, ORXONOX_OGRE_PLUGINS)
+        SetConfigValue(ogrePlugins_, specialConfig::ogrePlugins)
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
             .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
@@ -197,10 +197,10 @@ namespace orxonox
     void GraphicsManager::loadOgrePlugins()
     {
         // just to make sure the next statement doesn't segfault
-        if (ogrePluginsFolder_ == "")
-            ogrePluginsFolder_ = ".";
+        if (ogrePluginsDirectory_ == "")
+            ogrePluginsDirectory_ = ".";
 
-        boost::filesystem::path folder(ogrePluginsFolder_);
+        boost::filesystem::path folder(ogrePluginsDirectory_);
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '(', ')', false, '\0');
         // Use backslash paths on Windows! file_string() already does that though.

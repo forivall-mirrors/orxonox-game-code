@@ -20,33 +20,18 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    Sets the library directories when using precompiled dependency archives
- #  Note:
- #    When setting ENV${} variables, make sure to use quotes for lists
+ #    Joins both resources.oxr files together
+ #  Caution:
+ #    Variables are declared with @...@ because they don't exist anymore
+ #    during the installation. But we still require variables (_external_file)
+ #    so we can only replace @...@ but not ${...}
  #
 
-IF(MINGW)
+# Write some comment
+FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr "\n\n\n <!-- ----------------------------------------- -->")
+FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- Content from the external media directory -->")
+FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- ----------------------------------------- -->\n\n")
 
-  # 64 bit system?
-  IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    SET(BINARY_POSTFIX x64)
-  ELSE()
-    SET(BINARY_POSTFIX x86)
-  ENDIF()
-
-  SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
-  SET(DEP_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/lib/mingw-${BINARY_POSTFIX})
-  SET(DEP_BINARY_DIR  ${DEPENDENCY_PACKAGE_DIR}/bin/mingw-${BINARY_POSTFIX})
-
-  # Also the directory with the runtime libraries
-  SET(RUNTIME_LIBRARY_DIRECTORY ${DEP_BINARY_DIR})
-
-  # Sets the library path for the FIND_LIBRARY
-  SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR} ${DEP_BINARY_DIR})
-
-  # Certain find scripts don't behave as ecpected to we have
-  # to specify the libraries ourselves.
-  SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
-  SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
-
-ENDIF(MINGW)
+# Append the external file
+FILE(READ   @EXTERNAL_MEDIA_DIRECTORY@/resources.oxr _external_file)
+FILE(APPEND @MEDIA_INSTALL_DIRECTORY@/resources.oxr ${_external_file})

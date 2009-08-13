@@ -69,45 +69,55 @@
 #cmakedefine CMAKE_CONFIGURATION_TYPES
 
 // Handle default ConfigValues
-namespace orxonox
+namespace orxonox { namespace specialConfig
 {
+    // DEFAULT RELATIVE PATHS (might not be used at all)
+    const char defaultRuntimePath[] = "@DEFAULT_RUNTIME_PATH@";
+    const char defaultLibraryPath[] = "@DEFAULT_LIBRARY_PATH@";
+    const char defaultArchivePath[] = "@DEFAULT_ARCHIVE_PATH@";
+    const char defaultDocPath[]     = "@DEFAULT_DOC_PATH@";
+    const char defaultMediaPath[]   = "@DEFAULT_MEDIA_PATH@";
+    const char defaultConfigPath[]  = "@DEFAULT_CONFIG_PATH@";
+    const char defaultLogPath[]     = "@DEFAULT_LOG_PATH@";
+
     // INSTALLATION PATHS
-    const char ORXONOX_RUNTIME_INSTALL_PATH[] = "@ORXONOX_RUNTIME_INSTALL_PATH@";
-    const char ORXONOX_MEDIA_INSTALL_PATH[]   = "@ORXONOX_MEDIA_INSTALL_PATH@";
-    /* Config and Log path might be relative because they could be user and therefore runtime dependent */
-    const char ORXONOX_CONFIG_INSTALL_PATH[]  = "@ORXONOX_CONFIG_INSTALL_PATH@";
-    const char ORXONOX_LOG_INSTALL_PATH[]     = "@ORXONOX_LOG_INSTALL_PATH@";
+    const char runtimeInstallDirectory[]    = "@RUNTIME_INSTALL_DIRECTORY@";
+    const char mediaInstallDirectory[]      = "@MEDIA_INSTALL_DIRECTORY@";
+    const char configInstallDirectory[]     = "@CONFIG_INSTALL_DIRECTORY@";
+    const char logInstallDirectory[]        = "@LOG_INSTALL_DIRECTORY@";
 
     // DEVELOPMENT RUN PATHS
-    const char ORXONOX_MEDIA_DEV_PATH[]       = "@CMAKE_MEDIA_OUTPUT_DIRECTORY@";
+    const char mediaDevDirectory[]          = "@MEDIA_DIRECTORY@";
+    const char externalMediaDevDirectory[]  = "@EXTERNAL_MEDIA_DIRECTORY@";
 #ifdef CMAKE_CONFIGURATION_TYPES
-    const char ORXONOX_CONFIG_DEV_PATH[]      = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
-    const char ORXONOX_LOG_DEV_PATH[]         = "@CMAKE_LOG_OUTPUT_DIRECTORY@/"    BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
+    const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
+    const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@/"    BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
 #else
-    const char ORXONOX_CONFIG_DEV_PATH[]      = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@";
-    const char ORXONOX_LOG_DEV_PATH[]         = "@CMAKE_LOG_OUTPUT_DIRECTORY@";
+    const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@";
+    const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@";
 #endif
+
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ORXONOX_DEP_LIB_PATH[]         = "@DEP_LIBRARY_DIR@";
+    const char dependencyLibraryDirectory[] = "@DEP_LIBRARY_DIR@";
 #endif
 
     // OGRE PLUGINS
 #ifdef NDEBUG
-    const char ORXONOX_OGRE_PLUGINS[] = "@OGRE_PLUGINS_RELEASE@";
+    const char ogrePlugins[] = "@OGRE_PLUGINS_RELEASE@";
 #  ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ORXONOX_OGRE_PLUGINS_FOLDER[] = ".";
+    const char ogrePluginsDirectory[] = ".";
 #  else
-    const char ORXONOX_OGRE_PLUGINS_FOLDER[] = "@OGRE_PLUGINS_FOLDER_RELEASE@";
+    const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_RELEASE@";
 #  endif
 #else
-    const char ORXONOX_OGRE_PLUGINS[] = "@OGRE_PLUGINS_DEBUG@";
+    const char ogrePlugins[] = "@OGRE_PLUGINS_DEBUG@";
 #  ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ORXONOX_OGRE_PLUGINS_FOLDER[] = ".";
+    const char ogrePluginsDirectory[] = ".";
 #  else
-    const char ORXONOX_OGRE_PLUGINS_FOLDER[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
+    const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
 #  endif
 #endif
-}
+} }
 
 /**
 @def ORXONOX_USE_WINMAIN

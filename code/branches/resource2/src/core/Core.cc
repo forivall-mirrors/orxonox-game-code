@@ -84,7 +84,7 @@ namespace orxonox
     //! Static pointer to the singleton
     Core* Core::singletonPtr_s  = 0;
 
-    SetCommandLineArgument(mediaPath, "").information("Path to the media/data files");
+    SetCommandLineArgument(externalMediaPath, "").information("Path to the external media files");
     SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -109,9 +109,13 @@ namespace orxonox
             RegisterRootObject(CoreConfiguration);
             this->setConfigValues();
 
-            // Possible media path override by the command line
-            if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
-                tsetMediaPath(CommandLine::getValue("mediaPath"));
+            // External media directory only exists for dev runs
+            if (Core::isDevelopmentRun())
+            {
+                // Possible media path override by the command line
+                if (!CommandLine::getArgument("externalMediaPath")->hasDefaultValue())
+                    tsetExternalMediaPath(CommandLine::getValue("externalMediaPath"));
+            }
         }
 
         /**
@@ -144,14 +148,6 @@ namespace orxonox
             SetConfigValue(bInitializeRandomNumberGenerator_, true)
                 .description("If true, all random actions are different each time you start the game")
                 .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
-
-            // Only show this config value for development builds
-            if (Core::isDevelopmentRun())
-            {
-                SetConfigValue(mediaPathString_, mediaPath_.string())
-                    .description("Relative path to the game data.")
-                    .callback(this, &CoreConfiguration::mediaPathChanged);
-            }
         }
 
         /**
@@ -182,15 +178,6 @@ namespace orxonox
         }
 
         /**
-        @brief
-            Callback function if the media path has changed.
-        */
-        void mediaPathChanged()
-        {
-            mediaPath_ = boost::filesystem::path(this->mediaPathString_);
-        }
-
-        /**
             @brief Sets the language in the config-file back to the default.
         */
         void resetLanguage()
@@ -204,18 +191,9 @@ namespace orxonox
         @param path
             The new media path
         */
-        void tsetMediaPath(const std::string& path)
+        void tsetExternalMediaPath(const std::string& path)
         {
-            if (Core::isDevelopmentRun())
-            {
-                ModifyConfigValue(mediaPathString_, tset, path);
-            }
-            else
-            {
-                // Manual 'config' value without the file entry
-                mediaPathString_ = path;
-                this->mediaPathChanged();
-            }
+            mediaPath_ = boost::filesystem::path(path);
         }
 
         void initializeRandomNumberGenerator()
@@ -235,12 +213,12 @@ namespace orxonox
         int softDebugLevelShell_;                       //!< The debug level for the ingame shell
         std::string language_;                          //!< The language
         bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-        std::string mediaPathString_;                   //!< Path to the data/media file folder as string
 
         //! Path to the parent directory of the ones above if program was installed with relativ pahts
         boost::filesystem::path rootPath_;
         boost::filesystem::path executablePath_;        //!< Path to the executable
         boost::filesystem::path mediaPath_;             //!< Path to the media file folder
+        boost::filesystem::path externalMediaPath_;     //!< Path to the media file folder
         boost::filesystem::path configPath_;            //!< Path to the config file folder
         boost::filesystem::path logPath_;               //!< Path to the log file folder
     };
@@ -422,9 +400,9 @@ namespace orxonox
         Core::getInstance().configuration_->resetLanguage();
     }
 
-    /*static*/ void Core::tsetMediaPath(const std::string& path)
+    /*static*/ void Core::tsetExternalMediaPath(const std::string& path)
     {
-        getInstance().configuration_->tsetMediaPath(path);
+        getInstance().configuration_->tsetExternalMediaPath(path);
     }
 
     /*static*/ const boost::filesystem::path& Core::getMediaPath()
@@ -434,6 +412,15 @@ namespace orxonox
     /*static*/ std::string Core::getMediaPathString()
     {
         return getInstance().configuration_->mediaPath_.string() + '/';
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getExternalMediaPath()
+    {
+        return getInstance().configuration_->externalMediaPath_;
+    }
+    /*static*/ std::string Core::getExternalMediaPathString()
+    {
+        return getInstance().configuration_->externalMediaPath_.string() + '/';
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
@@ -573,15 +560,16 @@ namespace orxonox
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::bDevRun_ = true;
-            configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
-            configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
-            configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;
+            configuration_->mediaPath_  = specialConfig::mediaDevDirectory;
+            configuration_->externalMediaPath_ = specialConfig::externalMediaDevDirectory;
+            configuration_->configPath_ = specialConfig::configDevDirectory;
+            configuration_->logPath_    = specialConfig::logDevDirectory;
         }
         else
         {
 #ifdef INSTALL_COPYABLE // --> relative paths
             // Also set the root path
-            boost::filesystem::path relativeExecutablePath(ORXONOX_RUNTIME_INSTALL_PATH);
+            boost::filesystem::path relativeExecutablePath(specialConfig::defaultRuntimePath);
             configuration_->rootPath_ = configuration_->executablePath_;
             while (!boost::filesystem::equivalent(configuration_->rootPath_ / relativeExecutablePath, configuration_->executablePath_)
                    && !configuration_->rootPath_.empty())
@@ -590,13 +578,13 @@ namespace orxonox
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
             // Using paths relative to the install prefix, complete them
-            configuration_->mediaPath_  = configuration_->rootPath_ / ORXONOX_MEDIA_INSTALL_PATH;
-            configuration_->configPath_ = configuration_->rootPath_ / ORXONOX_CONFIG_INSTALL_PATH;
-            configuration_->logPath_    = configuration_->rootPath_ / ORXONOX_LOG_INSTALL_PATH;
+            configuration_->mediaPath_  = configuration_->rootPath_ / specialConfig::defaultMediaPath;
+            configuration_->configPath_ = configuration_->rootPath_ / specialConfig::defaultConfigPath;
+            configuration_->logPath_    = configuration_->rootPath_ / specialConfig::defaultLogPath;
 #else
             // There is no root path, so don't set it at all
 
-            configuration_->mediaPath_  = ORXONOX_MEDIA_INSTALL_PATH;
+            configuration_->mediaPath_  = specialConfig::mediaInstallDirectory;
 
             // Get user directory
 #  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
@@ -609,8 +597,8 @@ namespace orxonox
             boost::filesystem::path userDataPath(userDataPathPtr);
             userDataPath /= ".orxonox";
 
-            configuration_->configPath_ = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
-            configuration_->logPath_    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
+            configuration_->configPath_ = userDataPath / specialConfig::defaultConfigPath;
+            configuration_->logPath_    = userDataPath / specialConfig::defaultLogPath;
 #endif
         }
 
