@@ -50,6 +50,8 @@ namespace orxonox
         };
     }
 
+    class ScopeListener; // Forward declaration
+
     /**
         @brief The ScopeManager stores the variables of the scope templates in a statically linked context.
     */
