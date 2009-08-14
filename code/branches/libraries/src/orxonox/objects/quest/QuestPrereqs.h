@@ -31,28 +31,30 @@
   @brief Contains all the necessary forward declarations for all classes and structs.
 */
 
-#ifndef _OverlaysPrereqs_H__
-#define _OverlaysPrereqs_H__
+#ifndef _QuestsystemPrereqs_H__
+#define _QuestsystemPrereqs_H__
 
 #include "OrxonoxConfig.h"
+
+#include "OrxonoxPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
-#  ifdef OVERLAYS_SHARED_BUILD
-#    define _OverlaysExport __declspec(dllexport)
+#  ifdef QUEST_SHARED_BUILD
+#    define _QuestExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _OverlaysExport
+#      define _QuestExport
 #    else
-#      define _OverlaysExport __declspec(dllimport)
+#      define _QuestExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _OverlaysExport  __attribute__ ((visibility("default")))
+#  define _QuestExport  __attribute__ ((visibility("default")))
 #else
-#  define _OverlaysExport
+#  define _QuestExport
 #endif
 
 //-----------------------------------------------------------------------
@@ -61,28 +63,30 @@
 
 namespace orxonox
 {
-    class BarColour;
-    class DebugFPSText;
-    class DebugRTRText;
-    class GUIOverlay;
-    class HUDBar;
-    class HUDNavigation;
-    class HUDRadar;
-    class HUDSpeedBar;
-    class HUDHealthBar;
-    class HUDTimer;
-    class OrxonoxOverlay;
-    class OverlayGroup;
-    class OverlayText;
-    class FadeoutText;
-    class GametypeStatus;
-    class AnnounceMessage;
-    class KillMessage;
-    class DeathMessage;
+    class AddQuest;
+    class AddQuestHint;
+    class AddReward;
+    class ChangeQuestStatus;
+    class CompleteQuest;
+    class FailQuest;
+    class GlobalQuest;
+    class LocalQuest;
+    class Quest;
+    class QuestDescription;
+    class QuestEffect;
+    class QuestEffectBeacon;
+    class QuestHint;
+    class QuestItem;
+    class QuestListener;
+    class QuestManager;
+    class QuestNotification;
+    class Rewardable;
 
-    class CreateLines;
-    class Scoreboard;
-    class Stats;
+    class Notification;
+    class NotificationListener;
+    class NotificationManager;
+    class NotificationOverlay;
+    class NotificationQueue;
 }
 
-#endif /* _OverlaysPrereqs_H__ */
+#endif /* _QuestsystemPrereqs_H__ */

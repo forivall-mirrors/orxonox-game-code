@@ -35,6 +35,7 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
+#include "core/GUIManager.h"
 
 #include "objects/infos/PlayerInfo.h"
 #include "Quest.h"
@@ -63,7 +64,6 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
-
     }
 
     /**
@@ -206,7 +206,7 @@ namespace orxonox
     */
     QuestContainer* QuestManager::getQuestTree(std::string & name)
     {
-        PlayerInfo* player = this->players_[name];
+        PlayerInfo* player = GUIManager::getInstance().getPlayer(name);
         if(player == NULL)
         {
             COUT(1) << "Error: GUIOverlay with name '" << name << "' has no player." << std::endl;

@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Definition of the GlobalQuest class.
@@ -34,7 +34,7 @@
 #ifndef _GlobalQuest_H__
 #define _GlobalQuest_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <list>
 #include <set>
@@ -46,9 +46,9 @@ namespace orxonox
     @brief
         GlobalQuests are Quests, that have the same status for all players.
         This means, that when a player successfully completes a GlobalQuest, it is completed for all players that have it.
-        
+
         Creating a GlobalQuest through XML goes as follows:
-        
+
         <GlobalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
             <QuestDescription title="Title" description="Description." /> //The description of the quest.
             <subquests>
@@ -80,14 +80,14 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport GlobalQuest : public Quest
+    class _QuestExport GlobalQuest : public Quest
     {
         public:
             GlobalQuest(BaseObject* creator);
             virtual ~GlobalQuest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a GlobalQuest object through XML.
-            
+
             virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
             virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
 
@@ -97,14 +97,14 @@ namespace orxonox
             virtual bool isCompletable(const PlayerInfo* player) const; //!< Checks whether the Quest can be completed.
 
             virtual QuestStatus::Value getStatus(const PlayerInfo* player) const; //!< Returns the status of the Quest for a specific player.
-            
+
             virtual bool setStatus(PlayerInfo* player, const QuestStatus::Value & status); //!< Sets the status for a specific player.
 
         private:
             std::set<PlayerInfo*> players_; //!< The set of players which possess this Quest.
             QuestStatus::Value status_; //!< The status of this Quest.
             std::list<QuestEffect*> rewards_; //!< Reward QuestEffects only invoked on the player completing the Quest.
-            
+
             bool addRewardEffect(QuestEffect* effect); //!< Adds a reward QuestEffect to the list of reward QuestEffects.
             const QuestEffect* getRewardEffects(unsigned int index) const; //!< Returns the reward QuestEffect at the given index.
 

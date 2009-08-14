@@ -34,13 +34,13 @@
 #ifndef _QuestManager_H__
 #define _QuestManager_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <list>
 #include <map>
 #include <string>
 
-#include "util/Singleton.h"
+#include "util/ScopedSingleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
@@ -65,6 +65,8 @@ namespace orxonox
         HintContainer* next;
     };
 
+    typedef ScopedSingleton<QuestManager, ScopeID::GSLevel> ScopedSingletonQuestManagerGSLevel; // workaround for tolua
+
     /**
     @brief
         Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
@@ -72,16 +74,16 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestManager : public Singleton<QuestManager>, public orxonox::OrxonoxClass
+    class _QuestExport QuestManager : public ScopedSingletonQuestManagerGSLevel, public orxonox::OrxonoxClass
     {
 // tolua_end
-            friend class Singleton<QuestManager>;
+            friend class ScopedSingleton<QuestManager, ScopeID::GSLevel>;
         public:
             QuestManager();
             virtual ~QuestManager();
 
             //! Returns a reference to the single instance of the Quest Manager.
-            static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
+            static QuestManager& getInstance() { return ScopedSingleton<QuestManager, ScopeID::GSLevel>::getInstance(); } // tolua_export
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
             bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
@@ -91,17 +93,11 @@ namespace orxonox
 
             QuestContainer* getQuestTree(std::string & name); // tolua_export
 
-            inline void setPlayer(const std::string& guiname, PlayerInfo* player)
-                { this->players_[guiname] = player; }
-            inline PlayerInfo* getPlayer(const std::string& guiname) const
-                { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; }
-
         private:
             static QuestManager* singletonPtr_s;
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
-            std::map<std::string, PlayerInfo*> players_; //!< Stores the player (owner) for each gui
 
             void getRootQuests(const PlayerInfo* player, std::list<Quest*> & list);
             HintContainer* addHints(Quest* quest, const PlayerInfo* player);

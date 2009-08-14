@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Definition of the LocalQuest class.
@@ -34,7 +34,7 @@
 #ifndef _LocalQuest_H__
 #define _LocalQuest_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <map>
 #include "Quest.h"
@@ -45,9 +45,9 @@ namespace orxonox
     @brief
         Handles Quests which have different states for different players.
         LocalQuests have (as opposed to GlobalQuests) a different state for each player, that means if for one player the status of the Quest changes it does not for all the other players which also possess this quest.
-        
+
         Creating a LocalQuest through XML goes as follows:
-        
+
         <LocalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
             <QuestDescription title="Title" description="Description." /> //The description of the quest.
             <subquests>
@@ -74,14 +74,14 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport LocalQuest : public Quest
+    class _QuestExport LocalQuest : public Quest
     {
         public:
             LocalQuest(BaseObject* creator);
             virtual ~LocalQuest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a LocalQuest object through XML.
-            
+
             virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
             virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
 

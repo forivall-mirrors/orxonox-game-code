@@ -79,25 +79,6 @@ namespace orxonox
     class Scene;
     class Tickable;
 
-    class AddQuest;
-    class AddQuestHint;
-    class AddReward;
-    class ChangeQuestStatus;
-    class CompleteQuest;
-    class FailQuest;
-    class GlobalQuest;
-    class LocalQuest;
-    class Quest;
-    class QuestDescription;
-    class QuestEffect;
-    class QuestEffectBeacon;
-    class QuestHint;
-    class QuestItem;
-    class QuestListener;
-    class QuestManager;
-    class QuestNotification;
-    class Rewardable;
-
     class WorldEntity;
     class StaticEntity;
     class MobileEntity;

@@ -34,13 +34,13 @@
 #ifndef _NotificationManager_H__
 #define _NotificationManager_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <ctime>
 #include <map>
 #include <string>
 
-#include "util/Singleton.h"
+#include "util/ScopedSingleton.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -53,9 +53,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport NotificationManager : public Singleton<NotificationManager>, public OrxonoxClass
+    class _QuestExport NotificationManager : public ScopedSingleton<NotificationManager, ScopeID::GSLevel>, public OrxonoxClass
     {
-            friend class Singleton<NotificationManager>;
+            friend class ScopedSingleton<NotificationManager, ScopeID::GSLevel>;
         public:
             NotificationManager();
             virtual ~NotificationManager();

@@ -34,7 +34,7 @@
 #ifndef _QuestListener_H__
 #define _QuestListener_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <string>
 #include <list>
@@ -57,10 +57,10 @@ namespace orxonox
     /**
     @brief
         Provides a way to react to the starting, completing and failing of Quests.
-        
+
         The XML representation goes as follows:
         You can use the QuestListener as if it were a Trigger or EventListener, that fires an Event when the status (depending on the set mode) of the given Quest changes.
-        
+
         <BaseObject> // The object that should react to the status change of a Quest.
             <events>
                 <function> // Where function is the method of the object that schould be executed. Normally this would be visibility or activity.
@@ -71,28 +71,28 @@ namespace orxonox
     @author
     Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestListener : public BaseObject
+    class _QuestExport QuestListener : public BaseObject
     {
     public:
         QuestListener(BaseObject* creator);
         virtual ~QuestListener();
-        
+
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestListener object through XML.
-        
+
         static void advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status); //!< Makes all QuestListener in the list aware that a certain status change has occured.
-        
+
         bool setQuestId(const std::string & id); //!< Sets the questId of the Quest the QuestListener reacts to.
         bool setMode(const std::string & mode); //!< Sets the mode of the QuestListener.
-        
+
         std::string getMode(void); //!< Get the mode of the QuestListener.
-        
-        const std::string & getQuestId(void);        
+
+        const std::string & getQuestId(void);
         bool execute(void); //!< Executes the QuestListener, resp. fires an Event.
-        
+
     private:
         QuestListenerMode::Value mode_; //!< The mode of the QuestListener.
         Quest* quest_; //!< A pointer to the Quest the QuestListener is reacting to.
-    
+
     };
 
 }

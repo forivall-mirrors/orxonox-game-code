@@ -34,7 +34,7 @@
 #ifndef _ChangeQuestStatus_H__
 #define _ChangeQuestStatus_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <string>
 #include "QuestEffect.h"
@@ -47,7 +47,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport ChangeQuestStatus : public QuestEffect
+    class _QuestExport ChangeQuestStatus : public QuestEffect
     {
         public:
             ChangeQuestStatus(BaseObject* creator);
@@ -67,7 +67,7 @@ namespace orxonox
 
         private:
             std::string questId_; //!< The id of the Quest the status should be changed of.
-            
+
             bool setQuestId(const std::string & id); //!< Sets the id of the Quest.
 
     };

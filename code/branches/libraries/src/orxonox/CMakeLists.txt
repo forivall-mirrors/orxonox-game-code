@@ -46,8 +46,6 @@ ORXONOX_ADD_LIBRARY(orxonox
     LevelManager.h
     objects/pickup/BaseItem.h
     objects/pickup/PickupInventory.h
-    objects/quest/QuestDescription.h
-    objects/quest/QuestManager.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"
   PCH_FILE
