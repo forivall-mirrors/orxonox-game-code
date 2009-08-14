@@ -298,7 +298,18 @@ namespace orxonox
                         std::string library = filename.substr(0, filename.size() - pluginextensionlength);
                         boost::filesystem::path librarypath = searchpath / library;
 
-                        DynLibManager::getInstance().load(librarypath.string());
+                        try
+                        {
+                            DynLibManager::getInstance().load(librarypath.string());
+                        }
+                        catch (const std::exception& e)
+                        {
+                            COUT(1) << "Couldn't load plugin \"" << librarypath.string() << "\": " << e.what() << std::endl;
+                        }
+                        catch (...)
+                        {
+                            COUT(1) << "Couldn't load plugin \"" << librarypath.string() << "\"" << std::endl;
+                        }
                     }
                 }
 
