@@ -147,9 +147,9 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
-  # PLUGIN A
+  # PLUGIN A, always create shared libraries
   IF(_arg_PLUGIN)
-    SET(_arg_SHARED MODULE)
+    SET(_arg_SHARED SHARED)
     SET(_arg_STATIC)
   ENDIF()
 
@@ -164,7 +164,10 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # PLUGIN B
   IF (_arg_PLUGIN)
-    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY})
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY} # Windows
+      LIBRARY_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY} # Unix
+    )
     ADD_PLUGIN(${_target_name})
   ENDIF()
 
@@ -196,15 +199,17 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   IF(NOT _arg_STATIC AND NOT _arg_NO_INSTALL)
-    SET(_library_destination ${ORXONOX_LIBRARY_INSTALL_PATH})
-    IF (_arg_PLUGIN)
-      SET(_library_destination ${ORXONOX_PLUGIN_INSTALL_PATH})
+    IF(_arg_PLUGIN)
+      INSTALL(TARGETS ${_target_name}
+        RUNTIME DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+        LIBRARY DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+      )
+    ELSE()
+      INSTALL(TARGETS ${_target_name}
+        RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
+        LIBRARY DESTINATION ${ORXONOX_LIBRARY_INSTALL_PATH}
+      )
     ENDIF()
-
-    INSTALL(TARGETS ${_target_name}
-      RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
-      LIBRARY DESTINATION ${_library_destination}
-    )
   ENDIF()
 
 ENDFUNCTION(TU_ADD_TARGET)

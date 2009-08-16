@@ -281,6 +281,10 @@ namespace orxonox
             // Search in the directory of our executable
             boost::filesystem::path searchpath = this->configuration_->pluginPath_;
 
+            // Add that path to the PATH variable in case a plugin depends on another one
+            std::string pathVariable = getenv("PATH");
+            putenv(("PATH=" + pathVariable + ";" + configuration_->pluginPath_.string()).c_str());
+
             boost::filesystem::directory_iterator file(searchpath);
             boost::filesystem::directory_iterator end;
 
