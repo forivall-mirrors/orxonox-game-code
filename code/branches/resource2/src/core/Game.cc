@@ -53,9 +53,6 @@
 
 namespace orxonox
 {
-    using boost::shared_ptr;
-    using boost::weak_ptr;
-
     static void stop_game()
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");

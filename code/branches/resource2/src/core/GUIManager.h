@@ -91,9 +91,9 @@ namespace orxonox
         void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled (int abs, int rel);
 
-        boost::scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;  //!< CEGUI's interface to the Ogre Engine
-        boost::scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_; //!< CEGUI's script module to use Lua
-        boost::scoped_ptr<CEGUI::System>            guiSystem_;    //!< CEGUI's main system
+        scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;  //!< CEGUI's interface to the Ogre Engine
+        scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_; //!< CEGUI's script module to use Lua
+        scoped_ptr<CEGUI::System>            guiSystem_;    //!< CEGUI's main system
         Ogre::RenderWindow*      renderWindow_;     //!< Ogre's render window to give CEGUI access to it
         CEGUI::ResourceProvider* resourceProvider_; //!< CEGUI's resource provider
         CEGUI::Logger*           ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log

@@ -197,4 +197,18 @@ namespace std
     typedef basic_string<char, char_traits<char>, allocator<char> > string;
 }
 
+// Import general purpose smart pointers
+namespace boost
+{
+    template<class T> class scoped_ptr;
+    template<class T> class shared_ptr;
+    template<class T> class weak_ptr;
+}
+namespace orxonox
+{
+    using boost::scoped_ptr;
+    using boost::shared_ptr;
+    using boost::weak_ptr;
+}
+
 #endif /* _OrxonoxConfig_H__ */

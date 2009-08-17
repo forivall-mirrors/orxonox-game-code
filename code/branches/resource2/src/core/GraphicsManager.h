@@ -48,8 +48,6 @@
 
 namespace orxonox
 {
-    using boost::scoped_ptr;
-
     /**
     @brief
         Graphics engine manager class

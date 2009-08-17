@@ -60,8 +60,6 @@
 namespace orxonox
 {
     class GameConfiguration;
-    using boost::scoped_ptr;
-    using boost::shared_ptr;
 
     //! Helper object required before GameStates are being constructed
     struct GameStateInfo
@@ -83,7 +81,7 @@ namespace orxonox
         friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
         typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
-        typedef boost::shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
+        typedef shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
     public:
         Game(const std::string& cmdLine);
         ~Game();

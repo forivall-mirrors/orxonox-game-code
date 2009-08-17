@@ -50,7 +50,6 @@
 namespace orxonox
 {
     class CoreConfiguration;
-    using boost::scoped_ptr;
 
     /**
     @brief
