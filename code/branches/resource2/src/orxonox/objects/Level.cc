@@ -100,7 +100,7 @@ namespace orxonox
         mask.include(Class(Template));
         mask.include(Class(OverlayGroup)); // HACK to include the ChatOverlay
 
-        this->xmlfile_ = new XMLFile(Core::getDataPathString() + this->xmlfilename_, mask);
+        this->xmlfile_ = new XMLFile(mask, this->xmlfilename_);
 
         Loader::open(this->xmlfile_);
     }

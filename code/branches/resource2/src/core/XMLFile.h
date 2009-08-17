@@ -39,14 +39,23 @@ namespace orxonox
     class _CoreExport XMLFile
     {
         public:
-            XMLFile(const std::string& filename) : filename_(filename) {}
-            XMLFile(const std::string& filename, const ClassTreeMask& mask) : filename_(filename), mask_(mask) {};
+            XMLFile(const std::string& filename, const std::string& resourceGroup = "General")
+                : filename_(filename)
+                , group_(resourceGroup)
+            { }
+            XMLFile(const ClassTreeMask& mask, const std::string& filename, const std::string& resourceGroup = "General")
+                : filename_(filename)
+                , group_(resourceGroup)
+                , mask_(mask)
+            { }
 
             const std::string& getFilename() const { return this->filename_; }
+            const std::string& getResourceGroup() const { return this->group_; }
             const ClassTreeMask& getMask() const { return this->mask_; }
 
         private:
             std::string filename_;
+            std::string group_;
             ClassTreeMask mask_;
     };
 }

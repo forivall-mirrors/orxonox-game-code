@@ -32,6 +32,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   LuaBind.cc
   ObjectListBase.cc
   OrxonoxClass.cc
+  Resource.cc
   WindowEventListener.cc
 
   # command

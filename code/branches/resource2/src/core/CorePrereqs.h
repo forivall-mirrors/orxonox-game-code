@@ -147,6 +147,7 @@ namespace orxonox
     class ObjectListIterator;
     class OgreWindowEventListener;
     class OrxonoxClass;
+    struct ResourceInfo;
     class Shell;
     class ShellListener;
     template <class T>
@@ -220,6 +221,20 @@ namespace boost
     class mutex;
     class shared_mutex;
     class condition_variable;
+}
+
+// Ogre
+namespace Ogre
+{
+    class DataStream;
+    template <class T> class SharedPtr;
+    typedef SharedPtr<DataStream> DataStreamPtr;
+}
+namespace orxonox
+{
+    // Import the Ogre::DataStream
+    using Ogre::DataStream;
+    using Ogre::DataStreamPtr;
 }
 
 // CEGUI
