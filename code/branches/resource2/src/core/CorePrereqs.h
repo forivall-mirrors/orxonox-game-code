@@ -132,7 +132,7 @@ namespace orxonox
     class Language;
     class LanguageEntry;
     class Loader;
-    class LuaBind;
+    class LuaState;
     class MetaObjectList;
     class MetaObjectListElement;
     class Namespace;

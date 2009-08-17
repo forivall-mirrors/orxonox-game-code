@@ -1,7 +1,7 @@
 <?lua
-  include("overlay/hudtemplates3.oxo")
-  include("overlay/stats.oxo")
-  include("overlay/ponghud.oxo")
+  include("hudtemplates3.oxo")
+  include("stats.oxo")
+  include("ponghud.oxo")
 ?>
 
 <Template name=pongbatcameras defaults=0>
@@ -90,7 +90,7 @@ end
   </EventDispatcher>
 
   <?lua
-    dofile("../../media/levels/includes/CuboidSpaceStation.lua")
+    dofile("includes/CuboidSpaceStation.lua")
   ?>
 
   <StaticEntity pitch=15>

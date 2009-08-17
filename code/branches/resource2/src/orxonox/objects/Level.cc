@@ -52,9 +52,6 @@ namespace orxonox
 
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
-
-        if (this->xmlfilename_.length() >= Core::getDataPathString().length())
-            this->xmlfilename_ = this->xmlfilename_.substr(Core::getDataPathString().length());
     }
 
     Level::~Level()

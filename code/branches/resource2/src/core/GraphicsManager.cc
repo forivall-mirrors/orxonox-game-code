@@ -44,6 +44,7 @@
 #include <OgreException.h>
 #include <OgreRenderWindow.h>
 #include <OgreRenderSystem.h>
+#include <OgreResourceGroupManager.h>
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
@@ -58,7 +59,9 @@
 #include "Core.h"
 #include "Game.h"
 #include "GameMode.h"
+#include "Loader.h"
 #include "WindowEventListener.h"
+#include "XMLFile.h"
 
 namespace orxonox
 {
@@ -95,10 +98,24 @@ namespace orxonox
         // load all the required plugins for Ogre
         this->loadOgrePlugins();
 
+        // At first, add the root paths of the data directories as resource locations
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getDataPathString(), "FileSystem", "dataRoot", false);
+        // Load resources
+        resources_.reset(new XMLFile("resources.oxr", "dataRoot"));
+        Loader::open(resources_.get());
+
+        // Only for development runs
+        if (Core::isDevelopmentRun())
+        {
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
+            extResources_.reset(new XMLFile("resources.oxr", "externalDataRoot"));
+            Loader::open(extResources_.get());
+        }
+
         if (bLoadRenderer)
         {
             // Reads the ogre config and creates the render window
-            this->loadRenderer();
+            this->upgradeToGraphics();
         }
     }
 
@@ -108,6 +125,7 @@ namespace orxonox
     */
     GraphicsManager::~GraphicsManager()
     {
+        // TODO: Destroy the console command
     }
 
     void GraphicsManager::setConfigValues()
@@ -136,10 +154,29 @@ namespace orxonox
     */
     void GraphicsManager::upgradeToGraphics()
     {
-        if (renderWindow_ == NULL)
+        if (renderWindow_ != NULL)
+            return;
+
+        this->loadRenderer();
+
+        // RESOURCE MANAGEMENT
+
+        // Load graphical resources
+        resourcesGraphics_.reset(new XMLFile("resources_graphics.oxr", "dataRoot"));
+        Loader::open(resourcesGraphics_.get());
+
+        // Consider external data folder for dev runs
+        if (Core::isDevelopmentRun())
         {
-            this->loadRenderer();
+            extResourcesGraphics_.reset(new XMLFile("resources_graphics.oxr", "externalDataRoot"));
+            Loader::open(extResourcesGraphics_.get());
         }
+
+        // Initialise all resources
+        // Note: You can only do this once! Ogre will check whether a resource group has
+        // already been initialised. If you need to load resources later, you will have to
+        // choose another resource group.
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
     }
 
     /**

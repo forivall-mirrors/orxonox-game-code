@@ -1,11 +1,11 @@
 <?lua
-  include("overlay/stats.oxo")
-  include("overlay/hudtemplates3.oxo")
+  include("stats.oxo")
+  include("hudtemplates3.oxo")
 ?>
 
 <?lua
-  include("levels/templates/spaceship_assff.oxt")
-  include("levels/templates/spaceship_pirate.oxt")
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
 ?>
 
 <Level

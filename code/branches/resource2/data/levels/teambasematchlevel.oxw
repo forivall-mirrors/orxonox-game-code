@@ -1,9 +1,9 @@
 <?lua
-  include("overlay/hudtemplates3.oxo")
-  include("overlay/stats.oxo")
-  include("overlay/teambasematchhud.oxo")
-  include("levels/templates/spaceship_assff.oxt")
-  include("levels/templates/spaceship_pirate.oxt")
+  include("hudtemplates3.oxo")
+  include("stats.oxo")
+  include("teambasematchhud.oxo")
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
 ?>
 
 <Level

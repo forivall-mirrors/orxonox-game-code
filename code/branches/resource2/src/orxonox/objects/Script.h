@@ -36,17 +36,21 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport Script : public BaseObject
-  {
+    class _OrxonoxExport Script : public BaseObject
+    {
     public:
-      Script(BaseObject* creator);
-      ~Script();
-      void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-      void execute();
+        Script(BaseObject* creator);
+        ~Script();
+        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        void execute();
+
+        void setCode(const std::string& code) { code_ = code; }
+        const std::string& getCode() const { return code_; }
 
     private:
-      std::string code_;
-  };
+        std::string code_;
+        LuaState* luaState_;
+    };
 }
 
 #endif /* _Script_H__ */

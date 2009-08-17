@@ -128,7 +128,6 @@ namespace orxonox
             scoped_ptr<ConfigFileManager> configFileManager_;
             scoped_ptr<Language>          languageInstance_;
             scoped_ptr<CoreConfiguration> configuration_;
-            scoped_ptr<LuaBind>           luaBind_;
             scoped_ptr<TclBind>           tclBind_;
             scoped_ptr<TclThreadManager>  tclThreadManager_;
             scoped_ptr<Shell>             shell_;

@@ -1,8 +1,8 @@
 <?lua
-  include("levels/old/spaceshiptemplates_physics.oxw")
+  include("spaceshiptemplates_physics.oxw")
 ?>
 <?lua
-  include("overlay/hudtemplates3.oxo")
+  include("hudtemplates3.oxo")
 ?>
 
 <Level

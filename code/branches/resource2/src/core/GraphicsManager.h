@@ -42,6 +42,7 @@
 #include <string>
 #include <OgreLog.h>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
@@ -86,12 +87,17 @@ namespace orxonox
         // console commands
         void printScreen();
 
-    private:
         scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
         scoped_ptr<Ogre::LogManager>        ogreLogger_;
         scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
+
+        // XML files for the resources
+        shared_ptr<XMLFile> resources_;                //!< XML with resource locations
+        shared_ptr<XMLFile> extResources_;             //!< XML with resource locations in the external path (only for dev runs)
+        shared_ptr<XMLFile> resourcesGraphics_;        //!< XML with resource locations (with renderer)
+        shared_ptr<XMLFile> extResourcesGraphics_;     //!< XML with resource locations in the external path (only for dev runs) (with renderer)
 
         // config values
         std::string         ogreConfigFile_;           //!< ogre config file name

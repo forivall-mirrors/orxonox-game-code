@@ -37,7 +37,7 @@
     </collisionShapes>
 
 <?lua
-  include("levels/includes/weaponsettings_pirate.oxi")
+  include("includes/weaponsettings_pirate.oxi")
 ?>
   </SpaceShip>
 </Template>

@@ -1,8 +1,8 @@
 <?lua
-  include("overlay/hudtemplates3.oxo")
-  include("overlay/stats.oxo")
-  include("overlay/underattackhud.oxo")
-  include("levels/templates/spaceship_assff.oxt")
+  include("hudtemplates3.oxo")
+  include("stats.oxo")
+  include("underattackhud.oxo")
+  include("templates/spaceship_assff.oxt")
 ?>
 
 <Level

@@ -1,19 +1,6 @@
-<ResourceGroup name = "General" >
-    <ResourceLocation path = overlay />
-    <ResourceLocation path = particle />
-    <ResourceLocation path = defaultConfig />
-    <ResourceLocation path = levels />
-    <ResourceLocation path = tcl />
-    <ResourceLocation
-      path = test.zip
-      archive = Zip
-      recursive = true
-    />
-</ResourceGroup>
-
-<ResourceGroup name = "GUI" >
-    <ResourceLocation path = gui/configs />
-    <ResourceLocation path = gui/layouts />
-    <ResourceLocation path = gui/schemas />
-    <ResourceLocation path = gui/scripts />
-</ResourceGroup>
+<ResourceCollection resourceGroup = "General" >
+    <ResourceLocation path = "levels" />
+    <ResourceLocation path = "lua" />
+    <ResourceLocation path = "overlay" />
+    <ResourceLocation path = "tcl" />
+</ResourceCollection>

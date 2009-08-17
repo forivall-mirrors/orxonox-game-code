@@ -35,6 +35,7 @@
 
 #include "util/Math.h"
 #include "core/Core.h"
+#include "core/Resource.h"
 #include "orxonox/objects/worldentities/WorldEntity.h"
 #include "SoundManager.h"
 
@@ -133,9 +134,7 @@ namespace orxonox
         return true;
     }
 
-    bool SoundBase::loadFile(std::string filename) {
-        filename = Core::getDataPathString() + "/audio/" + filename;
-
+    bool SoundBase::loadFile(const std::string& filename) {
         if(!SoundManager::getInstance().isSoundAvailable())
         {
             COUT(3) << "Sound: not available, skipping " << filename << std::endl;
@@ -143,7 +142,20 @@ namespace orxonox
         }
 
         COUT(3) << "Sound: OpenAL ALUT: loading file " << filename << std::endl;
-        this->buffer_ = alutCreateBufferFromFile(filename.c_str());
+        // Get DataStream from the resources
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(filename);
+        if (fileInfo == NULL) {
+            COUT(2) << "Warning: Sound file '" << filename << "' not found" << std::endl;
+            return false;
+        }
+        DataStreamPtr stream = Resource::open(filename);
+        // Read everything into a temporary buffer
+        char* buffer = new char[fileInfo->size];
+        stream->read(buffer, fileInfo->size);
+
+        this->buffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
+        delete[] buffer;
+
         if(this->buffer_ == AL_NONE) {
             COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
             if(filename.find("ogg", 0) != std::string::npos)

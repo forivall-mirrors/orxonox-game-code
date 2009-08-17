@@ -28,15 +28,19 @@
 
 #include "Loader.h"
 
+#include <sstream>
 #include <tinyxml/ticpp.h>
+#include <boost/scoped_ptr.hpp>
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/StringUtils.h"
 #include "BaseObject.h"
 #include "Iterator.h"
 #include "ObjectList.h"
-#include "LuaBind.h"
+#include "LuaState.h"
 #include "Namespace.h"
+#include "Resource.h"
 #include "XMLFile.h"
 
 namespace orxonox
@@ -117,23 +121,19 @@ namespace orxonox
 
         Loader::currentMask_s = file->getMask() * mask;
 
-        // let Lua work this out:
-        LuaBind& lua = LuaBind::getInstance();
-        lua.clearLuaOutput();
-        lua.loadFile(file->getFilename(), true);
-        lua.run();
+        // Use the LuaState to replace the XML tags (calls our function)
+        scoped_ptr<LuaState> luaState(new LuaState());
+        luaState->setIncludeParser(&Loader::replaceLuaTags);
+        luaState->includeFile(file->getFilename(), file->getResourceGroup(), false);
+        //luaState->doString(luaInput);
 
         try
         {
             COUT(0) << "Start loading " << file->getFilename() << "..." << std::endl;
             COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
 
-            //ticpp::Document xmlfile(file->getFilename());
-            //xmlfile.LoadFile();
-            //ticpp::Element myelement(*Script::getFileString());
-            ticpp::Document xmlfile;
-            //xmlfile.ToDocument();
-            xmlfile.Parse(lua.getLuaOutput(), true);
+            ticpp::Document xmlfile(file->getFilename());
+            xmlfile.Parse(luaState->getOutput().str(), true);
 
             ticpp::Element rootElement;
             rootElement.SetAttribute("name", "root");
@@ -206,5 +206,156 @@ namespace orxonox
     {
         Loader::unload(file, mask);
         return Loader::load(file, mask);
+    }
+
+    std::string Loader::replaceLuaTags(const std::string& text)
+    {
+        // chreate map with all Lua tags
+        std::map<size_t, bool> luaTags;
+        {
+            size_t pos = 0;
+            while ((pos = text.find("<?lua", pos)) != std::string::npos)
+                luaTags[pos++] = true;
+        }
+        {
+            size_t pos = 0;
+            while ((pos = text.find("?>", pos)) != std::string::npos)
+                luaTags[pos++] = false;
+        }
+
+        // erase all tags from the map that are between two quotes
+        {
+            std::map<size_t, bool>::iterator it = luaTags.begin();
+            std::map<size_t, bool>::iterator it2 = it;
+            bool bBetweenQuotes = false;
+            size_t pos = 0;
+            while ((pos = getNextQuote(text, pos)) != std::string::npos)
+            {
+                while ((it != luaTags.end()) && (it->first < pos))
+                {
+                    if (bBetweenQuotes)
+                    {
+                        it2++;
+                        if(it->second && !(it2->second) && it2->first < pos)
+                            it = ++it2;
+                        else
+                            luaTags.erase(it++);
+                    }
+                    else
+                        ++it;
+                }
+                bBetweenQuotes = !bBetweenQuotes;
+                pos++;
+            }
+        }
+
+        // check whether on every opening <?lua tag a closing ?> tag follows
+        {
+            bool expectedValue = true;
+            for (std::map<size_t, bool>::iterator it = luaTags.begin(); it != luaTags.end(); ++it)
+            {
+                if (it->second == expectedValue)
+                    expectedValue = !expectedValue;
+                else
+                {
+                    expectedValue = false;
+                    break;
+                }
+            }
+            if (!expectedValue)
+            {
+                COUT(2) << "Warning: Error in level file" << std::endl;
+                // todo: errorhandling
+                return "";
+            }
+        }
+
+        // Use a stringstream object to speed up the parsing
+        std::ostringstream output;
+
+        // cut the original string into pieces and put them together with print() instead of lua tags
+        {
+            std::map<size_t, bool>::iterator it = luaTags.begin();
+            bool bInPrintFunction = true;
+            size_t start = 0;
+            size_t end = 0;
+
+            do
+            {
+                if (it != luaTags.end())
+                    end = (*(it++)).first;
+                else
+                    end = std::string::npos;
+
+                unsigned int equalSignCounter = 0;
+
+                if (bInPrintFunction)
+                {
+                    // count ['='[ and ]'='] and replace tags with print([[ and ]])
+                    std::string temp = text.substr(start, end - start);
+                    {
+                    size_t pos = 0;
+                    while ((pos = temp.find('[', pos)) != std::string::npos)
+                    {
+                        unsigned int tempCounter = 1;
+                        size_t tempPos = pos++;
+                        while(temp[++tempPos] == '=')
+                        {
+                            tempCounter++;
+                        }
+                        if(temp[tempPos] != '[')
+                        {
+                            tempCounter = 0;
+                        }
+                        else if(tempCounter == 0)
+                        {
+                            tempCounter = 1;
+                        }
+                        if (tempCounter > equalSignCounter)
+                            equalSignCounter = tempCounter;
+                        }
+                    }
+                    {
+                        size_t pos = 0;
+                        while ((pos = temp.find(']', pos)) != std::string::npos)
+                        {
+                            unsigned int tempCounter = 1;
+                            size_t tempPos = pos++;
+                            while(temp[++tempPos] == '=')
+                            {
+                                tempCounter++;
+                            }
+                            if(temp[tempPos] != ']')
+                            {
+                                tempCounter = 0;
+                            }
+                            else if(tempCounter == 0)
+                            {
+                                tempCounter = 1;
+                            }
+                            if (tempCounter > equalSignCounter)
+                                equalSignCounter = tempCounter;
+                        }
+                    }
+                    std::string equalSigns = "";
+                    for(unsigned int i = 0; i < equalSignCounter; i++)
+                    {
+                        equalSigns += "=";
+                    }
+                    output << "print([" + equalSigns + "[" + temp + "]" + equalSigns +"])";
+                    start = end + 5;
+                }
+                else
+                {
+                    output << text.substr(start, end - start);
+                    start = end + 2;
+                }
+
+                bInPrintFunction = !bInPrintFunction;
+            }
+            while (end != std::string::npos);
+        }
+
+        return output.str();
     }
 }

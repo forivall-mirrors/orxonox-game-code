@@ -1,9 +1,9 @@
 <?lua
-	include("overlay/hudtemplates3.oxo")
+	include("hudtemplates3.oxo")
 ?>
 
 <?lua
-	include("levels/templates/spaceship_assff.oxt")
+	include("templates/spaceship_assff.oxt")
 ?>
 
 <Level
@@ -19,7 +19,7 @@
 
 <!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 <?lua
-	dofile("../../media/levels/includes/CuboidSpaceStation.lua")
+	dofile("includes/CuboidSpaceStation.lua")
 ?>
 
 <!-- The following examples insert some space station in various ways, so I guess you will understand how to use my .lua file and the functions of it.

@@ -34,7 +34,7 @@
       <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
     </collisionShapes>
 <?lua
-  include("levels/includes/weaponsettings3.oxi")
+  include("includes/weaponsettings3.oxi")
 ?>
   </SpaceShip>
 </Template>

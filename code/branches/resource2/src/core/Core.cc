@@ -73,10 +73,11 @@
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
-#include "LuaBind.h"
+#include "LuaState.h"
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
+#include "ToluaBindCore.h"
 #include "input/InputManager.h"
 
 namespace orxonox
@@ -265,6 +266,8 @@ namespace orxonox
         if (limitToCPU > 0)
             setThreadAffinity(static_cast<unsigned int>(limitToCPU));
 #endif
+        // Add tolua interface
+        LuaState::addToluaInterface(&tolua_Core_open, "Core");
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_.reset(new ConfigFileManager());
@@ -274,12 +277,15 @@ namespace orxonox
         // Required as well for the config values
         this->languageInstance_.reset(new Language());
 
+        // creates the class hierarchy for all classes with factories
+        Factory::createClassHierarchy();
+
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         this->configuration_->initialise();
 
-        // Create the lua interface
-        this->luaBind_.reset(new LuaBind());
+        // Load OGRE excluding the renderer and the render window
+        this->graphicsManager_.reset(new GraphicsManager(false));
 
         // initialise Tcl
         this->tclBind_.reset(new TclBind(Core::getDataPathString()));
@@ -287,17 +293,11 @@ namespace orxonox
 
         // create a shell
         this->shell_.reset(new Shell());
-
-        // creates the class hierarchy for all classes with factories
-        Factory::createClassHierarchy();
-
-        // Load OGRE excluding the renderer and the render window
-        this->graphicsManager_.reset(new GraphicsManager(false));
     }
 
     /**
     @brief
-        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
+        All destruction code is handled by scoped_ptrs and ScopeGuards.
     */
     Core::~Core()
     {
@@ -560,7 +560,7 @@ namespace orxonox
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::bDevRun_ = true;
-            configuration_->dataPath_  = specialConfig::dataDevDirectory;
+            configuration_->dataPath_   = specialConfig::dataDevDirectory;
             configuration_->externalDataPath_ = specialConfig::externalDataDevDirectory;
             configuration_->configPath_ = specialConfig::configDevDirectory;
             configuration_->logPath_    = specialConfig::logDevDirectory;
@@ -578,7 +578,7 @@ namespace orxonox
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
             // Using paths relative to the install prefix, complete them
-            configuration_->dataPath_  = configuration_->rootPath_ / specialConfig::defaultDataPath;
+            configuration_->dataPath_   = configuration_->rootPath_ / specialConfig::defaultDataPath;
             configuration_->configPath_ = configuration_->rootPath_ / specialConfig::defaultConfigPath;
             configuration_->logPath_    = configuration_->rootPath_ / specialConfig::defaultLogPath;
 #else

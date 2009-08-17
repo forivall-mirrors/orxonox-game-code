@@ -22,7 +22,7 @@
   >
 
 <?lua
-  include("levels/includes/weaponsettings_H2.oxi")
+  include("includes/weaponsettings_H2.oxi")
 ?>
 
     <attached>
