@@ -96,8 +96,6 @@ namespace orxonox
         // XML files for the resources
         shared_ptr<XMLFile> resources_;                //!< XML with resource locations
         shared_ptr<XMLFile> extResources_;             //!< XML with resource locations in the external path (only for dev runs)
-        shared_ptr<XMLFile> resourcesGraphics_;        //!< XML with resource locations (with renderer)
-        shared_ptr<XMLFile> extResourcesGraphics_;     //!< XML with resource locations in the external path (only for dev runs) (with renderer)
 
         // config values
         std::string         ogreConfigFile_;           //!< ogre config file name

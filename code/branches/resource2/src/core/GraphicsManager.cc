@@ -159,20 +159,7 @@ namespace orxonox
 
         this->loadRenderer();
 
-        // RESOURCE MANAGEMENT
-
-        // Load graphical resources
-        resourcesGraphics_.reset(new XMLFile("resources_graphics.oxr", "dataRoot"));
-        Loader::open(resourcesGraphics_.get());
-
-        // Consider external data folder for dev runs
-        if (Core::isDevelopmentRun())
-        {
-            extResourcesGraphics_.reset(new XMLFile("resources_graphics.oxr", "externalDataRoot"));
-            Loader::open(extResourcesGraphics_.get());
-        }
-
-        // Initialise all resources
+        // Initialise all resources (do this AFTER the renderer has been loaded!)
         // Note: You can only do this once! Ogre will check whether a resource group has
         // already been initialised. If you need to load resources later, you will have to
         // choose another resource group.
