@@ -1,6 +1,6 @@
 <ResourceCollection resourceGroup = "General" >
     <ResourceLocation path = "levels" />
     <ResourceLocation path = "lua" />
-    <ResourceLocation path = "overlay" />
+    <ResourceLocation path = "overlays" />
     <ResourceLocation path = "tcl" />
 </ResourceCollection>
