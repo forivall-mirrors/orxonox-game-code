@@ -77,7 +77,6 @@
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
-#include "ToluaBindCore.h"
 #include "input/InputManager.h"
 
 namespace orxonox
@@ -266,8 +265,6 @@ namespace orxonox
         if (limitToCPU > 0)
             setThreadAffinity(static_cast<unsigned int>(limitToCPU));
 #endif
-        // Add tolua interface
-        LuaState::addToluaInterface(&tolua_Core_open, "Core");
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_.reset(new ConfigFileManager());

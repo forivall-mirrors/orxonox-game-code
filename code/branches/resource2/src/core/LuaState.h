@@ -39,6 +39,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "util/ScopeGuard.h"
+#include "ToluaInterface.h"
 
 // tolua_begin
 namespace orxonox

@@ -38,11 +38,15 @@ extern "C" {
 #include "util/Debug.h"
 #include "Core.h"
 #include "Resource.h"
+#include "ToluaBindCore.h"
 
 namespace orxonox
 {
     LuaState::ToluaInterfaceMap LuaState::toluaInterfaces_s;
     std::vector<LuaState*> LuaState::instances_s;
+
+    // Do this after declaring toluaInterfaces_s and instances_s to avoid larger problems
+    DeclareToluaInterface(Core);
 
     LuaState::LuaState()
         : bIsRunning_(false)

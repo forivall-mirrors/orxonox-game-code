@@ -32,9 +32,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/LuaState.h"
 #include "network/NetworkFunction.h"
-#include "ToluaBindOrxonox.h"
 #include "tools/Timer.h"
 #include "interfaces/TimeFactorListener.h"
 #include "interfaces/Tickable.h"
@@ -52,9 +50,6 @@ namespace orxonox
     {
         this->ccSetTimeFactor_ = 0;
         this->ccPause_ = 0;
-
-        // Tell LuaBind about all tolua interfaces
-        LuaState::addToluaInterface(&tolua_Orxonox_open, "Orxonox");
     }
 
     GSRoot::~GSRoot()
