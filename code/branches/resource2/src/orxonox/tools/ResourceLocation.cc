@@ -29,12 +29,18 @@
 #include "ResourceLocation.h"
 
 #include <OgreResourceGroupManager.h>
+#include <boost/filesystem.hpp>
+
 #include "util/Exception.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
+#include "core/XMLFile.h"
 #include "core/XMLPort.h"
 
 namespace orxonox
 {
+    CreateFactory(ResourceLocation);
+
     ResourceLocation::ResourceLocation(BaseObject* creator)
         : BaseObject(creator)
     {
@@ -42,7 +48,7 @@ namespace orxonox
 
         // Default values
         archiveType_ = "FileSystem";
-        bRecursive_  = false;
+        bRecursive_  = true;
     }
 
     ResourceLocation::~ResourceLocation()
@@ -62,9 +68,22 @@ namespace orxonox
     {
         if (path_.empty())
             ThrowException(InitialisationFailed, "ResourceLocation: Trying to add one without the path being set");
+
+        // Find the path
+        boost::filesystem::path path;
+        if (boost::filesystem::exists(Core::getDataPath() / this->getPath()))
+            path = Core::getDataPath() / this->getPath();
+        else if (Core::isDevelopmentRun() && boost::filesystem::exists(Core::getExternalDataPath() / this->getPath()))
+            path = Core::getExternalDataPath() / this->getPath();
+        else
+        {
+            COUT(2) << "Warning: ResourceLocation '" << this->getPath() << "' does not seem to exist" << std::endl;
+            return;
+        }
+
         // Add it to the Ogre paths
         Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-            this->getPath(), this->getArchiveType(), resourceGroup, this->getRecursive());
+            path.string(), this->getArchiveType(), resourceGroup, this->getRecursive());
         resourceGroup_ = resourceGroup;
     }
 

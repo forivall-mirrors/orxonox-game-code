@@ -28,6 +28,10 @@
 
 #include "GSDedicated.h"
 
+#include <iomanip>
+#include <iostream>
+#include <boost/bind.hpp>
+
 #include "util/Debug.h"
 #include "util/Sleep.h"
 #include "core/Clock.h"
@@ -36,10 +40,6 @@
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Server.h"
-
-#include <iostream>
-#include <iomanip>
-#include <boost/bind.hpp>
 
 #ifdef ORXONOX_PLATFORM_UNIX
 #include <termios.h>
