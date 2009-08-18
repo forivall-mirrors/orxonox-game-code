@@ -150,6 +150,13 @@ namespace orxonox
 
         // ScopeGuard helper function
         void resetChangingState() { this->bChangingState_ = false; }
+        /**
+        @brief
+            Retrieves information from an exception caught with "..."
+        @remarks
+            Never ever call this function without an exception in the stack!
+        */
+        static std::string getExceptionMessage();
 
         scoped_ptr<Clock>                  gameClock_;
         scoped_ptr<Core>                   core_;

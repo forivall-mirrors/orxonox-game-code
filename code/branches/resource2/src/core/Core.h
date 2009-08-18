@@ -64,6 +64,7 @@ namespace orxonox
     {
         typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
         friend class Singleton<Core>;
+        friend class Game;
 
         public:
             /**
@@ -77,12 +78,6 @@ namespace orxonox
             ~Core();
 
             void setConfigValues();
-
-            bool preUpdate(const Clock& time) throw();
-            bool postUpdate(const Clock& time) throw();
-
-            void loadGraphics();
-            void unloadGraphics();
 
             static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
@@ -115,6 +110,12 @@ namespace orxonox
 
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
+
+            void preUpdate(const Clock& time);
+            void postUpdate(const Clock& time);
+
+            void loadGraphics();
+            void unloadGraphics();
 
             void checkDevBuild();
             void setExecutablePath();

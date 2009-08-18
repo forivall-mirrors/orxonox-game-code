@@ -108,43 +108,31 @@ namespace orxonox
 
         COUT(3) << "Initialising CEGUI." << std::endl;
 
-        try
-        {
-            // Note: No SceneManager specified yet
-            guiRenderer_.reset(new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
-            resourceProvider_ = guiRenderer_->createResourceProvider();
-            resourceProvider_->setDefaultResourceGroup("GUI");
+        // Note: No SceneManager specified yet
+        guiRenderer_.reset(new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
+        resourceProvider_ = guiRenderer_->createResourceProvider();
+        resourceProvider_->setDefaultResourceGroup("GUI");
 
-            // setup scripting
-            scriptModule_.reset(new LuaScriptModule());
-            luaState_ = scriptModule_->getLuaState();
+        // setup scripting
+        scriptModule_.reset(new LuaScriptModule());
+        luaState_ = scriptModule_->getLuaState();
 
-            // Create our own logger to specify the filepath
-            std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
-            ceguiLogger->setLogFilename(Core::getLogPathString() + "cegui.log");
-            // set the log level according to ours (translate by subtracting 1)
-            ceguiLogger->setLoggingLevel(
-                static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
-            this->ceguiLogger_ = ceguiLogger.release();
+        // Create our own logger to specify the filepath
+        std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
+        ceguiLogger->setLogFilename(Core::getLogPathString() + "cegui.log");
+        // set the log level according to ours (translate by subtracting 1)
+        ceguiLogger->setLoggingLevel(
+            static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
+        this->ceguiLogger_ = ceguiLogger.release();
 
-            // create the CEGUI system singleton
-            guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
+        // create the CEGUI system singleton
+        guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-            // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
-            LuaState::openToluaInterfaces(this->luaState_);
+        // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
+        LuaState::openToluaInterfaces(this->luaState_);
 
-            // initialise the basic lua code
-            this->loadLuaCode();
-        }
-        catch (CEGUI::Exception& ex)
-        {
-#if CEGUI_VERSION_MAJOR == 0 && CEGUI_VERSION_MINOR < 6
-            throw GeneralException(ex.getMessage().c_str());
-#else
-            throw GeneralException(ex.getMessage().c_str(), ex.getLine(),
-                ex.getFileName().c_str(), ex.getName().c_str());
-#endif
-        }
+        // initialise the basic lua code
+        this->loadLuaCode();
     }
 
     /**

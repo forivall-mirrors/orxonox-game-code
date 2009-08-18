@@ -151,6 +151,8 @@ namespace orxonox
         Loads the renderer and creates the render window if not yet done so.
     @remarks
         This operation is irreversible without recreating the GraphicsManager!
+        So if it throws you HAVE to recreate the GraphicsManager!!!
+        It therefore offers almost no exception safety.
     */
     void GraphicsManager::upgradeToGraphics()
     {

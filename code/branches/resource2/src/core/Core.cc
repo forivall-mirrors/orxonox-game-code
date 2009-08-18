@@ -302,8 +302,8 @@ namespace orxonox
 
     void Core::loadGraphics()
     {
-        if (bGraphicsLoaded_)
-            return;
+        // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
+        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
         // Upgrade OGRE to receive a render window
         graphicsManager_->upgradeToGraphics();
@@ -313,22 +313,18 @@ namespace orxonox
         graphicsManager_->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
 
         // Calls the InputManager which sets up the input devices.
-        scoped_ptr<InputManager> inputManager(new InputManager(windowHnd));
+        inputManager_.reset(new InputManager(windowHnd));
 
         // load the CEGUI interface
         guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow()));
 
-        // Dismiss scoped pointer
-        inputManager_.swap(inputManager);
+        unloader.Dismiss();
 
         bGraphicsLoaded_ = true;
     }
 
     void Core::unloadGraphics()
     {
-        if (!bGraphicsLoaded_)
-            return;
-
         this->guiManager_.reset();;
         this->inputManager_.reset();;
         this->graphicsManager_.reset();
@@ -636,55 +632,25 @@ namespace orxonox
         }
     }
 
-    bool Core::preUpdate(const Clock& time) throw()
+    void Core::preUpdate(const Clock& time)
     {
-        std::string exceptionMessage;
-        try
+        if (this->bGraphicsLoaded_)
         {
-            if (this->bGraphicsLoaded_)
-            {
-                // process input events
-                this->inputManager_->update(time);
-                // process gui events
-                this->guiManager_->update(time);
-            }
-            // process thread commands
-            this->tclThreadManager_->update(time);
+            // process input events
+            this->inputManager_->update(time);
+            // process gui events
+            this->guiManager_->update(time);
         }
-        catch (const std::exception& ex)
-        { exceptionMessage = ex.what(); }
-        catch (...)
-        { exceptionMessage = "Unknown exception"; }
-        if (!exceptionMessage.empty())
-        {
-            COUT(0) << "An exception occurred in the Core preUpdate: " << exceptionMessage << std::endl;
-            COUT(0) << "This should really never happen! Closing the program." << std::endl;
-            return false;
-        }
-        return true;
+        // process thread commands
+        this->tclThreadManager_->update(time);
     }
 
-    bool Core::postUpdate(const Clock& time) throw()
+    void Core::postUpdate(const Clock& time)
     {
-        std::string exceptionMessage;
-        try
+        if (this->bGraphicsLoaded_)
         {
-            if (this->bGraphicsLoaded_)
-            {
-                // Render (doesn't throw)
-                this->graphicsManager_->update(time);
-            }
+            // Render (doesn't throw)
+            this->graphicsManager_->update(time);
         }
-        catch (const std::exception& ex)
-        { exceptionMessage = ex.what(); }
-        catch (...)
-        { exceptionMessage = "Unknown exception"; }
-        if (!exceptionMessage.empty())
-        {
-            COUT(0) << "An exception occurred in the Core postUpdate: " << exceptionMessage << std::endl;
-            COUT(0) << "This should really never happen! Closing the program." << std::endl;
-            return false;
-        }
-        return true;
     }
 }
