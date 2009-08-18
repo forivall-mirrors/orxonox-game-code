@@ -141,6 +141,10 @@ namespace orxonox
             if (it->find("old/") == 0)
                 it = availableLevels_.erase(it);
             else
+            {
+                size_t pos = it->find(".oxw");
+                *it = it->substr(0, pos);
                 ++it;
+            }
     }
 }

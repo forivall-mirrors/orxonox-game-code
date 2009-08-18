@@ -78,8 +78,7 @@ namespace orxonox
         lua_setglobal(luaState_, "luaState");
 
         // Parse init script
-        // Note: We have to use a hard coded path because the script is required for the resource loading
-        this->doString("dofile(\"" + Core::getDataPathString() + "lua/LuaStateInit.lua\")");
+        this->doFile("LuaStateInit.lua");
     }
 
     LuaState::~LuaState()

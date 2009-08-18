@@ -121,11 +121,25 @@ namespace orxonox
 
         Loader::currentMask_s = file->getMask() * mask;
 
-        // Use the LuaState to replace the XML tags (calls our function)
-        scoped_ptr<LuaState> luaState(new LuaState());
-        luaState->setIncludeParser(&Loader::replaceLuaTags);
-        luaState->includeFile(file->getFilename(), file->getResourceGroup(), false);
-        //luaState->doString(luaInput);
+        std::string xmlInput;
+        if (file->getLuaSupport())
+        {
+            // Use the LuaState to replace the XML tags (calls our function)
+            scoped_ptr<LuaState> luaState(new LuaState());
+            luaState->setIncludeParser(&Loader::replaceLuaTags);
+            luaState->includeFile(file->getFilename(), file->getResourceGroup(), false);
+            xmlInput = luaState->getOutput().str();
+        }
+        else
+        {
+            shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename(), file->getResourceGroup());
+            if (info == NULL)
+            {
+                COUT(1) << "Error: Could not find XML file '" << file->getFilename() << "'." << std::endl;
+                return false;
+            }
+            xmlInput = Resource::open(file->getFilename(), file->getResourceGroup())->getAsString();
+        }
 
         try
         {
@@ -133,7 +147,7 @@ namespace orxonox
             COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
 
             ticpp::Document xmlfile(file->getFilename());
-            xmlfile.Parse(luaState->getOutput().str(), true);
+            xmlfile.Parse(xmlInput, true);
 
             ticpp::Element rootElement;
             rootElement.SetAttribute("name", "root");

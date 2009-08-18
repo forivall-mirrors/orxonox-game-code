@@ -102,6 +102,7 @@ namespace orxonox
         Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getDataPathString(), "FileSystem", "dataRoot", false);
         // Load resources
         resources_.reset(new XMLFile("resources.oxr", "dataRoot"));
+        resources_->setLuaSupport(false);
         Loader::open(resources_.get());
 
         // Only for development runs
@@ -109,6 +110,7 @@ namespace orxonox
         {
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
             extResources_.reset(new XMLFile("resources.oxr", "externalDataRoot"));
+            extResources_->setLuaSupport(false);
             Loader::open(extResources_.get());
         }
 

@@ -49,14 +49,18 @@ namespace orxonox
                 , mask_(mask)
             { }
 
+            void setLuaSupport(bool val) { bLuaSupport_ = val; }
+
             const std::string& getFilename() const { return this->filename_; }
             const std::string& getResourceGroup() const { return this->group_; }
             const ClassTreeMask& getMask() const { return this->mask_; }
+            bool getLuaSupport() const { return this->bLuaSupport_; }
 
         private:
             std::string filename_;
             std::string group_;
             ClassTreeMask mask_;
+            bool bLuaSupport_;
     };
 }
 
