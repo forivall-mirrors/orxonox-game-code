@@ -1,7 +1,12 @@
-gui = require("gui")
-local P = gui:new() --inherit everything from the gui package
+-- PickupInventory.lua
 
-PickupInventory = P
+BasicGUI = require("BasicGUI")
+local P = BasicGUI:new() --inherit everything from the gui package
+if _REQUIREDNAME == nil then
+    PickupInventory = P
+else
+    _G[_REQUIREDNAME] = P
+end
 
 P.filename = "PickupInventory"
 P.layoutString = "PickupInventory.layout"
@@ -60,4 +65,4 @@ function P:updateTabs()
     self.lastUsableCount_ = orxonox.PickupInventory:getUsableCount()
 end
 
-return PickupInventory
+return P

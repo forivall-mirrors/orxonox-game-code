@@ -27,12 +27,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Implementation of the GUIManager class.
-*/
-
 #include "GUIManager.h"
 
 #include <memory>
@@ -59,6 +53,7 @@ extern "C" {
 #include "Core.h"
 #include "Clock.h"
 #include "LuaState.h"
+#include "Resource.h"
 
 namespace orxonox
 {
@@ -114,8 +109,8 @@ namespace orxonox
         resourceProvider_->setDefaultResourceGroup("GUI");
 
         // setup scripting
-        scriptModule_.reset(new LuaScriptModule());
-        luaState_ = scriptModule_->getLuaState();
+        luaState_.reset(new LuaState());
+        scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
@@ -128,40 +123,17 @@ namespace orxonox
         // create the CEGUI system singleton
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-        // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
-        LuaState::openToluaInterfaces(this->luaState_);
-
-        // initialise the basic lua code
-        this->loadLuaCode();
+        // Initialise the basic lua code
+        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
+        this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
     }
 
     /**
     @brief
-        Destructor of the GUIManager
-
         Basically shuts down CEGUI (member smart pointers) but first unloads our Tolua modules.
     */
     GUIManager::~GUIManager()
     {
-        // destroy our own tolua interfaces
-        LuaState::closeToluaInterfaces(this->luaState_);
-    }
-
-    /**
-    @brief
-        Calls main Lua script
-    @todo
-        This function calls the main Lua script for our GUI.
-
-        Additionally we set the datapath variable in Lua. This is needed so Lua can access the data used for the GUI.
-    */
-    void GUIManager::loadLuaCode()
-    {
-        // set datapath for GUI data
-        lua_pushfstring(this->scriptModule_->getLuaState(), Core::getDataPathString().c_str());
-        lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
-        // call main Lua script
-        this->scriptModule_->executeScriptFile("loadGUI_3.lua", "GUI");
     }
 
     /**
@@ -208,18 +180,7 @@ namespace orxonox
     */
     void GUIManager::executeCode(const std::string& str)
     {
-        try
-        {
-            this->scriptModule_->executeString(str);
-        }
-        catch (const CEGUI::Exception& ex)
-        {
-            COUT(2) << "CEGUI Error: \"" << ex.getMessage() << "\" while executing code \"" << str << "\"" << std::endl;
-        }
-        catch (...)
-        {
-            COUT(2) << "Couldn't execute GUI related Lua code due to unknown reasons." << std::endl;
-        }
+        this->luaState_->doString(str, rootFileInfo_);
     }
 
     /**
@@ -233,7 +194,7 @@ namespace orxonox
     */
     void GUIManager::showGUI(const std::string& name)
     {
-        this->executeCode(std::string("showGUI(\"") + name + "\")");
+        this->luaState_->doString("showGUI(\"" + name + "\")", rootFileInfo_);
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)

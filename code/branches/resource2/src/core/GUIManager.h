@@ -27,12 +27,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Declaration of the GUIManager class.
-*/
-
 #ifndef _GUIManager_H__
 #define _GUIManager_H__
 
@@ -42,6 +36,7 @@
 #include <string>
 #include <CEGUIForwardRefs.h>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "util/OgreForwardRefs.h"
 #include "util/Singleton.h"
@@ -79,8 +74,6 @@ namespace orxonox
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 
-        void loadLuaCode();
-
         // keyHandler functions
         void keyPressed (const KeyEvent& evt);
         void keyReleased(const KeyEvent& evt);
@@ -92,12 +85,13 @@ namespace orxonox
         void mouseScrolled (int abs, int rel);
 
         scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;  //!< CEGUI's interface to the Ogre Engine
+        scoped_ptr<LuaState>                 luaState_;     //!< LuaState, access point to the Lua engine
         scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_; //!< CEGUI's script module to use Lua
         scoped_ptr<CEGUI::System>            guiSystem_;    //!< CEGUI's main system
+        shared_ptr<ResourceInfo>             rootFileInfo_; //!< Resource information about the root script
         Ogre::RenderWindow*      renderWindow_;     //!< Ogre's render window to give CEGUI access to it
         CEGUI::ResourceProvider* resourceProvider_; //!< CEGUI's resource provider
         CEGUI::Logger*           ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
-        lua_State*               luaState_;         //!< Lua state, access point to the Lua engine
 
         static GUIManager*       singletonPtr_s;    //!< Singleton reference to GUIManager
 

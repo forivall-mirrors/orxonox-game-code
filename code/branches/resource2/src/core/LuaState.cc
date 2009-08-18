@@ -146,10 +146,6 @@ namespace orxonox
         if (sourceFileInfo != NULL)
             sourceFileInfo_ = sourceFileInfo;
 
-        //if (!bIsRunning_)
-        //{
-        //    bIsRunning_ = true;
-
         int error = 0;
 #if LUA_VERSION_NUM != 501
         LoadS ls;
@@ -162,21 +158,18 @@ namespace orxonox
 
         // execute the chunk
         if (error == 0)
-            error = lua_pcall(luaState_, 0, 0, 0);
+            error = lua_pcall(luaState_, 0, 1, 0);
         if (error != 0)
         {
             std::string origin;
             if (sourceFileInfo != NULL)
                 origin = " originating from " + sourceFileInfo_->filename;
             COUT(2) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
+            // return value is nil
+            lua_pushnil(luaState_);
         }
-
-        //    bIsRunning_ = false;
-        //}
-        //else
-        //{
-        //    COUT(2) << "Warning: LuaState do function called while running!" << std::endl;
-        //}
+        // push return value because it will get lost since the return value of this function is void
+        lua_setglobal(luaState_, "LuaStateReturnValue");
 
         // Load the old info again
         sourceFileInfo_ = oldSourceFileInfo;
@@ -190,6 +183,15 @@ namespace orxonox
     void LuaState::luaLog(unsigned int level, const std::string& message)
     {
         OutputHandler::getOutStream().setOutputLevel(level) << message << std::endl;
+    }
+
+    bool LuaState::fileExists(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
+    {
+        shared_ptr<ResourceInfo> info =  this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
+        if (info == NULL)
+            return false;
+        else
+            return true;
     }
 
 #if LUA_VERSION_NUM != 501

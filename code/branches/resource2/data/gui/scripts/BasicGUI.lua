@@ -2,7 +2,7 @@
 
 local P = {}
 if _REQUIREDNAME == nil then
-    gui = P
+    BasicGUI = P
 else
     _G[_REQUIREDNAME] = P
 end
@@ -39,4 +39,4 @@ function P:load ()
     return self
 end
 
-return gui or _G[_REQUIREDNAME]
+return P

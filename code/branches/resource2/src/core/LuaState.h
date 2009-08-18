@@ -58,11 +58,12 @@ namespace orxonox
         void doFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
         void doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
 
-        void includeFile(const std::string& filename, const std::string& resourceGroup = "Genreal", bool bSearchOtherPaths = true); // tolua_export
+        void includeFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
         void includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
+        bool fileExists(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
 
         const std::stringstream& getOutput() const { return output_; }
         void clearOutput() { output_.clear(); } // tolua_export

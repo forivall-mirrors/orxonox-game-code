@@ -1,11 +1,15 @@
--- mainmenu_2.lua
-gui = require("gui")
-local P = gui:new() --inherit everything from the gui package
+-- MainMenu.lua
 
-mainmenu_2 = P
+BasicGUI = require("BasicGUI")
+local P = BasicGUI:new() --inherit everything from the gui package
+if _REQUIREDNAME == nil then
+    MainMenu = P
+else
+    _G[_REQUIREDNAME] = P
+end
 
-P.filename = "mainmenu_2"
-P.layoutString = "MainMenu_2.layout"
+P.filename = "MainMenu"
+P.layoutString = "MainMenu.layout"
 
 function P:init()
     listbox = winMgr:getWindow("orxonox/LevelListbox")
@@ -84,5 +88,5 @@ function P.listbox_level_selectionchanged(e)
     end
 end
 
-return mainmenu_2
+return P
 
