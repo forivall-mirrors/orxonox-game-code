@@ -30,6 +30,7 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
+#include "core/Resource.h"
 #include "core/XMLPort.h"
 #include "ResourceLocation.h"
 
@@ -43,7 +44,7 @@ namespace orxonox
         RegisterObject(ResourceCollection);
 
         // Default group is "General"
-        this->setResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        this->setResourceGroup(Resource::DEFAULT_GROUP);
     }
 
     ResourceCollection::~ResourceCollection()

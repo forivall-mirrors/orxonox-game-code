@@ -85,9 +85,9 @@ namespace orxonox
         Non-initialising constructor.
     */
     GraphicsManager::GraphicsManager(bool bLoadRenderer)
-        : renderWindow_(0)
+        : ogreWindowEventListener_(new OgreWindowEventListener())
+        , renderWindow_(0)
         , viewport_(0)
-        , ogreWindowEventListener_(new OgreWindowEventListener())
     {
         RegisterObject(GraphicsManager);
 

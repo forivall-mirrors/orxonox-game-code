@@ -273,7 +273,7 @@ namespace orxonox
             try
             {
                 // Add tick time for most of the states
-                uint64_t timeBeforeTick;
+                uint64_t timeBeforeTick = 0;
                 if ((*it)->getInfo().bIgnoreTickTime)
                     timeBeforeTick = this->gameClock_->getRealMicroseconds();
                 (*it)->update(*this->gameClock_);

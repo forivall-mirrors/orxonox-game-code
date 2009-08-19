@@ -39,7 +39,8 @@ FIND_PATH(EXTERNAL_DATA_DIRECTORY resources.oxr
 )
 
 IF(NOT EXTERNAL_DATA_DIRECTORY)
-  MESSAGE(STATUS "Warning: External data directory not found. If you want to compile while downloading the data files, you will have to recompile about four files afterwards and relink everything. \\n You can specify your own folder with the DATA_DIRECTORY variable. Default location for the path is orxonox_root/data_extern")
+  MESSAGE(STATUS "Warning: External data directory not found. If you want to compile while downloading the data files, you will have to recompile about four files afterwards and relink everything.")
+  MESSAGE(STATUS "You can specify your own folder with the EXTERNAL_DATA_DIRECTORY variable. Default location for the path is orxonox_root/data_extern")
   # Temporary override to the default location.
   SET(EXTERNAL_DATA_DIRECTORY ${CMAKE_SOURCE_DIR}/data_extern)
 ENDIF()
