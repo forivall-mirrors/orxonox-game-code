@@ -55,9 +55,6 @@ namespace orxonox
         mousePosition_[0] = 0;
         mousePosition_[1] = 0;
 
-        joyStickButtons_.reserve(1000);
-        joyStickAxes_.reserve(1000);
-
         RegisterRootObject(KeyBinder);
 
         // intialise all buttons and half axes to avoid creating everything with 'new'
@@ -166,9 +163,9 @@ namespace orxonox
             for (unsigned int iDev = oldValue; iDev < joySticks_.size(); ++iDev)
             {
                 for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; ++i)
-                    joyStickButtons_[iDev][i].readConfigValue(this->configFile_);
+                    (*joyStickButtons_[iDev])[i].readConfigValue(this->configFile_);
                 for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; ++i)
-                    joyStickAxes_[iDev][i].readConfigValue(this->configFile_);
+                    (*joyStickAxes_[iDev])[i].readConfigValue(this->configFile_);
             }
         }
 
@@ -178,6 +175,11 @@ namespace orxonox
 
     void KeyBinder::initialiseJoyStickBindings()
     {
+        while (joyStickAxes_.size() < joySticks_.size())
+            joyStickAxes_.push_back(shared_ptr<JoyStickAxisVector>(new JoyStickAxisVector()));
+        while (joyStickButtons_.size() < joySticks_.size())
+            joyStickButtons_.push_back(shared_ptr<JoyStickButtonVector>(new JoyStickButtonVector()));
+        // For the case the new size is smaller
         this->joyStickAxes_.resize(joySticks_.size());
         this->joyStickButtons_.resize(joySticks_.size());
 
@@ -188,20 +190,20 @@ namespace orxonox
             // joy stick buttons
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
             {
-                joyStickButtons_[iDev][i].name_ = JoyStickButtonCode::ByString[i];
-                joyStickButtons_[iDev][i].paramCommandBuffer_ = &paramCommandBuffer_;
-                joyStickButtons_[iDev][i].groupName_ = "JoyStickButtons_" + deviceName;
+                (*joyStickButtons_[iDev])[i].name_ = JoyStickButtonCode::ByString[i];
+                (*joyStickButtons_[iDev])[i].paramCommandBuffer_ = &paramCommandBuffer_;
+                (*joyStickButtons_[iDev])[i].groupName_ = "JoyStickButtons_" + deviceName;
             }
             // joy stick axes
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                joyStickAxes_[iDev][i].name_ = JoyStickAxisCode::ByString[i / 2];
+                (*joyStickAxes_[iDev])[i].name_ = JoyStickAxisCode::ByString[i / 2];
                 if (i & 1)
-                    joyStickAxes_[iDev][i].name_ += "Pos";
+                    (*joyStickAxes_[iDev])[i].name_ += "Pos";
                 else
-                    joyStickAxes_[iDev][i].name_ += "Neg";
-                joyStickAxes_[iDev][i].paramCommandBuffer_ = &paramCommandBuffer_;
-                joyStickAxes_[iDev][i].groupName_ = "JoyStickAxes_" + deviceName;
+                    (*joyStickAxes_[iDev])[i].name_ += "Neg";
+                (*joyStickAxes_[iDev])[i].paramCommandBuffer_ = &paramCommandBuffer_;
+                (*joyStickAxes_[iDev])[i].groupName_ = "JoyStickAxes_" + deviceName;
             }
         }
     }
@@ -225,11 +227,11 @@ namespace orxonox
         for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
-                allButtons_[joyStickButtons_[iDev][i].groupName_ + "." + joyStickButtons_[iDev][i].name_] = &(joyStickButtons_[iDev][i]);
+                allButtons_[(*joyStickButtons_[iDev])[i].groupName_ + "." + (*joyStickButtons_[iDev])[i].name_] = &((*joyStickButtons_[iDev])[i]);
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                allButtons_[joyStickAxes_[iDev][i].groupName_ + "." + joyStickAxes_[iDev][i].name_] = &(joyStickAxes_[iDev][i]);
-                allHalfAxes_.push_back(&(joyStickAxes_[iDev][i]));
+                allButtons_[(*joyStickAxes_[iDev])[i].groupName_ + "." + (*joyStickAxes_[iDev])[i].name_] = &((*joyStickAxes_[iDev])[i]);
+                allHalfAxes_.push_back(&((*joyStickAxes_[iDev])[i]));
             }
         }
     }
@@ -302,8 +304,8 @@ namespace orxonox
         {
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                joyStickAxes_[iDev][i].absVal_ = 0.0f;
-                joyStickAxes_[iDev][i].relVal_ = 0.0f;
+                (*joyStickAxes_[iDev])[i].absVal_ = 0.0f;
+                (*joyStickAxes_[iDev])[i].relVal_ = 0.0f;
             }
         }
     }
@@ -365,7 +367,7 @@ namespace orxonox
     {
         for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
         {
-            tickHalfAxis(joyStickAxes_[joyStick][i]);
+            tickHalfAxis((*joyStickAxes_[joyStick])[i]);
         }
     }
 
@@ -480,7 +482,7 @@ namespace orxonox
     void KeyBinder::axisMoved(unsigned int device, unsigned int axisID, float value)
     {
         int i = axisID * 2;
-        JoyStickAxisVector& axis = joyStickAxes_[device];
+        JoyStickAxisVector& axis = *joyStickAxes_[device];
         if (value < 0)
         {
             axis[i].absVal_ = -value;
