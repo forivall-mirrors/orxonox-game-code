@@ -23,6 +23,8 @@
  #    Sets the right compiler and linker flags for the Microsoft Compiler.
  #
 
+INCLUDE(FlagUtilities)
+
 ################### Compiler Version ####################
 
 # We make use of variadic macros, which is only supported by MSVC 8 and above

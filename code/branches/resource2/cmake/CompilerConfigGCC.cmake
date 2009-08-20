@@ -23,6 +23,8 @@
  #    Sets the right compiler and linker flags for GCC.
  #
 
+INCLUDE(FlagUtilities)
+
 # Shortcut for CMAKE_COMPILER_IS_GNUCXX and ..._GNUC
 SET(CMAKE_COMPILER_IS_GNU TRUE)
 
