@@ -34,7 +34,7 @@
  #      NO_DLL_INTERFACE:  Link statically with MSVC
  #      NO_SOURCE_GROUPS:  Don't create msvc source groups
  #      STATIC/SHARED:     Inherited from ADD_LIBRARY
- #      PLUGIN:            For dynamic plugin libraries
+ #      MODULE:            For dynamic module libraries
  #      WIN32:             Inherited from ADD_EXECUTABLE
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
@@ -80,7 +80,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
-                  PCH_NO_DEFAULT     NO_INSTALL        PLUGIN)
+                  PCH_NO_DEFAULT     NO_INSTALL        MODULE)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
                   TOLUA_FILES     PCH_FILE  PCH_EXCLUDE OUTPUT_NAME)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
@@ -147,8 +147,9 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
-  # PLUGIN A, always create shared libraries
-  IF(_arg_PLUGIN)
+  # MODULE A
+  # Always create shared libraries
+  IF(_arg_MODULE)
     SET(_arg_SHARED SHARED)
     SET(_arg_STATIC)
   ENDIF()
@@ -162,13 +163,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
                    ${_${_target_name}_files})
   ENDIF()
 
-  # PLUGIN B
-  IF (_arg_PLUGIN)
+  # MODULE B
+  IF (_arg_MODULE)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY} # Windows
-      LIBRARY_OUTPUT_DIRECTORY ${CMAKE_PLUGIN_OUTPUT_DIRECTORY} # Unix
+      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Windows
+      LIBRARY_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Unix
     )
-    ADD_PLUGIN(${_target_name})
+    ADD_MODULE(${_target_name})
   ENDIF()
 
   # LINK_LIBRARIES
@@ -199,10 +200,10 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   IF(NOT _arg_STATIC AND NOT _arg_NO_INSTALL)
-    IF(_arg_PLUGIN)
+    IF(_arg_MODULE)
       INSTALL(TARGETS ${_target_name}
-        RUNTIME DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
-        LIBRARY DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+        RUNTIME DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+        LIBRARY DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
       )
     ELSE()
       INSTALL(TARGETS ${_target_name}
@@ -215,10 +216,10 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
 ENDFUNCTION(TU_ADD_TARGET)
 
 
-# Creates a helper file with name <name_of_the_library>.plugin
-# This helps finding dynamically loadable plugins at runtime
+# Creates a helper file with name <name_of_the_library>.module
+# This helps finding dynamically loadable modules at runtime
 
-FUNCTION(ADD_PLUGIN _target)
+FUNCTION(ADD_MODULE _target)
   # We use the properties to get the name because the librarys name may differ from
   # the target name (for example orxonox <-> liborxonox)
 
@@ -227,24 +228,24 @@ FUNCTION(ADD_PLUGIN _target)
 
   IF(CMAKE_CONFIGURATION_TYPES)
     FOREACH(_config ${CMAKE_CONFIGURATION_TYPES})
-      SET(_plugin_filename ${CMAKE_PLUGIN_OUTPUT_DIRECTORY}/${_config}/${_target_name}.plugin)
+      SET(_module_filename ${CMAKE_MODULE_OUTPUT_DIRECTORY}/${_config}/${_target_name}${ORXONOX_MODULE_EXTENSION})
 
-      FILE(WRITE ${_plugin_filename})
+      FILE(WRITE ${_module_filename})
 
       INSTALL(
-        FILES ${_plugin_filename}
-        DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+        FILES ${_module_filename}
+        DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
         CONFIGURATIONS ${_config}
       )
     ENDFOREACH()
   ELSE()
-    SET(_plugin_filename ${CMAKE_PLUGIN_OUTPUT_DIRECTORY}/${_target_name}.plugin)
+    SET(_module_filename ${CMAKE_MODULE_OUTPUT_DIRECTORY}/${_target_name}${ORXONOX_MODULE_EXTENSION})
 
-    FILE(WRITE ${_plugin_filename})
+    FILE(WRITE ${_module_filename})
 
     INSTALL(
-      FILES ${_plugin_filename}
-      DESTINATION ${ORXONOX_PLUGIN_INSTALL_PATH}
+      FILES ${_module_filename}
+      DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
     )
   ENDIF()
-ENDFUNCTION(ADD_PLUGIN)
+ENDFUNCTION(ADD_MODULE)

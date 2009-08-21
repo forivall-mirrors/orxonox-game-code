@@ -249,7 +249,7 @@ namespace orxonox
         //! Path to the parent directory of the ones above if program was installed with relativ pahts
         boost::filesystem::path rootPath_;
         boost::filesystem::path executablePath_;        //!< Path to the executable
-        boost::filesystem::path pluginPath_;            //!< Path to the plugins
+        boost::filesystem::path modulePath_;            //!< Path to the modules
         boost::filesystem::path mediaPath_;             //!< Path to the media file folder
         boost::filesystem::path configPath_;            //!< Path to the config file folder
         boost::filesystem::path logPath_;               //!< Path to the log file folder
@@ -271,19 +271,19 @@ namespace orxonox
         // Create a new dynamic library manager
         this->dynLibManager_.reset(new DynLibManager());
 
-        // Load plugins
+        // Load modules
         try
         {
             // We search for helper files with the following extension
-            std::string pluginextension = ".plugin";
-            size_t pluginextensionlength = pluginextension.size();
+            std::string moduleextension = ORXONOX_MODULE_EXTENSION;
+            size_t moduleextensionlength = moduleextension.size();
 
             // Search in the directory of our executable
-            boost::filesystem::path searchpath = this->configuration_->pluginPath_;
+            boost::filesystem::path searchpath = this->configuration_->modulePath_;
 
-            // Add that path to the PATH variable in case a plugin depends on another one
+            // Add that path to the PATH variable in case a module depends on another one
             std::string pathVariable = getenv("PATH");
-            putenv(const_cast<char*>(("PATH=" + pathVariable + ";" + configuration_->pluginPath_.string()).c_str()));
+            putenv(const_cast<char*>(("PATH=" + pathVariable + ";" + configuration_->modulePath_.string()).c_str()));
 
             boost::filesystem::directory_iterator file(searchpath);
             boost::filesystem::directory_iterator end;
@@ -294,12 +294,12 @@ namespace orxonox
                 std::string filename = file->BOOST_LEAF_FUNCTION();
 
                 // Check if the file ends with the exension in question
-                if (filename.size() > pluginextensionlength)
+                if (filename.size() > moduleextensionlength)
                 {
-                    if (filename.substr(filename.size() - pluginextensionlength) == pluginextension)
+                    if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
                     {
                         // We've found a helper file - now load the library with the same name
-                        std::string library = filename.substr(0, filename.size() - pluginextensionlength);
+                        std::string library = filename.substr(0, filename.size() - moduleextensionlength);
                         boost::filesystem::path librarypath = searchpath / library;
 
                         try
@@ -308,11 +308,11 @@ namespace orxonox
                         }
                         catch (const std::exception& e)
                         {
-                            COUT(1) << "Couldn't load plugin \"" << librarypath.string() << "\": " << e.what() << std::endl;
+                            COUT(1) << "Couldn't load module \"" << librarypath.string() << "\": " << e.what() << std::endl;
                         }
                         catch (...)
                         {
-                            COUT(1) << "Couldn't load plugin \"" << librarypath.string() << "\"" << std::endl;
+                            COUT(1) << "Couldn't load module \"" << librarypath.string() << "\"" << std::endl;
                         }
                     }
                 }
@@ -322,14 +322,14 @@ namespace orxonox
         }
         catch (const std::exception& e)
         {
-            COUT(1) << "An error occurred while loading plugins: " << e.what() << std::endl;
+            COUT(1) << "An error occurred while loading modules: " << e.what() << std::endl;
         }
         catch (...)
         {
-            COUT(1) << "An error occurred while loading plugins." << std::endl;
+            COUT(1) << "An error occurred while loading modules." << std::endl;
         }
 
-        // Parse command line arguments AFTER the plugins have been loaded (static code!)
+        // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLine::parseCommandLine(cmdLine);
 
         // Set configurable paths like log, config and media
@@ -573,7 +573,7 @@ namespace orxonox
 
     /**
     @brief
-        Retrievs the executable path and sets all hard coded fixed path (currently only plugin path)
+        Retrievs the executable path and sets all hard coded fixed path (currently only the module path)
         Also checks for "orxonox_dev_build.keep_me" in the executable diretory.
         If found it means that this is not an installed run, hence we
         don't write the logs and config files to ~/.orxonox
@@ -630,14 +630,14 @@ namespace orxonox
 #endif
 
         /////////////////////
-        // SET PLUGIN PATH //
+        // SET MODULE PATH //
         /////////////////////
 
         if (boost::filesystem::exists(configuration_->executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::bDevRun_ = true;
-            configuration_->pluginPath_ = ORXONOX_PLUGIN_DEV_PATH;
+            configuration_->modulePath_ = ORXONOX_MODULE_DEV_PATH;
         }
         else
         {
@@ -653,14 +653,14 @@ namespace orxonox
             if (configuration_->rootPath_.empty())
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
-            // Plugin path is fixed as well
-            configuration_->pluginPath_ = configuration_->rootPath_ / ORXONOX_PLUGIN_INSTALL_PATH;
+            // Module path is fixed as well
+            configuration_->modulePath_ = configuration_->rootPath_ / ORXONOX_MODULE_INSTALL_PATH;
 
 #else
 
             // There is no root path, so don't set it at all
-            // Plugin path is fixed as well
-            configuration_->pluginPath_ = ORXONOX_PLUGIN_INSTALL_PATH;
+            // Module path is fixed as well
+            configuration_->modulePath_ = ORXONOX_MODULE_INSTALL_PATH;
 
 #endif
         }

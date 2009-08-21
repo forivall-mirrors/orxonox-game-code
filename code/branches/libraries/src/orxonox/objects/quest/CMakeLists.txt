@@ -20,11 +20,11 @@ SET_SOURCE_FILES(QUEST_SRC_FILES
 
 ADD_SUBDIRECTORY(notifications)
 
-# add the parent directory for tolua (TODO: remove this if the quest plugin is moved somewhere else)
+# add the parent directory for tolua (TODO: remove this if the quest module is moved somewhere else)
 INCLUDE_DIRECTORIES(..)
 
 ORXONOX_ADD_LIBRARY(quest
-  PLUGIN
+  MODULE
   TOLUA_FILES
     QuestDescription.h
     QuestManager.h
