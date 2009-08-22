@@ -35,6 +35,20 @@ restrictions:
 # include <iostream>
 #endif
 
+// Fixes for missing macros in input.h
+#ifndef FF_EFFECT_MIN
+#define FF_EFFECT_MIN FF_RUMBLE
+#endif
+#ifndef FF_EFFECT_MAX
+#define FF_EFFECT_MAX FF_RAMP
+#endif
+#ifndef FF_WAVEFORM_MIN
+#define FF_WAVEFORM_MIN FF_SQUARE
+#endif
+#ifndef FF_WAVEFORM_MAX
+#define FF_WAVEFORM_MAX FF_CUSTOM
+#endif
+
 using namespace std;
 using namespace OIS;
 
