@@ -59,6 +59,8 @@ namespace OIS
 
 		IDirectInput8* mDirectInput;
 		IDirectInputDevice8* mJoyStick;
+		DIDEVCAPS mDIJoyCaps;
+
 		DWORD coopSetting;
 		GUID deviceGuid;
 

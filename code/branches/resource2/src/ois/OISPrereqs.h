@@ -166,8 +166,8 @@ namespace OIS
 	class _OISExport Button : public Component
 	{
 	public:
-		Button() {}
-		Button(bool bPushed) : Component(OIS_Button), pushed(bPushed) {};
+		Button() : Component(OIS_Button), pushed(false) {}
+		Button(bool bPushed) : Component(OIS_Button), pushed(bPushed) {}
 		//! true if pushed, false otherwise
 		bool pushed;
 	};
