@@ -50,7 +50,10 @@ IF(NOT _result EQUAL 0)
 	  "You can get a new version from www.orxonox.net")
 ENDIF()
 
-MESSAGE(STATUS "Using library package for the dependencies.")
+IF(NOT _INTERNAL_PACKAGE_MESSAGE)
+  MESSAGE(STATUS "Using library package for the dependencies.")
+  SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
+ENDIF()
 
 # Include paths and other special treatments
 SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut)

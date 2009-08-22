@@ -23,8 +23,16 @@
  #    Configures the installation (paths, rpaths, options)
  #
 
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) # Variable provided by CMake
+  IF("$ENV{ORXONOX_DEV}" OR TARDIS)
+    SET(_install_prefix_changed 1)
+    SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH
+        "Install path prefix, prepended onto install directories." FORCE)
+  ENDIF()
+ENDIF()
+
 SET(_info_text "Puts all installed files in subfolders of the install prefix path. That root folder can then be moved, copied and renamed as you wish. The executable will not write to folders like ~/.orxonox or \"Applictation Data\"")
-IF(UNIX)
+IF(UNIX AND NOT _install_prefix_changed)
   OPTION(INSTALL_COPYABLE "${_info_text}" FALSE)
 ELSE()
   OPTION(INSTALL_COPYABLE "${_info_text}" TRUE)

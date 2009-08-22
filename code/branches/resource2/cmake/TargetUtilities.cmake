@@ -51,6 +51,7 @@
  #    _target_name, ARGN for the macro arguments
  #
 
+INCLUDE(CMakeDependentOption)
 INCLUDE(CapitaliseName)
 INCLUDE(GenerateToluaBindings)
 INCLUDE(ParseMacroArguments)
@@ -111,7 +112,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # First part (pre target) of precompiled header files
-  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE AND _arg_PCH_FILE)
+  IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
     # Provide convenient option to control PCH
     STRING(TOUPPER "${_target_name}" _target_name_upper)
     IF(_arg_PCH_NO_DEFAULT)
@@ -119,7 +120,8 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ELSE()
       SET(PCH_DEFAULT TRUE)
     ENDIF()
-    OPTION(PCH_ENABLE_${_target_name_upper} "Enable using precompiled header files for library ${_target_name}." ${PCH_DEFAULT})
+    CMAKE_DEPENDENT_OPTION(PCH_ENABLE_${_target_name_upper}
+      "Enable using precompiled header files for library ${_target_name}." ${PCH_DEFAULT} PCH_ENABLE OFF)
 
     IF(PCH_ENABLE_${_target_name_upper})
       PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
