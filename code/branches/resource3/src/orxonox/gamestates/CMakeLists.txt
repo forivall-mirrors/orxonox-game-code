@@ -1,0 +1,11 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  GSClient.cc
+  GSDedicated.cc
+  GSGraphics.cc
+  GSIOConsole.cc
+  GSLevel.cc
+  GSMainMenu.cc
+  GSRoot.cc
+  GSServer.cc
+  GSStandalone.cc
+)

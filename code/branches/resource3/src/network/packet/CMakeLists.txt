@@ -1,0 +1,11 @@
+ADD_SOURCE_FILES(NETWORK_SRC_FILES
+  Packet.cc
+  Acknowledgement.cc
+  Chat.cc
+  ClassID.cc
+  DeleteObjects.cc
+  FunctionIDs.cc
+  FunctionCalls.cc
+  Gamestate.cc
+  Welcome.cc
+)
