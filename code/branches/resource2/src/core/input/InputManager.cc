@@ -166,24 +166,39 @@ namespace orxonox
         // Fill parameter list
         OIS::ParamList paramList;
         size_t windowHnd = GraphicsManager::getInstance().getRenderWindowHandle();
-        paramList.insert(std::make_pair(std::string("WINDOW"), multi_cast<std::string>(windowHnd)));
+        paramList.insert(std::make_pair("WINDOW", multi_cast<std::string>(windowHnd)));
 #if defined(ORXONOX_PLATFORM_WINDOWS)
-        // Load in non exclusive mode and change later
+        paramList.insert(std::make_pair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
+        paramList.insert(std::make_pair("w32_keyboard", "DISCL_FOREGROUND"));
+        paramList.insert(std::make_pair("w32_mouse", "DISCL_FOREGROUND"));
         if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
-            paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_EXCLUSIVE")));
+        {
+            // Disable Windows key plus special keys (like play, stop, next, etc.)
+            paramList.insert(std::make_pair("w32_keyboard", "DISCL_NOWINKEY"));
+            paramList.insert(std::make_pair("w32_mouse", "DISCL_EXCLUSIVE"));
+        }
         else
-            paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
-        paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
+            paramList.insert(std::make_pair("w32_mouse", "DISCL_NONEXCLUSIVE"));
 #elif defined(ORXONOX_PLATFORM_LINUX)
-        paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
-        paramList.insert(std::make_pair(std::string("x11_mouse_grab"), "true"));
-        paramList.insert(std::make_pair(std::string("x11_mouse_hide"), "true"));
-        bool kbNoGrab;
-        CommandLine::getValue("keyboard_no_grab", &kbNoGrab);
-        if (kbNoGrab)
-            paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+        // Enabling this is probably a bad idea, but whenever orxonox crashes, the setting stays on
+        // Trouble might be that the Pressed event occurs a bit too often...
+        paramList.insert(std::make_pair("XAutoRepeatOn", "true"));
+
+        if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
+        {
+            if (CommandLine::getValue("keyboard_no_grab").getBool())
+                paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
+            else
+                paramList.insert(std::make_pair("x11_keyboard_grab", "true"));
+            paramList.insert(std::make_pair("x11_mouse_grab",  "true"));
+            paramList.insert(std::make_pair("x11_mouse_hide", "true"));
+        }
         else
-            paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("true")));
+        {
+            paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
+            paramList.insert(std::make_pair("x11_mouse_grab",  "false"));
+            paramList.insert(std::make_pair("x11_mouse_hide", "false"));
+        }
 #endif
 
         try
