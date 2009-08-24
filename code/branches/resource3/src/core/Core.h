@@ -88,17 +88,21 @@ namespace orxonox
             static const std::string& getLanguage();
             static void  resetLanguage();
 
-            static void tsetMediaPath(const std::string& path);
-            //! Returns the path to the config files as boost::filesystem::path
+            static void tsetExternalMediaPath(const std::string& path);
+            //! Returns the path to the data files as boost::filesystem::path
             static const boost::filesystem::path& getMediaPath();
+            //! Returns the path to the external data files as boost::filesystem::path
+            static const boost::filesystem::path& getExternalMediaPath();
             //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getConfigPath();
             //! Returns the path to the log files as boost::filesystem::path
             static const boost::filesystem::path& getLogPath();
+            //! Returns the path to the data files as std::string
             //! Returns the path to the root folder as boost::filesystem::path
             static const boost::filesystem::path& getRootPath();
-            //! Returns the path to the data files as std::string
             static std::string getMediaPathString();
+            //! Returns the path to the external data files as std::string
+            static std::string getExternalMediaPathString();
             //! Returns the path to the config files as std::string
             static std::string getConfigPathString();
             //! Returns the path to the log files as std::string

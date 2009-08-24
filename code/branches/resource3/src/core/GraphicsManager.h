@@ -100,7 +100,7 @@ namespace orxonox
         // config values
         std::string         resourceFile_;             //!< resources file name
         std::string         ogreConfigFile_;           //!< ogre config file name
-        std::string         ogrePluginsFolder_;        //!< Folder where the Ogre plugins are located
+        std::string         ogrePluginsDirectory_;     //!< Directory where the Ogre plugins are located
         std::string         ogrePlugins_;              //!< Comma separated list of all plugins to load
         std::string         ogreLogFile_;              //!< log file name for Ogre log messages
         int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL

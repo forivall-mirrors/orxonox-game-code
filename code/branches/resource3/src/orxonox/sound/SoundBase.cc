@@ -134,7 +134,7 @@ namespace orxonox
     }
 
     bool SoundBase::loadFile(std::string filename) {
-        filename = Core::getMediaPathString() + "/audio/" + filename;
+        filename = Core::getExternalMediaPathString() + "/audio/" + filename;
 
         if(!SoundManager::getInstance().isSoundAvailable())
         {

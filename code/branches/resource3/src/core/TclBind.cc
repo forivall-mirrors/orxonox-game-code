@@ -126,7 +126,7 @@ namespace orxonox
     {
 #ifdef DEPENDENCY_PACKAGE_ENABLE
         if (Core::isDevelopmentRun())
-            return (std::string(ORXONOX_DEP_LIB_PATH) + "/tcl");
+            return (std::string(specialConfig::dependencyLibraryDirectory) + "/tcl");
         else
             return (Core::getRootPathString() + "lib/tcl");
 #else

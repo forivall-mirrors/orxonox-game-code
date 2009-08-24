@@ -245,7 +245,7 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        startFile_s = new XMLFile(Core::getMediaPathString() + "levels" + '/' + LevelManager::getInstance().getDefaultLevel());
+        startFile_s = new XMLFile(Core::getExternalMediaPathString() + "levels" + '/' + LevelManager::getInstance().getDefaultLevel());
         Loader::open(startFile_s);
     }
 

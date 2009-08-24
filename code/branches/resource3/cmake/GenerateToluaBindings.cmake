@@ -29,7 +29,7 @@
  #  Global Variables: (need to be set before)
  #    TOLUA_PARSER_SOURCE - Lua file with the parser source code
  #    TOLUA_PARSER_DEPENDENCIES - All the dependent lua files
- #    ORXONOX_RUNTIME_LIBRARY_DIRECTORY - Working directory
+ #    RUNTIME_LIBRARY_DIRECTORY - Working directory
  #
 
 FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
@@ -73,7 +73,7 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
                                   ${_tolua_pkgfile}
     DEPENDS           ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS  ${_implicit_dependencies}
-    WORKING_DIRECTORY ${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}
+    WORKING_DIRECTORY ${RUNTIME_LIBRARY_DIRECTORY}
     COMMENT "Generating tolua bind files for package ${_tolua_package}"
   )
 ENDFUNCTION(GENERATE_TOLUA_BINDINGS)

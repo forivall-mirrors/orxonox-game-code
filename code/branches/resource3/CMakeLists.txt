@@ -46,7 +46,7 @@ INCLUDE(LibraryConfig)
 INCLUDE(BuildConfig)
 
 # Configure media directory location and installation
-INCLUDE(Media)
+ADD_SUBDIRECTORY(media)
 
 # Create the actual project
 ADD_SUBDIRECTORY(src)

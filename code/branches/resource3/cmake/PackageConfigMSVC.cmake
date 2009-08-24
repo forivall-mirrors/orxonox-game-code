@@ -46,7 +46,7 @@ IF(MSVC)
   ENDIF()
 
   # Also the directory with the runtime libraries
-  SET(ORXONOX_RUNTIME_LIBRARY_DIRECTORY ${DEP_BINARY_DIR})
+  SET(RUNTIME_LIBRARY_DIRECTORY ${DEP_BINARY_DIR})
 
   # Sets the library path for the FIND_LIBRARY
   SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})

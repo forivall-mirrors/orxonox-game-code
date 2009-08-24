@@ -20,32 +20,37 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    Finds the media directory and configures it's installation.
+ #    Finds the external media directory and configures the media installation.
+ #    Default search paths are: ../../media and ../media_extern
  #
+
+# For dev runs we've got two media directory. The one from the other repository root folder
+# is called EXTERNAL_MEDIA
+SET(MEDIA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+SET(MEDIA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 
 # Specify media directory
 GET_FILENAME_COMPONENT(_search_path_1 ${CMAKE_SOURCE_DIR}/../${DEFAULT_MEDIA_PATH} ABSOLUTE)
-FIND_PATH(MEDIA_PATH resources.cfg
+FIND_PATH(EXTERNAL_MEDIA_DIRECTORY resources.oxr
   PATHS
-    ${CMAKE_SOURCE_DIR}/${DEFAULT_MEDIA_PATH}
+    ${CMAKE_SOURCE_DIR}/media_extern
     ${_search_path_1}
   NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH
 )
 
-# For consistency with other variables for config, log, bin, etc.
-SET(CMAKE_MEDIA_OUTPUT_DIRECTORY ${MEDIA_PATH})
-
-IF(NOT CMAKE_MEDIA_OUTPUT_DIRECTORY)
-  MESSAGE(STATUS "Warning: Media directory not found. If you want to compile while downloading the media files, you will have to recompile about four files afterwards and relink everything. Default location is orxonox_root/media")
+IF(NOT EXTERNAL_MEDIA_DIRECTORY)
+  MESSAGE(STATUS "Warning: External media directory not found. If you want to compile while downloading the data files, you will have to recompile about four files afterwards and relink everything.")
+  MESSAGE(STATUS "You can specify your own folder with the EXTERNAL_MEDIA_DIRECTORY variable. Default location for the path is orxonox_root/media_extern")
   # Temporary override to the default location.
-  SET(CMAKE_MEDIA_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/media)
+  SET(EXTERNAL_MEDIA_DIRECTORY ${CMAKE_SOURCE_DIR}/media_extern)
 ENDIF()
 
 
 ################ Installation #################
 
+# External directory
 INSTALL(
-  DIRECTORY ${CMAKE_MEDIA_OUTPUT_DIRECTORY}/
-  DESTINATION ${ORXONOX_MEDIA_INSTALL_PATH}
-  REGEX "\\.svn$|_svn$|backToPNG" EXCLUDE
+  DIRECTORY ${EXTERNAL_MEDIA_DIRECTORY}/
+  DESTINATION ${MEDIA_INSTALL_DIRECTORY}
+  REGEX "\\.svn$|_svn$" EXCLUDE
 )
