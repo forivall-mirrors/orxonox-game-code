@@ -524,7 +524,6 @@ namespace orxonox
         for (std::set<InputState*>::const_iterator it = tempSet.begin();it != tempSet.end(); ++it)
             activeStatesTicked_.push_back(*it);
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
         // Check whether we have to change the mouse mode
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
         if (mouseStates.empty() && bExclusiveMouse_ ||
@@ -534,7 +533,6 @@ namespace orxonox
             if (!GraphicsManager::getInstance().isFullScreen())
                 this->reloadInternal();
         }
-#endif
     }
 
     void InputManager::clearBuffers()

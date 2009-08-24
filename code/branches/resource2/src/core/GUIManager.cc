@@ -131,11 +131,9 @@ namespace orxonox
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
         // Hide the mouse cursor unless playing in fullscreen mode
         if (!bFullScreen)
             CEGUI::MouseCursor::getSingleton().hide();
-#endif
     }
 
     /**
