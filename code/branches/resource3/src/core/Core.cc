@@ -296,6 +296,9 @@ namespace orxonox
         // Required as well for the config values
         this->languageInstance_.reset(new Language());
 
+        // creates the class hierarchy for all classes with factories
+        Factory::createClassHierarchy();
+
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         this->configuration_->initialise();
@@ -303,18 +306,15 @@ namespace orxonox
         // Create the lua interface
         this->luaBind_.reset(new LuaBind());
 
+        // Load OGRE excluding the renderer and the render window
+        this->graphicsManager_.reset(new GraphicsManager(false));
+
         // initialise Tcl
         this->tclBind_.reset(new TclBind(Core::getMediaPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
         // create a shell
         this->shell_.reset(new Shell());
-
-        // creates the class hierarchy for all classes with factories
-        Factory::createClassHierarchy();
-
-        // Load OGRE excluding the renderer and the render window
-        this->graphicsManager_.reset(new GraphicsManager(false));
     }
 
     /**
