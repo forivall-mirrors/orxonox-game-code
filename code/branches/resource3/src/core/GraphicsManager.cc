@@ -36,11 +36,8 @@
 #include "GraphicsManager.h"
 
 #include <fstream>
-#include <memory>
 #include <boost/filesystem.hpp>
-#include <boost/shared_ptr.hpp>
 
-#include <OgreCompositorManager.h>
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -48,7 +45,6 @@
 #include <OgreException.h>
 #include <OgreRenderWindow.h>
 #include <OgreRenderSystem.h>
-#include <OgreTextureManager.h>
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
@@ -67,8 +63,6 @@
 
 namespace orxonox
 {
-    using boost::shared_ptr;
-
     class OgreWindowEventListener : public Ogre::WindowEventListener
     {
     public:
@@ -88,68 +82,32 @@ namespace orxonox
     @brief
         Non-initialising constructor.
     */
-    GraphicsManager::GraphicsManager()
-        : ogreRoot_(0)
-        , ogreLogger_(0)
+    GraphicsManager::GraphicsManager(bool bLoadRenderer)
+        : ogreWindowEventListener_(new OgreWindowEventListener())
         , renderWindow_(0)
         , viewport_(0)
-        , ogreWindowEventListener_(new OgreWindowEventListener())
     {
         RegisterObject(GraphicsManager);
 
         this->setConfigValues();
 
-        // Ogre setup procedure
-        setupOgre();
+        // Ogre setup procedure (creating Ogre::Root)
+        this->loadOgreRoot();
+        // load all the required plugins for Ogre
+        this->loadOgrePlugins();
+        // read resource declaration file
+        this->declareResources();
 
-        try
-        {
-            // load all the required plugins for Ogre
-            loadOgrePlugins();
-            // read resource declaration file
-            this->declareResources();
-            // Reads ogre config and creates the render window
-            this->loadRenderer();
-
-            // TODO: Spread this
-            this->initialiseResources();
-
-            // add console commands
-            FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
-            functor1->setObject(this);
-            ccPrintScreen_ = createConsoleCommand(functor1, "printScreen");
-            CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
-        }
-        catch (...)
-        {
-            // clean up
-            delete this->ogreRoot_;
-            delete this->ogreLogger_;
-            delete this->ogreWindowEventListener_;
-            throw;
-        }
+        if (bLoadRenderer)
+            this->upgradeToGraphics();
     }
 
     /**
     @brief
-        Destroys all the Ogre related objects
+        Destruction is done by the member scoped_ptrs.
     */
     GraphicsManager::~GraphicsManager()
     {
-/*
-        delete this->ccPrintScreen_;
-*/
-
-        // unload all compositors (this is only necessary because we don't yet destroy all resources!)
-        Ogre::CompositorManager::getSingleton().removeAll();
-
-        // Delete OGRE main control organ
-        delete this->ogreRoot_;
-
-        // delete the logManager (since we have created it in the first place).
-        delete this->ogreLogger_;
-
-        delete this->ogreWindowEventListener_;
     }
 
     void GraphicsManager::setConfigValues()
@@ -172,47 +130,29 @@ namespace orxonox
             .description("Corresponding orxonox debug level for ogre Critical");
     }
 
-    void GraphicsManager::update(const Clock& time)
+    /**
+    @brief
+        Loads the renderer and creates the render window if not yet done so.
+    @remarks
+        This operation is irreversible without recreating the GraphicsManager!
+        So if it throws you HAVE to recreate the GraphicsManager!!!
+        It therefore offers almost no exception safety.
+    */
+    void GraphicsManager::upgradeToGraphics()
     {
-        Ogre::FrameEvent evt;
-        evt.timeSinceLastFrame = time.getDeltaTime();
-        evt.timeSinceLastEvent = time.getDeltaTime(); // note: same time, but shouldn't matter anyway
-
-        // don't forget to call _fireFrameStarted to OGRE to make sure
-        // everything goes smoothly
-        ogreRoot_->_fireFrameStarted(evt);
-
-        // Pump messages in all registered RenderWindows
-        // This calls the WindowEventListener objects.
-        Ogre::WindowEventUtilities::messagePump();
-        // make sure the window stays active even when not focused
-        // (probably only necessary on windows)
-        this->renderWindow_->setActive(true);
-
-        // Time before rendering
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
-
-        // Render frame
-        ogreRoot_->_updateAllRenderTargets();
-
-        uint64_t timeAfterTick = time.getRealMicroseconds();
-        // Subtract the time used for rendering from the tick time counter
-        Game::getInstance().subtractTickTime(timeAfterTick - timeBeforeTick);
-
-        // again, just to be sure OGRE works fine
-        ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
-    }
-
-    void GraphicsManager::setCamera(Ogre::Camera* camera)
-    {
-        this->viewport_->setCamera(camera);
+        if (renderWindow_ == NULL)
+        {
+            // Reads the ogre config and creates the render window
+            this->loadRenderer();
+            this->initialiseResources();
+        }
     }
 
     /**
     @brief
         Creates the Ogre Root object and sets up the ogre log.
     */
-    void GraphicsManager::setupOgre()
+    void GraphicsManager::loadOgreRoot()
     {
         COUT(3) << "Setting up Ogre..." << std::endl;
 
@@ -232,12 +172,12 @@ namespace orxonox
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
-        std::auto_ptr<Ogre::LogManager> logger(new Ogre::LogManager());
+        ogreLogger_.reset(new Ogre::LogManager());
         COUT(4) << "Ogre LogManager created" << std::endl;
 
         // create our own log that we can listen to
         Ogre::Log *myLog;
-        myLog = logger->createLog(ogreLogFilepath.string(), true, false, false);
+        myLog = ogreLogger_->createLog(ogreLogFilepath.string(), true, false, false);
         COUT(4) << "Ogre Log created" << std::endl;
 
         myLog->setLogDetail(Ogre::LL_BOREME);
@@ -255,9 +195,7 @@ namespace orxonox
         }
 
         // Leave plugins file empty. We're going to do that part manually later
-        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
-        // In case that new Root failed the logger gets destroyed because of the std::auto_ptr
-        ogreLogger_ = logger.release();
+        ogreRoot_.reset(new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string()));
 
         COUT(3) << "Ogre set up done." << std::endl;
     }
@@ -339,14 +277,21 @@ namespace orxonox
         CCOUT(4) << "Creating render window" << std::endl;
 
         this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
+        // Propagate the size of the new winodw
         this->ogreWindowEventListener_->windowResized(renderWindow_);
 
-        Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_);
-
-        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+        Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
 
         // create a full screen default viewport
+        // Note: This may throw when adding a viewport with an existing z-order!
+        //       But in our case we only have one viewport for now anyway, therefore
+        //       no ScopeGuards or anything to handle exceptions.
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
+
+        // add console commands
+        FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
+        ccPrintScreen_ = createConsoleCommand(functor1->setObject(this), "printScreen");
+        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
     void GraphicsManager::initialiseResources()
@@ -367,6 +312,42 @@ namespace orxonox
         //    CCOUT(2) << "Error: There was a serious error when initialising the resources." << std::endl;
         //    throw;
         //}
+    }
+
+    void GraphicsManager::update(const Clock& time)
+    {
+        Ogre::FrameEvent evt;
+        evt.timeSinceLastFrame = time.getDeltaTime();
+        evt.timeSinceLastEvent = time.getDeltaTime(); // note: same time, but shouldn't matter anyway
+
+        // don't forget to call _fireFrameStarted to OGRE to make sure
+        // everything goes smoothly
+        ogreRoot_->_fireFrameStarted(evt);
+
+        // Pump messages in all registered RenderWindows
+        // This calls the WindowEventListener objects.
+        Ogre::WindowEventUtilities::messagePump();
+        // make sure the window stays active even when not focused
+        // (probably only necessary on windows)
+        this->renderWindow_->setActive(true);
+
+        // Time before rendering
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
+
+        // Render frame
+        ogreRoot_->_updateAllRenderTargets();
+
+        uint64_t timeAfterTick = time.getRealMicroseconds();
+        // Subtract the time used for rendering from the tick time counter
+        Game::getInstance().subtractTickTime(timeAfterTick - timeBeforeTick);
+
+        // again, just to be sure OGRE works fine
+        ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
+    }
+
+    void GraphicsManager::setCamera(Ogre::Camera* camera)
+    {
+        this->viewport_->setCamera(camera);
     }
 
     /**

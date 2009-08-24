@@ -41,11 +41,15 @@
 #include <cassert>
 #include <string>
 #include <OgreLog.h>
+#include <boost/scoped_ptr.hpp>
+
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
 namespace orxonox
 {
+    using boost::scoped_ptr;
+
     /**
     @brief
         Graphics engine manager class
@@ -54,17 +58,18 @@ namespace orxonox
     {
         friend class Singleton<GraphicsManager>;
     public:
-        GraphicsManager();
+        GraphicsManager(bool bLoadRenderer = true);
         ~GraphicsManager();
 
         void setConfigValues();
 
         void update(const Clock& time);
 
-        inline Ogre::Viewport* getViewport()
-            { return this->viewport_; }
-        inline Ogre::RenderWindow* getRenderWindow()
-            { return this->renderWindow_; }
+        Ogre::Viewport* getViewport()         { return this->viewport_; }
+        Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
+
+        void upgradeToGraphics();
+        bool rendererLoaded() const { return renderWindow_ != NULL; }
 
         void setCamera(Ogre::Camera* camera);
 
@@ -72,7 +77,7 @@ namespace orxonox
         GraphicsManager(GraphicsManager&); // don't mess with singletons
 
         // OGRE initialisation
-        void setupOgre();
+        void loadOgreRoot();
         void loadOgrePlugins();
         void declareResources();
         void loadRenderer();
@@ -86,11 +91,11 @@ namespace orxonox
         void printScreen();
 
     private:
-        Ogre::Root*         ogreRoot_;                 //!< Ogre's root
-        Ogre::LogManager*   ogreLogger_;
+        scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
+        scoped_ptr<Ogre::LogManager>        ogreLogger_;
+        scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
-        OgreWindowEventListener* ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 
         // config values
         std::string         resourceFile_;             //!< resources file name

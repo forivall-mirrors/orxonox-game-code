@@ -312,6 +312,9 @@ namespace orxonox
 
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
+
+        // Load OGRE excluding the renderer and the render window
+        this->graphicsManager_.reset(new GraphicsManager(false));
     }
 
     /**
@@ -324,37 +327,43 @@ namespace orxonox
 
     void Core::loadGraphics()
     {
-        if (bGraphicsLoaded_)
-            return;
+        // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
+        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
-        // Load OGRE including the render window
-        scoped_ptr<GraphicsManager> graphicsManager(new GraphicsManager());
+        // Upgrade OGRE to receive a render window
+        graphicsManager_->upgradeToGraphics();
 
         // The render window width and height are used to set up the mouse movement.
         size_t windowHnd = 0;
-        graphicsManager->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
+        graphicsManager_->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
 
         // Calls the InputManager which sets up the input devices.
-        scoped_ptr<InputManager> inputManager(new InputManager(windowHnd));
+        inputManager_.reset(new InputManager(windowHnd));
 
         // load the CEGUI interface
-        guiManager_.reset(new GUIManager(graphicsManager->getRenderWindow()));
+        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow()));
 
-        // Dismiss scoped pointers
-        graphicsManager_.swap(graphicsManager);
-        inputManager_.swap(inputManager);
+        unloader.Dismiss();
 
         bGraphicsLoaded_ = true;
     }
 
     void Core::unloadGraphics()
     {
-        if (!bGraphicsLoaded_)
-            return;
-
         this->guiManager_.reset();;
         this->inputManager_.reset();;
         this->graphicsManager_.reset();
+
+        // Load Ogre::Root again, but without the render system
+        try
+            { this->graphicsManager_.reset(new GraphicsManager(false)); }
+        catch (...)
+        {
+            COUT(0) << "An exception occurred during 'new GraphicsManager' while "
+                    << "another exception was being handled. This will lead to undefined behaviour!" << std::endl
+                    << "Terminating the program." << std::endl;
+            abort();
+        }
 
         bGraphicsLoaded_ = false;
     }

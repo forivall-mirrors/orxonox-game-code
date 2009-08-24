@@ -29,6 +29,8 @@
 
 #include "GSLevel.h"
 
+#include <OgreCompositorManager.h>
+
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/KeyBinder.h"
@@ -169,6 +171,11 @@ namespace orxonox
         }
 */
 
+        if (GameMode::showsGraphics())
+        {
+            // unload all compositors (this is only necessary because we don't yet destroy all resources!)
+            Ogre::CompositorManager::getSingleton().removeAll();
+        }
 
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
