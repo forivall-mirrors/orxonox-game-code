@@ -36,6 +36,7 @@ extern "C" {
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIInputEvent.h>
+#include <CEGUIMouseCursor.h>
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
@@ -95,7 +96,7 @@ namespace orxonox
         Ogre's render window. Without this, the GUI cannot be displayed.
     @return true if success, otherwise false
     */
-    GUIManager::GUIManager(Ogre::RenderWindow* renderWindow)
+    GUIManager::GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen)
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
     {
@@ -126,6 +127,15 @@ namespace orxonox
         // Initialise the basic lua code
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
         this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
+
+        // Align CEGUI mouse with OIS mouse
+        guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
+
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // Hide the mouse cursor unless playing in fullscreen mode
+        if (!bFullScreen)
+            CEGUI::MouseCursor::getSingleton().hide();
+#endif
     }
 
     /**
@@ -253,7 +263,7 @@ namespace orxonox
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        guiSystem_->injectMouseMove(static_cast<float>(rel.x), static_cast<float>(rel.y));
+        guiSystem_->injectMousePosition(static_cast<float>(abs.x), static_cast<float>(abs.y));
     }
     void GUIManager::mouseScrolled(int abs, int rel)
     {

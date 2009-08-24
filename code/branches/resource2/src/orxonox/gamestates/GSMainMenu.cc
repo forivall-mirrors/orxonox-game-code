@@ -51,6 +51,7 @@ namespace orxonox
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setHandler(GUIManager::getInstancePtr());
         inputState_->setJoyStickHandler(&InputHandler::EMPTY);
+        inputState_->setIsExclusiveMouse(false);
 
         // create an empty Scene
         this->scene_ = new Scene(0);

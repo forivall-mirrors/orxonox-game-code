@@ -127,6 +127,7 @@ namespace orxonox
     */
     GraphicsManager::~GraphicsManager()
     {
+        Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
         // TODO: Destroy the console command
     }
 
@@ -334,6 +335,30 @@ namespace orxonox
         }
         OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
             << "Ogre: " << message << std::endl;
+    }
+
+    size_t GraphicsManager::getRenderWindowHandle()
+    {
+        size_t windowHnd = 0;
+        renderWindow_->getCustomAttribute("WINDOW", &windowHnd);
+        return windowHnd;
+    }
+
+    bool GraphicsManager::isFullScreen() const
+    {
+        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
+        if (options.find("Full Screen") != options.end())
+        {
+            if (options["Full Screen"].currentValue == "Yes")
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            COUT(0) << "Could not find 'Full Screen' render system option. Fix This!!!" << std::endl;
+            return false;
+        }
     }
 
     void GraphicsManager::printScreen()

@@ -40,6 +40,7 @@
 #include <ois/OISInputManager.h>
 #include <boost/foreach.hpp>
 
+#include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/ScopeGuard.h"
 #include "core/Clock.h"
@@ -48,6 +49,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "core/Functor.h"
+#include "core/GraphicsManager.h"
 
 #include "InputBuffer.h"
 #include "KeyDetector.h"
@@ -81,11 +83,11 @@ namespace orxonox
     // #####                  Initialisation                  #####
     // ##########                                        ##########
     // ############################################################
-    InputManager::InputManager(size_t windowHnd)
+    InputManager::InputManager()
         : internalState_(Bad)
         , oisInputManager_(0)
         , devices_(2)
-        , windowHnd_(0)
+        , bExclusiveMouse_(false)
         , emptyState_(0)
         , keyDetector_(0)
         , calibratorCallbackHandler_(0)
@@ -96,7 +98,7 @@ namespace orxonox
 
         this->setConfigValues();
 
-        this->loadDevices(windowHnd);
+        this->loadDevices();
 
         // Lowest priority empty InputState
         emptyState_ = createInputState("empty", false, false, InputStatePriority::Empty);
@@ -146,16 +148,14 @@ namespace orxonox
     @brief
         Creates the OIS::InputMananger, the keyboard, the mouse and
         the joys ticks. If either of the first two fail, this method throws an exception.
-    @param windowHnd
-        The window handle of the render window
     @param windowWidth
         The width of the render window
     @param windowHeight
         The height of the render window
     */
-    void InputManager::loadDevices(size_t windowHnd)
+    void InputManager::loadDevices()
     {
-        CCOUT(3) << "Loading input devices..." << std::endl;
+        CCOUT(4) << "Loading input devices..." << std::endl;
 
         // When loading the devices they should not already be loaded
         assert(internalState_ & Bad);
@@ -163,20 +163,17 @@ namespace orxonox
         assert(devices_[InputDeviceEnumerator::Keyboard] == 0);
         assert(devices_.size() == InputDeviceEnumerator::FirstJoyStick);
 
-        // store handle internally so we can reload OIS
-        windowHnd_ = windowHnd;
-
-        OIS::ParamList paramList;
-        std::ostringstream windowHndStr;
-
         // Fill parameter list
-        windowHndStr << static_cast<unsigned int>(windowHnd);
-        paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+        OIS::ParamList paramList;
+        size_t windowHnd = GraphicsManager::getInstance().getRenderWindowHandle();
+        paramList.insert(std::make_pair(std::string("WINDOW"), multi_cast<std::string>(windowHnd)));
 #if defined(ORXONOX_PLATFORM_WINDOWS)
-        //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
-        //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-        //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
-        //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+        // Load in non exclusive mode and change later
+        if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
+            paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_EXCLUSIVE")));
+        else
+            paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+        paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
 #elif defined(ORXONOX_PLATFORM_LINUX)
         paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
         paramList.insert(std::make_pair(std::string("x11_mouse_grab"), "true"));
@@ -211,14 +208,13 @@ namespace orxonox
             ThrowException(InitialisationFailed, "Could not initialise the input system: " << ex.what());
         }
 
-        // TODO: Remove the two parameters
         this->loadMouse();
         this->loadJoySticks();
 
         // Reorder states in case some joy sticks were added/removed
         this->updateActiveStates();
 
-        CCOUT(3) << "Input devices loaded." << std::endl;
+        CCOUT(4) << "Input devices loaded." << std::endl;
     }
 
     //! Creates a new orxonox::Mouse
@@ -274,7 +270,7 @@ namespace orxonox
 
     InputManager::~InputManager()
     {
-        CCOUT(4) << "Destroying..." << std::endl;
+        CCOUT(3) << "Destroying..." << std::endl;
 
         // Destroy calibrator helper handler and state
         delete keyDetector_;
@@ -292,7 +288,7 @@ namespace orxonox
         if (!(internalState_ & Bad))
             this->destroyDevices();
 
-        CCOUT(4) << "Destruction complete." << std::endl;
+        CCOUT(3) << "Destruction complete." << std::endl;
     }
 
     /**
@@ -303,7 +299,7 @@ namespace orxonox
     */
     void InputManager::destroyDevices()
     {
-        CCOUT(3) << "Destroying devices..." << std::endl;
+        CCOUT(4) << "Destroying devices..." << std::endl;
 
         BOOST_FOREACH(InputDevice*& device, devices_)
         {
@@ -335,7 +331,7 @@ namespace orxonox
         oisInputManager_ = NULL;
 
         internalState_ |= Bad;
-        CCOUT(3) << "Destroyed devices." << std::endl;
+        CCOUT(4) << "Destroyed devices." << std::endl;
     }
 
     // ############################################################
@@ -364,11 +360,11 @@ namespace orxonox
         CCOUT(3) << "Reloading ..." << std::endl;
 
         this->destroyDevices();
-        this->loadDevices(windowHnd_);
+        this->loadDevices();
 
         internalState_ &= ~Bad;
         internalState_ &= ~ReloadRequest;
-        CCOUT(3) << "Reloading complete." << std::endl;
+        CCOUT(4) << "Reloading complete." << std::endl;
     }
 
     // ############################################################
@@ -480,6 +476,7 @@ namespace orxonox
     */
     void InputManager::updateActiveStates()
     {
+        assert((internalState_ & InputManager::Ticking) == 0);
         // temporary resize
         for (unsigned int i = 0; i < devices_.size(); ++i)
         {
@@ -511,6 +508,18 @@ namespace orxonox
         activeStatesTicked_.clear();
         for (std::set<InputState*>::const_iterator it = tempSet.begin();it != tempSet.end(); ++it)
             activeStatesTicked_.push_back(*it);
+
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // Check whether we have to change the mouse mode
+        std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
+        if (mouseStates.empty() && bExclusiveMouse_ ||
+            !mouseStates.empty() && mouseStates.front()->getIsExclusiveMouse() != bExclusiveMouse_)
+        {
+            bExclusiveMouse_ = !bExclusiveMouse_;
+            if (!GraphicsManager::getInstance().isFullScreen())
+                this->reloadInternal();
+        }
+#endif
     }
 
     void InputManager::clearBuffers()
@@ -555,8 +564,20 @@ namespace orxonox
         this->clearBuffers();
     }
 
+    std::pair<int, int> InputManager::getMousePosition() const
+    {
+        Mouse* mouse = static_cast<Mouse*>(devices_[InputDeviceEnumerator::Mouse]);
+        if (mouse != NULL)
+        {
+            const OIS::MouseState state = mouse->getOISDevice()->getMouseState();
+            return std::make_pair(state.X.abs, state.Y.abs);
+        }
+        else
+            return std::make_pair(0, 0);
+    }
+
     // ############################################################
-    // #####                    Iput States                   #####
+    // #####                    Input States                  #####
     // ##########                                        ##########
     // ############################################################
 

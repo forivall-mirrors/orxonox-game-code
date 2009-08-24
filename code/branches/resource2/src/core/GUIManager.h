@@ -59,7 +59,7 @@ namespace orxonox
     {
         friend class Singleton<GUIManager>;
     public:
-        GUIManager(Ogre::RenderWindow* renderWindow);
+        GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen);
         ~GUIManager();
 
         void update(const Clock& time);

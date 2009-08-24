@@ -40,7 +40,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <boost/filesystem.hpp>
-#include <OgreRenderWindow.h>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -308,15 +307,12 @@ namespace orxonox
         // Upgrade OGRE to receive a render window
         graphicsManager_->upgradeToGraphics();
 
-        // The render window width and height are used to set up the mouse movement.
-        size_t windowHnd = 0;
-        graphicsManager_->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
-
         // Calls the InputManager which sets up the input devices.
-        inputManager_.reset(new InputManager(windowHnd));
+        inputManager_.reset(new InputManager());
 
         // load the CEGUI interface
-        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow()));
+        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
+            inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
 
         unloader.Dismiss();
 
@@ -330,7 +326,15 @@ namespace orxonox
         this->graphicsManager_.reset();
 
         // Load Ogre::Root again, but without the render system
-        this->graphicsManager_.reset(new GraphicsManager(false));
+        try
+            { this->graphicsManager_.reset(new GraphicsManager(false)); }
+        catch (...)
+        {
+            COUT(0) << "An exception occurred during 'new GraphicsManager' while "
+                    << "another exception was being handled. This will lead to undefined behaviour!" << std::endl
+                    << "Terminating the program." << std::endl;
+            abort();
+        }
 
         bGraphicsLoaded_ = false;
     }

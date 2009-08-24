@@ -66,6 +66,8 @@ namespace orxonox
 
         Ogre::Viewport* getViewport()         { return this->viewport_; }
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
+        size_t getRenderWindowHandle();
+        bool isFullScreen() const;
 
         void upgradeToGraphics();
         bool rendererLoaded() const { return renderWindow_ != NULL; }
