@@ -285,7 +285,7 @@ namespace orxonox
         this->luaBind_.reset(new LuaBind());
 
         // Load OGRE excluding the renderer and the render window
-        this->graphicsManager_.reset(new GraphicsManager(false));
+        //this->graphicsManager_.reset(new GraphicsManager(false));
 
         // initialise Tcl
         this->tclBind_.reset(new TclBind(Core::getExternalMediaPathString()));
@@ -309,7 +309,8 @@ namespace orxonox
         Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
         // Upgrade OGRE to receive a render window
-        graphicsManager_->upgradeToGraphics();
+        //graphicsManager_->upgradeToGraphics();
+        graphicsManager_.reset(new GraphicsManager(true));
 
         // The render window width and height are used to set up the mouse movement.
         size_t windowHnd = 0;
@@ -333,15 +334,16 @@ namespace orxonox
         this->graphicsManager_.reset();
 
         // Load Ogre::Root again, but without the render system
-        try
-            { this->graphicsManager_.reset(new GraphicsManager(false)); }
-        catch (...)
-        {
-            COUT(0) << "An exception occurred during 'new GraphicsManager' while "
-                    << "another exception was being handled. This will lead to undefined behaviour!" << std::endl
-                    << "Terminating the program." << std::endl;
-            abort();
-        }
+        //try
+        //    { this->graphicsManager_.reset(new GraphicsManager(false)); }
+        //catch (...)
+        //{
+        //    COUT(0) << "An exception occurred during 'new GraphicsManager' while "
+        //            << "another exception was being handled. This will lead to undefined behaviour!" << std::endl
+        //            << "Terminating the program." << std::endl;
+        //    abort();
+        //}
+        this->graphicsManager_.reset();
 
         bGraphicsLoaded_ = false;
     }
