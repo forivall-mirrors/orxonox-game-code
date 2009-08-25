@@ -45,6 +45,7 @@
 #include <OgreException.h>
 #include <OgreRenderWindow.h>
 #include <OgreRenderSystem.h>
+#include <OgreTextureManager.h>
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
@@ -281,6 +282,8 @@ namespace orxonox
         this->ogreWindowEventListener_->windowResized(renderWindow_);
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
+
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
         // create a full screen default viewport
         // Note: This may throw when adding a viewport with an existing z-order!
