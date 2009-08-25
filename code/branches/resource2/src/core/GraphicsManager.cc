@@ -45,6 +45,7 @@
 #include <OgreRenderWindow.h>
 #include <OgreRenderSystem.h>
 #include <OgreResourceGroupManager.h>
+#include <OgreTextureManager.h>
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
@@ -258,6 +259,8 @@ namespace orxonox
         //       But in our case we only have one viewport for now anyway, therefore
         //       no ScopeGuards or anything to handle exceptions.
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
+
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
         // add console commands
         FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
