@@ -42,11 +42,13 @@ namespace orxonox
             XMLFile(const std::string& filename, const std::string& resourceGroup = "General")
                 : filename_(filename)
                 , group_(resourceGroup)
+                , bLuaSupport_(true)
             { }
             XMLFile(const ClassTreeMask& mask, const std::string& filename, const std::string& resourceGroup = "General")
                 : filename_(filename)
                 , group_(resourceGroup)
                 , mask_(mask)
+                , bLuaSupport_(true)
             { }
 
             void setLuaSupport(bool val) { bLuaSupport_ = val; }
@@ -60,7 +62,7 @@ namespace orxonox
             std::string filename_;
             std::string group_;
             ClassTreeMask mask_;
-            bool bLuaSupport_;
+            bool bLuaSupport_; // Default is true
     };
 }
 
