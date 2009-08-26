@@ -70,6 +70,7 @@ namespace orxonox
                 this->entity_ = this->scenemanager_->createEntity("Mesh" + multi_cast<std::string>(Mesh::meshCounter_s++), meshsource);
                 this->entity_->setCastShadows(this->bCastShadows_);
 
+#if OGRE_VERSION < 0x010600
                 this->entity_->setNormaliseNormals(true);
                 /*
                     Excerpt from Ogre forum:
@@ -78,6 +79,7 @@ namespace orxonox
 
                     I don't know exactly what this means, but I put this here if there will be problems with shaders.
                 */
+#endif
             }
             catch (...)
             {
