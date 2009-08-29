@@ -33,7 +33,7 @@
 
 #include <list>
 #include "util/Math.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "Controller.h"
 
 namespace orxonox

@@ -29,14 +29,14 @@
 #ifndef _DebugFPSText_H__
 #define _DebugFPSText_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport DebugFPSText : public OverlayText, public Tickable
+    class _OverlaysExport DebugFPSText : public OverlayText, public Tickable
     {
     public:
         DebugFPSText(BaseObject* creator);

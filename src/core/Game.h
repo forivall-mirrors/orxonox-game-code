@@ -47,6 +47,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "util/Debug.h"
+#include "util/ScopeGuard.h"
 #include "util/Singleton.h"
 
 /**
@@ -84,6 +85,7 @@ namespace orxonox
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
         typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
         typedef boost::shared_ptr<GameStateTreeNode> GameStateTreeNodePtr;
+
     public:
         Game(const std::string& cmdLine);
         ~Game();
@@ -117,7 +119,7 @@ namespace orxonox
             template <class T>
             static void createFactory(const std::string& className)
                 { factories_s[className].reset(new TemplateGameStateFactory<T>()); }
-        private:
+
             virtual shared_ptr<GameState> fabricateInternal(const GameStateInfo& info) = 0;
             static std::map<std::string, shared_ptr<GameStateFactory> > factories_s;
         };
@@ -128,6 +130,8 @@ namespace orxonox
             shared_ptr<GameState> fabricateInternal(const GameStateInfo& info)
                 { return shared_ptr<GameState>(new T(info)); }
         };
+        // For the factory destruction
+        typedef Loki::ObjScopeGuardImpl0<std::map<std::string, shared_ptr<GameStateFactory> >, void (std::map<std::string, shared_ptr<GameStateFactory> >::*)()> ObjScopeGuard;
 
         struct StatisticsTickInfo
         {
@@ -155,6 +159,7 @@ namespace orxonox
 
         scoped_ptr<Clock>                  gameClock_;
         scoped_ptr<Core>                   core_;
+        ObjScopeGuard                      gsFactoryDestroyer_;
         scoped_ptr<GameConfiguration>      configuration_;
 
         GameStateMap                       constructedStates_;

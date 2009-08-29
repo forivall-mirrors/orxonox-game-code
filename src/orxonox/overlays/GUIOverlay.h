@@ -29,14 +29,14 @@
 #ifndef _GUIOverlay_H__
 #define _GUIOverlay_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <string>
 #include "OrxonoxOverlay.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GUIOverlay : public OrxonoxOverlay
+    class _OverlaysExport GUIOverlay : public OrxonoxOverlay
     {
         public:
 
@@ -45,7 +45,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-            inline void setGUIName(const std::string& name) { this->guiName_ = name; }
+            void setGUIName(const std::string& name);
             inline const std::string& getGUIName() const { return this->guiName_; }
 
             virtual void changedVisibility();

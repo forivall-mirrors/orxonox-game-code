@@ -34,7 +34,7 @@
 namespace orxonox
 {
     /**
-     * The SoudBase class is the base class for all sound file loader classes.
+     * The SoundBase class is the base class for all sound file loader classes.
      * It server as main interface to the OpenAL library.
      *
      */

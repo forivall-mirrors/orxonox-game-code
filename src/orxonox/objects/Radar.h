@@ -41,7 +41,7 @@
 
 #include "core/ObjectListIterator.h"
 #include "interfaces/RadarViewable.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {

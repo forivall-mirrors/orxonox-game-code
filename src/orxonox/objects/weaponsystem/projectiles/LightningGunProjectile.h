@@ -29,7 +29,7 @@
 #ifndef _LightningGunProjectile_H__
 #define _LightningGunProjectile_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/weaponsystem/WeaponsystemPrereqs.h"
 
 #include <string>
 #include "tools/Timer.h"
@@ -37,16 +37,16 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LightningGunProjectile : public BillboardProjectile
+    class _WeaponsystemExport LightningGunProjectile : public BillboardProjectile
     {
         public:
             LightningGunProjectile(BaseObject* creator);
             virtual ~LightningGunProjectile() {}
-            
+
             virtual void setMaterial(const std::string& material);
 
         protected:
-            void changeTexture();        
+            void changeTexture();
             unsigned int textureIndex_;
             unsigned int maxTextureIndex_;
             Timer<LightningGunProjectile> textureTimer_;

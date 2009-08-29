@@ -29,7 +29,7 @@
 #ifndef _UnderAttackHealthBar_H__
 #define _UnderAttackHealthBar_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "util/Math.h"
 #include "tools/Timer.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport UnderAttackHealthBar : public HUDHealthBar
+    class _OverlaysExport UnderAttackHealthBar : public HUDHealthBar
     {
         public:
             UnderAttackHealthBar(BaseObject* creator);

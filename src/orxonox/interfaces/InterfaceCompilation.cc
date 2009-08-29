@@ -29,7 +29,7 @@
 /**
 @file
 @brief
-    Compiles all the interfaces (except RadarViewable) with mostly just a constructor.
+    Compiles all the interfaces in the orxonox library with mostly just a constructor.
 */
 
 #include "GametypeMessageListener.h"
@@ -37,8 +37,7 @@
 #include "RadarListener.h"
 #include "Rewardable.h"
 #include "TeamColourable.h"
-#include "Tickable.h"
-#include "TimeFactorListener.h"
+#include "NotificationListener.h"
 
 #include "core/CoreIncludes.h"
 
@@ -80,31 +79,18 @@ namespace orxonox
     }
 
     //----------------------------
-    // TimeFactorListener
-    //----------------------------
-    float TimeFactorListener::timefactor_s = 1.0f;
-
-    TimeFactorListener::TimeFactorListener()
-    {
-        RegisterRootObject(TimeFactorListener);
-    }
-
-    //----------------------------
-    // Tickable
-    //----------------------------
-    /**
-        @brief Constructor: Registers the object in the Tickable-list
-    */
-    Tickable::Tickable()
-    {
-        RegisterRootObject(Tickable);
-    }
-
-    //----------------------------
     // Rewardable
     //----------------------------
     Rewardable::Rewardable()
     {
         RegisterObject(Rewardable);
+    }
+
+    //----------------------------
+    // NotificationListener
+    //----------------------------
+    NotificationListener::NotificationListener()
+    {
+        RegisterObject(NotificationListener);
     }
 }

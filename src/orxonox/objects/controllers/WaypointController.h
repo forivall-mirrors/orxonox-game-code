@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <vector>
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "ArtificialController.h"
 
 namespace orxonox

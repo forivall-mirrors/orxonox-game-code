@@ -29,14 +29,14 @@
 #ifndef _GSServer_H__
 #define _GSServer_H__
 
-#include "OrxonoxPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSServer : public GameState
+    class _GameStatesExport GSServer : public GameState
     {
     public:
         GSServer(const GameStateInfo& info);

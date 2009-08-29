@@ -29,7 +29,7 @@
 #ifndef _OverlayText_H__
 #define _OverlayText_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <string>
 #include "util/Math.h"
@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport OverlayText : public OrxonoxOverlay
+    class _OverlaysExport OverlayText : public OrxonoxOverlay
     {
     public:
         enum Alignment

@@ -34,7 +34,7 @@
 #ifndef _FailQuest_H__
 #define _FailQuest_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox
@@ -42,14 +42,14 @@ namespace orxonox
     /**
     @brief
         Fails a quest (with a specified id) for the player invoking the QuestEffect.
-        
+
         Creating a FailQuest through XML goes as follows:
-        
+
         <FailQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be failed.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport FailQuest : public ChangeQuestStatus
+    class _QuestExport FailQuest : public ChangeQuestStatus
     {
         public:
             FailQuest(BaseObject* creator);

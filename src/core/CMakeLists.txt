@@ -22,6 +22,8 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
+  DynLib.cc
+  DynLibManager.cc
   Event.cc
   Game.cc
   GameMode.cc

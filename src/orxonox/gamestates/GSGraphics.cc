@@ -46,11 +46,11 @@
 #include "core/input/InputState.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
-#include "overlays/console/InGameConsole.h"
+#include "InGameConsole.h"
 #include "sound/SoundManager.h"
 
 // HACK:
-#include "overlays/map/Map.h"
+#include "Map.h"
 
 namespace orxonox
 {

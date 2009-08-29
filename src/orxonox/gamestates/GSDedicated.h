@@ -29,7 +29,7 @@
 #ifndef _GSDedicated_H__
 #define _GSDedicated_H__
 
-#include "OrxonoxPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
@@ -43,8 +43,8 @@ struct termios;
 
 namespace orxonox
 {
-    
-    class _OrxonoxExport GSDedicated : public GameState
+
+    class _GameStatesExport GSDedicated : public GameState
     {
     public:
         GSDedicated(const GameStateInfo& info);
@@ -60,12 +60,12 @@ namespace orxonox
         void processQueue();
         void setTerminalMode();
         static void resetTerminalMode();
-        
+
         void insertCharacter( unsigned int position, char c );
         void deleteCharacter( unsigned int position );
-        
+
         Server*                 server_;
-        
+
         boost::thread           *inputThread_;
         boost::recursive_mutex  inputLineMutex_;
         boost::recursive_mutex  inputQueueMutex_;
@@ -75,7 +75,7 @@ namespace orxonox
         unsigned int            inputIterator_;
         std::queue<std::string> commandQueue_;
         static termios*         originalTerminalSettings_;
-        
+
         unsigned int            cursorX_;
         unsigned int            cursorY_;
     };

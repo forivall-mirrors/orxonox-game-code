@@ -25,17 +25,17 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Definition of the Quest class.
         The Quest is the parent class of LocalQuest and GlobalQuest.
 */
- 
+
 #ifndef _Quest_H__
 #define _Quest_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <list>
 #include "QuestItem.h"
@@ -61,12 +61,12 @@ namespace orxonox
         Each Quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
         A Quest has several hints (QuestHint) that can be unlocked through QuestEffects and then display aid in solving the Quest.
         A Quest has a list of QuestEffects that are invoked when the quest is failed and also a list of QuestEffects that are invoked, when the Quest is completed.
-        
+
         Quest itself should not be instantiated, if you want to create a quest either go for LocalQuest or GlobalQuest, whichever suits you needs better.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Quest : public QuestItem
+    class _QuestExport Quest : public QuestItem
     {
         public:
             Quest(BaseObject* creator);
@@ -80,7 +80,7 @@ namespace orxonox
             */
             inline Quest* getParentQuest(void) const
                 { return this->parentQuest_; }
-                
+
             /**
             @brief Returns the list of subquests.
             @return Returns a reference to the list of subquests of the quest.
@@ -94,16 +94,16 @@ namespace orxonox
             */
             inline const std::list<QuestHint*> & getHintsList(void) const
                 { return this->hints_; }
-        
+
             bool isInactive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
             bool isActive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'active'.
             bool isFailed(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
             bool isCompleted(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
-        
+
             bool start(PlayerInfo* player); //!< Sets a Quest to active.
             virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
             virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
-        
+
             bool addListener(QuestListener* listener); //!< Adds a QuestListener to the list of QuestListeners listening to this Quest.
 
         protected:
@@ -115,14 +115,14 @@ namespace orxonox
             const QuestHint* getHint(unsigned int index) const; //!< Returns the QuestHint at the given index.
             const QuestEffect* getFailEffect(unsigned int index) const; //!< Returns the fail QuestEffect at the given index.
             const QuestEffect* getCompleteEffect(unsigned int index) const; //!< Returns the complete QuestEffect at the given index.
-            
+
             /**
             @brief Returns the list of fail QuestEffects.
             @return Returns a reference to the list of fail QuestEffects.
             */
             inline std::list<QuestEffect*> & getFailEffectList(void)
                 { return this->failEffects_; }
-                
+
             /**
             @brief Returns the list of complete QuestEffects.
             @return Returns a reference to the list of complete QuestEffects.
@@ -132,7 +132,7 @@ namespace orxonox
 
             virtual QuestStatus::Value getStatus(const PlayerInfo* player) const = 0; //!< Returns the status of the Quest for a specific player.
             virtual bool setStatus(PlayerInfo* player, const QuestStatus::Value & status) = 0; //!< Changes the status for a specific player.
-            
+
         private:
             Quest* parentQuest_; //!< Pointer to the parentquest.
             std::list<Quest*> subQuests_; //!< List of all the subquests.
@@ -141,9 +141,9 @@ namespace orxonox
 
             std::list<QuestEffect*> failEffects_; //!< A list of all QuestEffects to be invoked, when the Quest has been failed.
             std::list<QuestEffect*> completeEffects_; //!< A list of QuestEffects to be invoked, when the Quest has been completed.
-            
+
             std::list<QuestListener*> listeners_; //!< A list of QuestListeners, that listen to what exactly happens with this Quest.
-            
+
             bool setParentQuest(Quest* quest); //!< Sets the parentquest of the Quest.
             bool addSubQuest(Quest* quest); //!< Adds a subquest to the Quest.
             bool addHint(QuestHint* hint); //!< Add a QuestHint to the list of QuestHints.

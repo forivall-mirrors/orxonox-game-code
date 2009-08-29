@@ -30,7 +30,7 @@
 #ifndef _HUDRadar_H__
 #define _HUDRadar_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <map>
 #include <vector>
@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public RadarListener
+    class _OverlaysExport HUDRadar : public OrxonoxOverlay, public RadarListener
     {
     public:
         HUDRadar(BaseObject* creator);

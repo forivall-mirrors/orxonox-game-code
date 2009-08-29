@@ -44,10 +44,8 @@
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "objects/Radar.h"
-#include "objects/quest/QuestManager.h"
-#include "overlays/notifications/NotificationManager.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
@@ -109,9 +107,7 @@ namespace orxonox
 
         this->playerManager_ = new PlayerManager();
 
-        this->questManager_ = new QuestManager();
-
-        this->notificationManager_ = new NotificationManager();
+        this->scope_GSLevel_ = new Scope<ScopeID::GSLevel>();
 
         if (GameMode::isMaster())
         {
@@ -200,16 +196,10 @@ namespace orxonox
             this->playerManager_ = 0;
         }
 
-        if (this->questManager_)
+        if (this->scope_GSLevel_)
         {
-            delete this->questManager_;
-            this->questManager_ = NULL;
-        }
-
-        if (this->notificationManager_)
-        {
-            delete this->notificationManager_;
-            this->notificationManager_ = NULL;
+            delete this->scope_GSLevel_;
+            this->scope_GSLevel_ = NULL;
         }
 
         if (GameMode::showsGraphics())

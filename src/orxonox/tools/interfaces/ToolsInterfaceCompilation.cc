@@ -26,30 +26,37 @@
  *
  */
 
-#ifndef _TimeFactorListener_H__
-#define _TimeFactorListener_H__
+/**
+@file
+@brief
+    Compiles all the interfaces in the tools library with mostly just a constructor.
+*/
 
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "Tickable.h"
+#include "TimeFactorListener.h"
+
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport TimeFactorListener : virtual public OrxonoxClass
+    //----------------------------
+    // TimeFactorListener
+    //----------------------------
+    float TimeFactorListener::timefactor_s = 1.0f;
+
+    TimeFactorListener::TimeFactorListener()
     {
-        friend class GSRoot;
+        RegisterRootObject(TimeFactorListener);
+    }
 
-        public:
-            TimeFactorListener();
-            virtual ~TimeFactorListener() {}
-
-        protected:
-            virtual void changedTimeFactor(float factor_new, float factor_old) {}
-            inline float getTimeFactor() const
-                { return TimeFactorListener::timefactor_s; }
-
-        private:
-            static float timefactor_s;
-    };
+    //----------------------------
+    // Tickable
+    //----------------------------
+    /**
+        @brief Constructor: Registers the object in the Tickable-list
+    */
+    Tickable::Tickable()
+    {
+        RegisterRootObject(Tickable);
+    }
 }
-
-#endif /* _TimeFactorListener_H__ */

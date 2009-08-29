@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Definition of the QuestItem class.
@@ -36,7 +36,7 @@
 #ifndef _QuestItem_H__
 #define _QuestItem_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <string>
 #include "core/BaseObject.h"
@@ -50,7 +50,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestItem : public BaseObject
+    class _QuestExport QuestItem : public BaseObject
     {
 
         public:
@@ -65,7 +65,7 @@ namespace orxonox
             */
             inline const std::string & getId(void) const
                 { return this->id_; }
-            
+
             /**
             @brief Returns the QuestDescription of the QuestItem.
             @return Returns a pointer to the QuestDescription object of the QuestItem.
@@ -77,7 +77,7 @@ namespace orxonox
 
         protected:
             void setId(const std::string & id); //!< Sets the id of the QuestItem.
-            
+
             /**
             @brief Sets the description of the QuestItem.
             @param description The QuestDescription to be set.
