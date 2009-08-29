@@ -7,7 +7,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   WeaponSlot.cc
   WeaponSystem.cc
   DefaultWeaponmodeLink.cc
-  MuzzleFlash.cc
 )
 
 SET_SOURCE_FILES(WEAPONSYSTEM_SRC_FILES
