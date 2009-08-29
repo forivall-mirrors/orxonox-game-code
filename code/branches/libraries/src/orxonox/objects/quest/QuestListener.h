@@ -63,7 +63,7 @@ namespace orxonox
 
         <BaseObject> // The object that should react to the status change of a Quest.
             <events>
-                <function> // Where function is the method of the object that schould be executed. Normally this would be visibility or activity.
+                <function> // Where function is the method of the object that should be executed. Normally this would be visibility or activity.
                     <QuestListener questId="someQuestId" mode="someMode" /> // Where someQuestId is the identifier for the Quest the QuestListener is reacting to, and someMode is the kind of status change the QUestListener reacts to (all, start, complete or fail).
                 </function>
             </events>

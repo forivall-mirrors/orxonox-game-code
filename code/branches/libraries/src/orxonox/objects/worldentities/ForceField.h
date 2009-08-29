@@ -42,7 +42,7 @@ namespace orxonox
     public:
         ForceField(BaseObject* creator);
         virtual ~ForceField();
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void tick(float dt);
 
         inline void setVelocity(float vel)
