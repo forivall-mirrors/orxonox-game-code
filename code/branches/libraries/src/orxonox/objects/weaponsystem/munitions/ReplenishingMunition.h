@@ -29,14 +29,14 @@
 #ifndef _ReplenishingMunition_H__
 #define _ReplenishingMunition_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/weaponsystem/WeaponsystemPrereqs.h"
 
 #include "tools/Timer.h"
 #include "objects/weaponsystem/Munition.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ReplenishingMunition : public Munition
+    class _WeaponsystemExport ReplenishingMunition : public Munition
     {
         public:
             ReplenishingMunition(BaseObject* creator);

@@ -29,12 +29,12 @@
 #ifndef _FusionFire_H__
 #define _FusionFire_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/weaponsystem/WeaponsystemPrereqs.h"
 #include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport FusionFire : public WeaponMode
+    class _WeaponsystemExport FusionFire : public WeaponMode
     {
         public:
             FusionFire(BaseObject* creator);

@@ -63,31 +63,34 @@
 
 namespace orxonox
 {
-    class RadarViewable;
-    class Radar;
-    class RadarListener;
-
-    class Teamcolourable;
-
+    // manager
     class CameraManager;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
+
+    // interfaces
+    class GametypeMessageListener;
+    class NotificationListener;
+    class PawnListener;
+    class RadarListener;
+    class RadarViewable;
+    class Rewardable;
+    class Teamcolourable;
 
     // objects
     class Level;
     class Scene;
     class Tickable;
 
+    // worldentities
     class WorldEntity;
     class StaticEntity;
     class MobileEntity;
     class ControllableEntity;
     class MovableEntity;
-    class Sublevel;
-    class ForceField;
-    class Attacher;
 
+    // graphics
     class Model;
     class Billboard;
     class BlinkingBillboard;
@@ -99,23 +102,45 @@ namespace orxonox
     class Backlight;
     class ParticleEmitter;
     class ParticleSpawner;
+    class Camera;
 
+    // mixed
     class PongCenterpoint;
     class PongBall;
     class PongBat;
 
-    class Camera;
-    class CameraPosition;
+    class EventListener;
+    class EventDispatcher;
+    class EventTarget;
+
     class SpawnPoint;
     class TeamSpawnPoint;
+
+    class Attacher;
+    class CameraPosition;
+    class Sublevel;
+    class ForceField;
+    class Radar;
+
     class Test;
 
+    // pawns
     class Spectator;
     class Pawn;
     class SpaceShip;
     class TeamBaseMatchBase;
     class Destroyer;
 
+    // gametypes
+    class Gametype;
+    class Deathmatch;
+    class TeamDeathmatch;
+    class Asteroids;
+    class TeamBaseMatch;
+    class UnderAttack;
+    class Pong;
+
+    // pickups
     class BaseItem;
     class DroppedItem;
     class EquipmentItem;
@@ -130,17 +155,20 @@ namespace orxonox
     class HealthUsable;
     class PassiveItem;
 
+    // items
     class Item;
     class Engine;
     class MultiStateEngine;
     class RotatingEngine;
 
+    // trigger
     class Trigger;
     class DistanceTrigger;
     class EventTrigger;
     class PlayerTrigger;
     class CheckPoint;
 
+    // weaponsystem
     class WeaponSystem;
     class WeaponSet;
     class WeaponSlot;
@@ -148,28 +176,9 @@ namespace orxonox
     class Weapon;
     class WeaponMode;
     class DefaultWeaponmodeLink;
-    class MuzzleFlash;
-
-    class LaserFire;
-    class FusionFire;
-    class HsW01;
-    class LightningGun;
-    class EnergyDrink;
-
-    class ReplenishingMunition;
     class Munition;
-    class LaserMunition;
-    class FusionMunition;
 
-    class Projectile;
-    class BillboardProjectile;
-    class ParticleProjectile;
-    class LightningGunProjectile;
-
-    class EventListener;
-    class EventDispatcher;
-    class EventTarget;
-
+    // controller
     class Controller;
     class HumanController;
     class ArtificialController;
@@ -179,20 +188,13 @@ namespace orxonox
     class WaypointPatrolController;
     class PongAI;
 
+    // infos
     class Info;
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
     class PongBot;
     class GametypeInfo;
-
-    class Gametype;
-    class Deathmatch;
-    class TeamDeathmatch;
-    class Asteroids;
-    class TeamBaseMatch;
-    class UnderAttack;
-    class Pong;
 
     // collision
     class CollisionShape;
@@ -205,7 +207,6 @@ namespace orxonox
     class OverlayGroup;
     class OrxonoxOverlay;
     class Notification;
-    class NotificationListener;
     class NotificationManager;
     class InGameConsole;
     class Map;
