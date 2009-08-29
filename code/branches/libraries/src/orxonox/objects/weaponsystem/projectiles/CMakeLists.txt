@@ -1,4 +1,4 @@
-ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+ADD_SOURCE_FILES(WEAPONSYSTEM_SRC_FILES
   BillboardProjectile.cc
   ParticleProjectile.cc
   Projectile.cc
