@@ -36,11 +36,12 @@
 
 #include "OrxonoxConfig.h"
 
+#include "tools/ToolsPrereqs.h"
+
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#define ORXONOX_NO_EXPORTS // This is an executable that needs no exports
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !(defined(ORXONOX_STATIC_BUILD) || defined(ORXONOX_NO_EXPORTS))
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef ORXONOX_SHARED_BUILD
 #    define _OrxonoxExport __declspec(dllexport)
 #  else
@@ -62,61 +63,34 @@
 
 namespace orxonox
 {
-    namespace LODParticle
-    {
-        enum Value
-        {
-            Off = 0,
-            Low = 1,
-            Normal = 2,
-            High = 3
-        };
-    }
-
-    class RadarViewable;
-    class Radar;
-    class RadarListener;
-
-    class Teamcolourable;
-
+    // manager
     class CameraManager;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
+
+    // interfaces
+    class GametypeMessageListener;
+    class NotificationListener;
+    class PawnListener;
+    class RadarListener;
+    class RadarViewable;
+    class Rewardable;
+    class Teamcolourable;
 
     // objects
     class Level;
     class Scene;
     class Tickable;
 
-    class AddQuest;
-    class AddQuestHint;
-    class AddReward;
-    class ChangeQuestStatus;
-    class CompleteQuest;
-    class FailQuest;
-    class GlobalQuest;
-    class LocalQuest;
-    class Quest;
-    class QuestDescription;
-    class QuestEffect;
-    class QuestEffectBeacon;
-    class QuestHint;
-    class QuestItem;
-    class QuestListener;
-    class QuestManager;
-    class QuestNotification;
-    class Rewardable;
-
+    // worldentities
     class WorldEntity;
     class StaticEntity;
     class MobileEntity;
     class ControllableEntity;
     class MovableEntity;
-    class Sublevel;
-    class ForceField;
-    class Attacher;
 
+    // graphics
     class Model;
     class Billboard;
     class BlinkingBillboard;
@@ -128,23 +102,45 @@ namespace orxonox
     class Backlight;
     class ParticleEmitter;
     class ParticleSpawner;
+    class Camera;
 
+    // mixed
     class PongCenterpoint;
     class PongBall;
     class PongBat;
 
-    class Camera;
-    class CameraPosition;
+    class EventListener;
+    class EventDispatcher;
+    class EventTarget;
+
     class SpawnPoint;
     class TeamSpawnPoint;
+
+    class Attacher;
+    class CameraPosition;
+    class Sublevel;
+    class ForceField;
+    class Radar;
+
     class Test;
 
+    // pawns
     class Spectator;
     class Pawn;
     class SpaceShip;
     class TeamBaseMatchBase;
     class Destroyer;
 
+    // gametypes
+    class Gametype;
+    class Deathmatch;
+    class TeamDeathmatch;
+    class Asteroids;
+    class TeamBaseMatch;
+    class UnderAttack;
+    class Pong;
+
+    // pickups
     class BaseItem;
     class DroppedItem;
     class EquipmentItem;
@@ -159,17 +155,20 @@ namespace orxonox
     class HealthUsable;
     class PassiveItem;
 
+    // items
     class Item;
     class Engine;
     class MultiStateEngine;
     class RotatingEngine;
 
+    // trigger
     class Trigger;
     class DistanceTrigger;
     class EventTrigger;
     class PlayerTrigger;
     class CheckPoint;
 
+    // weaponsystem
     class WeaponSystem;
     class WeaponSet;
     class WeaponSlot;
@@ -177,28 +176,9 @@ namespace orxonox
     class Weapon;
     class WeaponMode;
     class DefaultWeaponmodeLink;
-    class MuzzleFlash;
-
-    class LaserFire;
-    class FusionFire;
-    class HsW01;
-    class LightningGun;
-    class EnergyDrink;
-
-    class ReplenishingMunition;
     class Munition;
-    class LaserMunition;
-    class FusionMunition;
 
-    class Projectile;
-    class BillboardProjectile;
-    class ParticleProjectile;
-    class LightningGunProjectile;
-
-    class EventListener;
-    class EventDispatcher;
-    class EventTarget;
-
+    // controller
     class Controller;
     class HumanController;
     class ArtificialController;
@@ -208,25 +188,13 @@ namespace orxonox
     class WaypointPatrolController;
     class PongAI;
 
+    // infos
     class Info;
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
     class PongBot;
     class GametypeInfo;
-
-    class Gametype;
-    class Deathmatch;
-    class TeamDeathmatch;
-    class Asteroids;
-    class TeamBaseMatch;
-    class UnderAttack;
-    class Pong;
-
-    class Scores;
-    class CreateLines;
-    class Scoreboard;
-    class Stats;
 
     // collision
     class CollisionShape;
@@ -235,54 +203,18 @@ namespace orxonox
     class PlaneCollisionShape;
     class WorldEntityCollisionShape;
 
-    // tools
-    class BillboardSet;
-    class Light;
-    class Mesh;
-    class ParticleInterface;
-    class Shader;
-    template <class T>
-    class Timer;
-
     // overlays
-    class BarColour;
-    class DebugFPSText;
-    class DebugRTRText;
-    class GUIOverlay;
-    class HUDBar;
-    class HUDNavigation;
-    class HUDRadar;
-    class HUDSpeedBar;
-    class HUDHealthBar;
-    class HUDTimer;
-    class InGameConsole;
+    class OverlayGroup;
+    class OrxonoxOverlay;
     class Notification;
     class NotificationManager;
-    class NotificationOverlay;
-    class NotificationQueue;
-    class OrxonoxOverlay;
-    class OverlayGroup;
-    class OverlayText;
-    class FadeoutText;
-    class GametypeStatus;
-    class AnnounceMessage;
-    class KillMessage;
-    class DeathMessage;
-    class CreateLines;
-    class Scoreboard;
+    class InGameConsole;
     class Map;
 
     //sound
     class SoundBase;
     class SoundManager;
     class SoundMainMenu;
-}
-
-namespace Ogre
-{
-    // OGRE Wiki adapted code
-    class DynamicLines;
-    class DynamicRenderable;
 }
 
 // Bullet Physics Engine

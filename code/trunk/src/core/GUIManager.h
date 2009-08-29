@@ -49,6 +49,8 @@
 
 namespace orxonox
 {
+    class PlayerInfo; // Forward declaration
+
     /**
     @class GUIManager
     @brief
@@ -76,6 +78,11 @@ namespace orxonox
 
         static GUIManager* getInstancePtr() { return singletonPtr_s; }
 
+        inline void setPlayer(const std::string& guiname, PlayerInfo* player)
+            { this->players_[guiname] = player; }
+        inline PlayerInfo* getPlayer(const std::string& guiname) const
+            { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; }
+
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 
@@ -91,15 +98,16 @@ namespace orxonox
         void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled (int abs, int rel);
 
-        boost::scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;  //!< CEGUI's interface to the Ogre Engine
-        boost::scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_; //!< CEGUI's script module to use Lua
-        boost::scoped_ptr<CEGUI::System>            guiSystem_;    //!< CEGUI's main system
-        Ogre::RenderWindow*      renderWindow_;     //!< Ogre's render window to give CEGUI access to it
-        CEGUI::ResourceProvider* resourceProvider_; //!< CEGUI's resource provider
-        CEGUI::Logger*           ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
-        lua_State*               luaState_;         //!< Lua state, access point to the Lua engine
+        boost::scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;       //!< CEGUI's interface to the Ogre Engine
+        boost::scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_;      //!< CEGUI's script module to use Lua
+        boost::scoped_ptr<CEGUI::System>            guiSystem_;         //!< CEGUI's main system
+        Ogre::RenderWindow*                         renderWindow_;      //!< Ogre's render window to give CEGUI access to it
+        CEGUI::ResourceProvider*                    resourceProvider_;  //!< CEGUI's resource provider
+        CEGUI::Logger*                              ceguiLogger_;       //!< CEGUI's logger to be able to log CEGUI errors in our log
+        lua_State*                                  luaState_;          //!< Lua state, access point to the Lua engine
+        std::map<std::string, PlayerInfo*>          players_;           //!< Stores the player (owner) for each gui
 
-        static GUIManager*       singletonPtr_s;    //!< Singleton reference to GUIManager
+        static GUIManager*                          singletonPtr_s;     //!< Singleton reference to GUIManager
 
     };
 }

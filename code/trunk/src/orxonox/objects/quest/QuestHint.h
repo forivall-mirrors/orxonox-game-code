@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Definition of the QuestHint class.
@@ -34,7 +34,7 @@
 #ifndef _QuestHint_H__
 #define _QuestHint_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <map>
 #include "QuestItem.h"
@@ -56,16 +56,16 @@ namespace orxonox
         Represents a hint in the game towards completing a Quest.
         Consists of title and description (which is stored in a QuestDescription object) in textual form and must belong to a quest.
         A QuestHint has a defined status (inactive or active, where inactive is default) for each player, which means each a QuestHint exists only once for all players, it doesn't belong to a player, it just has different states for each of them.
-        
+
         Creating a QuestHint through XML goes as follows:
-        
+
         <QuestHint id="hintId">  //Where hintId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
             <QuestDesctription title="" description="" />
         </QuestHint>
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestHint : public QuestItem
+    class _QuestExport QuestHint : public QuestItem
     {
 
         public:

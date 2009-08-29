@@ -34,7 +34,7 @@
 #ifndef _Notification_H__
 #define _Notification_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <string>
 #include "core/BaseObject.h"
@@ -48,7 +48,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Notification : public BaseObject
+    class _QuestExport Notification : public BaseObject
     {
         public:
             Notification(BaseObject* creator);

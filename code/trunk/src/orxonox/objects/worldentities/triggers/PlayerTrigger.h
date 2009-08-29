@@ -51,26 +51,26 @@ namespace orxonox
     public:
         PlayerTrigger(BaseObject* creator);
         virtual ~PlayerTrigger();
-        
+
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PlayerTrigger object through XML.
-        
+
         /**
         @brief Returns the player that triggered the PlayerTrigger.
         @return Returns a pointer to the ControllableEntity that triggered the PlayerTrigger.
         */
         inline Pawn* getTriggeringPlayer(void) const
             { return this->player_; }
-        
+
         /**
         @brief Checks whether the PlayerTrigger normally returns a ControllableEntity.
         @return Returns true if the PlayerTrigger normally returns a ControllableEntity.
         */
         inline bool isForPlayer(void) const
            { return this->isForPlayer_; }
-            
+
     protected:
         virtual bool isTriggered(TriggerMode::Value mode) = 0;
-        
+
         /**
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
         @param player A pointer to the ControllableEntity that triggered the PlayerTrigger.
@@ -80,15 +80,15 @@ namespace orxonox
 
             /**
             @brief Set whether the PlayerTrigger normally is triggered by ControllableEntities.
-            @param isForPlayer Should be true when the PlayerTrigger schould be set to normally be triggered by ControllableEntities, false if not.
+            @param isForPlayer Should be true when the PlayerTrigger should be set to normally be triggered by ControllableEntities, false if not.
             */
         inline void setForPlayer(bool isForPlayer)
            { this->isForPlayer_ = isForPlayer; }
-        
+
     private:
         Pawn* player_; //!< The player that triggered the PlayerTrigger.
-        bool isForPlayer_; //!< Is true when the PlayerTrigger schould be set to normally be triggered by ControllableEntities.
-    
+        bool isForPlayer_; //!< Is true when the PlayerTrigger should be set to normally be triggered by ControllableEntities.
+
     };
 
 }

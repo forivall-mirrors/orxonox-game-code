@@ -29,14 +29,14 @@
 #ifndef _GametypeStatus_H__
 #define _GametypeStatus_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeStatus : public OverlayText, public Tickable
+    class _OverlaysExport GametypeStatus : public OverlayText, public Tickable
     {
         public:
             GametypeStatus(BaseObject* creator);

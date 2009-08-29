@@ -29,16 +29,16 @@
 #ifndef _HUDHealthBar_H__
 #define _HUDHealthBar_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "util/Math.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 #include "HUDBar.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDHealthBar : public HUDBar, public Tickable
+    class _OverlaysExport HUDHealthBar : public HUDBar, public Tickable
     {
         public:
             HUDHealthBar(BaseObject* creator);

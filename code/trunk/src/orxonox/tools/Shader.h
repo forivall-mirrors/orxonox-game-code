@@ -29,18 +29,18 @@
 #ifndef _Shader_H__
 #define _Shader_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 
 #include <map>
 #include <string>
 #include <vector>
 
 #include "util/OgreForwardRefs.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Shader : public Tickable
+    class _ToolsExport Shader : public Tickable
     {
         typedef std::pair<bool, void*>                  ParameterPointer;
         typedef std::map<std::string, ParameterPointer> ParameterMap;

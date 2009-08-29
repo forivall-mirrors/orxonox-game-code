@@ -34,7 +34,7 @@
 #ifndef _AddQuestHint_H__
 #define _AddQuestHint_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <string>
 #include "QuestEffect.h"
@@ -44,14 +44,14 @@ namespace orxonox
     /**
     @brief
         Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.
-        
+
     Creating a AddQuestHint through XML goes as follows:
-        
+
         <AddQuestHint hintId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the QuestHint that should be added.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport AddQuestHint : public QuestEffect
+    class _QuestExport AddQuestHint : public QuestEffect
     {
         public:
             AddQuestHint(BaseObject* creator);
@@ -70,7 +70,7 @@ namespace orxonox
             */
             inline const std::string & getHintId(void) const
                 { return this->hintId_; }
-            
+
             bool setHintId(const std::string & id); //!< Sets the id of the QuestHint.
 
     };

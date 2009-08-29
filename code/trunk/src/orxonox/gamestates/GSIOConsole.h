@@ -29,12 +29,12 @@
 #ifndef _GSIOConsole_H__
 #define _GSIOConsole_H__
 
-#include "OrxonoxPrereqs.h"
+#include "gamestates/GameStatesPrereqs.h"
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSIOConsole : public GameState
+    class _GameStatesExport GSIOConsole : public GameState
     {
     public:
         GSIOConsole(const GameStateInfo& info);

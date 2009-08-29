@@ -34,7 +34,7 @@
 #ifndef _AddReward_H__
 #define _AddReward_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <list>
 #include "QuestEffect.h"
@@ -44,9 +44,9 @@ namespace orxonox
     /**
     @brief
         Adds a list of Rewardables to a player.
-        
+
         Creating a AddReward through XML goes as follows:
-        
+
         <AddReward>
             <Rewardable /> //A list of Rewardable objects to be rewarded the player, see the specific Rewardables for their respective XML representations.
             ...
@@ -55,7 +55,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport AddReward : public QuestEffect
+    class _QuestExport AddReward : public QuestEffect
     {
         public:
             AddReward(BaseObject* creator);
@@ -74,7 +74,7 @@ namespace orxonox
             */
             inline void addRewardable(Rewardable* reward)
                 { this->rewards_.push_back(reward); }
-        
+
             const Rewardable* getRewardables(unsigned int index) const; //!< Returns the Rewardable object at the given index.
 
     };

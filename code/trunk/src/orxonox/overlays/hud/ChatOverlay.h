@@ -29,7 +29,7 @@
 #ifndef _ChatOverlay_H__
 #define _ChatOverlay_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include <list>
 #include <OgreUTFString.h>
@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport ChatOverlay : public OverlayText, public ChatListener
+    class _OverlaysExport ChatOverlay : public OverlayText, public ChatListener
     {
         public:
             ChatOverlay(BaseObject* creator);

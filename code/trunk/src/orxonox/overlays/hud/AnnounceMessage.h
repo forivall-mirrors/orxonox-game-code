@@ -29,14 +29,14 @@
 #ifndef _AnnounceMessage_H__
 #define _AnnounceMessage_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "interfaces/GametypeMessageListener.h"
 #include "overlays/FadeoutText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport AnnounceMessage : public FadeoutText, public GametypeMessageListener
+    class _OverlaysExport AnnounceMessage : public FadeoutText, public GametypeMessageListener
     {
         public:
             AnnounceMessage(BaseObject* creator);

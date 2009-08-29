@@ -29,12 +29,12 @@
 #ifndef _Mesh_H__
 #define _Mesh_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 #include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Mesh
+    class _ToolsExport Mesh
     {
         public:
             Mesh();

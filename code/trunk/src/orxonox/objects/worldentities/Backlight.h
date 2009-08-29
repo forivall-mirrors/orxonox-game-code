@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "interfaces/TimeFactorListener.h"
+#include "tools/interfaces/TimeFactorListener.h"
 #include "FadingBillboard.h"
 
 namespace orxonox

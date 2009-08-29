@@ -29,14 +29,14 @@
 #ifndef _HUDTimer_H__
 #define _HUDTimer_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDTimer : public OverlayText, public Tickable
+    class _OverlaysExport HUDTimer : public OverlayText, public Tickable
     {
     public:
         HUDTimer(BaseObject* creator);

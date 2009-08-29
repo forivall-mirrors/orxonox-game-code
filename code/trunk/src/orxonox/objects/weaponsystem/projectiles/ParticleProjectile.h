@@ -29,12 +29,12 @@
 #ifndef _ParticleProjectile_H__
 #define _ParticleProjectile_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/weaponsystem/WeaponsystemPrereqs.h"
 #include "BillboardProjectile.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleProjectile : public BillboardProjectile
+    class _WeaponsystemExport ParticleProjectile : public BillboardProjectile
     {
         public:
             ParticleProjectile(BaseObject* creator);

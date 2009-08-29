@@ -29,14 +29,14 @@
 #ifndef _DynamicLines_H__
 #define _DynamicLines_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 
 #include <vector>
 #include "DynamicRenderable.h"
 
 namespace Ogre
 {
-    class DynamicLines : public DynamicRenderable
+    class _ToolsExport DynamicLines : public DynamicRenderable
     {
         typedef RenderOperation::OperationType OperationType;
 

@@ -29,14 +29,14 @@
 #ifndef _HsW01_H__
 #define _HsW01_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/weaponsystem/WeaponsystemPrereqs.h"
 
 #include "tools/Timer.h"
 #include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HsW01 : public WeaponMode
+    class _WeaponsystemExport HsW01 : public WeaponMode
     {
         public:
             HsW01(BaseObject* creator);

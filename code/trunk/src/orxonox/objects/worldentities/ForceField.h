@@ -32,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "StaticEntity.h"
 
 namespace orxonox
@@ -42,21 +42,21 @@ namespace orxonox
     public:
         ForceField(BaseObject* creator);
         virtual ~ForceField();
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void tick(float dt);
 
         inline void setVelocity(float vel)
             { this->velocity_ = vel; }
-    
+
         inline float getVelocity()
             { return velocity_; }
-    
+
         inline void setDiameter(float diam)
             { this->diameter_ = diam; }
 
         inline float getDiameter()
             { return diameter_; }
- 
+
         inline void setLength(float l)
             { this->length_ = l; }
 

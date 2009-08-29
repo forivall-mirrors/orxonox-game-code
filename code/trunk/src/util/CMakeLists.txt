@@ -26,6 +26,7 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
   MultiType.cc
   OutputBuffer.cc
   OutputHandler.cc
+  Scope.cc
   SignalHandler.cc
   Sleep.cc
   StringUtils.cc

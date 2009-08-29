@@ -29,7 +29,7 @@
 #ifndef _BulletConversions_H__
 #define _BulletConversions_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 
 #include "util/Convert.h"
 #include "util/Math.h"

@@ -112,6 +112,8 @@ namespace orxonox
         Non-initialising constructor.
     */
     Game::Game(const std::string& cmdLine)
+        // Destroy factories before the Core!
+        : gsFactoryDestroyer_(Game::GameStateFactory::factories_s, &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
     {
         this->bAbort_ = false;
         bChangingState_ = false;

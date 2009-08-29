@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/Math.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "Billboard.h"
 
 namespace orxonox

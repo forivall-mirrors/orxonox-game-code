@@ -23,6 +23,8 @@
  #    Adds a library or an executable like ADD_LIBRARY/ADD_EXECUTABLE, but
  #    accepts a lot more input information. Simply supply the keywords
  #    described below in any order you wish.
+ #    The output is then stored in "_arg_ARGNAME" where ARGNAME is the the
+ #    name of the switch or list.
  #
  #    Switches: (when given --> TRUE, FALSE otherwise)
  #      FIND_HEADER_FILES: Searches the current directory for all header files
@@ -32,9 +34,12 @@
  #      NO_DLL_INTERFACE:  Link statically with MSVC
  #      NO_SOURCE_GROUPS:  Don't create msvc source groups
  #      STATIC/SHARED:     Inherited from ADD_LIBRARY
+ #      MODULE:            For dynamic module libraries
  #      WIN32:             Inherited from ADD_EXECUTABLE
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
+ #      NO_INSTALL:        Do not install the target at all
+ #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
  #      VERSION:           Set version to the binary
@@ -43,6 +48,7 @@
  #      TOLUA_FILES:       Files with tolua interface
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
+ #      OUTPUT_NAME:       If you want a different name than the target name
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
@@ -74,9 +80,9 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
-                  PCH_NO_DEFAULT NO_INSTALL)
+                  PCH_NO_DEFAULT     NO_INSTALL        MODULE)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
-                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE)
+                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE OUTPUT_NAME)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
@@ -141,6 +147,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
+  # MODULE A
+  # Always create shared libraries
+  IF(_arg_MODULE)
+    SET(_arg_SHARED SHARED)
+    SET(_arg_STATIC)
+  ENDIF()
+
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")
     ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED}
@@ -148,6 +161,15 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ELSE()
     ADD_EXECUTABLE(${_target_name} ${_arg_WIN32} ${_arg_EXCLUDE_FROM_ALL}
                    ${_${_target_name}_files})
+  ENDIF()
+
+  # MODULE B
+  IF (_arg_MODULE)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Windows
+      LIBRARY_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Unix
+    )
+    ADD_MODULE(${_target_name})
   ENDIF()
 
   # LINK_LIBRARIES
@@ -167,17 +189,63 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${ORXONOX_VERSION})
   ENDIF()
 
+  # OUTPUT_NAME
+  IF(_arg_OUTPUT_NAME)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES OUTPUT_NAME  ${_arg_OUTPUT_NAME})
+  ENDIF()
+
   # Second part of precompiled header files
   IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE_${_target_name_upper} AND _arg_PCH_FILE)
     PRECOMPILED_HEADER_FILES_POST_TARGET(${_target_name} ${_arg_PCH_FILE})
   ENDIF()
 
   IF(NOT _arg_STATIC AND NOT _arg_NO_INSTALL)
-    INSTALL(TARGETS ${_target_name}
-      RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
-      LIBRARY DESTINATION ${ORXONOX_LIBRARY_INSTALL_PATH}
-      #ARCHIVE DESTINATION ${ORXONOX_ARCHIVE_INSTALL_PATH}
-    )
+    IF(_arg_MODULE)
+      INSTALL(TARGETS ${_target_name}
+        RUNTIME DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+        LIBRARY DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+      )
+    ELSE()
+      INSTALL(TARGETS ${_target_name}
+        RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
+        LIBRARY DESTINATION ${ORXONOX_LIBRARY_INSTALL_PATH}
+      )
+    ENDIF()
   ENDIF()
 
 ENDFUNCTION(TU_ADD_TARGET)
+
+
+# Creates a helper file with name <name_of_the_library>.module
+# This helps finding dynamically loadable modules at runtime
+
+FUNCTION(ADD_MODULE _target)
+  # We use the properties to get the name because the librarys name may differ from
+  # the target name (for example orxonox <-> liborxonox)
+
+  GET_TARGET_PROPERTY(_target_loc ${_target} LOCATION)
+  GET_FILENAME_COMPONENT(_target_name ${_target_loc} NAME_WE)
+
+  IF(CMAKE_CONFIGURATION_TYPES)
+    FOREACH(_config ${CMAKE_CONFIGURATION_TYPES})
+      SET(_module_filename ${CMAKE_MODULE_OUTPUT_DIRECTORY}/${_config}/${_target_name}${ORXONOX_MODULE_EXTENSION})
+
+      FILE(WRITE ${_module_filename})
+
+      INSTALL(
+        FILES ${_module_filename}
+        DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+        CONFIGURATIONS ${_config}
+      )
+    ENDFOREACH()
+  ELSE()
+    SET(_module_filename ${CMAKE_MODULE_OUTPUT_DIRECTORY}/${_target_name}${ORXONOX_MODULE_EXTENSION})
+
+    FILE(WRITE ${_module_filename})
+
+    INSTALL(
+      FILES ${_module_filename}
+      DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+    )
+  ENDIF()
+ENDFUNCTION(ADD_MODULE)

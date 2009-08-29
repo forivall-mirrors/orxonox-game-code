@@ -32,7 +32,7 @@
 #include <OgreMaterial.h>
 
 #include "util/UtilPrereqs.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox

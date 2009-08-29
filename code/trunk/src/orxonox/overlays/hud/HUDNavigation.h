@@ -29,15 +29,15 @@
 #ifndef _HUDNavigation_H__
 #define _HUDNavigation_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "util/OgreForwardRefs.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDNavigation : public OrxonoxOverlay, public Tickable
+    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable
     {
     public:
         HUDNavigation(BaseObject* creator);

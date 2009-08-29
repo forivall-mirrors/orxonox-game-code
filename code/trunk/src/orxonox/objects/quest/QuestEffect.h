@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Definition of the QuestEffect class.
@@ -34,7 +34,7 @@
 #ifndef _QuestEffect_H__
 #define _QuestEffect_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 
 #include <list>
 #include "core/BaseObject.h"
@@ -48,7 +48,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport QuestEffect : public BaseObject
+    class _QuestExport QuestEffect : public BaseObject
     {
         public:
             QuestEffect(BaseObject* creator);

@@ -29,14 +29,14 @@
 #ifndef _KillMessage_H__
 #define _KillMessage_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
 #include "interfaces/GametypeMessageListener.h"
 #include "overlays/FadeoutText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport KillMessage : public FadeoutText, public GametypeMessageListener
+    class _OverlaysExport KillMessage : public FadeoutText, public GametypeMessageListener
     {
         public:
             KillMessage(BaseObject* creator);

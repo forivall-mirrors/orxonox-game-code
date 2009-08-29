@@ -29,12 +29,12 @@
 #ifndef _BillboardSet_H__
 #define _BillboardSet_H__
 
-#include "OrxonoxPrereqs.h"
+#include "tools/ToolsPrereqs.h"
 #include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport BillboardSet
+    class _ToolsExport BillboardSet
     {
         public:
             BillboardSet();

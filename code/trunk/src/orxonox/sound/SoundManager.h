@@ -32,7 +32,7 @@
 #include <cassert>
 #include <list>
 #include "util/Singleton.h"
-#include "interfaces/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {

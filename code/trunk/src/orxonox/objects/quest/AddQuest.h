@@ -34,7 +34,7 @@
 #ifndef _AddQuest_H__
 #define _AddQuest_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/quest/QuestPrereqs.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox
@@ -42,21 +42,21 @@ namespace orxonox
     /**
     @brief
         Adds a Quest, resp. changes the quests status to active for the player invoking the Quest.
-        
+
         Creating a AddQuest through XML goes as follows:
-        
+
         <AddQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be added.
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport AddQuest : public ChangeQuestStatus
+    class _QuestExport AddQuest : public ChangeQuestStatus
     {
         public:
         AddQuest(BaseObject* creator);
         virtual ~AddQuest();
-    
+
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.
-    
+
         virtual bool invoke(PlayerInfo* player); //!< Invokes the QuestEffect.
 
     };

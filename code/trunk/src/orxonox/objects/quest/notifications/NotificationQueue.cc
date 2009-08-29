@@ -38,7 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "NotificationOverlay.h"
-#include "NotificationManager.h"
+#include "objects/quest/notifications/NotificationManager.h"
 
 namespace orxonox
 {
@@ -79,7 +79,7 @@ namespace orxonox
         this->size_ = 0;
         this->tickTime_ = 0.0;
 
-        NotificationManager::getInstance().registerQueue(this);
+        NotificationManager::getInstance().registerListener(this);
     }
 
     /**

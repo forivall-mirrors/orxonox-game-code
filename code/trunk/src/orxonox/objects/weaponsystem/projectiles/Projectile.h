@@ -29,7 +29,7 @@
 #ifndef _Projectile_H__
 #define _Projectile_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/weaponsystem/WeaponsystemPrereqs.h"
 
 #include "tools/Timer.h"
 #include "interfaces/PawnListener.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public MovableEntity, public PawnListener
+    class _WeaponsystemExport Projectile : public MovableEntity, public PawnListener
     {
         public:
             Projectile(BaseObject* creator);
