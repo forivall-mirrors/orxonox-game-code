@@ -1,5 +1,5 @@
 
-Orxonox/fairytwirl
+particle_system Orxonox/fairytwirl
 {
 	quota	500
 	material	PE/lensflare

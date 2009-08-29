@@ -1,5 +1,5 @@
 
-Orxonox/repairGold
+particle_system Orxonox/repairGold
 {
 	quota	200
 	material	PE/lensflare

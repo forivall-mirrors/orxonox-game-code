@@ -1,5 +1,5 @@
 
-Orxonox/smoke2
+particle_system Orxonox/smoke2
 {
 	quota	1000
 	material	PE/smoke

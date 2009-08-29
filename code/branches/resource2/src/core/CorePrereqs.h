@@ -133,6 +133,8 @@ namespace orxonox
     class LanguageEntry;
     class Loader;
     class LuaState;
+    class MemoryArchive;
+    class MemoryArchiveFactory;
     class MetaObjectList;
     class MetaObjectListElement;
     class Namespace;

@@ -1,5 +1,5 @@
 
-Orxonox/fire3
+particle_system Orxonox/fire3
 {
 	quota	50
 	material	PE/explosion3

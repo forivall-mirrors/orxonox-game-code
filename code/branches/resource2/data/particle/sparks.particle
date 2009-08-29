@@ -1,5 +1,5 @@
 
-Orxonox/sparks
+particle_system Orxonox/sparks
 {
 	quota	100
 	material	PE/lensflare

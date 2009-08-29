@@ -1,5 +1,5 @@
 
-Orxonox/engineglow
+particle_system Orxonox/engineglow
 {
 	quota	200
 	material	PE/bigFlame

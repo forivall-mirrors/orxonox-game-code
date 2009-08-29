@@ -1,5 +1,5 @@
 
-Orxonox/smoke4
+particle_system Orxonox/smoke4
 {
 	quota	10
 	material	PE/smoke3

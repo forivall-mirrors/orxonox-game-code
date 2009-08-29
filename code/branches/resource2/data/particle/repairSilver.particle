@@ -1,5 +1,5 @@
 
-Orxonox/repairSilver
+particle_system Orxonox/repairSilver
 {
 	quota	500
 	material	PE/lensflare

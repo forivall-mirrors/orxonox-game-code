@@ -1,5 +1,5 @@
 
-Orxonox/explosion2b
+particle_system Orxonox/explosion2b
 {
 	quota	150
 	material	PE/explosion

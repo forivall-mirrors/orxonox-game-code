@@ -1,5 +1,5 @@
 
-Orxonox/BigExplosion1part3
+particle_system Orxonox/BigExplosion1part3
 {
 	quota	120
 	material	PE/point_lensflare

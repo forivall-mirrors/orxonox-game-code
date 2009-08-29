@@ -30,6 +30,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   GUIManager.cc
   Language.cc
   LuaState.cc
+  MemoryArchive.cc
   ObjectListBase.cc
   OrxonoxClass.cc
   Resource.cc

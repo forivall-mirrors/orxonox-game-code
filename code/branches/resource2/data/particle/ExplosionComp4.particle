@@ -1,5 +1,5 @@
 
-ExplosionComp4
+particle_system ExplosionComp4
 {
 	quota	10
 	material	BaseWhite
@@ -19,7 +19,7 @@ ExplosionComp4
 	accurate_facing	false
 }
 
-Orxonox/ExplosionComp4
+particle_system Orxonox/ExplosionComp4
 {
 	quota	500
 	material	PE/explosion

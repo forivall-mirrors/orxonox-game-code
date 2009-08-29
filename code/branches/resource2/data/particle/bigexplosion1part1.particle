@@ -1,5 +1,5 @@
 
-Orxonox/BigExplosion1part1
+particle_system Orxonox/BigExplosion1part1
 {
 	quota	100
 	material	PE/Flare

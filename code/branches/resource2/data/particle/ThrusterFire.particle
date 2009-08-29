@@ -1,5 +1,5 @@
 
-Orxonox/ThrusterFire
+particle_system Orxonox/ThrusterFire
 {
 	quota	50
 	material	PE/explosion3

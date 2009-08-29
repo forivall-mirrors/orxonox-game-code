@@ -1,5 +1,5 @@
 
-Orxonox/ExplosionComp2
+particle_system Orxonox/ExplosionComp2
 {
 	quota	1000
 	material	PE/smoke

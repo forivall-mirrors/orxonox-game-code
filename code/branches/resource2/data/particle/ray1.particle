@@ -1,5 +1,5 @@
 
-Orxonox/ray1
+particle_system Orxonox/ray1
 {
 	quota	1000
 	material	PE/lensflare

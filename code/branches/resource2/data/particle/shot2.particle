@@ -1,5 +1,5 @@
 
-Orxonox/shot2
+particle_system Orxonox/shot2
 {
 	quota	25
 	material	PE/point_lensflare

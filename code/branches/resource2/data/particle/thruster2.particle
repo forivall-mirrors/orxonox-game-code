@@ -1,4 +1,4 @@
-Orxonox/thruster2
+particle_system Orxonox/thruster2
 {
 	quota	150
 	material	PE/bigFlame

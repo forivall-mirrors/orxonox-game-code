@@ -1,4 +1,4 @@
-Orxonox/ForceFieldPurpleBig
+particle_system Orxonox/ForceFieldPurpleBig
 {
 	quota	10000
 	material	PE/smoke
@@ -90,7 +90,7 @@ Orxonox/ForceFieldPurpleBig
 	}
 }
 
-Orxonox/ForceFieldPurpleSmall
+particle_system Orxonox/ForceFieldPurpleSmall
 {
 	quota	10000
 	material	PE/smoke
@@ -182,7 +182,7 @@ Orxonox/ForceFieldPurpleSmall
 	}
 }	
 
-Orxonox/ForceFieldGreenBig
+particle_system Orxonox/ForceFieldGreenBig
 {
 	quota	10000
 	material	PE/smoke
@@ -274,7 +274,7 @@ Orxonox/ForceFieldGreenBig
 	}
 }
 
-Orxonox/ForceFieldGreenSmall
+particle_system Orxonox/ForceFieldGreenSmall
 {
 	quota	10000
 	material	PE/smoke
@@ -369,7 +369,7 @@ Orxonox/ForceFieldGreenSmall
 }
 
 			
-Orxonox/ForceFieldBlueBig
+particle_system Orxonox/ForceFieldBlueBig
 {
 	quota	10000
 	material	PE/smoke
@@ -461,7 +461,7 @@ Orxonox/ForceFieldBlueBig
 	}
 }
 
-Orxonox/ForceFieldBlueSmall
+particle_system Orxonox/ForceFieldBlueSmall
 {
 	quota	10000
 	material	PE/smoke

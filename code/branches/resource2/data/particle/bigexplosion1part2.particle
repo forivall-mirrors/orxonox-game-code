@@ -1,5 +1,5 @@
 
-Orxonox/BigExplosion1part2
+particle_system Orxonox/BigExplosion1part2
 {
 	quota	50
 	material	PE/ringflare

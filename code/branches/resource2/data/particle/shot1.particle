@@ -1,4 +1,4 @@
-Orxonox/shot1
+particle_system Orxonox/shot1
 {
 	quota	5000
 	material	PE/lensflare

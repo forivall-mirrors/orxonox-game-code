@@ -1,5 +1,5 @@
 
-Orxonox/FireComp2
+particle_system Orxonox/FireComp2
 {
 	quota	10000
 	material	PE/smoke

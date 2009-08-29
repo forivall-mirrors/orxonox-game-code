@@ -1,5 +1,5 @@
 
-Orxonox/LaserGun
+particle_system Orxonox/LaserGun
 {
 	quota	1000
 	material	PE/Streak
