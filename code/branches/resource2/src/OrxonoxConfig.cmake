@@ -38,9 +38,6 @@ IF(PCH_COMPILER_SUPPORT)
   OPTION(PCH_ENABLE "Global PCH switch" TRUE)
 ENDIF()
 
-# Enable expensive optimisations: use this for a binary release build
-OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
-
 # Use WinMain() or main()?
 IF(WIN32)
   OPTION(ORXONOX_USE_WINMAIN "Use WinMain (doesn't show console) or main" FALSE)

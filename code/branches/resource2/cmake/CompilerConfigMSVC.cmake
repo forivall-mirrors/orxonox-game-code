@@ -74,13 +74,10 @@ SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"      Release        CACHE)
 SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP2"      RelWithDebInfo CACHE)
 SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"      MinSizeRel     CACHE)
 
-# Microsoft unfortunately couldn't integrate a fix issued while VS 2008 beta 2
-# was being tested into the final release even though a fix existed...
-# And it's actually quite a big issue, you simple can't compile anything.
-# Fortunately for us, disabling Minimal Rebuild solves the problem.
-REMOVE_COMPILER_FLAGS("-Gm" Debug MSVC09 CACHE)
-# And since we have to remove /Gm, let's add /MP2 to speed things up
-ADD_COMPILER_FLAGS("-MP2" Debug MSVC09 CACHE)
+# Use Link time code generation for Release config if ORXONOX_RELEASE is defined
+IF(ORXONOX_RELEASE)
+  ADD_COMPILER_FLAGS("-GL" ReleaseAll CACHE)
+ENDIF()
 
 
 ####################### Warnings ########################
@@ -148,3 +145,8 @@ ADD_COMPILER_FLAGS("-w44800" CACHE)
 # and INCREMENTAL and DEBUG for debug versions
 ADD_LINKER_FLAGS("-OPT:REF -OPT:ICF" Release MinSizeRel CACHE)
 ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
+
+# Use Link time code generation for Release config if ORXONOX_RELEASE is defined
+IF(ORXONOX_RELEASE)
+  ADD_LINKER_FLAGS("-LTCG" ReleaseAll CACHE)
+ENDIF()

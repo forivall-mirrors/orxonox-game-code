@@ -88,6 +88,9 @@ ELSE()
   MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 ENDIF()
 
+# Enable expensive optimisations: use this for a binary release build
+OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
+
 ########### Subfolders and Subscripts ###########
 
 # Library finding
