@@ -203,12 +203,18 @@ namespace boost
     template<class T> class scoped_ptr;
     template<class T> class shared_ptr;
     template<class T> class weak_ptr;
+    template<class T> class intrusive_ptr;
+    template<class T> class shared_array;
+    template<class T> class scoped_array;
 }
 namespace orxonox
 {
     using boost::scoped_ptr;
     using boost::shared_ptr;
     using boost::weak_ptr;
+    using boost::intrusive_ptr;
+    using boost::shared_array;
+    using boost::scoped_array;
 }
 
 #endif /* _OrxonoxConfig_H__ */
