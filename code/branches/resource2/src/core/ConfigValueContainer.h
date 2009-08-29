@@ -30,7 +30,7 @@
     @file
     @brief Definition of the ConfigValueContainer class.
 
-    The ConfigValueContainer class contains all needed informations about a configurable variable:
+    The ConfigValueContainer class contains all needed information about a configurable variable:
      - the name of the variable
      - the name of the class the variable belongs to
      - the default value
@@ -78,9 +78,9 @@ namespace orxonox
     };
 
 
-    //! The ConfigValuecontainer contains all needed informations about a configurable variable.
+    //! The ConfigValuecontainer contains all needed information about a configurable variable.
     /**
-        The ConfigValueContainer class contains all needed informations about a configurable variable:
+        The ConfigValueContainer class contains all needed information about a configurable variable:
          - the name of the variable
          - the name of the class the variable belongs to
          - the default value
