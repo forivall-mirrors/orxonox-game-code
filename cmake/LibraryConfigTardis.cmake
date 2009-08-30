@@ -36,6 +36,9 @@ ENDIF()
 IF(TARDIS)
   MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
 
+  SET(CMAKE_C_COMPILER "gcc-4.1.1")
+  SET(CMAKE_CXX_COMPILER "g++-4.1.1")
+
   # Note: When setting ENV${} variables, make sure to use quotes when
   #       having multiple directories.
   SET(BOOST_INCLUDEDIR "/usr/pack/boost-1.36.0-sd/include/boost-1_36")
