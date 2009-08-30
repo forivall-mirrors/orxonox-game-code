@@ -35,42 +35,52 @@
  #
 
 MACRO(PARSE_MACRO_ARGUMENTS _switches _list_names)
+
+  # Using LIST(FIND ...) speeds up the process
+  SET(_keywords ${_switches} ${_list_names})
+
   # Parse all the arguments and set the corresponding variable
   # If the option is just a switch, set the variable to its name for later use
   FOREACH(_arg ${ARGN})
-    SET(_arg_found FALSE)
 
-    # Switches
-    FOREACH(_switch ${_switches})
-      IF(${_switch} STREQUAL ${_arg})
-        SET(_arg_${_switch} ${_switch})
-	SET(_arg_found TRUE)
-        # Avoid interpreting arguments after this one as options args for the previous one
-	SET(_storage_var)
-        BREAK()
-      ENDIF()
-    ENDFOREACH(_switch)
+    # Is the argument a keyword?
+    LIST(FIND _keywords ${_arg} _keyword_index)
+    IF(NOT _keyword_index EQUAL -1)
 
-    # Input options
-    IF(NOT _arg_found)
-      FOREACH(_list_name ${_list_names})
-        IF(${_list_name} STREQUAL ${_arg})
-          SET(_storage_var _arg_${_list_name})
-	  SET(_arg_found TRUE)
+      # Another optimisation
+      SET(_arg_found FALSE)
+      # Switches
+      FOREACH(_switch ${_switches})
+        IF(${_switch} STREQUAL ${_arg})
+          SET(_arg_${_switch} ${_switch})
+          SET(_arg_found TRUE)
+          # Avoid interpreting arguments after this one as options args for the previous one
+          SET(_storage_var)
           BREAK()
         ENDIF()
-      ENDFOREACH(_list_name)
-    ENDIF(NOT _arg_found)
+      ENDFOREACH(_switch)
 
-    # Arguments of an input option (like source files for SOURCE_FILES)
-    IF(NOT _arg_found)
+      # Input options
+      IF(NOT _arg_found)
+        FOREACH(_list_name ${_list_names})
+          IF(${_list_name} STREQUAL ${_arg})
+            SET(_storage_var _arg_${_list_name})
+            BREAK()
+          ENDIF()
+        ENDFOREACH(_list_name)
+      ENDIF(NOT _arg_found)
+
+    ELSE()
+
+      # Arguments of an input option (like source files for SOURCE_FILES)
       IF(_storage_var)
         # Store in variable define above in the foreach loop
         SET(${_storage_var} ${${_storage_var}} ${_arg})
       ELSE()
         MESSAGE(FATAL_ERROR "ORXONOX_ADD_${_target_type} was given a non compliant argument: ${_arg}")
       ENDIF(_storage_var)
-    ENDIF(NOT _arg_found)
+
+    ENDIF()
 
   ENDFOREACH(_arg)
 ENDMACRO(PARSE_MACRO_ARGUMENTS)

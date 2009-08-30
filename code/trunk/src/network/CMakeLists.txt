@@ -34,11 +34,31 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   ServerConnection.cc
   TrafficControl.cc
 )
+
+SET_SOURCE_FILES(NETWORK_HDR_FILES
+  ChatListener.h
+  Client.h
+  ClientConnection.h
+  ClientConnectionListener.h
+  ClientInformation.h
+  Connection.h
+  FunctionCallManager.h
+  GamestateClient.h
+  GamestateHandler.h
+  GamestateManager.h
+  Host.h
+  NetworkFunction.h
+  NetworkPrecompiledHeaders.h
+  NetworkPrereqs.h
+  Server.h
+  ServerConnection.h
+  TrafficControl.h
+)
+
 ADD_SUBDIRECTORY(packet)
 ADD_SUBDIRECTORY(synchronisable)
 
 ORXONOX_ADD_LIBRARY(network
-  FIND_HEADER_FILES
   DEFINE_SYMBOL
     "NETWORK_SHARED_BUILD"
   PCH_FILE
@@ -50,5 +70,5 @@ ORXONOX_ADD_LIBRARY(network
     util
     core
   SOURCE_FILES
-    ${NETWORK_SRC_FILES}
+    ${NETWORK_SRC_FILES} ${NETWORK_HDR_FILES}
 )

@@ -31,8 +31,8 @@
  #    OGRE_PLUGINS_DEBUG          Names of the debug plugins without extension
  #    OGRE_PLUGINS_RELEASE        Names of the release plugins without ext.
  #  Note:
- #    You must not specify render systems as input, but the ones found will be
- #    present in the output variables.
+ #    You must not specify render systems as input. That will be taken care of
+ #    automatically.
  #
 
 FUNCTION(CHECK_OGRE_PLUGINS)

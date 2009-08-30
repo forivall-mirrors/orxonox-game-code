@@ -306,6 +306,8 @@ namespace orxonox
             void updateConfigValues();
             void updateConfigValues(ConfigFileType type);
 
+            static std::string DEFAULT_CONFIG_FILE;
+
         private:
             ConfigFileManager(const ConfigFileManager&);
 

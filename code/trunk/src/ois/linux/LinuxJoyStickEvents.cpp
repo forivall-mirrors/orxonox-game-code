@@ -36,15 +36,12 @@ restrictions:
 
 
 #include <sstream>
+# include <iostream>
+using namespace std;
 
 using namespace OIS;
 
 //#define OIS_LINUX_JOY_DEBUG
-
-#ifdef OIS_LINUX_JOY_DEBUG
-# include <iostream>
-  using namespace std;
-#endif
 
 //-------------------------------------------------------------------//
 LinuxJoyStick::LinuxJoyStick(InputManager* creator, bool buffered, const JoyStickInfo& js)
@@ -113,7 +110,7 @@ void LinuxJoyStick::capture()
 			int button = mButtonMap[js[i].code];
 
 			#ifdef OIS_LINUX_JOY_DEBUG
-			  std::cout << "\nButton Code: " << js[i].code << ", OIS Value: " << button << std::endl;
+			  cout << "\nButton Code: " << js[i].code << ", OIS Value: " << button << endl;
 			#endif
 
 			//Check to see whether push or released event...
@@ -131,14 +128,15 @@ void LinuxJoyStick::capture()
 			}
 			break;
 		}
-		case EV_ABS:  //Absoulte Axis
+
+		case EV_ABS:  //Absolute Axis
 		{
 			//A Stick (BrakeDefine is the highest possible Axis)
 			if( js[i].code <= ABS_BRAKE )
 			{
 				int axis = mAxisMap[js[i].code];
-				assert( axis < 32 && "Too many axes, not supported. Report this to OIS forums!" );
-				
+				assert( axis < 32 && "Too many axes (Max supported is 32). Report this to OIS forums!" );
+
 				axisMoved[axis] = true;
 
 				//check for rescaling:
@@ -189,8 +187,13 @@ void LinuxJoyStick::capture()
 			}
 			break;
 		}
-		//Relative Axes (Do any joysticks actually have a relative axis?)
-		case EV_REL:
+
+		
+		case EV_REL: //Relative Axes (Do any joystick actually have a relative axis?)
+#ifdef OIS_LINUX_JOY_DEBUG
+		    cout << "\nWarning: Relatives axes not supported yet" << endl;
+#endif
+			break;
 		default: break;
 		}
 	}
@@ -242,14 +245,14 @@ JoyStickInfoList LinuxJoyStick::_scanJoys()
 	//xxx move this to InputManager, as it can also scan all other events
 	for(int i = 0; i < 64; ++i )
 	{
-		std::stringstream s;
+		stringstream s;
 		s << "/dev/input/event" << i;
-		int fd = open( s.str().c_str(), O_RDONLY |O_NONBLOCK );
+		int fd = open( s.str().c_str(), O_RDWR |O_NONBLOCK );
 		if(fd == -1)
 			continue;
-		
+
         #ifdef OIS_LINUX_JOY_DEBUG
-          std::cout << "\nOpening " << s.str() << "...";
+		  cout << "Opening " << s.str() << "..." << endl;
         #endif
 		try
 		{
@@ -258,13 +261,13 @@ JoyStickInfoList LinuxJoyStick::_scanJoys()
 			{
 				joys.push_back(js);
                 #ifdef OIS_LINUX_JOY_DEBUG
-                  std::cout << "\n__Joystick added to list";
+                  cout << "=> Joystick added to list." << endl;
                 #endif
 			}
 			else
 			{
                 #ifdef OIS_LINUX_JOY_DEBUG
-                  std::cout << "\n__Not a joystick!!";
+                  cout << "=> Not a joystick." << endl;
                 #endif
 				close(fd);
 			}
@@ -272,7 +275,7 @@ JoyStickInfoList LinuxJoyStick::_scanJoys()
 		catch(...)
 		{
             #ifdef OIS_LINUX_JOY_DEBUG
-              std::cout << "\nException caught!!";
+              cout << "Exception caught!!" << endl;
             #endif
 			close(fd);
 		}

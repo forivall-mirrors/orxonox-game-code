@@ -81,32 +81,37 @@ void Win32JoyStick::_initialize()
 	//Clear old state
 	mState.mAxes.clear();
 
-	delete ff_device;
-	ff_device = 0;
+	if (ff_device)
+	{
+		delete ff_device;
+		ff_device = 0;
+	}
 
+	// Create direct input joystick device.
+	if(FAILED(mDirectInput->CreateDevice(deviceGuid, &mJoyStick, NULL)))
+		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize() >> Could not initialize joy device!");
+
+	// Set DIJoystick2 data format.
+	if(FAILED(mJoyStick->SetDataFormat(&c_dfDIJoystick2)))
+		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize() >> data format error!");
+
+	// Set cooperative level as specified when creating input manager.
+	HWND hwin = ((Win32InputManager*)mCreator)->getWindowHandle();
+	if(FAILED(mJoyStick->SetCooperativeLevel( hwin, coopSetting)))
+		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize() >> failed to set cooperation level!");
+
+	// Set buffer size.
 	DIPROPDWORD dipdw;
-
 	dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
 	dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
 	dipdw.diph.dwObj        = 0;
 	dipdw.diph.dwHow        = DIPH_DEVICE;
 	dipdw.dwData            = JOYSTICK_DX_BUFFERSIZE;
 
-	if(FAILED(mDirectInput->CreateDevice(deviceGuid, &mJoyStick, NULL)))
-		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize() >> Could not initialize joy device!");
-
-	if(FAILED(mJoyStick->SetDataFormat(&c_dfDIJoystick2)))
-		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize() >> data format error!");
-
-	HWND hwin = ((Win32InputManager*)mCreator)->getWindowHandle();
-
-	if(FAILED(mJoyStick->SetCooperativeLevel( hwin, coopSetting)))
-		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize() >> failed to set cooperation level!");
-
 	if( FAILED(mJoyStick->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)) )
-		OIS_EXCEPT( E_General, "Win32Mouse::Win32Mouse >> Failed to set buffer size property" );
+		OIS_EXCEPT( E_General, "Win32JoyStick::_initialize >> Failed to set buffer size property" );
 
-	//Enumerate all axes/buttons/sliders/etc before aquiring
+	// Enumerate all axes/buttons/sliders/force feedback/etc before aquiring
 	_enumerate();
 
 	mState.clear();
@@ -117,23 +122,25 @@ void Win32JoyStick::_initialize()
 //--------------------------------------------------------------------------------------------------//
 void Win32JoyStick::_enumerate()
 {
-	//We can check force feedback here too
-	DIDEVCAPS  DIJoyCaps;
-	DIJoyCaps.dwSize = sizeof(DIDEVCAPS);
-	mJoyStick->GetCapabilities(&DIJoyCaps);
+	// Get joystick capabilities.
+	mDIJoyCaps.dwSize = sizeof(DIDEVCAPS);
+	if( FAILED(mJoyStick->GetCapabilities(&mDIJoyCaps)) )
+		OIS_EXCEPT( E_General, "Win32JoyStick::_enumerate >> Failed to get capabilities" );
 
-	mPOVs = (short)DIJoyCaps.dwPOVs;
+	// => Number of POVs
+	mPOVs = (short)mDIJoyCaps.dwPOVs;
 
-	mState.mButtons.resize(DIJoyCaps.dwButtons);
-	mState.mAxes.resize(DIJoyCaps.dwAxes);
+	// => Number of buttons and axes.
+	mState.mButtons.resize(mDIJoyCaps.dwButtons);
+	mState.mAxes.resize(mDIJoyCaps.dwAxes);
+
+	// Enumerate all Force Feedback effects (if any)
+	mJoyStick->EnumEffects(DIEnumEffectsCallback, this, DIEFT_ALL);
 
 	//Reset the axis mapping enumeration value
 	_AxisNumber = 0;
 
-	//Enumerate Force Feedback (if any)
-	mJoyStick->EnumEffects(DIEnumEffectsCallback, this, DIEFT_ALL);
-
-	//Enumerate and set axis constraints (and check FF Axes)
+	// Enumerate and set axis constraints (and check FF Axes)
 	mJoyStick->EnumObjects(DIEnumDeviceObjectsCallback, this, DIDFT_AXIS);
 }
 
@@ -180,13 +187,22 @@ BOOL CALLBACK Win32JoyStick::DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTAN
 	if (FAILED(_this->mJoyStick->SetProperty(DIPROP_RANGE, &diprg.diph)))
 		OIS_EXCEPT( E_General, "Win32JoyStick::_DIEnumDeviceObjectsCallback >> Failed to set min/max range property" );
 
-	//Check if FF Axes
+	//Check if FF Axes, and if so, increment counter
 	if((lpddoi->dwFlags & DIDOI_FFACTUATOR) != 0 )
 	{
 		if( _this->ff_device )
 		{
-			//todo - increment force feedback axis count
+			_this->ff_device->_addFFAxis();
 		}
+	}
+
+	//Force the flags for gain and auto-center support to true,
+	//as DInput has no API to query the device for these capabilities
+	//(the only way to know is to try them ...)
+	if( _this->ff_device )
+	{
+	    _this->ff_device->_setGainSupport(true);
+	    _this->ff_device->_setAutoCenterSupport(true);
 	}
 
 	return DIENUM_CONTINUE;
@@ -197,9 +213,9 @@ BOOL CALLBACK Win32JoyStick::DIEnumEffectsCallback(LPCDIEFFECTINFO pdei, LPVOID 
 {
 	Win32JoyStick* _this = (Win32JoyStick*)pvRef;
 
-	//Create the FF class after we know there is at least one effect type
+	//Create the FF instance only after we know there is at least one effect type
 	if( _this->ff_device == 0 )
-		_this->ff_device = new Win32ForceFeedback(_this->mJoyStick);
+	  _this->ff_device = new Win32ForceFeedback(_this->mJoyStick, &_this->mDIJoyCaps);
 
 	_this->ff_device->_addEffectSupport( pdei );
 

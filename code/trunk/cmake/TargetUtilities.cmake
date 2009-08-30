@@ -57,6 +57,7 @@
  #    _target_name, ARGN for the macro arguments
  #
 
+INCLUDE(CMakeDependentOption)
 INCLUDE(CapitaliseName)
 INCLUDE(GenerateToluaBindings)
 INCLUDE(ParseMacroArguments)
@@ -117,7 +118,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # First part (pre target) of precompiled header files
-  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE AND _arg_PCH_FILE)
+  IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
     # Provide convenient option to control PCH
     STRING(TOUPPER "${_target_name}" _target_name_upper)
     IF(_arg_PCH_NO_DEFAULT)
@@ -125,7 +126,8 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ELSE()
       SET(PCH_DEFAULT TRUE)
     ENDIF()
-    OPTION(PCH_ENABLE_${_target_name_upper} "Enable using precompiled header files for library ${_target_name}." ${PCH_DEFAULT})
+    CMAKE_DEPENDENT_OPTION(PCH_ENABLE_${_target_name_upper}
+      "Enable using precompiled header files for library ${_target_name}." ${PCH_DEFAULT} PCH_ENABLE OFF)
 
     IF(PCH_ENABLE_${_target_name_upper})
       PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
@@ -202,13 +204,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(NOT _arg_STATIC AND NOT _arg_NO_INSTALL)
     IF(_arg_MODULE)
       INSTALL(TARGETS ${_target_name}
-        RUNTIME DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
-        LIBRARY DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+        RUNTIME DESTINATION ${MODULE_INSTALL_DIRECTORY}
+        LIBRARY DESTINATION ${MODULE_INSTALL_DIRECTORY}
       )
     ELSE()
       INSTALL(TARGETS ${_target_name}
-        RUNTIME DESTINATION ${ORXONOX_RUNTIME_INSTALL_PATH}
-        LIBRARY DESTINATION ${ORXONOX_LIBRARY_INSTALL_PATH}
+        RUNTIME DESTINATION ${RUNTIME_INSTALL_DIRECTORY}
+        LIBRARY DESTINATION ${LIBRARY_INSTALL_DIRECTORY}
       )
     ENDIF()
   ENDIF()
@@ -216,7 +218,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
 ENDFUNCTION(TU_ADD_TARGET)
 
 
-# Creates a helper file with name <name_of_the_library>.module
+# Creates a helper file with name <name_of_the_library>${ORXONOX_MODULE_EXTENSION}
 # This helps finding dynamically loadable modules at runtime
 
 FUNCTION(ADD_MODULE _target)
@@ -234,7 +236,7 @@ FUNCTION(ADD_MODULE _target)
 
       INSTALL(
         FILES ${_module_filename}
-        DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+        DESTINATION ${MODULE_INSTALL_DIRECTORY}
         CONFIGURATIONS ${_config}
       )
     ENDFOREACH()
@@ -245,7 +247,7 @@ FUNCTION(ADD_MODULE _target)
 
     INSTALL(
       FILES ${_module_filename}
-      DESTINATION ${ORXONOX_MODULE_INSTALL_PATH}
+      DESTINATION ${MODULE_INSTALL_DIRECTORY}
     )
   ENDIF()
 ENDFUNCTION(ADD_MODULE)

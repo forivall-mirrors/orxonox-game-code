@@ -62,7 +62,7 @@ ADD_CUSTOM_COMMAND(
                              -s ${TOLUA_PARSER_SOURCE}
                                 CEGUI.pkg
   DEPENDS              ${TOLUA_PARSER_DEPENDENCIES}
-  WORKING_DIRECTORY    ${ORXONOX_RUNTIME_LIBRARY_DIRECTORY}
+  WORKING_DIRECTORY    ${RUNTIME_LIBRARY_DIRECTORY}
   COMMENT "Generating tolua bind files for package CEGUILua"
 )
 

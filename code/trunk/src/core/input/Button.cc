@@ -58,7 +58,6 @@ namespace orxonox
         nCommands_[0]=0;
         nCommands_[1]=0;
         nCommands_[2]=0;
-        this->configContainer_ = 0;
     }
 
     Button::~Button()

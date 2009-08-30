@@ -27,12 +27,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Implementation of the GUIManager class.
-*/
-
 #include "GUIManager.h"
 
 #include <memory>
@@ -42,6 +36,7 @@ extern "C" {
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIInputEvent.h>
+#include <CEGUIMouseCursor.h>
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
@@ -58,7 +53,8 @@ extern "C" {
 #include "util/OrxAssert.h"
 #include "Core.h"
 #include "Clock.h"
-#include "LuaBind.h"
+#include "LuaState.h"
+#include "Resource.h"
 
 namespace orxonox
 {
@@ -100,7 +96,7 @@ namespace orxonox
         Ogre's render window. Without this, the GUI cannot be displayed.
     @return true if success, otherwise false
     */
-    GUIManager::GUIManager(Ogre::RenderWindow* renderWindow)
+    GUIManager::GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen)
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
     {
@@ -108,72 +104,44 @@ namespace orxonox
 
         COUT(3) << "Initialising CEGUI." << std::endl;
 
-        try
-        {
-            // Note: No SceneManager specified yet
-            guiRenderer_.reset(new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
-            resourceProvider_ = guiRenderer_->createResourceProvider();
-            resourceProvider_->setDefaultResourceGroup("GUI");
+        // Note: No SceneManager specified yet
+        guiRenderer_.reset(new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
+        resourceProvider_ = guiRenderer_->createResourceProvider();
+        resourceProvider_->setDefaultResourceGroup("GUI");
 
-            // setup scripting
-            scriptModule_.reset(new LuaScriptModule());
-            luaState_ = scriptModule_->getLuaState();
+        // setup scripting
+        luaState_.reset(new LuaState());
+        scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
 
-            // Create our own logger to specify the filepath
-            std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
-            ceguiLogger->setLogFilename(Core::getLogPathString() + "cegui.log");
-            // set the log level according to ours (translate by subtracting 1)
-            ceguiLogger->setLoggingLevel(
-                static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
-            this->ceguiLogger_ = ceguiLogger.release();
+        // Create our own logger to specify the filepath
+        std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
+        ceguiLogger->setLogFilename(Core::getLogPathString() + "cegui.log");
+        // set the log level according to ours (translate by subtracting 1)
+        ceguiLogger->setLoggingLevel(
+            static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
+        this->ceguiLogger_ = ceguiLogger.release();
 
-            // create the CEGUI system singleton
-            guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
+        // create the CEGUI system singleton
+        guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-            // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
-            LuaBind::getInstance().openToluaInterfaces(this->luaState_);
+        // Initialise the basic lua code
+        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
+        this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
 
-            // initialise the basic lua code
-            this->loadLuaCode();
-        }
-        catch (CEGUI::Exception& ex)
-        {
-#if CEGUI_VERSION_MAJOR == 0 && CEGUI_VERSION_MINOR < 6
-            throw GeneralException(ex.getMessage().c_str());
-#else
-            throw GeneralException(ex.getMessage().c_str(), ex.getLine(),
-                ex.getFileName().c_str(), ex.getName().c_str());
-#endif
-        }
+        // Align CEGUI mouse with OIS mouse
+        guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
+
+        // Hide the mouse cursor unless playing in fullscreen mode
+        if (!bFullScreen)
+            CEGUI::MouseCursor::getSingleton().hide();
     }
 
     /**
     @brief
-        Destructor of the GUIManager
-
         Basically shuts down CEGUI (member smart pointers) but first unloads our Tolua modules.
     */
     GUIManager::~GUIManager()
     {
-        // destroy our own tolua interfaces
-        LuaBind::getInstance().closeToluaInterfaces(this->luaState_);
-    }
-
-    /**
-    @brief
-        Calls main Lua script
-    @todo
-        This function calls the main Lua script for our GUI.
-
-        Additionally we set the datapath variable in Lua. This is needed so Lua can access the data used for the GUI.
-    */
-    void GUIManager::loadLuaCode()
-    {
-        // set datapath for GUI data
-        lua_pushfstring(this->scriptModule_->getLuaState(), Core::getMediaPathString().c_str());
-        lua_setglobal(this->scriptModule_->getLuaState(), "datapath");
-        // call main Lua script
-        this->scriptModule_->executeScriptFile("loadGUI_3.lua", "GUI");
     }
 
     /**
@@ -220,18 +188,7 @@ namespace orxonox
     */
     void GUIManager::executeCode(const std::string& str)
     {
-        try
-        {
-            this->scriptModule_->executeString(str);
-        }
-        catch (const CEGUI::Exception& ex)
-        {
-            COUT(2) << "CEGUI Error: \"" << ex.getMessage() << "\" while executing code \"" << str << "\"" << std::endl;
-        }
-        catch (...)
-        {
-            COUT(2) << "Couldn't execute GUI related Lua code due to unknown reasons." << std::endl;
-        }
+        this->luaState_->doString(str, rootFileInfo_);
     }
 
     /**
@@ -245,7 +202,7 @@ namespace orxonox
     */
     void GUIManager::showGUI(const std::string& name)
     {
-        this->executeCode(std::string("showGUI(\"") + name + "\")");
+        this->luaState_->doString("showGUI(\"" + name + "\")", rootFileInfo_);
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)
@@ -304,7 +261,7 @@ namespace orxonox
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        guiSystem_->injectMouseMove(static_cast<float>(rel.x), static_cast<float>(rel.y));
+        guiSystem_->injectMousePosition(static_cast<float>(abs.x), static_cast<float>(abs.y));
     }
     void GUIManager::mouseScrolled(int abs, int rel)
     {

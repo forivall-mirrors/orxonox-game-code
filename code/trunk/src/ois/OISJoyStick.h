@@ -31,7 +31,7 @@ namespace OIS
 	#define OIS_JOYSTICK_VECTOR3_DEFAULT 2.28f
 
 	//! POV / HAT Joystick component
-	class _OISExport Pov : Component
+	class _OISExport Pov : public Component
 	{
 	public:
 		Pov() : Component(OIS_POV), direction(0) {}
@@ -50,7 +50,7 @@ namespace OIS
 	};
 
 	//! A sliding axis - only used in Win32 Right Now
-	class _OISExport Slider : Component
+	class _OISExport Slider : public Component
 	{
 	public:
 		Slider() : Component(OIS_Slider), abX(0), abY(0) {};

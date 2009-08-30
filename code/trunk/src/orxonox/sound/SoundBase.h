@@ -54,7 +54,7 @@ namespace orxonox
         bool isPaused();
         bool isStopped();
 
-        bool loadFile(std::string filename);
+        bool loadFile(const std::string& filename);
 
     private:
         ALuint loadOggFile(const std::string& filename);

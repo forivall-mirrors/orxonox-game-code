@@ -41,7 +41,6 @@
 #include <cstdio>
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
-#include <OgreRenderWindow.h>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -75,7 +74,7 @@
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
-#include "LuaBind.h"
+#include "LuaState.h"
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
@@ -93,7 +92,7 @@ namespace orxonox
     //! Static pointer to the singleton
     Core* Core::singletonPtr_s  = 0;
 
-    SetCommandLineArgument(mediaPath, "").information("Path to the media/data files");
+    SetCommandLineArgument(externalDataPath, "").information("Path to the external data files");
     SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -118,9 +117,13 @@ namespace orxonox
             RegisterRootObject(CoreConfiguration);
             this->setConfigValues();
 
-            // Possible media path override by the command line
-            if (!CommandLine::getArgument("mediaPath")->hasDefaultValue())
-                tsetMediaPath(CommandLine::getValue("mediaPath"));
+            // External data directory only exists for dev runs
+            if (Core::isDevelopmentRun())
+            {
+                // Possible data path override by the command line
+                if (!CommandLine::getArgument("externalDataPath")->hasDefaultValue())
+                    tsetExternalDataPath(CommandLine::getValue("externalDataPath"));
+            }
         }
 
         /**
@@ -153,14 +156,6 @@ namespace orxonox
             SetConfigValue(bInitializeRandomNumberGenerator_, true)
                 .description("If true, all random actions are different each time you start the game")
                 .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
-
-            // Only show this config value for development builds
-            if (Core::isDevelopmentRun())
-            {
-                SetConfigValue(mediaPathString_, mediaPath_.string())
-                    .description("Relative path to the game data.")
-                    .callback(this, &CoreConfiguration::mediaPathChanged);
-            }
         }
 
         /**
@@ -191,15 +186,6 @@ namespace orxonox
         }
 
         /**
-        @brief
-            Callback function if the media path has changed.
-        */
-        void mediaPathChanged()
-        {
-            mediaPath_ = boost::filesystem::path(this->mediaPathString_);
-        }
-
-        /**
             @brief Sets the language in the config-file back to the default.
         */
         void resetLanguage()
@@ -209,22 +195,13 @@ namespace orxonox
 
         /**
         @brief
-            Temporary sets the media path
+            Temporary sets the data path
         @param path
-            The new media path
+            The new data path
         */
-        void tsetMediaPath(const std::string& path)
+        void tsetExternalDataPath(const std::string& path)
         {
-            if (Core::isDevelopmentRun())
-            {
-                ModifyConfigValue(mediaPathString_, tset, path);
-            }
-            else
-            {
-                // Manual 'config' value without the file entry
-                mediaPathString_ = path;
-                this->mediaPathChanged();
-            }
+            dataPath_ = boost::filesystem::path(path);
         }
 
         void initializeRandomNumberGenerator()
@@ -244,13 +221,13 @@ namespace orxonox
         int softDebugLevelShell_;                       //!< The debug level for the ingame shell
         std::string language_;                          //!< The language
         bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-        std::string mediaPathString_;                   //!< Path to the data/media file folder as string
 
         //! Path to the parent directory of the ones above if program was installed with relativ pahts
         boost::filesystem::path rootPath_;
         boost::filesystem::path executablePath_;        //!< Path to the executable
         boost::filesystem::path modulePath_;            //!< Path to the modules
-        boost::filesystem::path mediaPath_;             //!< Path to the media file folder
+        boost::filesystem::path dataPath_;              //!< Path to the data file folder
+        boost::filesystem::path externalDataPath_;      //!< Path to the external data file folder
         boost::filesystem::path configPath_;            //!< Path to the config file folder
         boost::filesystem::path logPath_;               //!< Path to the log file folder
     };
@@ -275,7 +252,7 @@ namespace orxonox
         try
         {
             // We search for helper files with the following extension
-            std::string moduleextension = ORXONOX_MODULE_EXTENSION;
+            std::string moduleextension = specialConfig::moduleExtension;
             size_t moduleextensionlength = moduleextension.size();
 
             // Search in the directory of our executable
@@ -363,27 +340,27 @@ namespace orxonox
         // Required as well for the config values
         this->languageInstance_.reset(new Language());
 
+        // creates the class hierarchy for all classes with factories
+        Factory::createClassHierarchy();
+
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         this->configuration_->initialise();
 
-        // Create the lua interface
-        this->luaBind_.reset(new LuaBind());
+        // Load OGRE excluding the renderer and the render window
+        this->graphicsManager_.reset(new GraphicsManager(false));
 
         // initialise Tcl
-        this->tclBind_.reset(new TclBind(Core::getMediaPathString()));
+        this->tclBind_.reset(new TclBind(Core::getDataPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
         // create a shell
         this->shell_.reset(new Shell());
-
-        // creates the class hierarchy for all classes with factories
-        Factory::createClassHierarchy();
     }
 
     /**
     @brief
-        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
+        All destruction code is handled by scoped_ptrs and ScopeGuards.
     */
     Core::~Core()
     {
@@ -391,37 +368,40 @@ namespace orxonox
 
     void Core::loadGraphics()
     {
-        if (bGraphicsLoaded_)
-            return;
+        // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
+        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
-        // Load OGRE including the render window
-        scoped_ptr<GraphicsManager> graphicsManager(new GraphicsManager());
-
-        // The render window width and height are used to set up the mouse movement.
-        size_t windowHnd = 0;
-        graphicsManager->getRenderWindow()->getCustomAttribute("WINDOW", &windowHnd);
+        // Upgrade OGRE to receive a render window
+        graphicsManager_->upgradeToGraphics();
 
         // Calls the InputManager which sets up the input devices.
-        scoped_ptr<InputManager> inputManager(new InputManager(windowHnd));
+        inputManager_.reset(new InputManager());
 
         // load the CEGUI interface
-        guiManager_.reset(new GUIManager(graphicsManager->getRenderWindow()));
+        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
+            inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
 
-        // Dismiss scoped pointers
-        graphicsManager_.swap(graphicsManager);
-        inputManager_.swap(inputManager);
+        unloader.Dismiss();
 
         bGraphicsLoaded_ = true;
     }
 
     void Core::unloadGraphics()
     {
-        if (!bGraphicsLoaded_)
-            return;
-
         this->guiManager_.reset();;
         this->inputManager_.reset();;
         this->graphicsManager_.reset();
+
+        // Load Ogre::Root again, but without the render system
+        try
+            { this->graphicsManager_.reset(new GraphicsManager(false)); }
+        catch (...)
+        {
+            COUT(0) << "An exception occurred during 'new GraphicsManager' while "
+                    << "another exception was being handled. This will lead to undefined behaviour!" << std::endl
+                    << "Terminating the program." << std::endl;
+            abort();
+        }
 
         bGraphicsLoaded_ = false;
     }
@@ -484,18 +464,27 @@ namespace orxonox
         Core::getInstance().configuration_->resetLanguage();
     }
 
-    /*static*/ void Core::tsetMediaPath(const std::string& path)
+    /*static*/ void Core::tsetExternalDataPath(const std::string& path)
     {
-        getInstance().configuration_->tsetMediaPath(path);
+        getInstance().configuration_->tsetExternalDataPath(path);
     }
 
-    /*static*/ const boost::filesystem::path& Core::getMediaPath()
+    /*static*/ const boost::filesystem::path& Core::getDataPath()
     {
-        return getInstance().configuration_->mediaPath_;
+        return getInstance().configuration_->dataPath_;
     }
-    /*static*/ std::string Core::getMediaPathString()
+    /*static*/ std::string Core::getDataPathString()
     {
-        return getInstance().configuration_->mediaPath_.string() + '/';
+        return getInstance().configuration_->dataPath_.string() + '/';
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getExternalDataPath()
+    {
+        return getInstance().configuration_->externalDataPath_;
+    }
+    /*static*/ std::string Core::getExternalDataPathString()
+    {
+        return getInstance().configuration_->externalDataPath_.string() + '/';
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
@@ -637,7 +626,7 @@ namespace orxonox
         {
             COUT(1) << "Running from the build tree." << std::endl;
             Core::bDevRun_ = true;
-            configuration_->modulePath_ = ORXONOX_MODULE_DEV_PATH;
+            configuration_->modulePath_ = specialConfig::moduleDevDirectory;
         }
         else
         {
@@ -645,7 +634,7 @@ namespace orxonox
 #ifdef INSTALL_COPYABLE // --> relative paths
 
             // Also set the root path
-            boost::filesystem::path relativeExecutablePath(ORXONOX_RUNTIME_INSTALL_PATH);
+            boost::filesystem::path relativeExecutablePath(specialConfig::defaultRuntimePath);
             configuration_->rootPath_ = configuration_->executablePath_;
             while (!boost::filesystem::equivalent(configuration_->rootPath_ / relativeExecutablePath, configuration_->executablePath_)
                    && !configuration_->rootPath_.empty())
@@ -654,13 +643,13 @@ namespace orxonox
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
             // Module path is fixed as well
-            configuration_->modulePath_ = configuration_->rootPath_ / ORXONOX_MODULE_INSTALL_PATH;
+            configuration_->modulePath_ = configuration_->rootPath_ / specialConfig::defaultModulePath;
 
 #else
 
             // There is no root path, so don't set it at all
             // Module path is fixed as well
-            configuration_->modulePath_ = ORXONOX_MODULE_INSTALL_PATH;
+            configuration_->modulePath_ = specialConfig::moduleInstallDirectory;
 
 #endif
         }
@@ -676,9 +665,10 @@ namespace orxonox
     {
         if (Core::isDevelopmentRun())
         {
-            configuration_->mediaPath_  = ORXONOX_MEDIA_DEV_PATH;
-            configuration_->configPath_ = ORXONOX_CONFIG_DEV_PATH;
-            configuration_->logPath_    = ORXONOX_LOG_DEV_PATH;
+            configuration_->dataPath_  = specialConfig::dataDevDirectory;
+            configuration_->externalDataPath_ = specialConfig::externalDataDevDirectory;
+            configuration_->configPath_ = specialConfig::configDevDirectory;
+            configuration_->logPath_    = specialConfig::logDevDirectory;
         }
         else
         {
@@ -686,13 +676,13 @@ namespace orxonox
 #ifdef INSTALL_COPYABLE // --> relative paths
 
             // Using paths relative to the install prefix, complete them
-            configuration_->mediaPath_  = configuration_->rootPath_ / ORXONOX_MEDIA_INSTALL_PATH;
-            configuration_->configPath_ = configuration_->rootPath_ / ORXONOX_CONFIG_INSTALL_PATH;
-            configuration_->logPath_    = configuration_->rootPath_ / ORXONOX_LOG_INSTALL_PATH;
+            configuration_->dataPath_   = configuration_->rootPath_ / specialConfig::defaultDataPath;
+            configuration_->configPath_ = configuration_->rootPath_ / specialConfig::defaultConfigPath;
+            configuration_->logPath_    = configuration_->rootPath_ / specialConfig::defaultLogPath;
 
 #else
 
-            configuration_->mediaPath_  = ORXONOX_MEDIA_INSTALL_PATH;
+            configuration_->dataPath_  = specialConfig::dataInstallDirectory;
 
             // Get user directory
 #  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
@@ -705,8 +695,8 @@ namespace orxonox
             boost::filesystem::path userDataPath(userDataPathPtr);
             userDataPath /= ".orxonox";
 
-            configuration_->configPath_ = userDataPath / ORXONOX_CONFIG_INSTALL_PATH;
-            configuration_->logPath_    = userDataPath / ORXONOX_LOG_INSTALL_PATH;
+            configuration_->configPath_ = userDataPath / specialConfig::defaultConfigPath;
+            configuration_->logPath_    = userDataPath / specialConfig::defaultLogPath;
 
 #endif
 
@@ -740,55 +730,25 @@ namespace orxonox
         }
     }
 
-    bool Core::preUpdate(const Clock& time) throw()
+    void Core::preUpdate(const Clock& time)
     {
-        std::string exceptionMessage;
-        try
+        if (this->bGraphicsLoaded_)
         {
-            if (this->bGraphicsLoaded_)
-            {
-                // process input events
-                this->inputManager_->update(time);
-                // process gui events
-                this->guiManager_->update(time);
-            }
-            // process thread commands
-            this->tclThreadManager_->update(time);
+            // process input events
+            this->inputManager_->update(time);
+            // process gui events
+            this->guiManager_->update(time);
         }
-        catch (const std::exception& ex)
-        { exceptionMessage = ex.what(); }
-        catch (...)
-        { exceptionMessage = "Unknown exception"; }
-        if (!exceptionMessage.empty())
-        {
-            COUT(0) << "An exception occurred in the Core preUpdate: " << exceptionMessage << std::endl;
-            COUT(0) << "This should really never happen! Closing the program." << std::endl;
-            return false;
-        }
-        return true;
+        // process thread commands
+        this->tclThreadManager_->update(time);
     }
 
-    bool Core::postUpdate(const Clock& time) throw()
+    void Core::postUpdate(const Clock& time)
     {
-        std::string exceptionMessage;
-        try
+        if (this->bGraphicsLoaded_)
         {
-            if (this->bGraphicsLoaded_)
-            {
-                // Render (doesn't throw)
-                this->graphicsManager_->update(time);
-            }
+            // Render (doesn't throw)
+            this->graphicsManager_->update(time);
         }
-        catch (const std::exception& ex)
-        { exceptionMessage = ex.what(); }
-        catch (...)
-        { exceptionMessage = "Unknown exception"; }
-        if (!exceptionMessage.empty())
-        {
-            COUT(0) << "An exception occurred in the Core postUpdate: " << exceptionMessage << std::endl;
-            COUT(0) << "This should really never happen! Closing the program." << std::endl;
-            return false;
-        }
-        return true;
     }
 }

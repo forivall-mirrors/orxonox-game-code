@@ -30,7 +30,7 @@
     @file
     @brief Definition of the Identifier, ClassIdentifier and SubclassIdentifier classes, implementation of the ClassIdentifier and SubclassIdentifier classes.
 
-    The Identifier contains all needed informations about the class it belongs to:
+    The Identifier contains all needed information about the class it belongs to:
      - the name
      - a list with all objects
      - parents and children
@@ -72,9 +72,9 @@ namespace orxonox
     // ###############################
     // ###       Identifier        ###
     // ###############################
-    //! The Identifier is used to identify the class of an object and to store informations about the class.
+    //! The Identifier is used to identify the class of an object and to store information about the class.
     /**
-        The Identifier contains all needed informations about the class it belongs to:
+        The Identifier contains all needed information about the class it belongs to:
          - the name
          - a list with all objects
          - parents and children
@@ -334,7 +334,7 @@ namespace orxonox
     //! The ClassIdentifier is derived from Identifier and holds all class-specific functions and variables the Identifier cannot have.
     /**
         ClassIdentifier is a Singleton, which means that only one object of a given type T exists.
-        This makes it possible to store informations about a class, sharing them with all
+        This makes it possible to store information about a class, sharing them with all
         objects of that class without defining static variables in every class.
 
         To be really sure that not more than exactly one object exists (even with libraries),

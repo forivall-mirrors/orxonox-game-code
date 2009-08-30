@@ -31,9 +31,11 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   GraphicsManager.cc
   GUIManager.cc
   Language.cc
-  LuaBind.cc
+  LuaState.cc
+  MemoryArchive.cc
   ObjectListBase.cc
   OrxonoxClass.cc
+  Resource.cc
   WindowEventListener.cc
 
   # command
@@ -76,7 +78,8 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     CommandExecutor.h
-    LuaBind.h
+    Loader.h
+    LuaState.h
   DEFINE_SYMBOL
     "CORE_SHARED_BUILD"
   PCH_FILE

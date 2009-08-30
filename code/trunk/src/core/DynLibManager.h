@@ -33,6 +33,9 @@ Torus Knot Software Ltd.
 #define _Core_DynLibManager_H__
 
 #include "CorePrereqs.h"
+
+#include <map>
+#include <string>
 #include "util/Singleton.h"
 
 namespace orxonox

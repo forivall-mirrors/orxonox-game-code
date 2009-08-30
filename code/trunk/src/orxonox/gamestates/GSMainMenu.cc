@@ -51,6 +51,7 @@ namespace orxonox
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setHandler(GUIManager::getInstancePtr());
         inputState_->setJoyStickHandler(&InputHandler::EMPTY);
+        inputState_->setIsExclusiveMouse(false);
 
         // create an empty Scene
         this->scene_ = new Scene(0);
@@ -69,7 +70,7 @@ namespace orxonox
     void GSMainMenu::activate()
     {
         // show main menu
-        GUIManager::getInstance().showGUI("mainmenu_4");
+        GUIManager::getInstance().showGUI("MainMenu");
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 

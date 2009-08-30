@@ -41,6 +41,9 @@
 #include <cassert>
 #include <string>
 #include <OgreLog.h>
+#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
+
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
@@ -54,17 +57,20 @@ namespace orxonox
     {
         friend class Singleton<GraphicsManager>;
     public:
-        GraphicsManager();
+        GraphicsManager(bool bLoadRenderer = true);
         ~GraphicsManager();
 
         void setConfigValues();
 
         void update(const Clock& time);
 
-        inline Ogre::Viewport* getViewport()
-            { return this->viewport_; }
-        inline Ogre::RenderWindow* getRenderWindow()
-            { return this->renderWindow_; }
+        Ogre::Viewport* getViewport()         { return this->viewport_; }
+        Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
+        size_t getRenderWindowHandle();
+        bool isFullScreen() const;
+
+        void upgradeToGraphics();
+        bool rendererLoaded() const { return renderWindow_ != NULL; }
 
         void setCamera(Ogre::Camera* camera);
 
@@ -72,11 +78,9 @@ namespace orxonox
         GraphicsManager(GraphicsManager&); // don't mess with singletons
 
         // OGRE initialisation
-        void setupOgre();
+        void loadOgreRoot();
         void loadOgrePlugins();
-        void declareResources();
         void loadRenderer();
-        void initialiseResources();
 
         // event from Ogre::LogListener
         void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
@@ -85,17 +89,22 @@ namespace orxonox
         // console commands
         void printScreen();
 
-    private:
-        Ogre::Root*         ogreRoot_;                 //!< Ogre's root
-        Ogre::LogManager*   ogreLogger_;
+        scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
+#if OGRE_VERSION < 0x010600
+        scoped_ptr<MemoryArchiveFactory>    memoryArchiveFactory_;    //!< Stores the modified particle scripts
+#endif
+        scoped_ptr<Ogre::LogManager>        ogreLogger_;
+        scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
-        OgreWindowEventListener* ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
+
+        // XML files for the resources
+        shared_ptr<XMLFile> resources_;                //!< XML with resource locations
+        shared_ptr<XMLFile> extResources_;             //!< XML with resource locations in the external path (only for dev runs)
 
         // config values
-        std::string         resourceFile_;             //!< resources file name
         std::string         ogreConfigFile_;           //!< ogre config file name
-        std::string         ogrePluginsFolder_;        //!< Folder where the Ogre plugins are located
+        std::string         ogrePluginsDirectory_;     //!< Directory where the Ogre plugins are located
         std::string         ogrePlugins_;              //!< Comma separated list of all plugins to load
         std::string         ogreLogFile_;              //!< log file name for Ogre log messages
         int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL

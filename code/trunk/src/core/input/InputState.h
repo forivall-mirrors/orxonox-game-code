@@ -74,14 +74,20 @@ namespace orxonox
         - Note: If you mark an InputState with both parameters on, then it will
           not influence ony other InputState at all.
 
-        Priorities
-        **********
+    @par Priorities
         Every InputState has a priority when on the stack, but mostly this
         priority is dynamic (InputStatePriority::Dynamic) which means that a state
         pushed onto the stack will simply have a higher priority than the top one.
         This behaviour really only applies to normal states that don't have
         a high priority (InputStatePriority::HighPriority). These 'special' ones
         are used for features like the KeyDetector or the console. Use with care!
+
+    @par Exclusive/Non-Exclusive mouse Mode
+        You can select a specific mouse mode that tells whether the application
+        should have exclusive accessto it or not.
+        When in non-exclusive mode, you can move the mouse out of the window
+        like with any other normal window (only for windowed mode!).
+        The setting is dictated by the topmost InputState that gets mouse events.
     */
     class _CoreExport InputState : public JoyStickQuantityListener
     {
@@ -112,6 +118,9 @@ namespace orxonox
         void setJoyStickHandler(InputHandler* handler);
         //! Sets an InputHandler to be used for all devices
         void setHandler        (InputHandler* handler);
+
+        void setIsExclusiveMouse(bool value) { bExclusiveMouse_ = value; this->bExpired_ = true; }
+        bool getIsExclusiveMouse() const { return bExclusiveMouse_; }
 
         //! Returns the name of the state (which is unique!)
         const std::string& getName() const { return name_; }
@@ -164,6 +173,7 @@ namespace orxonox
         const std::string           name_;                  //!< Name of the state
         const bool                  bAlwaysGetsInput_;      //!< See class declaration for explanation
         const bool                  bTransparent_;          //!< See class declaration for explanation
+        bool                        bExclusiveMouse_;       //!< See class declaration for explanation
         int                         priority_;              //!< Current priority (might change)
         bool                        bExpired_;              //!< See hasExpired()
         std::vector<InputHandler*>  handlers_;              //!< Vector with all handlers where the index is the device ID

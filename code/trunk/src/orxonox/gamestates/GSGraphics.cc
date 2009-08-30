@@ -95,7 +95,7 @@ namespace orxonox
     {
         // load debug overlay
         COUT(3) << "Loading Debug Overlay..." << std::endl;
-        this->debugOverlay_ = new XMLFile(Core::getMediaPathString() + "overlay/debug.oxo");
+        this->debugOverlay_ = new XMLFile("debug.oxo");
         Loader::open(debugOverlay_);
 
         masterKeyBinder_->loadBindings("masterKeybindings.ini");

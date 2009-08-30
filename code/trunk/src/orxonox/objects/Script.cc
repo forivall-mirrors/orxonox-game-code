@@ -28,41 +28,37 @@
 
 #include "Script.h"
 
-#include <tinyxml/ticpp.h>
 #include "core/CoreIncludes.h"
-#include "core/LuaBind.h"
+#include "core/LuaState.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
-  CreateFactory(Script);
+    CreateFactory(Script);
 
-  Script::Script(BaseObject* creator) : BaseObject(creator)
-  {
-    RegisterObject(Script);
+    Script::Script(BaseObject* creator) : BaseObject(creator)
+    {
+        RegisterObject(Script);
 
-    code_ = "";
-  }
+        // Get a new LuaState
+        luaState_ = new LuaState();
+    }
 
-  Script::~Script()
-  {
-  }
+    Script::~Script()
+    {
+        if (this->isInitialized())
+            delete luaState_;
+    }
 
-  /**
-  @brief XML loading and saving.
-  @param xmlelement The XML-element
-  @param loading Loading (true) or saving (false)
-   */
-  void Script::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-  {
-    BaseObject::XMLPort(xmlelement, mode);
+    void Script::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        BaseObject::XMLPort(xmlelement, mode);
 
-    code_ = xmlelement.GetText(false);
-  }
+        XMLPortParam(Script, "code", setCode, getCode, xmlelement, mode);
+    }
 
-  void Script::execute()
-  {
-    LuaBind& lua = LuaBind::getInstance();
-    lua.loadString(this->code_);
-    lua.run();
-  }
+    void Script::execute()
+    {
+        luaState_->doString(code_);
+    }
 }
