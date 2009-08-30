@@ -29,7 +29,7 @@
 #include "LevelManager.h"
 
 #include <map>
-#include <boost/filesystem.hpp>
+#include <OgreResourceGroupManager.h>
 
 #include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
@@ -134,18 +134,17 @@ namespace orxonox
     {
         availableLevels_.clear();
 
-        boost::filesystem::directory_iterator file(Core::getMediaPathString() + "levels");
-        boost::filesystem::directory_iterator end;
+        availableLevels_ = *Ogre::ResourceGroupManager::getSingleton().findResourceNames(
+            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "*.oxw");
 
-        while (file != end)
-        {
-            if (!boost::filesystem::is_directory(*file) && file->string()[file->string().length()-1] != '~')
+        for (std::vector<std::string>::iterator it = availableLevels_.begin(); it != availableLevels_.end();)
+            if (it->find("old/") == 0)
+                it = availableLevels_.erase(it);
+            else
             {
-                std::string filename = file->path().leaf();
-                if (filename.length() > 4)
-                    availableLevels_.push_back(filename.substr(0,filename.length()-4));
+                size_t pos = it->find(".oxw");
+                *it = it->substr(0, pos);
+                ++it;
             }
-            ++file;
-        }
     }
 }

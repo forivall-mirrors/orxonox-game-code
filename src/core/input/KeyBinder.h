@@ -40,6 +40,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 #include "InputHandler.h"
 #include "Button.h"
@@ -114,7 +115,7 @@ namespace orxonox
             Button buttons[JoyStickButtonCode::numberOfButtons];
         };
         //! Actual key bindings for joy stick buttons
-        std::vector<JoyStickButtonVector> joyStickButtons_;
+        std::vector<shared_ptr<JoyStickButtonVector> > joyStickButtons_;
         //! Helper class to use something like std:vector<HalfAxis[48]>
         struct JoyStickAxisVector
         {
@@ -122,7 +123,7 @@ namespace orxonox
             HalfAxis halfAxes[JoyStickAxisCode::numberOfAxes * 2];
         };
         //! Actual key bindings for joy stick axes (and sliders)
-        std::vector<JoyStickAxisVector> joyStickAxes_;
+        std::vector<shared_ptr<JoyStickAxisVector> > joyStickAxes_;
 
         //! Pointer map with all Buttons, including half axes
         std::map<std::string, Button*> allButtons_;
@@ -190,13 +191,13 @@ namespace orxonox
 
 
     inline void KeyBinder::buttonPressed (unsigned int device, JoyStickButtonCode::ByEnum button)
-    { joyStickButtons_[device][button].execute(KeybindMode::OnPress); }
+    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnPress); }
 
     inline void KeyBinder::buttonReleased(unsigned int device, JoyStickButtonCode::ByEnum button)
-    { joyStickButtons_[device][button].execute(KeybindMode::OnRelease); }
+    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnRelease); }
 
     inline void KeyBinder::buttonHeld    (unsigned int device, JoyStickButtonCode::ByEnum button)
-    { joyStickButtons_[device][button].execute(KeybindMode::OnHold); }
+    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnHold); }
 
     inline void KeyBinder::allDevicesUpdated(float dt)
     {

@@ -39,6 +39,8 @@
 #include "util/Exception.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
+#include "core/LuaState.h"
+#include "ToluaBindOrxonox.h"
 #include "Main.h"
 
 SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
@@ -47,6 +49,8 @@ SetCommandLineSwitch(server).information("Start in server mode");
 SetCommandLineSwitch(client).information("Start in client mode");
 SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
 SetCommandLineSwitch(standalone).information("Start in standalone mode");
+
+DeclareToluaInterface(Orxonox);
 
 namespace orxonox
 {

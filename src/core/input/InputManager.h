@@ -83,7 +83,7 @@ namespace orxonox
             If either the OIS input system and/or the keyboard could not be created,
             the constructor fails with an std::exception.
         */
-        InputManager(size_t windowHnd);
+        InputManager();
         //! Destroys all devices AND all input states!
         ~InputManager();
         void setConfigValues();
@@ -166,15 +166,15 @@ namespace orxonox
         unsigned int getJoyStickQuantity() const
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
         //! Returns a pointer to the OIS InputManager. Only you if you know what you're doing!
-        OIS::InputManager* getOISInputManager()
-            { return this->oisInputManager_; }
+        OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
+        std::pair<int, int> getMousePosition() const;
 
     private: // functions
         // don't mess with a Singleton
         InputManager(const InputManager&);
 
         // Intenal methods
-        void loadDevices(size_t windowHnd);
+        void loadDevices();
         void loadMouse();
         void loadJoySticks();
         void destroyDevices();
@@ -192,8 +192,7 @@ namespace orxonox
         State                               internalState_;        //!< Current internal state
         OIS::InputManager*                  oisInputManager_;      //!< OIS input manager
         std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
-        // TODO: Get this from the GraphicsManager during reload
-        size_t                              windowHnd_;            //!< Render window handle (used to reload the InputManager)
+        bool                                bExclusiveMouse_;      //!< Currently applied mouse mode
 
         // some internally handled states and handlers
         InputState*                         emptyState_;           //!< Lowest priority states (makes handling easier)

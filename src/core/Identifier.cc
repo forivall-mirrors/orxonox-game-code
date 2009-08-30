@@ -137,7 +137,7 @@ namespace orxonox
         // Check if at least one object of the given type was created
         if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
         {
-            // If no: We have to store the informations and initialize the Identifier
+            // If no: We have to store the information and initialize the Identifier
             COUT(4) << "*** ClassIdentifier: Register Class in " << this->getName() << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
                 this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.

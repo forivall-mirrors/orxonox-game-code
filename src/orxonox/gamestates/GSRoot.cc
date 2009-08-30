@@ -32,10 +32,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/LuaBind.h"
 #include "network/NetworkFunction.h"
-#include "ToluaBindCore.h"
-#include "ToluaBindOrxonox.h"
 #include "tools/Timer.h"
 #include "tools/interfaces/TimeFactorListener.h"
 #include "tools/interfaces/Tickable.h"
@@ -53,10 +50,6 @@ namespace orxonox
     {
         this->ccSetTimeFactor_ = 0;
         this->ccPause_ = 0;
-
-        // Tell LuaBind about all tolua interfaces
-        LuaBind::getInstance().addToluaInterface(&tolua_Core_open, "Core");
-        LuaBind::getInstance().addToluaInterface(&tolua_Orxonox_open, "Orxonox");
     }
 
     GSRoot::~GSRoot()
@@ -85,7 +78,7 @@ namespace orxonox
             CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
         }
 
-        // create the global LevelManager
+        // create the LevelManager
         this->levelManager_ = new LevelManager();
     }
 

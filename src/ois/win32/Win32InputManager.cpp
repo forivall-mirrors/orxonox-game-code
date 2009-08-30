@@ -74,13 +74,15 @@ void Win32InputManager::_initialize( ParamList &paramList )
 
 	hInst = GetModuleHandle(0);
 
-	//Create the device
+	//Create the input system
 	hr = DirectInput8Create( hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&mDirectInput, NULL );
     if (FAILED(hr))	
 		OIS_EXCEPT( E_General, "Win32InputManager::Win32InputManager >> Not able to init DirectX8 Input!");
 
 	//Ok, now we have DirectInput, parse whatever extra settings were sent to us
 	_parseConfigSettings( paramList );
+
+	// Enumerate devices ...
 	_enumerateDevices();
 }
 
@@ -115,13 +117,15 @@ void Win32InputManager::_parseConfigSettings( ParamList &paramList )
 void Win32InputManager::_enumerateDevices()
 {
 	//Enumerate all attached devices
-	mDirectInput->EnumDevices(NULL, _DIEnumKbdCallback, this, DIEDFL_ATTACHEDONLY); 
+	mDirectInput->EnumDevices(NULL , _DIEnumDevCallback, this, DIEDFL_ATTACHEDONLY); 
 }
 
 //--------------------------------------------------------------------------------//
-BOOL CALLBACK Win32InputManager::_DIEnumKbdCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
+BOOL CALLBACK Win32InputManager::_DIEnumDevCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
 	Win32InputManager *_this_ = static_cast<Win32InputManager*>(pvRef);
+
+	// Register only game devices (keyboard and mouse are managed differently).
 	if( GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_JOYSTICK ||
 		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_GAMEPAD ||
 		GET_DIDEVICE_TYPE(lpddi->dwDevType) == DI8DEVTYPE_1STPERSON ||

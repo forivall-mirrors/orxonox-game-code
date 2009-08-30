@@ -39,10 +39,6 @@
 
 namespace orxonox
 {
-    const char* const DEFAULT_CONFIG_FILE = "default.ini";
-
-    ConfigFileManager* ConfigFileManager::singletonPtr_s = 0;
-
     SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);
@@ -228,8 +224,8 @@ namespace orxonox
         boost::filesystem::path filepath(Core::getConfigPath() / this->filename_);
         if (!boost::filesystem::exists(filepath))
         {
-            // Try to get default one from the media folder
-            boost::filesystem::path defaultFilepath(Core::getMediaPath() / "defaultConfig" / this->filename_);
+            // Try to get default one from the data folder
+            boost::filesystem::path defaultFilepath(Core::getDataPath() / "defaultConfig" / this->filename_);
             if (boost::filesystem::exists(defaultFilepath))
             {
                 COUT(3) << "Copied " << this->filename_ << " from the defaultConfig folder." << std::endl;
@@ -338,10 +334,8 @@ namespace orxonox
 
     void ConfigFile::save() const
     {
-        boost::filesystem::path filepath(Core::getConfigPath() / this->filename_);
-
         std::ofstream file;
-        file.open(filepath.string().c_str(), std::fstream::out);
+        file.open((Core::getConfigPathString() + filename_).c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 
@@ -477,6 +471,10 @@ namespace orxonox
     ///////////////////////
     // ConfigFileManager //
     ///////////////////////
+
+    ConfigFileManager* ConfigFileManager::singletonPtr_s = 0;
+
+    std::string ConfigFileManager::DEFAULT_CONFIG_FILE = "default.ini";
 
     ConfigFileManager::ConfigFileManager()
          : mininmalFreeType_(ConfigFileType::numberOfReservedTypes)

@@ -54,6 +54,8 @@ namespace orxonox
             static void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
             static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
 
+            static std::string replaceLuaTags(const std::string& text);
+
             static ClassTreeMask currentMask_s;
 
         private:

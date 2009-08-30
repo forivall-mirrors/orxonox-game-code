@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Handles different output-levels of errors, warnings, infos and debug informations.
+    @brief Handles different output-levels of errors, warnings, infos and debug information.
 
     The COUT(level) macro acts like std::cout, but the output is only performed if the given
     level is <= the soft debug level.
@@ -44,10 +44,10 @@
      0: Very important output
      1: Errors
      2: Warnings
-     3: Informations
+     3: Information
      4: Debug information
      5: More debug information
-     6: Crazy debug informations
+     6: Crazy debug information
 
     @example
     COUT(0) << "Very important output" << std::endl;

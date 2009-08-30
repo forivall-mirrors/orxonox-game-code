@@ -48,7 +48,7 @@ namespace orxonox
 {
 
   /**
-  * This class implements a list for client informations
+  * This class implements a list for client information
   * @author Oliver Scheuss
   */
   class _NetworkExport ClientInformation{

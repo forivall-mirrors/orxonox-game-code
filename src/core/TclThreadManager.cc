@@ -56,7 +56,7 @@ namespace orxonox
     SetConsoleCommand(TclThreadManager, source,  false).argumentCompleter(0, autocompletion::tclthreads());
 
     /**
-        @brief A struct containing all informations about a Tcl-interpreter
+        @brief A struct containing all information about a Tcl-interpreter
     */
     struct TclInterpreterBundle
     {

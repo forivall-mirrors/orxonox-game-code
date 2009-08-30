@@ -30,7 +30,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 
 # Prevent CMake from finding libraries in the installation folder on Windows.
 # There might already be an installation from another compiler
-IF(DEPENDENCY_PACKAGE_ENABLE)
+IF(WIN32)
   LIST(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH  "${CMAKE_INSTALL_PREFIX}")
   LIST(REMOVE_ITEM CMAKE_SYSTEM_LIBRARY_PATH "${CMAKE_INSTALL_PREFIX}/bin")
 ENDIF()
@@ -71,24 +71,20 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
 ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
 # User script
-SET(USER_SCRIPT_LIBRARY_CONFIG "" CACHE FILEPATH
+SET(LIBRARY_CONFIG_USER_SCRIPT "" CACHE FILEPATH
     "Specify a CMake script if you wish to write your own library path config.
-     See LibraryConfigTardis.cmake or LibraryConfigMinGW.cmake for examples.")
-IF(USER_SCRIPT_LIBRARY_CONFIG)
-  IF(EXISTS ${CMAKE_MODULE_PATH}/${USER_SCRIPT_LIBRARY_CONFIG}.cmake)
-    INCLUDE(${USER_SCRIPT_LIBRARY_CONFIG})
-  ELSEIF(EXISTS ${USER_SCRIPT_LIBRARY_CONFIG})
-    INCLUDE(${USER_SCRIPT_LIBRARY_CONFIG})
-  ELSEIF(EXISTS ${CMAKE_MODULE_PATH}/${USER_SCRIPT_LIBRARY_CONFIG})
-    INCLUDE(${CMAKE_MODULE_PATH}/${USER_SCRIPT_LIBRARY_CONFIG})
+     See LibraryConfigTardis.cmake for an example.")
+IF(LIBRARY_CONFIG_USER_SCRIPT)
+  IF(EXISTS ${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT})
+    INCLUDE(${CMAKE_MODULE_PATH}/${LIBRARY_CONFIG_USER_SCRIPT})
   ENDIF()
-ENDIF(USER_SCRIPT_LIBRARY_CONFIG)
+ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 
 
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE  1.4 EXACT REQUIRED)
+FIND_PACKAGE(OGRE  1.4       REQUIRED)
 FIND_PACKAGE(ENet  1.1       REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
@@ -184,3 +180,21 @@ IF(WIN32)
     )
   ENDIF()
 ENDIF(WIN32)
+
+
+################# OGRE Plugins ##################
+
+# More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
+SET(OGRE_PLUGINS_INT Plugin_ParticleFX)
+IF(WIN32)
+  # CG program manager is probably DirectX related (not available under unix)
+  LIST(APPEND OGRE_PLUGINS_INT Plugin_CgProgramManager)
+ENDIF(WIN32)
+SET(OGRE_PLUGINS ${OGRE_PLUGINS_INT} CACHE STRING
+   "Specify which OGRE plugins to load. Existance check is performed.")
+
+# Check the plugins and determine the plugin folder
+# You can give a hint by setting the environment variable ENV{OGRE_PLUGIN_DIR}
+INCLUDE(CheckOGREPlugins)
+CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
+

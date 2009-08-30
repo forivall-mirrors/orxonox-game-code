@@ -50,13 +50,12 @@
 namespace orxonox
 {
     class CoreConfiguration;
-    using boost::scoped_ptr;
 
     /**
     @brief
         The Core class is a singleton used to configure the program basics.
     @details
-        The class provides information about the media, config and log path.
+        The class provides information about the data, config and log path.
         It determines those by the use of platform specific functions.
     @remark
         You should only create this singleton once because it destroys the identifiers!
@@ -65,6 +64,7 @@ namespace orxonox
     {
         typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
         friend class Singleton<Core>;
+        friend class Game;
 
         public:
             /**
@@ -79,20 +79,16 @@ namespace orxonox
 
             void setConfigValues();
 
-            bool preUpdate(const Clock& time) throw();
-            bool postUpdate(const Clock& time) throw();
-
-            void loadGraphics();
-            void unloadGraphics();
-
             static int   getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             static void  setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void  resetLanguage();
 
-            static void tsetMediaPath(const std::string& path);
-            //! Returns the path to the config files as boost::filesystem::path
-            static const boost::filesystem::path& getMediaPath();
+            static void tsetExternalDataPath(const std::string& path);
+            //! Returns the path to the data files as boost::filesystem::path
+            static const boost::filesystem::path& getDataPath();
+            //! Returns the path to the external data files as boost::filesystem::path
+            static const boost::filesystem::path& getExternalDataPath();
             //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getConfigPath();
             //! Returns the path to the log files as boost::filesystem::path
@@ -100,7 +96,9 @@ namespace orxonox
             //! Returns the path to the root folder as boost::filesystem::path
             static const boost::filesystem::path& getRootPath();
             //! Returns the path to the data files as std::string
-            static std::string getMediaPathString();
+            static std::string getDataPathString();
+            //! Returns the path to the external data files as std::string
+            static std::string getExternalDataPathString();
             //! Returns the path to the config files as std::string
             static std::string getConfigPathString();
             //! Returns the path to the log files as std::string
@@ -112,6 +110,12 @@ namespace orxonox
 
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
+
+            void preUpdate(const Clock& time);
+            void postUpdate(const Clock& time);
+
+            void loadGraphics();
+            void unloadGraphics();
 
             void setFixedPaths();
             void setConfigurablePaths();
@@ -125,7 +129,6 @@ namespace orxonox
             scoped_ptr<ConfigFileManager> configFileManager_;
             scoped_ptr<Language>          languageInstance_;
             scoped_ptr<CoreConfiguration> configuration_;
-            scoped_ptr<LuaBind>           luaBind_;
             scoped_ptr<TclBind>           tclBind_;
             scoped_ptr<TclThreadManager>  tclThreadManager_;
             scoped_ptr<Shell>             shell_;
