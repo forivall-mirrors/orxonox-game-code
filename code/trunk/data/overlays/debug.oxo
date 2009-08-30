@@ -82,14 +82,5 @@
      colour   = "1.0, 1.0, 0.0, 0.8"
      align    = "center"
     />
-
-    <NotificationQueue
-     name     = "notification"
-     position = "0.55, 0.05"
-     font     = "VeraMono"
-     textsize = 0.020
-     length   = 3
-     width    = 50
-    />
   </OverlayGroup>
 </Template>
