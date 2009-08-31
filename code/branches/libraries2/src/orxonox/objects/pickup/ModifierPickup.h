@@ -39,7 +39,7 @@
 #include <climits>
 #include <map>
 
-#include "orxonox/tools/Timer.h"
+#include "tools/Timer.h"
 #include "ModifierType.h"
 #include "PassiveItem.h"
 
