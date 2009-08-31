@@ -31,8 +31,8 @@
   @brief Contains all the necessary forward declarations for all classes and structs.
 */
 
-#ifndef _WeaponsystemPrereqs_H__
-#define _WeaponsystemPrereqs_H__
+#ifndef _WeaponsPrereqs_H__
+#define _WeaponsPrereqs_H__
 
 #include "OrxonoxConfig.h"
 
@@ -42,19 +42,19 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
-#  ifdef WEAPONSYSTEM_SHARED_BUILD
-#    define _WeaponsystemExport __declspec(dllexport)
+#  ifdef WEAPONS_SHARED_BUILD
+#    define _WeaponsExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _WeaponsystemExport
+#      define _WeaponsExport
 #    else
-#      define _WeaponsystemExport __declspec(dllimport)
+#      define _WeaponsExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _WeaponsystemExport  __attribute__ ((visibility("default")))
+#  define _WeaponsExport  __attribute__ ((visibility("default")))
 #else
-#  define _WeaponsystemExport
+#  define _WeaponsExport
 #endif
 
 //-----------------------------------------------------------------------
@@ -81,4 +81,4 @@ namespace orxonox
     class MuzzleFlash;
 }
 
-#endif /* _WeaponsystemPrereqs_H__ */
+#endif /* _WeaponsPrereqs_H__ */

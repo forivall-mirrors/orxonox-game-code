@@ -29,12 +29,12 @@
 #ifndef _LightningGun_H__
 #define _LightningGun_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 #include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    class _WeaponsystemExport LightningGun : public WeaponMode
+    class _WeaponsExport LightningGun : public WeaponMode
     {
         public:
             LightningGun(BaseObject* creator);

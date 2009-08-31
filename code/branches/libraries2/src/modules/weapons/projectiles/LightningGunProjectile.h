@@ -29,7 +29,7 @@
 #ifndef _LightningGunProjectile_H__
 #define _LightningGunProjectile_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 
 #include <string>
 #include "tools/Timer.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _WeaponsystemExport LightningGunProjectile : public BillboardProjectile
+    class _WeaponsExport LightningGunProjectile : public BillboardProjectile
     {
         public:
             LightningGunProjectile(BaseObject* creator);

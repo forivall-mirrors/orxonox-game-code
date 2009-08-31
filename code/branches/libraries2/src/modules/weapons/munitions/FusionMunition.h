@@ -29,12 +29,12 @@
 #ifndef _FusionMunition_H__
 #define _FusionMunition_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 #include "objects/weaponsystem/Munition.h"
 
 namespace orxonox
 {
-    class _WeaponsystemExport FusionMunition : public Munition
+    class _WeaponsExport FusionMunition : public Munition
     {
         public:
             FusionMunition(BaseObject* creator);

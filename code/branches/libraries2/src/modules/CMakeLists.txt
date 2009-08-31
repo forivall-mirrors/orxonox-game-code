@@ -22,3 +22,4 @@
 ADD_SUBDIRECTORY(gamestates)
 ADD_SUBDIRECTORY(overlays)
 ADD_SUBDIRECTORY(questsystem)
+ADD_SUBDIRECTORY(weapons)

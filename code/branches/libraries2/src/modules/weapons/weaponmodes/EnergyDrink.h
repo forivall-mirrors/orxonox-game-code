@@ -29,7 +29,7 @@
 #ifndef _EnergyDrink_H__
 #define _EnergyDrink_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 
 #include <string>
 #include "tools/Timer.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _WeaponsystemExport EnergyDrink : public WeaponMode
+    class _WeaponsExport EnergyDrink : public WeaponMode
     {
         public:
             EnergyDrink(BaseObject* creator);

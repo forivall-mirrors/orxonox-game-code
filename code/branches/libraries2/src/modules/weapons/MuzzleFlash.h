@@ -29,14 +29,14 @@
 #ifndef _MuzzleFlash_H__
 #define _MuzzleFlash_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 
 #include "tools/Timer.h"
 #include "objects/worldentities/Billboard.h"
 
 namespace orxonox
 {
-    class _WeaponsystemExport MuzzleFlash : public Billboard
+    class _WeaponsExport MuzzleFlash : public Billboard
     {
         public:
             MuzzleFlash(BaseObject* creator);

@@ -33,8 +33,8 @@
 #include "core/XMLPort.h"
 #include "objects/worldentities/Model.h"
 
-#include "objects/weaponsystem/projectiles/Projectile.h"
-#include "objects/weaponsystem/MuzzleFlash.h"
+#include "weapons/projectiles/Projectile.h"
+#include "weapons/MuzzleFlash.h"
 #include "objects/weaponsystem/Weapon.h"
 #include "objects/weaponsystem/WeaponPack.h"
 #include "objects/weaponsystem/WeaponSystem.h"

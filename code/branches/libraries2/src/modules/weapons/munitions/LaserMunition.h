@@ -29,12 +29,12 @@
 #ifndef _LaserMunition_H__
 #define _LaserMunition_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 #include "ReplenishingMunition.h"
 
 namespace orxonox
 {
-    class _WeaponsystemExport LaserMunition : public ReplenishingMunition
+    class _WeaponsExport LaserMunition : public ReplenishingMunition
     {
         public:
             LaserMunition(BaseObject* creator);

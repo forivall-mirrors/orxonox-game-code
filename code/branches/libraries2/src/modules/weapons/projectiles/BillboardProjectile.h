@@ -29,7 +29,7 @@
 #ifndef _BillboardProjectile_H__
 #define _BillboardProjectile_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _WeaponsystemExport BillboardProjectile : public Projectile
+    class _WeaponsExport BillboardProjectile : public Projectile
     {
         public:
             BillboardProjectile(BaseObject* creator);

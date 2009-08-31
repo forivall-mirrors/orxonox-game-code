@@ -29,12 +29,12 @@
 #ifndef _LaserFire_H__
 #define _LaserFire_H__
 
-#include "objects/weaponsystem/WeaponsystemPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 #include "objects/weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    class _WeaponsystemExport LaserFire : public WeaponMode
+    class _WeaponsExport LaserFire : public WeaponMode
     {
         public:
             LaserFire(BaseObject* creator);

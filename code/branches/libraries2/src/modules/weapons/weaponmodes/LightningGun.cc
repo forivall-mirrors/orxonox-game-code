@@ -29,7 +29,7 @@
 #include "LightningGun.h"
 
 #include "core/CoreIncludes.h"
-#include "objects/weaponsystem/projectiles/LightningGunProjectile.h"
+#include "weapons/projectiles/LightningGunProjectile.h"
 #include "objects/weaponsystem/Weapon.h"
 #include "objects/weaponsystem/WeaponPack.h"
 #include "objects/weaponsystem/WeaponSystem.h"

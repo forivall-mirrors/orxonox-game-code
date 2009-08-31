@@ -30,7 +30,7 @@
 
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "objects/weaponsystem/projectiles/BillboardProjectile.h"
+#include "weapons/projectiles/BillboardProjectile.h"
 
 #include "objects/weaponsystem/Weapon.h"
 #include "objects/weaponsystem/WeaponPack.h"
