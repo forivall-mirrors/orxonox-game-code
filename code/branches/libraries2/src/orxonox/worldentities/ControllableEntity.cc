@@ -39,7 +39,7 @@
 #include "Scene.h"
 #include "infos/PlayerInfo.h"
 #include "controllers/Controller.h"
-#include "worldentities/Camera.h"
+#include "graphics/Camera.h"
 #include "worldentities/CameraPosition.h"
 #include "overlays/OverlayGroup.h"
 

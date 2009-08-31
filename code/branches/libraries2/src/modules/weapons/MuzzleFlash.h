@@ -32,7 +32,7 @@
 #include "weapons/WeaponsPrereqs.h"
 
 #include "tools/Timer.h"
-#include "worldentities/Billboard.h"
+#include "graphics/Billboard.h"
 
 namespace orxonox
 {

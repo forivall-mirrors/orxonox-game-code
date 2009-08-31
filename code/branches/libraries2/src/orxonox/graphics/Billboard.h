@@ -34,7 +34,7 @@
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
 #include "interfaces/TeamColourable.h"
-#include "StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

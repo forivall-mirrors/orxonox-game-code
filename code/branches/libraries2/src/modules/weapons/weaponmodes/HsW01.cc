@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/XMLPort.h"
-#include "worldentities/Model.h"
+#include "graphics/Model.h"
 
 #include "weapons/projectiles/Projectile.h"
 #include "weapons/MuzzleFlash.h"

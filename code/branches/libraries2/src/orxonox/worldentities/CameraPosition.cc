@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "Camera.h"
+#include "graphics/Camera.h"
 
 namespace orxonox
 {

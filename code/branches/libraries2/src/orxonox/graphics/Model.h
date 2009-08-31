@@ -33,7 +33,7 @@
 
 #include <string>
 #include "tools/Mesh.h"
-#include "StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

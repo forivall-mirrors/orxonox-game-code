@@ -35,7 +35,7 @@
 
 #include "infos/PlayerInfo.h"
 #include "infos/Bot.h"
-#include "worldentities/Camera.h"
+#include "graphics/Camera.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Spectator.h"

@@ -36,7 +36,7 @@
 #include "core/GUIManager.h"
 #include "core/ObjectList.h"
 #include "tools/Shader.h"
-#include "worldentities/Camera.h"
+#include "graphics/Camera.h"
 #include "Scene.h"
 
 namespace orxonox

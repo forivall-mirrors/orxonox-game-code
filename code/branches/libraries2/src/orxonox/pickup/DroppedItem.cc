@@ -32,8 +32,8 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "BaseItem.h"
-#include "worldentities/Billboard.h"
-#include "worldentities/Model.h"
+#include "graphics/Billboard.h"
+#include "graphics/Model.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox

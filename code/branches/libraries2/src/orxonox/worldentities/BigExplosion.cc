@@ -37,8 +37,8 @@
 #include "core/GameMode.h"
 #include "tools/ParticleInterface.h"
 #include "Scene.h"
-#include "worldentities/ParticleSpawner.h"
-#include "Model.h"
+#include "graphics/ParticleSpawner.h"
+#include "graphics/Model.h"
 
 namespace orxonox
 {

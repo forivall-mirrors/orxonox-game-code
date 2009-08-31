@@ -39,7 +39,7 @@
 #include "PawnManager.h"
 #include "infos/PlayerInfo.h"
 #include "gametypes/Gametype.h"
-#include "worldentities/ParticleSpawner.h"
+#include "graphics/ParticleSpawner.h"
 #include "worldentities/ExplosionChunk.h"
 #include "worldentities/BigExplosion.h"
 #include "weaponsystem/WeaponSystem.h"

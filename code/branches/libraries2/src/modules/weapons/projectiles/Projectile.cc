@@ -34,7 +34,7 @@
 #include "core/GameMode.h"
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "worldentities/pawns/Pawn.h"
-#include "worldentities/ParticleSpawner.h"
+#include "graphics/ParticleSpawner.h"
 
 namespace orxonox
 {
