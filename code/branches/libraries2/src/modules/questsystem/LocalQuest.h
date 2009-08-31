@@ -34,7 +34,7 @@
 #ifndef _LocalQuest_H__
 #define _LocalQuest_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <map>
 #include "Quest.h"
@@ -74,7 +74,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport LocalQuest : public Quest
+    class _QuestsystemExport LocalQuest : public Quest
     {
         public:
             LocalQuest(BaseObject* creator);

@@ -34,7 +34,7 @@
 #ifndef _AddReward_H__
 #define _AddReward_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
 #include "QuestEffect.h"
@@ -55,7 +55,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport AddReward : public QuestEffect
+    class _QuestsystemExport AddReward : public QuestEffect
     {
         public:
             AddReward(BaseObject* creator);

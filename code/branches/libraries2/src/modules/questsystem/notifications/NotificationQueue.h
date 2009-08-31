@@ -34,7 +34,7 @@
 #ifndef _NotificationOueue_H__
 #define _NotificationOueue_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <ctime>
 #include <map>
@@ -84,7 +84,7 @@ namespace orxonox
         Damian 'Mozork' Frick
     */
 
-    class _QuestExport NotificationQueue : public OverlayGroup, public Tickable, public NotificationListener
+    class _QuestsystemExport NotificationQueue : public OverlayGroup, public Tickable, public NotificationListener
     {
 
         public:

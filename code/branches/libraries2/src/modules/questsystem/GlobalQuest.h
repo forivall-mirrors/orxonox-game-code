@@ -34,7 +34,7 @@
 #ifndef _GlobalQuest_H__
 #define _GlobalQuest_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
 #include <set>
@@ -80,7 +80,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport GlobalQuest : public Quest
+    class _QuestsystemExport GlobalQuest : public Quest
     {
         public:
             GlobalQuest(BaseObject* creator);

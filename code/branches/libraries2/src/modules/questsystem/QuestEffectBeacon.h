@@ -34,7 +34,7 @@
 #ifndef _QuestEffectBeacon_H__
 #define _QuestEffectBeacon_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
 #include "objects/worldentities/StaticEntity.h"
@@ -78,7 +78,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport QuestEffectBeacon : public StaticEntity
+    class _QuestsystemExport QuestEffectBeacon : public StaticEntity
     {
         public:
             QuestEffectBeacon(BaseObject* creator);

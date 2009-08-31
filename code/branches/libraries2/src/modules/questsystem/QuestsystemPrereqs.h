@@ -42,19 +42,19 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
-#  ifdef QUEST_SHARED_BUILD
-#    define _QuestExport __declspec(dllexport)
+#  ifdef QUESTSYSTEM_SHARED_BUILD
+#    define _QuestsystemExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _QuestExport
+#      define _QuestsystemExport
 #    else
-#      define _QuestExport __declspec(dllimport)
+#      define _QuestsystemExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _QuestExport  __attribute__ ((visibility("default")))
+#  define _QuestsystemExport  __attribute__ ((visibility("default")))
 #else
-#  define _QuestExport
+#  define _QuestsystemExport
 #endif
 
 //-----------------------------------------------------------------------

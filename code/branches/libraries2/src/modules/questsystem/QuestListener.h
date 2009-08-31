@@ -34,7 +34,7 @@
 #ifndef _QuestListener_H__
 #define _QuestListener_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include <list>
@@ -71,7 +71,7 @@ namespace orxonox
     @author
     Damian 'Mozork' Frick
     */
-    class _QuestExport QuestListener : public BaseObject
+    class _QuestsystemExport QuestListener : public BaseObject
     {
     public:
         QuestListener(BaseObject* creator);

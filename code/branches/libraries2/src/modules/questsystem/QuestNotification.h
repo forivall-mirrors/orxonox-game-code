@@ -29,7 +29,7 @@
 #ifndef _QuestNotification_H__
 #define _QuestNotification_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include "notifications/Notification.h"
@@ -42,7 +42,7 @@ namespace orxonox {
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport QuestNotification : public Notification
+    class _QuestsystemExport QuestNotification : public Notification
     {
         public:
             QuestNotification(BaseObject* creator);

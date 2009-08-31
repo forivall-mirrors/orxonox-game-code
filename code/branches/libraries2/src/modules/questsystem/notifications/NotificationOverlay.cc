@@ -35,7 +35,7 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "objects/quest/notifications/Notification.h"
+#include "Notification.h"
 #include "NotificationQueue.h"
 
 namespace orxonox

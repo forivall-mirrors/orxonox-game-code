@@ -34,7 +34,7 @@
 #ifndef _QuestManager_H__
 #define _QuestManager_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
 #include <map>
@@ -74,7 +74,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport QuestManager : public ScopedSingletonQuestManagerGSLevel, public orxonox::OrxonoxClass
+    class _QuestsystemExport QuestManager : public ScopedSingletonQuestManagerGSLevel, public orxonox::OrxonoxClass
     {
 // tolua_end
             friend class ScopedSingleton<QuestManager, ScopeID::GSLevel>;

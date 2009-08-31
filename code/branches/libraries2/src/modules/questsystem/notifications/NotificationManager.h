@@ -34,7 +34,7 @@
 #ifndef _NotificationManager_H__
 #define _NotificationManager_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <ctime>
 #include <map>
@@ -53,7 +53,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport NotificationManager : public ScopedSingleton<NotificationManager, ScopeID::GSLevel>, public OrxonoxClass
+    class _QuestsystemExport NotificationManager : public ScopedSingleton<NotificationManager, ScopeID::GSLevel>, public OrxonoxClass
     {
             friend class ScopedSingleton<NotificationManager, ScopeID::GSLevel>;
         public:

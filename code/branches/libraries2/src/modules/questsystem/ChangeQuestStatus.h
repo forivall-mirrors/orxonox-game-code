@@ -34,7 +34,7 @@
 #ifndef _ChangeQuestStatus_H__
 #define _ChangeQuestStatus_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include "QuestEffect.h"
@@ -47,7 +47,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport ChangeQuestStatus : public QuestEffect
+    class _QuestsystemExport ChangeQuestStatus : public QuestEffect
     {
         public:
             ChangeQuestStatus(BaseObject* creator);

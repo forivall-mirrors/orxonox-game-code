@@ -35,7 +35,7 @@
 #ifndef _NotificationOverlay_H__
 #define _NotificationOverlay_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include "overlays/OverlayText.h"
@@ -49,7 +49,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport NotificationOverlay : public OverlayText
+    class _QuestsystemExport NotificationOverlay : public OverlayText
     {
 
         public:

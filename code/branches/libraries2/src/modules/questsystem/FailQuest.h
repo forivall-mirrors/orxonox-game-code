@@ -34,7 +34,7 @@
 #ifndef _FailQuest_H__
 #define _FailQuest_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox
@@ -49,7 +49,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport FailQuest : public ChangeQuestStatus
+    class _QuestsystemExport FailQuest : public ChangeQuestStatus
     {
         public:
             FailQuest(BaseObject* creator);

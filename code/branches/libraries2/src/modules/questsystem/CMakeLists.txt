@@ -1,4 +1,4 @@
-SET_SOURCE_FILES(QUEST_SRC_FILES
+SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
   AddQuest.cc
   AddQuestHint.cc
   AddReward.cc
@@ -20,18 +20,15 @@ SET_SOURCE_FILES(QUEST_SRC_FILES
 
 ADD_SUBDIRECTORY(notifications)
 
-# add the parent directory for tolua (TODO: remove this if the quest module is moved somewhere else)
-INCLUDE_DIRECTORIES(..)
-
-ORXONOX_ADD_LIBRARY(quest
+ORXONOX_ADD_LIBRARY(questsystem
   MODULE
   TOLUA_FILES
     QuestDescription.h
     QuestManager.h
   DEFINE_SYMBOL
-    "QUEST_SHARED_BUILD"
+    "QUESTSYSTEM_SHARED_BUILD"
   LINK_LIBRARIES
     orxonox
     overlays
-  SOURCE_FILES ${QUEST_SRC_FILES}
+  SOURCE_FILES ${QUESTSYSTEM_SRC_FILES}
 )

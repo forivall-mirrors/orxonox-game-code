@@ -36,7 +36,7 @@
 #ifndef _QuestItem_H__
 #define _QuestItem_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include "core/BaseObject.h"
@@ -50,7 +50,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport QuestItem : public BaseObject
+    class _QuestsystemExport QuestItem : public BaseObject
     {
 
         public:

@@ -34,7 +34,7 @@
 #ifndef _QuestDescription_H__
 #define _QuestDescription_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include "core/BaseObject.h"
@@ -53,7 +53,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport QuestDescription : public BaseObject
+    class _QuestsystemExport QuestDescription : public BaseObject
     {
 // tolua_end
         public:

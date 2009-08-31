@@ -34,7 +34,7 @@
 #ifndef _CompleteQuest_H__
 #define _CompleteQuest_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox
@@ -49,7 +49,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport CompleteQuest : public ChangeQuestStatus
+    class _QuestsystemExport CompleteQuest : public ChangeQuestStatus
     {
         public:
             CompleteQuest(BaseObject* creator);

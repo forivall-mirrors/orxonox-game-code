@@ -34,7 +34,7 @@
 #ifndef _AddQuestHint_H__
 #define _AddQuestHint_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <string>
 #include "QuestEffect.h"
@@ -51,7 +51,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport AddQuestHint : public QuestEffect
+    class _QuestsystemExport AddQuestHint : public QuestEffect
     {
         public:
             AddQuestHint(BaseObject* creator);

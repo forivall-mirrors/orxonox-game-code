@@ -34,7 +34,7 @@
 #ifndef _QuestHint_H__
 #define _QuestHint_H__
 
-#include "objects/quest/QuestPrereqs.h"
+#include "questsystem/QuestsystemPrereqs.h"
 
 #include <map>
 #include "QuestItem.h"
@@ -65,7 +65,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestExport QuestHint : public QuestItem
+    class _QuestsystemExport QuestHint : public QuestItem
     {
 
         public:

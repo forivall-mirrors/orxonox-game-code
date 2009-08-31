@@ -38,7 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "NotificationOverlay.h"
-#include "objects/quest/notifications/NotificationManager.h"
+#include "NotificationManager.h"
 
 namespace orxonox
 {
