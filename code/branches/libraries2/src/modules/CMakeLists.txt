@@ -19,3 +19,4 @@
 
 ################ Sub Directories ################
 
+ADD_SUBDIRECTORY(gamestates)

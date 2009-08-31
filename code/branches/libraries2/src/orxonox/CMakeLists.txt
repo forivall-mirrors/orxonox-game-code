@@ -28,7 +28,6 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   InGameConsole.cc
   Map.cc
 )
-ADD_SUBDIRECTORY(gamestates)
 ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(overlays)
 ADD_SUBDIRECTORY(objects)
