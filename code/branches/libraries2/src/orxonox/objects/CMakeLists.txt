@@ -1,12 +1,8 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
-  EventListener.cc
-  EventDispatcher.cc
-  EventTarget.cc
   GlobalShader.cc
   Level.cc
   Radar.cc
   Scene.cc
-  Script.cc
 )
 
 ADD_SUBDIRECTORY(collisionshapes)

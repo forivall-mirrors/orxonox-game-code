@@ -5,7 +5,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   MobileEntity.cc
   ControllableEntity.cc
 
-  Attacher.cc
   Backlight.cc
   Billboard.cc
   BlinkingBillboard.cc
@@ -18,11 +17,8 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Model.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
-  Planet.cc
   SpawnPoint.cc
   TeamSpawnPoint.cc
-  ForceField.cc
 )
 
 ADD_SUBDIRECTORY(pawns)
-ADD_SUBDIRECTORY(triggers)
