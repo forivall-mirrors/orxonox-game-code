@@ -29,7 +29,7 @@
 #ifndef _Trigger_H__
 #define _Trigger_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <set>
 #include <queue>
@@ -50,7 +50,7 @@ namespace orxonox
     };
   }
 
-  class _OrxonoxExport Trigger : public StaticEntity, public Tickable
+  class _ObjectsExport Trigger : public StaticEntity, public Tickable
   {
     public:
       Trigger(BaseObject* creator);

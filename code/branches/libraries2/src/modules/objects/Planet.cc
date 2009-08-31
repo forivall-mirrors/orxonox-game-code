@@ -36,12 +36,12 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "objects/Scene.h"
-#include "Camera.h"
+#include "objects/worldentities/Camera.h"
 #include "CameraManager.h"
 
 namespace orxonox
 {
-    CreateFactory(Planet);    
+    CreateFactory(Planet);
 
     /**
      * @brief Constructor
@@ -59,7 +59,7 @@ namespace orxonox
     {
         if (this->isInitialized() && this->mesh_.getEntity())
             this->detachOgreObject(this->mesh_.getEntity());
-    }    
+    }
 
     void Planet::tick(float dt)
     {
@@ -106,7 +106,7 @@ namespace orxonox
         this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
         billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));
 
-        this->attachOgreObject(this->billboard_.getBillboardSet());    
+        this->attachOgreObject(this->billboard_.getBillboardSet());
         this->billboard_.getBillboardSet()->setUseAccurateFacing(true);
         this->setCastShadows(true);
         this->billboard_.getBillboardSet()->setRenderQueueGroup(this->mesh_.getEntity()->getRenderQueueGroup());
@@ -147,8 +147,8 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             XMLPortParam(Planet, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("planet/Atmosphere");
-            XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);     
-            XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);         
+            XMLPortParam(Planet, "atmospheresize", setAtmosphereSize, getAtmosphereSize, xmlelement,mode);
+            XMLPortParam(Planet, "imagesize", setImageSize, getImageSize, xmlelement,mode);
             XMLPortParam(Planet, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
             XMLPortParam(Planet, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
         }

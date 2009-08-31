@@ -106,17 +106,11 @@ namespace orxonox
     class Camera;
 
     // mixed
-    class EventListener;
-    class EventDispatcher;
-    class EventTarget;
-
     class SpawnPoint;
     class TeamSpawnPoint;
 
-    class Attacher;
     class CameraPosition;
     class Sublevel;
-    class ForceField;
     class Radar;
 
     class Test;
@@ -157,12 +151,6 @@ namespace orxonox
     class MultiStateEngine;
     class RotatingEngine;
 
-    // trigger
-    class Trigger;
-    class DistanceTrigger;
-    class EventTrigger;
-    class CheckPoint;
-
     // weaponsystem
     class WeaponSystem;
     class WeaponSet;
@@ -191,9 +179,7 @@ namespace orxonox
 
     // collision
     class CollisionShape;
-    class SphereCollisionShape;
     class CompoundCollisionShape;
-    class PlaneCollisionShape;
     class WorldEntityCollisionShape;
 
     // overlays

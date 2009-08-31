@@ -12,5 +12,7 @@ ORXONOX_ADD_LIBRARY(weapons
     "WEAPONS_SHARED_BUILD"
   LINK_LIBRARIES
     orxonox
+    # TODO: Remove this as soon as projectiles aren't hardcoded anymore buth rather defined in XML
+    objects
   SOURCE_FILES ${WEAPONS_SRC_FILES}
 )

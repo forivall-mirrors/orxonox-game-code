@@ -29,12 +29,12 @@
 #ifndef _EventTrigger_H__
 #define _EventTrigger_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 #include "Trigger.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport EventTrigger : public Trigger
+    class _ObjectsExport EventTrigger : public Trigger
     {
         public:
             EventTrigger(BaseObject* creator);

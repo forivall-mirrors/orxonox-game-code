@@ -30,14 +30,14 @@
 #ifndef _ForceField_H__
 #define _ForceField_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include "tools/interfaces/Tickable.h"
-#include "StaticEntity.h"
+#include "objects/worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ForceField : public StaticEntity, public Tickable
+    class _ObjectsExport ForceField : public StaticEntity, public Tickable
     {
     public:
         ForceField(BaseObject* creator);

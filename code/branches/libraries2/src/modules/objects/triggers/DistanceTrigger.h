@@ -29,7 +29,7 @@
 #ifndef _DistanceTrigger_H__
 #define _DistanceTrigger_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <set>
 #include "core/ClassTreeMask.h"
@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport DistanceTrigger : public Trigger, public PlayerTrigger
+  class _ObjectsExport DistanceTrigger : public Trigger, public PlayerTrigger
   {
     public:
       DistanceTrigger(BaseObject* creator);

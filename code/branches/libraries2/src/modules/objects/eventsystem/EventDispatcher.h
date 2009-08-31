@@ -29,14 +29,14 @@
 #ifndef _EventDispatcher_H__
 #define _EventDispatcher_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <list>
 #include "core/BaseObject.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport EventDispatcher : public BaseObject
+    class _ObjectsExport EventDispatcher : public BaseObject
     {
         public:
             EventDispatcher(BaseObject* creator);

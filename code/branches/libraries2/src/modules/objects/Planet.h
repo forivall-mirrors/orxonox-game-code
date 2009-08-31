@@ -29,65 +29,65 @@
 #ifndef _Planet_H__
 #define _Planet_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <string>
 #include "tools/BillboardSet.h"
 #include "tools/Mesh.h"
-#include "MovableEntity.h"
+#include "objects/worldentities/MovableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Planet : public MovableEntity
+    class _ObjectsExport Planet : public MovableEntity
     {
         public:
             Planet(BaseObject* creator);
-            
+
             virtual ~Planet();
-            
+
             void init();
             virtual void tick(float dt);
-            
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            
+
             virtual void changedVisibility();
-            
+
             inline void setMeshSource(const std::string& meshname)
                 { this->meshSrc_ = meshname; this->changedMesh(); }
-                
+
             inline const std::string& getMeshSource() const
                 { return this->meshSrc_; }
 
             inline void setCastShadows(bool bCastShadows)
                 { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
-                
+
             inline bool getCastShadows() const
-                { return this->bCastShadows_; }            
-            
+                { return this->bCastShadows_; }
+
             inline const std::string& getMesh() const{
                 return this->meshSrc_;
             }
-            
+
             inline void setAtmosphereSize(float size){
                 this->atmosphereSize = size;
             }
-            
+
             inline float getAtmosphereSize(){
                 return this->atmosphereSize;
             }
-            
+
             inline void setAtmosphere(const std::string& atmosphere){
                 this->atmosphere_ = atmosphere;
             }
-            
+
             inline const std::string& getAtmosphere(){
                 return this->atmosphere_;
             }
-            
+
             inline void setImageSize(float size){
                 this->imageSize = size;
             }
-            
+
             inline float getImageSize(){
                 return this->imageSize;
             }
@@ -96,10 +96,10 @@ namespace orxonox
             void registerVariables();
 
         private:
-        
+
             void changedMesh();
             void changedShadows();
-            
+
             std::string meshSrc_;
             std::string atmosphere_;
             Mesh mesh_;

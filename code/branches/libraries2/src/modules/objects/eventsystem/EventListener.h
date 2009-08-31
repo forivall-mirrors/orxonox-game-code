@@ -29,7 +29,7 @@
 #ifndef _EventListener_H__
 #define _EventListener_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <string>
 #include "core/BaseObject.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport EventListener : public BaseObject, public XMLNameListener
+    class _ObjectsExport EventListener : public BaseObject, public XMLNameListener
     {
         public:
             EventListener(BaseObject* creator);

@@ -29,14 +29,14 @@
 #ifndef _PlaneCollisionShape_H__
 #define _PlaneCollisionShape_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include "util/Math.h"
-#include "CollisionShape.h"
+#include "objects/collisionshapes/CollisionShape.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PlaneCollisionShape : public CollisionShape
+    class _ObjectsExport PlaneCollisionShape : public CollisionShape
     {
         public:
             PlaneCollisionShape(BaseObject* creator);

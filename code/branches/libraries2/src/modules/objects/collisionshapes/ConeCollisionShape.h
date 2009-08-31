@@ -29,12 +29,12 @@
 #ifndef _ConeCollisionShape_H__
 #define _ConeCollisionShape_H__
 
-#include "OrxonoxPrereqs.h"
-#include "CollisionShape.h"
+#include "objects/ObjectsPrereqs.h"
+#include "objects/collisionshapes/CollisionShape.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ConeCollisionShape : public CollisionShape
+    class _ObjectsExport ConeCollisionShape : public CollisionShape
     {
         public:
             ConeCollisionShape(BaseObject* creator);

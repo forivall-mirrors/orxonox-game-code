@@ -29,7 +29,7 @@
 #ifndef _Attacher_H__
 #define _Attacher_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <list>
 #include <string>
@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Attacher : public StaticEntity, public XMLNameListener
+    class _ObjectsExport Attacher : public StaticEntity, public XMLNameListener
     {
         public:
             Attacher(BaseObject* creator);

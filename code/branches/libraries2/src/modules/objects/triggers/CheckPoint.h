@@ -34,14 +34,14 @@
 #ifndef _CheckPoint_H__
 #define _CheckPoint_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include "interfaces/RadarViewable.h"
 #include "DistanceTrigger.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CheckPoint : public DistanceTrigger, public RadarViewable
+    class _ObjectsExport CheckPoint : public DistanceTrigger, public RadarViewable
     {
     public:
         CheckPoint(BaseObject* creator);

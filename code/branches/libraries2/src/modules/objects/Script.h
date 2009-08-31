@@ -29,14 +29,14 @@
 #ifndef _Script_H__
 #define _Script_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <string>
 #include "core/BaseObject.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Script : public BaseObject
+    class _ObjectsExport Script : public BaseObject
     {
     public:
         Script(BaseObject* creator);

@@ -29,14 +29,14 @@
 #ifndef _EventTarget_H__
 #define _EventTarget_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include "core/BaseObject.h"
 #include "core/XMLNameListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport EventTarget : public BaseObject, public XMLNameListener
+    class _ObjectsExport EventTarget : public BaseObject, public XMLNameListener
     {
         public:
             EventTarget(BaseObject* creator);
