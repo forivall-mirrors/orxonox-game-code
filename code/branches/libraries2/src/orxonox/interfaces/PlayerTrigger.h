@@ -36,7 +36,7 @@
 #define _PlayerTrigger_H__
 
 #include "OrxonoxPrereqs.h"
-#include "Trigger.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -46,13 +46,11 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport PlayerTrigger : public Trigger
+    class _OrxonoxExport PlayerTrigger : virtual public OrxonoxClass
     {
     public:
-        PlayerTrigger(BaseObject* creator);
-        virtual ~PlayerTrigger();
-
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PlayerTrigger object through XML.
+        PlayerTrigger();
+        virtual ~PlayerTrigger() {}
 
         /**
         @brief Returns the player that triggered the PlayerTrigger.
@@ -69,8 +67,6 @@ namespace orxonox
            { return this->isForPlayer_; }
 
     protected:
-        virtual bool isTriggered(TriggerMode::Value mode) = 0;
-
         /**
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
         @param player A pointer to the ControllableEntity that triggered the PlayerTrigger.

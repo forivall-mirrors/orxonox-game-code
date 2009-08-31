@@ -73,6 +73,7 @@ namespace orxonox
     class GametypeMessageListener;
     class NotificationListener;
     class PawnListener;
+    class PlayerTrigger;
     class RadarListener;
     class RadarViewable;
     class Rewardable;
@@ -160,7 +161,6 @@ namespace orxonox
     class Trigger;
     class DistanceTrigger;
     class EventTrigger;
-    class PlayerTrigger;
     class CheckPoint;
 
     // weaponsystem

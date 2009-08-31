@@ -37,7 +37,7 @@
 #include "core/XMLPort.h"
 #include "core/EventIncludes.h"
 #include "objects/worldentities/pawns/Pawn.h"
-#include "objects/worldentities/triggers/PlayerTrigger.h"
+#include "interfaces/PlayerTrigger.h"
 #include "QuestEffect.h"
 
 namespace orxonox
