@@ -37,8 +37,8 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "tools/TextureGenerator.h"
-#include "objects/worldentities/WorldEntity.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/WorldEntity.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

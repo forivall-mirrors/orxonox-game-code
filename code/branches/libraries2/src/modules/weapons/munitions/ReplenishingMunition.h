@@ -32,7 +32,7 @@
 #include "weapons/WeaponsPrereqs.h"
 
 #include "tools/Timer.h"
-#include "objects/weaponsystem/Munition.h"
+#include "weaponsystem/Munition.h"
 
 namespace orxonox
 {

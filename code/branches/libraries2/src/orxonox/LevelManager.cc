@@ -37,8 +37,8 @@
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
 #include "PlayerManager.h"
-#include "objects/Level.h"
-#include "objects/infos/HumanPlayer.h"
+#include "Level.h"
+#include "infos/HumanPlayer.h"
 
 namespace orxonox
 {

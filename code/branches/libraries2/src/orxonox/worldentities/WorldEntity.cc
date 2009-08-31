@@ -43,8 +43,8 @@
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/Scene.h"
-#include "objects/collisionshapes/WorldEntityCollisionShape.h"
+#include "Scene.h"
+#include "collisionshapes/WorldEntityCollisionShape.h"
 
 namespace orxonox
 {

@@ -33,8 +33,8 @@
 #include "core/GameMode.h"
 
 #include "tools/BillboardSet.h"
-#include "objects/Scene.h"
-#include "objects/infos/PlayerInfo.h"
+#include "Scene.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {

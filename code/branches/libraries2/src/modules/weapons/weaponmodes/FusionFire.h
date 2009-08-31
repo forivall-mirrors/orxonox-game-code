@@ -30,7 +30,7 @@
 #define _FusionFire_H__
 
 #include "weapons/WeaponsPrereqs.h"
-#include "objects/weaponsystem/WeaponMode.h"
+#include "weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {

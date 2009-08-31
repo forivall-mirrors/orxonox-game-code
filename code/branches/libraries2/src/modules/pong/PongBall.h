@@ -32,7 +32,7 @@
 #include "pong/PongPrereqs.h"
 
 #include "util/Math.h"
-#include "objects/worldentities/MovableEntity.h"
+#include "worldentities/MovableEntity.h"
 
 namespace orxonox
 {

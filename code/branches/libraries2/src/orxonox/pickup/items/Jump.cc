@@ -35,8 +35,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/pickup/DroppedItem.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "pickup/DroppedItem.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

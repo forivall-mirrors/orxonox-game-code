@@ -47,7 +47,7 @@
 #include "core/XMLFile.h"
 
 #include "tools/interfaces/Tickable.h"
-#include "objects/Radar.h"
+#include "Radar.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"

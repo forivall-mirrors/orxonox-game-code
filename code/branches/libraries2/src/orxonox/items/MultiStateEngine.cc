@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/SpaceShip.h"
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {

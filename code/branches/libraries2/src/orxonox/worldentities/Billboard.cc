@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -110,7 +110,7 @@ namespace orxonox
         else
             this->billboard_.setColour(this->colour_);
     }
-    
+
 /*
     void Billboard::changedRotation()
     {

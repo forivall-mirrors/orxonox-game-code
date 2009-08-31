@@ -31,8 +31,8 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "interfaces/TeamColourable.h"
-#include "objects/worldentities/TeamSpawnPoint.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/TeamSpawnPoint.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

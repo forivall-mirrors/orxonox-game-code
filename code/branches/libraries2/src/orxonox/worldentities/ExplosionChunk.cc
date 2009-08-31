@@ -32,7 +32,7 @@
 #include "core/Executor.h"
 #include "core/GameMode.h"
 #include "util/Exception.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 #include "tools/ParticleInterface.h"
 
 namespace orxonox

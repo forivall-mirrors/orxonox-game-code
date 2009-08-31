@@ -33,7 +33,7 @@
 #include "core/Executor.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

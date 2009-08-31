@@ -33,7 +33,7 @@
 
 #include <string>
 #include "core/Identifier.h"
-#include "objects/worldentities/StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

@@ -30,8 +30,8 @@
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/gametypes/Gametype.h"
+#include "worldentities/ControllableEntity.h"
+#include "gametypes/Gametype.h"
 
 namespace orxonox
 {

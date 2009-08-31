@@ -33,7 +33,7 @@
 
 #include <string>
 #include "tools/Timer.h"
-#include "objects/weaponsystem/WeaponMode.h"
+#include "weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {

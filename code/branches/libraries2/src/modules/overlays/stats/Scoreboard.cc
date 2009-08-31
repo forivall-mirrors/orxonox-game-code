@@ -28,8 +28,8 @@
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "objects/gametypes/Gametype.h"
-#include "objects/infos/PlayerInfo.h"
+#include "gametypes/Gametype.h"
+#include "infos/PlayerInfo.h"
 #include "CreateLines.h"
 
 namespace orxonox

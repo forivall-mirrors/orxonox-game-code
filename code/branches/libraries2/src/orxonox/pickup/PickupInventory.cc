@@ -38,8 +38,8 @@
 #include "core/ConsoleCommand.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"
-#include "objects/controllers/HumanController.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "controllers/HumanController.h"
+#include "worldentities/pawns/Pawn.h"
 
 #include "EquipmentItem.h"
 #include "PassiveItem.h"

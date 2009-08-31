@@ -29,7 +29,7 @@
 #include "Destroyer.h"
 
 #include "core/CoreIncludes.h"
-#include "objects/gametypes/UnderAttack.h"
+#include "gametypes/UnderAttack.h"
 
 namespace orxonox
 {

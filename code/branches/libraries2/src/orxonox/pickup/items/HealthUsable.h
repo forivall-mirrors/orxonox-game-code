@@ -37,7 +37,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <climits>
-#include "objects/pickup/UsableItem.h"
+#include "pickup/UsableItem.h"
 
 namespace orxonox
 {

@@ -36,7 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/EventIncludes.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 #include "interfaces/PlayerTrigger.h"
 #include "QuestEffect.h"
 

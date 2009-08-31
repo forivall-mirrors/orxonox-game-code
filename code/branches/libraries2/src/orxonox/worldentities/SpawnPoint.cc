@@ -31,8 +31,8 @@
 #include "core/CoreIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
-#include "objects/gametypes/Gametype.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "gametypes/Gametype.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

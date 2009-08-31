@@ -30,9 +30,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/infos/PlayerInfo.h"
-#include "objects/gametypes/UnderAttack.h"
-#include "objects/worldentities/pawns/Destroyer.h"
+#include "infos/PlayerInfo.h"
+#include "gametypes/UnderAttack.h"
+#include "worldentities/pawns/Destroyer.h"
 
 namespace orxonox
 {

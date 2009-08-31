@@ -36,11 +36,11 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 
-#include "objects/Scene.h"
-#include "objects/infos/PlayerInfo.h"
-#include "objects/controllers/Controller.h"
-#include "objects/worldentities/Camera.h"
-#include "objects/worldentities/CameraPosition.h"
+#include "Scene.h"
+#include "infos/PlayerInfo.h"
+#include "controllers/Controller.h"
+#include "worldentities/Camera.h"
+#include "worldentities/CameraPosition.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox
@@ -382,7 +382,7 @@ namespace orxonox
         registerVariable(this->client_linear_velocity_,  VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientLinearVelocity));
         registerVariable(this->client_orientation_,      VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientOrientation));
         registerVariable(this->client_angular_velocity_, VariableDirection::ToServer, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientAngularVelocity));
-        
+
 
         registerVariable(this->playerID_,                VariableDirection::ToClient, new NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
     }

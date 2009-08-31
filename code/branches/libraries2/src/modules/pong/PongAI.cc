@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "tools/Timer.h"
-#include "objects/worldentities/ControllableEntity.h"
+#include "worldentities/ControllableEntity.h"
 #include "PongBall.h"
 
 namespace orxonox

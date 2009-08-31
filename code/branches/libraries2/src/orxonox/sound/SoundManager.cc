@@ -32,7 +32,7 @@
 
 #include "util/Math.h"
 #include "CameraManager.h"
-#include "objects/worldentities/Camera.h"
+#include "worldentities/Camera.h"
 #include "SoundBase.h"
 
 namespace orxonox

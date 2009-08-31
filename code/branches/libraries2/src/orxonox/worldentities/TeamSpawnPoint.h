@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 #include "SpawnPoint.h"
 
 namespace orxonox

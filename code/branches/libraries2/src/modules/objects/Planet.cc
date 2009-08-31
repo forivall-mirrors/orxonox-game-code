@@ -35,8 +35,8 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "objects/Scene.h"
-#include "objects/worldentities/Camera.h"
+#include "Scene.h"
+#include "worldentities/Camera.h"
 #include "CameraManager.h"
 
 namespace orxonox

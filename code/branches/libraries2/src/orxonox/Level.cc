@@ -36,8 +36,8 @@
 #include "core/XMLFile.h"
 #include "core/XMLPort.h"
 
-#include "objects/infos/PlayerInfo.h"
-#include "objects/gametypes/Gametype.h"
+#include "infos/PlayerInfo.h"
+#include "gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 #include "sound/SoundBase.h"
 #include "LevelManager.h"

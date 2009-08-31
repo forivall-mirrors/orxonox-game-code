@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

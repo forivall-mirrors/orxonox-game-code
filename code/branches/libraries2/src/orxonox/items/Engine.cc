@@ -32,9 +32,9 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/Scene.h"
-#include "objects/worldentities/pawns/SpaceShip.h"
-#include "objects/pickup/ModifierType.h"
+#include "Scene.h"
+#include "worldentities/pawns/SpaceShip.h"
+#include "pickup/ModifierType.h"
 #include "tools/Shader.h"
 #include "sound/SoundBase.h"
 

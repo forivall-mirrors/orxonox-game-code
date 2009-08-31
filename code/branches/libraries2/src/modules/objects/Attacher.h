@@ -34,7 +34,7 @@
 #include <list>
 #include <string>
 #include "core/XMLNameListener.h"
-#include "objects/worldentities/StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

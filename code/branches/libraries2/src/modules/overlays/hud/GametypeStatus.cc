@@ -30,10 +30,10 @@
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "objects/infos/GametypeInfo.h"
-#include "objects/infos/PlayerInfo.h"
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/worldentities/pawns/Spectator.h"
+#include "infos/GametypeInfo.h"
+#include "infos/PlayerInfo.h"
+#include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/Spectator.h"
 
 namespace orxonox
 {

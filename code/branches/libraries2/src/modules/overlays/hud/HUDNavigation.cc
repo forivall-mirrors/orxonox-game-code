@@ -38,7 +38,7 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/Radar.h"
+#include "Radar.h"
 
 namespace orxonox
 {

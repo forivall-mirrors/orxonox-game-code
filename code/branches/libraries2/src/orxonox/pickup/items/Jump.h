@@ -40,7 +40,7 @@
 
 #include <climits>
 #include "util/Math.h"
-#include "objects/pickup/UsableItem.h"
+#include "pickup/UsableItem.h"
 
 namespace orxonox
 {

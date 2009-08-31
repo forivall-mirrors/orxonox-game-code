@@ -32,8 +32,8 @@
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "objects/gametypes/Gametype.h"
-#include "objects/controllers/AIController.h"
+#include "gametypes/Gametype.h"
+#include "controllers/AIController.h"
 
 namespace orxonox
 {

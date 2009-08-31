@@ -34,7 +34,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
-#include "objects/items/Engine.h"
+#include "items/Engine.h"
 
 namespace orxonox
 {

@@ -31,7 +31,7 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox

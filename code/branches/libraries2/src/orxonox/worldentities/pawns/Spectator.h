@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/Math.h"
-#include "objects/worldentities/ControllableEntity.h"
+#include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {

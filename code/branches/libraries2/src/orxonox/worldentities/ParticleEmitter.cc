@@ -38,7 +38,7 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "tools/ParticleInterface.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 
 namespace orxonox
 {

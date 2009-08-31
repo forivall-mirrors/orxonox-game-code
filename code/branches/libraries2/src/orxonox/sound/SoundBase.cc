@@ -36,7 +36,7 @@
 #include "util/Math.h"
 #include "core/Core.h"
 #include "core/Resource.h"
-#include "objects/worldentities/WorldEntity.h"
+#include "worldentities/WorldEntity.h"
 #include "SoundManager.h"
 
 namespace orxonox

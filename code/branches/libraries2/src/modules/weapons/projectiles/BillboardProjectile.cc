@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -60,7 +60,7 @@ namespace orxonox
     {
         this->billboard_.setColour(colour);
     }
-    
+
     void BillboardProjectile::setMaterial(const std::string& material)
     {
         this->billboard_.setMaterial(material);

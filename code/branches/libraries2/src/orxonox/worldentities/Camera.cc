@@ -37,7 +37,7 @@
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 #include "CameraManager.h"
 
 namespace orxonox

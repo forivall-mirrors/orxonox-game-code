@@ -33,8 +33,8 @@
 
 #include <string>
 #include "interfaces/RadarViewable.h"
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/pickup/PickupCollection.h"
+#include "worldentities/ControllableEntity.h"
+#include "pickup/PickupCollection.h"
 
 namespace orxonox
 {
@@ -113,7 +113,7 @@ namespace orxonox
                 { return this->pickups_; }
             virtual void useItem()
                 { this->pickups_.useItem(); }
-            
+
             virtual void startLocalHumanControl();
 
         protected:

@@ -31,7 +31,7 @@
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

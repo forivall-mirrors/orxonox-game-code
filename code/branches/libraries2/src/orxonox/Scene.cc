@@ -43,7 +43,7 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
-#include "objects/worldentities/WorldEntity.h"
+#include "worldentities/WorldEntity.h"
 
 namespace orxonox
 {

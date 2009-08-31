@@ -38,7 +38,7 @@
 #include "core/BaseObject.h"
 #include "core/Identifier.h"
 #include "tools/interfaces/Tickable.h"
-#include "objects/infos/GametypeInfo.h"
+#include "infos/GametypeInfo.h"
 
 namespace orxonox
 {

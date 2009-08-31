@@ -34,7 +34,7 @@
 #include <list>
 #include "util/Math.h"
 #include "tools/interfaces/Tickable.h"
-#include "objects/controllers/Controller.h"
+#include "controllers/Controller.h"
 
 namespace orxonox
 {

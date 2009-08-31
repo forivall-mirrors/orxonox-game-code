@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/MobileEntity.h"
+#include "worldentities/MobileEntity.h"
 
 namespace orxonox
 {
@@ -52,7 +52,7 @@ namespace orxonox
     void ForceField::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ForceField, XMLPort, xmlelement, mode);
- 
+
         //For correct xml import use: position, direction, velocity, scale
         XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
         XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);

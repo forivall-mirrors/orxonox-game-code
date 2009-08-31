@@ -33,13 +33,13 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 
-#include "objects/infos/PlayerInfo.h"
-#include "objects/infos/Bot.h"
-#include "objects/worldentities/Camera.h"
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/worldentities/SpawnPoint.h"
-#include "objects/worldentities/pawns/Spectator.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "infos/PlayerInfo.h"
+#include "infos/Bot.h"
+#include "worldentities/Camera.h"
+#include "worldentities/ControllableEntity.h"
+#include "worldentities/SpawnPoint.h"
+#include "worldentities/pawns/Spectator.h"
+#include "worldentities/pawns/Pawn.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox

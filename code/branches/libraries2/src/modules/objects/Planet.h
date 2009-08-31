@@ -34,7 +34,7 @@
 #include <string>
 #include "tools/BillboardSet.h"
 #include "tools/Mesh.h"
-#include "objects/worldentities/MovableEntity.h"
+#include "worldentities/MovableEntity.h"
 
 namespace orxonox
 {

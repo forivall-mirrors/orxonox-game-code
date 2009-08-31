@@ -33,7 +33,7 @@
 
 #include "Info.h"
 #include "core/Identifier.h"
-#include "objects/controllers/Controller.h"
+#include "controllers/Controller.h"
 
 namespace orxonox
 {

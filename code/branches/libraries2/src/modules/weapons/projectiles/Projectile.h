@@ -33,7 +33,7 @@
 
 #include "tools/Timer.h"
 #include "interfaces/PawnListener.h"
-#include "objects/worldentities/MovableEntity.h"
+#include "worldentities/MovableEntity.h"
 
 namespace orxonox
 {

@@ -47,8 +47,8 @@ ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
     LevelManager.h
-    objects/pickup/BaseItem.h
-    objects/pickup/PickupInventory.h
+    pickup/BaseItem.h
+    pickup/PickupInventory.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"
   PCH_FILE

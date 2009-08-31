@@ -33,8 +33,8 @@
 #include "core/GameMode.h"
 #include "network/ClientInformation.h"
 #include "network/Host.h"
-#include "objects/controllers/HumanController.h"
-#include "objects/gametypes/Gametype.h"
+#include "controllers/HumanController.h"
+#include "gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox

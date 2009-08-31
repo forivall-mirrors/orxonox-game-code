@@ -32,7 +32,7 @@
 
 #include "util/OrxAssert.h"
 #include "core/CoreIncludes.h"
-#include "objects/worldentities/WorldEntity.h"
+#include "worldentities/WorldEntity.h"
 
 namespace orxonox
 {

@@ -33,7 +33,7 @@
 
 #include <string>
 #include <util/Math.h>
-#include "objects/worldentities/StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

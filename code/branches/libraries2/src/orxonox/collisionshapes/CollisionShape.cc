@@ -32,7 +32,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/WorldEntity.h"
+#include "worldentities/WorldEntity.h"
 #include "CompoundCollisionShape.h"
 #include "WorldEntityCollisionShape.h"
 

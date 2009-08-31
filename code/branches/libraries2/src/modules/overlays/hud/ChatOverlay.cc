@@ -38,7 +38,7 @@
 #include "core/Executor.h"
 
 #include "tools/Timer.h"
-#include "objects/infos/PlayerInfo.h"
+#include "infos/PlayerInfo.h"
 #include "PlayerManager.h"
 
 namespace orxonox

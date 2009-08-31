@@ -63,11 +63,14 @@
 
 namespace orxonox
 {
-    // manager
     class CameraManager;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
+
+    class Level;
+    class Scene;
+    class Tickable;
 
     // interfaces
     class GametypeMessageListener;
@@ -78,11 +81,6 @@ namespace orxonox
     class RadarViewable;
     class Rewardable;
     class Teamcolourable;
-
-    // objects
-    class Level;
-    class Scene;
-    class Tickable;
 
     // worldentities
     class WorldEntity;

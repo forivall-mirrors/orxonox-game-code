@@ -31,8 +31,8 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"
-#include "objects/gametypes/TeamBaseMatch.h"
-#include "objects/infos/PlayerInfo.h"
+#include "gametypes/TeamBaseMatch.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {

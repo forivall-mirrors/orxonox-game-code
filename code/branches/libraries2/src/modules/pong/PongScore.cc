@@ -32,7 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "Pong.h"
-#include "objects/infos/PlayerInfo.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {

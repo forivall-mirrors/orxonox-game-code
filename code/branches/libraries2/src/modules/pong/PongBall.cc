@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "objects/gametypes/Gametype.h"
+#include "gametypes/Gametype.h"
 #include "PongBat.h"
 #include "sound/SoundBase.h"
 

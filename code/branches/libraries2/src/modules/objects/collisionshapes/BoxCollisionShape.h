@@ -32,7 +32,7 @@
 #include "objects/ObjectsPrereqs.h"
 
 #include "util/Math.h"
-#include "objects/collisionshapes/CollisionShape.h"
+#include "collisionshapes/CollisionShape.h"
 
 namespace orxonox
 {

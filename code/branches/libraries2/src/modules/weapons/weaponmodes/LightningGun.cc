@@ -30,9 +30,9 @@
 
 #include "core/CoreIncludes.h"
 #include "weapons/projectiles/LightningGunProjectile.h"
-#include "objects/weaponsystem/Weapon.h"
-#include "objects/weaponsystem/WeaponPack.h"
-#include "objects/weaponsystem/WeaponSystem.h"
+#include "weaponsystem/Weapon.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/WeaponSystem.h"
 
 namespace orxonox
 {

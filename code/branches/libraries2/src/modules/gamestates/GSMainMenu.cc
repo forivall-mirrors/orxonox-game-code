@@ -37,7 +37,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 #include "sound/SoundMainMenu.h"
 
 namespace orxonox

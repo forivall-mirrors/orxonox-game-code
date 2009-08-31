@@ -30,7 +30,7 @@
 #define _PongBot_H__
 
 #include "pong/PongPrereqs.h"
-#include "objects/infos/Bot.h"
+#include "infos/Bot.h"
 
 namespace orxonox
 {

@@ -32,7 +32,7 @@
 #include "pong/PongPrereqs.h"
 
 #include "tools/Timer.h"
-#include "objects/gametypes/Deathmatch.h"
+#include "gametypes/Deathmatch.h"
 
 namespace orxonox
 {

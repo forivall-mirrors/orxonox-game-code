@@ -32,8 +32,8 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "network/Host.h"
-#include "objects/worldentities/pawns/Destroyer.h"
-#include "objects/infos/PlayerInfo.h"
+#include "worldentities/pawns/Destroyer.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {

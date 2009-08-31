@@ -52,10 +52,10 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "interfaces/RadarViewable.h"
-#include "objects/Scene.h"
-#include "objects/controllers/HumanController.h"
-#include "objects/worldentities/CameraPosition.h"
-#include "objects/worldentities/ControllableEntity.h"
+#include "Scene.h"
+#include "controllers/HumanController.h"
+#include "worldentities/CameraPosition.h"
+#include "worldentities/ControllableEntity.h"
 
  namespace orxonox
  {

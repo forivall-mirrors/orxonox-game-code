@@ -30,7 +30,7 @@
 #define _WeaponSlot_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/worldentities/StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

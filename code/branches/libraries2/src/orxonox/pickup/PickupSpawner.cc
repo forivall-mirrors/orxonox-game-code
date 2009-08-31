@@ -39,7 +39,7 @@
 #include "core/GUIManager.h"     // HACK; see below
 #include "core/Template.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/Pawn.h"
 #include "PickupInventory.h"    // HACK; Only for hack, remove later
 
 

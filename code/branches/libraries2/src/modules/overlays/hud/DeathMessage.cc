@@ -29,7 +29,7 @@
 #include "DeathMessage.h"
 
 #include "core/CoreIncludes.h"
-#include "objects/infos/PlayerInfo.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {

@@ -37,7 +37,7 @@
 #include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
-#include "objects/worldentities/StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {

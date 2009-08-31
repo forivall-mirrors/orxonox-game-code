@@ -30,8 +30,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
-#include "objects/worldentities/pawns/TeamBaseMatchBase.h"
-#include "objects/infos/PlayerInfo.h"
+#include "worldentities/pawns/TeamBaseMatchBase.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {

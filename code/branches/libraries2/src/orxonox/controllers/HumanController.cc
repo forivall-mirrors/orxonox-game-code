@@ -30,10 +30,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/worldentities/pawns/Pawn.h"
-#include "objects/gametypes/Gametype.h"
-#include "objects/infos/PlayerInfo.h"
+#include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/Pawn.h"
+#include "gametypes/Gametype.h"
+#include "infos/PlayerInfo.h"
 #include "overlays/Map.h"
 
 namespace orxonox

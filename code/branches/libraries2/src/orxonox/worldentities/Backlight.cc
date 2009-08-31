@@ -37,7 +37,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "objects/Scene.h"
+#include "Scene.h"
 
 namespace orxonox
 {

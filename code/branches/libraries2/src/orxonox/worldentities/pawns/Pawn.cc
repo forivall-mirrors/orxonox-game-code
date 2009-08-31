@@ -37,15 +37,15 @@
 
 #include "interfaces/PawnListener.h"
 #include "PawnManager.h"
-#include "objects/infos/PlayerInfo.h"
-#include "objects/gametypes/Gametype.h"
-#include "objects/worldentities/ParticleSpawner.h"
-#include "objects/worldentities/ExplosionChunk.h"
-#include "objects/worldentities/BigExplosion.h"
-#include "objects/weaponsystem/WeaponSystem.h"
-#include "objects/weaponsystem/WeaponSlot.h"
-#include "objects/weaponsystem/WeaponPack.h"
-#include "objects/weaponsystem/WeaponSet.h"
+#include "infos/PlayerInfo.h"
+#include "gametypes/Gametype.h"
+#include "worldentities/ParticleSpawner.h"
+#include "worldentities/ExplosionChunk.h"
+#include "worldentities/BigExplosion.h"
+#include "weaponsystem/WeaponSystem.h"
+#include "weaponsystem/WeaponSlot.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/WeaponSet.h"
 
 
 namespace orxonox

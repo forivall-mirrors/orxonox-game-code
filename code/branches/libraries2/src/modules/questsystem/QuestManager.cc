@@ -37,7 +37,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 
-#include "objects/infos/PlayerInfo.h"
+#include "infos/PlayerInfo.h"
 #include "Quest.h"
 #include "QuestHint.h"
 #include "QuestItem.h"

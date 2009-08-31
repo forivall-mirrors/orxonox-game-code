@@ -31,13 +31,13 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/XMLPort.h"
-#include "objects/worldentities/Model.h"
+#include "worldentities/Model.h"
 
 #include "weapons/projectiles/Projectile.h"
 #include "weapons/MuzzleFlash.h"
-#include "objects/weaponsystem/Weapon.h"
-#include "objects/weaponsystem/WeaponPack.h"
-#include "objects/weaponsystem/WeaponSystem.h"
+#include "weaponsystem/Weapon.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/WeaponSystem.h"
 
 namespace orxonox
 {

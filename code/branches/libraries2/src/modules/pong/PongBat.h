@@ -30,7 +30,7 @@
 #define _PongBat_H__
 
 #include "pong/PongPrereqs.h"
-#include "objects/worldentities/ControllableEntity.h"
+#include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
