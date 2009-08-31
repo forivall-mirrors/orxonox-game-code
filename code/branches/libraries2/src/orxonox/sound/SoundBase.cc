@@ -36,10 +36,10 @@
 #include "util/Math.h"
 #include "core/Core.h"
 #include "core/Resource.h"
-#include "orxonox/objects/worldentities/WorldEntity.h"
+#include "objects/worldentities/WorldEntity.h"
 #include "SoundManager.h"
 
-namespace orxonox 
+namespace orxonox
 {
     SoundBase::SoundBase(WorldEntity* entity)
     {

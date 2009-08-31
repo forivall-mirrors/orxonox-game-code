@@ -20,3 +20,4 @@
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(gamestates)
+ADD_SUBDIRECTORY(overlays)

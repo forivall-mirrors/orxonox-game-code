@@ -38,7 +38,7 @@
 #include "objects/quest/QuestPrereqs.h"
 
 #include <string>
-#include "orxonox/overlays/OverlayText.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {

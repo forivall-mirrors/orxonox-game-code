@@ -36,8 +36,8 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/EventIncludes.h"
-#include "orxonox/objects/worldentities/pawns/Pawn.h"
-#include "orxonox/objects/worldentities/triggers/PlayerTrigger.h"
+#include "objects/worldentities/pawns/Pawn.h"
+#include "objects/worldentities/triggers/PlayerTrigger.h"
 #include "QuestEffect.h"
 
 namespace orxonox
@@ -51,7 +51,7 @@ namespace orxonox
     QuestEffectBeacon::QuestEffectBeacon(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(QuestEffectBeacon);
-        
+
         this->status_ = QuestEffectBeaconStatus::Active;
         this->times_ = INFINITE_TIME;
     }
@@ -62,7 +62,7 @@ namespace orxonox
     QuestEffectBeacon::~QuestEffectBeacon()
     {
     }
-    
+
     /**
     @brief
         Method for creating a QuestEffectBeacon object through XML.
@@ -73,10 +73,10 @@ namespace orxonox
 
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
         XMLPortObject(QuestEffectBeacon, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
-        
+
         COUT(3) << "New QuestEffectBeacon created." << std::endl;
     }
-    
+
     /**
     @brief
         Processes an event for this QuestEffectBeacon.
@@ -84,10 +84,10 @@ namespace orxonox
     void QuestEffectBeacon::processEvent(Event& event)
     {
         SUPER(QuestEffectBeacon, processEvent, event);
-    
+
         ORXONOX_SET_SUBCLASS_EVENT(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
     }
-    
+
     /**
     @brief
         Executes the QuestEffectBeacon.
@@ -108,7 +108,7 @@ namespace orxonox
             COUT(3) << "The QuestEffectBeacon is inactive." << std::endl;
             return false;
         }
-        
+
         if(!trigger->isForPlayer()) //!< The PlayerTrigger is not exclusively for ControllableEntities which means we cannot extract one.
         {
             return false;
@@ -122,10 +122,10 @@ namespace orxonox
             COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a Pawn." << std::endl;
             return false;
         }
-        
+
         //! Extract the PlayerInfo from the ControllableEntity.
         PlayerInfo* player = pawn->getPlayer();
-        
+
         if(player == NULL)
         {
             COUT(3) << "The PlayerInfo* is NULL." << std::endl;
@@ -143,7 +143,7 @@ namespace orxonox
 
         return false;
     }
-    
+
     /**
     @brief
         Set the status of the QuestEffectBeacon.
@@ -158,17 +158,17 @@ namespace orxonox
         {
             return false;
         }
-        
+
         if(activate)
         {
         this->status_ = QuestEffectBeaconStatus::Active;
         return true;
         }
-        
+
         this->status_ = QuestEffectBeaconStatus::Inactive;
         return true;
     }
-    
+
     /**
     @brief
         Decrement the number of times the QuestEffectBeacon can be executed.
@@ -185,16 +185,16 @@ namespace orxonox
         {
             return true;
         }
-        
+
         this->times_ = this->times_ - 1; //!< Decrement number of times the QuestEffectBeacon can be executed.
         if(this->getTimes() == 0) //!< Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
         {
             this->status_ = QuestEffectBeaconStatus::Inactive;
         }
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Set the number of times the QuestEffectBeacon can be executed.
@@ -211,11 +211,11 @@ namespace orxonox
         {
             return false;
         }
-        
+
         this->times_ = n;
         return true;
     }
-    
+
     /**
     @brief
         Adds a QuestEffect to the QuestEffectBeacon.
@@ -237,7 +237,7 @@ namespace orxonox
         COUT(3) << "A QuestEffect was added to a QuestEffectBeacon." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
         Returns the QuestEffect at the given index.

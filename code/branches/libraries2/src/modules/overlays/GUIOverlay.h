@@ -32,7 +32,7 @@
 #include "overlays/OverlaysPrereqs.h"
 
 #include <string>
-#include "OrxonoxOverlay.h"
+#include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
