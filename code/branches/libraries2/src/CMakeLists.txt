@@ -98,3 +98,24 @@ ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(libraries)
 ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(orxonox)
+
+################ Executable ################
+
+# Translate argument
+IF(ORXONOX_USE_WINMAIN)
+  SET(ORXONOX_WIN32 WIN32)
+ENDIF()
+
+ORXONOX_ADD_EXECUTABLE(orxonox-main
+  # When defined as WIN32 this removes the console window on Windows
+  ${ORXONOX_WIN32}
+  LINK_LIBRARIES
+    orxonox
+  SOURCE_FILES
+    Orxonox.cc
+  OUTPUT_NAME orxonox
+)
+
+GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
+GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
+SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")

@@ -44,7 +44,7 @@
 #endif
 
 #include "util/Debug.h"
-#include "Main.h"
+#include "orxonox/Main.h"
 
 /*
 @brief
