@@ -37,7 +37,7 @@
 #include "tools/DynamicLines.h"
 #include "objects/worldentities/WorldEntity.h"
 #include "objects/Radar.h"
-#include "Map.h"
+#include "overlays/Map.h"
 
 namespace orxonox
 {

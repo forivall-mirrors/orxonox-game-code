@@ -24,9 +24,6 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   LevelManager.cc
   PawnManager.cc
   PlayerManager.cc
-
-  InGameConsole.cc
-  Map.cc
 )
 ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(overlays)

@@ -34,7 +34,7 @@
 #include "objects/worldentities/pawns/Pawn.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/infos/PlayerInfo.h"
-#include "Map.h"
+#include "overlays/Map.h"
 
 namespace orxonox
 {
