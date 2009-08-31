@@ -5,18 +5,9 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   MobileEntity.cc
   ControllableEntity.cc
 
-  Backlight.cc
-  Billboard.cc
-  BlinkingBillboard.cc
   BigExplosion.cc
   ExplosionChunk.cc
-  FadingBillboard.cc
-  Light.cc
-  Camera.cc
   CameraPosition.cc
-  Model.cc
-  ParticleEmitter.cc
-  ParticleSpawner.cc
   SpawnPoint.cc
   TeamSpawnPoint.cc
 )

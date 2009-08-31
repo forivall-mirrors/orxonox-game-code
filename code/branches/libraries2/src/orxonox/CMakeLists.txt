@@ -25,7 +25,6 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   PawnManager.cc
   PlayerManager.cc
 
-  GlobalShader.cc
   Level.cc
   Radar.cc
   Scene.cc
@@ -34,6 +33,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
 ADD_SUBDIRECTORY(collisionshapes)
 ADD_SUBDIRECTORY(controllers)
 ADD_SUBDIRECTORY(gametypes)
+ADD_SUBDIRECTORY(graphics)
 ADD_SUBDIRECTORY(infos)
 ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(items)
