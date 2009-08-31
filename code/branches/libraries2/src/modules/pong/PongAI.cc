@@ -32,7 +32,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "tools/Timer.h"
 #include "objects/worldentities/ControllableEntity.h"
-#include "objects/worldentities/PongBall.h"
+#include "PongBall.h"
 
 namespace orxonox
 {

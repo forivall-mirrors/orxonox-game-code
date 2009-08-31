@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "objects/gametypes/Gametype.h"
-#include "objects/worldentities/PongBat.h"
+#include "PongBat.h"
 #include "sound/SoundBase.h"
 
 namespace orxonox

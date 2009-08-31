@@ -29,12 +29,12 @@
 #ifndef _PongBat_H__
 #define _PongBat_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pong/PongPrereqs.h"
 #include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PongBat : public ControllableEntity
+    class _PongExport PongBat : public ControllableEntity
     {
         public:
             PongBat(BaseObject* creator);

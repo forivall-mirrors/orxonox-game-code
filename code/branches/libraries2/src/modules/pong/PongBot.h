@@ -26,20 +26,20 @@
  *
  */
 
-#include "PongBot.h"
+#ifndef _PongBot_H__
+#define _PongBot_H__
 
-#include "core/CoreIncludes.h"
-#include "objects/controllers/PongAI.h"
+#include "pong/PongPrereqs.h"
+#include "objects/infos/Bot.h"
 
 namespace orxonox
 {
-    CreateFactory(PongBot);
-
-    PongBot::PongBot(BaseObject* creator) : Bot(creator)
+    class _PongExport PongBot : public Bot
     {
-        RegisterObject(PongBot);
-
-        this->defaultController_ = Class(PongAI);
-        this->createController();
-    }
+        public:
+            PongBot(BaseObject* creator);
+            virtual ~PongBot() {}
+    };
 }
+
+#endif /* _PongBot_H__ */

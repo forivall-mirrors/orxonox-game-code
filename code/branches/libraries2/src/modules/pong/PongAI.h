@@ -29,16 +29,16 @@
 #ifndef _PongAI_H__
 #define _PongAI_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pong/PongPrereqs.h"
 
 #include <list>
 #include "util/Math.h"
 #include "tools/interfaces/Tickable.h"
-#include "Controller.h"
+#include "objects/controllers/Controller.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PongAI : public Controller, public Tickable
+    class _PongExport PongAI : public Controller, public Tickable
     {
         public:
             PongAI(BaseObject* creator);

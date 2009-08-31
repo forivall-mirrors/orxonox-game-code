@@ -29,14 +29,14 @@
 #ifndef _Pong_H__
 #define _Pong_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pong/PongPrereqs.h"
 
 #include "tools/Timer.h"
-#include "Deathmatch.h"
+#include "objects/gametypes/Deathmatch.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Pong : public Deathmatch
+    class _PongExport Pong : public Deathmatch
     {
         public:
             Pong(BaseObject* creator);

@@ -30,11 +30,11 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
-#include "objects/worldentities/PongCenterpoint.h"
-#include "objects/worldentities/PongBall.h"
-#include "objects/worldentities/PongBat.h"
-#include "objects/infos/PongBot.h"
-#include "objects/controllers/PongAI.h"
+#include "PongCenterpoint.h"
+#include "PongBall.h"
+#include "PongBat.h"
+#include "PongBot.h"
+#include "PongAI.h"
 
 namespace orxonox
 {

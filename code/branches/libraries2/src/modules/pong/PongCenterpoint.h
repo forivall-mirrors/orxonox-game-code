@@ -29,7 +29,7 @@
 #ifndef _PongCenterpoint_H__
 #define _PongCenterpoint_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pong/PongPrereqs.h"
 
 #include <string>
 #include <util/Math.h>
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport PongCenterpoint : public StaticEntity
+    class _PongExport PongCenterpoint : public StaticEntity
     {
         public:
             PongCenterpoint(BaseObject* creator);

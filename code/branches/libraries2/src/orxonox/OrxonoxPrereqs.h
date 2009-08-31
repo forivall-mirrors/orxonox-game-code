@@ -105,10 +105,6 @@ namespace orxonox
     class Camera;
 
     // mixed
-    class PongCenterpoint;
-    class PongBall;
-    class PongBat;
-
     class EventListener;
     class EventDispatcher;
     class EventTarget;
@@ -138,7 +134,6 @@ namespace orxonox
     class Asteroids;
     class TeamBaseMatch;
     class UnderAttack;
-    class Pong;
 
     // pickups
     class BaseItem;
@@ -186,14 +181,12 @@ namespace orxonox
     class ScriptController;
     class WaypointController;
     class WaypointPatrolController;
-    class PongAI;
 
     // infos
     class Info;
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
-    class PongBot;
     class GametypeInfo;
 
     // collision

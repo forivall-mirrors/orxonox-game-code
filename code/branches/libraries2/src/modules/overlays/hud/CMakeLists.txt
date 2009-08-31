@@ -10,7 +10,6 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   AnnounceMessage.cc
   KillMessage.cc
   DeathMessage.cc
-  PongScore.cc
   UnderAttackHealthBar.cc
   TeamBaseMatchScore.cc
 )

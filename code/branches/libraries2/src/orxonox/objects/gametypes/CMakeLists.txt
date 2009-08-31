@@ -3,7 +3,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Deathmatch.cc
   TeamDeathmatch.cc
   TeamBaseMatch.cc
-  Pong.cc
   UnderAttack.cc
   Asteroids.cc
 )

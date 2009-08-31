@@ -29,14 +29,14 @@
 #ifndef _PongBall_H__
 #define _PongBall_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pong/PongPrereqs.h"
 
 #include "util/Math.h"
 #include "objects/worldentities/MovableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PongBall : public MovableEntity
+    class _PongExport PongBall : public MovableEntity
     {
         public:
             PongBall(BaseObject* creator);

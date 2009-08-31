@@ -6,5 +6,4 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   ScriptController.cc
   WaypointController.cc
   WaypointPatrolController.cc
-  PongAI.cc
 )

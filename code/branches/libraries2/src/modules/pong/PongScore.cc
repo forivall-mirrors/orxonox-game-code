@@ -31,7 +31,7 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/gametypes/Pong.h"
+#include "Pong.h"
 #include "objects/infos/PlayerInfo.h"
 
 namespace orxonox
