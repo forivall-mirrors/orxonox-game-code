@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Adrian Friedli
  *
  */
 
@@ -41,6 +41,7 @@ namespace orxonox
     public:
         GSClient(const GameStateInfo& info);
         ~GSClient();
+        void connect(const std::string& address, int port);
 
         void activate();
         void deactivate();
@@ -48,6 +49,7 @@ namespace orxonox
 
     private:
         Client* client_;
+        GGZClient* ggzClient;
     };
 }
 

@@ -68,6 +68,12 @@
 */
 #cmakedefine CMAKE_CONFIGURATION_TYPES
 
+/**
+@def GGZMOD_FOUND
+    Macro for availability of the ggzmod library
+*/
+#cmakedefine GGZMOD_FOUND
+
 // Handle default ConfigValues
 namespace orxonox { namespace specialConfig
 {

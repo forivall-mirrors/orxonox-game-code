@@ -192,6 +192,9 @@ namespace orxonox
     class SoundBase;
     class SoundManager;
     class SoundMainMenu;
+
+    // GGZ
+    class GGZClient;
 }
 
 // Bullet Physics Engine

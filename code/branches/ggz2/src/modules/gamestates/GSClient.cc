@@ -23,10 +23,12 @@
  *      Reto Grieder
  *   Co-authors:
  *      Fabian 'x3n' Landau
+ *      Adrian Friedli
  *
  */
 
 #include "GSClient.h"
+#include "SpecialConfig.h"
 
 #include "util/Exception.h"
 #include "core/Clock.h"
@@ -34,6 +36,9 @@
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Client.h"
+#ifdef GGZMOD_FOUND
+#include "GGZClient.h"
+#endif /* GGZMOD_FOUND */
 
 namespace orxonox
 {
@@ -44,6 +49,7 @@ namespace orxonox
     GSClient::GSClient(const GameStateInfo& info)
         : GameState(info)
         , client_(0)
+        , ggzClient(0)
     {
     }
 
@@ -55,7 +61,20 @@ namespace orxonox
     {
         GameMode::setIsClient(true);
 
-        this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+#ifdef GGZMOD_FOUND
+        if (GGZClient::isActive())
+        {
+            this->ggzClient = new GGZClient(this);
+            return;
+        }
+#endif /* GGZMOD_FOUND */
+
+        this->connect(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+    }
+
+    void GSClient::connect(const std::string& address, int port)
+    {
+        this->client_ = new Client(address, port);
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
@@ -67,6 +86,13 @@ namespace orxonox
     {
         client_->closeConnection();
 
+#ifdef GGZMOD_FOUND
+        if (ggzClient)
+        {
+            delete ggzClient;
+        }
+#endif /* GGZMOD_FOUND */
+
         // destroy client
         delete this->client_;
 
@@ -75,6 +101,9 @@ namespace orxonox
 
     void GSClient::update(const Clock& time)
     {
-        client_->update(time);
+        if (client_)
+        {
+            client_->update(time);
+        }
     }
 }

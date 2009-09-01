@@ -30,6 +30,10 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Scene.cc
 )
 
+IF(GGZMOD_FOUND)
+  ADD_SOURCE_FILES(ORXONOX_SRC_FILES GGZClient.cc)
+ENDIF(GGZMOD_FOUND)
+
 ADD_SUBDIRECTORY(collisionshapes)
 ADD_SUBDIRECTORY(controllers)
 ADD_SUBDIRECTORY(gametypes)
@@ -64,6 +68,7 @@ ORXONOX_ADD_LIBRARY(orxonox
     ${VORBISFILE_LIBRARY}
     ${VORBIS_LIBRARY}
     ${OGG_LIBRARY}
+    ${GGZMOD_LIBRARIES}
     tinyxml++_orxonox
     tolua++_orxonox
     bullet_orxonox
