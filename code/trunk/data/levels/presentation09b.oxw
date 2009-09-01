@@ -27,7 +27,7 @@
         <HealthImmediate recoveredHealth="80" guiImage="goldwrenchpickup.jpg" guiText="Health" />
     </Template>
 
-    <SpawnPoint position="-3800, 2500, 1500" direction="-0.683, -0.289, -0.670"  spawnclass=SpaceShip pawndesign=spaceshipassff2 />
+    <SpawnPoint position="-3800, 2500, 1500" direction="-0.683, -0.289, -0.670"  spawnclass=SpaceShip pawndesign=spaceshipassff />
 
     <SpaceShip position="-3900,3000,1000">
       <templates>

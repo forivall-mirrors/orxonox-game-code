@@ -63,25 +63,24 @@
 
 namespace orxonox
 {
-    // manager
     class CameraManager;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
 
+    class Level;
+    class Scene;
+    class Tickable;
+
     // interfaces
     class GametypeMessageListener;
     class NotificationListener;
     class PawnListener;
+    class PlayerTrigger;
     class RadarListener;
     class RadarViewable;
     class Rewardable;
     class Teamcolourable;
-
-    // objects
-    class Level;
-    class Scene;
-    class Tickable;
 
     // worldentities
     class WorldEntity;
@@ -105,21 +104,11 @@ namespace orxonox
     class Camera;
 
     // mixed
-    class PongCenterpoint;
-    class PongBall;
-    class PongBat;
-
-    class EventListener;
-    class EventDispatcher;
-    class EventTarget;
-
     class SpawnPoint;
     class TeamSpawnPoint;
 
-    class Attacher;
     class CameraPosition;
     class Sublevel;
-    class ForceField;
     class Radar;
 
     class Test;
@@ -138,7 +127,6 @@ namespace orxonox
     class Asteroids;
     class TeamBaseMatch;
     class UnderAttack;
-    class Pong;
 
     // pickups
     class BaseItem;
@@ -161,13 +149,6 @@ namespace orxonox
     class MultiStateEngine;
     class RotatingEngine;
 
-    // trigger
-    class Trigger;
-    class DistanceTrigger;
-    class EventTrigger;
-    class PlayerTrigger;
-    class CheckPoint;
-
     // weaponsystem
     class WeaponSystem;
     class WeaponSet;
@@ -186,21 +167,17 @@ namespace orxonox
     class ScriptController;
     class WaypointController;
     class WaypointPatrolController;
-    class PongAI;
 
     // infos
     class Info;
     class PlayerInfo;
     class HumanPlayer;
     class Bot;
-    class PongBot;
     class GametypeInfo;
 
     // collision
     class CollisionShape;
-    class SphereCollisionShape;
     class CompoundCollisionShape;
-    class PlaneCollisionShape;
     class WorldEntityCollisionShape;
 
     // overlays
