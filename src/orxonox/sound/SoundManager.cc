@@ -31,8 +31,8 @@
 #include <AL/alut.h>
 
 #include "util/Math.h"
-#include "orxonox/CameraManager.h"
-#include "orxonox/objects/worldentities/Camera.h"
+#include "CameraManager.h"
+#include "graphics/Camera.h"
 #include "SoundBase.h"
 
 namespace orxonox
@@ -145,7 +145,7 @@ namespace orxonox
         Vector3 up = orient.xAxis(); // just a wild guess
         Vector3 at = orient.zAxis();
 
-        ALfloat orientation[6] = { at.x, at.y, at.z, 
+        ALfloat orientation[6] = { at.x, at.y, at.z,
                                  up.x, up.y, up.z };
 
         alListenerfv(AL_POSITION, orientation);
@@ -157,7 +157,7 @@ namespace orxonox
         for(std::list<SoundBase*>::iterator i = this->soundlist_.begin(); i != this->soundlist_.end(); i++)
             (*i)->update();
     }
-    
+
     /**
     * Check if sound is available
     */

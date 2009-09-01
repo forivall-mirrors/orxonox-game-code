@@ -35,9 +35,9 @@
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "tools/DynamicLines.h"
-#include "objects/worldentities/WorldEntity.h"
-#include "objects/Radar.h"
-#include "Map.h"
+#include "worldentities/WorldEntity.h"
+#include "Radar.h"
+#include "overlays/Map.h"
 
 namespace orxonox
 {

@@ -25,27 +25,30 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   PawnManager.cc
   PlayerManager.cc
 
-  InGameConsole.cc
-  Map.cc
+  Level.cc
+  Radar.cc
+  Scene.cc
 )
-ADD_SUBDIRECTORY(gamestates)
-ADD_SUBDIRECTORY(interfaces)
-ADD_SUBDIRECTORY(overlays)
-ADD_SUBDIRECTORY(objects)
-ADD_SUBDIRECTORY(sound)
-ADD_SUBDIRECTORY(tools)
 
-# Translate argument
-IF(ORXONOX_USE_WINMAIN)
-  SET(ORXONOX_WIN32 WIN32)
-ENDIF()
+ADD_SUBDIRECTORY(collisionshapes)
+ADD_SUBDIRECTORY(controllers)
+ADD_SUBDIRECTORY(gametypes)
+ADD_SUBDIRECTORY(graphics)
+ADD_SUBDIRECTORY(infos)
+ADD_SUBDIRECTORY(interfaces)
+ADD_SUBDIRECTORY(items)
+ADD_SUBDIRECTORY(overlays)
+ADD_SUBDIRECTORY(pickup)
+ADD_SUBDIRECTORY(sound)
+ADD_SUBDIRECTORY(weaponsystem)
+ADD_SUBDIRECTORY(worldentities)
 
 ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
     LevelManager.h
-    objects/pickup/BaseItem.h
-    objects/pickup/PickupInventory.h
+    pickup/BaseItem.h
+    pickup/PickupInventory.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"
   PCH_FILE
@@ -70,20 +73,6 @@ ORXONOX_ADD_LIBRARY(orxonox
     tools
   SOURCE_FILES ${ORXONOX_SRC_FILES}
 )
-
-ORXONOX_ADD_EXECUTABLE(orxonox-main
-  # When defined as WIN32 this removes the console window on Windows
-  ${ORXONOX_WIN32}
-  LINK_LIBRARIES
-    orxonox
-  SOURCE_FILES
-    Orxonox.cc
-  OUTPUT_NAME orxonox
-)
-
-GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
-GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
-SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
 
 
 # When using Visual Studio we want to use the output directory as working

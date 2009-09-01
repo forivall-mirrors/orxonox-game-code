@@ -30,8 +30,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "objects/Level.h"
-#include "objects/infos/HumanPlayer.h"
+#include "Level.h"
+#include "infos/HumanPlayer.h"
 #include "LevelManager.h"
 
 namespace orxonox

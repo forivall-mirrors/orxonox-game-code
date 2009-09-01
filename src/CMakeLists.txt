@@ -71,43 +71,51 @@ INCLUDE_DIRECTORIES(
   # All library includes are prefixed with the path to avoid conflicts
   ${CMAKE_CURRENT_SOURCE_DIR}
   # Bullet headers really need the include directory
-  ${CMAKE_CURRENT_SOURCE_DIR}/bullet
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
   # OIS headers need the root dir as well
-  ${CMAKE_CURRENT_SOURCE_DIR}/ois
-  # Convenience directory
-  ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
   # Tolua bind files for Core
-  ${CMAKE_CURRENT_BINARY_DIR}/core/${CMAKE_CFG_INTDIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/libraries/core/${CMAKE_CFG_INTDIR}
   # Tolua bind files for Orxonox
   ${CMAKE_CURRENT_BINARY_DIR}/orxonox/${CMAKE_CFG_INTDIR}
+
+  # Add the base directories for convenience
+  ${CMAKE_CURRENT_SOURCE_DIR}/external
+  ${CMAKE_CURRENT_SOURCE_DIR}/libraries
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules
+  ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
 )
 
+IF(CEGUILUA_USE_INTERNAL_LIBRARY)
+  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
+ENDIF()
 
 ################ Sub Directories ################
 
-# Third party libraries
-ADD_SUBDIRECTORY(tolua)
+ADD_SUBDIRECTORY(external)
+ADD_SUBDIRECTORY(libraries)
+ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(orxonox)
 
-# Include CEGUILua if not requested otherwise
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-    MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
-  ENDIF()
+################ Executable ################
 
-  INCLUDE_DIRECTORIES(ceguilua/ceguilua-${CEGUI_VERSION})
-  ADD_SUBDIRECTORY(ceguilua)
+# Translate argument
+IF(ORXONOX_USE_WINMAIN)
+  SET(ORXONOX_WIN32 WIN32)
 ENDIF()
 
-ADD_SUBDIRECTORY(bullet)
-ADD_SUBDIRECTORY(cpptcl)
-ADD_SUBDIRECTORY(ogreceguirenderer)
-ADD_SUBDIRECTORY(ois)
-ADD_SUBDIRECTORY(tinyxml)
+ORXONOX_ADD_EXECUTABLE(orxonox-main
+  # When defined as WIN32 this removes the console window on Windows
+  ${ORXONOX_WIN32}
+  LINK_LIBRARIES
+    orxonox
+  SOURCE_FILES
+    Orxonox.cc
+  OUTPUT_NAME orxonox
+)
 
-# Orxonox code
-ADD_SUBDIRECTORY(util)
-ADD_SUBDIRECTORY(core)
-ADD_SUBDIRECTORY(network)
-ADD_SUBDIRECTORY(orxonox)
+GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
+GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
+SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")

@@ -34,6 +34,7 @@
 
 #include "GametypeMessageListener.h"
 #include "PawnListener.h"
+#include "PlayerTrigger.h"
 #include "RadarListener.h"
 #include "Rewardable.h"
 #include "TeamColourable.h"
@@ -83,7 +84,7 @@ namespace orxonox
     //----------------------------
     Rewardable::Rewardable()
     {
-        RegisterObject(Rewardable);
+        RegisterRootObject(Rewardable);
     }
 
     //----------------------------
@@ -91,6 +92,17 @@ namespace orxonox
     //----------------------------
     NotificationListener::NotificationListener()
     {
-        RegisterObject(NotificationListener);
+        RegisterRootObject(NotificationListener);
+    }
+
+    //----------------------------
+    // PlayerTrigger
+    //----------------------------
+    PlayerTrigger::PlayerTrigger()
+    {
+        RegisterRootObject(PlayerTrigger);
+
+        this->player_ = NULL;
+        this->isForPlayer_ = true;
     }
 }
