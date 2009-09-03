@@ -1,0 +1,12 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  Backlight.cc
+  Billboard.cc
+  BlinkingBillboard.cc
+  Camera.cc
+  FadingBillboard.cc
+  GlobalShader.cc
+  Light.cc
+  Model.cc
+  ParticleEmitter.cc
+  ParticleSpawner.cc
+)
