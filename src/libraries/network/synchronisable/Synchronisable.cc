@@ -59,7 +59,10 @@ namespace orxonox
       objectMap_[this->objectID] = this;
     }
     else
+    {
       objectID=OBJECTID_UNKNOWN;
+      this->setObjectMode(0x0);   //make sure this object doesn't get synchronized
+    }
     classID = static_cast<uint32_t>(-1);
     
     // set dataSize to 0
