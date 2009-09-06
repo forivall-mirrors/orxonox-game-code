@@ -32,6 +32,7 @@
 
 #include <cstdlib>
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/BaseObject.h"
 #include "network/Host.h"
 
@@ -51,7 +52,7 @@ namespace orxonox
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
     objectMode_=0x1; // by default do not send data to server
-    if ( !Host::running() || ( Host::running() && Host::isServer() ) )
+    if ( GameMode::isMaster() || ( Host::running() && Host::isServer() ) )
     {
       this->objectID = idCounter++; //this is only needed when running a server
     //add synchronisable to the objectMap
