@@ -36,11 +36,15 @@
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
+#include "core/ConsoleCommand.h"
+#include "core/input/InputManager.h" //TDO: Necessary?
+#include <CEGUIWindow.h>
+#include "overlays/GUIOverlay.h"
 
 #include "infos/PlayerInfo.h"
 #include "Quest.h"
 #include "QuestHint.h"
-#include "QuestItem.h"
+#include "QuestItem.h" //TDO: Necessary?
 
 namespace orxonox
 {
@@ -64,6 +68,22 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
+        for(std::map<PlayerInfo*, QuestGUI*>::iterator it = this->questGUIs_.begin(); it != this->questGUIs_.end(); it++)
+        {
+            delete (*it).second;
+        }
+        this->questGUIs_.clear();
+    }
+
+    /**
+    @brief
+        Retreive all Quests.
+    @return
+        Returns a map with all Quests indexed by their id's.
+    */
+    std::map<std::string, Quest*> & QuestManager::getQuests(void)
+    {
+        return this->questMap_;
     }
 
     /**
@@ -200,168 +220,43 @@ namespace orxonox
 
     /**
     @brief
-
-    @param name
+        Retreive the main window for the GUI.
+        This is for the use in the lua script tu start the QuestGUI.
+    @param guiName
+        The name of the GUI.
     @return
+        Returns a CEGUI Window.
     */
-    QuestContainer* QuestManager::getQuestTree(std::string & name)
+    CEGUI::Window* QuestManager::getQuestGUI(const std::string & guiName)
     {
-        PlayerInfo* player = GUIManager::getInstance().getPlayer(name);
+        PlayerInfo* player = this->retreivePlayer(guiName);
+
+        if(this->questGUIs_.find(player) == this->questGUIs_.end()) //!< Create a new GUI, if there is none, yet.
+            this->questGUIs_[player] = new QuestGUI(player);
+
+        return this->questGUIs_[player]->getGUI();
+    }
+
+    /**
+    @brief
+        Retrieve the player for a certain GUI.
+    @param guiName
+        The name of the GUI the player is retrieved for.
+    @return
+        Returns the player.
+    @todo
+        This very well might be outdated. So: Check if still needed, and update if necessary.
+    */
+    PlayerInfo* QuestManager::retreivePlayer(const std::string & guiName)
+    {
+        PlayerInfo* player = GUIManager::getInstance().getPlayer(guiName);
         if(player == NULL)
         {
-            COUT(1) << "Error: GUIOverlay with name '" << name << "' has no player." << std::endl;
+            COUT(1) << "Error: GUIOverlay with name '" << guiName << "' has no player." << std::endl;
             return NULL;
         }
 
-        QuestContainer* root = NULL;
-        QuestContainer* current = NULL;
-
-        std::list<Quest*>* rootQuests = new std::list<Quest*>();
-        getRootQuests(player, *rootQuests);
-
-        for(std::list<Quest*>::iterator it = rootQuests->begin(); it != rootQuests->end(); it++)
-        {
-            QuestContainer* container = addSubQuest(*it, player);
-
-            if(root == NULL)
-            {
-                root = container;
-            }
-            else
-            {
-                current->next = container;
-            }
-
-            current = container;
-
-        }
-        if(current != NULL)
-            current->next = NULL;
-
-        delete rootQuests;
-
-        return root;
+        return player;
     }
-
-    /**
-    @brief
-
-    @param player
-    @param list
-    @return
-    */
-    void QuestManager::getRootQuests(const PlayerInfo* player, std::list<Quest*> & list)
-    {
-        for(std::map<std::string, Quest*>::iterator it=this->questMap_.begin(); it!=this->questMap_.end(); it++)
-        {
-            Quest* quest = (*it).second;
-            if(quest->getParentQuest() == NULL && !quest->isInactive(player))
-            {
-                list.push_back(quest);
-            }
-        }
-    }
-
-    /**
-    @brief
-
-    @param quest
-    @param player
-    @return
-    */
-    QuestContainer* QuestManager::addSubQuest(Quest* quest, const PlayerInfo* player)
-    {
-        if(quest == NULL)
-            return NULL;
-
-        QuestContainer* container = new QuestContainer;
-        container->description = quest->getDescription();
-        container->hint = addHints(quest, player);
-
-        if(quest->isActive(player))
-        {
-            container->status = "active";
-        }
-        else if(quest->isCompleted(player))
-        {
-            container->status = "completed";
-        }
-        else if(quest->isFailed(player))
-        {
-            container->status = "failed";
-        }
-        else
-        {
-            container->status = "";
-            COUT(1) << "An error occurred. A Quest of un-specified status wanted to be displayed." << std::endl;
-        }
-
-        std::list<Quest*> quests = quest->getSubQuestList();
-        QuestContainer* current = NULL;
-        QuestContainer* first = NULL;
-        for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
-        {
-            Quest* subQuest = *it;
-            if(!subQuest->isInactive(player))
-            {
-                QuestContainer* subContainer = addSubQuest(subQuest, player);
-
-                if(first == NULL)
-                {
-                    first = subContainer;
-                }
-                else
-                {
-                    current->next = subContainer;
-                }
-
-                current = subContainer;
-            }
-        }
-        if(current != NULL)
-            current->next = NULL;
-        container->subQuests = first;
-
-        return container;
-    }
-
-    /**
-    @brief
-
-    @param quest
-    @param player
-    @return
-    */
-    HintContainer* QuestManager::addHints(Quest* quest, const PlayerInfo* player)
-    {
-        HintContainer* current = NULL;
-        HintContainer* first = NULL;
-
-        std::list<QuestHint*> hints = quest->getHintsList();
-        for(std::list<QuestHint*>::iterator it = hints.begin(); it != hints.end(); it++)
-        {
-            if((*it)->isActive(player))
-            {
-                HintContainer* hint = new HintContainer;
-                hint->description = (*it)->getDescription();
-
-                if(first == NULL)
-                {
-                    first = hint;
-                }
-                else
-                {
-                    current->next = hint;
-                }
-
-                current = hint;
-            }
-        }
-
-        if(current != NULL)
-            current->next = NULL;
-        return first;
-    }
-
 
 }

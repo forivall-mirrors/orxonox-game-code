@@ -11,6 +11,8 @@ SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
   QuestDescription.cc
   QuestEffect.cc
   QuestEffectBeacon.cc
+  QuestGUINode.cc
+  QuestGUI.cc
   QuestHint.cc
   QuestItem.cc
   QuestListener.cc

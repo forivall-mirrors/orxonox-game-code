@@ -35,6 +35,7 @@
 #define _QuestManager_H__
 
 #include "questsystem/QuestsystemPrereqs.h"
+#include <CEGUIForwardRefs.h>
 
 #include <list>
 #include <map>
@@ -43,27 +44,11 @@
 #include "util/ScopedSingleton.h"
 #include "core/OrxonoxClass.h"
 
+#include "QuestGUI.h"
+
 // tolua_begin
 namespace orxonox
 {
-
-    struct QuestContainer;
-    struct HintContainer;
-
-    struct QuestContainer
-    {
-        const QuestDescription* description;
-        std::string status;
-        HintContainer* hint;
-        QuestContainer* subQuests;
-        QuestContainer* next;
-    };
-
-    struct HintContainer
-    {
-        const QuestDescription* description;
-        HintContainer* next;
-    };
 
     typedef ScopedSingleton<QuestManager, ScopeID::GSLevel> ScopedSingletonQuestManagerGSLevel; // workaround for tolua
 
@@ -77,7 +62,11 @@ namespace orxonox
     class _QuestsystemExport QuestManager : public ScopedSingletonQuestManagerGSLevel, public orxonox::OrxonoxClass
     {
 // tolua_end
+
             friend class ScopedSingleton<QuestManager, ScopeID::GSLevel>;
+            friend class QuestGUI; //TDO: better solution.
+            //friend std::map<std::string, Quest*> & QuestGUI::getQuests(void);
+
         public:
             QuestManager();
             virtual ~QuestManager();
@@ -85,23 +74,27 @@ namespace orxonox
             //! Returns a reference to the single instance of the Quest Manager.
             static QuestManager& getInstance() { return ScopedSingleton<QuestManager, ScopeID::GSLevel>::getInstance(); } // tolua_export
 
+            //! Retreive the main window for the GUI. 
+            CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export
+
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
             bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
 
             Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
             QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
-            QuestContainer* getQuestTree(std::string & name); // tolua_export
+        protected:
+            std::map<std::string, Quest*> & getQuests(void); //!< Retreive all Quests.
 
         private:
             static QuestManager* singletonPtr_s;
+            PlayerInfo* retreivePlayer(const std::string & guiName); //!< Retrieve the player for a certain GUI.
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
 
-            void getRootQuests(const PlayerInfo* player, std::list<Quest*> & list);
-            HintContainer* addHints(Quest* quest, const PlayerInfo* player);
-            QuestContainer* addSubQuest(Quest* quest, const PlayerInfo* player);
+            //TDO: Call destructor of QuestGUI's on destruction of QuestManager?
+            std::map<PlayerInfo*, QuestGUI*> questGUIs_; //!< All GUI's registered by the players.
 
     }; // tolua_export
 
