@@ -109,15 +109,15 @@ namespace orxonox
             try
             {
                 this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), this->source_, this->LOD_);
-                this->attachOgreObject(this->particles_->getParticleSystem());
-                this->particles_->setVisible(this->isVisible());
-                this->particles_->setEnabled(this->isActive());
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load particle effect \"" << this->source_ << "\"" << std::endl;
-                this->particles_ = 0;
+                COUT(1) << "Error: Couln't load particle effect \"" << this->source_ << "\" because:" << std::endl
+                        << Exception::handleMessage() << std::endl;
             }
+            this->attachOgreObject(this->particles_->getParticleSystem());
+            this->particles_->setVisible(this->isVisible());
+            this->particles_->setEnabled(this->isActive());
         }
     }
 

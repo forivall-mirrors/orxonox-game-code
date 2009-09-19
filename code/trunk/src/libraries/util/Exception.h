@@ -82,6 +82,15 @@ namespace orxonox
         //! Returns the filename in which the exception occurred.
         virtual const std::string& getFilename()        const { return this->filename_; }
 
+        /**
+        @brief
+            Retrieves information from an exception caught with "..."
+            Works for std::exception and CEGUI::Exception
+        @remarks
+            Never ever call this function without an exception in the stack!
+        */
+        static std::string handleMessage();
+
     protected:
         std::string description_;             //!< User typed text about why the exception occurred
         unsigned int lineNumber_;             //!< Line on which the exception occurred

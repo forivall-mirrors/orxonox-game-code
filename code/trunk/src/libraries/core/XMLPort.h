@@ -590,14 +590,10 @@ namespace orxonox
                                                     COUT(1) << "An error occurred while loading object, abort loading..." << std::endl;
                                                     throw ex;
                                                 }
-                                                catch (std::exception& ex)
-                                                {
-                                                    COUT(1) << "An error occurred while loading object:" << std::endl;
-                                                    COUT(1) << ex.what() << std::endl;
-                                                }
                                                 catch (...)
                                                 {
-                                                    COUT(1) << "An unknown error occurred while loading object." << std::endl;
+                                                    COUT(1) << "An error occurred while loading object:" << std::endl;
+                                                    COUT(1) << Exception::handleMessage() << std::endl;
                                                 }
                                             }
                                         }

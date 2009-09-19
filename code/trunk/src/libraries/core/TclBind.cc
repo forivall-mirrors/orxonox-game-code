@@ -34,6 +34,7 @@
 
 #include "SpecialConfig.h"
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
@@ -91,10 +92,8 @@ namespace orxonox
             }
             catch (Tcl::tcl_error const &e)
             {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
-            catch (std::exception const &e)
-            {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl;   }
             catch (...)
-            {   COUT(1) << "Error while creating Tcl-interpreter." << std::endl;   }
+            {   COUT(1) << "Error while creating Tcl-interpreter: " << Exception::handleMessage() << std::endl;   }
         }
     }
 
@@ -114,10 +113,8 @@ namespace orxonox
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
-        catch (std::exception const &e)
-        {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
         catch (...)
-        {   COUT(1) << "Error while creating Tcl-interpreter." << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
+        {   COUT(1) << "Error while creating Tcl-interpreter: " << Exception::handleMessage() << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
 
         return interpreter;
     }
@@ -177,8 +174,8 @@ namespace orxonox
             }
             catch (Tcl::tcl_error const &e)
             {   COUT(1) << "tcl> Error: " << e.what() << std::endl;   }
-            catch (std::exception const &e)
-            {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
+            catch (...)
+            {   COUT(1) << "Error while executing Tcl: " << Exception::handleMessage() << std::endl;   }
         }
 
         return "";
@@ -198,8 +195,8 @@ namespace orxonox
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
-        catch (std::exception const &e)
-        {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
+        catch (...)
+        {   COUT(1) << "Error while executing Tcl: " << Exception::handleMessage() << std::endl;   }
 
         return false;
     }

@@ -36,6 +36,7 @@
 #include <cpptcl/cpptcl.h>
 
 #include "util/Convert.h"
+#include "util/Exception.h"
 #include "Clock.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
@@ -284,10 +285,8 @@ namespace orxonox
         }
         catch (const Tcl::tcl_error& e)
         {   bundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id_string << "): " << e.what() << std::endl;   }
-        catch (const std::exception& e)
-        {   bundle->interpreter_ = 0; COUT(1) << "Error while creating Tcl-interpreter (" << id_string << "): " << e.what() << std::endl;   }
         catch (...)
-        {   bundle->interpreter_ = 0; COUT(1) << "An error occurred while creating a new Tcl-interpreter (" << id_string << ")" << std::endl;   }
+        {   bundle->interpreter_ = 0; COUT(1) << "Error while creating Tcl-interpreter (" << id_string << "): " << Exception::handleMessage() << std::endl;   }
     }
 
     /**

@@ -171,7 +171,7 @@ namespace orxonox
         // to support both Ogre 1.4 and 1.6. The hacky solution is to create
         // scripts for the 1.6 version and then remove the inserted "particle_system"
         // keyword. But we need to supply these new scripts as well, which is why
-        // there is an extra Ogre::Archive dealing with in the memory.
+        // there is an extra Ogre::Archive dealing with it in the memory.
         using namespace Ogre;
         ArchiveManager::getSingleton().addArchiveFactory(memoryArchiveFactory_.get());
         const StringVector& groups = ResourceGroupManager::getSingleton().getResourceGroups();

@@ -186,18 +186,11 @@ namespace orxonox
             COUT(1) << "Loading aborted." << std::endl;
             return false;
         }
-        catch (std::exception& ex)
-        {
-            COUT(1) << std::endl;
-            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
-            return false;
-        }
         catch (...)
         {
             COUT(1) << std::endl;
-            COUT(1) << "An unknown error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << Exception::handleMessage() << std::endl;
             COUT(1) << "Loading aborted." << std::endl;
             return false;
         }

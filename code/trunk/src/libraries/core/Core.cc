@@ -283,13 +283,9 @@ namespace orxonox
                         {
                             DynLibManager::getInstance().load(librarypath.string());
                         }
-                        catch (const std::exception& e)
-                        {
-                            COUT(1) << "Couldn't load module \"" << librarypath.string() << "\": " << e.what() << std::endl;
-                        }
                         catch (...)
                         {
-                            COUT(1) << "Couldn't load module \"" << librarypath.string() << "\"" << std::endl;
+                            COUT(1) << "Couldn't load module \"" << librarypath.string() << "\": " << Exception::handleMessage() << std::endl;
                         }
                     }
                 }
@@ -297,13 +293,9 @@ namespace orxonox
                 ++file;
             }
         }
-        catch (const std::exception& e)
-        {
-            COUT(1) << "An error occurred while loading modules: " << e.what() << std::endl;
-        }
         catch (...)
         {
-            COUT(1) << "An error occurred while loading modules." << std::endl;
+            COUT(1) << "An error occurred while loading modules: " << Exception::handleMessage() << std::endl;
         }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
@@ -397,8 +389,8 @@ namespace orxonox
             { this->graphicsManager_.reset(new GraphicsManager(false)); }
         catch (...)
         {
-            COUT(0) << "An exception occurred during 'new GraphicsManager' while "
-                    << "another exception was being handled. This will lead to undefined behaviour!" << std::endl
+            COUT(0) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << std::endl
+                    << "Another exception might be being handled which may lead to undefined behaviour!" << std::endl
                     << "Terminating the program." << std::endl;
             abort();
         }

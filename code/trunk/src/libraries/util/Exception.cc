@@ -33,6 +33,7 @@
 */
 
 #include "Exception.h"
+#include <CEGUIExceptions.h>
 
 namespace orxonox
 {
@@ -91,5 +92,31 @@ namespace orxonox
     const char* Exception::what() const throw()
     {
         return getDescription().c_str();
+    }
+
+    /*static*/ std::string Exception::handleMessage()
+    {
+        try
+        {
+            // rethrow
+            throw;
+        }
+        catch (const std::exception& ex)
+        {
+            return ex.what();
+        }
+        catch (const CEGUI::Exception& ex)
+        {
+#if CEGUI_VERSION_MAJOR == 0 && CEGUI_VERSION_MINOR < 6
+            return GeneralException(ex.getMessage().c_str()).getDescription();
+#else
+            return GeneralException(ex.getMessage().c_str(), ex.getLine(),
+                ex.getFileName().c_str(), ex.getName().c_str()).getDescription();
+#endif
+        }
+        catch (...)
+        {
+            return "Unknown exception";
+        }
     }
 }

@@ -96,9 +96,9 @@ namespace orxonox
             Ogre::ResourceGroupManager::getSingleton().removeResourceLocation(
                 this->getPath(), this->getResourceGroup());
         }
-        catch (const std::exception& ex)
+        catch (...)
         {
-            COUT(1) << "Removing of a ResourceLocation failed: " << ex.what() << std::endl;
+            COUT(1) << "Removing of a ResourceLocation failed: " << Exception::handleMessage() << std::endl;
         }
     }
 }
