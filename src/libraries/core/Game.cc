@@ -36,7 +36,6 @@
 
 #include <exception>
 #include <boost/weak_ptr.hpp>
-#include <CEGUIExceptions.h>
 
 #include "util/Debug.h"
 #include "util/Exception.h"
@@ -203,7 +202,7 @@ namespace orxonox
                 { this->core_->preUpdate(*this->gameClock_); }
             catch (...)
             {
-                COUT(0) << "An exception occurred in the Core preUpdate: " << Game::getExceptionMessage() << std::endl;
+                COUT(0) << "An exception occurred in the Core preUpdate: " << Exception::handleMessage() << std::endl;
                 COUT(0) << "This should really never happen! Closing the program." << std::endl;
                 this->stop();
                 break;
@@ -217,8 +216,8 @@ namespace orxonox
                 { this->core_->postUpdate(*this->gameClock_); }
             catch (...)
             {
-            COUT(0) << "An exception occurred in the Core postUpdate: " << Game::getExceptionMessage() << std::endl;
-            COUT(0) << "This should really never happen! Closing the program." << std::endl;
+                COUT(0) << "An exception occurred in the Core postUpdate: " << Exception::handleMessage() << std::endl;
+                COUT(0) << "This should really never happen! Closing the program." << std::endl;
                 this->stop();
                 break;
             }
@@ -253,7 +252,7 @@ namespace orxonox
                 }
                 catch (...)
                 {
-                    COUT(1) << "Error: Loading GameState '" << requestedStateNode->name_ << "' failed: " << Game::getExceptionMessage() << std::endl;
+                    COUT(1) << "Error: Loading GameState '" << requestedStateNode->name_ << "' failed: " << Exception::handleMessage() << std::endl;
                     // All scheduled operations have now been rendered inert --> flush them and issue a warning
                     if (this->requestedStateNodes_.size() > 1)
                         COUT(4) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << std::endl;
@@ -284,7 +283,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "An exception occurred while updating '" << (*it)->getName() << "': " << Game::getExceptionMessage() << std::endl;
+                COUT(1) << "An exception occurred while updating '" << (*it)->getName() << "': " << Exception::handleMessage() << std::endl;
                 COUT(1) << "This should really never happen!" << std::endl;
                 COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
                 shared_ptr<GameStateTreeNode> current = this->loadedTopStateNode_;
@@ -592,7 +591,7 @@ namespace orxonox
         }
         catch (...)
         {
-            COUT(2) << "Warning: Unloading GameState '" << name << "' threw an exception: " << Game::getExceptionMessage() << std::endl;
+            COUT(2) << "Warning: Unloading GameState '" << name << "' threw an exception: " << Exception::handleMessage() << std::endl;
             COUT(2) << "         There might be potential resource leaks involved! To avoid this, improve exception-safety." << std::endl;
         }
         // Check if graphics is still required
@@ -605,33 +604,6 @@ namespace orxonox
                 this->unloadGraphics();
         }
         this->bChangingState_ = false;
-    }
-
-    /*static*/ std::string Game::getExceptionMessage()
-    {
-        std::string exceptionMessage;
-        try
-        {
-            // rethrow
-            throw;
-        }
-        catch (const std::exception& ex)
-        {
-            return ex.what();
-        }
-        catch (const CEGUI::Exception& ex)
-        {
-#if CEGUI_VERSION_MAJOR == 0 && CEGUI_VERSION_MINOR < 6
-            return GeneralException(ex.getMessage().c_str()).getDescription();
-#else
-            return GeneralException(ex.getMessage().c_str(), ex.getLine(),
-                ex.getFileName().c_str(), ex.getName().c_str()).getDescription();
-#endif
-        }
-        catch (...)
-        {
-            return "Unknown exception";
-        }
     }
 
     std::map<std::string, shared_ptr<Game::GameStateFactory> > Game::GameStateFactory::factories_s;

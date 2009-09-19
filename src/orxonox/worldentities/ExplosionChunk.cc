@@ -60,7 +60,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load particle effect in ExplosionChunk." << std::endl;
+                COUT(1) << "Error: Couln't load particle effect in ExplosionChunk: " << Exception::handleMessage() << std::endl;
                 this->fire_ = 0;
                 this->smoke_ = 0;
             }

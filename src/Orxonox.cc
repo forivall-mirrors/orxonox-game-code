@@ -44,6 +44,7 @@
 #endif
 
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "orxonox/Main.h"
 
 /*
@@ -66,15 +67,9 @@ int main(int argc, char** argv)
         return orxonox::main(strCmdLine);
 #endif
     }
-    catch (const std::exception& ex)
-    {
-        COUT(0) << "Orxonox failed to initialise: " << ex.what() << std::endl;
-        COUT(0) << "Terminating program." << std::endl;
-        return 1;
-    }
     catch (...)
     {
-        COUT(0) << "Orxonox failed to initialise: " << std::endl;
+        COUT(0) << "Orxonox failed to initialise: " << orxonox::Exception::handleMessage() << std::endl;
         COUT(0) << "Terminating program." << std::endl;
         return 1;
     }

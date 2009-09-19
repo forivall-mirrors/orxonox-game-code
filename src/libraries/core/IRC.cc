@@ -31,6 +31,7 @@
 #include <cpptcl/cpptcl.h>
 
 #include "util/Convert.h"
+#include "util/Exception.h"
 #include "ConsoleCommand.h"
 #include "CoreIncludes.h"
 #include "TclThreadManager.h"
@@ -63,8 +64,8 @@ namespace orxonox
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl (IRC) error: " << e.what();   }
-        catch (std::exception const &e)
-        {   COUT(1) << "Error while initializing Tcl (IRC): " << e.what();   }
+        catch (...)
+        {   COUT(1) << "Error while initializing Tcl (IRC): " << Exception::handleMessage();   }
 
         this->nickname_ = "orx" + multi_cast<std::string>(static_cast<unsigned int>(rand()));
         TclThreadManager::execute(threadID, "set nickname " + this->nickname_);
@@ -93,8 +94,8 @@ namespace orxonox
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl (IRC) error: " << e.what();   }
-        catch (std::exception const &e)
-        {   COUT(1) << "Error while executing Tcl (IRC): " << e.what();   }
+        catch (...)
+        {   COUT(1) << "Error while executing Tcl (IRC): " << Exception::handleMessage();   }
 
         return false;
     }

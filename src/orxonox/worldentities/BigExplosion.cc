@@ -73,7 +73,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load particle effect in BigExplosion." << std::endl;
+                COUT(1) << "Error: Couln't load particle effect in BigExplosion: " << Exception::handleMessage() << std::endl;
                 this->initZero();
             }
         }
@@ -96,41 +96,17 @@ namespace orxonox
 
     void BigExplosion::init()
     {
-        Identifier* idDE1 = Class(MovableEntity);
-        BaseObject* oDE1 = idDE1->fabricate(this);
-        this->debrisEntity1_ = orxonox_cast<MovableEntity*>(oDE1);
+        this->debrisEntity1_ = new MovableEntity(this);
+        this->debrisEntity2_ = new MovableEntity(this);
+        this->debrisEntity3_ = new MovableEntity(this);
+        this->debrisEntity4_ = new MovableEntity(this);
 
-        Identifier* idDE2 = Class(MovableEntity);
-        BaseObject* oDE2 = idDE2->fabricate(this);
-        this->debrisEntity2_ = orxonox_cast<MovableEntity*>(oDE2);
+        this->debris1_ = new Model(this);
+        this->debris2_ = new Model(this);
+        this->debris3_ = new Model(this);
+        this->debris4_ = new Model(this);
 
-        Identifier* idDE3 = Class(MovableEntity);
-        BaseObject* oDE3 = idDE3 ->fabricate(this);
-        this->debrisEntity3_ = orxonox_cast<MovableEntity*>(oDE3);
-
-        Identifier* idDE4 = Class(MovableEntity);
-        BaseObject* oDE4 = idDE4->fabricate(this);
-        this->debrisEntity4_ = orxonox_cast<MovableEntity*>(oDE4);
-
-        Identifier* idD1 = Class(Model);
-        BaseObject* oD1 = idD1->fabricate(this);
-        this->debris1_ = orxonox_cast<Model*>(oD1);
-
-        Identifier* idD2 = Class(Model);
-        BaseObject* oD2 = idD2->fabricate(this);
-        this->debris2_ = orxonox_cast<Model*>(oD2);
-
-        Identifier* idD3 = Class(Model);
-        BaseObject* oD3 = idD3->fabricate(this);
-        this->debris3_ = orxonox_cast<Model*>(oD3);
-
-        Identifier* idD4 = Class(Model);
-        BaseObject* oD4 = idD4->fabricate(this);
-        this->debris4_ = orxonox_cast<Model*>(oD4);
-
-        Identifier* id6 = Class(StaticEntity);
-        BaseObject* object4 = id6->fabricate(this);
-        this->explosion_ = orxonox_cast<StaticEntity*>(object4);
+        this->explosion_ = new StaticEntity(this);
 
         this->debrisSmoke1_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
         this->debrisSmoke2_ =  new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
@@ -199,22 +175,11 @@ namespace orxonox
 
         for(int i=0;i<10;i++)
         {
-            Identifier* idf1 = Class(Model);
-            BaseObject* obj1 = idf1->fabricate(this);
-            Model* part1 = orxonox_cast<Model*>(obj1);
+            Model* part1 = new Model(this);
+            Model* part2 = new Model(this);
 
-
-            Identifier* idf2 = Class(Model);
-            BaseObject* obj2 = idf2->fabricate(this);
-            Model* part2 = orxonox_cast<Model*>(obj2);
-
-            Identifier* idf3 = Class(MovableEntity);
-            BaseObject* obj3 = idf3->fabricate(this);
-            MovableEntity* partEntity1 = orxonox_cast<MovableEntity*>(obj3);
-
-            Identifier* idf4 = Class(MovableEntity);
-            BaseObject* obj4 = idf4->fabricate(this);
-            MovableEntity* partEntity2 = orxonox_cast<MovableEntity*>(obj4);
+            MovableEntity* partEntity1 = new MovableEntity(this);
+            MovableEntity* partEntity2 = new MovableEntity(this);
 
             partEntity1->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10,100));
             partEntity1->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());
@@ -226,7 +191,6 @@ namespace orxonox
 
             part1->setMeshSource("SmallPart1.mesh");
             part2->setMeshSource("SmallPart2.mesh");
-
 
             partEntity1->attach(part1);
             partEntity2->attach(part2);

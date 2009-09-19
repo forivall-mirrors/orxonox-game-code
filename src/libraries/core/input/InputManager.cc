@@ -329,7 +329,8 @@ namespace orxonox
             }
             catch (...)
             {
-                CCOUT(1) << className << " destruction failed! Potential resource leak!" << std::endl;
+                COUT(1) << className << " destruction failed: " << Exception::handleMessage() << std::endl
+                        << "    Potential resource leak!" << std::endl;
             }
         }
         devices_.resize(InputDeviceEnumerator::FirstJoyStick);
@@ -341,7 +342,8 @@ namespace orxonox
         }
         catch (...)
         {
-            CCOUT(1) << "OIS::InputManager destruction failed! Potential resource leak!" << std::endl;
+            COUT(1) << "OIS::InputManager destruction failed" << Exception::handleMessage() << std::endl
+                    << "    Potential resource leak!" << std::endl;
         }
         oisInputManager_ = NULL;
 

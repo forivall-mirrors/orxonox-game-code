@@ -41,6 +41,7 @@
 #include <ois/OISInputManager.h>
 
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "core/Clock.h"
 #include "InputState.h"
 
@@ -144,7 +145,8 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << this->getClassName() << " destruction failed! Potential resource leak!" << std::endl;
+                COUT(1) << this->getClassName() << " destruction failed: " << Exception::handleMessage() << std::endl
+                        << "    Potential resource leak!" << std::endl;
             }
         }
 
