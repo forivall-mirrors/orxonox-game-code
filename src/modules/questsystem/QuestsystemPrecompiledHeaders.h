@@ -29,10 +29,10 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the network library
+    Compilation of the most often used header files in the quest system module
 @details
-    Updated: 13. September 2009
-    Total Files: 28
+    Updated: 19. September 2009
+    Total Files: 24
 */
 
 #include "OrxonoxConfig.h"
@@ -41,39 +41,31 @@
 /////          Stable Headers         /////
 ///////////////////////////////////////////
 
-#include <cstring>  // 26
-#include <cassert>  // 24
-#include <string>   // 23
-#include <vector>   // 23
-#include <map>      // 23
-#include <fstream>  // 22
-#include <iostream> // 22
-#include <sstream>  // 22
-#include <set>      // 20
+#include <ctime> // 18
 
-#include "util/Debug.h"      // 20
-#include "util/TypeTraits.h" // 18
+#include <OgreMath.h>        // 16
+#include <OgreVector2.h>     // 16
+#include <OgreVector3.h>     // 16
+#include <OgreVector4.h>     // 16
+#include <OgreQuaternion.h>  // 16
+#include <OgreColourValue.h> // 16
 
-#ifdef ORXONOX_COMPILER_MSVC
+#include <tinyxml/ticpp.h>        // 14
+#include "util/ScopedSingleton.h" // 13
 
-#include <deque>    // 17
-#include <queue>    // 17
-#include <list>     // 16
-#include <cmath>    // 15
+///////////////////////////////////////////
+/////       All Rebuild Headers       /////
+///////////////////////////////////////////
 
-#include <OgreMath.h>        // 15
-#include <OgreVector2.h>     // 15
-#include <OgreVector3.h>     // 15
-#include <OgreVector4.h>     // 15
-#include <OgreQuaternion.h>  // 15
-#include <OgreColourValue.h> // 15
+#include "core/BaseObject.h"   // 24
+#include "core/CoreIncludes.h" // 23
 
-#include "util/mbool.h" // 11
+///////////////////////////////////////////
+/////      Not so Stable Headers      /////
+///////////////////////////////////////////
 
-#define WIN32_LEAN_AND_MEAN
-#include <enet/enet.h> // 6, 3.1MB
-
-#endif /*ORXONOX_COMPILER_MSVC */
+#include "core/Executor.h"     // 15
+//#include "core/XMLPort.h"    // 14
 
 
 // Just in case some header included windows.h

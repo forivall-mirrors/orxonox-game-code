@@ -29,70 +29,69 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the orxonox executable
+    Compilation of the most often used header files in the orxonox library
+@details
+    Updated: 13. September 2009
+    Total Files: 88
 */
 
 #include "OrxonoxConfig.h"
 
-#include <cassert>
-#include <deque>
-#include <fstream>
-#include <iostream>
-#include <list>
-#include <map>
-#include <set>
-#include <sstream>
-#include <stack>
-#include <string>
-#include <vector>
+///////////////////////////////////////////
+/////          Stable Headers         /////
+///////////////////////////////////////////
 
-// Prevent headers from including winsock.h that messes with winsock2.h from ENet
-#define WIN32_LEAN_AND_MEAN
+#include <cassert>  // 87
+#include <cstring>  // 87
+#include <fstream>  // 87
+#include <iostream> // 87
+#include <map>      // 87
+#include <set>      // 87
+#include <sstream>  // 87
+#include <string>   // 87
+#include <vector>   // 87
+#include <list>     // 86
+#include <ctime>    // 82
+#include <cmath>    // 81
+#include <deque>    // 81
+#include <queue>    // 81
 
+#include <OgreMath.h>        // 81
+#include <OgreVector2.h>     // 81
+#include <OgreVector3.h>     // 81
+#include <OgreVector4.h>     // 81
+#include <OgreQuaternion.h>  // 81
+#include <OgreColourValue.h> // 81
 
-#ifdef ORXONOX_COMPILER_MSVC
+#include "util/OgreForwardRefs.h"     // 67
+#include <LinearMath/btMotionState.h> // 60
+#include "util/SubString.h" // 55
+#include <tinyxml/ticpp.h>  // 41
 
-// Note: Numbers after the include specify the number of times included (2009-06-19)
-// The sizes in MB was just to see how much the MSVC9 PCH file increases for Ogre includes
-#include <OgreMaterial.h> // 33, 2.7MB
-#include <OgreRenderable.h> // 32, 2.6MB
-#include <OgreSingleton.h> // 28, 0.0MB
-#include <OgreSceneNode.h> // 25, 1.1MB
-#include <OgreTexture.h> // 25, 0.2MB (1.1MB)
-#include <OgreMovableObject.h> // 22, 1.3MB
-#include <OgreResourceGroupManager.h> // 21, 1.4MB
-#include <OgreTechnique.h> // 18, 1.2MB
-//#include <OgreSceneManager.h> // 16, 7.4MB
+//#include <OgreRenderable.h> // 14, 5.1MB
+//#include <OgreSceneNode.h>  // 13, 1MB
+//#include <OgreResourceGroupManager.h> // 12, 1.5MB
+//#include <OgreTexture.h>       // 11, 0.6MB
+//#include <OgreMovableObject.h> // 10, 1.6MB
+//#include <OgreSceneManager.h>  // 9, 8.7MB
 
-#endif
+///////////////////////////////////////////
+/////       All Rebuild Headers       /////
+///////////////////////////////////////////
 
+#include "core/BaseObject.h"   // 82
+#include "core/CoreIncludes.h" // 80
 
-//#include <boost/preprocessor/cat.hpp> // 15
-//#include <boost/shared_ptr.hpp> // 13
-#include <LinearMath/btMotionState.h>
-#include <tinyxml/ticpp.h>
+///////////////////////////////////////////
+/////      Not so Stable Headers      /////
+///////////////////////////////////////////
+
+#include "network/synchronisable/Synchronisable.h" // 70
+#include "util/MultiType.h"    // 65
+#include "core/Executor.h"     // 55
+//#include "core/XMLPort.h"     // 41
+
 
 // Just in case some header included windows.h
 #undef min
 #undef max
-
-//--------- Orxonox files --------
-//--------------------------------
-
-//#include "util/Convert.h" // 24
-#include "util/Debug.h"
-#include "util/Exception.h"
-#include "util/Math.h"
-#include "util/OgreForwardRefs.h"
-#include "util/SubString.h"
-
-#include "core/BaseObject.h"
-//#include "core/ConfigValueIncludes.h" // 19
-//#include "core/ConsoleCommand.h" // 15
-//#include "core/Core.h" // ?, but not many times
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-
-#include "network/synchronisable/Synchronisable.h"
-//#include "network/ClientInformation.h" // 26
-//#include "network/ClientConnectionListener.h" // 24

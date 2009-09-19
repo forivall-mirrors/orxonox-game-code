@@ -29,6 +29,7 @@
 #include "Connection.h"
 
 #include <cassert>
+#define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
 #include "packet/Packet.h"
 

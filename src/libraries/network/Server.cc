@@ -40,6 +40,7 @@
 
 #include "Server.h"
 
+#define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
 #include <cassert>
 #include <string>

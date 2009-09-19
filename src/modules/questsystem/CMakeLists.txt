@@ -24,11 +24,14 @@ ADD_SUBDIRECTORY(notifications)
 
 ORXONOX_ADD_LIBRARY(questsystem
   MODULE
+  FIND_HEADER_FILES
   TOLUA_FILES
     QuestDescription.h
     QuestManager.h
   DEFINE_SYMBOL
     "QUESTSYSTEM_SHARED_BUILD"
+  PCH_FILE
+    QuestsystemPrecompiledHeaders.h
   LINK_LIBRARIES
     orxonox
     overlays

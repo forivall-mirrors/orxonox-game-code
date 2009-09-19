@@ -29,10 +29,10 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the network library
+    Compilation of the most often used header files in the overlays module
 @details
-    Updated: 13. September 2009
-    Total Files: 28
+    Updated: 19. September 2009
+    Total Files: 21
 */
 
 #include "OrxonoxConfig.h"
@@ -41,39 +41,25 @@
 /////          Stable Headers         /////
 ///////////////////////////////////////////
 
-#include <cstring>  // 26
-#include <cassert>  // 24
-#include <string>   // 23
-#include <vector>   // 23
-#include <map>      // 23
-#include <fstream>  // 22
-#include <iostream> // 22
-#include <sstream>  // 22
-#include <set>      // 20
+#include <tinyxml/ticpp.h> // 14
+//#include <OgreOverlayelement.h> // 7, 7.2MB
+#include <bullet/linearmath/btMotionState.h> // 6
+//#include <OgrePanelOverlayelement.h> // 5
 
-#include "util/Debug.h"      // 20
-#include "util/TypeTraits.h" // 18
+///////////////////////////////////////////
+/////       All Rebuild Headers       /////
+///////////////////////////////////////////
 
-#ifdef ORXONOX_COMPILER_MSVC
+#include "overlays/OrxonoxOverlay.h" // 21
+#include "core/CoreIncludes.h"       // 20
 
-#include <deque>    // 17
-#include <queue>    // 17
-#include <list>     // 16
-#include <cmath>    // 15
+///////////////////////////////////////////
+/////      Not so Stable Headers      /////
+///////////////////////////////////////////
 
-#include <OgreMath.h>        // 15
-#include <OgreVector2.h>     // 15
-#include <OgreVector3.h>     // 15
-#include <OgreVector4.h>     // 15
-#include <OgreQuaternion.h>  // 15
-#include <OgreColourValue.h> // 15
-
-#include "util/mbool.h" // 11
-
-#define WIN32_LEAN_AND_MEAN
-#include <enet/enet.h> // 6, 3.1MB
-
-#endif /*ORXONOX_COMPILER_MSVC */
+#include "core/Executor.h"     // 13
+//#include "network/synchronisable/Synchronisable.h" // 13
+//#include "core/XMLPort.h"    // 9
 
 
 // Just in case some header included windows.h

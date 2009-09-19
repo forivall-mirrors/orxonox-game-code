@@ -29,51 +29,18 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the network library
+    Compilation of the most often used header files in the external bullet library
 @details
-    Updated: 13. September 2009
-    Total Files: 28
+    Updated: 19. September 2009
+    Total Files: 105
 */
-
-#include "OrxonoxConfig.h"
 
 ///////////////////////////////////////////
 /////          Stable Headers         /////
 ///////////////////////////////////////////
 
-#include <cstring>  // 26
-#include <cassert>  // 24
-#include <string>   // 23
-#include <vector>   // 23
-#include <map>      // 23
-#include <fstream>  // 22
-#include <iostream> // 22
-#include <sstream>  // 22
-#include <set>      // 20
-
-#include "util/Debug.h"      // 20
-#include "util/TypeTraits.h" // 18
-
-#ifdef ORXONOX_COMPILER_MSVC
-
-#include <deque>    // 17
-#include <queue>    // 17
-#include <list>     // 16
-#include <cmath>    // 15
-
-#include <OgreMath.h>        // 15
-#include <OgreVector2.h>     // 15
-#include <OgreVector3.h>     // 15
-#include <OgreVector4.h>     // 15
-#include <OgreQuaternion.h>  // 15
-#include <OgreColourValue.h> // 15
-
-#include "util/mbool.h" // 11
-
-#define WIN32_LEAN_AND_MEAN
-#include <enet/enet.h> // 6, 3.1MB
-
-#endif /*ORXONOX_COMPILER_MSVC */
+#include <bullet/bulletcollision/collisionshapes/btConvexInternalShape.h> // 37
+#include <bullet/bulletcollision/collisiondispatch/btCollisionObject.h> // 33
 
 
 // Just in case some header included windows.h
