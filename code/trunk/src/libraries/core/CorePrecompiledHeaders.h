@@ -29,53 +29,58 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the core library for MSVC
+    Compilation of the most often used header files in the core library
+@details
+    Updated: 13. September 2009
+    Total Files: 56
 */
 
 #include "OrxonoxConfig.h"
 
-#include <cassert>
-#include <fstream>
-#include <iostream>
-#include <list>
-#include <locale>
-#include <map>
-#include <queue>
-#include <set>
-#include <sstream>
-#include <stack>
-#include <string>
-#include <vector>
+///////////////////////////////////////////
+/////          Stable Headers         /////
+///////////////////////////////////////////
 
+#include <string>   // 54
+#include <vector>   // 54
+#include <cassert>  // 53
+#include <fstream>  // 53
+#include <iostream> // 53
+#include <map>      // 53
+#include <sstream>  // 53
+#include <set>      // 50
+
+#include "util/Debug.h" // 48
+
+#include <deque>    // 43
+#include <list>     // 44
+#include <cmath>    // 42
+
+#include "util/ScopeGuard.h" // 38
+
+#include <OgreMath.h>        // 36
+#include <OgreVector2.h>     // 36
+#include <OgreVector3.h>     // 36
+#include <OgreVector4.h>     // 36
+#include <OgreQuaternion.h>  // 36
+#include <OgreColourValue.h> // 36
+#include <boost/preprocessor/cat.hpp> // 27
+#include <boost/shared_ptr.hpp> // 21
 
 #ifdef ORXONOX_COMPILER_MSVC
 
-#include <OgreMath.h>
-#include <OgreVector2.h>
-#include <OgreVector3.h>
-#include <OgreVector4.h>
-#include <OgreQuaternion.h>
-#include <OgreColourValue.h>
+#include <ois/OISKeyboard.h> // 15
+#include <ois/OISMouse.h>    // 15
+#include <ois/OISJoyStick.h> // 15
 
-#include <boost/shared_ptr.hpp> // 12
-#include <boost/preprocessor/cat.hpp> // 12
+#include "util/SubString.h"  // 14
+
+#include <boost/scoped_ptr.hpp> // 13
+#include <stack> // 12
+
+#endif /*ORXONOX_COMPILER_MSVC */
+
 
 // Just in case some header included windows.h
 #undef min
 #undef max
-
-#endif /* ORXONOX_COMPILER_MSVC */
-
-
-#include "util/Debug.h"
-#include "util/Math.h"
-#include "util/MultiType.h"
-#include "util/SubString.h"
-
-
-#ifdef ORXONOX_COMPILER_MSVC
-
-// A change would trigger an 80% Core rebuild anyway
-#include "Identifier.h"
-
-#endif /*ORXONOX_COMPILER_MSVC */

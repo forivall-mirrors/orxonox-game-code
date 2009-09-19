@@ -33,48 +33,18 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
   SubString.cc
 )
 
-SET_SOURCE_FILES(UTIL_HDR_FILES
-  CRC32.h
-  Clipboard.h
-  Convert.h
-  Debug.h
-  Exception.h
-  ExprParser.h
-  Math.h
-  MathConvert.h
-  mbool.h
-  MultiType.h
-  MultiTypeValue.h
-  OgreForwardRefs.h
-  OrxAssert.h
-  OrxEnum.h
-  OutputBuffer.h
-  OutputHandler.h
-  RefToValue.h
-  ScopeGuard.h
-  Serialise.h
-  SignalHandler.h
-  Singleton.h
-  Sleep.h
-  StringUtils.h
-  SubString.h
-  TemplateUtils.h
-  TypeTraits.h
-  UTFStringConversions.h
-  UtilPrereqs.h
-)
-
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
   # Get around displaying a few hundred lines of warning code
   SET_SOURCE_FILES_PROPERTIES(MultiType.cc PROPERTIES COMPILE_FLAGS "-w")
 ENDIF()
 
 ORXONOX_ADD_LIBRARY(util
+  FIND_HEADER_FILES
   DEFINE_SYMBOL
     "UTIL_SHARED_BUILD"
   LINK_LIBRARIES
     ${CEGUI_LIBRARY}
     ${OGRE_LIBRARY}
   SOURCE_FILES
-    ${UTIL_SRC_FILES} ${UTIL_HDR_FILES}
+    ${UTIL_SRC_FILES}
 )

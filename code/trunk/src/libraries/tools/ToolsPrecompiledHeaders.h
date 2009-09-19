@@ -29,10 +29,10 @@
 /**
 @file
 @brief
-    Compilation of the most often used header files in the network library
+    Compilation of the most often used header files in the tools library
 @details
-    Updated: 13. September 2009
-    Total Files: 28
+    Updated: 19. September 2009
+    Total Files: 11
 */
 
 #include "OrxonoxConfig.h"
@@ -41,39 +41,28 @@
 /////          Stable Headers         /////
 ///////////////////////////////////////////
 
-#include <cstring>  // 26
-#include <cassert>  // 24
-#include <string>   // 23
-#include <vector>   // 23
-#include <map>      // 23
-#include <fstream>  // 22
-#include <iostream> // 22
-#include <sstream>  // 22
-#include <set>      // 20
+#include <cassert>  // 11
+#include <cstring>  // 11
+#include <fstream>  // 11
+#include <iostream> // 11
+#include <map>      // 11
+#include <set>      // 11
+#include <sstream>  // 11
+#include <string>   // 11
+#include <vector>   // 11
+#include <cmath>    // 10
+#include <deque>    // 10
+#include <list>     // 10
+#include <queue>    // 10
 
-#include "util/Debug.h"      // 20
-#include "util/TypeTraits.h" // 18
+#include <OgreMath.h>        // 10
+#include <OgreVector2.h>     // 10
+#include <OgreVector3.h>     // 10
+#include <OgreVector4.h>     // 10
+#include <OgreQuaternion.h>  // 10
+#include <OgreColourValue.h> // 10
 
-#ifdef ORXONOX_COMPILER_MSVC
-
-#include <deque>    // 17
-#include <queue>    // 17
-#include <list>     // 16
-#include <cmath>    // 15
-
-#include <OgreMath.h>        // 15
-#include <OgreVector2.h>     // 15
-#include <OgreVector3.h>     // 15
-#include <OgreVector4.h>     // 15
-#include <OgreQuaternion.h>  // 15
-#include <OgreColourValue.h> // 15
-
-#include "util/mbool.h" // 11
-
-#define WIN32_LEAN_AND_MEAN
-#include <enet/enet.h> // 6, 3.1MB
-
-#endif /*ORXONOX_COMPILER_MSVC */
+#include "util/Debug.h"      // 9
 
 
 // Just in case some header included windows.h
