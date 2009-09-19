@@ -30,18 +30,18 @@
 
 #include <sstream>
 
+#include <CEGUIWindowManager.h>
+#include <elements/CEGUIFrameWindow.h>
+#include <elements/CEGUIPushButton.h>
+#include <falagard/CEGUIFalWidgetLookFeel.h>
+#include <falagard/CEGUIFalWidgetLookManager.h>
+
 #include "core/CoreIncludes.h"
-#include "infos/PlayerInfo.h"
 #include "Quest.h"
 #include "QuestHint.h"
 #include "QuestItem.h"
 #include "QuestDescription.h"
 #include "QuestGUI.h"
-
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
-#include <CEGUIFont.h>
-#include <CEGUI.h>
 
 namespace orxonox {
 
@@ -116,7 +116,7 @@ namespace orxonox {
         this->visible_ = true;
     }
 
-    int QuestGUINode::toggleVisibility(void)
+    void QuestGUINode::toggleVisibility(void)
     {
         
     }
@@ -233,7 +233,7 @@ namespace orxonox {
                         QuestGUINode* node = *it;
                         node->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(0, 30)));
                         node->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-                        node->window_->setProperty("HorizontalAlignment", "Left"); // TDO: Get this working.
+                        node->window_->setProperty("HorizontalAlignment", "Left"); // TODO: Get this working.
                         window->addChildWindow(node->window_);
                         offset += 30;
                     }

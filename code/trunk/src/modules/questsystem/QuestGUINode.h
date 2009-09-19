@@ -30,12 +30,11 @@
 #define _QuestGUINode_H__
 
 #include "questsystem/QuestsystemPrereqs.h"
-#include <CEGUIForwardRefs.h>
-
-#include "core/OrxonoxClass.h"
 
 #include <list>
 #include <string>
+#include <CEGUIForwardRefs.h>
+#include "core/OrxonoxClass.h"
 
 
 namespace orxonox {
@@ -49,7 +48,7 @@ namespace orxonox {
             QuestGUINode(QuestGUI* gui, QuestGUINode* parent, QuestItem* item, int depth, int index);
             virtual ~QuestGUINode(void);
     
-            int toggleVisibility(void);
+            void toggleVisibility(void);
 
             void getName(std::string & buffer); //!< Sets the input buffer to the name of the node.
             /**

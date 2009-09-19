@@ -33,18 +33,18 @@
 
 #include "QuestManager.h"
 
+#include <CEGUIWindow.h>
+
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h" //TDO: Necessary?
-#include <CEGUIWindow.h>
+#include "infos/PlayerInfo.h"
 #include "overlays/GUIOverlay.h"
 
-#include "infos/PlayerInfo.h"
 #include "Quest.h"
 #include "QuestHint.h"
-#include "QuestItem.h" //TDO: Necessary?
+#include "QuestItem.h"
 
 namespace orxonox
 {
