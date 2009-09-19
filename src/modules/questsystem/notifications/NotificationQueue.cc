@@ -139,7 +139,7 @@ namespace orxonox
             {
                 this->removeContainer(*it);
                 this->scroll(Vector2(0.0,-(1.1*this->getFontSize())));
-                it = this->containers_.begin(); //TDO: Needed?
+                it = this->containers_.begin(); //TODO: Needed?
             }
 
             this->tickTime_ = 0.0; //!< Reset time counter.
@@ -442,7 +442,7 @@ namespace orxonox
         while(it != this->containers_.end())
         {
             this->removeContainer(*it);
-            it = this->containers_.begin(); //TDO: Needed?
+            it = this->containers_.begin(); //TODO: Needed?
         }
     }
 

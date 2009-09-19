@@ -80,7 +80,7 @@ namespace orxonox
         if(notification == NULL) //!< A NULL-Notification cannot be registered.
             return false;
 
-        std::time_t time = std::time(0); //TDO: Doesn't this expire? //!< Get current time.
+        std::time_t time = std::time(0); //TODO: Doesn't this expire? //!< Get current time.
 
         this->allNotificationsList_.insert(std::pair<std::time_t,Notification*>(time,notification));
 
@@ -95,7 +95,7 @@ namespace orxonox
         for(std::map<NotificationListener*,int>::iterator it = this->listenerList_.begin(); it != this->listenerList_.end(); it++) //!< Iterate through all listeners.
         {
             std::set<std::string> set = it->first->getTargetsSet();
-            if(all || set.find(notification->getSender()) != set.end() || set.find(ALL) != set.end()) //TDO: Make sure this works.
+            if(all || set.find(notification->getSender()) != set.end() || set.find(ALL) != set.end()) //TODO: Make sure this works.
             {
                 this->notificationLists_[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); //!< Insert the Notification in the Notifications list of the current NotificationListener.
                 it->first->update(notification, time); //!< Update the listener.
@@ -122,7 +122,7 @@ namespace orxonox
 
         this->listenerList_[listener] = index; //!< Add the NotificationListener to the list of listeners.
 
-        std::set<std::string> set = listener->getTargetsSet(); //TDO: Works this?
+        std::set<std::string> set = listener->getTargetsSet(); //TODO: Works this?
 
         //! If all senders are the target of the listener, then the list of notification for that specific listener is te same as the list of all Notifications.
         if(set.find(ALL) != set.end())

@@ -29,19 +29,15 @@
 #include "QuestGUI.h"
 
 #include <sstream>
+#include <CEGUIWindow.h>
+#include <CEGUIWindowManager.h>
 
 #include "core/CoreIncludes.h"
-#include "core/GUIManager.h"
-#include "infos/PlayerInfo.h"
 #include "Quest.h"
 #include "QuestHint.h"
-#include "QuestDescription.h" //Debug
 #include "QuestItem.h"
 #include "QuestGUINode.h"
 #include "QuestManager.h"
-
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
 
 namespace orxonox {
 

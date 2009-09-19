@@ -35,13 +35,13 @@
 #define _QuestGUI_H__
 
 #include "questsystem/QuestsystemPrereqs.h"
+
+#include <list>
+#include <map>
+#include <string>
 #include <CEGUIForwardRefs.h>
 
 #include "core/OrxonoxClass.h"
-
-#include <map>
-#include <string>
-#include <list>
 
 namespace orxonox {
 
@@ -94,7 +94,7 @@ namespace orxonox {
             void clear(void); //!< Clear the QuestGUI.
             
             PlayerInfo* player_; //!< The player that owns the GUI.
-            CEGUI::WindowManager* windowManager_; //!< The CEGUI WindowManager. //TDO: needed?
+            CEGUI::WindowManager* windowManager_; //!< The CEGUI WindowManager. //TODO: needed?
             CEGUI::Window* rootWindow_; //!< The root CEGUI Window of the GUI.
 
             QuestGUINode* root_; //!< An empty QuestGUINode being the parent of all otherwise parent-less nodes.
