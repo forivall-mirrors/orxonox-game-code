@@ -68,38 +68,42 @@ INCLUDE_DIRECTORIES(
   ${ZLIB_INCLUDE_DIR}
   ${VLD_INCLUDE_DIR}
 
-  # All library includes are prefixed with the path to avoid conflicts
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  # Bullet headers really need the include directory
+  # All includes in "externals" should be prefixed with the path
+  # relative to "external" to avoid conflicts
+  ${CMAKE_CURRENT_SOURCE_DIR}/external
+  # Include directories needed even if only included by Orxonox
   ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
-  # OIS headers need the root dir as well
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
+
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
-  # Tolua bind files for Core
-  ${CMAKE_CURRENT_BINARY_DIR}/libraries/core/${CMAKE_CFG_INTDIR}
-  # Tolua bind files for Orxonox
-  ${CMAKE_CURRENT_BINARY_DIR}/orxonox/${CMAKE_CFG_INTDIR}
-
-  # Add the base directories for convenience
-  ${CMAKE_CURRENT_SOURCE_DIR}/external
-  ${CMAKE_CURRENT_SOURCE_DIR}/libraries
-  ${CMAKE_CURRENT_SOURCE_DIR}/modules
-  ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
 )
 
 IF(CEGUILUA_USE_INTERNAL_LIBRARY)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
 ENDIF()
 
+################### Tolua Bind ##################
+
+# Create directory because the tolua application doesn't work otherwise
+IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
+ENDIF()
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
+
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(libraries)
-ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(orxonox)
+ADD_SUBDIRECTORY(modules)
 
 ################ Executable ################
+
+INCLUDE_DIRECTORIES(
+  ${CMAKE_CURRENT_SOURCE_DIR}/libraries
+  ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
+)
 
 # Translate argument
 IF(ORXONOX_USE_WINMAIN)
@@ -116,6 +120,7 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
   OUTPUT_NAME orxonox
 )
 
+# Get name to configure the run scripts
 GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
 SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")

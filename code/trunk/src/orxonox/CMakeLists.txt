@@ -17,6 +17,12 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
+INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/src/external
+  ${CMAKE_SOURCE_DIR}/src/libraries
+  ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Main.cc
 
