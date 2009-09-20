@@ -36,6 +36,7 @@
 #include "core/GUIManager.h"
 #include "core/XMLPort.h"
 #include "infos/PlayerInfo.h"
+#include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
@@ -61,6 +62,9 @@ namespace orxonox
     {
         SUPER(GUIOverlay, changedVisibility);
 
+        //Setting player now.
+        GUIManager::getInstance().setPlayer(this->guiName_, (orxonox_cast<ControllableEntity*>(this->getOwner()))->getPlayer());
+
         if (this->isVisible())
         {
             std::string str;
@@ -82,6 +86,6 @@ namespace orxonox
     void GUIOverlay::setGUIName(const std::string& name)
     {
         this->guiName_ = name;
-        GUIManager::getInstance().setPlayer(name, orxonox_cast<PlayerInfo*>(this->getOwner()));
+        GUIManager::getInstance().setPlayer(name, orxonox_cast<PlayerInfo*>(this->getOwner())); //Set Player is going to be NULL, so it needs to be set in changedVisibility() as well.
     }
 }
