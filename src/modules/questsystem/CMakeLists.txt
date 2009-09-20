@@ -26,7 +26,6 @@ ORXONOX_ADD_LIBRARY(questsystem
   MODULE
   FIND_HEADER_FILES
   TOLUA_FILES
-    QuestDescription.h
     QuestManager.h
   DEFINE_SYMBOL
     "QUESTSYSTEM_SHARED_BUILD"
