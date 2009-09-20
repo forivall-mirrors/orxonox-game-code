@@ -43,7 +43,7 @@
 
 #include <tinyxml/ticpp.h> // 14
 //#include <OgreOverlayelement.h> // 7, 7.2MB
-#include <bullet/linearmath/btMotionState.h> // 6
+#include <bullet/LinearMath/btMotionState.h> // 6
 //#include <OgrePanelOverlayelement.h> // 5
 
 ///////////////////////////////////////////

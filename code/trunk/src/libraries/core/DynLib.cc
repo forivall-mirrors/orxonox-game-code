@@ -41,8 +41,12 @@ Torus Knot Software Ltd.
 #  include <windows.h>
 #endif
 
+#ifdef ORXONOX_PLATFORM_LINUX
+#  include <dlfcn.h>
+#endif
+
 #ifdef ORXONOX_PLATFORM_APPLE
-#   include "macPlugins.h"
+#  include <macPlugins.h>
 #endif
 
 namespace orxonox
