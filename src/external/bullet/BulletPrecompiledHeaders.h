@@ -39,8 +39,8 @@
 /////          Stable Headers         /////
 ///////////////////////////////////////////
 
-#include <bullet/bulletcollision/collisionshapes/btConvexInternalShape.h> // 37
-#include <bullet/bulletcollision/collisiondispatch/btCollisionObject.h> // 33
+#include <bullet/BulletCollision/CollisionShapes/btConvexInternalShape.h> // 37
+#include <bullet/BulletCollision/CollisionDispatch/btCollisionObject.h> // 33
 
 
 // Just in case some header included windows.h
