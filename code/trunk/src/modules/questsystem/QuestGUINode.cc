@@ -160,7 +160,7 @@ namespace orxonox {
             stream << this->window_->getName() << "/Details";
             const QuestDescription* description = this->item_->getDescription();
             this->details_ = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/FrameWindow", stream.str());
-            this->details_->setSize(CEGUI::UVector2(CEGUI::UDim(0.8, 0),CEGUI::UDim(0.8, 0)));
+            this->details_->setSize(CEGUI::UVector2(CEGUI::UDim(0.7, 0),CEGUI::UDim(0.7, 0)));
             this->details_->setPosition(CEGUI::UVector2(CEGUI::UDim(0.1, 0),CEGUI::UDim(0.1, 0)));
             this->details_->setText(description->getTitle());
             this->details_->setAlpha(1.0);
@@ -213,6 +213,15 @@ namespace orxonox {
             stream.str("");
             stream << this->details_->getName() << "/Description";
             CEGUI::Window* descriptionWindow = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
+            stream << "/Title";
+            CEGUI::Window* descriptionWindowTitle = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
+            window->addChildWindow(descriptionWindowTitle);
+            descriptionWindowTitle->setProperty("HorzFormatting", "HorzCentred");
+            descriptionWindowTitle->setProperty("VertFormatting", "TopAligned");
+            descriptionWindowTitle->setText("Description:");
+            descriptionWindowTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
+            descriptionWindowTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(1.0, 0)));
+            offset += setHeight(descriptionWindowTitle);
             window->addChildWindow(descriptionWindow);
             descriptionWindow->setProperty("HorzFormatting", "WordWrapLeftAligned");
             descriptionWindow->setProperty("VertFormatting", "TopAligned");
@@ -224,12 +233,27 @@ namespace orxonox {
             offset += height;
 
             //! Display a list of hints if the QuestItem is a Quest.
+            bool title = true;
             if(quest != NULL)
             {
                 for(std::list<QuestGUINode*>::iterator it = this->subNodes_.begin(); it != this->subNodes_.end(); it++)
                 {
                     if(dynamic_cast<QuestHint*>((*it)->item_) != NULL) //!< If the subNode belongs to a QuestHint.
                     {
+                        if(title)
+                        {
+                            stream.str("");
+                            stream << this->details_->getName() << "/Hints/Title";
+                            CEGUI::Window* hintsTitle = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
+                            window->addChildWindow(hintsTitle);
+                            hintsTitle->setProperty("HorzFormatting", "HorzCentred");
+                            hintsTitle->setProperty("VertFormatting", "TopAligned");
+                            hintsTitle->setText("Hints:");
+                            hintsTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
+                            hintsTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(1.0, 0)));
+                            offset += setHeight(hintsTitle);;
+                            title = false;
+                        }
                         QuestGUINode* node = *it;
                         node->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(0, 30)));
                         node->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
@@ -254,7 +278,8 @@ namespace orxonox {
     {
         COUT(3) << "Open QuestItem..." << std::endl;
         
-        CEGUI::Window* window = this->gui_->getRootWindow();
+        //CEGUI::Window* window = this->gui_->getRootWindow();
+        CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow("orxonox/QuestGUI/Background");
 
         if(window != NULL)
             window->addChildWindow(this->getDetails());
@@ -268,12 +293,21 @@ namespace orxonox {
     */
     bool QuestGUINode::closeDetails(const CEGUI::EventArgs& e)
     {        
-        CEGUI::Window* questsList = this->gui_->getRootWindow();
-        questsList->removeChildWindow(this->details_);
+        //CEGUI::Window* window = this->gui_->getRootWindow();
+        CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow("orxonox/QuestGUI/Background");
+        window->removeChildWindow(this->details_);
 
         return true;
     }
 
+    /**
+    @brief
+        Helper method for setHeight(). Gets the StaticTextArea for an input CEGUI Window.
+    @param window
+        The CEGUI window.
+    @return
+        Returns a CEGUI Rect.
+    */
     /*static*/ CEGUI::Rect QuestGUINode::getStaticTextArea(const CEGUI::Window* window)
     {
         const CEGUI::WidgetLookFeel& lookAndFeel = CEGUI::WidgetLookManager::getSingleton().getWidgetLook(window->getLookNFeel());
@@ -281,18 +315,24 @@ namespace orxonox {
         return lookAndFeel.getNamedArea("WithFrameTextRenderArea").getArea().getPixelRect(*window);
     }
 
+    /**
+    @brief
+        Helper method to adjust the height of an input Window (of type StaticText) to the text it holds.
+    @param window
+        The  CEGUI Window (of type StaticText) for which the height is to be adjusted to the text.
+    @return
+        Returns the set height.
+    */
     /*static*/ int QuestGUINode::setHeight(CEGUI::Window* window)
     {
         //! Get the area the text is formatted and drawn into.
         const CEGUI::Rect formattedArea = getStaticTextArea(window);
-        COUT(1) << "PixelRect before setHeight(): " << formattedArea.getHeight() << "x" << formattedArea.getWidth() << std::endl; //Debug
 
         //! Calculate the pixel height of the frame by subtracting the height of the area above from the total height of the window.
         const float frameHeight = window->getUnclippedPixelRect().getHeight() - formattedArea.getHeight();
 
         //! Get the formatted line count - using the formatting area obtained above.
         const float lines = window->getFont()->getFormattedLineCount(window->getText(), formattedArea, CEGUI::WordWrapLeftAligned);
-        COUT(1) << "Lines: " << lines << std::endl; //Debug
 
         //! Calculate pixel height of window, which is the number of formatted lines multiplied by the spacing of the font, plus the pixel height of the frame.
         const float height = lines * window->getFont()->getLineSpacing() + frameHeight;
@@ -302,21 +342,9 @@ namespace orxonox {
         
         //Debug
         const CEGUI::Rect newArea = getStaticTextArea(window);
-        COUT(1) << "PixelRect after setHeight(): " << newArea.getHeight() << "x" << newArea.getWidth() << std::endl; //Debug
 
         return static_cast<int>(height);
     }
-
-    //int QuestGUINode::setHeight(CEGUI::Window* window)
-    //{
-    //    COUT(1) << "PixelRect before setHeight(): " << window->getPixelRect().getHeight() << "x" << window->getPixelRect().getWidth() << std::endl; //Debug
-    //    int lines = window->getFont()->getFormattedLineCount(window->getText(), window->getPixelRect(), CEGUI::WordWrapLeftAligned);
-    //    int height = 2*lines*window->getFont()->getLineSpacing();
-    //    COUT(1) << "Lines: " << lines << ", LineSpacing: " << window->getFont()->getLineSpacing() << std::endl; //Debug
-    //    window->setHeight(CEGUI::UDim(0, height));
-    //    COUT(1) << "PixelRect after setHeight(): " << window->getPixelRect().getHeight() << "x" << window->getPixelRect().getWidth() << std::endl; //Debug
-    //    return height;
-    //}
 
     /**
     @brief

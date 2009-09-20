@@ -63,8 +63,8 @@ namespace orxonox {
             bool closeDetails(const CEGUI::EventArgs& e); //!< Close the details window.
 
         private:
-            static CEGUI::Rect getStaticTextArea(const CEGUI::Window* window);
-            static int setHeight(CEGUI::Window* window);
+            static CEGUI::Rect getStaticTextArea(const CEGUI::Window* window); //Helper method for setHeight(). Gets the StaticTextArea for an input CEGUI Window.
+            static int setHeight(CEGUI::Window* window); //Helper method to adjust the height of an input Window (of type StaticText) to the text it holds.
 
             void initialize(void); //!< Initialize the object.
             void updatePosition(void); //!< Update the position list item.
