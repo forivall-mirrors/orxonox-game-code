@@ -39,15 +39,20 @@
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/ConsoleCommand.h"
+#include "core/LuaState.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/GUIOverlay.h"
 
+#include "ToluaBindQuestsystem.h"
 #include "Quest.h"
 #include "QuestHint.h"
 #include "QuestItem.h"
 
 namespace orxonox
 {
+    // Register tolua_open function when loading the library
+    DeclareToluaInterface(Questsystem);
+
     //! Pointer to the current (and single) instance of this class.
     /*static*/ QuestManager* QuestManager::singletonPtr_s = NULL;
 
