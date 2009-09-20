@@ -95,5 +95,10 @@
      align    = "center"
     />
 
+    <GUIOverlay
+      name = "QuestGUI"
+      guiname = "QuestGUI"
+    />
+
   </OverlayGroup>
 </Template>
