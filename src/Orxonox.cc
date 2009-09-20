@@ -33,7 +33,6 @@
     Entry point of the program.
 */
 
-#include "OrxonoxPrereqs.h"
 #include "SpecialConfig.h"
 
 #ifdef ORXONOX_USE_WINMAIN

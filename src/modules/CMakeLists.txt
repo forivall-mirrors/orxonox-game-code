@@ -17,6 +17,13 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
+INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/src/external
+  ${CMAKE_SOURCE_DIR}/src/libraries
+  ${CMAKE_SOURCE_DIR}/src/orxonox
+  ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(gamestates)
