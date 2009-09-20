@@ -71,7 +71,7 @@ namespace orxonox
     }
     /**
         @brief Called when the item is used, makes the user "jump".
-        @param pawn Pawn which used te item.
+        @param pawn Pawn which used the item.
     */
     void Jump::used(Pawn* pawn)
     {
