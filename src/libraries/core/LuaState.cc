@@ -73,7 +73,7 @@ namespace orxonox
         sourceFileInfo_->group = "General";
         sourceFileInfo_->size = 0;
 
-        // Push this pointer
+        // Push 'this' pointer
         tolua_pushusertype(luaState_, static_cast<void*>(this), "orxonox::LuaState");
         lua_setglobal(luaState_, "luaState");
 

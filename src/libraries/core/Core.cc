@@ -195,13 +195,13 @@ namespace orxonox
 
         /**
         @brief
-            Temporary sets the data path
+            Temporary sets the external data path
         @param path
             The new data path
         */
         void tsetExternalDataPath(const std::string& path)
         {
-            dataPath_ = boost::filesystem::path(path);
+            externalDataPath_ = boost::filesystem::path(path);
         }
 
         void initializeRandomNumberGenerator()
