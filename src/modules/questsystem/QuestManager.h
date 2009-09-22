@@ -64,8 +64,7 @@ namespace orxonox
 // tolua_end
 
             friend class ScopedSingleton<QuestManager, ScopeID::GSLevel>;
-            friend class QuestGUI; //TODO: better solution.
-            //friend std::map<std::string, Quest*> & QuestGUI::getQuests(void);
+            friend class QuestGUI;
 
         public:
             QuestManager();
@@ -93,7 +92,6 @@ namespace orxonox
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
 
-            //TODO: Call destructor of QuestGUI's on destruction of QuestManager?
             std::map<PlayerInfo*, QuestGUI*> questGUIs_; //!< All GUI's registered by the players.
 
     }; // tolua_export

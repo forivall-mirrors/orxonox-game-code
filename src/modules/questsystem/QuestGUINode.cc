@@ -159,7 +159,7 @@ namespace orxonox {
             //! Create the main window for the details.
             stream << this->window_->getName() << "/Details";
             const QuestDescription* description = this->item_->getDescription();
-            this->details_ = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/FrameWindow", stream.str());
+            this->details_ = this->gui_->getWindowManager()->createWindow("TaharezLook/FrameWindow", stream.str());
             this->details_->setSize(CEGUI::UVector2(CEGUI::UDim(0.7, 0),CEGUI::UDim(0.7, 0)));
             this->details_->setPosition(CEGUI::UVector2(CEGUI::UDim(0.1, 0),CEGUI::UDim(0.1, 0)));
             this->details_->setText(description->getTitle());
@@ -170,9 +170,9 @@ namespace orxonox {
 
             //! Create a ScrollablePane.
             stream << "/Scrollable";
-            CEGUI::Window* window = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/ScrollablePane", stream.str());
-            window->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -10),CEGUI::UDim(1.0, -26)));
-            window->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5),CEGUI::UDim(0, 26)));
+            CEGUI::Window* window = this->gui_->getWindowManager()->createWindow("TaharezLook/ScrollablePane", stream.str());
+            window->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -2*QuestGUINode::BORDER_WIDTH),CEGUI::UDim(1.0, -QuestGUINode::TITLE_HEIGHT)));
+            window->setPosition(CEGUI::UVector2(CEGUI::UDim(0, QuestGUINode::BORDER_WIDTH),CEGUI::UDim(0, QuestGUINode::TITLE_HEIGHT)));
             this->details_->addChildWindow(window);
 
             int height;
@@ -184,7 +184,7 @@ namespace orxonox {
             {
                 stream.str("");
                 stream << this->details_->getName() << "/Status";
-                CEGUI::Window* statusWindow = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
+                CEGUI::Window* statusWindow = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
                 window->addChildWindow(statusWindow);
                 std::string status = "";
                 if(quest->isActive(this->gui_->getPlayer()))
@@ -203,31 +203,36 @@ namespace orxonox {
                 statusWindow->setProperty("VertFormatting", "TopAligned");
                 statusWindow->setText(status);
                 statusWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-                statusWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(1.0, 0)));
+                statusWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
                 height = setHeight(statusWindow);
 
                 offset += height;
             }
-
-            //! Display the Description of the QuestItem.
+            
+            //! Create title pane for the description.
             stream.str("");
             stream << this->details_->getName() << "/Description";
-            CEGUI::Window* descriptionWindow = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
             stream << "/Title";
-            CEGUI::Window* descriptionWindowTitle = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
+            CEGUI::Window* descriptionWindowTitle = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
             window->addChildWindow(descriptionWindowTitle);
             descriptionWindowTitle->setProperty("HorzFormatting", "HorzCentred");
             descriptionWindowTitle->setProperty("VertFormatting", "TopAligned");
             descriptionWindowTitle->setText("Description:");
             descriptionWindowTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-            descriptionWindowTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(1.0, 0)));
+            descriptionWindowTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
+
             offset += setHeight(descriptionWindowTitle);
+
+            //! Display the Description of the QuestItem.
+            stream.str("");
+            stream << this->details_->getName() << "/Description";
+            CEGUI::Window* descriptionWindow = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
             window->addChildWindow(descriptionWindow);
             descriptionWindow->setProperty("HorzFormatting", "WordWrapLeftAligned");
             descriptionWindow->setProperty("VertFormatting", "TopAligned");
             descriptionWindow->setText(description->getDescription());
             descriptionWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-            descriptionWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(1.0, 0)));
+            descriptionWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
             height = setHeight(descriptionWindow);
 
             offset += height;
@@ -240,26 +245,25 @@ namespace orxonox {
                 {
                     if(dynamic_cast<QuestHint*>((*it)->item_) != NULL) //!< If the subNode belongs to a QuestHint.
                     {
-                        if(title)
+                        if(title) //!< If no title pane for the QuestHints has been created, create one.
                         {
                             stream.str("");
                             stream << this->details_->getName() << "/Hints/Title";
-                            CEGUI::Window* hintsTitle = CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/StaticText", stream.str());
+                            CEGUI::Window* hintsTitle = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
                             window->addChildWindow(hintsTitle);
                             hintsTitle->setProperty("HorzFormatting", "HorzCentred");
                             hintsTitle->setProperty("VertFormatting", "TopAligned");
                             hintsTitle->setText("Hints:");
                             hintsTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-                            hintsTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(1.0, 0)));
+                            hintsTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
                             offset += setHeight(hintsTitle);;
                             title = false;
                         }
                         QuestGUINode* node = *it;
-                        node->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -13),CEGUI::UDim(0, 30)));
+                        node->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(0, QuestGUINode::BUTTON_HEIGHT)));
                         node->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-                        node->window_->setProperty("HorizontalAlignment", "Left"); // TODO: Get this working.
                         window->addChildWindow(node->window_);
-                        offset += 30;
+                        offset += QuestGUINode::BUTTON_HEIGHT;
                     }
                 }
             }
@@ -279,7 +283,7 @@ namespace orxonox {
         COUT(3) << "Open QuestItem..." << std::endl;
         
         //CEGUI::Window* window = this->gui_->getRootWindow();
-        CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow("orxonox/QuestGUI/Background");
+        CEGUI::Window* window = this->gui_->getWindowManager()->getWindow("orxonox/QuestGUI/Background");
 
         if(window != NULL)
             window->addChildWindow(this->getDetails());
@@ -294,7 +298,7 @@ namespace orxonox {
     bool QuestGUINode::closeDetails(const CEGUI::EventArgs& e)
     {        
         //CEGUI::Window* window = this->gui_->getRootWindow();
-        CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow("orxonox/QuestGUI/Background");
+        CEGUI::Window* window = this->gui_->getWindowManager()->getWindow("orxonox/QuestGUI/Background");
         window->removeChildWindow(this->details_);
 
         return true;
@@ -352,8 +356,8 @@ namespace orxonox {
     */
     void QuestGUINode::updatePosition(void)
     {
-        this->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 20*this->depth_),CEGUI::UDim(0, 30*this->index_)));
-        this->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1, -20*this->depth_-13),CEGUI::UDim(0, 30)));
+        this->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, QuestGUINode::INDENT_WIDTH*this->depth_),CEGUI::UDim(0, QuestGUINode::BUTTON_HEIGHT*this->index_)));
+        this->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1, -QuestGUINode::INDENT_WIDTH*this->depth_-QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(0, QuestGUINode::BUTTON_HEIGHT)));
     }
 
     /**

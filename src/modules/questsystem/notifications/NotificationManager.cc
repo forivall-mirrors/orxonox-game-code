@@ -122,7 +122,7 @@ namespace orxonox
 
         this->listenerList_[listener] = index; //!< Add the NotificationListener to the list of listeners.
 
-        std::set<std::string> set = listener->getTargetsSet(); //TODO: Works this?
+        std::set<std::string> set = listener->getTargetsSet(); //TODO: Does this work?
 
         //! If all senders are the target of the listener, then the list of notification for that specific listener is te same as the list of all Notifications.
         if(set.find(ALL) != set.end())

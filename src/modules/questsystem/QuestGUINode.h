@@ -57,31 +57,38 @@ namespace orxonox {
             */
             inline CEGUI::Window* getWindow(void)
                 { return this->window_; }
-            CEGUI::Window* getDetails(void); //!< Creates the details window.
 
             bool openDetails(const CEGUI::EventArgs& e); //!< Opens the details window for the Quest/QuestHint clicked on.
             bool closeDetails(const CEGUI::EventArgs& e); //!< Close the details window.
 
         private:
-            static CEGUI::Rect getStaticTextArea(const CEGUI::Window* window); //Helper method for setHeight(). Gets the StaticTextArea for an input CEGUI Window.
-            static int setHeight(CEGUI::Window* window); //Helper method to adjust the height of an input Window (of type StaticText) to the text it holds.
+            CEGUI::Window* getDetails(void); //!< Creates the details window.
 
             void initialize(void); //!< Initialize the object.
             void updatePosition(void); //!< Update the position list item.
             void createWindow(void); //!< Helper method to create the CEGUI Window the node.
+            static CEGUI::Rect getStaticTextArea(const CEGUI::Window* window); //Helper method for setHeight(). Gets the StaticTextArea for an input CEGUI Window.
+            static int setHeight(CEGUI::Window* window); //Helper method to adjust the height of an input Window (of type StaticText) to the text it holds.
 
             bool visible_; //!< Boolean determining the visibility of the node.
 
             QuestGUI* gui_; //!< The QuestGUI this node belongs to.
             QuestGUINode* parent_; //!< The parent node.
-            std::list<QuestGUINode*> subNodes_; //!< a list of all subnodes.
-            QuestItem* item_; //!<
+            std::list<QuestGUINode*> subNodes_; //!< A list of all subnodes.
+            QuestItem* item_; //!< QuestItem belonging to this node.
 
             int depth_; //!< The depth (resp. indentation) of this node in the list of Quests. (Irrelevant for QuestHints)
             int index_; //!< The index of this node in the list of Quests, resp. in the list of QuestHints, if the node belongs to a QuestHint, rather than a Quest.
 
             CEGUI::Window* window_; //!< The list window of this node.
             CEGUI::Window* details_; //!< The details window of this node.
+
+            //! Some magic numbers
+            static const int TITLE_HEIGHT = 26;
+            static const int BORDER_WIDTH = 5;
+            static const int SCROLLBAR_WIDTH = 13;
+            static const int BUTTON_HEIGHT = 30;
+            static const int INDENT_WIDTH = 20;
 
     };
 
