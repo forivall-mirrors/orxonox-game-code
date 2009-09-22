@@ -59,8 +59,13 @@ namespace orxonox {
             QuestGUI(PlayerInfo* player);
             virtual ~QuestGUI();
 
-            CEGUI::Window* getGUI(void); //!< Get the root CEGUI Window of the GUI.
             void update(void); //!< Update the GUI.
+            CEGUI::Window* getGUI(void); //!< Get the root CEGUI Window of the GUI.
+
+            CEGUI::Window* getWindow(void); //!< Get a CEGUI Window to use.
+            void giveWindow(CEGUI::Window* window); //!< Return a no longer needed CEGUI Window for reuse.
+
+            static QuestGUINode* findNode(CEGUI::Window* window); //!< Finde the QuestGUINode belonging to the input CEGUI Window.
 
             /**
             @brief Retreive the CEGUI WindowManager.
@@ -74,30 +79,25 @@ namespace orxonox {
             */
             inline CEGUI::Window* getRootWindow(void)
                 { return this->rootWindow_; }
-
-            CEGUI::Window* getWindow(void); //!< Get a CEGUI Window to use.
-            void giveWindow(CEGUI::Window* window); //!< Return a no longer needed CEGUI Window for reuse.
-
             /**
             @brief Retreive the player.
             @return Returns the player.
             */
             inline PlayerInfo* getPlayer(void)
                 { return this->player_; }
-
-            static QuestGUINode* findNode(CEGUI::Window* window); //!< Finde the QuestGUINode belonging to the input CEGUI Window.
     
         private:
             
             int createNode(QuestGUINode* parent, QuestItem* item, int depth, int index); //!< Recursive method to create Nodes for all Quests an Hints the given Quest is a parent to.
 
             void clear(void); //!< Clear the QuestGUI.
-            
-            PlayerInfo* player_; //!< The player that owns the GUI.
-            CEGUI::WindowManager* windowManager_; //!< The CEGUI WindowManager. //TODO: needed?
-            CEGUI::Window* rootWindow_; //!< The root CEGUI Window of the GUI.
 
             QuestGUINode* root_; //!< An empty QuestGUINode being the parent of all otherwise parent-less nodes.
+
+            CEGUI::WindowManager* windowManager_; //!< The CEGUI WindowManager.
+            CEGUI::Window* rootWindow_; //!< The root CEGUI Window of the GUI.
+            PlayerInfo* player_; //!< The player that owns the GUI.
+
             std::map<CEGUI::Window*, QuestGUINode*> nodes_; //!< A list of all QuestGUINodes, ordered by their respective CEGUI Windows.
             std::list<CEGUI::Window*> windows_; //!< A list of windows to be used.
 
