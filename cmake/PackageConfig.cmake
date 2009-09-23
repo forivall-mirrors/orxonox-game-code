@@ -56,27 +56,11 @@ IF(NOT _INTERNAL_PACKAGE_MESSAGE)
 ENDIF()
 
 # Include paths and other special treatments
-SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut)
 SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost)
-SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui)
-SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
-SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
 SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
-SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg)
-SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis)
 SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre)
-SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
-SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl/include)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
 
 ### INSTALL ###
-
-# Tcl script library
-INSTALL(
-  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
-  DESTINATION lib/tcl
-)
 
 # On Windows, DLLs have to be in the executable folder, install them
 IF(WIN32 AND DEP_BINARY_DIR)

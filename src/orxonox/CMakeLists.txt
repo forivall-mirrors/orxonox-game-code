@@ -25,57 +25,16 @@ INCLUDE_DIRECTORIES(
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Main.cc
-
-  CameraManager.cc
-  LevelManager.cc
-  PawnManager.cc
-  PlayerManager.cc
-
-  Level.cc
-  Radar.cc
-  Scene.cc
+  GSRoot.cc
 )
-
-ADD_SUBDIRECTORY(collisionshapes)
-ADD_SUBDIRECTORY(controllers)
-ADD_SUBDIRECTORY(gametypes)
-ADD_SUBDIRECTORY(graphics)
-ADD_SUBDIRECTORY(infos)
-ADD_SUBDIRECTORY(interfaces)
-ADD_SUBDIRECTORY(items)
-ADD_SUBDIRECTORY(overlays)
-ADD_SUBDIRECTORY(pickup)
-ADD_SUBDIRECTORY(sound)
-ADD_SUBDIRECTORY(weaponsystem)
-ADD_SUBDIRECTORY(worldentities)
 
 ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
-  TOLUA_FILES
-    LevelManager.h
-    pickup/BaseItem.h
-    pickup/PickupInventory.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"
-  PCH_FILE
-    OrxonoxPrecompiledHeaders.h
   LINK_LIBRARIES
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
-    ${Boost_THREAD_LIBRARY}
-    ${Boost_DATE_TIME_LIBRARY} # Thread dependency
-    ${OGRE_LIBRARY}
-    ${OPENAL_LIBRARY}
-    ${ALUT_LIBRARY}
-    ${VORBISFILE_LIBRARY}
-    ${VORBIS_LIBRARY}
-    ${OGG_LIBRARY}
-    tinyxml++_orxonox
     tolua++_orxonox
-    bullet_orxonox
     util
     core
-    network
-    tools
   SOURCE_FILES ${ORXONOX_SRC_FILES}
 )

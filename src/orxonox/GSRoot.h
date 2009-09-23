@@ -20,47 +20,32 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-/**
-@file
-@brief
-    The main function of Orxonox.
-*/
+#ifndef _GSRoot_H__
+#define _GSRoot_H__
 
 #include "OrxonoxPrereqs.h"
-#include "SpecialConfig.h"
-
-#include "util/Exception.h"
-#include "core/CommandLine.h"
-#include "core/Game.h"
-#include "core/LuaState.h"
-#include "Main.h"
+#include "core/GameState.h"
 
 namespace orxonox
 {
-    /**
-    @brief
-        Main method. Game starts here (except for static initialisations).
-    */
-    int main(const std::string& strCmdLine)
+    class _OrxonoxExport GSRoot : public GameState
     {
-        Game* game = new Game(strCmdLine);
+    public:
+        GSRoot(const GameStateInfo& info);
+        ~GSRoot();
 
-        game->setStateHierarchy(
-        "root"
-        );
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
-        game->requestState("root");
-
-        game->run();
-        delete game;
-
-        return 0;
-    }
+    private:
+    };
 }
+
+#endif /* _GSRoot_H__ */

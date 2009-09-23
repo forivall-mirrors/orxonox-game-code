@@ -43,12 +43,6 @@
 #include <boost/preprocessor/stringize.hpp>
 
 /**
-@def CEGUILUA_USE_INTERNAL_LIBRARY
-    Set whether we must suffix "ceguilua/" for the CEGUILua.h include
-*/
-#cmakedefine CEGUILUA_USE_INTERNAL_LIBRARY
-
-/**
 @def DEPENDENCY_PACKAGE_ENABLE
     Defined if a precompiled depdency package was used. We then copy all libraries
     too when installing.
@@ -89,7 +83,6 @@ namespace orxonox { namespace specialConfig
 
     // DEVELOPMENT RUN PATHS
     const char dataDevDirectory[]           = "@DATA_DIRECTORY@";
-    const char externalDataDevDirectory[]   = "@EXTERNAL_DATA_DIRECTORY@";
 #ifdef CMAKE_CONFIGURATION_TYPES
     const char moduleDevDirectory[]         = "@CMAKE_MODULE_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
     const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
@@ -106,23 +99,6 @@ namespace orxonox { namespace specialConfig
 
     // Module extension
     const char moduleExtension[] = "@ORXONOX_MODULE_EXTENSION@";
-
-    // OGRE PLUGINS
-#ifdef NDEBUG
-    const char ogrePlugins[] = "@OGRE_PLUGINS_RELEASE@";
-#  ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ogrePluginsDirectory[] = ".";
-#  else
-    const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_RELEASE@";
-#  endif
-#else
-    const char ogrePlugins[] = "@OGRE_PLUGINS_DEBUG@";
-#  ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ogrePluginsDirectory[] = ".";
-#  else
-    const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
-#  endif
-#endif
 } }
 
 /**

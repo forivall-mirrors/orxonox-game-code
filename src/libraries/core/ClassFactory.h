@@ -54,7 +54,7 @@ namespace orxonox
     class ClassFactory : public BaseFactory
     {
         public:
-            static bool create(const std::string& name, bool bLoadable = true);
+            static bool create(const std::string& name);
             BaseObject* fabricate(BaseObject* creator);
 
         private:
@@ -72,11 +72,10 @@ namespace orxonox
         @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
-    bool ClassFactory<T>::create(const std::string& name, bool bLoadable)
+    bool ClassFactory<T>::create(const std::string& name)
     {
         COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
         ClassIdentifier<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
-        ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
         Factory::add(name, ClassIdentifier<T>::getIdentifier());
 
         return true;

@@ -37,9 +37,7 @@
 
 #include "util/StringUtils.h"
 #include "ConfigValueContainer.h"
-#include "ConsoleCommand.h"
 #include "Factory.h"
-#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -60,16 +58,11 @@ namespace orxonox
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
         this->factory_ = 0;
-        this->bLoadable_ = true;
 
         this->bHasConfigValues_ = false;
-        this->bHasConsoleCommands_ = false;
 
         this->children_ = new std::set<const Identifier*>();
         this->directChildren_ = new std::set<const Identifier*>();
-
-        // Default network ID is the class ID
-        this->networkID_ = this->classID_;
     }
 
     /**
@@ -84,13 +77,7 @@ namespace orxonox
         if (this->factory_)
             delete this->factory_;
 
-        for (std::map<std::string, ConsoleCommand*>::iterator it = this->consoleCommands_.begin(); it != this->consoleCommands_.end(); ++it)
-            delete (it->second);
         for (std::map<std::string, ConfigValueContainer*>::iterator it = this->configValues_.begin(); it != this->configValues_.end(); ++it)
-            delete (it->second);
-        for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
-            delete (it->second);
-        for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
             delete (it->second);
     }
 
@@ -187,9 +174,6 @@ namespace orxonox
             {
                 // Tell the parent we're one of it's direct children
                 (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
-
-                // Create the super-function dependencies
-                (*it)->createSuperFunctionCaller();
             }
         }
     }
@@ -236,16 +220,6 @@ namespace orxonox
             abort();
             return NULL;
         }
-    }
-
-    /**
-        @brief Sets the network ID to a new value and changes the entry in the Factory.
-        @param id The new network ID
-    */
-    void Identifier::setNetworkID(uint32_t id)
-    {
-        Factory::changeNetworkID(this, this->networkID_, id);
-        this->networkID_ = id;
     }
 
     /**
@@ -367,152 +341,6 @@ namespace orxonox
             return ((*it).second);
         else
             return 0;
-    }
-
-    /**
-        @brief Adds a new console command of this class.
-        @param executor The executor of the command
-        @param bCreateShortcut If this is true a shortcut gets created so you don't have to add the classname to access this command
-        @return The executor of the command
-    */
-    ConsoleCommand& Identifier::addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut)
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(command->getName());
-        if (it != this->consoleCommands_.end())
-        {
-            COUT(2) << "Warning: Overwriting console-command with name " << command->getName() << " in class " << this->getName() << "." << std::endl;
-            delete (it->second);
-        }
-
-        this->bHasConsoleCommands_ = true;
-        this->consoleCommands_[command->getName()] = command;
-        this->consoleCommands_LC_[getLowercase(command->getName())] = command;
-
-        if (bCreateShortcut)
-            CommandExecutor::addConsoleCommandShortcut(command);
-
-        return (*command);
-    }
-
-    /**
-        @brief Returns the executor of a console command with given name.
-        @brief name The name of the requested console command
-        @return The executor of the requested console command
-    */
-    ConsoleCommand* Identifier::getConsoleCommand(const std::string& name) const
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(name);
-        if (it != this->consoleCommands_.end())
-            return (*it).second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns the executor of a console command with given name in lowercase.
-        @brief name The name of the requested console command in lowercae
-        @return The executor of the requested console command
-    */
-    ConsoleCommand* Identifier::getLowercaseConsoleCommand(const std::string& name) const
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_LC_.find(name);
-        if (it != this->consoleCommands_LC_.end())
-            return (*it).second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns a XMLPortParamContainer that loads a parameter of this class.
-        @param paramname The name of the parameter
-        @return The container
-    */
-    XMLPortParamContainer* Identifier::getXMLPortParamContainer(const std::string& paramname)
-    {
-        std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
-        if (it != this->xmlportParamContainers_.end())
-            return ((*it).second);
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new XMLPortParamContainer that loads a parameter of this class.
-        @param paramname The name of the parameter
-        @param container The container
-    */
-    void Identifier::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
-    {
-        std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
-        if (it != this->xmlportParamContainers_.end())
-        {
-            COUT(2) << "Warning: Overwriting XMLPortParamContainer in class " << this->getName() << "." << std::endl;
-            delete (it->second);
-        }
-
-        this->xmlportParamContainers_[paramname] = container;
-    }
-
-    /**
-        @brief Returns a XMLPortObjectContainer that attaches an object to this class.
-        @param sectionname The name of the section that contains the attachable objects
-        @return The container
-    */
-    XMLPortObjectContainer* Identifier::getXMLPortObjectContainer(const std::string& sectionname)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
-        if (it != this->xmlportObjectContainers_.end())
-            return ((*it).second);
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new XMLPortObjectContainer that attaches an object to this class.
-        @param sectionname The name of the section that contains the attachable objects
-        @param container The container
-    */
-    void Identifier::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
-        if (it != this->xmlportObjectContainers_.end())
-        {
-            COUT(2) << "Warning: Overwriting XMLPortObjectContainer in class " << this->getName() << "." << std::endl;
-            delete (it->second);
-        }
-
-        this->xmlportObjectContainers_[sectionname] = container;
-    }
-
-    /**
-        @brief Returns a XMLPortEventContainer that attaches an event to this class.
-        @param sectionname The name of the section that contains the event
-        @return The container
-    */
-    XMLPortObjectContainer* Identifier::getXMLPortEventContainer(const std::string& eventname)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
-        if (it != this->xmlportEventContainers_.end())
-            return ((*it).second);
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new XMLPortEventContainer that attaches an event to this class.
-        @param sectionname The name of the section that contains the event
-        @param container The container
-    */
-    void Identifier::addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
-        if (it != this->xmlportEventContainers_.end())
-        {
-            COUT(2) << "Warning: Overwriting XMLPortEventContainer in class " << this->getName() << "." << std::endl;
-            delete (it->second);
-        }
-
-        this->xmlportEventContainers_[eventname] = container;
     }
 
     /**
