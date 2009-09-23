@@ -25,6 +25,4 @@ INCLUDE_DIRECTORIES(
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(core)
-ADD_SUBDIRECTORY(network)
-ADD_SUBDIRECTORY(tools)
 ADD_SUBDIRECTORY(util)

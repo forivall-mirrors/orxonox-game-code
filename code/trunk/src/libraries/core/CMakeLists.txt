@@ -24,27 +24,15 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Core.cc
   DynLib.cc
   DynLibManager.cc
-  Event.cc
   Game.cc
-  GameMode.cc
   GameState.cc
-  GraphicsManager.cc
-  GUIManager.cc
   Language.cc
   LuaState.cc
-  MemoryArchive.cc
   ObjectListBase.cc
   OrxonoxClass.cc
-  Resource.cc
-  WindowEventListener.cc
 
   # command
-  ArgumentCompletionFunctions.cc
-  CommandEvaluation.cc
-  CommandExecutor.cc
   CommandLine.cc
-  ConsoleCommand.cc
-  ConsoleCommandCompilation.cc
   Executor.cc
 
   # hierarchy
@@ -54,31 +42,15 @@ SET_SOURCE_FILES(CORE_SRC_FILES
 
   # level
   BaseObject.cc
-  ClassTreeMask.cc
-  Loader.cc
-  Namespace.cc
-  NamespaceNode.cc
-  Template.cc
-  XMLPort.cc
-  XMLNameListener.cc
 
-  # shell
-  IRC.cc
-  Shell.cc
-  TclBind.cc
-  TclThreadManager.cc
-  
   # multithreading
   Thread.cc
   ThreadPool.cc
 )
-ADD_SUBDIRECTORY(input)
 
 ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
-    CommandExecutor.h
-    Loader.h
     LuaState.h
   DEFINE_SYMBOL
     "CORE_SHARED_BUILD"
@@ -90,13 +62,7 @@ ORXONOX_ADD_LIBRARY(core
     ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
     ${Boost_THREAD_LIBRARY}
     ${Boost_DATE_TIME_LIBRARY} # Thread dependency
-    ${CEGUI_LIBRARY}
-    ${CEGUILUA_LIBRARY}
     ${LUA_LIBRARIES}
-    cpptcl_orxonox
-    ogreceguirenderer_orxonox
-    ois_orxonox
-    tinyxml++_orxonox
     tolua++_orxonox
     util
   SOURCE_FILES

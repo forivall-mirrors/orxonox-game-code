@@ -25,10 +25,3 @@ INCLUDE_DIRECTORIES(
 )
 
 ################ Sub Directories ################
-
-ADD_SUBDIRECTORY(gamestates)
-ADD_SUBDIRECTORY(objects)
-ADD_SUBDIRECTORY(overlays)
-ADD_SUBDIRECTORY(pong)
-ADD_SUBDIRECTORY(questsystem)
-ADD_SUBDIRECTORY(weapons)

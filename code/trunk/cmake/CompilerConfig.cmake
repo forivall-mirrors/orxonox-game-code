@@ -33,12 +33,3 @@ ELSEIF(MSVC)
 ELSE()
   MESSAGE(STATUS "Warning: Your compiler is not officially supported.")
 ENDIF()
-
-SET(COMPILER_CONFIG_USER_SCRIPT "" CACHE FILEPATH
-    "Specify a CMake script if you wish to write your own compiler config.
-     See CompilerConfigGCC.cmake or CompilerConfigMSVC.cmake for examples.")
-IF(COMPILER_CONFIG_USER_SCRIPT)
-  IF(EXISTS ${CMAKE_MODULE_PATH}/${COMPILER_CONFIG_USER_SCRIPT})
-    INCLUDE(${CMAKE_MODULE_PATH}/${COMPILER_CONFIG_USER_SCRIPT})
-  ENDIF()
-ENDIF(COMPILER_CONFIG_USER_SCRIPT)

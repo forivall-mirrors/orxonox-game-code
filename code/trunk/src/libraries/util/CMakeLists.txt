@@ -18,7 +18,6 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-  Clipboard.cc
   CRC32.cc
   Exception.cc
   ExprParser.cc

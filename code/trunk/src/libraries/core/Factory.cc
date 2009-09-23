@@ -54,20 +54,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the Identifier with a given network ID.
-        @param id The network ID of the wanted Identifier
-        @return The Identifier
-    */
-    Identifier* Factory::getIdentifier(const uint32_t id)
-    {
-        std::map<uint32_t, Identifier*>::const_iterator it = getFactoryPointer()->identifierNetworkIDMap_.find(id);
-        if (it != getFactoryPointer()->identifierNetworkIDMap_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
         @brief Adds a new Identifier to both maps.
         @param name The name of the identifier
         @param identifier The identifier to add
@@ -75,27 +61,6 @@ namespace orxonox
     void Factory::add(const std::string& name, Identifier* identifier)
     {
         getFactoryPointer()->identifierStringMap_[name] = identifier;
-        getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
-    }
-
-    /**
-        @brief Removes the entry with the old network ID and adds a new one.
-        @param identifier The identifier to change
-        @param oldID The old networkID
-        @param newID The new networkID
-    */
-    void Factory::changeNetworkID(Identifier* identifier, const uint32_t oldID, const uint32_t newID)
-    {
-//        getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
-        getFactoryPointer()->identifierNetworkIDMap_[newID] = identifier;
-    }
-
-    /**
-        @brief Cleans the NetworkID map (needed on clients for correct initialization)
-    */
-    void Factory::cleanNetworkIDs()
-    {
-        getFactoryPointer()->identifierNetworkIDMap_.clear();
     }
 
     /**

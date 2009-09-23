@@ -84,11 +84,8 @@ namespace orxonox
             static const std::string& getLanguage();
             static void  resetLanguage();
 
-            static void tsetExternalDataPath(const std::string& path);
             //! Returns the path to the data files as boost::filesystem::path
             static const boost::filesystem::path& getDataPath();
-            //! Returns the path to the external data files as boost::filesystem::path
-            static const boost::filesystem::path& getExternalDataPath();
             //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getConfigPath();
             //! Returns the path to the log files as boost::filesystem::path
@@ -97,8 +94,6 @@ namespace orxonox
             static const boost::filesystem::path& getRootPath();
             //! Returns the path to the data files as std::string
             static std::string getDataPathString();
-            //! Returns the path to the external data files as std::string
-            static std::string getExternalDataPathString();
             //! Returns the path to the config files as std::string
             static std::string getConfigPathString();
             //! Returns the path to the log files as std::string
@@ -114,9 +109,6 @@ namespace orxonox
             void preUpdate(const Clock& time);
             void postUpdate(const Clock& time);
 
-            void loadGraphics();
-            void unloadGraphics();
-
             void setFixedPaths();
             void setConfigurablePaths();
             void setThreadAffinity(int limitToCPU);
@@ -125,20 +117,11 @@ namespace orxonox
             scoped_ptr<DynLibManager>     dynLibManager_;
             scoped_ptr<SignalHandler>     signalHandler_;
             SimpleScopeGuard              identifierDestroyer_;
-            SimpleScopeGuard              consoleCommandDestroyer_;
             scoped_ptr<ConfigFileManager> configFileManager_;
             scoped_ptr<Language>          languageInstance_;
             scoped_ptr<CoreConfiguration> configuration_;
-            scoped_ptr<TclBind>           tclBind_;
-            scoped_ptr<TclThreadManager>  tclThreadManager_;
-            scoped_ptr<Shell>             shell_;
-            // graphical
-            scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
-            scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
-            scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
 
             bool                          bDevRun_;             //!< True for runs in the build directory (not installed)
-            bool                          bGraphicsLoaded_;
 
             static Core* singletonPtr_s;
     };
