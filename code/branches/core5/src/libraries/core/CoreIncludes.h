@@ -44,6 +44,7 @@
 
 #include "util/Debug.h"
 #include "Identifier.h"
+#include "SubclassIdentifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
 #include "ObjectList.h"

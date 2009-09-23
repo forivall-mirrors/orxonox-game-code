@@ -36,7 +36,7 @@
 #include <string>
 
 #include "core/BaseObject.h"
-#include "core/Identifier.h"
+#include "core/SubclassIdentifier.h"
 #include "tools/interfaces/Tickable.h"
 #include "infos/GametypeInfo.h"
 
