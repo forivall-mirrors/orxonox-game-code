@@ -47,6 +47,17 @@
 namespace orxonox
 {
     // ###############################
+    // ###       BaseFactory       ###
+    // ###############################
+    //! Base-class of ClassFactory.
+    class _CoreExport BaseFactory
+    {
+        public:
+            virtual BaseObject* fabricate(BaseObject* creator) = 0;
+            virtual ~BaseFactory() {};
+    };
+
+    // ###############################
     // ###      ClassFactory       ###
     // ###############################
     //! The ClassFactory is able to create new objects of a specific class.

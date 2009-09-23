@@ -85,17 +85,6 @@ namespace orxonox
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
             std::map<uint32_t, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
     };
-
-    // ###############################
-    // ###       BaseFactory       ###
-    // ###############################
-    //! Base-class of ClassFactory. Has to be defined separate because of circular dependencies.
-    class _CoreExport BaseFactory
-    {
-        public:
-            virtual BaseObject* fabricate(BaseObject* creator) = 0;
-            virtual ~BaseFactory() {};
-    };
 }
 
 #endif /* _Factory_H__ */
