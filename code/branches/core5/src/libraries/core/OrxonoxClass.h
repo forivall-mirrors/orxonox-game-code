@@ -71,19 +71,18 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier);
             bool isDirectParentOf(const Identifier* identifier);
 
-            template <class B> bool isA(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isExactlyA(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isChildOf(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isDirectChildOf(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isParentOf(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isDirectParentOf(const SubclassIdentifier<B>* identifier);
-
-            template <class B> bool isA(const SubclassIdentifier<B> identifier);
-            template <class B> bool isExactlyA(const SubclassIdentifier<B> identifier);
-            template <class B> bool isChildOf(const SubclassIdentifier<B> identifier);
-            template <class B> bool isDirectChildOf(const SubclassIdentifier<B> identifier);
-            template <class B> bool isParentOf(const SubclassIdentifier<B> identifier);
-            template <class B> bool isDirectParentOf(const SubclassIdentifier<B> identifier);
+            template <class B> inline bool isA(const SubclassIdentifier<B>* identifier)
+                { return this->isA(*identifier); }
+            template <class B> inline bool isExactlyA(const SubclassIdentifier<B>* identifier)
+                { return this->isExactlyA(*identifier); }
+            template <class B> inline bool isChildOf(const SubclassIdentifier<B>* identifier)
+                { return this->isChildOf(*identifier); }
+            template <class B> inline bool isDirectChildOf(const SubclassIdentifier<B>* identifier)
+                { return this->isDirectChildOf(*identifier); }
+            template <class B> inline bool isParentOf(const SubclassIdentifier<B>* identifier)
+                { return this->isParentOf(*identifier); }
+            template <class B> inline bool isDirectParentOf(const SubclassIdentifier<B>* identifier)
+                { return this->isDirectParentOf(*identifier); }
 
             bool isA(const OrxonoxClass* object);
             bool isExactlyA(const OrxonoxClass* object);
