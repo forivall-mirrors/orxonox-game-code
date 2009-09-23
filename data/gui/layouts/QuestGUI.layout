@@ -11,27 +11,6 @@
             <Property Name="UnifiedSize" Value="{{0.9,0},{0.05,0}}"/>
             <Property Name="Text" Value="Your Quests"/>
         </Window>
-        
-        <Window Type="TaharezLook/Button" Name="orxonox/QuestGUI/ActiveQuestsButton">
-            <Property Name="UnifiedPosition" Value="{{0.11,0},{0.11,0}}"/>
-            <Property Name="UnifiedSize" Value="{{0.15,0},{0.05,0}}"/>
-            <Property Name="Text" Value="Active Quests"/>
-            <Event Name="Clicked" Function="QuestGUI.button_activeQuests_clicked"/>
-        </Window>
-
-        <Window Type="TaharezLook/Button" Name="orxonox/CompletedQuestsButton">
-            <Property Name="UnifiedPosition" Value="{{0.43,0},{0.11,0}}"/>
-            <Property Name="UnifiedSize" Value="{{0.15,0},{0.05,0}}"/>
-            <Property Name="Text" Value="Completed Quests"/>
-            <Event Name="Clicked" Function="QuestGUI.button_activeQuests_clicked"/>
-        </Window>
-
-        <Window Type="TaharezLook/Button" Name="orxonox/FailedQuestsButton">
-            <Property Name="UnifiedPosition" Value="{{0.74,0},{0.11,0}}"/>
-            <Property Name="UnifiedSize" Value="{{0.15,0},{0.05,0}}"/>
-            <Property Name="Text" Value="Failed Quests"/>
-            <Event Name="Clicked" Function="QuestGUI.button_activeQuests_clicked"/>
-        </Window>
 
         <Window Type="TaharezLook/Listbox" Name="orxonox/QuestGUI/QuestsList">
             <Property Name="UnifiedPosition" Value="{{0.07,0},{0.18,0}}" />

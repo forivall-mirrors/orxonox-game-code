@@ -23,17 +23,5 @@ function P:show()
 
 end
 
-function P:button_activeQuests_clicked(e)
-    
-end
-
-function P:button_completedQuests_clicked(e)
-    
-end
-
-function P:button_failedQuests_clicked(e)
-    
-end
-
 return P
 
