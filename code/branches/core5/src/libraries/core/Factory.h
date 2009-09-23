@@ -68,7 +68,7 @@ namespace orxonox
             static Factory* getFactoryPointer();    // avoid overriding order problem in the static intialisation process
 
             /** @brief Returns the factory-map. */
-            static const std::map<std::string, Identifier*>& getFacbtoryMap()
+            static const std::map<std::string, Identifier*>& getFactoryMap()
                 { return Factory::getFactoryPointer()->identifierStringMap_; }
             /** @brief Returns the begin-iterator of the factory-map. */
             static std::map<std::string, Identifier*>::const_iterator getFactoryMapBegin()

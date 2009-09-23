@@ -173,7 +173,8 @@ namespace orxonox
                         COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined." << std::endl;
                     }
 
-                    assert(false);
+                    COUT(1) << "Aborting..." << std::endl;
+                    abort();
                     return 0;
                 }
             }

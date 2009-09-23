@@ -53,8 +53,8 @@ namespace orxonox
     class _CoreExport BaseFactory
     {
         public:
-            virtual BaseObject* fabricate(BaseObject* creator) = 0;
             virtual ~BaseFactory() {};
+            virtual BaseObject* fabricate(BaseObject* creator) = 0;
     };
 
     // ###############################
@@ -65,15 +65,8 @@ namespace orxonox
     class ClassFactory : public BaseFactory
     {
         public:
-            static bool create(const std::string& name, bool bLoadable = true);
+            ClassFactory(const std::string& name, bool bLoadable = true);
             BaseObject* fabricate(BaseObject* creator);
-
-        private:
-            ClassFactory() {}                               // Don't create
-            ClassFactory(const ClassFactory& factory) {}    // Don't copy
-            virtual ~ClassFactory() {}                      // Don't delete
-
-            static T* createNewObject(BaseObject* creator);
     };
 
     /**
@@ -83,14 +76,12 @@ namespace orxonox
         @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
-    bool ClassFactory<T>::create(const std::string& name, bool bLoadable)
+    ClassFactory<T>::ClassFactory(const std::string& name, bool bLoadable)
     {
         COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
-        ClassIdentifier<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
+        ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
         ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
         Factory::add(name, ClassIdentifier<T>::getIdentifier());
-
-        return true;
     }
 
     /**
@@ -100,17 +91,7 @@ namespace orxonox
     template <class T>
     inline BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
     {
-        return ClassFactory<T>::createNewObject(creator);
-    }
-
-    /**
-        @brief Creates and returns a new object of class T; this is a wrapper for the new operator.
-        @return The new object
-    */
-    template <class T>
-    inline T* ClassFactory<T>::createNewObject(BaseObject* creator)
-    {
-        return new T(creator);
+        return static_cast<BaseObject*>(new T(creator));
     }
 }
 
