@@ -531,7 +531,7 @@ namespace orxonox
             }
 
             /**
-                @brief Copyconstructor: Assigns the given Identifier.
+                @brief Constructor: Assigns the given Identifier.
                 @param identifier The Identifier
             */
             SubclassIdentifier(Identifier* identifier)
@@ -540,11 +540,21 @@ namespace orxonox
             }
 
             /**
+                @brief Copyconstructor: Assigns the identifier of the other SubclassIdentifier.
+                @param identifier The other SublcassIdentifier
+            */
+            template <class O>
+            SubclassIdentifier(const SubclassIdentifier<O>& identifier)
+            {
+                this->operator=(identifier.getIdentifier());
+            }
+
+            /**
                 @brief Overloading of the = operator: assigns the identifier and checks its type.
                 @param identifier The Identifier to assign
                 @return The SubclassIdentifier itself
             */
-            SubclassIdentifier<T>& operator=(Identifier* identifier)
+            const SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
                 if (!identifier || !identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
@@ -564,6 +574,16 @@ namespace orxonox
                     this->identifier_ = identifier;
                 }
                 return *this;
+            }
+
+            /**
+                @brief Overloading of the = operator: assigns the identifier of the other SubclassIdentifier.
+                @param identifier The other SublcassIdentifier
+            */
+            template <class O>
+            const SubclassIdentifier<T>& operator=(const SubclassIdentifier<O>& identifier)
+            {
+                return this->operator=(identifier.getIdentifier());
             }
 
             /**
@@ -611,13 +631,11 @@ namespace orxonox
                         COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
                         COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
-                        COUT(1) << "Aborting..." << std::endl;
                     }
                     else
                     {
                         COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined." << std::endl;
-                        COUT(1) << "Aborting..." << std::endl;
                     }
 
                     assert(false);
@@ -628,30 +646,6 @@ namespace orxonox
             /** @brief Returns the assigned identifier. @return The identifier */
             inline Identifier* getIdentifier() const
                 { return this->identifier_; }
-
-//            /** @brief Returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
-//            inline bool isA(const Identifier* identifier) const
-//                { return this->identifier_->isA(identifier); }
-//
-//            /** @brief Returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
-//            inline bool isExactlyA(const Identifier* identifier) const
-//                { return this->identifier_->isExactlyA(identifier); }
-//
-//            /** @brief Returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
-//            inline bool isChildOf(const Identifier* identifier) const
-//                { return this->identifier_->isChildOf(identifier); }
-//
-//            /** @brief Returns true, if the assigned identifier is a direct child of the given identifier. @param identifier The identifier to compare with */
-//            inline bool isDirectChildOf(const Identifier* identifier) const
-//                { return this->identifier_->isDirectChildOf(identifier); }
-//
-//            /** @brief Returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
-//            inline bool isParentOf(const Identifier* identifier) const
-//                { return this->identifier_->isParentOf(identifier); }
-//
-//            /** @brief Returns true, if the assigned identifier is a direct parent of the given identifier. @param identifier The identifier to compare with */
-//            inline bool isDirectParentOf(const Identifier* identifier) const
-//                { return this->identifier_->isDirectParentOf(identifier); }
 
         private:
             Identifier* identifier_;            //!< The assigned identifier
