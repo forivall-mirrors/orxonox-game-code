@@ -47,8 +47,8 @@ namespace orxonox
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {
-        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
-        if (identifier != Identifier::getLowercaseIdentifierMapEnd())
+        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
+        if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
         {
             std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
             if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
@@ -59,8 +59,8 @@ namespace orxonox
 
     bool tconfig(const std::string& classname, const std::string& varname, const std::string& value)
     {
-        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
-        if (identifier != Identifier::getLowercaseIdentifierMapEnd())
+        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
+        if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
         {
             std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
             if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
@@ -375,8 +375,8 @@ namespace orxonox
     {
         for (std::list<ConfigFileSection*>::iterator it1 = this->sections_.begin(); it1 != this->sections_.end(); )
         {
-            std::map<std::string, Identifier*>::const_iterator it2 = Identifier::getIdentifierMap().find((*it1)->getName());
-            if (it2 != Identifier::getIdentifierMapEnd() && (*it2).second->hasConfigValues())
+            std::map<std::string, Identifier*>::const_iterator it2 = Identifier::getStringIdentifierMap().find((*it1)->getName());
+            if (it2 != Identifier::getStringIdentifierMapEnd() && (*it2).second->hasConfigValues())
             {
                 // The section exists, delete comment
                 if (bCleanComments)
@@ -454,7 +454,7 @@ namespace orxonox
     {
         if (this->type_ == ConfigFileType::Settings)
         {
-            for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getIdentifierMapBegin(); it != Identifier::getIdentifierMapEnd(); ++it)
+            for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapBegin(); it != Identifier::getStringIdentifierMapEnd(); ++it)
             {
                 if (it->second->hasConfigValues())
                 {

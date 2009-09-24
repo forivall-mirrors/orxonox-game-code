@@ -50,7 +50,6 @@
 #include "util/Exception.h"
 #include "util/MultiType.h"
 #include "util/OrxAssert.h"
-#include "Factory.h"
 #include "Identifier.h"
 #include "Executor.h"
 #include "BaseObject.h"
@@ -547,7 +546,7 @@ namespace orxonox
                         {
                             for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
-                                Identifier* identifier = Factory::getIdentifier(child->Value());
+                                Identifier* identifier = Identifier::getIdentifierByString(child->Value());
                                 if (identifier)
                                 {
                                     if (identifier->isA(ClassIdentifier<O>::getIdentifier()))

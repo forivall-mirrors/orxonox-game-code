@@ -68,7 +68,6 @@
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "DynLibManager.h"
-#include "Factory.h"
 #include "GameMode.h"
 #include "GraphicsManager.h"
 #include "GUIManager.h"
@@ -333,7 +332,7 @@ namespace orxonox
         this->languageInstance_.reset(new Language());
 
         // creates the class hierarchy for all classes with factories
-        Factory::createClassHierarchy();
+        Identifier::createClassHierarchy();
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here

@@ -86,16 +86,33 @@ namespace orxonox
     */
     class _CoreExport Identifier
     {
-        template <class T>
-        friend class SubclassIdentifier;
-
-        friend class Factory;
-
         public:
+            /** @brief Returns the name of the class the Identifier belongs to. @return The name */
+            inline const std::string& getName() const { return this->name_; }
+            void setName(const std::string& name);
+
+            /** @brief Returns the network ID to identify a class through the network. @return the network ID */
+            inline const uint32_t getNetworkID() const { return this->networkID_; }
+            void setNetworkID(uint32_t id);
+
+            /** @brief Returns the unique ID of the class */
+            FORCEINLINE unsigned int getClassID() const { return this->classID_; }
+
+            /** @brief Returns the list of all existing objects of this class. @return The list */
+            inline ObjectListBase* getObjects() const { return this->objects_; }
+
             /** @brief Sets the Factory. @param factory The factory to assign */
             inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
+            /** @brief Returns true if the Identifier has a Factory. */
+            inline bool hasFactory() const { return (this->factory_ != 0); }
 
             BaseObject* fabricate(BaseObject* creator);
+
+            /** @brief Returns true if the class can be loaded through XML. */
+            inline bool isLoadable() const { return this->bLoadable_; }
+            /** @brief Set the class to be loadable through XML or not. */
+            inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
+
             bool isA(const Identifier* identifier) const;
             bool isExactlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
@@ -103,20 +120,14 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
-            /** @brief Returns true if the class can be loaded through XML. */
-            inline bool isLoadable() const { return this->bLoadable_; }
-            /** @brief Set the class to be loadable through XML or not. */
-            inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
-            /** @brief Returns the list of all existing objects of this class. @return The list */
-            inline ObjectListBase* getObjects() const
-                { return this->objects_; }
+            /////////////////////////////
+            ////// Class Hierarchy //////
+            /////////////////////////////
+            static void createClassHierarchy();
 
-            /** @brief Returns the name of the class the Identifier belongs to. @return The name */
-            inline const std::string& getName() const { return this->name_; }
-            void setName(const std::string& name);
-
-            virtual void updateConfigValues(bool updateChildren = true) const = 0;
+            /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
+            inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
@@ -147,20 +158,45 @@ namespace orxonox
             inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
 
 
-            /** @brief Returns the map that stores all Identifiers. @return The map */
-            static inline const std::map<std::string, Identifier*>& getIdentifierMap() { return Identifier::getIdentifierMapIntern(); }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getIdentifierMapBegin() { return Identifier::getIdentifierMap().begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getIdentifierMapEnd() { return Identifier::getIdentifierMap().end(); }
+            //////////////////////////
+            ///// Identifier Map /////
+            //////////////////////////
+            static void destroyAllIdentifiers();
+
+            static Identifier* getIdentifierByString(const std::string& name);
+            static Identifier* getIdentifierByID(uint32_t id);
+
+            static void clearNetworkIDs();
+
+            /** @brief Returns the map that stores all Identifiers with their names. @return The map */
+            static inline const std::map<std::string, Identifier*>& getStringIdentifierMap() { return Identifier::getStringIdentifierMapIntern(); }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their names. @return The const_iterator */
+            static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapBegin() { return Identifier::getStringIdentifierMap().begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their names. @return The const_iterator */
+            static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapEnd() { return Identifier::getStringIdentifierMap().end(); }
 
             /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
-            static inline const std::map<std::string, Identifier*>& getLowercaseIdentifierMap() { return Identifier::getLowercaseIdentifierMapIntern(); }
+            static inline const std::map<std::string, Identifier*>& getLowercaseStringIdentifierMap() { return Identifier::getLowercaseStringIdentifierMapIntern(); }
             /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapBegin() { return Identifier::getLowercaseIdentifierMap().begin(); }
+            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapBegin() { return Identifier::getLowercaseStringIdentifierMap().begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapEnd() { return Identifier::getLowercaseIdentifierMap().end(); }
+            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapEnd() { return Identifier::getLowercaseStringIdentifierMap().end(); }
 
+            /** @brief Returns the map that stores all Identifiers with their IDs. @return The map */
+            static inline const std::map<uint32_t, Identifier*>& getIDIdentifierMap() { return Identifier::getIDIdentifierMapIntern(); }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their IDs. @return The const_iterator */
+            static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapBegin() { return Identifier::getIDIdentifierMap().begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their IDs. @return The const_iterator */
+            static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd() { return Identifier::getIDIdentifierMap().end(); }
+
+
+            /////////////////////////
+            ///// Config Values /////
+            /////////////////////////
+            virtual void updateConfigValues(bool updateChildren = true) const = 0;
+
+            /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
+            inline bool hasConfigValues() const { return this->bHasConfigValues_; }
 
             /** @brief Returns the map that stores all config values. @return The const_iterator */
             inline const std::map<std::string, ConfigValueContainer*>& getConfigValueMap() const { return this->configValues_; }
@@ -176,6 +212,16 @@ namespace orxonox
             /** @brief Returns a const_iterator to the end of the map that stores all config values with their names in lowercase. @return The const_iterator */
             inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapEnd() const { return this->configValues_LC_.end(); }
 
+            void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
+            ConfigValueContainer* getConfigValueContainer(const std::string& varname);
+            ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
+
+
+            ////////////////////////////
+            ///// Console Commands /////
+            ////////////////////////////
+            /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
+            inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
 
             /** @brief Returns the map that stores all console commands. @return The const_iterator */
             inline const std::map<std::string, ConsoleCommand*>& getConsoleCommandMap() const { return this->consoleCommands_; }
@@ -191,6 +237,14 @@ namespace orxonox
             /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
             inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
 
+            ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
+            ConsoleCommand* getConsoleCommand(const std::string& name) const;
+            ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
+
+
+            ///////////////////
+            ///// XMLPort /////
+            ///////////////////
             /** @brief Returns the map that stores all XMLPort params. @return The const_iterator */
             inline const std::map<std::string, XMLPortParamContainer*>& getXMLPortParamMap() const { return this->xmlportParamContainers_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort params. @return The const_iterator */
@@ -212,27 +266,6 @@ namespace orxonox
             /** @brief Returns a const_iterator to the end of the map that stores all XMLPort events. @return The const_iterator */
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapEnd() const { return this->xmlportEventContainers_.end(); }
 
-            /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
-            inline bool hasConfigValues() const { return this->bHasConfigValues_; }
-            /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
-            inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
-
-            /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
-            inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
-
-            /** @brief Returns the network ID to identify a class through the network. @return the network ID */
-            inline const uint32_t getNetworkID() const { return this->networkID_; }
-
-            /** @brief Sets the network ID to a new value. @param id The new value */
-            void setNetworkID(uint32_t id);
-
-            /** @brief Returns the unique ID of the class */
-            FORCEINLINE unsigned int getClassID() const { return this->classID_; }
-
-            void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
-            ConfigValueContainer* getConfigValueContainer(const std::string& varname);
-            ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
-
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
 
@@ -242,13 +275,6 @@ namespace orxonox
             void addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container);
             XMLPortObjectContainer* getXMLPortEventContainer(const std::string& eventname);
 
-            ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
-            ConsoleCommand* getConsoleCommand(const std::string& name) const;
-            ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
-
-            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
-
-            static void destroyAllIdentifiers();
 
         protected:
             Identifier();
@@ -258,10 +284,14 @@ namespace orxonox
             static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
             virtual void createSuperFunctionCaller() const = 0;
 
-            /** @brief Returns the map that stores all Identifiers. @return The map */
-            static std::map<std::string, Identifier*>& getIdentifierMapIntern();
+            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
+
+            /** @brief Returns the map that stores all Identifiers with their names. @return The map */
+            static std::map<std::string, Identifier*>& getStringIdentifierMapIntern();
             /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
-            static std::map<std::string, Identifier*>& getLowercaseIdentifierMapIntern();
+            static std::map<std::string, Identifier*>& getLowercaseStringIdentifierMapIntern();
+            /** @brief Returns the map that stores all Identifiers with their network IDs. @return The map */
+            static std::map<uint32_t, Identifier*>& getIDIdentifierMapIntern();
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
             inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
@@ -344,8 +374,8 @@ namespace orxonox
         #include "Super.h"
 
         public:
-            static ClassIdentifier<T> *getIdentifier();
-            static ClassIdentifier<T> *getIdentifier(const std::string& name);
+            static ClassIdentifier<T>* getIdentifier();
+            static ClassIdentifier<T>* getIdentifier(const std::string& name);
 
             bool initialiseObject(T* object, const std::string& className, bool bRootClass);
 
@@ -376,8 +406,8 @@ namespace orxonox
     template <class T>
     inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
-        // check if the static field has already been filled
-        if (ClassIdentifier<T>::classIdentifier_s == 0)
+        // check if the Identifier already exists
+        if (!ClassIdentifier<T>::classIdentifier_s)
             ClassIdentifier<T>::initialiseIdentifier();
 
         return ClassIdentifier<T>::classIdentifier_s;

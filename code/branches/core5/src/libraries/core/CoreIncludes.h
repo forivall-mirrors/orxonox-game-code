@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Definition of macros for Identifier and Factory.
+    @brief Definition of macros for Identifiers
 
     Every class needs the RegisterObject(class) macro in its constructor. If the class is an interface
     or the BaseObject itself, it needs the macro RegisterRootObject(class) instead.
@@ -45,7 +45,6 @@
 #include "util/Debug.h"
 #include "Identifier.h"
 #include "SubclassIdentifier.h"
-#include "Factory.h"
 #include "ClassFactory.h"
 #include "ObjectList.h"
 
@@ -76,14 +75,14 @@
     InternRegisterObject(ClassName, true)
 
 /**
-    @brief Creates the entry in the Factory.
+    @brief Creates the Factory.
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
     BaseFactory* ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, true)
 
 /**
-    @brief Creates the entry in the Factory for classes which should not be loaded through XML.
+    @brief Creates the Factory for classes which should not be loaded through XML.
     @param ClassName The name of the class
 */
 #define CreateUnloadableFactory(ClassName) \
@@ -105,7 +104,7 @@ namespace orxonox
     */
     inline Identifier* ClassByString(const std::string& name)
     {
-        return Factory::getIdentifier(name);
+        return Identifier::getIdentifierByString(name);
     }
 
     /**
@@ -114,7 +113,7 @@ namespace orxonox
     */
     inline Identifier* ClassByID(uint32_t id)
     {
-        return Factory::getIdentifier(id);
+        return Identifier::getIdentifierByID(id);
     }
 }
 

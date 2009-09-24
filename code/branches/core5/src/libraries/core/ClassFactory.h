@@ -41,7 +41,6 @@
 #include <string>
 
 #include "util/Debug.h"
-#include "Factory.h"
 #include "Identifier.h"
 
 namespace orxonox
@@ -70,10 +69,9 @@ namespace orxonox
     };
 
     /**
-        @brief Adds the ClassFactory to the Identifier of the same type and the Identifier to the Factory.
+        @brief Adds the ClassFactory to the Identifier of the same type.
         @param name The name of the class
         @param bLoadable True if the class can be loaded through XML
-        @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
     ClassFactory<T>::ClassFactory(const std::string& name, bool bLoadable)
@@ -81,7 +79,6 @@ namespace orxonox
         COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
         ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
         ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
-        Factory::add(name, ClassIdentifier<T>::getIdentifier());
     }
 
     /**

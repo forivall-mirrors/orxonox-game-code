@@ -48,7 +48,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Executor.cc
 
   # hierarchy
-  Factory.cc
   Identifier.cc
   MetaObjectList.cc
 
@@ -67,7 +66,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Shell.cc
   TclBind.cc
   TclThreadManager.cc
-  
+
   # multithreading
   Thread.cc
   ThreadPool.cc

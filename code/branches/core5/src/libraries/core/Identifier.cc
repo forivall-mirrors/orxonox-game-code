@@ -195,6 +195,28 @@ namespace orxonox
     }
 
     /**
+        @brief Creates the class-hierarchy by creating and destroying one object of each type.
+    */
+    void Identifier::createClassHierarchy()
+    {
+        COUT(3) << "*** Identifier: Create class-hierarchy" << std::endl;
+        std::map<std::string, Identifier*>::const_iterator it;
+        it = Identifier::getStringIdentifierMap().begin();
+        Identifier::getStringIdentifierMap().begin()->second->startCreatingHierarchy();
+        for (it = Identifier::getStringIdentifierMap().begin(); it != Identifier::getStringIdentifierMap().end(); ++it)
+        {
+            // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
+            if (it->second->hasFactory())
+            {
+                BaseObject* temp = it->second->fabricate(0);
+                delete temp;
+            }
+        }
+        Identifier::getStringIdentifierMap().begin()->second->stopCreatingHierarchy();
+        COUT(3) << "*** Identifier: Finished class-hierarchy creation" << std::endl;
+    }
+
+    /**
         @brief Destroys all Identifiers. Called when exiting the program.
     */
     void Identifier::destroyAllIdentifiers()
@@ -213,8 +235,9 @@ namespace orxonox
         {
             this->name_ = name;
             this->bSetName_ = true;
-            Identifier::getIdentifierMapIntern()[name] = this;
-            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
+            Identifier::getStringIdentifierMapIntern()[name] = this;
+            Identifier::getLowercaseStringIdentifierMapIntern()[getLowercase(name)] = this;
+            Identifier::getIDIdentifierMapIntern()[this->networkID_] = this;
         }
     }
 
@@ -239,12 +262,13 @@ namespace orxonox
     }
 
     /**
-        @brief Sets the network ID to a new value and changes the entry in the Factory.
+        @brief Sets the network ID to a new value and changes the entry in the ID-Identifier-map.
         @param id The new network ID
     */
     void Identifier::setNetworkID(uint32_t id)
     {
-        Factory::changeNetworkID(this, this->networkID_, id);
+//        Identifier::getIDIdentifierMapIntern().erase(this->networkID_);
+        Identifier::getIDIdentifierMapIntern()[id] = this;
         this->networkID_ = id;
     }
 
@@ -303,23 +327,69 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the map that stores all Identifiers.
+        @brief Returns the map that stores all Identifiers with their names.
         @return The map
     */
-    std::map<std::string, Identifier*>& Identifier::getIdentifierMapIntern()
+    std::map<std::string, Identifier*>& Identifier::getStringIdentifierMapIntern()
     {
         static std::map<std::string, Identifier*> identifierMap;
         return identifierMap;
     }
 
     /**
-        @brief Returns the map that stores all Identifiers.
+        @brief Returns the map that stores all Identifiers with their names in lowercase.
         @return The map
     */
-    std::map<std::string, Identifier*>& Identifier::getLowercaseIdentifierMapIntern()
+    std::map<std::string, Identifier*>& Identifier::getLowercaseStringIdentifierMapIntern()
     {
         static std::map<std::string, Identifier*> lowercaseIdentifierMap;
         return lowercaseIdentifierMap;
+    }
+
+    /**
+        @brief Returns the map that stores all Identifiers with their network IDs.
+        @return The map
+    */
+    std::map<uint32_t, Identifier*>& Identifier::getIDIdentifierMapIntern()
+    {
+        static std::map<uint32_t, Identifier*> identifierMap;
+        return identifierMap;
+    }
+
+    /**
+        @brief Returns the Identifier with a given name.
+        @param name The name of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* Identifier::getIdentifierByString(const std::string& name)
+    {
+        std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapIntern().find(name);
+        if (it != Identifier::getStringIdentifierMapIntern().end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Returns the Identifier with a given network ID.
+        @param id The network ID of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* Identifier::getIdentifierByID(const uint32_t id)
+    {
+        std::map<uint32_t, Identifier*>::const_iterator it = Identifier::getIDIdentifierMapIntern().find(id);
+        if (it != Identifier::getIDIdentifierMapIntern().end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Cleans the NetworkID map (needed on clients for correct initialization)
+    */
+    void Identifier::clearNetworkIDs()
+    {
+        Identifier::getIDIdentifierMapIntern().clear();
     }
 
     /**
