@@ -112,7 +112,7 @@ namespace orxonox
         {
             // There is already an entry: return it and delete the proposal
             delete proposal;
-            return (*it).second;
+            return it->second;
         }
         else
         {
@@ -427,7 +427,7 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_.find(varname);
         if (it != configValues_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -441,7 +441,7 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_LC_.find(varname);
         if (it != configValues_LC_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -480,7 +480,7 @@ namespace orxonox
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(name);
         if (it != this->consoleCommands_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -494,7 +494,7 @@ namespace orxonox
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_LC_.find(name);
         if (it != this->consoleCommands_LC_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -508,7 +508,7 @@ namespace orxonox
     {
         std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
         if (it != this->xmlportParamContainers_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -539,7 +539,7 @@ namespace orxonox
     {
         std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
         if (it != this->xmlportObjectContainers_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -570,7 +570,7 @@ namespace orxonox
     {
         std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
         if (it != this->xmlportEventContainers_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -601,7 +601,11 @@ namespace orxonox
     std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list)
     {
         for (std::set<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
-            out << (*it)->getName() << " ";
+        {
+            if (it != list.begin())
+                out << " ";
+            out << (*it)->getName();
+        }
 
         return out;
     }
