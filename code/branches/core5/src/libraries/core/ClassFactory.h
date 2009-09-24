@@ -45,14 +45,14 @@
 
 namespace orxonox
 {
-    // ###############################
-    // ###       BaseFactory       ###
-    // ###############################
+    // ###########################
+    // ###       Factory       ###
+    // ###########################
     //! Base-class of ClassFactory.
-    class _CoreExport BaseFactory
+    class _CoreExport Factory
     {
         public:
-            virtual ~BaseFactory() {};
+            virtual ~Factory() {};
             virtual BaseObject* fabricate(BaseObject* creator) = 0;
     };
 
@@ -61,7 +61,7 @@ namespace orxonox
     // ###############################
     //! The ClassFactory is able to create new objects of a specific class.
     template <class T>
-    class ClassFactory : public BaseFactory
+    class ClassFactory : public Factory
     {
         public:
             ClassFactory(const std::string& name, bool bLoadable = true);

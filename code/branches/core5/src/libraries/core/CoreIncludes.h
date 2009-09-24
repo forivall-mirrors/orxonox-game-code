@@ -79,14 +79,14 @@
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    BaseFactory* ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, true)
+    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, true)
 
 /**
     @brief Creates the Factory for classes which should not be loaded through XML.
     @param ClassName The name of the class
 */
 #define CreateUnloadableFactory(ClassName) \
-    BaseFactory* ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, false)
+    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, false)
 
 /**
     @brief Returns the Identifier of the given class.
@@ -99,7 +99,7 @@
 namespace orxonox
 {
     /**
-        @brief Returns the Identifier with a given name through the factory.
+        @brief Returns the Identifier with a given name.
         @param String The name of the class
     */
     inline Identifier* ClassByString(const std::string& name)
@@ -108,7 +108,16 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the Identifier with a given network ID through the factory.
+        @brief Returns the Identifier with a given lowercase name.
+        @param String The lowercase name of the class
+    */
+    inline Identifier* ClassByLowercaseString(const std::string& name)
+    {
+        return Identifier::getIdentifierByLowercaseString(name);
+    }
+
+    /**
+        @brief Returns the Identifier with a given network ID.
         @param networkID The network ID of the class
     */
     inline Identifier* ClassByID(uint32_t id)

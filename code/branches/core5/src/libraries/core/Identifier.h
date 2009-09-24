@@ -102,7 +102,7 @@ namespace orxonox
             inline ObjectListBase* getObjects() const { return this->objects_; }
 
             /** @brief Sets the Factory. @param factory The factory to assign */
-            inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
+            inline void addFactory(Factory* factory) { this->factory_ = factory; }
             /** @brief Returns true if the Identifier has a Factory. */
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
@@ -164,6 +164,7 @@ namespace orxonox
             static void destroyAllIdentifiers();
 
             static Identifier* getIdentifierByString(const std::string& name);
+            static Identifier* getIdentifierByLowercaseString(const std::string& name);
             static Identifier* getIdentifierByID(uint32_t id);
 
             static void clearNetworkIDs();
@@ -333,7 +334,7 @@ namespace orxonox
             bool bSetName_;                                                //!< True if the name is set
             bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             std::string name_;                                             //!< The name of the class the Identifier belongs to
-            BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
+            Factory* factory_;                                             //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
             uint32_t networkID_;                                           //!< The network ID to identify a class through the network
             const unsigned int classID_;                                   //!< Uniquely identifies a class (might not be the same as the networkID_)

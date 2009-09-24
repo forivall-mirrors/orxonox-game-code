@@ -86,7 +86,6 @@ namespace orxonox
 
     class ArgumentCompleter;
     class ArgumentCompletionListElement;
-    class BaseFactory;
     class BaseMetaObjectListElement;
     class BaseObject;
     template <class T>

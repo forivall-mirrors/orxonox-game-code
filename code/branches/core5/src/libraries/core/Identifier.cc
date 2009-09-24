@@ -371,6 +371,20 @@ namespace orxonox
     }
 
     /**
+        @brief Returns the Identifier with a given name in lowercase.
+        @param name The name of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* Identifier::getIdentifierByLowercaseString(const std::string& name)
+    {
+        std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMapIntern().find(name);
+        if (it != Identifier::getLowercaseStringIdentifierMapIntern().end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
         @brief Returns the Identifier with a given network ID.
         @param id The network ID of the wanted Identifier
         @return The Identifier
