@@ -69,6 +69,10 @@
 
 #ifdef ORXONOX_COMPILER_MSVC
 
+#include <ois/OISKeyboard.h> // 15
+#include <ois/OISMouse.h>    // 15
+#include <ois/OISJoyStick.h> // 15
+
 #include "util/SubString.h"  // 14
 
 #include <boost/scoped_ptr.hpp> // 13

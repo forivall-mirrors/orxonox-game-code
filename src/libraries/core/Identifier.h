@@ -65,6 +65,7 @@
 #include "MetaObjectList.h"
 #include "ObjectList.h"
 #include "ObjectListBase.h"
+#include "Super.h"
 
 namespace orxonox
 {
@@ -104,6 +105,11 @@ namespace orxonox
             bool isDirectChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
+
+            /** @brief Returns true if the class can be loaded through XML. */
+            inline bool isLoadable() const { return this->bLoadable_; }
+            /** @brief Set the class to be loadable through XML or not. */
+            inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
             /** @brief Returns the list of all existing objects of this class. @return The list */
             inline ObjectListBase* getObjects() const
@@ -174,11 +180,54 @@ namespace orxonox
             inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapEnd() const { return this->configValues_LC_.end(); }
 
 
+            /** @brief Returns the map that stores all console commands. @return The const_iterator */
+            inline const std::map<std::string, ConsoleCommand*>& getConsoleCommandMap() const { return this->consoleCommands_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
+
+            /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
+            inline const std::map<std::string, ConsoleCommand*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
+
+            /** @brief Returns the map that stores all XMLPort params. @return The const_iterator */
+            inline const std::map<std::string, XMLPortParamContainer*>& getXMLPortParamMap() const { return this->xmlportParamContainers_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort params. @return The const_iterator */
+            inline std::map<std::string, XMLPortParamContainer*>::const_iterator getXMLPortParamMapBegin() const { return this->xmlportParamContainers_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort params. @return The const_iterator */
+            inline std::map<std::string, XMLPortParamContainer*>::const_iterator getXMLPortParamMapEnd() const { return this->xmlportParamContainers_.end(); }
+
+            /** @brief Returns the map that stores all XMLPort objects. @return The const_iterator */
+            inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortObjectMap() const { return this->xmlportObjectContainers_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort objects. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapBegin() const { return this->xmlportObjectContainers_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort objects. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapEnd() const { return this->xmlportObjectContainers_.end(); }
+
+            /** @brief Returns the map that stores all XMLPort events. @return The const_iterator */
+            inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortEventMap() const { return this->xmlportEventContainers_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort events. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapBegin() const { return this->xmlportEventContainers_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort events. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapEnd() const { return this->xmlportEventContainers_.end(); }
+
             /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
             inline bool hasConfigValues() const { return this->bHasConfigValues_; }
+            /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
+            inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
+
+            /** @brief Returns the network ID to identify a class through the network. @return the network ID */
+            inline const uint32_t getNetworkID() const { return this->networkID_; }
+
+            /** @brief Sets the network ID to a new value. @param id The new value */
+            void setNetworkID(uint32_t id);
 
             /** @brief Returns the unique ID of the class */
             FORCEINLINE unsigned int getClassID() const { return this->classID_; }
@@ -186,6 +235,19 @@ namespace orxonox
             void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
             ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
+
+            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
+            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
+
+            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
+            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
+
+            void addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container);
+            XMLPortObjectContainer* getXMLPortEventContainer(const std::string& eventname);
+
+            ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
+            ConsoleCommand* getConsoleCommand(const std::string& name) const;
+            ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
 
@@ -197,6 +259,7 @@ namespace orxonox
             virtual ~Identifier();
 
             static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
+            virtual void createSuperFunctionCaller() const = 0;
 
             /** @brief Returns the map that stores all Identifiers. @return The map */
             static std::map<std::string, Identifier*>& getIdentifierMapIntern();
@@ -241,15 +304,25 @@ namespace orxonox
 
             bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             bool bSetName_;                                                //!< True if the name is set
+            bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
+            uint32_t networkID_;                                           //!< The network ID to identify a class through the network
             const unsigned int classID_;                                   //!< Uniquely identifies a class (might not be the same as the networkID_)
             static unsigned int classIDCounter_s;                          //!< Static counter for the unique classIDs
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
             std::map<std::string, ConfigValueContainer*> configValues_LC_; //!< A map to link the string of configurable variables with their ConfigValueContainer
+
+            bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
+            std::map<std::string, ConsoleCommand*> consoleCommands_;       //!< All console commands of this class
+            std::map<std::string, ConsoleCommand*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
+
+            std::map<std::string, XMLPortParamContainer*> xmlportParamContainers_;     //!< All loadable parameters
+            std::map<std::string, XMLPortObjectContainer*> xmlportObjectContainers_;   //!< All attachable objects
+            std::map<std::string, XMLPortObjectContainer*> xmlportEventContainers_;    //!< All events
     };
 
     _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);
@@ -270,6 +343,9 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
+        #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
+        #include "Super.h"
+
         public:
             static ClassIdentifier<T> *getIdentifier();
             static ClassIdentifier<T> *getIdentifier(const std::string& name);
@@ -283,9 +359,11 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
             {
+                SuperFunctionInitialization<0, T>::initialize(this);
             }
             ~ClassIdentifier()
             {
+                SuperFunctionDestruction<0, T>::destroy(this);
             }
 
             static ClassIdentifier<T>* classIdentifier_s;
@@ -550,6 +628,30 @@ namespace orxonox
             /** @brief Returns the assigned identifier. @return The identifier */
             inline Identifier* getIdentifier() const
                 { return this->identifier_; }
+
+//            /** @brief Returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
+//            inline bool isA(const Identifier* identifier) const
+//                { return this->identifier_->isA(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
+//            inline bool isExactlyA(const Identifier* identifier) const
+//                { return this->identifier_->isExactlyA(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isChildOf(const Identifier* identifier) const
+//                { return this->identifier_->isChildOf(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a direct child of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isDirectChildOf(const Identifier* identifier) const
+//                { return this->identifier_->isDirectChildOf(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isParentOf(const Identifier* identifier) const
+//                { return this->identifier_->isParentOf(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a direct parent of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isDirectParentOf(const Identifier* identifier) const
+//                { return this->identifier_->isDirectParentOf(identifier); }
 
         private:
             Identifier* identifier_;            //!< The assigned identifier

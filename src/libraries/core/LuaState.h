@@ -44,17 +44,6 @@
 // tolua_begin
 namespace orxonox
 {
-    //! Stores basic information about a File
-    struct ResourceInfo
-    {
-        //! The file's fully qualified name
-        std::string filename;
-        //! Path name; separated by '/' and ending with '/'
-        std::string path;
-        //! Base filename
-        std::string basename;
-    };
-
     /**
     @brief
         Representation of an interface to lua
@@ -66,15 +55,15 @@ namespace orxonox
         LuaState();
         ~LuaState();
 
-        void doFile(const std::string& filename, bool bSearchOtherPaths = true); // tolua_export
+        void doFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
         void doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
 
-        void includeFile(const std::string& filename, bool bSearchOtherPaths = true); // tolua_export
+        void includeFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
         void includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
-        bool fileExists(const std::string& filename, bool bSearchOtherPaths = true); // tolua_export
+        bool fileExists(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
 
         const std::stringstream& getOutput() const { return output_; }
         void clearOutput() { output_.clear(); } // tolua_export
@@ -88,9 +77,7 @@ namespace orxonox
         static void closeToluaInterfaces(lua_State* state);
 
     private:
-        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename, bool bSearchOtherPaths);
-        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename);
-        std::string loadFile(const std::string& filename);
+        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths);
 
 #if LUA_VERSION_NUM != 501
         struct LoadS

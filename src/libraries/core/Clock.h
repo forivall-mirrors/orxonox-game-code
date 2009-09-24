@@ -30,8 +30,7 @@
 #define _Clock_H__
 
 #include "CorePrereqs.h"
-
-namespace Ogre { class Timer; }
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {

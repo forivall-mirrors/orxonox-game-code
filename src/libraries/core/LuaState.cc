@@ -29,7 +29,6 @@
 
 #include "LuaState.h"
 
-#include <boost/filesystem.hpp>
 #include <tolua/tolua++.h>
 extern "C" {
 #include <lua.h>
@@ -38,6 +37,7 @@ extern "C" {
 
 #include "util/Debug.h"
 #include "Core.h"
+#include "Resource.h"
 #include "ToluaBindCore.h"
 
 namespace orxonox
@@ -70,6 +70,8 @@ namespace orxonox
 
         // Create dummy file info
         sourceFileInfo_.reset(new ResourceInfo());
+        sourceFileInfo_->group = "General";
+        sourceFileInfo_->size = 0;
 
         // Push 'this' pointer
         tolua_pushusertype(luaState_, static_cast<void*>(this), "orxonox::LuaState");
@@ -84,55 +86,34 @@ namespace orxonox
         lua_close(luaState_);
     }
 
-    shared_ptr<ResourceInfo> LuaState::getFileInfo(const std::string& filename, bool bSearchOtherPaths)
+    shared_ptr<ResourceInfo> LuaState::getFileInfo(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
     {
         shared_ptr<ResourceInfo> sourceInfo;
-        sourceInfo = this->getFileInfo(filename);
+        if (resourceGroup != "NoResourceGroupProvided")
+            sourceInfo = Resource::getInfo(filename, resourceGroup);
 
         // Continue search if not explicitely forbidden
         if (bSearchOtherPaths && sourceInfo == NULL)
         {
             // Call might be relative to the file currently being processed
-            sourceInfo = this->getFileInfo(sourceFileInfo_->path + filename);
+            sourceInfo = Resource::getInfo(sourceFileInfo_->path + filename, sourceFileInfo_->group);
             if (sourceInfo == NULL)
             {
                 // Maybe find something in the same group but in the root path
-                sourceInfo = this->getFileInfo(filename);
+                sourceInfo = Resource::getInfo(filename, sourceFileInfo_->group);
             }
         }
         return sourceInfo;
     }
 
-    shared_ptr<ResourceInfo> LuaState::getFileInfo(const std::string& filename)
+    void LuaState::includeFile(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
     {
-        boost::filesystem::path filepath = Core::getDataPath() / "lua" / filename;
-        if (boost::filesystem::exists(filepath))
-        {
-            shared_ptr<ResourceInfo> info(new ResourceInfo());
-            info->filename = filepath.string();
-            info->path = filepath.branch_path().string();
-            info->basename = filepath.leaf();
-            return info;
-        }
-        else
-            return shared_ptr<ResourceInfo>();
-    }
-
-    std::string LuaState::loadFile(const std::string& filename)
-    {
-        std::ifstream file(filename.c_str());
-        std::ostringstream oss;
-        oss << file.rdbuf();
-        return oss.str();
-    }
-
-    void LuaState::includeFile(const std::string& filename, bool bSearchOtherPaths)
-    {
-        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename, bSearchOtherPaths);
+        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
         if (sourceInfo != NULL)
-            this->includeString(this->loadFile(sourceInfo->filename), sourceInfo);
+            this->includeString(Resource::open(sourceInfo->filename, sourceInfo->group)->getAsString(), sourceInfo);
         else
-            COUT(2) << "LuaState: Cannot include file '" << filename << std::endl;
+            COUT(2) << "LuaState: Cannot include file '" << filename << "' in resource group '"
+                    << (resourceGroup == "NoResourceGroupProvided" ? sourceFileInfo_->group : resourceGroup) << "': group not found." << std::endl;
     }
 
     void LuaState::includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo)
@@ -147,13 +128,14 @@ namespace orxonox
         this->doString(luaInput, sourceFileInfo);
     }
 
-    void LuaState::doFile(const std::string& filename, bool bSearchOtherPaths)
+    void LuaState::doFile(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
     {
-        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename, bSearchOtherPaths);
+        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
         if (sourceInfo != NULL)
-            this->doString(this->loadFile(sourceInfo->filename), sourceInfo);
+            this->doString(Resource::open(sourceInfo->filename, sourceInfo->group)->getAsString(), sourceInfo);
         else
-            COUT(2) << "LuaState: Cannot do file '" << filename << std::endl;
+            COUT(2) << "LuaState: Cannot do file '" << filename << "' in resource group '"
+                << (resourceGroup == "NoResourceGroupProvided" ? sourceFileInfo_->group : resourceGroup) << "': group not found." << std::endl;
     }
 
     void LuaState::doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo)
@@ -203,9 +185,9 @@ namespace orxonox
         OutputHandler::getOutStream().setOutputLevel(level) << message << std::endl;
     }
 
-    bool LuaState::fileExists(const std::string& filename, bool bSearchOtherPaths)
+    bool LuaState::fileExists(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
     {
-        shared_ptr<ResourceInfo> info =  this->getFileInfo(filename, bSearchOtherPaths);
+        shared_ptr<ResourceInfo> info =  this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
         if (info == NULL)
             return false;
         else
