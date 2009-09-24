@@ -62,15 +62,23 @@
 #include "util/Exception.h"
 #include "util/SignalHandler.h"
 #include "Clock.h"
+#include "CommandExecutor.h"
 #include "CommandLine.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "DynLibManager.h"
 #include "Factory.h"
+#include "GameMode.h"
+#include "GraphicsManager.h"
+#include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
+#include "Shell.h"
+#include "TclBind.h"
+#include "TclThreadManager.h"
+#include "input/InputManager.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
@@ -108,6 +116,14 @@ namespace orxonox
         {
             RegisterRootObject(CoreConfiguration);
             this->setConfigValues();
+
+            // External data directory only exists for dev runs
+            if (Core::isDevelopmentRun())
+            {
+                // Possible data path override by the command line
+                if (!CommandLine::getArgument("externalDataPath")->hasDefaultValue())
+                    tsetExternalDataPath(CommandLine::getValue("externalDataPath"));
+            }
         }
 
         /**
@@ -177,6 +193,17 @@ namespace orxonox
             ResetConfigValue(language_);
         }
 
+        /**
+        @brief
+            Temporary sets the external data path
+        @param path
+            The new data path
+        */
+        void tsetExternalDataPath(const std::string& path)
+        {
+            externalDataPath_ = boost::filesystem::path(path);
+        }
+
         void initializeRandomNumberGenerator()
         {
             static bool bInitialized = false;
@@ -200,6 +227,7 @@ namespace orxonox
         boost::filesystem::path executablePath_;        //!< Path to the executable
         boost::filesystem::path modulePath_;            //!< Path to the modules
         boost::filesystem::path dataPath_;              //!< Path to the data file folder
+        boost::filesystem::path externalDataPath_;      //!< Path to the external data file folder
         boost::filesystem::path configPath_;            //!< Path to the config file folder
         boost::filesystem::path logPath_;               //!< Path to the log file folder
     };
@@ -208,8 +236,11 @@ namespace orxonox
     Core::Core(const std::string& cmdLine)
         // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
+        // Cleanup guard for external console commands that don't belong to an Identifier
+        , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
         , configuration_(new CoreConfiguration()) // Don't yet create config values!
         , bDevRun_(false)
+        , bGraphicsLoaded_(false)
     {
         // Set the hard coded fixed paths
         this->setFixedPaths();
@@ -307,6 +338,16 @@ namespace orxonox
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         this->configuration_->initialise();
+
+        // Load OGRE excluding the renderer and the render window
+        this->graphicsManager_.reset(new GraphicsManager(false));
+
+        // initialise Tcl
+        this->tclBind_.reset(new TclBind(Core::getDataPathString()));
+        this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
+
+        // create a shell
+        this->shell_.reset(new Shell());
     }
 
     /**
@@ -315,6 +356,46 @@ namespace orxonox
     */
     Core::~Core()
     {
+    }
+
+    void Core::loadGraphics()
+    {
+        // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
+        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
+
+        // Upgrade OGRE to receive a render window
+        graphicsManager_->upgradeToGraphics();
+
+        // Calls the InputManager which sets up the input devices.
+        inputManager_.reset(new InputManager());
+
+        // load the CEGUI interface
+        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
+            inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
+
+        unloader.Dismiss();
+
+        bGraphicsLoaded_ = true;
+    }
+
+    void Core::unloadGraphics()
+    {
+        this->guiManager_.reset();;
+        this->inputManager_.reset();;
+        this->graphicsManager_.reset();
+
+        // Load Ogre::Root again, but without the render system
+        try
+            { this->graphicsManager_.reset(new GraphicsManager(false)); }
+        catch (...)
+        {
+            COUT(0) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << std::endl
+                    << "Another exception might be being handled which may lead to undefined behaviour!" << std::endl
+                    << "Terminating the program." << std::endl;
+            abort();
+        }
+
+        bGraphicsLoaded_ = false;
     }
 
     /**
@@ -375,6 +456,11 @@ namespace orxonox
         Core::getInstance().configuration_->resetLanguage();
     }
 
+    /*static*/ void Core::tsetExternalDataPath(const std::string& path)
+    {
+        getInstance().configuration_->tsetExternalDataPath(path);
+    }
+
     /*static*/ const boost::filesystem::path& Core::getDataPath()
     {
         return getInstance().configuration_->dataPath_;
@@ -382,6 +468,15 @@ namespace orxonox
     /*static*/ std::string Core::getDataPathString()
     {
         return getInstance().configuration_->dataPath_.string() + '/';
+    }
+
+    /*static*/ const boost::filesystem::path& Core::getExternalDataPath()
+    {
+        return getInstance().configuration_->externalDataPath_;
+    }
+    /*static*/ std::string Core::getExternalDataPathString()
+    {
+        return getInstance().configuration_->externalDataPath_.string() + '/';
     }
 
     /*static*/ const boost::filesystem::path& Core::getConfigPath()
@@ -563,6 +658,7 @@ namespace orxonox
         if (Core::isDevelopmentRun())
         {
             configuration_->dataPath_  = specialConfig::dataDevDirectory;
+            configuration_->externalDataPath_ = specialConfig::externalDataDevDirectory;
             configuration_->configPath_ = specialConfig::configDevDirectory;
             configuration_->logPath_    = specialConfig::logDevDirectory;
         }
@@ -628,9 +724,23 @@ namespace orxonox
 
     void Core::preUpdate(const Clock& time)
     {
+        if (this->bGraphicsLoaded_)
+        {
+            // process input events
+            this->inputManager_->update(time);
+            // process gui events
+            this->guiManager_->update(time);
+        }
+        // process thread commands
+        this->tclThreadManager_->update(time);
     }
 
     void Core::postUpdate(const Clock& time)
     {
+        if (this->bGraphicsLoaded_)
+        {
+            // Render (doesn't throw)
+            this->graphicsManager_->update(time);
+        }
     }
 }

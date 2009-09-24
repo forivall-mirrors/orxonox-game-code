@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GUILayout>
+    <Window Type="TaharezLook/FrameWindow" Name="orxonox/Inventory">
+        <Property Name="UnifiedMinSize" Value="{{0.0,385},{0.0,200}}" />
+        <Property Name="UnifiedMaxSize" Value="{{0.0,385},{0.0,200}}" />
+        <Property Name="UnifiedPosition" Value="{{0.5,-100},{0.5,-85}}" />
+        <Property Name="UnifiedSize" Value="{{0.0,385},{0.0,200}}" />
+        <Property Name="Text" Value="Inventory" />
+        <Property Name="CloseButtonEnabled" Value="False" />
+
+        <Window Type="TaharezLook/TabControl" Name="orxonox/Inventory/TabControl" >
+            <Property Name="Tooltip" Value="Inventory" />
+            <Property Name="TabHeight" Value="{0,-1}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="TabPanePosition" Value="Bottom" />
+            <Property Name="UnifiedAreaRect" Value="{{0,10},{0,30},{1,-10},{1,-10}}" />
+            
+            <Window Type="TaharezLook/ScrollablePane" Name="orxonox/Inventory/TabControl/TabEquipment">
+                <Property Name="Text" Value="Equipment" />
+                <Property Name="UnifiedPosition" Value="{{0.0,3},{0.0,3}}"/>
+                <Property Name="UnifiedSize" Value="{{1.0,-6},{1.0,-6}}"/>
+            </Window>
+            <Window Type="TaharezLook/ScrollablePane" Name="orxonox/Inventory/TabControl/TabUsable">
+                <Property Name="Text" Value="Usable" />
+                <Property Name="UnifiedPosition" Value="{{0.0,3},{0.0,3}}"/>
+                <Property Name="UnifiedSize" Value="{{1.0,-6},{1.0,-6}}"/>
+            </Window>
+        </Window>
+
+        <Event Name="WindowUpdate" Function="PickupInventory.update" />
+    </Window>
+</GUILayout>

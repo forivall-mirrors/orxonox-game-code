@@ -51,6 +51,11 @@ IF(MSVC)
   # Sets the library path for the FIND_LIBRARY
   SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 
+  # Certain find scripts don't behave as ecpected to we have
+  # to specify the libraries ourselves.
+  SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
+  SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
+
   # Visual Leak Detector
   SET(VLD_INCLUDE_DIR  ${DEP_INCLUDE_DIR}/vld   CACHE PATH "")
   SET(VLD_LIBRARY_DIR  ${DEP_LIBRARY_DIR}       CACHE PATH "")

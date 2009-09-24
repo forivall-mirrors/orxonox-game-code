@@ -33,11 +33,18 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "util/StringUtils.h"
+#include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "Core.h"
 
 namespace orxonox
 {
+    SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(reloadConfig);
+    SetConsoleCommandShortcutExtern(cleanConfig);
+    SetConsoleCommandShortcutExtern(loadSettings).argumentCompleter(0, autocompletion::files());
+
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {
         std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));

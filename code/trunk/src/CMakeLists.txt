@@ -37,9 +37,17 @@ ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
 
 # If no defines are specified, these libs get linked statically
 ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)
+ADD_COMPILER_FLAGS("-DENET_DLL"           WIN32 LINK_ENET_DYNAMIC)
 ADD_COMPILER_FLAGS("-DLUA_BUILD_AS_DLL"   WIN32 LINK_LUA_DYNAMIC)
+ADD_COMPILER_FLAGS("-DOIS_DYNAMIC_LIB")
+ADD_COMPILER_FLAGS("-DZLIB_DLL"           WIN32 LINK_ZLIB_DYNAMIC)
 # If no defines are specified, these libs get linked dynamically
+ADD_COMPILER_FLAGS("-DCEGUI_STATIC"       WIN32 NOT LINK_CEGUI_DYNAMIC)
 ADD_COMPILER_FLAGS("-DOGRE_STATIC_LIB"    WIN32 NOT LINK_OGRE_DYNAMIC)
+ADD_COMPILER_FLAGS("-DSTATIC_BUILD"       WIN32 NOT LINK_TCL_DYNAMIC)
+
+# Use TinyXML++
+ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 
 ############## Include Directories ##############
 
@@ -47,17 +55,33 @@ ADD_COMPILER_FLAGS("-DOGRE_STATIC_LIB"    WIN32 NOT LINK_OGRE_DYNAMIC)
 INCLUDE_DIRECTORIES(
   # External
   ${OGRE_INCLUDE_DIR}
+  ${CEGUI_INCLUDE_DIR}
+  ${ENET_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
+  ${OPENAL_INCLUDE_DIRS}
+  ${ALUT_INCLUDE_DIR}
+  ${VORBIS_INCLUDE_DIR}
+  ${OGG_INCLUDE_DIR}
   ${LUA_INCLUDE_DIR}
+  ${TCL_INCLUDE_PATH}
+  ${DIRECTX_INCLUDE_DIR}
+  ${ZLIB_INCLUDE_DIR}
   ${VLD_INCLUDE_DIR}
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts
   ${CMAKE_CURRENT_SOURCE_DIR}/external
+  # Include directories needed even if only included by Orxonox
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
 
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+IF(CEGUILUA_USE_INTERNAL_LIBRARY)
+  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
+ENDIF()
 
 ################### Tolua Bind ##################
 

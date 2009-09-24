@@ -44,13 +44,19 @@
 #include "util/SubString.h"
 #include "Clock.h"
 #include "CommandLine.h"
+#include "ConsoleCommand.h"
 #include "Core.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
+#include "GameMode.h"
 #include "GameState.h"
 
 namespace orxonox
 {
+    static void stop_game()
+        { Game::getInstance().stop(); }
+    SetConsoleCommandShortcutExternAlias(stop_game, "exit");
+
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonPtr_s = 0;
 
@@ -499,10 +505,45 @@ namespace orxonox
 
     void Game::loadGraphics()
     {
+        if (!GameMode::bShowsGraphics_s)
+        {
+            core_->loadGraphics();
+            Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
+            GameMode::bShowsGraphics_s = true;
+
+            // Construct all the GameStates that require graphics
+            for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
+                it != gameStateDeclarations_s.end(); ++it)
+            {
+                if (it->second.bGraphicsMode)
+                {
+                    // Game state loading failure is serious --> don't catch
+                    shared_ptr<GameState> gameState = GameStateFactory::fabricate(it->second);
+                    if (!constructedStates_.insert(std::make_pair(
+                        it->second.stateName, gameState)).second)
+                        assert(false); // GameState was already created!
+                }
+            }
+            graphicsUnloader.Dismiss();
+        }
     }
 
     void Game::unloadGraphics()
     {
+        if (GameMode::bShowsGraphics_s)
+        {
+            // Destroy all the GameStates that require graphics
+            for (GameStateMap::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
+            {
+                if (it->second->getInfo().bGraphicsMode)
+                    constructedStates_.erase(it++);
+                else
+                    ++it;
+            }
+
+            core_->unloadGraphics();
+            GameMode::bShowsGraphics_s = false;
+        }
     }
 
     bool Game::checkState(const std::string& name) const
@@ -521,7 +562,7 @@ namespace orxonox
 
         // If state requires graphics, load it
         Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
-        if (gameStateDeclarations_s[name].bGraphicsMode)
+        if (gameStateDeclarations_s[name].bGraphicsMode && !GameMode::showsGraphics())
             this->loadGraphics();
         else
             graphicsUnloader.Dismiss();
