@@ -110,8 +110,8 @@ namespace orxonox
             Game::getInstance().requestState("ioConsole");
         }
 
-        for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
-            it->tick(time);
+        for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; )
+            (it++)->tick(time);
 
         /*** HACK *** HACK ***/
         // Call the Tickable objects
@@ -121,8 +121,8 @@ namespace orxonox
             // just loaded
             leveldt = 0.0f;
         }
-        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(leveldt * this->timeFactor_);
+        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; )
+            (it++)->tick(leveldt * this->timeFactor_);
         /*** HACK *** HACK ***/
     }
 

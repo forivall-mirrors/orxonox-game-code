@@ -126,7 +126,7 @@ namespace orxonox
     {
         if (this->isActive())
         {
-            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); it++)
+            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 if (distance.length() < this->triggerDistance_)

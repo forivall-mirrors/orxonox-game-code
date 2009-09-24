@@ -83,7 +83,10 @@ namespace orxonox
 
     const RadarViewable* Radar::getFocus()
     {
-        return *(this->itFocus_);
+        if (this->itFocus_)
+            return *(this->itFocus_);
+        else
+            return 0;
     }
 
     RadarViewable::Shape Radar::addObjectDescription(const std::string name)
@@ -100,7 +103,7 @@ namespace orxonox
     {
         SUPER(Radar, tick, dt);
 
-        if (this->focus_ != *(this->itFocus_))
+        if (this->itFocus_ && (this->focus_ != *(this->itFocus_)))
         {
             // focus object was deleted, release focus
             this->focus_ = 0;

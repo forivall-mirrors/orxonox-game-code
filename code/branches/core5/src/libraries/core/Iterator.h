@@ -166,7 +166,6 @@ namespace orxonox
                 this->list_->registerIterator(this);
 
                 return (*this);
-                return *this;
             }
 
             /**
@@ -192,8 +191,7 @@ namespace orxonox
             */
             inline const Iterator<T>& operator++()
             {
-                if (this->element_)
-                    this->element_ = this->element_->next_;
+                this->element_ = this->element_->next_;
                 return *this;
             }
 
@@ -204,8 +202,7 @@ namespace orxonox
             inline Iterator<T> operator++(int i)
             {
                 Iterator<T> copy = *this;
-                if (this->element_)
-                    this->element_ = this->element_->next_;
+                this->element_ = this->element_->next_;
                 return copy;
             }
 
@@ -215,8 +212,7 @@ namespace orxonox
             */
             inline const Iterator<T>& operator--()
             {
-                if (this->element_)
-                    this->element_ = this->element_->prev_;
+                this->element_ = this->element_->prev_;
                 return *this;
             }
 
@@ -227,8 +223,7 @@ namespace orxonox
             inline Iterator<T> operator--(int i)
             {
                 Iterator<T> copy = *this;
-                if (this->element_)
-                    this->element_ = this->element_->prev_;
+                this->element_ = this->element_->prev_;
                 return copy;
             }
 
@@ -238,10 +233,7 @@ namespace orxonox
             */
             inline T* operator*() const
             {
-                if (this->element_)
-                    return orxonox_cast<T*>(this->element_->objectBase_);
-                else
-                    return 0;
+                return orxonox_cast<T*>(this->element_->objectBase_);
             }
 
             /**
@@ -250,10 +242,7 @@ namespace orxonox
             */
             inline T* operator->() const
             {
-                if (this->element_)
-                    return orxonox_cast<T*>(this->element_->objectBase_);
-                else
-                    return 0;
+                return orxonox_cast<T*>(this->element_->objectBase_);
             }
 
             /**
