@@ -64,32 +64,27 @@ namespace orxonox
     class ClassFactory : public Factory
     {
         public:
-            ClassFactory(const std::string& name, bool bLoadable = true);
-            BaseObject* fabricate(BaseObject* creator);
+            /**
+                @brief Constructor: Adds the ClassFactory to the Identifier of the same type.
+                @param name The name of the class
+                @param bLoadable True if the class can be loaded through XML
+            */
+            ClassFactory(const std::string& name, bool bLoadable = true)
+            {
+                COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
+                ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
+                ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
+            }
+
+            /**
+                @brief Creates and returns a new object of class T.
+                @return The new object
+            */
+            inline BaseObject* fabricate(BaseObject* creator)
+            {
+                return static_cast<BaseObject*>(new T(creator));
+            }
     };
-
-    /**
-        @brief Adds the ClassFactory to the Identifier of the same type.
-        @param name The name of the class
-        @param bLoadable True if the class can be loaded through XML
-    */
-    template <class T>
-    ClassFactory<T>::ClassFactory(const std::string& name, bool bLoadable)
-    {
-        COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
-        ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
-        ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
-    }
-
-    /**
-        @brief Creates and returns a new object of class T.
-        @return The new object
-    */
-    template <class T>
-    inline BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
-    {
-        return static_cast<BaseObject*>(new T(creator));
-    }
 }
 
 #endif /* _ClassFactory_H__ */

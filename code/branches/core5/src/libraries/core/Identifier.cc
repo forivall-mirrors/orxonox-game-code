@@ -65,9 +65,6 @@ namespace orxonox
         this->bHasConfigValues_ = false;
         this->bHasConsoleCommands_ = false;
 
-        this->children_ = new std::set<const Identifier*>();
-        this->directChildren_ = new std::set<const Identifier*>();
-
         // Default network ID is the class ID
         this->networkID_ = this->classID_;
     }
@@ -77,8 +74,6 @@ namespace orxonox
     */
     Identifier::~Identifier()
     {
-        delete this->children_;
-        delete this->directChildren_;
         delete this->objects_;
 
         if (this->factory_)
@@ -164,7 +159,7 @@ namespace orxonox
             for (std::set<const Identifier*>::iterator it = parents->begin(); it != parents->end(); ++it)
             {
                 // Tell the parent we're one of it's children
-                (*it)->getChildrenIntern().insert((*it)->getChildrenIntern().end(), this);
+                (*it)->children_.insert((*it)->children_.end(), this);
 
                 // Erase all parents of our parent from our direct-parent-list
                 for (std::set<const Identifier*>::const_iterator it1 = (*it)->getParents().begin(); it1 != (*it)->getParents().end(); ++it1)
@@ -186,7 +181,7 @@ namespace orxonox
             for (std::set<const Identifier*>::iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
             {
                 // Tell the parent we're one of it's direct children
-                (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
+                (*it)->directChildren_.insert((*it)->directChildren_.end(), this);
 
                 // Create the super-function dependencies
                 (*it)->createSuperFunctionCaller();
@@ -200,10 +195,8 @@ namespace orxonox
     void Identifier::createClassHierarchy()
     {
         COUT(3) << "*** Identifier: Create class-hierarchy" << std::endl;
-        std::map<std::string, Identifier*>::const_iterator it;
-        it = Identifier::getStringIdentifierMap().begin();
-        Identifier::getStringIdentifierMap().begin()->second->startCreatingHierarchy();
-        for (it = Identifier::getStringIdentifierMap().begin(); it != Identifier::getStringIdentifierMap().end(); ++it)
+        Identifier::startCreatingHierarchy();
+        for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMap().begin(); it != Identifier::getStringIdentifierMap().end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             if (it->second->hasFactory())
@@ -212,7 +205,7 @@ namespace orxonox
                 delete temp;
             }
         }
-        Identifier::getStringIdentifierMap().begin()->second->stopCreatingHierarchy();
+        Identifier::stopCreatingHierarchy();
         COUT(3) << "*** Identifier: Finished class-hierarchy creation" << std::endl;
     }
 
@@ -314,7 +307,7 @@ namespace orxonox
     */
     bool Identifier::isParentOf(const Identifier* identifier) const
     {
-        return (this->children_->find(identifier) != this->children_->end());
+        return (this->children_.find(identifier) != this->children_.end());
     }
 
     /**
@@ -323,7 +316,7 @@ namespace orxonox
     */
     bool Identifier::isDirectParentOf(const Identifier* identifier) const
     {
-        return (this->directChildren_->find(identifier) != this->directChildren_->end());
+        return (this->directChildren_.find(identifier) != this->directChildren_.end());
     }
 
     /**
