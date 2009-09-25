@@ -38,8 +38,7 @@ namespace orxonox
         // Place your code here:
         // - make sure to register the object in the factory
         // - do any kind of initialisation
-        
-        
+        RegisterObject(DroneController);
         
         // this checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
@@ -55,11 +54,13 @@ namespace orxonox
     {
         // Place your code here:
         // - steering commands
+        static float totaltime = 0;
+        totaltime += dt;
         Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
-        // you can use the following commands for steering
-        // - moveFrontBack, moveRightLeft, moveUpDown
-        // - rotatePitch, rotateYaw, rotateRoll
-        // - apply the to myDrone (e.g. myDrone->rotateYaw(..) )
-        
+        if(totaltime<100)
+        {
+            myDrone->moveFrontBack( -sqrt(dt) );
+            myDrone->rotatePitch(-dt);
+        }
     }
 }
