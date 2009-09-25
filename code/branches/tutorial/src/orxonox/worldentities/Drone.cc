@@ -70,9 +70,9 @@ namespace orxonox
         // this calls the XMLPort function of the parent class
         SUPER(Drone, XMLPort, xmlelement, mode);
 
-        XMLPortParamVariable(Drone, "primaryThrust",  primaryThrust_,  xmlelement, mode);
-        XMLPortParamVariable(Drone, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
-        XMLPortParamVariable(Drone, "rotationThrust", rotationThrust_, xmlelement, mode);
+        XMLPortParam(Drone, "primaryThrust",  setPrimaryThrust, getPrimaryThrust,  xmlelement, mode);
+        XMLPortParam(Drone, "auxilaryThrust", setAuxilaryThrust, getAuxilaryThrust, xmlelement, mode);
+        XMLPortParam(Drone, "rotationThrust", setRotationThrust, getRotationThrust, xmlelement, mode);
     }
 
     void Drone::tick(float dt)
