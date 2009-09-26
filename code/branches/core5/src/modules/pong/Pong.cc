@@ -119,7 +119,7 @@ namespace orxonox
     {
         if (this->ball_)
         {
-            delete this->ball_;
+            this->ball_->destroy();
             this->ball_ = 0;
         }
 

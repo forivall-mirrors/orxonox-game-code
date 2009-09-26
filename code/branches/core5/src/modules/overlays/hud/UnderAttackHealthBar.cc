@@ -57,7 +57,7 @@ namespace orxonox
     UnderAttackHealthBar::~UnderAttackHealthBar()
     {
         if (this->isInitialized())
-            delete this->text_;
+            this->text_->destroy();
     }
 
     void UnderAttackHealthBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)

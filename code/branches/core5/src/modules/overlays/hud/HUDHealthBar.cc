@@ -55,7 +55,7 @@ namespace orxonox
     HUDHealthBar::~HUDHealthBar()
     {
         if (this->isInitialized())
-            delete this->textoverlay_;
+            this->textoverlay_->destroy();
     }
 
     void HUDHealthBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)

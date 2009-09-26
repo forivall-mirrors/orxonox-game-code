@@ -425,7 +425,7 @@ namespace orxonox
         this->removeElement(container->overlay);
         this->containers_.erase(container);
         this->overlays_.erase(container->notification);
-        delete container->overlay;
+        container->overlay->destroy();
         delete container;
         this->size_= this->size_-1;
 

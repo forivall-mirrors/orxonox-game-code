@@ -83,13 +83,13 @@ namespace orxonox
             return;
 
         if (this->bDestroy_)
-            delete this;
+            this->destroy(); // TODO: use a scheduler instead of deleting the object right here in tick()
     }
 
     void Projectile::destroyObject()
     {
         if (GameMode::isMaster())
-            delete this;
+            this->destroy();
     }
 
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)

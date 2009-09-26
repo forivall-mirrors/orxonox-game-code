@@ -46,7 +46,7 @@ namespace orxonox
     {
         if (this->isInitialized())
             for (std::list<EventTarget*>::iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
-                delete (*it);
+                (*it)->destroy();
     }
 
     void EventDispatcher::XMLPort(Element& xmlelement, XMLPort::Mode mode)
