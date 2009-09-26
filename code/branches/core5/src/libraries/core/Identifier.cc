@@ -202,7 +202,7 @@ namespace orxonox
             if (it->second->hasFactory())
             {
                 BaseObject* temp = it->second->fabricate(0);
-                delete temp;
+                temp->destroy();
             }
         }
         Identifier::stopCreatingHierarchy();

@@ -288,10 +288,10 @@ namespace orxonox
         CCOUT(3) << "Destroying..." << std::endl;
 
         // Destroy calibrator helper handler and state
-        delete keyDetector_;
+        keyDetector_->destroy();
         this->destroyState("calibrator");
         // Destroy KeyDetector and state
-        delete calibratorCallbackHandler_;
+        calibratorCallbackHandler_->destroy();
         this->destroyState("detector");
         // destroy the empty InputState
         this->destroyStateInternal(this->emptyState_);
@@ -721,6 +721,6 @@ namespace orxonox
             updateActiveStates();
         }
         statesByName_.erase(state->getName());
-        delete state;
+        state->destroy();
     }
 }
