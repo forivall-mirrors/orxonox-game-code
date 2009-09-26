@@ -54,6 +54,9 @@ namespace orxonox
         template <class T>
         friend class ClassIdentifier;
 
+        template <class T>
+        friend class SmartPtr;
+
         public:
             OrxonoxClass();
             virtual ~OrxonoxClass();

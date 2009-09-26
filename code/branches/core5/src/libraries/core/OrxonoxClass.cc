@@ -51,6 +51,11 @@ namespace orxonox
     /** @brief Destructor: Deletes, if existing, the list of the parents. */
     OrxonoxClass::~OrxonoxClass()
     {
+//        if (!this->requestedDestruction_)
+//            COUT(2) << "Warning: Destroyed object without destroy() (" << this->getIdentifier()->getName() << ")" << std::endl;
+
+        assert(this->referenceCount_ == 0);
+
         delete this->metaList_;
 
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
@@ -61,9 +66,8 @@ namespace orxonox
     /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */
     void OrxonoxClass::destroy()
     {
-        if (this->referenceCount_ > 0)
-            this->requestedDestruction_ = true;
-        else
+        this->requestedDestruction_ = true;
+        if (this->referenceCount_ == 0)
             delete this;
     }
 

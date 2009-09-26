@@ -154,6 +154,8 @@ namespace orxonox
     class Shell;
     class ShellListener;
     template <class T>
+    class SmartPtr;
+    template <class T>
     class SubclassIdentifier;
     class TclBind;
     struct TclInterpreterBundle;
@@ -161,6 +163,8 @@ namespace orxonox
     class TclThreadList;
     class TclThreadManager;
     class Template;
+    template <class T>
+    class WeakPtr;
     class WindowEventListener;
     class XMLFile;
     class XMLNameListener;
