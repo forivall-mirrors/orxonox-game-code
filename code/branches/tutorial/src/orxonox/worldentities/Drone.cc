@@ -51,8 +51,6 @@ namespace orxonox
         this->auxilaryThrust_ = 100;
         this->rotationThrust_ = 10;
         this->steering_ = Vector3::ZERO;
-
-	std::cout << "sdfasdfasdf====================";
         
         this->setCollisionType(WorldEntity::Dynamic);
         
