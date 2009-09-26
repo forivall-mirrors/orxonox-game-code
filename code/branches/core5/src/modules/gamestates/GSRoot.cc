@@ -98,7 +98,7 @@ namespace orxonox
         }
 */
 
-        delete this->levelManager_;
+        this->levelManager_->destroy();
     }
 
     void GSRoot::update(const Clock& time)

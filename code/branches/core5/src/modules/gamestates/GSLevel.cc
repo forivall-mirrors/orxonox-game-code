@@ -187,7 +187,7 @@ namespace orxonox
 
         if (this->radar_)
         {
-            delete this->radar_;
+            this->radar_->destroy();
             this->radar_ = 0;
         }
 
@@ -199,7 +199,7 @@ namespace orxonox
 
         if (this->playerManager_)
         {
-            delete this->playerManager_;
+            this->playerManager_->destroy();
             this->playerManager_ = 0;
         }
 
@@ -217,7 +217,7 @@ namespace orxonox
             InputManager::getInstance().destroyState("game");
             if (this->keyBinder_)
             {
-                delete this->keyBinder_;
+                this->keyBinder_->destroy();
                 this->keyBinder_ = 0;
             }
         }

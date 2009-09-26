@@ -73,7 +73,7 @@ namespace orxonox
     GSGraphics::~GSGraphics()
     {
         InputManager::getInstance().destroyState("master");
-        delete this->masterKeyBinder_;
+        this->masterKeyBinder_->destroy();
     }
 
     /**
@@ -133,12 +133,12 @@ namespace orxonox
         }
 */
 
-        delete this->console_;
+        this->console_->destroy();
 
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
 
-        delete this->soundManager_;
+        this->soundManager_->destroy();
 
         // HACK: (destroys a resource smart pointer)
         Map::hackDestroyMap();

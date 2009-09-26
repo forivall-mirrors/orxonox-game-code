@@ -64,7 +64,7 @@ namespace orxonox
         InputManager::getInstance().destroyState("mainMenu");
 
         this->scene_->getSceneManager()->destroyCamera(this->camera_);
-        delete this->scene_;
+        this->scene_->destroy();
     }
 
     void GSMainMenu::activate()
@@ -107,7 +107,7 @@ namespace orxonox
 
     void GSMainMenu::deactivate()
     {
-        delete this->ambient_;
+        this->ambient_->destroy();
 
         InputManager::getInstance().leaveState("mainMenu");
 
