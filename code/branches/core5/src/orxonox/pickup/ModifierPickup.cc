@@ -138,7 +138,7 @@ namespace orxonox
             if (this->timer_.getRemainingTime() > 0.0f)
                 this->timer_.stopTimer();
 
-            delete this;
+            this->destroy();
 
             return true;
         }

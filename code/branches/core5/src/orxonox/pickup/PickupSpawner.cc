@@ -90,7 +90,7 @@ namespace orxonox
         {
             asItem->addTemplate(this->itemTemplate_);
             PickupInventory::getImageForItem(asItem);
-            delete newObject;
+            newObject->destroy();
         }
 
         //  & load the GUI itself too, along with some empty windows
@@ -173,7 +173,7 @@ namespace orxonox
                     }
                 }
                 else
-                    delete newObject;
+                    newObject->destroy();
             }
         }
     }

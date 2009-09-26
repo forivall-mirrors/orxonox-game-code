@@ -418,7 +418,7 @@ namespace orxonox
         {
             if (it->getGametype() == this)
             {
-                delete (*(it++));
+                (it++)->destroy();
                 ++i;
             }
             else

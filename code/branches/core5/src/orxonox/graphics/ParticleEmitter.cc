@@ -62,7 +62,7 @@ namespace orxonox
         if (this->isInitialized() && this->particles_)
         {
             this->detachOgreObject(this->particles_->getParticleSystem());
-            delete this->particles_;
+            this->particles_->destroy();
         }
     }
 
@@ -100,7 +100,7 @@ namespace orxonox
     {
         if (this->particles_)
         {
-            delete this->particles_;
+            this->particles_->destroy();
             this->particles_ = 0;
         }
 

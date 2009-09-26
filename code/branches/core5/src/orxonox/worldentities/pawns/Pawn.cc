@@ -96,7 +96,7 @@ namespace orxonox
                 it->destroyedPawn(this);
 
             if (this->weaponSystem_)
-                delete this->weaponSystem_;
+                this->weaponSystem_->destroy();
         }
     }
 

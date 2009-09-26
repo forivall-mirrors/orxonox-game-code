@@ -118,7 +118,7 @@ namespace orxonox
             for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
             {
                 if ((*it)->getDeleteWithParent())
-                    delete (*(it++));
+                    (*(it++))->destroy();
                 else
                 {
                     (*it)->setPosition(this->getWorldPosition());
@@ -131,7 +131,7 @@ namespace orxonox
                 this->deactivatePhysics();
                 delete this->physicalBody_;
             }
-            delete this->collisionShape_;
+            this->collisionShape_->destroy();
 
             this->node_->detachAllObjects();
             this->node_->removeAllChildren();

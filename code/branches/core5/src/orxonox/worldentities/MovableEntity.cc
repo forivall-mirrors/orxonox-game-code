@@ -60,7 +60,7 @@ namespace orxonox
     {
         if (this->isInitialized())
             if (this->continuousResynchroTimer_)
-                delete this->continuousResynchroTimer_;
+                this->continuousResynchroTimer_->destroy();
     }
 
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)

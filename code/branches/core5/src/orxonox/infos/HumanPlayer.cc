@@ -63,10 +63,10 @@ namespace orxonox
         if (this->BaseObject::isInitialized())
         {
             if (this->humanHud_)
-                delete this->humanHud_;
+                this->humanHud_->destroy();
 
             if (this->gametypeHud_)
-                delete this->gametypeHud_;
+                this->gametypeHud_->destroy();
         }
     }
 
@@ -169,7 +169,7 @@ namespace orxonox
     {
         if (this->humanHud_)
         {
-            delete this->humanHud_;
+            this->humanHud_->destroy();
             this->humanHud_ = 0;
         }
 
@@ -185,7 +185,7 @@ namespace orxonox
     {
         if (this->gametypeHud_)
         {
-            delete this->gametypeHud_;
+            this->gametypeHud_->destroy();
             this->gametypeHud_ = 0;
         }
 

@@ -68,7 +68,7 @@ namespace orxonox
         if (this->item_->pickedUp(pawn))
         {
             COUT(3) << "DroppedItem '" << this->item_->getPickupIdentifier() << "' picked up." << std::endl;
-            delete this;
+            this->destroy();
         }
     }
     void DroppedItem::createTimer()
@@ -84,10 +84,10 @@ namespace orxonox
         if (this->item_)
         {
             COUT(3) << "Delete DroppedItem with '" << this->item_->getPickupIdentifier() << "'" << std::endl;
-            delete this->item_;
+            this->item_->destroy();
         }
 
-        delete this;
+        this->destroy();
     }
 
     DroppedItem* DroppedItem::createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour, float timeToLive)

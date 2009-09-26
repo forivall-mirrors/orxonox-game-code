@@ -61,7 +61,7 @@ namespace orxonox
                 this->weaponPack_->removeWeapon(this);
 
             for (std::multimap<unsigned int, WeaponMode*>::iterator it = this->weaponmodes_.begin(); it != this->weaponmodes_.end(); ++it)
-                delete it->second;
+                it->second->destroy();
         }
     }
 

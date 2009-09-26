@@ -125,6 +125,6 @@ namespace orxonox
 
     void ParticleSpawner::destroyParticleSpawner()
     {
-        delete this;
+        this->destroy();
     }
 }

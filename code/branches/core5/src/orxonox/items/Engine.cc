@@ -78,7 +78,7 @@ namespace orxonox
             this->ship_->setEngine(0);
 
             if (this->boostBlur_)
-                delete this->boostBlur_;
+                this->boostBlur_->destroy();
 
             if(this->sound_ != NULL)
                 delete this->sound_;
@@ -236,7 +236,7 @@ namespace orxonox
 
             if (this->boostBlur_)
             {
-                delete this->boostBlur_;
+                this->boostBlur_->destroy();
                 this->boostBlur_ = 0;
             }
 

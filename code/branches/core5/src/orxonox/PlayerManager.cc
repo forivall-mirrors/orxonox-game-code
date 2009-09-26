@@ -84,7 +84,7 @@ namespace orxonox
 
             // delete PlayerInfo instance
             if (player)
-                delete player;
+                player->destroy();
         }
     }
 

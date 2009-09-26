@@ -95,16 +95,16 @@ namespace orxonox
                 this->getPlayer()->stopControl();
 
             if (this->xmlcontroller_)
-                delete this->xmlcontroller_;
+                this->xmlcontroller_->destroy();
 
             if (this->hud_)
-                delete this->hud_;
+                this->hud_->destroy();
 
             if (this->camera_)
-                delete this->camera_;
+                this->camera_->destroy();
 
             for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
-                delete (*it);
+                (*it)->destroy();
 
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->cameraPositionRootNode_->getName());
@@ -258,7 +258,7 @@ namespace orxonox
         this->changedPlayer();
 
         if (this->bDestroyWhenPlayerLeft_)
-            delete this;
+            this->destroy();
     }
 
     void ControllableEntity::networkcallback_changedplayerID()
@@ -302,13 +302,13 @@ namespace orxonox
         if (this->camera_)
         {
             this->camera_->detachFromParent();
-            delete this->camera_;
+            this->camera_->destroy();
             this->camera_ = 0;
         }
 
         if (this->hud_)
         {
-            delete this->hud_;
+            this->hud_->destroy();
             this->hud_ = 0;
         }
     }

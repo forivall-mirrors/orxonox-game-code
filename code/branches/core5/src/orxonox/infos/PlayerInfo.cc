@@ -65,7 +65,7 @@ namespace orxonox
 
             if (this->controller_)
             {
-                delete this->controller_;
+                this->controller_->destroy();
                 this->controller_ = 0;
             }
 
@@ -130,7 +130,7 @@ namespace orxonox
     {
         if (this->controller_)
         {
-            delete this->controller_;
+            this->controller_->destroy();
             this->controller_ = 0;
         }
         this->controller_ = this->defaultController_.fabricate(this);
