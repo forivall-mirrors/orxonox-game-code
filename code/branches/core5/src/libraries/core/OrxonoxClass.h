@@ -58,6 +58,8 @@ namespace orxonox
             OrxonoxClass();
             virtual ~OrxonoxClass();
 
+            void destroy();
+
             /** @brief Function to collect the SetConfigValue-macro calls. */
             void setConfigValues() {};
 
@@ -91,6 +93,9 @@ namespace orxonox
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
 
+            inline unsigned int getReferenceCount() const
+                { return this->referenceCount_; }
+
             /**
             @brief
                 Returns a valid pointer of any derived type that is
@@ -116,9 +121,19 @@ namespace orxonox
             }
 
         private:
+            /** @brief Increments the reference counter (for smart pointers). */
+            inline void incrementReferenceCount()
+                { ++this->referenceCount_; }
+            /** @brief Decrements the reference counter (for smart pointers). */
+            inline void decrementReferenceCount()
+                { --this->referenceCount_; if (this->referenceCount_ == 0 && this->requestedDestruction_) { delete this; } }
+
             Identifier* identifier_;                   //!< The Identifier of the object
             std::set<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList* metaList_;                 //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
+            unsigned int referenceCount_;              //!< Counts the references from smart pointers to this object
+            bool requestedDestruction_;                //!< Becomes true after someone called delete on this object
+
             //! 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };

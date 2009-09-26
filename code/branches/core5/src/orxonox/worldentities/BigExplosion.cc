@@ -332,11 +332,6 @@ namespace orxonox
         }
     }
 
-    void BigExplosion::destroy()
-    {
-        delete this;
-    }
-
 /* TODO
 
     void BigExplosion::setDebrisMeshes()

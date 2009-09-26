@@ -135,11 +135,6 @@ namespace orxonox
         }
     }
 
-    void ExplosionChunk::destroy()
-    {
-        delete this;
-    }
-
     void ExplosionChunk::tick(float dt)
     {
         static const unsigned int CHANGES_PER_SECOND = 5;

@@ -56,7 +56,6 @@ namespace orxonox
             void LODchanged();
             void checkStop();
             void stop();
-            void destroy();
             void init();
             void initZero();
 
@@ -97,8 +96,8 @@ namespace orxonox
             ParticleInterface*    explosionSmoke_;
             ParticleInterface*    explosionFire_;
 
-            LODParticle::Value      LOD_;
-            Timer<BigExplosion> destroyTimer_;
+            LODParticle::Value    LOD_;
+            Timer<BigExplosion>   destroyTimer_;
     };
 }
 

@@ -42,12 +42,8 @@ namespace orxonox
             MuzzleFlash(BaseObject* creator);
             virtual ~MuzzleFlash() {}
 
-
-
         private:
-            void destroy();
             Timer<MuzzleFlash> delayTimer_;
-
     };
 }
 

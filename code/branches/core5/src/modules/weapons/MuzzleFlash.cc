@@ -40,14 +40,7 @@ namespace orxonox
     {
         RegisterObject(MuzzleFlash);
         this->setScale(0.1f);
-        
+
         this->delayTimer_.setTimer(0.1f, false, this, createExecutor(createFunctor(&MuzzleFlash::destroy)));
-
     }
-
-    void MuzzleFlash::destroy()
-    {
-        delete this;
-    }
- 
 }

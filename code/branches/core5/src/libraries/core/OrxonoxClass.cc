@@ -44,6 +44,8 @@ namespace orxonox
         this->identifier_ = 0;
         this->parents_ = 0;
         this->metaList_ = new MetaObjectList();
+        this->referenceCount_ = 0;
+        this->requestedDestruction_ = false;
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */
@@ -54,6 +56,15 @@ namespace orxonox
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
         if (this->parents_)
             delete this->parents_;
+    }
+
+    /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */
+    void OrxonoxClass::destroy()
+    {
+        if (this->referenceCount_ > 0)
+            this->requestedDestruction_ = true;
+        else
+            delete this;
     }
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */

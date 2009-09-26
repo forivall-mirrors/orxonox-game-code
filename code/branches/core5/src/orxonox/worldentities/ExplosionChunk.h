@@ -54,12 +54,11 @@ namespace orxonox
             void LODchanged();
             void checkStop();
             void stop();
-            void destroy();
 
             bool                  bStop_;
             ParticleInterface*    fire_;
             ParticleInterface*    smoke_;
-            LODParticle::Value      LOD_;
+            LODParticle::Value    LOD_;
             Timer<ExplosionChunk> destroyTimer_;
     };
 }

@@ -142,7 +142,8 @@ namespace orxonox
                 @param object The object owning the timer and the function
                 @param exeuctor A executor of the function to call
             */
-            Timer(float interval, bool bLoop, T* object, ExecutorMember<T>* exeuctor, bool bKillAfterCall = false)
+            template <class O>
+            Timer(float interval, bool bLoop, T* object, ExecutorMember<O>* exeuctor, bool bKillAfterCall = false)
             {
                 this->setTimer(interval, bLoop, object, exeuctor, bKillAfterCall);
             }
@@ -154,7 +155,8 @@ namespace orxonox
                 @param object The object owning the timer and the function
                 @param exeuctor A executor of the function to call
             */
-            void setTimer(float interval, bool bLoop, T* object, ExecutorMember<T>* executor, bool bKillAfterCall = false)
+            template <class O>
+            void setTimer(float interval, bool bLoop, T* object, ExecutorMember<O>* executor, bool bKillAfterCall = false)
             {
                 this->deleteExecutor();
 
