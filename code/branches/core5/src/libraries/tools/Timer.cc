@@ -66,7 +66,7 @@ namespace orxonox
     void executeDelayedCommand(StaticTimer* timer, const std::string& command)
     {
         CommandExecutor::execute(command);
-        delete timer;
+        timer->destroy();
         delaytimerset.erase(timer);
     }
 
@@ -76,7 +76,7 @@ namespace orxonox
     void killdelays()
     {
         for (std::set<StaticTimer*>::iterator it = delaytimerset.begin(); it != delaytimerset.end(); ++it)
-            delete (*it);
+            (*it)->destroy();
 
         delaytimerset.clear();
     }
@@ -108,14 +108,14 @@ namespace orxonox
     /**
         @brief Executes the executor.
     */
-    void TimerBase::run() const
+    void TimerBase::run()
     {
         bool temp = this->bKillAfterCall_; // to avoid errors with bKillAfterCall_=false and an exutors which destroy the timer
 
         (*this->executor_)();
 
         if (temp)
-            delete this;
+            this->destroy();
     }
 
     /**

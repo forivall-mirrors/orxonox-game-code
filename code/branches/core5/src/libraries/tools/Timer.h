@@ -79,7 +79,7 @@ namespace orxonox
         public:
             ~TimerBase();
 
-            void run() const;
+            void run();
             void deleteExecutor();
 
             /** @brief Starts the Timer: Function-call after 'interval' seconds. */
