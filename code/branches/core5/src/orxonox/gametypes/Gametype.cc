@@ -421,6 +421,8 @@ namespace orxonox
                 delete (*(it++));
                 ++i;
             }
+            else
+                ++it;
         }
     }
 
