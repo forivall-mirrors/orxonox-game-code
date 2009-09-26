@@ -92,7 +92,7 @@ namespace orxonox
             {
                 if (T::singletonPtr_s)
                 {
-                    delete T::singletonPtr_s;
+                    T::singletonPtr_s->destroy();
                     T::singletonPtr_s = 0;
                 }
             }
