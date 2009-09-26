@@ -52,6 +52,8 @@ namespace orxonox
 
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
+        this->xmlfile_ = 0;
+        this->ambientsound_ = 0;
     }
 
     Level::~Level()
@@ -64,7 +66,7 @@ namespace orxonox
             if (this->xmlfile_)
                 Loader::unload(this->xmlfile_);
 
-            if(this->ambientsound_ != NULL)
+            if (this->ambientsound_ != NULL)
                 delete this->ambientsound_;
         }
     }
