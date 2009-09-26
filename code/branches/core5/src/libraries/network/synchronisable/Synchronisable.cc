@@ -200,7 +200,7 @@ namespace orxonox
     assert(getSynchronisable(objectID)->objectID==objectID);
     Synchronisable *s = getSynchronisable(objectID);
     if(s)
-      delete s;
+      s->destroy(); // or delete?
     else
       return false;
     return true;

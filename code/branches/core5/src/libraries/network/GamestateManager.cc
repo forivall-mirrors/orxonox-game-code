@@ -76,7 +76,7 @@ namespace orxonox
       for( it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
         delete (*it2).second;
     }
-    delete this->trafficControl_;
+    this->trafficControl_->destroy();
 //     delete this->threadMutex_;
 //     delete this->threadPool_;
   }
