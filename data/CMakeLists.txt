@@ -24,7 +24,7 @@
  #    Default search paths are: ../../data and ../data_extern
  #
 
-# For dev runs we've got two data directory. The one from the other repository root folder
+# For dev runs we've got two data directories. The one from the other repository root folder
 # is called EXTERNAL_DATA
 SET(DATA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 SET(DATA_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
