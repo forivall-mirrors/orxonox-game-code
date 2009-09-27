@@ -35,6 +35,8 @@
 #include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/Map.h"
+#include "Radar.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -55,6 +57,8 @@ namespace orxonox
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
     SetConsoleCommand(HumanController, dropItems,     true);
     SetConsoleCommand(HumanController, useItem,       true);
+    SetConsoleCommand(HumanController, cycleNavigationFocus,   true);
+    SetConsoleCommand(HumanController, releaseNavigationFocus, true);
 
     CreateUnloadableFactory(HumanController);
 
@@ -198,5 +202,17 @@ namespace orxonox
             return orxonox_cast<Pawn*>(HumanController::localController_s->getControllableEntity());
         else
             return NULL;
+    }
+
+    void HumanController::cycleNavigationFocus()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->getScene()->getRadar()->cycleFocus();
+    }
+
+    void HumanController::releaseNavigationFocus()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->getScene()->getRadar()->releaseFocus();
     }
 }

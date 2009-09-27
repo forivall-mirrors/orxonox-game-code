@@ -37,6 +37,7 @@
 #include "tools/DynamicLines.h"
 #include "worldentities/WorldEntity.h"
 #include "Radar.h"
+#include "Scene.h"
 #include "overlays/Map.h"
 
 namespace orxonox
@@ -134,7 +135,7 @@ namespace orxonox
 
     void RadarViewable::setRadarObjectDescription(const std::string& str)
     {
-        Radar* radar = Radar::getInstancePtr();
+        Radar* radar = this->getWorldEntity()->getScene()->getRadar();
         if (radar)
             this->radarObjectShape_ = radar->addObjectDescription(str);
         else

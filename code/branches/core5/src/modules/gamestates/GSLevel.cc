@@ -47,7 +47,6 @@
 #include "core/XMLFile.h"
 
 #include "tools/interfaces/Tickable.h"
-#include "Radar.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
@@ -66,7 +65,6 @@ namespace orxonox
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
-        , radar_(0)
         , cameraManager_(0)
     {
         RegisterObject(GSLevel);
@@ -103,9 +101,6 @@ namespace orxonox
 
             // create the global CameraManager
             this->cameraManager_ = new CameraManager(GraphicsManager::getInstance().getViewport());
-
-            // Start the Radar
-            this->radar_ = new Radar();
         }
 
         this->playerManager_ = new PlayerManager();
@@ -185,12 +180,6 @@ namespace orxonox
 
         if (GameMode::isMaster())
             this->unloadLevel();
-
-        if (this->radar_)
-        {
-            this->radar_->destroy();
-            this->radar_ = 0;
-        }
 
         if (this->cameraManager_)
         {

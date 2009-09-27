@@ -57,6 +57,8 @@ namespace orxonox
             static void mouseLook();
             static void dropItems();
             static void useItem();
+            static void cycleNavigationFocus();
+            static void releaseNavigationFocus();
 
             static void suicide();
 
