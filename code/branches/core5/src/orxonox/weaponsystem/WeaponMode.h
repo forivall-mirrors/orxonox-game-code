@@ -35,7 +35,7 @@
 #include <string>
 #include "util/Math.h"
 #include "core/BaseObject.h"
-#include "core/Identifier.h"
+#include "core/SubClassIdentifier.h"
 #include "tools/Timer.h"
 
 namespace orxonox
