@@ -131,6 +131,11 @@ namespace orxonox
     {
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
         // TODO: Destroy the console command
+
+        // Undeclare the resources
+        Loader::unload(resources_.get());
+        if (Core::isDevelopmentRun())
+            Loader::unload(extResources_.get());
     }
 
     void GraphicsManager::setConfigValues()
