@@ -50,6 +50,7 @@ namespace orxonox
         void startServer();
         void startClient();
         void startDedicated();
+	void startMainMenu();
 
     private:
         InputState*       inputState_;
@@ -61,6 +62,7 @@ namespace orxonox
         ConsoleCommand* ccStartServer_;
         ConsoleCommand* ccStartClient_;
         ConsoleCommand* ccStartDedicated_;
+        ConsoleCommand* ccStartMainMenu_;
 
         // ambient sound for the main menu
         SoundMainMenu* ambient_;

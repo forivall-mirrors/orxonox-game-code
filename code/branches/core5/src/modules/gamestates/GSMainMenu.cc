@@ -98,6 +98,12 @@ namespace orxonox
             this->ccStartDedicated_ = createConsoleCommand(functor, "startDedicated");
             CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
         }
+        {
+            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startMainMenu);
+            functor->setObject(this);
+            this->ccStartMainMenu_ = createConsoleCommand(functor, "startMainMenu");
+            CommandExecutor::addConsoleCommandShortcut(this->ccStartMainMenu_);
+        }
 
         InputManager::getInstance().enterState("mainMenu");
 
@@ -154,5 +160,12 @@ namespace orxonox
         Game::getInstance().popState();
         Game::getInstance().popState();
         Game::getInstance().requestStates("dedicated, level");
+    }
+    void GSMainMenu::startMainMenu()
+    {
+        // HACK - HACK
+        Game::getInstance().popState();
+        Game::getInstance().popState();
+        Game::getInstance().requestStates("mainmenu");
     }
 }
