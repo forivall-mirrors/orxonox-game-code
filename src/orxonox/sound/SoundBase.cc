@@ -96,7 +96,7 @@ namespace orxonox
 
             if(alGetError() != AL_NO_ERROR)
             {
-                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->source_ << std::endl;
+                 COUT(2) << "Sound: OpenAL: Error playing sound " << this->source_ << std::endl;
             }
         }
     }
