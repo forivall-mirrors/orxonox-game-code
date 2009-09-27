@@ -41,33 +41,43 @@ namespace orxonox
     class SmartPtr
     {
         public:
-            inline SmartPtr() : pointer_(0)
+            inline SmartPtr() : pointer_(0), base_(0)
             {
             }
 
-            inline SmartPtr(T* pointer) : pointer_(pointer)
+            inline SmartPtr(int) : pointer_(0), base_(0)
             {
-                if (this->pointer_)
-                    this->pointer_->incrementReferenceCount();
             }
 
-            inline SmartPtr(const SmartPtr& other) : pointer_(other.pointer_)
+            inline SmartPtr(T* pointer, bool bAddRef = true) : pointer_(pointer), base_(pointer)
             {
-                if (this->pointer_)
-                    this->pointer_->incrementReferenceCount();
+                if (this->base_ && bAddRef)
+                    this->base_->incrementReferenceCount();
+            }
+
+            inline SmartPtr(const SmartPtr& other) : pointer_(other.pointer_), base_(other.base_)
+            {
+                if (this->base_)
+                    this->base_->incrementReferenceCount();
             }
 
             template <class O>
-            inline SmartPtr(const SmartPtr<O>& other) : pointer_(other.get())
+            inline SmartPtr(const SmartPtr<O>& other) : pointer_(other.get()), base_(other.base_)
             {
-                if (this->pointer_)
-                    this->pointer_->incrementReferenceCount();
+                if (this->base_)
+                    this->base_->incrementReferenceCount();
             }
 
             inline ~SmartPtr()
             {
-                if (this->pointer_)
-                    this->pointer_->decrementReferenceCount();
+                if (this->base_)
+                    this->base_->decrementReferenceCount();
+            }
+            
+            inline const SmartPtr& operator=(int)
+            {
+                SmartPtr(0).swap(*this);
+                return *this;
             }
 
             inline const SmartPtr& operator=(T* pointer)
@@ -95,7 +105,7 @@ namespace orxonox
             }
 
             inline operator T*() const
-            {std::cout << "(implizit)";
+            {
                 return this->pointer_;
             }
 
@@ -116,9 +126,16 @@ namespace orxonox
 
             inline void swap(SmartPtr& other)
             {
-                T* temp = this->pointer_;
-                this->pointer_ = other.pointer_;
-                other.pointer_ = temp;
+                {
+                    T* temp = this->pointer_;
+                    this->pointer_ = other.pointer_;
+                    other.pointer_ = temp;
+                }
+                {
+                    OrxonoxClass* temp = this->base_;
+                    this->base_ = other.base_;
+                    other.base_ = temp;
+                }
             }
 
             inline void reset()
@@ -128,6 +145,7 @@ namespace orxonox
 
         private:
             T* pointer_;
+            OrxonoxClass* base_;
     };
 
     template <class A, class B>

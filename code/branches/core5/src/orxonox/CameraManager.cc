@@ -52,7 +52,8 @@ namespace orxonox
     CameraManager::~CameraManager()
     {
         if (this->fallbackCamera_)
-            this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
+            this->fallbackCameraScene_->getSceneManager()->destroyCamera(this->fallbackCamera_);
+        GUIManager::getInstance().setCamera(0);
     }
 
     Camera* CameraManager::getActiveCamera() const
@@ -73,7 +74,7 @@ namespace orxonox
             this->cameraList_.front()->removeFocus();
         else if (this->fallbackCamera_)
         {
-            this->fallbackCamera_->getSceneManager()->destroyCamera(this->fallbackCamera_);
+            this->fallbackCameraScene_->getSceneManager()->destroyCamera(this->fallbackCamera_);
             this->fallbackCamera_ = 0;
         }
 
@@ -106,7 +107,10 @@ namespace orxonox
             {
                 // there are no more cameras, create a fallback
                 if (!this->fallbackCamera_)
-                    this->fallbackCamera_ = camera->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
+                {
+                    this->fallbackCameraScene_ = camera->getScene();
+                    this->fallbackCamera_ = this->fallbackCameraScene_->getSceneManager()->createCamera(getUniqueNumberString());
+                }
                 this->useCamera(this->fallbackCamera_);
             }
         }

@@ -41,6 +41,7 @@
 #include <list>
 #include "util/OgreForwardRefs.h"
 #include "util/Singleton.h"
+#include "core/SmartPtr.h"
 
 namespace orxonox
 {
@@ -66,6 +67,7 @@ namespace orxonox
             std::list<Camera*>    cameraList_;
             Ogre::Viewport*       viewport_;
             Ogre::Camera*         fallbackCamera_;
+            SmartPtr<Scene>       fallbackCameraScene_;
 
             static CameraManager* singletonPtr_s;
     };

@@ -54,7 +54,7 @@ namespace orxonox
 //        if (!this->requestedDestruction_)
 //            COUT(2) << "Warning: Destroyed object without destroy() (" << this->getIdentifier()->getName() << ")" << std::endl;
 
-        assert(this->referenceCount_ == 0);
+        assert(this->referenceCount_ <= 0);
 
         delete this->metaList_;
 

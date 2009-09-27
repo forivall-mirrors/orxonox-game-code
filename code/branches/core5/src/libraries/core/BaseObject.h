@@ -52,6 +52,7 @@
 #include "util/mbool.h"
 #include "OrxonoxClass.h"
 #include "Super.h"
+#include "SmartPtr.h"
 
 namespace orxonox
 {
@@ -133,8 +134,8 @@ namespace orxonox
             inline void setCreator(BaseObject* creator) { this->creator_ = creator; }
             inline BaseObject* getCreator() const { return this->creator_; }
 
-            inline void setScene(Scene* scene) { this->scene_ = scene; }
-            inline Scene* getScene() const { return this->scene_; }
+            inline void setScene(const SmartPtr<Scene>& scene) { this->scene_ = scene; }
+            inline const SmartPtr<Scene>& getScene() const { return this->scene_; }
 
             inline void setGametype(Gametype* gametype)
             {
@@ -193,7 +194,7 @@ namespace orxonox
             std::string            loaderIndentation_;         //!< Indentation of the debug output in the Loader
             Namespace*             namespace_;
             BaseObject*            creator_;
-            Scene*                 scene_;
+            SmartPtr<Scene>        scene_;
             Gametype*              gametype_;
             Gametype*              oldGametype_;
             std::set<Template*>    templates_;

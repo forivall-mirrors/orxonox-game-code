@@ -134,7 +134,7 @@ namespace orxonox
             Identifier* identifier_;                   //!< The Identifier of the object
             std::set<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList* metaList_;                 //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
-            unsigned int referenceCount_;              //!< Counts the references from smart pointers to this object
+            int referenceCount_;                       //!< Counts the references from smart pointers to this object
             bool requestedDestruction_;                //!< Becomes true after someone called delete on this object
 
             //! 'Fast map' that holds this-pointers of all derived types

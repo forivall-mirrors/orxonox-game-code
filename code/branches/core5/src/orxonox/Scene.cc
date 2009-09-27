@@ -53,7 +53,7 @@ namespace orxonox
     {
         RegisterObject(Scene);
 
-        this->setScene(this);
+        this->setScene(SmartPtr<Scene>(this, false));
         this->bShadows_ = true;
 
         if (GameMode::showsGraphics())
