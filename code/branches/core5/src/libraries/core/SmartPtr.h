@@ -33,7 +33,9 @@
 
 #include "CorePrereqs.h"
 
+#include <cassert>
 #include <ostream>
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -111,11 +113,13 @@ namespace orxonox
 
             inline T* operator->() const
             {
+                assert(this->pointer_ != 0);
                 return this->pointer_;
             }
 
             inline T& operator*() const
             {
+                assert(this->pointer_ != 0);
                 return *this->pointer_;
             }
 
