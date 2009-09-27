@@ -165,6 +165,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
                    ${_${_target_name}_files})
   ENDIF()
 
+  # Change library prefix to "lib"
+  IF(MSVC AND ${_target_type} STREQUAL "LIBRARY")
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
+      PREFIX "lib"
+    )
+  ENDIF()
+
   # MODULE B
   IF (_arg_MODULE)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
