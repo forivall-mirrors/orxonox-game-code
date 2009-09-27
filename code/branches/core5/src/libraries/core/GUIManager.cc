@@ -61,7 +61,7 @@ namespace orxonox
     class CEGUILogger : public CEGUI::DefaultLogger
     {
     public:
-	    void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
+        void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
         {
             int orxonoxLevel = CEGUI::Standard;
             switch (level)

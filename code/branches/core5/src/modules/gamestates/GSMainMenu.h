@@ -50,7 +50,7 @@ namespace orxonox
         void startServer();
         void startClient();
         void startDedicated();
-	void startMainMenu();
+        void startMainMenu();
 
     private:
         InputState*       inputState_;

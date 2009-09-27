@@ -118,10 +118,10 @@ namespace orxonox
     }
 
     bool MemoryArchive::exists(const String& filename)
-	{
+    {
         const FileMap& files = archives_s[this->getName()];
         return files.find(filename) != files.end();
-	}
+    }
 
     const Ogre::String& MemoryArchiveFactory::getType(void) const
     {
