@@ -195,8 +195,6 @@ namespace orxonox
 
         if (this->scope_GSLevel_)
         {
-            InputManager::getInstance().destroyState("guiKeysOnly");
-            InputManager::getInstance().destroyState("guiMouseOnly");
             delete this->scope_GSLevel_;
             this->scope_GSLevel_ = NULL;
         }
@@ -207,6 +205,8 @@ namespace orxonox
             guiMouseOnlyInputState_->setHandler(0);
             guiKeysOnlyInputState_->setHandler(0);
             InputManager::getInstance().destroyState("game");
+            InputManager::getInstance().destroyState("guiKeysOnly");
+            InputManager::getInstance().destroyState("guiMouseOnly");
             if (this->keyBinder_)
             {
                 this->keyBinder_->destroy();

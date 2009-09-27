@@ -37,10 +37,9 @@
 #ifndef _SubclassIdentifier_H__
 #define _SubclassIdentifier_H__
 
-#include <cstdlib>
-
 #include "CorePrereqs.h"
 
+#include <cstdlib>
 #include "util/Debug.h"
 #include "Identifier.h"
 
