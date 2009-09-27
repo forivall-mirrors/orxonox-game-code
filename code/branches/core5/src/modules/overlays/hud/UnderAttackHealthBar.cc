@@ -77,7 +77,7 @@ namespace orxonox
         {
             this->owner_ = player;
 
-            UnderAttack* ua = orxonox_cast<UnderAttack*>(player->getGametype());
+            UnderAttack* ua = orxonox_cast<UnderAttack*>(player->getGametype().get());
             if (ua)
             {
                 this->setOwner(ua->getDestroyer());

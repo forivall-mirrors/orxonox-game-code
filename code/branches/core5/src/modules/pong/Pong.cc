@@ -157,7 +157,7 @@ namespace orxonox
             this->center_->fireEvent();
 
             if (player)
-                this->gtinfo_.sendAnnounceMessage(player->getName() + " scored");
+                this->gtinfo_->sendAnnounceMessage(player->getName() + " scored");
         }
 
         if (this->ball_)

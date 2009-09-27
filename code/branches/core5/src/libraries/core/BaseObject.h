@@ -137,7 +137,7 @@ namespace orxonox
             inline void setScene(const SmartPtr<Scene>& scene) { this->scene_ = scene; }
             inline const SmartPtr<Scene>& getScene() const { return this->scene_; }
 
-            inline void setGametype(Gametype* gametype)
+            inline void setGametype(const SmartPtr<Gametype>& gametype)
             {
                 if (gametype != this->gametype_)
                 {
@@ -146,7 +146,7 @@ namespace orxonox
                     this->changedGametype();
                 }
             }
-            inline Gametype* getGametype() const { return this->gametype_; }
+            inline const SmartPtr<Gametype>& getGametype() const { return this->gametype_; }
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual void changedGametype() {}
 
@@ -195,7 +195,7 @@ namespace orxonox
             Namespace*             namespace_;
             BaseObject*            creator_;
             SmartPtr<Scene>        scene_;
-            Gametype*              gametype_;
+            SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
             std::set<Template*>    templates_;
             std::map<BaseObject*,  std::string> eventListeners_;

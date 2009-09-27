@@ -80,9 +80,9 @@ namespace orxonox
                     continue;
 
                 if (it->second == 0)
-                    this->gtinfo_.sendAnnounceMessage("You have won the match!", it->first->getClientID());
+                    this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
                 else
-                    this->gtinfo_.sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+                    this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
             }
         }
     }
@@ -163,9 +163,9 @@ namespace orxonox
                         continue;
 
                     if (it->second == 1)
-                        this->gtinfo_.sendAnnounceMessage("You have won the match!", it->first->getClientID());
+                        this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
                     else
-                        this->gtinfo_.sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+                        this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
                 }
             }
 
@@ -177,7 +177,7 @@ namespace orxonox
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
 */
-                this->gtinfo_.sendAnnounceMessage(message);
+                this->gtinfo_->sendAnnounceMessage(message);
 
                 if (timesequence_ >= 30 && timesequence_ <= 60)
                 {

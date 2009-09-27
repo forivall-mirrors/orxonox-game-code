@@ -44,7 +44,7 @@ namespace orxonox
 
         this->state_ = BaseState::Uncontrolled;
 
-        TeamBaseMatch* gametype = orxonox_cast<TeamBaseMatch*>(this->getGametype());
+        TeamBaseMatch* gametype = orxonox_cast<TeamBaseMatch*>(this->getGametype().get());
         if (gametype)
         {
             gametype->addBase(this);
@@ -57,7 +57,7 @@ namespace orxonox
     {
         this->fireEvent();
 
-        TeamDeathmatch* gametype = orxonox_cast<TeamDeathmatch*>(this->getGametype());
+        TeamDeathmatch* gametype = orxonox_cast<TeamDeathmatch*>(this->getGametype().get());
         if (!gametype)
             return;
 

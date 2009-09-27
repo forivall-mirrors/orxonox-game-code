@@ -161,8 +161,12 @@ namespace orxonox
         PlayerInfo::changedGametype();
 
         if (this->isInitialized() && this->isLocalPlayer())
-            if (this->getGametype()->getHUDTemplate() != "")
+        {
+            if (this->getGametype() && this->getGametype()->getHUDTemplate() != "")
                 this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
+            else
+                this->setGametypeHUDTemplate("");
+        }
     }
 
     void HumanPlayer::updateHumanHUD()

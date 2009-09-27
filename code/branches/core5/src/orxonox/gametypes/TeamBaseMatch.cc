@@ -66,12 +66,12 @@ namespace orxonox
                 if (teamnr == 0)
                 {
                     base->setState(BaseState::ControlTeam1);
-                    this->gtinfo_.sendAnnounceMessage("The red team captured a base");
+                    this->gtinfo_->sendAnnounceMessage("The red team captured a base");
                 }
                 if (teamnr == 1)
                 {
                     base->setState(BaseState::ControlTeam2);
-                    this->gtinfo_.sendAnnounceMessage("The blue team captured a base");
+                    this->gtinfo_->sendAnnounceMessage("The blue team captured a base");
                 }
             }
 
@@ -193,9 +193,9 @@ namespace orxonox
                     continue;
 
                 if (it->second == winningteam)
-                    this->gtinfo_.sendAnnounceMessage("You have won the match!", it->first->getClientID());
+                    this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
                 else
-                    this->gtinfo_.sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+                    this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
             }
 
             this->end();

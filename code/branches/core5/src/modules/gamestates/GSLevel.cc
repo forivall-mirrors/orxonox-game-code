@@ -51,6 +51,7 @@
 #include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "infos/HumanPlayer.h"
 
 namespace orxonox
 {
@@ -241,6 +242,9 @@ namespace orxonox
 
     void GSLevel::unloadLevel()
     {
+        for (ObjectList<HumanPlayer>::iterator it = ObjectList<HumanPlayer>::begin(); it; ++it)
+            it->setGametype(0);
+        
         Loader::unload(startFile_s);
 
         delete startFile_s;
