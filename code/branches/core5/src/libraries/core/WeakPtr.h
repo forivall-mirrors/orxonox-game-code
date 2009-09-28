@@ -140,6 +140,11 @@ namespace orxonox
 
             inline void swap(WeakPtr& other)
             {
+                if (this->base_)
+                    this->base_->unregisterWeakPtr(this);
+                if (other.base_)
+                    other.base_->unregisterWeakPtr(&other);
+                
                 {
                     T* temp = this->pointer_;
                     this->pointer_ = other.pointer_;
@@ -150,6 +155,11 @@ namespace orxonox
                     this->base_ = other.base_;
                     other.base_ = temp;
                 }
+
+                if (this->base_)
+                    this->base_->registerWeakPtr(this);
+                if (other.base_)
+                    other.base_->registerWeakPtr(&other);
             }
 
             inline void reset()
@@ -170,7 +180,8 @@ namespace orxonox
         private:
             inline void objectDeleted()
             {
-                this->reset();
+                this->base_ = 0;
+                this->pointer_ = 0;
                 if (this->callback_)
                     (*this->callback_)();
             }
