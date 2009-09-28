@@ -137,7 +137,7 @@ namespace orxonox
             {
                 ControllableEntity* oldentity = it->first->getControllableEntity();
 
-                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity->getCreator());
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity);
                 if (oldentity->getCamera())
                 {
                     entity->setPosition(oldentity->getCamera()->getWorldPosition());
