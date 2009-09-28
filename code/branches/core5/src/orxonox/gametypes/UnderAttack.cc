@@ -45,6 +45,7 @@ namespace orxonox
         this->gameTime_ = 180;
         this->teams_ = 2;
         this->destroyer_ = 0;
+        this->destroyer_.addCallback(createFunctor(&UnderAttack::killedDestroyer)->setObject(this));
         this->gameEnded_ = false;
 
         this->setHUDTemplate("UnderAttackHUD");
@@ -64,26 +65,23 @@ namespace orxonox
     }
 
 
-    void UnderAttack::destroyedPawn(Pawn* pawn)
+    void UnderAttack::killedDestroyer()
     {
-        if (pawn == this->destroyer_)
+        this->end(); //end gametype
+        std::string message = "Ship destroyed! Team 0 has won!";
+        COUT(0) << message << std::endl;
+        Host::Broadcast(message);
+        this->gameEnded_ = true;
+
+        for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
         {
-            this->end(); //end gametype
-            std::string message = "Ship destroyed! Team 0 has won!";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
-            this->gameEnded_ = true;
+            if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                continue;
 
-            for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
-            {
-                if (it->first->getClientID() == CLIENTID_UNKNOWN)
-                    continue;
-
-                if (it->second == 0)
-                    this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
-                else
-                    this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
-            }
+            if (it->second == 0)
+                this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
+            else
+                this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
         }
     }
 
