@@ -65,7 +65,7 @@ namespace orxonox
             
         // reset all weak pointers pointing to this object
         for (std::set<WeakPtr<OrxonoxClass>*>::iterator it = this->weakPointers_.begin(); it != this->weakPointers_.end(); )
-            (*(it++))->reset();
+            (*(it++))->objectDeleted();
     }
 
     /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */

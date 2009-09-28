@@ -35,35 +35,38 @@
 
 #include <cassert>
 #include "OrxonoxClass.h"
+#include "Functor.h"
 
 namespace orxonox
 {
     template <class T>
     class WeakPtr
     {
+        friend class OrxonoxClass;
+        
         public:
-            inline WeakPtr() : pointer_(0), base_(0)
+            inline WeakPtr() : pointer_(0), base_(0), callback_(0)
             {
             }
 
-            inline WeakPtr(int) : pointer_(0), base_(0)
+            inline WeakPtr(int) : pointer_(0), base_(0), callback_(0)
             {
             }
 
-            inline WeakPtr(T* pointer) : pointer_(pointer), base_(pointer)
+            inline WeakPtr(T* pointer) : pointer_(pointer), base_(pointer), callback_(0)
             {
                 if (this->base_)
                     this->base_->registerWeakPtr(this);
             }
 
-            inline WeakPtr(const WeakPtr& other) : pointer_(other.pointer_), base_(other.base_)
+            inline WeakPtr(const WeakPtr& other) : pointer_(other.pointer_), base_(other.base_), callback_(0)
             {
                 if (this->base_)
                     this->base_->registerWeakPtr(this);
             }
 
             template <class O>
-            inline WeakPtr(const WeakPtr<O>& other) : pointer_(other.get()), base_(other.base_)
+            inline WeakPtr(const WeakPtr<O>& other) : pointer_(other.get()), base_(other.base_), callback_(0)
             {
                 if (this->base_)
                     this->base_->registerWeakPtr(this);
@@ -73,6 +76,9 @@ namespace orxonox
             {
                 if (this->base_)
                     this->base_->unregisterWeakPtr(this);
+                if (this->callback_)
+                    delete this->callback_;
+                    
             }
             
             inline const WeakPtr& operator=(int)
@@ -150,10 +156,28 @@ namespace orxonox
             {
                 WeakPtr().swap(*this);
             }
+            
+            inline void addCallback(Functor* callback)
+            {
+                this->callback_ = callback;
+            }
+            
+            inline Functor* getFunctor() const
+            {
+                return this->callback_;
+            }
 
         private:
+            inline void objectDeleted()
+            {
+                this->reset();
+                if (this->callback_)
+                    (*this->callback_)();
+            }
+        
             T* pointer_;
             OrxonoxClass* base_;
+            Functor* callback_;
     };
 
     template <class T>
