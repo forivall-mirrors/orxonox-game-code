@@ -28,91 +28,75 @@
 
 // Inspired by boost::intrusive_ptr by Peter Dimov
 
-#ifndef _SmartPtr_H__
-#define _SmartPtr_H__
+#ifndef _WeakPtr_H__
+#define _WeakPtr_H__
 
 #include "CorePrereqs.h"
 
 #include <cassert>
-
 #include "OrxonoxClass.h"
-#include "WeakPtr.h"
 
 namespace orxonox
 {
     template <class T>
-    class SmartPtr
+    class WeakPtr
     {
         public:
-            inline SmartPtr() : pointer_(0), base_(0)
+            inline WeakPtr() : pointer_(0), base_(0)
             {
             }
 
-            inline SmartPtr(int) : pointer_(0), base_(0)
+            inline WeakPtr(int) : pointer_(0), base_(0)
             {
             }
 
-            inline SmartPtr(T* pointer, bool bAddRef = true) : pointer_(pointer), base_(pointer)
-            {
-                if (this->base_ && bAddRef)
-                    this->base_->incrementReferenceCount();
-            }
-
-            inline SmartPtr(const SmartPtr& other) : pointer_(other.pointer_), base_(other.base_)
+            inline WeakPtr(T* pointer) : pointer_(pointer), base_(pointer)
             {
                 if (this->base_)
-                    this->base_->incrementReferenceCount();
+                    this->base_->registerWeakPtr(this);
+            }
+
+            inline WeakPtr(const WeakPtr& other) : pointer_(other.pointer_), base_(other.base_)
+            {
+                if (this->base_)
+                    this->base_->registerWeakPtr(this);
             }
 
             template <class O>
-            inline SmartPtr(const SmartPtr<O>& other) : pointer_(other.get()), base_(other.base_)
+            inline WeakPtr(const WeakPtr<O>& other) : pointer_(other.get()), base_(other.base_)
             {
                 if (this->base_)
-                    this->base_->incrementReferenceCount();
+                    this->base_->registerWeakPtr(this);
             }
 
-            template <class O>
-            inline SmartPtr(const WeakPtr<O>& other) : pointer_(other.get()), base_(other.getBase())
+            inline ~WeakPtr()
             {
                 if (this->base_)
-                    this->base_->incrementReferenceCount();
-            }
-
-            inline ~SmartPtr()
-            {
-                if (this->base_)
-                    this->base_->decrementReferenceCount();
+                    this->base_->unregisterWeakPtr(this);
             }
             
-            inline const SmartPtr& operator=(int)
+            inline const WeakPtr& operator=(int)
             {
-                SmartPtr(0).swap(*this);
+                WeakPtr(0).swap(*this);
                 return *this;
             }
 
-            inline const SmartPtr& operator=(T* pointer)
+            inline const WeakPtr& operator=(T* pointer)
             {
-                SmartPtr(pointer).swap(*this);
+                WeakPtr(pointer).swap(*this);
                 return *this;
             }
 
-            inline const SmartPtr& operator=(const SmartPtr& other)
+            inline const WeakPtr& operator=(const WeakPtr& other)
             {
-                SmartPtr(other).swap(*this);
-                return *this;
-            }
-
-            template <class O>
-            inline const SmartPtr& operator=(const SmartPtr<O>& other)
-            {
-                SmartPtr(other).swap(*this);
+                WeakPtr(other).swap(*this);
                 return *this;
             }
 
             template <class O>
-            inline const SmartPtr& operator=(const WeakPtr<O>& other)
+            inline const WeakPtr& operator=(const WeakPtr<O>& other)
             {
-                SmartPtr(other).swap(*this);
+                WeakPtr(other).swap(*this);
                 return *this;
             }
 
@@ -148,7 +132,7 @@ namespace orxonox
                 return (this->pointer_ == 0);
             }
 
-            inline void swap(SmartPtr& other)
+            inline void swap(WeakPtr& other)
             {
                 {
                     T* temp = this->pointer_;
@@ -164,7 +148,7 @@ namespace orxonox
 
             inline void reset()
             {
-                SmartPtr().swap(*this);
+                WeakPtr().swap(*this);
             }
 
         private:
@@ -173,28 +157,28 @@ namespace orxonox
     };
 
     template <class T>
-    void swap(SmartPtr<T>& a, SmartPtr<T>& b)
+    void swap(WeakPtr<T>& a, WeakPtr<T>& b)
     {
         a.swap(b);
     }
 
     template <class T, class U>
-    SmartPtr<T> static_pointer_cast(const SmartPtr<U>& p)
+    WeakPtr<T> static_pointer_cast(const WeakPtr<U>& p)
     {
         return static_cast<T*>(p.get());
     }
 
     template <class T, class U>
-    SmartPtr<T> const_pointer_cast(const SmartPtr<U>& p)
+    WeakPtr<T> const_pointer_cast(const WeakPtr<U>& p)
     {
         return const_cast<T*>(p.get());
     }
 
     template <class T, class U>
-    SmartPtr<T> dynamic_pointer_cast(const SmartPtr<U>& p)
+    WeakPtr<T> dynamic_pointer_cast(const WeakPtr<U>& p)
     {
         return dynamic_cast<T*>(p.get());
     }
 }
 
-#endif /* _SmartPtr_H__ */
+#endif /* _WeakPtr_H__ */

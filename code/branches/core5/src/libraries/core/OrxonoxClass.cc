@@ -35,6 +35,7 @@
 
 #include "MetaObjectList.h"
 #include "Identifier.h"
+#include "WeakPtr.h"
 
 namespace orxonox
 {
@@ -61,6 +62,10 @@ namespace orxonox
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
         if (this->parents_)
             delete this->parents_;
+            
+        // reset all weak pointers pointing to this object
+        for (std::set<WeakPtr<OrxonoxClass>*>::iterator it = this->weakPointers_.begin(); it != this->weakPointers_.end(); )
+            (*(it++))->reset();
     }
 
     /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */

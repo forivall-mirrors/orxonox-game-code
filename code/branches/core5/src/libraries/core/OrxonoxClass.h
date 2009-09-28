@@ -57,6 +57,9 @@ namespace orxonox
         template <class T>
         friend class SmartPtr;
 
+        template <class T>
+        friend class WeakPtr;
+
         public:
             OrxonoxClass();
             virtual ~OrxonoxClass();
@@ -130,12 +133,22 @@ namespace orxonox
             /** @brief Decrements the reference counter (for smart pointers). */
             inline void decrementReferenceCount()
                 { --this->referenceCount_; if (this->referenceCount_ == 0 && this->requestedDestruction_) { delete this; } }
+                
+            /** @brief Register a weak pointer which points to this object. */
+            template <class T>
+            inline void registerWeakPtr(WeakPtr<T>* pointer)
+                { this->weakPointers_.insert(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
+            /** @brief Unegister a weak pointer which pointed to this object before. */
+            template <class T>
+            inline void unregisterWeakPtr(WeakPtr<T>* pointer)
+                { this->weakPointers_.erase(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
 
             Identifier* identifier_;                   //!< The Identifier of the object
             std::set<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList* metaList_;                 //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
             int referenceCount_;                       //!< Counts the references from smart pointers to this object
             bool requestedDestruction_;                //!< Becomes true after someone called delete on this object
+            std::set<WeakPtr<OrxonoxClass>*> weakPointers_; //!< All weak pointers which point to this object (and like to get notified if it dies)
 
             //! 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
