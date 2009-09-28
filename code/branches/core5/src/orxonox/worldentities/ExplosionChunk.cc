@@ -78,7 +78,7 @@ namespace orxonox
             velocity *= rnd(60, 80);
             this->setVelocity(velocity);
 
-            this->destroyTimer_.setTimer(rnd(1, 2), false, this, createExecutor(createFunctor(&ExplosionChunk::stop)));
+            this->destroyTimer_.setTimer(rnd(1, 2), false, createExecutor(createFunctor(&ExplosionChunk::stop, this)));
         }
 
         this->registerVariables();
@@ -131,7 +131,7 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             this->bStop_ = true;
-            this->destroyTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&ExplosionChunk::destroy)));
+            this->destroyTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&ExplosionChunk::destroy, this)));
         }
     }
 

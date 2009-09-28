@@ -89,7 +89,7 @@ namespace orxonox
             velocity *= rnd(20, 30);
             this->setVelocity(velocity);
 
-            this->destroyTimer_.setTimer(rnd(2, 4), false, this, createExecutor(createFunctor(&BigExplosion::stop)));
+            this->destroyTimer_.setTimer(rnd(2, 4), false, createExecutor(createFunctor(&BigExplosion::stop, this)));
         }
         this->registerVariables();
     }
@@ -328,7 +328,7 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             this->bStop_ = true;
-            this->destroyTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&BigExplosion::destroy)));
+            this->destroyTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&BigExplosion::destroy, this)));
         }
     }
 

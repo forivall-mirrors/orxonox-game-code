@@ -113,7 +113,7 @@ namespace orxonox
         static const float rotationSpeed_s;     //!< Rotation speed of pickup
 
         float respawnTime_;                     //!< Time after which this gets re-actived.
-        Timer<PickupSpawner> respawnTimer_;     //!< Timer used for re-activating.
+        Timer respawnTimer_;                    //!< Timer used for re-activating.
     };
 }
 

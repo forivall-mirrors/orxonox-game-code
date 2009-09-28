@@ -51,7 +51,7 @@ namespace orxonox
         this->text_->setColour(ColourValue::White);
         this->text_->setPickPoint(Vector2(0.5, 0));
 
-        this->inittimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&UnderAttackHealthBar::init)));
+        this->inittimer_.setTimer(0.0f, false, createExecutor(createFunctor(&UnderAttackHealthBar::init, this)));
     }
 
     UnderAttackHealthBar::~UnderAttackHealthBar()

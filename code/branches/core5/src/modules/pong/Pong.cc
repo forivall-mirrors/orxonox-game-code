@@ -51,7 +51,7 @@ namespace orxonox
 
         this->setHUDTemplate("PongHUD");
 
-        this->starttimer_.setTimer(1.0, false, this, createExecutor(createFunctor(&Pong::startBall)));
+        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Pong::startBall, this)));
         this->starttimer_.stopTimer();
 
         this->botclass_ = Class(PongBot);

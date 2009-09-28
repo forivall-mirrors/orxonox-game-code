@@ -76,9 +76,7 @@ namespace orxonox
     class Mesh;
     class ParticleInterface;
     class Shader;
-    template <class T>
     class Timer;
-    class StaticTimer;
 }
 
 namespace Ogre

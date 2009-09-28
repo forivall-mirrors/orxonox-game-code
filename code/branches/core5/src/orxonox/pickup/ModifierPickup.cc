@@ -100,9 +100,9 @@ namespace orxonox
 
             if (this->duration_ > 0.0f)
             {
-                ExecutorMember<ModifierPickup>* executor = createExecutor(createFunctor(&ModifierPickup::timerCallback));
+                Executor* executor = createExecutor(createFunctor(&ModifierPickup::timerCallback, this));
                 executor->setDefaultValues(pawn);
-                this->timer_.setTimer(this->duration_, false, this, executor);
+                this->timer_.setTimer(this->duration_, false, executor);
             }
 
             return true;

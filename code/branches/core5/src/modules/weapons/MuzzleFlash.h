@@ -43,7 +43,7 @@ namespace orxonox
             virtual ~MuzzleFlash() {}
 
         private:
-            Timer<MuzzleFlash> delayTimer_;
+            Timer delayTimer_;
     };
 }
 

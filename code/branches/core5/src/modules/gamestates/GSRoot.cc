@@ -102,7 +102,7 @@ namespace orxonox
             Game::getInstance().requestState("ioConsole");
         }
 
-        for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; )
+        for (ObjectList<Timer>::iterator it = ObjectList<Timer>::begin(); it; )
             (it++)->tick(time);
 
         /*** HACK *** HACK ***/

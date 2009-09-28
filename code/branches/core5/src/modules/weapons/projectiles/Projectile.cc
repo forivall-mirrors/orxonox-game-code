@@ -60,7 +60,7 @@ namespace orxonox
             shape->setRadius(20);
             this->attachCollisionShape(shape);
 
-            this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+            this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Projectile::destroyObject, this)));
         }
     }
 

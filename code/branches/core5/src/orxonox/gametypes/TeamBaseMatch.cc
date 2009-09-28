@@ -41,8 +41,8 @@ namespace orxonox
     {
         RegisterObject(TeamBaseMatch);
 
-        this->scoreTimer_.setTimer(10, true, this, createExecutor(createFunctor(&TeamBaseMatch::winPoints)));
-        this->outputTimer_.setTimer(10, true, this, createExecutor(createFunctor(&TeamBaseMatch::showPoints)));
+        this->scoreTimer_.setTimer(10, true, createExecutor(createFunctor(&TeamBaseMatch::winPoints, this)));
+        this->outputTimer_.setTimer(10, true, createExecutor(createFunctor(&TeamBaseMatch::showPoints, this)));
 
         this->pointsTeam1_ = 0;
         this->pointsTeam2_ = 0;

@@ -70,7 +70,7 @@ namespace orxonox
             WeaponSlot* weaponSlot_;
             std::multimap<unsigned int, WeaponMode*> weaponmodes_;
 
-            Timer<Weapon> reloadTimer_;
+            Timer reloadTimer_;
             bool bReloading_;
             unsigned int reloadingWeaponmode_;
     };

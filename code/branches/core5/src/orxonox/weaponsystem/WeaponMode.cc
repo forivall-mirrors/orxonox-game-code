@@ -56,7 +56,7 @@ namespace orxonox
         this->bAutoReload_ = true;
         this->bParallelReload_ = true;
 
-        this->reloadTimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&WeaponMode::reloaded)));
+        this->reloadTimer_.setTimer(0.0f, false, createExecutor(createFunctor(&WeaponMode::reloaded, this)));
         this->reloadTimer_.stopTimer();
 
         this->damage_ = 0;

@@ -59,7 +59,7 @@ namespace orxonox
             ParticleInterface*    fire_;
             ParticleInterface*    smoke_;
             LODParticle::Value    LOD_;
-            Timer<ExplosionChunk> destroyTimer_;
+            Timer                 destroyTimer_;
     };
 }
 

@@ -97,7 +97,7 @@ namespace orxonox
             ParticleInterface*    explosionFire_;
 
             LODParticle::Value    LOD_;
-            Timer<BigExplosion>   destroyTimer_;
+            Timer                 destroyTimer_;
     };
 }
 

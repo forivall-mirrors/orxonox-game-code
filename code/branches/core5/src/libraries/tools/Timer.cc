@@ -41,7 +41,7 @@ namespace orxonox
     SetConsoleCommandShortcutExtern(delay);
     SetConsoleCommandShortcutExtern(killdelays);
 
-    static std::set<StaticTimer*> delaytimerset;
+    static std::set<Timer*> delaytimerset;
 
     /**
         @brief Calls a console command after 'delay' seconds.
@@ -50,7 +50,7 @@ namespace orxonox
     */
     void delay(float delay, const std::string& command)
     {
-        StaticTimer *delaytimer = new StaticTimer();
+        Timer* delaytimer = new Timer();
         delaytimerset.insert(delaytimer);
 
         ExecutorStatic* delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
@@ -63,7 +63,7 @@ namespace orxonox
         @param timer The timer to destroy after the command-execution
         @param command The command to execute
     */
-    void executeDelayedCommand(StaticTimer* timer, const std::string& command)
+    void executeDelayedCommand(Timer* timer, const std::string& command)
     {
         CommandExecutor::execute(command);
         timer->destroy();
@@ -75,7 +75,7 @@ namespace orxonox
     */
     void killdelays()
     {
-        for (std::set<StaticTimer*>::iterator it = delaytimerset.begin(); it != delaytimerset.end(); ++it)
+        for (std::set<Timer*>::iterator it = delaytimerset.begin(); it != delaytimerset.end(); ++it)
             (*it)->destroy();
 
         delaytimerset.clear();
@@ -84,7 +84,38 @@ namespace orxonox
     /**
         @brief Constructor: Sets the default-values.
     */
-    TimerBase::TimerBase()
+    Timer::Timer()
+    {
+        this->init();
+        RegisterObject(Timer);
+    }
+
+    /**
+        @brief Constructor: Initializes the Timer with given values.
+        @param interval The timer-interval in seconds
+        @param bLoop If true, the function gets called every 'interval' seconds
+        @param exeuctor A executor of the function to call
+    */
+    Timer::Timer(float interval, bool bLoop, Executor* executor, bool bKillAfterCall)
+    {
+        this->init();
+        RegisterObject(Timer);
+
+        this->setTimer(interval, bLoop, executor, bKillAfterCall);
+    }
+
+    /**
+        @brief Deletes the executor.
+    */
+    Timer::~Timer()
+    {
+        this->deleteExecutor();
+    }
+    
+    /**
+        @brief Initializes the Timer
+    */
+    void Timer::init()
     {
         this->executor_ = 0;
         this->interval_ = 0;
@@ -93,22 +124,12 @@ namespace orxonox
         this->bKillAfterCall_ = false;
 
         this->time_ = 0;
-
-        RegisterObject(TimerBase);
-    }
-
-    /**
-        @brief Deletes the executor.
-    */
-    TimerBase::~TimerBase()
-    {
-        this->deleteExecutor();
     }
 
     /**
         @brief Executes the executor.
     */
-    void TimerBase::run()
+    void Timer::run()
     {
         bool temp = this->bKillAfterCall_; // to avoid errors with bKillAfterCall_=false and an exutors which destroy the timer
 
@@ -121,7 +142,7 @@ namespace orxonox
     /**
         @brief Deletes the executor.
     */
-    void TimerBase::deleteExecutor()
+    void Timer::deleteExecutor()
     {
       if (this->executor_)
           delete this->executor_;
@@ -130,7 +151,7 @@ namespace orxonox
     /**
         @brief Updates the timer before the frames are rendered.
     */
-    void TimerBase::tick(const Clock& time)
+    void Timer::tick(const Clock& time)
     {
         if (this->bActive_)
         {

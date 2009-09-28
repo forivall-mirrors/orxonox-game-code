@@ -61,7 +61,7 @@ namespace orxonox
             PongCenterpoint* center_;
             PongBall* ball_;
             PongBat* bat_[2];
-            Timer<Pong> starttimer_;
+            Timer starttimer_;
     };
 }
 

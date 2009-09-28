@@ -95,8 +95,8 @@ namespace orxonox
             Vector3    overwrite_position_;
             Quaternion overwrite_orientation_;
 
-            Timer<MovableEntity> resynchronizeTimer_;
-            Timer<MovableEntity>* continuousResynchroTimer_;
+            Timer resynchronizeTimer_;
+            Timer* continuousResynchroTimer_;
 
             Pawn* owner_;
             float collisionDamage_;

@@ -88,7 +88,7 @@ namespace orxonox
             void stopParticleSpawner();
             void destroyParticleSpawner();
 
-            Timer<ParticleSpawner> timer_;
+            Timer timer_;
 
             bool  bSuppressStart_;
             bool  bAutostart_;

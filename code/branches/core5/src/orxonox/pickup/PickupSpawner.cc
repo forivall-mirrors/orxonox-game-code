@@ -165,8 +165,7 @@ namespace orxonox
 
                     if (this->respawnTime_ > 0.0f)
                     {
-                        ExecutorMember<PickupSpawner>* executor = createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback));
-                        this->respawnTimer_.setTimer(this->respawnTime_, false, this, executor);
+                        this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
 
                         this->setActive(false);
                         this->fireEvent();

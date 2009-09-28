@@ -95,14 +95,14 @@ namespace orxonox
         if (this->bForceDestroy_ || this->bSuppressStart_)
             return;
 
-        this->timer_.setTimer(this->startdelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::fireParticleSpawner)));
+        this->timer_.setTimer(this->startdelay_, false, createExecutor(createFunctor(&ParticleSpawner::fireParticleSpawner, this)));
     }
 
     void ParticleSpawner::fireParticleSpawner()
     {
         this->setActive(true);
         if (this->lifetime_ != 0)
-            this->timer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&ParticleSpawner::stopParticleSpawner)));
+            this->timer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&ParticleSpawner::stopParticleSpawner, this)));
     }
 
     void ParticleSpawner::stopParticleSpawner()
@@ -115,11 +115,11 @@ namespace orxonox
             this->detachFromParent();
 
             if (!this->timer_.isActive() || this->timer_.getRemainingTime() > this->destroydelay_)
-                this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
+                this->timer_.setTimer(this->destroydelay_, false, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner, this)));
         }
         else if (this->bLoop_)
         {
-            this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::startParticleSpawner)));
+            this->timer_.setTimer(this->destroydelay_, false, createExecutor(createFunctor(&ParticleSpawner::startParticleSpawner, this)));
         }
     }
 

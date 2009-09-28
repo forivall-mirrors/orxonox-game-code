@@ -86,7 +86,7 @@ namespace orxonox
         this->messages_.push_back(multi_cast<Ogre::UTFString>(text));
         COUT(0) << "Chat: " << text << std::endl;
 
-        new Timer<ChatOverlay>(this->displayTime_, false, this, createExecutor(createFunctor(&ChatOverlay::dropMessage)), true);
+        new Timer(this->displayTime_, false, createExecutor(createFunctor(&ChatOverlay::dropMessage, this)), true);
 
         this->updateOverlayText();
     }

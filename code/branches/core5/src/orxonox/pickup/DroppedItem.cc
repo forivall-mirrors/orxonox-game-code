@@ -75,8 +75,7 @@ namespace orxonox
     {
         if (this->timeToLive_ > 0)
         {
-            ExecutorMember<DroppedItem>* exec = createExecutor(createFunctor(&DroppedItem::timerCallback));
-            this->timer_.setTimer(this->timeToLive_, false, this, exec, false);
+            this->timer_.setTimer(this->timeToLive_, false, createExecutor(createFunctor(&DroppedItem::timerCallback, this)), false);
         }
     }
     void DroppedItem::timerCallback()

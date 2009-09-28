@@ -149,7 +149,7 @@ namespace orxonox
             SubclassIdentifier<Munition> munitiontype_;
             std::string munitionname_;
 
-            Timer<WeaponMode> reloadTimer_;
+            Timer reloadTimer_;
             bool bReloading_;
     };
 }

@@ -65,7 +65,7 @@ namespace orxonox
             float lifetime_;
             float damage_;
             bool bDestroy_;
-            Timer<Projectile> destroyTimer_;
+            Timer destroyTimer_;
     };
 }
 

@@ -59,7 +59,7 @@ namespace orxonox
 
     PongAI::~PongAI()
     {
-        for (std::list<std::pair<Timer<PongAI>*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
+        for (std::list<std::pair<Timer*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
             (*it).first->destroy();
     }
 
@@ -230,8 +230,8 @@ namespace orxonox
             float delay = MAX_REACTION_TIME * (1 - this->strength_);
 
             // Add a new Timer
-            Timer<PongAI>* timer = new Timer<PongAI>(delay, false, this, createExecutor(createFunctor(&PongAI::delayedMove)));
-            this->reactionTimers_.push_back(std::pair<Timer<PongAI>*, char>(timer, direction));
+            Timer* timer = new Timer(delay, false, createExecutor(createFunctor(&PongAI::delayedMove, this)));
+            this->reactionTimers_.push_back(std::pair<Timer*, char>(timer, direction));
         }
         else
         {
@@ -245,7 +245,7 @@ namespace orxonox
         this->movement_ = this->reactionTimers_.front().second;
 
         // Destroy the timer and remove it from the list
-        Timer<PongAI>* timer = this->reactionTimers_.front().first;
+        Timer* timer = this->reactionTimers_.front().first;
         timer->destroy();
 
         this->reactionTimers_.pop_front();

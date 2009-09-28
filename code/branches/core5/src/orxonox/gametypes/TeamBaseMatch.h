@@ -64,8 +64,8 @@ namespace orxonox
             using TeamDeathmatch::pawnsAreInTheSameTeam;
 
             std::set<TeamBaseMatchBase*> bases_;
-            Timer<TeamBaseMatch> scoreTimer_;
-            Timer<TeamBaseMatch> outputTimer_;
+            Timer scoreTimer_;
+            Timer outputTimer_;
 
             //points for each team
             int pointsTeam1_;
