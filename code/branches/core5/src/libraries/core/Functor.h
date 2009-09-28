@@ -190,31 +190,37 @@ namespace orxonox
 
 
 
-#define FUNCTOR_TEMPLATE(ismember, returnvalue, numparams) FUNCTOR_TEMPLATE##ismember##returnvalue##numparams
-#define FUNCTOR_TEMPLATE000
-#define FUNCTOR_TEMPLATE001 template <class P1>
-#define FUNCTOR_TEMPLATE002 template <class P1, class P2>
-#define FUNCTOR_TEMPLATE003 template <class P1, class P2, class P3>
-#define FUNCTOR_TEMPLATE004 template <class P1, class P2, class P3, class P4>
-#define FUNCTOR_TEMPLATE005 template <class P1, class P2, class P3, class P4, class P5>
-#define FUNCTOR_TEMPLATE010 template <class R>
-#define FUNCTOR_TEMPLATE011 template <class R, class P1>
-#define FUNCTOR_TEMPLATE012 template <class R, class P1, class P2>
-#define FUNCTOR_TEMPLATE013 template <class R, class P1, class P2, class P3>
-#define FUNCTOR_TEMPLATE014 template <class R, class P1, class P2, class P3, class P4>
-#define FUNCTOR_TEMPLATE015 template <class R, class P1, class P2, class P3, class P4, class P5>
-#define FUNCTOR_TEMPLATE100 template <class T>
-#define FUNCTOR_TEMPLATE101 template <class T, class P1>
-#define FUNCTOR_TEMPLATE102 template <class T, class P1, class P2>
-#define FUNCTOR_TEMPLATE103 template <class T, class P1, class P2, class P3>
-#define FUNCTOR_TEMPLATE104 template <class T, class P1, class P2, class P3, class P4>
-#define FUNCTOR_TEMPLATE105 template <class T, class P1, class P2, class P3, class P4, class P5>
-#define FUNCTOR_TEMPLATE110 template <class T, class R>
-#define FUNCTOR_TEMPLATE111 template <class T, class R, class P1>
-#define FUNCTOR_TEMPLATE112 template <class T, class R, class P1, class P2>
-#define FUNCTOR_TEMPLATE113 template <class T, class R, class P1, class P2, class P3>
-#define FUNCTOR_TEMPLATE114 template <class T, class R, class P1, class P2, class P3, class P4>
-#define FUNCTOR_TEMPLATE115 template <class T, class R, class P1, class P2, class P3, class P4, class P5>
+#define FUNCTOR_TEMPLATE(ismember, returnvalue, numparams, additionalobject) FUNCTOR_TEMPLATE##ismember##returnvalue##numparams(additionalobject)
+#define FUNCTOR_TEMPLATE000(additionalobject)
+#define FUNCTOR_TEMPLATE001(additionalobject) template <class P1>
+#define FUNCTOR_TEMPLATE002(additionalobject) template <class P1, class P2>
+#define FUNCTOR_TEMPLATE003(additionalobject) template <class P1, class P2, class P3>
+#define FUNCTOR_TEMPLATE004(additionalobject) template <class P1, class P2, class P3, class P4>
+#define FUNCTOR_TEMPLATE005(additionalobject) template <class P1, class P2, class P3, class P4, class P5>
+#define FUNCTOR_TEMPLATE010(additionalobject) template <class R>
+#define FUNCTOR_TEMPLATE011(additionalobject) template <class R, class P1>
+#define FUNCTOR_TEMPLATE012(additionalobject) template <class R, class P1, class P2>
+#define FUNCTOR_TEMPLATE013(additionalobject) template <class R, class P1, class P2, class P3>
+#define FUNCTOR_TEMPLATE014(additionalobject) template <class R, class P1, class P2, class P3, class P4>
+#define FUNCTOR_TEMPLATE015(additionalobject) template <class R, class P1, class P2, class P3, class P4, class P5>
+#define FUNCTOR_TEMPLATE100(additionalobject) template <class T FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE101(additionalobject) template <class T, class P1 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE102(additionalobject) template <class T, class P1, class P2 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE103(additionalobject) template <class T, class P1, class P2, class P3 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE104(additionalobject) template <class T, class P1, class P2, class P3, class P4 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE105(additionalobject) template <class T, class P1, class P2, class P3, class P4, class P5 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE110(additionalobject) template <class T, class R FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE111(additionalobject) template <class T, class R, class P1 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE112(additionalobject) template <class T, class R, class P1, class P2 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE113(additionalobject) template <class T, class R, class P1, class P2, class P3 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE114(additionalobject) template <class T, class R, class P1, class P2, class P3, class P4 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+#define FUNCTOR_TEMPLATE115(additionalobject) template <class T, class R, class P1, class P2, class P3, class P4, class P5 FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) >
+
+
+
+#define FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT(additionalobject) FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT##additionalobject
+#define FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT0
+#define FUNCTOR_TEMPLATE_ADDITIONAL_OBJECT1 , class O
 
 
 
@@ -316,7 +322,7 @@ namespace orxonox
 
 
 #define CREATE_STATIC_FUNCTOR(returnvalue, numparams) \
-    FUNCTOR_TEMPLATE(0, returnvalue, numparams) \
+    FUNCTOR_TEMPLATE(0, returnvalue, numparams, 0) \
     class FunctorStatic##returnvalue##numparams : public FunctorStatic \
     { \
         public: \
@@ -346,7 +352,7 @@ namespace orxonox
     }; \
     \
     \
-    FUNCTOR_TEMPLATE(0, returnvalue, numparams) \
+    FUNCTOR_TEMPLATE(0, returnvalue, numparams, 0) \
     inline FunctorStatic##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(0, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
     { \
         return new FunctorStatic##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(0, returnvalue, numparams) (functionPointer); \
@@ -357,7 +363,7 @@ namespace orxonox
 
 
 #define CREATE_MEMBER_FUNCTOR(returnvalue, numparams) \
-    FUNCTOR_TEMPLATE(1, returnvalue, numparams) \
+    FUNCTOR_TEMPLATE(1, returnvalue, numparams, 0) \
     class FunctorMember##returnvalue##numparams : public FunctorMember<T> \
     { \
         public: \
@@ -390,7 +396,7 @@ namespace orxonox
     }; \
     \
     \
-    FUNCTOR_TEMPLATE(1, returnvalue, numparams) \
+    FUNCTOR_TEMPLATE(1, returnvalue, numparams, 0) \
     class FunctorConstMember##returnvalue##numparams : public FunctorMember<T> \
     { \
         public: \
@@ -422,21 +428,21 @@ namespace orxonox
     }; \
     \
     \
-    FUNCTOR_TEMPLATE(1, returnvalue, numparams) \
+    FUNCTOR_TEMPLATE(1, returnvalue, numparams, 0) \
     inline FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
     { \
         return new FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
     } \
     \
     \
-    FUNCTOR_TEMPLATE(1, returnvalue, numparams) \
+    FUNCTOR_TEMPLATE(1, returnvalue, numparams, 0) \
     inline FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const) \
     { \
         return new FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
     } \
     \
-    FUNCTOR_TEMPLATE(1, returnvalue, numparams) \
-    inline FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)), T* object) \
+    FUNCTOR_TEMPLATE(1, returnvalue, numparams, 1) \
+    inline FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)), O* object) \
     { \
         FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* functor = new FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
         functor->setObject(object); \
@@ -444,8 +450,8 @@ namespace orxonox
     } \
     \
     \
-    FUNCTOR_TEMPLATE(1, returnvalue, numparams) \
-    inline FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const, T* object) \
+    FUNCTOR_TEMPLATE(1, returnvalue, numparams, 1) \
+    inline FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const, O* object) \
     { \
         FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* functor = new FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
         functor->setObject(object); \
