@@ -98,6 +98,9 @@ namespace orxonox
             for (std::map<BaseObject*, std::string>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
                 it->first->removeEvent(this);
 
+            for (std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.begin(); it != this->eventContainers_.end(); ++it)
+                delete it->second;
+
             if (this->functorSetMainState_)
                 delete this->functorSetMainState_;
             if (this->functorGetMainState_)
@@ -145,7 +148,7 @@ namespace orxonox
                 loadexecutor->setDefaultValue(1, sectionname);
 
                 XMLPortClassObjectContainer<BaseObject, BaseObject>* container = 0;
-                container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(this->getIdentifier()->getXMLPortEventContainer(sectionname));
+                container = static_cast<XMLPortClassObjectContainer<BaseObject, BaseObject>*>(this->getIdentifier()->getXMLPortEventContainer(sectionname));
                 if (!container)
                 {
                     container = new XMLPortClassObjectContainer<BaseObject, BaseObject>(sectionname, this->getIdentifier(), loadexecutor, saveexecutor, false, true);

@@ -87,6 +87,8 @@ namespace orxonox
             delete (it->second);
         for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
             delete (it->second);
+        for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportEventContainers_.begin(); it != this->xmlportEventContainers_.end(); ++it)
+            delete (it->second);
     }
 
     /**
