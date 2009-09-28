@@ -49,9 +49,7 @@ namespace orxonox
     void GSIOConsole::activate()
     {
         {
-            FunctorMember<GSIOConsole>* functor = createFunctor(&GSIOConsole::loadMenu);
-            functor->setObject(this);
-            this->ccLoadMenu_ = createConsoleCommand(functor, "loadMenu");
+            this->ccLoadMenu_ = createConsoleCommand(createFunctor(&GSIOConsole::loadMenu, this), "loadMenu");
             CommandExecutor::addConsoleCommandShortcut(this->ccLoadMenu_);
         }
     }

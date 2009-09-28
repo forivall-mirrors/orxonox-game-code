@@ -62,21 +62,13 @@ namespace orxonox
         // reset game speed to normal
         this->timeFactor_ = 1.0f;
 
-        {
-            // time factor console command
-            FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::setTimeFactor);
-            functor->setObject(this);
-            this->ccSetTimeFactor_ = createConsoleCommand(functor, "setTimeFactor");
-            CommandExecutor::addConsoleCommandShortcut(this->ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
-        }
+        // time factor console command
+        this->ccSetTimeFactor_ = createConsoleCommand(createFunctor(&GSRoot::setTimeFactor, this), "setTimeFactor");
+        CommandExecutor::addConsoleCommandShortcut(this->ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
 
-        {
-            // time factor console command
-            FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::pause);
-            functor->setObject(this);
-            this->ccPause_ = createConsoleCommand(functor, "pause");
-            CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
-        }
+        // time factor console command
+        this->ccPause_ = createConsoleCommand(createFunctor(&GSRoot::pause, this), "pause");
+        CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
 
         // create the LevelManager
         this->levelManager_ = new LevelManager();

@@ -39,8 +39,8 @@
 #define SetMainState(classname, statename, setfunction, getfunction) \
     if (this->getMainStateName() == statename) \
     { \
-        this->functorSetMainState_ = createFunctor(&classname::setfunction)->setObject(this); \
-        this->functorGetMainState_ = createFunctor(&classname::getfunction)->setObject(this); \
+        this->functorSetMainState_ = createFunctor(&classname::setfunction, this); \
+        this->functorGetMainState_ = createFunctor(&classname::getfunction, this); \
     }
 
 

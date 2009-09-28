@@ -317,8 +317,7 @@ namespace orxonox
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
         // add console commands
-        FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
-        ccPrintScreen_ = createConsoleCommand(functor1->setObject(this), "printScreen");
+        ccPrintScreen_ = createConsoleCommand(createFunctor(&GraphicsManager::printScreen, this), "printScreen");
         CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 

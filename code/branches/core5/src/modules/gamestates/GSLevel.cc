@@ -115,13 +115,9 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             // keybind console command
-            FunctorMember<GSLevel>* functor1 = createFunctor(&GSLevel::keybind);
-            functor1->setObject(this);
-            ccKeybind_ = createConsoleCommand(functor1, "keybind");
+            ccKeybind_ = createConsoleCommand(createFunctor(&GSLevel::keybind, this), "keybind");
             CommandExecutor::addConsoleCommandShortcut(ccKeybind_);
-            FunctorMember<GSLevel>* functor2 = createFunctor(&GSLevel::tkeybind);
-            functor2->setObject(this);
-            ccTkeybind_ = createConsoleCommand(functor2, "tkeybind");
+            ccTkeybind_ = createConsoleCommand(createFunctor(&GSLevel::tkeybind, this), "tkeybind");
             CommandExecutor::addConsoleCommandShortcut(ccTkeybind_);
             // set our console command as callback for the key detector
             InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);

@@ -48,8 +48,7 @@
     orxonox::EventContainer* containername = this->getEventContainer(eventname); \
     if (!containername) \
     { \
-        ExecutorMember<classname>* executor = orxonox::createExecutor(orxonox::createFunctor(&classname::functionname), std::string( #classname ) + "::" + #functionname); \
-        executor->setObject(this); \
+        ExecutorMember<classname>* executor = orxonox::createExecutor(orxonox::createFunctor(&classname::functionname, this), std::string( #classname ) + "::" + #functionname); \
         containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
         this->addEventContainer(eventname, containername); \
     } \
@@ -60,8 +59,7 @@
     orxonox::EventContainer* containername = this->getEventContainer(eventname); \
     if (!containername) \
     { \
-        ExecutorMember<classname>* executor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::functionname), std::string( #classname ) + "::" + #functionname); \
-        executor->setObject(this); \
+        ExecutorMember<classname>* executor = orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::functionname, this), std::string( #classname ) + "::" + #functionname); \
         containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
         this->addEventContainer(eventname, containername); \
     } \

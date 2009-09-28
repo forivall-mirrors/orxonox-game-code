@@ -74,36 +74,16 @@ namespace orxonox
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 
-        {
-            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startStandalone);
-            functor->setObject(this);
-            this->ccStartStandalone_ = createConsoleCommand(functor, "startGame");
-            CommandExecutor::addConsoleCommandShortcut(this->ccStartStandalone_);
-        }
-        {
-            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startServer);
-            functor->setObject(this);
-            this->ccStartServer_ = createConsoleCommand(functor, "startServer");
-            CommandExecutor::addConsoleCommandShortcut(this->ccStartServer_);
-        }
-        {
-            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startClient);
-            functor->setObject(this);
-            this->ccStartClient_ = createConsoleCommand(functor, "startClient");
-            CommandExecutor::addConsoleCommandShortcut(this->ccStartClient_);
-        }
-        {
-            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startDedicated);
-            functor->setObject(this);
-            this->ccStartDedicated_ = createConsoleCommand(functor, "startDedicated");
-            CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
-        }
-        {
-            FunctorMember<GSMainMenu>* functor = createFunctor(&GSMainMenu::startMainMenu);
-            functor->setObject(this);
-            this->ccStartMainMenu_ = createConsoleCommand(functor, "startMainMenu");
-            CommandExecutor::addConsoleCommandShortcut(this->ccStartMainMenu_);
-        }
+        this->ccStartStandalone_ = createConsoleCommand(createFunctor(&GSMainMenu::startStandalone, this), "startGame");
+        CommandExecutor::addConsoleCommandShortcut(this->ccStartStandalone_);
+        this->ccStartServer_ = createConsoleCommand(createFunctor(&GSMainMenu::startServer, this), "startServer");
+        CommandExecutor::addConsoleCommandShortcut(this->ccStartServer_);
+        this->ccStartClient_ = createConsoleCommand(createFunctor(&GSMainMenu::startClient, this), "startClient");
+        CommandExecutor::addConsoleCommandShortcut(this->ccStartClient_);
+        this->ccStartDedicated_ = createConsoleCommand(createFunctor(&GSMainMenu::startDedicated, this), "startDedicated");
+        CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
+        this->ccStartMainMenu_ = createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu, this), "startMainMenu");
+        CommandExecutor::addConsoleCommandShortcut(this->ccStartMainMenu_);
 
         InputManager::getInstance().enterState("mainMenu");
 

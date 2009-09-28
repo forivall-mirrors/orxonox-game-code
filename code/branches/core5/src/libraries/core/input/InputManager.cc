@@ -108,9 +108,7 @@ namespace orxonox
         // KeyDetector to evaluate a pressed key's name
         InputState* detector = createInputState("detector", false, false, InputStatePriority::Detector);
         // Create a callback to avoid buttonHeld events after the key has been detected
-        FunctorMember<InputManager>* bufferFunctor = createFunctor(&InputManager::clearBuffers);
-        bufferFunctor->setObject(this);
-        detector->setLeaveFunctor(bufferFunctor);
+        detector->setLeaveFunctor(createFunctor(&InputManager::clearBuffers, this));
         keyDetector_ = new KeyDetector();
         detector->setHandler(keyDetector_);
 
@@ -123,18 +121,10 @@ namespace orxonox
 
         this->updateActiveStates();
 
-        {
-            // calibrate console command
-            FunctorMember<InputManager>* functor = createFunctor(&InputManager::calibrate);
-            functor->setObject(this);
-            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "calibrate"), true);
-        }
-        {
-            // reload console command
-            FunctorMember<InputManager>* functor = createFunctor(&InputManager::reload);
-            functor->setObject(this);
-            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "reload"), false);
-        }
+        // calibrate console command
+        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&InputManager::calibrate, this), "calibrate"), true);
+        // reload console command
+        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&InputManager::reload, this), "reload"), false);
 
         CCOUT(4) << "Construction complete." << std::endl;
         internalState_ = Nothing;

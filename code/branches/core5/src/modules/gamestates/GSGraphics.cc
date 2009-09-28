@@ -108,9 +108,7 @@ namespace orxonox
         console_->initialise();
 
         // add console command to toggle GUI
-        FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::toggleGUI);
-        functor->setObject(this);
-        this->ccToggleGUI_ = createConsoleCommand(functor, "toggleGUI");
+        this->ccToggleGUI_ = createConsoleCommand(createFunctor(&GSGraphics::toggleGUI, this), "toggleGUI");
         CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
 
         // enable master input
