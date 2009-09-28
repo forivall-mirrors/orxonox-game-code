@@ -244,7 +244,10 @@ namespace orxonox
       return true;
     packet::DeleteObjects *del = new packet::DeleteObjects();
     if(!del->fetchIDs())
+    {
+      delete del;
       return true;  //everything ok (no deletes this tick)
+    }
 //     COUT(3) << "sending DeleteObjects" << std::endl;
     while(temp != NULL){
       if( !(temp->getSynched()) ){

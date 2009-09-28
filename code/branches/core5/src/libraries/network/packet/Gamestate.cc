@@ -377,6 +377,7 @@ Gamestate *Gamestate::diff(Gamestate *base)
   uint8_t *dest2 = new uint8_t[dest_length];
   rawDiff( dest2, dest, basep, header_->getDataSize(), base->header_->getDataSize() );
   assert( memcmp( dest2, gs, dest_length) == 0 );
+  delete dest2;
 #endif
 
   Gamestate *g = new Gamestate(ndata, getClientID());
