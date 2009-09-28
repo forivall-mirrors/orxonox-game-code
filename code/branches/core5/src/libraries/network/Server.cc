@@ -278,11 +278,7 @@ namespace orxonox
     temp->setPeer(event->peer);
 
     // inform all the listeners
-    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
-    while(listener){
-      listener->clientConnected(newid);
-      listener++;
-    }
+    ClientConnectionListener::broadcastClientConnected(newid);
 
     ++newid;
 
@@ -328,12 +324,9 @@ namespace orxonox
   void Server::disconnectClient( ClientInformation *client ){
     ServerConnection::disconnectClient( client );
     GamestateManager::removeClient(client);
-// inform all the listeners
-    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
-    while(listener){
-      listener->clientDisconnected(client->getID());
-      ++listener;
-    }
+    // inform all the listeners
+    ClientConnectionListener::broadcastClientDisconnected(client->getID());
+
     delete client; //remove client from list
   }
 

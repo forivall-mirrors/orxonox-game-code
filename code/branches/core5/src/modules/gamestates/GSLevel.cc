@@ -128,6 +128,9 @@ namespace orxonox
 
             // level is loaded: we can start capturing the input
             InputManager::getInstance().enterState("game");
+            
+            // connect the HumanPlayer to the game
+            this->playerManager_->clientConnected(0);
         }
     }
 
@@ -176,7 +179,12 @@ namespace orxonox
         //Loader::close();
 
         if (GameMode::showsGraphics())
+        {
+            // disconnect the HumanPlayer
+            this->playerManager_->clientDisconnected(0);
+            
             InputManager::getInstance().leaveState("game");
+        }
 
         if (GameMode::isMaster())
             this->unloadLevel();
@@ -233,9 +241,6 @@ namespace orxonox
 
     void GSLevel::unloadLevel()
     {
-        for (ObjectList<HumanPlayer>::iterator it = ObjectList<HumanPlayer>::begin(); it; ++it)
-            it->setGametype(0);
-        
         Loader::unload(startFile_s);
 
         delete startFile_s;

@@ -38,7 +38,6 @@
 #include "core/Loader.h"
 #include "PlayerManager.h"
 #include "Level.h"
-#include "infos/HumanPlayer.h"
 
 namespace orxonox
 {

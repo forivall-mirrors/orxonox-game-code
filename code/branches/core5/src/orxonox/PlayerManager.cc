@@ -73,7 +73,8 @@ namespace orxonox
     {
         if (GameMode::isMaster())
         {
-            COUT(3) << "client disconnected" << std::endl;
+            if (clientID != 0)
+                COUT(3) << "client disconnected" << std::endl;
 
             // remove from clients-map
             PlayerInfo* player = this->clients_[clientID];
