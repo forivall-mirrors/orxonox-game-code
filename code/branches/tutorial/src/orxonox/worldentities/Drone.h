@@ -110,7 +110,6 @@ namespace orxonox
         private:
             DroneController *myController_; //!< The controller of the Drone.
             
-            Vector3 steering_;
             btVector3 localLinearAcceleration_; //!< The linear acceleration that is used to move the Drone the next tick.
             btVector3 localAngularAcceleration_; //!< The linear angular acceleration that is used to move the Drone the next tick.
             float primaryThrust_; //!< The amount of primary thrust. This is just used, when moving forward. 

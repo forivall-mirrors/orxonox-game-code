@@ -54,7 +54,6 @@ namespace orxonox
         this->primaryThrust_  = 100;
         this->auxilaryThrust_ = 100;
         this->rotationThrust_ = 10;
-        this->steering_ = Vector3::ZERO;
         
         this->setCollisionType(WorldEntity::Dynamic);
         
@@ -121,7 +120,6 @@ namespace orxonox
     void Drone::moveFrontBack(const Vector2& value)
     {
         this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
-        this->steering_.z = -value.x;
     }
 
     /**
@@ -133,7 +131,6 @@ namespace orxonox
     void Drone::moveRightLeft(const Vector2& value)
     {
         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
-        this->steering_.x = value.x;
     }
 
     /**
@@ -145,7 +142,6 @@ namespace orxonox
     void Drone::moveUpDown(const Vector2& value)
     {
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
-        this->steering_.y = value.x;
     }
 
     /**
