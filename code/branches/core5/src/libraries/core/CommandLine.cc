@@ -37,7 +37,7 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "Core.h"
+#include "PathConfig.h"
 
 namespace orxonox
 {
@@ -347,7 +347,7 @@ namespace orxonox
     void CommandLine::_parseFile()
     {
         std::string filename = CommandLine::getValue("optionsFile").getString();
-        boost::filesystem::path filepath(Core::getConfigPath() / filename);
+        boost::filesystem::path filepath(PathConfig::getConfigPath() / filename);
 
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly

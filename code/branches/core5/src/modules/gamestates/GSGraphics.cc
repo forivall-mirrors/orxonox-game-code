@@ -38,7 +38,6 @@
 #include "core/Clock.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
-#include "core/Core.h"
 #include "core/Game.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"

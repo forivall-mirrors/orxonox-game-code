@@ -54,11 +54,11 @@
 #include "ConsoleCommand.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
-#include "Core.h"
 #include "Game.h"
 #include "GameMode.h"
 #include "Loader.h"
 #include "MemoryArchive.h"
+#include "PathConfig.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
 
@@ -101,16 +101,16 @@ namespace orxonox
         this->loadOgrePlugins();
 
         // At first, add the root paths of the data directories as resource locations
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getDataPathString(), "FileSystem", "dataRoot", false);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem", "dataRoot", false);
         // Load resources
         resources_.reset(new XMLFile("resources.oxr", "dataRoot"));
         resources_->setLuaSupport(false);
         Loader::open(resources_.get());
 
         // Only for development runs
-        if (Core::isDevelopmentRun())
+        if (PathConfig::isDevelopmentRun())
         {
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
             extResources_.reset(new XMLFile("resources.oxr", "externalDataRoot"));
             extResources_->setLuaSupport(false);
             Loader::open(extResources_.get());
@@ -134,7 +134,7 @@ namespace orxonox
 
         // Undeclare the resources
         Loader::unload(resources_.get());
-        if (Core::isDevelopmentRun())
+        if (PathConfig::isDevelopmentRun())
             Loader::unload(extResources_.get());
     }
 
@@ -245,8 +245,8 @@ namespace orxonox
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
-        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() / this->ogreConfigFile_);
-        boost::filesystem::path ogreLogFilepath(Core::getLogPath() / this->ogreLogFile_);
+        boost::filesystem::path ogreConfigFilepath(PathConfig::getConfigPath() / this->ogreConfigFile_);
+        boost::filesystem::path ogreLogFilepath(PathConfig::getLogPath() / this->ogreLogFile_);
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
@@ -421,6 +421,6 @@ namespace orxonox
     {
         assert(this->renderWindow_);
        
-        this->renderWindow_->writeContentsToTimestampedFile(Core::getLogPathString() + "screenShot_", ".jpg");
+        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".jpg");
     }
 }

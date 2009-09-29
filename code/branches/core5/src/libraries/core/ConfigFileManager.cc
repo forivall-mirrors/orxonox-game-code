@@ -35,7 +35,7 @@
 #include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
-#include "Core.h"
+#include "PathConfig.h"
 
 namespace orxonox
 {
@@ -221,11 +221,11 @@ namespace orxonox
         this->clear();
 
         // Get default file if necessary and available
-        boost::filesystem::path filepath(Core::getConfigPath() / this->filename_);
+        boost::filesystem::path filepath(PathConfig::getConfigPath() / this->filename_);
         if (!boost::filesystem::exists(filepath))
         {
             // Try to get default one from the data folder
-            boost::filesystem::path defaultFilepath(Core::getDataPath() / "defaultConfig" / this->filename_);
+            boost::filesystem::path defaultFilepath(PathConfig::getDataPath() / "defaultConfig" / this->filename_);
             if (boost::filesystem::exists(defaultFilepath))
             {
                 COUT(3) << "Copied " << this->filename_ << " from the defaultConfig folder." << std::endl;
@@ -335,7 +335,7 @@ namespace orxonox
     void ConfigFile::save() const
     {
         std::ofstream file;
-        file.open((Core::getConfigPathString() + filename_).c_str(), std::fstream::out);
+        file.open((PathConfig::getConfigPathString() + filename_).c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 

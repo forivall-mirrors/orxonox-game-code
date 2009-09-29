@@ -40,7 +40,6 @@
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/Core.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/Loader.h"

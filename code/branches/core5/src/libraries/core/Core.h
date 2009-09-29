@@ -27,15 +27,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Declaration of the Core class.
-@details
-    The Core class is a singleton, only used to configure some variables
-    in the core through the config-file.
-*/
-
 #ifndef _Core_H__
 #define _Core_H__
 
@@ -54,9 +45,6 @@ namespace orxonox
     /**
     @brief
         The Core class is a singleton used to configure the program basics.
-    @details
-        The class provides information about the data, config and log path.
-        It determines those by the use of platform specific functions.
     @remark
         You should only create this singleton once because it destroys the identifiers!
     */
@@ -84,30 +72,6 @@ namespace orxonox
             static const std::string& getLanguage();
             static void  resetLanguage();
 
-            static void tsetExternalDataPath(const std::string& path);
-            //! Returns the path to the data files as boost::filesystem::path
-            static const boost::filesystem::path& getDataPath();
-            //! Returns the path to the external data files as boost::filesystem::path
-            static const boost::filesystem::path& getExternalDataPath();
-            //! Returns the path to the config files as boost::filesystem::path
-            static const boost::filesystem::path& getConfigPath();
-            //! Returns the path to the log files as boost::filesystem::path
-            static const boost::filesystem::path& getLogPath();
-            //! Returns the path to the root folder as boost::filesystem::path
-            static const boost::filesystem::path& getRootPath();
-            //! Returns the path to the data files as std::string
-            static std::string getDataPathString();
-            //! Returns the path to the external data files as std::string
-            static std::string getExternalDataPathString();
-            //! Returns the path to the config files as std::string
-            static std::string getConfigPathString();
-            //! Returns the path to the log files as std::string
-            static std::string getLogPathString();
-            //! Returns the path to the root folder as std::string
-            static std::string getRootPathString();
-
-            static bool isDevelopmentRun() { return getInstance().bDevRun_; }
-
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
 
@@ -117,11 +81,10 @@ namespace orxonox
             void loadGraphics();
             void unloadGraphics();
 
-            void setFixedPaths();
-            void setConfigurablePaths();
             void setThreadAffinity(int limitToCPU);
 
             // Mind the order for the destruction!
+            scoped_ptr<PathConfig>        pathConfig_;
             scoped_ptr<DynLibManager>     dynLibManager_;
             scoped_ptr<SignalHandler>     signalHandler_;
             SimpleScopeGuard              identifierDestroyer_;
@@ -137,9 +100,7 @@ namespace orxonox
             scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
             scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
 
-            bool                          bDevRun_;             //!< True for runs in the build directory (not installed)
             bool                          bGraphicsLoaded_;
-
             static Core* singletonPtr_s;
     };
 }

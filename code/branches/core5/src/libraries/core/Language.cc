@@ -38,6 +38,7 @@
 
 #include "util/Debug.h"
 #include "Core.h"
+#include "PathConfig.h"
 
 namespace orxonox
 {
@@ -199,7 +200,7 @@ namespace orxonox
     {
         COUT(4) << "Read default language file." << std::endl;
 
-        boost::filesystem::path filepath(Core::getConfigPath() / getFilename(this->defaultLanguage_));
+        boost::filesystem::path filepath(PathConfig::getConfigPath() / getFilename(this->defaultLanguage_));
 
         // This creates the file if it's not existing
         std::ofstream createFile;
@@ -248,7 +249,7 @@ namespace orxonox
     {
         COUT(4) << "Read translated language file (" << Core::getLanguage() << ")." << std::endl;
 
-        boost::filesystem::path filepath(Core::getConfigPath() / getFilename(Core::getLanguage()));
+        boost::filesystem::path filepath(PathConfig::getConfigPath() / getFilename(Core::getLanguage()));
 
         // Open the file
         std::ifstream file;
@@ -302,7 +303,7 @@ namespace orxonox
     {
         COUT(4) << "Language: Write default language file." << std::endl;
 
-        boost::filesystem::path filepath(Core::getConfigPath() / getFilename(this->defaultLanguage_));
+        boost::filesystem::path filepath(PathConfig::getConfigPath() / getFilename(this->defaultLanguage_));
 
         // Open the file
         std::ofstream file;

@@ -150,6 +150,7 @@ namespace orxonox
     class ObjectListIterator;
     class OgreWindowEventListener;
     class OrxonoxClass;
+    class PathConfig;
     struct ResourceInfo;
     class Shell;
     class ShellListener;

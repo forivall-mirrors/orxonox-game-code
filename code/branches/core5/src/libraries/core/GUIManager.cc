@@ -54,6 +54,7 @@ extern "C" {
 #include "Core.h"
 #include "Clock.h"
 #include "LuaState.h"
+#include "PathConfig.h"
 #include "Resource.h"
 
 namespace orxonox
@@ -115,7 +116,7 @@ namespace orxonox
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
-        ceguiLogger->setLogFilename(Core::getLogPathString() + "cegui.log");
+        ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
         // set the log level according to ours (translate by subtracting 1)
         ceguiLogger->setLoggingLevel(
             static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));

@@ -35,6 +35,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   MemoryArchive.cc
   ObjectListBase.cc
   OrxonoxClass.cc
+  PathConfig.cc
   Resource.cc
   WindowEventListener.cc
 

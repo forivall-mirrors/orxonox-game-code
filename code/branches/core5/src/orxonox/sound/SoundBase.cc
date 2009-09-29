@@ -34,7 +34,6 @@
 #include <vorbis/vorbisfile.h>
 
 #include "util/Math.h"
-#include "core/Core.h"
 #include "core/Resource.h"
 #include "worldentities/WorldEntity.h"
 #include "SoundManager.h"

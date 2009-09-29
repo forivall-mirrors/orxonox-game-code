@@ -33,7 +33,6 @@
 
 #include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
 #include "PlayerManager.h"

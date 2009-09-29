@@ -29,7 +29,6 @@
 #include "Level.h"
 
 #include "util/Math.h"
-#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
 #include "core/Template.h"
