@@ -33,6 +33,10 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        Constructor.
+    */
     DroneController::DroneController(BaseObject* creator) : Controller(creator)
     {
         // Place your code here:
@@ -50,6 +54,12 @@ namespace orxonox
     {
     }
 
+    /**
+    @brief
+        The controlling happens here. This method defines what the controller has to do each tick.
+    @param dt
+        The duration of the tick.
+    */
     void DroneController::tick(float dt)
     {
         // Place your code here:

@@ -37,9 +37,13 @@ namespace orxonox
     // create the factory for the drone
     CreateFactory(Drone);
 
+    /**
+    @brief
+        Constructor. Registers the object and initializes some default values.
+    */
     Drone::Drone(BaseObject* creator) : ControllableEntity(creator)
     {
-        //put your code in here:
+        // put your code in here:
         // - register the drone class to the core
         // - create a new controller and pass our this pointer to it as creator
         this->myController_ = 0;
@@ -57,12 +61,20 @@ namespace orxonox
         myController_ = new DroneController(static_cast<BaseObject*>(this));
     }
 
+    /**
+    @brief
+        Destructor. Destroys controller, if present.
+    */
     Drone::~Drone()
     {
         if( this->myController_ )
             delete this->myController_;
     }
 
+    /**
+    @brief
+        Method for creating a Drone through XML.
+    */
     void Drone::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         // this calls the XMLPort function of the parent class
@@ -73,6 +85,12 @@ namespace orxonox
         XMLPortParam(Drone, "rotationThrust", setRotationThrust, getRotationThrust, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Defines which actions the Drone has to take in each tick.
+    @param dt
+        The length of the tick.
+    */
     void Drone::tick(float dt)
     {
         SUPER(Drone, tick, dt);
@@ -94,35 +112,70 @@ namespace orxonox
         //}
     }
     
-    
+    /**
+    @brief
+        Moves the Drone in the negative z-direction (Front/Back) by an amount specified by the first component of the input 2-dim vector.
+    @param value
+        The vector determining the amount of the movement.
+    */
     void Drone::moveFrontBack(const Vector2& value)
     {
         this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
         this->steering_.z = -value.x;
     }
 
+    /**
+    @brief
+        Moves the Drone in the x-direction (Right/Left) by an amount specified by the first component of the input 2-dim vector.
+    @param value
+        The vector determining the amount of the movement.
+    */
     void Drone::moveRightLeft(const Vector2& value)
     {
         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
         this->steering_.x = value.x;
     }
 
+    /**
+    @brief
+        Moves the Drone in the y-direction (Up/Down) by an amount specified by the first component of the input 2-dim vector.
+    @param value
+        The vector determining the amount of the movement.
+    */
     void Drone::moveUpDown(const Vector2& value)
     {
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
         this->steering_.y = value.x;
     }
 
+    /**
+    @brief
+        Rotates the Drone around the y-axis by the amount specified by the first component of the input 2-dim vector.
+    @param value
+        The vector determining the amount of the angular movement.
+    */
     void Drone::rotateYaw(const Vector2& value)
     {
         this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() - value.x);
     }
 
+    /**
+    @brief
+        Rotates the Drone around the x-axis by the amount specified by the first component of the input 2-dim vector.
+    @param value
+        The vector determining the amount of the angular movement.
+    */
     void Drone::rotatePitch(const Vector2& value)
     {
         this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x);
     }
 
+    /**
+    @brief
+        Rotates the Drone around the z-axis by the amount specified by the first component of the input 2-dim vector.
+    @param value
+        The vector determining the amount of the angular movement.
+    */
     void Drone::rotateRoll(const Vector2& value)
     {
         this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x);
