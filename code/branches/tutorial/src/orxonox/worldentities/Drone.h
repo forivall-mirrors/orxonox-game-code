@@ -113,9 +113,9 @@ namespace orxonox
             Vector3 steering_;
             btVector3 localLinearAcceleration_; //!< The linear acceleration that is used to move the Drone the next tick.
             btVector3 localAngularAcceleration_; //!< The linear angular acceleration that is used to move the Drone the next tick.
-            float primaryThrust_;
-            float auxilaryThrust_;
-            float rotationThrust_;
+            float primaryThrust_; //!< The amount of primary thrust. This is just used, when moving forward. 
+            float auxilaryThrust_; //!< The amount of auxilary thrust. Used for all other movements (except for rotations).
+            float rotationThrust_; //!< The amount of rotation thrust. Used for rotations only.
     };
 
 }
