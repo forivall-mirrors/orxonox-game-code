@@ -30,7 +30,6 @@
 
 #include <algorithm>
 #include <sstream>
-#include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
 #include "util/Debug.h"
@@ -347,12 +346,11 @@ namespace orxonox
     void CommandLine::_parseFile()
     {
         std::string filename = CommandLine::getValue("optionsFile").getString();
-        boost::filesystem::path filepath(PathConfig::getConfigPath() / filename);
 
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly
         std::ifstream file;
-        file.open(filepath.string().c_str());
+        file.open((PathConfig::getConfigPathString() + filename).c_str());
         std::vector<std::string> args;
         if (file)
         {

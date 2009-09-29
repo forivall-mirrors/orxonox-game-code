@@ -34,8 +34,6 @@
 #include "Language.h"
 
 #include <fstream>
-#include <boost/filesystem.hpp>
-
 #include "util/Debug.h"
 #include "Core.h"
 #include "PathConfig.h"
@@ -200,16 +198,16 @@ namespace orxonox
     {
         COUT(4) << "Read default language file." << std::endl;
 
-        boost::filesystem::path filepath(PathConfig::getConfigPath() / getFilename(this->defaultLanguage_));
+        std::string filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
         // This creates the file if it's not existing
         std::ofstream createFile;
-        createFile.open(filepath.string().c_str(), std::fstream::app);
+        createFile.open(filepath.c_str(), std::fstream::app);
         createFile.close();
 
         // Open the file
         std::ifstream file;
-        file.open(filepath.string().c_str(), std::fstream::in);
+        file.open(filepath.c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -249,11 +247,11 @@ namespace orxonox
     {
         COUT(4) << "Read translated language file (" << Core::getLanguage() << ")." << std::endl;
 
-        boost::filesystem::path filepath(PathConfig::getConfigPath() / getFilename(Core::getLanguage()));
+        std::string filepath = PathConfig::getConfigPathString() + getFilename(Core::getLanguage());
 
         // Open the file
         std::ifstream file;
-        file.open(filepath.string().c_str(), std::fstream::in);
+        file.open(filepath.c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
@@ -303,11 +301,11 @@ namespace orxonox
     {
         COUT(4) << "Language: Write default language file." << std::endl;
 
-        boost::filesystem::path filepath(PathConfig::getConfigPath() / getFilename(this->defaultLanguage_));
+        std::string filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
         // Open the file
         std::ofstream file;
-        file.open(filepath.string().c_str(), std::fstream::out);
+        file.open(filepath.c_str(), std::fstream::out);
 
         if (!file.is_open())
         {
