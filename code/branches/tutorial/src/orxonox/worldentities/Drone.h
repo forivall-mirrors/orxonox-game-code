@@ -99,13 +99,27 @@ namespace orxonox
             inline void rotateRoll(float value)
             { this->rotateRoll(Vector2(value, 0)); }
             
-            void setPrimaryThrust( float thrust ){ this->primaryThrust_=thrust; }
-            void setAuxilaryThrust( float thrust ){ this->auxilaryThrust_=thrust; }
-            void setRotationThrust( float thrust ){ this->rotationThrust_=thrust; }
+            /**
+            @brief Sets the primary thrust to the input amount.
+            @param thrust The amount of thrust.
+            */
+            inline void setPrimaryThrust( float thrust )
+                { this->primaryThrust_=thrust; }            
+            inline void setAuxilaryThrust( float thrust )
+                { this->auxilaryThrust_=thrust; }
+            inline void setRotationThrust( float thrust )
+                { this->rotationThrust_=thrust; }
             
-            float getPrimaryThrust(){ return this->primaryThrust_; }
-            float getAuxilaryThrust(){ return this->auxilaryThrust_; }
-            float getRotationThrust(){ return this->rotationThrust_; }
+            /**
+            @brief Gets the primary thrust to the input amount.
+            @preturn The amount of thrust.
+            */
+            inline float getPrimaryThrust()
+                { return this->primaryThrust_; }
+            inline float getAuxilaryThrust()
+                { return this->auxilaryThrust_; }
+            inline float getRotationThrust()
+                { return this->rotationThrust_; }
             
         private:
             DroneController *myController_; //!< The controller of the Drone.
