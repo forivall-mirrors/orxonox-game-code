@@ -283,6 +283,7 @@ namespace orxonox
             maxNameSize = std::max(it->second->getName().size(), maxNameSize);
         }
 
+        infoStr << std::endl;
         infoStr << "Usage: orxonox [options]" << std::endl;
         infoStr << "Available options:" << std::endl;
 

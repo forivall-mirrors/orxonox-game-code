@@ -34,6 +34,7 @@
 #include "network/ClientInformation.h"
 #include "gametypes/Gametype.h"
 #include "worldentities/ControllableEntity.h"
+#include "controllers/Controller.h"
 
 namespace orxonox
 {

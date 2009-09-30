@@ -409,6 +409,8 @@ namespace orxonox
                 currentNode = currentNode->parent_.lock();
                 requestedNodes.push_back(currentNode);
             }
+            if (currentNode == NULL)
+                requestedNodes.clear();
         }
 
         if (requestedNodes.empty())
