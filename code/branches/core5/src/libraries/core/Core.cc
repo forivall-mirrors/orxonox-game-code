@@ -200,7 +200,7 @@ namespace orxonox
         this->dynLibManager_.reset(new DynLibManager());
 
         // Load modules
-        std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
+        const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
         for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
         {
             try
