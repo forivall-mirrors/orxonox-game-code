@@ -35,7 +35,6 @@ namespace orxonox
 {
     // put your code in here:
     // create the factory for the drone
-    CreateFactory(Drone);
 
     /**
     @brief
@@ -45,9 +44,7 @@ namespace orxonox
     {
         // put your code in here:
         // - register the drone class to the core
-        // - create a new controller and pass our this pointer to it as creator
         this->myController_ = 0;
-        RegisterObject(Drone);
         
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
@@ -57,7 +54,7 @@ namespace orxonox
         
         this->setCollisionType(WorldEntity::Dynamic);
         
-        myController_ = new DroneController(static_cast<BaseObject*>(this));
+        myController_ = new DroneController(static_cast<BaseObject*>(this)); //!< Creates a new controller and passes our this pointer to it as creator.
     }
 
     /**
@@ -79,9 +76,12 @@ namespace orxonox
         // this calls the XMLPort function of the parent class
         SUPER(Drone, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Drone, "primaryThrust",  setPrimaryThrust, getPrimaryThrust,  xmlelement, mode);
-        XMLPortParam(Drone, "auxilaryThrust", setAuxilaryThrust, getAuxilaryThrust, xmlelement, mode);
-        XMLPortParam(Drone, "rotationThrust", setRotationThrust, getRotationThrust, xmlelement, mode);
+        // put your code in here:
+        // make sure you add the variables primaryThrust_, auxilaryThrust_ and rotationThrust_ to xmlport 
+        // make sure that the set- and get-functions exist.
+        // variables can be added by the following command 
+        // XMLPortParam(Classname, "xml-attribute-name (i.e. variablename)", setFunction, getFunction, xmlelement, mode)
+ 
     }
 
     /**
