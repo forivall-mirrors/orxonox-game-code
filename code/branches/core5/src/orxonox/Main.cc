@@ -30,13 +30,11 @@
 /**
 @file
 @brief
-    The main function of Orxonox.
+    The main function of Orxonox (but not the entry point of the program!)
 */
 
 #include "OrxonoxPrereqs.h"
-#include "SpecialConfig.h"
 
-#include "util/Exception.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
 #include "core/LuaState.h"
@@ -56,7 +54,7 @@ namespace orxonox
 {
     /**
     @brief
-        Main method. Game starts here (except for static initialisations).
+        Starting point of orxonox (however not the entry point of the program!)
     */
     int main(const std::string& strCmdLine)
     {
@@ -66,11 +64,7 @@ namespace orxonox
         "root"
         " graphics"
         "  mainMenu"
-        "  standalone"
-        "   level"
-        "  server"
-        "   level"
-        "  client"
+        "  standalone,server,client"
         "   level"
         " dedicated"
         "  level"

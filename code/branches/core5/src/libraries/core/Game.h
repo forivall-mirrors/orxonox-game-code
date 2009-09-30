@@ -142,6 +142,7 @@ namespace orxonox
         void loadGraphics();
         void unloadGraphics();
 
+        void parseStates(std::vector<std::pair<std::string, int> >::const_iterator& it, shared_ptr<GameStateTreeNode> currentNode);
         bool checkState(const std::string& name) const;
         void loadState(const std::string& name);
         void unloadState(const std::string& name);
