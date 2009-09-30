@@ -26,29 +26,41 @@
  *
  */
 
-#ifndef _GSClient_H__
-#define _GSClient_H__
+#ifndef _GSRoot_H__
+#define _GSRoot_H__
 
-#include "gamestates/GameStatesPrereqs.h"
-
+#include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
 
 namespace orxonox
 {
-    class _GameStatesExport GSClient : public GameState
+    class _OrxonoxExport GSRoot : public GameState
     {
     public:
-        GSClient(const GameStateInfo& info);
-        ~GSClient();
+        GSRoot(const GameStateInfo& info);
+        ~GSRoot();
 
         void activate();
         void deactivate();
         void update(const Clock& time);
 
+        // this has to be public because proteced triggers a bug in msvc
+        // when taking the function address.
+        void setTimeFactor(float factor);
+        void pause();
+        float getTimeFactor() { return this->timeFactor_; }
+
     private:
-        Client* client_;
+        float                 timeFactor_;              //!< A factor that sets the gamespeed. 1 is normal.
+        bool                  bPaused_;
+        float                 timeFactorPauseBackup_;
+
+        LevelManager*         levelManager_;            //!< global level manager
+
+        // console commands
+        ConsoleCommand*       ccSetTimeFactor_;
+        ConsoleCommand*       ccPause_;
     };
 }
 
-#endif /* _GSClient_H__ */
+#endif /* _GSRoot_H__ */

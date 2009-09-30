@@ -26,33 +26,29 @@
  *
  */
 
-/**
-@file
-@brief
-    Compilation of the most often used header files in the game states module
-@details
-    Updated: 19. September 2009
-    Total Files: 9
-*/
+#ifndef _GSServer_H__
+#define _GSServer_H__
 
-#include "OrxonoxConfig.h"
+#include "OrxonoxPrereqs.h"
 
-///////////////////////////////////////////
-/////          Stable Headers         /////
-///////////////////////////////////////////
+#include "core/GameState.h"
+#include "network/NetworkPrereqs.h"
 
-#include "util/SubString.h"       // 6
-#include "util/OgreForwardRefs.h" // 6
+namespace orxonox
+{
+    class _OrxonoxExport GSServer : public GameState
+    {
+    public:
+        GSServer(const GameStateInfo& info);
+        ~GSServer();
 
-///////////////////////////////////////////
-/////       All Rebuild Headers       /////
-///////////////////////////////////////////
+        void activate();
+        void deactivate();
+        void update(const Clock& time);
 
-#include "core/GameState.h" // 9
-#include "core/Game.h"      // 9
-#include "util/MultiType.h" // 8
+    private:
+        Server* server_;
+    };
+}
 
-
-// Just in case some header included windows.h
-#undef min
-#undef max
+#endif /* _GSServer_H__ */

@@ -29,22 +29,23 @@
 #ifndef _GSDedicated_H__
 #define _GSDedicated_H__
 
-#include "gamestates/GameStatesPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
-#include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
-#include <queue>
 #include <cstring>
+#include <queue>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
+
+#include "core/GameState.h"
+#include "network/NetworkPrereqs.h"
 
 struct termios;
 
 namespace orxonox
 {
 
-    class _GameStatesExport GSDedicated : public GameState
+    class _OrxonoxExport GSDedicated : public GameState
     {
     public:
         GSDedicated(const GameStateInfo& info);

@@ -22,34 +22,52 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht (documentation)
  *
  */
 
-#ifndef _GSIOConsole_H__
-#define _GSIOConsole_H__
+/**
+@file
+@brief
+    Declaration of the Graphics GameState class.
+*/
 
-#include "gamestates/GameStatesPrereqs.h"
+#ifndef _GSGraphics_H__
+#define _GSGraphics_H__
+
+#include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _GameStatesExport GSIOConsole : public GameState
+    /**
+    @brief
+        Game state used when displaying graphics of any kind. Another blubb resides here.
+
+        This game state is only left out if we start a dedicated server where no graphics are present.
+    */
+    class _OrxonoxExport GSGraphics : public GameState
     {
     public:
-        GSIOConsole(const GameStateInfo& info);
-        ~GSIOConsole();
+        GSGraphics(const GameStateInfo& info);
+        ~GSGraphics();
 
         void activate();
         void deactivate();
         void update(const Clock& time);
 
-    private:
-        void loadMenu();
+        void toggleGUI();
 
-        // console commands
-        ConsoleCommand* ccLoadMenu_;
+    private:
+        // managed singletons
+        InGameConsole*        console_;
+        SoundManager*         soundManager_;        //!< Keeps track of SoundBase objects
+
+        KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings
+        InputState*           masterInputState_;    //!< Special input state for master input
+        XMLFile*              debugOverlay_;
+        ConsoleCommand*       ccToggleGUI_;         //!< Console command to toggle GUI
     };
 }
 
-#endif /* _GSIOConsole_H__ */
+#endif /* _GSGraphics_H__ */

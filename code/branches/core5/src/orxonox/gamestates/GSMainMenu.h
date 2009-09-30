@@ -26,29 +26,47 @@
  *
  */
 
-#ifndef _GSServer_H__
-#define _GSServer_H__
+#ifndef _GSMainMenu_H__
+#define _GSMainMenu_H__
 
-#include "gamestates/GameStatesPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
+#include "util/OgreForwardRefs.h"
 #include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
 
 namespace orxonox
 {
-    class _GameStatesExport GSServer : public GameState
+    class _OrxonoxExport GSMainMenu : public GameState
     {
     public:
-        GSServer(const GameStateInfo& info);
-        ~GSServer();
+        GSMainMenu(const GameStateInfo& info);
+        ~GSMainMenu();
 
         void activate();
         void deactivate();
         void update(const Clock& time);
 
+        void startStandalone();
+        void startServer();
+        void startClient();
+        void startDedicated();
+        void startMainMenu();
+
     private:
-        Server* server_;
+        InputState*       inputState_;
+        Scene*            scene_;
+        Ogre::Camera*     camera_;
+
+        // console commands
+        ConsoleCommand* ccStartStandalone_;
+        ConsoleCommand* ccStartServer_;
+        ConsoleCommand* ccStartClient_;
+        ConsoleCommand* ccStartDedicated_;
+        ConsoleCommand* ccStartMainMenu_;
+
+        // ambient sound for the main menu
+        SoundMainMenu* ambient_;
     };
 }
 
-#endif /* _GSServer_H__ */
+#endif /* _GSMainMenu_H__ */

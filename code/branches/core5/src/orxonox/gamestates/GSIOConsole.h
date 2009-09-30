@@ -26,47 +26,30 @@
  *
  */
 
-#ifndef _GSMainMenu_H__
-#define _GSMainMenu_H__
+#ifndef _GSIOConsole_H__
+#define _GSIOConsole_H__
 
-#include "gamestates/GameStatesPrereqs.h"
-
-#include "util/OgreForwardRefs.h"
+#include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
 
 namespace orxonox
 {
-    class _GameStatesExport GSMainMenu : public GameState
+    class _OrxonoxExport GSIOConsole : public GameState
     {
     public:
-        GSMainMenu(const GameStateInfo& info);
-        ~GSMainMenu();
+        GSIOConsole(const GameStateInfo& info);
+        ~GSIOConsole();
 
         void activate();
         void deactivate();
         void update(const Clock& time);
 
-        void startStandalone();
-        void startServer();
-        void startClient();
-        void startDedicated();
-        void startMainMenu();
-
     private:
-        InputState*       inputState_;
-        Scene*            scene_;
-        Ogre::Camera*     camera_;
+        void loadMenu();
 
         // console commands
-        ConsoleCommand* ccStartStandalone_;
-        ConsoleCommand* ccStartServer_;
-        ConsoleCommand* ccStartClient_;
-        ConsoleCommand* ccStartDedicated_;
-        ConsoleCommand* ccStartMainMenu_;
-
-        // ambient sound for the main menu
-        SoundMainMenu* ambient_;
+        ConsoleCommand* ccLoadMenu_;
     };
 }
 
-#endif /* _GSMainMenu_H__ */
+#endif /* _GSIOConsole_H__ */

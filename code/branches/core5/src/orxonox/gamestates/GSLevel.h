@@ -29,7 +29,7 @@
 #ifndef _GSLevel_H__
 #define _GSLevel_H__
 
-#include "gamestates/GameStatesPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
 #include <string>
 #include "util/Scope.h"
@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    class _GameStatesExport GSLevel : public GameState, public OrxonoxClass
+    class _OrxonoxExport GSLevel : public GameState, public OrxonoxClass
     {
     public:
         GSLevel(const GameStateInfo& info);
