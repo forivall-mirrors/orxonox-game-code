@@ -72,6 +72,8 @@ namespace orxonox
 
             inline Radar* getRadar()
                 { return this->radar_; }
+            
+            inline virtual uint32_t getSceneID() const { return this->getObjectID(); }
 
             virtual void tick(float dt);
 

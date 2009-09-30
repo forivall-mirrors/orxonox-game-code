@@ -71,22 +71,25 @@ namespace orxonox
     this->setPriority( Priority::Normal );
 
     // get creator id
-    this->creatorID = OBJECTID_UNKNOWN;
+    if( creator )
+      this->creatorID = creator->getSceneID();
+    else
+      this->creatorID = OBJECTID_UNKNOWN;
 
-    searchcreatorID:
+    /*searchcreatorID:
     if (creator)
     {
         Synchronisable* synchronisable_creator = orxonox_cast<Synchronisable*>(creator);
         if (synchronisable_creator && synchronisable_creator->objectMode_)
         {
-            this->creatorID = synchronisable_creator->getObjectID();
+            this->creatorID = synchronisable_creator->getScene()->getObjectID();
         }
         else if (creator != creator->getCreator())
         {
             creator = creator->getCreator();
             goto searchcreatorID;
         }
-    }
+    }*/
   }
 
   /**
@@ -172,8 +175,10 @@ namespace orxonox
     Synchronisable *no = orxonox_cast<Synchronisable*>(bo);
     assert(no);
     no->objectID=header.getObjectID();
-    no->creatorID=header.getCreatorID(); //TODO: remove this
+    //no->creatorID=header.getCreatorID(); //TODO: remove this
     no->classID=header.getClassID();
+    assert(no->creatorID == header.getCreatorID());
+    //assert(no->classID == header.getClassID());
     COUT(4) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     assert( Synchronisable::objectMap_.find(header.getObjectID()) == Synchronisable::objectMap_.end() );

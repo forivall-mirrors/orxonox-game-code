@@ -45,6 +45,7 @@
 #include "XMLFile.h"
 #include "XMLNameListener.h"
 #include "XMLPort.h"
+#include "network/NetworkPrereqs.h"
 
 namespace orxonox
 {
@@ -73,7 +74,7 @@ namespace orxonox
         {
             this->setFile(this->creator_->getFile());
             this->setNamespace(this->creator_->getNamespace());
-            this->setScene(this->creator_->getScene());
+            this->setScene(this->creator_->getScene(), this->creator_->getSceneID());
             this->setGametype(this->creator_->getGametype());
         }
         else
@@ -81,6 +82,7 @@ namespace orxonox
             this->file_ = 0;
             this->namespace_ = 0;
             this->scene_ = 0;
+            this->sceneID_ = OBJECTID_UNKNOWN;
             this->gametype_ = 0;
         }
     }

@@ -54,7 +54,7 @@ namespace orxonox
     {
         RegisterObject(Scene);
 
-        this->setScene(SmartPtr<Scene>(this, false));
+        this->setScene(SmartPtr<Scene>(this, false), OBJECTID_UNKNOWN);
         this->bShadows_ = true;
 
         if (GameMode::showsGraphics())
@@ -282,7 +282,7 @@ namespace orxonox
     void Scene::addObject(BaseObject* object)
     {
         this->objects_.push_back(object);
-        object->setScene(this);
+        object->setScene(this, this->getObjectID());
     }
 
     BaseObject* Scene::getObject(unsigned int index) const

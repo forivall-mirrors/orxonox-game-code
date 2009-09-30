@@ -134,8 +134,9 @@ namespace orxonox
             inline void setCreator(BaseObject* creator) { this->creator_ = creator; }
             inline BaseObject* getCreator() const { return this->creator_; }
 
-            inline void setScene(const SmartPtr<Scene>& scene) { this->scene_ = scene; }
+            inline void setScene(const SmartPtr<Scene>& scene, uint32_t sceneID) { this->scene_ = scene; this->sceneID_=sceneID; }
             inline const SmartPtr<Scene>& getScene() const { return this->scene_; }
+            inline virtual uint32_t getSceneID() const { return this->sceneID_; }
 
             inline void setGametype(const SmartPtr<Gametype>& gametype)
             {
@@ -201,6 +202,7 @@ namespace orxonox
             std::map<BaseObject*,  std::string> eventListeners_;
             std::list<BaseObject*> events_;
             std::map<std::string, EventContainer*> eventContainers_;
+            uint32_t               sceneID_;
     };
 
     SUPER_FUNCTION(0, BaseObject, XMLPort, false);
