@@ -477,7 +477,8 @@ namespace orxonox
         stateStrings.push_back(std::make_pair("", -1));
 
         // Parse elements recursively
-        parseStates(stateStrings.begin(), this->rootStateNode_);
+        std::vector<std::pair<std::string, int> >::const_iterator begin = stateStrings.begin();
+        parseStates(begin, this->rootStateNode_);
     }
 
     /*** Internal ***/
