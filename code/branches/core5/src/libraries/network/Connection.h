@@ -66,8 +66,8 @@ namespace orxonox
     virtual void disconnectPeer(ENetPeer *peer);
     
     void processQueue();
-    virtual void addClient(ENetEvent* event)=0;
-    virtual void disconnectPeer(ENetEvent* event)=0;
+    virtual void addPeer(ENetEvent* event)=0;
+    virtual void removePeer(ENetEvent* event)=0;
     virtual bool processPacket(ENetEvent* event);
     
     ENetHost *host_;

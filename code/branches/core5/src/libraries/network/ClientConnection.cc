@@ -132,11 +132,11 @@ namespace orxonox
     return Connection::addPacket( packet, this->server_ );
   }
 
-  void ClientConnection::addClient(ENetEvent* event)
+  void ClientConnection::addPeer(ENetEvent* event)
   {
     assert(0);
   }
-  void ClientConnection::disconnectPeer(ENetEvent* event)
+  void ClientConnection::removePeer(ENetEvent* event)
   {
     this->established_=false;
     COUT(1) << "Received disconnect Packet from Server!" << endl;

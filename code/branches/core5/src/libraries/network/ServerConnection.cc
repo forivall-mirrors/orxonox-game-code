@@ -104,16 +104,6 @@ namespace orxonox
     Connection::disconnectPeer( client->getPeer() );
   }
   
-  void ServerConnection::disconnectPeer( ENetEvent* event )
-  {
-    COUT(4) << "removing client from list" << std::endl;
-    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
-    if(!client)
-      return;
-    else
-      ServerConnection::disconnectClient( client );
-  }
-  
   void ServerConnection::disconnectClient(int clientID){
     ClientInformation *client = ClientInformation::findClient(clientID);
     if(client)

@@ -53,8 +53,8 @@ namespace orxonox
     bool addPacket(ENetPacket *packet);
     inline bool isConnected(){ return this->established_; }
   private:
-    virtual void addClient(ENetEvent* event);
-    virtual void disconnectPeer(ENetEvent* event);
+    virtual void addPeer(ENetEvent* event);
+    virtual void removePeer(ENetEvent* event);
     
     bool disconnectConnection();
     // enet stuff

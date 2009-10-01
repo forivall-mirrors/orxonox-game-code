@@ -269,7 +269,7 @@ namespace orxonox
   }
 
 
-  void Server::addClient(ENetEvent *event){
+  void Server::addPeer(ENetEvent *event){
     static unsigned int newid=1;
 
     COUT(2) << "Server: adding client" << std::endl;
@@ -288,6 +288,20 @@ namespace orxonox
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
     createClient(temp->getID());
 }
+
+  void Server::removePeer(ENetEvent *event)
+  {
+    COUT(4) << "removing client from list" << std::endl;
+    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
+    if(!client)
+      return;
+    else
+    {
+      //ServerConnection::disconnectClient( client );
+      ClientConnectionListener::broadcastClientDisconnected( client->getID() );
+      delete client;
+    }
+  }
 
   bool Server::createClient(int clientID){
     ClientInformation *temp = ClientInformation::findClient(clientID);
