@@ -62,8 +62,6 @@ ClassID::ClassID( ) : Packet(){
       continue;
     classname = id->getName();
     network_id = id->getNetworkID();
-    if(network_id==0)
-      COUT(3) << "we got a null class id: " << id->getName() << std::endl;
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(network_id, classname) );
     ++nrOfClasses;
