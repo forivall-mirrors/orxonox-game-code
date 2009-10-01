@@ -47,6 +47,7 @@ SetCommandLineSwitch(server).information("Start in server mode");
 SetCommandLineSwitch(client).information("Start in client mode");
 SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
 SetCommandLineSwitch(standalone).information("Start in standalone mode");
+SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
 
 DeclareToluaInterface(Orxonox);
 
@@ -66,7 +67,7 @@ namespace orxonox
         "  mainMenu"
         "  standalone,server,client"
         "   level"
-        " dedicated"
+        " dedicated,dedicatedClient"
         "  level"
         " ioConsole"
         );
@@ -82,6 +83,8 @@ namespace orxonox
             Game::getInstance().requestStates("graphics, client, level");
         else if (CommandLine::getValue("dedicated").getBool())
             Game::getInstance().requestStates("dedicated, level");
+        else if (CommandLine::getValue("dedicatedClient").getBool())
+            Game::getInstance().requestStates("dedicatedClient, level");
         else if (CommandLine::getValue("console").getBool())
             Game::getInstance().requestStates("ioConsole");
         else
