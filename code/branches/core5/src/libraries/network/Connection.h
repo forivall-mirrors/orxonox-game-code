@@ -63,7 +63,7 @@ namespace orxonox
     static Connection* getInstance(){ return Connection::instance_; }
     
     int service(ENetEvent* event);
-    void disconnectPeer(ENetPeer *peer);
+    virtual void disconnectPeer(ENetPeer *peer);
     
     void processQueue();
     virtual void addClient(ENetEvent* event)=0;

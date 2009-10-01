@@ -329,8 +329,6 @@ namespace orxonox
     GamestateManager::removeClient(client);
     // inform all the listeners
     ClientConnectionListener::broadcastClientDisconnected(client->getID());
-
-    delete client; //remove client from list
   }
 
   bool Server::chat(const std::string& message){

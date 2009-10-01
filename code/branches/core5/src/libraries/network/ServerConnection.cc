@@ -102,6 +102,7 @@ namespace orxonox
   void ServerConnection::disconnectClient(ClientInformation *client)
   {
     Connection::disconnectPeer( client->getPeer() );
+    std::cout << "disconnecting peer and removing client" << endl;
     delete client;
   }
   
@@ -118,14 +119,14 @@ namespace orxonox
   void ServerConnection::disconnectClient(int clientID){
     ClientInformation *client = ClientInformation::findClient(clientID);
     if(client)
-      disconnectClient(client);
+      ServerConnection::disconnectClient(client);
   }
 
   void ServerConnection::disconnectClients() {
     ENetEvent event;
     ClientInformation *temp = ClientInformation::getBegin();
     while(temp!=0){
-      disconnectClient( temp );
+      ServerConnection::disconnectClient( temp );
       temp = temp->next();
     }
     temp = ClientInformation::getBegin();
