@@ -274,7 +274,7 @@ namespace orxonox
 
     void ControllableEntity::startLocalHumanControl()
     {
-        if (!this->camera_)
+        if (!this->camera_ && GameMode::showsGraphics())
         {
             this->camera_ = new Camera(this);
             this->camera_->requestFocus();
@@ -286,7 +286,7 @@ namespace orxonox
                 this->camera_->attachToNode(this->cameraPositionRootNode_);
         }
 
-        if (!this->hud_)
+        if (!this->hud_ && GameMode::showsGraphics())
         {
             if (this->hudtemplate_ != "")
             {

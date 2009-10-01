@@ -177,7 +177,7 @@ namespace orxonox
             this->humanHud_ = 0;
         }
 
-        if (this->isLocalPlayer() && this->humanHudTemplate_ != "")
+        if (this->isLocalPlayer() && this->humanHudTemplate_ != "" && GameMode::showsGraphics())
         {
             this->humanHud_ = new OverlayGroup(this);
             this->humanHud_->addTemplate(this->humanHudTemplate_);
