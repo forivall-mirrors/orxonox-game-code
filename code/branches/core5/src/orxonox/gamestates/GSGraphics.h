@@ -59,10 +59,6 @@ namespace orxonox
         void toggleGUI();
 
     private:
-        // managed singletons
-        InGameConsole*        console_;
-        SoundManager*         soundManager_;        //!< Keeps track of SoundBase objects
-
         KeyBinder*            masterKeyBinder_;     //!< Key binder for master key bindings
         InputState*           masterInputState_;    //!< Special input state for master input
         XMLFile*              debugOverlay_;

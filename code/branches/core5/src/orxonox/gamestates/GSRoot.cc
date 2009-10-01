@@ -36,7 +36,6 @@
 #include "tools/Timer.h"
 #include "tools/interfaces/TimeFactorListener.h"
 #include "tools/interfaces/Tickable.h"
-#include "LevelManager.h"
 
 namespace orxonox
 {
@@ -69,9 +68,6 @@ namespace orxonox
         // time factor console command
         this->ccPause_ = createConsoleCommand(createFunctor(&GSRoot::pause, this), "pause");
         CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
-
-        // create the LevelManager
-        this->levelManager_ = new LevelManager();
     }
 
     void GSRoot::deactivate()
@@ -89,8 +85,6 @@ namespace orxonox
             this->ccPause_ = 0;
         }
 */
-
-        this->levelManager_->destroy();
     }
 
     void GSRoot::update(const Clock& time)

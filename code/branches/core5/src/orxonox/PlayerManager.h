@@ -33,14 +33,14 @@
 
 #include <cassert>
 #include <map>
-#include "util/Singleton.h"
+#include "util/ScopedSingleton.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PlayerManager : public Singleton<PlayerManager>, public ClientConnectionListener
+    class _OrxonoxExport PlayerManager : public ScopedSingleton<PlayerManager, ScopeID::Root>, public ClientConnectionListener
     {
-            friend class Singleton<PlayerManager>;
+            friend class ScopedSingleton<PlayerManager, ScopeID::Root>;
         public:
             PlayerManager();
             virtual ~PlayerManager();

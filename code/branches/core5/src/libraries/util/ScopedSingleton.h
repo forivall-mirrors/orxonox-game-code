@@ -36,6 +36,7 @@
 
 namespace orxonox
 {
+    class Clock;
     /**
     @brief
         Base for scoped singleton classes.
@@ -58,11 +59,16 @@ namespace orxonox
             {
                 assert(Scope<scope>::isActive());
 
-                if (!T::singletonPtr_s && Scope<scope>::isActive())
+                if (!T::singletonPtr_s)
                     T::singletonPtr_s = new T();
 
                 return *T::singletonPtr_s;
             }
+
+            //! Update method for singletons like the ingame console
+            virtual void updated(const Clock& time) { static_cast<T*>(this)->update(time); }
+            //! Empty update method for the static polymorphism
+            void update(const Clock& time) { }
 
         protected:
             //! Constructor sets the singleton instance pointer
@@ -84,7 +90,7 @@ namespace orxonox
             void activated()
             {
                 // The ScopedSingleton shouldn't be active bevor the scope is activated -> always assertion failed
-                assert(T::singletonPtr_s == 0 && false);
+                assert(false);
             }
 
             //! Called if the Scope of this Singleton gets deactivated (destroys the instance)

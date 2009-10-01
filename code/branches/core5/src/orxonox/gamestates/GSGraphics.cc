@@ -45,8 +45,6 @@
 #include "core/input/InputState.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
-#include "overlays/InGameConsole.h"
-#include "sound/SoundManager.h"
 
 // HACK:
 #include "overlays/Map.h"
@@ -57,8 +55,6 @@ namespace orxonox
 
     GSGraphics::GSGraphics(const GameStateInfo& info)
         : GameState(info)
-        , console_(0)
-        , soundManager_(0)
         , masterKeyBinder_(0)
         , masterInputState_(0)
         , debugOverlay_(0)
@@ -99,13 +95,6 @@ namespace orxonox
 
         masterKeyBinder_->loadBindings("masterKeybindings.ini");
 
-        // Load the SoundManager
-        soundManager_ = new SoundManager();
-
-        // Load the InGameConsole
-        console_ = new InGameConsole();
-        console_->initialise();
-
         // add console command to toggle GUI
         this->ccToggleGUI_ = createConsoleCommand(createFunctor(&GSGraphics::toggleGUI, this), "toggleGUI");
         CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
@@ -130,12 +119,8 @@ namespace orxonox
         }
 */
 
-        this->console_->destroy();
-
         Loader::unload(this->debugOverlay_);
         delete this->debugOverlay_;
-
-        this->soundManager_->destroy();
 
         // HACK: (destroys a resource smart pointer)
         Map::hackDestroyMap();
@@ -169,7 +154,5 @@ namespace orxonox
             // Load a user interface therefore
             Game::getInstance().requestState("mainMenu");
         }
-
-        this->console_->update(time);
     }
 }

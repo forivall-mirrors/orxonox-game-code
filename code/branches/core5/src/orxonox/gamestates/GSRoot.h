@@ -55,8 +55,6 @@ namespace orxonox
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
 
-        LevelManager*         levelManager_;            //!< global level manager
-
         // console commands
         ConsoleCommand*       ccSetTimeFactor_;
         ConsoleCommand*       ccPause_;

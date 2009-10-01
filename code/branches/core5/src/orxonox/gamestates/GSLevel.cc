@@ -40,16 +40,12 @@
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 
-#include "tools/interfaces/Tickable.h"
-#include "CameraManager.h"
 #include "LevelManager.h"
 #include "PlayerManager.h"
-#include "infos/HumanPlayer.h"
 
 namespace orxonox
 {
@@ -64,7 +60,6 @@ namespace orxonox
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
-        , cameraManager_(0)
     {
         RegisterObject(GSLevel);
 
@@ -97,14 +92,7 @@ namespace orxonox
 
             guiKeysOnlyInputState_ = InputManager::getInstance().createInputState("guiKeysOnly");
             guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
-
-            // create the global CameraManager
-            this->cameraManager_ = new CameraManager(GraphicsManager::getInstance().getViewport());
         }
-
-        this->playerManager_ = new PlayerManager();
-
-        this->scope_GSLevel_ = new Scope<ScopeID::GSLevel>();
 
         if (GameMode::isMaster())
         {
@@ -125,7 +113,7 @@ namespace orxonox
             InputManager::getInstance().enterState("game");
             
             // connect the HumanPlayer to the game
-            this->playerManager_->clientConnected(0);
+            PlayerManager::getInstance().clientConnected(0);
         }
     }
 
@@ -164,7 +152,7 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             // disconnect the HumanPlayer
-            this->playerManager_->clientDisconnected(0);
+            PlayerManager::getInstance().clientDisconnected(0);
             
             // unload all compositors (this is only necessary because we don't yet destroy all resources!)
             Ogre::CompositorManager::getSingleton().removeAll();
@@ -183,24 +171,6 @@ namespace orxonox
 
         if (GameMode::isMaster())
             this->unloadLevel();
-
-        if (this->cameraManager_)
-        {
-            delete this->cameraManager_;
-            this->cameraManager_ = 0;
-        }
-
-        if (this->playerManager_)
-        {
-            this->playerManager_->destroy();
-            this->playerManager_ = 0;
-        }
-
-        if (this->scope_GSLevel_)
-        {
-            delete this->scope_GSLevel_;
-            this->scope_GSLevel_ = NULL;
-        }
 
         if (GameMode::showsGraphics())
         {

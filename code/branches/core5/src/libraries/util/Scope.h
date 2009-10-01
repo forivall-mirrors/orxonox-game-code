@@ -30,9 +30,10 @@
 #define __Util_Scope_H__
 
 #include "UtilPrereqs.h"
+
 #include <cassert>
-#include <set>
 #include <map>
+#include <set>
 #include "Debug.h"
 
 namespace orxonox
@@ -44,13 +45,14 @@ namespace orxonox
         */
         enum Value
         {
-            GSRoot,
-            GSGraphics,
-            GSLevel
+            Root,
+            Graphics
         };
     }
 
-    class ScopeListener; // Forward declaration
+    // Forward declarations
+    class ScopeListener;
+    class Clock;
 
     /**
         @brief The ScopeManager stores the variables of the scope templates in a statically linked context.
@@ -86,6 +88,8 @@ namespace orxonox
             virtual void activated() = 0;
             //! Gets called if the scope is deactivated
             virtual void deactivated() = 0;
+            //! Gets called if the scope is updated
+            virtual void updated(const Clock& time) = 0;
 
         private:
             ScopeID::Value scope_; //!< Store the scope to unregister on destruction
@@ -134,6 +138,16 @@ namespace orxonox
             static bool isActive()
             {
                 return (ScopeManager::instanceCounts_s[scope] > 0);
+            }
+
+            //! Update method for the ScopeListeners (to implement singleton updates)
+            static void update(const Clock& time)
+            {
+                if (isActive())
+                {
+                    for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
+                        (*(it++))->updated(time);
+                }
             }
     };
 }

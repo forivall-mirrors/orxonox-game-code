@@ -31,7 +31,7 @@
 
 #include <cassert>
 #include <list>
-#include "util/Singleton.h"
+#include "util/ScopedSingleton.h"
 #include "tools/interfaces/Tickable.h"
 
 namespace orxonox
@@ -42,9 +42,9 @@ namespace orxonox
      * function every tick. It is a singleton.
      *
      */
-    class _OrxonoxExport SoundManager : public Singleton<SoundManager>, public Tickable
+    class _OrxonoxExport SoundManager : public ScopedSingleton<SoundManager, ScopeID::Graphics>, public Tickable
     {
-        friend class Singleton<SoundManager>;
+        friend class ScopedSingleton<SoundManager, ScopeID::Graphics>;
     public:
         SoundManager();
         ~SoundManager();

@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "util/Scope.h"
 #include "core/OrxonoxClass.h"
 #include "core/GameState.h"
 
@@ -66,9 +65,6 @@ namespace orxonox
         InputState*              gameInputState_;          //!< input state for normal ingame playing
         InputState*              guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
         InputState*              guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
-        CameraManager*           cameraManager_;           //!< camera manager for this level
-        PlayerManager*           playerManager_;           //!< player manager for this level
-        Scope<ScopeID::GSLevel>* scope_GSLevel_;
 
         //##### ConfigValues #####
         std::string           keyDetectorCallbackCode_;

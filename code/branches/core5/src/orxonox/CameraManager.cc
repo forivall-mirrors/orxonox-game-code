@@ -33,6 +33,7 @@
 
 #include "util/StringUtils.h"
 #include "core/GameMode.h"
+#include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/ObjectList.h"
 #include "tools/Shader.h"
@@ -43,8 +44,8 @@ namespace orxonox
 {
     CameraManager* CameraManager::singletonPtr_s = 0;
 
-    CameraManager::CameraManager(Ogre::Viewport* viewport)
-        : viewport_(viewport)
+    CameraManager::CameraManager()
+        : viewport_(GraphicsManager::getInstance().getViewport())
     {
         this->fallbackCamera_ = 0;
     }

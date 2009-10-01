@@ -35,7 +35,7 @@
 #include <list>
 #include <string>
 
-#include "util/Singleton.h"
+#include "util/ScopedSingleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
@@ -43,9 +43,9 @@ namespace orxonox
 {
     class _OrxonoxExport LevelManager
     // tolua_end
-        : public Singleton<LevelManager>, public OrxonoxClass
+        : public ScopedSingleton<LevelManager, ScopeID::Root>, public OrxonoxClass
     { // tolua_export
-            friend class Singleton<LevelManager>;
+            friend class ScopedSingleton<LevelManager, ScopeID::Root>;
         public:
             LevelManager();
             virtual ~LevelManager();
@@ -62,7 +62,7 @@ namespace orxonox
             std::string getAvailableLevelListItem(unsigned int index) const; //tolua_export
 
             static LevelManager* getInstancePtr() { return singletonPtr_s; }
-            static LevelManager& getInstance()    { return Singleton<LevelManager>::getInstance(); } // tolua_export
+            static LevelManager& getInstance()    { return ScopedSingleton<LevelManager, ScopeID::Root>::getInstance(); } // tolua_export
 
         private:
             LevelManager(const LevelManager&);

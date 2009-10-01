@@ -84,6 +84,7 @@ namespace orxonox
         this->scroll_ = 0;
 
         this->setConfigValues();
+        this->initialise();
     }
 
     /**

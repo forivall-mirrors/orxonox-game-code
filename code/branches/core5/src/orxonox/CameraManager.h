@@ -40,16 +40,17 @@
 #include <cassert>
 #include <list>
 #include "util/OgreForwardRefs.h"
-#include "util/Singleton.h"
+#include "util/ScopedSingleton.h"
+#include "core/OrxonoxClass.h"
 #include "core/SmartPtr.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager : public Singleton<CameraManager>
+    class _OrxonoxExport CameraManager : public ScopedSingleton<CameraManager, ScopeID::Graphics>, public OrxonoxClass
     {
-            friend class Singleton<CameraManager>;
+            friend class ScopedSingleton<CameraManager, ScopeID::Graphics>;
         public:
-            CameraManager(Ogre::Viewport* viewport);
+            CameraManager();
             ~CameraManager();
 
             Camera* getActiveCamera() const;

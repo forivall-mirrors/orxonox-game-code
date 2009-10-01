@@ -263,6 +263,9 @@ namespace orxonox
 
         // create a shell
         this->shell_.reset(new Shell());
+
+        // Create singletons that always exist (in other libraries)
+        this->rootScope_.reset(new Scope<ScopeID::Root>());
     }
 
     /**
@@ -288,6 +291,9 @@ namespace orxonox
         guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
             inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
 
+        // Create singletons associated with graphics (in other libraries)
+        graphicsScope_.reset(new Scope<ScopeID::Graphics>());
+
         unloader.Dismiss();
 
         bGraphicsLoaded_ = true;
@@ -295,8 +301,9 @@ namespace orxonox
 
     void Core::unloadGraphics()
     {
-        this->guiManager_.reset();;
-        this->inputManager_.reset();;
+        this->graphicsScope_.reset();
+        this->guiManager_.reset();
+        this->inputManager_.reset();
         this->graphicsManager_.reset();
 
         // Load Ogre::Root again, but without the render system
@@ -419,12 +426,16 @@ namespace orxonox
 
     void Core::preUpdate(const Clock& time)
     {
+        // singletons from other libraries
+        Scope<ScopeID::Root>::update(time);
         if (this->bGraphicsLoaded_)
         {
             // process input events
             this->inputManager_->update(time);
             // process gui events
             this->guiManager_->update(time);
+            // graphics singletons from other libraries
+            Scope<ScopeID::Graphics>::update(time);
         }
         // process thread commands
         this->tclThreadManager_->update(time);

@@ -35,6 +35,7 @@
 #include <cassert>
 #include <boost/scoped_ptr.hpp>
 #include "util/OutputHandler.h"
+#include "util/Scope.h"
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
 
@@ -99,6 +100,8 @@ namespace orxonox
             scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
             scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
             scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
+            scoped_ptr<Scope<ScopeID::Root> >     rootScope_;
+            scoped_ptr<Scope<ScopeID::Graphics> > graphicsScope_;
 
             bool                          bGraphicsLoaded_;
             static Core* singletonPtr_s;
