@@ -27,20 +27,21 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the weapons module
 */
 
 #ifndef _WeaponsPrereqs_H__
 #define _WeaponsPrereqs_H__
 
 #include "OrxonoxConfig.h"
-
 #include "OrxonoxPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef WEAPONS_SHARED_BUILD
 #    define _WeaponsExport __declspec(dllexport)
@@ -63,22 +64,25 @@
 
 namespace orxonox
 {
-    class LaserFire;
+    class MuzzleFlash;
+
+    // munitions
+    class FusionMunition;
+    class LaserMunition;
+    class ReplenishingMunition;
+
+    // projectiles
+    class BillboardProjectile;
+    class LightningGunProjectile;
+    class ParticleProjectile;
+    class Projectile;
+
+    // weaponmodes
+    class EnergyDrink;
     class FusionFire;
     class HsW01;
+    class LaserFire;
     class LightningGun;
-    class EnergyDrink;
-
-    class Projectile;
-    class BillboardProjectile;
-    class ParticleProjectile;
-    class LightningGunProjectile;
-
-    class ReplenishingMunition;
-    class LaserMunition;
-    class FusionMunition;
-
-    class MuzzleFlash;
 }
 
 #endif /* _WeaponsPrereqs_H__ */

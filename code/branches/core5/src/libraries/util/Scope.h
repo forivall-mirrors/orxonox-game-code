@@ -38,22 +38,6 @@
 
 namespace orxonox
 {
-    namespace ScopeID
-    {
-        /**
-            @brief A list of available scopes for the Scope template.
-        */
-        enum Value
-        {
-            Root,
-            Graphics
-        };
-    }
-
-    // Forward declarations
-    class ScopeListener;
-    class Clock;
-
     /**
         @brief The ScopeManager stores the variables of the scope templates in a statically linked context.
     */

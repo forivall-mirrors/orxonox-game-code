@@ -375,7 +375,7 @@ namespace orxonox
                         {
                             this->owner_->xmlAttributes_.clear();
                             // Iterate through the attributes manually in order to make them case insensitive
-                            Attribute* attribute = xmlelement.FirstAttribute(false);
+                            ticpp::Attribute* attribute = xmlelement.FirstAttribute(false);
                             while (attribute != 0)
                             {
                                 this->owner_->xmlAttributes_[getLowercase(attribute->Name())] = attribute->Value();

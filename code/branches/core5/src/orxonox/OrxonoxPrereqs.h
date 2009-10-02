@@ -27,8 +27,9 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the orxonox library
 */
 
 #ifndef _OrxonoxPrereqs_H__
@@ -36,11 +37,10 @@
 
 #include "OrxonoxConfig.h"
 
-#include "tools/ToolsPrereqs.h"
-
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef ORXONOX_SHARED_BUILD
 #    define _OrxonoxExport __declspec(dllexport)
@@ -64,13 +64,53 @@
 namespace orxonox
 {
     class CameraManager;
+    class Level;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
-
-    class Level;
+    class Radar;
     class Scene;
-    class Tickable;
+
+    // collisionshapes
+    class CollisionShape;
+    class CompoundCollisionShape;
+    class WorldEntityCollisionShape;
+
+    // controllers
+    class AIController;
+    class ArtificialController;
+    class Controller;
+    class HumanController;
+    class ScriptController;
+    class WaypointController;
+    class WaypointPatrolController;
+
+    // gametypes
+    class Asteroids;
+    class Deathmatch;
+    class Gametype;
+    class TeamBaseMatch;
+    class TeamDeathmatch;
+    class UnderAttack;
+
+    // graphics
+    class Backlight;
+    class Billboard;
+    class BlinkingBillboard;
+    class Camera;
+    class FadingBillboard;
+    class GlobalShader;
+    class Light;
+    class Model;
+    class ParticleEmitter;
+    class ParticleSpawner;
+
+    // infos
+    class Bot;
+    class GametypeInfo;
+    class HumanPlayer;
+    class Info;
+    class PlayerInfo;
 
     // interfaces
     class GametypeMessageListener;
@@ -80,55 +120,20 @@ namespace orxonox
     class RadarListener;
     class RadarViewable;
     class Rewardable;
-    class Teamcolourable;
+    class TeamColourable;
 
-    // worldentities
-    class WorldEntity;
-    class StaticEntity;
-    class MobileEntity;
-    class ControllableEntity;
-    class MovableEntity;
+    // items
+    class Engine;
+    class Item;
+    class MultiStateEngine;
 
-    // graphics
-    class Model;
-    class Billboard;
-    class BlinkingBillboard;
-    class BigExplosion;
-    class ExplosionChunk;
-    class FadingBillboard;
-    class GlobalShader;
-    class Light;
-    class Backlight;
-    class ParticleEmitter;
-    class ParticleSpawner;
-    class Camera;
+    // overlays
+    class InGameConsole;
+    class Map;
+    class OrxonoxOverlay;
+    class OverlayGroup;
 
-    // mixed
-    class SpawnPoint;
-    class TeamSpawnPoint;
-
-    class CameraPosition;
-    class Sublevel;
-    class Radar;
-
-    class Test;
-
-    // pawns
-    class Spectator;
-    class Pawn;
-    class SpaceShip;
-    class TeamBaseMatchBase;
-    class Destroyer;
-
-    // gametypes
-    class Gametype;
-    class Deathmatch;
-    class TeamDeathmatch;
-    class Asteroids;
-    class TeamBaseMatch;
-    class UnderAttack;
-
-    // pickups
+    // pickup
     class BaseItem;
     class DroppedItem;
     class EquipmentItem;
@@ -138,60 +143,43 @@ namespace orxonox
     class PickupInventory;
     class PickupSpawner;
     class UsableItem;
-
-    class Jump;
+    // pickup, items
+    class HealthImmediate;
     class HealthUsable;
-    class PassiveItem;
-
-    // items
-    class Item;
-    class Engine;
-    class MultiStateEngine;
-    class RotatingEngine;
-
-    // weaponsystem
-    class WeaponSystem;
-    class WeaponSet;
-    class WeaponSlot;
-    class WeaponPack;
-    class Weapon;
-    class WeaponMode;
-    class DefaultWeaponmodeLink;
-    class Munition;
-
-    // controller
-    class Controller;
-    class HumanController;
-    class ArtificialController;
-    class AIController;
-    class ScriptController;
-    class WaypointController;
-    class WaypointPatrolController;
-
-    // infos
-    class Info;
-    class PlayerInfo;
-    class HumanPlayer;
-    class Bot;
-    class GametypeInfo;
-
-    // collision
-    class CollisionShape;
-    class CompoundCollisionShape;
-    class WorldEntityCollisionShape;
-
-    // overlays
-    class OverlayGroup;
-    class OrxonoxOverlay;
-    class Notification;
-    class NotificationManager;
-    class InGameConsole;
-    class Map;
+    class Jump;
 
     //sound
     class SoundBase;
     class SoundManager;
     class SoundMainMenu;
+
+    // weaponsystem
+    class DefaultWeaponmodeLink;
+    class Munition;
+    class Weapon;
+    class WeaponMode;
+    class WeaponPack;
+    class WeaponSet;
+    class WeaponSlot;
+    class WeaponSystem;
+
+    // worldentities
+    class BigExplosion;
+    class CameraPosition;
+    class ControllableEntity;
+    class ExplosionChunk;
+    class MobileEntity;
+    class MovableEntity;
+    class SpawnPoint;
+    class StaticEntity;
+    class TeamSpawnPoint;
+    class WorldEntity;
+    // worldentities, pawns
+    class Destroyer;
+    class Pawn;
+    class SpaceShip;
+    class Spectator;
+    class TeamBaseMatchBase;
 }
 
 // Bullet Physics Engine

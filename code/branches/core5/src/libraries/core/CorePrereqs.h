@@ -27,8 +27,9 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the core library
 */
 
 #ifndef _CorePrereqs_H__
@@ -39,6 +40,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( CORE_STATIC_BUILD )
 #  ifdef CORE_SHARED_BUILD
 #    define _CoreExport __declspec(dllexport)
@@ -55,10 +57,19 @@
 #  define _CoreExport
 #endif
 
+//-----------------------------------------------------------------------
+// Constants
+//-----------------------------------------------------------------------
+
+namespace orxonox
+{
+    static const uint32_t OBJECTID_UNKNOWN = static_cast<uint32_t>(-1);
+}
 
 //-----------------------------------------------------------------------
-// Forward declarations
+// Enums
 //-----------------------------------------------------------------------
+
 namespace orxonox
 {
     namespace XMLPort
@@ -81,12 +92,18 @@ namespace orxonox
             None
         };
     };
+}
 
+//-----------------------------------------------------------------------
+// Forward declarations
+//-----------------------------------------------------------------------
+
+namespace orxonox
+{
     typedef std::string LanguageEntryLabel;
 
     class ArgumentCompleter;
     class ArgumentCompletionListElement;
-    class BaseMetaObjectListElement;
     class BaseObject;
     template <class T>
     class ClassFactory;
@@ -97,7 +114,6 @@ namespace orxonox
     class ClassTreeMaskNode;
     class ClassTreeMaskObjectIterator;
     class CommandEvaluation;
-    class CommandExecutor;
     class CommandLine;
     class CommandLineArgument;
     class ConfigFile;
@@ -106,6 +122,7 @@ namespace orxonox
     class ConfigFileEntryValue;
     class ConfigFileManager;
     class ConfigFileSection;
+    struct ConfigFileType;
     class ConfigValueContainer;
     class ConsoleCommand;
     class Core;
@@ -122,16 +139,17 @@ namespace orxonox
     template <class T>
     class FunctorMember;
     class FunctorStatic;
+    class Game;
+    class GameState;
+    struct GameStateInfo;
+    struct GameStateTreeNode;
     class GraphicsManager;
     class GUIManager;
     class Identifier;
     class IRC;
     template <class T>
     class Iterator;
-    class IteratorBase;
     class Language;
-    class LanguageEntry;
-    class Loader;
     class LuaState;
     class MemoryArchive;
     class MemoryArchiveFactory;
@@ -163,6 +181,8 @@ namespace orxonox
     class TclThreadList;
     class TclThreadManager;
     class Template;
+    class Thread;
+    class ThreadPool;
     template <class T>
     class WeakPtr;
     class WindowEventListener;
@@ -175,17 +195,10 @@ namespace orxonox
     class XMLPortObjectContainer;
     class XMLPortParamContainer;
 
-    // game states
-    class Game;
-    class GameState;
-    struct GameStateInfo;
-    struct GameStateTreeNode;
-
-    // input
+    // Input
     class BaseCommand;
     class BufferedParamCommand;
     class Button;
-    class CalibratorCallback;
     class HalfAxis;
     class InputBuffer;
     class InputDevice;
@@ -194,18 +207,16 @@ namespace orxonox
     class InputHandler;
     class InputManager;
     class InputState;
+    struct InputStatePriority;
+    class JoyStickQuantityListener;
     class JoyStick;
-    class Mouse;
-    class Keyboard;
     class KeyBinder;
+    class Keyboard;
     class KeyDetector;
+    class KeyEvent;
+    class Mouse;
     class ParamCommand;
     class SimpleCommand;
-
-
-    // multithreading
-    class Thread;
-    class ThreadPool;
 }
 
 // CppTcl
@@ -284,14 +295,7 @@ namespace ticpp
 }
 namespace orxonox
 {
-    using ticpp::Document;
     using ticpp::Element;
-    using ticpp::Declaration;
-    using ticpp::StylesheetReference;
-    using ticpp::Text;
-    using ticpp::Comment;
-    using ticpp::Attribute;
 }
-
 
 #endif /* _CorePrereqs_H__ */

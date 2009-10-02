@@ -27,8 +27,9 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the tools module
 */
 
 #ifndef _ToolsPrereqs_H__
@@ -39,6 +40,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef TOOLS_SHARED_BUILD
 #    define _ToolsExport __declspec(dllexport)
@@ -56,7 +58,7 @@
 #endif
 
 //-----------------------------------------------------------------------
-// Forward declarations
+// Enums
 //-----------------------------------------------------------------------
 
 namespace orxonox
@@ -71,11 +73,22 @@ namespace orxonox
             High = 3
         };
     }
+}
 
+//-----------------------------------------------------------------------
+// Forward declarations
+//-----------------------------------------------------------------------
+
+namespace orxonox
+{
     class BillboardSet;
     class Mesh;
     class ParticleInterface;
+    class ResourceCollection;
+    class ResourceLocation;
     class Shader;
+    class Tickable;
+    class TimeFactorListener;
     class Timer;
 }
 

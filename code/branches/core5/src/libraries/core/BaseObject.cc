@@ -45,7 +45,6 @@
 #include "XMLFile.h"
 #include "XMLNameListener.h"
 #include "XMLPort.h"
-#include "network/NetworkPrereqs.h"
 
 namespace orxonox
 {

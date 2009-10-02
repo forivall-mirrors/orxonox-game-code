@@ -27,20 +27,21 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the questsystem module
 */
 
 #ifndef _QuestsystemPrereqs_H__
 #define _QuestsystemPrereqs_H__
 
 #include "OrxonoxConfig.h"
-
 #include "OrxonoxPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef QUESTSYSTEM_SHARED_BUILD
 #    define _QuestsystemExport __declspec(dllexport)
@@ -75,17 +76,16 @@ namespace orxonox
     class QuestDescription;
     class QuestEffect;
     class QuestEffectBeacon;
-    class QuestGUINode;
     class QuestGUI;
+    class QuestGUINode;
     class QuestHint;
     class QuestItem;
     class QuestListener;
     class QuestManager;
     class QuestNotification;
-    class Rewardable;
 
+    // notifications
     class Notification;
-    class NotificationListener;
     class NotificationManager;
     class NotificationOverlay;
     class NotificationQueue;
