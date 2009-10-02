@@ -45,7 +45,7 @@ namespace orxonox
         this->gameTime_ = 180;
         this->teams_ = 2;
         this->destroyer_ = 0;
-        this->destroyer_.addCallback(createFunctor(&UnderAttack::killedDestroyer, this));
+        this->destroyer_.setCallback(createFunctor(&UnderAttack::killedDestroyer, this));
         this->gameEnded_ = false;
 
         this->setHUDTemplate("UnderAttackHUD");

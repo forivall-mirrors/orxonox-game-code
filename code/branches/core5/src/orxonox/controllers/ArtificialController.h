@@ -32,20 +32,21 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/Math.h"
-#include "interfaces/PawnListener.h"
 #include "Controller.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ArtificialController : public Controller, public PawnListener
+    class _OrxonoxExport ArtificialController : public Controller
     {
         public:
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
-
-            virtual void destroyedPawn(Pawn* pawn);
+            
+            void abandonTarget(Pawn* target);
 
         protected:
+            void targetDied();
+
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
 
@@ -64,7 +65,7 @@ namespace orxonox
 
             bool bHasTargetPosition_;
             Vector3 targetPosition_;
-            Pawn* target_;
+            WeakPtr<Pawn> target_;
             bool bShooting_;
 
         private:

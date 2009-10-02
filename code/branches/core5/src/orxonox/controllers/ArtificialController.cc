@@ -45,6 +45,8 @@ namespace orxonox
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
+        
+        this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
     }
 
     ArtificialController::~ArtificialController()
@@ -161,13 +163,16 @@ namespace orxonox
         return (getAngle(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->targetPosition_) < angle);
     }
 
-    void ArtificialController::destroyedPawn(Pawn* ship)
+    void ArtificialController::abandonTarget(Pawn* target)
     {
-        if (ship == this->target_)
-        {
-            this->forgetTarget();
-            this->searchRandomTargetPosition();
-        }
+        if (target == this->target_)
+            this->targetDied();
+    }
+
+    void ArtificialController::targetDied()
+    {
+        this->forgetTarget();
+        this->searchRandomTargetPosition();
     }
 
     bool ArtificialController::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)

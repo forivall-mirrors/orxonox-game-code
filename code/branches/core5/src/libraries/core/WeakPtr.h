@@ -167,7 +167,7 @@ namespace orxonox
                 WeakPtr().swap(*this);
             }
             
-            inline void addCallback(Functor* callback)
+            inline void setCallback(Functor* callback)
             {
                 this->callback_ = callback;
             }

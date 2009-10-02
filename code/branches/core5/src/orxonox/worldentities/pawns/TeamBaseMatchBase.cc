@@ -30,7 +30,7 @@
 #include "TeamBaseMatchBase.h"
 
 #include "core/CoreIncludes.h"
-#include "interfaces/PawnListener.h"
+#include "controllers/ArtificialController.h"
 #include "interfaces/TeamColourable.h"
 #include "gametypes/TeamBaseMatch.h"
 
@@ -91,8 +91,8 @@ namespace orxonox
         this->setRadarObjectColour(colour);
 
         // Call this so bots stop shooting at the base after they converted it
-        for (ObjectList<PawnListener>::iterator it = ObjectList<PawnListener>::begin(); it != ObjectList<PawnListener>::end(); ++it)
-            it->destroyedPawn(this);
+        for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it != ObjectList<ArtificialController>::end(); ++it)
+            it->abandonTarget(this);
     }
 }
 
