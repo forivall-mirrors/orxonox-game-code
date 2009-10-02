@@ -33,7 +33,6 @@
 */
 
 #include "GametypeMessageListener.h"
-#include "PawnListener.h"
 #include "PlayerTrigger.h"
 #include "RadarListener.h"
 #include "Rewardable.h"
@@ -50,17 +49,6 @@ namespace orxonox
     GametypeMessageListener::GametypeMessageListener()
     {
         RegisterRootObject(GametypeMessageListener);
-    }
-
-    //----------------------------
-    // PawnListener
-    //----------------------------
-    /**
-        @brief Constructor for the PawnListener.
-    */
-    PawnListener::PawnListener()
-    {
-        RegisterRootObject(PawnListener);
     }
 
     //----------------------------

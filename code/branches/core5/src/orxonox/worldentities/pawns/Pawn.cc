@@ -35,7 +35,6 @@
 #include "core/XMLPort.h"
 #include "network/NetworkFunction.h"
 
-#include "interfaces/PawnListener.h"
 #include "PawnManager.h"
 #include "infos/PlayerInfo.h"
 #include "gametypes/Gametype.h"
@@ -92,9 +91,6 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            for (ObjectList<PawnListener>::iterator it = ObjectList<PawnListener>::begin(); it != ObjectList<PawnListener>::end(); ++it)
-                it->destroyedPawn(this);
-
             if (this->weaponSystem_)
                 this->weaponSystem_->destroy();
         }

@@ -115,7 +115,6 @@ namespace orxonox
     // interfaces
     class GametypeMessageListener;
     class NotificationListener;
-    class PawnListener;
     class PlayerTrigger;
     class RadarListener;
     class RadarViewable;
