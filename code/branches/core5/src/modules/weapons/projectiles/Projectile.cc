@@ -132,9 +132,8 @@ namespace orxonox
         return false;
     }
 
-    void Projectile::destroyedPawn(Pawn* pawn)
+    void Projectile::setOwner(Pawn* owner)
     {
-        if (this->owner_ == pawn)
-            this->owner_ = 0;
+        this->owner_ = owner;
     }
 }

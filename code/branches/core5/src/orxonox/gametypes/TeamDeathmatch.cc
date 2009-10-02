@@ -99,17 +99,17 @@ namespace orxonox
 
     bool TeamDeathmatch::allowPawnHit(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
     }
 
     bool TeamDeathmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
     }
 
     bool TeamDeathmatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
     }
 
     SpawnPoint* TeamDeathmatch::getBestSpawnPoint(PlayerInfo* player) const
