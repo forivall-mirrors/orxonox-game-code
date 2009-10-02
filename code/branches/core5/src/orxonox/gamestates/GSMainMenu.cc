@@ -30,10 +30,10 @@
 
 #include <OgreSceneManager.h>
 
+#include "util/Clock.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/Game.h"
-#include "core/Clock.h"
 #include "core/ConsoleCommand.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"

@@ -62,6 +62,7 @@
 
 namespace orxonox
 {
+    class Clock;
     class Exception;
     class ExprParser;
     class IntVector2;

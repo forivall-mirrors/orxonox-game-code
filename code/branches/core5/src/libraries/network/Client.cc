@@ -42,8 +42,8 @@
 
 #include <cassert>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
-#include "core/Clock.h"
 #include "synchronisable/Synchronisable.h"
 #include "packet/Chat.h"
 #include "packet/Gamestate.h"

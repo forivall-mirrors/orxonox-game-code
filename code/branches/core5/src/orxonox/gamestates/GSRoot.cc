@@ -28,7 +28,7 @@
 
 #include "GSRoot.h"
 
-#include "core/Clock.h"
+#include "util/Clock.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"

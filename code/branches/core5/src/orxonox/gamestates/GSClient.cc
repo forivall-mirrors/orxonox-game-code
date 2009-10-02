@@ -28,8 +28,8 @@
 
 #include "GSClient.h"
 
+#include "util/Clock.h"
 #include "util/Exception.h"
-#include "core/Clock.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
 #include "core/GameMode.h"

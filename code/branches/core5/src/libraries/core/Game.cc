@@ -37,12 +37,12 @@
 #include <exception>
 #include <boost/weak_ptr.hpp>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/ScopeGuard.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"
-#include "Clock.h"
 #include "CommandLine.h"
 #include "ConsoleCommand.h"
 #include "Core.h"

@@ -26,11 +26,6 @@
  *
  */
 
-/**
-    @file
-    @brief
-*/
-
 #include "Clock.h"
 #include <OgreTimer.h>
 

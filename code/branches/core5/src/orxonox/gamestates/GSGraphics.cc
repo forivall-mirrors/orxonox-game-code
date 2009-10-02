@@ -34,8 +34,8 @@
 
 #include "GSGraphics.h"
 
+#include "util/Clock.h"
 #include "util/Convert.h"
-#include "core/Clock.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"

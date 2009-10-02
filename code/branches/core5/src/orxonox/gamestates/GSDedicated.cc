@@ -32,9 +32,9 @@
 #include <iostream>
 #include <boost/bind.hpp>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Sleep.h"
-#include "core/Clock.h"
 #include "core/CommandLine.h"
 #include "core/CommandExecutor.h"
 #include "core/Game.h"

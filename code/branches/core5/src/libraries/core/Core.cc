@@ -47,11 +47,11 @@
 #  undef max
 #endif
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
-#include "Clock.h"
 #include "CommandExecutor.h"
 #include "CommandLine.h"
 #include "ConfigFileManager.h"

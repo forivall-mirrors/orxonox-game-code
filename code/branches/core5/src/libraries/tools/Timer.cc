@@ -30,10 +30,10 @@
 
 #include <set>
 
+#include "util/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandExecutor.h"
-#include "core/Clock.h"
 #include "core/Functor.h"
 
 namespace orxonox

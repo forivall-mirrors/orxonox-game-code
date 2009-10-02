@@ -47,10 +47,10 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "SpecialConfig.h"
+#include "util/Clock.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "Clock.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"

@@ -29,12 +29,12 @@
 #ifndef _Clock_H__
 #define _Clock_H__
 
-#include "CorePrereqs.h"
-#include "util/OgreForwardRefs.h"
+#include "UtilPrereqs.h"
+#include "OgreForwardRefs.h"
 
 namespace orxonox
 {
-    class _CoreExport Clock
+    class _UtilExport Clock
     {
     public:
         Clock();

@@ -45,8 +45,8 @@
 #include <cassert>
 #include <string>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
-#include "core/Clock.h"
 #include "core/ObjectList.h"
 #include "core/Executor.h"
 #include "packet/Chat.h"

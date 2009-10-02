@@ -48,11 +48,11 @@ extern "C" {
 #   include <CEGUILua.h>
 #endif
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
 #include "Core.h"
-#include "Clock.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"

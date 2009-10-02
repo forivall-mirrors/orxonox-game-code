@@ -96,7 +96,6 @@ namespace orxonox
     class ClassTreeMaskIterator;
     class ClassTreeMaskNode;
     class ClassTreeMaskObjectIterator;
-    class Clock;
     class CommandEvaluation;
     class CommandExecutor;
     class CommandLine;
