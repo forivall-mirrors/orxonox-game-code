@@ -92,7 +92,7 @@ namespace orxonox
         bool valid_player = Deathmatch::playerLeft(player);
 
         if (valid_player)
-            this->players_.erase(player);
+            this->teamnumbers_.erase(player);
 
         return valid_player;
     }
