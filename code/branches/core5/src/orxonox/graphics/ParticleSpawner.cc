@@ -87,9 +87,6 @@ namespace orxonox
 
     void ParticleSpawner::startParticleSpawner()
     {
-        if (!this->particles_)
-            return;
-
         this->setActive(false);
 
         if (this->bForceDestroy_ || this->bSuppressStart_)
