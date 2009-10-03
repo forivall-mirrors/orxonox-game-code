@@ -26,15 +26,11 @@
  *
  */
 
-/**
- @file
- @brief Implementation of the different input handlers.
- */
-
 #include "KeyBinder.h"
 
 #include "util/Convert.h"
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
@@ -47,8 +43,9 @@ namespace orxonox
     @brief
         Constructor that does as little as necessary.
     */
-    KeyBinder::KeyBinder()
+    KeyBinder::KeyBinder(const std::string& filename)
         : deriveTime_(0.0f)
+        , filename_(filename)
     {
         mouseRelative_[0] = 0;
         mouseRelative_[1] = 0;
@@ -102,6 +99,10 @@ namespace orxonox
 
         // set them here to use allHalfAxes_
         setConfigValues();
+
+        // Load the bindings if filename was given
+        if (!this->filename_.empty())
+            this->loadBindings();
     }
 
     /**
@@ -239,26 +240,17 @@ namespace orxonox
     /**
     @brief
         Loads the key and button bindings.
-    @return
-        True if loading succeeded.
     */
-    void KeyBinder::loadBindings(const std::string& filename)
+    void KeyBinder::loadBindings()
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-        if (filename.empty())
-            return;
+        // Get a new ConfigFileType from the ConfigFileManager
+        this->configFile_ = ConfigFileManager::getInstance().getNewConfigFileType();
 
-        if (this->configFile_ == ConfigFileType::NoType)
-        {
-            // Get a new ConfigFileType from the ConfigFileManager
-            this->configFile_ = ConfigFileManager::getInstance().getNewConfigFileType();
-        }
-
-        ConfigFileManager::getInstance().setFilename(this->configFile_, filename);
+        ConfigFileManager::getInstance().setFilename(this->configFile_, this->filename_);
 
         // Parse bindings and create the ConfigValueContainers if necessary
-        clearBindings();
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
             it->second->readConfigValue(this->configFile_);
 

@@ -56,22 +56,9 @@ namespace orxonox
         void loadLevel();
         void unloadLevel();
 
-        // console commands
-        void keybind(const std::string& command);
-        void tkeybind(const std::string& command);
-        void keybindInternal(const std::string& command, bool bTemporary);
-
-        KeyBinder*               keyBinder_;               //!< tool that loads and manages the input bindings
         InputState*              gameInputState_;          //!< input state for normal ingame playing
         InputState*              guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
         InputState*              guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
-
-        //##### ConfigValues #####
-        std::string           keyDetectorCallbackCode_;
-
-        // console commands
-        ConsoleCommand*       ccKeybind_;
-        ConsoleCommand*       ccTkeybind_;
     };
 }
 

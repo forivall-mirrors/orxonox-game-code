@@ -211,6 +211,7 @@ namespace orxonox
     class JoyStickQuantityListener;
     class JoyStick;
     class KeyBinder;
+    class KeyBinderManager;
     class Keyboard;
     class KeyDetector;
     class KeyEvent;

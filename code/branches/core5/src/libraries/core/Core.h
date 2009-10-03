@@ -99,6 +99,7 @@ namespace orxonox
             // graphical
             scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
             scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
+            scoped_ptr<KeyBinderManager>  keyBinderManager_;    //!< Manages all KeyBinders
             scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
             scoped_ptr<Scope<ScopeID::Root> >     rootScope_;
             scoped_ptr<Scope<ScopeID::Graphics> > graphicsScope_;

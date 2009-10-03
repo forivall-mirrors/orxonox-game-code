@@ -263,11 +263,6 @@ namespace orxonox
         JoyStickQuantityListener::changeJoyStickQuantity(joyStickList);
     }
 
-    void InputManager::setKeyDetectorCallback(const std::string& command)
-    {
-        this->keyDetector_->setCallbackCommand(command);
-    }
-
     // ############################################################
     // #####                    Destruction                   #####
     // ##########                                        ##########

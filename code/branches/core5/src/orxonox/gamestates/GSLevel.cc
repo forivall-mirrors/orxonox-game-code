@@ -34,7 +34,7 @@
 #include "util/Clock.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
-#include "core/input/KeyBinder.h"
+#include "core/input/KeyBinderManager.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -56,15 +56,11 @@ namespace orxonox
 
     GSLevel::GSLevel(const GameStateInfo& info)
         : GameState(info)
-        , keyBinder_(0)
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
     {
         RegisterObject(GSLevel);
-
-        this->ccKeybind_ = 0;
-        this->ccTkeybind_ = 0;
     }
 
     GSLevel::~GSLevel()
@@ -73,7 +69,6 @@ namespace orxonox
 
     void GSLevel::setConfigValues()
     {
-        SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
     }
 
     void GSLevel::activate()
@@ -83,9 +78,8 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             gameInputState_ = InputManager::getInstance().createInputState("game");
-            keyBinder_ = new KeyBinder();
-            keyBinder_->loadBindings("keybindings.ini");
-            gameInputState_->setHandler(keyBinder_);
+            gameInputState_->setHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
+            KeyBinderManager::getInstance().setToDefault();
 
             guiMouseOnlyInputState_ = InputManager::getInstance().createInputState("guiMouseOnly");
             guiMouseOnlyInputState_->setMouseHandler(GUIManager::getInstancePtr());
@@ -101,14 +95,6 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            // keybind console command
-            ccKeybind_ = createConsoleCommand(createFunctor(&GSLevel::keybind, this), "keybind");
-            CommandExecutor::addConsoleCommandShortcut(ccKeybind_);
-            ccTkeybind_ = createConsoleCommand(createFunctor(&GSLevel::tkeybind, this), "tkeybind");
-            CommandExecutor::addConsoleCommandShortcut(ccTkeybind_);
-            // set our console command as callback for the key detector
-            InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);
-
             // level is loaded: we can start capturing the input
             InputManager::getInstance().enterState("game");
             
@@ -135,20 +121,6 @@ namespace orxonox
 
     void GSLevel::deactivate()
     {
-/*
-        // destroy console commands
-        if (this->ccKeybind_)
-        {
-            delete this->ccKeybind_;
-            this->ccKeybind_ = 0;
-        }
-        if (this->ccTkeybind_)
-        {
-            delete this->ccTkeybind_;
-            this->ccTkeybind_ = 0;
-        }
-*/
-
         if (GameMode::showsGraphics())
         {
             // disconnect the HumanPlayer
@@ -180,11 +152,6 @@ namespace orxonox
             InputManager::getInstance().destroyState("game");
             InputManager::getInstance().destroyState("guiKeysOnly");
             InputManager::getInstance().destroyState("guiMouseOnly");
-            if (this->keyBinder_)
-            {
-                this->keyBinder_->destroy();
-                this->keyBinder_ = 0;
-            }
         }
     }
 
@@ -209,60 +176,5 @@ namespace orxonox
         Loader::unload(startFile_s);
 
         delete startFile_s;
-    }
-
-    void GSLevel::keybind(const std::string &command)
-    {
-        this->keybindInternal(command, false);
-    }
-
-    void GSLevel::tkeybind(const std::string &command)
-    {
-        this->keybindInternal(command, true);
-    }
-
-    /**
-    @brief
-        Assigns a command string to a key/button/axis. The name is determined via KeyDetector.
-    @param command
-        Command string that can be executed by the CommandExecutor
-        OR: Internal string "KeybindBindingStringKeyName=" used for the second call to identify
-        the key/button/axis that has been activated. This is configured above in activate().
-    */
-    void GSLevel::keybindInternal(const std::string& command, bool bTemporary)
-    {
-        if (GameMode::showsGraphics())
-        {
-            static std::string bindingString = "";
-            static bool bTemporarySaved = false;
-            static bool bound = true;
-            // note: We use a long name to make 'sure' that the user doesn't use it accidentally.
-            // Howerver there will be no real issue if it happens anyway.
-            if (command.find(keyDetectorCallbackCode_) != 0)
-            {
-                if (bound)
-                {
-                    COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-                    InputManager::getInstance().enterState("detector");
-                    bindingString = command;
-                    bTemporarySaved = bTemporary;
-                    bound = false;
-                }
-                //else:  We're still in a keybind command. ignore this call.
-            }
-            else
-            {
-                if (!bound)
-                {
-                    // user has pressed the key
-                    std::string name = command.substr(this->keyDetectorCallbackCode_.size());
-                    COUT(0) << "Binding string \"" << bindingString << "\" on key '" << name << "'" << std::endl;
-                    this->keyBinder_->setBinding(bindingString, name, bTemporarySaved);
-                    InputManager::getInstance().leaveState("detector");
-                    bound = true;
-                }
-                // else: A key was pressed within the same tick, ignore it.
-            }
-        }
     }
 }

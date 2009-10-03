@@ -40,9 +40,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GUIManager.h"
-#include "core/input/InputManager.h"
-#include "core/input/KeyBinder.h"
-#include "core/input/InputState.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 
@@ -55,20 +52,12 @@ namespace orxonox
 
     GSGraphics::GSGraphics(const GameStateInfo& info)
         : GameState(info)
-        , masterKeyBinder_(0)
-        , masterInputState_(0)
         , debugOverlay_(0)
     {
-        // load master key bindings
-        masterInputState_ = InputManager::getInstance().createInputState("master", true);
-        masterKeyBinder_ = new KeyBinder();
-        masterInputState_->setKeyHandler(masterKeyBinder_);
     }
 
     GSGraphics::~GSGraphics()
     {
-        InputManager::getInstance().destroyState("master");
-        this->masterKeyBinder_->destroy();
     }
 
     /**
@@ -93,14 +82,9 @@ namespace orxonox
         this->debugOverlay_ = new XMLFile("debug.oxo");
         Loader::open(debugOverlay_);
 
-        masterKeyBinder_->loadBindings("masterKeybindings.ini");
-
         // add console command to toggle GUI
         this->ccToggleGUI_ = createConsoleCommand(createFunctor(&GSGraphics::toggleGUI, this), "toggleGUI");
         CommandExecutor::addConsoleCommandShortcut(this->ccToggleGUI_);
-
-        // enable master input
-        InputManager::getInstance().enterState("master");
     }
 
     /**

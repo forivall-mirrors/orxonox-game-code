@@ -33,6 +33,7 @@
 #include "util/Clock.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
+#include "core/input/KeyBinderManager.h"
 #include "core/Game.h"
 #include "core/ConsoleCommand.h"
 #include "core/GraphicsManager.h"
@@ -50,6 +51,7 @@ namespace orxonox
     {
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setHandler(GUIManager::getInstancePtr());
+        inputState_->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
         inputState_->setJoyStickHandler(&InputHandler::EMPTY);
         inputState_->setIsExclusiveMouse(false);
 
@@ -85,6 +87,7 @@ namespace orxonox
         this->ccStartMainMenu_ = createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu, this), "startMainMenu");
         CommandExecutor::addConsoleCommandShortcut(this->ccStartMainMenu_);
 
+        KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
 
         this->ambient_ = new SoundMainMenu();
