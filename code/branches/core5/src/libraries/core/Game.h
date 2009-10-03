@@ -116,10 +116,10 @@ namespace orxonox
             static shared_ptr<GameState> fabricate(const GameStateInfo& info);
             template <class T>
             static void createFactory(const std::string& className)
-                { factories_s[className].reset(new TemplateGameStateFactory<T>()); }
+                { getFactories()[className].reset(new TemplateGameStateFactory<T>()); }
 
             virtual shared_ptr<GameState> fabricateInternal(const GameStateInfo& info) = 0;
-            static std::map<std::string, shared_ptr<GameStateFactory> > factories_s;
+            static std::map<std::string, shared_ptr<GameStateFactory> >& getFactories();
         };
         template <class T>
         class TemplateGameStateFactory : public GameStateFactory

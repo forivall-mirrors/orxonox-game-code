@@ -116,7 +116,7 @@ namespace orxonox
     */
     Game::Game(const std::string& cmdLine)
         // Destroy factories before the Core!
-        : gsFactoryDestroyer_(Game::GameStateFactory::factories_s, &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
+        : gsFactoryDestroyer_(Game::GameStateFactory::getFactories(), &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
     {
         this->bAbort_ = false;
         bChangingState_ = false;
@@ -623,12 +623,16 @@ namespace orxonox
         this->bChangingState_ = false;
     }
 
-    std::map<std::string, shared_ptr<Game::GameStateFactory> > Game::GameStateFactory::factories_s;
+    /*static*/ std::map<std::string, shared_ptr<Game::GameStateFactory> >& Game::GameStateFactory::getFactories()
+    {
+        static std::map<std::string, shared_ptr<GameStateFactory> > factories;
+        return factories;
+    }
 
     /*static*/ shared_ptr<GameState> Game::GameStateFactory::fabricate(const GameStateInfo& info)
     {
-        std::map<std::string, shared_ptr<Game::GameStateFactory> >::const_iterator it = factories_s.find(info.className);
-        assert(it != factories_s.end());
+        std::map<std::string, shared_ptr<Game::GameStateFactory> >::const_iterator it = getFactories().find(info.className);
+        assert(it != getFactories().end());
         return it->second->fabricateInternal(info);
     }
 }
