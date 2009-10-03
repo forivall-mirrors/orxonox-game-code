@@ -41,7 +41,7 @@
 #include <map>
 #include <string>
 
-#include "util/ScopedSingleton.h"
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 #include "QuestGUI.h"
@@ -58,10 +58,10 @@ namespace orxonox
     */
     class _QuestsystemExport QuestManager
 // tolua_end
-        : public ScopedSingleton<QuestManager, ScopeID::Root>, public orxonox::OrxonoxClass
+        : public Singleton<QuestManager>, public orxonox::OrxonoxClass
     { // tolua_export
 
-            friend class ScopedSingleton<QuestManager, ScopeID::Root>;
+            friend class Singleton<QuestManager>;
             friend class QuestGUI;
 
         public:
@@ -69,7 +69,7 @@ namespace orxonox
             virtual ~QuestManager();
 
             //! Returns a reference to the single instance of the Quest Manager.
-            static QuestManager& getInstance() { return ScopedSingleton<QuestManager, ScopeID::Root>::getInstance(); } // tolua_export
+            static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
             //! Retreive the main window for the GUI. 
             CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export

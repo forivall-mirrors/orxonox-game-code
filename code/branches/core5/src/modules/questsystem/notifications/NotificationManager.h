@@ -40,7 +40,7 @@
 #include <map>
 #include <string>
 
-#include "util/ScopedSingleton.h"
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -52,9 +52,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport NotificationManager : public ScopedSingleton<NotificationManager, ScopeID::Root>, public OrxonoxClass
+    class _QuestsystemExport NotificationManager : public Singleton<NotificationManager>, public OrxonoxClass
     {
-            friend class ScopedSingleton<NotificationManager, ScopeID::Root>;
+            friend class Singleton<NotificationManager>;
         public:
             NotificationManager();
             virtual ~NotificationManager();

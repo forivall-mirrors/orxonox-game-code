@@ -36,6 +36,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   OrxonoxClass.cc
   PathConfig.cc
   Resource.cc
+  ScopedSingletonManager.cc
   WindowEventListener.cc
 
   # command

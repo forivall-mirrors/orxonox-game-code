@@ -64,6 +64,7 @@
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
+#include "ScopedSingletonManager.h"
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
@@ -432,7 +433,7 @@ namespace orxonox
     void Core::preUpdate(const Clock& time)
     {
         // singletons from other libraries
-        Scope<ScopeID::Root>::update(time);
+        ScopedSingletonManager::update(time, ScopeID::Root);
         if (this->bGraphicsLoaded_)
         {
             // process input events
@@ -440,7 +441,7 @@ namespace orxonox
             // process gui events
             this->guiManager_->update(time);
             // graphics singletons from other libraries
-            Scope<ScopeID::Graphics>::update(time);
+            ScopedSingletonManager::update(time, ScopeID::Graphics);
         }
         // process thread commands
         this->tclThreadManager_->update(time);

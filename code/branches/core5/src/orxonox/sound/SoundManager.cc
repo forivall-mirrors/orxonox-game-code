@@ -31,6 +31,7 @@
 #include <AL/alut.h>
 
 #include "util/Math.h"
+#include "core/ScopedSingletonManager.h"
 #include "CameraManager.h"
 #include "graphics/Camera.h"
 #include "SoundBase.h"
@@ -38,6 +39,7 @@
 namespace orxonox
 {
     SoundManager* SoundManager::singletonPtr_s = NULL;
+    ManageScopedSingleton(SoundManager, ScopeID::Graphics);
 
     /**
      * Default constructor

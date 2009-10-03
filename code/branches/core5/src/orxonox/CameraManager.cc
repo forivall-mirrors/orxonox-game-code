@@ -25,6 +25,7 @@
  *      Fabian 'x3n' Landau
  *
  */
+
 #include "CameraManager.h"
 
 #include <OgreSceneManager.h>
@@ -36,12 +37,14 @@
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/ObjectList.h"
+#include "core/ScopedSingletonManager.h"
 #include "tools/Shader.h"
 #include "graphics/Camera.h"
 #include "Scene.h"
 
 namespace orxonox
 {
+    ManageScopedSingleton(CameraManager, ScopeID::Graphics);
     CameraManager* CameraManager::singletonPtr_s = 0;
 
     CameraManager::CameraManager()

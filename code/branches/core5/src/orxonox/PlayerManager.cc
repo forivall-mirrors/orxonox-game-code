@@ -30,6 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
+#include "core/ScopedSingletonManager.h"
 #include "Level.h"
 #include "infos/HumanPlayer.h"
 #include "LevelManager.h"
@@ -37,6 +38,7 @@
 namespace orxonox
 {
     PlayerManager* PlayerManager::singletonPtr_s = 0;
+    ManageScopedSingleton(PlayerManager, ScopeID::Root);
 
     PlayerManager::PlayerManager()
     {

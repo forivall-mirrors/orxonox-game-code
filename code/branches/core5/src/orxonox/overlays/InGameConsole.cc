@@ -47,6 +47,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/ScopedSingletonManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
@@ -60,6 +61,7 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
     InGameConsole* InGameConsole::singletonPtr_s = 0;
+    ManageScopedSingleton(InGameConsole, ScopeID::Graphics);
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.

@@ -35,15 +35,15 @@
 #include <string>
 
 #include "util/OgreForwardRefs.h"
-#include "util/ScopedSingleton.h"
+#include "util/Singleton.h"
 #include "core/Shell.h"
 #include "core/WindowEventListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public ScopedSingleton<InGameConsole, ScopeID::Graphics>, public ShellListener, public WindowEventListener
+    class _OrxonoxExport InGameConsole : public Singleton<InGameConsole>, public ShellListener, public WindowEventListener
     {
-        friend class ScopedSingleton<InGameConsole, ScopeID::Graphics>;
+        friend class Singleton<InGameConsole>;
     public: // functions
         InGameConsole();
         ~InGameConsole();

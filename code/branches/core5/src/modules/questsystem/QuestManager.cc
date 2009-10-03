@@ -40,6 +40,7 @@
 #include "core/GUIManager.h"
 #include "core/ConsoleCommand.h"
 #include "core/LuaState.h"
+#include "core/ScopedSingletonManager.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/GUIOverlay.h"
 
@@ -55,6 +56,7 @@ namespace orxonox
 
     //! Pointer to the current (and single) instance of this class.
     /*static*/ QuestManager* QuestManager::singletonPtr_s = NULL;
+    ManageScopedSingleton(QuestManager, ScopeID::Root);
 
     /**
     @brief

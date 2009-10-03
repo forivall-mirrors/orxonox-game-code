@@ -40,15 +40,15 @@
 #include <cassert>
 #include <list>
 #include "util/OgreForwardRefs.h"
-#include "util/ScopedSingleton.h"
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 #include "core/SmartPtr.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager : public ScopedSingleton<CameraManager, ScopeID::Graphics>, public OrxonoxClass
+    class _OrxonoxExport CameraManager : public Singleton<CameraManager>, public OrxonoxClass
     {
-            friend class ScopedSingleton<CameraManager, ScopeID::Graphics>;
+            friend class Singleton<CameraManager>;
         public:
             CameraManager();
             ~CameraManager();
