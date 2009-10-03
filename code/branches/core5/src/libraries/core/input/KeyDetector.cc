@@ -30,12 +30,16 @@
 
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/ScopedSingletonManager.h"
 #include "Button.h"
+#include "InputManager.h"
+#include "InputState.h"
 
 namespace orxonox
 {
     std::string KeyDetector::callbackCommand_s = "KeyDetectorKeyPressed";
     KeyDetector* KeyDetector::singletonPtr_s = 0;
+    ManageScopedSingleton(KeyDetector, ScopeID::Graphics);
 
     KeyDetector::KeyDetector()
         : KeyBinder("")
@@ -44,6 +48,17 @@ namespace orxonox
 
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyDetector::callback,  this), callbackCommand_s));
         this->assignCommands();
+
+        inputState_ = InputManager::getInstance().createInputState("detector", false, false, InputStatePriority::Detector);
+        // Create a callback to avoid buttonHeld events after the key has been detected
+        inputState_->setLeaveFunctor(createFunctor(&InputManager::clearBuffers, &InputManager::getInstance()));
+        inputState_->setHandler(this);
+    }
+
+    KeyDetector::~KeyDetector()
+    {
+        inputState_->setHandler(NULL);
+        InputManager::getInstance().destroyState("detector");
     }
 
     void KeyDetector::assignCommands()

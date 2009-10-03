@@ -33,12 +33,14 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/ScopedSingletonManager.h"
 #include "InputManager.h"
 #include "KeyDetector.h"
 
 namespace orxonox
 {
     KeyBinderManager* KeyBinderManager::singletonPtr_s = 0;
+    ManageScopedSingleton(KeyBinderManager, ScopeID::Graphics);
 
     KeyBinderManager::KeyBinderManager()
         : currentBinder_(NULL)

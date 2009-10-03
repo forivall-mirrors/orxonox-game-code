@@ -52,7 +52,6 @@
 #include "core/GraphicsManager.h"
 
 #include "InputBuffer.h"
-#include "KeyDetector.h"
 #include "JoyStick.h"
 #include "JoyStickQuantityListener.h"
 #include "Mouse.h"
@@ -89,7 +88,6 @@ namespace orxonox
         , devices_(2)
         , bExclusiveMouse_(false)
         , emptyState_(0)
-        , keyDetector_(0)
         , calibratorCallbackHandler_(0)
     {
         RegisterRootObject(InputManager);
@@ -104,13 +102,6 @@ namespace orxonox
         emptyState_ = createInputState("empty", false, false, InputStatePriority::Empty);
         emptyState_->setHandler(&InputHandler::EMPTY);
         activeStates_[emptyState_->getPriority()] = emptyState_;
-
-        // KeyDetector to evaluate a pressed key's name
-        InputState* detector = createInputState("detector", false, false, InputStatePriority::Detector);
-        // Create a callback to avoid buttonHeld events after the key has been detected
-        detector->setLeaveFunctor(createFunctor(&InputManager::clearBuffers, this));
-        keyDetector_ = new KeyDetector();
-        detector->setHandler(keyDetector_);
 
         // Joy stick calibration helper callback
         InputState* calibrator = createInputState("calibrator", false, false, InputStatePriority::Calibrator);
@@ -273,11 +264,9 @@ namespace orxonox
         CCOUT(3) << "Destroying..." << std::endl;
 
         // Destroy calibrator helper handler and state
-        keyDetector_->destroy();
         this->destroyState("calibrator");
         // Destroy KeyDetector and state
         calibratorCallbackHandler_->destroy();
-        this->destroyState("detector");
         // destroy the empty InputState
         this->destroyStateInternal(this->emptyState_);
 

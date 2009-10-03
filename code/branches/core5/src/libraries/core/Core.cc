@@ -69,7 +69,6 @@
 #include "TclBind.h"
 #include "TclThreadManager.h"
 #include "input/InputManager.h"
-#include "input/KeyBinderManager.h"
 
 namespace orxonox
 {
@@ -289,9 +288,6 @@ namespace orxonox
         // Calls the InputManager which sets up the input devices.
         inputManager_.reset(new InputManager());
 
-        // Manages KeyBinders and makes them available
-        keyBinderManager_.reset(new KeyBinderManager());
-
         // load the CEGUI interface
         guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
             inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
@@ -308,7 +304,6 @@ namespace orxonox
     {
         this->graphicsScope_.reset();
         this->guiManager_.reset();
-        this->keyBinderManager_.reset();
         this->inputManager_.reset();
         this->graphicsManager_.reset();
 

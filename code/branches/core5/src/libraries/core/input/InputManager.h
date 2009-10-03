@@ -194,7 +194,6 @@ namespace orxonox
 
         // some internally handled states and handlers
         InputState*                         emptyState_;           //!< Lowest priority states (makes handling easier)
-        KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         //! InputBuffer that reacts to the Enter key when calibrating the joy sticks
         InputBuffer*                        calibratorCallbackHandler_;
 

@@ -42,7 +42,7 @@ namespace orxonox
 
     public:
         KeyDetector();
-        ~KeyDetector() { }
+        ~KeyDetector();
 
         void setCallback(Functor* function) { this->callbackFunction_ = function; }
 
@@ -54,6 +54,7 @@ namespace orxonox
         void assignCommands();
 
         Functor* callbackFunction_;
+        InputState* inputState_;
         static std::string callbackCommand_s;
         static KeyDetector* singletonPtr_s;
     };
