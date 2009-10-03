@@ -28,48 +28,45 @@
 
 #include "KeyDetector.h"
 
-#include "util/Debug.h"
+#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "Button.h"
 
 namespace orxonox
 {
-    /**
-    @brief
-        Constructor
-    */
+    std::string KeyDetector::callbackCommand_s = "KeyDetectorKeyPressed";
+    KeyDetector* KeyDetector::singletonPtr_s = 0;
+
     KeyDetector::KeyDetector()
+        : KeyBinder("")
     {
         RegisterObject(KeyDetector);
+
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyDetector::callback,  this), callbackCommand_s));
+        this->assignCommands();
     }
 
-    /**
-    @brief
-        Destructor
-    */
-    KeyDetector::~KeyDetector()
+    void KeyDetector::assignCommands()
     {
-    }
-
-    /**
-    @brief
-        Assigns all the buttons 'command' plus the button's name.
-    */
-    void KeyDetector::setCallbackCommand(const std::string& command)
-    {
-        callbackCommand_ = command;
+        // Assign every button/axis the same command, but with its name as argument
         clearBindings();
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
         {
-            it->second->bindingString_ = callbackCommand_ + it->second->groupName_ + "." + it->second->name_;
+            it->second->bindingString_ = callbackCommand_s + " " + it->second->groupName_ + "." + it->second->name_;
             it->second->parse();
         }
+    }
+
+    void KeyDetector::callback(const std::string& name)
+    {
+        // Call the registered function
+        if (this->callbackFunction_)
+            (*this->callbackFunction_)(name);
     }
 
     void KeyDetector::JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList)
     {
         KeyBinder::JoyStickQuantityChanged(joyStickList);
-        if (!callbackCommand_.empty())
-            setCallbackCommand(callbackCommand_);
+        this->assignCommands();
     }
 }
