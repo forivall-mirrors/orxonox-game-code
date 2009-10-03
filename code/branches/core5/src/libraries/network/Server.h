@@ -31,6 +31,7 @@
 
 #include "NetworkPrereqs.h"
 
+#include "util/UtilPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "Host.h"
 #include "GamestateManager.h"

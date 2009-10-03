@@ -44,6 +44,8 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
+
+#include "util/UtilPrereqs.h"
 #include "ClientConnection.h"
 #include "GamestateClient.h"
 #include "Host.h"

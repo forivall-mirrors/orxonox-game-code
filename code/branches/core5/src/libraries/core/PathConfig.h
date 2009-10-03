@@ -32,6 +32,7 @@
 #include "CorePrereqs.h"
 
 #include <string>
+#include <vector>
 #include "util/Singleton.h"
 
 namespace orxonox
