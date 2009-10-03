@@ -48,7 +48,7 @@ namespace orxonox
 
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             if (it->getName() == this->getName())
-                this->addAsEvent(*it);
+                this->addEventTarget(*it);
     }
 
     void EventTarget::loadedNewXMLName(BaseObject* object)
@@ -57,12 +57,12 @@ namespace orxonox
             return;
 
         if (object->getName() == this->getName())
-            this->addAsEvent(object);
+            this->addEventTarget(object);
     }
 
-    void EventTarget::addAsEvent(BaseObject* object)
+    void EventTarget::addEventTarget(BaseObject* object)
     {
         if (object != static_cast<BaseObject*>(this))
-            object->addEvent(this, "");
+            object->addEventSource(this, "");
     }
 }

@@ -46,7 +46,7 @@ namespace orxonox
 
         private:
             virtual void loadedNewXMLName(BaseObject* object);
-            void addAsEvent(BaseObject* object);
+            void addEventTarget(BaseObject* object);
     };
 }
 

@@ -151,6 +151,10 @@ namespace orxonox
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual void changedGametype() {}
 
+            void addEventSource(BaseObject* source, const std::string& state);
+            void removeEventSource(BaseObject* source);
+            BaseObject* getEventSource(unsigned int index, const std::string& state) const;
+
             void fireEvent();
             void fireEvent(bool activate);
             void fireEvent(bool activate, BaseObject* originator);
@@ -158,24 +162,22 @@ namespace orxonox
 
             virtual void processEvent(Event& event);
 
-            inline void registerEventListener(BaseObject* object, const std::string& sectionname)
-                { this->eventListeners_[object] = sectionname; }
-            inline void unregisterEventListener(BaseObject* object)
-                { this->eventListeners_.erase(object); }
-
-            void addEvent(BaseObject* event, const std::string& sectionname);
-            void removeEvent(BaseObject* event);
-            BaseObject* getEvent(unsigned int index) const;
-
-            void addEventContainer(const std::string& sectionname, EventContainer* container);
-            EventContainer* getEventContainer(const std::string& sectionname) const;
-
             /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
 
         protected:
+            /** @brief Adds an object which listens to the events of this object. */
+            inline void registerEventListener(BaseObject* object)
+                { this->eventListeners_.insert(object); }
+            /** @brief Removes an event listener from this object. */
+            inline void unregisterEventListener(BaseObject* object)
+                { this->eventListeners_.erase(object); }
+
+            void addEventContainer(const std::string& sectionname, EventContainer* container);
+            EventContainer* getEventContainer(const std::string& sectionname) const;
+
             std::string name_;                                 //!< The name of the object
             std::string oldName_;                              //!< The old name of the object
             mbool       bActive_;                              //!< True = the object is active
@@ -196,13 +198,14 @@ namespace orxonox
             Namespace*             namespace_;
             BaseObject*            creator_;
             SmartPtr<Scene>        scene_;
+            uint32_t               sceneID_;
             SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
             std::set<Template*>    templates_;
-            std::map<BaseObject*,  std::string> eventListeners_;
-            std::list<BaseObject*> events_;
-            std::map<std::string, EventContainer*> eventContainers_;
-            uint32_t               sceneID_;
+            
+            std::map<BaseObject*, std::string>      eventSources_;      //!< List of objects which send events to this object, mapped to the state which they affect
+            std::set<BaseObject*>                   eventListeners_;    //!< List of objects which listen to the events of this object
+            std::map<std::string, EventContainer*>  eventContainers_;
     };
 
     SUPER_FUNCTION(0, BaseObject, XMLPort, false);

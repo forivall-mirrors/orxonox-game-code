@@ -29,7 +29,6 @@
 #include "Event.h"
 
 #include "BaseObject.h"
-#include "Executor.h"
 
 namespace orxonox
 {

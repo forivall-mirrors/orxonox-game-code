@@ -77,7 +77,7 @@ namespace orxonox
 
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             if (it->getName() == this->eventName_)
-                this->registerAsListener(*it);
+                this->addEventSource(*it, "");
     }
 
     void EventListener::loadedNewXMLName(BaseObject* object)
@@ -86,11 +86,6 @@ namespace orxonox
             return;
 
         if (object->getName() == this->eventName_)
-            this->registerAsListener(object);
-    }
-
-    void EventListener::registerAsListener(BaseObject* object)
-    {
-        object->registerEventListener(this, "");
+            this->addEventSource(object, "");
     }
 }

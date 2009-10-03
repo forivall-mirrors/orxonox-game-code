@@ -260,18 +260,22 @@ namespace orxonox
             /** @brief Returns a const_iterator to the end of the map that stores all XMLPort objects. @return The const_iterator */
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapEnd() const { return this->xmlportObjectContainers_.end(); }
 
+            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
+            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
+
+            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
+            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
+
+
+            //////////////////
+            ///// Events /////
+            //////////////////
             /** @brief Returns the map that stores all XMLPort events. @return The const_iterator */
             inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortEventMap() const { return this->xmlportEventContainers_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort events. @return The const_iterator */
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapBegin() const { return this->xmlportEventContainers_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all XMLPort events. @return The const_iterator */
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapEnd() const { return this->xmlportEventContainers_.end(); }
-
-            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
-            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
-
-            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
-            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
             void addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container);
             XMLPortObjectContainer* getXMLPortEventContainer(const std::string& eventname);

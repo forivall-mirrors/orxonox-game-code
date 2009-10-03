@@ -93,11 +93,11 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
-                (*it)->unregisterEventListener(this);
+            for (std::map<BaseObject*, std::string>::const_iterator it = this->eventSources_.begin(); it != this->eventSources_.end(); )
+                this->removeEventSource((it++)->first);
 
-            for (std::map<BaseObject*, std::string>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
-                it->first->removeEvent(this);
+            for (std::set<BaseObject*>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); )
+                (*(it++))->removeEventSource(this);
 
             for (std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.begin(); it != this->eventContainers_.end(); ++it)
                 delete it->second;
@@ -144,9 +144,10 @@ namespace orxonox
             for (std::list<std::string>::iterator it = eventnames.begin(); it != eventnames.end(); ++it)
             {
                 std::string sectionname = (*it);
-                ExecutorMember<BaseObject>* loadexecutor = createExecutor(createFunctor(&BaseObject::addEvent), std::string( "BaseObject" ) + "::" + "addEvent");
-                ExecutorMember<BaseObject>* saveexecutor = createExecutor(createFunctor(&BaseObject::getEvent), std::string( "BaseObject" ) + "::" + "getEvent");
+                ExecutorMember<BaseObject>* loadexecutor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource");
+                ExecutorMember<BaseObject>* saveexecutor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource");
                 loadexecutor->setDefaultValue(1, sectionname);
+                saveexecutor->setDefaultValue(1, sectionname);
 
                 XMLPortClassObjectContainer<BaseObject, BaseObject>* container = 0;
                 container = static_cast<XMLPortClassObjectContainer<BaseObject, BaseObject>*>(this->getIdentifier()->getXMLPortEventContainer(sectionname));
@@ -223,24 +224,39 @@ namespace orxonox
         return 0;
     }
 
-    void BaseObject::addEvent(BaseObject* event, const std::string& sectionname)
+    /**
+        @brief Adds a new event source for a specific state.
+        @param source The object which sends events to this object
+        @param state The state of this object which will be affected by the events
+    */
+    void BaseObject::addEventSource(BaseObject* source, const std::string& state)
     {
-        event->registerEventListener(this, sectionname);
-        this->events_.push_back(event);
+        this->eventSources_[source] = state;
+        source->registerEventListener(this);
     }
 
-    void BaseObject::removeEvent(BaseObject* event)
+    /**
+        @brief Removes an eventsource (but doesn't unregister itself at the source).
+    */
+    void BaseObject::removeEventSource(BaseObject* source)
     {
-        this->events_.remove(event);
+        this->eventSources_.erase(source);
+        source->unregisterEventListener(this);
     }
 
-    BaseObject* BaseObject::getEvent(unsigned int index) const
+    /**
+        @brief Returns an eventsource with a given index.
+    */
+    BaseObject* BaseObject::getEventSource(unsigned int index, const std::string& state) const
     {
         unsigned int i = 0;
-        for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
+        for (std::map<BaseObject*, std::string>::const_iterator it = this->eventSources_.begin(); it != this->eventSources_.end(); ++it)
         {
+            if (it->second != state)
+                continue;
+            
             if (i == index)
-                return (*it);
+                return it->first;
             ++i;
         }
         return 0;
@@ -267,32 +283,44 @@ namespace orxonox
             return 0;
     }
 
+    /**
+        @brief Fires an event (without a state).
+    */
     void BaseObject::fireEvent()
     {
         this->fireEvent(true);
         this->fireEvent(false);
     }
 
+    /**
+        @brief Fires an event which activates or deactivates a state.
+    */
     void BaseObject::fireEvent(bool activate)
     {
         this->fireEvent(activate, this);
     }
 
+    /**
+        @brief Fires an event which activates or deactivates a state with agiven originator (the object which sends the event).
+    */
     void BaseObject::fireEvent(bool activate, BaseObject* originator)
     {
         Event event(activate, originator);
 
-        for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+        for (std::set<BaseObject*>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
         {
-            event.sectionname_ = it->second;
-            it->first->processEvent(event);
+            event.sectionname_ = (*it)->eventSources_[this];
+            (*it)->processEvent(event);
         }
     }
 
+    /**
+        @brief Fires an event, using the Event struct.
+    */
     void BaseObject::fireEvent(Event& event)
     {
-        for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
-            it->first->processEvent(event);
+        for (std::set<BaseObject*>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+            (*it)->processEvent(event);
     }
 
     void BaseObject::processEvent(Event& event)
