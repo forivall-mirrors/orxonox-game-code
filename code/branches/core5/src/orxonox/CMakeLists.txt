@@ -24,16 +24,16 @@ INCLUDE_DIRECTORIES(
 )
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
-  Main.cc
-
-  CameraManager.cc
+  Level.cc
   LevelManager.cc
+  Main.cc
   PawnManager.cc
   PlayerManager.cc
-
-  Level.cc
   Radar.cc
+COMPILATION_BEGIN SceneCompilation.cc
+  CameraManager.cc
   Scene.cc
+COMPILATION_END
 )
 
 ADD_SUBDIRECTORY(collisionshapes)

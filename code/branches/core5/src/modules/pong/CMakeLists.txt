@@ -1,4 +1,5 @@
 SET_SOURCE_FILES(PONG_SRC_FILES
+#COMPILATION_BEGIN PongCompilation.cc
   Pong.cc
   PongAI.cc
   PongBall.cc
@@ -6,14 +7,12 @@ SET_SOURCE_FILES(PONG_SRC_FILES
   PongBot.cc
   PongCenterpoint.cc
   PongScore.cc
+#COMPILATION_END
 )
 
 ORXONOX_ADD_LIBRARY(pong
   MODULE
   FIND_HEADER_FILES
-  PCH_FILE
-    PongPrecompiledHeaders.h
-  PCH_NO_DEFAULT
   DEFINE_SYMBOL
     "PONG_SHARED_BUILD"
   LINK_LIBRARIES
