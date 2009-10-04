@@ -33,6 +33,7 @@ SET_SOURCE_FILES(OIS_FILES
   OISObject.h
   OISPrereqs.h
 
+COMPILATION_BEGIN OISCompilation.cpp
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -40,6 +41,7 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.cpp
   OISKeyboard.cpp
   OISObject.cpp
+COMPILATION_END
 )
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)

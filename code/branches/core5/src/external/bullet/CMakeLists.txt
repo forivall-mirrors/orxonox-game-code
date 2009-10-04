@@ -33,8 +33,6 @@ ADD_COMPILER_FLAGS("-w")
 ORXONOX_ADD_LIBRARY(bullet_orxonox
   ORXONOX_EXTERNAL
   NO_DLL_INTERFACE
-  PCH_FILE
-    BulletPrecompiledHeaders.h
   VERSION
     2.74
   SOURCE_FILES

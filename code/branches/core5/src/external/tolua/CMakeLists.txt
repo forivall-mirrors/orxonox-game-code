@@ -19,17 +19,17 @@
 
 ################### Tolua++ library ###################
 
-SET(TOLUA++_FILES
+SET_SOURCE_FILES(TOLUA++_FILES
   tolua_event.h
   tolua++.h
-
+COMPILATION_BEGIN ToluaCompilation.c
   tolua_event.c
   tolua_is.c
   tolua_map.c
   tolua_push.c
   tolua_to.c
+COMPILATION_END
 )
-GENERATE_SOURCE_GROUPS(${TOLUA++_FILES})
 
 # No warnings needed from third party libraries
 REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
