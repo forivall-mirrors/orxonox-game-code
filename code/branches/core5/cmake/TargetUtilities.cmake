@@ -66,16 +66,16 @@ IF(PCH_COMPILER_SUPPORT)
   INCLUDE(PrecompiledHeaderFiles)
 ENDIF()
 
-FUNCTION(ORXONOX_ADD_LIBRARY _target_name)
+MACRO(ORXONOX_ADD_LIBRARY _target_name)
   TU_ADD_TARGET(${_target_name} LIBRARY "STATIC;SHARED" ${ARGN})
-ENDFUNCTION(ORXONOX_ADD_LIBRARY)
+ENDMACRO(ORXONOX_ADD_LIBRARY)
 
-FUNCTION(ORXONOX_ADD_EXECUTABLE _target_name)
+MACRO(ORXONOX_ADD_EXECUTABLE _target_name)
   TU_ADD_TARGET(${_target_name} EXECUTABLE "WIN32" ${ARGN})
-ENDFUNCTION(ORXONOX_ADD_EXECUTABLE)
+ENDMACRO(ORXONOX_ADD_EXECUTABLE)
 
 
-FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
+MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   CAPITALISE_NAME(${_target_name} _target_name_capitalised)
 
   # Specify all possible options (either switch or with add. arguments)
@@ -149,6 +149,12 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(MSVC AND _arg_NO_DLL_INTERFACE)
     SET(_arg_SHARED)
     SET(_arg_STATIC STATIC)
+  ENDIF()
+
+  # No warnings needed from third party libraries
+  IF(_arg_ORXONOX_EXTERNAL)
+    REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
+    ADD_COMPILER_FLAGS("-w")
   ENDIF()
 
   # Set default linking if required
@@ -233,7 +239,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
-ENDFUNCTION(TU_ADD_TARGET)
+ENDMACRO(TU_ADD_TARGET)
 
 
 # Creates a helper file with name <name_of_the_library>${ORXONOX_MODULE_EXTENSION}

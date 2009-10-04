@@ -51,10 +51,6 @@ ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
 ENDIF()
 
-# No warnings needed from third party libraries
-REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-ADD_COMPILER_FLAGS("-w")
-
 INCLUDE_DIRECTORIES(.)
 
 ORXONOX_ADD_LIBRARY(ois_orxonox

@@ -29,10 +29,6 @@ COMPILATION_BEGIN OgreCEGUIRendererCompilation.cpp
 COMPILATION_END
 )
 
-# No warnings needed from third party libraries
-REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-ADD_COMPILER_FLAGS("-w")
-
 ORXONOX_ADD_LIBRARY(ogreceguirenderer_orxonox
   ORXONOX_EXTERNAL
   LINK_LIBRARIES
