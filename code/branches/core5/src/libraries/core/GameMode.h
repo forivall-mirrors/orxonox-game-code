@@ -40,7 +40,7 @@ namespace orxonox
 {
     class _CoreExport GameMode
     {
-        friend class Game;
+        friend class Core;
 
         public:
             static bool showsGraphics() { return bShowsGraphics_s; }

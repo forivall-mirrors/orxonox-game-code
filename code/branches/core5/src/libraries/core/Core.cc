@@ -292,12 +292,13 @@ namespace orxonox
         guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
             inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
 
+        bGraphicsLoaded_ = true;
+        GameMode::bShowsGraphics_s = true;
+
         // Create singletons associated with graphics (in other libraries)
         graphicsScope_.reset(new Scope<ScopeID::Graphics>());
 
         unloader.Dismiss();
-
-        bGraphicsLoaded_ = true;
     }
 
     void Core::unloadGraphics()
@@ -319,6 +320,7 @@ namespace orxonox
         }
 
         bGraphicsLoaded_ = false;
+        GameMode::bShowsGraphics_s = false;
     }
 
     /**

@@ -522,11 +522,10 @@ namespace orxonox
 
     void Game::loadGraphics()
     {
-        if (!GameMode::bShowsGraphics_s)
+        if (!GameMode::showsGraphics())
         {
             core_->loadGraphics();
             Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
-            GameMode::bShowsGraphics_s = true;
 
             // Construct all the GameStates that require graphics
             for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
@@ -547,7 +546,7 @@ namespace orxonox
 
     void Game::unloadGraphics()
     {
-        if (GameMode::bShowsGraphics_s)
+        if (GameMode::showsGraphics())
         {
             // Destroy all the GameStates that require graphics
             for (GameStateMap::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
@@ -559,7 +558,6 @@ namespace orxonox
             }
 
             core_->unloadGraphics();
-            GameMode::bShowsGraphics_s = false;
         }
     }
 
