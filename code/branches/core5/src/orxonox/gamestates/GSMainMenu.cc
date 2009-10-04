@@ -58,12 +58,20 @@ namespace orxonox
         this->scene_ = new Scene(NULL);
         // and a Camera
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
-        // Load sound
-        this->ambient_ = new SoundMainMenu();
+        if (GameMode::playsSound())
+        {
+            // Load sound
+            this->ambient_ = new SoundMainMenu();
+        }
     }
 
     GSMainMenu::~GSMainMenu()
     {
+        if (GameMode::playsSound())
+        {
+            this->ambient_->destroy();
+        }
+
         InputManager::getInstance().destroyState("mainMenu");
 
         this->scene_->getSceneManager()->destroyCamera(this->camera_);
@@ -86,12 +94,18 @@ namespace orxonox
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
 
-        this->ambient_->play(true);
+        if (GameMode::playsSound())
+        {
+            this->ambient_->play(true);
+        }
     }
 
     void GSMainMenu::deactivate()
     {
-        this->ambient_->stop();
+        if (GameMode::playsSound())
+        {
+            this->ambient_->stop();
+        }
 
         InputManager::getInstance().leaveState("mainMenu");
 
