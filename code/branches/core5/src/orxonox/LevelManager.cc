@@ -43,8 +43,8 @@ namespace orxonox
 {
     SetCommandLineArgument(level, "").shortcut("l").information("Default level file (overrides LevelManager::defaultLevelName_ configValue)");
 
-    ManageScopedSingleton(LevelManager, ScopeID::Root);
     LevelManager* LevelManager::singletonPtr_s = 0;
+    ManageScopedSingleton(LevelManager, ScopeID::Root, false);
 
     LevelManager::LevelManager()
     {

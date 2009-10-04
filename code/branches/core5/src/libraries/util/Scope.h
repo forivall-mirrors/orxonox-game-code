@@ -34,7 +34,9 @@
 #include <cassert>
 #include <map>
 #include <set>
+
 #include "Debug.h"
+#include "ScopeGuard.h"
 
 namespace orxonox
 {
@@ -62,7 +64,7 @@ namespace orxonox
 
         protected:
             //! Constructor: Registers the instance.
-            ScopeListener(ScopeID::Value scope) : scope_(scope)
+            ScopeListener(ScopeID::Value scope) : scope_(scope), bActivated_(false)
                 { ScopeManager::listeners_s[this->scope_].insert(this); }
             //! Destructor: Unregisters the instance.
             virtual ~ScopeListener()
@@ -75,6 +77,7 @@ namespace orxonox
 
         private:
             ScopeID::Value scope_; //!< Store the scope to unregister on destruction
+            bool bActivated_;
     };
 
     /**
@@ -90,12 +93,25 @@ namespace orxonox
             //! Constructor: Increases the instance counter and activates the scope if the count went from 0 to 1. Counts >1 don't change anything.
             Scope()
             {
-                ScopeManager::instanceCounts_s[scope]++;
-                assert(ScopeManager::instanceCounts_s[scope] > 0);
-                if (ScopeManager::instanceCounts_s[scope] == 1)
+                try
                 {
-                    for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
-                        (*(it++))->activated();
+                    ScopeManager::instanceCounts_s[scope]++;
+                    assert(ScopeManager::instanceCounts_s[scope] > 0);
+                    if (ScopeManager::instanceCounts_s[scope] == 1)
+                    {
+                        Loki::ScopeGuard deactivator = Loki::MakeObjGuard(*this, &Scope::deactivateListeners);
+                        for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
+                        {
+                            (*it)->activated();
+                            (*(it++))->bActivated_ = true;
+                        }
+                        deactivator.Dismiss();
+                    }
+                }
+                catch (...)
+                {
+                    ScopeManager::instanceCounts_s[scope]--;
+                    throw;
                 }
             }
 
@@ -110,9 +126,23 @@ namespace orxonox
                     ScopeManager::instanceCounts_s[scope] = 0;
 
                 if (ScopeManager::instanceCounts_s[scope] == 0)
+                    this->deactivateListeners();
+            }
+
+            void deactivateListeners()
+            {
+                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
                 {
-                    for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
-                        (*(it++))->deactivated();
+                    if ((*it)->bActivated_)
+                    {
+                        try
+                            { (*it)->deactivated(); }
+                        catch (...)
+                            { COUT(0) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << std::endl; }
+                        (*(it++))->bActivated_ = false;
+                    }
+                    else
+                        ++it;
                 }
             }
 

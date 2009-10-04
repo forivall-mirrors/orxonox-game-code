@@ -56,7 +56,7 @@ namespace orxonox
 
     //! Pointer to the current (and single) instance of this class.
     /*static*/ QuestManager* QuestManager::singletonPtr_s = NULL;
-    ManageScopedSingleton(QuestManager, ScopeID::Root);
+    ManageScopedSingleton(QuestManager, ScopeID::Root, false);
 
     /**
     @brief

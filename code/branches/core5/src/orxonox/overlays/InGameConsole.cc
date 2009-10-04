@@ -61,7 +61,7 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
     InGameConsole* InGameConsole::singletonPtr_s = 0;
-    ManageScopedSingleton(InGameConsole, ScopeID::Graphics);
+    ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.

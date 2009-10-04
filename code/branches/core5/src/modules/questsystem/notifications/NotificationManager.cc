@@ -47,7 +47,7 @@ namespace orxonox
     const std::string NotificationManager::NONE = "none";
 
     NotificationManager* NotificationManager::singletonPtr_s = NULL;
-    ManageScopedSingleton(NotificationManager, ScopeID::Root);
+    ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
     /**
     @brief

@@ -433,7 +433,7 @@ namespace orxonox
     void Core::preUpdate(const Clock& time)
     {
         // singletons from other libraries
-        ScopedSingletonManager::update(time, ScopeID::Root);
+        ScopedSingletonManager::update<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
             // process input events
@@ -441,7 +441,7 @@ namespace orxonox
             // process gui events
             this->guiManager_->update(time);
             // graphics singletons from other libraries
-            ScopedSingletonManager::update(time, ScopeID::Graphics);
+            ScopedSingletonManager::update<ScopeID::Graphics>(time);
         }
         // process thread commands
         this->tclThreadManager_->update(time);
