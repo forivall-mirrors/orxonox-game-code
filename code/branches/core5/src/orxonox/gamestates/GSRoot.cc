@@ -47,8 +47,6 @@ namespace orxonox
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
     {
-        this->ccSetTimeFactor_ = 0;
-        this->ccPause_ = 0;
     }
 
     GSRoot::~GSRoot()
@@ -62,29 +60,16 @@ namespace orxonox
         this->timeFactor_ = 1.0f;
 
         // time factor console command
-        this->ccSetTimeFactor_ = createConsoleCommand(createFunctor(&GSRoot::setTimeFactor, this), "setTimeFactor");
-        CommandExecutor::addConsoleCommandShortcut(this->ccSetTimeFactor_).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
+        ConsoleCommand* command = createConsoleCommand(createFunctor(&GSRoot::setTimeFactor, this), "setTimeFactor");
+        CommandExecutor::addConsoleCommandShortcut(command).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
 
         // time factor console command
-        this->ccPause_ = createConsoleCommand(createFunctor(&GSRoot::pause, this), "pause");
-        CommandExecutor::addConsoleCommandShortcut(this->ccPause_).accessLevel(AccessLevel::Offline);
+        command = createConsoleCommand(createFunctor(&GSRoot::pause, this), "pause");
+        CommandExecutor::addConsoleCommandShortcut(command).accessLevel(AccessLevel::Offline);
     }
 
     void GSRoot::deactivate()
     {
-/*
-        if (this->ccSetTimeFactor_)
-        {
-            delete this->ccSetTimeFactor_;
-            this->ccSetTimeFactor_ = 0;
-        }
-
-        if (this->ccPause_)
-        {
-            delete this->ccPause_;
-            this->ccPause_ = 0;
-        }
-*/
     }
 
     void GSRoot::update(const Clock& time)

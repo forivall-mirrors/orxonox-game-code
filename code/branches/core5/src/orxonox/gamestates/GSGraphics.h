@@ -59,8 +59,6 @@ namespace orxonox
         void toggleGUI();
 
     private:
-        XMLFile*              debugOverlay_;
-        ConsoleCommand*       ccToggleGUI_;         //!< Console command to toggle GUI
     };
 }
 

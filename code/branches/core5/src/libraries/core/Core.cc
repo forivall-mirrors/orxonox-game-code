@@ -288,12 +288,15 @@ namespace orxonox
         // Calls the InputManager which sets up the input devices.
         inputManager_.reset(new InputManager());
 
-        // load the CEGUI interface
+        // Load the CEGUI interface
         guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
             inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
 
         bGraphicsLoaded_ = true;
         GameMode::bShowsGraphics_s = true;
+
+        // Load some sort of a debug overlay (only denoted by its name, "debug.oxo")
+        graphicsManager_->loadDebugOverlay();
 
         // Create singletons associated with graphics (in other libraries)
         graphicsScope_.reset(new Scope<ScopeID::Graphics>());

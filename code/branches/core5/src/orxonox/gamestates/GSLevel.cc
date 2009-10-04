@@ -36,8 +36,6 @@
 #include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
 #include "core/ConsoleCommand.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
@@ -50,31 +48,22 @@
 namespace orxonox
 {
     DeclareGameState(GSLevel, "level", false, false);
-    SetConsoleCommand(GSLevel, showIngameGUI, true);
-
-    XMLFile* GSLevel::startFile_s = NULL;
 
     GSLevel::GSLevel(const GameStateInfo& info)
         : GameState(info)
         , gameInputState_(0)
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
+        , startFile_(0)
     {
-        RegisterObject(GSLevel);
     }
 
     GSLevel::~GSLevel()
     {
     }
 
-    void GSLevel::setConfigValues()
-    {
-    }
-
     void GSLevel::activate()
     {
-        setConfigValues();
-
         if (GameMode::showsGraphics())
         {
             gameInputState_ = InputManager::getInstance().createInputState("game");
@@ -86,6 +75,8 @@ namespace orxonox
 
             guiKeysOnlyInputState_ = InputManager::getInstance().createInputState("guiKeysOnly");
             guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
+
+            CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSLevel::showIngameGUI, this), "showIngameGUI"));
         }
 
         if (GameMode::isMaster())
@@ -128,16 +119,7 @@ namespace orxonox
             
             // unload all compositors (this is only necessary because we don't yet destroy all resources!)
             Ogre::CompositorManager::getSingleton().removeAll();
-        }
 
-        // this call will delete every BaseObject!
-        // But currently this will call methods of objects that exist no more
-        // The only 'memory leak' is the ParticleSpawer. They would be deleted here
-        // and call a sceneNode method that has already been destroy by the corresponding space ship.
-        //Loader::close();
-
-        if (GameMode::showsGraphics())
-        {
             InputManager::getInstance().leaveState("game");
         }
 
@@ -157,7 +139,7 @@ namespace orxonox
 
     void GSLevel::update(const Clock& time)
     {
-        // Note: Temporarily moved to GSGraphics.
+        // Note: Temporarily moved to GSRoot.
         //// Call the scene objects
         //for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
         //    it->tick(time.getDeltaTime() * this->timeFactor_);
@@ -167,14 +149,13 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        startFile_s = new XMLFile(LevelManager::getInstance().getDefaultLevel());
-        Loader::open(startFile_s);
+        startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
+        Loader::open(startFile_);
     }
 
     void GSLevel::unloadLevel()
     {
-        Loader::unload(startFile_s);
-
-        delete startFile_s;
+        Loader::unload(startFile_);
+        delete startFile_;
     }
 }

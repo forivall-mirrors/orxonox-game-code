@@ -29,8 +29,8 @@
 #include "GSIOConsole.h"
 
 #include <iostream>
-
 #include "core/ConsoleCommand.h"
+#include "core/CommandExecutor.h"
 #include "core/Game.h"
 
 namespace orxonox
@@ -48,21 +48,11 @@ namespace orxonox
 
     void GSIOConsole::activate()
     {
-        {
-            this->ccLoadMenu_ = createConsoleCommand(createFunctor(&GSIOConsole::loadMenu, this), "loadMenu");
-            CommandExecutor::addConsoleCommandShortcut(this->ccLoadMenu_);
-        }
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSIOConsole::loadMenu, this), "loadMenu"));
     }
 
     void GSIOConsole::deactivate()
     {
-/*
-        if (this->ccLoadMenu_)
-        {
-            delete this->ccLoadMenu_;
-            this->ccLoadMenu_ = 0;
-        }
-*/
     }
 
     void GSIOConsole::update(const Clock& time)

@@ -30,7 +30,6 @@
 
 #include <OgreSceneManager.h>
 
-#include "util/Clock.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
@@ -56,9 +55,11 @@ namespace orxonox
         inputState_->setIsExclusiveMouse(false);
 
         // create an empty Scene
-        this->scene_ = new Scene(0);
+        this->scene_ = new Scene(NULL);
         // and a Camera
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
+        // Load sound
+        this->ambient_ = new SoundMainMenu();
     }
 
     GSMainMenu::~GSMainMenu()
@@ -76,40 +77,26 @@ namespace orxonox
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 
-        this->ccStartStandalone_ = createConsoleCommand(createFunctor(&GSMainMenu::startStandalone, this), "startGame");
-        CommandExecutor::addConsoleCommandShortcut(this->ccStartStandalone_);
-        this->ccStartServer_ = createConsoleCommand(createFunctor(&GSMainMenu::startServer, this), "startServer");
-        CommandExecutor::addConsoleCommandShortcut(this->ccStartServer_);
-        this->ccStartClient_ = createConsoleCommand(createFunctor(&GSMainMenu::startClient, this), "startClient");
-        CommandExecutor::addConsoleCommandShortcut(this->ccStartClient_);
-        this->ccStartDedicated_ = createConsoleCommand(createFunctor(&GSMainMenu::startDedicated, this), "startDedicated");
-        CommandExecutor::addConsoleCommandShortcut(this->ccStartDedicated_);
-        this->ccStartMainMenu_ = createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu, this), "startMainMenu");
-        CommandExecutor::addConsoleCommandShortcut(this->ccStartMainMenu_);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startStandalone, this), "startGame"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startServer, this), "startServer"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startClient, this), "startClient"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startDedicated, this), "startDedicated"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu, this), "startMainMenu"));
 
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
 
-        this->ambient_ = new SoundMainMenu();
         this->ambient_->play(true);
     }
 
     void GSMainMenu::deactivate()
     {
-        this->ambient_->destroy();
+        this->ambient_->stop();
 
         InputManager::getInstance().leaveState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
         GraphicsManager::getInstance().setCamera(0);
-
-/*
-        if (this->ccStartGame_)
-        {
-            delete this->ccStartGame_;
-            this->ccStartGame_ = 0;
-        }
-*/
     }
 
     void GSMainMenu::update(const Clock& time)

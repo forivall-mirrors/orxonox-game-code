@@ -37,28 +37,26 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameState, public OrxonoxClass
+    class _OrxonoxExport GSLevel : public GameState
     {
     public:
         GSLevel(const GameStateInfo& info);
         ~GSLevel();
-        void setConfigValues();
 
         void activate();
         void deactivate();
         void update(const Clock& time);
 
-        static void showIngameGUI(bool show);
-
-        static XMLFile* startFile_s;
-
     protected:
         void loadLevel();
         void unloadLevel();
+        void showIngameGUI(bool show);
 
         InputState*              gameInputState_;          //!< input state for normal ingame playing
         InputState*              guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
         InputState*              guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
+
+        XMLFile* startFile_;
     };
 }
 

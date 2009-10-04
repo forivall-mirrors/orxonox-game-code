@@ -57,13 +57,6 @@ namespace orxonox
         Scene*            scene_;
         Ogre::Camera*     camera_;
 
-        // console commands
-        ConsoleCommand* ccStartStandalone_;
-        ConsoleCommand* ccStartServer_;
-        ConsoleCommand* ccStartClient_;
-        ConsoleCommand* ccStartDedicated_;
-        ConsoleCommand* ccStartMainMenu_;
-
         // ambient sound for the main menu
         SoundMainMenu* ambient_;
     };

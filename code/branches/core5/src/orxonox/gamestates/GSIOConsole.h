@@ -46,9 +46,6 @@ namespace orxonox
 
     private:
         void loadMenu();
-
-        // console commands
-        ConsoleCommand* ccLoadMenu_;
     };
 }
 

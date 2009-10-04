@@ -129,6 +129,8 @@ namespace orxonox
     */
     GraphicsManager::~GraphicsManager()
     {
+        Loader::unload(debugOverlay_.get());
+
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
         // TODO: Destroy the console command
 
@@ -321,6 +323,22 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
+    void GraphicsManager::loadDebugOverlay()
+    {
+        // Load debug overlay to show info about fps and tick time
+        COUT(4) << "Loading Debug Overlay..." << std::endl;
+        debugOverlay_.reset(new XMLFile("debug.oxo"));
+        Loader::open(debugOverlay_.get());
+    }
+
+    /**
+    @note
+        A note about the Ogre::FrameListener: Even though we don't use them,
+        they still get called. However, the delta times are not correct (except
+        for timeSinceLastFrame, which is the most important). A little research
+        as shown that there is probably only one FrameListener that doesn't even
+        need the time. So we shouldn't run into problems.
+    */
     void GraphicsManager::update(const Clock& time)
     {
         Ogre::FrameEvent evt;

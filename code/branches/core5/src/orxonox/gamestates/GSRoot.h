@@ -54,10 +54,6 @@ namespace orxonox
         float                 timeFactor_;              //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
-
-        // console commands
-        ConsoleCommand*       ccSetTimeFactor_;
-        ConsoleCommand*       ccPause_;
     };
 }
 

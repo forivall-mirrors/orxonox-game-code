@@ -70,6 +70,7 @@ namespace orxonox
         bool isFullScreen() const;
 
         void upgradeToGraphics();
+        void loadDebugOverlay();
         bool rendererLoaded() const { return renderWindow_ != NULL; }
 
         void setCamera(Ogre::Camera* camera);
@@ -98,9 +99,10 @@ namespace orxonox
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
 
-        // XML files for the resources
+        // XML files for the resources and the debug overlay
         shared_ptr<XMLFile> resources_;                //!< XML with resource locations
         shared_ptr<XMLFile> extResources_;             //!< XML with resource locations in the external path (only for dev runs)
+        shared_ptr<XMLFile> debugOverlay_;             //!< XML with various debug overlays
 
         // config values
         std::string         ogreConfigFile_;           //!< ogre config file name
