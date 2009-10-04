@@ -87,13 +87,24 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
-  # GET_HEADER_FILES
+  # Workaround: Source file properties get lost when leaving a subdirectory
+  # Therefore an "H" after a file means we have to set it as HEADER_FILE_ONLY
+  FOREACH(_file ${_arg_SOURCE_FILES})
+    IF(_file STREQUAL "H")
+      SET_SOURCE_FILES_PROPERTIES(${_last_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+    ELSE()
+      SET(_last_file ${_file})
+      LIST(APPEND _${_target_name}_source_files ${_file})
+    ENDIF()
+  ENDFOREACH(_file)
+
+  # Assemble all header files of the library
   IF(_arg_FIND_HEADER_FILES)
-    GET_ALL_HEADER_FILES(_${target_name}_header_files)
+    GET_ALL_HEADER_FILES(_${_target_name}_header_files)
   ENDIF()
 
   # Remove potential duplicates
-  SET(_${_target_name}_files ${_${target_name}_header_files} ${_arg_SOURCE_FILES})
+  SET(_${_target_name}_files ${_${_target_name}_header_files} ${_${_target_name}_source_files})
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
 
   # Generate the source groups

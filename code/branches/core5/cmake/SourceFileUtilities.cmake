@@ -23,18 +23,59 @@
  #    Several functions that help organising the source tree.
  #    [ADD/SET]_SOURCE_FILES - Writes source files to the cache by force and
  #                             adds the current directory.
- #    GET_ALL_HEADER_FILES - Finds all header files recursively.
+ #                             Also compiles multiple source files into a single
+ #                             one by including them
+ #                             Use COMPILATION_[BEGIN|END] in
+ #                             [ADD|SET]_SOURCE_FILES and specify the name of
+ #                             the new source file after COMPILATION_BEGIN
+ #    GET_ALL_HEADER_FILES   - Finds all header files recursively.
  #    GENERATE_SOURCE_GROUPS - Set Visual Studio source groups.
  #
 
-# Adds source files with the full path to a list
-FUNCTION(ADD_SOURCE_FILES _varname)
-  # Prefix the full path
+FUNCTION(PREPARE_SOURCE_FILES)
   SET(_fullpath_sources)
   FOREACH(_file ${ARGN})
-    GET_SOURCE_FILE_PROPERTY(_filepath ${_file} LOCATION)
-    LIST(APPEND _fullpath_sources ${_filepath})
+    IF(_file STREQUAL "COMPILATION_BEGIN")
+      SET(_compile TRUE)
+      # Next file is the name of the compilation
+      SET(_get_name TRUE)
+    ELSEIF(_get_name)
+      SET(_get_name FALSE)
+      SET(_compilation_name ${_file})
+    ELSEIF(_file STREQUAL "COMPILATION_END")
+      IF(NOT _compilation_name)
+        MESSAGE(FATAL_ERROR "No name provided for source file compilation")
+      ENDIF()
+      FOREACH(_file2 ${_compilation})
+        SET(_include_string "${_include_string}\n#include \"${_file2}\"")
+      ENDFOREACH(_file2)
+      IF(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${_compilation_name})
+        FILE(READ ${CMAKE_CURRENT_BINARY_DIR}/${_compilation_name} _include_string_file)
+      ENDIF()
+      IF(NOT _include_string STREQUAL "${_include_string_file}")
+        FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${_compilation_name} "${_include_string}")
+      ENDIF()
+      LIST(APPEND _fullpath_sources ${CMAKE_CURRENT_BINARY_DIR}/${_compilation_name})
+      SET(_compilation_name)
+      SET(_compilation)
+      SET(_compile FALSE)
+    ELSE()
+      # Prefix the full path
+      GET_SOURCE_FILE_PROPERTY(_filepath ${_file} LOCATION)
+      LIST(APPEND _fullpath_sources ${_filepath})
+      IF(_compile)
+        LIST(APPEND _compilation ${_filepath})
+	LIST(APPEND _fullpath_sources "H")
+      ENDIF()
+    ENDIF()
   ENDFOREACH(_file)
+  SET(_fullpath_sources ${_fullpath_sources} PARENT_SCOPE)
+ENDFUNCTION(PREPARE_SOURCE_FILES)
+
+
+# Adds source files with the full path to a list
+FUNCTION(ADD_SOURCE_FILES _varname)
+  PREPARE_SOURCE_FILES(${ARGN})
   # Write into the cache to avoid variable scoping in subdirs
   SET(${_varname} ${${_varname}} ${_fullpath_sources} CACHE INTERNAL "Do not edit")
 ENDFUNCTION(ADD_SOURCE_FILES)
@@ -42,12 +83,7 @@ ENDFUNCTION(ADD_SOURCE_FILES)
 
 # Sets source files with the full path
 FUNCTION(SET_SOURCE_FILES _varname)
-  # Prefix the full path
-  SET(_fullpath_sources)
-  FOREACH(_file ${ARGN})
-    GET_SOURCE_FILE_PROPERTY(_filepath ${_file} LOCATION)
-    LIST(APPEND _fullpath_sources ${_filepath})
-  ENDFOREACH(_file)
+  PREPARE_SOURCE_FILES(${ARGN})
   # Write into the cache to avoid variable scoping in subdirs
   SET(${_varname} ${_fullpath_sources} CACHE INTERNAL "Do not edit")
 ENDFUNCTION(SET_SOURCE_FILES)
@@ -65,9 +101,14 @@ FUNCTION(GENERATE_SOURCE_GROUPS)
   FOREACH(_file ${ARGN})
     GET_SOURCE_FILE_PROPERTY(_full_filepath ${_file} LOCATION)
     FILE(RELATIVE_PATH _relative_path ${CMAKE_CURRENT_SOURCE_DIR} ${_full_filepath})
-    GET_FILENAME_COMPONENT(_relative_path ${_relative_path} PATH)
-    STRING(REPLACE "/" "\\\\" _group_path "${_relative_path}")
-    SOURCE_GROUP("Source\\${_group_path}" FILES ${_file})
+    IF(NOT _relative_path MATCHES "^\\.\\.")
+      GET_FILENAME_COMPONENT(_relative_path ${_relative_path} PATH)
+      STRING(REPLACE "/" "\\\\" _group_path "${_relative_path}")
+      SOURCE_GROUP("Source\\${_group_path}" FILES ${_file})
+    ELSE()
+      # Has to be a compilation
+      SOURCE_GROUP("Compilations" FILES ${_file})
+    ENDIF()
   ENDFOREACH(_file)
 
 ENDFUNCTION(GENERATE_SOURCE_GROUPS)
