@@ -72,7 +72,6 @@ namespace orxonox
             COUT(2) << "OpenAL ALUT error: " << alutGetErrorString(alutGetError()) << std::endl;
         else
             COUT(4) << "OpenAL ALUT supported MIME types: " << str << std::endl;
-        ThrowException(InitialisationFailed, "Just testing");
 
         GameMode::setPlaysSound(true);
         // Disarm guards

@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             PongBall(BaseObject* creator);
-            virtual ~PongBall() {}
+            virtual ~PongBall();
 
             virtual void tick(float dt);
 
