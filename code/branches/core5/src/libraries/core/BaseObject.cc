@@ -117,12 +117,13 @@ namespace orxonox
         XMLPortParam(BaseObject, "mainstate", setMainStateName, getMainStateName, xmlelement, mode);
 
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
+        XMLPortObject(BaseObject, BaseObject, "eventlisteners", addEventListener, getEventListener, xmlelement, mode);
         
         Element* events = 0;
         if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
             events = xmlelement.FirstChildElement("events", false);
         else if (mode == XMLPort::SaveObject)
-            ;
+            {}
         if (events)
             this->XMLEventPort(*events, mode);
     }
@@ -136,6 +137,7 @@ namespace orxonox
     {
         XMLPortEventState(BaseObject, BaseObject, "activity", setActive, xmlelement, mode);
         XMLPortEventState(BaseObject, BaseObject, "visibility", setVisible, xmlelement, mode);
+        XMLPortEventState(BaseObject, BaseObject, "mainstate", setMainState, xmlelement, mode);
         
         this->bRegisteredEventStates_ = true;
     }
@@ -236,6 +238,30 @@ namespace orxonox
             
             if (i == index)
                 return it->first;
+            ++i;
+        }
+        return 0;
+    }
+
+    /**
+        @brief Adds an object which listens to the events of this object.
+    */
+    void BaseObject::addEventListener(BaseObject* listener)
+    {
+        this->eventListenersXML_.insert(listener);
+        listener->addEventSource(this, "mainstate");
+    }
+    
+    /**
+        @brief Returns an event listener with a given index.
+    */
+    BaseObject* BaseObject::getEventListener(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<BaseObject*>::const_iterator it = this->eventListenersXML_.begin(); it != this->eventListenersXML_.end(); ++it)
+        {
+            if (i == index)
+                return *it;
             ++i;
         }
         return 0;

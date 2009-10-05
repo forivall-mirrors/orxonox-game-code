@@ -41,6 +41,8 @@ namespace orxonox
         public:
             EventTarget(BaseObject* creator);
             virtual ~EventTarget();
+            
+            virtual void processEvent(Event& event);
 
             virtual void changedName();
 

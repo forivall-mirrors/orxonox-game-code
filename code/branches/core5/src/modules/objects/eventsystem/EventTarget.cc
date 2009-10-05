@@ -41,6 +41,11 @@ namespace orxonox
     EventTarget::~EventTarget()
     {
     }
+    
+    void EventTarget::processEvent(Event& event)
+    {
+        this->fireEvent(event);
+    }
 
     void EventTarget::changedName()
     {

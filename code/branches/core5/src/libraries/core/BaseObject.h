@@ -156,6 +156,9 @@ namespace orxonox
             void addEventSource(BaseObject* source, const std::string& state);
             void removeEventSource(BaseObject* source);
             BaseObject* getEventSource(unsigned int index, const std::string& state) const;
+            
+            void addEventListener(BaseObject* listener);
+            BaseObject* getEventListener(unsigned int index) const;
 
             void fireEvent();
             void fireEvent(bool activate);
@@ -207,6 +210,7 @@ namespace orxonox
             
             std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect
             std::set<BaseObject*>               eventListeners_;         //!< List of objects which listen to the events of this object
+            std::set<BaseObject*>               eventListenersXML_;      //!< List of objects which listen to the events of this object through the "eventlisteners" subsection in XML
             std::map<std::string, EventState*>  eventStates_;            //!< Maps the name of the event states to their helper objects
             bool                                bRegisteredEventStates_; //!< Becomes true after the object registered its event states (with XMLEventPort)
     };

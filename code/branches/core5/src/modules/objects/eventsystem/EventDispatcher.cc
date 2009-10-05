@@ -53,13 +53,13 @@ namespace orxonox
     {
         SUPER(EventDispatcher, XMLPort, xmlelement, mode);
 
-        XMLPortObject(EventDispatcher, EventTarget, "targets", addTarget, getTarget, xmlelement, mode);
+        XMLPortObject(EventDispatcher, BaseObject, "targets", addTarget, getTarget, xmlelement, mode);
     }
 
     void EventDispatcher::processEvent(Event& event)
     {
         for (std::list<EventTarget*>::iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
-            (*it)->fireEvent(event);
+            (*it)->processEvent(event);
     }
 
     void EventDispatcher::addTarget(EventTarget* target)
