@@ -95,136 +95,78 @@ namespace orxonox
     {
         SUPER(PongBall, tick, dt);
 
-        if (GameMode::isMaster())
+        Vector3 position = this->getPosition();
+        Vector3 velocity = this->getVelocity();
+
+        if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
         {
-            Vector3 position = this->getPosition();
-            Vector3 velocity = this->getVelocity();
-
-            if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
-            {
-                velocity.z = -velocity.z;
-                if (GameMode::playsSound())
-                    this->sidesound_->play();
-
-                if (position.z > this->fieldHeight_ / 2)
-                    position.z = this->fieldHeight_ / 2;
-                if (position.z < -this->fieldHeight_ / 2)
-                    position.z = -this->fieldHeight_ / 2;
-            }
-
-            if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
-            {
-                float distance = 0;
-
-                if (this->bat_)
-                {
-                    if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
-                    {
-                        distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
-                        if (fabs(distance) <= 1)
-                        {
-                            position.x = this->fieldWidth_ / 2;
-                            velocity.x = -velocity.x;
-                            velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
-                            if (GameMode::playsSound())
-                                this->batsound_->play();
-                        }
-                        else if (position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
-                        {
-                            if (this->getGametype() && this->bat_[0])
-                            {
-                                this->getGametype()->playerScored(this->bat_[0]->getPlayer());
-                                if (GameMode::playsSound())
-                                    this->scoresound_->play();
-                                return;
-                            }
-                        }
-                    }
-                    if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
-                    {
-                        distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
-                        if (fabs(distance) <= 1)
-                        {
-                            position.x = -this->fieldWidth_ / 2;
-                            velocity.x = -velocity.x;
-                            velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
-                            if (GameMode::playsSound())
-                                this->batsound_->play();
-                        }
-                        else if (position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
-                        {
-                            if (this->getGametype() && this->bat_[1])
-                            {
-                                if (GameMode::playsSound())
-                                    this->scoresound_->play();
-                                this->getGametype()->playerScored(this->bat_[1]->getPlayer());
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (velocity != this->getVelocity())
-                this->setVelocity(velocity);
-            if (position != this->getPosition())
-                this->setPosition(position);
-        }
-        else
-        {
-          Vector3 position = this->getPosition();
-          Vector3 velocity = this->getVelocity();
-
-          if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
-          {
             velocity.z = -velocity.z;
             if (GameMode::playsSound())
                 this->sidesound_->play();
 
             if (position.z > this->fieldHeight_ / 2)
-              position.z = this->fieldHeight_ / 2;
+                position.z = this->fieldHeight_ / 2;
             if (position.z < -this->fieldHeight_ / 2)
-              position.z = -this->fieldHeight_ / 2;
-          }
+                position.z = -this->fieldHeight_ / 2;
+        }
 
-          if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
-          {
+        if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
+        {
             float distance = 0;
 
             if (this->bat_)
             {
-              if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
-              {
-                distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
-                if (fabs(distance) <= 1)
+                if (position.x > this->fieldWidth_ / 2 && this->bat_[1])
                 {
-                  position.x = this->fieldWidth_ / 2;
-                  velocity.x = -velocity.x;
-                  if (GameMode::playsSound())
-                    this->batsound_->play();
-                  velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                    distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
+                    if (fabs(distance) <= 1)
+                    {
+                        position.x = this->fieldWidth_ / 2;
+                        velocity.x = -velocity.x;
+                        velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                        if (GameMode::playsSound())
+                            this->batsound_->play();
+                    }
+                    else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
+                    {
+                        if (this->getGametype() && this->bat_[0])
+                        {
+                            this->getGametype()->playerScored(this->bat_[0]->getPlayer());
+                            if (GameMode::playsSound())
+                                this->scoresound_->play();
+                            return;
+                        }
+                    }
                 }
-              }
-              if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
-              {
-                distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
-                if (fabs(distance) <= 1)
+                if (position.x < -this->fieldWidth_ / 2 && this->bat_[0])
                 {
-                  position.x = -this->fieldWidth_ / 2;
-                  velocity.x = -velocity.x;
-                  if (GameMode::playsSound())
-                    this->batsound_->play();
-                  velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                    distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
+                    if (fabs(distance) <= 1)
+                    {
+                        position.x = -this->fieldWidth_ / 2;
+                        velocity.x = -velocity.x;
+                        velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                        if (GameMode::playsSound())
+                            this->batsound_->play();
+                    }
+                    else if (GameMode::isMaster() && position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
+                    {
+                        if (this->getGametype() && this->bat_[1])
+                        {
+                            if (GameMode::playsSound())
+                                this->scoresound_->play();
+                            this->getGametype()->playerScored(this->bat_[1]->getPlayer());
+                            return;
+                        }
+                    }
                 }
-              }
             }
-          }
-
-          if (velocity != this->getVelocity())
-            this->setVelocity(velocity);
-          if (position != this->getPosition())
-            this->setPosition(position);
         }
+
+        if (velocity != this->getVelocity())
+            this->setVelocity(velocity);
+        if (position != this->getPosition())
+            this->setPosition(position);
     }
 
     void PongBall::setSpeed(float speed)
