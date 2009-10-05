@@ -76,6 +76,7 @@ namespace orxonox
     {
         enum Mode
         {
+            NOP,
             LoadObject,
             SaveObject,
             ExpandObject
@@ -129,7 +130,7 @@ namespace orxonox
     class DynLib;
     class DynLibManager;
     struct Event;
-    class EventContainer;
+    class EventState;
     class Executor;
     template <class T>
     class ExecutorMember;

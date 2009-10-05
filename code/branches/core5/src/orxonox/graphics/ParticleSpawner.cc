@@ -70,11 +70,11 @@ namespace orxonox
         XMLPortParam(ParticleSpawner, "destroydelay", setDestroydelay,     getDestroydelay,     xmlelement, mode).defaultValues(0.0f);
     }
 
-    void ParticleSpawner::processEvent(Event& event)
+    void ParticleSpawner::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(ParticleSpawner, processEvent, event);
+        SUPER(ParticleSpawner, XMLEventPort, xmlelement, mode);
 
-        ORXONOX_SET_EVENT(ParticleSpawner, "spawn", spawn, event);
+        XMLPortEventState(ParticleSpawner, BaseObject, "spawn", spawn, xmlelement, mode);
     }
 
     void ParticleSpawner::configure(float lifetime, float startdelay, float destroydelay, bool autodestroy)

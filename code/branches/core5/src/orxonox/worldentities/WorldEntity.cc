@@ -174,7 +174,7 @@ namespace orxonox
 
     void WorldEntity::registerVariables()
     {
-        registerVariable(this->mainStateName_,  VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedMainState));
+        registerVariable(this->mainStateName_,  VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedMainStateName));
 
         registerVariable(this->bActive_,        VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedActivity));
         registerVariable(this->bVisible_,       VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::changedVisibility));

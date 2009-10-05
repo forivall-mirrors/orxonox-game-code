@@ -109,22 +109,22 @@ namespace orxonox
             @return
                 Returns NULL if the no pointer was found.
             */
-            template <class T>
-            FORCEINLINE T* getDerivedPointer(unsigned int classID)
+            FORCEINLINE void* getDerivedPointer(unsigned int classID)
             {
                 for (int i = this->objectPointers_.size() - 1; i >= 0; --i)
                 {
                     if (this->objectPointers_[i].first == classID)
-                        return static_cast<T*>(this->objectPointers_[i].second);
+                        return this->objectPointers_[i].second;
                 }
                 return NULL;
             }
-            //! Const version of getDerivedPointer
-            template <class T>
-            FORCEINLINE const T* getDerivedPointer(unsigned int classID) const
-            {
-                return const_cast<OrxonoxClass*>(this)->getDerivedPointer<T>(classID);
-            }
+
+            //! Version of getDerivedPointer with template
+            template <class T> FORCEINLINE T* getDerivedPointer(unsigned int classID)
+            {   return static_cast<T*>(this->getDerivedPointer(classID));   }
+            //! Const version of getDerivedPointer with template
+            template <class T> FORCEINLINE const T* getDerivedPointer(unsigned int classID) const
+            {   return const_cast<OrxonoxClass*>(this)->getDerivedPointer<T>(classID);   }
 
         private:
             /** @brief Increments the reference counter (for smart pointers). */

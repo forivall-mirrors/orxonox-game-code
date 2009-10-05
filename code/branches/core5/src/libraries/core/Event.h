@@ -34,31 +34,49 @@
 
 namespace orxonox
 {
+    /**
+        @brief The Event struct contains information about a fired Event.
+    */
     struct _CoreExport Event
     {
-            Event(bool activate, BaseObject* originator) : activate_(activate), originator_(originator), castedOriginator_(0) {}
+        Event(bool activate, BaseObject* originator) : activate_(activate), originator_(originator) {}
 
-            bool        activate_;
-            BaseObject* originator_;
-            void*       castedOriginator_;
-            std::string sectionname_;
+        bool        activate_;   //!< True if this is an activating event (the event source was inactive before and just triggered the event) - false otherwise
+        std::string statename_;  //!< The name of the state this event affects
+        BaseObject* originator_; //!< The object which triggered this event
     };
 
-    class _CoreExport EventContainer
+    /**
+        @brief The EventState contains information about an event state.
+        
+        An event state is a state of an object, which can be changed by events.
+        Event states are changed through functions. Possible functions headers for set event states are:
+         - memoryless state: function()
+         - boolean state:    function(bool state)
+         - individual state: function(bool state, SomeClass originator)
+         
+        Note that SomeClass may be any class deriving from BaseObject. You will not receive events from originators of other classes.
+        The actual class for SomeClass must be specified as the second argument of the XMLPortEventState macro.
+        
+        The this pointer of the affected object is hidden in the functors, because the events are processed in the BaseObject, but some
+        statefunctions may be from child-classes.
+    */
+    class _CoreExport EventState
     {
         public:
-            EventContainer(const std::string& eventname, Functor* eventfunction, Identifier* subclass) : bActive_(false), eventname_(eventname), eventfunction_(eventfunction), subclass_(subclass), activeEvents_(0) {}
-            virtual ~EventContainer();
+            EventState(Functor* statefunction, Identifier* subclass) : bProcessingEvent_(false), activeEvents_(0), statefunction_(statefunction), subclass_(subclass) {}
+            virtual ~EventState();
 
-            void process(BaseObject* object, const Event& event);
+            void process(const Event& event, BaseObject* object);
+            
+            Functor* getFunctor() const
+                { return this->statefunction_; }
 
         private:
-            bool bActive_;
-            std::string eventname_;
-            Functor* eventfunction_;
-            Identifier* subclass_;
-
-            int activeEvents_;
+            bool        bProcessingEvent_;  //!< This becomes true while the container processes an event (used to prevent loops)
+            int         activeEvents_;      //!< The number of events which affect this state and are currently active
+            Functor*    statefunction_;     //!< A functor to set the state
+            Identifier* subclass_;          //!< Originators must be an instance of this class (usually BaseObject, but some statefunctions allow a second argument with an originator of a specific class)
     };
 }
 

@@ -87,8 +87,6 @@ namespace orxonox
             delete (it->second);
         for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
             delete (it->second);
-        for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportEventContainers_.begin(); it != this->xmlportEventContainers_.end(); ++it)
-            delete (it->second);
     }
 
     /**
@@ -561,37 +559,6 @@ namespace orxonox
         }
 
         this->xmlportObjectContainers_[sectionname] = container;
-    }
-
-    /**
-        @brief Returns a XMLPortEventContainer that attaches an event to this class.
-        @param sectionname The name of the section that contains the event
-        @return The container
-    */
-    XMLPortObjectContainer* Identifier::getXMLPortEventContainer(const std::string& eventname)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
-        if (it != this->xmlportEventContainers_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new XMLPortEventContainer that attaches an event to this class.
-        @param sectionname The name of the section that contains the event
-        @param container The container
-    */
-    void Identifier::addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
-        if (it != this->xmlportEventContainers_.end())
-        {
-            COUT(2) << "Warning: Overwriting XMLPortEventContainer in class " << this->getName() << "." << std::endl;
-            delete (it->second);
-        }
-
-        this->xmlportEventContainers_[eventname] = container;
     }
 
     /**

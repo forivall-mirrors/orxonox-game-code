@@ -36,14 +36,6 @@
 #ifndef _BaseObject_H__
 #define _BaseObject_H__
 
-#define SetMainState(classname, statename, setfunction, getfunction) \
-    if (this->getMainStateName() == statename) \
-    { \
-        this->functorSetMainState_ = createFunctor(&classname::setfunction, this); \
-        this->functorGetMainState_ = createFunctor(&classname::getfunction, this); \
-    }
-
-
 #include "CorePrereqs.h"
 
 #include <map>
@@ -68,6 +60,7 @@ namespace orxonox
             BaseObject(BaseObject* creator);
             virtual ~BaseObject();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
             /** @brief Returns if the object was initialized (passed the object registration). @return True was the object is initialized */
             inline bool isInitialized() const { return this->bInitialized_; }
@@ -110,11 +103,20 @@ namespace orxonox
             virtual void changedVisibility() {}
 
             void setMainState(bool state);
-            bool getMainState() const;
 
-            void setMainStateName(const std::string& name);
+            /** @brief Sets the name of the main state (used for event reactions). */
+            void setMainStateName(const std::string& name)
+            {
+                if (this->mainStateName_ != name)
+                {
+                    this->mainStateName_ = name;
+                    this->changedMainStateName();
+                }
+            }
+            /** @brief Returns the name of the main state. */
             inline const std::string& getMainStateName() const { return this->mainStateName_; }
-            virtual void changedMainState();
+            /** @brief This function gets called if the main state name of the object changes. */
+            virtual void changedMainStateName();
 
             /** @brief Sets a pointer to the xml file that loaded this object. @param file The pointer to the XMLFile */
             inline void setFile(const XMLFile* file) { this->file_ = file; }
@@ -175,20 +177,20 @@ namespace orxonox
             inline void unregisterEventListener(BaseObject* object)
                 { this->eventListeners_.erase(object); }
 
-            void addEventContainer(const std::string& sectionname, EventContainer* container);
-            EventContainer* getEventContainer(const std::string& sectionname) const;
+            void addEventState(const std::string& name, EventState* container);
+            EventState* getEventState(const std::string& name) const;
 
             std::string name_;                                 //!< The name of the object
             std::string oldName_;                              //!< The old name of the object
             mbool       bActive_;                              //!< True = the object is active
             mbool       bVisible_;                             //!< True = the object is visible
             std::string mainStateName_;
-            Functor*    functorSetMainState_;
-            Functor*    functorGetMainState_;
+            Functor*    mainStateFunctor_;
 
         private:
             void setXMLName(const std::string& name);
             Template* getTemplate(unsigned int index) const;
+            void registerEventStates();
 
             bool                   bInitialized_;              //!< True if the object was initialized (passed the object registration)
             const XMLFile*         file_;                      //!< The XMLFile that loaded this object
@@ -203,18 +205,18 @@ namespace orxonox
             Gametype*              oldGametype_;
             std::set<Template*>    templates_;
             
-            std::map<BaseObject*, std::string>      eventSources_;      //!< List of objects which send events to this object, mapped to the state which they affect
-            std::set<BaseObject*>                   eventListeners_;    //!< List of objects which listen to the events of this object
-            std::map<std::string, EventContainer*>  eventContainers_;
+            std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect
+            std::set<BaseObject*>               eventListeners_;         //!< List of objects which listen to the events of this object
+            std::map<std::string, EventState*>  eventStates_;            //!< Maps the name of the event states to their helper objects
+            bool                                bRegisteredEventStates_; //!< Becomes true after the object registered its event states (with XMLEventPort)
     };
 
     SUPER_FUNCTION(0, BaseObject, XMLPort, false);
     SUPER_FUNCTION(2, BaseObject, changedActivity, false);
     SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
-    SUPER_FUNCTION(4, BaseObject, processEvent, false);
-    SUPER_FUNCTION(6, BaseObject, changedMainState, false);
-    SUPER_FUNCTION(9, BaseObject, changedName, false);
-    SUPER_FUNCTION(10, BaseObject, changedGametype, false);
+    SUPER_FUNCTION(4, BaseObject, XMLEventPort, false);
+    SUPER_FUNCTION(8, BaseObject, changedName, false);
+    SUPER_FUNCTION(9, BaseObject, changedGametype, false);
 }
 
 #endif /* _BaseObject_H__ */

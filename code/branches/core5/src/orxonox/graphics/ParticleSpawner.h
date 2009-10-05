@@ -43,7 +43,7 @@ namespace orxonox
             virtual ~ParticleSpawner();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void processEvent(Event& event);
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void stop(bool bDestroy)
                 { this->bForceDestroy_ = bDestroy; this->stopParticleSpawner(); }

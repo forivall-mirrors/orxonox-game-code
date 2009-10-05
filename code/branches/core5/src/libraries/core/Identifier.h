@@ -267,20 +267,6 @@ namespace orxonox
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
 
-            //////////////////
-            ///// Events /////
-            //////////////////
-            /** @brief Returns the map that stores all XMLPort events. @return The const_iterator */
-            inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortEventMap() const { return this->xmlportEventContainers_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort events. @return The const_iterator */
-            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapBegin() const { return this->xmlportEventContainers_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort events. @return The const_iterator */
-            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortEventMapEnd() const { return this->xmlportEventContainers_.end(); }
-
-            void addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container);
-            XMLPortObjectContainer* getXMLPortEventContainer(const std::string& eventname);
-
-
         protected:
             Identifier();
             Identifier(const Identifier& identifier); // don't copy
@@ -341,7 +327,6 @@ namespace orxonox
 
             std::map<std::string, XMLPortParamContainer*> xmlportParamContainers_;     //!< All loadable parameters
             std::map<std::string, XMLPortObjectContainer*> xmlportObjectContainers_;   //!< All attachable objects
-            std::map<std::string, XMLPortObjectContainer*> xmlportEventContainers_;    //!< All events
     };
 
     _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);

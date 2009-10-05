@@ -32,38 +32,40 @@
 #include "CorePrereqs.h"
 #include "Executor.h"
 
-#define ORXONOX_SET_EVENT(classname, eventname, functionname, event) \
-    ORXONOX_SET_EVENT_GENERIC(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject)
-
-#define ORXONOX_SET_EVENT_TEMPLATE(classname, eventname, functionname, event, ...) \
-    ORXONOX_SET_EVENT_GENERIC_TEMPLATE(eventcontainer##classname##functionname, classname, eventname, functionname, event, BaseObject, __VA_ARGS__)
-
-#define ORXONOX_SET_SUBCLASS_EVENT(classname, eventname, functionname, event, subclassname) \
-    event.castedOriginator_ = orxonox::orxonox_cast<subclassname*>(event.originator_); \
-    ORXONOX_SET_EVENT_GENERIC(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname)
-
-#define ORXONOX_SET_SUBCLASS_EVENT_TEMPLATE(classname, eventname, functionname, event, subclassname, ...) \
-    event.castedOriginator_ = orxonox::orxonox_cast<subclassname*>(event.originator_); \
-    ORXONOX_SET_EVENT_GENERIC_TEMPLATE(eventcontainer##classname##functionname, classname, eventname, functionname, event, subclassname, __VA_ARGS__)
-
-#define ORXONOX_SET_EVENT_GENERIC(containername, classname, eventname, functionname, event, subclassname) \
-    orxonox::EventContainer* containername = this->getEventContainer(eventname); \
-    if (!containername) \
+/**
+    @brief Defines a new event state (a state of the object which can be changed by events).
+    
+    @param classname    The name of this class
+    @param subclassname Usually BaseObject - if different, only instances of this class can send events to this object
+    @param statename    The name (string) of this state
+    @param function     The function which should be used to set the state
+    @param xmlelement   Argument for XMLPort
+    @param mode         Argument for XMLPort
+*/
+#define XMLPortEventState(classname, subclassname, statename, function, xmlelement, mode) \
+    orxonox::EventState* containername##function = this->getEventState(statename); \
+    if (!containername##function) \
     { \
-        Functor* functor = orxonox::createFunctor(&classname::functionname, this); \
-        containername = new orxonox::EventContainer(std::string(eventname), functor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
-        this->addEventContainer(eventname, containername); \
+        containername##function = new orxonox::EventState(orxonox::createFunctor(&classname::function, this), orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
+        this->addEventState(statename, containername##function); \
     } \
-    containername->process(this, event)
+    XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
 
-#define ORXONOX_SET_EVENT_GENERIC_TEMPLATE(containername, classname, eventname, functionname, event, subclassname, ...) \
-    orxonox::EventContainer* containername = this->getEventContainer(eventname); \
-    if (!containername) \
+/**
+    @brief Like XMLPortEventState but with additional template arguments to identify the function of the state (if ambiguous).
+*/
+#define XMLPortEventStateTemplate(classname, subclassname, statename, function, xmlelement, mode, ...) \
+    orxonox::EventState* containername##function = this->getEventState(statename); \
+    if (!containername##function) \
     { \
-        Functor* functor = orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::functionname, this); \
-        containername = new orxonox::EventContainer(std::string(eventname), functor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
-        this->addEventContainer(eventname, containername); \
+        containername##function = new orxonox::EventState(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::function, this), orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
+        this->addEventState(statename, containername##function); \
     } \
-    containername->process(this, event)
+    XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
 
+#define XMLPortEventStateIntern(name, classname, statename, xmlelement, mode) \
+    static orxonox::ExecutorMember<classname>* xmlsetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::addEventSource), std::string( #classname ) + "::" + "addEventSource" + "(" + statename + ")")->setDefaultValue(1, statename); \
+    static orxonox::ExecutorMember<classname>* xmlgetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::getEventSource), std::string( #classname ) + "::" + "getEventSource" + "(" + statename + ")")->setDefaultValue(1, statename); \
+    XMLPortObjectGeneric(xmlport##name, classname, orxonox::BaseObject, statename, xmlsetfunctor##name, xmlgetfunctor##name, xmlelement, mode, false, true)
+ 
 #endif /* _EventIncludes_H__ */

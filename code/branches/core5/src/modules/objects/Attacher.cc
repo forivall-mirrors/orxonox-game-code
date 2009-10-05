@@ -52,8 +52,8 @@ namespace orxonox
 
     void Attacher::processEvent(Event& event)
     {
-        for (std::list<WorldEntity*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
-            (*it)->fireEvent(event);
+        if (this->target_)
+            this->target_->processEvent(event);
     }
 
     void Attacher::changedActivity()
@@ -101,8 +101,13 @@ namespace orxonox
             return;
 
         for (ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it != ObjectList<WorldEntity>::end(); ++it)
+        {
             if (it->getName() == this->targetname_)
+            {
+                this->target_ = *it;
                 this->attachToParent(*it);
+            }
+        }
     }
 
     void Attacher::loadedNewXMLName(BaseObject* object)

@@ -410,7 +410,7 @@ namespace orxonox
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
-                else
+                else if (mode == XMLPort::SaveObject)
                 {
                     if (this->saveexecutor_)
                     {
@@ -627,7 +627,7 @@ namespace orxonox
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
-                else
+                else if (mode == XMLPort::SaveObject)
                 {
                 }
 
