@@ -28,6 +28,13 @@
     <Billboard position="-300,100,  0" material="Examples/Flare" colour="1.0, 0.0, 1.0" />
 
 
+
+    <!--
+      Begin of the tutorial section.
+    -->
+
+
+
     <!--
       Note:
       All following examples use only one subobject (in nested layouts). But of course you can add more
@@ -147,15 +154,16 @@
 
 
     <!-- blue -->
+    <!--
       Mainstate:
       Apart from the standard states (like activity and visibility), each object can have a mainstate.
       You can define the mainstate with an xml-attribute: mainstate="state". "state" must be one of the
-      supported boolean states of the object. If the mainstate is set (by default that's not the case),
-      you can send events to the "mainstate" state. This allows you to hide the actually affected state
-      in the event-listener, while the event-source just sends events.
+      supported states of the object (except states which need the originator as a second argument). If
+      the mainstate is set (by default that's not the case), you can send events to the "mainstate" state.
+      This allows you to hide the actually affected state in the event-listener, while the event-source
+      just sends events.
       Note that this example is exactly like the standard case, but the event is sent to the main-state,
       which in turn is set to "visibility".
-    <!--
     -->
     <Billboard position="-200,150,0" material="Examples/Flare" colour="1.0, 1.0, 1.0" visible=0 mainstate="visibility">
       <events>
@@ -180,6 +188,34 @@
     <DistanceTrigger position="-300,100,0" distance=25 target="ControllableEntity">
       <eventlisteners>
         <Billboard position="-300,150,0" material="Examples/Flare" colour="1.0, 1.0, 1.0" visible=0 mainstate="visibility" />
+      </eventlisteners>
+    </DistanceTrigger>
+
+
+
+    <!--
+      End of the tutorial section.
+    -->
+
+
+
+    <!--
+      The following example shows again the red (standard layout) and the violet (event forwarding) example,
+      but this time with a memoryless state (spawn) from the ParticleSpawner instead of the boolean state
+      (visibility) in the other examples.
+    -->
+    <Billboard position=" 300,100,300" material="Examples/Flare" colour="1.0, 0.0, 0.0" />
+    <Billboard position="-300,100,300" material="Examples/Flare" colour="1.0, 0.0, 1.0" />
+    <ParticleSpawner position="300,150,300" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0>
+      <events>
+        <spawn>
+          <DistanceTrigger position="300,100,300" distance=25 target="ControllableEntity" />
+        </spawn>
+      </events>
+    </ParticleSpawner>
+    <DistanceTrigger position="-300,100,300" distance=25 target="ControllableEntity">
+      <eventlisteners>
+        <ParticleSpawner position="-300,150,300" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 mainstate="spawn" />
       </eventlisteners>
     </DistanceTrigger>
 

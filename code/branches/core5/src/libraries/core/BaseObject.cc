@@ -355,7 +355,17 @@ namespace orxonox
     void BaseObject::setMainState(bool state)
     {
         if (this->mainStateFunctor_)
-            (*this->mainStateFunctor_)(state);
+        {
+            if (this->mainStateFunctor_->getParamCount() == 0)
+            {
+                if (state)
+                    (*this->mainStateFunctor_)();
+            }
+            else
+            {
+                (*this->mainStateFunctor_)(state);
+            }
+        }
         else
             COUT(2) << "Warning: No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << std::endl;
     }
@@ -365,15 +375,23 @@ namespace orxonox
     */
     void BaseObject::changedMainStateName()
     {
-        this->registerEventStates();
-        
         this->mainStateFunctor_ = 0;
-        
-        std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(this->mainStateName_);
-        if (it != this->eventStates_.end() && it->second->getFunctor() && it->second->getFunctor()->getParamCount() == 1)
-            this->mainStateFunctor_ = it->second->getFunctor();
-        else
-            COUT(2) << "Warning: \"" << this->mainStateName_ << "\" is not a valid MainState." << std::endl;
+
+        if (this->mainStateName_ != "")
+        {
+            this->registerEventStates();
+            
+            std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(this->mainStateName_);
+            if (it != this->eventStates_.end() && it->second->getFunctor())
+            {
+                if (it->second->getFunctor()->getParamCount() <= 1)
+                    this->mainStateFunctor_ = it->second->getFunctor();
+                else
+                    COUT(2) << "Warning: Can't use \"" << this->mainStateName_ << "\" as MainState because it needs a second argument." << std::endl;
+            }
+            else
+                COUT(2) << "Warning: \"" << this->mainStateName_ << "\" is not a valid MainState." << std::endl;
+        }
     }
     
     /**
