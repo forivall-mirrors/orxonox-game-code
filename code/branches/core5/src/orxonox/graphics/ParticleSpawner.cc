@@ -90,7 +90,10 @@ namespace orxonox
         this->setActive(false);
 
         if (this->bForceDestroy_ || this->bSuppressStart_)
+        {
+            this->timer_.stopTimer();
             return;
+        }
 
         this->timer_.setTimer(this->startdelay_, false, createExecutor(createFunctor(&ParticleSpawner::fireParticleSpawner, this)));
     }
