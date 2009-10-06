@@ -149,9 +149,10 @@ namespace orxonox
     class Jump;
 
     //sound
-    class SoundBase;
+    class AmbientSound;
+    class BaseSound;
     class SoundManager;
-    class SoundMainMenu;
+    class WorldSound;
 
     // weaponsystem
     class DefaultWeaponmodeLink;

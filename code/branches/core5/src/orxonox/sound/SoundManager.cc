@@ -35,9 +35,6 @@
 #include "util/ScopeGuard.h"
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
-#include "CameraManager.h"
-#include "graphics/Camera.h"
-#include "SoundBase.h"
 
 namespace orxonox
 {
@@ -88,75 +85,26 @@ namespace orxonox
         alutExit();
     }
 
-    /**
-     * Add a SoundBase object to the list. Every SoundBase object should be in
-     * this list.
-     *
-     * @param sound Pointer to the SoundBase object to add
-     */
-    void SoundManager::addSound(SoundBase* sound)
+    void SoundManager::setListenerPosition(const Vector3& position)
     {
-        this->soundlist_.push_back(sound);
-    }
-
-    /**
-     * Remove a SoundBase object from the list and destroy it.
-     */
-    void SoundManager::removeSound(SoundBase* sound)
-    {
-        std::list<SoundBase*>::iterator pos = this->soundlist_.end();
-        for(std::list<SoundBase*>::iterator i = this->soundlist_.begin(); i != this->soundlist_.end(); i++)
-        {
-            if((*i) == sound)
-                pos = i;
-        }
-
-        delete (*pos);
-        this->soundlist_.erase(pos);
-    }
-
-    /**
-     * Tick function, updates listener and registred SoundBase objects
-     *
-     * @param dt @see Orxonox::Tickable
-     */
-    void SoundManager::tick(float dt)
-    {
-        if (!CameraManager::getInstancePtr())
-            return;
-
-        // update listener position
-        Camera* camera = CameraManager::getInstance().getActiveCamera();
-        if(camera == NULL) return;
-        Vector3 pos = camera->getPosition();
-        alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
+        alListener3f(AL_POSITION, position.x, position.y, position.z);
         ALenum error = alGetError();
-        if(error == AL_INVALID_VALUE)
+        if (error == AL_INVALID_VALUE)
             COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
-
-        // update listener orientation
-        const Quaternion& orient = camera->getOrientation();
-        Vector3 up = orient.xAxis(); // just a wild guess
-        Vector3 at = orient.zAxis();
-
-        ALfloat orientation[6] = { at.x, at.y, at.z,
-                                 up.x, up.y, up.z };
-
-        alListenerfv(AL_POSITION, orientation);
-        error = alGetError();
-        if(error == AL_INVALID_VALUE)
-            COUT(2) << "Sound: OpenAL: Invalid listener orientation" << std::endl;
-
-        // update sounds
-        for(std::list<SoundBase*>::iterator i = this->soundlist_.begin(); i != this->soundlist_.end(); i++)
-            (*i)->update();
     }
 
-    /**
-    * Check if sound is available
-    */
-    bool SoundManager::isSoundAvailable()
+    void SoundManager::setListenerOrientation(const Quaternion& orientation)
     {
-        return this->soundavailable_;
+        // update listener orientation
+        Vector3 up = orientation.xAxis(); // just a wild guess
+        Vector3 at = orientation.zAxis();
+
+        ALfloat orient[6] = { at.x, at.y, at.z,
+                              up.x, up.y, up.z };
+
+        alListenerfv(AL_POSITION, orient);
+        ALenum error = alGetError();
+        if (error == AL_INVALID_VALUE)
+            COUT(2) << "Sound: OpenAL: Invalid listener orientation" << std::endl;
     }
 }

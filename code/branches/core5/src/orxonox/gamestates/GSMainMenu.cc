@@ -38,7 +38,7 @@
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "Scene.h"
-#include "sound/SoundBase.h"
+#include "sound/AmbientSound.h"
 
 namespace orxonox
 {
@@ -61,8 +61,8 @@ namespace orxonox
         if (GameMode::playsSound())
         {
             // Load sound
-            this->ambient_ = new SoundBase(0);
-            this->ambient_->loadFile("ambient/mainmenu.wav");
+            this->ambient_ = new AmbientSound(0);
+            this->ambient_->setSoundFile("ambient/mainmenu.wav");
         }
     }
 
@@ -95,7 +95,8 @@ namespace orxonox
 
         if (GameMode::playsSound())
         {
-            this->ambient_->play(true);
+            this->ambient_->setLoop(true);
+            this->ambient_->play();
         }
     }
 

@@ -20,50 +20,37 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *       Erwin 'vaiursch' Herrsche
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
-#ifndef _SoundBase_H__
-#define _SoundBase_H__
+#ifndef _AmbientSound_H__
+#define _AmbientSound_H__
 
 #include "OrxonoxPrereqs.h"
-#include <cstring> // define NULL
+
+#include "core/BaseObject.h"
+#include "sound/BaseSound.h"
 
 namespace orxonox
 {
     /**
-     * The SoundBase class is the base class for all sound file loader classes.
+     * The AmbientSound class is the base class for all sound file loader classes.
      * It server as main interface to the OpenAL library.
      *
      */
-    class _OrxonoxExport SoundBase
+    class _OrxonoxExport AmbientSound : public BaseSound, public BaseObject
     {
     public:
-        SoundBase(WorldEntity* entity = NULL);
-        ~SoundBase();
+        AmbientSound(BaseObject* creator);
+        virtual ~AmbientSound();
 
-        void attachToEntity(WorldEntity* entity);
-        void update();
-        void play(bool loop = false);
-        void stop();
-        void pause();
-
-        bool isPlaying();
-        bool isPaused();
-        bool isStopped();
-
-        bool loadFile(const std::string& filename);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
     private:
-        ALuint loadOggFile(const std::string& filename);
-        ALuint source_;
-        ALuint buffer_;
-        WorldEntity* entity_;
+    };
+}
 
-        ALint getSourceState();
-    }; // class SoundBase
-} // namepsace orxonox
-
-#endif /* _SoundBase_H__ */
+#endif /* _AmbientSound_H__ */

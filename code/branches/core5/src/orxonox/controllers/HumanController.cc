@@ -35,6 +35,7 @@
 #include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/Map.h"
+#include "sound/SoundManager.h"
 #include "Radar.h"
 #include "Scene.h"
 
@@ -74,6 +75,19 @@ namespace orxonox
     HumanController::~HumanController()
     {
         HumanController::localController_s = 0;
+    }
+
+    void HumanController::tick(float dt)
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        {
+            if (GameMode::playsSound())
+            {
+                // Update sound listener
+                SoundManager::getInstance().setListenerPosition(HumanController::localController_s->controllableEntity_->getPosition());
+                SoundManager::getInstance().setListenerOrientation(HumanController::localController_s->controllableEntity_->getOrientation());
+            }
+        }
     }
 
     void HumanController::moveFrontBack(const Vector2& value)

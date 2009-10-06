@@ -20,43 +20,41 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *       Erwin 'vaiursch' Herrsche
+ *      Reto Grieder
  *   Co-authors:
  *      ...
+ *
  */
-#ifndef _SoundManager_H__
-#define _SoundManager_H__
+#ifndef _WorldSound_H__
+#define _WorldSound_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <cassert>
-#include <list>
-#include "util/Singleton.h"
 #include "tools/interfaces/Tickable.h"
+#include "sound/BaseSound.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    /**
-     * The SoundManager class manages the OpenAL device, context and listener
-     * position. It is a singleton.
-     *
-     */
-    class _OrxonoxExport SoundManager : public Singleton<SoundManager>
+    /*
+    @brief
+        The WorldSound class is to be used for sounds with position and orientation.
+    */
+    class _OrxonoxExport WorldSound : public StaticEntity, public BaseSound, public Tickable
     {
-        friend class Singleton<SoundManager>;
     public:
-        SoundManager();
-        ~SoundManager();
+        WorldSound(BaseObject* creator);
+        virtual ~WorldSound();
 
-        void setListenerPosition(const Vector3& position);
-        void setListenerOrientation(const Quaternion& orientation);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+
+        virtual void tick(float dt);
+
+        virtual void processEvent(Event& event);
 
     private:
-        ALCdevice* device_;
-        ALCcontext* context_;
-
-        static SoundManager* singletonPtr_s;
     };
 }
 
-#endif /* _SoundManager_H__ */
+#endif /* _WorldSound_H__ */

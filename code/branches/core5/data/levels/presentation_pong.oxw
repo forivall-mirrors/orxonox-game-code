@@ -45,6 +45,8 @@
  description  = "A simple testlevel"
  gametype     = Pong
 >
+  <AmbientSound soundFile="ambient/mainmenu.wav" playOnLoad=true />
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"
@@ -81,6 +83,14 @@ end
           <ParticleSpawner name=scoreeffect_left position="-120,0,-15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
           <ParticleSpawner name=scoreeffect_left position="-120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
           <ParticleSpawner name=scoreeffect_left position="-120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+
+          <WorldSound name="scoreSound" position="0,0,0" soundFile="sounds/pong_score.wav" >
+            <events>
+              <play>
+                <EventListener event=pongcenter />
+              </play>
+            </events>
+          </WorldSound>
 
 <?lua
 for i = 1, 15, 1

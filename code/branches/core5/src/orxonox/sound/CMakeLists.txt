@@ -1,5 +1,7 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+    AmbientSound.cc
+    BaseSound.cc
     SoundManager.cc
-    SoundBase.cc
+    WorldSound.cc
 )
 
