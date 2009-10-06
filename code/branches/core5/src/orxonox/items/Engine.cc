@@ -36,7 +36,6 @@
 #include "worldentities/pawns/SpaceShip.h"
 #include "pickup/ModifierType.h"
 #include "tools/Shader.h"
-#include "sound/SoundBase.h"
 
 namespace orxonox
 {
@@ -67,8 +66,6 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
-
-        this->sound_ = NULL;
     }
 
     Engine::~Engine()
@@ -79,9 +76,6 @@ namespace orxonox
 
             if (this->boostBlur_)
                 this->boostBlur_->destroy();
-
-            if(this->sound_ != NULL)
-                delete this->sound_;
         }
     }
 
@@ -101,8 +95,6 @@ namespace orxonox
         XMLPortParam(Engine, "accelerationback",      setAccelerationBack,      setAccelerationBack,      xmlelement, mode);
         XMLPortParam(Engine, "accelerationleftright", setAccelerationLeftRight, setAccelerationLeftRight, xmlelement, mode);
         XMLPortParam(Engine, "accelerationupdown",    setAccelerationUpDown,    setAccelerationUpDown,    xmlelement, mode);
-
-        XMLPortParamLoadOnly(Engine, "sound", loadSound, xmlelement, mode);
     }
 
     void Engine::setConfigValues()
@@ -239,9 +231,6 @@ namespace orxonox
                 this->boostBlur_->destroy();
                 this->boostBlur_ = 0;
             }
-
-            if(this->sound_ != NULL)
-                this->sound_->attachToEntity(ship);
         }
     }
 
@@ -251,20 +240,5 @@ namespace orxonox
             return this->ship_->getSteeringDirection();
         else
             return Vector3::ZERO;
-    }
-
-    void Engine::loadSound(const std::string filename)
-    {
-        if(filename == "") return;
-        else
-        {
-            if(this->sound_ == NULL)
-            {
-                this->sound_ = new SoundBase(this->ship_);
-            }
-
-            this->sound_->loadFile(filename);
-            this->sound_->play(true);
-        }
     }
 }

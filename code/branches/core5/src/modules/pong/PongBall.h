@@ -75,10 +75,6 @@ namespace orxonox
             PongBat** bat_;
             unsigned int* batID_;
             float relMercyOffset_;
-
-            SoundBase* sidesound_;
-            SoundBase* batsound_;
-            SoundBase* scoresound_;
     };
 }
 

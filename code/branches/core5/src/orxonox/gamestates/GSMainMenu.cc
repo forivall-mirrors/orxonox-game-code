@@ -38,7 +38,7 @@
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "Scene.h"
-#include "sound/SoundMainMenu.h"
+#include "sound/SoundBase.h"
 
 namespace orxonox
 {
@@ -61,16 +61,15 @@ namespace orxonox
         if (GameMode::playsSound())
         {
             // Load sound
-            this->ambient_ = new SoundMainMenu();
+            this->ambient_ = new SoundBase(0);
+            this->ambient_->loadFile("ambient/mainmenu.wav");
         }
     }
 
     GSMainMenu::~GSMainMenu()
     {
         if (GameMode::playsSound())
-        {
-            this->ambient_->destroy();
-        }
+            delete this->ambient_;
 
         InputManager::getInstance().destroyState("mainMenu");
 

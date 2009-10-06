@@ -38,7 +38,6 @@
 #include "infos/PlayerInfo.h"
 #include "gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
-#include "sound/SoundBase.h"
 #include "LevelManager.h"
 
 namespace orxonox
@@ -52,7 +51,6 @@ namespace orxonox
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
         this->xmlfile_ = 0;
-        this->ambientsound_ = 0;
     }
 
     Level::~Level()
@@ -64,9 +62,6 @@ namespace orxonox
 
             if (this->xmlfile_)
                 Loader::unload(this->xmlfile_);
-
-            if (this->ambientsound_ != NULL)
-                delete this->ambientsound_;
         }
     }
 
@@ -76,8 +71,6 @@ namespace orxonox
 
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
-
-        XMLPortParamLoadOnly(Level, "ambientsound", loadAmbientSound, xmlelement, mode);
 
         XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
     }
@@ -147,21 +140,6 @@ std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << st
             ++i;
         }
         return 0;
-    }
-
-    void Level::loadAmbientSound(const std::string& filename)
-    {
-        if(filename == "") return;
-        else
-        {
-            if(this->ambientsound_ == NULL)
-            {
-                this->ambientsound_ = new SoundBase();
-            }
-
-            this->ambientsound_->loadFile(filename);
-            this->ambientsound_->play(true);
-        }
     }
 
     void Level::playerEntered(PlayerInfo* player)

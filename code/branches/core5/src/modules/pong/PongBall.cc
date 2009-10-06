@@ -32,7 +32,6 @@
 #include "core/GameMode.h"
 #include "gametypes/Gametype.h"
 #include "PongBat.h"
-#include "sound/SoundBase.h"
 
 namespace orxonox
 {
@@ -42,9 +41,6 @@ namespace orxonox
 
     PongBall::PongBall(BaseObject* creator)
         : MovableEntity(creator)
-        , sidesound_(NULL)
-        , batsound_(NULL)
-        , scoresound_(NULL)
     {
         RegisterObject(PongBall);
 
@@ -56,28 +52,10 @@ namespace orxonox
         this->relMercyOffset_ = 0.05f;
 
         this->registerVariables();
-
-        if (GameMode::playsSound())
-        {
-            this->sidesound_ = new SoundBase(this);
-            this->sidesound_->loadFile("sounds/pong_side.wav");
-
-            this->batsound_ = new SoundBase(this);
-            this->batsound_->loadFile("sounds/pong_bat.wav");
-
-            this->scoresound_ = new SoundBase(this);
-            this->scoresound_->loadFile("sounds/pong_score.wav");
-        }
     }
 
     PongBall::~PongBall()
     {
-        if (this->sidesound_)
-            delete this->sidesound_;
-        if (this->batsound_)
-            delete this->batsound_;
-        if (this->scoresound_)
-            delete this->scoresound_;
     }
 
     void PongBall::registerVariables()
@@ -107,8 +85,6 @@ namespace orxonox
                 position.z = -this->fieldHeight_ / 2;
 
             this->fireEvent();
-            if (GameMode::playsSound())
-                this->sidesound_->play();
         }
 
         if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
@@ -127,16 +103,12 @@ namespace orxonox
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
                         
                         this->fireEvent();
-                        if (GameMode::playsSound())
-                            this->batsound_->play();
                     }
                     else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
                         if (this->getGametype() && this->bat_[0])
                         {
                             this->getGametype()->playerScored(this->bat_[0]->getPlayer());
-                            if (GameMode::playsSound())
-                                this->scoresound_->play();
                             return;
                         }
                     }
@@ -151,15 +123,11 @@ namespace orxonox
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
 
                         this->fireEvent();
-                        if (GameMode::playsSound())
-                            this->batsound_->play();
                     }
                     else if (GameMode::isMaster() && position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
                         if (this->getGametype() && this->bat_[1])
                         {
-                            if (GameMode::playsSound())
-                                this->scoresound_->play();
                             this->getGametype()->playerScored(this->bat_[1]->getPlayer());
                             return;
                         }

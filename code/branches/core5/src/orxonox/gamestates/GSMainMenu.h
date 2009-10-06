@@ -58,7 +58,7 @@ namespace orxonox
         Ogre::Camera*     camera_;
 
         // ambient sound for the main menu
-        SoundMainMenu* ambient_;
+        SoundBase*        ambient_;
     };
 }
 
