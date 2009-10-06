@@ -46,11 +46,16 @@ namespace orxonox
             
             virtual void processEvent(Event& event);
 
-            virtual void changedName();
+            void setTargetName(const std::string& name);
+            inline const std::string& getTargetName() const
+                { return this->target_; }
 
         private:
             virtual void loadedNewXMLName(BaseObject* object);
             void addEventTarget(BaseObject* object);
+            
+            std::string target_;
+            bool bActive_;
     };
 }
 

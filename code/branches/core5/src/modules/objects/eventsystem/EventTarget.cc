@@ -37,6 +37,8 @@ namespace orxonox
     EventTarget::EventTarget(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(EventTarget);
+
+        this->bActive_ = false;
     }
 
     EventTarget::~EventTarget()
@@ -47,30 +49,40 @@ namespace orxonox
     {
         SUPER(EventTarget, XMLPort, xmlelement, mode);
 
+        XMLPortParam(EventTarget, "target", setTargetName, getTargetName, xmlelement, mode);
+
         // since we need event sources mapped to any state, we have to parse XML by ourselves
         this->loadAllEventStates(xmlelement, mode, this, Class(EventTarget));
     }
 
     void EventTarget::processEvent(Event& event)
     {
+        if (this->bActive_)
+        {
+            COUT(2) << "Warning: Detected Event loop in EventTarget \"" << this->getName() << "\"" << std::endl;
+            return;
+        }
+
+        this->bActive_ = true;
         this->fireEvent(event);
+        this->bActive_ = false;
     }
 
-    void EventTarget::changedName()
+    void EventTarget::setTargetName(const std::string& name)
     {
-        SUPER(EventTarget, changedName);
-
+        this->target_ = name;
+        
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
-            if (it->getName() == this->getName())
+            if (it->getName() == this->target_)
                 this->addEventTarget(*it);
     }
 
     void EventTarget::loadedNewXMLName(BaseObject* object)
     {
-        if (this->getName() == "")
+        if (this->target_ == "")
             return;
 
-        if (object->getName() == this->getName())
+        if (object->getName() == this->target_)
             this->addEventTarget(object);
     }
 

@@ -110,7 +110,7 @@
     <Billboard position="-2500, 2400, 1500" material="Examples/Flare" />
     <EventDispatcher>
       <targets>
-        <EventTarget name=pirates />
+        <EventTarget target=pirates />
       </targets>
       <events>
         <activity>
@@ -162,7 +162,7 @@ end
     <Billboard position="2300, 4400, 2500" material="Examples/Flare" />
     <EventDispatcher>
       <targets>
-        <EventTarget name=attacker />
+        <EventTarget target=attacker />
       </targets>
       <events>
         <activity>

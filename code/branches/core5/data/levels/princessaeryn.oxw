@@ -226,7 +226,7 @@
             <!-- Trail -->
             <EventDispatcher>
                 <targets>
-                    <EventTarget name=trail />
+                    <EventTarget target=trail />
                 </targets>
                 <events>
                     <visibility>

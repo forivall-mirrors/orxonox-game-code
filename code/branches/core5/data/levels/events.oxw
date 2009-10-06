@@ -95,7 +95,7 @@
     -->
     <Billboard name="bb3" position="100,150,0" material="Examples/Flare" colour="1.0, 1.0, 1.0" visible=0 />
     <Billboard name="bb3" position="100,150,100" material="Examples/Flare" colour="1.0, 1.0, 1.0" visible=0 />
-    <EventTarget name="bb3">
+    <EventTarget target="bb3">
       <events>
         <visibility>
           <DistanceTrigger position="100,100,0" distance=25 target="ControllableEntity" />
@@ -143,7 +143,7 @@
     <DistanceTrigger name="trigger5" position="-100,100,100" distance=25 target="ControllableEntity" />
     <EventDispatcher>
       <targets>
-        <EventTarget name="bb5" />
+        <EventTarget target="bb5" />
       </targets>
       <events>
         <visibility>
