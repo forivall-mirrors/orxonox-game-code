@@ -159,9 +159,9 @@ namespace orxonox
         if (this->center_)
         {
             if (player == this->getRightPlayer())
-                this->center_->fireEvent(EventName(PongCenterpoint, right));
+                this->center_->fireEvent(FireEventName(PongCenterpoint, right));
             else if (player == this->getLeftPlayer())
-                this->center_->fireEvent(EventName(PongCenterpoint, left));
+                this->center_->fireEvent(FireEventName(PongCenterpoint, left));
             
             if (player)
                 this->gtinfo_->sendAnnounceMessage(player->getName() + " scored");
