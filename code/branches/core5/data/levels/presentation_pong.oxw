@@ -31,7 +31,11 @@
       <!--Billboard scale=0.2 colour="1.0, 1.0, 0.5" material="Examples/Flare" /-->
       <Backlight scale=0.2 colour="1.0, 1.0, 0.5" width=7 length=500 lifetime=0.3 elements=20 trailmaterial="Trail/backlighttrail" material="Examples/Flare" />
       <Light type=point diffuse="1.0, 1.0, 0.5" specular="1.0, 1.0, 0.5" attenuation="1200, 1.0, 0.0035, 0.00005" />
+      <ParticleSpawner name=hiteffect position="0,0,0" source="Orxonox/sparks2" lifetime=0.01 autostart=0 mainstate=spawn />
     </attached>
+    <eventlisteners>
+      <EventTarget target=hiteffect />
+    </eventlisteners>
   </PongBall>
 </Template>
 
@@ -61,18 +65,31 @@ end
         <attached>
           <Model position="0,0,60" mesh="cube.mesh" scale3D="105,1,1" />
           <Model position="0,0,-60" mesh="cube.mesh" scale3D="105,1,1" />
-<!--
-          <ParticleSpawner name=scoreeffect_R position=" 100,0, 60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect position="  50,0, 60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect position="   0,0, 60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect position=" -50,0, 60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect_L position="-100,0, 60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect_R position=" 100,0,-60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect position="  50,0,-60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect position="   0,0,-60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect position=" -50,0,-60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
-          <ParticleSpawner name=scoreeffect_L position="-100,0,-60" source="Orxonox/BigExplosion1part1" lifetime=3.0 autostart=0 />
--->
+
+          <ParticleSpawner name=scoreeffect_right position="120,0, 45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_right position="120,0, 30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+          <ParticleSpawner name=scoreeffect_right position="120,0, 15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_right position="120,0,  0" source="Orxonox/BigExplosion1part2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_right position="120,0,-15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_right position="120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+          <ParticleSpawner name=scoreeffect_right position="120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+
+          <ParticleSpawner name=scoreeffect_left position="-120,0, 45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_left position="-120,0, 30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+          <ParticleSpawner name=scoreeffect_left position="-120,0, 15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_left position="-120,0,  0" source="Orxonox/BigExplosion1part2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_left position="-120,0,-15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+          <ParticleSpawner name=scoreeffect_left position="-120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+          <ParticleSpawner name=scoreeffect_left position="-120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+
+<?lua
+for i = 1, 15, 1
+do ?>
+          <ParticleSpawner name=scoreeffect_center position="<?lua print(math.random() * 200 - 100) ?>,0,<?lua print(math.random() * 120 - 60) ?>" source="Orxonox/sparks2" lifetime=0.02 autostart=0 startdelay=<?lua print(math.random() * 0.7) ?> />
+<?lua
+end
+?>
+
         </attached>
       </PongCenterpoint>
     </attached>
@@ -80,11 +97,33 @@ end
 
   <EventDispatcher>
     <targets>
-      <EventTarget name=scoreeffect />
+      <EventTarget target=scoreeffect_right />
+      <EventTarget target=scoreeffect_center />
     </targets>
     <events>
       <spawn>
-        <EventListener event=pongcenter />
+        <EventFilter>
+          <names>
+            <EventName name=right />
+          </names>
+          <EventListener event=pongcenter />
+        </EventFilter>
+      </spawn>
+    </events>
+  </EventDispatcher>
+  <EventDispatcher>
+    <targets>
+      <EventTarget target=scoreeffect_left />
+      <EventTarget target=scoreeffect_center />
+    </targets>
+    <events>
+      <spawn>
+        <EventFilter>
+          <names>
+            <EventName name=left />
+          </names>
+          <EventListener event=pongcenter />
+        </EventFilter>
       </spawn>
     </events>
   </EventDispatcher>
