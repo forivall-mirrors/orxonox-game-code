@@ -51,8 +51,6 @@ namespace orxonox
 
         virtual void tick(float dt);
 
-        virtual void processEvent(Event& event);
-
     private:
     };
 }

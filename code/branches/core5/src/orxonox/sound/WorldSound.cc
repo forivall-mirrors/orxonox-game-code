@@ -62,11 +62,6 @@ namespace orxonox
         XMLPortEventState(WorldSound, BaseObject, "play", play, xmlelement, mode);
     }
 
-    void WorldSound::processEvent(Event& event)
-    {
-        SUPER(WorldSound, processEvent, event);
-    }
-
     void WorldSound::tick(float dt)
     {
         if (alIsSource(this->source_))
