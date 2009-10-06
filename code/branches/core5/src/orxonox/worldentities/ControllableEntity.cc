@@ -103,7 +103,7 @@ namespace orxonox
             if (this->camera_)
                 this->camera_->destroy();
 
-            for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+            for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
                 (*it)->destroy();
 
             if (this->getScene()->getSceneManager())
@@ -152,7 +152,7 @@ namespace orxonox
     CameraPosition* ControllableEntity::getCameraPosition(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+        for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
         {
             if (i == index)
                 return (*it);
@@ -171,7 +171,7 @@ namespace orxonox
             }
             else if (this->cameraPositions_.size() > 0)
             {
-                for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
                 {
                     if ((*it) == this->camera_->getParent())
                     {
@@ -332,7 +332,7 @@ namespace orxonox
         WorldEntity* parent = this->getParent();
         if (parent)
         {
-            for (std::list<CameraPosition*>::iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+            for (std::list<SmartPtr<CameraPosition> >::iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
                 if ((*it)->getIsAbsolute())
                     parent->attach((*it));
         }
