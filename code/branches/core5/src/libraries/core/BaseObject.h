@@ -160,9 +160,9 @@ namespace orxonox
             void addEventListener(BaseObject* listener);
             BaseObject* getEventListener(unsigned int index) const;
 
-            void fireEvent();
-            void fireEvent(bool activate);
-            void fireEvent(bool activate, BaseObject* originator);
+            void fireEvent(const std::string& name = "");
+            void fireEvent(bool activate, const std::string& name = "");
+            void fireEvent(bool activate, BaseObject* originator, const std::string& name = "");
             void fireEvent(Event& event);
 
             virtual void processEvent(Event& event);

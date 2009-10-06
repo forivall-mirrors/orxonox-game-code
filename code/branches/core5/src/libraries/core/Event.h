@@ -39,11 +39,12 @@ namespace orxonox
     */
     struct _CoreExport Event
     {
-        Event(bool activate, BaseObject* originator) : activate_(activate), originator_(originator) {}
+        Event(bool activate, BaseObject* originator, const std::string& name) : activate_(activate), originator_(originator), name_(name) {}
 
         bool        activate_;   //!< True if this is an activating event (the event source was inactive before and just triggered the event) - false otherwise
         std::string statename_;  //!< The name of the state this event affects
         BaseObject* originator_; //!< The object which triggered this event
+        std::string name_;       //!< The name of this event
     };
 
     /**

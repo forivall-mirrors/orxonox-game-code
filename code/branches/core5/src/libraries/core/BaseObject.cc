@@ -299,26 +299,26 @@ namespace orxonox
     /**
         @brief Fires an event (without a state).
     */
-    void BaseObject::fireEvent()
+    void BaseObject::fireEvent(const std::string& name)
     {
-        this->fireEvent(true);
-        this->fireEvent(false);
+        this->fireEvent(true, name);
+        this->fireEvent(false, name);
     }
 
     /**
         @brief Fires an event which activates or deactivates a state.
     */
-    void BaseObject::fireEvent(bool activate)
+    void BaseObject::fireEvent(bool activate, const std::string& name)
     {
-        this->fireEvent(activate, this);
+        this->fireEvent(activate, this, name);
     }
 
     /**
         @brief Fires an event which activates or deactivates a state with agiven originator (the object which triggered the event).
     */
-    void BaseObject::fireEvent(bool activate, BaseObject* originator)
+    void BaseObject::fireEvent(bool activate, BaseObject* originator, const std::string& name)
     {
-        Event event(activate, originator);
+        Event event(activate, originator, name);
 
         for (std::set<BaseObject*>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
         {

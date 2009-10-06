@@ -62,9 +62,7 @@ namespace orxonox
         }
 
         this->bActive_ = true;
-
-        this->fireEvent(event.activate_, event.originator_);
-
+        this->fireEvent(event.activate_, event.originator_, event.name_);
         this->bActive_ = false;
     }
 

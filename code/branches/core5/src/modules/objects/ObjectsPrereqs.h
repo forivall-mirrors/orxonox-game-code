@@ -77,7 +77,9 @@ namespace orxonox
 
     // eventsystem
     class EventDispatcher;
+    class EventFilter;
     class EventListener;
+    class EventName;
     class EventTarget;
 
     // triggers

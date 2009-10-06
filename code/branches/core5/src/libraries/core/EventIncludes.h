@@ -67,5 +67,21 @@
     static orxonox::ExecutorMember<classname>* xmlsetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::addEventSource), std::string( #classname ) + "::" + "addEventSource" + "(" + statename + ")")->setDefaultValue(1, statename); \
     static orxonox::ExecutorMember<classname>* xmlgetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::getEventSource), std::string( #classname ) + "::" + "getEventSource" + "(" + statename + ")")->setDefaultValue(1, statename); \
     XMLPortObjectGeneric(xmlport##name, classname, orxonox::BaseObject, statename, xmlsetfunctor##name, xmlgetfunctor##name, xmlelement, mode, false, true)
+    
+
+/**
+    @brief Defines a new event name for a class. Named events can only have names which were defined with this macro.
+    
+    @param classname The name of the class
+    @param name      The name of the event
+*/
+#define CreateEventName(classname, name) \
+    static std::string eventname##classname##name = #name
+
+/**
+    @brief This macro is needed to fire an event with this name. The event name must previously be declared with @ref CreateEventName.
+*/    
+#define EventName(classname, name) \
+    eventname##classname##name
  
 #endif /* _EventIncludes_H__ */
