@@ -37,7 +37,6 @@
 #include "util/Math.h"
 #include "util/OgreForwardRefs.h"
 #include "core/OrxonoxClass.h"
-#include "tools/ToolsPrereqs.h"
 
 namespace orxonox
 {

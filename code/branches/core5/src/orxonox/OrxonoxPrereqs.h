@@ -36,6 +36,7 @@
 #define _OrxonoxPrereqs_H__
 
 #include "OrxonoxConfig.h"
+#include "tools/ToolsPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings

@@ -57,6 +57,8 @@ namespace orxonox
 
     ChatOverlay::~ChatOverlay()
     {
+        for (std::set<Timer*>::iterator it = this->timers_.begin(); it != this->timers_.end(); ++it)
+            delete (*it);
     }
 
     void ChatOverlay::setConfigValues()
@@ -86,16 +88,21 @@ namespace orxonox
         this->messages_.push_back(multi_cast<Ogre::UTFString>(text));
         COUT(0) << "Chat: " << text << std::endl;
 
-        new Timer(this->displayTime_, false, createExecutor(createFunctor(&ChatOverlay::dropMessage, this)), true);
+        Timer* timer = new Timer();
+        this->timers_.insert(timer); // store the timer in a set to destroy it in the destructor
+        Executor* executor = createExecutor(createFunctor(&ChatOverlay::dropMessage, this));
+        executor->setDefaultValues(timer);
+        timer->setTimer(this->displayTime_, false, executor, true);
 
         this->updateOverlayText();
     }
 
-    void ChatOverlay::dropMessage()
+    void ChatOverlay::dropMessage(Timer* timer)
     {
         if (this->messages_.size() > 0)
             this->messages_.pop_front();
         this->updateOverlayText();
+        this->timers_.erase(timer); // the timer destroys itself, but we have to remove it from the set
     }
 
     void ChatOverlay::updateOverlayText()
