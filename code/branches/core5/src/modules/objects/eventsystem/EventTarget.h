@@ -42,6 +42,8 @@ namespace orxonox
             EventTarget(BaseObject* creator);
             virtual ~EventTarget();
             
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            
             virtual void processEvent(Event& event);
 
             virtual void changedName();

@@ -244,7 +244,7 @@ namespace orxonox
     }
 
     /**
-        @brief Adds an object which listens to the events of this object.
+        @brief Adds an object which listens to the events of this object. The events are sent to the other objects mainstate.
     */
     void BaseObject::addEventListener(BaseObject* listener)
     {
@@ -267,6 +267,11 @@ namespace orxonox
         return 0;
     }
 
+    /**
+        @brief Adds a new event-state to the object. Event-states are states which can be changed by events.
+        @param name  The name of the event
+        @param state The object containing information about the event-state
+    */
     void BaseObject::addEventState(const std::string& name, EventState* state)
     {
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
@@ -279,6 +284,9 @@ namespace orxonox
         this->eventStates_[name] = state;
     }
 
+    /**
+        @brief Returns the event-state with the given name.
+    */
     EventState* BaseObject::getEventState(const std::string& name) const
     {
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
@@ -403,6 +411,51 @@ namespace orxonox
         {
             Element xmlelement;
             this->XMLEventPort(xmlelement, XMLPort::NOP);
+        }
+    }
+    
+    /**
+        @brief Manually loads all event states, even if the class doesn't officially support them. This is needed by some classes like @ref EventDispatcher or @ref EventTarget.
+    */
+    void BaseObject::loadAllEventStates(Element& xmlelement, XMLPort::Mode mode, BaseObject* object, Identifier* identifier)
+    {
+        Element* events = xmlelement.FirstChildElement("events", false);
+        if (events)
+        {
+            // get the list of all states present
+            std::list<std::string> eventnames;
+            if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
+            {
+                for (ticpp::Iterator<ticpp::Element> child = events->FirstChildElement(false); child != child.end(); child++)
+                    eventnames.push_back(child->Value());
+            }
+            else if (mode == XMLPort::SaveObject)
+            {
+            }
+
+            // iterate through all states and get the event sources
+            for (std::list<std::string>::iterator it = eventnames.begin(); it != eventnames.end(); ++it)
+            {
+                std::string statename = (*it);
+
+                // if the event state is already known, continue with the next state
+                orxonox::EventState* eventstate = object->getEventState(statename);
+                if (eventstate)
+                    continue;
+
+                XMLPortClassObjectContainer<BaseObject, BaseObject>* container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(identifier->getXMLPortObjectContainer(statename));
+                if (!container)
+                {
+                    ExecutorMember<BaseObject>* setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + "(" + statename + ")");
+                    ExecutorMember<BaseObject>* getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + "(" + statename + ")");
+                    setfunctor->setDefaultValue(1, statename);
+                    getfunctor->setDefaultValue(1, statename);
+
+                    container = new XMLPortClassObjectContainer<BaseObject, BaseObject>(statename, identifier, setfunctor, getfunctor, false, true);
+                    identifier->addXMLPortObjectContainer(statename, container);
+                }
+                container->port(object, *events, mode);
+            }
         }
     }
 }

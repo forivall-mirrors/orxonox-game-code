@@ -28,6 +28,7 @@
 
 #include "EventTarget.h"
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
@@ -42,6 +43,14 @@ namespace orxonox
     {
     }
     
+    void EventTarget::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(EventTarget, XMLPort, xmlelement, mode);
+
+        // since we need event sources mapped to any state, we have to parse XML by ourselves
+        this->loadAllEventStates(xmlelement, mode, this, Class(EventTarget));
+    }
+
     void EventTarget::processEvent(Event& event)
     {
         this->fireEvent(event);

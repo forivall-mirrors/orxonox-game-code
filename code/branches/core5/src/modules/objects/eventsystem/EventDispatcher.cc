@@ -53,6 +53,9 @@ namespace orxonox
         SUPER(EventDispatcher, XMLPort, xmlelement, mode);
 
         XMLPortObject(EventDispatcher, BaseObject, "targets", addTarget, getTarget, xmlelement, mode);
+
+        // since we need event sources mapped to any state, we have to parse XML by ourselves
+        this->loadAllEventStates(xmlelement, mode, this, Class(EventDispatcher));
     }
 
     void EventDispatcher::processEvent(Event& event)

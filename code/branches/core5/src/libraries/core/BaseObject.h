@@ -171,15 +171,10 @@ namespace orxonox
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
+            
+            static void loadAllEventStates(Element& xmlelement, XMLPort::Mode mode, BaseObject* object, Identifier* identifier);
 
         protected:
-            /** @brief Adds an object which listens to the events of this object. */
-            inline void registerEventListener(BaseObject* object)
-                { this->eventListeners_.insert(object); }
-            /** @brief Removes an event listener from this object. */
-            inline void unregisterEventListener(BaseObject* object)
-                { this->eventListeners_.erase(object); }
-
             void addEventState(const std::string& name, EventState* container);
             EventState* getEventState(const std::string& name) const;
 
@@ -191,6 +186,13 @@ namespace orxonox
             Functor*    mainStateFunctor_;
 
         private:
+            /** @brief Adds an object which listens to the events of this object. */
+            inline void registerEventListener(BaseObject* object)
+                { this->eventListeners_.insert(object); }
+            /** @brief Removes an event listener from this object. */
+            inline void unregisterEventListener(BaseObject* object)
+                { this->eventListeners_.erase(object); }
+
             void setXMLName(const std::string& name);
             Template* getTemplate(unsigned int index) const;
             void registerEventStates();
