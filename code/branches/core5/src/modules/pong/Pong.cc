@@ -29,6 +29,7 @@
 #include "Pong.h"
 
 #include "core/CoreIncludes.h"
+#include "core/EventIncludes.h"
 #include "core/Executor.h"
 #include "PongCenterpoint.h"
 #include "PongBall.h"
@@ -38,6 +39,9 @@
 
 namespace orxonox
 {
+    CreateEventName(PongCenterpoint, right);
+    CreateEventName(PongCenterpoint, left);
+    
     CreateUnloadableFactory(Pong);
 
     Pong::Pong(BaseObject* creator) : Deathmatch(creator)
@@ -154,8 +158,11 @@ namespace orxonox
 
         if (this->center_)
         {
-            this->center_->fireEvent();
-
+            if (player == this->getRightPlayer())
+                this->center_->fireEvent(EventName(PongCenterpoint, right));
+            else if (player == this->getLeftPlayer())
+                this->center_->fireEvent(EventName(PongCenterpoint, left));
+            
             if (player)
                 this->gtinfo_->sendAnnounceMessage(player->getName() + " scored");
         }
