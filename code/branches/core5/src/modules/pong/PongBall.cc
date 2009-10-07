@@ -45,6 +45,7 @@ namespace orxonox
         RegisterObject(PongBall);
 
         this->speed_ = 0;
+        this->accelerationFactor_ = 1.0f;
         this->bat_ = 0;
         this->batID_ = new unsigned int[2];
         this->batID_[0] = OBJECTID_UNKNOWN;
@@ -75,6 +76,7 @@ namespace orxonox
 
         Vector3 position = this->getPosition();
         Vector3 velocity = this->getVelocity();
+        Vector3 acceleration = this->getAcceleration();
 
         if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
         {
@@ -101,6 +103,7 @@ namespace orxonox
                         position.x = this->fieldWidth_ / 2;
                         velocity.x = -velocity.x;
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                        acceleration = this->bat_[1]->getVelocity() * this->accelerationFactor_ * -1;
                         
                         this->fireEvent();
                     }
@@ -121,6 +124,7 @@ namespace orxonox
                         position.x = -this->fieldWidth_ / 2;
                         velocity.x = -velocity.x;
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
+                        acceleration = this->bat_[0]->getVelocity() * this->accelerationFactor_ * -1;
 
                         this->fireEvent();
                     }
@@ -136,6 +140,8 @@ namespace orxonox
             }
         }
 
+        if (acceleration != this->getAcceleration())
+            this->setAcceleration(acceleration);
         if (velocity != this->getVelocity())
             this->setVelocity(velocity);
         if (position != this->getPosition())

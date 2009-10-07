@@ -63,7 +63,7 @@ end
 
   <MovableEntity rotationrate=5 rotationaxis="0,0,1">
     <attached>
-      <PongCenterpoint name=pongcenter dimension="200,120" balltemplate=pongball battemplate=pongbat ballspeed=200 batspeed=130 batlength=0.25>
+      <PongCenterpoint name=pongcenter dimension="200,120" balltemplate=pongball battemplate=pongbat ballspeed=200 ballaccfactor=1.0 batspeed=130 batlength=0.25>
         <attached>
           <Model position="0,0,60" mesh="cube.mesh" scale3D="105,1,1" />
           <Model position="0,0,-60" mesh="cube.mesh" scale3D="105,1,1" />

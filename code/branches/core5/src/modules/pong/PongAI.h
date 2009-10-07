@@ -61,6 +61,7 @@ namespace orxonox
             Vector2 ballDirection_;
             float ballEndPosition_;
             float randomOffset_;
+            bool bChangedRandomOffset_;
             float relHysteresisOffset_;
             float strength_;
 

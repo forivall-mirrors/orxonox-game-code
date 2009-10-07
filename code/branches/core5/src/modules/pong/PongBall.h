@@ -57,6 +57,11 @@ namespace orxonox
             float getSpeed() const
                 { return this->speed_; }
 
+            void setAccelerationFactor(float factor)
+                { this->accelerationFactor_ = factor; }
+            float getAccelerationFactor() const
+                { return this->accelerationFactor_; }
+
             void setBatLength(float batlength)
                 { this->batlength_ = batlength; }
             float getBatLength() const
@@ -71,6 +76,7 @@ namespace orxonox
             float fieldWidth_;
             float fieldHeight_;
             float speed_;
+            float accelerationFactor_;
             float batlength_;
             PongBat** bat_;
             unsigned int* batID_;

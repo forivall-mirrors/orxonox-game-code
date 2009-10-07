@@ -75,6 +75,7 @@ namespace orxonox
             this->ball_->setPosition(0, 0, 0);
             this->ball_->setFieldDimension(this->center_->getFieldDimension());
             this->ball_->setSpeed(0);
+            this->ball_->setAccelerationFactor(this->center_->getBallAccelerationFactor());
             this->ball_->setBatLength(this->center_->getBatLength());
 
             if (!this->bat_[0])
@@ -171,6 +172,7 @@ namespace orxonox
         {
             this->ball_->setPosition(Vector3::ZERO);
             this->ball_->setVelocity(Vector3::ZERO);
+            this->ball_->setAcceleration(Vector3::ZERO);
             this->ball_->setSpeed(0);
         }
 
