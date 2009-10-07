@@ -107,9 +107,6 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
       ENDIF()
       # Add the config files in a special source group
       LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
-      FOREACH(_file ${ORXONOX_CONFIG_FILES})
-        SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
-      ENDFOREACH(_file)
       SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
     ENDIF()
   ENDIF(NOT _arg_NO_SOURCE_GROUPS)
@@ -158,6 +155,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET(_arg_SHARED SHARED)
     SET(_arg_STATIC)
   ENDIF()
+
+  # Don't compile header files
+  FOREACH(_file ${_${_target_name}_files})
+    IF(NOT _file MATCHES "\\.(c|cc|cpp)")
+      SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+    ENDIF()
+  ENDFOREACH(_file)
 
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")
