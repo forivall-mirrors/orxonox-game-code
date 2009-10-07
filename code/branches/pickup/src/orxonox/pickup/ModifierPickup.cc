@@ -42,8 +42,10 @@ namespace orxonox
     CreateFactory(ModifierPickup);
 
     /**
-        @brief Constructor. Registers the ModifierPickup.
-        @param creator Pointer to the object which created this item.
+    @brief
+        Constructor. Registers the ModifierPickup.
+    @param creator
+        Pointer to the object which created this item.
     */
     ModifierPickup::ModifierPickup(BaseObject* creator) : PassiveItem(creator)
     {
@@ -51,15 +53,25 @@ namespace orxonox
 
         this->duration_ = 0.0f;
     }
-    //! Deconstructor.
+
+    /**
+    @brief
+        Destructor.
+    */
     ModifierPickup::~ModifierPickup()
     {
+        
     }
+
     /**
-        @brief Method for loading information from a level file.
-        @param element XMLElement from which to read the data.
-        @param mode XMLPort mode to use.
+    @brief
+        Method for loading information from a level file.
+    @param element
+        XMLElement from which to read the data.
+    @param mode
+        XMLPort mode to use.
     */
+    //TODO: Comments: params can probably be ommitted. 
     void ModifierPickup::XMLPort(Element& element, XMLPort::Mode mode)
     {
         SUPER(ModifierPickup, XMLPort, element, mode);
@@ -72,15 +84,18 @@ namespace orxonox
         XMLPortParamTemplate(ModifierPickup, "accelerationAdd", setAdditiveAcceleration, getAdditiveAcceleration, element, mode, float);
         XMLPortParamTemplate(ModifierPickup, "accelerationMulti", setMultiplicativeAcceleration, getMultiplicativeAcceleration, element, mode, float);
     }
+
     /**
-        @brief
-            Invoked when a pawn picks up the pickup.
+    @brief
+        Invoked when a pawn picks up the pickup.
 
-            Adds the modifiers to the pawn and sets a timer (if effect is limited)
-            if the pickup could be added to the pawn's PickupCollection.
+        Adds the modifiers to the pawn and sets a timer (if effect is limited)
+        if the pickup could be added to the pawn's PickupCollection.
 
-        @param pawn Pawn which picked up the pickup.
-        @return Returns whether the pickup was able to be added to the pawn.
+    @param pawn
+        Pawn which picked up the pickup.
+    @return
+        Returns whether the pickup was able to be added to the pawn.
     */
     bool ModifierPickup::pickedUp(Pawn* pawn)
     {
@@ -109,15 +124,18 @@ namespace orxonox
         }
         return false;
     }
+
     /**
-        @brief
-            Invoked when a pawn drops the pickup.
+    @brief
+        Invoked when a pawn drops the pickup.
 
-            Removes the modifiers from the pawn if the pickup
-            was successfully removed from it's PickupCollection.
+        Removes the modifiers from the pawn if the pickup
+        was successfully removed from it's PickupCollection.
 
-        @param pawn Pawn which dropped the pickup.
-        @return Returns whether the pickup could be removed.
+    @param pawn
+        Pawn which dropped the pickup.
+    @return 
+        Returns whether the pickup could be removed.
     */
     bool ModifierPickup::dropped(Pawn* pawn)
     {
@@ -144,18 +162,24 @@ namespace orxonox
         }
         return false;
     }
+
     /**
-        @brief Invoked when the timer finished, calls dropped().
+    @brief Invoked when the timer finished, calls dropped().
     */
+    //TODO: Other name for function?
     void ModifierPickup::timerCallback(Pawn* pawn)
     {
         if (!this->dropped(pawn))
             COUT(2) << "Failed to remove modifier pickup after the timer ran out!" << std::endl;
     }
+
     /**
-        @brief Gets the additive modifier of a given type.
-        @param type ModifierType for which to return the modifier.
-        @return Returns the additive modifier for type (or 0 if not exists).
+    @brief
+        Gets the additive modifier of a given type.
+    @param type
+        ModifierType for which to return the modifier.
+    @return
+        Returns the additive modifier for type (or 0 if not exists).
     */
     float ModifierPickup::getAdditiveModifier(ModifierType::Value type) const
     {
@@ -165,10 +189,14 @@ namespace orxonox
         else
             return 0.0f;
     }
+
     /**
-        @brief Gets the multiplicative modifier of a given type.
-        @param type ModifierType for which to return the modifier.
-        @return Returns the multiplicative modifier for type (or 1 if not exists).
+    @brief
+        Gets the multiplicative modifier of a given type.
+    @param type
+        ModifierType for which to return the modifier.
+    @return
+        Returns the multiplicative modifier for type (or 1 if not exists).
     */
     float ModifierPickup::getMultiplicativeModifier(ModifierType::Value type) const
     {
@@ -178,10 +206,14 @@ namespace orxonox
         else
             return 1.0f;
     }
+
     /**
-        @brief Gets the additive modifier of a given type.
-        @param type ModifierType for which to return the modifier.
-        @param value The new additive modifier for type.
+    @brief
+        Gets the additive modifier of a given type.
+    @param type
+        ModifierType for which to return the modifier.
+    @param value
+        The new additive modifier for type.
     */
     void ModifierPickup::setAdditiveModifier(ModifierType::Value type, float value)
     {
@@ -190,10 +222,14 @@ namespace orxonox
         else
             this->additiveModifiers_[type] = value;
     }
+
     /**
-        @brief Gets the multiplicative modifier of a given type.
-        @param type ModifierType for which to return the modifier.
-        @param value The new multiplicative modifier for type.
+    @brief
+        Gets the multiplicative modifier of a given type.
+    @param type
+        ModifierType for which to return the modifier.
+    @param value
+        The new multiplicative modifier for type.
     */
     void ModifierPickup::setMultiplicativeModifier(ModifierType::Value type, float value)
     {
@@ -202,4 +238,5 @@ namespace orxonox
         else
             this->multiplicativeModifiers_[type] = value;
     }
+
 }

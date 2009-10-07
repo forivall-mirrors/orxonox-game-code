@@ -46,99 +46,112 @@
 namespace orxonox
 {
     /**
-        @brief Class for a (temporary) modifier effect.
-        @author Daniel 'Huty' Haggenmueller
+    @brief Class for a (temporary) modifier effect.
+    @author Daniel 'Huty' Haggenmueller
     */
+    //TODO: More elaborate comments.
     class _OrxonoxExport ModifierPickup : public PassiveItem
     {
-    public:
-        ModifierPickup(BaseObject* creator);
-        virtual ~ModifierPickup();
+        //TODO: What does being derived from PassiveItem add exactly? Probably better to kill PassiveItem and just derive from BaseItem.
+        //Include ModifierType here, no additional header file needed for that, imo.
+        public:
+            ModifierPickup(BaseObject* creator);
+            virtual ~ModifierPickup();
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< To create a ModifierPickup through the level file.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< To create a ModifierPickup through the level file.
 
-        virtual bool pickedUp(Pawn* pawn);                              //!< Override of the BaseItem::pickedUp() method.
-        virtual bool dropped(Pawn* pawn);                               //!< Override of the BaseItem::dropped() method
+            virtual bool pickedUp(Pawn* pawn); //!< Override of the BaseItem::pickedUp() method.
+            virtual bool dropped(Pawn* pawn); //!< Override of the BaseItem::dropped() method
 
-        virtual int getMaxCarryAmount(){ return INT_MAX; }              //!< Allow the player to carry infinite ModPickups
+            //TODO: Where does this INT_MAX come from? Comment.
+            virtual int getMaxCarryAmount() //!< Allow the player to carry infinite ModPickups
+                { return INT_MAX; }
 
-        /**
+            /**
             @brief Get the duration of this pickup.
             @return Returns how long the effect holds on.
-        */
-        inline float getDuration() const
-            { return this->duration_; }
-        /**
+            */
+            inline float getDuration() const
+                { return this->duration_; }
+            /**
             @brief Set the duration of this pickup.
             @param duration How long the effect should hold.
-        */
-        inline void setDuration(float duration)
-            { this->duration_ = duration; }
+            */
+            //TODO: Better be private?
+            inline void setDuration(float duration)
+                { this->duration_ = duration; }
 
-        /**
+            //TODO: Shouldn't these all be seperate pickup items? But, then, would this class really be needed? What does it actually add?
+            //Duration! Thus create two virtual functions addEffect() and removeEffect().
+            //Export the ideas here into seperate, individual subclasses.
+            //Shouldn't this, as an item be in the items folder? or is it, as merely the equivalent of an abstract class not specific enough?
+            //Specify what ModifierItem should do exactly. If the limited duration is the core functionality, another name would probably more fitting.
+            //Perhaps, limited effect duration could also just be another feature of BaseItem...
+            /**
             @brief Get the amount of damage this pickup adds.
             @return Returns how much damage this pickup adds.
-        */
-        inline float getAdditiveDamage() const
-            { return this->getAdditiveModifier(ModifierType::Damage); }
-        /**
+            */
+            inline float getAdditiveDamage() const
+                { return this->getAdditiveModifier(ModifierType::Damage); }
+            /**
             @brief Get the factor by which this pickup multiplies the damage.
             @return Returns the factor by which to multiply damage.
-        */
-        inline float getMultiplicativeDamage() const
-            { return this->getMultiplicativeModifier(ModifierType::Damage); }
+            */
+            inline float getMultiplicativeDamage() const
+                { return this->getMultiplicativeModifier(ModifierType::Damage); }
 
-        /**
+            /**
             @brief Set the amount of damage this pickup adds.
             @param value How much damage this pickup adds.
-        */
-        inline void setAdditiveDamage(float value)
-            { this->setAdditiveModifier(ModifierType::Damage, value); }
-        /**
+            */
+            inline void setAdditiveDamage(float value)
+                { this->setAdditiveModifier(ModifierType::Damage, value); }
+            /**
             @brief Set the factor by which this pickup multiplies the damage.
             @param value Factor by which to multiply damage.
-        */
-        inline void setMultiplicativeDamage(float value)
-            { this->setMultiplicativeModifier(ModifierType::Damage, value); }
+            */
+            inline void setMultiplicativeDamage(float value)
+                { this->setMultiplicativeModifier(ModifierType::Damage, value); }
 
-        /**
+            /**
             @brief Get the amount of acceleration this pickup adds.
             @return Returns how much acceleration this pickup adds.
-        */
-        inline float getAdditiveAcceleration() const
-            { return this->getAdditiveModifier(ModifierType::Acceleration); }
-        /**
+            */
+            inline float getAdditiveAcceleration() const
+                { return this->getAdditiveModifier(ModifierType::Acceleration); }
+            /**
             @brief Get the factor by which this pickup multiplies the acceleration.
             @return Returns the factor by which to multiply acceleration.
-        */
-        inline float getMultiplicativeAcceleration() const
-            { return this->getMultiplicativeModifier(ModifierType::Acceleration); }
+            */
+            inline float getMultiplicativeAcceleration() const
+                { return this->getMultiplicativeModifier(ModifierType::Acceleration); }
 
-        /**
+            /**
             @brief Set the amount of acceleration this pickup adds.
             @param value How much acceleration this pickup adds.
-        */
-        inline void setAdditiveAcceleration(float value)
-            { this->setAdditiveModifier(ModifierType::Acceleration, value); }
-        /**
+            */
+            inline void setAdditiveAcceleration(float value)
+                { this->setAdditiveModifier(ModifierType::Acceleration, value); }
+            /**
             @brief Set the factor by which this pickup multiplies the acceleration.
             @param value Factor by which to multiply acceleration.
-        */
-        inline void setMultiplicativeAcceleration(float value)
-            { this->setMultiplicativeModifier(ModifierType::Acceleration, value); }
+            */
+            inline void setMultiplicativeAcceleration(float value)
+                { this->setMultiplicativeModifier(ModifierType::Acceleration, value); }
 
-        void timerCallback(Pawn* pawn);     //!< Method called when the timer runs out.
-    private:
-        float getAdditiveModifier(ModifierType::Value type) const;               //!< Get the additive modifier for a given ModifierType.
-        float getMultiplicativeModifier(ModifierType::Value type) const;         //!< Get the multiplicative modifier for a given ModifierType.
-        void setAdditiveModifier(ModifierType::Value type, float value);         //!< Set the additive modifier for a given ModifierType.
-        void setMultiplicativeModifier(ModifierType::Value type, float value);   //!< Set the multiplicative modifier for a given ModifierType
+            //TODO: Make private?
+            void timerCallback(Pawn* pawn);     //!< Method called when the timer runs out.
+        private:
+            float getAdditiveModifier(ModifierType::Value type) const;               //!< Get the additive modifier for a given ModifierType.
+            float getMultiplicativeModifier(ModifierType::Value type) const;         //!< Get the multiplicative modifier for a given ModifierType.
+            void setAdditiveModifier(ModifierType::Value type, float value);         //!< Set the additive modifier for a given ModifierType.
+            void setMultiplicativeModifier(ModifierType::Value type, float value);   //!< Set the multiplicative modifier for a given ModifierType
 
-        std::map<ModifierType::Value, float> additiveModifiers_;                 //!< Map of additive modifiers, indexed by ModifierType.
-        std::map<ModifierType::Value, float> multiplicativeModifiers_;           //!< Map of multiplicative modifiers, indexed by ModifierType.
+            std::map<ModifierType::Value, float> additiveModifiers_;                 //!< Map of additive modifiers, indexed by ModifierType.
+            std::map<ModifierType::Value, float> multiplicativeModifiers_;           //!< Map of multiplicative modifiers, indexed by ModifierType.
 
-        float duration_;                                                        //!< Duration of this pickup's effect (0 for unlimited).
-        Timer<ModifierPickup> timer_;                                           //!< Timer used if the pickup's effect has a time limit.
+            float duration_;                                                        //!< Duration of this pickup's effect (0 for unlimited).
+            Timer<ModifierPickup> timer_;                                           //!< Timer used if the pickup's effect has a time limit.
     };
 }
 

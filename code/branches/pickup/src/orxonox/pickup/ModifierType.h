@@ -38,6 +38,7 @@
 
 namespace orxonox
 {
+    //TODO: Merge with ModifierPickup.
     namespace ModifierType
     {
         /**

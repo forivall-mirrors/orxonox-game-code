@@ -49,47 +49,48 @@ namespace orxonox
     */
     class _OrxonoxExport Jump : public UsableItem
     {
-    public:
-        Jump(BaseObject* creator);      //!< Constructor
-        virtual ~Jump();                //!< Deconstructor
+        public:
+            //TODO: Comment. a.s.o.
+            Jump(BaseObject* creator);      //!< Constructor
+            virtual ~Jump();                //!< Deconstructor
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
 
-        virtual int getMaxCarryAmount() const
-            { return INT_MAX; }
+            virtual int getMaxCarryAmount() const
+                { return INT_MAX; }
 
-        virtual void used(Pawn* pawn);          //!< Called when the item is used.
+            virtual void used(Pawn* pawn);          //!< Called when the item is used.
 
-        virtual bool pickedUp(Pawn* pawn);      //!< Called when the item is picked up.
-        virtual bool dropped(Pawn* pawn);       //!< Called when the item is dropped.
+            virtual bool pickedUp(Pawn* pawn);      //!< Called when the item is picked up.
+            virtual bool dropped(Pawn* pawn);       //!< Called when the item is dropped.
 
-        /**
-            @brief Get the velocity added when the item is used.
-            @return Returns the added velocity (relative to the Pawn).
-        */
-        inline const Vector3& getVelocity() const
-            { return this->velocity_; }
-        /**
-            @brief Set the velocity added when the item is used.
-            @param velocity New added velocity (relative to Pawn).
-        */
-        inline void setVelocity(const Vector3& velocity)
-            { this->velocity_ = velocity; }
-        /**
-            @brief Get the amount of jumps available.
-            @return Returns how many times the item can be used.
-        */
-        inline int getJumpsAvailable() const
-            { return this->jumpsAvailable_; }
-        /**
-            @brief Set the amount of jumps available.
-            @param num New number of available jumps.
-        */
-        inline void setJumpsAvailable(int num)
-            { this->jumpsAvailable_ = num; }
-    private:
-        Vector3 velocity_;      //!< The velocity added when the item is used.
-        int jumpsAvailable_;    //!< Amount of jumps still available.
+            /**
+                @brief Get the velocity added when the item is used.
+                @return Returns the added velocity (relative to the Pawn).
+            */
+            inline const Vector3& getVelocity() const
+                { return this->velocity_; }
+            /**
+                @brief Set the velocity added when the item is used.
+                @param velocity New added velocity (relative to Pawn).
+            */
+            inline void setVelocity(const Vector3& velocity)
+                { this->velocity_ = velocity; }
+            /**
+                @brief Get the amount of jumps available.
+                @return Returns how many times the item can be used.
+            */
+            inline int getJumpsAvailable() const
+                { return this->jumpsAvailable_; }
+            /**
+                @brief Set the amount of jumps available.
+                @param num New number of available jumps.
+            */
+            inline void setJumpsAvailable(int num)
+                { this->jumpsAvailable_ = num; }
+        private:
+            Vector3 velocity_;      //!< The velocity added when the item is used.
+            int jumpsAvailable_;    //!< Amount of jumps still available.
     };
 }
 

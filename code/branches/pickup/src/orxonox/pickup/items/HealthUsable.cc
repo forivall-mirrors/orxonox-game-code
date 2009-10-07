@@ -44,8 +44,8 @@ namespace orxonox
     CreateFactory(HealthUsable);
 
     /**
-        @brief Constructor
-        @param creator Object that created this item.
+    @brief Constructor
+    @param creator Object that created this item.
     */
     HealthUsable::HealthUsable(BaseObject* creator) : UsableItem(creator)
     {
@@ -53,14 +53,16 @@ namespace orxonox
 
         this->recoveredHealth_ = 0;
     }
+
     //! Deconstructor
     HealthUsable::~HealthUsable()
     {
     }
+
     /**
-        @brief XMLPort for Jump.
-        @param xmlelement Element of the XML-file.
-        @param mode XMLPort mode to use.
+    @brief XMLPort for Jump.
+    @param xmlelement Element of the XML-file.
+    @param mode XMLPort mode to use.
     */
     void HealthUsable::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -68,10 +70,13 @@ namespace orxonox
 
         XMLPortParam(HealthUsable, "recoveredHealth", setRecoveredHealth, getRecoveredHealth, xmlelement, mode);
     }
+
     /**
-        @brief Called when the item is used, makes the user "jump".
-        @param pawn Pawn which used te item.
+    @brief Called when the item is used, makes the user "jump".
+    @param pawn Pawn which used te item.
     */
+    //TODO: Jump? Nope! => Comment.
+    //Should be destroyed anyways.
     void HealthUsable::used(Pawn* pawn)
     {
         float maxH = pawn->getMaxHealth();
@@ -84,17 +89,19 @@ namespace orxonox
             delete this;
         }
     }
+
     /**
-        @brief Called when the item is picked up.
-        @param pawn Pawn which picked up the item.
+    @brief Called when the item is picked up.
+    @param pawn Pawn which picked up the item.
     */
     bool HealthUsable::pickedUp(Pawn* pawn)
     {
         return this->addTo(pawn);
     }
+
     /**
-        @brief Called when the item is dropped, creates a DroppedItem behind the pawn.
-        @param pawn Pawn which dropped the item.
+    @brief Called when the item is dropped, creates a DroppedItem behind the pawn.
+    @param pawn Pawn which dropped the item.
     */
     bool HealthUsable::dropped(Pawn* pawn)
     {

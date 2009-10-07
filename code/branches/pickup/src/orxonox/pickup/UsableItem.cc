@@ -37,8 +37,8 @@
 namespace orxonox
 {
     /**
-        @brief Constructor. Registers the UsableItem.
-        @param creator Pointer to the object which created this item.
+    @brief Constructor. Registers the UsableItem.
+    @param creator Pointer to the object which created this item.
     */
     UsableItem::UsableItem(BaseObject* creator) : BaseItem(creator) 
     {

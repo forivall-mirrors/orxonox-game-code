@@ -52,8 +52,10 @@ namespace orxonox
     CreateFactory(PickupSpawner);
 
     /**
-        @brief Constructor. Registers the PickupSpawner.
-        @param creator Pointer to the object which created this item.
+    @brief
+        Constructor. Registers the PickupSpawner.
+    @param creator
+        Pointer to the object which created this item.
     */
     PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator)
     {
@@ -64,14 +66,23 @@ namespace orxonox
         this->respawnTime_ = 0.0f;
         this->tickSum_ = 0.0f;
     }
-    //! Deconstructor.
+
+    /**
+    @brief
+        Destructor.
+    */
     PickupSpawner::~PickupSpawner()
     {
+        
     }
+
     /**
-        @brief Method for creating a PickupSpawner through XML.
-        @param xmlelement XML element which contains the PickupSpawner.
-        @param mode XMLPort mode.
+    @brief
+        Method for creating a PickupSpawner through XML.
+    @param xmlelement
+        XML element which contains the PickupSpawner.
+    @param mode
+        XMLPort mode.
     */
     void PickupSpawner::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -81,6 +92,7 @@ namespace orxonox
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
 
+        //TODO: Kill hack.
         // HACKs
         // Load the GUI image as soon as the PickupSpawner gets loaded
         //  = less delays while running
@@ -99,8 +111,10 @@ namespace orxonox
         GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
         PickupInventory::getSingleton();
     }
+
     /**
-        @brief Invoked when the activity has changed. Sets visibility of attached objects.
+    @brief
+        Invoked when the activity has changed. Sets visibility of attached objects.
     */
     void PickupSpawner::changedActivity()
     {
@@ -109,19 +123,26 @@ namespace orxonox
         for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
             (*it)->setVisible(this->isActive());
     }
+
     /**
-        @brief Set the template name of the item to spawn, also loads the template.
-        @param name Name of the new template.
+    @brief
+        Set the template name of the item to spawn, also loads the template.
+    @param name
+        Name of the new template.
     */
     void PickupSpawner::setItemTemplateName(const std::string& name)
     {
         this->itemTemplateName_ = name;
         this->itemTemplate_ = Template::getTemplate(name);
     }
+
     /**
-        @brief Tick, checks if any Pawn is close enough to trigger.
-        @param dt Time since last tick.
+    @brief
+        Tick, checks if any Pawn is close enough to trigger.
+    @param dt
+        Time since last tick.
     */
+    //TODO: Replace this with a real DistanceTrigger.
     void PickupSpawner::tick(float dt)
     {
         if (this->isActive())
@@ -139,14 +160,16 @@ namespace orxonox
                 this->tickSum_ -= 2*Ogre::Math::PI;
         }
     }
+
     /**
-        @brief
-            Trigger the PickupSpawner.
+    @brief
+        Trigger the PickupSpawner.
 
-            Adds the pickup to the Pawn that triggered,
-            sets the timer to re-activate and deactives the PickupSpawner.
+        Adds the pickup to the Pawn that triggered,
+        sets the timer to re-activate and deactives the PickupSpawner.
 
-        @param pawn Pawn which triggered the PickupSpawner.
+    @param pawn
+        Pawn which triggered the PickupSpawner.
     */
     void PickupSpawner::trigger(Pawn* pawn)
     {
@@ -177,8 +200,10 @@ namespace orxonox
             }
         }
     }
+
     /**
-        @brief Invoked by the timer, re-activates the PickupSpawner.
+    @brief
+        Invoked by the timer, re-activates the PickupSpawner.
     */
     void PickupSpawner::respawnTimerCallback()
     {
