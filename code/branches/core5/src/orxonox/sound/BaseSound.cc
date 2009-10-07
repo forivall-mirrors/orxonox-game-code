@@ -131,10 +131,11 @@ namespace orxonox
             COUT(2) << "Warning: Sound file '" << source << "' not found" << std::endl;
             return;
         }
-        DataStreamPtr stream = Resource::open(source);
+        dataStream_ = Resource::open(source);
         // Read everything into a temporary buffer
         char* buffer = new char[fileInfo->size];
-        stream->read(buffer, fileInfo->size);
+        dataStream_->read(buffer, fileInfo->size);
+        dataStream_->seek(0);
 
         this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
         delete[] buffer;
@@ -142,18 +143,17 @@ namespace orxonox
         if (this->audioBuffer_ == AL_NONE)
         {
             COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
-            return;
-            //if (filename.find("ogg", 0) != std::string::npos)
-            //{
-            //    COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
-            //    this->audioBuffer_ = loadOggFile(filename);
-            //}
+            if (source.find("ogg", 0) != std::string::npos)
+            {
+                COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
+                this->audioBuffer_ = loadOggFile();
+            }
 
-            //if (this->audioBuffer_ == AL_NONE)
-            //{
-            //    COUT(2) << "Sound: fallback ogg loader failed: " << alutGetErrorString(alutGetError()) << std::endl;
-            //    return;
-            //}
+            if (this->audioBuffer_ == AL_NONE)
+            {
+                COUT(2) << "Sound: fallback ogg loader failed: " << alutGetErrorString(alutGetError()) << std::endl;
+                return;
+            }
         }
 
         alGenSources(1, &this->audioSource_);
@@ -177,8 +177,31 @@ namespace orxonox
         return state;
     }
 
-#if 0 // Not yet supported because of missing resource implementation
-    ALuint BaseSound::loadOggFile(const std::string& filename)
+    size_t readVorbis(void* ptr, size_t size, size_t nmemb, void* datasource)
+    {
+        return static_cast<Ogre::DataStream*>(datasource)->read(ptr, size * nmemb);
+    }
+
+    int seekVorbis(void* datasource, ogg_int64_t offset, int whence)
+    {
+        Ogre::DataStream* stream = static_cast<Ogre::DataStream*>(datasource);
+        int offset_beg = offset;
+        if (whence == SEEK_CUR)
+            offset_beg = stream->tell() + offset;
+        else if (whence == SEEK_END)
+            offset_beg = stream->size() + offset;
+        else if (whence != SEEK_SET)
+            return -1;
+        stream->seek(offset_beg);
+        return 0;
+    }
+
+    long tellVorbis(void* datasource)
+    {
+        return static_cast<long>(static_cast<Ogre::DataStream*>(datasource)->tell());
+    }
+
+    ALuint BaseSound::loadOggFile()
     {
         char inbuffer[4096];
         std::vector<char> outbuffer;
@@ -189,9 +212,15 @@ namespace orxonox
         ALuint buffer;
         ALenum format;
 
-        FILE* f = fopen(filename.c_str(), "rb");
+        // Open file with custom streaming
+        ov_callbacks vorbisCallbacks;
+        vorbisCallbacks.read_func  = &readVorbis;
+        vorbisCallbacks.seek_func  = &seekVorbis;
+        vorbisCallbacks.tell_func  = &tellVorbis;
+        vorbisCallbacks.close_func = NULL;
 
-        if (ov_open(f, &vf, NULL, 0) < 0)
+        int ret = ov_open_callbacks(dataStream_.get(), &vf, NULL, 0, vorbisCallbacks);
+        if (ret < 0)
         {
             COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
             ov_clear(&vf);
@@ -229,6 +258,5 @@ namespace orxonox
 
         return buffer;
     }
-#endif
 
 } // namespace: orxonox

@@ -31,6 +31,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include <OgreSharedPtr.h>
+#include <OgreDataStream.h>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -64,7 +66,7 @@ namespace orxonox
         void setLoop(bool val) { this->bLoop_ = val; }
 
     protected:
-        ALuint loadOggFile(const std::string& filename);
+        ALuint loadOggFile();
         ALint getSourceState();
 
         ALuint audioSource_;
@@ -74,6 +76,7 @@ namespace orxonox
         std::string source_;
         bool bPlayOnLoad_;
         bool bLoop_;
+        DataStreamPtr dataStream_;
     };
 }
 
