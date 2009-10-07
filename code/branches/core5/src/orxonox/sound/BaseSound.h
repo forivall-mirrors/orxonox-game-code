@@ -54,8 +54,8 @@ namespace orxonox
         bool isPaused();
         bool isStopped();
 
-        void setSoundFile(const std::string& soundFile);
-        const std::string& getSoundFile() { return this->soundFile_; }
+        void setSource(const std::string& source);
+        const std::string& getSource() { return this->source_; }
 
         bool getPlayOnLoad() { return this->bPlayOnLoad_; }
         void setPlayOnLoad(bool val);
@@ -64,14 +64,14 @@ namespace orxonox
         void setLoop(bool val) { this->bLoop_ = val; }
 
     protected:
-        //ALuint loadOggFile(const std::string& filename);
+        ALuint loadOggFile(const std::string& filename);
         ALint getSourceState();
 
-        ALuint source_;
-        ALuint buffer_;
+        ALuint audioSource_;
+        ALuint audioBuffer_;
 
     private:
-        std::string soundFile_;
+        std::string source_;
         bool bPlayOnLoad_;
         bool bLoop_;
     };

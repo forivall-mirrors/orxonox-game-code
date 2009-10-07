@@ -45,7 +45,7 @@
  description  = "A simple testlevel"
  gametype     = Pong
 >
-  <AmbientSound soundFile="ambient/mainmenu.wav" playOnLoad=true />
+  <AmbientSound source="ambient/mainmenu.wav" playOnLoad=true />
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
@@ -84,7 +84,7 @@ end
           <ParticleSpawner name=scoreeffect_left position="-120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
           <ParticleSpawner name=scoreeffect_left position="-120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
 
-          <WorldSound name="scoreSound" position="0,0,0" soundFile="sounds/pong_score.wav" >
+          <WorldSound name="scoreSound" position="0,0,0" source="sounds/pong_score.wav" >
             <events>
               <play>
                 <EventListener event=pongcenter />

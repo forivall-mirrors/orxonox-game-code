@@ -48,7 +48,7 @@ namespace orxonox
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AmbientSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "soundFile", setSoundFile, getSoundFile, xmlelement, mode);
+        XMLPortParamExtern(AmbientSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
         XMLPortParamExtern(AmbientSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
         XMLPortParamExtern(AmbientSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
     }

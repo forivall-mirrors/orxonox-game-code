@@ -62,7 +62,7 @@ namespace orxonox
         {
             // Load sound
             this->ambient_ = new AmbientSound(0);
-            this->ambient_->setSoundFile("ambient/mainmenu.wav");
+            this->ambient_->setSource("ambient/mainmenu.wav");
         }
     }
 

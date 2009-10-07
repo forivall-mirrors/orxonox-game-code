@@ -39,8 +39,8 @@
 namespace orxonox
 {
     BaseSound::BaseSound()
-        : source_(0)
-        , buffer_(0)
+        : audioSource_(0)
+        , audioBuffer_(0)
         , bPlayOnLoad_(false)
         , bLoop_(false)
     {
@@ -49,55 +49,55 @@ namespace orxonox
 
     BaseSound::~BaseSound()
     {
-        this->setSoundFile("");
+        this->setSource("");
     }
 
     void BaseSound::play()
     {
-        if (alIsSource(this->source_))
+        if (alIsSource(this->audioSource_))
         {
             if (this->bLoop_)
-                alSourcei(this->source_, AL_LOOPING, AL_TRUE);
+                alSourcei(this->audioSource_, AL_LOOPING, AL_TRUE);
             else
-                alSourcei(this->source_, AL_LOOPING, AL_FALSE);
-            alSourcePlay(this->source_);
+                alSourcei(this->audioSource_, AL_LOOPING, AL_FALSE);
+            alSourcePlay(this->audioSource_);
 
             if (alGetError() != AL_NO_ERROR)
             {
-                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->source_ << std::endl;
+                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->audioSource_ << std::endl;
             }
         }
     }
 
     void BaseSound::stop()
     {
-        if (alIsSource(this->source_))
-            alSourceStop(this->source_);
+        if (alIsSource(this->audioSource_))
+            alSourceStop(this->audioSource_);
     }
 
     void BaseSound::pause()
     {
-        if (alIsSource(this->source_))
-            alSourcePause(this->source_);
+        if (alIsSource(this->audioSource_))
+            alSourcePause(this->audioSource_);
     }
 
     bool BaseSound::isPlaying()
     {
-        if (alIsSource(this->source_))
+        if (alIsSource(this->audioSource_))
             return getSourceState() == AL_PLAYING;
         return false;
     }
 
     bool BaseSound::isPaused()
     {
-        if (alIsSource(this->source_))
+        if (alIsSource(this->audioSource_))
             return getSourceState() == AL_PAUSED;
         return true;
     }
 
     bool BaseSound::isStopped()
     {
-        if (alIsSource(this->source_))
+        if (alIsSource(this->audioSource_))
             return getSourceState() == AL_INITIAL || getSourceState() == AL_STOPPED;
         return true;
     }
@@ -108,63 +108,63 @@ namespace orxonox
         this->play();
     }
 
-    void BaseSound::setSoundFile(const std::string& soundFile)
+    void BaseSound::setSource(const std::string& source)
     {
-        this->soundFile_ = soundFile;
+        this->source_ = source;
         if (!GameMode::playsSound())
             return;
 
-        if (soundFile.empty() && alIsSource(this->source_))
+        if (source.empty() && alIsSource(this->audioSource_))
         {
             // Unload sound
-            alSourcei(this->source_, AL_BUFFER, 0);
-            alDeleteSources(1, &this->source_);
-            alDeleteBuffers(1, &this->buffer_);
+            alSourcei(this->audioSource_, AL_BUFFER, 0);
+            alDeleteSources(1, &this->audioSource_);
+            alDeleteBuffers(1, &this->audioBuffer_);
             return;
         }
 
-        COUT(3) << "Sound: OpenAL ALUT: loading file " << soundFile << std::endl;
+        COUT(3) << "Sound: OpenAL ALUT: loading file " << source << std::endl;
         // Get DataStream from the resources
-        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(soundFile);
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
         if (fileInfo == NULL)
         {
-            COUT(2) << "Warning: Sound file '" << soundFile << "' not found" << std::endl;
+            COUT(2) << "Warning: Sound file '" << source << "' not found" << std::endl;
             return;
         }
-        DataStreamPtr stream = Resource::open(soundFile);
+        DataStreamPtr stream = Resource::open(source);
         // Read everything into a temporary buffer
         char* buffer = new char[fileInfo->size];
         stream->read(buffer, fileInfo->size);
 
-        this->buffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
+        this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
         delete[] buffer;
 
-        if (this->buffer_ == AL_NONE)
+        if (this->audioBuffer_ == AL_NONE)
         {
             COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
             return;
             //if (filename.find("ogg", 0) != std::string::npos)
             //{
             //    COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
-            //    this->buffer_ = loadOggFile(filename);
+            //    this->audioBuffer_ = loadOggFile(filename);
             //}
 
-            //if (this->buffer_ == AL_NONE)
+            //if (this->audioBuffer_ == AL_NONE)
             //{
             //    COUT(2) << "Sound: fallback ogg loader failed: " << alutGetErrorString(alutGetError()) << std::endl;
             //    return;
             //}
         }
 
-        alGenSources(1, &this->source_);
-        alSourcei(this->source_, AL_BUFFER, this->buffer_);
+        alGenSources(1, &this->audioSource_);
+        alSourcei(this->audioSource_, AL_BUFFER, this->audioBuffer_);
         if (alGetError() != AL_NO_ERROR)
         {
-            COUT(2) << "Sound: OpenAL: Error loading sample file: " << soundFile << std::endl;
+            COUT(2) << "Sound: OpenAL: Error loading sample file: " << source << std::endl;
             return;
         }
 
-        alSource3f(this->source_, AL_POSITION,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
 
         if (this->bPlayOnLoad_)
             this->play();
@@ -173,7 +173,7 @@ namespace orxonox
     ALint BaseSound::getSourceState()
     {
         ALint state;
-        alGetSourcei(this->source_, AL_SOURCE_STATE, &state);
+        alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
         return state;
     }
 

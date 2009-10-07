@@ -51,7 +51,7 @@ namespace orxonox
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WorldSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "soundFile", setSoundFile, getSoundFile, xmlelement, mode);
+        XMLPortParamExtern(WorldSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
         XMLPortParamExtern(WorldSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
         XMLPortParamExtern(WorldSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
     }
@@ -64,23 +64,23 @@ namespace orxonox
 
     void WorldSound::tick(float dt)
     {
-        if (alIsSource(this->source_))
+        if (alIsSource(this->audioSource_))
         {
             const Vector3& pos = this->getWorldPosition();
-            alSource3f(this->source_, AL_POSITION, pos.x, pos.y, pos.z);
+            alSource3f(this->audioSource_, AL_POSITION, pos.x, pos.y, pos.z);
             ALenum error = alGetError();
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound position" << std::endl;
 
             const Vector3& vel = this->getVelocity();
-            alSource3f(this->source_, AL_VELOCITY, vel.x, vel.y, vel.z);
+            alSource3f(this->audioSource_, AL_VELOCITY, vel.x, vel.y, vel.z);
             error = alGetError();
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound velocity" << std::endl;
 
             const Quaternion& orient = this->getWorldOrientation();
             Vector3 at = orient.zAxis();
-            alSource3f(this->source_, AL_DIRECTION, at.x, at.y, at.z);
+            alSource3f(this->audioSource_, AL_DIRECTION, at.x, at.y, at.z);
             error = alGetError();
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
