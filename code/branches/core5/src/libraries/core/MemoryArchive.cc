@@ -67,7 +67,7 @@ namespace orxonox
             if (!StringUtil::match(file.string(), pattern, true))
                 continue;
             if (bDirs)
-                file = file.parent_path();
+                file = file.branch_path();
             if (file.empty())
                 continue;
             if (file.has_parent_path() && !bRecursive)
@@ -80,7 +80,7 @@ namespace orxonox
                 fi.archive = this;
                 fi.filename = file.string();
                 fi.basename = file.filename();
-                fi.path = file.parent_path().string();
+                fi.path = file.branch_path().string();
                 fi.compressedSize = it->second.second;
                 fi.uncompressedSize = it->second.second;
                 detailList->push_back(fi);
