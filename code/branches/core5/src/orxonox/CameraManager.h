@@ -40,17 +40,14 @@
 #include <cassert>
 #include <list>
 #include "util/OgreForwardRefs.h"
-#include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
-#include "core/SmartPtr.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager : public Singleton<CameraManager>, public OrxonoxClass
+    class _OrxonoxExport CameraManager : public BaseObject
     {
-            friend class Singleton<CameraManager>;
         public:
-            CameraManager();
+            CameraManager(BaseObject* creator);
             ~CameraManager();
 
             Camera* getActiveCamera() const;
@@ -60,17 +57,12 @@ namespace orxonox
 
             void useCamera(Ogre::Camera* camera);
 
-            static CameraManager* getInstancePtr() { return singletonPtr_s; }
-
         private:
             CameraManager(const CameraManager&); // don't use
 
             std::list<Camera*>    cameraList_;
             Ogre::Viewport*       viewport_;
             Ogre::Camera*         fallbackCamera_;
-            SmartPtr<Scene>       fallbackCameraScene_;
-
-            static CameraManager* singletonPtr_s;
     };
 }
 

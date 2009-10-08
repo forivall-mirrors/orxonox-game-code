@@ -72,6 +72,9 @@ namespace orxonox
 
             inline Radar* getRadar()
                 { return this->radar_; }
+
+            inline CameraManager* getCameraManager()
+                { return this->cameraManager_.get(); }
             
             inline virtual uint32_t getSceneID() const { return this->getObjectID(); }
 
@@ -96,6 +99,7 @@ namespace orxonox
             std::list<BaseObject*>   objects_;
             bool                     bShadows_;
             Radar*                   radar_;
+            SmartPtr<CameraManager>  cameraManager_;
 
 
         /////////////

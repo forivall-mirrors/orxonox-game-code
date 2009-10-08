@@ -100,6 +100,7 @@ namespace orxonox
     GUIManager::GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen)
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
+        , camera_(NULL)
     {
         using namespace CEGUI;
 
@@ -173,6 +174,7 @@ namespace orxonox
     */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
+        this->camera_ = camera;
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else
