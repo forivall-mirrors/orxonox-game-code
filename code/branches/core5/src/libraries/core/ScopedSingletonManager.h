@@ -85,7 +85,7 @@ namespace orxonox
 
         ~ClassScopedSingletonManager()
         {
-            assert(singletonPtr_ == NULL);
+            //assert(singletonPtr_ == NULL); // Might get triggered in the SignalHandler
             ScopedSingletonManager::removeManager(this);
         }
 
