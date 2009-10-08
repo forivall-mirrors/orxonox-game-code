@@ -53,8 +53,10 @@ namespace orxonox
         this->setConfigValues();
 
         // keybind console commands
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::keybind,  this), "keybind" ));
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tkeybind, this), "tkeybind"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::keybind,  this), "keybind" ))
+            .defaultValues("");
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tkeybind, this), "tkeybind"))
+            .defaultValues("");
 
         // Load default key binder
         this->setCurrent(defaultFilename_);
