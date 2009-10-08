@@ -49,10 +49,10 @@ namespace orxonox
         , inputState_(0)
     {
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
+        inputState_->setMouseMode(MouseMode::Nonexclusive);
         inputState_->setHandler(GUIManager::getInstancePtr());
         inputState_->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
         inputState_->setJoyStickHandler(&InputHandler::EMPTY);
-        inputState_->setIsExclusiveMouse(false);
 
         // create an empty Scene
         this->scene_ = new Scene(NULL);

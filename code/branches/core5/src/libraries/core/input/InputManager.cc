@@ -86,7 +86,7 @@ namespace orxonox
         : internalState_(Bad)
         , oisInputManager_(0)
         , devices_(2)
-        , bExclusiveMouse_(false)
+        , mouseMode_(MouseMode::Nonexclusive)
         , emptyState_(0)
         , calibratorCallbackHandler_(0)
     {
@@ -96,6 +96,8 @@ namespace orxonox
 
         this->setConfigValues();
 
+        if (GraphicsManager::getInstance().isFullScreen())
+            mouseMode_ = MouseMode::Exclusive;
         this->loadDevices();
 
         // Lowest priority empty InputState
@@ -152,7 +154,7 @@ namespace orxonox
         paramList.insert(std::make_pair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
         paramList.insert(std::make_pair("w32_keyboard", "DISCL_FOREGROUND"));
         paramList.insert(std::make_pair("w32_mouse", "DISCL_FOREGROUND"));
-        if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
+        if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
         {
             // Disable Windows key plus special keys (like play, stop, next, etc.)
             paramList.insert(std::make_pair("w32_keyboard", "DISCL_NOWINKEY"));
@@ -501,11 +503,15 @@ namespace orxonox
             activeStatesTicked_.push_back(*it);
 
         // Check whether we have to change the mouse mode
+        MouseMode::Value requestedMode = MouseMode::Dontcare;
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
-        if (mouseStates.empty() && bExclusiveMouse_ ||
-            !mouseStates.empty() && mouseStates.front()->getIsExclusiveMouse() != bExclusiveMouse_)
+        if (mouseStates.empty())
+            requestedMode = MouseMode::Nonexclusive;
+        else 
+            requestedMode = mouseStates.front()->getMouseMode();
+        if (requestedMode != MouseMode::Dontcare && mouseMode_ != requestedMode)
         {
-            bExclusiveMouse_ = !bExclusiveMouse_;
+            mouseMode_ = requestedMode;
             if (!GraphicsManager::getInstance().isFullScreen())
                 this->reloadInternal();
         }

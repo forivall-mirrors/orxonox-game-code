@@ -67,10 +67,12 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             gameInputState_ = InputManager::getInstance().createInputState("game");
+            gameInputState_->setMouseMode(MouseMode::Exclusive);
             gameInputState_->setHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
             KeyBinderManager::getInstance().setToDefault();
 
             guiMouseOnlyInputState_ = InputManager::getInstance().createInputState("guiMouseOnly");
+            guiMouseOnlyInputState_->setMouseMode(MouseMode::Exclusive);
             guiMouseOnlyInputState_->setMouseHandler(GUIManager::getInstancePtr());
 
             guiKeysOnlyInputState_ = InputManager::getInstance().createInputState("guiKeysOnly");
