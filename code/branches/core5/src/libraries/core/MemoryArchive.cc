@@ -70,7 +70,7 @@ namespace orxonox
                 file = file.branch_path();
             if (file.empty())
                 continue;
-            if (file.has_parent_path() && !bRecursive)
+            if (file.has_branch_path() && !bRecursive)
                 continue;
             if (simpleList)
                 simpleList->push_back(file.string());
@@ -79,7 +79,7 @@ namespace orxonox
                 FileInfo fi;
                 fi.archive = this;
                 fi.filename = file.string();
-                fi.basename = file.filename();
+                fi.basename = file.leaf();
                 fi.path = file.branch_path().string();
                 fi.compressedSize = it->second.second;
                 fi.uncompressedSize = it->second.second;
