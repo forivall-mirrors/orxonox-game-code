@@ -172,7 +172,7 @@ namespace orxonox
                 CommandEvaluation eval = CommandExecutor::evaluate(commandStr);
                 if (!eval.isValid())
                 {
-                    parseError("Command evaluation failed.", true);
+                    parseError("Command evaluation of \"" + commandStr + "\"failed.", true);
                     continue;
                 }
 
