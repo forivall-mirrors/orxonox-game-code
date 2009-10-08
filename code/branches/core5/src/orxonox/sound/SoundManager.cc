@@ -50,7 +50,13 @@ namespace orxonox
         COUT(3) << "OpenAL: Opening sound device..." << std::endl;
         this->device_ = alcOpenDevice(NULL);
         if (this->device_ == NULL)
+        {
+            COUT(0) << "OpenaAL: Could not open sound device. Have you installed OpenAL?" << std::endl;
+#ifdef ORXONOX_PLATFORM_WINDOWS
+            COUT(0) << "Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
+#endif
             ThrowException(InitialisationFailed, "OpenAL error: Could not open sound device.");
+        }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
         COUT(3) << "OpenAL: Sound device opened" << std::endl;
