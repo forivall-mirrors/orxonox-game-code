@@ -169,7 +169,6 @@ namespace orxonox
         (it++)->destroy();
       else
       {
-        Synchronisable* blub = *it;
         ++it;
       }
     }
