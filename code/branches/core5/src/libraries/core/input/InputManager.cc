@@ -167,7 +167,7 @@ namespace orxonox
         // Trouble might be that the Pressed event occurs a bit too often...
         paramList.insert(std::make_pair("XAutoRepeatOn", "true"));
 
-        if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
+        if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
         {
             if (CommandLine::getValue("keyboard_no_grab").getBool())
                 paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
