@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include <set>
 #include "core/OrxonoxClass.h"
 #include "core/GameState.h"
 
@@ -57,6 +58,7 @@ namespace orxonox
         InputState*              guiKeysOnlyInputState_;   //!< input state if we only need the keys to use the GUI
 
         XMLFile* startFile_;
+        std::set<BaseObject*> staticObjects_;
     };
 }
 

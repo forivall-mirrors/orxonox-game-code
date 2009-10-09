@@ -149,6 +149,9 @@ namespace orxonox
 
     void GSLevel::loadLevel()
     {
+        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
+            this->staticObjects_.insert(*it);
+        
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
@@ -159,5 +162,21 @@ namespace orxonox
     {
         Loader::unload(startFile_);
         delete startFile_;
+
+        COUT(3) << "Unloaded level. Remaining objects:" << std::endl;
+        unsigned int i = 0;
+        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
+        {
+            std::set<BaseObject*>::const_iterator find = this->staticObjects_.find(*it);
+            if (find == this->staticObjects_.end())
+            {
+                COUT(3) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << ")" << std::endl;
+            }
+        }
+        COUT(3) << i << " objects remaining.";
+        if (i == 0)
+            COUT(3) << " Well done!" << std::endl;
+        else
+            COUT(3) << " Try harder!" << std::endl;
     }
 }
