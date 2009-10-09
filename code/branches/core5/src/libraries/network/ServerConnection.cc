@@ -129,8 +129,7 @@ namespace orxonox
           enet_packet_destroy(event.packet);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
-          if(ClientInformation::findClient(&(event.peer->address)))
-            delete ClientInformation::findClient(&(event.peer->address));
+          removePeer( &event );
           temp = ClientInformation::getBegin();
           break;
         }
