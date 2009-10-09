@@ -86,8 +86,8 @@ namespace orxonox
             Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
             if (camera)
             {
-                SoundManager::getInstance().setListenerPosition(camera->getPosition());
-                SoundManager::getInstance().setListenerOrientation(camera->getOrientation());
+                SoundManager::getInstance().setListenerPosition(camera->getWorldPosition());
+                SoundManager::getInstance().setListenerOrientation(camera->getWorldOrientation());
             }
             else
                 COUT(3) << "HumanController, Warning: Using a ControllableEntity without Camera" << std::endl;

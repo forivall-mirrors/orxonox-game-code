@@ -31,6 +31,7 @@
 
 #include <AL/alut.h>
 #include "util/Math.h"
+#include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 

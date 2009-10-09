@@ -41,6 +41,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
+#include "core/GUIManager.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
 #include "Radar.h"

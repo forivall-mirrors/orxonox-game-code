@@ -109,12 +109,8 @@ namespace orxonox
         else
             this->gametype_ = gametype;
 
-std::cout << "Load Gametype: " << this->gametype_ << std::endl;
-
         Gametype* rootgametype = orxonox_cast<Gametype*>(identifier->fabricate(this));
         this->setGametype(rootgametype);
-
-std::cout << "root gametype: " << rootgametype->getIdentifier()->getName() << std::endl;
 
         for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
             (*it)->setGametype(rootgametype);

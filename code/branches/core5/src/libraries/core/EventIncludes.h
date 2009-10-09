@@ -31,6 +31,7 @@
 
 #include "CorePrereqs.h"
 #include "Executor.h"
+#include "XMLPort.h"
 
 /**
     @brief Defines a new event state (a state of the object which can be changed by events).
