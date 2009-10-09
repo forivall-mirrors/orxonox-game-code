@@ -37,7 +37,7 @@
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/GameMode.h"
+#include "core/GUIManager.h"
 #include "Scene.h"
 #include "CameraManager.h"
 
@@ -49,8 +49,6 @@ namespace orxonox
     {
         RegisterObject(Camera);
 
-        if (!GameMode::showsGraphics())
-            ThrowException(AbortLoading, "Can't create Camera, no graphics.");
         if (!this->getScene())
             ThrowException(AbortLoading, "Can't create Camera, no scene.");
         if (!this->getScene()->getSceneManager())
@@ -77,6 +75,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
+            if( GUIManager::getInstance().getCamera() == this->camera_ )
+                GUIManager::getInstance().setCamera( NULL );
             this->releaseFocus();
 
             this->cameraNode_->detachAllObjects();
@@ -119,12 +119,12 @@ namespace orxonox
 
     void Camera::requestFocus()
     {
-        this->getScene()->getCameraManager()->requestFocus(this);
+        CameraManager::getInstance().requestFocus(this);
     }
 
     void Camera::releaseFocus()
     {
-        this->getScene()->getCameraManager()->releaseFocus(this);
+        CameraManager::getInstance().releaseFocus(this);
     }
 
     /**
@@ -139,7 +139,7 @@ namespace orxonox
     void Camera::setFocus()
     {
         this->bHasFocus_ = true;
-        this->getScene()->getCameraManager()->useCamera(this->camera_);
+        CameraManager::getInstance().useCamera(this->camera_);
     }
 
     void Camera::setDrag(bool bDrag)

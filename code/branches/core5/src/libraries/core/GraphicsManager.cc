@@ -360,7 +360,8 @@ namespace orxonox
         uint64_t timeBeforeTick = time.getRealMicroseconds();
 
         // Render frame
-        ogreRoot_->_updateAllRenderTargets();
+        if( this->viewport_->getCamera() )
+            ogreRoot_->_updateAllRenderTargets();
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
         // Subtract the time used for rendering from the tick time counter

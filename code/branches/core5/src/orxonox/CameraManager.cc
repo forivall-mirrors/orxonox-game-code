@@ -37,33 +37,29 @@
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/ObjectList.h"
+#include "core/ScopedSingletonManager.h"
 #include "tools/Shader.h"
 #include "graphics/Camera.h"
 #include "Scene.h"
 
 namespace orxonox
 {
-    CameraManager::CameraManager(BaseObject* creator)
-        : BaseObject(creator)
-        , viewport_(GraphicsManager::getInstance().getViewport())
-        , fallbackCamera_(NULL)
+    CameraManager* CameraManager::singletonPtr_s = 0;
+    ManageScopedSingleton(CameraManager, ScopeID::Graphics, false);
+
+    CameraManager::CameraManager()
+        : viewport_(GraphicsManager::getInstance().getViewport())
     {
-        assert(GameMode::showsGraphics());
     }
 
     CameraManager::~CameraManager()
     {
-        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end();)
-            if ((*it)->camera_ == GUIManager::getInstance().getCamera())
-                GUIManager::getInstance().setCamera(NULL);
-
-        if (this->fallbackCamera_)
-            this->getScene()->getSceneManager()->destroyCamera(this->fallbackCamera_);
+        GUIManager::getInstance().setCamera(0);
     }
 
     Camera* CameraManager::getActiveCamera() const
     {
-        if (!this->cameraList_.empty())
+        if (this->cameraList_.size() > 0)
             return this->cameraList_.front();
         else
             return 0;
@@ -71,18 +67,19 @@ namespace orxonox
 
     void CameraManager::requestFocus(Camera* camera)
     {
+        if (!GameMode::showsGraphics())
+            assert(0);
+
         // notify old camera (if it exists)
-        if (!this->cameraList_.empty())
+        if (this->cameraList_.size() > 0)
             this->cameraList_.front()->removeFocus();
 
         camera->setFocus();
 
         // make sure we don't add it twice
-        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end();)
+        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
             if ((*it) == camera)
-                this->cameraList_.erase(it++);
-            else
-                ++it;
+                return;
 
         // add to list
         this->cameraList_.push_front(camera);
@@ -90,6 +87,9 @@ namespace orxonox
 
     void CameraManager::releaseFocus(Camera* camera)
     {
+        if (!GameMode::showsGraphics())
+            assert(0);
+
         // notify the cam of releasing the focus
         if (!this->cameraList_.empty() && this->cameraList_.front() == camera)
         {
@@ -97,15 +97,8 @@ namespace orxonox
             this->cameraList_.pop_front();
 
             // set new focus if possible
-            if (!this->cameraList_.empty())
+            if (this->cameraList_.size() > 0)
                 this->cameraList_.front()->setFocus();
-            else
-            {
-                // there are no more cameras, create a fallback
-                if (!this->fallbackCamera_)
-                    this->fallbackCamera_ = camera->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
-                this->useCamera(this->fallbackCamera_);
-            }
         }
         else
             this->cameraList_.remove(camera);

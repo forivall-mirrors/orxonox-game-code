@@ -45,7 +45,6 @@
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
 #include "Radar.h"
-#include "CameraManager.h"
 #include "worldentities/WorldEntity.h"
 
 namespace orxonox
@@ -66,7 +65,6 @@ namespace orxonox
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
 
             this->radar_ = new Radar();
-            this->cameraManager_ = new CameraManager(this);
         }
         else
         {
@@ -75,7 +73,6 @@ namespace orxonox
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
 
             this->radar_ = 0;
-            this->cameraManager_ = 0;
         }
 
         // No physics yet, XMLPort will do that.
@@ -97,20 +94,12 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (GameMode::showsGraphics())
-            {
-                // Check whether we're still using this scene manager for the GUI
-                if (GUIManager::getInstance().getCamera() && GUIManager::getInstance().getCamera()->getSceneManager() == this->sceneManager_)
-                    GUIManager::getInstance().setCamera(NULL);
                 Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
-            }
             else
                 delete this->sceneManager_;
 
             if (this->radar_)
                 this->radar_->destroy();
-
-            if (this->cameraManager_)
-                this->cameraManager_->destroy();
 
             this->setPhysicalWorld(false);
         }
