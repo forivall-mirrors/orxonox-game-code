@@ -90,7 +90,7 @@ namespace orxonox
         {
             if (this->getShip()->hasLocalController())
             {
-                this->setObjectMode(ObjectDirection::Bidirectional);
+                this->setSyncMode(ObjectDirection::Bidirectional);
 
                 const Vector3& direction = this->getDirection();
                 const Vector3& velocity = this->getShip()->getLocalVelocity();

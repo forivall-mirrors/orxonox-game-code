@@ -183,6 +183,11 @@ namespace orxonox
 
             // Config Values
             std::string scoreboardTemplate_;
+            
+            /* HACK HACK HACK */
+            ConsoleCommand* hackAddBots_;
+            ConsoleCommand* hackKillBots_;
+            /* HACK HACK HACK */
     };
 }
 
