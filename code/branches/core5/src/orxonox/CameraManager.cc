@@ -50,6 +50,7 @@ namespace orxonox
     CameraManager::CameraManager()
         : viewport_(GraphicsManager::getInstance().getViewport())
     {
+        assert(GameMode::showsGraphics());
     }
 
     CameraManager::~CameraManager()
@@ -59,7 +60,7 @@ namespace orxonox
 
     Camera* CameraManager::getActiveCamera() const
     {
-        if (this->cameraList_.size() > 0)
+        if (!this->cameraList_.empty())
             return this->cameraList_.front();
         else
             return 0;
@@ -67,29 +68,24 @@ namespace orxonox
 
     void CameraManager::requestFocus(Camera* camera)
     {
-        if (!GameMode::showsGraphics())
-            assert(0);
-
         // notify old camera (if it exists)
-        if (this->cameraList_.size() > 0)
+        if (!this->cameraList_.empty())
             this->cameraList_.front()->removeFocus();
 
         camera->setFocus();
 
         // make sure we don't add it twice
-        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
+        for (std::list<Camera*>::iterator it = this->cameraList_.begin(); it != this->cameraList_.end();)
             if ((*it) == camera)
-                return;
-
+                this->cameraList_.erase(it++);
+            else
+                ++it;
         // add to list
         this->cameraList_.push_front(camera);
     }
 
     void CameraManager::releaseFocus(Camera* camera)
     {
-        if (!GameMode::showsGraphics())
-            assert(0);
-
         // notify the cam of releasing the focus
         if (!this->cameraList_.empty() && this->cameraList_.front() == camera)
         {
@@ -97,7 +93,7 @@ namespace orxonox
             this->cameraList_.pop_front();
 
             // set new focus if possible
-            if (this->cameraList_.size() > 0)
+            if (!this->cameraList_.empty())
                 this->cameraList_.front()->setFocus();
         }
         else

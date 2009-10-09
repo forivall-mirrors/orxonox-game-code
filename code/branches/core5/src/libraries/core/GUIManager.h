@@ -101,7 +101,7 @@ namespace orxonox
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
         CEGUI::Logger*                       ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
         std::map<std::string, PlayerInfo*>   players_;          //!< Stores the player (owner) for each gui
-        Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the 
+        Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
 
         static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
 
