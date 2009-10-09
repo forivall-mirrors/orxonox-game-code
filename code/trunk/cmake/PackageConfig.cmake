@@ -25,9 +25,13 @@
  #
 
 # Check package version info
-# MAJOR: Interface breaking change somewhere (library version changed, etc.)
-# MINOR: Bug fix or small conformant changes
-SET(DEPENDENCY_VERSION_REQUIRED 3)
+# MAJOR: Breaking change
+# MINOR: No breaking changes by the dependency package
+#        For example any code running on 3.0 should still run on 3.1
+#        But you can specify that the code only runs on 3.1 and higher
+#        or 4.0 and higher (so both 3.1 and 4.0 will work).
+SET(ALLOWED_MINIMUM_VERSIONS 3.1 4.0)
+
 IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
   SET(DEPENDENCY_VERSION 1.0)
 ELSE()
@@ -43,11 +47,22 @@ ELSE()
 ENDIF()
 
 INCLUDE(CompareVersionStrings)
-COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${DEPENDENCY_VERSION_REQUIRED} _result TRUE)
-IF(NOT _result EQUAL 0)
+SET(_version_match FALSE)
+FOREACH(_version ${ALLOWED_MINIMUM_VERSIONS})
+  # Get major version
+  STRING(REGEX REPLACE "^([0-9]+)\\..*$" "\\1" _major_version "${_version}")
+  COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${_major_version} _result TRUE)
+  IF(_result EQUAL 0)
+    COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${_version} _result FALSE)
+    IF(NOT _result LESS 0)
+      SET(_version_match TRUE)
+    ENDIF()
+  ENDIF()
+ENDFOREACH(_version)
+IF(NOT _version_match)
   MESSAGE(FATAL_ERROR "Your dependency package version is ${DEPENDENCY_VERSION}\n"
-          "Required version: ${DEPENDENCY_VERSION_REQUIRED}\n"
-	  "You can get a new version from www.orxonox.net")
+          "Possible required versions: ${ALLOWED_MINIMUM_VERSIONS}\n"
+          "You can get a new version from www.orxonox.net")
 ENDIF()
 
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
