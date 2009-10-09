@@ -48,6 +48,8 @@
 #include "packet/Chat.h"
 #include "packet/Gamestate.h"
 #include "FunctionCallManager.h"
+#include "core/CoreIncludes.h"
+#include "core/Game.h"
 
 namespace orxonox
 {
@@ -156,6 +158,23 @@ namespace orxonox
     gamestate.cleanup();
 
     return;
+  }
+  
+  void Client::connectionClosed()
+  {
+    ObjectList<Synchronisable>::iterator it;
+    for(it = ObjectList<Synchronisable>::begin(); it; )
+    {
+      if( it->getSyncMode() != 0x0 )
+        (it++)->destroy();
+      else
+      {
+        Synchronisable* blub = *it;
+        ++it;
+      }
+    }
+    Game::getInstance().popState();
+    Game::getInstance().popState();
   }
 
 }

@@ -45,7 +45,7 @@ namespace orxonox
         this->bAbsolute_ = false;
         this->bRenderCamera_ = false;
 
-        this->setObjectMode(0x0);
+        this->setSyncMode(0x0);
     }
 
     CameraPosition::~CameraPosition()

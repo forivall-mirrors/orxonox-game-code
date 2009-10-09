@@ -67,7 +67,7 @@ namespace orxonox
         this->bDrag_ = false;
         this->nearClipDistance_ = 1;
 
-        this->setObjectMode(0x0);
+        this->setSyncMode(0x0);
 
         this->setConfigValues();
         this->configvaluecallback_changedNearClipDistance();

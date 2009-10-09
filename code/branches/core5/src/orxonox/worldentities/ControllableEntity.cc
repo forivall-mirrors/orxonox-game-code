@@ -237,7 +237,7 @@ namespace orxonox
             if (!GameMode::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
-                this->setObjectMode(ObjectDirection::Bidirectional);
+                this->setSyncMode(ObjectDirection::Bidirectional);
             }
         }
 
@@ -253,7 +253,7 @@ namespace orxonox
         this->playerID_ = OBJECTID_UNKNOWN;
         this->bHasLocalController_ = false;
         this->bHasHumanController_ = false;
-        this->setObjectMode(ObjectDirection::ToClient);
+        this->setSyncMode(ObjectDirection::ToClient);
 
         this->changedPlayer();
 

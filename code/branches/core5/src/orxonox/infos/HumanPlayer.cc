@@ -115,7 +115,7 @@ namespace orxonox
             this->client_initialized_ = true;
 
             if (!GameMode::isMaster())
-                this->setObjectMode(ObjectDirection::Bidirectional);
+                this->setSyncMode(ObjectDirection::Bidirectional);
             else
                 this->setName(this->nick_);
 

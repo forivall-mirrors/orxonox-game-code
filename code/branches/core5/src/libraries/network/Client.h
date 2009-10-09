@@ -73,7 +73,8 @@ namespace orxonox
     virtual bool broadcast(const std::string& message) { return false; }
 
     void update(const Clock& time);
-
+  protected:
+    virtual void connectionClosed();
   private:
     Client(const Client& copy); // not used
     virtual bool isServer_(){return false;}
