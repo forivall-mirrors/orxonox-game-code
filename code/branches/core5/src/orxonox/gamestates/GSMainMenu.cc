@@ -56,6 +56,7 @@ namespace orxonox
 
         // create an empty Scene
         this->scene_ = new Scene(NULL);
+        this->scene_->setSyncMode( 0x0 );
         // and a Camera
         this->camera_ = this->scene_->getSceneManager()->createCamera("mainMenu/Camera");
         if (GameMode::playsSound())
@@ -89,6 +90,7 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startClient, this), "startClient"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startDedicated, this), "startDedicated"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu, this), "startMainMenu"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startIOConsole, this), "startIOConsole"));
 
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
@@ -151,5 +153,12 @@ namespace orxonox
         Game::getInstance().popState();
         Game::getInstance().popState();
         Game::getInstance().requestStates("mainmenu");
+    }
+    void GSMainMenu::startIOConsole()
+    {
+        // HACK - HACK
+        Game::getInstance().popState();
+        Game::getInstance().popState();
+        Game::getInstance().requestStates("ioConsole");
     }
 }

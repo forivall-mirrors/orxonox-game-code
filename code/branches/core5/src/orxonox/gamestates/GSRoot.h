@@ -40,6 +40,8 @@ namespace orxonox
         GSRoot(const GameStateInfo& info);
         ~GSRoot();
 
+        static void printObjects();
+
         void activate();
         void deactivate();
         void update(const Clock& time);

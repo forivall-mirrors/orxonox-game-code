@@ -46,11 +46,12 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
-        void startStandalone();
-        void startServer();
-        void startClient();
-        void startDedicated();
-        void startMainMenu();
+        static void startStandalone();
+        static void startServer();
+        static void startClient();
+        static void startDedicated();
+        static void startMainMenu();
+        static void startIOConsole();
 
     private:
         InputState*       inputState_;
