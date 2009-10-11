@@ -277,7 +277,7 @@ namespace orxonox
                 {
                     // We've found a helper file
                     std::string library = filename.substr(0, filename.size() - moduleextensionlength);
-                    modulePaths.push_back((modulePath_ / library).string());
+                    modulePaths.push_back((modulePath_ / library).file_string());
                 }
             }
             ++file;
