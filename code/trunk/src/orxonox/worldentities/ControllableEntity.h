@@ -103,7 +103,7 @@ namespace orxonox
 
             void addCameraPosition(CameraPosition* position);
             CameraPosition* getCameraPosition(unsigned int index) const;
-            inline const std::list<CameraPosition*>& getCameraPositions() const
+            inline const std::list<SmartPtr<CameraPosition> >& getCameraPositions() const
                 { return this->cameraPositions_; }
 
             inline void setCameraPositionTemplate(const std::string& name)
@@ -197,7 +197,7 @@ namespace orxonox
             bool bMouseLook_;
             float mouseLookSpeed_;
             Ogre::SceneNode* cameraPositionRootNode_;
-            std::list<CameraPosition*> cameraPositions_;
+            std::list<SmartPtr<CameraPosition> > cameraPositions_;
             std::string cameraPositionTemplate_;
             Controller* xmlcontroller_;
             CameraPosition* reverseCamera_;

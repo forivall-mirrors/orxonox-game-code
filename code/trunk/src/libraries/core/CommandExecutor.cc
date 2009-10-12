@@ -467,7 +467,7 @@ namespace orxonox
     {
         CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.clear();
         std::string lowercase = getLowercase(fragment);
-        for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseIdentifierMapBegin(); it != Identifier::getLowercaseIdentifierMapEnd(); ++it)
+        for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMapBegin(); it != Identifier::getLowercaseStringIdentifierMapEnd(); ++it)
             if ((*it).second->hasConsoleCommands())
                 if ((*it).first.find(lowercase) == 0 || fragment == "")
                     CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second->getName()));
@@ -515,8 +515,8 @@ namespace orxonox
     Identifier* CommandExecutor::getPossibleIdentifier(const std::string& name)
     {
         std::string lowercase = getLowercase(name);
-        std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseIdentifierMap().find(lowercase);
-        if ((it != Identifier::getLowercaseIdentifierMapEnd()) && (*it).second->hasConsoleCommands())
+        std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMap().find(lowercase);
+        if ((it != Identifier::getLowercaseStringIdentifierMapEnd()) && (*it).second->hasConsoleCommands())
             return (*it).second;
 
         return 0;

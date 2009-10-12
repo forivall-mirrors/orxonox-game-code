@@ -38,6 +38,7 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "Scene.h"
 #include "Radar.h"
 
 namespace orxonox
@@ -129,7 +130,10 @@ namespace orxonox
     {
         SUPER(HUDNavigation, tick, dt);
 
-        if (!Radar::getInstance().getFocus())
+        // Get radar
+        Radar* radar = this->getOwner()->getScene()->getRadar();
+
+        if (!radar->getFocus())
         {
             this->overlay_->hide();
             return;
@@ -149,7 +153,7 @@ namespace orxonox
         Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
 */
         // transform to screen coordinates
-        Vector3 pos = /*transformationMatrix * */Radar::getInstance().getFocus()->getRVWorldPosition();
+        Vector3 pos = /*transformationMatrix * */radar->getFocus()->getRVWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)

@@ -36,11 +36,7 @@
 #include "Core.h"
 
 #include <cassert>
-#include <fstream>
-#include <cstdlib>
-#include <cstdio>
-#include <boost/version.hpp>
-#include <boost/filesystem.hpp>
+#include <vector>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #  ifndef WIN32_LEAN_AND_MEAN
@@ -49,51 +45,36 @@
 #  include <windows.h>
 #  undef min
 #  undef max
-#elif defined(ORXONOX_PLATFORM_APPLE)
-#  include <sys/param.h>
-#  include <mach-o/dyld.h>
-#else /* Linux */
-#  include <sys/types.h>
-#  include <unistd.h>
 #endif
 
-#include "SpecialConfig.h"
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/SignalHandler.h"
-#include "Clock.h"
+#include "PathConfig.h"
 #include "CommandExecutor.h"
 #include "CommandLine.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "DynLibManager.h"
-#include "Factory.h"
 #include "GameMode.h"
 #include "GraphicsManager.h"
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
+#include "ScopedSingletonManager.h"
 #include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
 #include "input/InputManager.h"
-
-// Boost 1.36 has some issues with deprecated functions that have been omitted
-#if (BOOST_VERSION == 103600)
-#  define BOOST_LEAF_FUNCTION filename
-#else
-#  define BOOST_LEAF_FUNCTION leaf
-#endif
 
 namespace orxonox
 {
     //! Static pointer to the singleton
     Core* Core::singletonPtr_s  = 0;
 
-    SetCommandLineArgument(externalDataPath, "").information("Path to the external data files");
-    SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one cpu/core (1, 2, 3, etc.). 0 turns it off (default)");
@@ -116,14 +97,6 @@ namespace orxonox
         {
             RegisterRootObject(CoreConfiguration);
             this->setConfigValues();
-
-            // External data directory only exists for dev runs
-            if (Core::isDevelopmentRun())
-            {
-                // Possible data path override by the command line
-                if (!CommandLine::getArgument("externalDataPath")->hasDefaultValue())
-                    tsetExternalDataPath(CommandLine::getValue("externalDataPath"));
-            }
         }
 
         /**
@@ -193,17 +166,6 @@ namespace orxonox
             ResetConfigValue(language_);
         }
 
-        /**
-        @brief
-            Temporary sets the external data path
-        @param path
-            The new data path
-        */
-        void tsetExternalDataPath(const std::string& path)
-        {
-            externalDataPath_ = boost::filesystem::path(path);
-        }
-
         void initializeRandomNumberGenerator()
         {
             static bool bInitialized = false;
@@ -221,15 +183,6 @@ namespace orxonox
         int softDebugLevelShell_;                       //!< The debug level for the ingame shell
         std::string language_;                          //!< The language
         bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-
-        //! Path to the parent directory of the ones above if program was installed with relativ pahts
-        boost::filesystem::path rootPath_;
-        boost::filesystem::path executablePath_;        //!< Path to the executable
-        boost::filesystem::path modulePath_;            //!< Path to the modules
-        boost::filesystem::path dataPath_;              //!< Path to the data file folder
-        boost::filesystem::path externalDataPath_;      //!< Path to the external data file folder
-        boost::filesystem::path configPath_;            //!< Path to the config file folder
-        boost::filesystem::path logPath_;               //!< Path to the log file folder
     };
 
 
@@ -239,78 +192,41 @@ namespace orxonox
         // Cleanup guard for external console commands that don't belong to an Identifier
         , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
         , configuration_(new CoreConfiguration()) // Don't yet create config values!
-        , bDevRun_(false)
         , bGraphicsLoaded_(false)
     {
         // Set the hard coded fixed paths
-        this->setFixedPaths();
+        this->pathConfig_.reset(new PathConfig());
 
         // Create a new dynamic library manager
         this->dynLibManager_.reset(new DynLibManager());
 
         // Load modules
-        try
+        const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
+        for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
         {
-            // We search for helper files with the following extension
-            std::string moduleextension = specialConfig::moduleExtension;
-            size_t moduleextensionlength = moduleextension.size();
-
-            // Search in the directory of our executable
-            boost::filesystem::path searchpath = this->configuration_->modulePath_;
-
-            // Add that path to the PATH variable in case a module depends on another one
-            std::string pathVariable = getenv("PATH");
-            putenv(const_cast<char*>(("PATH=" + pathVariable + ";" + configuration_->modulePath_.string()).c_str()));
-
-            boost::filesystem::directory_iterator file(searchpath);
-            boost::filesystem::directory_iterator end;
-
-            // Iterate through all files
-            while (file != end)
+            try
             {
-                std::string filename = file->BOOST_LEAF_FUNCTION();
-
-                // Check if the file ends with the exension in question
-                if (filename.size() > moduleextensionlength)
-                {
-                    if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
-                    {
-                        // We've found a helper file - now load the library with the same name
-                        std::string library = filename.substr(0, filename.size() - moduleextensionlength);
-                        boost::filesystem::path librarypath = searchpath / library;
-
-                        try
-                        {
-                            DynLibManager::getInstance().load(librarypath.string());
-                        }
-                        catch (...)
-                        {
-                            COUT(1) << "Couldn't load module \"" << librarypath.string() << "\": " << Exception::handleMessage() << std::endl;
-                        }
-                    }
-                }
-
-                ++file;
+                this->dynLibManager_->load(*it);
             }
-        }
-        catch (...)
-        {
-            COUT(1) << "An error occurred while loading modules: " << Exception::handleMessage() << std::endl;
+            catch (...)
+            {
+                COUT(1) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << std::endl;
+            }
         }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLine::parseCommandLine(cmdLine);
 
         // Set configurable paths like log, config and media
-        this->setConfigurablePaths();
+        this->pathConfig_->setConfigurablePaths();
 
         // create a signal handler (only active for linux)
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_.reset(new SignalHandler());
-        this->signalHandler_->doCatch(configuration_->executablePath_.string(), Core::getLogPathString() + "orxonox_crash.log");
+        this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
-        OutputHandler::getOutStream().setLogPath(Core::getLogPathString());
+        OutputHandler::getOutStream().setLogPath(PathConfig::getLogPathString());
 
         // Parse additional options file now that we know its path
         CommandLine::parseFile();
@@ -333,7 +249,7 @@ namespace orxonox
         this->languageInstance_.reset(new Language());
 
         // creates the class hierarchy for all classes with factories
-        Factory::createClassHierarchy();
+        Identifier::createClassHierarchy();
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
@@ -343,11 +259,14 @@ namespace orxonox
         this->graphicsManager_.reset(new GraphicsManager(false));
 
         // initialise Tcl
-        this->tclBind_.reset(new TclBind(Core::getDataPathString()));
+        this->tclBind_.reset(new TclBind(PathConfig::getDataPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
         // create a shell
         this->shell_.reset(new Shell());
+
+        // Create singletons that always exist (in other libraries)
+        this->rootScope_.reset(new Scope<ScopeID::Root>());
     }
 
     /**
@@ -369,19 +288,27 @@ namespace orxonox
         // Calls the InputManager which sets up the input devices.
         inputManager_.reset(new InputManager());
 
-        // load the CEGUI interface
+        // Load the CEGUI interface
         guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
             inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
 
-        unloader.Dismiss();
-
         bGraphicsLoaded_ = true;
+        GameMode::bShowsGraphics_s = true;
+
+        // Load some sort of a debug overlay (only denoted by its name, "debug.oxo")
+        graphicsManager_->loadDebugOverlay();
+
+        // Create singletons associated with graphics (in other libraries)
+        graphicsScope_.reset(new Scope<ScopeID::Graphics>());
+
+        unloader.Dismiss();
     }
 
     void Core::unloadGraphics()
     {
-        this->guiManager_.reset();;
-        this->inputManager_.reset();;
+        this->graphicsScope_.reset();
+        this->guiManager_.reset();
+        this->inputManager_.reset();
         this->graphicsManager_.reset();
 
         // Load Ogre::Root again, but without the render system
@@ -396,6 +323,7 @@ namespace orxonox
         }
 
         bGraphicsLoaded_ = false;
+        GameMode::bShowsGraphics_s = false;
     }
 
     /**
@@ -456,56 +384,6 @@ namespace orxonox
         Core::getInstance().configuration_->resetLanguage();
     }
 
-    /*static*/ void Core::tsetExternalDataPath(const std::string& path)
-    {
-        getInstance().configuration_->tsetExternalDataPath(path);
-    }
-
-    /*static*/ const boost::filesystem::path& Core::getDataPath()
-    {
-        return getInstance().configuration_->dataPath_;
-    }
-    /*static*/ std::string Core::getDataPathString()
-    {
-        return getInstance().configuration_->dataPath_.string() + '/';
-    }
-
-    /*static*/ const boost::filesystem::path& Core::getExternalDataPath()
-    {
-        return getInstance().configuration_->externalDataPath_;
-    }
-    /*static*/ std::string Core::getExternalDataPathString()
-    {
-        return getInstance().configuration_->externalDataPath_.string() + '/';
-    }
-
-    /*static*/ const boost::filesystem::path& Core::getConfigPath()
-    {
-        return getInstance().configuration_->configPath_;
-    }
-    /*static*/ std::string Core::getConfigPathString()
-    {
-        return getInstance().configuration_->configPath_.string() + '/';
-    }
-
-    /*static*/ const boost::filesystem::path& Core::getLogPath()
-    {
-        return getInstance().configuration_->logPath_;
-    }
-    /*static*/ std::string Core::getLogPathString()
-    {
-        return getInstance().configuration_->logPath_.string() + '/';
-    }
-
-    /*static*/ const boost::filesystem::path& Core::getRootPath()
-    {
-        return getInstance().configuration_->rootPath_;
-    }
-    /*static*/ std::string Core::getRootPathString()
-    {
-        return getInstance().configuration_->rootPath_.string() + '/';
-    }
-
     /**
     @note
         The code of this function has been copied and adjusted from OGRE, an open source graphics engine.
@@ -552,184 +430,18 @@ namespace orxonox
 #endif
     }
 
-    /**
-    @brief
-        Retrievs the executable path and sets all hard coded fixed path (currently only the module path)
-        Also checks for "orxonox_dev_build.keep_me" in the executable diretory.
-        If found it means that this is not an installed run, hence we
-        don't write the logs and config files to ~/.orxonox
-    @throw
-        GeneralException
-    */
-    void Core::setFixedPaths()
-    {
-        //////////////////////////
-        // FIND EXECUTABLE PATH //
-        //////////////////////////
-
-#ifdef ORXONOX_PLATFORM_WINDOWS
-        // get executable module
-        TCHAR buffer[1024];
-        if (GetModuleFileName(NULL, buffer, 1024) == 0)
-            ThrowException(General, "Could not retrieve executable path.");
-
-#elif defined(ORXONOX_PLATFORM_APPLE)
-        char buffer[1024];
-        unsigned long path_len = 1023;
-        if (_NSGetExecutablePath(buffer, &path_len))
-            ThrowException(General, "Could not retrieve executable path.");
-
-#else /* Linux */
-        /* written by Nicolai Haehnle <prefect_@gmx.net> */
-
-        /* Get our PID and build the name of the link in /proc */
-        char linkname[64]; /* /proc/<pid>/exe */
-        if (snprintf(linkname, sizeof(linkname), "/proc/%i/exe", getpid()) < 0)
-        {
-            /* This should only happen on large word systems. I'm not sure
-               what the proper response is here.
-               Since it really is an assert-like condition, aborting the
-               program seems to be in order. */
-            assert(false);
-        }
-
-        /* Now read the symbolic link */
-        char buffer[1024];
-        int ret;
-        ret = readlink(linkname, buffer, 1024);
-        /* In case of an error, leave the handling up to the caller */
-        if (ret == -1)
-            ThrowException(General, "Could not retrieve executable path.");
-
-        /* Ensure proper NUL termination */
-        buffer[ret] = 0;
-#endif
-
-        configuration_->executablePath_ = boost::filesystem::path(buffer);
-#ifndef ORXONOX_PLATFORM_APPLE
-        configuration_->executablePath_ = configuration_->executablePath_.branch_path(); // remove executable name
-#endif
-
-        /////////////////////
-        // SET MODULE PATH //
-        /////////////////////
-
-        if (boost::filesystem::exists(configuration_->executablePath_ / "orxonox_dev_build.keep_me"))
-        {
-            COUT(1) << "Running from the build tree." << std::endl;
-            Core::bDevRun_ = true;
-            configuration_->modulePath_ = specialConfig::moduleDevDirectory;
-        }
-        else
-        {
-
-#ifdef INSTALL_COPYABLE // --> relative paths
-
-            // Also set the root path
-            boost::filesystem::path relativeExecutablePath(specialConfig::defaultRuntimePath);
-            configuration_->rootPath_ = configuration_->executablePath_;
-            while (!boost::filesystem::equivalent(configuration_->rootPath_ / relativeExecutablePath, configuration_->executablePath_)
-                   && !configuration_->rootPath_.empty())
-                configuration_->rootPath_ = configuration_->rootPath_.branch_path();
-            if (configuration_->rootPath_.empty())
-                ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
-
-            // Module path is fixed as well
-            configuration_->modulePath_ = configuration_->rootPath_ / specialConfig::defaultModulePath;
-
-#else
-
-            // There is no root path, so don't set it at all
-            // Module path is fixed as well
-            configuration_->modulePath_ = specialConfig::moduleInstallDirectory;
-
-#endif
-        }
-    }
-
-    /**
-    @brief
-        Sets config, log and media path and creates folders if necessary.
-    @throws
-        GeneralException
-    */
-    void Core::setConfigurablePaths()
-    {
-        if (Core::isDevelopmentRun())
-        {
-            configuration_->dataPath_  = specialConfig::dataDevDirectory;
-            configuration_->externalDataPath_ = specialConfig::externalDataDevDirectory;
-            configuration_->configPath_ = specialConfig::configDevDirectory;
-            configuration_->logPath_    = specialConfig::logDevDirectory;
-        }
-        else
-        {
-
-#ifdef INSTALL_COPYABLE // --> relative paths
-
-            // Using paths relative to the install prefix, complete them
-            configuration_->dataPath_   = configuration_->rootPath_ / specialConfig::defaultDataPath;
-            configuration_->configPath_ = configuration_->rootPath_ / specialConfig::defaultConfigPath;
-            configuration_->logPath_    = configuration_->rootPath_ / specialConfig::defaultLogPath;
-
-#else
-
-            configuration_->dataPath_  = specialConfig::dataInstallDirectory;
-
-            // Get user directory
-#  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
-            char* userDataPathPtr(getenv("HOME"));
-#  else
-            char* userDataPathPtr(getenv("APPDATA"));
-#  endif
-            if (userDataPathPtr == NULL)
-                ThrowException(General, "Could not retrieve user data path.");
-            boost::filesystem::path userDataPath(userDataPathPtr);
-            userDataPath /= ".orxonox";
-
-            configuration_->configPath_ = userDataPath / specialConfig::defaultConfigPath;
-            configuration_->logPath_    = userDataPath / specialConfig::defaultLogPath;
-
-#endif
-
-        }
-
-        // Option to put all the config and log files in a separate folder
-        if (!CommandLine::getArgument("writingPathSuffix")->hasDefaultValue())
-        {
-            std::string directory(CommandLine::getValue("writingPathSuffix").getString());
-            configuration_->configPath_ = configuration_->configPath_ / directory;
-            configuration_->logPath_    = configuration_->logPath_    / directory;
-        }
-
-        // Create directories to avoid problems when opening files in non existent folders.
-        std::vector<std::pair<boost::filesystem::path, std::string> > directories;
-        directories.push_back(std::make_pair(boost::filesystem::path(configuration_->configPath_), "config"));
-        directories.push_back(std::make_pair(boost::filesystem::path(configuration_->logPath_), "log"));
-
-        for (std::vector<std::pair<boost::filesystem::path, std::string> >::iterator it = directories.begin();
-            it != directories.end(); ++it)
-        {
-            if (boost::filesystem::exists(it->first) && !boost::filesystem::is_directory(it->first))
-            {
-                ThrowException(General, std::string("The ") + it->second + " directory has been preoccupied by a file! \
-                                         Please remove " + it->first.string());
-            }
-            if (boost::filesystem::create_directories(it->first)) // function may not return true at all (bug?)
-            {
-                COUT(4) << "Created " << it->second << " directory" << std::endl;
-            }
-        }
-    }
-
     void Core::preUpdate(const Clock& time)
     {
+        // singletons from other libraries
+        ScopedSingletonManager::update<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
             // process input events
             this->inputManager_->update(time);
             // process gui events
             this->guiManager_->update(time);
+            // graphics singletons from other libraries
+            ScopedSingletonManager::update<ScopeID::Graphics>(time);
         }
         // process thread commands
         this->tclThreadManager_->update(time);

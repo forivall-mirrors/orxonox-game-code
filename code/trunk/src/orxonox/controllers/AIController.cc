@@ -43,7 +43,7 @@ namespace orxonox
     {
         RegisterObject(AIController);
 
-        this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&AIController::action)));
+        this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&AIController::action, this)));
     }
 
     AIController::~AIController()

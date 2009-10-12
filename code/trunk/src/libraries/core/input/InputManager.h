@@ -160,8 +160,6 @@ namespace orxonox
         //-------------------------------
         // Various getters and setters
         //-------------------------------
-        //! Sets the the name of the command used by the KeyDetector as callback.
-        void setKeyDetectorCallback(const std::string& command);
         //! Returns the number of joy stick that have been created since the c'tor or last call to reload().
         unsigned int getJoyStickQuantity() const
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
@@ -192,11 +190,10 @@ namespace orxonox
         State                               internalState_;        //!< Current internal state
         OIS::InputManager*                  oisInputManager_;      //!< OIS input manager
         std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
-        bool                                bExclusiveMouse_;      //!< Currently applied mouse mode
+        MouseMode::Value                    mouseMode_;            //!< Currently applied mouse mode
 
         // some internally handled states and handlers
         InputState*                         emptyState_;           //!< Lowest priority states (makes handling easier)
-        KeyDetector*                        keyDetector_;          //!< KeyDetector instance
         //! InputBuffer that reacts to the Enter key when calibrating the joy sticks
         InputBuffer*                        calibratorCallbackHandler_;
 

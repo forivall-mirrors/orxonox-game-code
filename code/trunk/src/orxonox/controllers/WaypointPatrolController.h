@@ -60,7 +60,7 @@ namespace orxonox
 
             int team_;
             float alertnessradius_;
-            Timer<WaypointPatrolController> patrolTimer_;
+            Timer patrolTimer_;
     };
 }
 

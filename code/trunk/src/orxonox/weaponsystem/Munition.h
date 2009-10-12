@@ -46,7 +46,7 @@ namespace orxonox
                 Magazine(Munition* munition, bool bUseReloadTime = true);
 
                 unsigned int munition_;
-                Timer<Magazine> loadTimer_;
+                Timer loadTimer_;
                 bool bLoaded_;
 
             private:

@@ -46,7 +46,7 @@ namespace orxonox
     /**
      * @brief Constructor
      */
-    Planet::Planet(BaseObject* creator): MovableEntity(creator)
+    Planet::Planet(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(Planet);
         this->registerVariables();
@@ -63,13 +63,13 @@ namespace orxonox
 
     void Planet::tick(float dt)
     {
-        if(!this->isVisible())
+        if (!this->isVisible())
             return;
 
         if (GameMode::showsGraphics())
         {
             Camera* activeCamera = CameraManager::getInstance().getActiveCamera();
-            if(activeCamera)
+            if (activeCamera)
             {
                 float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
                 //             COUT(2) << distance << std::endl;

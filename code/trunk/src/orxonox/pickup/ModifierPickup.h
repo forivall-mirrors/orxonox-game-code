@@ -128,6 +128,7 @@ namespace orxonox
             { this->setMultiplicativeModifier(ModifierType::Acceleration, value); }
 
         void timerCallback(Pawn* pawn);     //!< Method called when the timer runs out.
+        
     private:
         float getAdditiveModifier(ModifierType::Value type) const;               //!< Get the additive modifier for a given ModifierType.
         float getMultiplicativeModifier(ModifierType::Value type) const;         //!< Get the multiplicative modifier for a given ModifierType.
@@ -137,8 +138,8 @@ namespace orxonox
         std::map<ModifierType::Value, float> additiveModifiers_;                 //!< Map of additive modifiers, indexed by ModifierType.
         std::map<ModifierType::Value, float> multiplicativeModifiers_;           //!< Map of multiplicative modifiers, indexed by ModifierType.
 
-        float duration_;                                                        //!< Duration of this pickup's effect (0 for unlimited).
-        Timer<ModifierPickup> timer_;                                           //!< Timer used if the pickup's effect has a time limit.
+        float duration_;                                                         //!< Duration of this pickup's effect (0 for unlimited).
+        Timer timer_;                                                            //!< Timer used if the pickup's effect has a time limit.
     };
 }
 

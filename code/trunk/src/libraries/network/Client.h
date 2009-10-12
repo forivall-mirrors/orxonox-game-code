@@ -44,6 +44,8 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
+
+#include "util/UtilPrereqs.h"
 #include "ClientConnection.h"
 #include "GamestateClient.h"
 #include "Host.h"
@@ -71,7 +73,8 @@ namespace orxonox
     virtual bool broadcast(const std::string& message) { return false; }
 
     void update(const Clock& time);
-
+  protected:
+    virtual void connectionClosed();
   private:
     Client(const Client& copy); // not used
     virtual bool isServer_(){return false;}

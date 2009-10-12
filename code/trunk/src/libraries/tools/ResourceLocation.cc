@@ -32,8 +32,8 @@
 #include <boost/filesystem.hpp>
 
 #include "util/Exception.h"
-#include "core/Core.h"
 #include "core/CoreIncludes.h"
+#include "core/PathConfig.h"
 #include "core/XMLFile.h"
 #include "core/XMLPort.h"
 
@@ -70,11 +70,12 @@ namespace orxonox
             ThrowException(InitialisationFailed, "ResourceLocation: Trying to add one without the path being set");
 
         // Find the path
-        boost::filesystem::path path;
-        if (boost::filesystem::exists(Core::getDataPath() / this->getPath()))
-            path = Core::getDataPath() / this->getPath();
-        else if (Core::isDevelopmentRun() && boost::filesystem::exists(Core::getExternalDataPath() / this->getPath()))
-            path = Core::getExternalDataPath() / this->getPath();
+        namespace bf = boost::filesystem;
+        bf::path path;
+        if (bf::exists(PathConfig::getDataPath() / this->getPath()))
+            path = PathConfig::getDataPath() / this->getPath();
+        else if (PathConfig::isDevelopmentRun() && bf::exists(PathConfig::getExternalDataPath() / this->getPath()))
+            path = PathConfig::getExternalDataPath() / this->getPath();
         else
         {
             COUT(2) << "Warning: ResourceLocation '" << this->getPath() << "' does not seem to exist" << std::endl;

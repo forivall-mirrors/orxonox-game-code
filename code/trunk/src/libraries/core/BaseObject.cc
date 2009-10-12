@@ -62,18 +62,18 @@ namespace orxonox
         this->bActive_ = true;
         this->bVisible_ = true;
         this->oldGametype_ = 0;
+        this->bRegisteredEventStates_ = false;
 
         this->lastLoadedXMLElement_ = 0;
 
-        this->functorSetMainState_ = 0;
-        this->functorGetMainState_ = 0;
+        this->mainStateFunctor_ = 0;
 
         this->setCreator(creator);
         if (this->creator_)
         {
             this->setFile(this->creator_->getFile());
             this->setNamespace(this->creator_->getNamespace());
-            this->setScene(this->creator_->getScene());
+            this->setScene(this->creator_->getScene(), this->creator_->getSceneID());
             this->setGametype(this->creator_->getGametype());
         }
         else
@@ -81,6 +81,7 @@ namespace orxonox
             this->file_ = 0;
             this->namespace_ = 0;
             this->scene_ = 0;
+            this->sceneID_ = OBJECTID_UNKNOWN;
             this->gametype_ = 0;
         }
     }
@@ -92,16 +93,14 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
-                (*it)->unregisterEventListener(this);
+            for (std::map<BaseObject*, std::string>::const_iterator it = this->eventSources_.begin(); it != this->eventSources_.end(); )
+                this->removeEventSource((it++)->first);
 
-            for (std::map<BaseObject*, std::string>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
-                it->first->removeEvent(this);
+            for (std::set<BaseObject*>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); )
+                (*(it++))->removeEventSource(this);
 
-            if (this->functorSetMainState_)
-                delete this->functorSetMainState_;
-            if (this->functorGetMainState_)
-                delete this->functorGetMainState_;
+            for (std::map<std::string, EventState*>::const_iterator it = this->eventStates_.begin(); it != this->eventStates_.end(); ++it)
+                delete it->second;
         }
     }
 
@@ -109,7 +108,6 @@ namespace orxonox
         @brief XML loading and saving.
         @param xmlelement The XML-element
         @param loading Loading (true) or saving (false)
-        @return The XML-element
     */
     void BaseObject::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -119,41 +117,29 @@ namespace orxonox
         XMLPortParam(BaseObject, "mainstate", setMainStateName, getMainStateName, xmlelement, mode);
 
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
-
-        Element* events = xmlelement.FirstChildElement("events", false);
-
+        XMLPortObject(BaseObject, BaseObject, "eventlisteners", addEventListener, getEventListener, xmlelement, mode);
+        
+        Element* events = 0;
+        if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
+            events = xmlelement.FirstChildElement("events", false);
+        else if (mode == XMLPort::SaveObject)
+            {}
         if (events)
-        {
-            std::list<std::string> eventnames;
+            this->XMLEventPort(*events, mode);
+    }
 
-            if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
-            {
-                for (ticpp::Iterator<ticpp::Element> child = events->FirstChildElement(false); child != child.end(); child++)
-                    eventnames.push_back(child->Value());
-            }
-            else if (mode == XMLPort::SaveObject)
-            {
-                for (std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->getIdentifier()->getXMLPortEventMapBegin(); it != this->getIdentifier()->getXMLPortEventMapEnd(); ++it)
-                    eventnames.push_back(it->first);
-            }
-
-            for (std::list<std::string>::iterator it = eventnames.begin(); it != eventnames.end(); ++it)
-            {
-                std::string sectionname = (*it);
-                ExecutorMember<BaseObject>* loadexecutor = createExecutor(createFunctor(&BaseObject::addEvent), std::string( "BaseObject" ) + "::" + "addEvent");
-                ExecutorMember<BaseObject>* saveexecutor = createExecutor(createFunctor(&BaseObject::getEvent), std::string( "BaseObject" ) + "::" + "getEvent");
-                loadexecutor->setDefaultValue(1, sectionname);
-
-                XMLPortClassObjectContainer<BaseObject, BaseObject>* container = 0;
-                container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(this->getIdentifier()->getXMLPortEventContainer(sectionname));
-                if (!container)
-                {
-                    container = new XMLPortClassObjectContainer<BaseObject, BaseObject>(sectionname, this->getIdentifier(), loadexecutor, saveexecutor, false, true);
-                    this->getIdentifier()->addXMLPortEventContainer(sectionname, container);
-                }
-                container->port(this, *events, mode);
-            }
-        }
+    /**
+        @brief Defines the possible event states of this object and parses eventsources from an XML file.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+    */
+    void BaseObject::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        XMLPortEventState(BaseObject, BaseObject, "activity", setActive, xmlelement, mode);
+        XMLPortEventState(BaseObject, BaseObject, "visibility", setVisible, xmlelement, mode);
+        XMLPortEventState(BaseObject, BaseObject, "mainstate", setMainState, xmlelement, mode);
+        
+        this->bRegisteredEventStates_ = true;
     }
 
     /**
@@ -219,124 +205,257 @@ namespace orxonox
         return 0;
     }
 
-    void BaseObject::addEvent(BaseObject* event, const std::string& sectionname)
+    /**
+        @brief Adds a new event source for a specific state.
+        @param source The object which sends events to this object
+        @param state The state of this object which will be affected by the events
+    */
+    void BaseObject::addEventSource(BaseObject* source, const std::string& state)
     {
-        event->registerEventListener(this, sectionname);
-        this->events_.push_back(event);
+        this->eventSources_[source] = state;
+        source->registerEventListener(this);
     }
 
-    void BaseObject::removeEvent(BaseObject* event)
+    /**
+        @brief Removes an eventsource (but doesn't unregister itself at the source).
+    */
+    void BaseObject::removeEventSource(BaseObject* source)
     {
-        this->events_.remove(event);
+        this->eventSources_.erase(source);
+        source->unregisterEventListener(this);
     }
 
-    BaseObject* BaseObject::getEvent(unsigned int index) const
+    /**
+        @brief Returns an eventsource with a given index.
+    */
+    BaseObject* BaseObject::getEventSource(unsigned int index, const std::string& state) const
     {
         unsigned int i = 0;
-        for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
+        for (std::map<BaseObject*, std::string>::const_iterator it = this->eventSources_.begin(); it != this->eventSources_.end(); ++it)
         {
+            if (it->second != state)
+                continue;
+            
             if (i == index)
-                return (*it);
+                return it->first;
             ++i;
         }
         return 0;
     }
 
-    void BaseObject::addEventContainer(const std::string& sectionname, EventContainer* container)
+    /**
+        @brief Adds an object which listens to the events of this object. The events are sent to the other objects mainstate.
+    */
+    void BaseObject::addEventListener(BaseObject* listener)
     {
-        std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.find(sectionname);
-        if (it != this->eventContainers_.end())
+        this->eventListenersXML_.insert(listener);
+        listener->addEventSource(this, "mainstate");
+    }
+    
+    /**
+        @brief Returns an event listener with a given index.
+    */
+    BaseObject* BaseObject::getEventListener(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<BaseObject*>::const_iterator it = this->eventListenersXML_.begin(); it != this->eventListenersXML_.end(); ++it)
         {
-            COUT(2) << "Warning: Overwriting EventContainer in class " << this->getIdentifier()->getName() << "." << std::endl;
+            if (i == index)
+                return *it;
+            ++i;
+        }
+        return 0;
+    }
+
+    /**
+        @brief Adds a new event-state to the object. Event-states are states which can be changed by events.
+        @param name  The name of the event
+        @param state The object containing information about the event-state
+    */
+    void BaseObject::addEventState(const std::string& name, EventState* state)
+    {
+        std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
+        if (it != this->eventStates_.end())
+        {
+            COUT(2) << "Warning: Overwriting EventState in class " << this->getIdentifier()->getName() << "." << std::endl;
             delete (it->second);
         }
 
-        this->eventContainers_[sectionname] = container;
+        this->eventStates_[name] = state;
     }
 
-    EventContainer* BaseObject::getEventContainer(const std::string& sectionname) const
+    /**
+        @brief Returns the event-state with the given name.
+    */
+    EventState* BaseObject::getEventState(const std::string& name) const
     {
-        std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.find(sectionname);
-        if (it != this->eventContainers_.end())
+        std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
+        if (it != this->eventStates_.end())
             return ((*it).second);
         else
             return 0;
     }
 
-    void BaseObject::fireEvent()
+    /**
+        @brief Fires an event (without a state).
+    */
+    void BaseObject::fireEvent(const std::string& name)
     {
-        this->fireEvent(true);
-        this->fireEvent(false);
+        this->fireEvent(true, name);
+        this->fireEvent(false, name);
     }
 
-    void BaseObject::fireEvent(bool activate)
+    /**
+        @brief Fires an event which activates or deactivates a state.
+    */
+    void BaseObject::fireEvent(bool activate, const std::string& name)
     {
-        this->fireEvent(activate, this);
+        this->fireEvent(activate, this, name);
     }
 
-    void BaseObject::fireEvent(bool activate, BaseObject* originator)
+    /**
+        @brief Fires an event which activates or deactivates a state with agiven originator (the object which triggered the event).
+    */
+    void BaseObject::fireEvent(bool activate, BaseObject* originator, const std::string& name)
     {
-        Event event(activate, originator);
+        Event event(activate, originator, name);
 
-        for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+        for (std::set<BaseObject*>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
         {
-            event.sectionname_ = it->second;
-            it->first->processEvent(event);
+            event.statename_ = (*it)->eventSources_[this];
+            (*it)->processEvent(event);
         }
     }
 
+    /**
+        @brief Fires an event, using the Event struct.
+    */
     void BaseObject::fireEvent(Event& event)
     {
-        for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
-            it->first->processEvent(event);
+        for (std::set<BaseObject*>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+            (*it)->processEvent(event);
     }
 
+    /**
+        @brief Processing an event by calling the right main state.
+        @param event The event struct which contains the information about the event
+    */
     void BaseObject::processEvent(Event& event)
     {
-        ORXONOX_SET_EVENT(BaseObject, "activity", setActive, event);
-        ORXONOX_SET_EVENT(BaseObject, "visibility", setVisible, event);
+        this->registerEventStates();
+        
+        std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(event.statename_);
+        if (it != this->eventStates_.end())
+            it->second->process(event, this);
+        else if (event.statename_ != "")
+            COUT(2) << "Warning: \"" << event.statename_ << "\" is not a valid state in object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << std::endl;
+        else
+            COUT(2) << "Warning: Event with invalid source sent to object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << std::endl;
     }
 
-    void BaseObject::setMainStateName(const std::string& name)
-    {
-        if (this->mainStateName_ != name)
-        {
-            this->mainStateName_ = name;
-            if (this->functorSetMainState_)
-                delete this->functorSetMainState_;
-            if (this->functorGetMainState_)
-                delete this->functorGetMainState_;
-            this->changedMainState();
-            if (!this->functorSetMainState_)
-                COUT(2) << "Warning: \"" << name << "\" is not a valid MainState." << std::endl;
-        }
-    }
-
+    /**
+        @brief Sets the main state of the object to a given boolean value.
+        
+        Note: The main state of an object can be set with the @ref setMainStateName function.
+        It's part of the eventsystem and used for event forwarding (when the target object can't specify a specific state,
+        the main state is used by default).
+    */
     void BaseObject::setMainState(bool state)
     {
-        if (this->functorSetMainState_)
-            (*this->functorSetMainState_)(state);
+        if (this->mainStateFunctor_)
+        {
+            if (this->mainStateFunctor_->getParamCount() == 0)
+            {
+                if (state)
+                    (*this->mainStateFunctor_)();
+            }
+            else
+            {
+                (*this->mainStateFunctor_)(state);
+            }
+        }
         else
             COUT(2) << "Warning: No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << std::endl;
     }
 
-    bool BaseObject::getMainState() const
+    /**
+        @brief This function gets called if the main state name of the object changes.
+    */
+    void BaseObject::changedMainStateName()
     {
-        if (this->functorGetMainState_)
+        this->mainStateFunctor_ = 0;
+
+        if (this->mainStateName_ != "")
         {
-            (*this->functorGetMainState_)();
-            return this->functorGetMainState_->getReturnvalue();
-        }
-        else
-        {
-            COUT(2) << "Warning: No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << std::endl;
-            return false;
+            this->registerEventStates();
+            
+            std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(this->mainStateName_);
+            if (it != this->eventStates_.end() && it->second->getFunctor())
+            {
+                if (it->second->getFunctor()->getParamCount() <= 1)
+                    this->mainStateFunctor_ = it->second->getFunctor();
+                else
+                    COUT(2) << "Warning: Can't use \"" << this->mainStateName_ << "\" as MainState because it needs a second argument." << std::endl;
+            }
+            else
+                COUT(2) << "Warning: \"" << this->mainStateName_ << "\" is not a valid MainState." << std::endl;
         }
     }
-
-    void BaseObject::changedMainState()
+    
+    /**
+        @brief Calls XMLEventPort with an empty XML-element to register the event states if necessary.
+    */
+    void BaseObject::registerEventStates()
     {
-        SetMainState(BaseObject, "activity",   setActive,  isActive);
-        SetMainState(BaseObject, "visibility", setVisible, isVisible);
+        if (!this->bRegisteredEventStates_)
+        {
+            Element xmlelement;
+            this->XMLEventPort(xmlelement, XMLPort::NOP);
+        }
+    }
+    
+    /**
+        @brief Manually loads all event states, even if the class doesn't officially support them. This is needed by some classes like @ref EventDispatcher or @ref EventTarget.
+    */
+    void BaseObject::loadAllEventStates(Element& xmlelement, XMLPort::Mode mode, BaseObject* object, Identifier* identifier)
+    {
+        Element* events = xmlelement.FirstChildElement("events", false);
+        if (events)
+        {
+            // get the list of all states present
+            std::list<std::string> eventnames;
+            if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
+            {
+                for (ticpp::Iterator<ticpp::Element> child = events->FirstChildElement(false); child != child.end(); child++)
+                    eventnames.push_back(child->Value());
+            }
+            else if (mode == XMLPort::SaveObject)
+            {
+            }
+
+            // iterate through all states and get the event sources
+            for (std::list<std::string>::iterator it = eventnames.begin(); it != eventnames.end(); ++it)
+            {
+                std::string statename = (*it);
+
+                // if the event state is already known, continue with the next state
+                orxonox::EventState* eventstate = object->getEventState(statename);
+                if (eventstate)
+                    continue;
+
+                XMLPortClassObjectContainer<BaseObject, BaseObject>* container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(identifier->getXMLPortObjectContainer(statename));
+                if (!container)
+                {
+                    ExecutorMember<BaseObject>* setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + "(" + statename + ")");
+                    ExecutorMember<BaseObject>* getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + "(" + statename + ")");
+                    setfunctor->setDefaultValue(1, statename);
+                    getfunctor->setDefaultValue(1, statename);
+
+                    container = new XMLPortClassObjectContainer<BaseObject, BaseObject>(statename, identifier, setfunctor, getfunctor, false, true);
+                    identifier->addXMLPortObjectContainer(statename, container);
+                }
+                container->port(object, *events, mode);
+            }
+        }
     }
 }

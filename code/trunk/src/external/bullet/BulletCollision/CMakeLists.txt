@@ -1,4 +1,7 @@
 ADD_SOURCE_FILES(BULLET_FILES
+
+COMPILATION_BEGIN BulletCollisionCompilation.cpp
+
 	BroadphaseCollision/btAxisSweep3.cpp
 	BroadphaseCollision/btBroadphaseProxy.cpp
 	BroadphaseCollision/btCollisionAlgorithm.cpp
@@ -67,15 +70,11 @@ ADD_SOURCE_FILES(BULLET_FILES
 
 	Gimpact/btContactProcessing.cpp
 	Gimpact/btGImpactShape.cpp
-	Gimpact/gim_contact.cpp
 	Gimpact/btGImpactBvh.cpp
 	Gimpact/btGenericPoolAllocator.cpp
-	Gimpact/gim_memory.cpp
 	Gimpact/btGImpactCollisionAlgorithm.cpp
 	Gimpact/btTriangleShapeEx.cpp
-	Gimpact/gim_tri_collision.cpp
 	Gimpact/btGImpactQuantizedBvh.cpp
-	Gimpact/gim_box_set.cpp
 
 	NarrowPhaseCollision/btContinuousConvexCollision.cpp
 	NarrowPhaseCollision/btGjkEpa2.cpp
@@ -88,6 +87,15 @@ ADD_SOURCE_FILES(BULLET_FILES
 	NarrowPhaseCollision/btRaycastCallback.cpp
 	NarrowPhaseCollision/btSubSimplexConvexCast.cpp
 	NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
+
+COMPILATION_END
+
+COMPILATION_BEGIN BulletGImpactCompilation.cpp
+	Gimpact/gim_contact.cpp
+	Gimpact/gim_memory.cpp
+	Gimpact/gim_tri_collision.cpp
+	Gimpact/gim_box_set.cpp
+COMPILATION_END
 
 	# Headers
 	BroadphaseCollision/btAxisSweep3.h

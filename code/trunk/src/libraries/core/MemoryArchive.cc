@@ -67,10 +67,10 @@ namespace orxonox
             if (!StringUtil::match(file.string(), pattern, true))
                 continue;
             if (bDirs)
-                file = file.parent_path();
+                file = file.branch_path();
             if (file.empty())
                 continue;
-            if (file.has_parent_path() && !bRecursive)
+            if (file.has_branch_path() && !bRecursive)
                 continue;
             if (simpleList)
                 simpleList->push_back(file.string());
@@ -79,8 +79,8 @@ namespace orxonox
                 FileInfo fi;
                 fi.archive = this;
                 fi.filename = file.string();
-                fi.basename = file.filename();
-                fi.path = file.parent_path().string();
+                fi.basename = file.leaf();
+                fi.path = file.branch_path().string();
                 fi.compressedSize = it->second.second;
                 fi.uncompressedSize = it->second.second;
                 detailList->push_back(fi);
@@ -118,10 +118,10 @@ namespace orxonox
     }
 
     bool MemoryArchive::exists(const String& filename)
-	{
+    {
         const FileMap& files = archives_s[this->getName()];
         return files.find(filename) != files.end();
-	}
+    }
 
     const Ogre::String& MemoryArchiveFactory::getType(void) const
     {

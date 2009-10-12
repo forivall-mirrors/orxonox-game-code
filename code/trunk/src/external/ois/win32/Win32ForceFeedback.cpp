@@ -25,7 +25,7 @@ restrictions:
 #include <Math.h>
 
 // 0 = No trace; 1 = Important traces; 2 = Debug traces
-#define OIS_WIN32_JOYFF_DEBUG 1
+#define OIS_WIN32_JOYFF_DEBUG 0
 
 #if (defined (_DEBUG) || defined(OIS_WIN32_JOYFF_DEBUG))
   #include <iostream>

@@ -45,6 +45,16 @@ namespace orxonox
         RegisterObject(Scoreboard);
     }
 
+    Scoreboard::~Scoreboard()
+    {
+        while (this->lines_.size() > 0)
+        {
+            // destroy lines
+            delete this->lines_.back();
+            this->lines_.pop_back();
+        }
+    }
+
     /**
         @brief Initializes the lines.
     */

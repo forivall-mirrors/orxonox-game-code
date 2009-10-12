@@ -87,7 +87,7 @@ namespace orxonox
     {
         OutputHandler::getOutStream().setOutputBuffer(0);
         if (this->inputBuffer_)
-            delete this->inputBuffer_;
+            this->inputBuffer_->destroy();
     }
 
     void Shell::setConfigValues()

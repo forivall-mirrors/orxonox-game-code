@@ -76,7 +76,7 @@ namespace orxonox
         float triggerDistance_;
         BaseItem* item_;
 
-        Timer<DroppedItem> timer_;
+        Timer timer_;
     };
 }
 

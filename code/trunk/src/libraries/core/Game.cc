@@ -37,12 +37,12 @@
 #include <exception>
 #include <boost/weak_ptr.hpp>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/ScopeGuard.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"
-#include "Clock.h"
 #include "CommandLine.h"
 #include "ConsoleCommand.h"
 #include "Core.h"
@@ -56,6 +56,12 @@ namespace orxonox
     static void stop_game()
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
+    static void printFPS()
+        { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
+    SetConsoleCommandShortcutExternAlias(printFPS, "printFPS");
+    static void printTickTime()
+        { COUT(0) << Game::getInstance().getAvgTickTime() << std::endl; }
+    SetConsoleCommandShortcutExternAlias(printTickTime, "printTickTime");
 
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonPtr_s = 0;
@@ -110,7 +116,7 @@ namespace orxonox
     */
     Game::Game(const std::string& cmdLine)
         // Destroy factories before the Core!
-        : gsFactoryDestroyer_(Game::GameStateFactory::factories_s, &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
+        : gsFactoryDestroyer_(Game::GameStateFactory::getFactories(), &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
     {
         this->bAbort_ = false;
         bChangingState_ = false;
@@ -409,6 +415,8 @@ namespace orxonox
                 currentNode = currentNode->parent_.lock();
                 requestedNodes.push_back(currentNode);
             }
+            if (currentNode == NULL)
+                requestedNodes.clear();
         }
 
         if (requestedNodes.empty())
@@ -456,12 +464,12 @@ namespace orxonox
     void Game::setStateHierarchy(const std::string& str)
     {
         // Split string into pieces of the form whitespacesText
-        std::vector<std::pair<std::string, unsigned> > stateStrings;
+        std::vector<std::pair<std::string, int> > stateStrings;
         size_t pos = 0;
         size_t startPos = 0;
         while (pos < str.size())
         {
-            unsigned indentation = 0;
+            int indentation = 0;
             while(pos < str.size() && str[pos] == ' ')
                 ++indentation, ++pos;
             startPos = pos;
@@ -469,47 +477,55 @@ namespace orxonox
                 ++pos;
             stateStrings.push_back(std::make_pair(str.substr(startPos, pos - startPos), indentation));
         }
-        unsigned int currentLevel = 0;
-        shared_ptr<GameStateTreeNode> currentNode = this->rootStateNode_;
-        for (std::vector<std::pair<std::string, unsigned> >::const_iterator it = stateStrings.begin(); it != stateStrings.end(); ++it)
-        {
-            std::string newStateName = it->first;
-            unsigned newLevel = it->second + 1; // empty root is 0
-            if (!this->checkState(newStateName))
-                ThrowException(GameState, "GameState with name '" << newStateName << "' not found!");
-            if (newStateName == this->rootStateNode_->name_)
-                ThrowException(GameState, "You shouldn't use 'emptyRootGameState' in the hierarchy...");
-            shared_ptr<GameStateTreeNode> newNode(new GameStateTreeNode);
-            newNode->name_ = newStateName;
+        if (stateStrings.empty())
+            ThrowException(GameState, "Emtpy GameState hierarchy provided, terminating.");
+        // Add element with large identation to detect the last with just an iterator
+        stateStrings.push_back(std::make_pair("", -1));
 
-            if (newLevel <= currentLevel)
-            {
-                do
-                    currentNode = currentNode->parent_.lock();
-                while (newLevel <= --currentLevel);
-            }
-            if (newLevel == currentLevel + 1)
-            {
-                // Add the child
-                newNode->parent_ = currentNode;
-                currentNode->children_.push_back(newNode);
-            }
-            else
-                ThrowException(GameState, "Indentation error while parsing the hierarchy.");
-            currentNode = newNode;
-            currentLevel = newLevel;
-        }
+        // Parse elements recursively
+        std::vector<std::pair<std::string, int> >::const_iterator begin = stateStrings.begin();
+        parseStates(begin, this->rootStateNode_);
     }
 
     /*** Internal ***/
 
+    void Game::parseStates(std::vector<std::pair<std::string, int> >::const_iterator& it, shared_ptr<GameStateTreeNode> currentNode)
+    {
+        SubString tokens(it->first, ",");
+        std::vector<std::pair<std::string, int> >::const_iterator startIt = it;
+
+        for (unsigned int i = 0; i < tokens.size(); ++i)
+        {
+            it = startIt; // Reset iterator to the beginning of the sub tree
+            if (!this->checkState(tokens[i]))
+                ThrowException(GameState, "GameState with name '" << tokens[i] << "' not found!");
+            if (tokens[i] == this->rootStateNode_->name_)
+                ThrowException(GameState, "You shouldn't use 'emptyRootGameState' in the hierarchy...");
+            shared_ptr<GameStateTreeNode> node(new GameStateTreeNode());
+            node->name_ = tokens[i];
+            node->parent_ = currentNode;
+            currentNode->children_.push_back(node);
+
+            int currentLevel = it->second;
+            ++it;
+            while (it->second != -1)
+            {
+                if (it->second <= currentLevel)
+                    break;
+                else if (it->second == currentLevel + 1)
+                    parseStates(it, node);
+                else
+                    ThrowException(GameState, "Indentation error while parsing the hierarchy.");
+            }
+        }
+    }
+
     void Game::loadGraphics()
     {
-        if (!GameMode::bShowsGraphics_s)
+        if (!GameMode::showsGraphics())
         {
             core_->loadGraphics();
             Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
-            GameMode::bShowsGraphics_s = true;
 
             // Construct all the GameStates that require graphics
             for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
@@ -530,7 +546,7 @@ namespace orxonox
 
     void Game::unloadGraphics()
     {
-        if (GameMode::bShowsGraphics_s)
+        if (GameMode::showsGraphics())
         {
             // Destroy all the GameStates that require graphics
             for (GameStateMap::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
@@ -542,7 +558,6 @@ namespace orxonox
             }
 
             core_->unloadGraphics();
-            GameMode::bShowsGraphics_s = false;
         }
     }
 
@@ -606,12 +621,16 @@ namespace orxonox
         this->bChangingState_ = false;
     }
 
-    std::map<std::string, shared_ptr<Game::GameStateFactory> > Game::GameStateFactory::factories_s;
+    /*static*/ std::map<std::string, shared_ptr<Game::GameStateFactory> >& Game::GameStateFactory::getFactories()
+    {
+        static std::map<std::string, shared_ptr<GameStateFactory> > factories;
+        return factories;
+    }
 
     /*static*/ shared_ptr<GameState> Game::GameStateFactory::fabricate(const GameStateInfo& info)
     {
-        std::map<std::string, shared_ptr<Game::GameStateFactory> >::const_iterator it = factories_s.find(info.className);
-        assert(it != factories_s.end());
+        std::map<std::string, shared_ptr<Game::GameStateFactory> >::const_iterator it = getFactories().find(info.className);
+        assert(it != getFactories().end());
         return it->second->fabricateInternal(info);
     }
 }

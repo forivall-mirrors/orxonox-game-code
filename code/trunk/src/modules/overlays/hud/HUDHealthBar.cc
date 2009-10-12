@@ -55,7 +55,7 @@ namespace orxonox
     HUDHealthBar::~HUDHealthBar()
     {
         if (this->isInitialized())
-            delete this->textoverlay_;
+            this->textoverlay_->destroy();
     }
 
     void HUDHealthBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -83,6 +83,11 @@ namespace orxonox
         {
             this->setValue(this->owner_->getHealth() / this->owner_->getInitialHealth());
             this->textoverlay_->setCaption(multi_cast<std::string>(static_cast<int>(this->owner_->getHealth())));
+        }
+        else
+        {
+            this->setValue(0);
+            this->textoverlay_->setCaption("0");
         }
 
         if (this->bUseBarColour_)

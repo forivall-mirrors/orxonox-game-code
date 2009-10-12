@@ -32,23 +32,23 @@
 #include "NetworkPrereqs.h"
 #include "core/OrxonoxClass.h"
 
-namespace orxonox{
+namespace orxonox
+{
+    class _NetworkExport ClientConnectionListener : virtual public OrxonoxClass
+    {
+        public:
+            ClientConnectionListener();
+            virtual ~ClientConnectionListener() {}
+            
+            static void broadcastClientConnected(unsigned int clientID);
+            static void broadcastClientDisconnected(unsigned int clientID);
 
-  class _NetworkExport ClientConnectionListener : virtual public OrxonoxClass
-  {
-    friend class Server;
+            virtual void clientConnected(unsigned int clientID) = 0;
+            virtual void clientDisconnected(unsigned int clientID) = 0;
 
-  public:
-    ClientConnectionListener();
-    virtual ~ClientConnectionListener() {}
-
-    void getConnectedClients();
-
-  protected:
-    virtual void clientConnected(unsigned int clientID) = 0;
-    virtual void clientDisconnected(unsigned int clientID) = 0;
-  };
-
+        protected:
+            void getConnectedClients();
+    };
 }
 
 

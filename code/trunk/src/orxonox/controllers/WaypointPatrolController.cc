@@ -44,7 +44,7 @@ namespace orxonox
         this->team_ = 0;
         this->alertnessradius_ = 500;
 
-        this->patrolTimer_.setTimer(rnd(), true, this, createExecutor(createFunctor(&WaypointPatrolController::searchEnemy)));
+        this->patrolTimer_.setTimer(rnd(), true, createExecutor(createFunctor(&WaypointPatrolController::searchEnemy, this)));
     }
 
     void WaypointPatrolController::XMLPort(Element& xmlelement, XMLPort::Mode mode)

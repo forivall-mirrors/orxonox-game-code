@@ -212,8 +212,8 @@ namespace orxonox
         OverlayGroup* group_;
   };
 
-  SUPER_FUNCTION(7, OrxonoxOverlay, changedOwner, false);
-  SUPER_FUNCTION(8, OrxonoxOverlay, changedOverlayGroup, false);
+  SUPER_FUNCTION(6, OrxonoxOverlay, changedOwner, false);
+  SUPER_FUNCTION(7, OrxonoxOverlay, changedOverlayGroup, false);
 }
 
 #endif /* _OrxonoxOverlay_H__ */

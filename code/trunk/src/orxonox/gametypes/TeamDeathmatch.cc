@@ -92,24 +92,24 @@ namespace orxonox
         bool valid_player = Deathmatch::playerLeft(player);
 
         if (valid_player)
-            this->players_.erase(player);
+            this->teamnumbers_.erase(player);
 
         return valid_player;
     }
 
     bool TeamDeathmatch::allowPawnHit(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
     }
 
     bool TeamDeathmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
     }
 
     bool TeamDeathmatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator));
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
     }
 
     SpawnPoint* TeamDeathmatch::getBestSpawnPoint(PlayerInfo* player) const

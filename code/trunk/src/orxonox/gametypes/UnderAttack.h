@@ -31,12 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "interfaces/PawnListener.h"
 #include "TeamDeathmatch.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport UnderAttack : public TeamDeathmatch, public PawnListener
+    class _OrxonoxExport UnderAttack : public TeamDeathmatch
     {
         public:
             UnderAttack(BaseObject* creator);
@@ -53,9 +52,9 @@ namespace orxonox
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
 
         protected:
-            virtual void destroyedPawn(Pawn* pawn);
+            virtual void killedDestroyer();
 
-            Destroyer* destroyer_;
+            WeakPtr<Destroyer> destroyer_;
             unsigned int teams_;
             float gameTime_;
             int timesequence_;

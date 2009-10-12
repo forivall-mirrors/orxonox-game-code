@@ -35,9 +35,9 @@
 #include <OgreTimer.h>
 #include <cpptcl/cpptcl.h>
 
+#include "util/Clock.h"
 #include "util/Convert.h"
 #include "util/Exception.h"
-#include "Clock.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "CoreIncludes.h"

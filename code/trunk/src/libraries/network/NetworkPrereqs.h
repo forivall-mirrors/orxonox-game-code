@@ -27,8 +27,9 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the network library
 */
 
 #ifndef _NetworkPrereqs_H__
@@ -39,6 +40,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( NETWORK_STATIC_BUILD )
 #  ifdef NETWORK_SHARED_BUILD
 #    define _NetworkExport __declspec(dllexport)
@@ -56,13 +58,33 @@
 #endif
 
 //-----------------------------------------------------------------------
-// Library global contants
+// Constants
 //-----------------------------------------------------------------------
+
 namespace orxonox
 {
   static const unsigned int GAMESTATEID_INITIAL = static_cast<unsigned int>(-1);
   static const unsigned int CLIENTID_UNKNOWN    = static_cast<unsigned int>(-2);
-  static const uint32_t     OBJECTID_UNKNOWN    = static_cast<uint32_t>(-1);
+}
+
+//-----------------------------------------------------------------------
+// Enums
+//-----------------------------------------------------------------------
+
+namespace orxonox
+{
+  namespace packet
+  {
+    namespace PacketFlag
+    {
+      enum Value
+      {
+        Reliable   = 1,
+        Unsequence = 2,
+        NoAllocate = 4
+      };
+    }
+  }
 }
 
 //-----------------------------------------------------------------------
@@ -83,61 +105,53 @@ typedef _ENetAddress ENetAddress;
 
 namespace orxonox
 {
+  class ChatListener;
   class Client;
   class ClientConnection;
   class ClientConnectionListener;
-  class ClientFrameListener;
   class ClientInformation;
   class Connection;
   class FunctionCallManager;
   class GamestateClient;
-  class GamestateManager;
   class GamestateHandler;
-  class NetworkCallbackBase;
-  template <class T> class NetworkCallback;
-  class NetworkCallbackManager;
+  class GamestateManager;
+  class Host;
   class NetworkFunctionBase;
-  class NetworkFunctionStatic;
-  class NetworkMemberFunctionBase;
-  template <class T> class NetworkMemeberFunction;
   struct NetworkFunctionPointer;
+  class NetworkFunctionStatic;
+  template <class T>
+  class NetworkMemberFunction;
+  class NetworkMemberFunctionBase;
   class Server;
   class ServerConnection;
-  class ServerFrameListener;
-  class Synchronisable;
-  class SynchronisableVariableBase;
-  template <class T> class SynchronisableVariable;
-  template <class T> class SynchronisableVariableBidirectional;
-  struct ClientList;
-  struct PacketEnvelope;
-  struct QueueItem;
-  struct syncData;
   class TrafficControl;
-  class obj;
-  class objInfo;
 
+  // packet
   namespace packet
   {
     class Acknowledgement;
     class Chat;
     class ClassID;
+    class DeleteObjects;
     class FunctionCalls;
     class FunctionIDs;
     class Gamestate;
-    class NetworkIDs;
     class Packet;
     class Welcome;
-
-    namespace PacketFlag
-    {
-      enum Value
-      {
-        Reliable   = 1,
-        Unsequence = 2,
-        NoAllocate = 4
-      };
-    }
   }
+
+  // synchronisable
+  template <class T>
+  class NetworkCallback;
+  class NetworkCallbackBase;
+  class NetworkCallbackManager;
+  class Synchronisable;
+  class SynchronisableHeader;
+  template <class T>
+  class SynchronisableVariable;
+  class SynchronisableVariableBase;
+  template <class T>
+  class SynchronisableVariableBidirectional;
 }
 
 #endif /* _NetworkPrereqs_H__ */

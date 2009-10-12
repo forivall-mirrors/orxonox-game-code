@@ -66,16 +66,16 @@ IF(PCH_COMPILER_SUPPORT)
   INCLUDE(PrecompiledHeaderFiles)
 ENDIF()
 
-FUNCTION(ORXONOX_ADD_LIBRARY _target_name)
+MACRO(ORXONOX_ADD_LIBRARY _target_name)
   TU_ADD_TARGET(${_target_name} LIBRARY "STATIC;SHARED" ${ARGN})
-ENDFUNCTION(ORXONOX_ADD_LIBRARY)
+ENDMACRO(ORXONOX_ADD_LIBRARY)
 
-FUNCTION(ORXONOX_ADD_EXECUTABLE _target_name)
+MACRO(ORXONOX_ADD_EXECUTABLE _target_name)
   TU_ADD_TARGET(${_target_name} EXECUTABLE "WIN32" ${ARGN})
-ENDFUNCTION(ORXONOX_ADD_EXECUTABLE)
+ENDMACRO(ORXONOX_ADD_EXECUTABLE)
 
 
-FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
+MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   CAPITALISE_NAME(${_target_name} _target_name_capitalised)
 
   # Specify all possible options (either switch or with add. arguments)
@@ -87,13 +87,24 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
-  # GET_HEADER_FILES
+  # Workaround: Source file properties get lost when leaving a subdirectory
+  # Therefore an "H" after a file means we have to set it as HEADER_FILE_ONLY
+  FOREACH(_file ${_arg_SOURCE_FILES})
+    IF(_file STREQUAL "H")
+      SET_SOURCE_FILES_PROPERTIES(${_last_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+    ELSE()
+      SET(_last_file ${_file})
+      LIST(APPEND _${_target_name}_source_files ${_file})
+    ENDIF()
+  ENDFOREACH(_file)
+
+  # Assemble all header files of the library
   IF(_arg_FIND_HEADER_FILES)
-    GET_ALL_HEADER_FILES(_${target_name}_header_files)
+    GET_ALL_HEADER_FILES(_${_target_name}_header_files)
   ENDIF()
 
   # Remove potential duplicates
-  SET(_${_target_name}_files ${_${target_name}_header_files} ${_arg_SOURCE_FILES})
+  SET(_${_target_name}_files ${_${_target_name}_header_files} ${_${_target_name}_source_files})
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
 
   # Generate the source groups
@@ -140,6 +151,12 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET(_arg_STATIC STATIC)
   ENDIF()
 
+  # No warnings needed from third party libraries
+  IF(_arg_ORXONOX_EXTERNAL)
+    REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
+    ADD_COMPILER_FLAGS("-w")
+  ENDIF()
+
   # Set default linking if required
   IF(NOT _arg_SHARED AND NOT _arg_STATIC)
     IF("${ORXONOX_DEFAULT_LINK}" STREQUAL "STATIC")
@@ -170,6 +187,13 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ELSE()
     ADD_EXECUTABLE(${_target_name} ${_arg_WIN32} ${_arg_EXCLUDE_FROM_ALL}
                    ${_${_target_name}_files})
+  ENDIF()
+
+  # Change library prefix to "lib"
+  IF(MSVC AND ${_target_type} STREQUAL "LIBRARY")
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
+      PREFIX "lib"
+    )
   ENDIF()
 
   # MODULE B
@@ -222,7 +246,7 @@ FUNCTION(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
-ENDFUNCTION(TU_ADD_TARGET)
+ENDMACRO(TU_ADD_TARGET)
 
 
 # Creates a helper file with name <name_of_the_library>${ORXONOX_MODULE_EXTENSION}

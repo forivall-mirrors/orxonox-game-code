@@ -61,16 +61,16 @@ namespace orxonox
                 this->pawn_->setWeaponSystem(0);
 
             while (!this->weaponSets_.empty())
-                delete (this->weaponSets_.begin()->second);
+                this->weaponSets_.begin()->second->destroy();
 
             while (!this->weaponPacks_.empty())
-                delete (*this->weaponPacks_.begin());
+                (*this->weaponPacks_.begin())->destroy();
 
             while (!this->weaponSlots_.empty())
-                delete (*this->weaponSlots_.begin());
+                (*this->weaponSlots_.begin())->destroy();
 
             while (!this->munitions_.empty())
-                { delete (this->munitions_.begin()->second); this->munitions_.erase(this->munitions_.begin()); }
+                { this->munitions_.begin()->second->destroy(); this->munitions_.erase(this->munitions_.begin()); }
         }
     }
 

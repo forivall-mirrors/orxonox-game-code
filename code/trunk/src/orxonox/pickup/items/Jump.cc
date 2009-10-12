@@ -83,7 +83,7 @@ namespace orxonox
         if (this->jumpsAvailable_ <= 0)
         {
             this->removeFrom(pawn);
-            delete this;
+            this->destroy();
         }
     }
     /**

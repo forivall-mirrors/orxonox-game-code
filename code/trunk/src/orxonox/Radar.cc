@@ -42,18 +42,11 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(Radar, cycleNavigationFocus, true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(Radar, releaseNavigationFocus, true).accessLevel(AccessLevel::User);
-
-    Radar* Radar::instance_s = 0;
 
     Radar::Radar()
         : focus_(0)
         , objectTypeCounter_(0)
     {
-        assert(instance_s == 0);
-        instance_s = this;
-
         // TODO: make this mapping configurable. Maybe there's a possibility with self configured
         //       configValues..
         this->objectTypes_["Asteroid"] = RadarViewable::Dot;
@@ -78,12 +71,14 @@ namespace orxonox
 
     Radar::~Radar()
     {
-        instance_s = 0;
     }
 
     const RadarViewable* Radar::getFocus()
     {
-        return *(this->itFocus_);
+        if (this->itFocus_)
+            return *(this->itFocus_);
+        else
+            return 0;
     }
 
     RadarViewable::Shape Radar::addObjectDescription(const std::string name)
@@ -100,7 +95,7 @@ namespace orxonox
     {
         SUPER(Radar, tick, dt);
 
-        if (this->focus_ != *(this->itFocus_))
+        if (this->itFocus_ && (this->focus_ != *(this->itFocus_)))
         {
             // focus object was deleted, release focus
             this->focus_ = 0;
@@ -189,28 +184,5 @@ namespace orxonox
         {
             COUT(3) << i++ << ": " << (*it)->getRVWorldPosition() << std::endl;
         }
-    }
-
-
-    /*static*/ Radar& Radar::getInstance()
-    {
-        assert(instance_s);
-        return *instance_s;
-    }
-
-    /*static*/ void Radar::cycleNavigationFocus()
-    {
-        // avoid using getInstance because of the assert().
-        // User might call this fuction even if HUDNavigation doesn't exist.
-        if (instance_s)
-            instance_s->cycleFocus();
-    }
-
-    /*static*/ void Radar::releaseNavigationFocus()
-    {
-        // avoid using getInstance because of the assert().
-        // User might call this fuction even if HUDNavigation doesn't exist.
-        if (instance_s)
-            instance_s->releaseFocus();
     }
 }

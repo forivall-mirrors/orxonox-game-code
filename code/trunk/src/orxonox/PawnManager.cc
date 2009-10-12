@@ -56,12 +56,12 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++count)
         {
             if (!it->isAlive())
-                delete (*(it++));
+                (it++)->destroy();
             else
                 ++it;
         }
 
         if (count == 0)
-            delete this;
+            this->destroy();
     }
 }

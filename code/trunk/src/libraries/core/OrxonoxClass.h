@@ -54,9 +54,17 @@ namespace orxonox
         template <class T>
         friend class ClassIdentifier;
 
+        template <class T>
+        friend class SmartPtr;
+
+        template <class T>
+        friend class WeakPtr;
+
         public:
             OrxonoxClass();
             virtual ~OrxonoxClass();
+
+            void destroy();
 
             /** @brief Function to collect the SetConfigValue-macro calls. */
             void setConfigValues() {};
@@ -71,19 +79,18 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier);
             bool isDirectParentOf(const Identifier* identifier);
 
-            template <class B> bool isA(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isExactlyA(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isChildOf(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isDirectChildOf(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isParentOf(const SubclassIdentifier<B>* identifier);
-            template <class B> bool isDirectParentOf(const SubclassIdentifier<B>* identifier);
-
-            template <class B> bool isA(const SubclassIdentifier<B> identifier);
-            template <class B> bool isExactlyA(const SubclassIdentifier<B> identifier);
-            template <class B> bool isChildOf(const SubclassIdentifier<B> identifier);
-            template <class B> bool isDirectChildOf(const SubclassIdentifier<B> identifier);
-            template <class B> bool isParentOf(const SubclassIdentifier<B> identifier);
-            template <class B> bool isDirectParentOf(const SubclassIdentifier<B> identifier);
+            template <class B> inline bool isA(const SubclassIdentifier<B>* identifier)
+                { return this->isA(*identifier); }
+            template <class B> inline bool isExactlyA(const SubclassIdentifier<B>* identifier)
+                { return this->isExactlyA(*identifier); }
+            template <class B> inline bool isChildOf(const SubclassIdentifier<B>* identifier)
+                { return this->isChildOf(*identifier); }
+            template <class B> inline bool isDirectChildOf(const SubclassIdentifier<B>* identifier)
+                { return this->isDirectChildOf(*identifier); }
+            template <class B> inline bool isParentOf(const SubclassIdentifier<B>* identifier)
+                { return this->isParentOf(*identifier); }
+            template <class B> inline bool isDirectParentOf(const SubclassIdentifier<B>* identifier)
+                { return this->isDirectParentOf(*identifier); }
 
             bool isA(const OrxonoxClass* object);
             bool isExactlyA(const OrxonoxClass* object);
@@ -92,6 +99,9 @@ namespace orxonox
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
 
+            inline unsigned int getReferenceCount() const
+                { return this->referenceCount_; }
+
             /**
             @brief
                 Returns a valid pointer of any derived type that is
@@ -99,27 +109,47 @@ namespace orxonox
             @return
                 Returns NULL if the no pointer was found.
             */
-            template <class T>
-            FORCEINLINE T* getDerivedPointer(unsigned int classID)
+            FORCEINLINE void* getDerivedPointer(unsigned int classID)
             {
                 for (int i = this->objectPointers_.size() - 1; i >= 0; --i)
                 {
                     if (this->objectPointers_[i].first == classID)
-                        return static_cast<T*>(this->objectPointers_[i].second);
+                        return this->objectPointers_[i].second;
                 }
                 return NULL;
             }
-            //! Const version of getDerivedPointer
-            template <class T>
-            FORCEINLINE const T* getDerivedPointer(unsigned int classID) const
-            {
-                return const_cast<OrxonoxClass*>(this)->getDerivedPointer<T>(classID);
-            }
+
+            //! Version of getDerivedPointer with template
+            template <class T> FORCEINLINE T* getDerivedPointer(unsigned int classID)
+            {   return static_cast<T*>(this->getDerivedPointer(classID));   }
+            //! Const version of getDerivedPointer with template
+            template <class T> FORCEINLINE const T* getDerivedPointer(unsigned int classID) const
+            {   return const_cast<OrxonoxClass*>(this)->getDerivedPointer<T>(classID);   }
 
         private:
+            /** @brief Increments the reference counter (for smart pointers). */
+            inline void incrementReferenceCount()
+                { ++this->referenceCount_; }
+            /** @brief Decrements the reference counter (for smart pointers). */
+            inline void decrementReferenceCount()
+                { --this->referenceCount_; if (this->referenceCount_ == 0 && this->requestedDestruction_) { delete this; } }
+                
+            /** @brief Register a weak pointer which points to this object. */
+            template <class T>
+            inline void registerWeakPtr(WeakPtr<T>* pointer)
+                { this->weakPointers_.insert(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
+            /** @brief Unegister a weak pointer which pointed to this object before. */
+            template <class T>
+            inline void unregisterWeakPtr(WeakPtr<T>* pointer)
+                { this->weakPointers_.erase(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
+
             Identifier* identifier_;                   //!< The Identifier of the object
             std::set<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList* metaList_;                 //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
+            int referenceCount_;                       //!< Counts the references from smart pointers to this object
+            bool requestedDestruction_;                //!< Becomes true after someone called delete on this object
+            std::set<WeakPtr<OrxonoxClass>*> weakPointers_; //!< All weak pointers which point to this object (and like to get notified if it dies)
+
             //! 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };

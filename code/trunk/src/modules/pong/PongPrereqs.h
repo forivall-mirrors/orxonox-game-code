@@ -27,18 +27,21 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the pong module
 */
 
 #ifndef _PongPrereqs_H__
 #define _PongPrereqs_H__
 
 #include "OrxonoxConfig.h"
+#include "OrxonoxPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef PONG_SHARED_BUILD
 #    define _PongExport __declspec(dllexport)

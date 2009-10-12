@@ -58,7 +58,7 @@ namespace orxonox
             std::string material_;
             float speed_;
             float delay_;
-            Timer<EnergyDrink> delayTimer_;
+            Timer delayTimer_;
     };
 }
 

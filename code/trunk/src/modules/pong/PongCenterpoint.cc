@@ -43,6 +43,7 @@ namespace orxonox
         this->width_ = 200;
         this->height_ = 120;
         this->ballspeed_ = 100;
+        this->ballaccfactor_ = 1.0;
         this->batspeed_ = 60;
         this->batlength_ = 0.25;
 
@@ -57,6 +58,7 @@ namespace orxonox
         XMLPortParam(PongCenterpoint, "balltemplate", setBalltemplate, getBalltemplate, xmlelement, mode);
         XMLPortParam(PongCenterpoint, "battemplate", setBattemplate, getBattemplate, xmlelement, mode);
         XMLPortParam(PongCenterpoint, "ballspeed", setBallSpeed, getBallSpeed, xmlelement, mode);
+        XMLPortParam(PongCenterpoint, "ballaccfactor", setBallAccelerationFactor, getBallAccelerationFactor, xmlelement, mode);
         XMLPortParam(PongCenterpoint, "batspeed", setBatSpeed, getBatSpeed, xmlelement, mode);
         XMLPortParam(PongCenterpoint, "batlength", setBatLength, getBatLength, xmlelement, mode);
     }
@@ -72,7 +74,7 @@ namespace orxonox
     {
         if (this->getGametype() && this->getGametype()->isA(Class(Pong)))
         {
-            Pong* pong_gametype = orxonox_cast<Pong*>(this->getGametype());
+            Pong* pong_gametype = orxonox_cast<Pong*>(this->getGametype().get());
             pong_gametype->setCenterpoint(this);
         }
     }

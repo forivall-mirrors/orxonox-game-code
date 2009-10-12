@@ -40,15 +40,17 @@ namespace orxonox
 {
     class _CoreExport GameMode
     {
-        friend class Game;
+        friend class Core;
 
         public:
             static bool showsGraphics() { return bShowsGraphics_s; }
+            static bool playsSound()    { return bPlaysSound_s; }
             static bool hasServer()     { return bHasServer_s; }
             static bool isClient()      { return bIsClient_s; }
             static bool isStandalone()  { return bIsStandalone_s; }
             static bool isMaster()      { return bIsMaster_s; }
 
+            static void setPlaysSound   (bool val) { bPlaysSound_s    = val; }
             static void setHasServer    (bool val) { bHasServer_s     = val; updateIsMaster(); }
             static void setIsClient     (bool val) { bIsClient_s      = val; updateIsMaster(); }
             static void setIsStandalone (bool val) { bIsStandalone_s  = val; updateIsMaster(); }
@@ -64,6 +66,7 @@ namespace orxonox
             }
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
+            static bool bPlaysSound_s;                      //!< global variable that tells whether to sound works
             static bool bHasServer_s;                       //!< global variable that tells whether this is a server
             static bool bIsClient_s;
             static bool bIsStandalone_s;

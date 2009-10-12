@@ -27,20 +27,21 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the objects module
 */
 
 #ifndef _ObjectsPrereqs_H__
 #define _ObjectsPrereqs_H__
 
 #include "OrxonoxConfig.h"
-
 #include "OrxonoxPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef OBJECTS_SHARED_BUILD
 #    define _ObjectsExport __declspec(dllexport)
@@ -75,15 +76,17 @@ namespace orxonox
     class SphereCollisionShape;
 
     // eventsystem
-    class EventListener;
     class EventDispatcher;
+    class EventFilter;
+    class EventListener;
+    class EventName;
     class EventTarget;
 
     // triggers
-    class Trigger;
+    class CheckPoint;
     class DistanceTrigger;
     class EventTrigger;
-    class CheckPoint;
+    class Trigger;
 }
 
 #endif /* _ObjectsPrereqs_H__ */

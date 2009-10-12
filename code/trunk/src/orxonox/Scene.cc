@@ -41,8 +41,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
+#include "core/GUIManager.h"
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
+#include "Radar.h"
 #include "worldentities/WorldEntity.h"
 
 namespace orxonox
@@ -53,7 +55,7 @@ namespace orxonox
     {
         RegisterObject(Scene);
 
-        this->setScene(this);
+        this->setScene(SmartPtr<Scene>(this, false), OBJECTID_UNKNOWN);
         this->bShadows_ = true;
 
         if (GameMode::showsGraphics())
@@ -61,12 +63,16 @@ namespace orxonox
             assert(Ogre::Root::getSingletonPtr());
             this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
+
+            this->radar_ = new Radar();
         }
         else
         {
             // create a dummy SceneManager of our own since we don't have Ogre::Root.
             this->sceneManager_ = new Ogre::DefaultSceneManager("");
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
+
+            this->radar_ = 0;
         }
 
         // No physics yet, XMLPort will do that.
@@ -91,6 +97,9 @@ namespace orxonox
                 Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
             else
                 delete this->sceneManager_;
+
+            if (this->radar_)
+                this->radar_->destroy();
 
             this->setPhysicalWorld(false);
         }
@@ -274,7 +283,7 @@ namespace orxonox
     void Scene::addObject(BaseObject* object)
     {
         this->objects_.push_back(object);
-        object->setScene(this);
+        object->setScene(this, this->getObjectID());
     }
 
     BaseObject* Scene::getObject(unsigned int index) const

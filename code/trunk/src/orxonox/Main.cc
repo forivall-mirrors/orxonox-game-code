@@ -30,13 +30,11 @@
 /**
 @file
 @brief
-    The main function of Orxonox.
+    The main function of Orxonox (but not the entry point of the program!)
 */
 
 #include "OrxonoxPrereqs.h"
-#include "SpecialConfig.h"
 
-#include "util/Exception.h"
 #include "core/CommandLine.h"
 #include "core/Game.h"
 #include "core/LuaState.h"
@@ -49,6 +47,7 @@ SetCommandLineSwitch(server).information("Start in server mode");
 SetCommandLineSwitch(client).information("Start in client mode");
 SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
 SetCommandLineSwitch(standalone).information("Start in standalone mode");
+SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
 
 DeclareToluaInterface(Orxonox);
 
@@ -56,7 +55,7 @@ namespace orxonox
 {
     /**
     @brief
-        Main method. Game starts here (except for static initialisations).
+        Starting point of orxonox (however not the entry point of the program!)
     */
     int main(const std::string& strCmdLine)
     {
@@ -66,13 +65,9 @@ namespace orxonox
         "root"
         " graphics"
         "  mainMenu"
-        "  standalone"
+        "  standalone,server,client"
         "   level"
-        "  server"
-        "   level"
-        "  client"
-        "   level"
-        " dedicated"
+        " dedicated,dedicatedClient"
         "  level"
         " ioConsole"
         );
@@ -88,6 +83,8 @@ namespace orxonox
             Game::getInstance().requestStates("graphics, client, level");
         else if (CommandLine::getValue("dedicated").getBool())
             Game::getInstance().requestStates("dedicated, level");
+        else if (CommandLine::getValue("dedicatedClient").getBool())
+            Game::getInstance().requestStates("dedicatedClient, level");
         else if (CommandLine::getValue("console").getBool())
             Game::getInstance().requestStates("ioConsole");
         else

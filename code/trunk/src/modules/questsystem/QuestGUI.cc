@@ -78,7 +78,7 @@ namespace orxonox {
         this->windows_.clear();
         
         if(this->root_ != NULL)
-            delete this->root_;
+            this->root_->destroy();
     }
 
     /**
@@ -145,7 +145,7 @@ namespace orxonox {
             node->getName(*str);
             COUT(3) << "Clearing Node '" << *str << "' ..." << std::endl;
             delete str;
-            delete node;
+            node->destroy();
         }
         this->nodes_.clear();
 

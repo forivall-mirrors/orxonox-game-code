@@ -48,6 +48,7 @@ namespace orxonox
         this->ballDirection_ = Vector2::ZERO;
         this->ballEndPosition_ = 0;
         this->randomOffset_ = 0;
+        this->bChangedRandomOffset_ = false;
         this->relHysteresisOffset_ = 0.02f;
         this->strength_ = 0.5f;
         this->movement_ = 0;
@@ -59,8 +60,8 @@ namespace orxonox
 
     PongAI::~PongAI()
     {
-        for (std::list<std::pair<Timer<PongAI>*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
-            delete (*it).first;
+        for (std::list<std::pair<Timer*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
+            (*it).first->destroy();
     }
 
     void PongAI::setConfigValues()
@@ -112,6 +113,7 @@ namespace orxonox
                 this->ballDirection_.y = sgn(ballvel.z);
                 this->ballEndPosition_ = 0;
                 this->randomOffset_ = 0;
+                this->bChangedRandomOffset_ = false;
 
                 this->calculateRandomOffset();
                 this->calculateBallEndPosition();
@@ -127,6 +129,18 @@ namespace orxonox
                 this->calculateBallEndPosition();
                 delay = true;
                 this->bOscillationAvoidanceActive_ = false;
+            }
+            
+            // If the ball is close enough, calculate another random offset to accelerate the ball
+            if (!this->bChangedRandomOffset_)
+            {
+                float timetohit = (-this->ball_->getPosition().x + this->ball_->getFieldDimension().x / 2 * sgn(this->ball_->getVelocity().x)) / this->ball_->getVelocity().x;
+                if (timetohit < 0.05)
+                {
+                    this->bChangedRandomOffset_ = true;
+                    if (rnd() < this->strength_)
+                        this->calculateRandomOffset();
+                }
             }
 
             // Move to the predicted end position with an additional offset (to hit the ball with the side of the bat)
@@ -183,33 +197,100 @@ namespace orxonox
     {
         Vector3 position = this->ball_->getPosition();
         Vector3 velocity = this->ball_->getVelocity();
+        Vector3 acceleration = this->ball_->getAcceleration();
         Vector2 dimension = this->ball_->getFieldDimension();
 
-        // calculate end-height: current height + slope * distance
-        this->ballEndPosition_ = position.z + velocity.z / velocity.x * (-position.x + dimension.x / 2 * sgn(velocity.x));
-
-        // Calculate bounces
-        for (float limit = 0.35f; limit < this->strength_ || this->strength_ > 0.99f; limit += 0.4f)
+        // Calculate bounces. The number of predicted bounces is limited by the AIs strength
+        for (float limit = -0.05f; limit < this->strength_ || this->strength_ > 0.99f; limit += 0.4f)
         {
-            // Calculate a random prediction error, based on the vertical speed of the ball and the strength of the AI
-            float randomError = rnd(-1, 1) * dimension.y * (velocity.z / velocity.x / PongBall::MAX_REL_Z_VELOCITY) * (1 - this->strength_);
+            // calculate the time until the ball reaches the other side
+            float totaltime = (-position.x + dimension.x / 2 * sgn(velocity.x)) / velocity.x;
+            
+            // calculate wall bounce position (four possible solutions of the equation: pos.z + vel.z*t + acc.z/2*t^2 = +/- dim.z/2)
+            float bouncetime = totaltime;
+            bool bUpperWall = false;
+            
+            if (acceleration.z == 0)
+            {
+                if (velocity.z > 0)
+                {
+                    bUpperWall = true;
+                    bouncetime = (dimension.y/2 - position.z) / velocity.z;
+                }
+                else if (velocity.z < 0)
+                {
+                    bUpperWall = false;
+                    bouncetime = (-dimension.y/2 - position.z) / velocity.z;
+                }
+            }
+            else
+            {
+                // upper wall
+                float temp = velocity.z*velocity.z + 2*acceleration.z*(dimension.y/2 - position.z);
+                if (temp >= 0)
+                {
+                    float t1 = (sqrt(temp) - velocity.z) / acceleration.z;
+                    float t2 = (sqrt(temp) + velocity.z) / acceleration.z * (-1);
+                    if (t1 > 0 && t1 < bouncetime)
+                    {
+                        bouncetime = t1;
+                        bUpperWall = true;
+                    }
+                    if (t2 > 0 && t2 < bouncetime)
+                    {
+                        bouncetime = t2;
+                        bUpperWall = true;
+                    }
+                }
+                // lower wall
+                temp = velocity.z*velocity.z - 2*acceleration.z*(dimension.y/2 + position.z);
+                if (temp >= 0)
+                {
+                    float t1 = (sqrt(temp) - velocity.z) / acceleration.z;
+                    float t2 = (sqrt(temp) + velocity.z) / acceleration.z * (-1);
+                    if (t1 > 0 && t1 < bouncetime)
+                    {
+                        bouncetime = t1;
+                        bUpperWall = false;
+                    }
+                    if (t2 > 0 && t2 < bouncetime)
+                    {
+                        bouncetime = t2;
+                        bUpperWall = false;
+                    }
+                }
+            }
 
-            // Bounce from the lower bound
-            if (this->ballEndPosition_ > dimension.y / 2)
+            if (bouncetime < totaltime)
             {
-                // Mirror the predicted position at the upper bound and add some random error
-                this->ballEndPosition_ = dimension.y - this->ballEndPosition_ + randomError;
-                continue;
+                // Calculate a random prediction error, based on the vertical speed of the ball and the strength of the AI
+                float randomErrorX = rnd(-1, 1) * dimension.y * (velocity.z / velocity.x / PongBall::MAX_REL_Z_VELOCITY) * (1 - this->strength_);
+                float randomErrorZ = rnd(-1, 1) * dimension.y * (velocity.z / velocity.x / PongBall::MAX_REL_Z_VELOCITY) * (1 - this->strength_);
+
+                // ball bounces after <bouncetime> seconds, update the position and continue
+                velocity.z = velocity.z + acceleration.z * bouncetime;
+                
+                if (bUpperWall)
+                {
+                    position.z = dimension.y / 2;
+                    velocity.z = -fabs(velocity.z) + fabs(randomErrorZ);
+                }
+                else
+                {
+                    position.z = -dimension.y / 2;
+                    velocity.z = fabs(velocity.z) - fabs(randomErrorZ);
+                }
+                    
+                position.x = position.x + velocity.x * bouncetime + randomErrorX;
+                this->ballEndPosition_ = position.z;
             }
-            // Bounce from the upper bound
-            if (this->ballEndPosition_ < -dimension.y / 2)
+            else
             {
-                // Mirror the predicted position at the lower bound and add some random error
-                this->ballEndPosition_ = -dimension.y - this->ballEndPosition_ + randomError;
-                continue;
+                // ball doesn't bounce, calculate the end position and return
+                // calculate end-height: current height + slope * distance incl. acceleration
+                this->ballEndPosition_ = position.z + velocity.z * totaltime + acceleration.z / 2 * totaltime * totaltime;
+                return;
             }
-            // No bounce - break
-            break;
         }
     }
 
@@ -230,8 +311,8 @@ namespace orxonox
             float delay = MAX_REACTION_TIME * (1 - this->strength_);
 
             // Add a new Timer
-            Timer<PongAI>* timer = new Timer<PongAI>(delay, false, this, createExecutor(createFunctor(&PongAI::delayedMove)));
-            this->reactionTimers_.push_back(std::pair<Timer<PongAI>*, char>(timer, direction));
+            Timer* timer = new Timer(delay, false, createExecutor(createFunctor(&PongAI::delayedMove, this)));
+            this->reactionTimers_.push_back(std::pair<Timer*, char>(timer, direction));
         }
         else
         {
@@ -245,8 +326,8 @@ namespace orxonox
         this->movement_ = this->reactionTimers_.front().second;
 
         // Destroy the timer and remove it from the list
-        Timer<PongAI>* timer = this->reactionTimers_.front().first;
-        delete timer;
+        Timer* timer = this->reactionTimers_.front().first;
+        timer->destroy();
 
         this->reactionTimers_.pop_front();
     }

@@ -49,7 +49,7 @@ namespace orxonox
         this->bReloading_ = false;
         this->reloadingWeaponmode_ = WeaponSystem::WEAPON_MODE_UNASSIGNED;
 
-        this->reloadTimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&Weapon::reloaded)));
+        this->reloadTimer_.setTimer(0.0f, false, createExecutor(createFunctor(&Weapon::reloaded, this)));
         this->reloadTimer_.stopTimer();
     }
 
@@ -61,7 +61,7 @@ namespace orxonox
                 this->weaponPack_->removeWeapon(this);
 
             for (std::multimap<unsigned int, WeaponMode*>::iterator it = this->weaponmodes_.begin(); it != this->weaponmodes_.end(); ++it)
-                delete it->second;
+                it->second->destroy();
         }
     }
 

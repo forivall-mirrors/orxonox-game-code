@@ -36,6 +36,7 @@
 #include <set>
 
 #include "core/CoreIncludes.h"
+#include "core/ScopedSingletonManager.h"
 #include "Notification.h"
 #include "interfaces/NotificationListener.h"
 
@@ -46,6 +47,7 @@ namespace orxonox
     const std::string NotificationManager::NONE = "none";
 
     NotificationManager* NotificationManager::singletonPtr_s = NULL;
+    ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
     /**
     @brief

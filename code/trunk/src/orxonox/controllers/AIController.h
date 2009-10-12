@@ -49,7 +49,7 @@ namespace orxonox
             virtual void action();
 
         private:
-            Timer<AIController> actionTimer_;
+            Timer actionTimer_;
     };
 }
 

@@ -144,7 +144,7 @@ namespace orxonox
     {
         ControllableEntity::setPlayer(player);
 
-//        this->setObjectMode(ObjectDirection::ToClient);
+//        this->setSyncMode(ObjectDirection::ToClient);
     }
 
     void Spectator::startLocalHumanControl()

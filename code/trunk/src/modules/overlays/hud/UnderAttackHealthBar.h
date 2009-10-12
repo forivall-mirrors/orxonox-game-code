@@ -61,7 +61,7 @@ namespace orxonox
 
             PlayerInfo* owner_;
             OverlayText* text_;
-            Timer<UnderAttackHealthBar> inittimer_;
+            Timer inittimer_;
     };
 }
 #endif /* _UnderAttackHealthBar_H__ */

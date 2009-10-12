@@ -29,6 +29,7 @@
 #include "Pong.h"
 
 #include "core/CoreIncludes.h"
+#include "core/EventIncludes.h"
 #include "core/Executor.h"
 #include "PongCenterpoint.h"
 #include "PongBall.h"
@@ -38,6 +39,9 @@
 
 namespace orxonox
 {
+    CreateEventName(PongCenterpoint, right);
+    CreateEventName(PongCenterpoint, left);
+    
     CreateUnloadableFactory(Pong);
 
     Pong::Pong(BaseObject* creator) : Deathmatch(creator)
@@ -51,7 +55,7 @@ namespace orxonox
 
         this->setHUDTemplate("PongHUD");
 
-        this->starttimer_.setTimer(1.0, false, this, createExecutor(createFunctor(&Pong::startBall)));
+        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Pong::startBall, this)));
         this->starttimer_.stopTimer();
 
         this->botclass_ = Class(PongBot);
@@ -71,6 +75,7 @@ namespace orxonox
             this->ball_->setPosition(0, 0, 0);
             this->ball_->setFieldDimension(this->center_->getFieldDimension());
             this->ball_->setSpeed(0);
+            this->ball_->setAccelerationFactor(this->center_->getBallAccelerationFactor());
             this->ball_->setBatLength(this->center_->getBatLength());
 
             if (!this->bat_[0])
@@ -119,7 +124,7 @@ namespace orxonox
     {
         if (this->ball_)
         {
-            delete this->ball_;
+            this->ball_->destroy();
             this->ball_ = 0;
         }
 
@@ -154,16 +159,20 @@ namespace orxonox
 
         if (this->center_)
         {
-            this->center_->fireEvent();
-
+            if (player == this->getRightPlayer())
+                this->center_->fireEvent(FireEventName(PongCenterpoint, right));
+            else if (player == this->getLeftPlayer())
+                this->center_->fireEvent(FireEventName(PongCenterpoint, left));
+            
             if (player)
-                this->gtinfo_.sendAnnounceMessage(player->getName() + " scored");
+                this->gtinfo_->sendAnnounceMessage(player->getName() + " scored");
         }
 
         if (this->ball_)
         {
             this->ball_->setPosition(Vector3::ZERO);
             this->ball_->setVelocity(Vector3::ZERO);
+            this->ball_->setAcceleration(Vector3::ZERO);
             this->ball_->setSpeed(0);
         }
 

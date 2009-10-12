@@ -49,7 +49,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             for (size_t i = 0; i < this->waypoints_.size(); ++i)
-                delete this->waypoints_[i];
+                this->waypoints_[i]->destroy();
         }
     }
 
