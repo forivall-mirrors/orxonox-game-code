@@ -102,30 +102,19 @@ namespace orxonox
   void ServerConnection::disconnectClient(ClientInformation *client)
   {
     Connection::disconnectPeer( client->getPeer() );
-    delete client;
-  }
-  
-  void ServerConnection::disconnectPeer( ENetEvent* event )
-  {
-    COUT(4) << "removing client from list" << std::endl;
-    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
-    if(!client)
-      return;
-    else
-      ServerConnection::disconnectClient( client );
   }
   
   void ServerConnection::disconnectClient(int clientID){
     ClientInformation *client = ClientInformation::findClient(clientID);
     if(client)
-      disconnectClient(client);
+      ServerConnection::disconnectClient(client);
   }
 
   void ServerConnection::disconnectClients() {
     ENetEvent event;
     ClientInformation *temp = ClientInformation::getBegin();
     while(temp!=0){
-      disconnectClient( temp );
+      ServerConnection::disconnectClient( temp );
       temp = temp->next();
     }
     temp = ClientInformation::getBegin();
@@ -140,8 +129,7 @@ namespace orxonox
           enet_packet_destroy(event.packet);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
-          if(ClientInformation::findClient(&(event.peer->address)))
-            delete ClientInformation::findClient(&(event.peer->address));
+          removePeer( &event );
           temp = ClientInformation::getBegin();
           break;
         }

@@ -74,18 +74,16 @@ namespace orxonox
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
         XMLPortObject(QuestEffectBeacon, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
 
+        XMLPortEventState(QuestEffectBeacon, PlayerTrigger, "execute", execute, xmlelement, mode);
+
         COUT(3) << "New QuestEffectBeacon created." << std::endl;
     }
 
-    /**
-    @brief
-        Processes an event for this QuestEffectBeacon.
-    */
-    void QuestEffectBeacon::processEvent(Event& event)
+    void QuestEffectBeacon::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(QuestEffectBeacon, processEvent, event);
+        SUPER(QuestEffectBeacon, XMLEventPort, xmlelement, mode);
 
-        ORXONOX_SET_SUBCLASS_EVENT(QuestEffectBeacon, "execute", execute, event, PlayerTrigger);
+        XMLPortEventState(QuestEffectBeacon, PlayerTrigger, "execute", execute, xmlelement, mode);
     }
 
     /**

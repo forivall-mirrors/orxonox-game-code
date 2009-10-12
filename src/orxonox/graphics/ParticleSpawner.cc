@@ -70,11 +70,11 @@ namespace orxonox
         XMLPortParam(ParticleSpawner, "destroydelay", setDestroydelay,     getDestroydelay,     xmlelement, mode).defaultValues(0.0f);
     }
 
-    void ParticleSpawner::processEvent(Event& event)
+    void ParticleSpawner::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(ParticleSpawner, processEvent, event);
+        SUPER(ParticleSpawner, XMLEventPort, xmlelement, mode);
 
-        ORXONOX_SET_EVENT(ParticleSpawner, "spawn", spawn, event);
+        XMLPortEventState(ParticleSpawner, BaseObject, "spawn", spawn, xmlelement, mode);
     }
 
     void ParticleSpawner::configure(float lifetime, float startdelay, float destroydelay, bool autodestroy)
@@ -87,22 +87,22 @@ namespace orxonox
 
     void ParticleSpawner::startParticleSpawner()
     {
-        if (!this->particles_)
-            return;
-
         this->setActive(false);
 
         if (this->bForceDestroy_ || this->bSuppressStart_)
+        {
+            this->timer_.stopTimer();
             return;
+        }
 
-        this->timer_.setTimer(this->startdelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::fireParticleSpawner)));
+        this->timer_.setTimer(this->startdelay_, false, createExecutor(createFunctor(&ParticleSpawner::fireParticleSpawner, this)));
     }
 
     void ParticleSpawner::fireParticleSpawner()
     {
         this->setActive(true);
         if (this->lifetime_ != 0)
-            this->timer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&ParticleSpawner::stopParticleSpawner)));
+            this->timer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&ParticleSpawner::stopParticleSpawner, this)));
     }
 
     void ParticleSpawner::stopParticleSpawner()
@@ -115,16 +115,16 @@ namespace orxonox
             this->detachFromParent();
 
             if (!this->timer_.isActive() || this->timer_.getRemainingTime() > this->destroydelay_)
-                this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
+                this->timer_.setTimer(this->destroydelay_, false, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner, this)));
         }
         else if (this->bLoop_)
         {
-            this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::startParticleSpawner)));
+            this->timer_.setTimer(this->destroydelay_, false, createExecutor(createFunctor(&ParticleSpawner::startParticleSpawner, this)));
         }
     }
 
     void ParticleSpawner::destroyParticleSpawner()
     {
-        delete this;
+        this->destroy();
     }
 }

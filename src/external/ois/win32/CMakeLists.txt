@@ -6,9 +6,11 @@ ADD_SOURCE_FILES(OIS_FILES
   Win32Mouse.h
   Win32Prereqs.h
 
+COMPILATION_BEGIN OISWin32Compilation.cpp
   Win32ForceFeedback.cpp
   Win32InputManager.cpp
   Win32JoyStick.cpp
   Win32KeyBoard.cpp
   Win32Mouse.cpp
+COMPILATION_END
 )

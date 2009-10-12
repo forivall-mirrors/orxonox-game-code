@@ -17,22 +17,20 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET(TINYXML++_FILES
+SET_SOURCE_FILES(TINYXML++_FILES
   ticpp.h
   ticpprc.h
   tinystr.h
   tinyxml.h
 
+COMPILATION_BEGIN TicppCompilation.cpp
   ticpp.cpp
   tinystr.cpp
   tinyxml.cpp
   tinyxmlerror.cpp
   tinyxmlparser.cpp
+COMPILATION_END
 )
-
-# No warnings needed from third party libraries
-REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-ADD_COMPILER_FLAGS("-w")
 
 ORXONOX_ADD_LIBRARY(tinyxml++_orxonox
   ORXONOX_EXTERNAL

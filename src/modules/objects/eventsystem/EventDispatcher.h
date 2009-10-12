@@ -46,11 +46,11 @@ namespace orxonox
 
             virtual void processEvent(Event& event);
 
-            void addTarget(EventTarget* target);
-            EventTarget* getTarget(unsigned int index) const;
+            void addTarget(BaseObject* target);
+            BaseObject* getTarget(unsigned int index) const;
 
         private:
-            std::list<EventTarget*> targets_;
+            std::list<BaseObject*> targets_;
     };
 }
 

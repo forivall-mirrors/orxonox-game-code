@@ -35,6 +35,10 @@
 #include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/Map.h"
+#include "graphics/Camera.h"
+#include "sound/SoundManager.h"
+#include "Radar.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -55,6 +59,8 @@ namespace orxonox
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
     SetConsoleCommand(HumanController, dropItems,     true);
     SetConsoleCommand(HumanController, useItem,       true);
+    SetConsoleCommand(HumanController, cycleNavigationFocus,   true);
+    SetConsoleCommand(HumanController, releaseNavigationFocus, true);
 
     CreateUnloadableFactory(HumanController);
 
@@ -70,6 +76,22 @@ namespace orxonox
     HumanController::~HumanController()
     {
         HumanController::localController_s = 0;
+    }
+
+    void HumanController::tick(float dt)
+    {
+        if (GameMode::playsSound() && HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        {
+            // Update sound listener
+            Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
+            if (camera)
+            {
+                SoundManager::getInstance().setListenerPosition(camera->getWorldPosition());
+                SoundManager::getInstance().setListenerOrientation(camera->getWorldOrientation());
+            }
+            else
+                COUT(3) << "HumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
+        }
     }
 
     void HumanController::moveFrontBack(const Vector2& value)
@@ -198,5 +220,17 @@ namespace orxonox
             return orxonox_cast<Pawn*>(HumanController::localController_s->getControllableEntity());
         else
             return NULL;
+    }
+
+    void HumanController::cycleNavigationFocus()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->getScene()->getRadar()->cycleFocus();
+    }
+
+    void HumanController::releaseNavigationFocus()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->getScene()->getRadar()->releaseFocus();
     }
 }

@@ -110,7 +110,7 @@ namespace orxonox
                 { return this->textoverlay_->getSpaceWidth(); }
 
         private:
-            Pawn* owner_;
+            WeakPtr<Pawn> owner_;
             OverlayText* textoverlay_;
             bool bUseBarColour_;
             ColourValue textColour_;

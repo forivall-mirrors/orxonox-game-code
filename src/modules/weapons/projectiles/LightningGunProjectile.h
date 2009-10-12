@@ -49,7 +49,7 @@ namespace orxonox
             void changeTexture();
             unsigned int textureIndex_;
             unsigned int maxTextureIndex_;
-            Timer<LightningGunProjectile> textureTimer_;
+            Timer textureTimer_;
             std::string materialBase_;
       private:
             void registerVariables();

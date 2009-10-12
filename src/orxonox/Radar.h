@@ -45,21 +45,11 @@
 
 namespace orxonox
 {
-    /**
-    @brief This class merely ensures that no one can inherit from Radar.
-    */
-    class _OrxonoxExport RadarBase
-    {
-    private:
-        friend class Radar;
-        RadarBase() { }
-    };
-
-    class _OrxonoxExport Radar : public Tickable, private virtual RadarBase
+    class _OrxonoxExport Radar : public Tickable
     {
     public:
         Radar();
-        ~Radar();
+        virtual ~Radar();
 
         virtual void tick(float dt);
 
@@ -68,25 +58,18 @@ namespace orxonox
 
         void listObjects() const;
 
-        static Radar& getInstance();
-        static Radar* getInstancePtr() { return instance_s; }
-
-        static void cycleNavigationFocus();
-        static void releaseNavigationFocus();
+        void releaseFocus();
+        void cycleFocus();
 
     private:
         Radar(Radar& instance);
 
-        void releaseFocus();
         void updateFocus();
-        void cycleFocus();
 
         ObjectListIterator<RadarViewable> itFocus_;
         RadarViewable* focus_;
         std::map<std::string, RadarViewable::Shape> objectTypes_;
         int objectTypeCounter_;
-
-        static Radar* instance_s;
     };
 }
 #endif /* _Radar_H__ */

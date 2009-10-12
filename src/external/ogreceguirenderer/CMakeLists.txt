@@ -17,19 +17,17 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET(OCR_FILES
+SET_SOURCE_FILES(OCR_FILES
   OgreCEGUIRenderer.h
   OgreCEGUIResourceProvider.h
   OgreCEGUITexture.h
 
+COMPILATION_BEGIN OgreCEGUIRendererCompilation.cpp
   OgreCEGUIRenderer.cpp
   OgreCEGUIResourceProvider.cpp
   OgreCEGUITexture.cpp
+COMPILATION_END
 )
-
-# No warnings needed from third party libraries
-REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-ADD_COMPILER_FLAGS("-w")
 
 ORXONOX_ADD_LIBRARY(ogreceguirenderer_orxonox
   ORXONOX_EXTERNAL

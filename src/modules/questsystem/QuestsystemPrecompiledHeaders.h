@@ -50,8 +50,8 @@
 #include <OgreQuaternion.h>  // 16
 #include <OgreColourValue.h> // 16
 
-#include <tinyxml/ticpp.h>        // 14
-#include "util/ScopedSingleton.h" // 13
+#include <tinyxml/ticpp.h>   // 14
+#include "util/Singleton.h"  // 13
 
 ///////////////////////////////////////////
 /////       All Rebuild Headers       /////

@@ -249,13 +249,10 @@
     #define SUPER_changedVisibility(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
 
-    #define SUPER_processEvent(classname, functionname, ...) \
+    #define SUPER_XMLEventPort(classname, functionname, ...) \
         SUPER_ARGS(classname, functionname, __VA_ARGS__)
 
     #define SUPER_changedScale(classname, functionname, ...) \
-        SUPER_NOARGS(classname, functionname)
-
-    #define SUPER_changedMainState(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
 
     #define SUPER_changedOwner(classname, functionname, ...) \
@@ -496,31 +493,27 @@ namespace orxonox
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(4, processEvent, true, Event& event)
-            (event)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(4, XMLEventPort, true, Element& xmlelement, XMLPort::Mode mode)
+            (xmlelement, mode)
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(5, changedScale, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(6, changedMainState, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(6, changedOwner, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(7, changedOwner, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(7, changedOverlayGroup, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(8, changedOverlayGroup, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(8, changedName, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(9, changedName, false)
-            ()
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(10, changedGametype, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(9, changedGametype, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
@@ -570,9 +563,8 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(tick);
     SUPER_INTRUSIVE_DECLARATION(changedActivity);
     SUPER_INTRUSIVE_DECLARATION(changedVisibility);
-    SUPER_INTRUSIVE_DECLARATION(processEvent);
+    SUPER_INTRUSIVE_DECLARATION(XMLEventPort);
     SUPER_INTRUSIVE_DECLARATION(changedScale);
-    SUPER_INTRUSIVE_DECLARATION(changedMainState);
     SUPER_INTRUSIVE_DECLARATION(changedOwner);
     SUPER_INTRUSIVE_DECLARATION(changedOverlayGroup);
     SUPER_INTRUSIVE_DECLARATION(changedName);

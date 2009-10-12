@@ -40,12 +40,11 @@
 #include <map>
 #include <string>
 
-#include "util/ScopedSingleton.h"
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-
     /**
     @brief
         The Singleton NotificationManager functions as a gateway between Notifications and NotificationListeners.
@@ -53,9 +52,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport NotificationManager : public ScopedSingleton<NotificationManager, ScopeID::GSLevel>, public OrxonoxClass
+    class _QuestsystemExport NotificationManager : public Singleton<NotificationManager>, public OrxonoxClass
     {
-            friend class ScopedSingleton<NotificationManager, ScopeID::GSLevel>;
+            friend class Singleton<NotificationManager>;
         public:
             NotificationManager();
             virtual ~NotificationManager();

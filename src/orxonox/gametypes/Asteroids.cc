@@ -53,7 +53,7 @@ namespace orxonox
 
         if (this->time_ < 0 && !this->hasEnded() && this->timerIsActive_)
         {
-            this->gtinfo_.sendAnnounceMessage("Time's up - you have lost the match!");
+            this->gtinfo_->sendAnnounceMessage("Time's up - you have lost the match!");
             this->end();
         }
     }
@@ -62,7 +62,7 @@ namespace orxonox
     {
         if (victim && victim->getPlayer())
         {
-            this->gtinfo_.sendAnnounceMessage("You're dead - you have lost the match!");
+            this->gtinfo_->sendAnnounceMessage("You're dead - you have lost the match!");
             this->end();
         }
     }

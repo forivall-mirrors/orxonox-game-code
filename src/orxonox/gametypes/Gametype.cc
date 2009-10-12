@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
+#include "core/ConsoleCommand.h"
 
 #include "infos/PlayerInfo.h"
 #include "infos/Bot.h"
@@ -46,11 +47,13 @@ namespace orxonox
 {
     CreateUnloadableFactory(Gametype);
 
-    Gametype::Gametype(BaseObject* creator) : BaseObject(creator), gtinfo_(creator)
+    Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Gametype);
+        
+        this->gtinfo_ = new GametypeInfo(creator);
 
-        this->setGametype(this);
+        this->setGametype(SmartPtr<Gametype>(this, false));
 
         this->defaultControllableEntity_ = Class(Spectator);
 
@@ -75,6 +78,25 @@ namespace orxonox
         }
         else
             this->scoreboard_ = 0;
+        
+        /* HACK HACK HACK */
+        this->hackAddBots_ = createConsoleCommand( createFunctor(&Gametype::addBots, this), "hackAddBots");
+        this->hackKillBots_ = createConsoleCommand( createFunctor(&Gametype::killBots, this), "hackKillBots");
+        CommandExecutor::addConsoleCommandShortcut( this->hackAddBots_ );
+        CommandExecutor::addConsoleCommandShortcut( this->hackKillBots_ );
+        /* HACK HACK HACK */
+    }
+    
+    Gametype::~Gametype()
+    {
+        if (this->isInitialized())
+        {
+            this->gtinfo_->destroy();
+            if( this->hackAddBots_ )
+                delete this->hackAddBots_;
+            if( this->hackKillBots_ )
+                delete this->hackKillBots_;
+        }
     }
 
     void Gametype::setConfigValues()
@@ -99,12 +121,12 @@ namespace orxonox
                 this->time_ -= dt;
         }
 
-        if (this->gtinfo_.bStartCountdownRunning_ && !this->gtinfo_.bStarted_)
-            this->gtinfo_.startCountdown_ -= dt;
+        if (this->gtinfo_->bStartCountdownRunning_ && !this->gtinfo_->bStarted_)
+            this->gtinfo_->startCountdown_ -= dt;
 
-        if (!this->gtinfo_.bStarted_)
+        if (!this->gtinfo_->bStarted_)
             this->checkStart();
-        else if (!this->gtinfo_.bEnded_)
+        else if (!this->gtinfo_->bEnded_)
             this->spawnDeadPlayersIfRequested();
 
         this->assignDefaultPawnsIfNeeded();
@@ -114,14 +136,14 @@ namespace orxonox
     {
         this->addBots(this->numberOfBots_);
 
-        this->gtinfo_.bStarted_ = true;
+        this->gtinfo_->bStarted_ = true;
 
         this->spawnPlayersIfRequested();
     }
 
     void Gametype::end()
     {
-        this->gtinfo_.bEnded_ = true;
+        this->gtinfo_->bEnded_ = true;
 
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -129,7 +151,7 @@ namespace orxonox
             {
                 ControllableEntity* oldentity = it->first->getControllableEntity();
 
-                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity->getCreator());
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity);
                 if (oldentity->getCamera())
                 {
                     entity->setPosition(oldentity->getCamera()->getWorldPosition());
@@ -242,9 +264,9 @@ namespace orxonox
                         it->second.frags_++;
 
                         if (killer->getPlayer()->getClientID() != CLIENTID_UNKNOWN)
-                            this->gtinfo_.sendKillMessage("You killed " + victim->getPlayer()->getName(), killer->getPlayer()->getClientID());
+                            this->gtinfo_->sendKillMessage("You killed " + victim->getPlayer()->getName(), killer->getPlayer()->getClientID());
                         if (victim->getPlayer()->getClientID() != CLIENTID_UNKNOWN)
-                            this->gtinfo_.sendDeathMessage("You were killed by " + killer->getPlayer()->getName(), victim->getPlayer()->getClientID());
+                            this->gtinfo_->sendDeathMessage("You were killed by " + killer->getPlayer()->getName(), victim->getPlayer()->getClientID());
                     }
                 }
 
@@ -307,7 +329,7 @@ namespace orxonox
             {
                 it->second.state_ = PlayerState::Dead;
 
-                if (!it->first->isReadyToSpawn() || !this->gtinfo_.bStarted_)
+                if (!it->first->isReadyToSpawn() || !this->gtinfo_->bStarted_)
                 {
                     this->spawnPlayerAsDefaultPawn(it->first);
                     it->second.state_ = PlayerState::Dead;
@@ -318,14 +340,14 @@ namespace orxonox
 
     void Gametype::checkStart()
     {
-        if (!this->gtinfo_.bStarted_)
+        if (!this->gtinfo_->bStarted_)
         {
-            if (this->gtinfo_.bStartCountdownRunning_)
+            if (this->gtinfo_->bStartCountdownRunning_)
             {
-                if (this->gtinfo_.startCountdown_ <= 0)
+                if (this->gtinfo_->startCountdown_ <= 0)
                 {
-                    this->gtinfo_.bStartCountdownRunning_ = false;
-                    this->gtinfo_.startCountdown_ = 0;
+                    this->gtinfo_->bStartCountdownRunning_ = false;
+                    this->gtinfo_->startCountdown_ = 0;
                     this->start();
                 }
             }
@@ -348,8 +370,8 @@ namespace orxonox
                     }
                     if (allplayersready && hashumanplayers)
                     {
-                        this->gtinfo_.startCountdown_ = this->initialStartCountdown_;
-                        this->gtinfo_.bStartCountdownRunning_ = true;
+                        this->gtinfo_->startCountdown_ = this->initialStartCountdown_;
+                        this->gtinfo_->bStartCountdownRunning_ = true;
                     }
                 }
             }
@@ -418,9 +440,11 @@ namespace orxonox
         {
             if (it->getGametype() == this)
             {
-                delete (*(it++));
+                (it++)->destroy();
                 ++i;
             }
+            else
+                ++it;
         }
     }
 

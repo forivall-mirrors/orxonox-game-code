@@ -41,66 +41,50 @@
 #include <string>
 
 #include "util/Debug.h"
-#include "Factory.h"
 #include "Identifier.h"
 
 namespace orxonox
 {
+    // ###########################
+    // ###       Factory       ###
+    // ###########################
+    //! Base-class of ClassFactory.
+    class _CoreExport Factory
+    {
+        public:
+            virtual ~Factory() {};
+            virtual BaseObject* fabricate(BaseObject* creator) = 0;
+    };
+
     // ###############################
     // ###      ClassFactory       ###
     // ###############################
     //! The ClassFactory is able to create new objects of a specific class.
     template <class T>
-    class ClassFactory : public BaseFactory
+    class ClassFactory : public Factory
     {
         public:
-            static bool create(const std::string& name, bool bLoadable = true);
-            BaseObject* fabricate(BaseObject* creator);
+            /**
+                @brief Constructor: Adds the ClassFactory to the Identifier of the same type.
+                @param name The name of the class
+                @param bLoadable True if the class can be loaded through XML
+            */
+            ClassFactory(const std::string& name, bool bLoadable = true)
+            {
+                COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
+                ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
+                ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
+            }
 
-        private:
-            ClassFactory() {}                               // Don't create
-            ClassFactory(const ClassFactory& factory) {}    // Don't copy
-            virtual ~ClassFactory() {}                      // Don't delete
-
-            static T* createNewObject(BaseObject* creator);
+            /**
+                @brief Creates and returns a new object of class T.
+                @return The new object
+            */
+            inline BaseObject* fabricate(BaseObject* creator)
+            {
+                return static_cast<BaseObject*>(new T(creator));
+            }
     };
-
-    /**
-        @brief Adds the ClassFactory to the Identifier of the same type and the Identifier to the Factory.
-        @param name The name of the class
-        @param bLoadable True if the class can be loaded through XML
-        @return Always true (this is needed because the compiler only allows assignments before main())
-    */
-    template <class T>
-    bool ClassFactory<T>::create(const std::string& name, bool bLoadable)
-    {
-        COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
-        ClassIdentifier<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
-        ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
-        Factory::add(name, ClassIdentifier<T>::getIdentifier());
-
-        return true;
-    }
-
-    /**
-        @brief Creates and returns a new object of class T.
-        @return The new object
-    */
-    template <class T>
-    inline BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
-    {
-        return ClassFactory<T>::createNewObject(creator);
-    }
-
-    /**
-        @brief Creates and returns a new object of class T; this is a wrapper for the new operator.
-        @return The new object
-    */
-    template <class T>
-    inline T* ClassFactory<T>::createNewObject(BaseObject* creator)
-    {
-        return new T(creator);
-    }
 }
 
 #endif /* _ClassFactory_H__ */

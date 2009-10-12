@@ -53,7 +53,6 @@ namespace orxonox
 
         private:
             virtual void loadedNewXMLName(BaseObject* object);
-            void registerAsListener(BaseObject* object);
 
             std::string eventName_;
             bool bActive_;

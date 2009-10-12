@@ -52,8 +52,6 @@ namespace orxonox
             inline const std::string& getDescription() const
                 { return this->description_; }
 
-            void loadAmbientSound(const std::string& filename);
-
             void playerEntered(PlayerInfo* player);
             void playerLeft(PlayerInfo* player);
 
@@ -72,8 +70,6 @@ namespace orxonox
             std::string            xmlfilename_;
             XMLFile*               xmlfile_;
             std::list<BaseObject*> objects_;
-
-            SoundBase*             ambientsound_;
     };
 }
 

@@ -48,12 +48,13 @@ extern "C" {
 #   include <CEGUILua.h>
 #endif
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
 #include "Core.h"
-#include "Clock.h"
 #include "LuaState.h"
+#include "PathConfig.h"
 #include "Resource.h"
 
 namespace orxonox
@@ -61,7 +62,7 @@ namespace orxonox
     class CEGUILogger : public CEGUI::DefaultLogger
     {
     public:
-	    void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
+        void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
         {
             int orxonoxLevel = CEGUI::Standard;
             switch (level)
@@ -99,6 +100,7 @@ namespace orxonox
     GUIManager::GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen)
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
+        , camera_(NULL)
     {
         using namespace CEGUI;
 
@@ -115,7 +117,7 @@ namespace orxonox
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
-        ceguiLogger->setLogFilename(Core::getLogPathString() + "cegui.log");
+        ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
         // set the log level according to ours (translate by subtracting 1)
         ceguiLogger->setLoggingLevel(
             static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
@@ -172,6 +174,7 @@ namespace orxonox
     */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
+        this->camera_ = camera;
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else

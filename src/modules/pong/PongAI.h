@@ -61,10 +61,11 @@ namespace orxonox
             Vector2 ballDirection_;
             float ballEndPosition_;
             float randomOffset_;
+            bool bChangedRandomOffset_;
             float relHysteresisOffset_;
             float strength_;
 
-            std::list<std::pair<Timer<PongAI>*, char> > reactionTimers_;
+            std::list<std::pair<Timer*, char> > reactionTimers_;
             char movement_;
             char oldMove_;
             bool bOscillationAvoidanceActive_;

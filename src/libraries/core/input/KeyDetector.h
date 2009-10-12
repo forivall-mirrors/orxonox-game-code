@@ -31,21 +31,32 @@
 
 #include "InputPrereqs.h"
 
-#include <string>
+#include "util/Singleton.h"
 #include "KeyBinder.h"
 
 namespace orxonox
 {
-    class _CoreExport KeyDetector : public KeyBinder
+    class _CoreExport KeyDetector : public KeyBinder, public Singleton<KeyDetector>
     {
+        friend class Singleton<KeyDetector>;
+
     public:
         KeyDetector();
         ~KeyDetector();
-        void setCallbackCommand(const std::string& command);
-        void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
+
+        void setCallback(Functor* function) { this->callbackFunction_ = function; }
 
     private:
-        std::string callbackCommand_;
+        KeyDetector(const KeyDetector&);
+
+        void callback(const std::string& name);
+        void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
+        void assignCommands();
+
+        Functor* callbackFunction_;
+        InputState* inputState_;
+        static std::string callbackCommand_s;
+        static KeyDetector* singletonPtr_s;
     };
 }
 

@@ -487,6 +487,7 @@ namespace orxonox
                 (*it)->subnodes_.clear();
 
                 // Remove the redundant subnode from the current node
+                delete (*it);
                 node->subnodes_.erase(it++);
             }
             else

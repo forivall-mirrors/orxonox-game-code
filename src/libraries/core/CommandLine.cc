@@ -30,14 +30,13 @@
 
 #include <algorithm>
 #include <sstream>
-#include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "Core.h"
+#include "PathConfig.h"
 
 namespace orxonox
 {
@@ -284,6 +283,7 @@ namespace orxonox
             maxNameSize = std::max(it->second->getName().size(), maxNameSize);
         }
 
+        infoStr << std::endl;
         infoStr << "Usage: orxonox [options]" << std::endl;
         infoStr << "Available options:" << std::endl;
 
@@ -347,12 +347,11 @@ namespace orxonox
     void CommandLine::_parseFile()
     {
         std::string filename = CommandLine::getValue("optionsFile").getString();
-        boost::filesystem::path filepath(Core::getConfigPath() / filename);
 
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly
         std::ifstream file;
-        file.open(filepath.string().c_str());
+        file.open((PathConfig::getConfigPathString() + filename).c_str());
         std::vector<std::string> args;
         if (file)
         {

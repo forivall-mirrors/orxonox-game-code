@@ -30,15 +30,19 @@
 #define _HumanController_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include "tools/interfaces/Tickable.h"
 #include "Controller.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HumanController : public Controller
+    class _OrxonoxExport HumanController : public Controller, public Tickable
     {
         public:
             HumanController(BaseObject* creator);
             virtual ~HumanController();
+
+            virtual void tick(float dt);
 
             static void moveFrontBack(const Vector2& value);
             static void moveRightLeft(const Vector2& value);
@@ -57,6 +61,8 @@ namespace orxonox
             static void mouseLook();
             static void dropItems();
             static void useItem();
+            static void cycleNavigationFocus();
+            static void releaseNavigationFocus();
 
             static void suicide();
 

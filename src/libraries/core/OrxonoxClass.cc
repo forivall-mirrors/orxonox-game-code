@@ -35,6 +35,7 @@
 
 #include "MetaObjectList.h"
 #include "Identifier.h"
+#include "WeakPtr.h"
 
 namespace orxonox
 {
@@ -44,16 +45,35 @@ namespace orxonox
         this->identifier_ = 0;
         this->parents_ = 0;
         this->metaList_ = new MetaObjectList();
+        this->referenceCount_ = 0;
+        this->requestedDestruction_ = false;
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */
     OrxonoxClass::~OrxonoxClass()
     {
+//        if (!this->requestedDestruction_)
+//            COUT(2) << "Warning: Destroyed object without destroy() (" << this->getIdentifier()->getName() << ")" << std::endl;
+
+        assert(this->referenceCount_ <= 0);
+
         delete this->metaList_;
 
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
         if (this->parents_)
             delete this->parents_;
+            
+        // reset all weak pointers pointing to this object
+        for (std::set<WeakPtr<OrxonoxClass>*>::iterator it = this->weakPointers_.begin(); it != this->weakPointers_.end(); )
+            (*(it++))->objectDeleted();
+    }
+
+    /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */
+    void OrxonoxClass::destroy()
+    {
+        this->requestedDestruction_ = true;
+        if (this->referenceCount_ == 0)
+            delete this;
     }
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */
@@ -74,46 +94,6 @@ namespace orxonox
     /** @brief Returns true if the objects class is a direct parent of the given type. */
     bool OrxonoxClass::isDirectParentOf(const Identifier* identifier)
         { return this->getIdentifier()->isDirectParentOf(identifier); }
-
-
-    /** @brief Returns true if the objects class is of the given type or a derivative. */
-    template <class B> bool OrxonoxClass::isA(const SubclassIdentifier<B>* identifier)
-        { return this->getIdentifier()->isA(identifier->getIdentifier()); }
-    /** @brief Returns true if the objects class is exactly of the given type. */
-    template <class B> bool OrxonoxClass::isExactlyA(const SubclassIdentifier<B>* identifier)
-        { return this->getIdentifier()->isExactlyA(identifier->getIdentifier()); }
-    /** @brief Returns true if the objects class is a child of the given type. */
-    template <class B> bool OrxonoxClass::isChildOf(const SubclassIdentifier<B>* identifier)
-        { return this->getIdentifier()->isChildOf(identifier->getIdentifier()); }
-    /** @brief Returns true if the objects class is a direct child of the given type. */
-    template <class B> bool OrxonoxClass::isDirectChildOf(const SubclassIdentifier<B>* identifier)
-        { return this->getIdentifier()->isDirectChildOf(identifier->getIdentifier()); }
-    /** @brief Returns true if the objects class is a parent of the given type. */
-    template <class B> bool OrxonoxClass::isParentOf(const SubclassIdentifier<B>* identifier)
-        { return this->getIdentifier()->isParentOf(identifier->getIdentifier()); }
-    /** @brief Returns true if the objects class is a direct parent of the given type. */
-    template <class B> bool OrxonoxClass::isDirectParentOf(const SubclassIdentifier<B>* identifier)
-        { return this->getIdentifier()->isDirectParentOf(identifier->getIdentifier()); }
-
-
-    /** @brief Returns true if the objects class is of the given type or a derivative. */
-    template <class B> bool OrxonoxClass::isA(const SubclassIdentifier<B> identifier)
-        { return this->getIdentifier()->isA(identifier.getIdentifier()); }
-    /** @brief Returns true if the objects class is exactly of the given type. */
-    template <class B> bool OrxonoxClass::isExactlyA(const SubclassIdentifier<B> identifier)
-        { return this->getIdentifier()->isExactlyA(identifier.getIdentifier()); }
-    /** @brief Returns true if the objects class is a child of the given type. */
-    template <class B> bool OrxonoxClass::isChildOf(const SubclassIdentifier<B> identifier)
-        { return this->getIdentifier()->isChildOf(identifier.getIdentifier()); }
-    /** @brief Returns true if the objects class is a direct child of the given type. */
-    template <class B> bool OrxonoxClass::isDirectChildOf(const SubclassIdentifier<B> identifier)
-        { return this->getIdentifier()->isDirectChildOf(identifier.getIdentifier()); }
-    /** @brief Returns true if the objects class is a parent of the given type. */
-    template <class B> bool OrxonoxClass::isParentOf(const SubclassIdentifier<B> identifier)
-        { return this->getIdentifier()->isParentOf(identifier.getIdentifier()); }
-    /** @brief Returns true if the objects class is a direct parent of the given type. */
-    template <class B> bool OrxonoxClass::isDirectParentOf(const SubclassIdentifier<B> identifier)
-        { return this->getIdentifier()->isDirectParentOf(identifier.getIdentifier()); }
 
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */

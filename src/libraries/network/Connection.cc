@@ -82,10 +82,10 @@ namespace orxonox
       switch(event.type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          addClient( &event );
+          addPeer( &event );
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
-          disconnectPeer( &event );
+          removePeer( &event );
           break;
         case ENET_EVENT_TYPE_RECEIVE:
           processPacket( &event );

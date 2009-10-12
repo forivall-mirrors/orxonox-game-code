@@ -52,9 +52,11 @@ namespace orxonox
     // add a packet to queue for the server
     bool addPacket(ENetPacket *packet);
     inline bool isConnected(){ return this->established_; }
+  protected:
+    virtual void connectionClosed()=0;
   private:
-    virtual void addClient(ENetEvent* event);
-    virtual void disconnectPeer(ENetEvent* event);
+    virtual void addPeer(ENetEvent* event);
+    virtual void removePeer(ENetEvent* event);
     
     bool disconnectConnection();
     // enet stuff

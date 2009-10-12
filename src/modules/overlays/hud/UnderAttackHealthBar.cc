@@ -51,13 +51,13 @@ namespace orxonox
         this->text_->setColour(ColourValue::White);
         this->text_->setPickPoint(Vector2(0.5, 0));
 
-        this->inittimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&UnderAttackHealthBar::init)));
+        this->inittimer_.setTimer(0.0f, false, createExecutor(createFunctor(&UnderAttackHealthBar::init, this)));
     }
 
     UnderAttackHealthBar::~UnderAttackHealthBar()
     {
         if (this->isInitialized())
-            delete this->text_;
+            this->text_->destroy();
     }
 
     void UnderAttackHealthBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -77,7 +77,7 @@ namespace orxonox
         {
             this->owner_ = player;
 
-            UnderAttack* ua = orxonox_cast<UnderAttack*>(player->getGametype());
+            UnderAttack* ua = orxonox_cast<UnderAttack*>(player->getGametype().get());
             if (ua)
             {
                 this->setOwner(ua->getDestroyer());

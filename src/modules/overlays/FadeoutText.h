@@ -67,7 +67,7 @@ namespace orxonox
             float fadeouttime_;
 
             bool bFadingOut_;
-            Timer<FadeoutText> fadeouttimer_;
+            Timer fadeouttimer_;
 
             float initialAlpha_;
     };

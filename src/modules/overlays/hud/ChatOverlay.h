@@ -54,9 +54,10 @@ namespace orxonox
 
         private:
             void updateOverlayText();
-            void dropMessage();
+            void dropMessage(Timer* timer);
 
             float displayTime_;
+            std::set<Timer*> timers_;
     };
 }
 #endif /* _DebugFPSText_H__ */

@@ -117,11 +117,13 @@ namespace orxonox
             break;
           case ENET_EVENT_TYPE_DISCONNECT:
             COUT(4) << "received disconnect confirmation from server" << endl;
+            this->connectionClosed();
             return true;
         }
       }
     }
     enet_peer_reset( this->server_ );
+    this->connectionClosed();
     return false;
   }
 
@@ -132,15 +134,16 @@ namespace orxonox
     return Connection::addPacket( packet, this->server_ );
   }
 
-  void ClientConnection::addClient(ENetEvent* event)
+  void ClientConnection::addPeer(ENetEvent* event)
   {
     assert(0);
   }
-  void ClientConnection::disconnectPeer(ENetEvent* event)
+  void ClientConnection::removePeer(ENetEvent* event)
   {
     this->established_=false;
     COUT(1) << "Received disconnect Packet from Server!" << endl;
         // server closed the connection
+    this->connectionClosed();
   }
 
 }

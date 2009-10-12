@@ -264,9 +264,9 @@ namespace orxonox
             const ClassTreeMaskObjectIterator& operator++();
 
             /** @brief Returns true if the ClassTreeMaskObjectIterator points at the given object. @param pointer The pointer of the object */
-            inline bool operator==(BaseObject* pointer) const { return ((*this->objectIterator_) == pointer); }
+            inline bool operator==(BaseObject* pointer) const { return (this->objectIterator_ && (*this->objectIterator_) == pointer) || (!this->objectIterator_ && pointer == 0); }
             /** @brief Returns true if the ClassTreeMaskObjectIterator doesn't point at the given object. @param pointer The pointer of the object */
-            inline bool operator!=(BaseObject* pointer) const { return ((*this->objectIterator_) != pointer); }
+            inline bool operator!=(BaseObject* pointer) const { return (this->objectIterator_ && (*this->objectIterator_) != pointer) || (!this->objectIterator_ && pointer != 0); }
             /** @brief Returns true if the ClassTreeMaskObjectIterator hasn't already reached the end. */
             inline operator bool() const { return (this->objectIterator_); }
             /** @brief Returns the object the ClassTreeMaskObjectIterator currently points at. */

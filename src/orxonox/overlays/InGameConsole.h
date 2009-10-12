@@ -49,7 +49,6 @@ namespace orxonox
         ~InGameConsole();
 
         void initialise();
-        void destroy();
         void setConfigValues();
 
         void update(const Clock& time);

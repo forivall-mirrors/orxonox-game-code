@@ -5,7 +5,7 @@
 ?>
 
 <?lua
-	dofile("../../media/levels/includes/CuboidSpaceStation.lua")
+	dofile("includes/CuboidSpaceStation.lua")
 ?>
 
 <NotificationQueue
@@ -226,7 +226,7 @@
             <!-- Trail -->
             <EventDispatcher>
                 <targets>
-                    <EventTarget name=trail />
+                    <EventTarget target=trail />
                 </targets>
                 <events>
                     <visibility>

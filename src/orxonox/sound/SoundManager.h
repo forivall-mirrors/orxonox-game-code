@@ -38,29 +38,25 @@ namespace orxonox
 {
     /**
      * The SoundManager class manages the OpenAL device, context and listener
-     * position. It has a list of all SoundBase objects and calls their update
-     * function every tick. It is a singleton.
+     * position. It is a singleton.
      *
      */
-    class _OrxonoxExport SoundManager : public Singleton<SoundManager>, public Tickable
+    class _OrxonoxExport SoundManager : public Singleton<SoundManager>
     {
         friend class Singleton<SoundManager>;
     public:
         SoundManager();
         ~SoundManager();
-        void addSound(SoundBase* sound);
-        void removeSound(SoundBase* sound);
-        void tick(float dt);
-        bool isSoundAvailable();
+
+        void setListenerPosition(const Vector3& position);
+        void setListenerOrientation(const Quaternion& orientation);
 
     private:
         ALCdevice* device_;
         ALCcontext* context_;
-        std::list<SoundBase*> soundlist_;
-        bool soundavailable_;
 
         static SoundManager* singletonPtr_s;
-    }; // class SoundManager
-} // namespace orxonox
+    };
+}
 
 #endif /* _SoundManager_H__ */

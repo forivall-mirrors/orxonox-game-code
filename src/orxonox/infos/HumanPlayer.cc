@@ -63,10 +63,10 @@ namespace orxonox
         if (this->BaseObject::isInitialized())
         {
             if (this->humanHud_)
-                delete this->humanHud_;
+                this->humanHud_->destroy();
 
             if (this->gametypeHud_)
-                delete this->gametypeHud_;
+                this->gametypeHud_->destroy();
         }
     }
 
@@ -115,7 +115,7 @@ namespace orxonox
             this->client_initialized_ = true;
 
             if (!GameMode::isMaster())
-                this->setObjectMode(ObjectDirection::Bidirectional);
+                this->setSyncMode(ObjectDirection::Bidirectional);
             else
                 this->setName(this->nick_);
 
@@ -161,19 +161,23 @@ namespace orxonox
         PlayerInfo::changedGametype();
 
         if (this->isInitialized() && this->isLocalPlayer())
-            if (this->getGametype()->getHUDTemplate() != "")
+        {
+            if (this->getGametype() && this->getGametype()->getHUDTemplate() != "")
                 this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
+            else
+                this->setGametypeHUDTemplate("");
+        }
     }
 
     void HumanPlayer::updateHumanHUD()
     {
         if (this->humanHud_)
         {
-            delete this->humanHud_;
+            this->humanHud_->destroy();
             this->humanHud_ = 0;
         }
 
-        if (this->isLocalPlayer() && this->humanHudTemplate_ != "")
+        if (this->isLocalPlayer() && this->humanHudTemplate_ != "" && GameMode::showsGraphics())
         {
             this->humanHud_ = new OverlayGroup(this);
             this->humanHud_->addTemplate(this->humanHudTemplate_);
@@ -185,7 +189,7 @@ namespace orxonox
     {
         if (this->gametypeHud_)
         {
-            delete this->gametypeHud_;
+            this->gametypeHud_->destroy();
             this->gametypeHud_ = 0;
         }
 

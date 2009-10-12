@@ -40,7 +40,7 @@ particle_system Orxonox/ExplosionComp1
 		repeat_delay_min	2.5
 		repeat_delay_max	2.5
 		width		20
-		hight		20
+		height		20
 		depth		0
 	}
 

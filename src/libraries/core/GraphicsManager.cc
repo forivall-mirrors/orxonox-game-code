@@ -47,18 +47,18 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "SpecialConfig.h"
+#include "util/Clock.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "Clock.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
-#include "Core.h"
 #include "Game.h"
 #include "GameMode.h"
 #include "Loader.h"
 #include "MemoryArchive.h"
+#include "PathConfig.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
 
@@ -101,16 +101,16 @@ namespace orxonox
         this->loadOgrePlugins();
 
         // At first, add the root paths of the data directories as resource locations
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getDataPathString(), "FileSystem", "dataRoot", false);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem", "dataRoot", false);
         // Load resources
         resources_.reset(new XMLFile("resources.oxr", "dataRoot"));
         resources_->setLuaSupport(false);
         Loader::open(resources_.get());
 
         // Only for development runs
-        if (Core::isDevelopmentRun())
+        if (PathConfig::isDevelopmentRun())
         {
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Core::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
             extResources_.reset(new XMLFile("resources.oxr", "externalDataRoot"));
             extResources_->setLuaSupport(false);
             Loader::open(extResources_.get());
@@ -129,8 +129,15 @@ namespace orxonox
     */
     GraphicsManager::~GraphicsManager()
     {
+        Loader::unload(debugOverlay_.get());
+
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
         // TODO: Destroy the console command
+
+        // Undeclare the resources
+        Loader::unload(resources_.get());
+        if (PathConfig::isDevelopmentRun())
+            Loader::unload(extResources_.get());
     }
 
     void GraphicsManager::setConfigValues()
@@ -240,8 +247,8 @@ namespace orxonox
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
-        boost::filesystem::path ogreConfigFilepath(Core::getConfigPath() / this->ogreConfigFile_);
-        boost::filesystem::path ogreLogFilepath(Core::getLogPath() / this->ogreLogFile_);
+        boost::filesystem::path ogreConfigFilepath(PathConfig::getConfigPath() / this->ogreConfigFile_);
+        boost::filesystem::path ogreLogFilepath(PathConfig::getLogPath() / this->ogreLogFile_);
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
@@ -312,11 +319,26 @@ namespace orxonox
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
         // add console commands
-        FunctorMember<GraphicsManager>* functor1 = createFunctor(&GraphicsManager::printScreen);
-        ccPrintScreen_ = createConsoleCommand(functor1->setObject(this), "printScreen");
+        ccPrintScreen_ = createConsoleCommand(createFunctor(&GraphicsManager::printScreen, this), "printScreen");
         CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
     }
 
+    void GraphicsManager::loadDebugOverlay()
+    {
+        // Load debug overlay to show info about fps and tick time
+        COUT(4) << "Loading Debug Overlay..." << std::endl;
+        debugOverlay_.reset(new XMLFile("debug.oxo"));
+        Loader::open(debugOverlay_.get());
+    }
+
+    /**
+    @note
+        A note about the Ogre::FrameListener: Even though we don't use them,
+        they still get called. However, the delta times are not correct (except
+        for timeSinceLastFrame, which is the most important). A little research
+        as shown that there is probably only one FrameListener that doesn't even
+        need the time. So we shouldn't run into problems.
+    */
     void GraphicsManager::update(const Clock& time)
     {
         Ogre::FrameEvent evt;
@@ -417,6 +439,6 @@ namespace orxonox
     {
         assert(this->renderWindow_);
        
-        this->renderWindow_->writeContentsToTimestampedFile(Core::getLogPathString() + "screenShot_", ".jpg");
+        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".jpg");
     }
 }

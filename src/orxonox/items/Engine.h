@@ -129,8 +129,6 @@ namespace orxonox
 
             Shader* boostBlur_;
             float blurStrength_;
-
-            SoundBase* sound_;
     };
 }
 

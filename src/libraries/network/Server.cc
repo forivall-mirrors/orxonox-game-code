@@ -45,8 +45,8 @@
 #include <cassert>
 #include <string>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
-#include "core/Clock.h"
 #include "core/ObjectList.h"
 #include "core/Executor.h"
 #include "packet/Chat.h"
@@ -244,7 +244,10 @@ namespace orxonox
       return true;
     packet::DeleteObjects *del = new packet::DeleteObjects();
     if(!del->fetchIDs())
+    {
+      delete del;
       return true;  //everything ok (no deletes this tick)
+    }
 //     COUT(3) << "sending DeleteObjects" << std::endl;
     while(temp != NULL){
       if( !(temp->getSynched()) ){
@@ -266,7 +269,7 @@ namespace orxonox
   }
 
 
-  void Server::addClient(ENetEvent *event){
+  void Server::addPeer(ENetEvent *event){
     static unsigned int newid=1;
 
     COUT(2) << "Server: adding client" << std::endl;
@@ -278,17 +281,27 @@ namespace orxonox
     temp->setPeer(event->peer);
 
     // inform all the listeners
-    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
-    while(listener){
-      listener->clientConnected(newid);
-      listener++;
-    }
+    ClientConnectionListener::broadcastClientConnected(newid);
 
     ++newid;
 
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
     createClient(temp->getID());
 }
+
+  void Server::removePeer(ENetEvent *event)
+  {
+    COUT(4) << "removing client from list" << std::endl;
+    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
+    if(!client)
+      return;
+    else
+    {
+      //ServerConnection::disconnectClient( client );
+      ClientConnectionListener::broadcastClientDisconnected( client->getID() );
+      delete client;
+    }
+  }
 
   bool Server::createClient(int clientID){
     ClientInformation *temp = ClientInformation::findClient(clientID);
@@ -328,13 +341,8 @@ namespace orxonox
   void Server::disconnectClient( ClientInformation *client ){
     ServerConnection::disconnectClient( client );
     GamestateManager::removeClient(client);
-// inform all the listeners
-    ObjectList<ClientConnectionListener>::iterator listener = ObjectList<ClientConnectionListener>::begin();
-    while(listener){
-      listener->clientDisconnected(client->getID());
-      ++listener;
-    }
-    delete client; //remove client from list
+    // inform all the listeners
+    ClientConnectionListener::broadcastClientDisconnected(client->getID());
   }
 
   bool Server::chat(const std::string& message){

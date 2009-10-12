@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Definition of macros for Identifier and Factory.
+    @brief Definition of macros for Identifiers
 
     Every class needs the RegisterObject(class) macro in its constructor. If the class is an interface
     or the BaseObject itself, it needs the macro RegisterRootObject(class) instead.
@@ -44,7 +44,7 @@
 
 #include "util/Debug.h"
 #include "Identifier.h"
-#include "Factory.h"
+#include "SubclassIdentifier.h"
 #include "ClassFactory.h"
 #include "ObjectList.h"
 
@@ -75,18 +75,18 @@
     InternRegisterObject(ClassName, true)
 
 /**
-    @brief Creates the entry in the Factory.
+    @brief Creates the Factory.
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName, true)
+    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, true)
 
 /**
-    @brief Creates the entry in the Factory for classes which should not be loaded through XML.
+    @brief Creates the Factory for classes which should not be loaded through XML.
     @param ClassName The name of the class
 */
 #define CreateUnloadableFactory(ClassName) \
-    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName, false)
+    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, false)
 
 /**
     @brief Returns the Identifier of the given class.
@@ -99,21 +99,30 @@
 namespace orxonox
 {
     /**
-        @brief Returns the Identifier with a given name through the factory.
+        @brief Returns the Identifier with a given name.
         @param String The name of the class
     */
     inline Identifier* ClassByString(const std::string& name)
     {
-        return Factory::getIdentifier(name);
+        return Identifier::getIdentifierByString(name);
     }
 
     /**
-        @brief Returns the Identifier with a given network ID through the factory.
+        @brief Returns the Identifier with a given lowercase name.
+        @param String The lowercase name of the class
+    */
+    inline Identifier* ClassByLowercaseString(const std::string& name)
+    {
+        return Identifier::getIdentifierByLowercaseString(name);
+    }
+
+    /**
+        @brief Returns the Identifier with a given network ID.
         @param networkID The network ID of the class
     */
     inline Identifier* ClassByID(uint32_t id)
     {
-        return Factory::getIdentifier(id);
+        return Identifier::getIdentifierByID(id);
     }
 }
 

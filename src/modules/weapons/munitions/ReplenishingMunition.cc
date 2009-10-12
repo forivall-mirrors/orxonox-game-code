@@ -43,13 +43,13 @@ namespace orxonox
         // Use the timer to initialize itself after the first tick (because the real values for
         // replenishIntervall_ and replenishMunitionAmount_ will be set in the constructor of the
         // inheriting class, which comes after this constructor)
-        this->replenishingTimer_.setTimer(0.0f, false, this, createExecutor(createFunctor(&ReplenishingMunition::initializeTimer)));
+        this->replenishingTimer_.setTimer(0.0f, false, createExecutor(createFunctor(&ReplenishingMunition::initializeTimer, this)));
     }
 
     void ReplenishingMunition::initializeTimer()
     {
         // Initialize the timer
-        this->replenishingTimer_.setTimer(this->replenishIntervall_, true, this, createExecutor(createFunctor(&ReplenishingMunition::replenish)));
+        this->replenishingTimer_.setTimer(this->replenishIntervall_, true, createExecutor(createFunctor(&ReplenishingMunition::replenish, this)));
     }
 
     void ReplenishingMunition::replenish()

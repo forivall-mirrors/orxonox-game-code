@@ -40,7 +40,7 @@ namespace orxonox
             EventTrigger(BaseObject* creator);
             virtual ~EventTrigger();
 
-            virtual void processEvent(Event& event);
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void trigger(bool bTriggered)
                 { this->bEventTriggered_ = bTriggered; this->tick(0); }

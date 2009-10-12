@@ -95,16 +95,16 @@ namespace orxonox
                 this->getPlayer()->stopControl();
 
             if (this->xmlcontroller_)
-                delete this->xmlcontroller_;
+                this->xmlcontroller_->destroy();
 
             if (this->hud_)
-                delete this->hud_;
+                this->hud_->destroy();
 
             if (this->camera_)
-                delete this->camera_;
+                this->camera_->destroy();
 
-            for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
-                delete (*it);
+            for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                (*it)->destroy();
 
             if (this->getScene()->getSceneManager())
                 this->getScene()->getSceneManager()->destroySceneNode(this->cameraPositionRootNode_->getName());
@@ -152,7 +152,7 @@ namespace orxonox
     CameraPosition* ControllableEntity::getCameraPosition(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+        for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
         {
             if (i == index)
                 return (*it);
@@ -171,7 +171,7 @@ namespace orxonox
             }
             else if (this->cameraPositions_.size() > 0)
             {
-                for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
                 {
                     if ((*it) == this->camera_->getParent())
                     {
@@ -237,7 +237,7 @@ namespace orxonox
             if (!GameMode::isMaster())
             {
                 this->client_overwrite_ = this->server_overwrite_;
-                this->setObjectMode(ObjectDirection::Bidirectional);
+                this->setSyncMode(ObjectDirection::Bidirectional);
             }
         }
 
@@ -253,12 +253,12 @@ namespace orxonox
         this->playerID_ = OBJECTID_UNKNOWN;
         this->bHasLocalController_ = false;
         this->bHasHumanController_ = false;
-        this->setObjectMode(ObjectDirection::ToClient);
+        this->setSyncMode(ObjectDirection::ToClient);
 
         this->changedPlayer();
 
         if (this->bDestroyWhenPlayerLeft_)
-            delete this;
+            this->destroy();
     }
 
     void ControllableEntity::networkcallback_changedplayerID()
@@ -274,7 +274,7 @@ namespace orxonox
 
     void ControllableEntity::startLocalHumanControl()
     {
-        if (!this->camera_)
+        if (!this->camera_ && GameMode::showsGraphics())
         {
             this->camera_ = new Camera(this);
             this->camera_->requestFocus();
@@ -286,7 +286,7 @@ namespace orxonox
                 this->camera_->attachToNode(this->cameraPositionRootNode_);
         }
 
-        if (!this->hud_)
+        if (!this->hud_ && GameMode::showsGraphics())
         {
             if (this->hudtemplate_ != "")
             {
@@ -302,13 +302,13 @@ namespace orxonox
         if (this->camera_)
         {
             this->camera_->detachFromParent();
-            delete this->camera_;
+            this->camera_->destroy();
             this->camera_ = 0;
         }
 
         if (this->hud_)
         {
-            delete this->hud_;
+            this->hud_->destroy();
             this->hud_ = 0;
         }
     }
@@ -332,7 +332,7 @@ namespace orxonox
         WorldEntity* parent = this->getParent();
         if (parent)
         {
-            for (std::list<CameraPosition*>::iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+            for (std::list<SmartPtr<CameraPosition> >::iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
                 if ((*it)->getIsAbsolute())
                     parent->attach((*it));
         }

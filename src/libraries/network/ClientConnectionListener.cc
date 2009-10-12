@@ -32,23 +32,34 @@
 #include "core/GameMode.h"
 #include "ClientInformation.h"
 
-namespace orxonox{
-
-  ClientConnectionListener::ClientConnectionListener()
-  { 
-    RegisterRootObject(ClientConnectionListener); 
-  }
-
-  void ClientConnectionListener::getConnectedClients(){
-    if(GameMode::showsGraphics())
-      this->clientConnected(0); //server client id
-    ClientInformation *client = ClientInformation::getBegin();
-    while(client){
-      this->clientConnected(client->getID());
-      client=client->next();
+namespace orxonox
+{
+    ClientConnectionListener::ClientConnectionListener()
+    { 
+        RegisterRootObject(ClientConnectionListener); 
     }
-  }
 
+    void ClientConnectionListener::broadcastClientConnected(unsigned int clientID)
+    {
+        for (ObjectList<ClientConnectionListener>::iterator it = ObjectList<ClientConnectionListener>::begin(); it != ObjectList<ClientConnectionListener>::end(); ++it)
+            it->clientConnected(clientID);
+    }
+    
+    void ClientConnectionListener::broadcastClientDisconnected(unsigned int clientID)
+    {
+        for (ObjectList<ClientConnectionListener>::iterator it = ObjectList<ClientConnectionListener>::begin(); it != ObjectList<ClientConnectionListener>::end(); ++it)
+            it->clientDisconnected(clientID);
+    }
+
+    void ClientConnectionListener::getConnectedClients()
+    {
+        ClientInformation* client = ClientInformation::getBegin();
+        while (client)
+        {
+            this->clientConnected(client->getID());
+            client = client->next();
+        }
+    }
 }
 
 

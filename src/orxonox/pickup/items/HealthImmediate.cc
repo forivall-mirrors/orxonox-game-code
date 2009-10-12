@@ -66,7 +66,7 @@ namespace orxonox
         if (curH < maxH)
         {
             pawn->addHealth(this->recoveredHealth_);
-            delete this;
+            this->destroy();
         }
 
         return (curH < maxH);

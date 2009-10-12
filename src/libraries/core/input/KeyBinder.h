@@ -26,12 +26,6 @@
  *
  */
 
-/**
-@file
-@brief
-    Different definitions of input processing.
-*/
-
 #ifndef _KeyBinder_H__
 #define _KeyBinder_H__
 
@@ -52,33 +46,39 @@ namespace orxonox
 {
     /**
     @brief
-        Handles mouse, keyboard and joy stick input while in the actual game mode.
-        Manages the key bindings.
+        Maps mouse, keyboard and joy stick input to command strings and executes them.
+
+        The bindings are stored in ini-files (like the one for configValues) in the config Path.
+    @remarks
+        You cannot change the filename because the KeyBinderManager maps these filenames to the
+        KeyBinders. If you need to load other bindings, just create a new one.
     */
     class _CoreExport KeyBinder : public InputHandler, public JoyStickQuantityListener
     {
     public:
-        KeyBinder ();
+        KeyBinder (const std::string& filename);
         virtual ~KeyBinder();
 
-        void loadBindings(const std::string& filename);
         void clearBindings();
         bool setBinding(const std::string& binding, const std::string& name, bool bTemporary = false);
+        const std::string& getBindingsFilename()
+            { return this->filename_; }
         void setConfigValues();
         void resetJoyStickAxes();
 
     protected: // functions
+        void loadBindings();
+        void buttonThresholdChanged();
+        void initialiseJoyStickBindings();
+        void compilePointerLists();
+        // from JoyStickQuantityListener interface
+        virtual void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
+
         void allDevicesUpdated(float dt);
         void mouseUpdated(float dt);
         void joyStickUpdated(unsigned int joyStick, float dt);
         // internal
         void tickHalfAxis(HalfAxis& halfAxis);
-
-        void buttonThresholdChanged();
-        // from JoyStickQuantityListener interface
-        virtual void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
-        void initialiseJoyStickBindings();
-        void compilePointerLists();
 
         void buttonPressed (const KeyEvent& evt);
         void buttonReleased(const KeyEvent& evt);
@@ -143,6 +143,8 @@ namespace orxonox
         int mouseRelative_[2];
         float deriveTime_;
 
+        //! Name of the file used in this KeyBinder (constant!)
+        const std::string filename_;
         //! Config file used. ConfigFileType::NoType in case of KeyDetector. Also indicates whether we've already loaded.
         ConfigFileType configFile_;
 
@@ -169,6 +171,7 @@ namespace orxonox
         // Use some value at about 1000. This can be configured with mouseSensitivity_ anyway.
         static const int mouseClippingSize_ = 1024;
     };
+
 
     inline void KeyBinder::buttonPressed (const KeyEvent& evt)
     { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnPress); }

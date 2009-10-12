@@ -1,8 +1,11 @@
 ADD_SOURCE_FILES(BULLET_FILES
+
+COMPILATION_BEGIN BulletLinearMathCompilation.cpp
 		btConvexHull.cpp
 		btQuickprof.cpp
 		btGeometryUtil.cpp
 		btAlignedAllocator.cpp
+COMPILATION_END
 
 		# Headers
 		btAlignedObjectArray.h

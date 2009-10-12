@@ -60,7 +60,7 @@ namespace orxonox
     {
         if (this->isInitialized())
             if (this->continuousResynchroTimer_)
-                delete this->continuousResynchroTimer_;
+                this->continuousResynchroTimer_->destroy();
     }
 
     void MovableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -97,7 +97,7 @@ namespace orxonox
 
     void MovableEntity::clientConnected(unsigned int clientID)
     {
-        this->resynchronizeTimer_.setTimer(rnd() * MAX_RESYNCHRONIZE_TIME, false, this, createExecutor(createFunctor(&MovableEntity::resynchronize)));
+        this->resynchronizeTimer_.setTimer(rnd() * MAX_RESYNCHRONIZE_TIME, false, createExecutor(createFunctor(&MovableEntity::resynchronize, this)));
     }
 
     void MovableEntity::clientDisconnected(unsigned int clientID)
@@ -109,8 +109,8 @@ namespace orxonox
         if (GameMode::isMaster() && !this->continuousResynchroTimer_)
         {
             // Resynchronise every few seconds because we only work with velocities (no positions)
-            continuousResynchroTimer_ = new Timer<MovableEntity>(CONTINUOUS_SYNCHRONIZATION_TIME + rnd(-1, 1),
-                true, this, createExecutor(createFunctor(&MovableEntity::resynchronize)), false);
+            continuousResynchroTimer_ = new Timer(CONTINUOUS_SYNCHRONIZATION_TIME + rnd(-1, 1),
+                true, createExecutor(createFunctor(&MovableEntity::resynchronize, this)), false);
         }
 
         this->overwrite_position_ = this->getPosition();
