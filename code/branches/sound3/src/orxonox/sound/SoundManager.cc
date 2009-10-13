@@ -44,37 +44,37 @@ namespace orxonox
     SoundManager::SoundManager()
     {
         if (!alutInitWithoutContext(NULL,NULL))
-            ThrowException(InitialisationFailed, "OpenAL ALUT error: " << alutGetErrorString(alutGetError()));
+            ThrowException(InitialisationFailed, "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
 
-        COUT(3) << "OpenAL: Opening sound device..." << std::endl;
+        COUT(3) << "Sound: OpenAL: Opening sound device..." << std::endl;
         this->device_ = alcOpenDevice(NULL);
         if (this->device_ == NULL)
         {
-            COUT(0) << "OpenaAL: Could not open sound device. Have you installed OpenAL?" << std::endl;
+            COUT(0) << "Sound: OpenaAL: Could not open sound device. Have you installed OpenAL?" << std::endl;
 #ifdef ORXONOX_PLATFORM_WINDOWS
-            COUT(0) << "Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
+            COUT(0) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
 #endif
-            ThrowException(InitialisationFailed, "OpenAL error: Could not open sound device.");
+            ThrowException(InitialisationFailed, "Sound: OpenAL error: Could not open sound device.");
         }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
-        COUT(3) << "OpenAL: Sound device opened" << std::endl;
+        COUT(3) << "Sound: OpenAL: Sound device opened" << std::endl;
         this->context_ = alcCreateContext(this->device_, NULL);
         if (this->context_ == NULL)
-            ThrowException(InitialisationFailed, "OpenAL error: Could not create sound context");
+            ThrowException(InitialisationFailed, "Sound: OpenAL error: Could not create sound context");
         Loki::ScopeGuard desroyContextGuard = Loki::MakeGuard(&alcDestroyContext, this->context_);
 
         if (alcMakeContextCurrent(this->context_) == AL_TRUE)
-            COUT(3) << "OpenAL: Context " << this->context_ << " loaded" << std::endl;
+            COUT(3) << "Sound: OpenAL: Context " << this->context_ << " loaded" << std::endl;
 
         COUT(4) << "Sound: OpenAL ALUT version: " << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
 
         const char* str = alutGetMIMETypes(ALUT_LOADER_BUFFER);
         if (str == NULL)
-            COUT(2) << "OpenAL ALUT error: " << alutGetErrorString(alutGetError()) << std::endl;
+            COUT(2) << "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()) << std::endl;
         else
-            COUT(4) << "OpenAL ALUT supported MIME types: " << str << std::endl;
+            COUT(4) << "Sound: OpenAL ALUT supported MIME types: " << str << std::endl;
 
         GameMode::setPlaysSound(true);
         // Disarm guards

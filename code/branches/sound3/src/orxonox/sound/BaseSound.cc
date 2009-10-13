@@ -64,7 +64,7 @@ namespace orxonox
 
             if (alGetError() != AL_NO_ERROR)
             {
-                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->audioSource_ << std::endl;
+                 COUT(2) << "Sound: OpenAL: Error playing sound " << this->audioSource_ << std::endl;
             }
         }
     }
@@ -146,7 +146,7 @@ namespace orxonox
             if (source.find("ogg", 0) != std::string::npos)
             {
                 COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
-                this->audioBuffer_ = loadOggFile();
+                this->audioBuffer_ = this->loadOggFile();
             }
 
             if (this->audioBuffer_ == AL_NONE)
