@@ -113,7 +113,7 @@ namespace orxonox
 
             std::list<QuestEffect*> effects_; //!< The list of QuestEffects to be invoked on the executing player.
             int times_; //!< Number of times the beacon can be exectued.
-            QuestEffectBeaconStatus::Value status_; //!< The status of the QUestEffectBeacon, Can be eighter active or inactive.
+            QuestEffectBeaconStatus::Value status_; //!< The status of the QuestEffectBeacon, Can be eighter active or inactive.
 
             bool setTimes(const int & n); //!< Set the number of times the QuestEffectBeacon can be executed.
             bool addEffect(QuestEffect* effect); //!< Add a QuestEffect to the QuestEffectBeacon.

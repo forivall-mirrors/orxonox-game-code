@@ -89,7 +89,7 @@ namespace orxonox
     /**
     @brief
         Executes the QuestEffectBeacon.
-        This means extracting the ControllableEntity from the PlayerTrigger, provided by the Event causing the execution, and the extracting the PlayerInfo from the received ControllableEntity and invoking the QuestEffectbeacon's QuestEffects on the received PlayerInfo.
+        This means extracting the Pawn from the PlayerTrigger, provided by the Event causing the execution, and the extracting the PlayerInfo from the received Pawn and invoking the QuestEffectbeacon's QuestEffects on the received PlayerInfo.
     @param trigger
         Apointer to the PlayerTrigger that threw the Event.
     @return
@@ -107,12 +107,12 @@ namespace orxonox
             return false;
         }
 
-        if(!trigger->isForPlayer()) //!< The PlayerTrigger is not exclusively for ControllableEntities which means we cannot extract one.
+        if(!trigger->isForPlayer()) //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
         {
             return false;
         }
 
-        //! Extracting the ControllableEntity form the PlayerTrigger.
+        //! Extracting the Pawn from the PlayerTrigger.
         Pawn* pawn = trigger->getTriggeringPlayer();
 
         if(pawn == NULL)
@@ -121,7 +121,7 @@ namespace orxonox
             return false;
         }
 
-        //! Extract the PlayerInfo from the ControllableEntity.
+        //! Extract the PlayerInfo from the Pawn.
         PlayerInfo* player = pawn->getPlayer();
 
         if(player == NULL)
