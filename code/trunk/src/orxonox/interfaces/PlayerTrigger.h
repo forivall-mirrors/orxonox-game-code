@@ -42,7 +42,7 @@ namespace orxonox
 {
     /**
     @brief
-        A PlayerTrigger is a trigger which is normally triggered by ControllableEntities and can as such return a pointer to the ControllableEntity which triggered it.
+        A PlayerTrigger is a trigger which is normally triggered by Pawns and can as such return a pointer to the Pawn which triggered it.
     @author
         Damian 'Mozork' Frick
     */
@@ -54,14 +54,14 @@ namespace orxonox
 
         /**
         @brief Returns the player that triggered the PlayerTrigger.
-        @return Returns a pointer to the ControllableEntity that triggered the PlayerTrigger.
+        @return Returns a pointer to the Pawn that triggered the PlayerTrigger.
         */
         inline Pawn* getTriggeringPlayer(void) const
             { return this->player_; }
 
         /**
-        @brief Checks whether the PlayerTrigger normally returns a ControllableEntity.
-        @return Returns true if the PlayerTrigger normally returns a ControllableEntity.
+        @brief Checks whether the PlayerTrigger normally returns a Pawn.
+        @return Returns true if the PlayerTrigger normally returns a Pawn.
         */
         inline bool isForPlayer(void) const
            { return this->isForPlayer_; }
@@ -69,21 +69,21 @@ namespace orxonox
     protected:
         /**
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
-        @param player A pointer to the ControllableEntity that triggered the PlayerTrigger.
+        @param player A pointer to the Pawn that triggered the PlayerTrigger.
         */
         inline void setTriggeringPlayer(Pawn* player)
            { this->player_ = player; }
 
             /**
-            @brief Set whether the PlayerTrigger normally is triggered by ControllableEntities.
-            @param isForPlayer Should be true when the PlayerTrigger should be set to normally be triggered by ControllableEntities, false if not.
+            @brief Set whether the PlayerTrigger normally is triggered by Pawns.
+            @param isForPlayer Should be true when the PlayerTrigger should be set to normally be triggered by Pawns, false if not.
             */
         inline void setForPlayer(bool isForPlayer)
            { this->isForPlayer_ = isForPlayer; }
 
     private:
         Pawn* player_; //!< The player that triggered the PlayerTrigger.
-        bool isForPlayer_; //!< Is true when the PlayerTrigger should be set to normally be triggered by ControllableEntities.
+        bool isForPlayer_; //!< Is true when the PlayerTrigger should be set to normally be triggered by Pawns.
 
     };
 
