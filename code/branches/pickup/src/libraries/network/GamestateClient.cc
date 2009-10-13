@@ -107,7 +107,7 @@ namespace orxonox
   void GamestateClient::removeObject(ObjectList<Synchronisable>::iterator &it) {
     ObjectList<Synchronisable>::iterator temp=it;
     ++it;
-    delete  *temp;
+    temp->destroy(); // or delete?
   }
 
   packet::Gamestate *GamestateClient::getGamestate(){

@@ -53,10 +53,10 @@ namespace orxonox
             this->weaponSystem_->removeWeaponPack(this);
 
             while (!this->weapons_.empty())
-                delete (*this->weapons_.begin());
+                (*this->weapons_.begin())->destroy();
 
             for (std::set<DefaultWeaponmodeLink*>::iterator it = this->links_.begin(); it != this->links_.end(); )
-                delete (*(it++));
+                (*(it++))->destroy();
         }
     }
 

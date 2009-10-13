@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "core/Identifier.h"
+#include "core/SubclassIdentifier.h"
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox

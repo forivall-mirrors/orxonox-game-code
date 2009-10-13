@@ -27,18 +27,21 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the overlays module
 */
 
 #ifndef _OverlaysPrereqs_H__
 #define _OverlaysPrereqs_H__
 
 #include "OrxonoxConfig.h"
+#include "OrxonoxPrereqs.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
 #  ifdef OVERLAYS_SHARED_BUILD
 #    define _OverlaysExport __declspec(dllexport)
@@ -61,25 +64,31 @@
 
 namespace orxonox
 {
-    class BarColour;
+    class FadeoutText;
+    class GUIOverlay;
+    class OverlayText;
+
+    // debugging
     class DebugFPSText;
     class DebugRTRText;
-    class GUIOverlay;
+
+    // hud
+    class AnnounceMessage;
+    class BarColour;
+    class ChatOverlay;
+    class DeathMessage;
+    class GametypeStatus;
     class HUDBar;
+    class HUDHealthBar;
     class HUDNavigation;
     class HUDRadar;
     class HUDSpeedBar;
-    class HUDHealthBar;
     class HUDTimer;
-    class OrxonoxOverlay;
-    class OverlayGroup;
-    class OverlayText;
-    class FadeoutText;
-    class GametypeStatus;
-    class AnnounceMessage;
     class KillMessage;
-    class DeathMessage;
+    class TeamBaseMatchScore;
+    class UnderAttackHealthBar;
 
+    // stats
     class CreateLines;
     class Scoreboard;
     class Stats;

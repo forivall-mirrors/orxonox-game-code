@@ -36,7 +36,6 @@ extern "C" {
 }
 
 #include "util/Debug.h"
-#include "Core.h"
 #include "Resource.h"
 #include "ToluaBindCore.h"
 

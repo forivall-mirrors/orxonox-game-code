@@ -31,6 +31,7 @@
 
 #include "NetworkPrereqs.h"
 
+#include "util/UtilPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "Host.h"
 #include "GamestateManager.h"
@@ -64,7 +65,9 @@ namespace orxonox
     unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
     
-    void addClient(ENetEvent *event);
+    void addPeer(ENetEvent *event);
+    void removePeer(ENetEvent *event);
+    
     bool createClient(int clientID);
     void disconnectClient( ClientInformation *client);
     bool processPacket( ENetPacket *packet, ENetPeer *peer );

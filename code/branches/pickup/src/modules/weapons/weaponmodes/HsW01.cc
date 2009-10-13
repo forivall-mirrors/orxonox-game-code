@@ -53,7 +53,7 @@ namespace orxonox
         this->delay_ = 0;
         this->setMunitionName("LaserMunition");
 
-        this->delayTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&HsW01::shot)));
+        this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&HsW01::shot, this)));
         this->delayTimer_.stopTimer();
     }
 

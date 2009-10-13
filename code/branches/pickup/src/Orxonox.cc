@@ -62,9 +62,9 @@ int main(int argc, char** argv)
         std::string strCmdLine;
         for (int i = 1; i < argc; ++i)
             strCmdLine += argv[i] + std::string(" ");
+#endif
 
         return orxonox::main(strCmdLine);
-#endif
     }
     catch (...)
     {

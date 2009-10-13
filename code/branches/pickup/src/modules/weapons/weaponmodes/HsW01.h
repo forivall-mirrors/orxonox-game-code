@@ -56,7 +56,7 @@ namespace orxonox
             std::string material_;
             float speed_;
             float delay_;
-            Timer<HsW01> delayTimer_;
+            Timer delayTimer_;
     };
 }
 

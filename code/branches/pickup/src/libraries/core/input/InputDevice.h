@@ -40,9 +40,9 @@
 #include <vector>
 #include <ois/OISInputManager.h>
 
+#include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "core/Clock.h"
 #include "InputState.h"
 
 namespace orxonox

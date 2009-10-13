@@ -58,10 +58,10 @@ namespace orxonox
 
     CreateLines::~CreateLines()
     {
-        delete this->playerNameText_;
-        delete this->scoreText_;
-        delete this->deathsText_;
-        delete this->background_;
+        this->playerNameText_->destroy();
+        this->scoreText_->destroy();
+        this->deathsText_->destroy();
+        this->background_->destroy();
     }
 
     void CreateLines::setPlayerName(const std::string& str)

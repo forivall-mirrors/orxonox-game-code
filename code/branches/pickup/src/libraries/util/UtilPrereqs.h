@@ -27,8 +27,9 @@
  */
 
 /**
-  @file
-  @brief Contains all the necessary forward declarations for all classes and structs.
+@file
+@brief
+    Shared library macros, enums, constants and forward declarations for the util library
 */
 
 #ifndef _UtilPrereqs_H__
@@ -39,6 +40,7 @@
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
+
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined( UTIL_STATIC_BUILD )
 #  ifdef UTIL_SHARED_BUILD
 #    define _UtilExport __declspec(dllexport)
@@ -55,6 +57,22 @@
 #  define _UtilExport
 #endif
 
+//-----------------------------------------------------------------------
+// Enums
+//-----------------------------------------------------------------------
+
+namespace orxonox
+{
+    namespace ScopeID
+    {
+        //!A list of available scopes for the Scope template.
+        enum Value
+        {
+            Root,
+            Graphics
+        };
+    }
+}
 
 //-----------------------------------------------------------------------
 // Forward declarations
@@ -62,6 +80,7 @@
 
 namespace orxonox
 {
+    class Clock;
     class Exception;
     class ExprParser;
     class IntVector2;
@@ -70,7 +89,14 @@ namespace orxonox
     class OutputBuffer;
     class OutputBufferListener;
     class OutputHandler;
+    template <ScopeID::Value>
+    class Scope;
+    template <class, ScopeID::Value>
+    class ScopedSingleton;
+    class ScopeListener;
     class SignalHandler;
+    template <class T>
+    class Singleton;
     class SubString;
 }
 

@@ -73,7 +73,7 @@ namespace orxonox
             float turnontime_;
             float turnofftime_;
             float postprocessingtime_;
-            Timer<FadingBillboard> turnonofftimer_;
+            Timer turnonofftimer_;
             char changedirection_;
             ColourValue fadedColour_;
     };

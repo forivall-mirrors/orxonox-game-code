@@ -71,7 +71,7 @@ namespace orxonox
           this->attachOgreObject(this->debugBillboard_.getBillboardSet());
     }
 
-    this->setObjectMode(0x0);
+    this->setSyncMode(0x0);
   }
 
   Trigger::~Trigger()

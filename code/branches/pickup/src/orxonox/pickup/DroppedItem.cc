@@ -74,7 +74,7 @@ namespace orxonox
     {
         if (this->item_)
         {
-            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); it++) //!< Iterate through all Pawns.
+            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it) //!< Iterate through all Pawns.
             {
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 if (distance.length() < this->triggerDistance_)
@@ -92,7 +92,7 @@ namespace orxonox
         if (this->item_->pickedUp(pawn)) //If pickup was successful.
         {
             COUT(3) << "DroppedItem '" << this->item_->getPickupIdentifier() << "' picked up." << std::endl;
-            delete this;
+            this->destroy();
         }
     }
 
@@ -105,8 +105,7 @@ namespace orxonox
     {
         if (this->timeToLive_ > 0)
         {
-            ExecutorMember<DroppedItem>* exec = createExecutor(createFunctor(&DroppedItem::timerCallback));
-            this->timer_.setTimer(this->timeToLive_, false, this, exec, false);
+            this->timer_.setTimer(this->timeToLive_, false, createExecutor(createFunctor(&DroppedItem::timerCallback, this)), false);
         }
     }
     
@@ -122,10 +121,10 @@ namespace orxonox
         if (this->item_)
         {
             COUT(3) << "Delete DroppedItem with '" << this->item_->getPickupIdentifier() << "'" << std::endl;
-            delete this->item_;
+            this->item_->destroy();
         }
 
-        delete this;
+        this->destroy();
     }
 
     /**

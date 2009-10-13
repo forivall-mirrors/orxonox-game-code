@@ -59,13 +59,13 @@ namespace orxonox
         {
             // We have no ship, so the effects are not attached and won't be destroyed automatically
             for (std::list<WorldEntity*>::const_iterator it = this->activeEffects_.begin(); it != this->activeEffects_.end(); ++it)
-                delete (*it);
+                (*it)->destroy();
             for (std::list<WorldEntity*>::const_iterator it = this->forwardEffects_.begin(); it != this->forwardEffects_.end(); ++it)
-                delete (*it);
+                (*it)->destroy();
             for (std::list<WorldEntity*>::const_iterator it = this->boostEffects_.begin(); it != this->boostEffects_.end(); ++it)
-                delete (*it);
+                (*it)->destroy();
             for (std::list<WorldEntity*>::const_iterator it = this->brakeEffects_.begin(); it != this->brakeEffects_.end(); ++it)
-                delete (*it);
+                (*it)->destroy();
         }
     }
 
@@ -90,7 +90,7 @@ namespace orxonox
         {
             if (this->getShip()->hasLocalController())
             {
-                this->setObjectMode(ObjectDirection::Bidirectional);
+                this->setSyncMode(ObjectDirection::Bidirectional);
 
                 const Vector3& direction = this->getDirection();
                 const Vector3& velocity = this->getShip()->getLocalVelocity();

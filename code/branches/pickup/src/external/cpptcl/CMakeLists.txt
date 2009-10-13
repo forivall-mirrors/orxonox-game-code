@@ -31,10 +31,6 @@ SET(CPPTCL_FILES
   details/methods_v.h
 )
 
-# No warnings needed from third party libraries
-REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-ADD_COMPILER_FLAGS("-w")
-
 ORXONOX_ADD_LIBRARY(cpptcl_orxonox
   ORXONOX_EXTERNAL
   NO_DLL_INTERFACE

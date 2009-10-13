@@ -40,10 +40,10 @@
 #include <ois/OISInputManager.h>
 #include <boost/foreach.hpp>
 
+#include "util/Clock.h"
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/ScopeGuard.h"
-#include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -52,7 +52,6 @@
 #include "core/GraphicsManager.h"
 
 #include "InputBuffer.h"
-#include "KeyDetector.h"
 #include "JoyStick.h"
 #include "JoyStickQuantityListener.h"
 #include "Mouse.h"
@@ -87,9 +86,8 @@ namespace orxonox
         : internalState_(Bad)
         , oisInputManager_(0)
         , devices_(2)
-        , bExclusiveMouse_(false)
+        , mouseMode_(MouseMode::Nonexclusive)
         , emptyState_(0)
-        , keyDetector_(0)
         , calibratorCallbackHandler_(0)
     {
         RegisterRootObject(InputManager);
@@ -98,21 +96,14 @@ namespace orxonox
 
         this->setConfigValues();
 
+        if (GraphicsManager::getInstance().isFullScreen())
+            mouseMode_ = MouseMode::Exclusive;
         this->loadDevices();
 
         // Lowest priority empty InputState
         emptyState_ = createInputState("empty", false, false, InputStatePriority::Empty);
         emptyState_->setHandler(&InputHandler::EMPTY);
         activeStates_[emptyState_->getPriority()] = emptyState_;
-
-        // KeyDetector to evaluate a pressed key's name
-        InputState* detector = createInputState("detector", false, false, InputStatePriority::Detector);
-        // Create a callback to avoid buttonHeld events after the key has been detected
-        FunctorMember<InputManager>* bufferFunctor = createFunctor(&InputManager::clearBuffers);
-        bufferFunctor->setObject(this);
-        detector->setLeaveFunctor(bufferFunctor);
-        keyDetector_ = new KeyDetector();
-        detector->setHandler(keyDetector_);
 
         // Joy stick calibration helper callback
         InputState* calibrator = createInputState("calibrator", false, false, InputStatePriority::Calibrator);
@@ -123,18 +114,10 @@ namespace orxonox
 
         this->updateActiveStates();
 
-        {
-            // calibrate console command
-            FunctorMember<InputManager>* functor = createFunctor(&InputManager::calibrate);
-            functor->setObject(this);
-            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "calibrate"), true);
-        }
-        {
-            // reload console command
-            FunctorMember<InputManager>* functor = createFunctor(&InputManager::reload);
-            functor->setObject(this);
-            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "reload"), false);
-        }
+        // calibrate console command
+        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&InputManager::calibrate, this), "calibrate"), true);
+        // reload console command
+        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&InputManager::reload, this), "reload"), false);
 
         CCOUT(4) << "Construction complete." << std::endl;
         internalState_ = Nothing;
@@ -171,7 +154,7 @@ namespace orxonox
         paramList.insert(std::make_pair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
         paramList.insert(std::make_pair("w32_keyboard", "DISCL_FOREGROUND"));
         paramList.insert(std::make_pair("w32_mouse", "DISCL_FOREGROUND"));
-        if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
+        if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
         {
             // Disable Windows key plus special keys (like play, stop, next, etc.)
             paramList.insert(std::make_pair("w32_keyboard", "DISCL_NOWINKEY"));
@@ -184,7 +167,7 @@ namespace orxonox
         // Trouble might be that the Pressed event occurs a bit too often...
         paramList.insert(std::make_pair("XAutoRepeatOn", "true"));
 
-        if (bExclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
+        if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
         {
             if (CommandLine::getValue("keyboard_no_grab").getBool())
                 paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
@@ -273,11 +256,6 @@ namespace orxonox
         JoyStickQuantityListener::changeJoyStickQuantity(joyStickList);
     }
 
-    void InputManager::setKeyDetectorCallback(const std::string& command)
-    {
-        this->keyDetector_->setCallbackCommand(command);
-    }
-
     // ############################################################
     // #####                    Destruction                   #####
     // ##########                                        ##########
@@ -288,11 +266,9 @@ namespace orxonox
         CCOUT(3) << "Destroying..." << std::endl;
 
         // Destroy calibrator helper handler and state
-        delete keyDetector_;
         this->destroyState("calibrator");
         // Destroy KeyDetector and state
-        delete calibratorCallbackHandler_;
-        this->destroyState("detector");
+        calibratorCallbackHandler_->destroy();
         // destroy the empty InputState
         this->destroyStateInternal(this->emptyState_);
 
@@ -527,11 +503,15 @@ namespace orxonox
             activeStatesTicked_.push_back(*it);
 
         // Check whether we have to change the mouse mode
+        MouseMode::Value requestedMode = MouseMode::Dontcare;
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
-        if (mouseStates.empty() && bExclusiveMouse_ ||
-            !mouseStates.empty() && mouseStates.front()->getIsExclusiveMouse() != bExclusiveMouse_)
+        if (mouseStates.empty())
+            requestedMode = MouseMode::Nonexclusive;
+        else 
+            requestedMode = mouseStates.front()->getMouseMode();
+        if (requestedMode != MouseMode::Dontcare && mouseMode_ != requestedMode)
         {
-            bExclusiveMouse_ = !bExclusiveMouse_;
+            mouseMode_ = requestedMode;
             if (!GraphicsManager::getInstance().isFullScreen())
                 this->reloadInternal();
         }
@@ -721,6 +701,6 @@ namespace orxonox
             updateActiveStates();
         }
         statesByName_.erase(state->getName());
-        delete state;
+        state->destroy();
     }
 }

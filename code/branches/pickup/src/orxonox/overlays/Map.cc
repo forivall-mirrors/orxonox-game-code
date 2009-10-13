@@ -289,7 +289,7 @@ Ogre::MaterialPtr Map::init()
 //Ogre::Entity * ent;// = mapSceneM_s->createEntity("ent1", "drone.mesh");
        for(ObjectList<orxonox::RadarViewable>::iterator it = ObjectList<orxonox::RadarViewable>::begin();
             it!=ObjectList<orxonox::RadarViewable>::end();
-            it++)
+            ++it)
         {
             //COUT(0) << "Radar_Position: " << it->getRVWorldPosition() << std::endl;
             //Ogre::SceneNode node = it->getMapNode();
@@ -391,7 +391,7 @@ Ogre::MaterialPtr Map::init()
     {
         for(ObjectList<orxonox::Map>::iterator it = ObjectList<orxonox::Map>::begin();
             it!=ObjectList<orxonox::Map>::end();
-            it++)
+            ++it)
         {
         //Map * m = it->getMap();
         //COUT(0) << it->isVisible_ << std::endl;

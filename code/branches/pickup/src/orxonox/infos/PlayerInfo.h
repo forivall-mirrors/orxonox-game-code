@@ -32,8 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "Info.h"
-#include "core/Identifier.h"
-#include "controllers/Controller.h"
+#include "core/SubclassIdentifier.h"
 
 namespace orxonox
 {

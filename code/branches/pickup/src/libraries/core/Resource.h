@@ -63,7 +63,7 @@ namespace orxonox
     {
         // Docs by Ogre::ResourceGroupManager.h
     public:
-		/**
+        /**
         @brief
             Open a single resource by name and return a DataStream
             pointing at the source of the data.
@@ -80,12 +80,12 @@ namespace orxonox
         @return
             Shared pointer to data stream containing the data. Will be
             destroyed automatically when no longer referenced.
-		*/
+        */
         static DataStreamPtr open(const std::string& name,
             const std::string& group = Resource::DEFAULT_GROUP,
             bool bSearchGroupsIfNotFound = false);
 
-		/**
+        /**
         @brief
             Open all resources matching a given pattern (which can contain
             the character '*' as a wildcard), and return a collection of 
@@ -100,7 +100,7 @@ namespace orxonox
         @return
             Shared pointer to a data stream list , will be
             destroyed automatically when no longer referenced
-		*/
+        */
         static DataStreamListPtr openMulti(const std::string& pattern, const std::string& group = Resource::DEFAULT_GROUP);
 
         /**

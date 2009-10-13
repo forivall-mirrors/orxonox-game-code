@@ -60,7 +60,7 @@ namespace orxonox
             shape->setRadius(20);
             this->attachCollisionShape(shape);
 
-            this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+            this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Projectile::destroyObject, this)));
         }
     }
 
@@ -83,13 +83,13 @@ namespace orxonox
             return;
 
         if (this->bDestroy_)
-            delete this;
+            this->destroy(); // TODO: use a scheduler instead of deleting the object right here in tick()
     }
 
     void Projectile::destroyObject()
     {
         if (GameMode::isMaster())
-            delete this;
+            this->destroy();
     }
 
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
@@ -132,9 +132,8 @@ namespace orxonox
         return false;
     }
 
-    void Projectile::destroyedPawn(Pawn* pawn)
+    void Projectile::setOwner(Pawn* owner)
     {
-        if (this->owner_ == pawn)
-            this->owner_ = 0;
+        this->owner_ = owner;
     }
 }

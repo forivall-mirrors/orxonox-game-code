@@ -38,7 +38,7 @@
 #include "util/StringUtils.h"
 #include "ConfigValueContainer.h"
 #include "ConsoleCommand.h"
-#include "Factory.h"
+#include "ClassFactory.h"
 #include "XMLPort.h"
 
 namespace orxonox
@@ -60,13 +60,10 @@ namespace orxonox
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
         this->factory_ = 0;
-        this->bLoadable_ = true;
+        this->bLoadable_ = false;
 
         this->bHasConfigValues_ = false;
         this->bHasConsoleCommands_ = false;
-
-        this->children_ = new std::set<const Identifier*>();
-        this->directChildren_ = new std::set<const Identifier*>();
 
         // Default network ID is the class ID
         this->networkID_ = this->classID_;
@@ -77,8 +74,6 @@ namespace orxonox
     */
     Identifier::~Identifier()
     {
-        delete this->children_;
-        delete this->directChildren_;
         delete this->objects_;
 
         if (this->factory_)
@@ -117,7 +112,7 @@ namespace orxonox
         {
             // There is already an entry: return it and delete the proposal
             delete proposal;
-            return (*it).second;
+            return it->second;
         }
         else
         {
@@ -164,7 +159,7 @@ namespace orxonox
             for (std::set<const Identifier*>::iterator it = parents->begin(); it != parents->end(); ++it)
             {
                 // Tell the parent we're one of it's children
-                (*it)->getChildrenIntern().insert((*it)->getChildrenIntern().end(), this);
+                (*it)->children_.insert((*it)->children_.end(), this);
 
                 // Erase all parents of our parent from our direct-parent-list
                 for (std::set<const Identifier*>::const_iterator it1 = (*it)->getParents().begin(); it1 != (*it)->getParents().end(); ++it1)
@@ -186,12 +181,32 @@ namespace orxonox
             for (std::set<const Identifier*>::iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
             {
                 // Tell the parent we're one of it's direct children
-                (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
+                (*it)->directChildren_.insert((*it)->directChildren_.end(), this);
 
                 // Create the super-function dependencies
                 (*it)->createSuperFunctionCaller();
             }
         }
+    }
+
+    /**
+        @brief Creates the class-hierarchy by creating and destroying one object of each type.
+    */
+    void Identifier::createClassHierarchy()
+    {
+        COUT(3) << "*** Identifier: Create class-hierarchy" << std::endl;
+        Identifier::startCreatingHierarchy();
+        for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMap().begin(); it != Identifier::getStringIdentifierMap().end(); ++it)
+        {
+            // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
+            if (it->second->hasFactory())
+            {
+                BaseObject* temp = it->second->fabricate(0);
+                temp->destroy();
+            }
+        }
+        Identifier::stopCreatingHierarchy();
+        COUT(3) << "*** Identifier: Finished class-hierarchy creation" << std::endl;
     }
 
     /**
@@ -213,8 +228,9 @@ namespace orxonox
         {
             this->name_ = name;
             this->bSetName_ = true;
-            Identifier::getIdentifierMapIntern()[name] = this;
-            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
+            Identifier::getStringIdentifierMapIntern()[name] = this;
+            Identifier::getLowercaseStringIdentifierMapIntern()[getLowercase(name)] = this;
+            Identifier::getIDIdentifierMapIntern()[this->networkID_] = this;
         }
     }
 
@@ -234,17 +250,18 @@ namespace orxonox
             COUT(1) << "Error: Cannot fabricate an object of type '" << this->name_ << "'. Class has no factory." << std::endl;
             COUT(1) << "Aborting..." << std::endl;
             abort();
-            return NULL;
+            return 0;
         }
     }
 
     /**
-        @brief Sets the network ID to a new value and changes the entry in the Factory.
+        @brief Sets the network ID to a new value and changes the entry in the ID-Identifier-map.
         @param id The new network ID
     */
     void Identifier::setNetworkID(uint32_t id)
     {
-        Factory::changeNetworkID(this, this->networkID_, id);
+//        Identifier::getIDIdentifierMapIntern().erase(this->networkID_);
+        Identifier::getIDIdentifierMapIntern()[id] = this;
         this->networkID_ = id;
     }
 
@@ -290,7 +307,7 @@ namespace orxonox
     */
     bool Identifier::isParentOf(const Identifier* identifier) const
     {
-        return (this->children_->find(identifier) != this->children_->end());
+        return (this->children_.find(identifier) != this->children_.end());
     }
 
     /**
@@ -299,27 +316,87 @@ namespace orxonox
     */
     bool Identifier::isDirectParentOf(const Identifier* identifier) const
     {
-        return (this->directChildren_->find(identifier) != this->directChildren_->end());
+        return (this->directChildren_.find(identifier) != this->directChildren_.end());
     }
 
     /**
-        @brief Returns the map that stores all Identifiers.
+        @brief Returns the map that stores all Identifiers with their names.
         @return The map
     */
-    std::map<std::string, Identifier*>& Identifier::getIdentifierMapIntern()
+    std::map<std::string, Identifier*>& Identifier::getStringIdentifierMapIntern()
     {
         static std::map<std::string, Identifier*> identifierMap;
         return identifierMap;
     }
 
     /**
-        @brief Returns the map that stores all Identifiers.
+        @brief Returns the map that stores all Identifiers with their names in lowercase.
         @return The map
     */
-    std::map<std::string, Identifier*>& Identifier::getLowercaseIdentifierMapIntern()
+    std::map<std::string, Identifier*>& Identifier::getLowercaseStringIdentifierMapIntern()
     {
         static std::map<std::string, Identifier*> lowercaseIdentifierMap;
         return lowercaseIdentifierMap;
+    }
+
+    /**
+        @brief Returns the map that stores all Identifiers with their network IDs.
+        @return The map
+    */
+    std::map<uint32_t, Identifier*>& Identifier::getIDIdentifierMapIntern()
+    {
+        static std::map<uint32_t, Identifier*> identifierMap;
+        return identifierMap;
+    }
+
+    /**
+        @brief Returns the Identifier with a given name.
+        @param name The name of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* Identifier::getIdentifierByString(const std::string& name)
+    {
+        std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapIntern().find(name);
+        if (it != Identifier::getStringIdentifierMapIntern().end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Returns the Identifier with a given name in lowercase.
+        @param name The name of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* Identifier::getIdentifierByLowercaseString(const std::string& name)
+    {
+        std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMapIntern().find(name);
+        if (it != Identifier::getLowercaseStringIdentifierMapIntern().end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Returns the Identifier with a given network ID.
+        @param id The network ID of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* Identifier::getIdentifierByID(const uint32_t id)
+    {
+        std::map<uint32_t, Identifier*>::const_iterator it = Identifier::getIDIdentifierMapIntern().find(id);
+        if (it != Identifier::getIDIdentifierMapIntern().end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Cleans the NetworkID map (needed on clients for correct initialization)
+    */
+    void Identifier::clearNetworkIDs()
+    {
+        Identifier::getIDIdentifierMapIntern().clear();
     }
 
     /**
@@ -350,7 +427,7 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_.find(varname);
         if (it != configValues_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -364,7 +441,7 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_LC_.find(varname);
         if (it != configValues_LC_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -403,7 +480,7 @@ namespace orxonox
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(name);
         if (it != this->consoleCommands_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -417,7 +494,7 @@ namespace orxonox
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_LC_.find(name);
         if (it != this->consoleCommands_LC_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -431,7 +508,7 @@ namespace orxonox
     {
         std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
         if (it != this->xmlportParamContainers_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -462,7 +539,7 @@ namespace orxonox
     {
         std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
         if (it != this->xmlportObjectContainers_.end())
-            return ((*it).second);
+            return it->second;
         else
             return 0;
     }
@@ -485,37 +562,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns a XMLPortEventContainer that attaches an event to this class.
-        @param sectionname The name of the section that contains the event
-        @return The container
-    */
-    XMLPortObjectContainer* Identifier::getXMLPortEventContainer(const std::string& eventname)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
-        if (it != this->xmlportEventContainers_.end())
-            return ((*it).second);
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new XMLPortEventContainer that attaches an event to this class.
-        @param sectionname The name of the section that contains the event
-        @param container The container
-    */
-    void Identifier::addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container)
-    {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
-        if (it != this->xmlportEventContainers_.end())
-        {
-            COUT(2) << "Warning: Overwriting XMLPortEventContainer in class " << this->getName() << "." << std::endl;
-            delete (it->second);
-        }
-
-        this->xmlportEventContainers_[eventname] = container;
-    }
-
-    /**
         @brief Lists the names of all Identifiers in a std::set<const Identifier*>.
         @param out The outstream
         @param list The list (or set) of Identifiers
@@ -524,7 +570,11 @@ namespace orxonox
     std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list)
     {
         for (std::set<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
-            out << (*it)->getName() << " ";
+        {
+            if (it != list.begin())
+                out << " ";
+            out << (*it)->getName();
+        }
 
         return out;
     }

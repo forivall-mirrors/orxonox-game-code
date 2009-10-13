@@ -74,7 +74,7 @@ namespace orxonox
     SpaceShip::~SpaceShip()
     {
         if (this->isInitialized() && this->engine_)
-            delete this->engine_;
+            this->engine_->destroy();
     }
 
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -206,7 +206,7 @@ namespace orxonox
                     }
                     else
                     {
-                        delete object;
+                        object->destroy();
                     }
                 }
             }

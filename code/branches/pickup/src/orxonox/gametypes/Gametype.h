@@ -36,7 +36,7 @@
 #include <string>
 
 #include "core/BaseObject.h"
-#include "core/Identifier.h"
+#include "core/SubclassIdentifier.h"
 #include "tools/interfaces/Tickable.h"
 #include "infos/GametypeInfo.h"
 
@@ -67,19 +67,19 @@ namespace orxonox
 
         public:
             Gametype(BaseObject* creator);
-            virtual ~Gametype() {}
+            virtual ~Gametype();
 
             void setConfigValues();
 
             virtual void tick(float dt);
 
             inline const GametypeInfo* getGametypeInfo() const
-                { return &this->gtinfo_; }
+                { return this->gtinfo_; }
 
             inline bool hasStarted() const
-                { return this->gtinfo_.bStarted_; }
+                { return this->gtinfo_->bStarted_; }
             inline bool hasEnded() const
-                { return this->gtinfo_.bEnded_; }
+                { return this->gtinfo_->bEnded_; }
 
             virtual void start();
             virtual void end();
@@ -113,14 +113,14 @@ namespace orxonox
                 { this->spawnpoints_.insert(spawnpoint); }
 
             inline bool isStartCountdownRunning() const
-                { return this->gtinfo_.bStartCountdownRunning_; }
+                { return this->gtinfo_->bStartCountdownRunning_; }
             inline float getStartCountdown() const
-                { return this->gtinfo_.startCountdown_; }
+                { return this->gtinfo_->startCountdown_; }
 
             inline void setHUDTemplate(const std::string& name)
-                { this->gtinfo_.hudtemplate_ = name; }
+                { this->gtinfo_->hudtemplate_ = name; }
             inline const std::string& getHUDTemplate() const
-                { return this->gtinfo_.hudtemplate_; }
+                { return this->gtinfo_->hudtemplate_; }
 
             void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
@@ -162,7 +162,7 @@ namespace orxonox
             virtual void spawnPlayersIfRequested();
             virtual void spawnDeadPlayersIfRequested();
 
-            GametypeInfo gtinfo_;
+            SmartPtr<GametypeInfo> gtinfo_;
 
             bool bAutoStart_;
             bool bForceSpawn_;
@@ -183,6 +183,11 @@ namespace orxonox
 
             // Config Values
             std::string scoreboardTemplate_;
+            
+            /* HACK HACK HACK */
+            ConsoleCommand* hackAddBots_;
+            ConsoleCommand* hackKillBots_;
+            /* HACK HACK HACK */
     };
 }
 

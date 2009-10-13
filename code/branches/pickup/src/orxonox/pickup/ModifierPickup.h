@@ -151,7 +151,7 @@ namespace orxonox
             std::map<ModifierType::Value, float> multiplicativeModifiers_;           //!< Map of multiplicative modifiers, indexed by ModifierType.
 
             float duration_;                                                        //!< Duration of this pickup's effect (0 for unlimited).
-            Timer<ModifierPickup> timer_;                                           //!< Timer used if the pickup's effect has a time limit.
+            Timer timer_;                                           //!< Timer used if the pickup's effect has a time limit.
     };
 }
 

@@ -39,7 +39,7 @@
             public:
                 ClassName();
                 void functionName();
-                Timer<ClassName> myTimer;
+                Timer myTimer;
         };
 
     source.cc:
@@ -47,7 +47,7 @@
 
         ClassName::ClassName()
         {
-            myTimer.setTimer(interval_in_seconds, bLoop, this, createExecutor(createFunctor(&ClassName::functionName)));
+            myTimer.setTimer(interval_in_seconds, bLoop, createExecutor(createFunctor(&ClassName::functionName, this)));
         }
 
         void ClassName::functionName()
@@ -68,18 +68,40 @@
 
 namespace orxonox
 {
-    class StaticTimer;
     void delay(float delay, const std::string& command);
     void killdelays();
-    void executeDelayedCommand(StaticTimer* timer, const std::string& command);
+    void executeDelayedCommand(Timer* timer, const std::string& command);
 
-    //! TimerBase is the parent of the Timer class.
-    class _ToolsExport TimerBase : public TimeFactorListener
+    //! The Timer is a callback-object, calling a given function after a given time-interval.
+    class _ToolsExport Timer : public TimeFactorListener
     {
         public:
-            ~TimerBase();
+            Timer();
+            ~Timer();
 
-            void run() const;
+            Timer(float interval, bool bLoop, Executor* executor, bool bKillAfterCall = false);
+
+            /**
+                @brief Initializes the Timer with given values.
+                @param interval The timer-interval in seconds
+                @param bLoop If true, the function gets called every 'interval' seconds
+                @param object The object owning the timer and the function
+                @param executor A executor of the function to call
+            */
+            void setTimer(float interval, bool bLoop, Executor* executor, bool bKillAfterCall = false)
+            {
+                this->deleteExecutor();
+
+                this->setInterval(interval);
+                this->bLoop_ = bLoop;
+                this->executor_ = executor;
+                this->bActive_ = true;
+
+                this->time_ = this->interval_;
+                this->bKillAfterCall_ = bKillAfterCall;
+            }
+
+            void run();
             void deleteExecutor();
 
             /** @brief Starts the Timer: Function-call after 'interval' seconds. */
@@ -115,9 +137,9 @@ namespace orxonox
 
             void tick(const Clock& time);
 
-        protected:
-            TimerBase();
-
+        private:
+            void init();
+        
             Executor* executor_;  //!< The executor of the function that should be called when the time expires
 
             long long interval_;  //!< The time-interval in micro seconds
@@ -127,86 +149,6 @@ namespace orxonox
 
             long long time_;      //!< Internal variable, counting the time till the next function-call
     };
-
-    //! The Timer is a callback-object, calling a given function after a given time-interval.
-    template <class T = BaseObject>
-    class Timer : public TimerBase
-    {
-        public:
-            Timer() {}
-
-            /**
-                @brief Constructor: Initializes the Timer with given values.
-                @param interval The timer-interval in seconds
-                @param bLoop If true, the function gets called every 'interval' seconds
-                @param object The object owning the timer and the function
-                @param exeuctor A executor of the function to call
-            */
-            Timer(float interval, bool bLoop, T* object, ExecutorMember<T>* exeuctor, bool bKillAfterCall = false)
-            {
-                this->setTimer(interval, bLoop, object, exeuctor, bKillAfterCall);
-            }
-
-            /**
-                @brief Initializes the Timer with given values.
-                @param interval The timer-interval in seconds
-                @param bLoop If true, the function gets called every 'interval' seconds
-                @param object The object owning the timer and the function
-                @param exeuctor A executor of the function to call
-            */
-            void setTimer(float interval, bool bLoop, T* object, ExecutorMember<T>* executor, bool bKillAfterCall = false)
-            {
-                this->deleteExecutor();
-
-                this->setInterval(interval);
-                this->bLoop_ = bLoop;
-                executor->setObject(object);
-                this->executor_ = static_cast<Executor*>(executor);
-                this->bActive_ = true;
-
-                this->time_ = this->interval_;
-                this->bKillAfterCall_ = bKillAfterCall;
-            }
-    };
-
-    //! The StaticTimer is a callback-object, calling a static function after a given time-interval.
-    class _ToolsExport StaticTimer : public TimerBase
-    {
-        public:
-            StaticTimer() {}
-
-            /**
-                @brief Constructor: Initializes the Timer with given values.
-                @param interval The timer-interval in seconds
-                @param bLoop If true, the function gets called every 'interval' seconds
-                @param exeuctor A executor of the function to call
-            */
-            StaticTimer(float interval, bool bLoop, ExecutorStatic* executor, bool bKillAfterCall = false)
-            {
-                this->setTimer(interval, bLoop, executor, bKillAfterCall);
-            }
-
-            /**
-                @brief Initializes the Timer with given values.
-                @param interval The timer-interval in seconds
-                @param bLoop If true, the function gets called every 'interval' seconds
-                @param object The object owning the timer and the function
-                @param executor A executor of the function to call
-            */
-            void setTimer(float interval, bool bLoop, ExecutorStatic* executor, bool bKillAfterCall = false)
-            {
-                this->deleteExecutor();
-
-                this->setInterval(interval);
-                this->bLoop_ = bLoop;
-                this->executor_ = executor;
-                this->bActive_ = true;
-
-                this->time_ = this->interval_;
-                this->bKillAfterCall_ = bKillAfterCall;
-            }
-    };
-
 }
 
 #endif /* _Timer_H__ */

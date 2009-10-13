@@ -18,8 +18,6 @@
  #
 
 SET_SOURCE_FILES(CORE_SRC_FILES
-  Clock.cc
-  ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
   DynLib.cc
@@ -32,14 +30,13 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   GUIManager.cc
   Language.cc
   LuaState.cc
-  MemoryArchive.cc
   ObjectListBase.cc
   OrxonoxClass.cc
   Resource.cc
+  ScopedSingletonManager.cc
   WindowEventListener.cc
 
   # command
-  ArgumentCompletionFunctions.cc
   CommandEvaluation.cc
   CommandExecutor.cc
   CommandLine.cc
@@ -48,7 +45,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Executor.cc
 
   # hierarchy
-  Factory.cc
   Identifier.cc
   MetaObjectList.cc
 
@@ -66,12 +62,22 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   IRC.cc
   Shell.cc
   TclBind.cc
-  TclThreadManager.cc
-  
+
+COMPILATION_BEGIN FilesystemCompilation.cc
+  ArgumentCompletionFunctions.cc
+  ConfigFileManager.cc
+  MemoryArchive.cc
+  PathConfig.cc
+COMPILATION_END
+
   # multithreading
-  Thread.cc
   ThreadPool.cc
+COMPILATION_BEGIN ThreadCompilation.cc
+  TclThreadManager.cc
+  Thread.cc
+COMPILATION_END
 )
+
 ADD_SUBDIRECTORY(input)
 
 ORXONOX_ADD_LIBRARY(core

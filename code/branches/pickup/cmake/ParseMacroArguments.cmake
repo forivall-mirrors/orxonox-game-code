@@ -39,6 +39,11 @@ MACRO(PARSE_MACRO_ARGUMENTS _switches _list_names)
   # Using LIST(FIND ...) speeds up the process
   SET(_keywords ${_switches} ${_list_names})
 
+  # Reset all arguments
+  FOREACH(_arg ${_switches} ${_list_names})
+    SET(_arg_${_arg})
+  ENDFOREACH(_arg)
+
   # Parse all the arguments and set the corresponding variable
   # If the option is just a switch, set the variable to its name for later use
   FOREACH(_arg ${ARGN})

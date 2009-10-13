@@ -33,6 +33,7 @@ SET_SOURCE_FILES(OIS_FILES
   OISObject.h
   OISPrereqs.h
 
+COMPILATION_BEGIN OISCompilation.cpp
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -40,6 +41,7 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.cpp
   OISKeyboard.cpp
   OISObject.cpp
+COMPILATION_END
 )
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)
@@ -48,10 +50,6 @@ ELSEIF(APPLE)
 ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
 ENDIF()
-
-# No warnings needed from third party libraries
-REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-ADD_COMPILER_FLAGS("-w")
 
 INCLUDE_DIRECTORIES(.)
 

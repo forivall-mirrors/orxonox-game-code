@@ -122,9 +122,9 @@
 
     <EventDispatcher>
       <targets>
-        <EventTarget name=fireright />
-        <EventTarget name=firecenter />
-        <EventTarget name=fireleft />
+        <EventTarget target=fireright />
+        <EventTarget target=firecenter />
+        <EventTarget target=fireleft />
       </targets>
       <events>
         <activity>

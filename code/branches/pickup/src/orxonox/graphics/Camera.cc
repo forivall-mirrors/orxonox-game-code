@@ -37,6 +37,8 @@
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/GameMode.h"
+#include "core/GUIManager.h"
 #include "Scene.h"
 #include "CameraManager.h"
 
@@ -48,6 +50,8 @@ namespace orxonox
     {
         RegisterObject(Camera);
 
+        if (!GameMode::showsGraphics())
+            ThrowException(AbortLoading, "Can't create Camera, no graphics.");
         if (!this->getScene())
             ThrowException(AbortLoading, "Can't create Camera, no scene.");
         if (!this->getScene()->getSceneManager())
@@ -64,7 +68,7 @@ namespace orxonox
         this->bDrag_ = false;
         this->nearClipDistance_ = 1;
 
-        this->setObjectMode(0x0);
+        this->setSyncMode(0x0);
 
         this->setConfigValues();
         this->configvaluecallback_changedNearClipDistance();
@@ -74,6 +78,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
+            if (GUIManager::getInstance().getCamera() == this->camera_)
+                GUIManager::getInstance().setCamera(NULL);
             this->releaseFocus();
 
             this->cameraNode_->detachAllObjects();

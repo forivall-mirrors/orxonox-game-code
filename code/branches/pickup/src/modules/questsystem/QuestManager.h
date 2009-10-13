@@ -41,7 +41,7 @@
 #include <map>
 #include <string>
 
-#include "util/ScopedSingleton.h"
+#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 #include "QuestGUI.h"
@@ -49,9 +49,6 @@
 // tolua_begin
 namespace orxonox
 {
-
-    typedef ScopedSingleton<QuestManager, ScopeID::GSLevel> ScopedSingletonQuestManagerGSLevel; // workaround for tolua
-
     /**
     @brief
         Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
@@ -59,11 +56,12 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport QuestManager : public ScopedSingletonQuestManagerGSLevel, public orxonox::OrxonoxClass
-    {
+    class _QuestsystemExport QuestManager
 // tolua_end
+        : public Singleton<QuestManager>, public orxonox::OrxonoxClass
+    { // tolua_export
 
-            friend class ScopedSingleton<QuestManager, ScopeID::GSLevel>;
+            friend class Singleton<QuestManager>;
             friend class QuestGUI;
 
         public:
@@ -71,7 +69,7 @@ namespace orxonox
             virtual ~QuestManager();
 
             //! Returns a reference to the single instance of the Quest Manager.
-            static QuestManager& getInstance() { return ScopedSingleton<QuestManager, ScopeID::GSLevel>::getInstance(); } // tolua_export
+            static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
             //! Retreive the main window for the GUI. 
             CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export

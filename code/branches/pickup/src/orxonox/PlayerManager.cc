@@ -30,6 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
+#include "core/ScopedSingletonManager.h"
 #include "Level.h"
 #include "infos/HumanPlayer.h"
 #include "LevelManager.h"
@@ -37,6 +38,7 @@
 namespace orxonox
 {
     PlayerManager* PlayerManager::singletonPtr_s = 0;
+    ManageScopedSingleton(PlayerManager, ScopeID::Root, false);
 
     PlayerManager::PlayerManager()
     {
@@ -73,7 +75,8 @@ namespace orxonox
     {
         if (GameMode::isMaster())
         {
-            COUT(3) << "client disconnected" << std::endl;
+            if (clientID != 0)
+                COUT(3) << "client disconnected" << std::endl;
 
             // remove from clients-map
             PlayerInfo* player = this->clients_[clientID];
@@ -84,7 +87,7 @@ namespace orxonox
 
             // delete PlayerInfo instance
             if (player)
-                delete player;
+                player->destroy();
         }
     }
 

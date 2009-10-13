@@ -95,7 +95,11 @@ namespace orxonox
     HUDBar::~HUDBar()
     {
         if (this->isInitialized())
+        {
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->bar_);
+            for (std::vector<BarColour*>::const_iterator it = this->barColours_.begin(); it != this->barColours_.end(); )
+                (*it++)->destroy();
+        }
     }
 
     void HUDBar::XMLPort(Element& xmlElement, XMLPort::Mode mode)

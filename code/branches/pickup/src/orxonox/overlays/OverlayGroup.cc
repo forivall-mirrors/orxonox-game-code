@@ -60,7 +60,7 @@ namespace orxonox
     OverlayGroup::~OverlayGroup()
     {
         for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            delete (*it);
+            (*it)->destroy();
     }
 
     /**

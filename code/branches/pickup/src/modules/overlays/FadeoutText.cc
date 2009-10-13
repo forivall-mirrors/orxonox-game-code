@@ -45,7 +45,7 @@ namespace orxonox
         this->fadeouttime_ = 1.0f;
 
         this->bFadingOut_ = false;
-        this->fadeouttimer_.setTimer(3.0f, false, this, createExecutor(createFunctor(&FadeoutText::fadeout)));
+        this->fadeouttimer_.setTimer(3.0f, false, createExecutor(createFunctor(&FadeoutText::fadeout, this)));
         this->fadeouttimer_.stopTimer();
 
         this->initialAlpha_ = 1.0f;

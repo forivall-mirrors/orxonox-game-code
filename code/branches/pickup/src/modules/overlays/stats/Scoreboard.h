@@ -41,7 +41,7 @@ namespace orxonox
     {
     public: // functions
         Scoreboard(BaseObject* creator);
-        virtual ~Scoreboard() {}
+        virtual ~Scoreboard();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);

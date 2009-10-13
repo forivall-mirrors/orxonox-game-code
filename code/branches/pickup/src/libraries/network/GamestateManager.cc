@@ -76,7 +76,7 @@ namespace orxonox
       for( it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
         delete (*it2).second;
     }
-    delete this->trafficControl_;
+    this->trafficControl_->destroy();
 //     delete this->threadMutex_;
 //     delete this->threadPool_;
   }
@@ -159,8 +159,7 @@ namespace orxonox
       clientGamestates.push(0);
       finishGamestate( cid, &clientGamestates.back(), client, reference );
       //FunctorMember<GamestateManager>* functor = 
-//       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate) );
-//       executor->setObject(this);
+//       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate, this) );
 //       executor->setDefaultValues( cid, &clientGamestates.back(), client, reference );
 //       (*static_cast<Executor*>(executor))();
 //       this->threadPool_->passFunction( executor, true );

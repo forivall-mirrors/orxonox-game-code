@@ -102,7 +102,7 @@ namespace orxonox
         if (this->isActive())
         {
             this->changedirection_ = 1;
-            this->turnonofftimer_.setTimer(this->turnontime_, false, this, createExecutor(createFunctor(&FadingBillboard::stopturnonoff)));
+            this->turnonofftimer_.setTimer(this->turnontime_, false, createExecutor(createFunctor(&FadingBillboard::stopturnonoff, this)));
 
             if (this->isVisible())
                 this->getBillboardSet().setVisible(true);
@@ -110,7 +110,7 @@ namespace orxonox
         else
         {
             this->changedirection_ = -1;
-            this->turnonofftimer_.setTimer(this->turnofftime_, false, this, createExecutor(createFunctor(&FadingBillboard::stopturnonoff)));
+            this->turnonofftimer_.setTimer(this->turnofftime_, false, createExecutor(createFunctor(&FadingBillboard::stopturnonoff, this)));
         }
     }
 
@@ -125,7 +125,7 @@ namespace orxonox
         {
             this->fadedColour_ = ColourValue::ZERO;
             this->getBillboardSet().setColour(this->fadedColour_);
-            this->turnonofftimer_.setTimer(this->postprocessingtime_, false, this, createExecutor(createFunctor(&FadingBillboard::poststopturnonoff)));
+            this->turnonofftimer_.setTimer(this->postprocessingtime_, false, createExecutor(createFunctor(&FadingBillboard::poststopturnonoff, this)));
         }
         this->changedirection_ = 0;
     }

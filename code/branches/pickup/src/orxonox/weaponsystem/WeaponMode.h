@@ -35,7 +35,7 @@
 #include <string>
 #include "util/Math.h"
 #include "core/BaseObject.h"
-#include "core/Identifier.h"
+#include "core/SubclassIdentifier.h"
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -149,7 +149,7 @@ namespace orxonox
             SubclassIdentifier<Munition> munitiontype_;
             std::string munitionname_;
 
-            Timer<WeaponMode> reloadTimer_;
+            Timer reloadTimer_;
             bool bReloading_;
     };
 }

@@ -50,7 +50,6 @@
 #include "util/Exception.h"
 #include "util/MultiType.h"
 #include "util/OrxAssert.h"
-#include "Factory.h"
 #include "Identifier.h"
 #include "Executor.h"
 #include "BaseObject.h"
@@ -376,7 +375,7 @@ namespace orxonox
                         {
                             this->owner_->xmlAttributes_.clear();
                             // Iterate through the attributes manually in order to make them case insensitive
-                            Attribute* attribute = xmlelement.FirstAttribute(false);
+                            ticpp::Attribute* attribute = xmlelement.FirstAttribute(false);
                             while (attribute != 0)
                             {
                                 this->owner_->xmlAttributes_[getLowercase(attribute->Name())] = attribute->Value();
@@ -411,7 +410,7 @@ namespace orxonox
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
-                else
+                else if (mode == XMLPort::SaveObject)
                 {
                     if (this->saveexecutor_)
                     {
@@ -547,7 +546,7 @@ namespace orxonox
                         {
                             for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
-                                Identifier* identifier = Factory::getIdentifier(child->Value());
+                                Identifier* identifier = Identifier::getIdentifierByString(child->Value());
                                 if (identifier)
                                 {
                                     if (identifier->isA(ClassIdentifier<O>::getIdentifier()))
@@ -628,7 +627,7 @@ namespace orxonox
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
-                else
+                else if (mode == XMLPort::SaveObject)
                 {
                 }
 

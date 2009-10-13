@@ -62,7 +62,7 @@ namespace orxonox
 		RegisterObject ( Test );
     setConfigValues();
     registerVariables();
-		setObjectMode(0x3);
+		setSyncMode(0x3);
 	}
 
 	Test::~Test()

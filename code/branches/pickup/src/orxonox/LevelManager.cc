@@ -33,18 +33,18 @@
 
 #include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
+#include "core/ScopedSingletonManager.h"
 #include "PlayerManager.h"
 #include "Level.h"
-#include "infos/HumanPlayer.h"
 
 namespace orxonox
 {
     SetCommandLineArgument(level, "").shortcut("l").information("Default level file (overrides LevelManager::defaultLevelName_ configValue)");
 
     LevelManager* LevelManager::singletonPtr_s = 0;
+    ManageScopedSingleton(LevelManager, ScopeID::Root, false);
 
     LevelManager::LevelManager()
     {

@@ -18,19 +18,22 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-  Clipboard.cc
-  CRC32.cc
   Exception.cc
-  ExprParser.cc
   Math.cc
   MultiType.cc
+  Scope.cc
+  StringUtils.cc
+COMPILATION_BEGIN StableCompilation.cc
+  Clipboard.cc
+  Clock.cc
+  CRC32.cc
+  ExprParser.cc
   OutputBuffer.cc
   OutputHandler.cc
-  Scope.cc
   SignalHandler.cc
   Sleep.cc
-  StringUtils.cc
   SubString.cc
+COMPILATION_END
 )
 
 IF(GCC_NO_SYSTEM_HEADER_SUPPORT)

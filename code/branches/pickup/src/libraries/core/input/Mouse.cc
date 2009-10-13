@@ -47,18 +47,10 @@ namespace orxonox
         this->windowResized(this->getWindowWidth(), this->getWindowHeight());
 
 #ifdef ORXONOX_PLATFORM_LINUX
-        {
-            // Mouse grab console command
-            FunctorMember<Mouse>* functor = createFunctor(&Mouse::grab);
-            functor->setObject(this);
-            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "grab"), false);
-        }
-        {
-            // Mouse ungrab console command
-            FunctorMember<Mouse>* functor = createFunctor(&Mouse::ungrab);
-            functor->setObject(this);
-            this->getIdentifier()->addConsoleCommand(createConsoleCommand(functor, "ungrab"), false);
-        }
+        // Mouse grab console command
+        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&Mouse::grab, this), "grab"), false);
+        // Mouse ungrab console command
+        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&Mouse::ungrab, this), "ungrab"), false);
 #endif
     }
 

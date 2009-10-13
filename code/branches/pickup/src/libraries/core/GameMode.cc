@@ -26,16 +26,12 @@
  *
  */
 
-/**
-    @file
-    @brief Implementation of the GameMode class.
-*/
-
 #include "GameMode.h"
 
 namespace orxonox
 {
     bool GameMode::bShowsGraphics_s = false;
+    bool GameMode::bPlaysSound_s    = false;
     bool GameMode::bHasServer_s     = false;
     bool GameMode::bIsClient_s      = false;
     bool GameMode::bIsStandalone_s  = false;

@@ -70,6 +70,11 @@ namespace orxonox
             inline bool getShadow() const
                 { return this->bShadows_; }
 
+            inline Radar* getRadar()
+                { return this->radar_; }
+            
+            inline virtual uint32_t getSceneID() const { return this->getObjectID(); }
+
             virtual void tick(float dt);
 
         private:
@@ -90,6 +95,7 @@ namespace orxonox
             ColourValue              ambientLight_;
             std::list<BaseObject*>   objects_;
             bool                     bShadows_;
+            Radar*                   radar_;
 
 
         /////////////

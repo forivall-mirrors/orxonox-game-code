@@ -102,7 +102,7 @@ namespace orxonox
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); )
         {
             if (mask.isIncluded(it->getIdentifier()))
-                delete (*(it++));
+                (it++)->destroy();
             else
                 ++it;
         }
@@ -203,7 +203,7 @@ namespace orxonox
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; )
         {
             if ((it->getFile() == file) && mask.isIncluded(it->getIdentifier()))
-                delete (*(it++));
+                (it++)->destroy();
             else
                 ++it;
         }

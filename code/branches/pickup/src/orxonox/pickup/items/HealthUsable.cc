@@ -86,7 +86,7 @@ namespace orxonox
             pawn->addHealth(this->recoveredHealth_);
 
             this->removeFrom(pawn);
-            delete this;
+            this->destroy();
         }
     }
 

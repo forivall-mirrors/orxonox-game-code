@@ -44,6 +44,8 @@
 
 namespace orxonox
 {
+    class Notification;
+
     class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
     {
         public:

@@ -102,7 +102,7 @@ namespace orxonox
         {
             asItem->addTemplate(this->itemTemplate_);
             PickupInventory::getImageForItem(asItem);
-            delete newObject;
+            newObject->destroy();
         }
 
         //  & load the GUI itself too, along with some empty windows
@@ -147,7 +147,7 @@ namespace orxonox
     {
         if (this->isActive())
         {
-            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); it++)
+            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 if (distance.length() < this->triggerDistance_)
@@ -188,15 +188,14 @@ namespace orxonox
 
                     if (this->respawnTime_ > 0.0f)
                     {
-                        ExecutorMember<PickupSpawner>* executor = createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback));
-                        this->respawnTimer_.setTimer(this->respawnTime_, false, this, executor);
+                        this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
 
                         this->setActive(false);
                         this->fireEvent();
                     }
                 }
                 else
-                    delete newObject;
+                    newObject->destroy();
             }
         }
     }

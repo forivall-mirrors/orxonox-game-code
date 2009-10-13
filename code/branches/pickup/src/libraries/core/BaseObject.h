@@ -36,14 +36,6 @@
 #ifndef _BaseObject_H__
 #define _BaseObject_H__
 
-#define SetMainState(classname, statename, setfunction, getfunction) \
-    if (this->getMainStateName() == statename) \
-    { \
-        this->functorSetMainState_ = createFunctor(&classname::setfunction)->setObject(this); \
-        this->functorGetMainState_ = createFunctor(&classname::getfunction)->setObject(this); \
-    }
-
-
 #include "CorePrereqs.h"
 
 #include <map>
@@ -52,6 +44,7 @@
 #include "util/mbool.h"
 #include "OrxonoxClass.h"
 #include "Super.h"
+#include "SmartPtr.h"
 
 namespace orxonox
 {
@@ -67,6 +60,7 @@ namespace orxonox
             BaseObject(BaseObject* creator);
             virtual ~BaseObject();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
             /** @brief Returns if the object was initialized (passed the object registration). @return True was the object is initialized */
             inline bool isInitialized() const { return this->bInitialized_; }
@@ -109,11 +103,20 @@ namespace orxonox
             virtual void changedVisibility() {}
 
             void setMainState(bool state);
-            bool getMainState() const;
 
-            void setMainStateName(const std::string& name);
+            /** @brief Sets the name of the main state (used for event reactions). */
+            void setMainStateName(const std::string& name)
+            {
+                if (this->mainStateName_ != name)
+                {
+                    this->mainStateName_ = name;
+                    this->changedMainStateName();
+                }
+            }
+            /** @brief Returns the name of the main state. */
             inline const std::string& getMainStateName() const { return this->mainStateName_; }
-            virtual void changedMainState();
+            /** @brief This function gets called if the main state name of the object changes. */
+            virtual void changedMainStateName();
 
             /** @brief Sets a pointer to the xml file that loaded this object. @param file The pointer to the XMLFile */
             inline void setFile(const XMLFile* file) { this->file_ = file; }
@@ -133,10 +136,11 @@ namespace orxonox
             inline void setCreator(BaseObject* creator) { this->creator_ = creator; }
             inline BaseObject* getCreator() const { return this->creator_; }
 
-            inline void setScene(Scene* scene) { this->scene_ = scene; }
-            inline Scene* getScene() const { return this->scene_; }
+            inline void setScene(const SmartPtr<Scene>& scene, uint32_t sceneID) { this->scene_ = scene; this->sceneID_=sceneID; }
+            inline const SmartPtr<Scene>& getScene() const { return this->scene_; }
+            inline virtual uint32_t getSceneID() const { return this->sceneID_; }
 
-            inline void setGametype(Gametype* gametype)
+            inline void setGametype(const SmartPtr<Gametype>& gametype)
             {
                 if (gametype != this->gametype_)
                 {
@@ -145,46 +149,53 @@ namespace orxonox
                     this->changedGametype();
                 }
             }
-            inline Gametype* getGametype() const { return this->gametype_; }
+            inline const SmartPtr<Gametype>& getGametype() const { return this->gametype_; }
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual void changedGametype() {}
 
-            void fireEvent();
-            void fireEvent(bool activate);
-            void fireEvent(bool activate, BaseObject* originator);
+            void addEventSource(BaseObject* source, const std::string& state);
+            void removeEventSource(BaseObject* source);
+            BaseObject* getEventSource(unsigned int index, const std::string& state) const;
+            
+            void addEventListener(BaseObject* listener);
+            BaseObject* getEventListener(unsigned int index) const;
+
+            void fireEvent(const std::string& name = "");
+            void fireEvent(bool activate, const std::string& name = "");
+            void fireEvent(bool activate, BaseObject* originator, const std::string& name = "");
             void fireEvent(Event& event);
 
             virtual void processEvent(Event& event);
-
-            inline void registerEventListener(BaseObject* object, const std::string& sectionname)
-                { this->eventListeners_[object] = sectionname; }
-            inline void unregisterEventListener(BaseObject* object)
-                { this->eventListeners_.erase(object); }
-
-            void addEvent(BaseObject* event, const std::string& sectionname);
-            void removeEvent(BaseObject* event);
-            BaseObject* getEvent(unsigned int index) const;
-
-            void addEventContainer(const std::string& sectionname, EventContainer* container);
-            EventContainer* getEventContainer(const std::string& sectionname) const;
 
             /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
+            
+            static void loadAllEventStates(Element& xmlelement, XMLPort::Mode mode, BaseObject* object, Identifier* identifier);
 
         protected:
+            void addEventState(const std::string& name, EventState* container);
+            EventState* getEventState(const std::string& name) const;
+
             std::string name_;                                 //!< The name of the object
             std::string oldName_;                              //!< The old name of the object
             mbool       bActive_;                              //!< True = the object is active
             mbool       bVisible_;                             //!< True = the object is visible
             std::string mainStateName_;
-            Functor*    functorSetMainState_;
-            Functor*    functorGetMainState_;
+            Functor*    mainStateFunctor_;
 
         private:
+            /** @brief Adds an object which listens to the events of this object. */
+            inline void registerEventListener(BaseObject* object)
+                { this->eventListeners_.insert(object); }
+            /** @brief Removes an event listener from this object. */
+            inline void unregisterEventListener(BaseObject* object)
+                { this->eventListeners_.erase(object); }
+
             void setXMLName(const std::string& name);
             Template* getTemplate(unsigned int index) const;
+            void registerEventStates();
 
             bool                   bInitialized_;              //!< True if the object was initialized (passed the object registration)
             const XMLFile*         file_;                      //!< The XMLFile that loaded this object
@@ -193,22 +204,25 @@ namespace orxonox
             std::string            loaderIndentation_;         //!< Indentation of the debug output in the Loader
             Namespace*             namespace_;
             BaseObject*            creator_;
-            Scene*                 scene_;
-            Gametype*              gametype_;
+            SmartPtr<Scene>        scene_;
+            uint32_t               sceneID_;
+            SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
             std::set<Template*>    templates_;
-            std::map<BaseObject*,  std::string> eventListeners_;
-            std::list<BaseObject*> events_;
-            std::map<std::string, EventContainer*> eventContainers_;
+            
+            std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect
+            std::set<BaseObject*>               eventListeners_;         //!< List of objects which listen to the events of this object
+            std::set<BaseObject*>               eventListenersXML_;      //!< List of objects which listen to the events of this object through the "eventlisteners" subsection in XML
+            std::map<std::string, EventState*>  eventStates_;            //!< Maps the name of the event states to their helper objects
+            bool                                bRegisteredEventStates_; //!< Becomes true after the object registered its event states (with XMLEventPort)
     };
 
     SUPER_FUNCTION(0, BaseObject, XMLPort, false);
     SUPER_FUNCTION(2, BaseObject, changedActivity, false);
     SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
-    SUPER_FUNCTION(4, BaseObject, processEvent, false);
-    SUPER_FUNCTION(6, BaseObject, changedMainState, false);
-    SUPER_FUNCTION(9, BaseObject, changedName, false);
-    SUPER_FUNCTION(10, BaseObject, changedGametype, false);
+    SUPER_FUNCTION(4, BaseObject, XMLEventPort, false);
+    SUPER_FUNCTION(8, BaseObject, changedName, false);
+    SUPER_FUNCTION(9, BaseObject, changedGametype, false);
 }
 
 #endif /* _BaseObject_H__ */

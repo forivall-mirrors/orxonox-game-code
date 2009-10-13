@@ -50,7 +50,7 @@ namespace orxonox
             void replenish();
             void initializeTimer();
 
-            Timer<ReplenishingMunition> replenishingTimer_;
+            Timer replenishingTimer_;
     };
 }
 

@@ -48,38 +48,36 @@ namespace packet {
 ClassID::ClassID( ) : Packet(){
   Identifier *id;
   std::string classname;
-  unsigned int nrOfClasses=0; 
+  unsigned int nrOfClasses=0;
   unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nrofclasses
   uint32_t network_id;
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
-  
+
   //calculate total needed size (for all strings and integers)
-  std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryMapBegin();
-  for(;it != Factory::getFactoryMapEnd();++it){
+  std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapBegin();
+  for(;it != Identifier::getStringIdentifierMapEnd();++it){
     id = (*it).second;
-    if(id == NULL)
+    if(id == NULL || !id->hasFactory())
       continue;
     classname = id->getName();
     network_id = id->getNetworkID();
-    if(network_id==0)
-      COUT(3) << "we got a null class id: " << id->getName() << std::endl;
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(network_id, classname) );
     ++nrOfClasses;
     packetSize += (classname.size()+1)+sizeof(uint32_t)+sizeof(uint32_t);
   }
-  
+
   this->data_=new uint8_t[ packetSize ];
   //set the appropriate packet id
   assert(this->data_);
   *(Type::Value *)(this->data_ + _PACKETID ) = Type::ClassID;
-  
+
   uint8_t *temp=data_+sizeof(uint32_t);
   // save the number of all classes
   *(uint32_t*)temp = nrOfClasses;
   temp += sizeof(uint32_t);
-  
+
   // now save all classids and classnames
   std::pair<uint32_t, std::string> tempPair;
   while( !tempQueue.empty() ){
@@ -90,9 +88,9 @@ ClassID::ClassID( ) : Packet(){
     memcpy(temp+2*sizeof(uint32_t), tempPair.second.c_str(), tempPair.second.size()+1);
     temp+=2*sizeof(uint32_t)+tempPair.second.size()+1;
   }
-  
+
   COUT(5) << "classid packetSize is " << packetSize << endl;
-  
+
 }
 
 ClassID::ClassID( uint8_t* data, unsigned int clientID )
@@ -110,7 +108,7 @@ uint32_t ClassID::getSize() const{
   uint32_t nrOfClasses = *(uint32_t*)temp;
   temp += sizeof(uint32_t);
   totalsize += sizeof(uint32_t); // storage size for nr of all classes
-  
+
   for(unsigned int i=0; i<nrOfClasses; i++){
     totalsize += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t));
   }
@@ -124,18 +122,18 @@ bool ClassID::process(){
   uint32_t networkID;
   uint32_t stringsize;
   unsigned char *classname;
-  
-  
-  //clean the map of network ids
-  Factory::cleanNetworkIDs();
-  
+
+
+  //clear the map of network ids
+  Identifier::clearNetworkIDs();
+
   COUT(4) << "=== processing classids: " << endl;
   std::pair<uint32_t, std::string> tempPair;
   Identifier *id;
   // read the total number of classes
   nrOfClasses = *(uint32_t*)temp;
   temp += sizeof(uint32_t);
-  
+
   for( int i=0; i<nrOfClasses; i++){
     networkID = *(uint32_t*)temp;
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));

@@ -40,13 +40,14 @@
 #include <OgreFontManager.h>
 #include <OgreFont.h>
 
-#include "util/Math.h"
+#include "util/Clock.h"
 #include "util/Convert.h"
+#include "util/Math.h"
 #include "util/UTFStringConversions.h"
-#include "core/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/ScopedSingletonManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
@@ -60,6 +61,7 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
     InGameConsole* InGameConsole::singletonPtr_s = 0;
+    ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
@@ -84,6 +86,7 @@ namespace orxonox
         this->scroll_ = 0;
 
         this->setConfigValues();
+        this->initialise();
     }
 
     /**

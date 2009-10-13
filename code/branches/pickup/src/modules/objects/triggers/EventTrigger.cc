@@ -46,11 +46,11 @@ namespace orxonox
     {
     }
 
-    void EventTrigger::processEvent(Event& event)
+    void EventTrigger::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(EventTrigger, processEvent, event);
+        SUPER(EventTrigger, XMLEventPort, xmlelement, mode);
 
-        ORXONOX_SET_EVENT(EventTrigger, "trigger", trigger, event);
+        XMLPortEventState(EventTrigger, BaseObject, "trigger", trigger, xmlelement, mode);
     }
 
     bool EventTrigger::isTriggered(TriggerMode::Value mode)

@@ -67,6 +67,11 @@ namespace orxonox
             float getBallSpeed() const
                 { return this->ballspeed_; }
 
+            void setBallAccelerationFactor(float ballaccfactor)
+                { this->ballaccfactor_ = ballaccfactor; }
+            float getBallAccelerationFactor() const
+                { return this->ballaccfactor_; }
+
             void setBatSpeed(float batspeed)
                 { this->batspeed_ = batspeed; }
             float getBatSpeed() const
@@ -84,6 +89,7 @@ namespace orxonox
             std::string battemplate_;
 
             float ballspeed_;
+            float ballaccfactor_;
             float batspeed_;
             float batlength_;
 

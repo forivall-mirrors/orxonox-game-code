@@ -49,10 +49,10 @@ namespace orxonox
             inline const std::map<unsigned int, PlayerInfo*>& getClients() const
                 { return this->clients_; }
 
-        private:
             void clientConnected(unsigned int clientID);
             void clientDisconnected(unsigned int clientID);
 
+        private:
             std::map<unsigned int, PlayerInfo*> clients_;
 
             static PlayerManager* singletonPtr_s;

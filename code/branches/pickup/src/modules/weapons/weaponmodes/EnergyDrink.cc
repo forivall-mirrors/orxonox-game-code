@@ -53,7 +53,7 @@ namespace orxonox
         this->delay_ = 0;
         this->setMunitionName("FusionMunition");
 
-        this->delayTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&EnergyDrink::shot)));
+        this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&EnergyDrink::shot, this)));
         this->delayTimer_.stopTimer();
     }
 

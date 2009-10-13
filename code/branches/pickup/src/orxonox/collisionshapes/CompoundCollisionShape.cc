@@ -55,7 +55,7 @@ namespace orxonox
             {
                 // make sure that the child doesn't want to detach itself --> speedup because of the missing update
                 it->first->notifyDetached();
-                delete it->first;
+                it->first->destroy();
             }
 
             delete this->compoundShape_;

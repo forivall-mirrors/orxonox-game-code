@@ -55,6 +55,16 @@ namespace orxonox
         static const int Detector     = HighPriority + 2;
     };
 
+    namespace MouseMode
+    {
+        enum Value
+        {
+            Exclusive,
+            Nonexclusive,
+            Dontcare
+        };
+    }
+
     /**
     @brief
         InputStates allow you to customise the input event targets at runtime.
@@ -119,8 +129,8 @@ namespace orxonox
         //! Sets an InputHandler to be used for all devices
         void setHandler        (InputHandler* handler);
 
-        void setIsExclusiveMouse(bool value) { bExclusiveMouse_ = value; this->bExpired_ = true; }
-        bool getIsExclusiveMouse() const { return bExclusiveMouse_; }
+        void setMouseMode(MouseMode::Value value) { mouseMode_ = value; this->bExpired_ = true; }
+        MouseMode::Value getMouseMode() const { return mouseMode_; }
 
         //! Returns the name of the state (which is unique!)
         const std::string& getName() const { return name_; }
@@ -173,7 +183,7 @@ namespace orxonox
         const std::string           name_;                  //!< Name of the state
         const bool                  bAlwaysGetsInput_;      //!< See class declaration for explanation
         const bool                  bTransparent_;          //!< See class declaration for explanation
-        bool                        bExclusiveMouse_;       //!< See class declaration for explanation
+        MouseMode::Value            mouseMode_;             //!< See class declaration for explanation
         int                         priority_;              //!< Current priority (might change)
         bool                        bExpired_;              //!< See hasExpired()
         std::vector<InputHandler*>  handlers_;              //!< Vector with all handlers where the index is the device ID

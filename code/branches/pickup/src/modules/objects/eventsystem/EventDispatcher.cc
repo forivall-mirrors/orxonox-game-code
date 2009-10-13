@@ -31,7 +31,6 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
-#include "EventTarget.h"
 
 namespace orxonox
 {
@@ -45,32 +44,35 @@ namespace orxonox
     EventDispatcher::~EventDispatcher()
     {
         if (this->isInitialized())
-            for (std::list<EventTarget*>::iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
-                delete (*it);
+            for (std::list<BaseObject*>::iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
+                (*it)->destroy();
     }
 
     void EventDispatcher::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(EventDispatcher, XMLPort, xmlelement, mode);
 
-        XMLPortObject(EventDispatcher, EventTarget, "targets", addTarget, getTarget, xmlelement, mode);
+        XMLPortObject(EventDispatcher, BaseObject, "targets", addTarget, getTarget, xmlelement, mode);
+
+        // since we need event sources mapped to any state, we have to parse XML by ourselves
+        this->loadAllEventStates(xmlelement, mode, this, Class(EventDispatcher));
     }
 
     void EventDispatcher::processEvent(Event& event)
     {
-        for (std::list<EventTarget*>::iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
-            (*it)->fireEvent(event);
+        for (std::list<BaseObject*>::iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
+            (*it)->processEvent(event);
     }
 
-    void EventDispatcher::addTarget(EventTarget* target)
+    void EventDispatcher::addTarget(BaseObject* target)
     {
         this->targets_.push_back(target);
     }
 
-    EventTarget* EventDispatcher::getTarget(unsigned int index) const
+    BaseObject* EventDispatcher::getTarget(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::list<EventTarget*>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
+        for (std::list<BaseObject*>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); ++it)
         {
             if (i == index)
                 return (*it);

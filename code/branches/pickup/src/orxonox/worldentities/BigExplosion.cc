@@ -89,7 +89,7 @@ namespace orxonox
             velocity *= rnd(20, 30);
             this->setVelocity(velocity);
 
-            this->destroyTimer_.setTimer(rnd(2, 4), false, this, createExecutor(createFunctor(&BigExplosion::stop)));
+            this->destroyTimer_.setTimer(rnd(2, 4), false, createExecutor(createFunctor(&BigExplosion::stop, this)));
         }
         this->registerVariables();
     }
@@ -225,45 +225,45 @@ namespace orxonox
             if (this->debrisFire1_)
             {
                 this->debris1_->detachOgreObject(this->debrisFire1_->getParticleSystem());
-                delete this->debrisFire1_;
+                this->debrisFire1_->destroy();
             }
             if (this->debrisSmoke1_)
             {
                 this->debris1_->detachOgreObject(this->debrisSmoke1_->getParticleSystem());
-                delete this->debrisSmoke1_;
+                this->debrisSmoke1_->destroy();
             }
 
             if (this->debrisFire2_)
             {
                 this->debris2_->detachOgreObject(this->debrisFire2_->getParticleSystem());
-                delete this->debrisFire2_;
+                this->debrisFire2_->destroy();
             }
             if (this->debrisSmoke2_)
             {
                 this->debris2_->detachOgreObject(this->debrisSmoke2_->getParticleSystem());
-                delete this->debrisSmoke2_;
+                this->debrisSmoke2_->destroy();
             }
 
             if (this->debrisFire3_)
             {
                 this->debris3_->detachOgreObject(this->debrisFire3_->getParticleSystem());
-                delete this->debrisFire3_;
+                this->debrisFire3_->destroy();
             }
             if (this->debrisSmoke3_)
             {
                 this->debris3_->detachOgreObject(this->debrisSmoke3_->getParticleSystem());
-                delete this->debrisSmoke3_;
+                this->debrisSmoke3_->destroy();
             }
 
             if (this->debrisFire4_)
             {
                 this->debris4_->detachOgreObject(this->debrisFire4_->getParticleSystem());
-                delete this->debrisFire4_;
+                this->debrisFire4_->destroy();
             }
             if (this->debrisSmoke4_)
             {
                 this->debris4_->detachOgreObject(this->debrisSmoke4_->getParticleSystem());
-                delete this->debrisSmoke4_;
+                this->debrisSmoke4_->destroy();
             }
         }
     }
@@ -328,13 +328,8 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             this->bStop_ = true;
-            this->destroyTimer_.setTimer(1.0f, false, this, createExecutor(createFunctor(&BigExplosion::destroy)));
+            this->destroyTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&BigExplosion::destroy, this)));
         }
-    }
-
-    void BigExplosion::destroy()
-    {
-        delete this;
     }
 
 /* TODO
