@@ -42,7 +42,7 @@ namespace orxonox
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
-    this->setForPlayer(false); //!< Normally hasn't just ControllableEntities as targets.
+    this->setForPlayer(false); //!< Normally hasn't just players as targets.
   }
 
   DistanceTrigger::~DistanceTrigger()
