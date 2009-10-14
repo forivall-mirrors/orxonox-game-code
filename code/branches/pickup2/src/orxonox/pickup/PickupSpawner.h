@@ -52,6 +52,7 @@ namespace orxonox
         public:
             //TODO: Add limit of items spawned here. Also possibility to spawn collections?
             PickupSpawner(BaseObject* creator);
+            PickupSpawner(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems);
             virtual ~PickupSpawner();
 
             virtual void changedActivity();                                 //!< Invoked when activity has changed (set visibilty).
@@ -101,9 +102,23 @@ namespace orxonox
             */
             inline void setRespawnTime(float time)
                 { this->respawnTime_ = time; }
+
+
+            inline int getMaxSpawnedItems(void)
+                { return this->maxSpawnedItems_; }
+            void setMaxSpawnedItems(int items);
+
+        protected:
+            virtual BaseItem* getItem(void);
+
         private:
+            void initialize(void);
+
             std::string itemTemplateName_;          //!< Template name of the item to spawn.
             Template* itemTemplate_;                //!< Template of the item to spawn.
+
+            int maxSpawnedItems_;                   //!< Maximum number of items spawned by this PickupSpawner.
+            int spawnsRemaining_;                   //!< Number of items that can be spawned by this PickupSpawner until it selfdestructs.
 
             float triggerDistance_;                 //!< Distance in which this gets triggered.
 
@@ -115,6 +130,8 @@ namespace orxonox
 
             float respawnTime_;                     //!< Time after which this gets re-actived.
             Timer respawnTimer_;                    //!< Timer used for re-activating.
+
+            static const int INF = -1;             //!< Constant for infinity.
     };
 }
 

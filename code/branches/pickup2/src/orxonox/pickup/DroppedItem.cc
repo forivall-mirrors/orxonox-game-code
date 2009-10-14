@@ -38,93 +38,35 @@
 
 namespace orxonox
 {
-    CreateFactory(DroppedItem);
+    CreateFactory(DroppedItem); //TODO: This isn't needed, is it?
 
     /**
     @brief
         Constructor. Registers object and sets default values.
     */
-    DroppedItem::DroppedItem(BaseObject* creator) : StaticEntity(creator)
+    DroppedItem::DroppedItem(BaseObject* creator) : PickupSpawner(creator)
     {
         RegisterObject(DroppedItem);
+    }
 
-        this->triggerDistance_ = 20.0f;
-        this->timeToLive_ = 0;
-        this->item_ = NULL;
+    DroppedItem::DroppedItem(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems) : PickupSpawner(creator, item, triggerDistance, respawnTime, maxSpawnedItems)
+    {
+        RegisterObject(DroppedItem);
+        this->item_ = item;
     }
 
     /**
     @brief
         Default destructor.
     */
-    //TODO: Destroy something?
     DroppedItem::~DroppedItem()
     {
         
     }
 
-    /**
-    @brief
-        Checks whether any pawn is in triggerDistance of the Item and calls this->trigger if so.
-    @param dt
-        The  duration of the last time interval.    
-    */
-    //TODO: Replace this with a DistanceTrigger!
-    void DroppedItem::tick(float dt)
+    BaseItem* DroppedItem::getItem(void)
     {
-        if (this->item_)
-        {
-            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it) //!< Iterate through all Pawns.
-            {
-                Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
-                if (distance.length() < this->triggerDistance_)
-                    this->trigger(*it);
-            }
-        }
-    }
-
-    /**
-    @brief
-        Called when the DroppedItem is triggered. Adds the item to the triggering pawn.
-    */
-    void DroppedItem::trigger(Pawn* pawn)
-    {
-        if (this->item_->pickedUp(pawn)) //If pickup was successful.
-        {
-            COUT(3) << "DroppedItem '" << this->item_->getPickupIdentifier() << "' picked up." << std::endl;
-            this->destroy();
-        }
-    }
-
-    /**
-    @brief
-        Creates a timer to call this->timerCallback() at expiration of timeToLive.
-    */
-    //TODO: Better Comments.
-    void DroppedItem::createTimer()
-    {
-        if (this->timeToLive_ > 0)
-        {
-            this->timer_.setTimer(this->timeToLive_, false, createExecutor(createFunctor(&DroppedItem::timerCallback, this)), false);
-        }
-    }
-    
-    /**
-    @brief
-        Destroys the item. Called by the set timer upon its expiration.
-    */
-    //TODO: Choose better function name if this doesn't create dependency inconsistencies. e.g. this->destroy() or this->timeOut()
-    //Make certain that only one pawn has the same item, because if not, deliting the item would lead to a possible segfault.
-    //If the item is destroyed here, shouldn't it be destroyed in the destructor as well?
-    void DroppedItem::timerCallback()
-    {
-        if (this->item_)
-        {
-            COUT(3) << "Delete DroppedItem with '" << this->item_->getPickupIdentifier() << "'" << std::endl;
-            this->item_->destroy();
-        }
-
-        this->destroy();
+        return this->item_;
     }
 
     /**
@@ -132,15 +74,14 @@ namespace orxonox
         
     */
     //TODO: Comment.
-    //This is for pawns dropping items they have...
-    //Probably better to create a spawner with only 1 item in it.
-    //Various different thigs are done here, which in my opinion should eighter be done in XML or some where else, preferably in XML.
     //Each pickup should have a XML template where the Model and Billboard, and so on, is specified.
-    //The position, item and timetoLive should be specified by this Classes XMLPort function.
-    //These adjustments above, will very likely create inkonsistencies in the level files, possibly templates.
     /*static*/ DroppedItem* DroppedItem::createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour, float timeToLive)
     {
-        DroppedItem* drop = new DroppedItem(item);
+        //TODO: triggerDistance?
+        float triggerDistance = 20.0;
+        DroppedItem* droppedItem = new DroppedItem(item, item, triggerDistance, 0, 1);
+        
+        //TODO: Do this somehwere else?
         Model* model = new Model(item);
         Billboard* billboard = new Billboard(item);
 
@@ -151,18 +92,13 @@ namespace orxonox
         billboard->setColour(flareColour);
         billboard->setScale(0.5f);
 
-        drop->setPosition(position);
-        drop->attach(model);
-        drop->attach(billboard);
-
-        drop->setItem(item);
-
-        drop->setTimeToLive(timeToLive);
-        drop->createTimer();
+        droppedItem->setPosition(position);
+        droppedItem->attach(model);
+        droppedItem->attach(billboard);
 
         COUT(3) << "Created DroppedItem for '" << item->getPickupIdentifier() << "' at (" << position.x << "," << position.y << "," << position.z << ")." << std::endl;
 
-        return drop;
+        return droppedItem;
     }
 
     /**

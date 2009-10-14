@@ -45,6 +45,7 @@
 
 namespace orxonox
 {
+
     const float PickupSpawner::bounceSpeed_s = 6.0f;
     const float PickupSpawner::rotationSpeed_s = 1.0f;
     const float PickupSpawner::bounceDistance_s = 4.0f;
@@ -59,12 +60,32 @@ namespace orxonox
     */
     PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator)
     {
+        this->initialize();
+    }
+
+    PickupSpawner::PickupSpawner(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator)
+    {
+        this->initialize();
+  
+        //TODO: Does this actually work?
+        this->itemTemplateName_ = item->getIdentifier()->getName();
+        this->itemTemplate_ = Template::getTemplate(this->itemTemplateName_);
+
+        this->triggerDistance_ = triggerDistance;
+        this->respawnTime_ = respawnTime;
+        this->setMaxSpawnedItems(maxSpawnedItems);
+    }
+
+    void PickupSpawner::initialize(void)
+    {
         RegisterObject(PickupSpawner);
 
-        this->itemTemplate_ = 0;
+        this->itemTemplate_ = NULL;
         this->triggerDistance_ = 20;
         this->respawnTime_ = 0.0f;
         this->tickSum_ = 0.0f;
+        this->maxSpawnedItems_ = INF;
+        this->spawnsRemaining_ = INF;
     }
 
     /**
@@ -91,6 +112,7 @@ namespace orxonox
         XMLPortParam(PickupSpawner, "item", setItemTemplateName, getItemTemplateName, xmlelement, mode);
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
+        XMLPortParam(PickupSpawner, "maxSpawnedItems", setMaxSpawnedItems, getMaxSpawnedItems, xmlelement, mode);
 
         //TODO: Kill hack.
         // HACKs
@@ -136,6 +158,12 @@ namespace orxonox
         this->itemTemplate_ = Template::getTemplate(name);
     }
 
+    void PickupSpawner::setMaxSpawnedItems(int items)
+    {
+        this->maxSpawnedItems_ = items;
+        this->spawnsRemaining_ = items;
+    }
+
     /**
     @brief
         Tick, checks if any Pawn is close enough to trigger.
@@ -147,12 +175,15 @@ namespace orxonox
     {
         if (this->isActive())
         {
+            //! Triggers as soon as a Pawn is in the specified distance.
             for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 if (distance.length() < this->triggerDistance_)
                     this->trigger(*it);
             }
+
+            //! Animation.
             this->yaw(Radian(rotationSpeed_s*dt));
             this->tickSum_ += bounceSpeed_s*dt;
             this->translate(Vector3(0,bounceDistance_s*dt*sin(this->tickSum_),0));
@@ -173,20 +204,25 @@ namespace orxonox
     */
     void PickupSpawner::trigger(Pawn* pawn)
     {
-        if (this->isActive() && this->itemTemplate_ && this->itemTemplate_->getBaseclassIdentifier())
+        if (this->isActive() && this->itemTemplate_ && this->itemTemplate_->getBaseclassIdentifier()) //!< Checks whether PickupItem is active, amongst other things.
         {
-            BaseObject* newObject = this->itemTemplate_->getBaseclassIdentifier()->fabricate(this);
-            BaseItem* asItem = orxonox_cast<BaseItem*>(newObject);
-            if (asItem)
+            BaseItem* item = this->getItem();
+            if (item != NULL) //!< If the conversion was successful.
             {
-                asItem->setPickupIdentifier(this->itemTemplateName_);
-                asItem->addTemplate(this->itemTemplate_);
+                item->setPickupIdentifier(this->itemTemplateName_); //TODO: Needed?
+                item->addTemplate(this->itemTemplate_); //TODO: Does what?
 
-                if (asItem->pickedUp(pawn))
+                if(item->pickedUp(pawn))
                 {
                     COUT(3) << this->itemTemplateName_ << " got picked up." << std::endl;
 
-                    if (this->respawnTime_ > 0.0f)
+
+                    if(this->spawnsRemaining_ != INF)
+                    {
+                        this->spawnsRemaining_--;
+                    }
+
+                    if (this->spawnsRemaining_ != 0 && this->respawnTime_ > 0.0f)
                     {
                         this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
 
@@ -195,9 +231,30 @@ namespace orxonox
                     }
                 }
                 else
-                    newObject->destroy();
+                {
+                    item->destroy();
+                }
             }
         }
+
+        if(this->spawnsRemaining_ == 0)
+        {
+            COUT(3) << "PickupSpawner empty, selfdistruct initialized." << std::endl;
+            this->setActive(false);
+            this->destroy();
+        }
+    }
+
+    /**
+    @brief
+        Creates a BaseItem of the type specified by the PickupSpawner.
+    @return
+        The BaseItem created.
+    */    
+    BaseItem* PickupSpawner::getItem(void)
+    {
+        BaseObject* newItem = this->itemTemplate_->getBaseclassIdentifier()->fabricate(this); //!< Creates new object of specified item type.
+        return orxonox_cast<BaseItem*>(newItem);
     }
 
     /**
