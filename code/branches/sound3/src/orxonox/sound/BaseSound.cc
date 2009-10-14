@@ -110,16 +110,24 @@ namespace orxonox
 
     void BaseSound::setSource(const std::string& source)
     {
-        this->source_ = source;
-        if (!GameMode::playsSound())
+        if (!GameMode::playsSound()) 
+        {
+            this->source_ = source;
             return;
-
-        if (source.empty() && alIsSource(this->audioSource_))
+        }
+        
+        if (this->source_ != source && alIsSource(this->audioSource_))
         {
             // Unload sound
             alSourcei(this->audioSource_, AL_BUFFER, 0);
             alDeleteSources(1, &this->audioSource_);
             alDeleteBuffers(1, &this->audioBuffer_);
+        }
+
+        this->source_ = source;
+
+        if(source_.empty()) 
+        {
             return;
         }
 
