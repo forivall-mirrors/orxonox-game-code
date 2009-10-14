@@ -58,6 +58,7 @@ namespace orxonox
         XMLPortParam(HealthImmediate, "recoveredHealth", setRecoveredHealth, getRecoveredHealth, xmlelement, mode);
     }
 
+    //TODO: Should be destroyed anyways...
     bool HealthImmediate::pickedUp(Pawn* pawn)
     {
         float maxH = pawn->getMaxHealth();

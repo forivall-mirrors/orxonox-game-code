@@ -40,14 +40,19 @@
 namespace orxonox
 {
     /**
-        @brief Base class for all equipment-type items.
-        @author Daniel 'Huty' Haggenmueller
+    @brief Base class for all equipment-type items.
+    @author Daniel 'Huty' Haggenmueller
     */
     class _OrxonoxExport EquipmentItem : public BaseItem
     {
-    public:
-        EquipmentItem(BaseObject* creator);
-        virtual ~EquipmentItem() {}
+        //TODO: What is this class for?
+        //Probably falls under UsableItem or PassiveItem
+        public:
+            EquipmentItem(BaseObject* creator);
+            virtual ~EquipmentItem() {}
+
+        
+
     };
 }
 

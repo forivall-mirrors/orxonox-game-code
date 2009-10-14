@@ -48,14 +48,21 @@ namespace orxonox
         DroppedItem(BaseObject* creator);
         virtual ~DroppedItem();
 
+        //TODO: Comment.
+        //DroppedItem -> Item with no owner, alone in space?
+        //Would be much nicer if it would be triggered by a standard issue DistanceTrigger.
+        //Where is this created? I see no XMLPort.
+        //Where is the item for this created? What happens if more than one pawn triggers this?
+        //Add more than just one items, or even better create the ability to add a Collection.? Rename to ...?
+
         void tick(float dt);
         void trigger(Pawn* pawn);
 
         static DroppedItem* createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour = ColourValue(0.5f, 1.0f, 0.3f), float timeToLive = 0);
         static DroppedItem* createDefaultDrop(BaseItem* item, Pawn* pawn, const ColourValue& flareColour = ColourValue(0.5f, 1.0f, 0.3f), float timeToLive = 0);
 
-        void createTimer();
-        void timerCallback();
+        void createTimer(); //TODO: Can this be made private, too?
+        void timerCallback(); //TODO: This should really be private.
 
         inline float getTriggerDistance() const
             { return this->triggerDistance_; }
@@ -64,11 +71,13 @@ namespace orxonox
 
         inline BaseItem* getItem() const
             { return this->item_; }
+        //TODO: Needs to be public?
         inline void setItem(BaseItem* item)
             { this->item_ = item; }
 
         inline float getTimeToLive() const
             { return this->timeToLive_; }
+        //TODO: Needs to be public?
         inline void setTimeToLive(float time)
             { this->timeToLive_ = time; }
     private:

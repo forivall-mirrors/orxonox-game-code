@@ -32,8 +32,8 @@
 namespace orxonox
 {
     /**
-        @brief Constructor. Registers the PassiveItem.
-        @param creator Pointer to the object which created this item.
+    @brief Constructor. Registers the PassiveItem.
+    @param creator Pointer to the object which created this item.
     */
     PassiveItem::PassiveItem(BaseObject* creator) : BaseItem(creator)
     {

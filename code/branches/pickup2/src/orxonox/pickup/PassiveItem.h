@@ -40,14 +40,17 @@
 namespace orxonox
 {
     /**
-        @brief Base class for all passive items.
-        @author Daniel 'Huty' Haggenmueller
+    @brief Base class for all passive items.
+    @author Daniel 'Huty' Haggenmueller
     */
     class _OrxonoxExport PassiveItem : public BaseItem
     {
-    public:
-        PassiveItem(BaseObject* creator);
-        virtual ~PassiveItem() {}
+        //TODO: What is this Class for. Where is ActiveItem?
+        //Rename it InstantItem?
+        public:
+            PassiveItem(BaseObject* creator);
+            virtual ~PassiveItem() {}
+
     };
 }
 
