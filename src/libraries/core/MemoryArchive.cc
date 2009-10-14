@@ -32,6 +32,14 @@
 
 #include <OgreException.h>
 #include <boost/filesystem.hpp>
+#include <boost/version.hpp>
+
+// Boost 1.36 has some issues with deprecated functions that have been omitted
+#if (BOOST_VERSION == 103600)
+#  define BOOST_HAS_BRANCH_PATH_FUNCTION has_parent_path
+#else
+#  define BOOST_HAS_BRANCH_PATH_FUNCTION has_branch_path
+#endif
 
 namespace orxonox
 {
@@ -70,7 +78,7 @@ namespace orxonox
                 file = file.branch_path();
             if (file.empty())
                 continue;
-            if (file.has_branch_path() && !bRecursive)
+            if (file.BOOST_HAS_BRANCH_PATH_FUNCTION() && !bRecursive)
                 continue;
             if (simpleList)
                 simpleList->push_back(file.string());
