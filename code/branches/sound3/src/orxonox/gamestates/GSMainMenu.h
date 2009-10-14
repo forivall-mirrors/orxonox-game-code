@@ -33,10 +33,11 @@
 
 #include "util/OgreForwardRefs.h"
 #include "core/GameState.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSMainMenu : public GameState
+    class _OrxonoxExport GSMainMenu : public GameState, public OrxonoxClass
     {
     public:
         GSMainMenu(const GameStateInfo& info);
@@ -45,6 +46,11 @@ namespace orxonox
         void activate();
         void deactivate();
         void update(const Clock& time);
+
+		void setConfigValues();
+		void reloadSound();
+		const std::string& getMainMenuSoundPath();
+		void setMainMenuSoundPath(const std::string& path);
 
         static void startStandalone();
         static void startServer();
@@ -60,6 +66,7 @@ namespace orxonox
 
         // ambient sound for the main menu
         AmbientSound*     ambient_;
+		std::string		  soundPathMain_;
     };
 }
 
