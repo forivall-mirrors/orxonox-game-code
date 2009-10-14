@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="OrxonoxGUI">
+    <Imageset Name="MainMenuBackground" Filename="MainMenuBackground.imageset" ResourceGroup="General"/>
+</GUIScheme>
