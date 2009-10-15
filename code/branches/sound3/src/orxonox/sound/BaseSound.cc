@@ -136,7 +136,7 @@ namespace orxonox
         shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
         if (fileInfo == NULL)
         {
-            COUT(2) << "Warning: Sound file '" << source << "' not found" << std::endl;
+            COUT(2) << "Sound: Warning: Sound file '" << source << "' not found" << std::endl;
             return;
         }
         dataStream_ = Resource::open(source);
