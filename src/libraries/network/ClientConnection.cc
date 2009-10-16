@@ -145,5 +145,11 @@ namespace orxonox
         // server closed the connection
     this->connectionClosed();
   }
+  
+  uint32_t ClientConnection::getRTT()
+  { 
+    assert(server_);
+    return server_->roundTripTime;
+  }
 
 }

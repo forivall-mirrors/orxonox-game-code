@@ -56,7 +56,8 @@ namespace orxonox
     bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void update(const Clock& time);
-    unsigned int getPing(unsigned int clientID);
+    unsigned int getRTT(unsigned int clientID);
+    virtual void printRTT();
     double getPacketLoss(unsigned int clientID);
   protected:
     void updateGamestate();

@@ -41,6 +41,7 @@
 #include "ClientInformation.h"
 #define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
+#include "ClientConnectionListener.h"
 
 namespace orxonox
 {
@@ -65,6 +66,7 @@ namespace orxonox
       next()->setPrev(this->prev());
     if(this==head_)
       head_=next();
+    ClientConnectionListener::broadcastClientDisconnected( this->getID() );
   }
 
   ClientInformation *ClientInformation::next() {

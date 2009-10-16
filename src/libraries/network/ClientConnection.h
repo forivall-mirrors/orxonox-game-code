@@ -54,6 +54,7 @@ namespace orxonox
     inline bool isConnected(){ return this->established_; }
   protected:
     virtual void connectionClosed()=0;
+    uint32_t getRTT();
   private:
     virtual void addPeer(ENetEvent* event);
     virtual void removePeer(ENetEvent* event);

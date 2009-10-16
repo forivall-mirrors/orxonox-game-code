@@ -110,6 +110,10 @@ namespace orxonox
 //    COUT(1) << "Player " << playerID << ": " << message << std::endl;
     return true;
   }
+  
+  void Client::printRTT(){
+    COUT(0) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
+  }
 
   /**
    * This function implements the method of sending a chat message to the server
