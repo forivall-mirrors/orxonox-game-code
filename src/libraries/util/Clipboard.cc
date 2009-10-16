@@ -93,6 +93,8 @@ namespace orxonox
             if (OpenClipboard(0))
             {
                 HANDLE hData = GetClipboardData(CF_TEXT);
+                if (hData == NULL)
+                    return "";
                 std::string output = static_cast<char*>(GlobalLock(hData));
                 GlobalUnlock(hData);
                 CloseClipboard();
