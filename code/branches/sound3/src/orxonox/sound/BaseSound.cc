@@ -110,26 +110,26 @@ namespace orxonox
 
     void BaseSound::setSource(const std::string& source)
     {
-        if (!GameMode::playsSound()) 
+        if (!GameMode::playsSound() || source == this->source_) 
         {
             this->source_ = source;
             return;
         }
         
-        if (this->source_ != source && alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_))
         {
-            // Unload sound
+            this->stop();
+            // Unload old sound first
             alSourcei(this->audioSource_, AL_BUFFER, 0);
             alDeleteSources(1, &this->audioSource_);
+            this->audioSource_ = 0;
             alDeleteBuffers(1, &this->audioBuffer_);
+            this->audioBuffer_ = 0;
         }
 
         this->source_ = source;
-
-        if(source_.empty()) 
-        {
+        if (source_.empty()) 
             return;
-        }
 
         COUT(3) << "Sound: OpenAL ALUT: loading file " << source << std::endl;
         // Get DataStream from the resources
