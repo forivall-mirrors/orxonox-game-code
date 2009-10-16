@@ -248,8 +248,8 @@ namespace orxonox
         this->windowResized(this->getWindowWidth(), this->getWindowWidth());
 
         // move overlay "above" the top edge of the screen
-        // we take -1.2 because the border makes the panel bigger
-        this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
+        // we take -1.3 because the border makes the panel bigger
+        this->consoleOverlayContainer_->setTop(-1.3 * this->relativeHeight);
 
         Shell::getInstance().addOutputLevel(true);
 
@@ -373,11 +373,11 @@ namespace orxonox
             {
                 // scrolling up
                 // note: +0.01 for the same reason as when scrolling down
-                float deltaScroll = (1.2 * this->relativeHeight + 0.01 + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
-                if (oldTop - deltaScroll <= -1.2 * this->relativeHeight)
+                float deltaScroll = (1.3 * this->relativeHeight + 0.01 + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
+                if (oldTop - deltaScroll <= -1.3 * this->relativeHeight)
                 {
                     // window has completely scrolled up
-                    this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
+                    this->consoleOverlayContainer_->setTop(-1.3 * this->relativeHeight);
                     this->scroll_ = 0;
                     this->consoleOverlay_->hide();
                 }
