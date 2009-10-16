@@ -163,9 +163,15 @@ namespace orxonox
   /**
    * @brief: returns ping time to client in milliseconds 
    */
-  unsigned int Server::getPing(unsigned int clientID){
+  unsigned int Server::getRTT(unsigned int clientID){
     assert(ClientInformation::findClient(clientID));
     return ClientInformation::findClient(clientID)->getRTT();
+  }
+  
+  void Server::printRTT()
+  {
+    for( ClientInformation* temp=ClientInformation::getBegin(); temp!=0; temp=temp->next() )
+      COUT(0) << "Round trip time to client with ID: " << temp->getID() << " is " << temp->getRTT() << " ms" << endl;
   }
 
   /**
@@ -298,7 +304,7 @@ namespace orxonox
     else
     {
       //ServerConnection::disconnectClient( client );
-      ClientConnectionListener::broadcastClientDisconnected( client->getID() );
+      //ClientConnectionListener::broadcastClientDisconnected( client->getID() ); //this is done in ClientInformation now
       delete client;
     }
   }
@@ -342,7 +348,7 @@ namespace orxonox
     ServerConnection::disconnectClient( client );
     GamestateManager::removeClient(client);
     // inform all the listeners
-    ClientConnectionListener::broadcastClientDisconnected(client->getID());
+    // ClientConnectionListener::broadcastClientDisconnected(client->getID()); // this is done in ClientInformation now
   }
 
   bool Server::chat(const std::string& message){

@@ -71,6 +71,7 @@ namespace orxonox
     bool processChat(const std::string& message, unsigned int playerID);
     virtual bool chat(const std::string& message);
     virtual bool broadcast(const std::string& message) { return false; }
+    virtual void printRTT();
 
     void update(const Clock& time);
   protected:
