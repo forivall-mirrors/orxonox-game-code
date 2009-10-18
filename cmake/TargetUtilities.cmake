@@ -180,6 +180,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDFOREACH(_file)
 
+
+
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")
     ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED}
@@ -189,11 +191,20 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
                    ${_${_target_name}_files})
   ENDIF()
 
+
+
   # Change library prefix to "lib"
   IF(MSVC AND ${_target_type} STREQUAL "LIBRARY")
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
       PREFIX "lib"
     )
+  ENDIF()
+
+  # MSVC hack to exclude external library sources from the intellisense database
+  # (IntelliSense stops working when adding "-Zm1000" as compile flag. "/Zm1000"
+  # would not work because of the slash)
+  IF(_arg_ORXONOX_EXTERNAL AND MSVC)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "-Zm1000")
   ENDIF()
 
   # MODULE B
