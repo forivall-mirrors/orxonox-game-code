@@ -68,11 +68,6 @@ SET(PCH_COMPILER_SUPPORT TRUE)
 ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"      CACHE)
 ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 
-# We need this flag to hack-disable IntelliSense for certain files/projects
-# Our precompiled headers should not be larger than 50MB anyway
-# because otherwise they get rendered useless due to too many file fragments
-REMOVE_COMPILER_FLAGS("-Zm1000" CACHE)
-
 # Overwrite CMake default flags here.
 SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -MP2 -RTC1" Debug          CACHE)
 SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"       Release        CACHE)
