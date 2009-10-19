@@ -90,6 +90,12 @@ namespace orxonox
                 player->destroy();
         }
     }
+    
+    void PlayerManager::disconnectAllClients()
+    {
+        for( std::map<unsigned int, PlayerInfo*>::iterator it = this->clients_.begin(); it != this->clients_.end(); )
+            this->clientDisconnected( (it++)->first );
+    }
 
 
     PlayerInfo* PlayerManager::getClient(unsigned int clientID) const
