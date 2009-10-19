@@ -116,14 +116,14 @@ namespace orxonox
     {
         if (GameMode::showsGraphics())
         {
-            // disconnect the HumanPlayer
-            PlayerManager::getInstance().clientDisconnected(0);
-            
             // unload all compositors (this is only necessary because we don't yet destroy all resources!)
             Ogre::CompositorManager::getSingleton().removeAll();
 
             InputManager::getInstance().leaveState("game");
         }
+        
+        // disconnect all HumanPlayers
+        PlayerManager::getInstance().disconnectAllClients();
 
         if (GameMode::isMaster())
             this->unloadLevel();

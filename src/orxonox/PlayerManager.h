@@ -51,6 +51,7 @@ namespace orxonox
 
             void clientConnected(unsigned int clientID);
             void clientDisconnected(unsigned int clientID);
+            void disconnectAllClients();
 
         private:
             std::map<unsigned int, PlayerInfo*> clients_;
