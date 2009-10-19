@@ -160,6 +160,7 @@ namespace orxonox
         isSynched_=true;
     }
     gamestate.cleanup();
+    Connection::sendPackets();
 
     return;
   }
