@@ -37,8 +37,8 @@ namespace orxonox
 {
   const unsigned int NETWORK_CLIENT_WAIT_TIME = 1;
   const unsigned int NETWORK_CLIENT_CONNECTION_TIMEOUT = 3000; //millisecs
-  const unsigned int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
-  const unsigned int NETWORK_CLIENT_CHANNELS = 2;
+  const unsigned int NETWORK_CLIENT_MAX_CONNECTIONS = 1;
+  const unsigned int NETWORK_CLIENT_CHANNELS = 1;
 
 
   ClientConnection::ClientConnection():
