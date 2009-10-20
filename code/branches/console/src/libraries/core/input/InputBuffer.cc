@@ -185,6 +185,7 @@ namespace orxonox
 
     void InputBuffer::processKey(const KeyEvent& evt)
     {
+        // Prevent disaster when switching applications
         if (evt.isModifierDown(KeyboardModifier::Alt) && evt.getKeyCode() == KeyCode::Tab)
             return;
 
@@ -221,7 +222,7 @@ namespace orxonox
     }
 
     /**
-        @brief This update() function is called by the InputManager if the InputBuffer is active.
+        @brief This update() function is called by the InputState if the InputBuffer is active.
         @param dt Delta time
     */
     void InputBuffer::keyboardUpdated(float dt)

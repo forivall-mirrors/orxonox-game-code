@@ -72,6 +72,11 @@ namespace orxonox
             , text_(evt.text)
             , modifiers_(0)
         { }
+        KeyEvent(KeyCode::ByEnum key, unsigned int text, int modifiers)
+            : key_(key)
+            , text_(text)
+            , modifiers_(modifiers)
+        { }
         bool operator==(const KeyEvent& rhs) const
             { return rhs.key_ == key_; }
         bool operator!=(const KeyEvent& rhs) const
