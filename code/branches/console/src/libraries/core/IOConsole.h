@@ -57,8 +57,6 @@ namespace orxonox
 
         void printOutputLine(const std::string& line);
         void printInputLine();
-        void insertCharacter(unsigned int position, char c);
-        void deleteCharacter(unsigned int position);
 
         // Methods from ShellListener
         void linesChanged();
@@ -69,16 +67,10 @@ namespace orxonox
         void exit();
 
         Shell&                  shell_;
-        bool                    cleanLine_;
         bool                    bEscapeMode_;
         std::string             escapeSequence_;
         InputBuffer*            buffer_;
-        unsigned char*          commandLine_;
-        unsigned int            inputIterator_;
         static termios*         originalTerminalSettings_;
-
-        unsigned int            cursorX_;
-        unsigned int            cursorY_;
 
         static IOConsole* singletonPtr_s;
     };

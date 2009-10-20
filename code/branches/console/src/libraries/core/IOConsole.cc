@@ -56,12 +56,8 @@ namespace orxonox
 
     IOConsole::IOConsole()
         : shell_(Shell::getInstance())
-        , cleanLine_(true)
         , bEscapeMode_(false)
         , buffer_(Shell::getInstance().getInputBuffer())
-        , inputIterator_(0)
-        , cursorX_(0)
-        , cursorY_(0)
     {
         this->originalTerminalSettings_ = new termios;
         this->setTerminalMode();
@@ -80,13 +76,13 @@ namespace orxonox
     {
         termios new_settings;
 
-        tcgetattr(0,this->originalTerminalSettings_);
+        tcgetattr(0, this->originalTerminalSettings_);
         new_settings = *this->originalTerminalSettings_;
-        new_settings.c_lflag &= ~( ICANON | ECHO );
+        new_settings.c_lflag &= ~(ICANON | ECHO);
         //         new_settings.c_lflag |= ( ISIG | IEXTEN );
         new_settings.c_cc[VTIME] = 1;
-        new_settings.c_cc[VMIN] = 0;
-        tcsetattr(0,TCSANOW,&new_settings);
+        new_settings.c_cc[VMIN]  = 0;
+        tcsetattr(0, TCSANOW, &new_settings);
         COUT(0) << endl;
         //       atexit(&IOConsole::resetTerminalMode);
     }
@@ -98,16 +94,14 @@ namespace orxonox
 
     void IOConsole::update(const Clock& time)
     {
-        unsigned c;
+        unsigned char c;
         while (read(STDIN_FILENO, &c, 1) == 1)
         {
             if (this->bEscapeMode_)
             {
                 this->escapeSequence_ += c;
-                bool clear = true;
-                if      (this->escapeSequence_ == "\033")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape,   0, 0));
-                else if (this->escapeSequence_ == "[A")
+                bool endOfSeq = true;
+                if      (this->escapeSequence_ == "[A")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Up,       0, 0));
                 else if (this->escapeSequence_ == "[B")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Down,     0, 0));
@@ -119,6 +113,8 @@ namespace orxonox
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Home,     0, 0));
                 else if (this->escapeSequence_ == "[2~")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Insert,   0, 0));
+                else if (this->escapeSequence_ == "[3~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Delete,   0, 0));
                 else if (this->escapeSequence_ == "[4~")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      0, 0));
                 else if (this->escapeSequence_ == "[5~")
@@ -129,24 +125,30 @@ namespace orxonox
                 else if (this->escapeSequence_ == "\t")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Tab, '\t', KeyboardModifier::Alt));
                 else if (this->escapeSequence_.size() > 4)
-                    clear = true; // Something went wrong, start over
+                    endOfSeq = true; // Something went wrong, start over
                 else
-                    clear = false;
+                    endOfSeq = false;
 
-                if (clear)
-                    this->escapeSequence_.clear();
+                //this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape,   0, 0));
+
+                if (endOfSeq)
+                    this->bEscapeMode_ = false;
             }
             else // not in an escape sequence
             {
                 if (c == '\033')
+				{
                     this->bEscapeMode_ = true;
+					this->escapeSequence_.clear();
+				}
                 else
                 {
                     KeyCode::ByEnum code;
                     switch (c)
                     {
                     case '\n': code = KeyCode::Return; break;
-                    case  127: code = KeyCode::Delete; break; 
+                    case '\r': code = KeyCode::Return; break;
+                    case  127: code = KeyCode::Back;   break; 
                     case '\b': code = KeyCode::Back;   break;
                     case '\t': code = KeyCode::Tab;    break;
                     default:
@@ -159,10 +161,14 @@ namespace orxonox
                 }
             }
         }
+
+		// Print input line
+		this->printInputLine();
     }
 
     void IOConsole::printOutputLine(const std::string& line)
     {
+		COUT(0) << "print output" << std::endl;
         // Save cursor position
         std::cout << "\033[s";
 
@@ -198,6 +204,8 @@ namespace orxonox
         // Restore cursor position
         std::cout << "\033[u";
         std::cout.flush();
+
+		this->printInputLine();
     }
 
     void IOConsole::printInputLine()
@@ -205,12 +213,14 @@ namespace orxonox
         // set cursor to the beginning of the line and erase the line
         std::cout << "\033[0G\033[K";
         // print status line
-        std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
+        //std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
+		// Show an arrow to indicate a command prompt
+		std::cout << ">";
         // save cursor position
         std::cout << "\033[s";
         // print commandLine buffer
         std::cout << this->shell_.getInput();
-        // restore cursor position and move it cursorX_ to the right
+        // restore cursor position and move it to the right
         std::cout << "\033[u";
         if (this->buffer_->getCursorPosition() > 0)
             std::cout << "\033[" << this->buffer_->getCursorPosition() << "C";

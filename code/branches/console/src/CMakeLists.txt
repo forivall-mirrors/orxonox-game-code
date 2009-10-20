@@ -97,7 +97,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
 ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(libraries)
 ADD_SUBDIRECTORY(orxonox)
-ADD_SUBDIRECTORY(modules)
+#ADD_SUBDIRECTORY(modules)
 
 ################ Executable ################
 

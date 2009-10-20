@@ -57,10 +57,12 @@ namespace orxonox
 
     void GSIOConsole::update(const Clock& time)
     {
+		/*
         std::cout << ">";
         std::string command;
         std::getline(std::cin, command);
         CommandExecutor::execute(command, true);
+		*/
     }
 
     void GSIOConsole::loadMenu()

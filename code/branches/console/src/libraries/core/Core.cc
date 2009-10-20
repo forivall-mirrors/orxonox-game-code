@@ -63,6 +63,7 @@
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
+#include "IOConsole.h"
 #include "LuaState.h"
 #include "ScopedSingletonManager.h"
 #include "Shell.h"
@@ -264,6 +265,8 @@ namespace orxonox
 
         // create a shell
         this->shell_.reset(new Shell());
+        // create persistent io console
+        this->ioConsole_.reset(new IOConsole());
 
         // Create singletons that always exist (in other libraries)
         this->rootScope_.reset(new Scope<ScopeID::Root>());
@@ -443,6 +446,8 @@ namespace orxonox
             // graphics singletons from other libraries
             ScopedSingletonManager::update<ScopeID::Graphics>(time);
         }
+        // process console text
+        this->ioConsole_->update(time);
         // process thread commands
         this->tclThreadManager_->update(time);
     }

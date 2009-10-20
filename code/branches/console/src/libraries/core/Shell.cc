@@ -117,8 +117,10 @@ namespace orxonox
     {
         this->inputBuffer_->registerListener(this, &Shell::inputChanged, true);
         this->inputBuffer_->registerListener(this, &Shell::execute, '\r', false);
+        this->inputBuffer_->registerListener(this, &Shell::execute, '\n', false);
         this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
         this->inputBuffer_->registerListener(this, &Shell::backspace, '\b', true);
+        this->inputBuffer_->registerListener(this, &Shell::backspace, static_cast<char>(127), true);
         this->inputBuffer_->registerListener(this, &Shell::deletechar, KeyCode::Delete);
         this->inputBuffer_->registerListener(this, &Shell::exit, static_cast<char>(27), true);
         this->inputBuffer_->registerListener(this, &Shell::cursor_right, KeyCode::Right);
