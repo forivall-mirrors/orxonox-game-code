@@ -187,7 +187,7 @@ namespace orxonox
         case  4: std::cout << "\033[36m"; break;
         case  5: std::cout << "\033[35m"; break;
         case  6: std::cout << "\033[37m"; break;
-        default:
+        default: break;
         }
 
         // Print output line
@@ -274,7 +274,7 @@ namespace orxonox
     @brief
         Called if the console gets closed.
     */
-    void InGameConsole::exit()
+    void IOConsole::exit()
     {
         // Exit is not an option, IOConsole always exists
     }
