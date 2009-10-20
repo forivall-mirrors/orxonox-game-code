@@ -80,7 +80,7 @@ namespace orxonox
         new_settings = *this->originalTerminalSettings_;
         new_settings.c_lflag &= ~(ICANON | ECHO);
         //         new_settings.c_lflag |= ( ISIG | IEXTEN );
-        new_settings.c_cc[VTIME] = 1;
+        new_settings.c_cc[VTIME] = 0;
         new_settings.c_cc[VMIN]  = 0;
         tcsetattr(0, TCSANOW, &new_settings);
         COUT(0) << endl;
