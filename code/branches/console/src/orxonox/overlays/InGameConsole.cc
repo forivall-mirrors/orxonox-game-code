@@ -67,7 +67,8 @@ namespace orxonox
         @brief Constructor: Creates and initializes the InGameConsole.
     */
     InGameConsole::InGameConsole()
-        : consoleOverlay_(0)
+        : shell_(Shell::getInstance())
+        , consoleOverlay_(0)
         , consoleOverlayContainer_(0)
         , consoleOverlayNoise_(0)
         , consoleOverlayCursor_(0)
@@ -173,7 +174,7 @@ namespace orxonox
     {
         // create the corresponding input state
         inputState_ = InputManager::getInstance().createInputState("console", false, false, InputStatePriority::Console);
-        inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
+        inputState_->setKeyHandler(this->shell_.getInputBuffer());
         bHidesAllInputChanged();
 
         // create overlay and elements
@@ -251,7 +252,7 @@ namespace orxonox
         // we take -1.2 because the border makes the panel bigger
         this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
 
-        Shell::getInstance().addOutputLevel(true);
+        this->shell_.addOutputLevel(true);
 
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }
@@ -265,11 +266,11 @@ namespace orxonox
     */
     void InGameConsole::linesChanged()
     {
-        std::list<std::string>::const_iterator it = Shell::getInstance().getNewestLineIterator();
+        std::list<std::string>::const_iterator it = this->shell_.getNewestLineIterator();
         int max = 0;
         for (int i = 1; i < LINES; ++i)
         {
-            if (it != Shell::getInstance().getEndIterator())
+            if (it != this->shell_.getEndIterator())
             {
                 ++it;
                 max = i;
@@ -294,7 +295,7 @@ namespace orxonox
     void InGameConsole::onlyLastLineChanged()
     {
         if (LINES > 1)
-            this->print(*Shell::getInstance().getNewestLineIterator(), 1);
+            this->print(*this->shell_.getNewestLineIterator(), 1);
     }
 
     /**
@@ -313,9 +314,9 @@ namespace orxonox
     void InGameConsole::inputChanged()
     {
         if (LINES > 0)
-            this->print(Shell::getInstance().getInput(), 0);
+            this->print(this->shell_.getInput(), 0);
 
-        if (Shell::getInstance().getInput() == "" || Shell::getInstance().getInput().size() == 0)
+        if (this->shell_.getInput() == "" || this->shell_.getInput().size() == 0)
             this->inputWindowStart_ = 0;
     }
 
@@ -324,7 +325,7 @@ namespace orxonox
     */
     void InGameConsole::cursorChanged()
     {
-        unsigned int pos = Shell::getInstance().getCursorPosition() - inputWindowStart_;
+        unsigned int pos = this->shell_.getCursorPosition() - inputWindowStart_;
         if (pos > maxCharsPerLine_)
             pos = maxCharsPerLine_;
 
@@ -481,10 +482,10 @@ namespace orxonox
             {
                 if (output.size() > this->maxCharsPerLine_)
                 {
-                    if (Shell::getInstance().getInputBuffer()->getCursorPosition() < this->inputWindowStart_)
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition();
-                    else if (Shell::getInstance().getInputBuffer()->getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition() - this->maxCharsPerLine_ + 1;
+                    if (this->shell_.getInputBuffer()->getCursorPosition() < this->inputWindowStart_)
+                        this->inputWindowStart_ = this->shell_.getInputBuffer()->getCursorPosition();
+                    else if (this->shell_.getInputBuffer()->getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
+                        this->inputWindowStart_ = this->shell_.getInputBuffer()->getCursorPosition() - this->maxCharsPerLine_ + 1;
 
                     output = output.substr(this->inputWindowStart_, this->maxCharsPerLine_);
                 }
@@ -505,7 +506,7 @@ namespace orxonox
         {
             this->bActive_ = true;
             InputManager::getInstance().enterState("console");
-            Shell::getInstance().registerListener(this);
+            this->shell_.registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
             this->linesChanged();
@@ -527,7 +528,7 @@ namespace orxonox
         {
             this->bActive_ = false;
             InputManager::getInstance().leaveState("console");
-            Shell::getInstance().unregisterListener(this);
+            this->shell_.unregisterListener(this);
 
             // scroll up
             this->scroll_ = -1;

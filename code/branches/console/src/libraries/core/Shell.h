@@ -131,6 +131,13 @@ namespace orxonox
             void scroll_down();
             void exit();
 
+            template <void (ShellListener::*F)()>
+            void updateListeners()
+            {
+                for (std::list<ShellListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
+                    ((*(it++))->*F)();
+            }
+
             std::list<ShellListener*> listeners_;
             InputBuffer* inputBuffer_;
             OutputBuffer outputBuffer_;

@@ -35,10 +35,6 @@
 #include "Core.h"
 #include "ConsoleCommand.h"
 
-#define SHELL_UPDATE_LISTENERS(function) \
-    for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
-        (*(it++))->function()
-
 namespace orxonox
 {
     SetConsoleCommand(Shell, clearShell, true);
@@ -152,7 +148,7 @@ namespace orxonox
 
     void Shell::registerListener(ShellListener* listener)
     {
-        this->listeners_.insert(this->listeners_.end(), listener);
+        this->listeners_.push_back(listener);
     }
 
     void Shell::unregisterListener(ShellListener* listener)
@@ -160,7 +156,7 @@ namespace orxonox
         for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
         {
             if ((*it) == listener)
-                this->listeners_.erase(it++);
+                it = this->listeners_.erase(it);
             else
                 ++it;
         }
@@ -169,7 +165,7 @@ namespace orxonox
     void Shell::setCursorPosition(unsigned int cursor)
     {
         this->inputBuffer_->setCursorPosition(cursor);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::setInput(const std::string& input)
@@ -198,7 +194,7 @@ namespace orxonox
         this->scrollPosition_ = 0;
         this->finishedLastLine_ = true;
 
-        SHELL_UPDATE_LISTENERS(linesChanged);
+        this->updateListeners<&ShellListener::linesChanged>();
     }
 
     std::list<std::string>::const_iterator Shell::getNewestLineIterator() const
@@ -257,14 +253,14 @@ namespace orxonox
 
                 if (!this->scrollPosition_)
                 {
-                    SHELL_UPDATE_LISTENERS(lineAdded);
+                    this->updateListeners<&ShellListener::lineAdded>();
                 }
             }
             else
             {
                 (*this->lines_.begin()) += output;
                 this->finishedLastLine_ = newline;
-                SHELL_UPDATE_LISTENERS(onlyLastLineChanged);
+                this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
 
         } while (newline);
@@ -272,8 +268,8 @@ namespace orxonox
 
     void Shell::inputChanged()
     {
-        SHELL_UPDATE_LISTENERS(inputChanged);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::execute()
@@ -298,46 +294,46 @@ namespace orxonox
     void Shell::backspace()
     {
         this->inputBuffer_->removeBehindCursor();
-        SHELL_UPDATE_LISTENERS(inputChanged);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::deletechar()
     {
         this->inputBuffer_->removeAtCursor();
-        SHELL_UPDATE_LISTENERS(inputChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
     }
 
     void Shell::clear()
     {
         this->inputBuffer_->clear();
         this->historyPosition_ = 0;
-        SHELL_UPDATE_LISTENERS(inputChanged);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::cursor_right()
     {
         this->inputBuffer_->increaseCursor();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::cursor_left()
     {
         this->inputBuffer_->decreaseCursor();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::cursor_end()
     {
         this->inputBuffer_->setCursorToEnd();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::cursor_home()
     {
         this->inputBuffer_->setCursorToBegin();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::history_up()
@@ -365,7 +361,7 @@ namespace orxonox
             ++this->scrollIterator_;
             ++this->scrollPosition_;
 
-            SHELL_UPDATE_LISTENERS(linesChanged);
+            this->updateListeners<&ShellListener::linesChanged>();
         }
     }
 
@@ -376,7 +372,7 @@ namespace orxonox
             --this->scrollIterator_;
             --this->scrollPosition_;
 
-            SHELL_UPDATE_LISTENERS(linesChanged);
+            this->updateListeners<&ShellListener::linesChanged>();
         }
     }
 
@@ -392,6 +388,6 @@ namespace orxonox
         this->scrollPosition_ = 0;
         this->scrollIterator_ = this->lines_.begin();
 
-        SHELL_UPDATE_LISTENERS(exit);
+        this->updateListeners<&ShellListener::exit>();
     }
 }
