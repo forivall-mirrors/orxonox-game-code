@@ -52,6 +52,13 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
+        enum EscapeMode
+        {
+            None,
+            First,
+            Second
+        };
+
         void setTerminalMode();
         static void resetTerminalMode();
 
@@ -67,7 +74,7 @@ namespace orxonox
         void exit();
 
         Shell&                  shell_;
-        bool                    bEscapeMode_;
+        EscapeMode              escapeMode_;
         std::string             escapeSequence_;
         InputBuffer*            buffer_;
         static termios*         originalTerminalSettings_;

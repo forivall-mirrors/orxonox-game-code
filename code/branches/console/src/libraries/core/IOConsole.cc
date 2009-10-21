@@ -56,7 +56,7 @@ namespace orxonox
 
     IOConsole::IOConsole()
         : shell_(Shell::getInstance())
-        , bEscapeMode_(false)
+        , escapeMode_(None)
         , buffer_(Shell::getInstance().getInputBuffer())
     {
         this->originalTerminalSettings_ = new termios;
@@ -94,53 +94,60 @@ namespace orxonox
 
     void IOConsole::update(const Clock& time)
     {
-        unsigned char c;
+        unsigned char c = 0;
         while (read(STDIN_FILENO, &c, 1) == 1)
         {
-            if (this->bEscapeMode_)
+            if (this->escapeMode_ == First && c == '[')
+                this->escapeMode_ = Second;
+            // Get Alt+Tab combination when switching applications
+            else if (this->escapeMode_ == First && c == '\t')
             {
-                this->escapeSequence_ += c;
-                bool endOfSeq = true;
-                if      (this->escapeSequence_ == "[A")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Up,       0, 0));
-                else if (this->escapeSequence_ == "[B")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Down,     0, 0));
-                else if (this->escapeSequence_ == "[C")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Right,    0, 0));
-                else if (this->escapeSequence_ == "[D")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Left,     0, 0));
-                else if (this->escapeSequence_ == "[1~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Home,     0, 0));
-                else if (this->escapeSequence_ == "[2~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Insert,   0, 0));
-                else if (this->escapeSequence_ == "[3~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Delete,   0, 0));
-                else if (this->escapeSequence_ == "[4~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      0, 0));
-                else if (this->escapeSequence_ == "[5~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageUp,   0, 0));
-                else if (this->escapeSequence_ == "[6~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageDown, 0, 0));
-                // Get Alt+Tab combination when switching applications
-                else if (this->escapeSequence_ == "\t")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Tab, '\t', KeyboardModifier::Alt));
-                else if (this->escapeSequence_.size() > 4)
-                    endOfSeq = true; // Something went wrong, start over
-                else
-                    endOfSeq = false;
-
-                //this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape,   0, 0));
-
-                if (endOfSeq)
-                    this->bEscapeMode_ = false;
+                this->buffer_->buttonPressed(KeyEvent(KeyCode::Tab, '\t', KeyboardModifier::Alt));
+                this->escapeMode_ = None;
             }
-            else // not in an escape sequence
+            else if (this->escapeMode_ == Second)
             {
+                bool endOfSeq = true;
+                this->escapeMode_ = None;
+                if      (this->escapeSequence_ == "A")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Up,       0, 0));
+                else if (this->escapeSequence_ == "B")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Down,     0, 0));
+                else if (this->escapeSequence_ == "C")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Right,    0, 0));
+                else if (this->escapeSequence_ == "D")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Left,     0, 0));
+                else if (this->escapeSequence_ == "1~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Home,     0, 0));
+                else if (this->escapeSequence_ == "2~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Insert,   0, 0));
+                else if (this->escapeSequence_ == "3~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Delete,   0, 0));
+                else if (this->escapeSequence_ == "4~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      0, 0));
+                else if (this->escapeSequence_ == "5~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageUp,   0, 0));
+                else if (this->escapeSequence_ == "6~")
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageDown, 0, 0));
+                else if (this->escapeSequence_.size() > 4)
+                    // User probably very quickly pressed ESC and [
+                    this->escapeMode_ = None;
+                else
+                    // Waiting for sequence to complete
+                    this->escapeMode_ = Second;
+            }
+            else // not in an escape sequence OR user might have pressed just ESC
+            {
+                if (this->escapeMode_ == First)
+                {
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, 0, 0));
+                    this->escapeMode_ = None;
+                }
                 if (c == '\033')
-				{
-                    this->bEscapeMode_ = true;
-					this->escapeSequence_.clear();
-				}
+                {
+                    this->escapeMode_ = First;
+                    this->escapeSequence_.clear();
+                }
                 else
                 {
                     KeyCode::ByEnum code;
@@ -162,13 +169,17 @@ namespace orxonox
             }
         }
 
-		// Print input line
-		this->printInputLine();
+        // If there is still an escape key pending (escape key ONLY), then
+        // it sure isn't an escape sequence here
+        this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, 0, 0));
+
+        // Print input line
+        this->printInputLine();
     }
 
     void IOConsole::printOutputLine(const std::string& line)
     {
-		COUT(0) << "print output" << std::endl;
+        COUT(0) << "print output" << std::endl;
         // Save cursor position
         std::cout << "\033[s";
 
@@ -205,7 +216,7 @@ namespace orxonox
         std::cout << "\033[u";
         std::cout.flush();
 
-		this->printInputLine();
+        this->printInputLine();
     }
 
     void IOConsole::printInputLine()
@@ -214,8 +225,8 @@ namespace orxonox
         std::cout << "\033[0G\033[K";
         // print status line
         //std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
-		// Show an arrow to indicate a command prompt
-		std::cout << ">";
+        // Show an arrow to indicate a command prompt
+        std::cout << ">";
         // save cursor position
         std::cout << "\033[s";
         // print commandLine buffer
