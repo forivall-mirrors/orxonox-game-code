@@ -74,12 +74,15 @@ namespace orxonox
             GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().enterState("guiMouseOnly");
             GUIManager::getInstance().executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
+
+            COUT(3) << "Showing GUI " << this->guiName_ << std::endl;
         }
         else
         {
             GUIManager::getInstance().executeCode("hideGUI(\"" + this->guiName_ + "\")");
             GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().leaveState("guiMouseOnly");
+            COUT(3) << "Hiding GUI " << this->guiName_ << std::endl;
         }
     }
 
