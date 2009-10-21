@@ -35,6 +35,7 @@
 #include "util/ScopeGuard.h"
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
+#include "BaseSound.h"
 
 namespace orxonox
 {
@@ -112,5 +113,34 @@ namespace orxonox
         ALenum error = alGetError();
         if (error == AL_INVALID_VALUE)
             COUT(2) << "Sound: OpenAL: Invalid listener orientation" << std::endl;
+    }
+
+    void SoundManager::registerAmbientSound(BaseSound* newAmbient)
+    {
+        if (!(this->ambientSounds_.empty())) 
+        {
+            this->ambientSounds_.front()->pause();
+        }
+        this->ambientSounds_.push_front(newAmbient);
+    }
+
+    void SoundManager::unregisterAmbientSound(BaseSound* currentAmbient)
+    {
+        if(this->ambientSounds_.front() == currentAmbient) 
+        {
+            this->ambientSounds_.pop_front();
+            this->ambientSounds_.front()->replay();
+        }
+        else
+        {
+            for(std::list<BaseSound*>::iterator it= this->ambientSounds_.begin(); it != this->ambientSounds_.end(); it++)
+            {
+                if(*it == currentAmbient)
+                {
+                    this->ambientSounds_.erase(it);
+                    break;
+                }
+            }
+        }
     }
 }

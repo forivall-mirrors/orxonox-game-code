@@ -31,6 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
+#include "SoundManager.h"
 
 namespace orxonox
 {
@@ -59,4 +60,42 @@ namespace orxonox
         SUPER(AmbientSound, XMLEventPort, xmlelement, mode);
         XMLPortEventState(AmbientSound, BaseObject, "play", play, xmlelement, mode);
     }
+
+    void AmbientSound::play()
+    {
+        COUT(3) << this->getSource() << ": Playing" << std::endl;
+        SoundManager::getInstance().registerAmbientSound(this);
+        SUPER(AmbientSound, play);
+    }
+
+    void AmbientSound::replay()
+    {
+        SUPER(AmbientSound, play);
+    }
+
+    void AmbientSound::stop()
+    {
+        SUPER(AmbientSound, stop);
+        SoundManager::getInstance().unregisterAmbientSound(this);
+    }
+
+    void AmbientSound::pause()
+    {
+        SUPER(AmbientSound, pause);
+    }
+
+    void AmbientSound::changedActivity() 
+    {
+        COUT(3) << this->getSource() << ": ChangedActivity: " << this->isActive() << std::endl;
+        SUPER(AmbientSound, changedActivity);
+        if(this->isActive())
+        {
+            this->play();
+        }
+        else 
+        {
+            this->stop();
+        }
+    }
+
 }

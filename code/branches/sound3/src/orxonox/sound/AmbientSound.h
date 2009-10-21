@@ -46,8 +46,15 @@ namespace orxonox
         AmbientSound(BaseObject* creator);
         virtual ~AmbientSound();
 
+        virtual void play();
+        virtual void replay();      // is only needed for the AmbientSound list in SoundManager
+        virtual void stop();
+        virtual void pause();
+
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+        virtual void changedActivity();
+
 
     private:
     };

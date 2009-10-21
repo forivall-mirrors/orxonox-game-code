@@ -69,6 +69,11 @@ namespace orxonox
         }
     }
 
+    void BaseSound::replay()
+    {
+        BaseSound::play();
+    }
+
     void BaseSound::stop()
     {
         if (alIsSource(this->audioSource_))
@@ -104,8 +109,11 @@ namespace orxonox
 
     void BaseSound::setPlayOnLoad(bool val)
     {
-        this->bPlayOnLoad_ = true;
-        this->play();
+        this->bPlayOnLoad_ = val;
+        if(val)
+        {
+            this->play();
+        }
     }
 
     void BaseSound::setSource(const std::string& source)

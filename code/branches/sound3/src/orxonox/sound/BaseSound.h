@@ -48,9 +48,10 @@ namespace orxonox
         BaseSound();
         virtual ~BaseSound();
 
-        void play();
-        void stop();
-        void pause();
+        virtual void play();
+        virtual void replay();      // is only needed for the AmbientSound list in SoundManager
+        virtual void stop();
+        virtual void pause();
 
         bool isPlaying();
         bool isPaused();
