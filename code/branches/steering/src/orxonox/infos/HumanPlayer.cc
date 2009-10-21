@@ -34,6 +34,7 @@
 #include "network/ClientInformation.h"
 #include "network/Host.h"
 #include "controllers/HumanController.h"
+#include "controllers/NewHumanController.h"
 #include "gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
@@ -49,7 +50,7 @@ namespace orxonox
         this->client_initialized_ = false;
 
         this->bHumanPlayer_ = true;
-        this->defaultController_ = Class(HumanController);
+        this->defaultController_ = Class(NewHumanController);
 
         this->humanHud_ = 0;
         this->gametypeHud_ = 0;
