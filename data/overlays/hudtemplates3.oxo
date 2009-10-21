@@ -98,6 +98,7 @@
     <GUIOverlay
       name = "QuestGUI"
       guiname = "QuestGUI"
+      visible = "false"
     />
 
   </OverlayGroup>

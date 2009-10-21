@@ -47,6 +47,8 @@
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
 
+#include "OverlayGroup.h"
+
 namespace orxonox
 {
     unsigned int OrxonoxOverlay::hudOverlayCounter_s = 0;
@@ -164,10 +166,13 @@ namespace orxonox
     //! Called by BaseObject when visibility has changed.
     void OrxonoxOverlay::changedVisibility()
     {
+        SUPER( OrxonoxOverlay, changedVisibility );
+        
         if (!this->overlay_)
             return;
 
-        if (this->isVisible())
+        // only set to visible if corresponding OverlayGroup is also visible
+        if (this->isVisible() && (!this->getOverlayGroup() || this->getOverlayGroup()->isVisible()) )
             this->overlay_->show();
         else
             this->overlay_->hide();

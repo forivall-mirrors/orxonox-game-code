@@ -178,7 +178,8 @@ namespace orxonox
         }
         inline OverlayGroup* getOverlayGroup() const
             { return this->group_; }
-        virtual void changedOverlayGroup() {}
+        virtual void changedOverlayGroup() 
+            { this->changedVisibility(); }
 
     protected:
         virtual void angleChanged();
