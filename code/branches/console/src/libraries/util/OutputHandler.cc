@@ -148,8 +148,8 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::streambuf* sb)
     {
-        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-            std::cout << sb;
+        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+        //    std::cout << sb;
 
         if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
         {
@@ -170,8 +170,8 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::ostream& (*manipulator)(std::ostream&))
     {
-        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-            manipulator(std::cout);
+        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+        //    manipulator(std::cout);
 
         if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
         {
@@ -192,8 +192,8 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::ios& (*manipulator)(std::ios&))
     {
-        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-            manipulator(std::cout);
+        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+        //    manipulator(std::cout);
 
         if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
         {
@@ -214,8 +214,8 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::ios_base& (*manipulator)(std::ios_base&))
     {
-        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-            manipulator(std::cout);
+        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+        //    manipulator(std::cout);
 
         if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
         {

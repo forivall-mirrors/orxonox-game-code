@@ -62,7 +62,7 @@ namespace orxonox
         void setTerminalMode();
         static void resetTerminalMode();
 
-        void printOutputLine(const std::string& line);
+        void print(const std::string& line);
         void printInputLine();
 
         // Methods from ShellListener
@@ -71,6 +71,7 @@ namespace orxonox
         void lineAdded();
         void inputChanged();
         void cursorChanged();
+        void executed();
         void exit();
 
         Shell&                  shell_;

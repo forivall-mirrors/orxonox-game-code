@@ -120,9 +120,9 @@ namespace orxonox
         this->inputBuffer_->registerListener(this, &Shell::execute, '\n', false);
         this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
         this->inputBuffer_->registerListener(this, &Shell::backspace, '\b', true);
-        this->inputBuffer_->registerListener(this, &Shell::backspace, static_cast<char>(127), true);
+        this->inputBuffer_->registerListener(this, &Shell::backspace, '\177', true);
         this->inputBuffer_->registerListener(this, &Shell::deletechar, KeyCode::Delete);
-        this->inputBuffer_->registerListener(this, &Shell::exit, static_cast<char>(27), true);
+        this->inputBuffer_->registerListener(this, &Shell::exit, '\033', true); // escape
         this->inputBuffer_->registerListener(this, &Shell::cursor_right, KeyCode::Right);
         this->inputBuffer_->registerListener(this, &Shell::cursor_left, KeyCode::Left);
         this->inputBuffer_->registerListener(this, &Shell::cursor_end, KeyCode::End);
@@ -277,7 +277,7 @@ namespace orxonox
     void Shell::execute()
     {
         this->addToHistory(this->inputBuffer_->get());
-        this->addLine(this->inputBuffer_->get(), 0);
+        this->updateListeners<&ShellListener::executed>();
 
         if (!CommandExecutor::execute(this->inputBuffer_->get()))
             this->addLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", 1);

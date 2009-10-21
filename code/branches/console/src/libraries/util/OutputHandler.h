@@ -163,8 +163,8 @@ namespace orxonox
     template<class T>
     OutputHandler& OutputHandler::output(const T& output)
     {
-        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-            std::cout << output;
+        //if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+        //    std::cout << output;
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
         {
@@ -187,8 +187,8 @@ namespace orxonox
     template<class T>
     OutputHandler& operator<<(OutputHandler& out, const T& output)
     {
-        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Console) >= out.getOutputLevel())
-            std::cout << output;
+        //if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Console) >= out.getOutputLevel())
+        //    std::cout << output;
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Logfile) >= out.getOutputLevel())
         {

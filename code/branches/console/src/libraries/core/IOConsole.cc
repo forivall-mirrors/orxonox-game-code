@@ -61,6 +61,7 @@ namespace orxonox
     {
         this->originalTerminalSettings_ = new termios;
         this->setTerminalMode();
+		this->shell_.registerListener(this);
     }
 
     IOConsole::~IOConsole()
@@ -69,7 +70,6 @@ namespace orxonox
         std::cout.flush();
         resetTerminalMode();
         delete this->originalTerminalSettings_;
-        COUT(0) << "Press enter to end the game..." << std::endl;
     }
 
     void IOConsole::setTerminalMode()
@@ -107,7 +107,7 @@ namespace orxonox
             }
             else if (this->escapeMode_ == Second)
             {
-                bool endOfSeq = true;
+				this->escapeSequence_ += c;
                 this->escapeMode_ = None;
                 if      (this->escapeSequence_ == "A")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Up,       0, 0));
@@ -140,7 +140,7 @@ namespace orxonox
             {
                 if (this->escapeMode_ == First)
                 {
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, 0, 0));
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, c, 0));
                     this->escapeMode_ = None;
                 }
                 if (c == '\033')
@@ -171,33 +171,32 @@ namespace orxonox
 
         // If there is still an escape key pending (escape key ONLY), then
         // it sure isn't an escape sequence here
-        this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, 0, 0));
+        if (this->escapeMode_ == First)
+            this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, '\033', 0));
+        // Reset in any case because escape sequences always come in one piece
+        this->escapeMode_ = None;
 
         // Print input line
         this->printInputLine();
     }
 
-    void IOConsole::printOutputLine(const std::string& line)
+    void IOConsole::print(const std::string& text)
     {
-        COUT(0) << "print output" << std::endl;
-        // Save cursor position
-        std::cout << "\033[s";
-
         std::string output;
 
         // Handle line colouring by inspecting the first letter
         char level = 0;
-        if (!line.empty())
-            level = line[0];
+        if (!text.empty())
+            level = text[0];
         if (level >= -1 && level <= 6)
-            output = line.substr(1);
+            output = text.substr(1);
         else
-            output = line;
+            output = text;
 
         // Colour line
         switch (level)
         {
-        case -1: std::cout << "\033[30m"; break;
+        case -1: std::cout << "\033[37m"; break;
         case  1: std::cout << "\033[91m"; break;
         case  2: std::cout << "\033[31m"; break;
         case  3: std::cout << "\033[34m"; break;
@@ -208,25 +207,21 @@ namespace orxonox
         }
 
         // Print output line
-        std::cout << output << std::endl;
+        std::cout << output;
 
-        // Reset colour to black
-        std::cout << "\033[30m";
-        // Restore cursor position
-        std::cout << "\033[u";
+        // Reset colour to white
+        std::cout << "\033[37m";
         std::cout.flush();
-
-        this->printInputLine();
     }
 
     void IOConsole::printInputLine()
     {
         // set cursor to the beginning of the line and erase the line
-        std::cout << "\033[0G\033[K";
+        std::cout << "\033[1G\033[K";
         // print status line
         //std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
         // Show an arrow to indicate a command prompt
-        std::cout << ">";
+        std::cout << "orxonox>";
         // save cursor position
         std::cout << "\033[s";
         // print commandLine buffer
@@ -260,8 +255,14 @@ namespace orxonox
     */
     void IOConsole::onlyLastLineChanged()
     {
-        // We cannot do anything here because printed lines are fixed
-        COUT(2) << "Warning: Trying to edit last console lines, which is impossible!" << std::endl;
+		// Save cursor position and move it the beginning of the second to last line
+		std::cout << "\033[s\033[1F";
+		// Erase the second to last line
+		std::cout << "\033[K";
+		this->print(*(this->shell_.getNewestLineIterator()));
+		// Restore cursor
+		std::cout << "\033[u";
+		std::cout.flush();
     }
 
     /**
@@ -270,7 +271,11 @@ namespace orxonox
     */
     void IOConsole::lineAdded()
     {
-        this->printOutputLine(*(this->shell_.getNewestLineIterator()));
+		// Move curosr the beginning of the line and erase it
+		std::cout << "\033[1G\033[K";
+		this->print(*(this->shell_.getNewestLineIterator()));
+		std::cout << std::endl;
+		this->printInputLine();
     }
 
     /**
@@ -290,6 +295,20 @@ namespace orxonox
     {
         this->printInputLine();
     }
+
+    /**
+    @brief
+        Called if a command is about to be executed
+    */
+    void IOConsole::executed()
+    {
+		// Move curosr the beginning of the line
+		std::cout << "\033[1G";
+        // Print command so the user knows what he typed
+        std::cout << "orxonox>" << this->shell_.getInput() << std::endl;
+		this->printInputLine();
+    }
+
 
     /**
     @brief

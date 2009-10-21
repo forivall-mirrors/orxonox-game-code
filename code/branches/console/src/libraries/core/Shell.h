@@ -56,6 +56,7 @@ namespace orxonox
             virtual void lineAdded() {}
             virtual void inputChanged() {}
             virtual void cursorChanged() {}
+            virtual void executed() {}
             virtual void exit() {}
     };
 
