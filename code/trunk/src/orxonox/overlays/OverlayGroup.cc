@@ -104,7 +104,7 @@ namespace orxonox
     void OverlayGroup::addElement(OrxonoxOverlay* element)
     {
         hudElements_.insert(element);
-        element->setVisible(this->isVisible());
+        element->setOverlayGroup( this );
         if (this->owner_)
             element->setOwner(this->owner_);
     }
@@ -141,8 +141,10 @@ namespace orxonox
     //! Changes the visibility of all elements
     void OverlayGroup::changedVisibility()
     {
+        SUPER( OverlayGroup, changedVisibility );
+        
         for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-            (*it)->setVisible(this->isVisible());
+            (*it)->changedVisibility(); //inform all Child Overlays that our visibility has changed
     }
 
     void OverlayGroup::setOwner(BaseObject* owner)

@@ -43,6 +43,8 @@ namespace orxonox
         void setDeaths(const std::string&);
 
         void setVisibility(bool);
+        void changedVisibility();
+        void setOverlayGroup( OverlayGroup* group );
 
         //void setNumberOfColumns(unsigned int numberOfColumns, unsigned int lineIndex);
         //void alignColumn(int columnIndex, float leftOffset, float topOffset);

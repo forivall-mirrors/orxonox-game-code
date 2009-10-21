@@ -86,6 +86,21 @@ namespace orxonox
         this->playerNameText_->setVisible(visible);
         this->background_->setVisible(visible);
     }
+    void CreateLines::changedVisibility()
+    {
+        this->scoreText_->changedVisibility();
+        this->deathsText_->changedVisibility();
+        this->playerNameText_->changedVisibility();
+        this->background_->changedVisibility();
+    }
+    
+    void CreateLines::setOverlayGroup( OverlayGroup* group )
+    {
+        this->scoreText_->setOverlayGroup( group );
+        this->deathsText_->setOverlayGroup( group );
+        this->playerNameText_->setOverlayGroup( group );
+        this->background_->setOverlayGroup( group );
+    }
 
     /**
         @brief Ensures that the number of OverlayElements is equal to numberOfColumns.

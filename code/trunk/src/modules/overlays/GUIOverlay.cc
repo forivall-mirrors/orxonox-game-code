@@ -61,9 +61,10 @@ namespace orxonox
     void GUIOverlay::changedVisibility()
     {
         SUPER(GUIOverlay, changedVisibility);
-
+        
         //Setting player now.
-        GUIManager::getInstance().setPlayer(this->guiName_, (orxonox_cast<ControllableEntity*>(this->getOwner()))->getPlayer());
+        if( this->getOwner() )
+            GUIManager::getInstance().setPlayer(this->guiName_, (orxonox_cast<ControllableEntity*>(this->getOwner()))->getPlayer());
 
         if (this->isVisible())
         {
