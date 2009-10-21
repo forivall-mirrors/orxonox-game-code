@@ -157,8 +157,10 @@ namespace orxonox
 
         this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
 
-        if (this->controller_)
+        if (this->controller_) {
             this->controller_->setControllableEntity(entity);
+            this->controller_->startControl();
+        }
 
         this->changedControllableEntity();
     }
@@ -173,8 +175,10 @@ namespace orxonox
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = OBJECTID_UNKNOWN;
 
-        if (this->controller_)
+        if (this->controller_) {
             this->controller_->setControllableEntity(0);
+            this->controller_->stopControl();
+        }
 
         entity->removePlayer();
 

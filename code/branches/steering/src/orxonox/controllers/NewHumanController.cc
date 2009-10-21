@@ -20,13 +20,16 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Michael Wirth
  *   Co-authors:
  *      ...
  *
  */
 
 #include "NewHumanController.h"
+
+#include "core/input/InputManager.h"
+#include "core/input/InputState.h"
 
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -71,11 +74,21 @@ namespace orxonox
         RegisterObject(NewHumanController);
 
         NewHumanController::localController_s = this;
+
+        gameInputState_ = InputManager::getInstance().createInputState("humansteering", true, true);
+        gameInputState_->setMouseHandler(this);
+        gameInputState_->setMouseMode(MouseMode::Exclusive);
     }
 
     NewHumanController::~NewHumanController()
     {
         NewHumanController::localController_s = 0;
+
+        if( this->isInitialized() )
+        {
+            gameInputState_->setHandler(0);
+            InputManager::getInstance().destroyState("humansteering");
+        }
     }
 
     void NewHumanController::tick(float dt)
@@ -92,6 +105,24 @@ namespace orxonox
             else
                 COUT(3) << "NewHumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
         }
+    }
+
+    void NewHumanController::startControl() {
+        //gameInputState_->setHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
+        //KeyBinderManager::getInstance().setToDefault();
+
+        InputManager::getInstance().enterState("humansteering");
+        std::cout << "started control" << endl;
+    }
+
+    void NewHumanController::stopControl() {
+        InputManager::getInstance().leaveState("humansteering");
+        std::cout << "stopped control" << endl;
+    }
+
+    void NewHumanController::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    {
+        std::cout << "X: " << static_cast<float>(abs.x) << " Y: " << static_cast<float>(abs.y) << endl;
     }
 
 }

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Michael Wirth
  *   Co-authors:
  *      ...
  *
@@ -31,12 +31,14 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "tools/interfaces/Tickable.h"
+//#include "tools/interfaces/Tickable.h"
 #include "HumanController.h"
+#include "core/input/InputHandler.h"
+#include "core/input/InputState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport NewHumanController : public HumanController
+    class _OrxonoxExport NewHumanController : public HumanController, public InputHandler
     {
         public:
             NewHumanController(BaseObject* creator);
@@ -44,8 +46,15 @@ namespace orxonox
 
             virtual void tick(float dt);
 
+            void startControl();
+            void stopControl();
+
         private:
             static NewHumanController* localController_s;
+            InputState* gameInputState_;
+
+            //mouse handler functions
+            void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
     };
 }
 
