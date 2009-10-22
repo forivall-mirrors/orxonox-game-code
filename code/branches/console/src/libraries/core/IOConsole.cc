@@ -97,7 +97,7 @@ namespace orxonox
         unsigned char c = 0;
         while (read(STDIN_FILENO, &c, 1) == 1)
         {
-            if (this->escapeMode_ == First && c == '[')
+            if (this->escapeMode_ == First && (c == '[' || c=='O') )
                 this->escapeMode_ = Second;
             // Get Alt+Tab combination when switching applications
             else if (this->escapeMode_ == First && c == '\t')
@@ -107,7 +107,7 @@ namespace orxonox
             }
             else if (this->escapeMode_ == Second)
             {
-				this->escapeSequence_ += c;
+                this->escapeSequence_ += c;
                 this->escapeMode_ = None;
                 if      (this->escapeSequence_ == "A")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Up,       0, 0));
@@ -117,13 +117,13 @@ namespace orxonox
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Right,    0, 0));
                 else if (this->escapeSequence_ == "D")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Left,     0, 0));
-                else if (this->escapeSequence_ == "1~")
+                else if (this->escapeSequence_ == "1~" || this->escapeSequence_ == "H")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Home,     0, 0));
                 else if (this->escapeSequence_ == "2~")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Insert,   0, 0));
                 else if (this->escapeSequence_ == "3~")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::Delete,   0, 0));
-                else if (this->escapeSequence_ == "4~")
+                else if (this->escapeSequence_ == "4~" || this->escapeSequence_ == "F")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      0, 0));
                 else if (this->escapeSequence_ == "5~")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::PageUp,   0, 0));
