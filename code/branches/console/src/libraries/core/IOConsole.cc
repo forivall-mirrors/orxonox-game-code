@@ -126,9 +126,9 @@ namespace orxonox
                 else if (this->escapeSequence_ == "4~" || this->escapeSequence_ == "F")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      0, 0));
                 else if (this->escapeSequence_ == "5~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageUp,   0, 0));
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::AltPageUp,   0, 0));
                 else if (this->escapeSequence_ == "6~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageDown, 0, 0));
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::AltPageDown, 0, 0));
                 else if (this->escapeSequence_.size() > 4)
                     // User probably very quickly pressed ESC and [
                     this->escapeMode_ = None;

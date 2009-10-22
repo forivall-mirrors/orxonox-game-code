@@ -128,6 +128,8 @@ namespace orxonox
             void cursor_home();
             void history_up();
             void history_down();
+            void history_search_up();
+            void history_search_down();
             void scroll_up();
             void scroll_down();
             void exit();

@@ -29,6 +29,7 @@
 #include "Shell.h"
 
 #include "util/OutputHandler.h"
+#include "util/StringUtils.h"
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
@@ -131,6 +132,8 @@ namespace orxonox
         this->inputBuffer_->registerListener(this, &Shell::history_down, KeyCode::Down);
         this->inputBuffer_->registerListener(this, &Shell::scroll_up, KeyCode::PageUp);
         this->inputBuffer_->registerListener(this, &Shell::scroll_down, KeyCode::PageDown);
+        this->inputBuffer_->registerListener(this, &Shell::history_search_up, KeyCode::AltPageUp);
+        this->inputBuffer_->registerListener(this, &Shell::history_search_down, KeyCode::AltPageDown);
     }
 
     void Shell::clearShell()
@@ -353,6 +356,42 @@ namespace orxonox
         {
             this->historyPosition_--;
             this->inputBuffer_->set(this->getFromHistory());
+        }
+    }
+
+    void Shell::history_search_up()
+    {
+        if (this->historyPosition_ == this->historyOffset_)
+            return;
+        unsigned int cursorPosition = this->getCursorPosition();
+        std::string input_str( this->getInput().substr(0,cursorPosition) ); //only search for the expression from the beginning of the inputline untill the cursor position
+	for (unsigned int newPos = this->historyPosition_+1; newPos<=this->historyOffset_; newPos++)
+        {
+            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) //search case insensitive
+            {
+                this->historyPosition_ = newPos;
+                this->inputBuffer_->set(this->getFromHistory());
+                this->setCursorPosition( cursorPosition );
+                return;
+            }
+        }
+    }
+
+    void Shell::history_search_down()
+    {
+        if (this->historyPosition_ == 0)
+            return;
+        unsigned int cursorPosition = this->getCursorPosition();
+        std::string input_str( this->getInput().substr(0,cursorPosition) ); //only search for the expression from the beginn$
+        for (unsigned int newPos = this->historyPosition_-1; newPos>0; newPos--)
+        {
+            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) //sear$
+            {
+                this->historyPosition_ = newPos;
+                this->inputBuffer_->set(this->getFromHistory());
+                this->setCursorPosition( cursorPosition );
+                return;
+            }
         }
     }
 
