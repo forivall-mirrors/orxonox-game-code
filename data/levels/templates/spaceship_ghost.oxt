@@ -43,6 +43,11 @@
       <CameraPosition position="0,40,160" drag=true mouselook=true />
       <CameraPosition position="0,50,200" drag=true mouselook=true />
     </camerapositions>
+
+<?lua
+  include("includes/weaponsettings_ghost.oxi")
+?>
+
   </SpaceShip>
 </Template>
 
@@ -61,6 +66,7 @@
    accelerationleftright =  100
    accelerationupdown    =  100
   >
+
 
     <forward>
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.06, 3.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />

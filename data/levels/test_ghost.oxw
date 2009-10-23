@@ -2,7 +2,7 @@
   include("hudtemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceship_ghost.oxt")
-  include("templates/spaceship_H2.oxt")
+  include("templates/spaceship_pirate.oxt")
 ?>
 
 <Level
