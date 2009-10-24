@@ -189,7 +189,7 @@ namespace orxonox
             oisInputManager_ = OIS::InputManager::createInputSystem(paramList);
             // Exception-safety
             Loki::ScopeGuard guard = Loki::MakeGuard(OIS::InputManager::destroyInputSystem, oisInputManager_);
-            CCOUT(ORX_DEBUG) << "Created OIS input manager." << std::endl;
+            CCOUT(4) << "Created OIS input manager." << std::endl;
 
             if (oisInputManager_->getNumberOfDevices(OIS::OISKeyboard) > 0)
                 devices_[InputDeviceEnumerator::Keyboard] = new Keyboard(InputDeviceEnumerator::Keyboard, oisInputManager_);
@@ -231,7 +231,7 @@ namespace orxonox
             }
         }
         else
-            CCOUT(ORX_WARNING) << "Warning: No mouse found! Proceeding without mouse support." << std::endl;
+            CCOUT(2) << "Warning: No mouse found! Proceeding without mouse support." << std::endl;
     }
 
     //! Creates as many joy sticks as are available.

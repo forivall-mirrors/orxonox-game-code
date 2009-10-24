@@ -47,6 +47,20 @@
 
 namespace orxonox
 {
+    namespace OutputLevel
+    {
+        enum Value
+        {
+            None    = 0,
+            Error   = 1,
+            Warning = 2,
+            Info    = 3,
+            Debug   = 4,
+            Verbose = 5,
+            Ultra   = 6,
+        };
+    }
+
     //! The OutputHandler acts like std::cout, but redirects output to the console, the logfile and the ingame shell.
     class _UtilExport OutputHandler
     {
@@ -60,6 +74,8 @@ namespace orxonox
             };
 
             static OutputHandler& getOutStream();
+            static inline OutputHandler& getOutStream(int level)
+                { return OutputHandler::getOutStream().setOutputLevel(level); }
 
             /** @brief Puts some text on the outstream. @param text The text */
             static inline const std::string& log(const std::string& text)
@@ -141,6 +157,9 @@ namespace orxonox
             OutputHandler& operator<<(std::ostream& (*manipulator)(std::ostream&));
             OutputHandler& operator<<(std::ios& (*manipulator)(std::ios&));
             OutputHandler& operator<<(std::ios_base& (*manipulator)(std::ios_base&));
+
+            /** @brief Dummy operator required by Debug.h for the ternary operator */
+            inline operator int() { return 0; }
 
         private:
             explicit OutputHandler();
