@@ -42,7 +42,6 @@
 namespace orxonox
 {
     class CoreConfiguration;
-	class IOConsole;
 
     /**
     @brief

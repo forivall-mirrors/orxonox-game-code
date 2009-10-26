@@ -126,14 +126,14 @@ namespace orxonox
         // create the CEGUI system singleton
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-        // Initialise the basic lua code
+        // Initialise the basic Lua code
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
         this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
 
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
 
-        // Hide the mouse cursor unless playing in fullscreen mode
+        // Hide the mouse cursor unless playing in full screen mode
         if (!bFullScreen)
             CEGUI::MouseCursor::getSingleton().hide();
     }
@@ -279,7 +279,7 @@ namespace orxonox
     @return
         code of the mouse button as it is used by CEGUI
 
-        Simple convertion from mouse event code in Orxonox to the one used in CEGUI.
+        Simple conversion from mouse event code in Orxonox to the one used in CEGUI.
      */
     static inline CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button)
     {

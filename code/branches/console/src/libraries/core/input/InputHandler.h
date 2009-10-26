@@ -101,10 +101,10 @@ namespace orxonox
         Base class for all input handlers like KeyBinder, InputBuffer, etc.
 
         Derive from this class if you wish to receive input events.
-        But keep in mind that this is pointless wihtout first having an InputState.
+        But keep in mind that this is pointless without first having an InputState.
     @note
         The definitions for the button events with the weird arguments are simply
-        to avoid redunant code in the input devices.
+        to avoid redundant code in the input devices.
     */
     class _CoreExport InputHandler
     {

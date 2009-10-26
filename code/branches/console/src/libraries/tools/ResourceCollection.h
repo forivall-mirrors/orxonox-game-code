@@ -37,8 +37,6 @@
 
 namespace orxonox
 {
-    class ResourceLocation;
-
     class _ToolsExport ResourceCollection : public BaseObject
     {
     public:

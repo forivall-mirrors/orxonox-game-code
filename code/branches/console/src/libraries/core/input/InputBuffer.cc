@@ -79,7 +79,7 @@ namespace orxonox
 
     void InputBuffer::setConfigValues()
     {
-        SetConfigValue(keyRepeatDeleay_, 0.4).description("Key repeat deleay of the input buffer");
+        SetConfigValue(keyRepeatDeleay_, 0.4).description("Key repeat delay of the input buffer");
         SetConfigValue(keyRepeatTime_, 0.022).description("Key repeat time of the input buffer");
 
         if (keyRepeatDeleay_ < 0.0)

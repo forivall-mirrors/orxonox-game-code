@@ -125,7 +125,7 @@ namespace orxonox
                 .callback(this, &CoreConfiguration::debugLevelChanged);
 
             SetConfigValue(language_, Language::getInstance().defaultLanguage_)
-                .description("The language of the ingame text")
+                .description("The language of the in game text")
                 .callback(this, &CoreConfiguration::languageChanged);
             SetConfigValue(bInitializeRandomNumberGenerator_, true)
                 .description("If true, all random actions are different each time you start the game")
@@ -221,12 +221,12 @@ namespace orxonox
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
 
-        // create a signal handler (only active for linux)
+        // create a signal handler (only active for Linux)
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_.reset(new SignalHandler());
         this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
 
-        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
+        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
         OutputHandler::getOutStream().setLogPath(PathConfig::getLogPathString());
 
         // Parse additional options file now that we know its path
