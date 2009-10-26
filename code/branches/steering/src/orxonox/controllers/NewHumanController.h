@@ -31,30 +31,24 @@
 
 #include "OrxonoxPrereqs.h"
 
-//#include "tools/interfaces/Tickable.h"
 #include "HumanController.h"
-#include "core/input/InputHandler.h"
-#include "core/input/InputState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport NewHumanController : public HumanController, public InputHandler
+    class _OrxonoxExport NewHumanController : public HumanController
     {
         public:
             NewHumanController(BaseObject* creator);
             virtual ~NewHumanController();
 
-            virtual void tick(float dt);
-
-            void startControl();
-            void stopControl();
+//             virtual void tick(float dt);
+            
+            virtual void yaw(const Vector2& value);
+            virtual void pitch(const Vector2& value);
 
         private:
-            static NewHumanController* localController_s;
-            InputState* gameInputState_;
-
-            //mouse handler functions
-            void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+            float                       currentYaw_;
+            float                       currentPitch_;
     };
 }
 

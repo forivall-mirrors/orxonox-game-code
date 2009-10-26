@@ -56,8 +56,6 @@ namespace orxonox
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
             virtual void changedControllableEntity() {}
-            virtual void startControl() {}
-            virtual void stopControl() {}
 
         protected:
             PlayerInfo* player_;

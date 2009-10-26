@@ -112,7 +112,7 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->moveUpDown(value);
     }
 
-    void HumanController::rotateYaw(const Vector2& value)
+    void HumanController::yaw(const Vector2& value)
     {
         //Hack to enable mouselook in map
         if ( Map::getSingletonPtr() && Map::getSingletonPtr()->getVisibility() && HumanController::localController_s->controllableEntity_->isInMouseLook() )
@@ -124,7 +124,7 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->rotateYaw(value);
     }
 
-    void HumanController::rotatePitch(const Vector2& value)
+    void HumanController::pitch(const Vector2& value)
     {
         //Hack to enable mouselook in map
         if ( Map::getSingletonPtr() && Map::getSingletonPtr()->getVisibility() && HumanController::localController_s->controllableEntity_->isInMouseLook() )

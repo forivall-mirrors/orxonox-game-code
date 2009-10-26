@@ -45,53 +45,22 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(NewHumanController, moveFrontBack, true).setAsInputCommand();
-    SetConsoleCommand(NewHumanController, moveRightLeft, true).setAsInputCommand();
-    SetConsoleCommand(NewHumanController, moveUpDown,    true).setAsInputCommand();
-    SetConsoleCommand(NewHumanController, rotateYaw,     true).setAsInputCommand();
-    SetConsoleCommand(NewHumanController, rotatePitch,   true).setAsInputCommand();
-    SetConsoleCommand(NewHumanController, rotateRoll,    true).setAsInputCommand();
-    SetConsoleCommand(NewHumanController, fire,          true).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(NewHumanController, reload,        true);
-    SetConsoleCommand(NewHumanController, boost,         true).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(NewHumanController, greet,         true);
-    SetConsoleCommand(NewHumanController, switchCamera,  true);
-    SetConsoleCommand(NewHumanController, mouseLook,     true);
-    SetConsoleCommand(NewHumanController, suicide,       true);
-    SetConsoleCommand(NewHumanController, addBots,       true).defaultValues(1);
-    SetConsoleCommand(NewHumanController, killBots,      true).defaultValues(0);
-    SetConsoleCommand(NewHumanController, dropItems,     true);
-    SetConsoleCommand(NewHumanController, useItem,       true);
-    SetConsoleCommand(NewHumanController, cycleNavigationFocus,   true);
-    SetConsoleCommand(NewHumanController, releaseNavigationFocus, true);
 
     CreateUnloadableFactory(NewHumanController);
-
-    NewHumanController* NewHumanController::localController_s = 0;
 
     NewHumanController::NewHumanController(BaseObject* creator) : HumanController(creator)
     {
         RegisterObject(NewHumanController);
-
-        NewHumanController::localController_s = this;
-
-        gameInputState_ = InputManager::getInstance().createInputState("humansteering", true, true);
-        gameInputState_->setMouseHandler(this);
-        gameInputState_->setMouseMode(MouseMode::Exclusive);
     }
 
     NewHumanController::~NewHumanController()
     {
-        NewHumanController::localController_s = 0;
-
         if( this->isInitialized() )
         {
-            gameInputState_->setHandler(0);
-            InputManager::getInstance().destroyState("humansteering");
         }
     }
 
-    void NewHumanController::tick(float dt)
+    /*void NewHumanController::tick(float dt)
     {
         if (GameMode::playsSound() && NewHumanController::localController_s && NewHumanController::localController_s->controllableEntity_)
         {
@@ -105,24 +74,23 @@ namespace orxonox
             else
                 COUT(3) << "NewHumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
         }
-    }
-
-    void NewHumanController::startControl() {
-        //gameInputState_->setHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
-        //KeyBinderManager::getInstance().setToDefault();
-
-        InputManager::getInstance().enterState("humansteering");
-        std::cout << "started control" << endl;
-    }
-
-    void NewHumanController::stopControl() {
-        InputManager::getInstance().leaveState("humansteering");
-        std::cout << "stopped control" << endl;
-    }
-
-    void NewHumanController::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    }*/
+    
+    void NewHumanController::yaw(const Vector2& value)
     {
-        std::cout << "X: " << static_cast<float>(abs.x) << " Y: " << static_cast<float>(abs.y) << endl;
+//         SUPER(NewHumanController, yaw, value);
+        HumanController::yaw(value);
+        
+        this->currentYaw_ = value.x;
+        std::cout << "X: " << static_cast<float>(this->currentPitch_) << " Y: " << static_cast<float>(this->currentYaw_) << endl;
+    }
+    void NewHumanController::pitch(const Vector2& value)
+    {
+//         SUPER(NewHumanController, pitch, value);
+        HumanController::pitch(value);
+        
+        this->currentPitch_ = value.x;
+        std::cout << "X: " << static_cast<float>(this->currentPitch_) << " Y: " << static_cast<float>(this->currentYaw_) << endl;
     }
 
 }
