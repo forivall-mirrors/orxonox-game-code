@@ -407,7 +407,7 @@ namespace orxonox
         default:
             orxonoxLevel = 0;
         }
-        OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
+        OutputHandler::getOutStream(orxonoxLevel)
             << "Ogre: " << message << std::endl;
     }
 

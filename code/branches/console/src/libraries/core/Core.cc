@@ -105,24 +105,14 @@ namespace orxonox
         */
         void setConfigValues()
         {
-#ifdef NDEBUG
-            const unsigned int defaultLevelConsole = 1;
-            const unsigned int defaultLevelLogfile = 3;
-            const unsigned int defaultLevelShell   = 1;
+#ifdef ORXONOX_RELEASE
+            const unsigned int defaultLevelLogFile = 3;
 #else
-            const unsigned int defaultLevelConsole = 3;
-            const unsigned int defaultLevelLogfile = 4;
-            const unsigned int defaultLevelShell   = 3;
+            const unsigned int defaultLevelLogFile = 4;
 #endif
-            SetConfigValue(softDebugLevelConsole_, defaultLevelConsole)
-                .description("The maximal level of debug output shown in the console")
-                .callback(this, &CoreConfiguration::debugLevelChanged);
-            SetConfigValue(softDebugLevelLogfile_, defaultLevelLogfile)
-                .description("The maximal level of debug output shown in the logfile")
-                .callback(this, &CoreConfiguration::debugLevelChanged);
-            SetConfigValue(softDebugLevelShell_, defaultLevelShell)
-                .description("The maximal level of debug output shown in the ingame shell")
-                .callback(this, &CoreConfiguration::debugLevelChanged);
+            SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevelLogFile_, "softDebugLevelLogFile", "OutputHandler", defaultLevelLogFile)
+                .description("The maximum level of debug output shown in the log file");
+            OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
 
             SetConfigValue(language_, Language::getInstance().defaultLanguage_)
                 .description("The language of the in game text")
@@ -130,24 +120,6 @@ namespace orxonox
             SetConfigValue(bInitializeRandomNumberGenerator_, true)
                 .description("If true, all random actions are different each time you start the game")
                 .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
-        }
-
-        /**
-            @brief Callback function if the debug level has changed.
-        */
-        void debugLevelChanged()
-        {
-            // softDebugLevel_ is the maximum of the 3 variables
-            this->softDebugLevel_ = this->softDebugLevelConsole_;
-            if (this->softDebugLevelLogfile_ > this->softDebugLevel_)
-                this->softDebugLevel_ = this->softDebugLevelLogfile_;
-            if (this->softDebugLevelShell_ > this->softDebugLevel_)
-                this->softDebugLevel_ = this->softDebugLevelShell_;
-
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_All,     this->softDebugLevel_);
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Console, this->softDebugLevelConsole_);
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Logfile, this->softDebugLevelLogfile_);
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Shell,   this->softDebugLevelShell_);
         }
 
         /**
@@ -178,10 +150,7 @@ namespace orxonox
             }
         }
 
-        int softDebugLevel_;                            //!< The debug level
-        int softDebugLevelConsole_;                     //!< The debug level for the console
-        int softDebugLevelLogfile_;                     //!< The debug level for the logfile
-        int softDebugLevelShell_;                       //!< The debug level for the ingame shell
+        int softDebugLevelLogFile_;                     //!< The debug level for the log file (belongs to OutputHandler)
         std::string language_;                          //!< The language
         bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
     };
@@ -227,7 +196,7 @@ namespace orxonox
         this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
-        OutputHandler::getOutStream().setLogPath(PathConfig::getLogPathString());
+        OutputHandler::getInstance().setLogPath(PathConfig::getLogPathString());
 
         // Parse additional options file now that we know its path
         CommandLine::parseFile();
@@ -327,48 +296,6 @@ namespace orxonox
 
         bGraphicsLoaded_ = false;
         GameMode::bShowsGraphics_s = false;
-    }
-
-    /**
-        @brief Returns the softDebugLevel for the given device (returns a default-value if the class is right about to be created).
-        @param device The device
-        @return The softDebugLevel
-    */
-    /*static*/ int Core::getSoftDebugLevel(OutputHandler::OutputDevice device)
-    {
-        switch (device)
-        {
-        case OutputHandler::LD_All:
-            return Core::getInstance().configuration_->softDebugLevel_;
-        case OutputHandler::LD_Console:
-            return Core::getInstance().configuration_->softDebugLevelConsole_;
-        case OutputHandler::LD_Logfile:
-            return Core::getInstance().configuration_->softDebugLevelLogfile_;
-        case OutputHandler::LD_Shell:
-            return Core::getInstance().configuration_->softDebugLevelShell_;
-        default:
-            assert(0);
-            return 2;
-        }
-    }
-
-     /**
-        @brief Sets the softDebugLevel for the given device. Please use this only temporary and restore the value afterwards, as it overrides the configured value.
-        @param device The device
-        @param level The level
-    */
-    /*static*/ void Core::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
-    {
-        if (device == OutputHandler::LD_All)
-            Core::getInstance().configuration_->softDebugLevel_ = level;
-        else if (device == OutputHandler::LD_Console)
-            Core::getInstance().configuration_->softDebugLevelConsole_ = level;
-        else if (device == OutputHandler::LD_Logfile)
-            Core::getInstance().configuration_->softDebugLevelLogfile_ = level;
-        else if (device == OutputHandler::LD_Shell)
-            Core::getInstance().configuration_->softDebugLevelShell_ = level;
-
-        OutputHandler::setSoftDebugLevel(device, level);
     }
 
     /**

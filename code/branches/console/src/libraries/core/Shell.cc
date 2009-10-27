@@ -50,10 +50,8 @@ namespace orxonox
     Shell* Shell::singletonPtr_s = 0;
 
     Shell::Shell()
+        : OutputListener("shell")
     {
-        int level = Core::getSoftDebugLevel(OutputHandler::LD_Shell);
-        Core::setSoftDebugLevel(OutputHandler::LD_Shell, -1);
-
         RegisterRootObject(Shell);
 
         this->scrollPosition_ = 0;
@@ -68,32 +66,46 @@ namespace orxonox
         this->inputBuffer_ = new InputBuffer();
         this->configureInputBuffer();
 
-        this->outputBuffer_.registerListener(this);
-        OutputHandler::getOutStream().setOutputBuffer(&this->outputBuffer_);
-
         // Get a config file for the command history
         this->commandHistoryConfigFileType_ = ConfigFileManager::getInstance().getNewConfigFileType();
         ConfigFileManager::getInstance().setFilename(this->commandHistoryConfigFileType_, "commandHistory.ini");
 
+        // Use a stringstream object to buffer the output and get it line by line in update()
+        this->outputStream_ = &this->outputBuffer_;
+
         this->setConfigValues();
 
-        Core::setSoftDebugLevel(OutputHandler::LD_Shell, level);
+        // Get the previous output and add it to the Shell
+        for (OutputHandler::OutputVectorIterator it = OutputHandler::getInstance().getOutputVectorBegin();
+            it != OutputHandler::getInstance().getOutputVectorEnd(); ++it)
+            this->addLine(it->second, it->first);
+
+        // Register the shell as output listener
+        OutputHandler::getInstance().registerOutputListener(this);
     }
 
     Shell::~Shell()
     {
-        OutputHandler::getOutStream().setOutputBuffer(0);
-        if (this->inputBuffer_)
-            this->inputBuffer_->destroy();
+        OutputHandler::getInstance().unregisterOutputListener(this);
+        this->inputBuffer_->destroy();
     }
 
     void Shell::setConfigValues()
     {
-        SetConfigValueGeneric(commandHistoryConfigFileType_, maxHistoryLength_, 100)
+        SetConfigValueGeneric(commandHistoryConfigFileType_, maxHistoryLength_, "maxHistoryLength_", "Shell", 100)
             .callback(this, &Shell::commandHistoryLengthChanged);
-        SetConfigValueGeneric(commandHistoryConfigFileType_, historyOffset_, 0)
+        SetConfigValueGeneric(commandHistoryConfigFileType_, historyOffset_, "historyOffset_", "Shell", 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
         SetConfigValueVectorGeneric(commandHistoryConfigFileType_, commandHistory_, std::vector<std::string>());
+
+#ifdef ORXONOX_RELEASE
+        const unsigned int defaultLevel = 1;
+#else
+        const unsigned int defaultLevel = 3;
+#endif
+        SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevel_, "softDebugLevelShell", "OutputHandler", defaultLevel)
+            .description("The maximal level of debug output shown in the Shell");
+        OutputHandler::getInstance().setSoftDebugLevel("shell", this->softDebugLevel_);
     }
 
     void Shell::commandHistoryOffsetChanged()
@@ -181,14 +193,9 @@ namespace orxonox
 
     void Shell::addLine(const std::string& line, int level)
     {
-        int original_level = OutputHandler::getOutStream().getOutputLevel();
-        OutputHandler::getOutStream().setOutputLevel(level);
-
-        if (!this->finishedLastLine_)
-            this->outputBuffer_ << std::endl;
-
-        this->outputBuffer_ << line << std::endl;
-        OutputHandler::getOutStream().setOutputLevel(original_level);
+        if (level <= this->softDebugLevel_)
+            this->lines_.push_front(line);
+        this->updateListeners<&ShellListener::lineAdded>();
     }
 
     void Shell::clearLines()
@@ -237,7 +244,15 @@ namespace orxonox
         bool newline;
         do
         {
-            newline = this->outputBuffer_.getLine(&output);
+            std::getline(this->outputBuffer_, output);
+
+            bool eof = this->outputBuffer_.eof();
+            bool fail = this->outputBuffer_.fail();
+            if (eof)
+                this->outputBuffer_.flush();
+            if (eof || fail)
+                this->outputBuffer_.clear();
+            newline = (!eof && !fail);
 
             if (!newline && output == "")
                 break;
@@ -245,9 +260,9 @@ namespace orxonox
             if (this->finishedLastLine_)
             {
                 if (this->bAddOutputLevel_)
-                    output.insert(0, 1, static_cast<char>(OutputHandler::getOutStream().getOutputLevel()));
+                    output.insert(0, 1, static_cast<char>(OutputHandler::getInstance().getOutputLevel()));
 
-                this->lines_.insert(this->lines_.begin(), output);
+                this->lines_.push_front(output);
 
                 if (this->scrollPosition_)
                     this->scrollPosition_++;
@@ -364,14 +379,14 @@ namespace orxonox
         if (this->historyPosition_ == this->historyOffset_)
             return;
         unsigned int cursorPosition = this->getCursorPosition();
-        std::string input_str( this->getInput().substr(0,cursorPosition) ); //only search for the expression from the beginning of the inputline untill the cursor position
-	for (unsigned int newPos = this->historyPosition_+1; newPos<=this->historyOffset_; newPos++)
+        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning of the inputline untill the cursor position
+        for (unsigned int newPos = this->historyPosition_ + 1; newPos <= this->historyOffset_; newPos++)
         {
-            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) //search case insensitive
+            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // search case insensitive
             {
                 this->historyPosition_ = newPos;
                 this->inputBuffer_->set(this->getFromHistory());
-                this->setCursorPosition( cursorPosition );
+                this->setCursorPosition(cursorPosition);
                 return;
             }
         }
@@ -382,14 +397,14 @@ namespace orxonox
         if (this->historyPosition_ == 0)
             return;
         unsigned int cursorPosition = this->getCursorPosition();
-        std::string input_str( this->getInput().substr(0,cursorPosition) ); //only search for the expression from the beginn$
-        for (unsigned int newPos = this->historyPosition_-1; newPos>0; newPos--)
+        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginn$
+        for (unsigned int newPos = this->historyPosition_ - 1; newPos > 0; newPos--)
         {
-            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) //sear$
+            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // sear$
             {
                 this->historyPosition_ = newPos;
                 this->inputBuffer_->set(this->getFromHistory());
-                this->setCursorPosition( cursorPosition );
+                this->setCursorPosition(cursorPosition);
                 return;
             }
         }

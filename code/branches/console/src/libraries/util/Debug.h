@@ -75,9 +75,11 @@ namespace orxonox
 }
 
 /**
-@def COUT
+@brief
     Logs text output: use exactly like std::cout, but specify an output
-    level as argument. For example COUT(3) << "Some info" << std::endl;
+    level as argument.
+@example
+    COUT(3) << "Some info" << std::endl;
 @note
     The ? : operator requires both possible results to have the type of
     the first. This is achieved by the int conversion operator dummy

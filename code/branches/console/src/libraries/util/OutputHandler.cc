@@ -22,210 +22,224 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
 /**
-    @file
-    @brief Implementation of the OutputHandler class.
+@file
+@brief
+    Definition of classes related to output (logging).
 */
 
 #include "OutputHandler.h"
 
+#include <algorithm>
 #include <ctime>
 #include <cstdlib>
+#include <fstream>
+#include <sstream>
+
+#include "Debug.h"
 
 namespace orxonox
 {
+    //! How the log file shall be named on the filesystem
+    const std::string logFileBaseName_g = "orxonox.log";
+
+    /////////////////////////
+    ///// LogFileWriter /////
+    /////////////////////////
     /**
-        @brief Constructor: Opens the logfile and writes the first line.
-        @param logfilename The name of the logfile
+    @brief
+        Writes the output to the log file.
+    @note
+        As long as the correct log path is not yet known (for pre main code), the
+        LogFileWriter will write to a temporary file in /temp (Unix) or %TEMP% (Windows).
+        As soon as you set the correct path setLogPath the content of the temporary file
+        is read and put into the new file as well.
     */
-    OutputHandler::OutputHandler()
+    class LogFileWriter : public OutputListener
     {
+    public:
+        //! Gets temporary log path and starts the log file
+        LogFileWriter()
+            : OutputListener(OutputHandler::logFileOutputListenerName_s)
+        {
+            // Get path for a temporary file
 #ifdef ORXONOX_PLATFORM_WINDOWS
-        char* pTempDir = getenv("TEMP");
-        this->logfilename_ = std::string(pTempDir) + "/orxonox.log";
+            char* pTempDir = getenv("TEMP");
+            this->logFilename_ = std::string(pTempDir) + "/" + logFileBaseName_g;
 #else
-        this->logfilename_ = "/tmp/orxonox.log";
-#endif
-#ifdef NDEBUG
-        this->softDebugLevel_[LD_All] = this->softDebugLevel_[LD_Logfile] = 2;
-        this->softDebugLevel_[LD_Console] = this->softDebugLevel_[LD_Shell] = 1;
-#else
-        this->softDebugLevel_[LD_All] = this->softDebugLevel_[LD_Logfile] = 3;
-        this->softDebugLevel_[LD_Console] = this->softDebugLevel_[LD_Shell] = 2;
+            this->logFilename_ = std::string("/tmp/") + logFileBaseName_g;
 #endif
 
-        this->outputBuffer_ = &this->fallbackBuffer_;
-        this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
+            // Get current time
+            time_t rawtime;
+            struct tm* timeinfo;
+            time(&rawtime);
+            timeinfo = localtime(&rawtime);
 
-        time_t rawtime;
-        struct tm* timeinfo;
-        time(&rawtime);
-        timeinfo = localtime(&rawtime);
+            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
+            this->logFile_ << "Started log on " << asctime(timeinfo) << std::endl;
+            this->logFile_.flush();
 
-        this->logfile_ << "Started log on " << asctime(timeinfo) << std::endl;
-        this->logfile_.flush();
+            this->outputStream_ = &this->logFile_;
+            // Use default level until we get the configValue from the Core
+            OutputHandler::getInstance().setSoftDebugLevel(this->getOutputListenerName(), OutputLevel::Debug);
+            OutputHandler::getInstance().registerOutputListener(this);
+        }
+
+        //! Closes the log file
+        ~LogFileWriter()
+        {
+            this->logFile_ << "Closed log" << std::endl;
+            this->logFile_.close();
+        }
+
+        //! Changes the log path
+        void setLogPath(const std::string& path)
+        {
+            this->logFile_.close();
+            // Read old file into a buffer
+            std::ifstream old(this->logFilename_.c_str());
+            this->logFilename_ = path + logFileBaseName_g;
+            // Open the new file and feed it the content of the old one
+            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
+            this->logFile_ << old.rdbuf();
+            this->logFile_.flush();
+            old.close();
+        }
+
+    private:
+        std::ofstream logFile_;     //! File handle for the log file
+        std::string   logFilename_; //! Filename of the log file
+    };
+
+
+    ///////////////////////////
+    ///// MemoryLogWriter /////
+    ///////////////////////////
+    /**
+    @brief
+        OutputListener that writes all the output piece by piece to an array
+        associated with the corresponding output level.
+    @note
+        Only output below or equal to the current soft debug level is written
+        to minimise huge arrays for the normal run.
+    */
+    class MemoryLogWriter : public OutputListener
+    {
+    public:
+        friend class OutputHandler;
+
+        //! Sets the right soft debug level and registers itself
+        MemoryLogWriter()
+            : OutputListener("memoryLog")
+        {
+            this->outputStream_ = &this->buffer_;
+            // We capture as much input as the listener with the highest level
+            OutputHandler::getInstance().setSoftDebugLevel(this->getOutputListenerName(), OutputHandler::getSoftDebugLevel());
+            OutputHandler::getInstance().registerOutputListener(this);
+        }
+
+        //! Pushed the just written output to the internal array
+        void outputChanged()
+        {
+            // Read ostringstream and store it
+            this->output_.push_back(std::make_pair(OutputHandler::getInstance().getOutputLevel(), this->buffer_.str()));
+            // Clear content and flags
+            this->buffer_.str(std::string());
+            this->buffer_.clear();
+        }
+
+    private:
+        std::ostringstream                        buffer_; //! Stream object used to process the output
+        std::vector<std::pair<int, std::string> > output_; //! Vector containing ALL output
+    };
+
+
+    /////////////////////////
+    ///// OutputHandler /////
+    /////////////////////////
+    const std::string OutputHandler::logFileOutputListenerName_s = "logFile";
+          int         OutputHandler::softDebugLevel_s = hardDebugLevel;
+
+    //! Creates the LogFileWriter and the MemoryLogWriter
+    OutputHandler::OutputHandler()
+        : outputLevel_(OutputLevel::Verbose)
+    {
+        this->logFile_ = new LogFileWriter();
+        this->output_  = new MemoryLogWriter();
     }
 
-    /**
-        @brief Destructor: Writes the last line to the logfile and closes it.
-    */
+    //! Destroys the LogFileWriter and the MemoryLogWriter
     OutputHandler::~OutputHandler()
     {
-        this->logfile_ << "Closed log" << std::endl;
-        this->logfile_.close();
+        delete this->logFile_;
+        delete this->output_;
     }
 
-    /**
-        @brief Returns a reference to the only existing instance of the OutputHandler class.
-        @return The instance
-    */
-    OutputHandler& OutputHandler::getOutStream()
+    OutputHandler& OutputHandler::getInstance()
     {
         static OutputHandler orxout;
         return orxout;
     }
 
-    /**
-        @brief Sets the soft debug level for a given output device.
-        @param device The output device
-        @param level The debug level
-    */
-    void OutputHandler::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
+    void OutputHandler::registerOutputListener(OutputListener* listener)
     {
-        OutputHandler::getOutStream().softDebugLevel_[static_cast<unsigned int>(device)] = level;
-    }
-
-    /**
-        @brief Returns the soft debug level for a given output device.
-        @param device The output device
-        @return The debug level
-    */
-    int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
-    {
-        return OutputHandler::getOutStream().softDebugLevel_[static_cast<unsigned int>(device)];
-    }
-
-    /**
-        @brief Sets the OutputBuffer, representing the third output stream.
-        @param buffer The OutputBuffer
-    */
-    void OutputHandler::setOutputBuffer(OutputBuffer* buffer)
-    {
-        if (buffer == NULL)
-            this->outputBuffer_ = &this->fallbackBuffer_;
-        else
+        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            buffer->getStream() >> this->outputBuffer_->getStream().rdbuf();
-            this->outputBuffer_ = buffer;
+            if ((*it)->name_ == listener->name_)
+            {
+                COUT(2) << "OutputHandler, Warning: Trying to register two listeners with the same name!" << std::endl;
+                return;
+            }
         }
+        this->listeners_.push_back(listener);
     }
 
-    /**
-        @brief Sets the path where to create orxonox.log
-        @param Path string with trailing slash
-    */
+    void OutputHandler::unregisterOutputListener(OutputListener* listener)
+    {
+        this->listeners_.remove(listener);
+    }
+
     void OutputHandler::setLogPath(const std::string& path)
     {
-        OutputHandler::getOutStream().logfile_.close();
-        // store old content
-        std::ifstream old;
-        old.open(OutputHandler::getOutStream().logfilename_.c_str());
-        OutputHandler::getOutStream().logfilename_ = path + "orxonox.log";
-        OutputHandler::getOutStream().logfile_.open(OutputHandler::getOutStream().logfilename_.c_str(), std::fstream::out);
-        OutputHandler::getOutStream().logfile_ << old.rdbuf();
-        old.close();
-        OutputHandler::getOutStream().logfile_.flush();
+        this->logFile_->setLogPath(path);
     }
 
-    /**
-        @brief Overloaded << operator, redirects the output to the console and the logfile.
-        @param sb The streambuffer that should be shown in the console
-        @return A reference to the OutputHandler itself
-    */
-    OutputHandler& OutputHandler::operator<<(std::streambuf* sb)
+    OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorBegin() const
     {
-        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-        //    std::cout << sb;
-
-        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
-        {
-            this->logfile_ << sb;
-            this->logfile_.flush();
-        }
-
-        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            (*this->outputBuffer_) << sb;
-
-        return *this;
+        return this->output_->output_.begin();
     }
 
-    /**
-        @brief Overloaded << operator, redirects the output to the console, the logfile and the ingame shell.
-        @param manipulator A function, manipulating the outstream.
-        @return A reference to the OutputHandler itself
-    */
-    OutputHandler& OutputHandler::operator<<(std::ostream& (*manipulator)(std::ostream&))
+    OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorEnd() const
     {
-        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-        //    manipulator(std::cout);
-
-        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
-        {
-            manipulator(this->logfile_);
-            this->logfile_.flush();
-        }
-
-        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            (*this->outputBuffer_) << manipulator;
-
-        return *this;
+        return this->output_->output_.end();
     }
 
-    /**
-        @brief Overloaded << operator, redirects the output to the console, the logfile and the ingame shell.
-        @param manipulator A function, manipulating the outstream.
-        @return A reference to the OutputHandler itself
-    */
-    OutputHandler& OutputHandler::operator<<(std::ios& (*manipulator)(std::ios&))
+    int OutputHandler::getSoftDebugLevel(const std::string& name) const
     {
-        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-        //    manipulator(std::cout);
-
-        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            manipulator(this->logfile_);
-            this->logfile_.flush();
+            if ((*it)->name_ == name)
+                return (*it)->softDebugLevel_;
         }
-
-        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            (*this->outputBuffer_) << manipulator;
-
-        return *this;
+        return -1;
     }
 
-    /**
-        @brief Overloaded << operator, redirects the output to the console, the logfile and the ingame shell.
-        @param manipulator A function, manipulating the outstream.
-        @return A reference to the OutputHandler itself
-    */
-    OutputHandler& OutputHandler::operator<<(std::ios_base& (*manipulator)(std::ios_base&))
+    void OutputHandler::setSoftDebugLevel(const std::string& name, int level)
     {
-        //if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
-        //    manipulator(std::cout);
-
-        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        int globalSoftDebugLevel = -1;
+        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            manipulator(this->logfile_);
-            this->logfile_.flush();
+            if ((*it)->name_ == name)
+                (*it)->softDebugLevel_ = level;
+            if ((*it)->softDebugLevel_ > globalSoftDebugLevel)
+                globalSoftDebugLevel = (*it)->softDebugLevel_;
         }
-
-        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            (*this->outputBuffer_) << manipulator;
-
-        return *this;
+        // Update global soft debug level
+        OutputHandler::softDebugLevel_s = globalSoftDebugLevel;
     }
 }

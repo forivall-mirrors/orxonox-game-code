@@ -86,9 +86,8 @@ namespace orxonox
     class IntVector2;
     class IntVector3;
     class MultiType;
-    class OutputBuffer;
-    class OutputBufferListener;
     class OutputHandler;
+    class OutputListener;
     template <ScopeID::Value>
     class Scope;
     template <class, ScopeID::Value>

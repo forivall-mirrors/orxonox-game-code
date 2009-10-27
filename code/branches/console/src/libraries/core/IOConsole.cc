@@ -61,7 +61,7 @@ namespace orxonox
     {
         this->originalTerminalSettings_ = new termios;
         this->setTerminalMode();
-		this->shell_.registerListener(this);
+        this->shell_.registerListener(this);
     }
 
     IOConsole::~IOConsole()
@@ -233,6 +233,39 @@ namespace orxonox
         std::cout.flush();
     }
 
+#elif defined(ORXONOX_PLATFORM_WINDOWS)
+
+    IOConsole::IOConsole()
+        : shell_(Shell::getInstance())
+        , buffer_(Shell::getInstance().getInputBuffer())
+    {
+        this->setTerminalMode();
+    }
+
+    IOConsole::~IOConsole()
+    {
+    }
+
+    void IOConsole::setTerminalMode()
+    {
+    }
+
+    void IOConsole::resetTerminalMode()
+    {
+    }
+
+    void IOConsole::update(const Clock& time)
+    {
+    }
+
+    void IOConsole::print(const std::string& text)
+    {
+    }
+
+    void IOConsole::printInputLine()
+    {
+    }
+
 #endif /* ORXONOX_PLATFORM_UNIX */
 
     // ###############################
@@ -255,14 +288,14 @@ namespace orxonox
     */
     void IOConsole::onlyLastLineChanged()
     {
-		// Save cursor position and move it the beginning of the second to last line
-		std::cout << "\033[s\033[1F";
-		// Erase the second to last line
-		std::cout << "\033[K";
-		this->print(*(this->shell_.getNewestLineIterator()));
-		// Restore cursor
-		std::cout << "\033[u";
-		std::cout.flush();
+        // Save cursor position and move it the beginning of the second to last line
+        std::cout << "\033[s\033[1F";
+        // Erase the second to last line
+        std::cout << "\033[K";
+        this->print(*(this->shell_.getNewestLineIterator()));
+        // Restore cursor
+        std::cout << "\033[u";
+        std::cout.flush();
     }
 
     /**
@@ -271,11 +304,11 @@ namespace orxonox
     */
     void IOConsole::lineAdded()
     {
-		// Move curosr the beginning of the line and erase it
-		std::cout << "\033[1G\033[K";
-		this->print(*(this->shell_.getNewestLineIterator()));
-		std::cout << std::endl;
-		this->printInputLine();
+        // Move curosr the beginning of the line and erase it
+        std::cout << "\033[1G\033[K";
+        this->print(*(this->shell_.getNewestLineIterator()));
+        std::cout << std::endl;
+        this->printInputLine();
     }
 
     /**
@@ -302,11 +335,11 @@ namespace orxonox
     */
     void IOConsole::executed()
     {
-		// Move curosr the beginning of the line
-		std::cout << "\033[1G";
-        // Print command so the user knows what he typed
+        // Move cursor the beginning of the line
+        std::cout << "\033[1G";
+        // Print command so the user knows what he has typed
         std::cout << "orxonox>" << this->shell_.getInput() << std::endl;
-		this->printInputLine();
+        this->printInputLine();
     }
 
 

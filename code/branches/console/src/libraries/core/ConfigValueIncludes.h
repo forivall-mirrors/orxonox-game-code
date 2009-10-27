@@ -46,17 +46,17 @@
     @param varname The name of the variable
     @param defvalue The default-value of the variable
 */
-#define SetConfigValueGeneric(type, varname, defvalue) \
+#define SetConfigValueGeneric(type, varname, entryname, sectionname, defvalue) \
     static orxonox::Identifier* identifier##varname = this->getIdentifier(); \
     orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(type, identifier##varname, identifier##varname->getName(), #varname, defvalue, varname); \
+        container##varname = new orxonox::ConfigValueContainer(type, identifier##varname, sectionname, entryname, defvalue, varname); \
         identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname, this)
 
-#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(ConfigFileType::Settings, varname, defvalue)
+#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(ConfigFileType::Settings, varname, identifier##varname->getName(), #varname, defvalue)
 
 
 /**

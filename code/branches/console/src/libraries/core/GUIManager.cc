@@ -52,7 +52,6 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
-#include "Core.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
@@ -74,7 +73,7 @@ namespace orxonox
                 case CEGUI::Insane:      orxonoxLevel = 6; break;
                 default: OrxAssert(false, "CEGUI log level out of range, inpect immediately!");
             }
-            OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
+            OutputHandler::getOutStream(orxonoxLevel)
                 << "CEGUI: " << message << std::endl;
 
             CEGUI::DefaultLogger::logEvent(message, level);
@@ -120,7 +119,7 @@ namespace orxonox
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
         // set the log level according to ours (translate by subtracting 1)
         ceguiLogger->setLoggingLevel(
-            static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
+            static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // create the CEGUI system singleton

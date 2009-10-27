@@ -33,10 +33,11 @@
 
 #include <cassert>
 #include <list>
+#include <sstream>
 #include <string>
 #include <vector>
 
-#include "util/OutputBuffer.h"
+#include "util/OutputHandler.h"
 #include "input/InputBuffer.h"
 #include "OrxonoxClass.h"
 #include "ConfigFileManager.h"
@@ -60,7 +61,7 @@ namespace orxonox
             virtual void exit() {}
     };
 
-    class _CoreExport Shell : public Singleton<Shell>, virtual public OrxonoxClass, public OutputBufferListener
+    class _CoreExport Shell : public Singleton<Shell>, virtual public OrxonoxClass, public OutputListener
     {
         friend class Singleton<Shell>;
         public:
@@ -70,7 +71,7 @@ namespace orxonox
             static void clearShell();
             static void history();
 
-            virtual void setConfigValues();
+            void setConfigValues();
             void commandHistoryOffsetChanged();
             void commandHistoryLengthChanged();
 
@@ -79,8 +80,6 @@ namespace orxonox
 
             inline InputBuffer* getInputBuffer()
                 { return this->inputBuffer_; }
-            inline OutputBuffer& getOutputBuffer()
-                { return this->outputBuffer_; }
 
             void setCursorPosition(unsigned int cursor);
             inline unsigned int getCursorPosition() const
@@ -116,6 +115,7 @@ namespace orxonox
             std::string getFromHistory() const;
 
             virtual void outputChanged();
+
             void inputChanged();
             void execute();
             void hintandcomplete();
@@ -143,7 +143,7 @@ namespace orxonox
 
             std::list<ShellListener*> listeners_;
             InputBuffer* inputBuffer_;
-            OutputBuffer outputBuffer_;
+            std::stringstream outputBuffer_;
             bool finishedLastLine_;
             std::list<std::string> lines_;
             std::list<std::string>::const_iterator scrollIterator_;
@@ -153,6 +153,7 @@ namespace orxonox
             unsigned int historyPosition_;
             unsigned int historyOffset_;
             bool bAddOutputLevel_;
+            int softDebugLevel_;
 
             ConfigFileType commandHistoryConfigFileType_;
 
