@@ -52,7 +52,9 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
+#include "ConsoleCommand.h"
 #include "Core.h"
+#include "input/InputManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
@@ -84,6 +86,9 @@ namespace orxonox
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
     GUIManager* GUIManager::singletonPtr_s = 0;
+
+    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
 
     /**
     @brief
@@ -203,9 +208,53 @@ namespace orxonox
         The function executes the Lua function with the same name in case the GUIManager is ready.
         For more details check out loadGUI_2.lua where the function presides.
     */
-    void GUIManager::showGUI(const std::string& name)
+    /*static*/ void GUIManager::showGUI(const std::string& name)
     {
-        this->luaState_->doString("showGUI(\"" + name + "\")", rootFileInfo_);
+        std::pair<std::set<std::string>::iterator,bool> result = GUIManager::getInstance().showingGUIs_.insert(name);
+        if(result.second == false) //!< GUI already showing.
+            return;
+        if(GUIManager::getInstance().showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
+        {
+            GUIManager::getInstance().executeCode("showCursor()");
+            InputManager::getInstance().enterState("guiMouseOnly");
+        }
+        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\")");
+    }
+
+    /**
+    @brief
+        Hack-ish. Needed for GUIOverlay.
+    */
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr)
+    {
+        std::pair<std::set<std::string>::iterator,bool> result = this->showingGUIs_.insert(name);
+        if(result.second == false) //!< GUI already showing.
+            return;
+        if(this->showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
+        {
+            this->executeCode("showCursor()");
+            InputManager::getInstance().enterState("guiMouseOnly");
+        }
+        this->executeCode("showGUI(\"" + name + "\", " + ptr + ")");
+    }
+
+    /**
+    @brief
+        Hides specified GUI.
+    @param name
+        The name of the GUI.
+    */
+    /*static*/ void GUIManager::hideGUI(const std::string& name)
+    {
+        bool present = GUIManager::getInstance().showingGUIs_.erase(name);
+        if(!present) //!< If there was nothing to erase.
+            return;
+        GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
+        if(GUIManager::getInstance().showingGUIs_.size() == 0)
+        {
+            GUIManager::getInstance().executeCode("hideCursor()");
+            InputManager::getInstance().leaveState("guiMouseOnly");
+        }
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)

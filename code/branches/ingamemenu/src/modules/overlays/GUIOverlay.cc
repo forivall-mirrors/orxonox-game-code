@@ -72,17 +72,14 @@ namespace orxonox
             std::stringstream out;
             out << reinterpret_cast<long>(this);
             str = out.str();
-            GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().enterState("guiMouseOnly");
-            GUIManager::getInstance().executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
+            COUT(1) << "GUIManager ptr: " << str << std::endl;
+            GUIManager::getInstance().showGUIExtra(this->guiName_, str);
 
             COUT(3) << "Showing GUI " << this->guiName_ << std::endl;
         }
         else
         {
-            GUIManager::getInstance().executeCode("hideGUI(\"" + this->guiName_ + "\")");
-            GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().leaveState("guiMouseOnly");
+            GUIManager::hideGUI(this->guiName_);
             COUT(3) << "Hiding GUI " << this->guiName_ << std::endl;
         }
     }

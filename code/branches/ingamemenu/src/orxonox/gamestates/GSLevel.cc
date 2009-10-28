@@ -100,15 +100,11 @@ namespace orxonox
     {
         if (show)
         {
-            GUIManager::getInstance().showGUI("inGameTest");
-            GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().enterState("guiMouseOnly");
+            GUIManager::showGUI("inGameTest");
         }
         else
         {
-            GUIManager::getInstance().executeCode("hideGUI(\"inGameTest\")");
-            GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().leaveState("guiMouseOnly");
+            GUIManager::hideGUI("inGameTest");
         }
     }
 

@@ -13,6 +13,7 @@ system:setDefaultFont("BlueHighway-12")
 system:setDefaultTooltip("TaharezLook/Tooltip")
 
 loadedGUIs = {}
+root = nil;
 
 -- loads the GUI with the specified filename
 -- be sure to set the global variable "filename" before calling this function
@@ -42,29 +43,26 @@ end
 -- shows the specified and loads it if not loaded already
 -- be sure to set the global variable "filename" before calling this function
 function showGUI(filename)
-    if current == nil or current.filename ~= filename then
-        current = loadedGUIs[filename]
-        if current == nil then
-            current = loadGUI(filename)
-        end
-        system:setGUISheet(current.window)
+    if root == nil then
+        root = winMgr:createWindow("TaharezLook/StaticImage", "AbsoluteRootWindow")
+        root:setProperty("Alpha", "0.0")
+        root:setSize(CEGUI.UVector2(CEGUI.UDim(1.0,0),CEGUI.UDim(1.0,0)))
+        system:setGUISheet(root)
     end
-    current:show()
-    showing = true
-    return current
-end
 
-function toggleGUI()
-    if showing == true then
-        current:hide()
-        cursor:hide()
-        showing = false
-    else
-        current:show()
-        cursor:show()
-        showing = true
+    local currentGUI = loadedGUIs[filename]
+    if(currentGUI == nil) then
+        currentGUI = loadGUI(filename)
     end
-    return showing
+
+    if(root:isChild(currentGUI.window)) then
+        root:removeChildWindow(currentGUI.window)
+    end
+    root:addChildWindow(currentGUI.window)
+
+    currentGUI:show()
+    showing = true
+    return currentGUI
 end
 
 function hideCursor()
@@ -76,9 +74,10 @@ function showCursor()
 end
 
 function hideGUI(filename)
-    current = loadedGUIs[filename]
-    if current ~= nil then
-        current:hide()
+    local currentGUI = loadedGUIs[filename]
+    if currentGUI ~= nil then
+        currentGUI:hide()
+        root:removeChildWindow(currentGUI.window)
         showing = false
     end
 end
