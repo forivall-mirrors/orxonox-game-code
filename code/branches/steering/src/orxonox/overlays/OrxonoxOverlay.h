@@ -154,6 +154,9 @@ namespace orxonox
         //! ConsoleCommand: Accesses the overlay by its name and rotates it.
         static void rotateOverlay(const std::string& name, const Degree& angle);
 
+        void setBackgroundMaterial(const std::string& material);
+        const std::string& getBackgroundMaterial() const;
+
         virtual void changedVisibility();
 
         inline void setOwner(BaseObject* owner)
@@ -185,9 +188,6 @@ namespace orxonox
         virtual void sizeCorrectionChanged();
         virtual void sizeChanged();
         virtual void positionChanged();
-
-        void setBackgroundMaterial(const std::string& material);
-        const std::string& getBackgroundMaterial() const;
 
         Ogre::Overlay* overlay_;                   //!< The overlay the entire class is about.
         Ogre::PanelOverlayElement* background_;    //!< Background image (blank per default).

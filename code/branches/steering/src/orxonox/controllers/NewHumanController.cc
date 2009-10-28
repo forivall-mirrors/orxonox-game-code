@@ -51,6 +51,11 @@ namespace orxonox
     NewHumanController::NewHumanController(BaseObject* creator) : HumanController(creator)
     {
         RegisterObject(NewHumanController);
+
+        CrossHairOverlay = new OrxonoxOverlay(this);
+        CrossHairOverlay->setBackgroundMaterial("Orxonox/Crosshair3");
+        CrossHairOverlay->setSize(Vector2(0.08,0.08));
+        CrossHairOverlay->show();
     }
 
     NewHumanController::~NewHumanController()
@@ -58,6 +63,12 @@ namespace orxonox
         if( this->isInitialized() )
         {
         }
+    }
+
+    void NewHumanController::tick(float dt) {
+        CrossHairOverlay->setPosition(Vector2(static_cast<float>(this->currentYaw_), static_cast<float>(this->currentPitch_)));
+
+        HumanController::tick(dt);
     }
 
     /*void NewHumanController::tick(float dt)
@@ -82,7 +93,7 @@ namespace orxonox
         HumanController::yaw(value);
         
         this->currentYaw_ = value.x;
-        std::cout << "X: " << static_cast<float>(this->currentPitch_) << " Y: " << static_cast<float>(this->currentYaw_) << endl;
+        std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
     }
     void NewHumanController::pitch(const Vector2& value)
     {
@@ -90,7 +101,7 @@ namespace orxonox
         HumanController::pitch(value);
         
         this->currentPitch_ = value.x;
-        std::cout << "X: " << static_cast<float>(this->currentPitch_) << " Y: " << static_cast<float>(this->currentYaw_) << endl;
+        std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
     }
 
 }

@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "HumanController.h"
+#include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
@@ -41,7 +42,7 @@ namespace orxonox
             NewHumanController(BaseObject* creator);
             virtual ~NewHumanController();
 
-//             virtual void tick(float dt);
+            virtual void tick(float dt);
             
             virtual void yaw(const Vector2& value);
             virtual void pitch(const Vector2& value);
@@ -49,6 +50,7 @@ namespace orxonox
         private:
             float                       currentYaw_;
             float                       currentPitch_;
+            OrxonoxOverlay              *CrossHairOverlay;
     };
 }
 
