@@ -52,18 +52,14 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
-        enum EscapeMode
-        {
-            None,
-            First,
-            Second
-        };
 
         void setTerminalMode();
         static void resetTerminalMode();
+        int getTerminalSize(int* x, int* y);
 
         void print(const std::string& line);
         void printInputLine();
+        void printStatusLines();
 
         // Methods from ShellListener
         void linesChanged();
@@ -73,12 +69,12 @@ namespace orxonox
         void cursorChanged();
         void executed();
         void exit();
-
         Shell&                  shell_;
-        EscapeMode              escapeMode_;
-        std::string             escapeSequence_;
         InputBuffer*            buffer_;
         static termios*         originalTerminalSettings_;
+        bool                    bPrintStatusLine_;
+        bool                    bStatusPrinted_;
+        std::vector<unsigned>   statusLineWidths_;
 
         static IOConsole* singletonPtr_s;
     };
