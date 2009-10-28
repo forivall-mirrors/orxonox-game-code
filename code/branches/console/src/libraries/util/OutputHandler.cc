@@ -62,8 +62,14 @@ namespace orxonox
     class LogFileWriter : public OutputListener
     {
     public:
-        //! Gets temporary log path and starts the log file
-        LogFileWriter()
+        /**
+        @brief
+            Gets temporary log path and starts the log file
+        @param outputHandler
+            This is only required to avoid another call to getInstance (this c'tor was
+            called from getInstance!)
+        */
+        LogFileWriter(OutputHandler& outputHandler)
             : OutputListener(OutputHandler::logFileOutputListenerName_s)
         {
             // Get path for a temporary file
@@ -86,8 +92,8 @@ namespace orxonox
 
             this->outputStream_ = &this->logFile_;
             // Use default level until we get the configValue from the Core
-            OutputHandler::getInstance().setSoftDebugLevel(this->getOutputListenerName(), OutputLevel::Debug);
-            OutputHandler::getInstance().registerOutputListener(this);
+            outputHandler.setSoftDebugLevel(this->getOutputListenerName(), OutputLevel::Debug);
+            outputHandler.registerOutputListener(this);
         }
 
         //! Closes the log file
@@ -133,14 +139,20 @@ namespace orxonox
     public:
         friend class OutputHandler;
 
-        //! Sets the right soft debug level and registers itself
-        MemoryLogWriter()
+        /**
+        @brief
+            Sets the right soft debug level and registers itself
+        @param outputHandler
+            This is only required to avoid another call to getInstance (this c'tor was
+            called from getInstance!)
+        */
+        MemoryLogWriter(OutputHandler& outputHandler)
             : OutputListener("memoryLog")
         {
             this->outputStream_ = &this->buffer_;
             // We capture as much input as the listener with the highest level
-            OutputHandler::getInstance().setSoftDebugLevel(this->getOutputListenerName(), OutputHandler::getSoftDebugLevel());
-            OutputHandler::getInstance().registerOutputListener(this);
+            outputHandler.setSoftDebugLevel(this->getOutputListenerName(), OutputHandler::getSoftDebugLevel());
+            outputHandler.registerOutputListener(this);
         }
 
         //! Pushed the just written output to the internal array
@@ -169,8 +181,8 @@ namespace orxonox
     OutputHandler::OutputHandler()
         : outputLevel_(OutputLevel::Verbose)
     {
-        this->logFile_ = new LogFileWriter();
-        this->output_  = new MemoryLogWriter();
+        this->logFile_ = new LogFileWriter(*this);
+        this->output_  = new MemoryLogWriter(*this);
     }
 
     //! Destroys the LogFileWriter and the MemoryLogWriter
