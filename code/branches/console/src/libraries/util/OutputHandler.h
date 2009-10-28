@@ -216,23 +216,6 @@ namespace orxonox
             static int softDebugLevel_s;           //!< Maximum of all soft debug levels. @note This is only static for faster access
     };
 
-    template<class T>
-    inline OutputHandler& OutputHandler::output(const T& output)
-    {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
-        {
-            if (this->outputLevel_ <= (*it)->softDebugLevel_ && (*it)->outputStream_ != NULL)
-            {
-                std::ostream& stream = *((*it)->outputStream_);
-                stream << output;
-                stream.flush();
-                (*it)->outputChanged();
-            }
-        }
-
-        return *this;
-    }
-
     /**
     @brief
         Interface for listening to output.
@@ -262,6 +245,23 @@ namespace orxonox
         const std::string name_;           //!< Name of the listener, constant and unique!
         int               softDebugLevel_; //!< Current soft debug level that defines what kind of output is written to the stream
     };
+
+    template<class T>
+    inline OutputHandler& OutputHandler::output(const T& output)
+    {
+        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        {
+            if (this->outputLevel_ <= (*it)->softDebugLevel_ && (*it)->outputStream_ != NULL)
+            {
+                std::ostream& stream = *((*it)->outputStream_);
+                stream << output;
+                stream.flush();
+                (*it)->outputChanged();
+            }
+        }
+
+        return *this;
+    }
 }
 
 #endif /* _OutputHandler_H__ */
