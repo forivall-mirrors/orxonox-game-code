@@ -111,13 +111,13 @@ namespace orxonox
     {
         unsigned char c = 0;
         std::string escapeSequence;
-        EscapeMode escapeMode = EscapeMode::None;
+        EscapeMode::Value escapeMode = EscapeMode::None;
         while (read(STDIN_FILENO, &c, 1) == 1)
         {
             if (escapeMode == EscapeMode::First && (c == '[' || c=='O') )
                 escapeMode = EscapeMode::Second;
             // Get Alt+Tab combination when switching applications
-            else if (escapeMode == First && c == '\t')
+            else if (escapeMode == EscapeMode::First && c == '\t')
             {
                 this->buffer_->buttonPressed(KeyEvent(KeyCode::Tab, '\t', KeyboardModifier::Alt));
                 escapeMode = EscapeMode::None;
@@ -235,7 +235,7 @@ namespace orxonox
         // Print status line
         //std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
         // Indicate a command prompt
-        std::cout << promptString;
+        std::cout << promptString_g;
         // Save cursor position
         std::cout << "\033[s";
         // Print command line buffer
@@ -257,12 +257,14 @@ namespace orxonox
 
             }
             // Check terminal size
+            /*
             int x, y;
             if (this->getTerminalSize(&x, &y) && (x < statusTextWidth_g || y < (2 + statusTextHeight_g)))
             {
                 this->bStatusPrinted_ = false;
                 return;
             }
+            */
         }
     }
 
@@ -357,7 +359,7 @@ namespace orxonox
     void IOConsole::onlyLastLineChanged()
     {
         // Save cursor position and move it to the beginning of the first output line
-        std::cout << "\033[s\033[" << (1 + statusTextHeight_g) << "F";
+        std::cout << "\033[s\033[" << (1 + 0/*statusTextHeight_g*/) << "F";
         // Erase the line
         std::cout << "\033[K";
         // Reprint the last output line
@@ -374,13 +376,13 @@ namespace orxonox
     void IOConsole::lineAdded()
     {
         // Save cursor and move it to the beginning of the first status line
-        std::cout << "\033[s\033[" << statusTextHeight_g << "F";
+        std::cout << "\033[s\033[" << 0/*statusTextHeight_g*/ << "F";
         // Create a new line and move cursor to the beginning of it (one cell up)
         std::cout << std::endl << "\033[1F";
         // Print the new output line
         this->printLogText(*(this->shell_.getNewestLineIterator()));
         // Restore cursor (for horizontal position) and move it down again (just in case the lines were shifted)
-        std::cout << "\033[u\033[" << (1 + statusTextHeight_g) << "B";
+        std::cout << "\033[u\033[" << (1 + 0/*statusTextHeight_g*/) << "B";
         std::cout.flush();
     }
 

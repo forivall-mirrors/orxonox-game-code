@@ -57,7 +57,7 @@ namespace orxonox
         static void resetTerminalMode();
         int getTerminalSize(int* x, int* y);
 
-        void print(const std::string& line);
+        void printLogText(const std::string& line);
         void printInputLine();
         void printStatusLines();
 
