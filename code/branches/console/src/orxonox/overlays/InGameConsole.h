@@ -80,7 +80,7 @@ namespace orxonox
         void bHidesAllInputChanged();
 
     private: // variables
-        Shell& shell_;
+        Shell* shell_;
         bool bActive_;
         int windowW_;
         int windowH_;

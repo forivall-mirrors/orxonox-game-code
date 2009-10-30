@@ -69,12 +69,14 @@ namespace orxonox
         void cursorChanged();
         void executed();
         void exit();
-        Shell&                  shell_;
+        Shell*                  shell_;
         InputBuffer*            buffer_;
         static termios*         originalTerminalSettings_;
         bool                    bPrintStatusLine_;
         bool                    bStatusPrinted_;
         std::vector<unsigned>   statusLineWidths_;
+        unsigned int            statusLineMaxWidth_;
+        static const unsigned   minOutputLines_ = 3;
 
         static IOConsole* singletonPtr_s;
     };

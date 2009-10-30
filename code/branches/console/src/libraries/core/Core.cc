@@ -66,7 +66,6 @@
 #include "IOConsole.h"
 #include "LuaState.h"
 #include "ScopedSingletonManager.h"
-#include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
 #include "input/InputManager.h"
@@ -232,8 +231,6 @@ namespace orxonox
         this->tclBind_.reset(new TclBind(PathConfig::getDataPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
 
-        // create a shell
-        this->shell_.reset(new Shell());
         // create persistent io console
         this->ioConsole_.reset(new IOConsole());
 

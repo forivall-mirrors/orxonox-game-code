@@ -51,7 +51,7 @@ namespace orxonox
     IOConsole* IOConsole::singletonPtr_s = NULL;
     const std::string promptString_g = "orxonox>";
 
-#if 1//def ORXONOX_PLATFORM_UNIX
+#ifdef ORXONOX_PLATFORM_UNIX
 
     termios* IOConsole::originalTerminalSettings_;
 
@@ -66,17 +66,17 @@ namespace orxonox
     }
 
     IOConsole::IOConsole()
-        : shell_(Shell::getInstance())
-        , buffer_(Shell::getInstance().getInputBuffer())
+        : shell_(new Shell("IOConsole", false))
+        , buffer_(shell_->getInputBuffer())
+        , originalTerminalSettings_(new termios())
         , bStatusPrinted_(false)
     {
-        this->originalTerminalSettings_ = new termios;
         this->setTerminalMode();
-        this->shell_.registerListener(this);
-
+        this->shell_->registerListener(this);
 
         // Manually set the widths of the individual status lines
-        this->statusLineWidths_.push_back(20);
+        this->statusLineWidths_.push_back(6);
+        this->statusLineMaxWidth_ = 6;
     }
 
     IOConsole::~IOConsole()
@@ -85,6 +85,7 @@ namespace orxonox
         std::cout.flush();
         resetTerminalMode();
         delete this->originalTerminalSettings_;
+        this->shell_->destroy();
     }
 
     void IOConsole::setTerminalMode()
@@ -188,7 +189,9 @@ namespace orxonox
         if (escapeMode == EscapeMode::First)
             this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, '\033', 0));
 
-        // Print input line
+        // Clear screen below the last output line by first moving the cursor to the beginning of the first status line
+        std::cout << "\033[" << (this->bStatusPrinted_ ? this->statusLineWidths_.size() : 0) << "F\033[J";
+        this->printStatusLines();
         this->printInputLine();
     }
 
@@ -232,14 +235,12 @@ namespace orxonox
     {
         // Set cursor to the beginning of the line and erase the line
         std::cout << "\033[1G\033[K";
-        // Print status line
-        //std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, " << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms avg ticktime # ";
         // Indicate a command prompt
         std::cout << promptString_g;
         // Save cursor position
         std::cout << "\033[s";
         // Print command line buffer
-        std::cout << this->shell_.getInput();
+        std::cout << this->shell_->getInput();
         // Restore cursor position and move it to the right
         std::cout << "\033[u";
         if (this->buffer_->getCursorPosition() > 0)
@@ -251,20 +252,16 @@ namespace orxonox
     {
         if (!this->statusLineWidths_.empty())
         {
-            if (this->bStatusPrinted_)
-            {
-                // Erase the status lines first (completely, including new lines!)
-
-            }
             // Check terminal size
-            /*
             int x, y;
-            if (this->getTerminalSize(&x, &y) && (x < statusTextWidth_g || y < (2 + statusTextHeight_g)))
+            if (this->getTerminalSize(&x, &y) && (x < (int)this->statusLineMaxWidth_ || y < (int)(this->minOutputLines_ + this->statusLineWidths_.size())))
             {
                 this->bStatusPrinted_ = false;
                 return;
             }
-            */
+            std::cout << "Status" << std::endl;
+            std::cout.flush();
+            this->bStatusPrinted_ = true;
         }
     }
 
@@ -306,8 +303,8 @@ namespace orxonox
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
 
     IOConsole::IOConsole()
-        : shell_(Shell::getInstance())
-        , buffer_(Shell::getInstance().getInputBuffer())
+        : shell_(new Shell("IOConsole", false))
+        , buffer_(shell_->getInputBuffer())
     {
         this->setTerminalMode();
     }
@@ -328,7 +325,7 @@ namespace orxonox
     {
     }
 
-    void IOConsole::print(const std::string& text)
+    void IOConsole::printLogText(const std::string& text)
     {
     }
 
@@ -359,11 +356,11 @@ namespace orxonox
     void IOConsole::onlyLastLineChanged()
     {
         // Save cursor position and move it to the beginning of the first output line
-        std::cout << "\033[s\033[" << (1 + 0/*statusTextHeight_g*/) << "F";
+        std::cout << "\033[s\033[" << (1 + this->statusLineWidths_.size()) << "F";
         // Erase the line
         std::cout << "\033[K";
         // Reprint the last output line
-        this->printLogText(*(this->shell_.getNewestLineIterator()));
+        this->printLogText(*(this->shell_->getNewestLineIterator()));
         // Restore cursor
         std::cout << "\033[u";
         std::cout.flush();
@@ -375,15 +372,13 @@ namespace orxonox
     */
     void IOConsole::lineAdded()
     {
-        // Save cursor and move it to the beginning of the first status line
-        std::cout << "\033[s\033[" << 0/*statusTextHeight_g*/ << "F";
-        // Create a new line and move cursor to the beginning of it (one cell up)
-        std::cout << std::endl << "\033[1F";
+        // Move cursor to the beginning of the first status line and erase screen from there
+        std::cout << "\033[" << this->statusLineWidths_.size() << "F\033[J";
         // Print the new output line
-        this->printLogText(*(this->shell_.getNewestLineIterator()));
-        // Restore cursor (for horizontal position) and move it down again (just in case the lines were shifted)
-        std::cout << "\033[u\033[" << (1 + 0/*statusTextHeight_g*/) << "B";
-        std::cout.flush();
+        this->printLogText(*(this->shell_->getNewestLineIterator()));
+        std::cout << std::endl;
+        this->printStatusLines();
+        this->printInputLine();
     }
 
     /**
@@ -413,7 +408,7 @@ namespace orxonox
         // Move cursor the beginning of the line
         std::cout << "\033[1G";
         // Print command so the user knows what he has typed
-        std::cout << promptString_g << this->shell_.getInput() << std::endl;
+        std::cout << promptString_g << this->shell_->getInput() << std::endl;
         this->printInputLine();
     }
 

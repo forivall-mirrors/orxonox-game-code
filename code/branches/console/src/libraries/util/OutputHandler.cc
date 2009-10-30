@@ -92,7 +92,7 @@ namespace orxonox
 
             this->outputStream_ = &this->logFile_;
             // Use default level until we get the configValue from the Core
-            outputHandler.setSoftDebugLevel(this->getOutputListenerName(), OutputLevel::Debug);
+            this->setSoftDebugLevel(OutputLevel::Debug);
             outputHandler.registerOutputListener(this);
         }
 
@@ -151,15 +151,15 @@ namespace orxonox
         {
             this->outputStream_ = &this->buffer_;
             // We capture as much input as the listener with the highest level
-            outputHandler.setSoftDebugLevel(this->getOutputListenerName(), OutputHandler::getSoftDebugLevel());
+            this->setSoftDebugLevel(OutputHandler::getSoftDebugLevel());
             outputHandler.registerOutputListener(this);
         }
 
         //! Pushed the just written output to the internal array
-        void outputChanged()
+        void outputChanged(int level)
         {
             // Read ostringstream and store it
-            this->output_.push_back(std::make_pair(OutputHandler::getInstance().getOutputLevel(), this->buffer_.str()));
+            this->output_.push_back(std::make_pair(level, this->buffer_.str()));
             // Clear content and flags
             this->buffer_.str(std::string());
             this->buffer_.clear();
@@ -209,6 +209,8 @@ namespace orxonox
             }
         }
         this->listeners_.push_back(listener);
+        // Update global soft debug level
+        this->setSoftDebugLevel(listener->getOutputListenerName(), listener->getSoftDebugLevel());
     }
 
     void OutputHandler::unregisterOutputListener(OutputListener* listener)

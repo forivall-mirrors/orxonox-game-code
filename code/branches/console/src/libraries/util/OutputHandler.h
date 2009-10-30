@@ -141,7 +141,7 @@ namespace orxonox
             static int getSoftDebugLevel() { return softDebugLevel_s; }
             //! Returns the soft debug level for a device by its name   @return The level or -1 if the listener was not found
             int  getSoftDebugLevel(const std::string& name) const;
-            //! Sets the soft debug level for a listener by its name
+            //! Sets the soft debug level for a listener by its name   @remarks Only works for registered listeners!
             void setSoftDebugLevel(const std::string& name, int level);
 
             /**
@@ -230,13 +230,22 @@ namespace orxonox
         OutputListener(const std::string& name)
             : outputStream_(NULL)
             , name_(name)
+            , softDebugLevel_(OutputLevel::Info)
         {}
         virtual ~OutputListener() {}
 
         //! Gets called whenever output is put into the stream
-        virtual void outputChanged() {}
+        virtual void outputChanged(int level) {}
         //! Returns the name of this output listener
         const std::string& getOutputListenerName() const { return this->name_; }
+        //! Returns the soft debug level of the listener
+        int getSoftDebugLevel() const { return this->softDebugLevel_; }
+        //! Sets the soft debug level of the listener
+        void setSoftDebugLevel(int level)
+        {
+            this->softDebugLevel_ = level;
+            OutputHandler::getInstance().setSoftDebugLevel(this->name_, level);
+        }
 
     protected:
         std::ostream*     outputStream_;   //!< Pointer to the associated output stream, can be NULL
@@ -256,7 +265,7 @@ namespace orxonox
                 std::ostream& stream = *((*it)->outputStream_);
                 stream << output;
                 stream.flush();
-                (*it)->outputChanged();
+                (*it)->outputChanged(this->outputLevel_);
             }
         }
 

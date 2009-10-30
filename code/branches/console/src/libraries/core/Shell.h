@@ -31,16 +31,15 @@
 
 #include "CorePrereqs.h"
 
-#include <cassert>
 #include <list>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "util/OutputHandler.h"
-#include "input/InputBuffer.h"
 #include "OrxonoxClass.h"
 #include "ConfigFileManager.h"
+#include "input/InputBuffer.h"
 
 namespace orxonox
 {
@@ -61,15 +60,11 @@ namespace orxonox
             virtual void exit() {}
     };
 
-    class _CoreExport Shell : public Singleton<Shell>, virtual public OrxonoxClass, public OutputListener
+    class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener
     {
-        friend class Singleton<Shell>;
         public:
-            Shell();
+            Shell(const std::string& consoleName, bool bScrollable);
             virtual ~Shell();
-
-            static void clearShell();
-            static void history();
 
             void setConfigValues();
             void commandHistoryOffsetChanged();
@@ -99,7 +94,7 @@ namespace orxonox
             void clearLines();
 
             inline unsigned int getNumLines() const
-                { return this->lines_.size(); }
+                { return this->outputLines_.size(); }
             inline unsigned int getScrollPosition() const
                 { return this->scrollPosition_; }
 
@@ -114,7 +109,7 @@ namespace orxonox
             void addToHistory(const std::string& command);
             std::string getFromHistory() const;
 
-            virtual void outputChanged();
+            virtual void outputChanged(int level);
 
             void inputChanged();
             void execute();
@@ -145,19 +140,20 @@ namespace orxonox
             InputBuffer* inputBuffer_;
             std::stringstream outputBuffer_;
             bool finishedLastLine_;
-            std::list<std::string> lines_;
+            std::list<std::string> outputLines_;
             std::list<std::string>::const_iterator scrollIterator_;
             unsigned int scrollPosition_;
-            std::vector<std::string> commandHistory_;
-            unsigned int maxHistoryLength_;
             unsigned int historyPosition_;
-            unsigned int historyOffset_;
             bool bAddOutputLevel_;
-            int softDebugLevel_;
-
             ConfigFileType commandHistoryConfigFileType_;
+            const std::string consoleName_;
+            const bool bScrollable_;
 
-            static Shell* singletonPtr_s;
+            // Config values
+            unsigned int maxHistoryLength_;
+            unsigned int historyOffset_;
+            std::vector<std::string> commandHistory_;
+            int softDebugLevel_;
     };
 }
 

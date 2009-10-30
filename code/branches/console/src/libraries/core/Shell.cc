@@ -33,24 +33,21 @@
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
-#include "Core.h"
 #include "ConsoleCommand.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(Shell, clearShell, true);
-    SetConsoleCommand(Shell, history, true);
-
     SetConsoleCommandShortcut(OutputHandler, log);
     SetConsoleCommandShortcut(OutputHandler, error);
     SetConsoleCommandShortcut(OutputHandler, warning);
     SetConsoleCommandShortcut(OutputHandler, info);
     SetConsoleCommandShortcut(OutputHandler, debug);
 
-    Shell* Shell::singletonPtr_s = 0;
-
-    Shell::Shell()
-        : OutputListener("shell")
+    Shell::Shell(const std::string& consoleName, bool bScrollable)
+        : inputBuffer_(new InputBuffer())
+        , OutputListener(consoleName)
+        , consoleName_(consoleName)
+        , bScrollable_(bScrollable)
     {
         RegisterRootObject(Shell);
 
@@ -62,8 +59,6 @@ namespace orxonox
         this->bAddOutputLevel_ = false;
 
         this->clearLines();
-
-        this->inputBuffer_ = new InputBuffer();
         this->configureInputBuffer();
 
         // Get a config file for the command history
@@ -78,7 +73,13 @@ namespace orxonox
         // Get the previous output and add it to the Shell
         for (OutputHandler::OutputVectorIterator it = OutputHandler::getInstance().getOutputVectorBegin();
             it != OutputHandler::getInstance().getOutputVectorEnd(); ++it)
-            this->addLine(it->second, it->first);
+        {
+            if (it->first <= this->getSoftDebugLevel())
+            {
+                this->outputBuffer_ << it->second;
+                this->outputChanged(it->first);
+            }
+        }
 
         // Register the shell as output listener
         OutputHandler::getInstance().registerOutputListener(this);
@@ -92,9 +93,9 @@ namespace orxonox
 
     void Shell::setConfigValues()
     {
-        SetConfigValueGeneric(commandHistoryConfigFileType_, maxHistoryLength_, "maxHistoryLength_", "Shell", 100)
+        SetConfigValue(maxHistoryLength_, 100)
             .callback(this, &Shell::commandHistoryLengthChanged);
-        SetConfigValueGeneric(commandHistoryConfigFileType_, historyOffset_, "historyOffset_", "Shell", 0)
+        SetConfigValue(historyOffset_, 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
         SetConfigValueVectorGeneric(commandHistoryConfigFileType_, commandHistory_, std::vector<std::string>());
 
@@ -103,9 +104,9 @@ namespace orxonox
 #else
         const unsigned int defaultLevel = 3;
 #endif
-        SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevel_, "softDebugLevelShell", "OutputHandler", defaultLevel)
+        SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevel_, "softDebugLevel" + this->consoleName_, "OutputHandler", defaultLevel)
             .description("The maximal level of debug output shown in the Shell");
-        OutputHandler::getInstance().setSoftDebugLevel("shell", this->softDebugLevel_);
+        this->setSoftDebugLevel(this->softDebugLevel_);
     }
 
     void Shell::commandHistoryOffsetChanged()
@@ -148,11 +149,7 @@ namespace orxonox
         this->inputBuffer_->registerListener(this, &Shell::history_search_down, KeyCode::AltPageDown);
     }
 
-    void Shell::clearShell()
-    {
-        Shell::getInstance().clearLines();
-    }
-
+    /*
     void Shell::history()
     {
         Shell& instance = Shell::getInstance();
@@ -162,6 +159,7 @@ namespace orxonox
         for (unsigned int i =  0; i < instance.historyOffset_; ++i)
             instance.addLine(instance.commandHistory_[i], -1);
     }
+    */
 
     void Shell::registerListener(ShellListener* listener)
     {
@@ -194,14 +192,14 @@ namespace orxonox
     void Shell::addLine(const std::string& line, int level)
     {
         if (level <= this->softDebugLevel_)
-            this->lines_.push_front(line);
+            this->outputLines_.push_front(line);
         this->updateListeners<&ShellListener::lineAdded>();
     }
 
     void Shell::clearLines()
     {
-        this->lines_.clear();
-        this->scrollIterator_ = this->lines_.begin();
+        this->outputLines_.clear();
+        this->scrollIterator_ = this->outputLines_.begin();
 
         this->scrollPosition_ = 0;
         this->finishedLastLine_ = true;
@@ -214,12 +212,12 @@ namespace orxonox
         if (this->scrollPosition_)
             return this->scrollIterator_;
         else
-            return this->lines_.begin();
+            return this->outputLines_.begin();
     }
 
     std::list<std::string>::const_iterator Shell::getEndIterator() const
     {
-        return this->lines_.end();
+        return this->outputLines_.end();
     }
 
     void Shell::addToHistory(const std::string& command)
@@ -238,12 +236,12 @@ namespace orxonox
             return "";
     }
 
-    void Shell::outputChanged()
+    void Shell::outputChanged(int level)
     {
-        std::string output;
-        bool newline;
+        bool newline = false;
         do
         {
+            std::string output;
             std::getline(this->outputBuffer_, output);
 
             bool eof = this->outputBuffer_.eof();
@@ -260,14 +258,14 @@ namespace orxonox
             if (this->finishedLastLine_)
             {
                 if (this->bAddOutputLevel_)
-                    output.insert(0, 1, static_cast<char>(OutputHandler::getInstance().getOutputLevel()));
+                    output.insert(0, 1, static_cast<char>(level));
 
-                this->lines_.push_front(output);
+                this->outputLines_.push_front(output);
 
                 if (this->scrollPosition_)
                     this->scrollPosition_++;
                 else
-                    this->scrollIterator_ = this->lines_.begin();
+                    this->scrollIterator_ = this->outputLines_.begin();
 
                 this->finishedLastLine_ = newline;
 
@@ -278,7 +276,7 @@ namespace orxonox
             }
             else
             {
-                (*this->lines_.begin()) += output;
+                (*this->outputLines_.begin()) += output;
                 this->finishedLastLine_ = newline;
                 this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
@@ -412,7 +410,7 @@ namespace orxonox
 
     void Shell::scroll_up()
     {
-        if (this->scrollIterator_ != this->lines_.end())
+        if (this->scrollIterator_ != this->outputLines_.end())
         {
             ++this->scrollIterator_;
             ++this->scrollPosition_;
@@ -423,7 +421,7 @@ namespace orxonox
 
     void Shell::scroll_down()
     {
-        if (this->scrollIterator_ != this->lines_.begin())
+        if (this->scrollIterator_ != this->outputLines_.begin())
         {
             --this->scrollIterator_;
             --this->scrollPosition_;
@@ -442,7 +440,7 @@ namespace orxonox
 
         this->clear();
         this->scrollPosition_ = 0;
-        this->scrollIterator_ = this->lines_.begin();
+        this->scrollIterator_ = this->outputLines_.begin();
 
         this->updateListeners<&ShellListener::exit>();
     }

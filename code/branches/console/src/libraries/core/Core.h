@@ -93,7 +93,6 @@ namespace orxonox
             scoped_ptr<CoreConfiguration> configuration_;
             scoped_ptr<TclBind>           tclBind_;
             scoped_ptr<TclThreadManager>  tclThreadManager_;
-            scoped_ptr<Shell>             shell_;
             scoped_ptr<IOConsole>         ioConsole_;
             // graphical
             scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
