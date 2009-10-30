@@ -53,7 +53,7 @@ namespace orxonox
 
 #ifdef ORXONOX_PLATFORM_UNIX
 
-    termios* IOConsole::originalTerminalSettings_ = new termios();
+    termios* IOConsole::originalTerminalSettings_;
 
     namespace EscapeMode
     {
@@ -70,6 +70,7 @@ namespace orxonox
         , buffer_(shell_->getInputBuffer())
         , bStatusPrinted_(false)
     {
+        this->originalTerminalSettings_ = new termios();
         this->setTerminalMode();
         this->shell_->registerListener(this);
 
