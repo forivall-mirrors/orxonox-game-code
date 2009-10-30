@@ -54,7 +54,7 @@ namespace orxonox
     private:
 
         void setTerminalMode();
-        static void resetTerminalMode();
+        void resetTerminalMode();
         int getTerminalSize(int* x, int* y);
 
         void printLogText(const std::string& line);
@@ -71,7 +71,7 @@ namespace orxonox
         void exit();
         Shell*                  shell_;
         InputBuffer*            buffer_;
-        static termios*         originalTerminalSettings_;
+        termios*                originalTerminalSettings_;
         bool                    bPrintStatusLine_;
         bool                    bStatusPrinted_;
         std::vector<unsigned>   statusLineWidths_;

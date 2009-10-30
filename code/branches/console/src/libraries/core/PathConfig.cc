@@ -262,6 +262,10 @@ namespace orxonox
         std::string pathVariable = getenv("PATH");
         putenv(const_cast<char*>(("PATH=" + pathVariable + ";" + modulePath_.string()).c_str()));
 
+        // Make sure the path exists, otherwise don't load modules
+        if (!boost::filesystem::exists(modulePath_))
+            return modulePaths;
+
         boost::filesystem::directory_iterator file(modulePath_);
         boost::filesystem::directory_iterator end;
 

@@ -53,8 +53,6 @@ namespace orxonox
 
 #ifdef ORXONOX_PLATFORM_UNIX
 
-    termios* IOConsole::originalTerminalSettings_;
-
     namespace EscapeMode
     {
         enum Value
@@ -68,9 +66,9 @@ namespace orxonox
     IOConsole::IOConsole()
         : shell_(new Shell("IOConsole", false))
         , buffer_(shell_->getInputBuffer())
+        , originalTerminalSettings_(new termios())
         , bStatusPrinted_(false)
     {
-        this->originalTerminalSettings_ = new termios();
         this->setTerminalMode();
         this->shell_->registerListener(this);
 

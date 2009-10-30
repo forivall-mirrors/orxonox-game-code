@@ -69,7 +69,7 @@ namespace orxonox
             This is only required to avoid another call to getInstance (this c'tor was
             called from getInstance!)
         */
-        LogFileWriter(OutputHandler& outputHandler)
+        LogFileWriter()
             : OutputListener(OutputHandler::logFileOutputListenerName_s)
         {
             // Get path for a temporary file
@@ -91,9 +91,6 @@ namespace orxonox
             this->logFile_.flush();
 
             this->outputStream_ = &this->logFile_;
-            // Use default level until we get the configValue from the Core
-            this->setSoftDebugLevel(OutputLevel::Debug);
-            outputHandler.registerOutputListener(this);
         }
 
         //! Closes the log file
@@ -146,13 +143,10 @@ namespace orxonox
             This is only required to avoid another call to getInstance (this c'tor was
             called from getInstance!)
         */
-        MemoryLogWriter(OutputHandler& outputHandler)
+        MemoryLogWriter()
             : OutputListener("memoryLog")
         {
             this->outputStream_ = &this->buffer_;
-            // We capture as much input as the listener with the highest level
-            this->setSoftDebugLevel(OutputHandler::getSoftDebugLevel());
-            outputHandler.registerOutputListener(this);
         }
 
         //! Pushed the just written output to the internal array
@@ -181,8 +175,15 @@ namespace orxonox
     OutputHandler::OutputHandler()
         : outputLevel_(OutputLevel::Verbose)
     {
-        this->logFile_ = new LogFileWriter(*this);
-        this->output_  = new MemoryLogWriter(*this);
+        this->logFile_ = new LogFileWriter();
+        // Use default level until we get the configValue from the Core
+        this->logFile_->softDebugLevel_ = OutputLevel::Debug;
+        this->registerOutputListener(this->logFile_);
+
+        this->output_  = new MemoryLogWriter();
+        // We capture as much input as the listener with the highest level
+        this->output_->softDebugLevel_ = getSoftDebugLevel();
+        this->registerOutputListener(this->output_);
     }
 
     //! Destroys the LogFileWriter and the MemoryLogWriter
