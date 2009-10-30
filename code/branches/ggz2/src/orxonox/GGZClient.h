@@ -2,7 +2,7 @@
 #define _GGZClient_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/Tickable.h"
+#include "tools/interfaces/Tickable.h"
 #include "gamestates/GSClient.h"
 
 #include <ggzmod.h>
