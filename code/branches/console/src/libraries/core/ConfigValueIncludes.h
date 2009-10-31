@@ -56,7 +56,7 @@
     } \
     container##varname->getValue(&varname, this)
 
-#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(ConfigFileType::Settings, varname, identifier##varname->getName(), #varname, defvalue)
+#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(ConfigFileType::Settings, varname, #varname, identifier##varname->getName(), defvalue)
 
 
 /**
