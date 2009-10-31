@@ -67,7 +67,7 @@ namespace orxonox
         @brief Constructor: Creates and initializes the InGameConsole.
     */
     InGameConsole::InGameConsole()
-        : shell_(new Shell("InGameConsole", true))
+        : shell_(new Shell("InGameConsole", true, true))
         , consoleOverlay_(0)
         , consoleOverlayContainer_(0)
         , consoleOverlayNoise_(0)
@@ -254,8 +254,6 @@ namespace orxonox
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border makes the panel bigger
         this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
-
-        this->shell_->addOutputLevel(true);
 
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }

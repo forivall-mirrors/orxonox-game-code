@@ -76,6 +76,7 @@ namespace orxonox
         bool                    bStatusPrinted_;
         std::vector<unsigned>   statusLineWidths_;
         unsigned int            statusLineMaxWidth_;
+        const std::string       promptString_;
         static const unsigned   minOutputLines_ = 3;
 
         static IOConsole* singletonPtr_s;

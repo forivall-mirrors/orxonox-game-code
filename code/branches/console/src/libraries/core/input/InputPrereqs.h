@@ -178,13 +178,11 @@ namespace orxonox
             Home          = OIS::KC_HOME,            // Home on arrow keypad
             Up            = OIS::KC_UP,              // UpArrow on arrow keypad
             PageUp        = OIS::KC_PGUP,            // PgUp on arrow keypad
-            AltPageUp     = OIS::KC_PGUP+1,          // Alternative PgUp for the IOConsole
             Left          = OIS::KC_LEFT,            // LeftArrow on arrow keypad
             Right         = OIS::KC_RIGHT,           // RightArrow on arrow keypad
             End           = OIS::KC_END,             // End on arrow keypad
             Down          = OIS::KC_DOWN,            // DownArrow on arrow keypad
             PageDown      = OIS::KC_PGDOWN,          // PgDn on arrow keypad
-            AltPageDown   = OIS::KC_END-1,           // Alternative PgUp for IOConsole
             Insert        = OIS::KC_INSERT,          // Insert on arrow keypad
             Delete        = OIS::KC_DELETE,          // Delete on arrow keypad
             LeftWindows   = OIS::KC_LWIN,            // Left Windows key
@@ -287,11 +285,11 @@ namespace orxonox
             "Home",
             "UP",
             "PageUp",
-            "", // used for AltPageUp
+            "",
             "Left",
             "",
             "Right",
-            "", // used for AltPageDown
+            "",
             "End", "Down", "PageDown", "Insert", "Delete",
             "","","","","","","",
             "LeftWindows", "RightWindows", "Apps",

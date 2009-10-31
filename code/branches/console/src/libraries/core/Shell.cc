@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -43,10 +43,11 @@ namespace orxonox
     SetConsoleCommandShortcut(OutputHandler, info);
     SetConsoleCommandShortcut(OutputHandler, debug);
 
-    Shell::Shell(const std::string& consoleName, bool bScrollable)
-        : inputBuffer_(new InputBuffer())
-        , OutputListener(consoleName)
+    Shell::Shell(const std::string& consoleName, bool bScrollable, bool bPrependOutputLevel)
+        : OutputListener(consoleName)
+        , inputBuffer_(new InputBuffer())
         , consoleName_(consoleName)
+        , bPrependOutputLevel_(bPrependOutputLevel)
         , bScrollable_(bScrollable)
     {
         RegisterRootObject(Shell);
@@ -55,10 +56,9 @@ namespace orxonox
         this->maxHistoryLength_ = 100;
         this->historyPosition_ = 0;
         this->historyOffset_ = 0;
-        this->finishedLastLine_ = true;
-        this->bAddOutputLevel_ = false;
+        this->bFinishedLastLine_ = true;
 
-        this->clearLines();
+        this->clearOutput();
         this->configureInputBuffer();
 
         // Get a config file for the command history
@@ -130,23 +130,29 @@ namespace orxonox
     void Shell::configureInputBuffer()
     {
         this->inputBuffer_->registerListener(this, &Shell::inputChanged, true);
-        this->inputBuffer_->registerListener(this, &Shell::execute, '\r', false);
-        this->inputBuffer_->registerListener(this, &Shell::execute, '\n', false);
-        this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
-        this->inputBuffer_->registerListener(this, &Shell::backspace, '\b', true);
-        this->inputBuffer_->registerListener(this, &Shell::backspace, '\177', true);
-        this->inputBuffer_->registerListener(this, &Shell::deletechar, KeyCode::Delete);
-        this->inputBuffer_->registerListener(this, &Shell::exit, '\033', true); // escape
-        this->inputBuffer_->registerListener(this, &Shell::cursor_right, KeyCode::Right);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_left, KeyCode::Left);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_end, KeyCode::End);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_home, KeyCode::Home);
-        this->inputBuffer_->registerListener(this, &Shell::history_up, KeyCode::Up);
-        this->inputBuffer_->registerListener(this, &Shell::history_down, KeyCode::Down);
-        this->inputBuffer_->registerListener(this, &Shell::scroll_up, KeyCode::PageUp);
-        this->inputBuffer_->registerListener(this, &Shell::scroll_down, KeyCode::PageDown);
-        this->inputBuffer_->registerListener(this, &Shell::history_search_up, KeyCode::AltPageUp);
-        this->inputBuffer_->registerListener(this, &Shell::history_search_down, KeyCode::AltPageDown);
+        this->inputBuffer_->registerListener(this, &Shell::execute,         '\r',   false);
+        this->inputBuffer_->registerListener(this, &Shell::execute,         '\n',   false);
+        this->inputBuffer_->registerListener(this, &Shell::hintAndComplete, '\t',   true);
+        this->inputBuffer_->registerListener(this, &Shell::backspace,       '\b',   true);
+        this->inputBuffer_->registerListener(this, &Shell::backspace,       '\177', true);
+        this->inputBuffer_->registerListener(this, &Shell::exit,            '\033', true); // escape
+        this->inputBuffer_->registerListener(this, &Shell::deleteChar,      KeyCode::Delete);
+        this->inputBuffer_->registerListener(this, &Shell::cursorRight,     KeyCode::Right);
+        this->inputBuffer_->registerListener(this, &Shell::cursorLeft,      KeyCode::Left);
+        this->inputBuffer_->registerListener(this, &Shell::cursorEnd,       KeyCode::End);
+        this->inputBuffer_->registerListener(this, &Shell::cursorHome,      KeyCode::Home);
+        this->inputBuffer_->registerListener(this, &Shell::historyUp,       KeyCode::Up);
+        this->inputBuffer_->registerListener(this, &Shell::historyDown,     KeyCode::Down);
+        if (this->bScrollable_)
+        {
+            this->inputBuffer_->registerListener(this, &Shell::scrollUp,    KeyCode::PageUp);
+            this->inputBuffer_->registerListener(this, &Shell::scrollDown,  KeyCode::PageDown);
+        }
+        else
+        {
+            this->inputBuffer_->registerListener(this, &Shell::historySearchUp,   KeyCode::PageUp);
+            this->inputBuffer_->registerListener(this, &Shell::historySearchDown, KeyCode::PageDown);
+        }
     }
 
     /*
@@ -155,9 +161,9 @@ namespace orxonox
         Shell& instance = Shell::getInstance();
 
         for (unsigned int i = instance.historyOffset_; i < instance.commandHistory_.size(); ++i)
-            instance.addLine(instance.commandHistory_[i], -1);
+            instance.addOutputLine(instance.commandHistory_[i], -1);
         for (unsigned int i =  0; i < instance.historyOffset_; ++i)
-            instance.addLine(instance.commandHistory_[i], -1);
+            instance.addOutputLine(instance.commandHistory_[i], -1);
     }
     */
 
@@ -183,26 +189,20 @@ namespace orxonox
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::setInput(const std::string& input)
-    {
-        this->inputBuffer_->set(input);
-        this->inputChanged();
-    }
-
-    void Shell::addLine(const std::string& line, int level)
+    void Shell::addOutputLine(const std::string& line, int level)
     {
         if (level <= this->softDebugLevel_)
             this->outputLines_.push_front(line);
         this->updateListeners<&ShellListener::lineAdded>();
     }
 
-    void Shell::clearLines()
+    void Shell::clearOutput()
     {
         this->outputLines_.clear();
         this->scrollIterator_ = this->outputLines_.begin();
 
         this->scrollPosition_ = 0;
-        this->finishedLastLine_ = true;
+        this->bFinishedLastLine_ = true;
 
         this->updateListeners<&ShellListener::linesChanged>();
     }
@@ -255,9 +255,9 @@ namespace orxonox
             if (!newline && output == "")
                 break;
 
-            if (this->finishedLastLine_)
+            if (this->bFinishedLastLine_)
             {
-                if (this->bAddOutputLevel_)
+                if (this->bPrependOutputLevel_)
                     output.insert(0, 1, static_cast<char>(level));
 
                 this->outputLines_.push_front(output);
@@ -267,7 +267,7 @@ namespace orxonox
                 else
                     this->scrollIterator_ = this->outputLines_.begin();
 
-                this->finishedLastLine_ = newline;
+                this->bFinishedLastLine_ = newline;
 
                 if (!this->scrollPosition_)
                 {
@@ -277,12 +277,29 @@ namespace orxonox
             else
             {
                 (*this->outputLines_.begin()) += output;
-                this->finishedLastLine_ = newline;
+                this->bFinishedLastLine_ = newline;
                 this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
 
         } while (newline);
     }
+
+    void Shell::clearInput()
+    {
+        this->inputBuffer_->clear();
+        this->historyPosition_ = 0;
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
+    }
+
+    void Shell::setPromptPrefix(const std::string& str)
+    {
+    }
+
+
+    // ##########################################
+    // ###   InputBuffer callback functions   ###
+    // ##########################################
 
     void Shell::inputChanged()
     {
@@ -296,15 +313,15 @@ namespace orxonox
         this->updateListeners<&ShellListener::executed>();
 
         if (!CommandExecutor::execute(this->inputBuffer_->get()))
-            this->addLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", 1);
+            this->addOutputLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", 1);
 
-        this->clear();
+        this->clearInput();
     }
 
-    void Shell::hintandcomplete()
+    void Shell::hintAndComplete()
     {
         this->inputBuffer_->set(CommandExecutor::complete(this->inputBuffer_->get()));
-        this->addLine(CommandExecutor::hint(this->inputBuffer_->get()), -1);
+        this->addOutputLine(CommandExecutor::hint(this->inputBuffer_->get()), -1);
 
         this->inputChanged();
     }
@@ -316,45 +333,52 @@ namespace orxonox
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::deletechar()
+    void Shell::exit()
+    {
+        if (this->inputBuffer_->getSize() > 0)
+        {
+            this->clearInput();
+            return;
+        }
+
+        this->clearInput();
+        this->scrollPosition_ = 0;
+        this->scrollIterator_ = this->outputLines_.begin();
+
+        this->updateListeners<&ShellListener::exit>();
+    }
+
+    void Shell::deleteChar()
     {
         this->inputBuffer_->removeAtCursor();
         this->updateListeners<&ShellListener::inputChanged>();
     }
 
-    void Shell::clear()
-    {
-        this->inputBuffer_->clear();
-        this->historyPosition_ = 0;
-        this->updateListeners<&ShellListener::inputChanged>();
-        this->updateListeners<&ShellListener::cursorChanged>();
-    }
-
-    void Shell::cursor_right()
+    void Shell::cursorRight()
     {
         this->inputBuffer_->increaseCursor();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::cursor_left()
+    void Shell::cursorLeft()
     {
         this->inputBuffer_->decreaseCursor();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::cursor_end()
+    void Shell::cursorEnd()
     {
         this->inputBuffer_->setCursorToEnd();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::cursor_home()
+    void Shell::cursorHome()
     {
         this->inputBuffer_->setCursorToBegin();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::history_up()
+    void Shell::historyUp()
     {
         if (this->historyPosition_ < this->commandHistory_.size())
         {
@@ -363,7 +387,7 @@ namespace orxonox
         }
     }
 
-    void Shell::history_down()
+    void Shell::historyDown()
     {
         if (this->historyPosition_ > 0)
         {
@@ -372,12 +396,12 @@ namespace orxonox
         }
     }
 
-    void Shell::history_search_up()
+    void Shell::historySearchUp()
     {
         if (this->historyPosition_ == this->historyOffset_)
             return;
         unsigned int cursorPosition = this->getCursorPosition();
-        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning of the inputline untill the cursor position
+        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning of the inputline until the cursor position
         for (unsigned int newPos = this->historyPosition_ + 1; newPos <= this->historyOffset_; newPos++)
         {
             if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // search case insensitive
@@ -390,12 +414,12 @@ namespace orxonox
         }
     }
 
-    void Shell::history_search_down()
+    void Shell::historySearchDown()
     {
         if (this->historyPosition_ == 0)
             return;
         unsigned int cursorPosition = this->getCursorPosition();
-        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginn$
+        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning
         for (unsigned int newPos = this->historyPosition_ - 1; newPos > 0; newPos--)
         {
             if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // sear$
@@ -408,7 +432,7 @@ namespace orxonox
         }
     }
 
-    void Shell::scroll_up()
+    void Shell::scrollUp()
     {
         if (this->scrollIterator_ != this->outputLines_.end())
         {
@@ -419,7 +443,7 @@ namespace orxonox
         }
     }
 
-    void Shell::scroll_down()
+    void Shell::scrollDown()
     {
         if (this->scrollIterator_ != this->outputLines_.begin())
         {
@@ -428,20 +452,5 @@ namespace orxonox
 
             this->updateListeners<&ShellListener::linesChanged>();
         }
-    }
-
-    void Shell::exit()
-    {
-        if (this->inputBuffer_->getSize() > 0)
-        {
-            this->clear();
-            return;
-        }
-
-        this->clear();
-        this->scrollPosition_ = 0;
-        this->scrollIterator_ = this->outputLines_.begin();
-
-        this->updateListeners<&ShellListener::exit>();
     }
 }

@@ -49,7 +49,6 @@
 namespace orxonox
 {
     IOConsole* IOConsole::singletonPtr_s = NULL;
-    const std::string promptString_g = "orxonox>";
 
 #ifdef ORXONOX_PLATFORM_UNIX
 
@@ -64,10 +63,11 @@ namespace orxonox
     }
 
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false))
+        : shell_(new Shell("IOConsole", false, true))
         , buffer_(shell_->getInputBuffer())
         , originalTerminalSettings_(new termios())
         , bStatusPrinted_(false)
+        , promptString_("orxonox> ")
     {
         this->setTerminalMode();
         this->shell_->registerListener(this);
@@ -142,9 +142,9 @@ namespace orxonox
                 else if (escapeSequence == "4~" || escapeSequence == "F")
                     this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      0, 0));
                 else if (escapeSequence == "5~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::AltPageUp,   0, 0));
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageUp,   0, 0));
                 else if (escapeSequence == "6~")
-                    this->buffer_->buttonPressed(KeyEvent(KeyCode::AltPageDown, 0, 0));
+                    this->buffer_->buttonPressed(KeyEvent(KeyCode::PageDown, 0, 0));
                 else
                     // Waiting for sequence to complete
                     // If the user presses ESC and then '[' or 'O' while the loop is not
@@ -191,6 +191,7 @@ namespace orxonox
         std::cout << "\033[" << (this->bStatusPrinted_ ? this->statusLineWidths_.size() : 0) << "F\033[J";
         this->printStatusLines();
         this->printInputLine();
+        std::cout.flush();
     }
 
     void IOConsole::printLogText(const std::string& text)
@@ -226,7 +227,6 @@ namespace orxonox
 
         // Reset colour to white
 //        std::cout << "\033[37m";
-        std::cout.flush();
     }
 
     void IOConsole::printInputLine()
@@ -243,7 +243,6 @@ namespace orxonox
         std::cout << "\033[u";
         if (this->buffer_->getCursorPosition() > 0)
             std::cout << "\033[" << this->buffer_->getCursorPosition() << "C";
-        std::cout.flush();
     }
 
     void IOConsole::printStatusLines()
@@ -258,7 +257,6 @@ namespace orxonox
                 return;
             }
             std::cout << "Status" << std::endl;
-            std::cout.flush();
             this->bStatusPrinted_ = true;
         }
     }
@@ -331,6 +329,10 @@ namespace orxonox
     {
     }
 
+    void IOConsole::printStatusLines()
+    {
+    }
+
 #endif /* ORXONOX_PLATFORM_UNIX */
 
     // ###############################
@@ -377,6 +379,7 @@ namespace orxonox
         std::cout << std::endl;
         this->printStatusLines();
         this->printInputLine();
+        std::cout.flush();
     }
 
     /**
@@ -386,6 +389,7 @@ namespace orxonox
     void IOConsole::inputChanged()
     {
         this->printInputLine();
+        std::cout.flush();
     }
 
     /**
@@ -395,6 +399,7 @@ namespace orxonox
     void IOConsole::cursorChanged()
     {
         this->printInputLine();
+        std::cout.flush();
     }
 
     /**
@@ -403,11 +408,7 @@ namespace orxonox
     */
     void IOConsole::executed()
     {
-        // Move cursor the beginning of the line
-        std::cout << "\033[1G";
-        // Print command so the user knows what he has typed
-        std::cout << promptString_g << this->shell_->getInput() << std::endl;
-        this->printInputLine();
+        this->shell_->addOutputLine(this->promptString_ + this->shell_->getInput());
     }
 
 
