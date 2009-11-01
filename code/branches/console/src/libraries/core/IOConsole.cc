@@ -67,19 +67,22 @@ namespace orxonox
         , buffer_(shell_->getInputBuffer())
         , originalTerminalSettings_(new termios())
         , bStatusPrinted_(false)
-        , promptString_("orxonox> ")
+        , promptString_("orxonox # ")
     {
         this->setTerminalMode();
         this->shell_->registerListener(this);
 
         // Manually set the widths of the individual status lines
-        this->statusLineWidths_.push_back(6);
-        this->statusLineMaxWidth_ = 6;
+        this->statusLineWidths_.push_back(20);
+        this->statusLineMaxWidth_ = 20;
     }
 
     IOConsole::~IOConsole()
     {
-        std::cout << "\033[0G\033[K";
+        // Goto last line and erase it
+        if (this->bStatusPrinted_)
+            std::cout << "\033[" << this->statusLineWidths_.size() << 'E';
+        std::cout << "\033[1G\033[K";
         std::cout.flush();
         resetTerminalMode();
         delete this->originalTerminalSettings_;
@@ -187,10 +190,21 @@ namespace orxonox
         if (escapeMode == EscapeMode::First)
             this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, '\033', 0));
 
-        // Clear screen below the last output line by first moving the cursor to the beginning of the first status line
-        std::cout << "\033[" << (this->bStatusPrinted_ ? this->statusLineWidths_.size() : 0) << "F\033[J";
-        this->printStatusLines();
+        // Determine terminal width and height
+        this->getTerminalSize();
+
+        if (!this->bStatusPrinted_ && this->willPrintStatusLines())
+        {
+            // Print new lines to make way for status lines
+            std::cout << std::string(this->statusLineWidths_.size(), '\n');
+            // Move cursor up again
+            std::cout << "\033[" << this->statusLineWidths_.size() << 'A';
+            this->bStatusPrinted_ = true;
+        }
+        // Move cursor horizontally and erase status and input lines
+        std::cout << "\033[1G\033[J";
         this->printInputLine();
+        this->printStatusLines();
         std::cout.flush();
     }
 
@@ -234,7 +248,7 @@ namespace orxonox
         // Set cursor to the beginning of the line and erase the line
         std::cout << "\033[1G\033[K";
         // Indicate a command prompt
-        std::cout << promptString_;
+        std::cout << this->promptString_;
         // Save cursor position
         std::cout << "\033[s";
         // Print command line buffer
@@ -247,53 +261,56 @@ namespace orxonox
 
     void IOConsole::printStatusLines()
     {
-        if (!this->statusLineWidths_.empty())
+        if (this->willPrintStatusLines())
         {
-            // Check terminal size
-            int x, y;
-            if (this->getTerminalSize(&x, &y) && (x < (int)this->statusLineMaxWidth_ || y < (int)(this->minOutputLines_ + this->statusLineWidths_.size())))
-            {
-                this->bStatusPrinted_ = false;
-                return;
-            }
-            std::cout << "Status" << std::endl;
+            // Save cursor position
+            std::cout << "\033[s";
+            // Move cursor down (don't create a new line here because the buffer might flush then!)
+            std::cout << "\033[1E";
+            std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
+            std::cout <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
+            // Restore cursor position
+            std::cout << "\033[u";
             this->bStatusPrinted_ = true;
         }
+        else
+            this->bStatusPrinted_ = false;
     }
 
-    int IOConsole::getTerminalSize(int* x, int* y)
+    inline bool IOConsole::willPrintStatusLines()
+    {
+        return !this->statusLineWidths_.empty()
+             && this->terminalWidth_  >= this->statusLineMaxWidth_
+             && this->terminalHeight_ >= (this->minOutputLines_ + this->statusLineWidths_.size());
+    }
+
+    void IOConsole::getTerminalSize()
     {
 #ifdef TIOCGSIZE
         struct ttysize win;
-#elif defined(TIOCGWINSZ)
-        struct winsize win;
-#endif
-
-#ifdef TIOCGSIZE
-        if (ioctl(STDIN_FILENO, TIOCGSIZE, &win))
-            return 0;
-        *y = win.ts_lines;
-        *x = win.ts_cols;
-#elif defined TIOCGWINSZ
-        if (ioctl(STDIN_FILENO, TIOCGWINSZ, &win))
-            return 0;
-        *y = win.ws_row;
-        *x = win.ws_col;
-#else
+        if (!ioctl(STDIN_FILENO, TIOCGSIZE, &win))
         {
-            const char* s = getenv("LINES");
-            if (s)
-                *y = strtol(s, NULL, 10);
-            else
-                *y = 25;
-            s = getenv("COLUMNS");
-            if (s)
-                *x = strtol(s, NULL, 10);
-            else
-                *x = 80;
+            this->terminalWidth_  = win.ts_cols;
+            this->terminalHeight_ = win.ts_lines;
+            return;
         }
+#elif defined TIOCGWINSZ
+        struct winsize win;
+        if (!ioctl(STDIN_FILENO, TIOCGWINSZ, &win))
+        {
+            this->terminalWidth_  = win.ws_col;
+            this->terminalHeight_ = win.ws_row;
+            return;
+        }
+#else
+        const char* s = getenv("COLUMNS");
+        this->terminalWidth_  = s ? strtol(s, NULL, 10) : 80;
+        s = getenv("LINES");
+        this->terminalHeight_ = s ? strtol(s, NULL, 10) : 24;
+        return;
 #endif
-        return 1;
+        this->terminalWidth_  = 80;
+        this->terminalHeight_ = 24;
     }
 
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
@@ -356,7 +373,7 @@ namespace orxonox
     void IOConsole::onlyLastLineChanged()
     {
         // Save cursor position and move it to the beginning of the first output line
-        std::cout << "\033[s\033[" << (1 + this->statusLineWidths_.size()) << "F";
+        std::cout << "\033[s\033[1F";
         // Erase the line
         std::cout << "\033[K";
         // Reprint the last output line
@@ -372,13 +389,22 @@ namespace orxonox
     */
     void IOConsole::lineAdded()
     {
-        // Move cursor to the beginning of the first status line and erase screen from there
-        std::cout << "\033[" << this->statusLineWidths_.size() << "F\033[J";
+        // Move cursor to the bottom line
+        if (this->bStatusPrinted_)
+            std::cout << "\033[" << this->statusLineWidths_.size() << 'E';
+        // Create the new line on the screen
+        std::cout << '\n';
+        // Move cursor to the beginning of the new (last) output line
+        std::cout << "\033[" << (1 + this->statusLineWidths_.size()) << 'F';
+        // Erase screen from here
+        std::cout << "\033[J";
         // Print the new output line
         this->printLogText(*(this->shell_->getNewestLineIterator()));
-        std::cout << std::endl;
-        this->printStatusLines();
+        // Move cursor down
+        std::cout << "\033[1E";
+        // Print status and input lines
         this->printInputLine();
+        this->printStatusLines();
         std::cout.flush();
     }
 
