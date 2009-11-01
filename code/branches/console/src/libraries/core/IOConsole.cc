@@ -234,7 +234,7 @@ namespace orxonox
         // Set cursor to the beginning of the line and erase the line
         std::cout << "\033[1G\033[K";
         // Indicate a command prompt
-        std::cout << promptString_g;
+        std::cout << promptString_;
         // Save cursor position
         std::cout << "\033[s";
         // Print command line buffer
