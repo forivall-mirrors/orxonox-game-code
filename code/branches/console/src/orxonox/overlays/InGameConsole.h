@@ -67,6 +67,7 @@ namespace orxonox
         void lineAdded();
         void inputChanged();
         void cursorChanged();
+        void executed();
         void exit();
 
         void shiftLines();

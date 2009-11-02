@@ -29,31 +29,92 @@
 
 #include "IOConsole.h"
 
-#include <cstring>
 #include <iomanip>
 #include <iostream>
-
-#include "util/Clock.h"
-#include "util/Debug.h"
-#include "util/Sleep.h"
-#include "core/CommandExecutor.h"
 #include "core/Game.h"
-#include "core/GameMode.h"
-#include "core/Shell.h"
 #include "core/input/InputBuffer.h"
 
-#ifdef ORXONOX_PLATFORM_UNIX
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#endif
-
+// ##########################
+// ###   Mutual methods   ###
+// ##########################
 namespace orxonox
 {
     IOConsole* IOConsole::singletonPtr_s = NULL;
 
-#ifdef ORXONOX_PLATFORM_UNIX
+    int IOConsole::extractLogLevel(std::string* text)
+    {
+        // Handle line colouring by inspecting the first letter
+        char level = 0;
+        if (!text->empty())
+        {
+            level = (*text)[0];
+            if (level == -1 || level >= 1 && level <= 6)
+            {
+                *text = text->substr(1);
+                if (level != -1)
+                    return level;
+            }
+        }
+        return 0;
+    }
 
+    inline bool IOConsole::willPrintStatusLines()
+    {
+        return !this->statusLineWidths_.empty()
+             && this->terminalWidth_  >= this->statusLineMaxWidth_
+             && this->terminalHeight_ >= (this->minOutputLines_ + this->statusLineWidths_.size());
+    }
+
+    // ###############################
+    // ###  ShellListener methods  ###
+    // ###############################
+
+    //! Called if all output-lines have to be reprinted
+    void IOConsole::linesChanged()
+    {
+        // Method only gets called upon start to draw all the lines
+        // or when scrolling. But scrolling is disable and the output
+        // is already in std::cout when we start the IOConsole
+    }
+
+    //! Called if the text in the input-line has changed
+    void IOConsole::inputChanged()
+    {
+        this->printInputLine();
+        std::cout.flush();
+    }
+
+    //! Called if the position of the cursor in the input-line has changed
+    void IOConsole::cursorChanged()
+    {
+        this->printInputLine();
+        std::cout.flush();
+    }
+
+    //! Called if a command is about to be executed
+    void IOConsole::executed()
+    {
+        this->shell_->addOutputLine(this->promptString_ + this->shell_->getInput());
+    }
+
+    //! Called if the console gets closed
+    void IOConsole::exit()
+    {
+        // Exit is not an option, just do nothing (Shell doesn't really exit too)
+    }
+}
+
+#ifdef ORXONOX_PLATFORM_UNIX
+// ###############################
+// ###   Unix Implementation   ###
+// ###############################
+
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+
+namespace orxonox
+{
     namespace EscapeMode
     {
         enum Value
@@ -81,38 +142,24 @@ namespace orxonox
         this->getTerminalSize();
         this->lastTerminalWidth_ = this->terminalWidth_;
         this->lastTerminalHeight_ = this->terminalHeight_;
+
+        // Disable standard std::cout logging
+        OutputHandler::getInstance().disableCout();
     }
 
     IOConsole::~IOConsole()
     {
-        // Goto last line and erase it
+        // Goto last line and create a new one
         if (this->bStatusPrinted_)
             std::cout << "\033[" << this->statusLineWidths_.size() << 'E';
-        std::cout << "\033[1G\033[K";
-        std::cout.flush();
+        std::cout << std::endl;
+
         resetTerminalMode();
         delete this->originalTerminalSettings_;
         this->shell_->destroy();
-    }
 
-    void IOConsole::setTerminalMode()
-    {
-        termios new_settings;
-
-        tcgetattr(0, this->originalTerminalSettings_);
-        new_settings = *this->originalTerminalSettings_;
-        new_settings.c_lflag &= ~(ICANON | ECHO);
-        //         new_settings.c_lflag |= ( ISIG | IEXTEN );
-        new_settings.c_cc[VTIME] = 0;
-        new_settings.c_cc[VMIN]  = 0;
-        tcsetattr(0, TCSANOW, &new_settings);
-        COUT(0) << endl;
-        //       atexit(&IOConsole::resetTerminalMode);
-    }
-
-    void IOConsole::resetTerminalMode()
-    {
-        tcsetattr(0, TCSANOW, IOConsole::originalTerminalSettings_);
+        // Enable standard std::cout logging again
+        OutputHandler::getInstance().enableCout();
     }
 
     void IOConsole::update(const Clock& time)
@@ -120,8 +167,12 @@ namespace orxonox
         unsigned char c = 0;
         std::string escapeSequence;
         EscapeMode::Value escapeMode = EscapeMode::None;
-        while (read(STDIN_FILENO, &c, 1) == 1)
+        while (std::cin.good())
         {
+            c = std::cin.get();
+            if (std::cin.bad())
+                break;
+
             if (escapeMode == EscapeMode::First && (c == '[' || c=='O') )
                 escapeMode = EscapeMode::Second;
             // Get Alt+Tab combination when switching applications
@@ -190,6 +241,8 @@ namespace orxonox
                 }
             }
         }
+        // Reset error flags in std::cin
+        std::cin.clear();
 
         // If there is still an escape key pending (escape key ONLY), then
         // it sure isn't an escape sequence anymore
@@ -204,7 +257,7 @@ namespace orxonox
         int heightDiff = this->terminalHeight_ - this->lastTerminalHeight_;
         if (this->bStatusPrinted_ && heightDiff < 0)
         {
-            // Terminal width has shrinked. The cursor will still be on the input line,
+            // Terminal width has shrunk. The cursor will still be on the input line,
             // but that line might very well be the last
             int newLines = std::min((int)this->statusLineWidths_.size(), -heightDiff);
             std::cout << std::string(newLines, '\n');
@@ -229,16 +282,8 @@ namespace orxonox
 
     void IOConsole::printLogText(const std::string& text)
     {
-        std::string output;
-
-        // Handle line colouring by inspecting the first letter
-        char level = 0;
-        if (!text.empty())
-            level = text[0];
-        if (level >= -1 && level <= 6)
-            output = text.substr(1);
-        else
-            output = text;
+        std::string output = text;
+        int level = this->extractLogLevel(&output);
 
         // Colour line
 /*
@@ -296,11 +341,22 @@ namespace orxonox
             this->bStatusPrinted_ = false;
     }
 
-    inline bool IOConsole::willPrintStatusLines()
+    void IOConsole::setTerminalMode()
     {
-        return !this->statusLineWidths_.empty()
-             && this->terminalWidth_  >= this->statusLineMaxWidth_
-             && this->terminalHeight_ >= (this->minOutputLines_ + this->statusLineWidths_.size());
+        termios new_settings;
+
+        tcgetattr(0, this->originalTerminalSettings_);
+        new_settings = *this->originalTerminalSettings_;
+        new_settings.c_lflag &= ~(ICANON | ECHO);
+        //new_settings.c_lflag |= (ISIG | IEXTEN);
+        new_settings.c_cc[VTIME] = 0;
+        new_settings.c_cc[VMIN]  = 0;
+        tcsetattr(0, TCSANOW, &new_settings);
+    }
+
+    void IOConsole::resetTerminalMode()
+    {
+        tcsetattr(0, TCSANOW, IOConsole::originalTerminalSettings_);
     }
 
     void IOConsole::getTerminalSize()
@@ -332,63 +388,11 @@ namespace orxonox
         this->terminalHeight_ = 24;
     }
 
-#elif defined(ORXONOX_PLATFORM_WINDOWS)
-
-    IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false))
-        , buffer_(shell_->getInputBuffer())
-    {
-        this->setTerminalMode();
-    }
-
-    IOConsole::~IOConsole()
-    {
-    }
-
-    void IOConsole::setTerminalMode()
-    {
-    }
-
-    void IOConsole::resetTerminalMode()
-    {
-    }
-
-    void IOConsole::update(const Clock& time)
-    {
-    }
-
-    void IOConsole::printLogText(const std::string& text)
-    {
-    }
-
-    void IOConsole::printInputLine()
-    {
-    }
-
-    void IOConsole::printStatusLines()
-    {
-    }
-
-#endif /* ORXONOX_PLATFORM_UNIX */
-
     // ###############################
     // ###  ShellListener methods  ###
     // ###############################
 
-    /**
-    @brief
-        Called if all output-lines have to be redrawn.
-    */
-    void IOConsole::linesChanged()
-    {
-        // Method only gets called upon start to draw all the lines
-        // But we are using std::cout anyway, so do nothing here
-    }
-
-    /**
-    @brief
-        Called if only the last output-line has changed.
-    */
+    //! Called if only the last output-line has changed
     void IOConsole::onlyLastLineChanged()
     {
         // Save cursor position and move it to the beginning of the first output line
@@ -402,10 +406,7 @@ namespace orxonox
         std::cout.flush();
     }
 
-    /**
-    @brief
-        Called if a new output-line was added.
-    */
+    //! Called if a new output-line was added
     void IOConsole::lineAdded()
     {
         // Move cursor to the bottom line
@@ -428,44 +429,114 @@ namespace orxonox
         this->printStatusLines();
         std::cout.flush();
     }
-
-    /**
-    @brief
-        Called if the text in the input-line has changed.
-    */
-    void IOConsole::inputChanged()
-    {
-        this->printInputLine();
-        std::cout.flush();
-    }
-
-    /**
-    @brief
-        Called if the position of the cursor in the input-line has changed.
-    */
-    void IOConsole::cursorChanged()
-    {
-        this->printInputLine();
-        std::cout.flush();
-    }
-
-    /**
-    @brief
-        Called if a command is about to be executed
-    */
-    void IOConsole::executed()
-    {
-        this->shell_->addOutputLine(this->promptString_ + this->shell_->getInput());
-    }
-
-
-    /**
-    @brief
-        Called if the console gets closed.
-    */
-    void IOConsole::exit()
-    {
-        // Exit is not an option, IOConsole always exists
-    }
-
 }
+
+#elif defined(ORXONOX_PLATFORM_WINDOWS)
+// ##################################
+// ###   Windows Implementation   ###
+// ##################################
+
+namespace orxonox
+{
+    IOConsole::IOConsole()
+        : shell_(new Shell("IOConsole", false, true))
+        , buffer_(shell_->getInputBuffer())
+        , bStatusPrinted_(false)
+        , promptString_("orxonox # ")
+    {
+/*
+        this->setTerminalMode();
+        this->shell_->registerListener(this);
+
+        // Manually set the widths of the individual status lines
+        this->statusLineWidths_.push_back(29);
+        this->statusLineMaxWidth_ = 29;
+
+        this->getTerminalSize();
+        this->lastTerminalWidth_ = this->terminalWidth_;
+        this->lastTerminalHeight_ = this->terminalHeight_;
+
+        // Disable standard std::cout logging
+        OutputHandler::getInstance().disableCout();
+*/
+    }
+
+    IOConsole::~IOConsole()
+    {
+/*
+        resetTerminalMode();
+        this->shell_->destroy();
+
+        // Enable standard std::cout logging again
+        OutputHandler::getInstance().enableCout();
+*/
+    }
+
+    void IOConsole::update(const Clock& time)
+    {
+/*
+        unsigned char c = 0;
+        while (std::cin.good())
+        {
+            c = std::cin.get();
+            if (std::cin.bad())
+                break;
+        }
+        // Reset error flags in std::cin
+        std::cin.clear();
+
+        // Determine terminal width and height
+        this->lastTerminalWidth_ = this->terminalWidth_;
+        this->lastTerminalHeight_ = this->terminalHeight_;
+        this->getTerminalSize();
+*/
+    }
+
+    void IOConsole::printLogText(const std::string& text)
+    {
+    }
+
+    void IOConsole::printInputLine()
+    {
+    }
+
+    void IOConsole::printStatusLines()
+    {
+/*
+        if (this->willPrintStatusLines())
+        {
+            this->bStatusPrinted_ = true;
+        }
+        else
+            this->bStatusPrinted_ = false;
+*/
+    }
+
+    void IOConsole::setTerminalMode()
+    {
+    }
+
+    void IOConsole::resetTerminalMode()
+    {
+    }
+
+    void IOConsole::getTerminalSize()
+    {
+    }
+
+    // ###############################
+    // ###  ShellListener methods  ###
+    // ###############################
+
+    //! Called if only the last output-line has changed
+    void IOConsole::onlyLastLineChanged()
+    {
+    }
+
+    //! Called if a new output-line was added
+    void IOConsole::lineAdded()
+    {
+    }
+}
+
+#endif /* ORXONOX_PLATFORM_UNIX */

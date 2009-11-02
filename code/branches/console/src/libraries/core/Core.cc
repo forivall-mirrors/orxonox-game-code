@@ -217,6 +217,9 @@ namespace orxonox
         // Required as well for the config values
         this->languageInstance_.reset(new Language());
 
+        // create persistent io console
+        this->ioConsole_.reset(new IOConsole());
+
         // creates the class hierarchy for all classes with factories
         Identifier::createClassHierarchy();
 
@@ -230,9 +233,6 @@ namespace orxonox
         // initialise Tcl
         this->tclBind_.reset(new TclBind(PathConfig::getDataPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
-
-        // create persistent io console
-        this->ioConsole_.reset(new IOConsole());
 
         // Create singletons that always exist (in other libraries)
         this->rootScope_.reset(new Scope<ScopeID::Root>());

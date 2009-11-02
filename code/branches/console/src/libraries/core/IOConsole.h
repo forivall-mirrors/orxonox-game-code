@@ -32,12 +32,14 @@
 
 #include "CorePrereqs.h"
 
-#include <queue>
-#include <boost/scoped_ptr.hpp>
+#include <string>
+#include <vector>
 #include "util/Singleton.h"
 #include "core/Shell.h"
 
+#ifdef ORXONOX_PLATFORM_UNIX
 struct termios;
+#endif
 
 namespace orxonox
 {
@@ -52,11 +54,11 @@ namespace orxonox
         void update(const Clock& time);
 
     private:
-
         void setTerminalMode();
         void resetTerminalMode();
         void getTerminalSize();
         bool willPrintStatusLines();
+        int extractLogLevel(std::string* text);
 
         void printLogText(const std::string& line);
         void printInputLine();
@@ -70,10 +72,8 @@ namespace orxonox
         void cursorChanged();
         void executed();
         void exit();
-
         Shell*                  shell_;
         InputBuffer*            buffer_;
-        termios*                originalTerminalSettings_;
         unsigned int            terminalWidth_;
         unsigned int            terminalHeight_;
         unsigned int            lastTerminalWidth_;
@@ -84,6 +84,10 @@ namespace orxonox
         unsigned int            statusLineMaxWidth_;
         const std::string       promptString_;
         static const unsigned   minOutputLines_ = 3;
+
+#ifdef ORXONOX_PLATFORM_UNIX
+        termios*                originalTerminalSettings_;
+#endif
 
         static IOConsole* singletonPtr_s;
     };

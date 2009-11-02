@@ -335,6 +335,14 @@ namespace orxonox
     }
 
     /**
+        @brief Called if a command is about to be executed
+    */
+    void InGameConsole::executed()
+    {
+        this->shell_->addOutputLine(this->shell_->getInput());
+    }
+
+    /**
         @brief Called if the console gets closed.
     */
     void InGameConsole::exit()

@@ -120,6 +120,27 @@ namespace orxonox
     };
 
 
+    /////////////////////////
+    ///// ConsoleWriter /////
+    /////////////////////////
+    /**
+    @brief
+        Writes the output to std::cout.
+    @note
+        This listener will usually be disable once an actual shell with console is instantiated.
+    */
+    class ConsoleWriter : public OutputListener
+    {
+    public:
+        //! Only assigns the output stream with std::cout
+        ConsoleWriter()
+            : OutputListener("consoleLog")
+        {
+            this->outputStream_ = &std::cout;
+        }
+    };
+
+
     ///////////////////////////
     ///// MemoryLogWriter /////
     ///////////////////////////
@@ -175,10 +196,22 @@ namespace orxonox
     OutputHandler::OutputHandler()
         : outputLevel_(OutputLevel::Verbose)
     {
+#ifdef ORXONOX_RELEASE
+        const OutputLevel::Value defaultLevelConsole = OutputLevel::Error;
+        const OutputLevel::Value defaultLevelLogFile = OutputLevel::Info;
+#else
+        const OutputLevel::Value defaultLevelConsole = OutputLevel::Info;
+        const OutputLevel::Value defaultLevelLogFile = OutputLevel::Debug;
+#endif
+
         this->logFile_ = new LogFileWriter();
         // Use default level until we get the configValue from the Core
-        this->logFile_->softDebugLevel_ = OutputLevel::Debug;
+        this->logFile_->softDebugLevel_ = defaultLevelLogFile;
         this->registerOutputListener(this->logFile_);
+
+        this->consoleWriter_ = new ConsoleWriter();
+        this->consoleWriter_->softDebugLevel_ = defaultLevelConsole;
+        this->registerOutputListener(this->consoleWriter_);
 
         this->output_  = new MemoryLogWriter();
         // We capture as much input as the listener with the highest level
@@ -222,6 +255,16 @@ namespace orxonox
     void OutputHandler::setLogPath(const std::string& path)
     {
         this->logFile_->setLogPath(path);
+    }
+
+    void OutputHandler::disableCout()
+    {
+        this->unregisterOutputListener(this->consoleWriter_);
+    }
+
+    void OutputHandler::enableCout()
+    {
+        this->registerOutputListener(this->consoleWriter_);
     }
 
     OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorBegin() const

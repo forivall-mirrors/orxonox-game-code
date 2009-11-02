@@ -73,6 +73,7 @@ namespace orxonox
 
     // Forward declarations for classes in the source file
     class LogFileWriter;
+    class ConsoleWriter;
     class MemoryLogWriter;
 
     /**
@@ -128,6 +129,10 @@ namespace orxonox
 
             //! Set the log path once the program has been properly initialised
             void setLogPath(const std::string& path);
+            //! Disables the std::cout stream for output
+            void disableCout();
+            //! Enables the std::cout stream for output (startup behaviour)
+            void enableCout();
 
             //! Sets the level of the incoming output and returns the OutputHandler
             inline OutputHandler& setOutputLevel(int level)
@@ -209,11 +214,12 @@ namespace orxonox
             ~OutputHandler();
             OutputHandler(const OutputHandler& rhs); //! Unused and undefined
 
-            std::list<OutputListener*> listeners_; //!< Array with all registered output listeners
-            int outputLevel_;                      //!< The level of the incoming output
-            LogFileWriter* logFile_;               //!< Listener that writes to the log file
-            MemoryLogWriter* output_;              //!< Listener that Stores ALL output below the current soft debug level
-            static int softDebugLevel_s;           //!< Maximum of all soft debug levels. @note This is only static for faster access
+            std::list<OutputListener*> listeners_;        //!< Array with all registered output listeners
+            int                        outputLevel_;      //!< The level of the incoming output
+            LogFileWriter*             logFile_;          //!< Listener that writes to the log file
+            ConsoleWriter*             consoleWriter_;    //!< Listener for std::cout (just program beginning)
+            MemoryLogWriter*           output_;           //!< Listener that Stores ALL output below the current soft debug level
+            static int                 softDebugLevel_s;  //!< Maximum of all soft debug levels. @note This is only static for faster access
     };
 
     /**
