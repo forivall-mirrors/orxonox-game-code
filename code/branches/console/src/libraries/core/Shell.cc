@@ -30,6 +30,7 @@
 
 #include "util/OutputHandler.h"
 #include "util/StringUtils.h"
+#include "util/SubString.h"
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
@@ -191,9 +192,14 @@ namespace orxonox
 
     void Shell::addOutputLine(const std::string& line, int level)
     {
-        if (level <= this->softDebugLevel_)
-            this->outputLines_.push_front(line);
-        this->updateListeners<&ShellListener::lineAdded>();
+        // Make sure we really only have one line per line (no new lines!)
+        SubString lines(line, '\n');
+        for (unsigned i = 0; i < lines.size(); ++i)
+        {
+            if (level <= this->softDebugLevel_)
+                this->outputLines_.push_front(lines[i]);
+            this->updateListeners<&ShellListener::lineAdded>();
+        }
     }
 
     void Shell::clearOutput()
