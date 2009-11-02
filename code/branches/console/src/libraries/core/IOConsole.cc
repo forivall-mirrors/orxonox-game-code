@@ -44,6 +44,8 @@
 
 #ifdef ORXONOX_PLATFORM_UNIX
 #include <termios.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
 #endif
 
 namespace orxonox
@@ -73,8 +75,12 @@ namespace orxonox
         this->shell_->registerListener(this);
 
         // Manually set the widths of the individual status lines
-        this->statusLineWidths_.push_back(20);
-        this->statusLineMaxWidth_ = 20;
+        this->statusLineWidths_.push_back(29);
+        this->statusLineMaxWidth_ = 29;
+
+        this->getTerminalSize();
+        this->lastTerminalWidth_ = this->terminalWidth_;
+        this->lastTerminalHeight_ = this->terminalHeight_;
     }
 
     IOConsole::~IOConsole()
@@ -191,17 +197,30 @@ namespace orxonox
             this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, '\033', 0));
 
         // Determine terminal width and height
+        this->lastTerminalWidth_ = this->terminalWidth_;
+        this->lastTerminalHeight_ = this->terminalHeight_;
         this->getTerminalSize();
+
+        int heightDiff = this->terminalHeight_ - this->lastTerminalHeight_;
+        if (this->bStatusPrinted_ && heightDiff < 0)
+        {
+            // Terminal width has shrinked. The cursor will still be on the input line,
+            // but that line might very well be the last
+            int newLines = std::min((int)this->statusLineWidths_.size(), -heightDiff);
+            std::cout << std::string(newLines, '\n');
+            // Move cursor up again
+            std::cout << "\033[" << newLines << 'F';
+        }
 
         if (!this->bStatusPrinted_ && this->willPrintStatusLines())
         {
             // Print new lines to make way for status lines
             std::cout << std::string(this->statusLineWidths_.size(), '\n');
             // Move cursor up again
-            std::cout << "\033[" << this->statusLineWidths_.size() << 'A';
+            std::cout << "\033[" << this->statusLineWidths_.size() << 'F';
             this->bStatusPrinted_ = true;
         }
-        // Move cursor horizontally and erase status and input lines
+        // Erase status and input lines
         std::cout << "\033[1G\033[J";
         this->printInputLine();
         this->printStatusLines();
@@ -392,14 +411,16 @@ namespace orxonox
         // Move cursor to the bottom line
         if (this->bStatusPrinted_)
             std::cout << "\033[" << this->statusLineWidths_.size() << 'E';
-        // Create the new line on the screen
-        std::cout << '\n';
+        // Create new lines on the screen
+        int newLines = this->shell_->getNewestLineIterator()->size() / this->terminalWidth_ + 1;
+        std::cout << std::string(newLines, '\n');
         // Move cursor to the beginning of the new (last) output line
-        std::cout << "\033[" << (1 + this->statusLineWidths_.size()) << 'F';
+        std::cout << "\033[" << (newLines + this->statusLineWidths_.size()) << 'F';
         // Erase screen from here
         std::cout << "\033[J";
         // Print the new output line
-        this->printLogText(*(this->shell_->getNewestLineIterator()));
+        for (int i = 0; i < newLines; ++i)
+            this->printLogText(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
         // Move cursor down
         std::cout << "\033[1E";
         // Print status and input lines

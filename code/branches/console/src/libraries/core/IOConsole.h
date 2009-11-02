@@ -76,6 +76,8 @@ namespace orxonox
         termios*                originalTerminalSettings_;
         unsigned int            terminalWidth_;
         unsigned int            terminalHeight_;
+        unsigned int            lastTerminalWidth_;
+        unsigned int            lastTerminalHeight_;
         bool                    bPrintStatusLine_;
         bool                    bStatusPrinted_;
         std::vector<unsigned>   statusLineWidths_;
