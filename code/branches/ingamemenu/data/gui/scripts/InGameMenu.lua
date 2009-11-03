@@ -22,7 +22,14 @@ function P.button_quit_clicked(e)
 end
 
 function P.button_mainmenu_clicked(e)
+    orxonox.Game:getInstance():popState()
+    orxonox.Game:getInstance():popState()
+    orxonox.Game:getInstance():requestState("mainmenu")
     orxonox.CommandExecutor:execute("showGUI MainMenu")
+    orxonox.CommandExecutor:execute("hideGUI InGameMenu")
+end
+
+function P.button_return_clicked(e)
     orxonox.CommandExecutor:execute("hideGUI InGameMenu")
 end
 

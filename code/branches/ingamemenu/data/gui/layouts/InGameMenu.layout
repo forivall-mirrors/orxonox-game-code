@@ -9,7 +9,7 @@
             <Property Name="Font" Value="BlueHighway-12" />
             <Property Name="Text" Value="MainMenu" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.45,0},{0.4,0},{0.55,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.2,0},{0.6,0},{0.3,0}}" />
             <Property Name="Alpha" Value="0.7" />
             <Event Name="Clicked" Function="InGameMenu.button_mainmenu_clicked"/>
         </Window>
@@ -17,9 +17,17 @@
             <Property Name="Font" Value="BlueHighway-12" />
             <Property Name="Text" Value="Quit" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.6,0},{0.45,0},{0.8,0},{0.55,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.4,0},{0.6,0},{0.5,0}}" />
             <Property Name="Alpha" Value="0.7" />
             <Event Name="Clicked" Function="InGameMenu.button_quit_clicked"/>
+        </Window>
+        <Window Type="TaharezLook/Button" Name="orxonox/InGameMenu_ReturnButton" >
+            <Property Name="Font" Value="BlueHighway-12" />
+            <Property Name="Text" Value="return to Game" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6,0},{0.6,0},{0.7,0}}" />
+            <Property Name="Alpha" Value="0.7" />
+            <Event Name="Clicked" Function="InGameMenu.button_return_clicked"/>
         </Window>
     </Window>
 </GUILayout>
