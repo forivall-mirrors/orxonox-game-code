@@ -257,6 +257,11 @@ namespace orxonox
         }
     }
 
+    /*static*/ void GUIManager::hideCursor()
+    {
+        GUIManager::getInstance().executeCode("hideCursor()");
+    }
+
     void GUIManager::keyPressed(const KeyEvent& evt)
     {
         guiSystem_->injectKeyDown(evt.getKeyCode());

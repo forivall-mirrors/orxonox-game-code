@@ -70,6 +70,7 @@ namespace orxonox
         static void showGUI(const std::string& name);
         void showGUIExtra(const std::string& name, const std::string& ptr);
         static void hideGUI(const std::string& name);
+        static void hideCursor();
 
         void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->camera_; }

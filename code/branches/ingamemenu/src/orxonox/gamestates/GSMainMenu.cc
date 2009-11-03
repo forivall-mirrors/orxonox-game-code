@@ -82,6 +82,7 @@ namespace orxonox
     {
         // show main menu
         GUIManager::showGUI("MainMenu");
+        GUIManager::hideCursor();
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 
