@@ -84,6 +84,20 @@ namespace orxonox
         SUPER(AmbientSound, pause);
     }
 
+    void AmbientSound::setSource(const std::string& source)
+    {
+        if(source.find('/') == std::string.npos)
+        {
+            std::string filePath = SoundManager::getInstance().getAmbientPath(source);
+            if(!(filePath.empty()))
+            {
+                BaseSound::setSource(filePath);
+                return;
+            }
+        }
+        COUT(3) << source << ": Not a valid name! Ambient sound will not change." << std::endl;       
+    }
+
     void AmbientSound::changedActivity() 
     {
         COUT(3) << this->getSource() << ": ChangedActivity: " << this->isActive() << std::endl;

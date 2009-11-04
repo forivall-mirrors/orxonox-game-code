@@ -51,6 +51,8 @@ namespace orxonox
         virtual void stop();
         virtual void pause();
 
+        virtual void setSource(const std::string& source);
+
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedActivity();

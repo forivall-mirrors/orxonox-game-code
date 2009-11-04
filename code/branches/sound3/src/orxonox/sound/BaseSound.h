@@ -57,7 +57,7 @@ namespace orxonox
         bool isPaused();
         bool isStopped();
 
-        void setSource(const std::string& source);
+        virtual void setSource(const std::string& source);
         const std::string& getSource() { return this->source_; }
 
         bool getPlayOnLoad() { return this->bPlayOnLoad_; }

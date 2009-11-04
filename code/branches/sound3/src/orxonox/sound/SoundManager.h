@@ -52,11 +52,13 @@ namespace orxonox
         void setListenerOrientation(const Quaternion& orientation);
         void registerAmbientSound(BaseSound* newAmbient);
         void unregisterAmbientSound(BaseSound* currentAmbient);
+        const std::string& getAmbientPath(const std::string& source);
 
     private:
         ALCdevice* device_;
         ALCcontext* context_;
         std::list<BaseSound*> ambientSounds_;
+        std::string lastReqPath;
 
         static SoundManager* singletonPtr_s;
     };

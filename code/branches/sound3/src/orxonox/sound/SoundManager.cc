@@ -33,9 +33,12 @@
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/ScopeGuard.h"
+#include "util/StringUtils.h"
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
+#include "core/Resource.h"
 #include "BaseSound.h"
+#include "MoodManager.h"
 
 namespace orxonox
 {
@@ -126,10 +129,17 @@ namespace orxonox
 
     void SoundManager::unregisterAmbientSound(BaseSound* currentAmbient)
     {
+        if(currentAmbient == NULL || ambientSounds_.empty())
+        {
+            return;
+        }
         if(this->ambientSounds_.front() == currentAmbient) 
         {
             this->ambientSounds_.pop_front();
-            this->ambientSounds_.front()->replay();
+            if(!(this->ambientSounds_.empty()))
+            {
+                this->ambientSounds_.front()->replay();
+            }
         }
         else
         {
@@ -142,5 +152,17 @@ namespace orxonox
                 }
             }
         }
+    }
+
+    // Get the current mood and return the full path string to the requested sound.
+    const std::string& SoundManager::getAmbientPath(const std::string& source)
+    {
+        lastReqPath = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(lastReqPath);
+        if(fileInfo == NULL)
+        {
+            return BLANKSTRING;
+        }
+        return lastReqPath;
     }
 }

@@ -127,7 +127,7 @@ namespace orxonox
 
 	void GSMainMenu::setConfigValues()
     {
-        SetConfigValue(soundPathMain_, "ambient/mainmenu.wav")
+        SetConfigValue(soundPathMain_, "mainmenu.wav")
             .description("Contains the path to the main menu sound file.")
 			.callback(this, &GSMainMenu::reloadSound);
     }

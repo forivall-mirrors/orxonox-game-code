@@ -16,8 +16,8 @@
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
-  <AmbientSound source="ambient/mainmenu.wav" loop="true" playOnLoad="true" />
-  <AmbientSound source="ambient/CoreWave.wav" loop="true" playOnLoad="false">
+  <AmbientSound source="mainmenu.wav" loop="true" playOnLoad="true" />
+  <AmbientSound source="CoreWave.wav" loop="true" playOnLoad="false">
 	<events>
 		<activity>
 			<DistanceTrigger position="300,100,0" distance=200 target="ControllableEntity">
