@@ -49,6 +49,7 @@ extern "C" {
 #endif
 
 #include "util/Clock.h"
+#include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
@@ -87,7 +88,7 @@ namespace orxonox
 
     GUIManager* GUIManager::singletonPtr_s = 0;
 
-    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, true);
     SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
 
     /**
@@ -208,24 +209,24 @@ namespace orxonox
         The function executes the Lua function with the same name in case the GUIManager is ready.
         For more details check out loadGUI_2.lua where the function presides.
     */
-    /*static*/ void GUIManager::showGUI(const std::string& name)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool showCursor)
     {
         std::pair<std::set<std::string>::iterator,bool> result = GUIManager::getInstance().showingGUIs_.insert(name);
         if(result.second == false) //!< GUI already showing.
             return;
         if(GUIManager::getInstance().showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
         {
-            GUIManager::getInstance().executeCode("showCursor()");
+//             GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().enterState("guiMouseOnly");
         }
-        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\")");
+        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(showCursor) + ")");
     }
 
     /**
     @brief
         Hack-ish. Needed for GUIOverlay.
     */
-    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr)
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool showCursor)
     {
         std::pair<std::set<std::string>::iterator,bool> result = this->showingGUIs_.insert(name);
         if(result.second == false) //!< GUI already showing.
@@ -235,7 +236,7 @@ namespace orxonox
             this->executeCode("showCursor()");
             InputManager::getInstance().enterState("guiMouseOnly");
         }
-        this->executeCode("showGUI(\"" + name + "\", " + ptr + ")");
+        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
     }
 
     /**
@@ -255,11 +256,6 @@ namespace orxonox
             GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().leaveState("guiMouseOnly");
         }
-    }
-
-    /*static*/ void GUIManager::hideCursor()
-    {
-        GUIManager::getInstance().executeCode("hideCursor()");
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)
