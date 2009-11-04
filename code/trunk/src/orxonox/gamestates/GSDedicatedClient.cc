@@ -79,7 +79,7 @@ namespace orxonox
         this->setTerminalMode();
 #endif
 
-        this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLineLine::getValue("port"));
+        this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLineParser::getValue("port"));
         COUT(0) << "Loading scene in client mode" << std::endl;
 
         if( !client_->establishConnection() )
