@@ -33,6 +33,7 @@
 
 #include "HumanController.h"
 #include "overlays/OrxonoxOverlay.h"
+#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
@@ -47,10 +48,13 @@ namespace orxonox
             virtual void yaw(const Vector2& value);
             virtual void pitch(const Vector2& value);
 
+            virtual void doFire(unsigned int firemode);
+
         private:
             float                       currentYaw_;
             float                       currentPitch_;
             OrxonoxOverlay              *CrossHairOverlay;
+            float			overlaySize;
     };
 }
 

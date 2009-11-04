@@ -55,7 +55,8 @@ namespace orxonox
             virtual void yaw(const Vector2& value);
             virtual void pitch(const Vector2& value);
 
-            static void fire(unsigned int firemode);
+            static void fire(unsigned int firemode) { HumanController::localController_s->doFire(firemode); }
+            virtual void doFire(unsigned int firemode);
             static void reload();
 
             static void boost();
@@ -78,7 +79,7 @@ namespace orxonox
             //friend class, for mouselook
             friend class Map;
 
-        private:
+        protected:
             static HumanController* localController_s;
     };
 }

@@ -142,7 +142,7 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->rotateRoll(value);
     }
 
-    void HumanController::fire(unsigned int firemode)
+    void HumanController::doFire(unsigned int firemode)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->fire(firemode);
