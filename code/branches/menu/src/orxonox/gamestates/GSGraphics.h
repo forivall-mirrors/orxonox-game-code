@@ -56,8 +56,6 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
-        void toggleGUI();
-
     private:
     };
 }

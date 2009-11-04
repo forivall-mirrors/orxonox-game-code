@@ -5,6 +5,7 @@
     <Property Name="Image" Value="set:MainMenuBackground image:Background"/>
     <Property Name="FrameEnabled" Value="set:true"/>
     <Property Name="BackgroundEnabled" Value="set:false"/>
+    <Property Name="InheritsAlpha" Value="False" />
  
         <Window Type="TaharezLook/Button" Name="orxonox/StandaloneButton">
             <Property Name="UnifiedPosition" Value="{{0.11,0},{0.3,0}}"/>

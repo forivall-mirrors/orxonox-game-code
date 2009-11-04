@@ -13,6 +13,11 @@ system:setDefaultFont("BlueHighway-12")
 system:setDefaultTooltip("TaharezLook/Tooltip")
 
 loadedGUIs = {}
+cursorVisibility = {}
+activeSheets = {}
+nrOfActiveSheets = 0
+root = nil
+bShowsCursor = false
 
 -- loads the GUI with the specified filename
 -- be sure to set the global variable "filename" before calling this function
@@ -34,51 +39,93 @@ function loadGUI(filename)
     return loadedGui
 end
 
-function showGUI(filename, ptr)
-    gui = showGUI(filename)
+function showGUI(filename, bCursorVisible, ptr)
+    gui = showGUI(filename, bCursorVisible)
     gui.overlay = ptr
 end
 
 -- shows the specified and loads it if not loaded already
 -- be sure to set the global variable "filename" before calling this function
-function showGUI(filename)
-    if current == nil or current.filename ~= filename then
-        current = loadedGUIs[filename]
-        if current == nil then
-            current = loadGUI(filename)
-        end
-        system:setGUISheet(current.window)
+function showGUI(filename, bCursorVisible)
+--     bCursorVisibile=false
+    if bCursorVisible == nil then
+        cursorVisibility= true
     end
-    current:show()
-    showing = true
-    return current
-end
 
-function toggleGUI()
-    if showing == true then
-        current:hide()
-        cursor:hide()
-        showing = false
-    else
-        current:show()
-        cursor:show()
-        showing = true
+    if root == nil then
+        root = winMgr:createWindow("TaharezLook/StaticImage", "AbsoluteRootWindow")
+        root:setProperty("Alpha", "0.0")
+        root:setSize(CEGUI.UVector2(CEGUI.UDim(1.0,0),CEGUI.UDim(1.0,0)))
+        system:setGUISheet(root)
     end
-    return showing
+
+    local currentGUI = loadedGUIs[filename]
+    if(currentGUI == nil) then
+        currentGUI = loadGUI(filename)
+    end
+
+    if(root:isChild(currentGUI.window)) then
+        root:removeChildWindow(currentGUI.window)
+    end
+    root:addChildWindow(currentGUI.window)
+
+    if bCursorVisible then
+        showCursor()
+    else
+        hideCursor()
+    end
+    cursorVisibility[filename]=bCursorVisible
+    
+    nrOfActiveSheets = nrOfActiveSheets + 1
+    table.insert(activeSheets, filename)
+    activeSheets[nrOfActiveSheets] = filename
+    
+    currentGUI:show()
+    showing = true
+    return currentGUI
 end
 
 function hideCursor()
-    cursor:hide()
+    if bShowsCursor==true then
+        bShowsCursor=false
+        cursor:hide()
+    end
 end
 
 function showCursor()
-    cursor:show()
+    if bShowsCursor==false then
+        bShowsCursor=true
+        cursor:show()
+    end
 end
 
 function hideGUI(filename)
-    current = loadedGUIs[filename]
-    if current ~= nil then
-        current:hide()
-        showing = false
+    local currentGUI = loadedGUIs[filename]
+    if currentGUI == nil then
+        return
     end
+    currentGUI:hide()
+    root:removeChildWindow(currentGUI.window)
+    showing = false
+    i=1
+    while activeSheets[i] do
+        if activeSheets[i+1] == nil then
+            if activeSheets[i-1] ~= nil then
+                if cursorVisibility[ activeSheets[i-1] ] == true then
+                    showCursor()
+                else
+                    hideCursor()
+                end
+            else
+                hideCursor()
+            end
+        end
+        if activeSheets[i] == filename then
+            table.remove( activeSheets, i )
+            nrOfActiveSheets = nrOfActiveSheets-1
+        else
+            i = i+1
+        end
+    end
+    cursorVisibility[filename] = nil -- remove the cursor visibility of the current gui from the table
 end

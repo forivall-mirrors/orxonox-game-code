@@ -81,7 +81,7 @@ namespace orxonox
     void GSMainMenu::activate()
     {
         // show main menu
-        GUIManager::getInstance().showGUI("MainMenu");
+        GUIManager::getInstance().showGUI("MainMenu", false);
         GUIManager::getInstance().setCamera(this->camera_);
         GraphicsManager::getInstance().setCamera(this->camera_);
 
@@ -112,6 +112,7 @@ namespace orxonox
         InputManager::getInstance().leaveState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
+        GUIManager::hideGUI("MainMenu");
         GraphicsManager::getInstance().setCamera(0);
     }
 

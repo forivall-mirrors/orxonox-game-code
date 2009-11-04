@@ -57,9 +57,10 @@
 */
 #define DeclareGameState(className, stateName, bIgnoreTickTime, bGraphicsMode) \
     static bool BOOST_PP_CAT(bGameStateDummy_##className, __LINE__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
-
+// tolua_begin
 namespace orxonox
 {
+// tolua_end
     class GameConfiguration;
 
     //! Helper object required before GameStates are being constructed
@@ -77,8 +78,11 @@ namespace orxonox
     @remark
         You should only create this singleton once because it owns the Core class! (see remark there)
     */
-    class _CoreExport Game : public Singleton<Game>
+// tolua_begin
+    class _CoreExport Game
+        : public Singleton<Game>
     {
+// tolua_end
         friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
         typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
@@ -94,9 +98,11 @@ namespace orxonox
         void run();
         void stop();
 
-        void requestState(const std::string& name);
-        void requestStates(const std::string& names);
-        void popState();
+        static Game& getInstance(){ return Singleton<Game>::getInstance(); } // tolua_export
+
+        void requestState(const std::string& name); //tolua_export
+        void requestStates(const std::string& names); //tolua_export
+        void popState(); //tolua_export
 
         const Clock& getGameClock() { return *this->gameClock_; }
 
@@ -182,7 +188,7 @@ namespace orxonox
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonPtr_s;        //!< Pointer to the Singleton
-    };
+    }; //tolua_export
 
     template <class T>
     /*static*/ bool Game::declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bGraphicsMode)
@@ -208,6 +214,6 @@ namespace orxonox
         // just a required dummy return value
         return true;
     }
-}
+} //tolua_export
 
 #endif /* _Game_H__ */

@@ -163,7 +163,7 @@ namespace orxonox
             std::string origin;
             if (sourceFileInfo != NULL)
                 origin = " originating from " + sourceFileInfo_->filename;
-            COUT(2) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
+            COUT(1) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
             // return value is nil
             lua_pushnil(luaState_);
         }

@@ -33,6 +33,7 @@
 #include "CorePrereqs.h"
 
 #include <map>
+#include <set>
 #include <string>
 #include <CEGUIForwardRefs.h>
 #include <boost/scoped_ptr.hpp>
@@ -64,10 +65,11 @@ namespace orxonox
         GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen);
         ~GUIManager();
 
-        void update(const Clock& time);
+        void update(const Clock& time); 
 
-        void showGUI(const std::string& name);
-        void executeCode(const std::string& str);
+        static void showGUI(const std::string& name, bool showCursor=true);
+        void showGUIExtra(const std::string& name, const std::string& ptr, bool showCursor=true);
+        static void hideGUI(const std::string& name);
 
         void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->camera_; }
@@ -81,6 +83,10 @@ namespace orxonox
 
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
+
+        std::set<std::string> showingGUIs_; //!< Keeps track of all the GUIs that are currently showing.
+
+        void executeCode(const std::string& str);
 
         // keyHandler functions
         void keyPressed (const KeyEvent& evt);

@@ -5,6 +5,7 @@
     <Property Name="Image" Value="set:MainMenuBackground image:Background"/>
     <Property Name="FrameEnabled" Value="set:true"/>
     <Property Name="BackgroundEnabled" Value="set:false"/>
+    <Property Name="InheritsAlpha" Value="False" />
 
         <Window Type="TaharezLook/Titlebar" Name="orxonox/QuestGUI/Title">
             <Property Name="UnifiedPosition" Value="{{0.05,0},{0.05,0}}"/>
