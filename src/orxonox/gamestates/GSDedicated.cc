@@ -35,7 +35,7 @@
 #include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Sleep.h"
-#include "core/CommandLineParse.h"
+#include "core/CommandLineParser.h"
 #include "core/CommandExecutor.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
