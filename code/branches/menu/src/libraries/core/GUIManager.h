@@ -67,9 +67,11 @@ namespace orxonox
 
         void update(const Clock& time); 
 
-        static void showGUI(const std::string& name, bool showCursor=true);
-        void showGUIExtra(const std::string& name, const std::string& ptr, bool showCursor=true);
+        static void showGUI(const std::string& name, bool hidePrevious=false, bool showCursor=true);
+        void showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious=false, bool showCursor=true);
         static void hideGUI(const std::string& name);
+        void setToggleMode(const bool& mode);
+        void setBackground(const std::string& name);
 
         void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->camera_; }
@@ -110,6 +112,7 @@ namespace orxonox
         Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
 
         static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
+        bool                                 bToggleMode_;
 
     };
 }

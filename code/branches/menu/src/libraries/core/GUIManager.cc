@@ -88,7 +88,7 @@ namespace orxonox
 
     GUIManager* GUIManager::singletonPtr_s = 0;
 
-    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, true);
+    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, false).defaultValue(2, true);
     SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
 
     /**
@@ -209,7 +209,7 @@ namespace orxonox
         The function executes the Lua function with the same name in case the GUIManager is ready.
         For more details check out loadGUI_2.lua where the function presides.
     */
-    /*static*/ void GUIManager::showGUI(const std::string& name, bool showCursor)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool hidePrevious, bool showCursor)
     {
         std::pair<std::set<std::string>::iterator,bool> result = GUIManager::getInstance().showingGUIs_.insert(name);
         if(result.second == false) //!< GUI already showing.
@@ -219,14 +219,15 @@ namespace orxonox
 //             GUIManager::getInstance().executeCode("showCursor()");
             InputManager::getInstance().enterState("guiMouseOnly");
         }
-        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(showCursor) + ")");
+        COUT(0) << "showGUI" << endl;
+        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ")");
     }
 
     /**
     @brief
         Hack-ish. Needed for GUIOverlay.
     */
-    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool showCursor)
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious, bool showCursor)
     {
         std::pair<std::set<std::string>::iterator,bool> result = this->showingGUIs_.insert(name);
         if(result.second == false) //!< GUI already showing.
@@ -236,7 +237,7 @@ namespace orxonox
             this->executeCode("showCursor()");
             InputManager::getInstance().enterState("guiMouseOnly");
         }
-        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
+        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
     }
 
     /**
@@ -256,6 +257,17 @@ namespace orxonox
             GUIManager::getInstance().executeCode("hideCursor()");
             InputManager::getInstance().leaveState("guiMouseOnly");
         }
+    }
+    
+    void GUIManager::setToggleMode(const bool& mode)
+    {
+        this->bToggleMode_ = mode;
+        this->executeCode("setToggleMode(" + multi_cast<std::string>(mode) + ")");
+    }
+    
+    void GUIManager::setBackground(const std::string& name)
+    {
+        this->executeCode("setBackground(\"" + name + "\")");
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)
