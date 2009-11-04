@@ -30,7 +30,7 @@
 
 #include "util/Clock.h"
 #include "util/Exception.h"
-#include "core/CommandLine.h"
+#include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Client.h"
@@ -55,7 +55,7 @@ namespace orxonox
     {
         GameMode::setIsClient(true);
 
-        this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+        this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLineParser::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");

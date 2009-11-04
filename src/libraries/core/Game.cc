@@ -43,7 +43,7 @@
 #include "util/ScopeGuard.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"
-#include "CommandLine.h"
+#include "CommandLineParser.h"
 #include "ConsoleCommand.h"
 #include "Core.h"
 #include "CoreIncludes.h"

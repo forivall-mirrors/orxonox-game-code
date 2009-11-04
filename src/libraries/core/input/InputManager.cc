@@ -47,7 +47,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "core/CommandLine.h"
+#include "core/CommandLineParser.h"
 #include "core/Functor.h"
 #include "core/GraphicsManager.h"
 
@@ -169,7 +169,7 @@ namespace orxonox
 
         if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
         {
-            if (CommandLine::getValue("keyboard_no_grab").getBool())
+            if (CommandLineParser::getValue("keyboard_no_grab").getBool())
                 paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
             else
                 paramList.insert(std::make_pair("x11_keyboard_grab", "true"));

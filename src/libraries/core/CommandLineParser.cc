@@ -26,7 +26,7 @@
  *
  */
 
-#include "CommandLine.h"
+#include "CommandLineParser.h"
 
 #include <algorithm>
 #include <sstream>
@@ -87,18 +87,18 @@ namespace orxonox
     @brief
         Destructor destroys all CommandLineArguments with it.
     */
-    CommandLine::~CommandLine()
+    CommandLineParser::~CommandLineParser()
     {
-        CommandLine::destroyAllArguments();
+        CommandLineParser::destroyAllArguments();
     }
 
     /**
     @brief
         Returns a unique instance (Meyers Singleton).
     */
-    CommandLine& CommandLine::_getInstance()
+    CommandLineParser& CommandLineParser::_getInstance()
     {
-        static CommandLine instance;
+        static CommandLineParser instance;
         return instance;
     }
 
@@ -107,7 +107,7 @@ namespace orxonox
         Destroys all command line arguments. This should be called at the end
         of main. Do not use before that.
     */
-    void CommandLine::destroyAllArguments()
+    void CommandLineParser::destroyAllArguments()
     {
         for (std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.begin();
             it != _getInstance().cmdLineArgs_.end(); ++it)
@@ -126,7 +126,7 @@ namespace orxonox
     @param arguments
         Vector of space separated strings.
     */
-    void CommandLine::_parse(const std::vector<std::string>& arguments, bool bParsingFile)
+    void CommandLineParser::_parse(const std::vector<std::string>& arguments, bool bParsingFile)
     {
         try
         {
@@ -231,7 +231,7 @@ namespace orxonox
         catch (const ArgumentException& ex)
         {
             COUT(0) << "Could not parse command line (including additional files): " << ex.what() << std::endl;
-            COUT(0) << CommandLine::getUsageInformation() << std::endl;
+            COUT(0) << CommandLineParser::getUsageInformation() << std::endl;
             throw GeneralException("");
         }
     }
@@ -244,7 +244,7 @@ namespace orxonox
     @param value
         String containing the value
     */
-    void CommandLine::checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile)
+    void CommandLineParser::checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.find(name);
         if (it == cmdLineArgs_.end())
@@ -261,7 +261,7 @@ namespace orxonox
     @param value
         String containing the value
     */
-    void CommandLine::checkShortcut(const std::string& shortcut, const std::string& value, bool bParsingFile)
+    void CommandLineParser::checkShortcut(const std::string& shortcut, const std::string& value, bool bParsingFile)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgsShortcut_.find(shortcut);
         if (it == cmdLineArgsShortcut_.end())
@@ -270,9 +270,9 @@ namespace orxonox
         it->second->parse(value, bParsingFile);
     }
 
-    std::string CommandLine::getUsageInformation()
+    std::string CommandLineParser::getUsageInformation()
     {
-        CommandLine& inst = _getInstance();
+        CommandLineParser& inst = _getInstance();
         std::ostringstream infoStr;
 
         // determine maximum name size
@@ -314,7 +314,7 @@ namespace orxonox
     @note
         You shold of course not call this method before the command line has been parsed.
     */
-    const CommandLineArgument* CommandLine::getArgument(const std::string& name)
+    const CommandLineArgument* CommandLineParser::getArgument(const std::string& name)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
         if (it == _getInstance().cmdLineArgs_.end())
@@ -331,7 +331,7 @@ namespace orxonox
     @brief
         Parses only the command line for CommandLineArguments.
     */
-    void CommandLine::_parseCommandLine(const std::string& cmdLine)
+    void CommandLineParser::_parseCommandLine(const std::string& cmdLine)
     {
         std::vector<std::string> args;
         SubString tokens(cmdLine, " ", " ", false, '\\', true, '"', true, '(', ')', false);
@@ -344,9 +344,9 @@ namespace orxonox
     @brief
         Parses start.ini (or the file specified with --optionsFile) for CommandLineArguments.
     */
-    void CommandLine::_parseFile()
+    void CommandLineParser::_parseFile()
     {
-        std::string filename = CommandLine::getValue("optionsFile").getString();
+        std::string filename = CommandLineParser::getValue("optionsFile").getString();
 
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly

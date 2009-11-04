@@ -35,7 +35,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/CommandLine.h"
+#include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/LuaState.h"
 #include "ToluaBindOrxonox.h"
@@ -75,17 +75,17 @@ namespace orxonox
         game->requestState("root");
 
         // Some development hacks (not really, but in the future, this calls won't make sense anymore)
-        if (CommandLine::getValue("standalone").getBool())
+        if (CommandLineParser::getValue("standalone").getBool())
             Game::getInstance().requestStates("graphics, standalone, level");
-        else if (CommandLine::getValue("server").getBool())
+        else if (CommandLineParser::getValue("server").getBool())
             Game::getInstance().requestStates("graphics, server, level");
-        else if (CommandLine::getValue("client").getBool())
+        else if (CommandLineParser::getValue("client").getBool())
             Game::getInstance().requestStates("graphics, client, level");
-        else if (CommandLine::getValue("dedicated").getBool())
+        else if (CommandLineParser::getValue("dedicated").getBool())
             Game::getInstance().requestStates("dedicated, level");
-        else if (CommandLine::getValue("dedicatedClient").getBool())
+        else if (CommandLineParser::getValue("dedicatedClient").getBool())
             Game::getInstance().requestStates("dedicatedClient, level");
-        else if (CommandLine::getValue("console").getBool())
+        else if (CommandLineParser::getValue("console").getBool())
             Game::getInstance().requestStates("ioConsole");
         else
             Game::getInstance().requestStates("graphics, mainMenu");

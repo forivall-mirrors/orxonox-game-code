@@ -35,7 +35,7 @@
 #include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Sleep.h"
-#include "core/CommandLine.h"
+#include "core/CommandLineParse.h"
 #include "core/CommandExecutor.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
@@ -80,7 +80,7 @@ namespace orxonox
         this->setTerminalMode();
 #endif
 
-        this->server_ = new Server(CommandLine::getValue("port"));
+        this->server_ = new Server(CommandLineParser::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
 
         server_->open();
@@ -90,7 +90,7 @@ namespace orxonox
     {
         this->server_->close();
         delete this->server_;
-        
+
         closeThread_ = true;
 #ifdef ORXONOX_PLATFORM_UNIX
         std::cout << "\033[0G\033[K";
@@ -137,7 +137,7 @@ namespace orxonox
                     {
                         escapeChar = 2;
                         continue;
-                    }
+}
                     else if ( escapeChar == 2 )
                     {
                         switch (c)
