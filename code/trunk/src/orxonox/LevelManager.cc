@@ -31,7 +31,7 @@
 #include <map>
 #include <OgreResourceGroupManager.h>
 
-#include "core/CommandLine.h"
+#include "core/CommandLineParser.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
@@ -52,9 +52,9 @@ namespace orxonox
         this->setConfigValues();
 
         // check override
-        if (!CommandLine::getArgument("level")->hasDefaultValue())
+        if (!CommandLineParser::getArgument("level")->hasDefaultValue())
         {
-            ModifyConfigValue(defaultLevelName_, tset, CommandLine::getValue("level").getString());
+            ModifyConfigValue(defaultLevelName_, tset, CommandLineParser::getValue("level").getString());
         }
     }
 

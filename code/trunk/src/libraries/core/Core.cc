@@ -53,7 +53,7 @@
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
 #include "CommandExecutor.h"
-#include "CommandLine.h"
+#include "CommandLineParser.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
@@ -215,7 +215,7 @@ namespace orxonox
         }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
-        CommandLine::parseCommandLine(cmdLine);
+        CommandLineParser::parseCommandLine(cmdLine);
 
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
@@ -229,13 +229,13 @@ namespace orxonox
         OutputHandler::getOutStream().setLogPath(PathConfig::getLogPathString());
 
         // Parse additional options file now that we know its path
-        CommandLine::parseFile();
+        CommandLineParser::parseFile();
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
         // the timer though).
-        int limitToCPU = CommandLine::getValue("limitToCPU");
+        int limitToCPU = CommandLineParser::getValue("limitToCPU");
         if (limitToCPU > 0)
             setThreadAffinity(static_cast<unsigned int>(limitToCPU));
 #endif
@@ -243,7 +243,7 @@ namespace orxonox
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_.reset(new ConfigFileManager());
         this->configFileManager_->setFilename(ConfigFileType::Settings,
-            CommandLine::getValue("settingsFile").getString());
+            CommandLineParser::getValue("settingsFile").getString());
 
         // Required as well for the config values
         this->languageInstance_.reset(new Language());

@@ -53,7 +53,7 @@
 #include "SpecialConfig.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "CommandLine.h"
+#include "CommandLineParser.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
@@ -185,8 +185,8 @@ namespace orxonox
             logPath_          = specialConfig::logDevDirectory;
 
             // Check for data path override by the command line
-            if (!CommandLine::getArgument("externalDataPath")->hasDefaultValue())
-                externalDataPath_ = CommandLine::getValue("externalDataPath").getString();
+            if (!CommandLineParser::getArgument("externalDataPath")->hasDefaultValue())
+                externalDataPath_ = CommandLineParser::getValue("externalDataPath").getString();
             else
                 externalDataPath_ = specialConfig::externalDataDevDirectory;
         }
@@ -223,9 +223,9 @@ namespace orxonox
         }
 
         // Option to put all the config and log files in a separate folder
-        if (!CommandLine::getArgument("writingPathSuffix")->hasDefaultValue())
+        if (!CommandLineParser::getArgument("writingPathSuffix")->hasDefaultValue())
         {
-            std::string directory(CommandLine::getValue("writingPathSuffix").getString());
+            std::string directory(CommandLineParser::getValue("writingPathSuffix").getString());
             configPath_ = configPath_ / directory;
             logPath_    = logPath_    / directory;
         }

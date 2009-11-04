@@ -115,7 +115,7 @@ namespace orxonox
     class ClassTreeMaskNode;
     class ClassTreeMaskObjectIterator;
     class CommandEvaluation;
-    class CommandLine;
+    class CommandLineParser;
     class CommandLineArgument;
     class ConfigFile;
     class ConfigFileEntry;

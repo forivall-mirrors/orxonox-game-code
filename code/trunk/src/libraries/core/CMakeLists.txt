@@ -39,7 +39,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   # command
   CommandEvaluation.cc
   CommandExecutor.cc
-  CommandLine.cc
+  CommandLineParser.cc
   ConsoleCommand.cc
   ConsoleCommandCompilation.cc
   Executor.cc

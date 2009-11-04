@@ -36,7 +36,7 @@
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/Sleep.h"
-#include "core/CommandLine.h"
+#include "core/CommandLineParser.h"
 #include "core/CommandExecutor.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
@@ -79,7 +79,7 @@ namespace orxonox
         this->setTerminalMode();
 #endif
 
-        this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+        this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLine::getValue("port"));
         COUT(0) << "Loading scene in client mode" << std::endl;
 
         if( !client_->establishConnection() )
@@ -92,12 +92,12 @@ namespace orxonox
 
     void GSDedicatedClient::deactivate()
     {
-        if( this->client_ )
+        if (this->client_)
         {
             this->client_->closeConnection();
             delete this->client_;
         }
-        
+
         closeThread_ = true;
 #ifdef ORXONOX_PLATFORM_UNIX
         std::cout << "\033[0G\033[K";
@@ -142,7 +142,7 @@ namespace orxonox
                     {
                         escapeChar = 2;
                         continue;
-                    }
+}
                     else if ( escapeChar == 2 )
                     {
                         switch (c)
