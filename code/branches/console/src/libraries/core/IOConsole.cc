@@ -73,7 +73,7 @@ namespace orxonox
     void IOConsole::linesChanged()
     {
         // Method only gets called upon start to draw all the lines
-        // or when scrolling. But scrolling is disable and the output
+        // or when scrolling. But scrolling is disabled and the output
         // is already in std::cout when we start the IOConsole
     }
 
@@ -81,14 +81,14 @@ namespace orxonox
     void IOConsole::inputChanged()
     {
         this->printInputLine();
-        std::cout.flush();
+        this->cout_.flush();
     }
 
     //! Called if the position of the cursor in the input-line has changed
     void IOConsole::cursorChanged()
     {
         this->printInputLine();
-        std::cout.flush();
+        this->cout_.flush();
     }
 
     //! Called if a command is about to be executed
@@ -111,7 +111,6 @@ namespace orxonox
 
 #include <termios.h>
 #include <sys/ioctl.h>
-#include <sys/stat.h>
 
 namespace orxonox
 {
@@ -128,9 +127,10 @@ namespace orxonox
     IOConsole::IOConsole()
         : shell_(new Shell("IOConsole", false, true))
         , buffer_(shell_->getInputBuffer())
-        , originalTerminalSettings_(new termios())
+        , cout_(std::cout.rdbuf())
         , bStatusPrinted_(false)
         , promptString_("orxonox # ")
+        , originalTerminalSettings_(new termios())
     {
         this->setTerminalMode();
         this->shell_->registerListener(this);
@@ -145,19 +145,29 @@ namespace orxonox
 
         // Disable standard std::cout logging
         OutputHandler::getInstance().disableCout();
+        // Redirect std::cout to an ostringstream
+        // (Other part is in the initialiser list)
+        std::cout.rdbuf(this->origCout_.rdbuf());
+
+        // Make sure we make way for the status lines
+        this->update(Game::getInstance().getGameClock());
     }
 
     IOConsole::~IOConsole()
     {
+        // Empty all buffers
+        this->update(Game::getInstance().getGameClock());
         // Goto last line and create a new one
         if (this->bStatusPrinted_)
-            std::cout << "\033[" << this->statusLineWidths_.size() << 'E';
-        std::cout << std::endl;
+            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'E';
+        this->cout_ << std::endl;
 
         resetTerminalMode();
         delete this->originalTerminalSettings_;
         this->shell_->destroy();
 
+        // Restore this->cout_ redirection
+        std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard std::cout logging again
         OutputHandler::getInstance().enableCout();
     }
@@ -249,6 +259,13 @@ namespace orxonox
         if (escapeMode == EscapeMode::First)
             this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, '\033', 0));
 
+        // Process output written to std::cout
+        if (!this->origCout_.str().empty())
+        {
+            this->shell_->addOutputLine(this->origCout_.str());
+            this->origCout_.str("");
+        }
+
         // Determine terminal width and height
         this->lastTerminalWidth_ = this->terminalWidth_;
         this->lastTerminalHeight_ = this->terminalHeight_;
@@ -260,67 +277,67 @@ namespace orxonox
             // Terminal width has shrunk. The cursor will still be on the input line,
             // but that line might very well be the last
             int newLines = std::min((int)this->statusLineWidths_.size(), -heightDiff);
-            std::cout << std::string(newLines, '\n');
+            this->cout_ << std::string(newLines, '\n');
             // Move cursor up again
-            std::cout << "\033[" << newLines << 'F';
+            this->cout_ << "\033[" << newLines << 'F';
         }
 
         if (!this->bStatusPrinted_ && this->willPrintStatusLines())
         {
             // Print new lines to make way for status lines
-            std::cout << std::string(this->statusLineWidths_.size(), '\n');
+            this->cout_ << std::string(this->statusLineWidths_.size(), '\n');
             // Move cursor up again
-            std::cout << "\033[" << this->statusLineWidths_.size() << 'F';
+            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'F';
             this->bStatusPrinted_ = true;
         }
         // Erase status and input lines
-        std::cout << "\033[1G\033[J";
+        this->cout_ << "\033[1G\033[J";
         this->printInputLine();
         this->printStatusLines();
-        std::cout.flush();
+        this->cout_.flush();
     }
 
     void IOConsole::printLogText(const std::string& text)
     {
         std::string output = text;
+/*
         int level = this->extractLogLevel(&output);
 
         // Colour line
-/*
         switch (level)
         {
-        case -1: std::cout << "\033[37m"; break;
-        case  1: std::cout << "\033[91m"; break;
-        case  2: std::cout << "\033[31m"; break;
-        case  3: std::cout << "\033[34m"; break;
-        case  4: std::cout << "\033[36m"; break;
-        case  5: std::cout << "\033[35m"; break;
-        case  6: std::cout << "\033[37m"; break;
+        case -1: this->cout_ << "\033[37m"; break;
+        case  1: this->cout_ << "\033[91m"; break;
+        case  2: this->cout_ << "\033[31m"; break;
+        case  3: this->cout_ << "\033[34m"; break;
+        case  4: this->cout_ << "\033[36m"; break;
+        case  5: this->cout_ << "\033[35m"; break;
+        case  6: this->cout_ << "\033[37m"; break;
         default: break;
         }
 */
 
         // Print output line
-        std::cout << output;
+        this->cout_ << output;
 
         // Reset colour to white
-//        std::cout << "\033[37m";
+//        this->cout_ << "\033[37m";
     }
 
     void IOConsole::printInputLine()
     {
         // Set cursor to the beginning of the line and erase the line
-        std::cout << "\033[1G\033[K";
+        this->cout_ << "\033[1G\033[K";
         // Indicate a command prompt
-        std::cout << this->promptString_;
+        this->cout_ << this->promptString_;
         // Save cursor position
-        std::cout << "\033[s";
+        this->cout_ << "\033[s";
         // Print command line buffer
-        std::cout << this->shell_->getInput();
+        this->cout_ << this->shell_->getInput();
         // Restore cursor position and move it to the right
-        std::cout << "\033[u";
+        this->cout_ << "\033[u";
         if (this->buffer_->getCursorPosition() > 0)
-            std::cout << "\033[" << this->buffer_->getCursorPosition() << "C";
+            this->cout_ << "\033[" << this->buffer_->getCursorPosition() << "C";
     }
 
     void IOConsole::printStatusLines()
@@ -328,13 +345,14 @@ namespace orxonox
         if (this->willPrintStatusLines())
         {
             // Save cursor position
-            std::cout << "\033[s";
+            this->cout_ << "\033[s";
             // Move cursor down (don't create a new line here because the buffer might flush then!)
-            std::cout << "\033[1E";
-            std::cout << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
-            std::cout <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
+            this->cout_ << "\033[1E";
+            //this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
+            //this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
+            this->cout_ << "Terminal width: " << this->terminalWidth_ << ", height: " << this->terminalHeight_;
             // Restore cursor position
-            std::cout << "\033[u";
+            this->cout_ << "\033[u";
             this->bStatusPrinted_ = true;
         }
         else
@@ -396,14 +414,14 @@ namespace orxonox
     void IOConsole::onlyLastLineChanged()
     {
         // Save cursor position and move it to the beginning of the first output line
-        std::cout << "\033[s\033[1F";
+        this->cout_ << "\033[s\033[1F";
         // Erase the line
-        std::cout << "\033[K";
+        this->cout_ << "\033[K";
         // Reprint the last output line
         this->printLogText(*(this->shell_->getNewestLineIterator()));
         // Restore cursor
-        std::cout << "\033[u";
-        std::cout.flush();
+        this->cout_ << "\033[u";
+        this->cout_.flush();
     }
 
     //! Called if a new output-line was added
@@ -411,23 +429,23 @@ namespace orxonox
     {
         // Move cursor to the bottom line
         if (this->bStatusPrinted_)
-            std::cout << "\033[" << this->statusLineWidths_.size() << 'E';
+            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'E';
         // Create new lines on the screen
         int newLines = this->shell_->getNewestLineIterator()->size() / this->terminalWidth_ + 1;
-        std::cout << std::string(newLines, '\n');
+        this->cout_ << std::string(newLines, '\n');
         // Move cursor to the beginning of the new (last) output line
-        std::cout << "\033[" << (newLines + this->statusLineWidths_.size()) << 'F';
+        this->cout_ << "\033[" << (newLines + this->statusLineWidths_.size()) << 'F';
         // Erase screen from here
-        std::cout << "\033[J";
+        this->cout_ << "\033[J";
         // Print the new output line
         for (int i = 0; i < newLines; ++i)
             this->printLogText(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
         // Move cursor down
-        std::cout << "\033[1E";
+        this->cout_ << "\033[1E";
         // Print status and input lines
         this->printInputLine();
         this->printStatusLines();
-        std::cout.flush();
+        this->cout_.flush();
     }
 }
 
@@ -456,7 +474,7 @@ namespace orxonox
         this->lastTerminalWidth_ = this->terminalWidth_;
         this->lastTerminalHeight_ = this->terminalHeight_;
 
-        // Disable standard std::cout logging
+        // Disable standard this->cout_ logging
         OutputHandler::getInstance().disableCout();
 */
     }
@@ -467,7 +485,7 @@ namespace orxonox
         resetTerminalMode();
         this->shell_->destroy();
 
-        // Enable standard std::cout logging again
+        // Enable standard this->cout_ logging again
         OutputHandler::getInstance().enableCout();
 */
     }

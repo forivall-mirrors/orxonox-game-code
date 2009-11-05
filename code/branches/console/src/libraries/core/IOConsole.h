@@ -32,6 +32,7 @@
 
 #include "CorePrereqs.h"
 
+#include <sstream>
 #include <string>
 #include <vector>
 #include "util/Singleton.h"
@@ -74,6 +75,8 @@ namespace orxonox
         void exit();
         Shell*                  shell_;
         InputBuffer*            buffer_;
+        std::ostream            cout_;
+        std::ostringstream      origCout_;
         unsigned int            terminalWidth_;
         unsigned int            terminalHeight_;
         unsigned int            lastTerminalWidth_;
