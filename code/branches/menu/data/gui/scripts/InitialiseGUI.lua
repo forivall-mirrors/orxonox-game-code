@@ -60,11 +60,7 @@ function showGUI(filename, hidePrevious, bCursorVisible)
         currentGUI = loadGUI(filename)
     end
 
-    debug("test")
-    debug(currentGUI.window:getName())
-    debug(root:isChild(currentGUI.window))
     if(root:isChild(currentGUI.window)) then
-        debug("removing window")
         root:removeChildWindow(currentGUI.window)
     end
     root:addChildWindow(currentGUI.window)
