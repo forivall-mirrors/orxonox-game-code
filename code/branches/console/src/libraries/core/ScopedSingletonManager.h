@@ -51,7 +51,6 @@ namespace orxonox
             { }
             virtual ~ScopedSingletonManager() { }
             static void addManager(ScopedSingletonManager* manager);
-            static void removeManager(ScopedSingletonManager* manager);
 
             template<ScopeID::Value scope>
             static void update(const Clock& time)
@@ -85,8 +84,6 @@ namespace orxonox
 
         ~ClassScopedSingletonManager()
         {
-            //assert(singletonPtr_ == NULL); // Might get triggered in the SignalHandler
-            ScopedSingletonManager::removeManager(this);
         }
 
         //! Called if the Scope of the Singleton gets active (creates the instance)
@@ -139,8 +136,6 @@ namespace orxonox
 
         ~ClassScopedSingletonManager()
         {
-            assert(singletonPtr_ == NULL);
-            ScopedSingletonManager::removeManager(this);
         }
 
         //! Called if the Scope of the Singleton gets active (creates the instance)
