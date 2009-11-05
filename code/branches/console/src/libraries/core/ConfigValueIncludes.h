@@ -48,11 +48,11 @@
 */
 #define SetConfigValueGeneric(type, varname, entryname, sectionname, defvalue) \
     static orxonox::Identifier* identifier##varname = this->getIdentifier(); \
-    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
+    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(entryname); \
     if (!container##varname) \
     { \
         container##varname = new orxonox::ConfigValueContainer(type, identifier##varname, sectionname, entryname, defvalue, varname); \
-        identifier##varname->addConfigValueContainer(#varname, container##varname); \
+        identifier##varname->addConfigValueContainer(entryname, container##varname); \
     } \
     container##varname->getValue(&varname, this)
 
