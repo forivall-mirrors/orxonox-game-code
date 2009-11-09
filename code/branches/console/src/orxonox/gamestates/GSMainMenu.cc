@@ -90,7 +90,6 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startClient), "startClient"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startDedicated), "startDedicated"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu), "startMainMenu"));
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startIOConsole), "startIOConsole"));
 
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
@@ -145,7 +144,7 @@ namespace orxonox
         // HACK - HACK
         Game::getInstance().popState();
         Game::getInstance().popState();
-        Game::getInstance().requestStates("dedicated, level");
+        Game::getInstance().requestStates("server, level");
     }
     void GSMainMenu::startMainMenu()
     {
@@ -153,12 +152,5 @@ namespace orxonox
         Game::getInstance().popState();
         Game::getInstance().popState();
         Game::getInstance().requestStates("mainmenu");
-    }
-    void GSMainMenu::startIOConsole()
-    {
-        // HACK - HACK
-        Game::getInstance().popState();
-        Game::getInstance().popState();
-        Game::getInstance().requestStates("ioConsole");
     }
 }

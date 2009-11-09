@@ -89,13 +89,6 @@ namespace orxonox
 
     void GSRoot::update(const Clock& time)
     {
-        if (this->getActivity().topState)
-        {
-            // This state can not 'survive' on its own.
-            // Load a user interface therefore
-            Game::getInstance().requestState("ioConsole");
-        }
-
         for (ObjectList<Timer>::iterator it = ObjectList<Timer>::begin(); it; )
             (it++)->tick(time);
 
