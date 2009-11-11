@@ -47,9 +47,9 @@ namespace orxonox
         virtual ~AmbientSound();
 
         virtual void play();
-        virtual void replay();      // is only needed for the AmbientSound list in SoundManager
+        void replay();      // Continue playing without re-registering the sound
         virtual void stop();
-        virtual void pause();
+        void doStop();
 
         virtual void setSource(const std::string& source);
 

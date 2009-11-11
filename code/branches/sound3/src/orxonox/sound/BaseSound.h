@@ -49,9 +49,8 @@ namespace orxonox
         virtual ~BaseSound();
 
         virtual void play();
-        virtual void replay();      // is only needed for the AmbientSound list in SoundManager
         virtual void stop();
-        virtual void pause();
+        void pause();
 
         bool isPlaying();
         bool isPaused();
@@ -65,6 +64,8 @@ namespace orxonox
 
         bool getLoop() { return this->bLoop_; }
         void setLoop(bool val) { this->bLoop_ = val; }
+
+        ALuint getALAudioSource(void);
 
     protected:
         ALuint loadOggFile();

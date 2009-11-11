@@ -64,34 +64,39 @@ namespace orxonox
     void AmbientSound::play()
     {
         COUT(3) << this->getSource() << ": Playing" << std::endl;
-        SoundManager::getInstance().registerAmbientSound(this);
-        SUPER(AmbientSound, play);
+        if(GameMode::playsSound())
+        {
+            SoundManager::getInstance().registerAmbientSound(this);
+            this->BaseSound::play();
+        }
     }
 
     void AmbientSound::replay()
     {
-        SUPER(AmbientSound, play);
+        this->BaseSound::play();
     }
 
     void AmbientSound::stop()
     {
-        SUPER(AmbientSound, stop);
-        SoundManager::getInstance().unregisterAmbientSound(this);
+        if(GameMode::playsSound())
+        {
+            SoundManager::getInstance().unregisterAmbientSound(this);
+        }
     }
 
-    void AmbientSound::pause()
+    void AmbientSound::doStop()
     {
-        SUPER(AmbientSound, pause);
+        this->BaseSound::stop();
     }
 
     void AmbientSound::setSource(const std::string& source)
     {
-        if(source.find('/') == std::string.npos)
+        if(source.find('/') == std::string.npos && GameMode::playsSound())
         {
             std::string filePath = SoundManager::getInstance().getAmbientPath(source);
             if(!(filePath.empty()))
             {
-                BaseSound::setSource(filePath);
+                this->BaseSound::setSource(filePath);
                 return;
             }
         }
@@ -101,7 +106,7 @@ namespace orxonox
     void AmbientSound::changedActivity() 
     {
         COUT(3) << this->getSource() << ": ChangedActivity: " << this->isActive() << std::endl;
-        SUPER(AmbientSound, changedActivity);
+        this->BaseObject::changedActivity();
         if(this->isActive())
         {
             this->play();
@@ -111,5 +116,4 @@ namespace orxonox
             this->stop();
         }
     }
-
 }

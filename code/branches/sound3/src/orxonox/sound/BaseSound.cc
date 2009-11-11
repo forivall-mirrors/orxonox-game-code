@@ -69,11 +69,6 @@ namespace orxonox
         }
     }
 
-    void BaseSound::replay()
-    {
-        BaseSound::play();
-    }
-
     void BaseSound::stop()
     {
         if (alIsSource(this->audioSource_))
@@ -184,6 +179,11 @@ namespace orxonox
 
         if (this->bPlayOnLoad_)
             this->play();
+    }
+
+    ALuint BaseSound::getALAudioSource()
+    {
+        return audioSource_;
     }
 
     ALint BaseSound::getSourceState()

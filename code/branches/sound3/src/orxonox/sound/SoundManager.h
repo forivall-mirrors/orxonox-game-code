@@ -41,24 +41,37 @@ namespace orxonox
      * position. It is a singleton.
      *
      */
-    class _OrxonoxExport SoundManager : public Singleton<SoundManager>
+    class _OrxonoxExport SoundManager : public Singleton<SoundManager>, public OrxonoxClass
     {
         friend class Singleton<SoundManager>;
     public:
         SoundManager();
         ~SoundManager();
 
+        void update(const Clock &time);
+        void setConfigValues(void);
+
         void setListenerPosition(const Vector3& position);
         void setListenerOrientation(const Quaternion& orientation);
-        void registerAmbientSound(BaseSound* newAmbient);
-        void unregisterAmbientSound(BaseSound* currentAmbient);
+
+        void registerAmbientSound(AmbientSound* newAmbient);
+        void unregisterAmbientSound(AmbientSound* currentAmbient);
         const std::string& getAmbientPath(const std::string& source);
+        void fadeInAmbientSound(float dt);
+        void fadeOutAmbientSound(float dt);
+        void checkFadeStepValidity(void);
 
     private:
         ALCdevice* device_;
         ALCcontext* context_;
-        std::list<BaseSound*> ambientSounds_;
-        std::string lastReqPath;
+       
+        std::list<AmbientSound*> ambientSounds_;
+        
+        float fadeStep_;       //per second
+        std::list<std::pair<AmbientSound*, float> > fadeInList_;
+        std::list<std::pair<AmbientSound*, float> > fadeOutList_;
+        
+        std::string lastReqPath_;
 
         static SoundManager* singletonPtr_s;
     };
