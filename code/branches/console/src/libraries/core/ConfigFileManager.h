@@ -53,12 +53,12 @@ namespace orxonox
         static const int numberOfReservedTypes = 1024;
     };
 
-    bool config(const std::string& classname, const std::string& varname, const std::string& value);
-    bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
-    void reloadConfig();
-    void saveConfig();
-    void cleanConfig();
-    void loadSettings(const std::string& filename);
+    _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value);
+    _CoreExport bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
+    _CoreExport void reloadConfig();
+    _CoreExport void saveConfig();
+    _CoreExport void cleanConfig();
+    _CoreExport void loadSettings(const std::string& filename);
 
 
     /////////////////////

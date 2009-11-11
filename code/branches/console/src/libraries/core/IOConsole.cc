@@ -300,9 +300,9 @@ namespace orxonox
     void IOConsole::printLogText(const std::string& text)
     {
         std::string output = text;
-/*
         int level = this->extractLogLevel(&output);
 
+/*
         // Colour line
         switch (level)
         {
@@ -348,9 +348,9 @@ namespace orxonox
             this->cout_ << "\033[s";
             // Move cursor down (don't create a new line here because the buffer might flush then!)
             this->cout_ << "\033[1E";
-            //this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
-            //this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
-            this->cout_ << "Terminal width: " << this->terminalWidth_ << ", height: " << this->terminalHeight_;
+            this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
+            this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
+//            this->cout_ << "Terminal width: " << this->terminalWidth_ << ", height: " << this->terminalHeight_;
             // Restore cursor position
             this->cout_ << "\033[u";
             this->bStatusPrinted_ = true;
