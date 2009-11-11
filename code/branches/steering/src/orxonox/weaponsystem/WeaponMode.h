@@ -38,6 +38,12 @@
 #include "core/SubclassIdentifier.h"
 #include "tools/Timer.h"
 
+#include "weaponsystem/Weapon.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/WeaponSystem.h"
+#include "worldentities/pawns/Pawn.h"
+#include "controllers/Controller.h"
+
 namespace orxonox
 {
     class _OrxonoxExport WeaponMode : public BaseObject
@@ -123,6 +129,9 @@ namespace orxonox
                 { this->mode_ = mode; }
             inline unsigned int getMode() const
                 { return this->mode_; }
+
+            inline Vector3 getTarget()
+                { return this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getController()->getTarget(); }
 
         protected:
             virtual void fire() = 0;

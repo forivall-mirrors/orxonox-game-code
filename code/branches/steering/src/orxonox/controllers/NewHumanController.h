@@ -44,17 +44,22 @@ namespace orxonox
             virtual ~NewHumanController();
 
             virtual void tick(float dt);
-            
+
             virtual void yaw(const Vector2& value);
             virtual void pitch(const Vector2& value);
 
             virtual void doFire(unsigned int firemode);
+
+            void changeMode(unsigned int controleMode);
+
+            virtual Vector3 getTarget();
 
         private:
             float                       currentYaw_;
             float                       currentPitch_;
             OrxonoxOverlay              *CrossHairOverlay;
             float			overlaySize;
+            unsigned int                controlMode;
     };
 }
 

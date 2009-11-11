@@ -56,6 +56,8 @@ namespace orxonox
 
         overlaySize = 0.08;
 
+        controlMode = 0;
+
         CrossHairOverlay = new OrxonoxOverlay(this);
         CrossHairOverlay->setBackgroundMaterial("Orxonox/Crosshair3");
         CrossHairOverlay->setSize(Vector2(overlaySize,overlaySize));
@@ -109,44 +111,58 @@ namespace orxonox
  }
 */
 
+            HumanController::localController_s->getControllableEntity()->fire(firemode);
+        //}
+//}
+    }
+
+    Vector3 NewHumanController::getTarget() {
             Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
 
-std::cout << "X: " << static_cast<float>(this->currentYaw_)/2*-1+.5 << "  Y: " << static_cast<float>(this->currentPitch_)/2*-1+.5 << endl;
+//std::cout << "X: " << static_cast<float>(this->currentYaw_)/2*-1+.5 << "  Y: " << static_cast<float>(this->currentPitch_)/2*-1+.5 << endl;
 
             Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
 
             rsq->setRay(mouseRay);
             rsq->setSortByDistance(true);
 
+/*
+Distance of objects:
+ignore everything under 200 maybe even take 1000 as min distance to shoot at
+
+shots are regularly traced and are entities!!!!!!!!! this is the biggest problem
+they vanish only after a distance of 10'000
+*/
+
 
             Ogre::RaySceneQueryResult &result = rsq->execute();
 
             Ogre::RaySceneQueryResult::iterator itr;
-for ( itr = result.begin(); itr != result.end(); itr++ )
- {
-     std::cout << "distance: " << itr->distance << "  name: " << itr->movable->getName() << " type: " << itr->movable->getMovableType() << endl;
-if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity") {
-std::cout << " in scene" << endl;
-	itr->movable->getParentSceneNode()->showBoundingBox(true);
-}
- }
+            for ( itr = result.begin(); itr != result.end(); itr++ )
+            {
+                //std::cout << "distance: " << itr->distance << "  name: " << itr->movable->getName() << " type: " << itr->movable->getMovableType();
+                if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500) {
+                    //std::cout << "  TAGGED";
+                    itr->movable->getParentSceneNode()->showBoundingBox(true);
+std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
+return itr->movable->getParentSceneNode()->_getDerivedPosition();
+                }
+                //std::cout << endl;
+            }
 
 //if (result.front().movable->isInScene()) std::cout << "in scene" << endl;
 // && result.front().movable->getParentSceneNode() != NULL) result.front().movable->getParentSceneNode()->showBoundingBox(true);
 //result.front().movable->setVisible(false);
 
-std::cout << endl;
+            //std::cout << endl;
 /*
             if (!result.empty()) {
             	Ogre::RaySceneQueryResultEntry obj = result.front();
             	std::cout << "distance: " << obj.distance << "  name: " << obj.movable->getName() << endl;
             }
 */
-
-
-            HumanController::localController_s->getControllableEntity()->fire(firemode);
-        //}
-//}
+        return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z);
+//return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
     }
 
     void NewHumanController::yaw(const Vector2& value)

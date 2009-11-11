@@ -137,8 +137,10 @@ namespace orxonox
         this->controller_ = this->defaultController_.fabricate(this);
         assert(this->controller_);
         this->controller_->setPlayer(this);
-        if (this->controllableEntity_)
+        if (this->controllableEntity_) {
             this->controller_->setControllableEntity(this->controllableEntity_);
+            this->controllableEntity_->setController(this->controller_);
+        }
         this->changedController();
     }
 
@@ -157,8 +159,10 @@ namespace orxonox
 
         this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
 
-        if (this->controller_)
+        if (this->controller_) {
             this->controller_->setControllableEntity(entity);
+            this->controllableEntity_->setController(this->controller_);
+        }
 
         this->changedControllableEntity();
     }
@@ -170,6 +174,7 @@ namespace orxonox
         if (!entity)
             return;
 
+        this->controllableEntity_->setController(0);
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = OBJECTID_UNKNOWN;
 

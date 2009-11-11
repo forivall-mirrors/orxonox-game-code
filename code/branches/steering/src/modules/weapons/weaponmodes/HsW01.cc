@@ -38,6 +38,7 @@
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
+#include "worldentities/WorldEntity.h"
 
 namespace orxonox
 {
@@ -109,9 +110,11 @@ namespace orxonox
         projectile->attach(model);
         model->setScale(5);
 
-        projectile->setOrientation(this->getMuzzleOrientation());
+        //projectile->setOrientation(this->getMuzzleOrientation());
+        projectile->lookAt(this->getTarget(), WorldEntity::World);
         projectile->setPosition(this->getMuzzlePosition());
-        projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
+        projectile->setVelocity((projectile->getOrientation() * Vector3::UNIT_Z) * this->speed_); //getWorldOrientation??
+        //projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());

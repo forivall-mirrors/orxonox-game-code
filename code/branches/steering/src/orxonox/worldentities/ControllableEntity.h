@@ -139,6 +139,11 @@ namespace orxonox
             inline Controller* getXMLController() const
                 { return this->xmlcontroller_; }
 
+            inline Controller* getController() const
+                { return this->controller_; }
+            inline void setController(Controller* c)
+                { this->controller_ = c; }
+
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
             virtual void removePlayer();                // don't call this directly, use friend class PlayerInfo instead
@@ -200,6 +205,7 @@ namespace orxonox
             std::list<SmartPtr<CameraPosition> > cameraPositions_;
             std::string cameraPositionTemplate_;
             Controller* xmlcontroller_;
+            Controller* controller_;
             CameraPosition* reverseCamera_;
     };
 }

@@ -57,6 +57,8 @@ namespace orxonox
                 { return this->controllableEntity_; }
             virtual void changedControllableEntity() {}
 
+            virtual Vector3 getTarget();
+
         protected:
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;

@@ -28,6 +28,7 @@
 
 #include "Controller.h"
 #include "core/CoreIncludes.h"
+#include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
@@ -43,5 +44,9 @@ namespace orxonox
 
     Controller::~Controller()
     {
+    }
+
+    Vector3 Controller::getTarget() {
+        return this->controllableEntity_->getPosition() + (this->controllableEntity_->getOrientation() * Vector3::UNIT_Z);
     }
 }
