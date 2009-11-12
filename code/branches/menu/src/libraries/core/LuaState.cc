@@ -115,7 +115,7 @@ namespace orxonox
                     << (resourceGroup == "NoResourceGroupProvided" ? sourceFileInfo_->group : resourceGroup) << "': group not found." << std::endl;
     }
 
-    void LuaState::includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo)
+    void LuaState::includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
         // Parse string with provided include parser (otherwise don't preparse at all)
         std::string luaInput;
@@ -137,7 +137,7 @@ namespace orxonox
                 << (resourceGroup == "NoResourceGroupProvided" ? sourceFileInfo_->group : resourceGroup) << "': group not found." << std::endl;
     }
 
-    void LuaState::doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo)
+    void LuaState::doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
         // Save the oold source file info
         shared_ptr<ResourceInfo> oldSourceFileInfo = sourceFileInfo_;

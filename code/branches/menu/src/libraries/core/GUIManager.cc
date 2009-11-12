@@ -120,6 +120,9 @@ namespace orxonox
 
         // setup scripting
         luaState_.reset(new LuaState());
+        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
+        // This is necessary to ensure that input events also use the right resource info when triggering lua functions
+        luaState_->setDefaultResourceInfo(this->rootFileInfo_);
         scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
 
         // Create our own logger to specify the filepath
@@ -134,7 +137,6 @@ namespace orxonox
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
         // Initialise the basic lua code
-        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
         this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
 
         // Align CEGUI mouse with OIS mouse
