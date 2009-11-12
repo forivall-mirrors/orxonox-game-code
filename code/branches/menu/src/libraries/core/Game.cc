@@ -583,7 +583,7 @@ namespace orxonox
             graphicsUnloader.Dismiss();
 
         shared_ptr<GameState> state = this->getState(name);
-        state->activate();
+        state->activateInternal();
         if (!this->loadedStates_.empty())
             this->loadedStates_.back()->activity_.topState = false;
         this->loadedStates_.push_back(state);
@@ -602,7 +602,7 @@ namespace orxonox
             this->loadedStates_.pop_back();
             if (!this->loadedStates_.empty())
                 this->loadedStates_.back()->activity_.topState = true;
-            state->deactivate();
+            state->deactivateInternal();
         }
         catch (...)
         {
