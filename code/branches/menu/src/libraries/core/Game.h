@@ -97,6 +97,7 @@ namespace orxonox
 
         void run();
         void stop();
+        void keyESC();
 
         static Game& getInstance(){ return Singleton<Game>::getInstance(); } // tolua_export
 

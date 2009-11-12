@@ -55,6 +55,7 @@ namespace orxonox
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
         , startFile_(0)
+        , bShowIngameGUI_(false)
     {
     }
 
@@ -77,8 +78,6 @@ namespace orxonox
 
             guiKeysOnlyInputState_ = InputManager::getInstance().createInputState("guiKeysOnly");
             guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
-
-            CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSLevel::showIngameGUI, this), "showIngameGUI"));
         }
 
         if (GameMode::isMaster())
@@ -93,18 +92,6 @@ namespace orxonox
             
             // connect the HumanPlayer to the game
             PlayerManager::getInstance().clientConnected(0);
-        }
-    }
-
-    void GSLevel::showIngameGUI(bool show)
-    {
-        if (show)
-        {
-            GUIManager::showGUI("inGameTest");
-        }
-        else
-        {
-            GUIManager::hideGUI("inGameTest");
         }
     }
 

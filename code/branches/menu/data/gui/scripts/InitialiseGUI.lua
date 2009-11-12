@@ -20,6 +20,9 @@ root = nil
 bShowsCursor = false
 bHidePrevious = {}
 
+-- Require all tools
+require("GUITools")
+
 -- loads the GUI with the specified filename
 -- be sure to set the global variable "filename" before calling this function
 function loadGUI(filename)
@@ -27,6 +30,9 @@ function loadGUI(filename)
     loadedGui = loadedGUIs[filename]
     if loadedGui == nil then
         loadedGuiNS = require(filename)
+        if loadedGuiNS == nil then
+            return
+        end
         loadedGui = loadedGuiNS:load()
         loadedGUIs[filename] = loadedGui
         -- if there has no GUI been loaded yet, set new GUI as current
@@ -144,6 +150,10 @@ function hideGUI(filename)
     end
     cursorVisibility[filename] = nil -- remove the cursor visibility of the current gui from the table
     bHidePrevious[filename] = nil
+end
+
+function keyESC()
+    orxonox.CommandExecutor:execute("hideGUI "..activeSheets[nrOfActiveSheets])
 end
 
 function setBackground(filename)

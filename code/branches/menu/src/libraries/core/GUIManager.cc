@@ -107,6 +107,7 @@ namespace orxonox
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
         , camera_(NULL)
+        , bShowIngameGUI_(false)
     {
         using namespace CEGUI;
 
@@ -250,11 +251,27 @@ namespace orxonox
             InputManager::getInstance().leaveState("guiMouseOnly");
         }
     }
-    
-    void GUIManager::setToggleMode(const bool& mode)
+
+    void GUIManager::toggleIngameGUI()
     {
-        this->bToggleMode_ = mode;
-        this->executeCode("setToggleMode(" + multi_cast<std::string>(mode) + ")");
+        if ( this->bShowIngameGUI_==false )
+        {
+            GUIManager::showGUI("InGameMenu");
+            this->bShowIngameGUI_ = true;
+        }
+        else
+        {
+            GUIManager::hideGUI("InGameMenu");
+            this->bShowIngameGUI_ = false;
+        }
+    }
+    
+    void GUIManager::keyESC()
+    {
+        if( this->showingGUIs_.size() == 0 )
+            this->showGUI("InGameMenu");
+        else
+            this->executeCode("keyESC()");
     }
     
     void GUIManager::setBackground(const std::string& name)
