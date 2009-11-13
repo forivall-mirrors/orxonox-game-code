@@ -42,7 +42,6 @@
 #include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "core/WindowEventListener.h"
-#include "OverlayGroup.h"
 
 namespace orxonox
 {
@@ -169,16 +168,7 @@ namespace orxonox
             { return this->owner_; }
         virtual void changedOwner() {}
 
-        inline void setOverlayGroup(OverlayGroup* group)
-        {
-            if (group != this->group_)
-            {
-                if(this->group_)
-                    this->group_->removeElement(this);
-                this->group_ = group;
-                this->changedOverlayGroup();
-            }
-        }
+        void setOverlayGroup(OverlayGroup* group);
         inline OverlayGroup* getOverlayGroup() const
             { return this->group_; }
         virtual void changedOverlayGroup() 
