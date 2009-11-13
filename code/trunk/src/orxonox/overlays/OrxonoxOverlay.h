@@ -42,6 +42,7 @@
 #include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
 #include "core/WindowEventListener.h"
+#include "OverlayGroup.h"
 
 namespace orxonox
 {
@@ -172,6 +173,8 @@ namespace orxonox
         {
             if (group != this->group_)
             {
+                if(this->group_)
+                    this->group_->removeElement(this);
                 this->group_ = group;
                 this->changedOverlayGroup();
             }
