@@ -358,4 +358,15 @@ namespace orxonox
         if (it != overlays_s.end())
             (*it).second->rotate(angle);
     }
+
+    void OrxonoxOverlay::setOverlayGroup(OverlayGroup* group)
+    {
+        if (group != this->group_)
+        {
+            if (this->group_)
+                this->group_->removeElement(this);
+            this->group_ = group;
+            this->changedOverlayGroup();
+        }
+    }
 }
