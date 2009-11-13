@@ -85,6 +85,7 @@ namespace orxonox
     class ScriptController;
     class WaypointController;
     class WaypointPatrolController;
+	class RocketController;
 
     // gametypes
     class Asteroids;
@@ -175,6 +176,7 @@ namespace orxonox
     class StaticEntity;
     class TeamSpawnPoint;
     class WorldEntity;
+	class Rocket;
     // worldentities, pawns
     class Destroyer;
     class Pawn;

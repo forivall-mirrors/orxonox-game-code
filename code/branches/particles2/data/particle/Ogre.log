@@ -1,0 +1,58 @@
+13:25:05: Creating resource group General
+13:25:05: Creating resource group Internal
+13:25:05: Creating resource group Autodetect
+13:25:05: Registering ResourceManager for type Material
+13:25:05: Registering ResourceManager for type Mesh
+13:25:05: Registering ResourceManager for type Skeleton
+13:25:05: MovableObjectFactory for type 'ParticleSystem' registered.
+13:25:05: Loading library OgrePlatform.dll
+13:25:05: OverlayElementFactory for type Panel registered.
+13:25:05: OverlayElementFactory for type BorderPanel registered.
+13:25:05: OverlayElementFactory for type TextArea registered.
+13:25:05: Registering ResourceManager for type Font
+13:25:05: ArchiveFactory for archive type FileSystem registered.
+13:25:05: ArchiveFactory for archive type Zip registered.
+13:25:05: DevIL version: Developer's Image Library (DevIL) 1.6.7 Oct 28 2005
+13:25:05: DevIL image formats: bmp dib cut dcx dds gif hdr ico cur jpg jpe jpeg lif mdl mng jng pcx pic pix png pbm pgm pnm ppm psd pdd psp pxr sgi bw rgb rgba tga vda icb vst tif tiff wal xpm raw 
+13:25:05: Registering ResourceManager for type HighLevelGpuProgram
+13:25:05: Registering ResourceManager for type Compositor
+13:25:05: MovableObjectFactory for type 'Entity' registered.
+13:25:05: MovableObjectFactory for type 'Light' registered.
+13:25:05: MovableObjectFactory for type 'BillboardSet' registered.
+13:25:05: MovableObjectFactory for type 'ManualObject' registered.
+13:25:05: MovableObjectFactory for type 'BillboardChain' registered.
+13:25:05: MovableObjectFactory for type 'RibbonTrail' registered.
+13:25:05: An exception has been thrown!
+
+-----------------------------------
+Details:
+-----------------------------------
+Error #: 8
+Function: ConfigFile::load
+Description: 'plugins.cfg' file not found!. 
+File: \cvs\ogrenew\OgreMain\src\OgreConfigFile.cpp
+Line: 79
+Stack unwinding: <<beginning of stack>>
+13:25:05: plugins.cfg not found, automatic plugin loading disabled.
+13:25:05: *-*-* OGRE Initialising
+13:25:05: *-*-* Version 1.3.0 (Eihort)
+13:25:05: An exception has been thrown!
+
+-----------------------------------
+Details:
+-----------------------------------
+Error #: 8
+Function: ConfigFile::load
+Description: 'resources.cfg' file not found!. 
+File: \cvs\ogrenew\OgreMain\src\OgreConfigFile.cpp
+Line: 79
+Stack unwinding: <<beginning of stack>>
+13:25:10: ___Particle Editor closing down cleanly.___
+13:25:10: *-*-* OGRE Shutdown
+13:25:10: Unregistering ResourceManager for type Compositor
+13:25:10: Unregistering ResourceManager for type Font
+13:25:10: Unregistering ResourceManager for type Skeleton
+13:25:10: Unregistering ResourceManager for type Mesh
+13:25:10: Unregistering ResourceManager for type HighLevelGpuProgram
+13:25:10: Unregistering ResourceManager for type Material
+13:25:10: Unloading library OgrePlatform.dll
