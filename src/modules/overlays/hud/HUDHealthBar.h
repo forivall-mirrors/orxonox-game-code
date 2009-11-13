@@ -111,7 +111,7 @@ namespace orxonox
 
         private:
             WeakPtr<Pawn> owner_;
-            OverlayText* textoverlay_;
+            SmartPtr<OverlayText> textoverlay_;
             bool bUseBarColour_;
             ColourValue textColour_;
     };

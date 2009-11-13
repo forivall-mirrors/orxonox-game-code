@@ -59,8 +59,9 @@ namespace orxonox
 
     OverlayGroup::~OverlayGroup()
     {
-        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->destroy();
+        this->hudElements_.clear();
     }
 
     /**
@@ -82,7 +83,7 @@ namespace orxonox
     //! Scales every element in the set.
     void OverlayGroup::setScale(const Vector2& scale)
     {
-        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->scale(scale / this->scale_);
         this->scale_ = scale;
     }
@@ -90,7 +91,7 @@ namespace orxonox
     //! Scrolls every element in the set.
     void OverlayGroup::setScroll(const Vector2& scroll)
     {
-        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->scroll(scroll - this->scroll_);
         this->scroll_ = scroll;
     }
@@ -103,7 +104,7 @@ namespace orxonox
     */
     void OverlayGroup::addElement(OrxonoxOverlay* element)
     {
-        hudElements_.insert(element);
+        hudElements_.insert(SmartPtr<OrxonoxOverlay>(element));
         element->setOverlayGroup( this );
         if (this->owner_)
             element->setOwner(this->owner_);
@@ -119,7 +120,7 @@ namespace orxonox
     */
     bool OverlayGroup::removeElement(OrxonoxOverlay* element)
     {
-        if(this->hudElements_.erase(element) == 0)
+        if(this->hudElements_.erase(SmartPtr<OrxonoxOverlay>(element)) == 0)
             return false;
         return true;
     }
@@ -129,10 +130,10 @@ namespace orxonox
     {
         if (index < this->hudElements_.size())
         {
-            std::set<OrxonoxOverlay*>::const_iterator it = hudElements_.begin();
+            std::set< SmartPtr<OrxonoxOverlay> >::const_iterator it = hudElements_.begin();
             for (unsigned int i = 0; i != index; ++it, ++i)
                 ;
-            return (*it);
+            return it->get();
         }
         else
             return 0;
@@ -143,7 +144,7 @@ namespace orxonox
     {
         SUPER( OverlayGroup, changedVisibility );
         
-        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->changedVisibility(); //inform all Child Overlays that our visibility has changed
     }
 
@@ -151,7 +152,7 @@ namespace orxonox
     {
         this->owner_ = owner;
 
-        for (std::set<OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->setOwner(owner);
     }
 
