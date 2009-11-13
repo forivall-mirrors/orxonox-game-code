@@ -205,7 +205,7 @@ namespace orxonox
             if (controller->canFindTarget())
             {
                 Vector3 muzzleDirection(controller->getTarget() - this->muzzlePosition_);
-                this->muzzleOrientation_ = this->weapon_->getWorldOrientation() * (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection);
+                this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
             }
             else
                 this->muzzleOrientation_ = this->weapon_->getWorldOrientation();

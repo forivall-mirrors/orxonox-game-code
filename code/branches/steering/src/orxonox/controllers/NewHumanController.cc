@@ -58,7 +58,7 @@ namespace orxonox
         crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
         crossHairOverlay_->show();
 
-        // HACK: Define which objects are targettable when considering the creator of an orxonox::Model
+        // HACK: Define which objects are targetable when considering the creator of an orxonox::Model
         this->targetMask_.exclude(ClassByString("BaseObject"));
         this->targetMask_.include(ClassByString("WorldEntity"));
         this->targetMask_.exclude(ClassByString("Projectile"));
@@ -120,7 +120,7 @@ namespace orxonox
 
         //std::cout << "X: " << static_cast<float>(this->currentYaw_)/2*-1+.5 << "  Y: " << static_cast<float>(this->currentPitch_)/2*-1+.5 << endl;
 
-        Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
+        Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getOgreCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
 
         rsq->setRay(mouseRay);
         rsq->setSortByDistance(true);
@@ -169,8 +169,8 @@ namespace orxonox
             std::cout << "distance: " << obj.distance << "  name: " << obj.movable->getName() << endl;
         }
 */
-        return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 100);
-        //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
+        return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 800);
+        //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getOgreCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
     }
 
     void NewHumanController::yaw(const Vector2& value)
