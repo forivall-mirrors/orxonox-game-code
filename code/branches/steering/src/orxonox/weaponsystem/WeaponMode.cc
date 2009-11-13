@@ -31,6 +31,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "controllers/Controller.h"
+#include "worldentities/pawns/Pawn.h"
 
 #include "Munition.h"
 #include "Weapon.h"
@@ -193,26 +195,32 @@ namespace orxonox
         this->bReloading_ = false;
     }
 
-    Vector3 WeaponMode::getMuzzlePosition() const
+    void WeaponMode::computeMuzzleParameters()
     {
         if (this->weapon_)
-            return (this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_);
-        else
-            return this->muzzleOffset_;
-    }
+        {
+            this->muzzlePosition_ = this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_;
 
-    const Quaternion& WeaponMode::getMuzzleOrientation() const
-    {
-        if (this->weapon_)
-            return this->weapon_->getWorldOrientation();
+            Controller* controller = this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getController();
+            if (controller->canFindTarget())
+            {
+                Vector3 muzzleDirection(controller->getTarget() - this->muzzlePosition_);
+                this->muzzleOrientation_ = this->weapon_->getWorldOrientation() * (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection);
+            }
+            else
+                this->muzzleOrientation_ = this->weapon_->getWorldOrientation();
+        }
         else
-            return Quaternion::IDENTITY;
+        {
+            this->muzzlePosition_ = this->muzzleOffset_;
+            this->muzzleOrientation_ = Quaternion::IDENTITY;
+        }
     }
 
     Vector3 WeaponMode::getMuzzleDirection() const
     {
         if (this->weapon_)
-            return (this->weapon_->getWorldOrientation() * WorldEntity::FRONT);
+            return (this->getMuzzleOrientation() * WorldEntity::FRONT);
         else
             return WorldEntity::FRONT;
     }

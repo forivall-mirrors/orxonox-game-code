@@ -36,43 +36,44 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "worldentities/ControllableEntity.h"
-#include "worldentities/pawns/Pawn.h"
-#include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
-#include "overlays/Map.h"
+#include "overlays/OrxonoxOverlay.h"
 #include "graphics/Camera.h"
 #include "sound/SoundManager.h"
-#include "Radar.h"
 #include "Scene.h"
 
 namespace orxonox
 {
-
     CreateUnloadableFactory(NewHumanController);
 
     NewHumanController::NewHumanController(BaseObject* creator) : HumanController(creator)
     {
         RegisterObject(NewHumanController);
 
-        overlaySize = 0.08;
+        overlaySize_ = 0.08;
+        controlMode_ = 0;
 
-        controlMode = 0;
+        crossHairOverlay_ = new OrxonoxOverlay(this);
+        crossHairOverlay_->setBackgroundMaterial("Orxonox/Crosshair3");
+        crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
+        crossHairOverlay_->show();
 
-        CrossHairOverlay = new OrxonoxOverlay(this);
-        CrossHairOverlay->setBackgroundMaterial("Orxonox/Crosshair3");
-        CrossHairOverlay->setSize(Vector2(overlaySize,overlaySize));
-        CrossHairOverlay->show();
+        // HACK: Define which objects are targettable when considering the creator of an orxonox::Model
+        this->targetMask_.exclude(ClassByString("BaseObject"));
+        this->targetMask_.include(ClassByString("WorldEntity"));
+        this->targetMask_.exclude(ClassByString("Projectile"));
     }
 
     NewHumanController::~NewHumanController()
     {
-        if( this->isInitialized() )
+        if (this->isInitialized())
         {
         }
     }
 
-    void NewHumanController::tick(float dt) {
-        CrossHairOverlay->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize/2));
+    void NewHumanController::tick(float dt)
+    {
+        crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
 
         HumanController::tick(dt);
     }
@@ -98,71 +99,78 @@ namespace orxonox
         //if (HumanController::localController_s && HumanController::localController_s->controllableEntity_) {
 
 /*
-
- // Get results, create a node/entity on the position
- for ( itr = result.begin(); itr != result.end(); itr++ )
- {
-     if (itr->movable && itr->movable->getName() == "Head")
-     {
-         soundMgr->StopSound( &jaguarSoundChannel );
-         soundMgr->PlaySound( jaguarSound, headNode, &jaguarSoundChannel );
-         break;
-     } // if
- }
+        // Get results, create a node/entity on the position
+        for ( itr = result.begin(); itr != result.end(); itr++ )
+        {
+            if (itr->movable && itr->movable->getName() == "Head")
+            {
+                soundMgr->StopSound( &jaguarSoundChannel );
+                soundMgr->PlaySound( jaguarSound, headNode, &jaguarSoundChannel );
+                break;
+            } // if
+        }
 */
 
-            HumanController::localController_s->getControllableEntity()->fire(firemode);
-        //}
-//}
+        HumanController::localController_s->getControllableEntity()->fire(firemode);
     }
 
-    Vector3 NewHumanController::getTarget() {
-            Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
+    Vector3 NewHumanController::getTarget()
+    {
+        Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
 
-//std::cout << "X: " << static_cast<float>(this->currentYaw_)/2*-1+.5 << "  Y: " << static_cast<float>(this->currentPitch_)/2*-1+.5 << endl;
+        //std::cout << "X: " << static_cast<float>(this->currentYaw_)/2*-1+.5 << "  Y: " << static_cast<float>(this->currentPitch_)/2*-1+.5 << endl;
 
-            Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
+        Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
 
-            rsq->setRay(mouseRay);
-            rsq->setSortByDistance(true);
+        rsq->setRay(mouseRay);
+        rsq->setSortByDistance(true);
 
-/*
-Distance of objects:
-ignore everything under 200 maybe even take 1000 as min distance to shoot at
+        /*
+        Distance of objects:
+        ignore everything under 200 maybe even take 1000 as min distance to shoot at
 
-shots are regularly traced and are entities!!!!!!!!! this is the biggest problem
-they vanish only after a distance of 10'000
-*/
+        shots are regularly traced and are entities!!!!!!!!! this is the biggest problem
+        they vanish only after a distance of 10'000
+        */
 
 
-            Ogre::RaySceneQueryResult &result = rsq->execute();
+        Ogre::RaySceneQueryResult& result = rsq->execute();
 
-            Ogre::RaySceneQueryResult::iterator itr;
-            for ( itr = result.begin(); itr != result.end(); itr++ )
+        Ogre::RaySceneQueryResult::iterator itr;
+        for (itr = result.begin(); itr != result.end(); ++itr)
+        {
+            //std::cout << "distance: " << itr->distance << "  name: " << itr->movable->getName() << " type: " << itr->movable->getMovableType();
+            if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500)
             {
-                //std::cout << "distance: " << itr->distance << "  name: " << itr->movable->getName() << " type: " << itr->movable->getMovableType();
-                if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500) {
-                    //std::cout << "  TAGGED";
-                    itr->movable->getParentSceneNode()->showBoundingBox(true);
-std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
-return itr->movable->getParentSceneNode()->_getDerivedPosition();
+                // Try to cast the user pointer
+                WorldEntity* wePtr = dynamic_cast<WorldEntity*>(itr->movable->getUserObject());
+                if (wePtr)
+                {
+                    BaseObject* creator = wePtr->getCreator();
+                    if (this->targetMask_.isExcluded(creator->getIdentifier()))
+                        continue;
                 }
-                //std::cout << endl;
+                //std::cout << "  TAGGED";
+                itr->movable->getParentSceneNode()->showBoundingBox(true);
+                std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
+                return itr->movable->getParentSceneNode()->_getDerivedPosition();
             }
-
-//if (result.front().movable->isInScene()) std::cout << "in scene" << endl;
-// && result.front().movable->getParentSceneNode() != NULL) result.front().movable->getParentSceneNode()->showBoundingBox(true);
-//result.front().movable->setVisible(false);
-
             //std::cout << endl;
+        }
+
+        //if (result.front().movable->isInScene()) std::cout << "in scene" << endl;
+        // && result.front().movable->getParentSceneNode() != NULL) result.front().movable->getParentSceneNode()->showBoundingBox(true);
+        //result.front().movable->setVisible(false);
+
+        //std::cout << endl;
 /*
-            if (!result.empty()) {
-            	Ogre::RaySceneQueryResultEntry obj = result.front();
-            	std::cout << "distance: " << obj.distance << "  name: " << obj.movable->getName() << endl;
-            }
+        if (!result.empty()) {
+            Ogre::RaySceneQueryResultEntry obj = result.front();
+            std::cout << "distance: " << obj.distance << "  name: " << obj.movable->getName() << endl;
+        }
 */
-        return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z);
-//return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
+        return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 100);
+        //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
     }
 
     void NewHumanController::yaw(const Vector2& value)
@@ -173,6 +181,7 @@ return itr->movable->getParentSceneNode()->_getDerivedPosition();
         this->currentYaw_ = value.x;
         //std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
     }
+
     void NewHumanController::pitch(const Vector2& value)
     {
 //         SUPER(NewHumanController, pitch, value);
@@ -181,5 +190,4 @@ return itr->movable->getParentSceneNode()->_getDerivedPosition();
         this->currentPitch_ = value.x;
         //std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
     }
-
 }

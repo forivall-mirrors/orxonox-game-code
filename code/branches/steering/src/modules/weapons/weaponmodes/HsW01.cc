@@ -110,11 +110,10 @@ namespace orxonox
         projectile->attach(model);
         model->setScale(5);
 
-        //projectile->setOrientation(this->getMuzzleOrientation());
-        projectile->lookAt(this->getTarget(), WorldEntity::World);
+        this->computeMuzzleParameters();
+        projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
-        projectile->setVelocity((projectile->getOrientation() * Vector3::UNIT_Z) * this->speed_); //getWorldOrientation??
-        //projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
+        projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());

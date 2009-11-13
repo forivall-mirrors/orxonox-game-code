@@ -653,7 +653,7 @@ HACK HACK HACK
 
     /**
     @brief
-        Makes this WorldEntity look a specific target location.
+        Makes this WorldEntity look at a specific target location.
     @param relativeTo
         @see WorldEntity::TransformSpace
     @param localDirectionVector

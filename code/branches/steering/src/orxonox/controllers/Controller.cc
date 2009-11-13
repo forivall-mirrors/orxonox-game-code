@@ -45,8 +45,4 @@ namespace orxonox
     Controller::~Controller()
     {
     }
-
-    Vector3 Controller::getTarget() {
-        return this->controllableEntity_->getPosition() + (this->controllableEntity_->getOrientation() * Vector3::UNIT_Z);
-    }
 }

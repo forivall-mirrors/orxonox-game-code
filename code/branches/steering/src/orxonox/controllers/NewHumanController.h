@@ -31,9 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "core/ClassTreeMask.h"
 #include "HumanController.h"
-#include "overlays/OrxonoxOverlay.h"
-#include "util/OgreForwardRefs.h"
 
 namespace orxonox
 {
@@ -52,14 +51,16 @@ namespace orxonox
 
             void changeMode(unsigned int controleMode);
 
+            virtual bool canFindTarget() { return true; }
             virtual Vector3 getTarget();
 
         private:
             float                       currentYaw_;
             float                       currentPitch_;
-            OrxonoxOverlay              *CrossHairOverlay;
-            float			overlaySize;
-            unsigned int                controlMode;
+            OrxonoxOverlay*             crossHairOverlay_;
+            float			            overlaySize_;
+            unsigned int                controlMode_;
+            ClassTreeMask               targetMask_;
     };
 }
 

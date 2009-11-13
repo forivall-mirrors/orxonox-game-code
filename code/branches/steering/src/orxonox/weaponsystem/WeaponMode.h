@@ -38,12 +38,6 @@
 #include "core/SubclassIdentifier.h"
 #include "tools/Timer.h"
 
-#include "weaponsystem/Weapon.h"
-#include "weaponsystem/WeaponPack.h"
-#include "weaponsystem/WeaponSystem.h"
-#include "worldentities/pawns/Pawn.h"
-#include "controllers/Controller.h"
-
 namespace orxonox
 {
     class _OrxonoxExport WeaponMode : public BaseObject
@@ -114,8 +108,11 @@ namespace orxonox
             inline const Vector3& getMuzzleOffset() const
                 { return this->muzzleOffset_; }
 
-            Vector3 getMuzzlePosition() const;
-            const Quaternion& getMuzzleOrientation() const;
+            void computeMuzzleParameters();
+            const Vector3& getMuzzlePosition() const
+                { return this->muzzlePosition_; }
+            const Quaternion& getMuzzleOrientation() const
+                { return this->muzzleOrientation_; }
             Vector3 getMuzzleDirection() const;
 
 
@@ -130,8 +127,7 @@ namespace orxonox
             inline unsigned int getMode() const
                 { return this->mode_; }
 
-            inline Vector3 getTarget()
-                { return this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getController()->getTarget(); }
+            Vector3 getTarget();
 
         protected:
             virtual void fire() = 0;
@@ -160,6 +156,9 @@ namespace orxonox
 
             Timer reloadTimer_;
             bool bReloading_;
+
+            Vector3 muzzlePosition_;
+            Quaternion muzzleOrientation_;
     };
 }
 

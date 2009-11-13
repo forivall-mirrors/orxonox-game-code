@@ -141,8 +141,8 @@ namespace orxonox
 
             inline Controller* getController() const
                 { return this->controller_; }
-            inline void setController(Controller* c)
-                { this->controller_ = c; }
+            inline void setController(Controller* val)
+                { this->controller_ = val; }
 
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
