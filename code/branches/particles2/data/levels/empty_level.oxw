@@ -17,7 +17,7 @@
     skybox       = "Orxonox/Starbox"
   >
 
-<Rocket position="-10, 3.5,800" velocity="0,0,-100"> 
+<!--Rocket position="-10, 3.5,800" velocity="0,0,-100"> 
       <attached>
         <Model pitch=180 position="0,0,0" scale=1.5 mesh="rocket_test.mesh" >
 	  <attached>
@@ -28,7 +28,7 @@
           </attached>
 	  </Model>
 	</attached>
-    </Rocket>
+    </Rocket-->
     
     
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />

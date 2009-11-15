@@ -31,10 +31,10 @@
 
 #include "OrxonoxPrereqs.h"
 #include "worldentities/ControllableEntity.h"
-#include "controllers/RocketController.h"
 
 namespace orxonox
 {
+    class ConeCollisionShape;
 
     /**
     @brief
@@ -51,11 +51,13 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Rocket through XML.
             virtual void tick(float dt); //!< Defines which actions the Rocket has to take in each tick.
-
             
-            virtual void moveFrontBack(const Vector2& value);
-            virtual void moveRightLeft(const Vector2& value);
-            virtual void moveUpDown(const Vector2& value);
+            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            void destroyObject();
+            
+            virtual void moveFrontBack(const Vector2& value){}
+            virtual void moveRightLeft(const Vector2& value){}
+            virtual void moveUpDown(const Vector2& value){}
 
             virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
@@ -99,31 +101,25 @@ namespace orxonox
             inline void rotateRoll(float value)
             { this->rotateRoll(Vector2(value, 0)); }
             
-            /**
-            @brief Sets the primary thrust to the input amount.
-            @param thrust The amount of thrust.
-            */
-            inline void setPrimaryThrust( float thrust )
-                { this->primaryThrust_=thrust; }      
-            // place your set-functions here.
-            // - hint: auxiliary thrust, rotation thrust.
-            
-            /**
-            @brief Gets the primary thrust to the input amount.
-            @preturn The amount of thrust.
-            */
-            inline float getPrimaryThrust()
-                { return this->primaryThrust_; }
-            // place your get-functions here.
+            void setOwner(Pawn* owner);
+            inline Pawn* getOwner() const
+                { return this->owner_; }
+                
+            inline void setDamage(float damage)
+                { this->damage_ = damage; }
+            inline float getDamage() const
+                { return this->damage_; }
             
         private:
-            RocketController *myController_; //!< The controller of the Rocket.
+            WeakPtr<Pawn> owner_;
+            Vector3 localAngularVelocity_;
+            float damage_;
+            bool bDestroy_;
             
-            btVector3 localLinearAcceleration_; //!< The linear acceleration that is used to move the Rocket the next tick.
-            btVector3 localAngularAcceleration_; //!< The linear angular acceleration that is used to move the Rocket the next tick.
-            float primaryThrust_; //!< The amount of primary thrust. This is just used, when moving forward. 
-            float auxilaryThrust_; //!< The amount of auxilary thrust. Used for all other movements (except for rotations).
-            float rotationThrust_; //!< The amount of rotation thrust. Used for rotations only.
+            Model* model_;
+            ConeCollisionShape* collisionShape_;
+            Timer destroyTimer_;
+            float lifetime_;
     };
 
 }

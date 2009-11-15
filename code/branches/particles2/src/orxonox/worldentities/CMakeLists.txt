@@ -4,7 +4,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   MovableEntity.cc
   MobileEntity.cc
   ControllableEntity.cc
-  Rocket.cc
 
   BigExplosion.cc
   ExplosionChunk.cc

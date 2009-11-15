@@ -1,17 +1,19 @@
     <weaponslots>
       <WeaponSlot position="-15.0,-1.5,0" />
       <WeaponSlot position=" 15.0,-1.5,0" />
-      <WeaponSlot position="  0.0, 0.0,0" />
+      <WeaponSlot position="    0,   0,0" />
     </weaponslots>
     <weaponsets>
       <WeaponSet firemode=0 />
       <WeaponSet firemode=1 />
+      <WeaponSet firemode=2 />
     </weaponsets>
     <weapons>
       <WeaponPack>
         <links>
           <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
           <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
+          <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
         </links>
         <Weapon>
           <attached>
@@ -34,6 +36,9 @@
           <HsW01 mode=0 munitionpershot=0 delay=0     material="Flares/point_lensflare" muzzleoffset=" 0.9, 1.1, -4.0" />
           <HsW01 mode=0 munitionpershot=0 delay=0.125 material="Flares/point_lensflare" muzzleoffset="-0.7, 1.5, -4.0" />
           <LightningGun mode=1 muzzleoffset="0,0,0" />
+        </Weapon>
+        <Weapon>
+          <RocketFire mode=2 muzzleoffset="0,0,0" />
         </Weapon>
       </WeaponPack>
       <WeaponPack>
