@@ -39,10 +39,8 @@
 #include "util/Clock.h"
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
-#include "core/Resource.h"
 #include "core/ConfigValueIncludes.h"
 #include "BaseSound.h"
-#include "MoodManager.h"
 #include "AmbientSound.h"
 
 namespace orxonox
@@ -220,18 +218,6 @@ namespace orxonox
                 }
             }
         }
-    }
-
-    //! Get the current mood and return the full path string to the requested sound.
-    std::string SoundManager::getAmbientPath(const std::string& source)
-    {
-        std::string path = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
-        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
-        if (fileInfo == NULL)
-        {
-            return "";
-        }
-        return path;
     }
 
     void SoundManager::fadeIn(AmbientSound* sound)

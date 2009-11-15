@@ -52,9 +52,9 @@ namespace orxonox
         virtual void stop();
         virtual void pause();
 
-        bool isPlaying();
-        bool isPaused();
-        bool isStopped();
+        bool isPlaying() { return this->state_ = Playing; }
+        bool isPaused()  { return this->state_ = Paused; }
+        bool isStopped() { return this->state_ = Stopped; }
 
         virtual void setSource(const std::string& source);
         virtual const std::string& getSource() const { return this->source_; }
@@ -62,26 +62,29 @@ namespace orxonox
         void setVolume(float vol);
         float getVolume() const { return this->volume_; }
 
-        bool getPlayOnLoad() const   { return this->bPlayOnLoad_; }
-        void setPlayOnLoad(bool val) { this->bPlayOnLoad_ = val; }
-
-        bool getLoop() const   { return this->bLoop_; }
-        void setLoop(bool val) { this->bLoop_ = val; }
+        bool getLooping() const   { return this->bLoop_; }
+        void setLooping(bool val);
 
         //ALuint getALAudioSource(void);
 
     protected:
         ALuint loadOggFile();
-        ALint getSourceState();
 
         ALuint audioSource_;
         ALuint audioBuffer_;
 
     private:
+        enum State
+        {
+            Stopped,
+            Playing,
+            Paused
+        };
+
         std::string     source_;
         float           volume_;
-        bool            bPlayOnLoad_;
         bool            bLoop_;
+        State           state_;
         DataStreamPtr   dataStream_;
     };
 }

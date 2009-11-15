@@ -31,8 +31,10 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/GameMode.h"
+#include "core/Resource.h"
 #include "core/XMLPort.h"
 #include "SoundManager.h"
+#include "MoodManager.h"
 
 namespace orxonox
 {
@@ -55,9 +57,9 @@ namespace orxonox
     {
         SUPER(AmbientSound, XMLPort, xmlelement, mode);
         XMLPortParamExtern(AmbientSound, BaseSound, this, "volume", setVolume, getVolume, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
+        XMLPortParamExtern(AmbientSound, BaseSound, this, "loop", setLooping, getLooping, xmlelement, mode);
+        XMLPortParamExtern(AmbientSound, BaseSound, this, "play", play, isPlaying, xmlelement, mode);
+        XMLPortParam(AmbientSound, "source", setAmbientSource, getAmbientSource, xmlelement, mode);
     }
 
     void AmbientSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -106,17 +108,17 @@ namespace orxonox
         BaseSound::pause();
     }
 
-    void AmbientSound::setSource(const std::string& source)
+    void AmbientSound::setAmbientSource(const std::string& source)
     {
+        this->ambientSource_ = source;
         if (GameMode::playsSound())
         {
-            std::string filePath = SoundManager::getInstance().getAmbientPath(source);
-            if (!filePath.empty())
-            {
-                BaseSound::setSource(filePath);
-                return;
-            }
-            COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;       
+            std::string path = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
+            shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
+            if (fileInfo != NULL)
+                this->setSource(path);
+            else
+                COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;       
         }
     }
 

@@ -58,12 +58,15 @@ namespace orxonox
         virtual void stop();
         virtual void pause();
 
-        virtual void setSource(const std::string& source);
+        virtual void setAmbientSource(const std::string& source);
+        const std::string& getAmbientSource() const { return this->ambientSource_; }
 
     private:
-        void doPlay();      // Continue playing without re-registering the sound
+        void doPlay();
         void doStop();
         void doPause();
+
+        std::string ambientSource_; //!< Analogous to source_, but mood independent
     };
 }
 

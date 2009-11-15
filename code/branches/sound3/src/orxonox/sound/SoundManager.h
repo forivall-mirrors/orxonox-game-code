@@ -59,7 +59,6 @@ namespace orxonox
         void registerAmbientSound(AmbientSound* newAmbient);
         void unregisterAmbientSound(AmbientSound* oldAmbient);
         void pauseAmbientSound(AmbientSound* ambient);
-        std::string getAmbientPath(const std::string& source);
 
     private:
         void processCrossFading(float dt);

@@ -101,8 +101,8 @@ namespace orxonox
 
         if (GameMode::playsSound())
         {
-            this->ambient_->setLoop(true);
-			this->ambient_->setPlayOnLoad(true);
+            this->ambient_->setLooping(true);
+            this->ambient_->play(); // works without source
         }
 
 		this->setConfigValues();
@@ -135,7 +135,7 @@ namespace orxonox
 	void GSMainMenu::reloadSound() {
 		if (GameMode::playsSound())
         {
-			this->ambient_->setSource(soundPathMain_);
+            this->ambient_->setAmbientSource(soundPathMain_);
 		}
 	}
 
