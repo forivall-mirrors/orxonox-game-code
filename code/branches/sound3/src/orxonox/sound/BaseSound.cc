@@ -92,7 +92,7 @@ namespace orxonox
     {
         if (alIsSource(this->audioSource_))
             return getSourceState() == AL_PAUSED;
-        return true;
+        return false;
     }
 
     bool BaseSound::isStopped()
@@ -102,13 +102,17 @@ namespace orxonox
         return true;
     }
 
-    void BaseSound::setPlayOnLoad(bool val)
+    void BaseSound::setVolume(float vol)
     {
-        this->bPlayOnLoad_ = val;
-        if(val)
+        if (vol > 1 || vol < 0)
         {
-            this->play();
+            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
+            vol = vol > 1 ? 1 : vol;
+            vol = vol < 0 ? 0 : vol;
         }
+        this->volume_ = vol;
+        if (alIsSource(this->audioSource_))
+            alSourcef(this->audioSource_, AL_GAIN, vol);
     }
 
     void BaseSound::setSource(const std::string& source)
@@ -177,13 +181,10 @@ namespace orxonox
 
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
 
+        this->setVolume(this->volume_);
+
         if (this->bPlayOnLoad_)
             this->play();
-    }
-
-    ALuint BaseSound::getALAudioSource()
-    {
-        return audioSource_;
     }
 
     ALint BaseSound::getSourceState()
@@ -274,5 +275,4 @@ namespace orxonox
 
         return buffer;
     }
-
-} // namespace: orxonox
+}

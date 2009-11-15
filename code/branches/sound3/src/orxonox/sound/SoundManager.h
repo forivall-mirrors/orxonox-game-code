@@ -21,18 +21,19 @@
  *
  *   Author:
  *       Erwin 'vaiursch' Herrsche
+ *       Kevin Young
  *   Co-authors:
  *      ...
  */
+
 #ifndef _SoundManager_H__
 #define _SoundManager_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <cassert>
 #include <list>
+#include <string>
 #include "util/Singleton.h"
-#include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {
@@ -44,35 +45,39 @@ namespace orxonox
     class _OrxonoxExport SoundManager : public Singleton<SoundManager>, public OrxonoxClass
     {
         friend class Singleton<SoundManager>;
+
     public:
         SoundManager();
         ~SoundManager();
 
-        void update(const Clock &time);
-        void setConfigValues(void);
+        void update(const Clock& time);
+        void setConfigValues();
 
         void setListenerPosition(const Vector3& position);
         void setListenerOrientation(const Quaternion& orientation);
 
         void registerAmbientSound(AmbientSound* newAmbient);
-        void unregisterAmbientSound(AmbientSound* currentAmbient);
-        const std::string& getAmbientPath(const std::string& source);
-        void fadeInAmbientSound(float dt);
-        void fadeOutAmbientSound(float dt);
-        void checkFadeStepValidity(void);
+        void unregisterAmbientSound(AmbientSound* oldAmbient);
+        void pauseAmbientSound(AmbientSound* ambient);
+        std::string getAmbientPath(const std::string& source);
 
     private:
+        void processCrossFading(float dt);
+        void fadeIn(AmbientSound* sound);
+        void fadeOut(AmbientSound* sound);
+
+        void checkFadeStepValidity();
+
         ALCdevice* device_;
         ALCcontext* context_;
        
-        std::list<AmbientSound*> ambientSounds_;
+        typedef std::list<std::pair<AmbientSound*, bool> > AmbientList;
+        AmbientList ambientSounds_;
         
-        float fadeStep_;       //per second
-        std::list<std::pair<AmbientSound*, float> > fadeInList_;
-        std::list<std::pair<AmbientSound*, float> > fadeOutList_;
+        float crossFadeStep_;       //!< Absolute change per second (0.1 means 10% of the nominal volume) for cross fading
+        std::list<AmbientSound*> fadeInList_;
+        std::list<AmbientSound*> fadeOutList_;
         
-        std::string lastReqPath_;
-
         static SoundManager* singletonPtr_s;
     };
 }

@@ -21,6 +21,7 @@
  *
  *   Author:
  *       Erwin 'vaiursch' Herrsche
+ *       Kevin Young
  *   Co-authors:
  *      ...
  *
@@ -29,6 +30,7 @@
 #include "SoundManager.h"
 
 #include <AL/alut.h>
+#include <utility>
 
 #include "util/Exception.h"
 #include "util/Math.h"
@@ -52,7 +54,7 @@ namespace orxonox
     {
         RegisterRootObject(SoundManager);
 
-        if (!alutInitWithoutContext(NULL,NULL))
+        if (!alutInitWithoutContext(NULL, NULL))
             ThrowException(InitialisationFailed, "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
 
@@ -102,17 +104,27 @@ namespace orxonox
         alutExit();
     }
 
-    void SoundManager::update(const Clock &time)
+    void SoundManager::update(const Clock& time)
     {
-        this->fadeInAmbientSound(time.getDeltaTime());
-        this->fadeOutAmbientSound(time.getDeltaTime());
+        this->processCrossFading(time.getDeltaTime());
     }
 
     void SoundManager::setConfigValues()
     {
-        SetConfigValue(fadeStep_, 0.2f)
+        SetConfigValue(crossFadeStep_, 0.2f)
             .description("Determines how fast sounds should fade, per second.")
             .callback(this, &SoundManager::checkFadeStepValidity);
+    }
+
+    void SoundManager::checkFadeStepValidity()
+    {
+        if (crossFadeStep_ <= 0.0 || crossFadeStep_ >= 1.0 )
+        {
+            COUT(2) << "Sound warning: Sound step out of range, ignoring change." << std::endl;
+            ResetConfigValue(crossFadeStep_);
+        }
+        COUT(3) << "SoundManager: fade step set to " << crossFadeStep_ << std::endl;
+        return;
     }
 
     void SoundManager::setListenerPosition(const Vector3& position)
@@ -140,39 +152,53 @@ namespace orxonox
 
     void SoundManager::registerAmbientSound(AmbientSound* newAmbient)
     {
-        if(newAmbient != NULL)
+        if (newAmbient != NULL)
         {
-            if (!(this->ambientSounds_.empty())) 
+            for (AmbientList::const_iterator it = this->ambientSounds_.begin(); it != this->ambientSounds_.end(); ++it)
             {
-                this->fadeOutList_.push_front(std::make_pair(this->ambientSounds_.front(), 1.0));
+                if (it->first == newAmbient)
+                {
+                    COUT(2) << "Sound warning: Will not play an AmbientSound twice." << std::endl;
+                    return;
+                }
             }
-            this->fadeInList_.push_front(std::make_pair(newAmbient, 0.0));
-            this->ambientSounds_.push_front(newAmbient);
+
+            if (!this->ambientSounds_.empty()) 
+            {
+                this->fadeOut(ambientSounds_.front().first);
+            }
+            this->ambientSounds_.push_front(std::make_pair(newAmbient, false));
+            newAmbient->doPlay();
+            this->fadeIn(newAmbient);
         }
     }
 
-    void SoundManager::unregisterAmbientSound(AmbientSound* currentAmbient)
+    void SoundManager::unregisterAmbientSound(AmbientSound* oldAmbient)
     {
-        if(currentAmbient == NULL || ambientSounds_.empty())
+        if (oldAmbient == NULL || ambientSounds_.empty())
         {
             return;
         }
-        if(this->ambientSounds_.front() == currentAmbient) 
+        if (this->ambientSounds_.front().first == oldAmbient) 
         {
-            this->fadeOutList_.push_front(std::make_pair(this->ambientSounds_.front(), 1.0));
+            this->fadeOut(oldAmbient);
             this->ambientSounds_.pop_front();
-            if(!(this->ambientSounds_.empty()))
+            if (!this->ambientSounds_.empty())
             {
-                this->fadeInList_.push_front(std::make_pair(this->ambientSounds_.front(), 0.0));
+                if (!this->ambientSounds_.front().second) // Not paused before
+                {
+                    this->ambientSounds_.front().first->doPlay();
+                }
+                this->fadeIn(this->ambientSounds_.front().first);
             }
         }
         else
         {
-            for(std::list<AmbientSound*>::iterator it= this->ambientSounds_.begin(); it != this->ambientSounds_.end(); it++)
+            for (AmbientList::iterator it = this->ambientSounds_.begin(); it != this->ambientSounds_.end(); ++it)
             {
-                if(*it == currentAmbient)
+                if (it->first == oldAmbient)
                 {
-                    currentAmbient->doStop();
+                    this->fadeOut(oldAmbient);
                     this->ambientSounds_.erase(it);
                     break;
                 }
@@ -180,75 +206,110 @@ namespace orxonox
         }
     }
 
-    // Get the current mood and return the full path string to the requested sound.
-    const std::string& SoundManager::getAmbientPath(const std::string& source)
+    void SoundManager::pauseAmbientSound(AmbientSound* ambient)
     {
-        lastReqPath_ = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
-        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(lastReqPath_);
-        if(fileInfo == NULL)
+        if (ambient != NULL)
         {
-            return BLANKSTRING;
-        }
-        return lastReqPath_;
-    }
-
-    void SoundManager::fadeInAmbientSound(float dt)
-    {
-        if(!(this->fadeInList_.empty()))
-        {
-            for(std::list<std::pair<AmbientSound*, float> >::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); it++)
+            for (AmbientList::iterator it = this->ambientSounds_.begin(); it != this->ambientSounds_.end(); ++it)
             {
-                it->second += fadeStep_ * dt;
-                alSourcef(it->first->getALAudioSource(), AL_GAIN, it->second);
-            }
-            if(this->fadeInList_.back().second >= 1)
-            {
-                this->fadeInList_.pop_back();
-            }
-        }
-    }
-
-    void SoundManager::fadeOutAmbientSound(float dt)
-    {
-        if(!(this->fadeInList_.empty()))
-        {
-            for(std::list<std::pair<AmbientSound*, float> >::iterator it= this->fadeOutList_.begin(); it != this->fadeOutList_.end(); it++)
-            {
-                it->second -= fadeStep_ * dt;
-                alSourcef(it->first->getALAudioSource(), AL_GAIN, it->second);
-            }
-            if(this->fadeOutList_.back().second <= 0)
-            {
-                bool pauseTest = false;
-            
-                for(std::list<AmbientSound*>::iterator it= this->ambientSounds_.begin(); it != this->ambientSounds_.end(); it++)
+                if (it->first == ambient)
                 {
-                    if(*it == this->fadeOutList_.back().first)
+                    it->second = true;
+                    this->fadeOut(it->first);
+                    return;
+                }
+            }
+        }
+    }
+
+    //! Get the current mood and return the full path string to the requested sound.
+    std::string SoundManager::getAmbientPath(const std::string& source)
+    {
+        std::string path = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
+        if (fileInfo == NULL)
+        {
+            return "";
+        }
+        return path;
+    }
+
+    void SoundManager::fadeIn(AmbientSound* sound)
+    {
+        // If we're already fading out --> remove that
+        for (std::list<AmbientSound*>::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); it++)
+        {
+            if (*it == sound)
+            {
+                this->fadeOutList_.erase(it);
+                break;
+            }
+        }
+        // No duplicate entries
+        if (std::find(this->fadeInList_.begin(), this->fadeInList_.end(), sound) == this->fadeInList_.end())
+            this->fadeInList_.push_back(sound);
+    }
+
+    void SoundManager::fadeOut(AmbientSound* sound)
+    {
+        // If we're already fading in --> remove that
+        for (std::list<AmbientSound*>::iterator it = this->fadeInList_.begin(); it != this->fadeInList_.end(); it++)
+        {
+            if (*it == sound)
+            {
+                this->fadeInList_.erase(it);
+                break;
+            }
+        }
+        // No duplicate entries
+        if (std::find(this->fadeOutList_.begin(), this->fadeOutList_.end(), sound) == this->fadeOutList_.end())
+            this->fadeOutList_.push_back(sound);
+    }
+
+    void SoundManager::processCrossFading(float dt)
+    {
+        // FADE IN
+        for (std::list<AmbientSound*>::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); it)
+        {
+            if ((*it)->getVolume() + this->crossFadeStep_*dt > 1.0f)
+            {
+                (*it)->setVolume(1.0f);
+                this->fadeInList_.erase(it++);
+            }
+            else
+            {
+                (*it)->setVolume((*it)->getVolume() + this->crossFadeStep_*dt);
+                ++it;
+            }
+        }
+
+        // FADE OUT
+        for (std::list<AmbientSound*>::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); it)
+        {
+            if ((*it)->getVolume() - this->crossFadeStep_*dt < 0.0f)
+            {
+                (*it)->setVolume(0.0f);
+
+                // If sound is in the ambient list --> pause
+                for (AmbientList::const_iterator it2 = this->ambientSounds_.begin(); it2 != this->ambientSounds_.end(); ++it2)
+                {
+                    if (it2->first == *it)
                     {
-                        pauseTest = true;
+                        (*it)->doPause();
                         break;
                     }
                 }
-                if(pauseTest)
-                {
-                    this->fadeOutList_.back().first->pause();
-                }
-                else
-                {
-                    this->fadeOutList_.back().first->doStop();
-                }
-                this->fadeOutList_.pop_back();
+                // If not pause (by loop above for instance) --> stop
+                if (!(*it)->isPaused())
+                    (*it)->doStop();
+
+                this->fadeOutList_.erase(it++);
+            }
+            else
+            {
+                (*it)->setVolume((*it)->getVolume() - this->crossFadeStep_*dt);
+                ++it;
             }
         }
-    }
-
-    void SoundManager::checkFadeStepValidity()
-    {
-        if(fadeStep_ <= 0.0 || fadeStep_ >= 1.0 )
-        {
-            ResetConfigValue(fadeStep_);
-        }
-        COUT(0) << "SoundManager: fade step now set to " << fadeStep_ << std::endl;
-        return;
     }
 }

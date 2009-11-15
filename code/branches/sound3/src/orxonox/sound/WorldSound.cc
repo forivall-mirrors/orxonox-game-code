@@ -52,9 +52,10 @@ namespace orxonox
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WorldSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
+        XMLPortParamExtern(WorldSound, BaseSound, this, "volume", setVolume, getVolume, xmlelement, mode);
         XMLPortParamExtern(WorldSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
         XMLPortParamExtern(WorldSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
+        XMLPortParamExtern(WorldSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
     }
 
     void WorldSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -87,5 +88,4 @@ namespace orxonox
                 COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
         }
     }
-
 }

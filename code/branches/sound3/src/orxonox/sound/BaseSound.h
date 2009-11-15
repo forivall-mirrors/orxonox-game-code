@@ -25,13 +25,13 @@
  *      Reto Grieder
  *
  */
+
 #ifndef _BaseSound_H__
 #define _BaseSound_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreSharedPtr.h>
 #include <OgreDataStream.h>
 #include "core/OrxonoxClass.h"
 
@@ -50,22 +50,25 @@ namespace orxonox
 
         virtual void play();
         virtual void stop();
-        void pause();
+        virtual void pause();
 
         bool isPlaying();
         bool isPaused();
         bool isStopped();
 
         virtual void setSource(const std::string& source);
-        const std::string& getSource() { return this->source_; }
+        virtual const std::string& getSource() const { return this->source_; }
 
-        bool getPlayOnLoad() { return this->bPlayOnLoad_; }
-        void setPlayOnLoad(bool val);
+        void setVolume(float vol);
+        float getVolume() const { return this->volume_; }
 
-        bool getLoop() { return this->bLoop_; }
+        bool getPlayOnLoad() const   { return this->bPlayOnLoad_; }
+        void setPlayOnLoad(bool val) { this->bPlayOnLoad_ = val; }
+
+        bool getLoop() const   { return this->bLoop_; }
         void setLoop(bool val) { this->bLoop_ = val; }
 
-        ALuint getALAudioSource(void);
+        //ALuint getALAudioSource(void);
 
     protected:
         ALuint loadOggFile();
@@ -75,10 +78,11 @@ namespace orxonox
         ALuint audioBuffer_;
 
     private:
-        std::string source_;
-        bool bPlayOnLoad_;
-        bool bLoop_;
-        DataStreamPtr dataStream_;
+        std::string     source_;
+        float           volume_;
+        bool            bPlayOnLoad_;
+        bool            bLoop_;
+        DataStreamPtr   dataStream_;
     };
 }
 

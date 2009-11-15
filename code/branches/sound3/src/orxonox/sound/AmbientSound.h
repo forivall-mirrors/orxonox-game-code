@@ -21,10 +21,12 @@
  *
  *   Author:
  *      Reto Grieder
+ *      Kevin Young
  *   Co-authors:
  *      ...
  *
  */
+
 #ifndef _AmbientSound_H__
 #define _AmbientSound_H__
 
@@ -42,23 +44,26 @@ namespace orxonox
      */
     class _OrxonoxExport AmbientSound : public BaseSound, public BaseObject
     {
+        friend class SoundManager;
+
     public:
         AmbientSound(BaseObject* creator);
         virtual ~AmbientSound();
-
-        virtual void play();
-        void replay();      // Continue playing without re-registering the sound
-        virtual void stop();
-        void doStop();
-
-        virtual void setSource(const std::string& source);
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedActivity();
 
+        virtual void play();
+        virtual void stop();
+        virtual void pause();
+
+        virtual void setSource(const std::string& source);
 
     private:
+        void doPlay();      // Continue playing without re-registering the sound
+        void doStop();
+        void doPause();
     };
 }
 
