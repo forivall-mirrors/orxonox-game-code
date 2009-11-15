@@ -20,16 +20,16 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Oliver Scheuss
  *   Co-authors:
- *      Martin Stypinski
+ *      ...
  *
  */
 
 #ifndef _Rocket_H__
 #define _Rocket_H__
 
-#include "OrxonoxPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox
@@ -43,7 +43,7 @@ namespace orxonox
     @author
         Oli Scheuss
     */
-    class _OrxonoxExport Rocket : public ControllableEntity
+    class _WeaponsExport Rocket : public ControllableEntity
     {
         public:
             Rocket(BaseObject* creator);
