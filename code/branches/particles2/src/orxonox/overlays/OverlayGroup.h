@@ -63,7 +63,7 @@ namespace orxonox
         static void scaleGroup(const std::string& name, float scale);
         static void scrollGroup(const std::string& name, const Vector2& scroll);
 
-        inline const std::set<OrxonoxOverlay*>& getOverlays() const
+        inline const std::set< SmartPtr<OrxonoxOverlay> >& getOverlays() const
             { return this->hudElements_; }
 
         void changedVisibility();
@@ -89,7 +89,7 @@ namespace orxonox
         OrxonoxOverlay* getElement(unsigned int index);
 
     private:
-        std::set<OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
+        std::set< SmartPtr<OrxonoxOverlay> > hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
         Vector2 scale_;                            //!< Current scale (independent of the elements).
         Vector2 scroll_;                           //!< Current scrolling offset.
         BaseObject* owner_;                        //!< The owner of this OverlayGroup

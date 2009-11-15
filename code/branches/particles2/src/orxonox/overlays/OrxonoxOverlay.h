@@ -168,14 +168,7 @@ namespace orxonox
             { return this->owner_; }
         virtual void changedOwner() {}
 
-        inline void setOverlayGroup(OverlayGroup* group)
-        {
-            if (group != this->group_)
-            {
-                this->group_ = group;
-                this->changedOverlayGroup();
-            }
-        }
+        void setOverlayGroup(OverlayGroup* group);
         inline OverlayGroup* getOverlayGroup() const
             { return this->group_; }
         virtual void changedOverlayGroup() 

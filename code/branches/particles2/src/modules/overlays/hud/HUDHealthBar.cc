@@ -47,7 +47,7 @@ namespace orxonox
 
         this->textoverlay_ = new OverlayText(this);
 
-        assert(this->textoverlay_);
+        assert(this->textoverlay_.get());
 
         this->textoverlay_->setCaption("");
     }
@@ -55,7 +55,10 @@ namespace orxonox
     HUDHealthBar::~HUDHealthBar()
     {
         if (this->isInitialized())
+        {
             this->textoverlay_->destroy();
+            this->textoverlay_ = 0;
+        }
     }
 
     void HUDHealthBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -105,7 +108,7 @@ namespace orxonox
     {
         SUPER(HUDHealthBar, changedOverlayGroup);
 
-        this->getOverlayGroup()->addElement(this->textoverlay_);
+        this->getOverlayGroup()->addElement(this->textoverlay_.get());
     }
 
     void HUDHealthBar::changedVisibility()
