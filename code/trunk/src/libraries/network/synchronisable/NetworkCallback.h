@@ -48,7 +48,7 @@ namespace orxonox{
   {
     public:
       NetworkCallback(T* object, void (T::*function) (void)) : object_(object), function_(function) {}
-	  virtual ~NetworkCallback() {}
+      virtual ~NetworkCallback() {}
       virtual void call()
         { (this->object_->*function_)(); }
 

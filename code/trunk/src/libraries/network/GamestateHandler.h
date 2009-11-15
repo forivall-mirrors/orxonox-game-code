@@ -34,7 +34,7 @@
 namespace orxonox {
 
 /**
-	@author Oliver Scheuss
+    @author Oliver Scheuss
 */
 class _NetworkExport GamestateHandler{
   private:

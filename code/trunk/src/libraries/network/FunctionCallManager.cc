@@ -42,7 +42,7 @@ void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID)
     FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
     FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
   } 
-  FunctionCallManager::	clientMap_[clientID]->addCallStatic(functionID);
+  FunctionCallManager::clientMap_[clientID]->addCallStatic(functionID);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1)
 {  

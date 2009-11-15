@@ -71,10 +71,10 @@ namespace orxonox
         @see
             Resource
     */
-	class _CoreExport DynLib
+    class _CoreExport DynLib
     {
-	protected:
-		std::string mName;
+    protected:
+        std::string mName;
         /// Gets the last loading error
         std::string dynlibError(void);
     public:
@@ -94,8 +94,8 @@ namespace orxonox
         /** Unload the library
         */
         void unload();
-		/// Get the name of the library
-		const std::string& getName(void) const { return mName; }
+        /// Get the name of the library
+        const std::string& getName(void) const { return mName; }
 
         /**
             Returns the address of the given symbol from the loaded library.

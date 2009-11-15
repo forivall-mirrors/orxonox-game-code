@@ -44,7 +44,7 @@ namespace orxonox {
 *       - Makes server and client a singleton
 *       - defines static functions available on both server and client
 *       - is the interface to be used when communicating with the network
-*	@author Oliver Scheuss
+*       @author Oliver Scheuss
 */
 class _NetworkExport Host{
   private:
