@@ -45,11 +45,16 @@ namespace orxonox
         , bLoop_(false)
     {
         RegisterRootObject(BaseSound);
+
+        if (GameMode::playsSound())
+            alGenSources(1, &this->audioSource_);
     }
 
     BaseSound::~BaseSound()
     {
         this->setSource("");
+        if (this->audioSource_)
+            alDeleteSources(1, &this->audioSource_);
     }
 
     void BaseSound::play()
@@ -123,13 +128,11 @@ namespace orxonox
             return;
         }
         
-        if (alIsSource(this->audioSource_))
+        if (alIsSource(this->audioBuffer_))
         {
             this->stop();
             // Unload old sound first
             alSourcei(this->audioSource_, AL_BUFFER, 0);
-            alDeleteSources(1, &this->audioSource_);
-            this->audioSource_ = 0;
             alDeleteBuffers(1, &this->audioBuffer_);
             this->audioBuffer_ = 0;
         }
@@ -171,7 +174,6 @@ namespace orxonox
             }
         }
 
-        alGenSources(1, &this->audioSource_);
         alSourcei(this->audioSource_, AL_BUFFER, this->audioBuffer_);
         if (alGetError() != AL_NO_ERROR)
         {
