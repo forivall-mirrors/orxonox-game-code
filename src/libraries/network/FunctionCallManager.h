@@ -36,7 +36,7 @@
 
 namespace orxonox {
 /**
-	@author
+    @author
 */
 
 class _NetworkExport FunctionCallManager

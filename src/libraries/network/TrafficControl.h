@@ -129,7 +129,7 @@ class TrafficControl : public ClientConnectionListener {
     void processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>& list); //gets a pointer to the list (containing objectIDs) and sorts it
     static void processAck(unsigned int clientID, unsigned int gamestateID)
     { return instance_->ack(clientID, gamestateID); }
-    void deleteObject(unsigned int objectID);				// this function gets called when an object has been deleted (in order to clean up lists and maps)
+    void deleteObject(unsigned int objectID);               // this function gets called when an object has been deleted (in order to clean up lists and maps)
     
     bool prioritySort(uint32_t clientID, obj i, obj j);
     bool dataSort(obj i, obj j);

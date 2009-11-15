@@ -36,7 +36,7 @@ namespace orxonox {
 const unsigned int ACKID_NACK = 0;
 namespace packet {
 /**
-	@author
+    @author
 */
 class _NetworkExport Acknowledgement : public Packet
 {

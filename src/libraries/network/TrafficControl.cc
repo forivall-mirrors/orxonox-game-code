@@ -63,26 +63,26 @@ namespace orxonox {
 /**
 *Initializing protected members
 */
-	TrafficControl *TrafficControl::instance_=0;
+    TrafficControl *TrafficControl::instance_=0;
 
-	/**
-	* @brief Constructor: assures that only one reference will be created and sets the pointer
-	*/
-	TrafficControl::TrafficControl()
-	{
+    /**
+    * @brief Constructor: assures that only one reference will be created and sets the pointer
+    */
+    TrafficControl::TrafficControl()
+    {
     RegisterObject(TrafficControl);
-	  assert(instance_==0);
-	  instance_=this;
+      assert(instance_==0);
+      instance_=this;
     this->setConfigValues();
-	}
+    }
 
-	/**
-	* @brief Destructor: resets the instance pointer to 0
-	*/
-	TrafficControl::~TrafficControl()
-	{
-	  instance_=0;
-	}
+    /**
+    * @brief Destructor: resets the instance pointer to 0
+    */
+    TrafficControl::~TrafficControl()
+    {
+      instance_=0;
+    }
 
 /**
 *Definition of public members
@@ -120,13 +120,13 @@ namespace orxonox {
 
 
 
-	void TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>& list)
-	{
-	  currentClientID=clientID;
-	  currentGamestateID=gamestateID;
-	  evaluateList(clientID, list);
-	  return;
-	}
+    void TrafficControl::processObjectList(unsigned int clientID, unsigned int gamestateID, std::list<obj>& list)
+    {
+      currentClientID=clientID;
+      currentGamestateID=gamestateID;
+      evaluateList(clientID, list);
+      return;
+    }
 
   TrafficControl *TrafficControl::getInstance()
   {
@@ -134,11 +134,11 @@ namespace orxonox {
     return instance_;
   }
 
-	void TrafficControl::ack(unsigned int clientID, unsigned int gamestateID)
-	{
+    void TrafficControl::ack(unsigned int clientID, unsigned int gamestateID)
+    {
     if ( !this->bActive_ )
       return;
-	  std::list<obj>::iterator itvec;  // iterator to iterate through the acked objects
+      std::list<obj>::iterator itvec;  // iterator to iterate through the acked objects
 
     //assertions to make sure the maps already exist
     assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
@@ -150,7 +150,7 @@ namespace orxonox {
     std::map<unsigned int, std::list<obj> >& objectListTemp = clientListTemp_[clientID];
 
     for(itvec = objectListTemp[gamestateID].begin(); itvec != objectListTemp[gamestateID].end(); itvec++)
-	  {
+      {
       if(objectListPerm.find((*itvec).objID) != objectListPerm.end()) // check whether the obj already exists in our lists
       {
         objectListPerm[(*itvec).objID].objCurGS = gamestateID;
@@ -164,25 +164,25 @@ namespace orxonox {
         objectListPerm[(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
         objectListPerm[(*itvec).objID].objSize = (*itvec).objSize;
       }
-	  }
-	   // remove temporary list (with acked objects) from the map
+      }
+       // remove temporary list (with acked objects) from the map
     objectListTemp.erase( objectListTemp.find(gamestateID) );
-	}
+    }
 
 /**
 *Definition of private members
 */
 
-	/**
-	*updateClientListPerm
-	*returns void
-	*/
-	void TrafficControl::insertinClientListPerm(unsigned int clientID, obj objinf)
-	{
-	  std::map<unsigned int,std::map<unsigned int, objInfo> >::iterator itperm;//iterator clientListPerm over clientIDs
+    /**
+    *updateClientListPerm
+    *returns void
+    */
+    void TrafficControl::insertinClientListPerm(unsigned int clientID, obj objinf)
+    {
+      std::map<unsigned int,std::map<unsigned int, objInfo> >::iterator itperm;//iterator clientListPerm over clientIDs
     unsigned int gsid=GAMESTATEID_INITIAL, gsdiff=currentGamestateID, prioperm=Synchronisable::getSynchronisable(objinf.objID)->getPriority(), priomom=0;
     clientListPerm_[clientID][objinf.objID] = objInfo(objinf.objID, objinf.objCreatorID,gsid,gsdiff, objinf.objSize,prioperm,priomom);
-	}
+    }
 
   /**
   * updateClientListTemp
@@ -222,11 +222,11 @@ namespace orxonox {
   }
 
 
-	/**
-	*evaluateList evaluates whether new obj are there, whether there are things to be updatet and manipulates all this.
-	*/
-	void TrafficControl::evaluateList(unsigned int clientID, std::list<obj>& list)
-	{
+    /**
+    *evaluateList evaluates whether new obj are there, whether there are things to be updatet and manipulates all this.
+    */
+    void TrafficControl::evaluateList(unsigned int clientID, std::list<obj>& list)
+    {
 
     if( bActive_ )
     {

@@ -37,7 +37,7 @@ namespace packet {
 
   
 /**
-	@author
+    @author
 */
 class _NetworkExport ClassID : public Packet
 {

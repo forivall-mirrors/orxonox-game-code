@@ -95,7 +95,7 @@ class _NetworkExport GamestateHeader{
 };
 
 /**
-	@author Oliver Scheuss
+    @author Oliver Scheuss
 */
 class _NetworkExport Gamestate: public Packet{
   public:
