@@ -49,7 +49,7 @@ namespace orxonox
         : GameState(info)
         , inputState_(0)
     {
-		RegisterRootObject(GSMainMenu);
+        RegisterRootObject(GSMainMenu);
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setMouseMode(MouseMode::Nonexclusive);
         inputState_->setHandler(GUIManager::getInstancePtr());
@@ -92,9 +92,9 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startDedicated), "startDedicated"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu), "startMainMenu"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startIOConsole), "startIOConsole"));
-		
-		// create command to change sound path
-		CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
+        
+        // create command to change sound path
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
 
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
@@ -105,7 +105,7 @@ namespace orxonox
             this->ambient_->play(); // works without source
         }
 
-		this->setConfigValues();
+        this->setConfigValues();
     }
 
     void GSMainMenu::deactivate()
@@ -125,27 +125,30 @@ namespace orxonox
     {
     }
 
-	void GSMainMenu::setConfigValues()
+    void GSMainMenu::setConfigValues()
     {
         SetConfigValue(soundPathMain_, "mainmenu.wav")
             .description("Contains the path to the main menu sound file.")
-			.callback(this, &GSMainMenu::reloadSound);
+            .callback(this, &GSMainMenu::reloadSound);
     }
 
-	void GSMainMenu::reloadSound() {
-		if (GameMode::playsSound())
+    void GSMainMenu::reloadSound()
+    {
+        if (GameMode::playsSound())
         {
             this->ambient_->setAmbientSource(soundPathMain_);
-		}
-	}
+        }
+    }
 
-	const std::string& GSMainMenu::getMainMenuSoundPath() {
-		return soundPathMain_;
-	}
+    const std::string& GSMainMenu::getMainMenuSoundPath()
+    {
+        return soundPathMain_;
+    }
 
-	void GSMainMenu::setMainMenuSoundPath(const std::string& path) {
-		ModifyConfigValue(soundPathMain_, set, path);
-	}
+    void GSMainMenu::setMainMenuSoundPath(const std::string& path)
+    {
+        ModifyConfigValue(soundPathMain_, set, path);
+    }
 
     void GSMainMenu::startStandalone()
     {

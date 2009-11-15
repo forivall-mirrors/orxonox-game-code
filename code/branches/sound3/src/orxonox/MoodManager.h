@@ -52,13 +52,13 @@ namespace orxonox
 
             void setConfigValues();
 
-			void setMood(const std::string& mood);
-			const std::string& getMood();
+            void setMood(const std::string& mood);
+            const std::string& getMood();
 
             static MoodManager& getInstance()    { return Singleton<MoodManager>::getInstance(); } // tolua_export
 
         private:
-           
+
             // config values
             std::string mood_;
             std::string moodOld_;

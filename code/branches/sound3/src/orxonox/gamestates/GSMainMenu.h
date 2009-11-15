@@ -47,10 +47,10 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
-		void setConfigValues();
-		void reloadSound();
-		const std::string& getMainMenuSoundPath();
-		void setMainMenuSoundPath(const std::string& path);
+        void setConfigValues();
+        void reloadSound();
+        const std::string& getMainMenuSoundPath();
+        void setMainMenuSoundPath(const std::string& path);
 
         static void startStandalone();
         static void startServer();
@@ -66,7 +66,7 @@ namespace orxonox
 
         // ambient sound for the main menu
         AmbientSound*     ambient_;
-		std::string		  soundPathMain_;
+        std::string       soundPathMain_;
     };
 }
 

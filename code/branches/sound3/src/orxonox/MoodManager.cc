@@ -43,7 +43,7 @@ namespace orxonox
         RegisterRootObject(MoodManager);
         moodOld_ = "default";
         this->setConfigValues();
-		CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&MoodManager::setMood, this), "setMood"));
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&MoodManager::setMood, this), "setMood"));
     }
 
     MoodManager::~MoodManager()
@@ -57,18 +57,20 @@ namespace orxonox
             .callback(this, &MoodManager::checkMoodValidity);
     }
 
-	/**
+    /**
      *  Sets the mood
      *  @note TODO: Inform dependent classes of mood change
      */
-	void MoodManager::setMood(const std::string& mood) {
-		ModifyConfigValue(mood_, set, mood);
-	}
-	
-	// gets the current mood
-	const std::string& MoodManager::getMood() {
-		return mood_;
-	}
+    void MoodManager::setMood(const std::string& mood)
+    {
+        ModifyConfigValue(mood_, set, mood);
+    }
+    
+    // gets the current mood
+    const std::string& MoodManager::getMood()
+    {
+        return mood_;
+    }
 
     void MoodManager::checkMoodValidity()
     {
