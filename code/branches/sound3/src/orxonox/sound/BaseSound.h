@@ -52,9 +52,9 @@ namespace orxonox
         virtual void stop();
         virtual void pause();
 
-        bool isPlaying() { return this->state_ = Playing; }
-        bool isPaused()  { return this->state_ = Paused; }
-        bool isStopped() { return this->state_ = Stopped; }
+        bool isPlaying() { return this->state_ == Playing; }
+        bool isPaused()  { return this->state_ == Paused; }
+        bool isStopped() { return this->state_ == Stopped; }
 
         virtual void setSource(const std::string& source);
         virtual const std::string& getSource() const { return this->source_; }
