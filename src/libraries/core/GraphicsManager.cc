@@ -97,8 +97,6 @@ namespace orxonox
 
         // Ogre setup procedure (creating Ogre::Root)
         this->loadOgreRoot();
-        // load all the required plugins for Ogre
-        this->loadOgrePlugins();
 
         // At first, add the root paths of the data directories as resource locations
         Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem", "dataRoot", false);
@@ -170,6 +168,9 @@ namespace orxonox
     {
         if (renderWindow_ != NULL)
             return;
+
+        // load all the required plugins for Ogre
+        this->loadOgrePlugins();
 
         this->loadRenderer();
 
