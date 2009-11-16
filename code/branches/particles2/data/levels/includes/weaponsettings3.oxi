@@ -45,8 +45,8 @@
         <links>
           <DefaultWeaponmodeLink firemode=1 weaponmode=0 />
         </links>
-        <Weapon>
-          <!-- EnergyDrink mode=0 munitionpershot=0 delay=0  material="Flares/point_lensflare"muzzleoffset="2,-0.2,-1" / -->
-        </Weapon>
+        <!--Weapon>
+          <EnergyDrink mode=0 munitionpershot=0 delay=0  material="Flares/point_lensflare"muzzleoffset="2,-0.2,-1" />
+        </Weapon-->
       </WeaponPack>
     </weapons>

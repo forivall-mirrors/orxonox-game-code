@@ -201,7 +201,7 @@ namespace orxonox
                 it->second->setWeaponmodeLink(wPack, weaponmode);
         }
 
-        this->weaponPacks_.insert(wPack);
+        this->weaponPacks_.push_back(wPack);
         wPack->setWeaponSystem(this);
 
         return true;
@@ -220,13 +220,14 @@ namespace orxonox
             it->second->removeWeaponmodeLink(wPack);
 
         // Remove the WeaponPack from the WeaponSystem
-        this->weaponPacks_.erase(wPack);
+        assert( std::find(this->weaponPacks_.begin(),this->weaponPacks_.end(),wPack)!=this->weaponPacks_.end() );
+        this->weaponPacks_.erase( std::find(this->weaponPacks_.begin(),this->weaponPacks_.end(),wPack) );
     }
 
     WeaponPack * WeaponSystem::getWeaponPack(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::set<WeaponPack*>::const_iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); ++it)
+        for (std::vector<WeaponPack*>::const_iterator it = this->weaponPacks_.begin(); it != this->weaponPacks_.end(); ++it)
         {
             ++i;
             if (i > index)
@@ -257,7 +258,7 @@ namespace orxonox
             return;
 
         // Check if the WeaponPack belongs to this WeaponSystem
-        std::set<WeaponPack *>::iterator it1 = this->weaponPacks_.find(wPack);
+        std::vector<WeaponPack *>::iterator it1 = std::find( this->weaponPacks_.begin(), this->weaponPacks_.end(), wPack );
         if (it1 == this->weaponPacks_.end())
             return;
 
