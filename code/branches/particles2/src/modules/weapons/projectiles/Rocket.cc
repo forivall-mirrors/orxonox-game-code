@@ -124,7 +124,7 @@ namespace orxonox
     {
         SUPER(Rocket, tick, dt);
         
-        this->setAngularVelocity(this->localAngularVelocity_);
+        this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
         this->setVelocity( (this->getOrientation()*WorldEntity::FRONT)*100 );
         this->localAngularVelocity_ = 0;
 //         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
@@ -194,7 +194,7 @@ namespace orxonox
     */
     void Rocket::rotateYaw(const Vector2& value)
     {
-        this->localAngularVelocity_.x = value.x;
+        this->localAngularVelocity_.y = value.x;
     }
 
     /**
@@ -205,7 +205,7 @@ namespace orxonox
     */
     void Rocket::rotatePitch(const Vector2& value)
     {
-        this->localAngularVelocity_.y = value.x;
+        this->localAngularVelocity_.x = value.x;
     }
 
     /**
