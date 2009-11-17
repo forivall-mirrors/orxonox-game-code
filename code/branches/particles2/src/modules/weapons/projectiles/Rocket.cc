@@ -110,6 +110,7 @@ namespace orxonox
         this->owner_ = owner;
             
         this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
+        this->originalControllableEntity_->setDestroyWhenPlayerLeft( false );
         this->owner_->getPlayer()->startControl(this);
     }
 
@@ -124,6 +125,19 @@ namespace orxonox
         SUPER(Rocket, tick, dt);
         
         this->setAngularVelocity(this->localAngularVelocity_);
+        this->setVelocity( (this->getOrientation()*WorldEntity::FRONT)*100 );
+        this->localAngularVelocity_ = 0;
+//         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
+//         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
+//         if (this->localLinearAcceleration_.z() > 0)
+//             this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
+//         else
+//             this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
+//         this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
+//         this->localLinearAcceleration_.setValue(0, 0, 0);
+//     
+//         this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
+//         this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
     }
     
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
@@ -180,7 +194,7 @@ namespace orxonox
     */
     void Rocket::rotateYaw(const Vector2& value)
     {
-        this->localAngularVelocity_.y = value.x;
+        this->localAngularVelocity_.x = value.x;
     }
 
     /**
@@ -191,7 +205,7 @@ namespace orxonox
     */
     void Rocket::rotatePitch(const Vector2& value)
     {
-        this->localAngularVelocity_.x = value.x;
+        this->localAngularVelocity_.y = value.x;
     }
 
     /**
