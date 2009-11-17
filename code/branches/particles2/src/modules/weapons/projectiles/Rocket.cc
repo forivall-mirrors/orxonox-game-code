@@ -34,6 +34,9 @@
 #include "graphics/ParticleSpawner.h"
 #include "graphics/Model.h"
 #include "objects/collisionshapes/ConeCollisionShape.h"
+#include "infos/PlayerInfo.h"
+#include "controllers/Controller.h"
+#include "worldentities/CameraPosition.h"
 
 namespace orxonox
 {
@@ -68,6 +71,11 @@ namespace orxonox
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
         }
+        
+        this->camPosition_ = new CameraPosition(this);
+        this->camPosition_->setPosition(0,0,0);
+        this->attach( this->camPosition_ );
+        this->addCameraPosition( this->camPosition_ );
     }
 
     /**
@@ -80,6 +88,10 @@ namespace orxonox
         {
             this->collisionShape_->destroy();
             this->model_->destroy();
+            
+            if (GameMode::isMaster() && this->owner_)
+                this->owner_->getPlayer()->startControl(this->originalControllableEntity_);
+            this->camPosition_->destroy();
         }
     }
 
@@ -96,6 +108,9 @@ namespace orxonox
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
+            
+        this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
+        this->owner_->getPlayer()->startControl(this);
     }
 
     /**
