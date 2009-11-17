@@ -54,9 +54,10 @@ namespace orxonox
         this->setCollisionType(WorldEntity::Kinematic);
         this->setVelocity(0,0,-100);
         this->model_ = new Model(this);
-        this->model_->setMeshSource("can.mesh");
+        this->model_->setMeshSource("rocket_test.mesh");
         this->attach(this->model_);
         this->lifetime_ = 100;
+        this->bDestroy_ = false;
         
         if (GameMode::isMaster())
         {
@@ -73,7 +74,7 @@ namespace orxonox
         }
         
         this->camPosition_ = new CameraPosition(this);
-        this->camPosition_->setPosition(0,0,0);
+        this->camPosition_->setPosition(0,10,40);
         this->attach( this->camPosition_ );
         this->addCameraPosition( this->camPosition_ );
     }
@@ -89,8 +90,8 @@ namespace orxonox
             this->collisionShape_->destroy();
             this->model_->destroy();
             
-            if (GameMode::isMaster() && this->owner_)
-                this->owner_->getPlayer()->startControl(this->originalControllableEntity_);
+            if (GameMode::isMaster() && this->player_)
+                this->player_->stopTemporaryControl();
             this->camPosition_->destroy();
         }
     }
@@ -108,10 +109,10 @@ namespace orxonox
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-            
+        
         this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
-        this->originalControllableEntity_->setDestroyWhenPlayerLeft( false );
-        this->owner_->getPlayer()->startControl(this);
+        this->player_ = this->owner_->getPlayer();
+        this->owner_->getPlayer()->startTemporaryControl(this);
     }
 
     /**
@@ -125,19 +126,11 @@ namespace orxonox
         SUPER(Rocket, tick, dt);
         
         this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
-        this->setVelocity( (this->getOrientation()*WorldEntity::FRONT)*100 );
+        this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
         this->localAngularVelocity_ = 0;
-//         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
-//         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
-//         if (this->localLinearAcceleration_.z() > 0)
-//             this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->auxilaryThrust_);
-//         else
-//             this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
-//         this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
-//         this->localLinearAcceleration_.setValue(0, 0, 0);
-//     
-//         this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
-//         this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
+        
+        if( this->bDestroy_ )
+            this->destroy();
     }
     
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
@@ -146,7 +139,7 @@ namespace orxonox
         {
             if (otherObject == this->owner_)
                 return false;
-
+            
             this->bDestroy_ = true;
 
             if (this->owner_)
@@ -176,6 +169,7 @@ namespace orxonox
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
                 victim->damage(dmg, this->owner_);
+//             this->destroy();
         }
         return false;
     }
@@ -194,7 +188,7 @@ namespace orxonox
     */
     void Rocket::rotateYaw(const Vector2& value)
     {
-        this->localAngularVelocity_.y = value.x;
+        this->localAngularVelocity_.y += value.x;
     }
 
     /**
@@ -205,7 +199,7 @@ namespace orxonox
     */
     void Rocket::rotatePitch(const Vector2& value)
     {
-        this->localAngularVelocity_.x = value.x;
+        this->localAngularVelocity_.x += value.x;
     }
 
     /**
@@ -216,7 +210,7 @@ namespace orxonox
     */
     void Rocket::rotateRoll(const Vector2& value)
     {
-        this->localAngularVelocity_.z = value.x;
+        this->localAngularVelocity_.z += value.x;
     }
     
 }

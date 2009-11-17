@@ -109,7 +109,7 @@ namespace orxonox
                 { this->damage_ = damage; }
             inline float getDamage() const
                 { return this->damage_; }
-            virtual void fire(unsigned int firemode) {}
+            virtual void fire(unsigned int firemode) { this->destroy(); }
             
         private:
             WeakPtr<Pawn> owner_;
@@ -121,6 +121,7 @@ namespace orxonox
             Model* model_;
             CameraPosition* camPosition_;
             ConeCollisionShape* collisionShape_;
+            PlayerInfo* player_;
             Timer destroyTimer_;
             float lifetime_;
     };

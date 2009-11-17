@@ -162,6 +162,29 @@ namespace orxonox
 
         this->changedControllableEntity();
     }
+    
+    void PlayerInfo::startTemporaryControl(ControllableEntity* entity)
+    {
+        if (!entity || entity == this->controllableEntity_)
+            return;
+
+//         if (this->controllableEntity_)
+//             this->stopControl();
+
+        this->oldControllableEntity_ = this->controllableEntity_;
+
+        this->controllableEntity_ = entity;
+        this->controllableEntityID_ = entity->getObjectID();
+
+        entity->setPlayer(this);
+
+        this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
+
+        if (this->controller_)
+            this->controller_->setControllableEntity(entity);
+
+        this->changedControllableEntity();
+    }
 
     void PlayerInfo::stopControl()
     {
@@ -177,7 +200,31 @@ namespace orxonox
             this->controller_->setControllableEntity(0);
 
         entity->removePlayer();
+        
+        if ( this->oldControllableEntity_ )
+        {
+            this->oldControllableEntity_->removePlayer();
+            this->oldControllableEntity_ = 0;
+        }
 
+        this->changedControllableEntity();
+    }
+    
+    void PlayerInfo::stopTemporaryControl()
+    {
+        ControllableEntity* entity = this->controllableEntity_;
+
+        if (!entity)
+            return;
+
+        this->controllableEntity_ = this->oldControllableEntity_.get();
+        this->controllableEntityID_ = this->controllableEntity_->getObjectID();
+
+        if (this->controller_)
+            this->controller_->setControllableEntity(this->controllableEntity_);
+
+        entity->removePlayer();
+        
         this->changedControllableEntity();
     }
 
