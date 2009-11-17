@@ -220,8 +220,9 @@ namespace orxonox
             it->second->removeWeaponmodeLink(wPack);
 
         // Remove the WeaponPack from the WeaponSystem
-        assert( std::find(this->weaponPacks_.begin(),this->weaponPacks_.end(),wPack)!=this->weaponPacks_.end() );
-        this->weaponPacks_.erase( std::find(this->weaponPacks_.begin(),this->weaponPacks_.end(),wPack) );
+        std::vector<WeaponPack*>::iterator it = std::find(this->weaponPacks_.begin(),this->weaponPacks_.end(), wPack);
+        assert(it !=this->weaponPacks_.end());
+        this->weaponPacks_.erase(it);
     }
 
     WeaponPack * WeaponSystem::getWeaponPack(unsigned int index) const

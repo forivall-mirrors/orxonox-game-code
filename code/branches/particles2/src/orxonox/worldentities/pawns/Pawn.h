@@ -88,6 +88,7 @@ namespace orxonox
             void addWeaponSet(WeaponSet * wSet);
             WeaponSet * getWeaponSet(unsigned int index) const;
             void addWeaponPack(WeaponPack * wPack);
+            void addWeaponPackXML(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const

@@ -109,7 +109,7 @@ namespace orxonox
 
         XMLPortObject(Pawn, WeaponSlot, "weaponslots", addWeaponSlot, getWeaponSlot, xmlelement, mode);
         XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
-        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPack, getWeaponPack, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPackXML, getWeaponPack, xmlelement, mode);
     }
 
     void Pawn::registerVariables()
@@ -338,6 +338,13 @@ namespace orxonox
     {
         if (this->weaponSystem_)
             this->weaponSystem_->addWeaponPack(wPack);
+    }
+
+    void Pawn::addWeaponPackXML(WeaponPack * wPack)
+    {
+        if (this->weaponSystem_)
+            if (!this->weaponSystem_->addWeaponPack(wPack))
+                wPack->destroy();
     }
 
     WeaponPack * Pawn::getWeaponPack(unsigned int index) const

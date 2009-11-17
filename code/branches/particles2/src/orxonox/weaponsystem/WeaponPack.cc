@@ -95,8 +95,9 @@ namespace orxonox
         if (!weapon)
             return;
 
-        assert( std::find(this->weapons_.begin(), this->weapons_.end(), weapon)!=this->weapons_.end() );
-        this->weapons_.erase( std::find(this->weapons_.begin(), this->weapons_.end(), weapon) );
+        std::vector<Weapon*>::iterator it = std::find(this->weapons_.begin(), this->weapons_.end(), weapon);
+        assert(it != this->weapons_.end());
+        this->weapons_.erase(it);
         weapon->setWeaponPack(0);
     }
 
