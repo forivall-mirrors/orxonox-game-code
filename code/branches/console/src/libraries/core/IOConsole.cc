@@ -180,7 +180,7 @@ namespace orxonox
         while (std::cin.good())
         {
             c = std::cin.get();
-            if (std::cin.bad())
+            if (!std::cin.good())
                 break;
 
             if (escapeMode == EscapeMode::First && (c == '[' || c=='O') )
@@ -277,17 +277,14 @@ namespace orxonox
             // Terminal width has shrunk. The cursor will still be on the input line,
             // but that line might very well be the last
             int newLines = std::min((int)this->statusLineWidths_.size(), -heightDiff);
-            this->cout_ << std::string(newLines, '\n');
-            // Move cursor up again
-            this->cout_ << "\033[" << newLines << 'F';
+            // Scroll terminal to create new lines
+            this->cout_ << "\033[" << newLines << "S";
         }
 
         if (!this->bStatusPrinted_ && this->willPrintStatusLines())
         {
-            // Print new lines to make way for status lines
-            this->cout_ << std::string(this->statusLineWidths_.size(), '\n');
-            // Move cursor up again
-            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'F';
+            // Scroll console to make way for status lines
+            this->cout_ << "\033[" << this->statusLineWidths_.size() << "S";
             this->bStatusPrinted_ = true;
         }
         // Erase status and input lines
@@ -347,7 +344,7 @@ namespace orxonox
             // Save cursor position
             this->cout_ << "\033[s";
             // Move cursor down (don't create a new line here because the buffer might flush then!)
-            this->cout_ << "\033[1E";
+            this->cout_ << "\033[1B\033[1G";
             this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
             this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
 //            this->cout_ << "Terminal width: " << this->terminalWidth_ << ", height: " << this->terminalHeight_;
@@ -414,7 +411,7 @@ namespace orxonox
     void IOConsole::onlyLastLineChanged()
     {
         // Save cursor position and move it to the beginning of the first output line
-        this->cout_ << "\033[s\033[1F";
+        this->cout_ << "\033[s\033[1A\033[1G";
         // Erase the line
         this->cout_ << "\033[K";
         // Reprint the last output line
@@ -429,19 +426,19 @@ namespace orxonox
     {
         // Move cursor to the bottom line
         if (this->bStatusPrinted_)
-            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'E';
+            this->cout_ << "\033[" << this->statusLineWidths_.size() << "B\033[1G";
         // Create new lines on the screen
         int newLines = this->shell_->getNewestLineIterator()->size() / this->terminalWidth_ + 1;
         this->cout_ << std::string(newLines, '\n');
         // Move cursor to the beginning of the new (last) output line
-        this->cout_ << "\033[" << (newLines + this->statusLineWidths_.size()) << 'F';
+        this->cout_ << "\033[" << (newLines + this->statusLineWidths_.size()) << "A\033[1G";
         // Erase screen from here
         this->cout_ << "\033[J";
         // Print the new output line
         for (int i = 0; i < newLines; ++i)
             this->printLogText(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
         // Move cursor down
-        this->cout_ << "\033[1E";
+        this->cout_ << "\033[1B\033[1G";
         // Print status and input lines
         this->printInputLine();
         this->printStatusLines();
