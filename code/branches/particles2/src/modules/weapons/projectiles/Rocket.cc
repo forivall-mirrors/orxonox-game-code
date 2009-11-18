@@ -50,6 +50,8 @@ namespace orxonox
     Rocket::Rocket(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(Rocket);// - register the Rocket class to the core
+
+		this->localAngularVelocity_ = 0;
         
         if (GameMode::isMaster())
         {
@@ -59,8 +61,12 @@ namespace orxonox
             this->bDestroy_ = false;
         
             this->model_ = new Model(this);
-            this->model_->setMeshSource("rocket_test.mesh");
-            this->attach(this->model_);
+            this->model_->setMeshSource("rocket.mesh");
+			this->attach(this->model_);
+			ParticleSpawner* fire = new ParticleSpawner(this);
+			this->attach(fire);
+			fire->setOrientation(this->getOrientation());
+            fire->setSource("Orxonox/rocketfire");
         
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
@@ -72,6 +78,8 @@ namespace orxonox
             this->attachCollisionShape(this->collisionShape_);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
+               
+			
         }
         
         this->camPosition_ = new CameraPosition(this);
@@ -155,9 +163,10 @@ namespace orxonox
                     effect->setPosition(this->getPosition());
                     effect->setOrientation(this->getOrientation());
                     effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/explosion3");
+                    effect->setSource("Orxonox/explosion4");
                     effect->setLifetime(2.0f);
                 }
+
                 {
                     ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
                     effect->setPosition(this->getPosition());
@@ -195,9 +204,10 @@ namespace orxonox
                 effect->setPosition(this->getPosition());
                 effect->setOrientation(this->getOrientation());
                 effect->setDestroyAfterLife(true);
-                effect->setSource("Orxonox/explosion3");
+                effect->setSource("Orxonox/explosion4");
                 effect->setLifetime(2.0f);
             }
+
             {
                 ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
                 effect->setPosition(this->getPosition());
