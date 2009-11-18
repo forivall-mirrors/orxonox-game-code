@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-	CreateFactory(Rocket);    // put your code in here:
+	CreateFactory(Rocket);    
     // create the factory for the Rocket
 
     /**
