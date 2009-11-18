@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-	CreateFactory ( Test );
+    CreateFactory ( Test );
   
   SetConsoleCommand(Test, printV1, true).accessLevel(AccessLevel::User);
   SetConsoleCommand(Test, printV2, true).accessLevel(AccessLevel::User);
@@ -55,24 +55,24 @@ namespace orxonox
   
   Test* Test::instance_ = 0;
 
-	Test::Test(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
-	{
+    Test::Test(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    {
     assert(instance_==0);
     instance_=this;
-		RegisterObject ( Test );
+        RegisterObject ( Test );
     setConfigValues();
     registerVariables();
-		setSyncMode(0x3);
-	}
+        setSyncMode(0x3);
+    }
 
-	Test::~Test()
-	{
+    Test::~Test()
+    {
     instance_=0;
-	}
+    }
 
-	void Test::setConfigValues()
-	{
-		SetConfigValue ( u1, 1 )/*.callback ( this, &Test::checkV1 )*/;
+    void Test::setConfigValues()
+    {
+        SetConfigValue ( u1, 1 )/*.callback ( this, &Test::checkV1 )*/;
     SetConfigValue ( u2, 2 )/*.callback ( this, &Test::checkV2 )*/;
     SetConfigValue ( u3, 3 )/*.callback ( this, &Test::checkV3 )*/;
     SetConfigValue ( u4, 4 )/*.callback ( this, &Test::checkV4 )*/;
@@ -81,7 +81,7 @@ namespace orxonox
     SetConfigValue ( s2, 2 )/*.callback ( this, &Test::checkV2 )*/;
     SetConfigValue ( s3, 3 )/*.callback ( this, &Test::checkV3 )*/;
     SetConfigValue ( s4, 4 )/*.callback ( this, &Test::checkV4 )*/;
-	}
+    }
 
 
   void Test::registerVariables()
