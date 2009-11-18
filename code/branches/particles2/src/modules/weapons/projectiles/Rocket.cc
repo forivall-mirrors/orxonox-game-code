@@ -51,16 +51,17 @@ namespace orxonox
     {
         RegisterObject(Rocket);// - register the Rocket class to the core
         
-        this->setCollisionType(WorldEntity::Kinematic);
-        this->setVelocity(0,0,-100);
-        this->model_ = new Model(this);
-        this->model_->setMeshSource("rocket_test.mesh");
-        this->attach(this->model_);
-        this->lifetime_ = 100;
-        this->bDestroy_ = false;
-        
         if (GameMode::isMaster())
         {
+            this->setCollisionType(WorldEntity::Kinematic);
+            this->setVelocity(0,0,-100);
+            this->lifetime_ = 100;
+            this->bDestroy_ = false;
+        
+            this->model_ = new Model(this);
+            this->model_->setMeshSource("rocket_test.mesh");
+            this->attach(this->model_);
+        
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
@@ -75,6 +76,7 @@ namespace orxonox
         
         this->camPosition_ = new CameraPosition(this);
         this->camPosition_->setPosition(0,10,40);
+        this->camPosition_->setSyncMode(0x0);
         this->attach( this->camPosition_ );
         this->addCameraPosition( this->camPosition_ );
     }
@@ -87,11 +89,13 @@ namespace orxonox
     {
         if(this->isInitialized())
         {
-            this->collisionShape_->destroy();
-            this->model_->destroy();
             
-            if (GameMode::isMaster() && this->player_)
+            if (GameMode::isMaster() && this->player_.get())
+            {
+                this->model_->destroy();
+                this->collisionShape_->destroy();
                 this->player_->stopTemporaryControl();
+            }
             this->camPosition_->destroy();
         }
     }
@@ -109,7 +113,6 @@ namespace orxonox
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        
         this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
         this->player_ = this->owner_->getPlayer();
         this->owner_->getPlayer()->startTemporaryControl(this);
@@ -125,12 +128,15 @@ namespace orxonox
     {
         SUPER(Rocket, tick, dt);
         
-        this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
-        this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
-        this->localAngularVelocity_ = 0;
-        
-        if( this->bDestroy_ )
-            this->destroy();
+        if( GameMode::isMaster() )
+        {
+            this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
+            this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
+            this->localAngularVelocity_ = 0;
+            
+            if( this->bDestroy_ )
+                this->destroy();
+        }
     }
     
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
@@ -178,6 +184,30 @@ namespace orxonox
     {
         if (GameMode::isMaster())
             this->destroy();
+    }
+    
+    void Rocket::fire(unsigned int firemode)
+    {
+        if (this->owner_)
+        {
+            {
+                ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                effect->setPosition(this->getPosition());
+                effect->setOrientation(this->getOrientation());
+                effect->setDestroyAfterLife(true);
+                effect->setSource("Orxonox/explosion3");
+                effect->setLifetime(2.0f);
+            }
+            {
+                ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                effect->setPosition(this->getPosition());
+                effect->setOrientation(this->getOrientation());
+                effect->setDestroyAfterLife(true);
+                effect->setSource("Orxonox/smoke4");
+                effect->setLifetime(3.0f);
+            }
+            this->destroy();
+        }
     }
 
     /**

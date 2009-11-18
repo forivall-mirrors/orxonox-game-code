@@ -49,7 +49,9 @@ namespace orxonox
         this->bSetUnreadyAfterSpawn_ = true;
         this->controller_ = 0;
         this->controllableEntity_ = 0;
-        this->controllableEntityID_ = CLIENTID_UNKNOWN;
+        this->controllableEntityID_ = OBJECTID_UNKNOWN;
+        this->temporaryControllableEntity_ = 0;
+        this->temporaryControllableEntityID_ = OBJECTID_UNKNOWN;
 
         this->gtinfo_ = 0;
         this->gtinfoID_ = OBJECTID_UNKNOWN;
@@ -79,6 +81,7 @@ namespace orxonox
     {
         registerVariable(this->name_,                 VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
         registerVariable(this->controllableEntityID_, VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
+        registerVariable(this->temporaryControllableEntityID_, VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
         registerVariable(this->bReadyToSpawn_,        VariableDirection::ToServer);
         registerVariable(this->gtinfoID_,             VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedgtinfoID));
     }
@@ -165,16 +168,13 @@ namespace orxonox
     
     void PlayerInfo::startTemporaryControl(ControllableEntity* entity)
     {
-        if (!entity || entity == this->controllableEntity_)
+        if (!entity)
             return;
+        
+        assert( this->temporaryControllableEntity_==0 );
 
-//         if (this->controllableEntity_)
-//             this->stopControl();
-
-        this->oldControllableEntity_ = this->controllableEntity_;
-
-        this->controllableEntity_ = entity;
-        this->controllableEntityID_ = entity->getObjectID();
+        this->temporaryControllableEntity_ = entity;
+        this->temporaryControllableEntityID_ = entity->getObjectID();
 
         entity->setPlayer(this);
 
@@ -200,34 +200,28 @@ namespace orxonox
             this->controller_->setControllableEntity(0);
 
         entity->removePlayer();
-        
-        if ( this->oldControllableEntity_ )
-        {
-            this->oldControllableEntity_->removePlayer();
-            this->oldControllableEntity_ = 0;
-        }
 
         this->changedControllableEntity();
     }
     
     void PlayerInfo::stopTemporaryControl()
     {
-        ControllableEntity* entity = this->controllableEntity_;
+        ControllableEntity* entity = this->temporaryControllableEntity_;
 
         if (!entity)
             return;
 
-        this->controllableEntity_ = this->oldControllableEntity_.get();
-        this->controllableEntityID_ = this->controllableEntity_->getObjectID();
+        this->temporaryControllableEntity_ = 0;
+        this->temporaryControllableEntityID_ = OBJECTID_UNKNOWN;
 
-        if (this->controller_)
+        if ( this->controllableEntity_ && this->controller_)
             this->controller_->setControllableEntity(this->controllableEntity_);
 
         entity->removePlayer();
         
         this->changedControllableEntity();
     }
-
+    
     void PlayerInfo::networkcallback_changedcontrollableentityID()
     {
         if (this->controllableEntityID_ != OBJECTID_UNKNOWN)
@@ -242,8 +236,25 @@ namespace orxonox
         }
     }
 
+    void PlayerInfo::networkcallback_changedtemporarycontrollableentityID()
+    {
+        CCOUT(0) << "changedtemporarycontrollableentityid" << endl;
+        if (this->temporaryControllableEntityID_ != OBJECTID_UNKNOWN)
+        {
+            Synchronisable* temp = Synchronisable::getSynchronisable(this->temporaryControllableEntityID_);
+            ControllableEntity* entity = orxonox_cast<ControllableEntity*>(temp);
+            this->startTemporaryControl(entity);
+        }
+        else
+        {
+            this->stopTemporaryControl();
+        }
+    }
+
+
     void PlayerInfo::networkcallback_changedgtinfoID()
     {
+        CCOUT(0) << "changedcontrollableentityid" << endl;
         if (this->gtinfoID_ != OBJECTID_UNKNOWN)
         {
             this->gtinfo_ = orxonox_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
