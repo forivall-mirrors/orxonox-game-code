@@ -44,7 +44,11 @@
 
 namespace orxonox
 {
+    SetConsoleCommand(NewHumanController, changeMode,          false).keybindMode(KeybindMode::OnPress);
+
     CreateUnloadableFactory(NewHumanController);
+
+    NewHumanController* NewHumanController::localController_s = 0;
 
     NewHumanController::NewHumanController(BaseObject* creator) : HumanController(creator)
     {
@@ -62,6 +66,8 @@ namespace orxonox
         this->targetMask_.exclude(ClassByString("BaseObject"));
         this->targetMask_.include(ClassByString("WorldEntity"));
         this->targetMask_.exclude(ClassByString("Projectile"));
+
+        NewHumanController::localController_s = this;
     }
 
     NewHumanController::~NewHumanController()
@@ -118,8 +124,6 @@ namespace orxonox
     {
         Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
 
-        //std::cout << "X: " << static_cast<float>(this->currentYaw_)/2*-1+.5 << "  Y: " << static_cast<float>(this->currentPitch_)/2*-1+.5 << endl;
-
         Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getOgreCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
 
         rsq->setRay(mouseRay);
@@ -139,7 +143,6 @@ namespace orxonox
         Ogre::RaySceneQueryResult::iterator itr;
         for (itr = result.begin(); itr != result.end(); ++itr)
         {
-            //std::cout << "distance: " << itr->distance << "  name: " << itr->movable->getName() << " type: " << itr->movable->getMovableType();
             if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500)
             {
                 // Try to cast the user pointer
@@ -150,33 +153,25 @@ namespace orxonox
                     if (this->targetMask_.isExcluded(creator->getIdentifier()))
                         continue;
                 }
-                //std::cout << "  TAGGED";
+
                 itr->movable->getParentSceneNode()->showBoundingBox(true);
-                std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
-                return itr->movable->getParentSceneNode()->_getDerivedPosition();
+                //std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
+                return mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance; //or itr->movable->getParentSceneNode()->_getDerivedPosition()
             }
-            //std::cout << endl;
+
         }
 
-        //if (result.front().movable->isInScene()) std::cout << "in scene" << endl;
-        // && result.front().movable->getParentSceneNode() != NULL) result.front().movable->getParentSceneNode()->showBoundingBox(true);
-        //result.front().movable->setVisible(false);
+	return mouseRay.getOrigin() + mouseRay.getDirection() * 1200;
 
-        //std::cout << endl;
-/*
-        if (!result.empty()) {
-            Ogre::RaySceneQueryResultEntry obj = result.front();
-            std::cout << "distance: " << obj.distance << "  name: " << obj.movable->getName() << endl;
-        }
-*/
-        return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 800);
+        //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 2000);
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getOgreCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
     }
 
     void NewHumanController::yaw(const Vector2& value)
     {
 //         SUPER(NewHumanController, yaw, value);
-        HumanController::yaw(value);
+        if (this->controlMode_ == 0)
+            HumanController::yaw(value);
         
         this->currentYaw_ = value.x;
         //std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
@@ -185,9 +180,17 @@ namespace orxonox
     void NewHumanController::pitch(const Vector2& value)
     {
 //         SUPER(NewHumanController, pitch, value);
-        HumanController::pitch(value);
-        
+        if (this->controlMode_ == 0)
+            HumanController::pitch(value);
+
         this->currentPitch_ = value.x;
         //std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
+    }
+
+    void NewHumanController::changeMode() {
+        if (NewHumanController::localController_s->controlMode_ == 0)
+            NewHumanController::localController_s->controlMode_ = 1;
+        else
+            NewHumanController::localController_s->controlMode_ = 0;
     }
 }

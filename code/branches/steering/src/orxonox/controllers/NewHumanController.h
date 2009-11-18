@@ -26,7 +26,7 @@
  *
  */
 
-#ifndef _NewNewHumanController_H__
+#ifndef _NewNewHumanController_H__	
 #define _NewNewHumanController_H__
 
 #include "OrxonoxPrereqs.h"
@@ -49,17 +49,19 @@ namespace orxonox
 
             virtual void doFire(unsigned int firemode);
 
-            void changeMode(unsigned int controleMode);
+            static void changeMode();
 
             virtual bool canFindTarget() { return true; }
             virtual Vector3 getTarget();
 
+        protected:
+            unsigned int                controlMode_;
+            static NewHumanController* localController_s;
         private:
             float                       currentYaw_;
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
             float			            overlaySize_;
-            unsigned int                controlMode_;
             ClassTreeMask               targetMask_;
     };
 }
