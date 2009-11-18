@@ -254,6 +254,13 @@ namespace orxonox
 
     void SoundManager::processCrossFading(float dt)
     {
+        
+        // Hacky solution to the fade delay while loading a level.
+        if(dt > 0.2)
+        {
+            return;
+        }
+        
         // FADE IN
         for (std::list<AmbientSound*>::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); it)
         {
