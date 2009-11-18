@@ -46,7 +46,7 @@ namespace orxonox
     @brief
         Manages the input devices (mouse, keyboard, joy sticks) and the input states.
 
-        Every input device has its own wrapper class which does the actualy input event
+        Every input device has its own wrapper class which does the actually input event
         distribution. The InputManager only creates reloads (on request) those devices.
 
         The other functionality concerns handling InputStates. They act as a layer
@@ -57,7 +57,7 @@ namespace orxonox
         - The actual lists containing all the InputStates for a specific device are stored
           in the InputDevices themselves.
         - The devices_ vector always has at least two elements: Keyboard (first) and mouse.
-          You best access them intenally with InputDeviceEnumerator::Keyboard/Mouse
+          You best access them internally with InputDeviceEnumerator::Keyboard/Mouse
           The first joy stick is accessed with InputDeviceEnumerator::FirstJoyStick.
         - Keyboard construction is mandatory , mouse and joy sticks are not.
           If the OIS::InputManager or the Keyboard fail, an exception is thrown.
@@ -93,7 +93,7 @@ namespace orxonox
             Updates the devices (which distribute the input events) and the input states.
 
             Any InpuStates changes (destroy, enter, leave) and happens here. If a reload request
-            was submitted while updating, the request wil be postponed until the next update call.
+            was submitted while updating, the request will be postponed until the next update call.
         */
         void update(const Clock& time);
         //! Clears all input device buffers. This usually only includes the pressed button list.
@@ -134,7 +134,7 @@ namespace orxonox
         /**
         @brief
             Activates a specific input state.
-            It might not be actually activated if the priority is too low!
+            It might not actually be activated if the priority is too low!
         @return
             False if name was not found, true otherwise.
         */
@@ -171,7 +171,7 @@ namespace orxonox
         // don't mess with a Singleton
         InputManager(const InputManager&);
 
-        // Intenal methods
+        // Internal methods
         void loadDevices();
         void loadMouse();
         void loadJoySticks();
