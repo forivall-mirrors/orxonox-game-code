@@ -124,15 +124,10 @@ namespace orxonox
 
     void AmbientSound::changedActivity() 
     {
-        COUT(3) << "Sound: " << this->getSource() << ": ChangedActivity: " << this->isActive() << std::endl;
-        this->BaseObject::changedActivity();
+        SUPER(AmbientSound, changedActivity);
         if (this->isActive())
-        {
             this->play();
-        }
         else 
-        {
             this->stop();
-        }
     }
 }

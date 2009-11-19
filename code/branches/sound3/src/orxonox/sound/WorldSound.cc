@@ -88,4 +88,13 @@ namespace orxonox
                 COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
         }
     }
+
+    void WorldSound::changedActivity() 
+    {
+        SUPER(WorldSound, changedActivity);
+        if (this->isActive())
+            this->play();
+        else 
+            this->stop();
+    }
 }
