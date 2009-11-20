@@ -630,10 +630,15 @@ namespace orxonox
                 if (stateDestroyRequests_.find(it->second) == stateDestroyRequests_.end())
                 {
                     // not scheduled for destruction
-                    // prevents a state being added multiple times
+                    // prevents a state from being added multiple times
                     stateEnterRequests_.insert(it->second);
                     return true;
                 }
+            }
+            else if (this->stateLeaveRequests_.find(it->second) != this->stateLeaveRequests_.end())
+            {
+                // State already scheduled for leaving --> cancel
+                this->stateLeaveRequests_.erase(this->stateLeaveRequests_.find(it->second));
             }
         }
         return false;
@@ -656,6 +661,11 @@ namespace orxonox
                 // active
                 stateLeaveRequests_.insert(it->second);
                 return true;
+            }
+            else if (this->stateEnterRequests_.find(it->second) != this->stateEnterRequests_.end())
+            {
+                // State already scheduled for entering --> cancel
+                this->stateEnterRequests_.erase(this->stateEnterRequests_.find(it->second));
             }
         }
         return false;

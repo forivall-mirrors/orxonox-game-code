@@ -51,6 +51,9 @@ namespace orxonox
             void requestFocus();
             void releaseFocus();
 
+            inline Ogre::Camera* getOgreCamera()
+               { return this->camera_; }
+
             inline bool hasFocus()
                 { return this->bHasFocus_; }
 

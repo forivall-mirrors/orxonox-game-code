@@ -108,8 +108,11 @@ namespace orxonox
             inline const Vector3& getMuzzleOffset() const
                 { return this->muzzleOffset_; }
 
-            Vector3 getMuzzlePosition() const;
-            const Quaternion& getMuzzleOrientation() const;
+            void computeMuzzleParameters();
+            const Vector3& getMuzzlePosition() const
+                { return this->muzzlePosition_; }
+            const Quaternion& getMuzzleOrientation() const
+                { return this->muzzleOrientation_; }
             Vector3 getMuzzleDirection() const;
 
 
@@ -123,6 +126,8 @@ namespace orxonox
                 { this->mode_ = mode; }
             inline unsigned int getMode() const
                 { return this->mode_; }
+
+            Vector3 getTarget();
 
         protected:
             virtual void fire() = 0;
@@ -151,6 +156,9 @@ namespace orxonox
 
             Timer reloadTimer_;
             bool bReloading_;
+
+            Vector3 muzzlePosition_;
+            Quaternion muzzleOrientation_;
     };
 }
 

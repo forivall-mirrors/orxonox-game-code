@@ -32,6 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <OgreUserDefinedObject.h>
 #ifdef ORXONOX_RELEASE
 #  include <OgreSceneNode.h>
 #endif
@@ -54,7 +55,7 @@ namespace orxonox
         as more advanced ones.
 
         The basic task of the WorldEntity is provide a location, a direction and a scaling and the possibility
-        to create an entire hierarchy of derivated objects.
+        to create an entire hierarchy of derived objects.
         It is also the basis for the physics interface to the Bullet physics engine.
         Every WorldEntity can have a specific collision type: @see CollisionType
         This would then imply that every scene object could have any collision type. To limit this, you can always
@@ -62,13 +63,13 @@ namespace orxonox
         for a specific object.
         There is also support for attaching WorldEntities with physics to each other. Currently, the collision shape
         of both objects simply get merged into one larger shape (for static collision type).
-        The phyiscal body that is internally stored and administrated has the following supported properties:
-        - Restitution, angular factor, linear damping, angular damping, fricition, mass and collision shape.
+        The physical body that is internally stored and administrated has the following supported properties:
+        - Restitution, angular factor, linear damping, angular damping, friction, mass and collision shape.
         You can get more information at the corresponding set function.
 
         Collision shapes: These are controlled by the internal WorldEntityCollisionShape. @see WorldEntityCollisionShape.
     */
-    class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
+    class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState, public Ogre::UserDefinedObject
     {
         friend class Scene;
 
@@ -317,7 +318,7 @@ namespace orxonox
             @brief
                 Sets an artificial parameter that tells how much torque is applied when you apply a non-central force.
 
-                Normally the angular factor is 1, which means it's physically 'correct'. Howerver if you have a player
+                Normally the angular factor is 1, which means it's physically 'correct'. However if you have a player
                 character that should not rotate when hit sideways, you can set the angular factor to 0.
             */
             inline void setAngularFactor(float angularFactor)
@@ -393,7 +394,7 @@ namespace orxonox
 
                 You can override this function in a derived class to constrain the collision to e.g. None or Dynamic.
                 A projectile may not prove very useful if there is no physical body. Simply set the CollisionType
-                in its constructor and override this method. But be careful that a derived classe's virtual functions
+                in its constructor and override this method. But be careful that a derived class's virtual functions
                 don't yet exist in the constructor if a base class.
             */
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;

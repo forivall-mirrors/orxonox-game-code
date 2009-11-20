@@ -53,6 +53,11 @@ namespace orxonox
                 { return this->controllableEntity_; }
             virtual void changedControllableEntity() {}
 
+            virtual bool canFindTarget()
+                { return false; }
+            virtual Vector3 getTarget()
+                { return Vector3::ZERO; }
+
         protected:
             // don't use this directly, use getPlayer()->startControl(entity) (unless you know exactly what you do)
             inline void setControllableEntity(ControllableEntity* entity)
@@ -64,6 +69,7 @@ namespace orxonox
                 }
             }
 
+        protected:
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;
     };
