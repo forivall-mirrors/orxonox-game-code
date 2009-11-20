@@ -109,7 +109,7 @@ namespace orxonox
                 { this->damage_ = damage; }
             inline float getDamage() const
                 { return this->damage_; }
-            virtual void fire(unsigned int firemode);
+            virtual void fired(unsigned int firemode);
             
         private:
             WeakPtr<Pawn> owner_;

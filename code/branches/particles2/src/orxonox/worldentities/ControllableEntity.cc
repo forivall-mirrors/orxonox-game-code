@@ -35,6 +35,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
+#include "network/NetworkFunction.h"
 
 #include "Scene.h"
 #include "infos/PlayerInfo.h"
@@ -46,6 +47,8 @@
 namespace orxonox
 {
     CreateFactory(ControllableEntity);
+
+    registerMemberNetworkFunction( ControllableEntity, fire );
 
     ControllableEntity::ControllableEntity(BaseObject* creator) : MobileEntity(creator)
     {
@@ -215,6 +218,18 @@ namespace orxonox
     {
         if (this->bMouseLook_)
             this->cameraPositionRootNode_->roll(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+    
+    void ControllableEntity::fire(unsigned int firemode)
+    {
+        if(GameMode::isMaster())
+        {
+            this->fired(firemode);
+        }
+        else
+        {
+            callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 0, firemode);
+        }
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)

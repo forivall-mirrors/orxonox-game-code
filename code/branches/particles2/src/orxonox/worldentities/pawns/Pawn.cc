@@ -51,8 +51,6 @@ namespace orxonox
 {
     CreateFactory(Pawn);
 
-    registerMemberNetworkFunction( Pawn, doFire );
-
     Pawn::Pawn(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(Pawn);
@@ -262,24 +260,10 @@ namespace orxonox
         }
     }
 
-    void Pawn::fire(unsigned int firemode)
+    void Pawn::fired(unsigned int firemode)
     {
-        this->doFire(firemode);
-    }
-
-    void Pawn::doFire(uint8_t firemode)
-    {
-        if(GameMode::isMaster())
-        {
-            if (this->weaponSystem_)
-                this->weaponSystem_->fire(firemode);
-        }
-        else
-        {
-            callMemberNetworkFunction(Pawn, doFire, this->getObjectID(), 0, firemode);
-            if (this->weaponSystem_)
-                this->weaponSystem_->fire(firemode);
-        }
+        if (this->weaponSystem_)
+            this->weaponSystem_->fire(firemode);
     }
 
     void Pawn::reload()

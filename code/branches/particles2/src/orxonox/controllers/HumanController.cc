@@ -144,7 +144,7 @@ namespace orxonox
 
     void HumanController::fire(unsigned int firemode)
     {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        if( HumanController::localController_s && HumanController::localController_s->controllableEntity_ )
             HumanController::localController_s->controllableEntity_->fire(firemode);
     }
 

@@ -91,16 +91,14 @@ namespace orxonox
 
         private:
             void networkcallback_changedcontrollableentityID();
-            void networkcallback_changedtemporarycontrollableentityID();
             void networkcallback_changedgtinfoID();
             void updateGametypeInfo();
 
             bool bReadyToSpawn_;
             Controller* controller_;
             ControllableEntity* controllableEntity_;
-            ControllableEntity* temporaryControllableEntity_;
+            ControllableEntity* oldControllableEntity_;
             unsigned int controllableEntityID_;
-            unsigned int temporaryControllableEntityID_;
 
             const GametypeInfo* gtinfo_;
             unsigned int gtinfoID_;

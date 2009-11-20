@@ -136,7 +136,7 @@ namespace orxonox
     {
         SUPER(Rocket, tick, dt);
         
-        if( GameMode::isMaster() )
+        if( this->hasLocalController() )
         {
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
@@ -195,7 +195,7 @@ namespace orxonox
             this->destroy();
     }
     
-    void Rocket::fire(unsigned int firemode)
+    void Rocket::fired(unsigned int firemode)
     {
         if (this->owner_)
         {

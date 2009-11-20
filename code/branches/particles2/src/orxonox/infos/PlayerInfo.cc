@@ -50,8 +50,7 @@ namespace orxonox
         this->controller_ = 0;
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = OBJECTID_UNKNOWN;
-        this->temporaryControllableEntity_ = 0;
-        this->temporaryControllableEntityID_ = OBJECTID_UNKNOWN;
+        this->oldControllableEntity_ = 0;
 
         this->gtinfo_ = 0;
         this->gtinfoID_ = OBJECTID_UNKNOWN;
@@ -81,8 +80,6 @@ namespace orxonox
     {
         registerVariable(this->name_,                 VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
         registerVariable(this->controllableEntityID_, VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
-        registerVariable(this->temporaryControllableEntityID_, VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
-        registerVariable(this->bReadyToSpawn_,        VariableDirection::ToServer);
         registerVariable(this->gtinfoID_,             VariableDirection::ToClient, new NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedgtinfoID));
     }
 
@@ -150,6 +147,8 @@ namespace orxonox
         if (!entity || entity == this->controllableEntity_)
             return;
 
+        if (this->oldControllableEntity_)
+            this->stopTemporaryControl();
         if (this->controllableEntity_)
             this->stopControl();
 
@@ -171,14 +170,13 @@ namespace orxonox
         if (!entity)
             return;
         
-        assert( this->temporaryControllableEntity_==0 );
+//         assert( this->temporaryControllableEntity_==0 );
 
-        this->temporaryControllableEntity_ = entity;
-        this->temporaryControllableEntityID_ = entity->getObjectID();
+        this->oldControllableEntity_ = this->controllableEntity_;
+        this->controllableEntity_ = entity;
+        this->controllableEntityID_ = entity->getObjectID();
 
         entity->setPlayer(this);
-
-        this->bReadyToSpawn_ &= (!this->bSetUnreadyAfterSpawn_);
 
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
@@ -188,6 +186,9 @@ namespace orxonox
 
     void PlayerInfo::stopControl()
     {
+        if ( this->oldControllableEntity_ )
+            this->stopTemporaryControl();
+        
         ControllableEntity* entity = this->controllableEntity_;
 
         if (!entity)
@@ -199,25 +200,28 @@ namespace orxonox
         if (this->controller_)
             this->controller_->setControllableEntity(0);
 
-        entity->removePlayer();
+        if ( GameMode::isMaster() )
+            entity->removePlayer();
 
         this->changedControllableEntity();
     }
     
     void PlayerInfo::stopTemporaryControl()
     {
-        ControllableEntity* entity = this->temporaryControllableEntity_;
+        ControllableEntity* entity = this->controllableEntity_;
 
-        if (!entity)
+        if (!entity || !this->oldControllableEntity_)
             return;
 
-        this->temporaryControllableEntity_ = 0;
-        this->temporaryControllableEntityID_ = OBJECTID_UNKNOWN;
+        this->controllableEntity_ = this->oldControllableEntity_;
+        this->controllableEntityID_ = this->controllableEntity_->getObjectID();
+        this->oldControllableEntity_ = 0;
 
         if ( this->controllableEntity_ && this->controller_)
             this->controller_->setControllableEntity(this->controllableEntity_);
 
-        entity->removePlayer();
+        if ( GameMode::isMaster() )
+            entity->removePlayer();
         
         this->changedControllableEntity();
     }
@@ -236,25 +240,9 @@ namespace orxonox
         }
     }
 
-    void PlayerInfo::networkcallback_changedtemporarycontrollableentityID()
-    {
-        CCOUT(0) << "changedtemporarycontrollableentityid" << endl;
-        if (this->temporaryControllableEntityID_ != OBJECTID_UNKNOWN)
-        {
-            Synchronisable* temp = Synchronisable::getSynchronisable(this->temporaryControllableEntityID_);
-            ControllableEntity* entity = orxonox_cast<ControllableEntity*>(temp);
-            this->startTemporaryControl(entity);
-        }
-        else
-        {
-            this->stopTemporaryControl();
-        }
-    }
-
 
     void PlayerInfo::networkcallback_changedgtinfoID()
     {
-        CCOUT(0) << "changedcontrollableentityid" << endl;
         if (this->gtinfoID_ != OBJECTID_UNKNOWN)
         {
             this->gtinfo_ = orxonox_cast<GametypeInfo*>(Synchronisable::getSynchronisable(this->gtinfoID_));
