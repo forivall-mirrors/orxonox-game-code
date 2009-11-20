@@ -159,6 +159,10 @@ namespace orxonox
         this->update(Game::getInstance().getGameClock());
         // Erase input and status lines
         this->cout_ << "\033[1G\033[J";
+        // Move cursor to the bottom
+        this->cout_ << "\033[" << this->statusLineWidths_.size() << 'B';
+        // Scroll terminal to compensate for erased lines
+        this->cout_ << "\033[" << this->statusLineWidths_.size() << 'T';
 
         resetTerminalMode();
         delete this->originalTerminalSettings_;
