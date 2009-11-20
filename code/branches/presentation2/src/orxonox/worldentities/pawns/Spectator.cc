@@ -188,7 +188,7 @@ namespace orxonox
         ControllableEntity::rotateRoll(value);
     }
 
-    void Spectator::fire(unsigned int firemode)
+    void Spectator::fired(unsigned int firemode)
     {
         if (this->getPlayer())
             this->getPlayer()->setReadyToSpawn(true);

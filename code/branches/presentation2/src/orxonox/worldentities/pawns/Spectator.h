@@ -54,7 +54,7 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
 
-            virtual void fire(unsigned int firemode);
+            virtual void fired(unsigned int firemode);
             virtual void greet();
 
         protected:

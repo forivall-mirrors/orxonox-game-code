@@ -51,8 +51,6 @@ namespace orxonox
 {
     CreateFactory(Pawn);
 
-    registerMemberNetworkFunction( Pawn, doFire );
-
     Pawn::Pawn(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(Pawn);
@@ -109,7 +107,7 @@ namespace orxonox
 
         XMLPortObject(Pawn, WeaponSlot, "weaponslots", addWeaponSlot, getWeaponSlot, xmlelement, mode);
         XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
-        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPack, getWeaponPack, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPackXML, getWeaponPack, xmlelement, mode);
     }
 
     void Pawn::registerVariables()
@@ -262,24 +260,10 @@ namespace orxonox
         }
     }
 
-    void Pawn::fire(unsigned int firemode)
+    void Pawn::fired(unsigned int firemode)
     {
-        this->doFire(firemode);
-    }
-
-    void Pawn::doFire(uint8_t firemode)
-    {
-        if(GameMode::isMaster())
-        {
-            if (this->weaponSystem_)
-                this->weaponSystem_->fire(firemode);
-        }
-        else
-        {
-            callMemberNetworkFunction(Pawn, doFire, this->getObjectID(), 0, firemode);
-            if (this->weaponSystem_)
-                this->weaponSystem_->fire(firemode);
-        }
+        if (this->weaponSystem_)
+            this->weaponSystem_->fire(firemode);
     }
 
     void Pawn::reload()
@@ -338,6 +322,13 @@ namespace orxonox
     {
         if (this->weaponSystem_)
             this->weaponSystem_->addWeaponPack(wPack);
+    }
+
+    void Pawn::addWeaponPackXML(WeaponPack * wPack)
+    {
+        if (this->weaponSystem_)
+            if (!this->weaponSystem_->addWeaponPack(wPack))
+                wPack->destroy();
     }
 
     WeaponPack * Pawn::getWeaponPack(unsigned int index) const

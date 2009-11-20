@@ -68,7 +68,7 @@ namespace orxonox
         private:
             void notifyWeapons();
 
-            std::set<Weapon *> weapons_;
+            std::vector<Weapon *> weapons_;
             std::set<DefaultWeaponmodeLink *> links_;
             WeaponSystem * weaponSystem_;
     };

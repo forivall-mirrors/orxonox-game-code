@@ -83,7 +83,8 @@ namespace orxonox
             inline void rotateRoll(float value)
                 { this->rotateRoll(Vector2(value, 0)); }
 
-            virtual void fire(unsigned int firemode) {}
+            void fire(unsigned int firemode);
+            virtual void fired(unsigned int firemode) {}
             virtual void reload() {}
 
             virtual void boost() {}

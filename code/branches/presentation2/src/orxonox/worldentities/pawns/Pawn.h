@@ -78,9 +78,8 @@ namespace orxonox
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void kill();
 
-            virtual void fire(unsigned int firemode);
+            virtual void fired(unsigned int firemode);
             virtual void reload();
-            virtual void doFire(uint8_t firemode);
             virtual void postSpawn();
 
             void addWeaponSlot(WeaponSlot * wSlot);
@@ -88,6 +87,7 @@ namespace orxonox
             void addWeaponSet(WeaponSet * wSet);
             WeaponSet * getWeaponSet(unsigned int index) const;
             void addWeaponPack(WeaponPack * wPack);
+            void addWeaponPackXML(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const

@@ -175,6 +175,7 @@ namespace orxonox
     class StaticEntity;
     class TeamSpawnPoint;
     class WorldEntity;
+    class Rocket;
     // worldentities, pawns
     class Destroyer;
     class Pawn;
