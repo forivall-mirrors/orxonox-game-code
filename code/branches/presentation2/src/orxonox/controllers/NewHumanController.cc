@@ -80,7 +80,7 @@ namespace orxonox
 
     void NewHumanController::tick(float dt)
     {
-        if( !this->controllableEntity_->isInMouseLook() )
+        if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
         {
             this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
             this->crossHairOverlay_->show();
@@ -184,8 +184,6 @@ namespace orxonox
             pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 1200 );
             pawn->setTarget( 0 );
         }
-
-    //return mouseRay.getOrigin() + mouseRay.getDirection() * 1200;
     
 
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 2000);

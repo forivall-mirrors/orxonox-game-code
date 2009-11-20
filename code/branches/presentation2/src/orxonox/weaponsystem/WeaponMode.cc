@@ -210,7 +210,6 @@ namespace orxonox
             else
                 muzzleDirection = pawn->getAimPosition() - this->muzzlePosition_;
 //             COUT(0) << "muzzleDirection " << muzzleDirection << endl;
-                //this->muzzleOrientation_ = this->weapon_->getWorldOrientation();
             this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
         }
         else

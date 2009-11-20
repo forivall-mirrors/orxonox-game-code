@@ -145,10 +145,10 @@ namespace orxonox
             inline void setController(Controller* val)
                 { this->controller_ = val; }
             
-            virtual void setTarget( WorldEntity* target )
-                { this->target_ = target; }
+            virtual void setTarget( WorldEntity* target );
             virtual WorldEntity* getTarget()
                 { return this->target_.get(); }
+            void setTargetInternal( uint32_t targetID );
 
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead

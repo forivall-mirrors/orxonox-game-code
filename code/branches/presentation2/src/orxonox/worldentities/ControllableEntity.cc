@@ -49,6 +49,7 @@ namespace orxonox
     CreateFactory(ControllableEntity);
 
     registerMemberNetworkFunction( ControllableEntity, fire );
+    registerMemberNetworkFunction( ControllableEntity, setTargetInternal );
 
     ControllableEntity::ControllableEntity(BaseObject* creator) : MobileEntity(creator)
     {
@@ -231,6 +232,27 @@ namespace orxonox
         {
             callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 0, firemode);
         }
+    }
+    
+    void ControllableEntity::setTarget( WorldEntity* target )
+    {
+        this->target_ = target;
+        if ( !GameMode::isMaster() )
+        {
+            if ( target != 0 )
+            {
+                callMemberNetworkFunction(ControllableEntity, setTargetInternal, this->getObjectID(), 0, target->getObjectID() );
+            }
+           else
+           {
+                callMemberNetworkFunction(ControllableEntity, setTargetInternal, this->getObjectID(), 0, OBJECTID_UNKNOWN );
+           }
+        }
+    }
+    
+    void ControllableEntity::setTargetInternal( uint32_t targetID )
+    {
+        this->setTarget( orxonox_cast<WorldEntity*>(Synchronisable::getSynchronisable(targetID)) );
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)
