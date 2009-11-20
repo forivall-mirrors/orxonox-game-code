@@ -157,10 +157,8 @@ namespace orxonox
     {
         // Empty all buffers
         this->update(Game::getInstance().getGameClock());
-        // Goto last line and create a new one
-        if (this->bStatusPrinted_)
-            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'E';
-        this->cout_ << std::endl;
+        // Erase input and status lines
+        this->cout_ << "\033[1G\033[J";
 
         resetTerminalMode();
         delete this->originalTerminalSettings_;
@@ -174,7 +172,7 @@ namespace orxonox
 
     void IOConsole::update(const Clock& time)
     {
-        unsigned char c = 0;
+        unsigned char c;
         std::string escapeSequence;
         EscapeMode::Value escapeMode = EscapeMode::None;
         while (std::cin.good())
@@ -259,13 +257,6 @@ namespace orxonox
         if (escapeMode == EscapeMode::First)
             this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape, '\033', 0));
 
-        // Process output written to std::cout
-        if (!this->origCout_.str().empty())
-        {
-            this->shell_->addOutputLine(this->origCout_.str());
-            this->origCout_.str("");
-        }
-
         // Determine terminal width and height
         this->lastTerminalWidth_ = this->terminalWidth_;
         this->lastTerminalHeight_ = this->terminalHeight_;
@@ -278,26 +269,39 @@ namespace orxonox
             // but that line might very well be the last
             int newLines = std::min((int)this->statusLineWidths_.size(), -heightDiff);
             // Scroll terminal to create new lines
-            this->cout_ << "\033[" << newLines << "S";
+            this->cout_ << "\033[" << newLines << 'S';
         }
 
         if (!this->bStatusPrinted_ && this->willPrintStatusLines())
         {
             // Scroll console to make way for status lines
-            this->cout_ << "\033[" << this->statusLineWidths_.size() << "S";
+            this->cout_ << "\033[" << this->statusLineWidths_.size() << 'S';
             this->bStatusPrinted_ = true;
         }
+
+        // We always assume that the cursor is on the inputline.
+        // But we cannot always be sure about that, esp. if we scroll the console
+        this->cout_ << "\033[" << this->statusLineWidths_.size() << 'B';
+        this->cout_ << "\033[" << this->statusLineWidths_.size() << 'A';
+
         // Erase status and input lines
         this->cout_ << "\033[1G\033[J";
         this->printInputLine();
         this->printStatusLines();
         this->cout_.flush();
+
+        // Process output written to std::cout
+        if (!this->origCout_.str().empty())
+        {
+            this->shell_->addOutputLine(this->origCout_.str());
+            this->origCout_.str("");
+        }
     }
 
     void IOConsole::printLogText(const std::string& text)
     {
         std::string output = text;
-        int level = this->extractLogLevel(&output);
+        /*int level =*/ this->extractLogLevel(&output);
 
 /*
         // Colour line
@@ -347,7 +351,6 @@ namespace orxonox
             this->cout_ << "\033[1B\033[1G";
             this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
             this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
-//            this->cout_ << "Terminal width: " << this->terminalWidth_ << ", height: " << this->terminalHeight_;
             // Restore cursor position
             this->cout_ << "\033[u";
             this->bStatusPrinted_ = true;
@@ -424,17 +427,14 @@ namespace orxonox
     //! Called if a new output-line was added
     void IOConsole::lineAdded()
     {
-        // Move cursor to the bottom line
-        if (this->bStatusPrinted_)
-            this->cout_ << "\033[" << this->statusLineWidths_.size() << "B\033[1G";
-        // Create new lines on the screen
         int newLines = this->shell_->getNewestLineIterator()->size() / this->terminalWidth_ + 1;
-        this->cout_ << std::string(newLines, '\n');
+        // Create new lines by scrolling the screen
+        this->cout_ << "\033[" << newLines << 'S';
         // Move cursor to the beginning of the new (last) output line
-        this->cout_ << "\033[" << (newLines + this->statusLineWidths_.size()) << "A\033[1G";
+        this->cout_ << "\033[" << newLines << "A\033[1G";
         // Erase screen from here
         this->cout_ << "\033[J";
-        // Print the new output line
+        // Print the new output lines
         for (int i = 0; i < newLines; ++i)
             this->printLogText(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
         // Move cursor down
