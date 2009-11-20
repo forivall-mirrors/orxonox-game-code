@@ -67,6 +67,7 @@ namespace orxonox
         void lineAdded();
         void inputChanged();
         void cursorChanged();
+        void executed();
         void exit();
 
         void shiftLines();
@@ -80,6 +81,7 @@ namespace orxonox
         void bHidesAllInputChanged();
 
     private: // variables
+        Shell* shell_;
         bool bActive_;
         int windowW_;
         int windowH_;

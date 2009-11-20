@@ -42,6 +42,13 @@
 #include <set>
 #include <vector>
 
+/**
+@def CCOUT
+    Acts almost exactly like COUT(x), but prepends "ClassName: "
+*/
+#define CCOUT(level) \
+    COUT(level) << this->getIdentifier()->getName() << ": "
+
 namespace orxonox
 {
     //! The class all objects and interfaces of the game-logic (not the engine) are derived from.

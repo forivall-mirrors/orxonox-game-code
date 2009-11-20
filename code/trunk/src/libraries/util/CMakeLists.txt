@@ -28,7 +28,6 @@ COMPILATION_BEGIN StableCompilation.cc
   Clock.cc
   CRC32.cc
   ExprParser.cc
-  OutputBuffer.cc
   OutputHandler.cc
   SignalHandler.cc
   Sleep.cc

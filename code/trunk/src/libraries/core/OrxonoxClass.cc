@@ -33,6 +33,7 @@
 
 #include "OrxonoxClass.h"
 
+#include <cassert>
 #include "MetaObjectList.h"
 #include "Identifier.h"
 #include "WeakPtr.h"
@@ -71,6 +72,7 @@ namespace orxonox
     /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */
     void OrxonoxClass::destroy()
     {
+        assert(this); // Just in case someone tries to delete a NULL pointer
         this->requestedDestruction_ = true;
         if (this->referenceCount_ == 0)
             delete this;

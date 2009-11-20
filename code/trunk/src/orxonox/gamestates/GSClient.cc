@@ -28,7 +28,7 @@
 
 #include "GSClient.h"
 
-#include "util/Clock.h"
+#include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/CommandLineParser.h"
 #include "core/Game.h"
@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    DeclareGameState(GSClient, "client", false, true);
+    DeclareGameState(GSClient, "client", false, false);
 
     SetCommandLineArgument(ip, "127.0.0.1").information("Sever IP as string in the form #.#.#.#");
 
