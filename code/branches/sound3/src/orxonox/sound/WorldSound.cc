@@ -52,10 +52,7 @@ namespace orxonox
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WorldSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "volume", setVolume, getVolume, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "loop", setLooping, getLooping, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "play", play, isPlaying, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
+        BaseSound::XMLPortExtern(xmlelement, mode);
     }
 
     void WorldSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)

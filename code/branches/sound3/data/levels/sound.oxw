@@ -17,8 +17,8 @@
     skybox       = "Orxonox/Starbox"
   >
 
-  <AmbientSound source="Mars.ogg" loop="true" play="true" />
-  <AmbientSound source="Asteroid_rocks.ogg" loop="true" play="false">
+  <AmbientSound ambientSource="Mars.ogg" loop="true" play="true" />
+  <AmbientSound ambientSource="Asteroid_rocks.ogg" loop="true" play="false">
 	<events>
 		<activity>
 			<DistanceTrigger position="300,100,0" distance=200 target="ControllableEntity">

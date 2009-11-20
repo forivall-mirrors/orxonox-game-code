@@ -48,6 +48,8 @@ namespace orxonox
         BaseSound();
         virtual ~BaseSound();
 
+        void XMLPortExtern(Element& xmlelement, XMLPort::Mode mode);
+
         virtual void play();
         virtual void stop();
         virtual void pause();

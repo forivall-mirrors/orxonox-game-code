@@ -36,6 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/Resource.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
@@ -59,6 +60,14 @@ namespace orxonox
         this->setSource("");
         if (GameMode::playsSound())
             alDeleteSources(1, &this->audioSource_);
+    }
+
+    void BaseSound::XMLPortExtern(Element& xmlelement, XMLPort::Mode mode)
+    {
+        XMLPortParam(BaseSound, "volume", setVolume,  getVolume,  xmlelement, mode);
+        XMLPortParam(BaseSound, "loop",   setLooping, getLooping, xmlelement, mode);
+        XMLPortParam(BaseSound, "play",   play,       isPlaying,  xmlelement, mode);
+        XMLPortParam(BaseSound, "source", setSource,  getSource,  xmlelement, mode);
     }
 
     void BaseSound::play()
