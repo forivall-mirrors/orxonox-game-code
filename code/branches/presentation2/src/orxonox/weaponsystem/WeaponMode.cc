@@ -201,14 +201,17 @@ namespace orxonox
         {
             this->muzzlePosition_ = this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_;
 
-            Controller* controller = this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getController();
-            if (controller->canFindTarget())
+            Pawn* pawn = this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn();
+            Vector3 muzzleDirection;
+            if ( pawn->getTarget() )
             {
-                Vector3 muzzleDirection(controller->getTarget() - this->muzzlePosition_);
-                this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
+                muzzleDirection = pawn->getTarget()->getWorldPosition() - this->muzzlePosition_;
             }
             else
-                this->muzzleOrientation_ = this->weapon_->getWorldOrientation();
+                muzzleDirection = pawn->getAimPosition() - this->muzzlePosition_;
+//             COUT(0) << "muzzleDirection " << muzzleDirection << endl;
+                //this->muzzleOrientation_ = this->weapon_->getWorldOrientation();
+            this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
         }
         else
         {

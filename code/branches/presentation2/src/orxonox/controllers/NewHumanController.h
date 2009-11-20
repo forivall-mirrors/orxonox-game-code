@@ -51,10 +51,9 @@ namespace orxonox
 
             static void changeMode();
 
-            virtual bool canFindTarget() { return true; }
-            virtual Vector3 getTarget();
-
         protected:
+            void updateTarget();
+            
             unsigned int                controlMode_;
             static NewHumanController* localController_s;
         private:

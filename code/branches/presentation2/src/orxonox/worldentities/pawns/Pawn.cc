@@ -66,6 +66,8 @@ namespace orxonox
         this->lastHitOriginator_ = 0;
 
         this->spawnparticleduration_ = 3.0f;
+        
+        this->aimPosition_ = Vector3::ZERO;
 
         this->getPickups().setOwner(this);
 

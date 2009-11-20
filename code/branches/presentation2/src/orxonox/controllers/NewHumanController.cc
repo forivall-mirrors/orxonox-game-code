@@ -36,6 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/Pawn.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/OrxonoxOverlay.h"
 #include "graphics/Camera.h"
@@ -79,7 +80,14 @@ namespace orxonox
 
     void NewHumanController::tick(float dt)
     {
-        crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
+        if( !this->controllableEntity_->isInMouseLook() )
+        {
+            this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
+            this->crossHairOverlay_->show();
+        }
+        else
+            this->crossHairOverlay_->hide();
+        // TODO: update aimPosition of Pawn
 
         HumanController::tick(dt);
     }
@@ -116,11 +124,13 @@ namespace orxonox
             } // if
         }
 */
+        if( !NewHumanController::localController_s->getControllableEntity()->isInMouseLook() )
+            this->updateTarget();
 
         HumanController::localController_s->getControllableEntity()->fire(firemode);
     }
 
-    Vector3 NewHumanController::getTarget()
+    void NewHumanController::updateTarget()
     {
         Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
 
@@ -139,6 +149,7 @@ namespace orxonox
 
 
         Ogre::RaySceneQueryResult& result = rsq->execute();
+        Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
 
         Ogre::RaySceneQueryResult::iterator itr;
         for (itr = result.begin(); itr != result.end(); ++itr)
@@ -153,15 +164,29 @@ namespace orxonox
                     if (this->targetMask_.isExcluded(creator->getIdentifier()))
                         continue;
                 }
+                
+                this->getControllableEntity()->setTarget(wePtr);
 
                 itr->movable->getParentSceneNode()->showBoundingBox(true);
                 //std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
-                return mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance; //or itr->movable->getParentSceneNode()->_getDerivedPosition()
+                //return mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance; //or itr->movable->getParentSceneNode()->_getDerivedPosition()
+                if ( pawn )
+                {
+                    pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance ); // or itr->movable->getParentSceneNode()->_getDerivedPosition()
+                    pawn->setTarget( wePtr );
+                }
+                return;
             }
 
         }
+        if ( pawn )
+        {
+            pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 1200 );
+            pawn->setTarget( 0 );
+        }
 
-	return mouseRay.getOrigin() + mouseRay.getDirection() * 1200;
+    //return mouseRay.getOrigin() + mouseRay.getDirection() * 1200;
+    
 
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 2000);
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getOgreCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
@@ -188,8 +213,11 @@ namespace orxonox
     }
 
     void NewHumanController::changeMode() {
-        if (NewHumanController::localController_s->controlMode_ == 0)
-            NewHumanController::localController_s->controlMode_ = 1;
+        if (NewHumanController::localController_s && NewHumanController::localController_s->controlMode_ == 0)
+        {
+            if (NewHumanController::localController_s->controllableEntity_ && !NewHumanController::localController_s->controllableEntity_->isInMouseLook() )
+                NewHumanController::localController_s->controlMode_ = 1;
+        }
         else
             NewHumanController::localController_s->controlMode_ = 0;
     }

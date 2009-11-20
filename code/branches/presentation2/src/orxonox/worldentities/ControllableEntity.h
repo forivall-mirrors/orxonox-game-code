@@ -144,6 +144,11 @@ namespace orxonox
                 { return this->controller_; }
             inline void setController(Controller* val)
                 { this->controller_ = val; }
+            
+            virtual void setTarget( WorldEntity* target )
+                { this->target_ = target; }
+            virtual WorldEntity* getTarget()
+                { return this->target_.get(); }
 
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
@@ -208,6 +213,7 @@ namespace orxonox
             Controller* xmlcontroller_;
             Controller* controller_;
             CameraPosition* reverseCamera_;
+            WeakPtr<WorldEntity> target_;
     };
 }
 
