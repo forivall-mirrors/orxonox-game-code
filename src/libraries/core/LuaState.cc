@@ -181,7 +181,7 @@ namespace orxonox
 
     void LuaState::luaLog(unsigned int level, const std::string& message)
     {
-        OutputHandler::getOutStream().setOutputLevel(level) << message << std::endl;
+        OutputHandler::getOutStream(level) << message << std::endl;
     }
 
     bool LuaState::fileExists(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)

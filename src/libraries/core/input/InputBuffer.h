@@ -161,10 +161,11 @@ namespace orxonox
             inline void decreaseCursor()
                 { if (this->cursor_ > 0) { --this->cursor_; } }
 
+            void buttonPressed(const KeyEvent& evt);
+
         private:
             bool charIsAllowed(const char& input);
 
-            void buttonPressed(const KeyEvent& evt);
             void buttonHeld   (const KeyEvent& evt);
             void processKey   (const KeyEvent& evt);
 

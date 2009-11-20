@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -31,15 +31,15 @@
 
 #include "CorePrereqs.h"
 
-#include <cassert>
 #include <list>
+#include <sstream>
 #include <string>
 #include <vector>
 
-#include "util/OutputBuffer.h"
-#include "input/InputBuffer.h"
+#include "util/OutputHandler.h"
 #include "OrxonoxClass.h"
 #include "ConfigFileManager.h"
+#include "input/InputBuffer.h"
 
 namespace orxonox
 {
@@ -56,20 +56,18 @@ namespace orxonox
             virtual void lineAdded() {}
             virtual void inputChanged() {}
             virtual void cursorChanged() {}
+            virtual void executed() {}
             virtual void exit() {}
     };
 
-    class _CoreExport Shell : public Singleton<Shell>, virtual public OrxonoxClass, public OutputBufferListener
+
+    class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener
     {
-        friend class Singleton<Shell>;
         public:
-            Shell();
-            virtual ~Shell();
+            Shell(const std::string& consoleName, bool bScrollable, bool bPrependOutputLevel = false);
+            ~Shell();
 
-            static void clearShell();
-            static void history();
-
-            virtual void setConfigValues();
+            void setConfigValues();
             void commandHistoryOffsetChanged();
             void commandHistoryLengthChanged();
 
@@ -78,75 +76,84 @@ namespace orxonox
 
             inline InputBuffer* getInputBuffer()
                 { return this->inputBuffer_; }
-            inline OutputBuffer& getOutputBuffer()
-                { return this->outputBuffer_; }
 
             void setCursorPosition(unsigned int cursor);
             inline unsigned int getCursorPosition() const
                 { return this->inputBuffer_->getCursorPosition(); }
 
-            void setInput(const std::string& input);
-
-            inline void clearInput()
-                { this->setInput(""); }
             inline std::string getInput() const
                 { return this->inputBuffer_->get(); }
 
             std::list<std::string>::const_iterator getNewestLineIterator() const;
             std::list<std::string>::const_iterator getEndIterator() const;
 
-            void addLine(const std::string& line, int level = 0);
-            void clearLines();
+            void addOutputLine(const std::string& line, int level = 0);
+            void clearOutput();
 
             inline unsigned int getNumLines() const
-                { return this->lines_.size(); }
+                { return this->outputLines_.size(); }
             inline unsigned int getScrollPosition() const
                 { return this->scrollPosition_; }
 
-            inline void addOutputLevel(bool bAddOutputLevel)
-                { this->bAddOutputLevel_ = bAddOutputLevel; }
+            inline const std::string& getPromptPrefix() const { return this->promptPrefix_; }
+            void setPromptPrefix(const std::string& str);
 
         private:
             Shell(const Shell& other);
 
-            void configureInputBuffer();
-
             void addToHistory(const std::string& command);
             std::string getFromHistory() const;
+            void clearInput();
+            // OutputListener
+            void outputChanged(int level);
 
-            virtual void outputChanged();
+            void configureInputBuffer();
+
+            // InputBuffer callbacks
             void inputChanged();
             void execute();
-            void hintandcomplete();
+            void hintAndComplete();
             void backspace();
-            void deletechar();
-            void clear();
-            void cursor_right();
-            void cursor_left();
-            void cursor_end();
-            void cursor_home();
-            void history_up();
-            void history_down();
-            void scroll_up();
-            void scroll_down();
+            void deleteChar();
+            void cursorRight();
+            void cursorLeft();
+            void cursorEnd();
+            void cursorHome();
+            void historyUp();
+            void historyDown();
+            void historySearchUp();
+            void historySearchDown();
+            void scrollUp();
+            void scrollDown();
             void exit();
 
+            template <void (ShellListener::*F)()>
+            void updateListeners()
+            {
+                for (std::list<ShellListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
+                    ((*(it++))->*F)();
+            }
+
             std::list<ShellListener*> listeners_;
-            InputBuffer* inputBuffer_;
-            OutputBuffer outputBuffer_;
-            bool finishedLastLine_;
-            std::list<std::string> lines_;
+            InputBuffer*              inputBuffer_;
+            std::stringstream         outputBuffer_;
+            bool                      bFinishedLastLine_;
+            std::list<std::string>    outputLines_;
             std::list<std::string>::const_iterator scrollIterator_;
-            unsigned int scrollPosition_;
-            std::vector<std::string> commandHistory_;
-            unsigned int maxHistoryLength_;
-            unsigned int historyPosition_;
-            unsigned int historyOffset_;
-            bool bAddOutputLevel_;
+            unsigned int              scrollPosition_;
+            unsigned int              historyPosition_;
+            ConfigFileType            commandHistoryConfigFileType_;
 
-            ConfigFileType commandHistoryConfigFileType_;
+            std::string               promptPrefix_;
+            const std::string         consoleName_;
+            const bool                bPrependOutputLevel_;
+            const bool                bScrollable_;
 
-            static Shell* singletonPtr_s;
+            // Config values
+            unsigned int              maxHistoryLength_;
+            unsigned int              historyOffset_;
+            std::vector<std::string>  commandHistory_;
+            int                       softDebugLevel_;
     };
 }
 

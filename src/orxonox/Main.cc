@@ -67,9 +67,8 @@ namespace orxonox
         "  mainMenu"
         "  standalone,server,client"
         "   level"
-        " dedicated,dedicatedClient"
+        " server,client"
         "  level"
-        " ioConsole"
         );
 
         game->requestState("root");
@@ -82,13 +81,14 @@ namespace orxonox
         else if (CommandLineParser::getValue("client").getBool())
             Game::getInstance().requestStates("graphics, client, level");
         else if (CommandLineParser::getValue("dedicated").getBool())
-            Game::getInstance().requestStates("dedicated, level");
+            Game::getInstance().requestStates("server, level");
         else if (CommandLineParser::getValue("dedicatedClient").getBool())
-            Game::getInstance().requestStates("dedicatedClient, level");
-        else if (CommandLineParser::getValue("console").getBool())
-            Game::getInstance().requestStates("ioConsole");
+            Game::getInstance().requestStates("client, level");
         else
-            Game::getInstance().requestStates("graphics, mainMenu");
+        {
+            if (!CommandLineParser::getValue("console").getBool())
+                Game::getInstance().requestStates("graphics, mainMenu");
+        }
 
         game->run();
         delete game;

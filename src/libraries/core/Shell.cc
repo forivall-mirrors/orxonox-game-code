@@ -22,81 +22,92 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
 #include "Shell.h"
 
 #include "util/OutputHandler.h"
+#include "util/StringUtils.h"
+#include "util/SubString.h"
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
-#include "Core.h"
 #include "ConsoleCommand.h"
-
-#define SHELL_UPDATE_LISTENERS(function) \
-    for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
-        (*(it++))->function()
 
 namespace orxonox
 {
-    SetConsoleCommand(Shell, clearShell, true);
-    SetConsoleCommand(Shell, history, true);
-
     SetConsoleCommandShortcut(OutputHandler, log);
     SetConsoleCommandShortcut(OutputHandler, error);
     SetConsoleCommandShortcut(OutputHandler, warning);
     SetConsoleCommandShortcut(OutputHandler, info);
     SetConsoleCommandShortcut(OutputHandler, debug);
 
-    Shell* Shell::singletonPtr_s = 0;
-
-    Shell::Shell()
+    Shell::Shell(const std::string& consoleName, bool bScrollable, bool bPrependOutputLevel)
+        : OutputListener(consoleName)
+        , inputBuffer_(new InputBuffer())
+        , consoleName_(consoleName)
+        , bPrependOutputLevel_(bPrependOutputLevel)
+        , bScrollable_(bScrollable)
     {
-        int level = Core::getSoftDebugLevel(OutputHandler::LD_Shell);
-        Core::setSoftDebugLevel(OutputHandler::LD_Shell, -1);
-
         RegisterRootObject(Shell);
 
         this->scrollPosition_ = 0;
         this->maxHistoryLength_ = 100;
         this->historyPosition_ = 0;
         this->historyOffset_ = 0;
-        this->finishedLastLine_ = true;
-        this->bAddOutputLevel_ = false;
+        this->bFinishedLastLine_ = true;
 
-        this->clearLines();
-
-        this->inputBuffer_ = new InputBuffer();
+        this->clearOutput();
         this->configureInputBuffer();
-
-        this->outputBuffer_.registerListener(this);
-        OutputHandler::getOutStream().setOutputBuffer(&this->outputBuffer_);
 
         // Get a config file for the command history
         this->commandHistoryConfigFileType_ = ConfigFileManager::getInstance().getNewConfigFileType();
         ConfigFileManager::getInstance().setFilename(this->commandHistoryConfigFileType_, "commandHistory.ini");
 
+        // Use a stringstream object to buffer the output and get it line by line in update()
+        this->outputStream_ = &this->outputBuffer_;
+
         this->setConfigValues();
 
-        Core::setSoftDebugLevel(OutputHandler::LD_Shell, level);
+        // Get the previous output and add it to the Shell
+        for (OutputHandler::OutputVectorIterator it = OutputHandler::getInstance().getOutputVectorBegin();
+            it != OutputHandler::getInstance().getOutputVectorEnd(); ++it)
+        {
+            if (it->first <= this->getSoftDebugLevel())
+            {
+                this->outputBuffer_ << it->second;
+                this->outputChanged(it->first);
+            }
+        }
+
+        // Register the shell as output listener
+        OutputHandler::getInstance().registerOutputListener(this);
     }
 
     Shell::~Shell()
     {
-        OutputHandler::getOutStream().setOutputBuffer(0);
-        if (this->inputBuffer_)
-            this->inputBuffer_->destroy();
+        OutputHandler::getInstance().unregisterOutputListener(this);
+        this->inputBuffer_->destroy();
     }
 
     void Shell::setConfigValues()
     {
-        SetConfigValueGeneric(commandHistoryConfigFileType_, maxHistoryLength_, 100)
+        SetConfigValue(maxHistoryLength_, 100)
             .callback(this, &Shell::commandHistoryLengthChanged);
-        SetConfigValueGeneric(commandHistoryConfigFileType_, historyOffset_, 0)
+        SetConfigValue(historyOffset_, 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
         SetConfigValueVectorGeneric(commandHistoryConfigFileType_, commandHistory_, std::vector<std::string>());
+
+#ifdef ORXONOX_RELEASE
+        const unsigned int defaultLevel = 1;
+#else
+        const unsigned int defaultLevel = 3;
+#endif
+        SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevel_, "softDebugLevel" + this->consoleName_, "OutputHandler", defaultLevel)
+            .description("The maximal level of debug output shown in the Shell");
+        this->setSoftDebugLevel(this->softDebugLevel_);
     }
 
     void Shell::commandHistoryOffsetChanged()
@@ -120,39 +131,46 @@ namespace orxonox
     void Shell::configureInputBuffer()
     {
         this->inputBuffer_->registerListener(this, &Shell::inputChanged, true);
-        this->inputBuffer_->registerListener(this, &Shell::execute, '\r', false);
-        this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
-        this->inputBuffer_->registerListener(this, &Shell::backspace, '\b', true);
-        this->inputBuffer_->registerListener(this, &Shell::deletechar, KeyCode::Delete);
-        this->inputBuffer_->registerListener(this, &Shell::exit, static_cast<char>(27), true);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_right, KeyCode::Right);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_left, KeyCode::Left);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_end, KeyCode::End);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_home, KeyCode::Home);
-        this->inputBuffer_->registerListener(this, &Shell::history_up, KeyCode::Up);
-        this->inputBuffer_->registerListener(this, &Shell::history_down, KeyCode::Down);
-        this->inputBuffer_->registerListener(this, &Shell::scroll_up, KeyCode::PageUp);
-        this->inputBuffer_->registerListener(this, &Shell::scroll_down, KeyCode::PageDown);
+        this->inputBuffer_->registerListener(this, &Shell::execute,         '\r',   false);
+        this->inputBuffer_->registerListener(this, &Shell::execute,         '\n',   false);
+        this->inputBuffer_->registerListener(this, &Shell::hintAndComplete, '\t',   true);
+        this->inputBuffer_->registerListener(this, &Shell::backspace,       '\b',   true);
+        this->inputBuffer_->registerListener(this, &Shell::backspace,       '\177', true);
+        this->inputBuffer_->registerListener(this, &Shell::exit,            '\033', true); // escape
+        this->inputBuffer_->registerListener(this, &Shell::deleteChar,      KeyCode::Delete);
+        this->inputBuffer_->registerListener(this, &Shell::cursorRight,     KeyCode::Right);
+        this->inputBuffer_->registerListener(this, &Shell::cursorLeft,      KeyCode::Left);
+        this->inputBuffer_->registerListener(this, &Shell::cursorEnd,       KeyCode::End);
+        this->inputBuffer_->registerListener(this, &Shell::cursorHome,      KeyCode::Home);
+        this->inputBuffer_->registerListener(this, &Shell::historyUp,       KeyCode::Up);
+        this->inputBuffer_->registerListener(this, &Shell::historyDown,     KeyCode::Down);
+        if (this->bScrollable_)
+        {
+            this->inputBuffer_->registerListener(this, &Shell::scrollUp,    KeyCode::PageUp);
+            this->inputBuffer_->registerListener(this, &Shell::scrollDown,  KeyCode::PageDown);
+        }
+        else
+        {
+            this->inputBuffer_->registerListener(this, &Shell::historySearchUp,   KeyCode::PageUp);
+            this->inputBuffer_->registerListener(this, &Shell::historySearchDown, KeyCode::PageDown);
+        }
     }
 
-    void Shell::clearShell()
-    {
-        Shell::getInstance().clearLines();
-    }
-
+    /*
     void Shell::history()
     {
         Shell& instance = Shell::getInstance();
 
         for (unsigned int i = instance.historyOffset_; i < instance.commandHistory_.size(); ++i)
-            instance.addLine(instance.commandHistory_[i], -1);
+            instance.addOutputLine(instance.commandHistory_[i], -1);
         for (unsigned int i =  0; i < instance.historyOffset_; ++i)
-            instance.addLine(instance.commandHistory_[i], -1);
+            instance.addOutputLine(instance.commandHistory_[i], -1);
     }
+    */
 
     void Shell::registerListener(ShellListener* listener)
     {
-        this->listeners_.insert(this->listeners_.end(), listener);
+        this->listeners_.push_back(listener);
     }
 
     void Shell::unregisterListener(ShellListener* listener)
@@ -160,7 +178,7 @@ namespace orxonox
         for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
         {
             if ((*it) == listener)
-                this->listeners_.erase(it++);
+                it = this->listeners_.erase(it);
             else
                 ++it;
         }
@@ -169,36 +187,30 @@ namespace orxonox
     void Shell::setCursorPosition(unsigned int cursor)
     {
         this->inputBuffer_->setCursorPosition(cursor);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::setInput(const std::string& input)
+    void Shell::addOutputLine(const std::string& line, int level)
     {
-        this->inputBuffer_->set(input);
-        this->inputChanged();
+        // Make sure we really only have one line per line (no new lines!)
+        SubString lines(line, '\n');
+        for (unsigned i = 0; i < lines.size(); ++i)
+        {
+            if (level <= this->softDebugLevel_)
+                this->outputLines_.push_front(lines[i]);
+            this->updateListeners<&ShellListener::lineAdded>();
+        }
     }
 
-    void Shell::addLine(const std::string& line, int level)
+    void Shell::clearOutput()
     {
-        int original_level = OutputHandler::getOutStream().getOutputLevel();
-        OutputHandler::getOutStream().setOutputLevel(level);
-
-        if (!this->finishedLastLine_)
-            this->outputBuffer_ << std::endl;
-
-        this->outputBuffer_ << line << std::endl;
-        OutputHandler::getOutStream().setOutputLevel(original_level);
-    }
-
-    void Shell::clearLines()
-    {
-        this->lines_.clear();
-        this->scrollIterator_ = this->lines_.begin();
+        this->outputLines_.clear();
+        this->scrollIterator_ = this->outputLines_.begin();
 
         this->scrollPosition_ = 0;
-        this->finishedLastLine_ = true;
+        this->bFinishedLastLine_ = true;
 
-        SHELL_UPDATE_LISTENERS(linesChanged);
+        this->updateListeners<&ShellListener::linesChanged>();
     }
 
     std::list<std::string>::const_iterator Shell::getNewestLineIterator() const
@@ -206,12 +218,12 @@ namespace orxonox
         if (this->scrollPosition_)
             return this->scrollIterator_;
         else
-            return this->lines_.begin();
+            return this->outputLines_.begin();
     }
 
     std::list<std::string>::const_iterator Shell::getEndIterator() const
     {
-        return this->lines_.end();
+        return this->outputLines_.end();
     }
 
     void Shell::addToHistory(const std::string& command)
@@ -230,67 +242,92 @@ namespace orxonox
             return "";
     }
 
-    void Shell::outputChanged()
+    void Shell::outputChanged(int level)
     {
-        std::string output;
-        bool newline;
+        bool newline = false;
         do
         {
-            newline = this->outputBuffer_.getLine(&output);
+            std::string output;
+            std::getline(this->outputBuffer_, output);
+
+            bool eof = this->outputBuffer_.eof();
+            bool fail = this->outputBuffer_.fail();
+            if (eof)
+                this->outputBuffer_.flush();
+            if (eof || fail)
+                this->outputBuffer_.clear();
+            newline = (!eof && !fail);
 
             if (!newline && output == "")
                 break;
 
-            if (this->finishedLastLine_)
+            if (this->bFinishedLastLine_)
             {
-                if (this->bAddOutputLevel_)
-                    output.insert(0, 1, static_cast<char>(OutputHandler::getOutStream().getOutputLevel()));
+                if (this->bPrependOutputLevel_)
+                    output.insert(0, 1, static_cast<char>(level));
 
-                this->lines_.insert(this->lines_.begin(), output);
+                this->outputLines_.push_front(output);
 
                 if (this->scrollPosition_)
                     this->scrollPosition_++;
                 else
-                    this->scrollIterator_ = this->lines_.begin();
+                    this->scrollIterator_ = this->outputLines_.begin();
 
-                this->finishedLastLine_ = newline;
+                this->bFinishedLastLine_ = newline;
 
                 if (!this->scrollPosition_)
                 {
-                    SHELL_UPDATE_LISTENERS(lineAdded);
+                    this->updateListeners<&ShellListener::lineAdded>();
                 }
             }
             else
             {
-                (*this->lines_.begin()) += output;
-                this->finishedLastLine_ = newline;
-                SHELL_UPDATE_LISTENERS(onlyLastLineChanged);
+                (*this->outputLines_.begin()) += output;
+                this->bFinishedLastLine_ = newline;
+                this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
 
         } while (newline);
     }
 
+    void Shell::clearInput()
+    {
+        this->inputBuffer_->clear();
+        this->historyPosition_ = 0;
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
+    }
+
+    void Shell::setPromptPrefix(const std::string& str)
+    {
+    }
+
+
+    // ##########################################
+    // ###   InputBuffer callback functions   ###
+    // ##########################################
+
     void Shell::inputChanged()
     {
-        SHELL_UPDATE_LISTENERS(inputChanged);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
     void Shell::execute()
     {
         this->addToHistory(this->inputBuffer_->get());
-        this->addLine(this->inputBuffer_->get(), 0);
+        this->updateListeners<&ShellListener::executed>();
 
         if (!CommandExecutor::execute(this->inputBuffer_->get()))
-            this->addLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", 1);
+            this->addOutputLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", 1);
 
-        this->clear();
+        this->clearInput();
     }
 
-    void Shell::hintandcomplete()
+    void Shell::hintAndComplete()
     {
         this->inputBuffer_->set(CommandExecutor::complete(this->inputBuffer_->get()));
-        this->addLine(CommandExecutor::hint(this->inputBuffer_->get()), -1);
+        this->addOutputLine(CommandExecutor::hint(this->inputBuffer_->get()), -1);
 
         this->inputChanged();
     }
@@ -298,49 +335,56 @@ namespace orxonox
     void Shell::backspace()
     {
         this->inputBuffer_->removeBehindCursor();
-        SHELL_UPDATE_LISTENERS(inputChanged);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::deletechar()
+    void Shell::exit()
+    {
+        if (this->inputBuffer_->getSize() > 0)
+        {
+            this->clearInput();
+            return;
+        }
+
+        this->clearInput();
+        this->scrollPosition_ = 0;
+        this->scrollIterator_ = this->outputLines_.begin();
+
+        this->updateListeners<&ShellListener::exit>();
+    }
+
+    void Shell::deleteChar()
     {
         this->inputBuffer_->removeAtCursor();
-        SHELL_UPDATE_LISTENERS(inputChanged);
+        this->updateListeners<&ShellListener::inputChanged>();
     }
 
-    void Shell::clear()
-    {
-        this->inputBuffer_->clear();
-        this->historyPosition_ = 0;
-        SHELL_UPDATE_LISTENERS(inputChanged);
-        SHELL_UPDATE_LISTENERS(cursorChanged);
-    }
-
-    void Shell::cursor_right()
+    void Shell::cursorRight()
     {
         this->inputBuffer_->increaseCursor();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::cursor_left()
+    void Shell::cursorLeft()
     {
         this->inputBuffer_->decreaseCursor();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::cursor_end()
+    void Shell::cursorEnd()
     {
         this->inputBuffer_->setCursorToEnd();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::cursor_home()
+    void Shell::cursorHome()
     {
         this->inputBuffer_->setCursorToBegin();
-        SHELL_UPDATE_LISTENERS(cursorChanged);
+        this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::history_up()
+    void Shell::historyUp()
     {
         if (this->historyPosition_ < this->commandHistory_.size())
         {
@@ -349,7 +393,7 @@ namespace orxonox
         }
     }
 
-    void Shell::history_down()
+    void Shell::historyDown()
     {
         if (this->historyPosition_ > 0)
         {
@@ -358,40 +402,61 @@ namespace orxonox
         }
     }
 
-    void Shell::scroll_up()
+    void Shell::historySearchUp()
     {
-        if (this->scrollIterator_ != this->lines_.end())
+        if (this->historyPosition_ == this->historyOffset_)
+            return;
+        unsigned int cursorPosition = this->getCursorPosition();
+        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning of the inputline until the cursor position
+        for (unsigned int newPos = this->historyPosition_ + 1; newPos <= this->historyOffset_; newPos++)
+        {
+            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // search case insensitive
+            {
+                this->historyPosition_ = newPos;
+                this->inputBuffer_->set(this->getFromHistory());
+                this->setCursorPosition(cursorPosition);
+                return;
+            }
+        }
+    }
+
+    void Shell::historySearchDown()
+    {
+        if (this->historyPosition_ == 0)
+            return;
+        unsigned int cursorPosition = this->getCursorPosition();
+        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning
+        for (unsigned int newPos = this->historyPosition_ - 1; newPos > 0; newPos--)
+        {
+            if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // sear$
+            {
+                this->historyPosition_ = newPos;
+                this->inputBuffer_->set(this->getFromHistory());
+                this->setCursorPosition(cursorPosition);
+                return;
+            }
+        }
+    }
+
+    void Shell::scrollUp()
+    {
+        if (this->scrollIterator_ != this->outputLines_.end())
         {
             ++this->scrollIterator_;
             ++this->scrollPosition_;
 
-            SHELL_UPDATE_LISTENERS(linesChanged);
+            this->updateListeners<&ShellListener::linesChanged>();
         }
     }
 
-    void Shell::scroll_down()
+    void Shell::scrollDown()
     {
-        if (this->scrollIterator_ != this->lines_.begin())
+        if (this->scrollIterator_ != this->outputLines_.begin())
         {
             --this->scrollIterator_;
             --this->scrollPosition_;
 
-            SHELL_UPDATE_LISTENERS(linesChanged);
+            this->updateListeners<&ShellListener::linesChanged>();
         }
-    }
-
-    void Shell::exit()
-    {
-        if (this->inputBuffer_->getSize() > 0)
-        {
-            this->clear();
-            return;
-        }
-
-        this->clear();
-        this->scrollPosition_ = 0;
-        this->scrollIterator_ = this->lines_.begin();
-
-        SHELL_UPDATE_LISTENERS(exit);
     }
 }

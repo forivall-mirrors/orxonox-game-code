@@ -28,6 +28,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   GameState.cc
   GraphicsManager.cc
   GUIManager.cc
+  IOConsole.cc
   Language.cc
   LuaState.cc
   ObjectListBase.cc

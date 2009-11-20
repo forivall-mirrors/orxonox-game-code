@@ -85,7 +85,6 @@ namespace orxonox
 
     std::string echo(const std::string& text)
     {
-        std::cout << text << std::endl;
         return text;
     }
 

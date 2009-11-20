@@ -147,6 +147,7 @@ namespace orxonox
     class GraphicsManager;
     class GUIManager;
     class Identifier;
+    class IOConsole;
     class IRC;
     template <class T>
     class Iterator;
