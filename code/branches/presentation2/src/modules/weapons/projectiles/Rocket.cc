@@ -62,10 +62,10 @@ namespace orxonox
         
             this->model_ = new Model(this);
             this->model_->setMeshSource("rocket.mesh");
-			this->attach(this->model_);
-			ParticleSpawner* fire = new ParticleSpawner(this);
-			this->attach(fire);
-			fire->setOrientation(this->getOrientation());
+            this->attach(this->model_);
+            ParticleSpawner* fire = new ParticleSpawner(this);
+            this->attach(fire);
+            fire->setOrientation(this->getOrientation());
             fire->setSource("Orxonox/rocketfire");
         
             this->enableCollisionCallback();
@@ -78,13 +78,12 @@ namespace orxonox
             this->attachCollisionShape(this->collisionShape_);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
-               
-			
         }
         
         this->camPosition_ = new CameraPosition(this);
         this->camPosition_->setPosition(0,10,40);
         this->camPosition_->setSyncMode(0x0);
+        this->camPosition_->setAllowMouseLook(true);
         this->attach( this->camPosition_ );
         this->addCameraPosition( this->camPosition_ );
     }
@@ -97,7 +96,6 @@ namespace orxonox
     {
         if(this->isInitialized())
         {
-            
             if (GameMode::isMaster() && this->player_.get())
             {
                 this->model_->destroy();
@@ -228,7 +226,10 @@ namespace orxonox
     */
     void Rocket::rotateYaw(const Vector2& value)
     {
-        this->localAngularVelocity_.y += value.x;
+        ControllableEntity::rotateYaw(value);
+        
+        if( !this->isInMouseLook() )
+            this->localAngularVelocity_.y += value.x;
     }
 
     /**
@@ -239,7 +240,10 @@ namespace orxonox
     */
     void Rocket::rotatePitch(const Vector2& value)
     {
-        this->localAngularVelocity_.x += value.x;
+        ControllableEntity::rotatePitch(value);
+        
+        if( !this->isInMouseLook() )
+            this->localAngularVelocity_.x += value.x;
     }
 
     /**
@@ -250,7 +254,10 @@ namespace orxonox
     */
     void Rocket::rotateRoll(const Vector2& value)
     {
-        this->localAngularVelocity_.z += value.x;
+        ControllableEntity::rotateRoll(value);
+        
+        if( !this->isInMouseLook() )
+            this->localAngularVelocity_.z += value.x;
     }
     
 }

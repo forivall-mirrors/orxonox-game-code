@@ -234,4 +234,11 @@ namespace orxonox
         else
             NewHumanController::localController_s->controlMode_ = 0;
     }
+    
+    void NewHumanController::changedControllableEntity()
+    {
+        this->controlMode_ = 0;
+        this->currentYaw_ = 0;
+        this->currentPitch_ = 0;
+    }
 }

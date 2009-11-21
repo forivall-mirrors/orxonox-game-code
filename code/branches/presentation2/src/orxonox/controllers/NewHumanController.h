@@ -50,17 +50,19 @@ namespace orxonox
             virtual void doFire(unsigned int firemode);
 
             static void changeMode();
+            
+            virtual void changedControllableEntity();
 
         protected:
             void updateTarget();
             
             unsigned int                controlMode_;
-            static NewHumanController* localController_s;
+            static NewHumanController*  localController_s;
         private:
             float                       currentYaw_;
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
-            float			            overlaySize_;
+            float                       overlaySize_;
             ClassTreeMask               targetMask_;
     };
 }
