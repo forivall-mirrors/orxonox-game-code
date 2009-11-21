@@ -160,8 +160,8 @@ namespace orxonox
                 WorldEntity* wePtr = dynamic_cast<WorldEntity*>(itr->movable->getUserObject());
                 if (wePtr)
                 {
-                    BaseObject* creator = wePtr->getCreator();
-                    if (this->targetMask_.isExcluded(creator->getIdentifier()))
+                    BaseObject* parent = wePtr->getParent();
+                    if (this->targetMask_.isExcluded(parent->getIdentifier()))
                         continue;
                 }
                 
