@@ -160,8 +160,23 @@ namespace orxonox
                 WorldEntity* wePtr = dynamic_cast<WorldEntity*>(itr->movable->getUserObject());
                 if (wePtr)
                 {
-                    BaseObject* parent = wePtr->getParent();
-                    if (this->targetMask_.isExcluded(parent->getIdentifier()))
+                    // go through all parents of object and look wheter they are Sightable or not
+                    bool isSightable = false;
+                    WorldEntity* parent = wePtr->getParent();
+                    while( parent )
+                    {
+                        if (this->targetMask_.isExcluded(parent->getIdentifier()))
+                        {
+                            parent = parent->getParent();
+                            continue;
+                        }
+                        else
+                        {
+                            isSightable = true;
+                            break;
+                        }
+                    }
+                    if ( !isSightable )
                         continue;
                 }
                 
