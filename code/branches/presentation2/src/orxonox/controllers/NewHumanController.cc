@@ -180,7 +180,8 @@ namespace orxonox
                         continue;
                 }
                 
-                this->getControllableEntity()->setTarget(wePtr);
+                if( this->getControllableEntity()->getTarget() != wePtr )
+                    this->getControllableEntity()->setTarget(wePtr);
 
                 itr->movable->getParentSceneNode()->showBoundingBox(true);
                 //std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
@@ -197,7 +198,8 @@ namespace orxonox
         if ( pawn )
         {
             pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 1200 );
-            pawn->setTarget( 0 );
+            if( this->getControllableEntity()->getTarget() != 0 )
+                pawn->setTarget( 0 );
         }
     
 
