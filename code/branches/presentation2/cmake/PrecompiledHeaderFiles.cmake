@@ -93,7 +93,7 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
         IF(NOT _old_flags)
           SET(_old_flags "")
         ENDIF()
-	SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES COMPILE_FLAGS "${_old_flags} /FI\"${_pch_header_file}\" /Yu\"${_pch_header_file}\" /Fp\"${_pch_file}\"")
+        SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES COMPILE_FLAGS "${_old_flags} /FI\"${_pch_header_file}\" /Yu\"${_pch_header_file}\" /Fp\"${_pch_file}\"")
       ENDIF(NOT _is_header)
     ENDFOREACH(_file)
 
@@ -151,7 +151,7 @@ FUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET _target_name)
         OUTPUT ${_pch_file}
         COMMAND ${CMAKE_CXX_COMPILER}
         ARGS ${pchsupport_compiler_cxx_arg1} ${_pch_gcc_flags} -c -x c++-header -o ${_pch_file} ${_pch_header_file}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DEPENDS ${_pch_dep_helper_file}
         IMPLICIT_DEPENDS CXX ${_pch_header_file}
         VERBATIM

@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-	CreateFactory(Rocket);    
+    CreateFactory(Rocket);
     // create the factory for the Rocket
 
     /**
@@ -51,7 +51,7 @@ namespace orxonox
     {
         RegisterObject(Rocket);// - register the Rocket class to the core
 
-		this->localAngularVelocity_ = 0;
+        this->localAngularVelocity_ = 0;
         
         if (GameMode::isMaster())
         {

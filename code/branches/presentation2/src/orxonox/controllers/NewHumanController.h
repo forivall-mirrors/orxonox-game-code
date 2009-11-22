@@ -26,7 +26,7 @@
  *
  */
 
-#ifndef _NewNewHumanController_H__	
+#ifndef _NewNewHumanController_H__
 #define _NewNewHumanController_H__
 
 #include "OrxonoxPrereqs.h"

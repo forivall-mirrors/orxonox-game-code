@@ -5,7 +5,7 @@
       <!--OverlayText
        name      = "Title"
        position  = "0.79, 0.19"
-       pickpoint = "1, 1"	
+       pickpoint = "1, 1"
        font      = "Monofur"
        caption   = "Scoreboard"
        colour    = "0, 0.75, 0.2, 1"
@@ -24,7 +24,7 @@
       <OverlayText
        name      = "descr2"
        position  = "0.6, 0.20"
-       pickpoint = "0, 1"	
+       pickpoint = "0, 1"
        font      = "Monofur"
        caption   = "score"
        colour    = "0, 0.75, 0.2, 1"
@@ -33,7 +33,7 @@
       <OverlayText
        name      = "descr3"
        position  = "0.8, 0.20"
-       pickpoint = "0, 1"	
+       pickpoint = "0, 1"
        font      = "Monofur"
        caption   = "deaths"
        colour    = "0, 0.75, 0.2, 1"
