@@ -25,6 +25,7 @@
  *      ...
  *
  */
+
 #ifndef _WorldSound_H__
 #define _WorldSound_H__
 
@@ -48,6 +49,7 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+        virtual void changedActivity();
 
         virtual void tick(float dt);
 

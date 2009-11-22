@@ -30,7 +30,11 @@
 
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
+#include "core/GameMode.h"
+#include "core/Resource.h"
 #include "core/XMLPort.h"
+#include "SoundManager.h"
+#include "MoodManager.h"
 
 namespace orxonox
 {
@@ -40,6 +44,9 @@ namespace orxonox
         : BaseObject(creator)
     {
         RegisterObject(AmbientSound);
+
+        // Ambient sounds always fade in
+        this->setVolume(0);
     }
 
     AmbientSound::~AmbientSound()
@@ -49,14 +56,76 @@ namespace orxonox
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AmbientSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
+        BaseSound::XMLPortExtern(xmlelement, mode);
+        XMLPortParam(AmbientSound, "ambientsource", setAmbientSource, getAmbientSource, xmlelement, mode);
     }
 
     void AmbientSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AmbientSound, XMLEventPort, xmlelement, mode);
         XMLPortEventState(AmbientSound, BaseObject, "play", play, xmlelement, mode);
+    }
+
+    void AmbientSound::play()
+    {
+        if (GameMode::playsSound())
+        {
+            COUT(3) << "Sound: " << this->getSource() << ": Playing" << std::endl;
+            SoundManager::getInstance().registerAmbientSound(this);
+        }
+    }
+
+    void AmbientSound::doPlay()
+    {
+        BaseSound::play();
+    }
+
+    void AmbientSound::stop()
+    {
+        if (GameMode::playsSound())
+        {
+            SoundManager::getInstance().unregisterAmbientSound(this);
+        }
+    }
+
+    void AmbientSound::doStop()
+    {
+        BaseSound::stop();
+    }
+
+    void AmbientSound::pause()
+    {
+        if (GameMode::playsSound())
+        {
+            SoundManager::getInstance().pauseAmbientSound(this);
+        }
+    }
+
+    void AmbientSound::doPause()
+    {
+        BaseSound::pause();
+    }
+
+    void AmbientSound::setAmbientSource(const std::string& source)
+    {
+        this->ambientSource_ = source;
+        if (GameMode::playsSound())
+        {
+            std::string path = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
+            shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
+            if (fileInfo != NULL)
+                this->setSource(path);
+            else
+                COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;       
+        }
+    }
+
+    void AmbientSound::changedActivity() 
+    {
+        SUPER(AmbientSound, changedActivity);
+        if (this->isActive())
+            this->play();
+        else 
+            this->stop();
     }
 }

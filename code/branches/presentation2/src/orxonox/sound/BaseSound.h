@@ -25,13 +25,13 @@
  *      Reto Grieder
  *
  */
+
 #ifndef _BaseSound_H__
 #define _BaseSound_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreSharedPtr.h>
 #include <OgreDataStream.h>
 #include "core/OrxonoxClass.h"
 
@@ -48,35 +48,46 @@ namespace orxonox
         BaseSound();
         virtual ~BaseSound();
 
-        void play();
-        void stop();
-        void pause();
+        void XMLPortExtern(Element& xmlelement, XMLPort::Mode mode);
 
-        bool isPlaying();
-        bool isPaused();
-        bool isStopped();
+        virtual void play();
+        virtual void stop();
+        virtual void pause();
 
-        void setSource(const std::string& source);
-        const std::string& getSource() { return this->source_; }
+        bool isPlaying() { return this->state_ == Playing; }
+        bool isPaused()  { return this->state_ == Paused; }
+        bool isStopped() { return this->state_ == Stopped; }
 
-        bool getPlayOnLoad() { return this->bPlayOnLoad_; }
-        void setPlayOnLoad(bool val);
+        virtual void setSource(const std::string& source);
+        virtual const std::string& getSource() const { return this->source_; }
 
-        bool getLoop() { return this->bLoop_; }
-        void setLoop(bool val) { this->bLoop_ = val; }
+        void setVolume(float vol);
+        float getVolume() const { return this->volume_; }
+
+        bool getLooping() const   { return this->bLoop_; }
+        void setLooping(bool val);
+
+        //ALuint getALAudioSource(void);
 
     protected:
         ALuint loadOggFile();
-        ALint getSourceState();
 
         ALuint audioSource_;
         ALuint audioBuffer_;
 
     private:
-        std::string source_;
-        bool bPlayOnLoad_;
-        bool bLoop_;
-        DataStreamPtr dataStream_;
+        enum State
+        {
+            Stopped,
+            Playing,
+            Paused
+        };
+
+        std::string     source_;
+        float           volume_;
+        bool            bLoop_;
+        State           state_;
+        DataStreamPtr   dataStream_;
     };
 }
 

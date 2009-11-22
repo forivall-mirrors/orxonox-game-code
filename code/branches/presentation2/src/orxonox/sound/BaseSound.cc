@@ -28,6 +28,7 @@
 
 #include "BaseSound.h"
 
+#include <cassert>
 #include <vector>
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
@@ -35,100 +36,115 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/Resource.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
     BaseSound::BaseSound()
         : audioSource_(0)
         , audioBuffer_(0)
-        , bPlayOnLoad_(false)
         , bLoop_(false)
+        , state_(Stopped)
     {
         RegisterRootObject(BaseSound);
+
+        if (GameMode::playsSound())
+        {
+            alGenSources(1, &this->audioSource_);
+            assert(this->audioSource_ != 0);
+        }
     }
 
     BaseSound::~BaseSound()
     {
         this->setSource("");
+        if (GameMode::playsSound())
+            alDeleteSources(1, &this->audioSource_);
+    }
+
+    void BaseSound::XMLPortExtern(Element& xmlelement, XMLPort::Mode mode)
+    {
+        XMLPortParam(BaseSound, "volume", setVolume,  getVolume,  xmlelement, mode);
+        XMLPortParam(BaseSound, "loop",   setLooping, getLooping, xmlelement, mode);
+        XMLPortParam(BaseSound, "play",   play,       isPlaying,  xmlelement, mode);
+        XMLPortParam(BaseSound, "source", setSource,  getSource,  xmlelement, mode);
     }
 
     void BaseSound::play()
     {
-        if (alIsSource(this->audioSource_))
+        if (!this->isPlaying() && GameMode::showsGraphics())
         {
-            if (this->bLoop_)
-                alSourcei(this->audioSource_, AL_LOOPING, AL_TRUE);
-            else
-                alSourcei(this->audioSource_, AL_LOOPING, AL_FALSE);
+            this->state_ = Playing;
             alSourcePlay(this->audioSource_);
 
             if (alGetError() != AL_NO_ERROR)
-            {
-                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->audioSource_ << std::endl;
-            }
+                 COUT(2) << "Sound: OpenAL: Error playing sound " << this->audioSource_ << std::endl;
         }
     }
 
     void BaseSound::stop()
     {
-        if (alIsSource(this->audioSource_))
+        this->state_ = Stopped;
+        if (GameMode::playsSound())
             alSourceStop(this->audioSource_);
     }
 
     void BaseSound::pause()
     {
-        if (alIsSource(this->audioSource_))
+        if (this->isStopped())
+            return;
+        this->state_ = Paused;
+        if (GameMode::playsSound())
             alSourcePause(this->audioSource_);
     }
 
-    bool BaseSound::isPlaying()
+    void BaseSound::setVolume(float vol)
     {
+        if (vol > 1 || vol < 0)
+        {
+            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
+            vol = vol > 1 ? 1 : vol;
+            vol = vol < 0 ? 0 : vol;
+        }
+        this->volume_ = vol;
         if (alIsSource(this->audioSource_))
-            return getSourceState() == AL_PLAYING;
-        return false;
+            alSourcef(this->audioSource_, AL_GAIN, vol);
     }
 
-    bool BaseSound::isPaused()
+    void BaseSound::setLooping(bool val)
     {
-        if (alIsSource(this->audioSource_))
-            return getSourceState() == AL_PAUSED;
-        return true;
-    }
-
-    bool BaseSound::isStopped()
-    {
-        if (alIsSource(this->audioSource_))
-            return getSourceState() == AL_INITIAL || getSourceState() == AL_STOPPED;
-        return true;
-    }
-
-    void BaseSound::setPlayOnLoad(bool val)
-    {
-        this->bPlayOnLoad_ = true;
-        this->play();
+        this->bLoop_ = val;
+        if (GameMode::playsSound())
+            alSourcei(this->audioSource_, AL_LOOPING, (val ? AL_TRUE : AL_FALSE));
     }
 
     void BaseSound::setSource(const std::string& source)
     {
-        this->source_ = source;
-        if (!GameMode::playsSound())
-            return;
-
-        if (source.empty() && alIsSource(this->audioSource_))
+        if (!GameMode::playsSound() || source == this->source_) 
         {
-            // Unload sound
-            alSourcei(this->audioSource_, AL_BUFFER, 0);
-            alDeleteSources(1, &this->audioSource_);
-            alDeleteBuffers(1, &this->audioBuffer_);
+            this->source_ = source;
             return;
         }
+
+        if (this->audioBuffer_ != 0 && alIsBuffer(this->audioBuffer_))
+        {
+            alSourceStop(this->audioSource_);
+            // Unload old sound first
+            alSourcei(this->audioSource_, AL_BUFFER, 0);
+            alDeleteBuffers(1, &this->audioBuffer_);
+            this->audioBuffer_ = 0;
+        }
+
+        this->source_ = source;
+        if (source_.empty()) 
+            return;
 
         COUT(3) << "Sound: OpenAL ALUT: loading file " << source << std::endl;
         // Get DataStream from the resources
         shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
         if (fileInfo == NULL)
         {
-            COUT(2) << "Warning: Sound file '" << source << "' not found" << std::endl;
+            COUT(2) << "Sound: Warning: Sound file '" << source << "' not found" << std::endl;
             return;
         }
         dataStream_ = Resource::open(source);
@@ -146,7 +162,7 @@ namespace orxonox
             if (source.find("ogg", 0) != std::string::npos)
             {
                 COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
-                this->audioBuffer_ = loadOggFile();
+                this->audioBuffer_ = this->loadOggFile();
             }
 
             if (this->audioBuffer_ == AL_NONE)
@@ -156,7 +172,6 @@ namespace orxonox
             }
         }
 
-        alGenSources(1, &this->audioSource_);
         alSourcei(this->audioSource_, AL_BUFFER, this->audioBuffer_);
         if (alGetError() != AL_NO_ERROR)
         {
@@ -165,16 +180,15 @@ namespace orxonox
         }
 
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
+        alSourcef (this->audioSource_, AL_GAIN, this->volume_);
+        alSourcei (this->audioSource_, AL_LOOPING, (this->bLoop_ ? AL_TRUE : AL_FALSE));
+        if (this->isPlaying() || this->isPaused())
+            alSourcePlay(this->audioSource_);
+        if (this->isPaused())
+            alSourcePause(this->audioSource_);
 
-        if (this->bPlayOnLoad_)
-            this->play();
-    }
-
-    ALint BaseSound::getSourceState()
-    {
-        ALint state;
-        alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
-        return state;
+        if (alGetError() != AL_NO_ERROR)
+            COUT(2) << "Sound: OpenAL: Error playing sound " << this->audioSource_ << std::endl;
     }
 
     size_t readVorbis(void* ptr, size_t size, size_t nmemb, void* datasource)
@@ -258,5 +272,4 @@ namespace orxonox
 
         return buffer;
     }
-
-} // namespace: orxonox
+}

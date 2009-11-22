@@ -183,7 +183,7 @@
         containername = new orxonox::XMLPortClassParamContainer<objectclass>(std::string(paramname), ClassIdentifier<classname>::getIdentifier(), loadexecutor, saveexecutor); \
         ClassIdentifier<classname>::getIdentifier()->addXMLPortParamContainer(paramname, containername); \
     } \
-    containername->port(static_cast<BaseObject*>(this), object, xmlelement, mode)
+    containername->port(dynamic_cast<BaseObject*>(this), object, xmlelement, mode)
 
 // --------------------
 // XMLPortObjectExtended
