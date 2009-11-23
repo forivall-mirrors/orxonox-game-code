@@ -483,10 +483,10 @@ namespace orxonox
 
     IOConsole::~IOConsole()
     {
-/*
-        resetTerminalMode();
+//        resetTerminalMode();
         this->shell_->destroy();
 
+/*
         // Enable standard this->cout_ logging again
         OutputHandler::getInstance().enableCout();
 */

@@ -51,17 +51,22 @@ namespace orxonox
 
     NewHumanController* NewHumanController::localController_s = 0;
 
-    NewHumanController::NewHumanController(BaseObject* creator) : HumanController(creator)
+    NewHumanController::NewHumanController(BaseObject* creator)
+        : HumanController(creator)
+        , crossHairOverlay_(NULL)
     {
         RegisterObject(NewHumanController);
 
         overlaySize_ = 0.08;
         controlMode_ = 0;
 
-        crossHairOverlay_ = new OrxonoxOverlay(this);
-        crossHairOverlay_->setBackgroundMaterial("Orxonox/Crosshair3");
-        crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
-        crossHairOverlay_->show();
+        if (GameMode::showsGraphics())
+        {
+            crossHairOverlay_ = new OrxonoxOverlay(this);
+            crossHairOverlay_->setBackgroundMaterial("Orxonox/Crosshair3");
+            crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
+            crossHairOverlay_->show();
+        }
 
         // HACK: Define which objects are targetable when considering the creator of an orxonox::Model
         this->targetMask_.exclude(ClassByString("BaseObject"));
@@ -75,19 +80,24 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
+            if (this->crossHairOverlay_)
+                this->crossHairOverlay_->destroy();
         }
     }
 
     void NewHumanController::tick(float dt)
     {
-        if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
+        if (GameMode::showsGraphics())
         {
-            this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
-            this->crossHairOverlay_->show();
+            if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
+            {
+                this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
+                this->crossHairOverlay_->show();
+            }
+            else
+                this->crossHairOverlay_->hide();
+            // TODO: update aimPosition of Pawn
         }
-        else
-            this->crossHairOverlay_->hide();
-        // TODO: update aimPosition of Pawn
 
         HumanController::tick(dt);
     }
