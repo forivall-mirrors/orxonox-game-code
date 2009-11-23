@@ -228,7 +228,7 @@ namespace orxonox
             this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
             this->consoleOverlayTextAreas_[i]->setLeft(8);
             this->consoleOverlayTextAreas_[i]->setCaption("");
-            this->consoleOverlayContainer_->addChild(this->consoleOverlayTextAreas_[i]);
+            this->consoleOverlayBorder_->addChild(this->consoleOverlayTextAreas_[i]);
         }
 
         // create cursor (also a text area overlay element)
