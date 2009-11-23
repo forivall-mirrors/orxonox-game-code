@@ -137,7 +137,6 @@ namespace orxonox
   protected:
     Synchronisable(BaseObject* creator);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
-    //template <class T> void unregisterVariable(T& var);
     void setPriority(unsigned int freq){ objectFrequency_ = freq; }
 
 
@@ -186,34 +185,16 @@ namespace orxonox
   {
     if (bidirectional)
     {
-      syncList.push_back(new SynchronisableVariableBidirectional<const T>(variable, mode, cb));
+      syncList.push_back(new SynchronisableVariableBidirectional<T>(variable, mode, cb));
       this->dataSize_ += syncList.back()->getSize(state_);
     }
     else
     {
-      syncList.push_back(new SynchronisableVariable<const T>(variable, mode, cb));
+      syncList.push_back(new SynchronisableVariable<T>(variable, mode, cb));
       if ( this->state_ == mode )
         this->dataSize_ += syncList.back()->getSize(state_);
     }
   }
-  
-
-
-//   template <class T> void Synchronisable::unregisterVariable(T& var){
-//     std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin();
-//     while(it!=syncList.end()){
-//       if( ((*it)->getReference()) == &var ){
-//         delete (*it);
-//         syncList.erase(it);
-//         return;
-//       }
-//       else
-//         it++;
-//     }
-//     bool unregistered_nonexistent_variable = false;
-//     assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
-//     // the variable has not been registered before
-//   }
 
   
 }

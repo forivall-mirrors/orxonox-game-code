@@ -39,16 +39,14 @@
 
 namespace orxonox{
     
-// general template declaration
-    
     /** @brief returns the size of the variable in a datastream */
-    template <class T> inline uint32_t returnSize( const T& );
+    template <class T> inline uint32_t returnSize( const T& variable );
     /** @brief loads the value of a variable out of the bytestream and increases the mem pointer */
-    template <class T> inline void loadAndIncrease( const T&, uint8_t*& );
+    template <class T> inline void loadAndIncrease( const T& variable, uint8_t*& mem );
     /** @brief saves the value of a variable into the bytestream and increases the mem pointer */
-    template <class T> inline void saveAndIncrease( const T&, uint8_t*& );
+    template <class T> inline void saveAndIncrease( const T& variable, uint8_t*& mem );
     /** @brief checks whether the variable of type T is the same as in the bytestream */
-    template <class T> inline  bool checkEquality( const T&, uint8_t* );
+    template <class T> inline bool checkEquality( const T& variable, uint8_t* mem );
 
 // =================== Template specialisation stuff =============
 
@@ -470,8 +468,6 @@ namespace orxonox{
         Ogre::Real* r = (Ogre::Real*)mem;
         return variable==Degree(*r);
     }
-    
-    
 }
 
 

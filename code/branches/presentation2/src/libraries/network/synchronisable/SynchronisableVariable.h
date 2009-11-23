@@ -34,7 +34,7 @@
 
 #include <cassert>
 #include <cstring>
-#include "util/Serialise.h"
+#include "Serialise.h"
 #include "util/TypeTraits.h"
 #include "core/GameMode.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
@@ -142,8 +142,7 @@ namespace orxonox{
   // check whether we need to consider a callback
     if ( this->callback_ != 0 )
     {
-      if( forceCallback || !checkEquality( this->variable_, mem ) )
-        callback = true;
+      callback = forceCallback || !checkEquality( this->variable_, mem );
     }
   // write the data
     loadAndIncrease( this->variable_, mem );

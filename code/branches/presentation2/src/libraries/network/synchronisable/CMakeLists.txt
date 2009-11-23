@@ -9,5 +9,6 @@ ADD_SOURCE_FILES(NETWORK_HDR_FILES
   NetworkCallback.h
   NetworkCallbackManager.h
   Synchronisable.h
+  SynchronisablePointer.h
   SynchronisableVariable.h
 )

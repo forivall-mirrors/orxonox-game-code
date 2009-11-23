@@ -74,6 +74,8 @@ namespace orxonox
       void checkS2();
       void checkS3();
       void checkS4();
+      
+      void printPointer();
 
       static void printV1(){ instance_->checkU1(); }
       static void printV2(){ instance_->checkU2(); }
@@ -92,6 +94,8 @@ namespace orxonox
       TYPE s2;
       TYPE s3;
       TYPE s4;
+      
+      Test* pointer_;
 
       static Test* instance_;
   };
