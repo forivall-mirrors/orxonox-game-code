@@ -245,9 +245,9 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        COUT(4) << "Read translated language file (" << Core::getLanguage() << ")." << std::endl;
+        COUT(4) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << std::endl;
 
-        std::string filepath = PathConfig::getConfigPathString() + getFilename(Core::getLanguage());
+        std::string filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getLanguage());
 
         // Open the file
         std::ifstream file;
@@ -256,8 +256,8 @@ namespace orxonox
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFilename(Core::getLanguage()) << " to read the translated language entries!" << std::endl;
-            Core::resetLanguage();
+            COUT(1) << "Error: Couldn't open file " << getFilename(Core::getInstance().getLanguage()) << " to read the translated language entries!" << std::endl;
+            Core::getInstance().resetLanguage();
             COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
             return;
         }
@@ -286,7 +286,7 @@ namespace orxonox
                 }
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getLanguage()) << std::endl;
+                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getLanguage()) << std::endl;
                 }
             }
         }

@@ -49,6 +49,7 @@
 #include "util/Debug.h"
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
 
 /**
 @def
@@ -60,8 +61,6 @@
 
 namespace orxonox
 {
-    class GameConfiguration;
-
     //! Helper object required before GameStates are being constructed
     struct GameStateInfo
     {
@@ -77,7 +76,7 @@ namespace orxonox
     @remark
         You should only create this singleton once because it owns the Core class! (see remark there)
     */
-    class _CoreExport Game : public Singleton<Game>
+    class _CoreExport Game : public Singleton<Game>, public OrxonoxClass
     {
         friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
@@ -87,6 +86,8 @@ namespace orxonox
     public:
         Game(const std::string& cmdLine);
         ~Game();
+
+        void setConfigValues();
 
         void setStateHierarchy(const std::string& str);
         shared_ptr<GameState> getState(const std::string& name);
@@ -159,7 +160,6 @@ namespace orxonox
         scoped_ptr<Clock>                  gameClock_;
         scoped_ptr<Core>                   core_;
         ObjScopeGuard                      gsFactoryDestroyer_;
-        scoped_ptr<GameConfiguration>      configuration_;
 
         GameStateMap                       constructedStates_;
         GameStateVector                    loadedStates_;
@@ -179,6 +179,11 @@ namespace orxonox
         float                              avgTickTime_;
         int                                excessSleepTime_;
         unsigned int                       minimumSleepTime_;
+
+        // config values
+        unsigned int                       statisticsRefreshCycle_;
+        unsigned int                       statisticsAvgLength_;
+        unsigned int                       fpsLimit_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonPtr_s;        //!< Pointer to the Singleton

@@ -66,11 +66,7 @@ namespace orxonox
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonPtr_s = 0;
 
-
-    /**
-    @brief
-        Represents one node of the game state tree.
-    */
+    //! Represents one node of the game state tree.
     struct GameStateTreeNode
     {
         std::string name_;
@@ -78,42 +74,6 @@ namespace orxonox
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
-
-    /**
-    @brief
-        Another helper class for the Game singleton: we cannot derive
-        Game from OrxonoxClass because we need to handle the Identifier
-        destruction in the Core destructor.
-    */
-    class GameConfiguration : public OrxonoxClass
-    {
-    public:
-        GameConfiguration()
-        {
-            RegisterRootObject(GameConfiguration);
-            this->setConfigValues();
-        }
-
-        void setConfigValues()
-        {
-            SetConfigValue(statisticsRefreshCycle_, 250000)
-                .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
-            SetConfigValue(statisticsAvgLength_, 1000000)
-                .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
-            SetConfigValue(fpsLimit_, 50)
-                .description("Sets the desired framerate (0 for no limit).");
-        }
-
-        unsigned int statisticsRefreshCycle_;
-        unsigned int statisticsAvgLength_;
-        unsigned int fpsLimit_;
-    };
-
-
-    /**
-    @brief
-        Non-initialising constructor.
-    */
     Game::Game(const std::string& cmdLine)
         // Destroy factories before the Core!
         : gsFactoryDestroyer_(Game::GameStateFactory::getFactories(), &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
@@ -136,6 +96,12 @@ namespace orxonox
         // Create the Core
         this->core_.reset(new Core(cmdLine));
 
+        // Do this after the Core creation!
+        ClassIdentifier<Game>::getIdentifier("Game")->initialiseObject(this, "Game", true);
+        // Remove us from the object lists again to avoid problems when destroying the Game
+        this->unregisterObject();
+        this->setConfigValues();
+
         // After the core has been created, we can safely instantiate the GameStates that don't require graphics
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
             it != gameStateDeclarations_s.end(); ++it)
@@ -149,9 +115,6 @@ namespace orxonox
         this->rootStateNode_->name_ = "emptyRootGameState";
         this->loadedTopStateNode_ = this->rootStateNode_;
         this->loadedStates_.push_back(this->getState(rootStateNode_->name_));
-
-        // Do this after the Core creation!
-        this->configuration_.reset(new GameConfiguration());
     }
 
     /**
@@ -160,6 +123,16 @@ namespace orxonox
     */
     Game::~Game()
     {
+    }
+
+    void Game::setConfigValues()
+    {
+        SetConfigValue(statisticsRefreshCycle_, 250000)
+            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+        SetConfigValue(statisticsAvgLength_, 1000000)
+            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
+        SetConfigValue(fpsLimit_, 50)
+            .description("Sets the desired framerate (0 for no limit).");
     }
 
     /**
@@ -311,11 +284,11 @@ namespace orxonox
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
         this->statisticsTickTimes_.back().tickLength += currentRealTime - currentTime;
         this->periodTickTime_ += currentRealTime - currentTime;
-        if (this->periodTime_ > this->configuration_->statisticsRefreshCycle_)
+        if (this->periodTime_ > this->statisticsRefreshCycle_)
         {
             std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
             assert(it != this->statisticsTickTimes_.end());
-            int64_t lastTime = currentTime - this->configuration_->statisticsAvgLength_;
+            int64_t lastTime = currentTime - this->statisticsAvgLength_;
             if (static_cast<int64_t>(it->tickTime) < lastTime)
             {
                 do
@@ -332,14 +305,14 @@ namespace orxonox
             this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
             this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
-            this->periodTime_ -= this->configuration_->statisticsRefreshCycle_;
+            this->periodTime_ -= this->statisticsRefreshCycle_;
         }
     }
 
     void Game::updateFPSLimiter()
     {
-        // Why configuration_->fpsLimit_ - 1? No idea, but otherwise the fps rate is always (from 10 to 200!) one frame too high
-        uint32_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / (configuration_->fpsLimit_ - 1));
+        // Why fpsLimit_ - 1? No idea, but otherwise the fps rate is always (from 10 to 200!) one frame too high
+        uint32_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / (fpsLimit_ - 1));
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
         while (currentRealTime < nextTime - minimumSleepTime_)
         {

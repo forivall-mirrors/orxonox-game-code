@@ -72,6 +72,7 @@ namespace orxonox
             virtual ~OrxonoxClass();
 
             void destroy();
+            void unregisterObject();
 
             /** @brief Function to collect the SetConfigValue-macro calls. */
             void setConfigValues() {};

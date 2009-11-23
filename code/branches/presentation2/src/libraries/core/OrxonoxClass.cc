@@ -58,12 +58,12 @@ namespace orxonox
 
         assert(this->referenceCount_ <= 0);
 
-        delete this->metaList_;
+        this->unregisterObject();
 
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
         if (this->parents_)
             delete this->parents_;
-            
+
         // reset all weak pointers pointing to this object
         for (std::set<WeakPtr<OrxonoxClass>*>::iterator it = this->weakPointers_.begin(); it != this->weakPointers_.end(); )
             (*(it++))->objectDeleted();
@@ -76,6 +76,13 @@ namespace orxonox
         this->requestedDestruction_ = true;
         if (this->referenceCount_ == 0)
             delete this;
+    }
+
+    void OrxonoxClass::unregisterObject()
+    {
+        if (this->metaList_)
+            delete this->metaList_;
+        this->metaList_ = 0;
     }
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */

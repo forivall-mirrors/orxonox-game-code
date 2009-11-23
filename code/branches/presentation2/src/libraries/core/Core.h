@@ -34,22 +34,19 @@
 
 #include <cassert>
 #include <boost/scoped_ptr.hpp>
-#include "util/OutputHandler.h"
-#include "util/Scope.h"
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class CoreConfiguration;
-
     /**
     @brief
         The Core class is a singleton used to configure the program basics.
     @remark
         You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core : public Singleton<Core>
+    class _CoreExport Core : public Singleton<Core>, public OrxonoxClass
     {
         typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
         friend class Singleton<Core>;
@@ -68,11 +65,16 @@ namespace orxonox
 
             void setConfigValues();
 
-            static const std::string& getLanguage();
-            static void  resetLanguage();
+            //! Returns the configured language.
+            const std::string& getLanguage()
+                { return this->language_; }
+            void resetLanguage();
 
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
+
+            void languageChanged();
+            void initRandomNumberGenerator();
 
             void preUpdate(const Clock& time);
             void postUpdate(const Clock& time);
@@ -81,7 +83,7 @@ namespace orxonox
             void unloadGraphics();
 
             void setThreadAffinity(int limitToCPU);
-
+            // MANAGED SINGLETONS/OBJECTS
             // Mind the order for the destruction!
             scoped_ptr<PathConfig>        pathConfig_;
             scoped_ptr<DynLibManager>     dynLibManager_;
@@ -91,18 +93,21 @@ namespace orxonox
             scoped_ptr<ConfigFileManager> configFileManager_;
             scoped_ptr<Language>          languageInstance_;
             scoped_ptr<IOConsole>         ioConsole_;
-            scoped_ptr<CoreConfiguration> configuration_;
             scoped_ptr<TclBind>           tclBind_;
             scoped_ptr<TclThreadManager>  tclThreadManager_;
+            scoped_ptr<Scope<ScopeID::Root> >     rootScope_;
             // graphical
             scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
             scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
             scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
-            scoped_ptr<Scope<ScopeID::Root> >     rootScope_;
             scoped_ptr<Scope<ScopeID::Graphics> > graphicsScope_;
 
             bool                          bGraphicsLoaded_;
-            static Core* singletonPtr_s;
+            int                           softDebugLevelLogFile_;      //!< The debug level for the log file (belongs to OutputHandler)
+            std::string                   language_;                   //!< The language
+            bool                          bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
+
+            static Core*                  singletonPtr_s;
     };
 }
 
