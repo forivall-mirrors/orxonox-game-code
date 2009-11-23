@@ -217,6 +217,14 @@ namespace orxonox
         font->addCodePointRange(Ogre::Font::CodePointRange(33, 126));
         font->addCodePointRange(Ogre::Font::CodePointRange(161, 255));
 
+        // create noise
+        this->consoleOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "InGameConsoleNoise"));
+        this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
+        this->consoleOverlayNoise_->setPosition(5,0);
+        this->consoleOverlayNoise_->setMaterialName("ConsoleNoiseSmall");
+        // comment following line to disable noise
+        this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
+
         // create the text lines
         this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
@@ -228,7 +236,7 @@ namespace orxonox
             this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
             this->consoleOverlayTextAreas_[i]->setLeft(8);
             this->consoleOverlayTextAreas_[i]->setCaption("");
-            this->consoleOverlayBorder_->addChild(this->consoleOverlayTextAreas_[i]);
+            this->consoleOverlayNoise_->addChild(this->consoleOverlayTextAreas_[i]);
         }
 
         // create cursor (also a text area overlay element)
@@ -239,15 +247,7 @@ namespace orxonox
         this->consoleOverlayCursor_->setParameter("colour_top", "0.21 0.69 0.21");
         this->consoleOverlayCursor_->setLeft(7);
         this->consoleOverlayCursor_->setCaption(std::string(this->cursorSymbol_, 1));
-        this->consoleOverlayContainer_->addChild(this->consoleOverlayCursor_);
-
-        // create noise
-        this->consoleOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "InGameConsoleNoise"));
-        this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
-        this->consoleOverlayNoise_->setPosition(5,0);
-        this->consoleOverlayNoise_->setMaterialName("ConsoleNoiseSmall");
-        // comment following line to disable noise
-        this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
+        this->consoleOverlayNoise_->addChild(this->consoleOverlayCursor_);
 
         this->windowResized(this->getWindowWidth(), this->getWindowWidth());
 
