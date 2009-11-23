@@ -217,8 +217,9 @@ namespace orxonox
 
     ALuint BaseSound::loadOggFile()
     {
-        char inbuffer[4096];
+        char inbuffer[256*1024];
         std::vector<char> outbuffer;
+        outbuffer.reserve(80*1024*1024);
         OggVorbis_File vf;
         vorbis_info* vorbisInfo;
         int eof = false;
@@ -256,7 +257,7 @@ namespace orxonox
             }
             else
             {
-                outbuffer.insert(outbuffer.end(), inbuffer, inbuffer + sizeof(inbuffer));
+                outbuffer.insert(outbuffer.end(), inbuffer, inbuffer + ret);
             }
         }
 
