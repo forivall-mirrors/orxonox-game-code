@@ -72,12 +72,22 @@ namespace orxonox
 
     //! Adjust to discard certain output with level > hardDebugLevel at compile time
     const int hardDebugLevel = OutputLevel::Verbose;
+
+    //! This function simply returns 0 and helps to suppress the "statement has no effect" compiler warning
+    inline int debugDummyFunction()
+    {
+        return 0;
+    }
 }
 
 /**
 @brief
     Logs text output: use exactly like std::cout, but specify an output
     level as argument.
+@details
+    (a > b ? 0 : c << "text") is equivalent to (a > b ? 0 : (c << "text"))
+    where (a > b ? 0 : ) stands for COUT(x). This should explain how
+    this macro magic can possibly even work ;)
 @example
     COUT(3) << "Some info" << std::endl;
 @note
@@ -87,10 +97,10 @@ namespace orxonox
 */
 #define COUT(level)                                                    \
     /*if*/ (level > orxonox::hardDebugLevel) ?                         \
-        0                                                              \
+        orxonox::debugDummyFunction()                                  \
     /*else*/ :                                                         \
         /*if*/ (level > orxonox::OutputHandler::getSoftDebugLevel()) ? \
-            0                                                          \
+            orxonox::debugDummyFunction()                              \
         /*else*/ :                                                     \
             orxonox::OutputHandler::getOutStream(level)
 
