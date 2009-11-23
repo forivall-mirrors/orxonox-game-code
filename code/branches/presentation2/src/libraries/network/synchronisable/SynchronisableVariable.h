@@ -34,7 +34,7 @@
 
 #include <cassert>
 #include <cstring>
-#include "Serialise.h"
+#include "util/Serialise.h"
 #include "util/TypeTraits.h"
 #include "core/GameMode.h"
 #include "network/synchronisable/NetworkCallbackManager.h"
