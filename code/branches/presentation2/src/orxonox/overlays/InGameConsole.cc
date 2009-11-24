@@ -43,7 +43,7 @@
 #include "util/Clock.h"
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "util/UTFStringConversions.h"
+#include "util/DisplayStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -476,14 +476,14 @@ namespace orxonox
                 while (output.size() > this->maxCharsPerLine_)
                 {
                     ++linesUsed;
-                    this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output.substr(0, this->maxCharsPerLine_)));
+                    this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output.substr(0, this->maxCharsPerLine_)));
                     output.erase(0, this->maxCharsPerLine_);
                     output.insert(0, 1, ' ');
                     if (linesUsed > numLinesShifted_ || alwaysShift)
                         this->shiftLines();
                     this->colourLine(level, index);
                 }
-                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output));
+                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output));
                 this->displayedText_ = output;
                 this->numLinesShifted_ = linesUsed;
             }
@@ -501,7 +501,7 @@ namespace orxonox
                 else
                   this->inputWindowStart_ = 0;
                 this->displayedText_ = output;
-                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output));
+                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output));
             }
         }
     }
