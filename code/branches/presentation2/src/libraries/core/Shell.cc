@@ -264,7 +264,12 @@ namespace orxonox
             if (this->bFinishedLastLine_)
             {
                 if (this->bPrependOutputLevel_)
-                    output.insert(0, 1, static_cast<char>(level));
+                {
+                    if (level == 0)
+                        output.insert(0, 1, static_cast<char>(-1));
+                    else
+                        output.insert(0, 1, static_cast<char>(level));
+                }
 
                 this->outputLines_.push_front(output);
 

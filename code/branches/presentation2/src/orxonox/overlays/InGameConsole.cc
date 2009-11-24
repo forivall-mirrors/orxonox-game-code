@@ -223,7 +223,7 @@ namespace orxonox
         this->consoleOverlayNoise_->setPosition(5,0);
         this->consoleOverlayNoise_->setMaterialName("ConsoleNoiseSmall");
         // comment following line to disable noise
-        this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
+        this->consoleOverlayBorder_->addChild(this->consoleOverlayNoise_);
 
         // create the text lines
         this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
