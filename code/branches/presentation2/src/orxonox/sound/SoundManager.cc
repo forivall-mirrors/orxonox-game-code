@@ -262,7 +262,7 @@ namespace orxonox
         }
         
         // FADE IN
-        for (std::list<AmbientSound*>::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); it)
+        for (std::list<AmbientSound*>::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); )
         {
             if ((*it)->getVolume() + this->crossFadeStep_*dt > 1.0f)
             {
@@ -277,7 +277,7 @@ namespace orxonox
         }
 
         // FADE OUT
-        for (std::list<AmbientSound*>::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); it)
+        for (std::list<AmbientSound*>::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); )
         {
             if ((*it)->getVolume() - this->crossFadeStep_*dt < 0.0f)
             {
