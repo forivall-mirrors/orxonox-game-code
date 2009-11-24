@@ -61,7 +61,8 @@ namespace orxonox
   */
   Client::Client():
       isSynched_(false),
-      gameStateFailure_(false)
+      gameStateFailure_(false),
+      timeSinceLastUpdate_(0)
   {
   }
 
@@ -72,7 +73,8 @@ namespace orxonox
   */
   Client::Client(const std::string& address, int port):
       isSynched_(false),
-      gameStateFailure_(false)
+      gameStateFailure_(false),
+      timeSinceLastUpdate_(0)
   {
       setPort( port );
       setServerAddress( address );
