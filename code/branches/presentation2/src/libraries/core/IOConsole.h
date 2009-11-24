@@ -40,6 +40,9 @@
 
 #ifdef ORXONOX_PLATFORM_UNIX
 struct termios;
+#elif defined(ORXONOX_PLATFORM_WINDOWS)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
 
 namespace orxonox
@@ -90,6 +93,14 @@ namespace orxonox
 
 #ifdef ORXONOX_PLATFORM_UNIX
         termios*                originalTerminalSettings_;
+#elif defined(ORXONOX_PLATFORM_WINDOWS)
+        void moveCursor(int dx, int dy);
+        void moveCursorYAndHome(int dy);
+        void clearCurrentLine();
+
+        DWORD                   originalTerminalSettings_;
+        HANDLE                  stdInHandle_;
+        HANDLE                  stdOutHandle_;
 #endif
 
         static IOConsole* singletonPtr_s;

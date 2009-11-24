@@ -31,6 +31,8 @@
 
 #include <iomanip>
 #include <iostream>
+
+#include "util/Math.h"
 #include "core/Game.h"
 #include "core/input/InputBuffer.h"
 
@@ -455,6 +457,8 @@ namespace orxonox
 // ###   Windows Implementation   ###
 // ##################################
 
+#include <windows.h>
+
 namespace orxonox
 {
     IOConsole::IOConsole()
@@ -464,7 +468,6 @@ namespace orxonox
         , bStatusPrinted_(false)
         , promptString_("orxonox # ")
     {
-/*
         this->setTerminalMode();
         this->shell_->registerListener(this);
 
@@ -478,70 +481,210 @@ namespace orxonox
 
         // Disable standard this->cout_ logging
         OutputHandler::getInstance().disableCout();
-*/
+        // Redirect std::cout to an ostringstream
+        // (Other part is in the initialiser list)
+        std::cout.rdbuf(this->origCout_.rdbuf());
+
+        // Make sure we make way for the status lines
+        this->update(Game::getInstance().getGameClock());
     }
 
     IOConsole::~IOConsole()
     {
-//        resetTerminalMode();
+        // Empty all buffers
+        this->update(Game::getInstance().getGameClock());
+
+        resetTerminalMode();
         this->shell_->destroy();
 
-/*
+        // Restore this->cout_ redirection
+        std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard this->cout_ logging again
         OutputHandler::getInstance().enableCout();
-*/
     }
 
     void IOConsole::update(const Clock& time)
     {
-/*
-        unsigned char c = 0;
-        while (std::cin.good())
+        while (true)
         {
-            c = std::cin.get();
-            if (std::cin.bad())
+            DWORD count;
+            INPUT_RECORD inrec;
+            PeekConsoleInput(this->stdInHandle_, &inrec, 1, &count);
+            if (count == 0)
                 break;
-        }
-        // Reset error flags in std::cin
-        std::cin.clear();
+            ReadConsoleInput(this->stdInHandle_, &inrec, 1, &count);
+            if (inrec.EventType == KEY_EVENT && inrec.Event.KeyEvent.bKeyDown)
+            {
+                // Process keyboard modifiers (Ctrl, Alt and Shift)
+                DWORD modifiersIn = inrec.Event.KeyEvent.dwControlKeyState;
+                int modifiersOut = 0;
+                if ((modifiersIn & (LEFT_ALT_PRESSED  | RIGHT_ALT_PRESSED))  != 0)
+                    modifiersOut |= KeyboardModifier::Alt;
+                if ((modifiersIn & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)) != 0)
+                    modifiersOut |= KeyboardModifier::Ctrl;
+                if ((modifiersIn & SHIFT_PRESSED) != 0)
+                    modifiersOut |= KeyboardModifier::Shift;
 
-        // Determine terminal width and height
-        this->lastTerminalWidth_ = this->terminalWidth_;
-        this->lastTerminalHeight_ = this->terminalHeight_;
+                // ASCII character (0 for special keys)
+                char asciiChar = inrec.Event.KeyEvent.uChar.AsciiChar;
+
+                // Process special keys and if not found, use Key::A as dummy (InputBuffer uses the ASCII text anyway)
+                switch (inrec.Event.KeyEvent.wVirtualKeyCode)
+                {
+                case VK_BACK:   this->buffer_->buttonPressed(KeyEvent(KeyCode::Back,     asciiChar, modifiersOut)); break;
+                case VK_TAB:    this->buffer_->buttonPressed(KeyEvent(KeyCode::Back,     asciiChar, modifiersOut)); break;
+                case VK_RETURN: this->buffer_->buttonPressed(KeyEvent(KeyCode::Back,     asciiChar, modifiersOut)); break;
+                case VK_PAUSE:  this->buffer_->buttonPressed(KeyEvent(KeyCode::Pause,    asciiChar, modifiersOut)); break;
+                case VK_ESCAPE: this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape,   asciiChar, modifiersOut)); break;
+                case VK_SPACE:  this->buffer_->buttonPressed(KeyEvent(KeyCode::Space,    asciiChar, modifiersOut)); break;
+                case VK_PRIOR:  this->buffer_->buttonPressed(KeyEvent(KeyCode::PageUp,   asciiChar, modifiersOut)); break;
+                case VK_NEXT:   this->buffer_->buttonPressed(KeyEvent(KeyCode::PageDown, asciiChar, modifiersOut)); break;
+                case VK_END:    this->buffer_->buttonPressed(KeyEvent(KeyCode::End,      asciiChar, modifiersOut)); break;
+                case VK_HOME:   this->buffer_->buttonPressed(KeyEvent(KeyCode::Home,     asciiChar, modifiersOut)); break;
+                case VK_LEFT:   this->buffer_->buttonPressed(KeyEvent(KeyCode::Left,     asciiChar, modifiersOut)); break;
+                case VK_UP:     this->buffer_->buttonPressed(KeyEvent(KeyCode::Up,       asciiChar, modifiersOut)); break;
+                case VK_RIGHT:  this->buffer_->buttonPressed(KeyEvent(KeyCode::Right,    asciiChar, modifiersOut)); break;
+                case VK_DOWN:   this->buffer_->buttonPressed(KeyEvent(KeyCode::Down,     asciiChar, modifiersOut)); break;
+                case VK_INSERT: this->buffer_->buttonPressed(KeyEvent(KeyCode::Insert,   asciiChar, modifiersOut)); break;
+                case VK_DELETE: this->buffer_->buttonPressed(KeyEvent(KeyCode::Delete,   asciiChar, modifiersOut)); break;
+                default:        this->buffer_->buttonPressed(KeyEvent(KeyCode::A,        asciiChar, modifiersOut));
+                }
+            }
+        }
+
+        // Get info about cursor and terminal size
         this->getTerminalSize();
-*/
+
+        // Refresh status line
+        this->printStatusLines();
+
+        // Process output written to std::cout
+        if (!this->origCout_.str().empty())
+        {
+            this->shell_->addOutputLine(this->origCout_.str());
+            this->origCout_.str("");
+        }
+        this->cout_.flush();
     }
 
     void IOConsole::printLogText(const std::string& text)
     {
+        std::string output = text;
+        int level = this->extractLogLevel(&output);
+
+        // Colour line
+        switch (level)
+        {
+        case  1: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_INTENSITY); break;
+        case  2: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY); break;
+        case  3: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_BLUE | FOREGROUND_INTENSITY); break;
+        case  4: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_GREEN); break;
+        default: break;
+        }
+
+        // Print output line
+        this->cout_ << output;
+
+        // Reset colour to white
+        SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
     }
 
     void IOConsole::printInputLine()
     {
+        this->moveCursorYAndHome(0);
+        this->clearCurrentLine();
+        this->cout_ << this->promptString_ << this->shell_->getInput();
+        this->moveCursorYAndHome(0);
+        this->moveCursor(this->promptString_.size() + this->buffer_->getCursorPosition(), 0);
     }
 
     void IOConsole::printStatusLines()
     {
-/*
         if (this->willPrintStatusLines())
         {
             this->bStatusPrinted_ = true;
+            // Put cursor on home position, one line down the input line
+            this->moveCursorYAndHome(1);
+            this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
+            this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
+            // Clear rest of the line
+            CONSOLE_SCREEN_BUFFER_INFO info;
+            GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
+            this->cout_ << std::string(info.dwSize.X - info.dwCursorPosition.X - 1, ' ');
+            // Restore cursor position
+            this->moveCursorYAndHome(-1);
+            this->moveCursor(this->promptString_.size() + this->buffer_->getCursorPosition(), 0);
         }
         else
             this->bStatusPrinted_ = false;
-*/
     }
 
     void IOConsole::setTerminalMode()
     {
+        // Set the console mode to no-echo, raw input, and no window or mouse events
+        this->stdOutHandle_ = GetStdHandle(STD_OUTPUT_HANDLE);
+        this->stdInHandle_  = GetStdHandle(STD_INPUT_HANDLE);
+        if (this->stdInHandle_ == INVALID_HANDLE_VALUE
+            || !GetConsoleMode(this->stdInHandle_, &this->originalTerminalSettings_)
+            || !SetConsoleMode(this->stdInHandle_, 0))
+        {
+            COUT(1) << "Error: Could not set Windows console settings" << std::endl;
+            return;
+        }
+        FlushConsoleInputBuffer(this->stdInHandle_);
     }
 
     void IOConsole::resetTerminalMode()
     {
+        SetConsoleMode(this->stdInHandle_, this->originalTerminalSettings_);
+    }
+
+    //! Moves the console cursor around and inserts new lines when reaching the end.
+    //! Moving out on the right is just clamped though.
+    void IOConsole::moveCursor(int dx, int dy)
+    {
+        CONSOLE_SCREEN_BUFFER_INFO info;
+        GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
+        SHORT& x = info.dwCursorPosition.X;
+        x = clamp(x + dx, 0, info.dwSize.X - 1);
+        SHORT& y = info.dwCursorPosition.Y;
+        if (y + dy >= info.dwSize.Y)
+        {
+            // Insert new lines
+            this->cout_ << std::string(y + dy - info.dwSize.Y + 1, 'n');
+            y = info.dwSize.Y - 1;
+        }
+        else if (y < 0)
+            y = 0;
+        else
+            y += dy;
+        SetConsoleCursorPosition(this->stdOutHandle_, info.dwCursorPosition);
+    }
+
+    void IOConsole::moveCursorYAndHome(int dy)
+    {
+        CONSOLE_SCREEN_BUFFER_INFO info;
+        GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
+        this->moveCursor(-info.dwCursorPosition.X, dy);
+    }
+
+    void IOConsole::clearCurrentLine()
+    {
+        CONSOLE_SCREEN_BUFFER_INFO info;
+        GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
+        info.dwCursorPosition.X = 0;
+        DWORD count;
+        FillConsoleOutputCharacter(this->stdOutHandle_, ' ', info.dwSize.X, info.dwCursorPosition, &count);;
     }
 
     void IOConsole::getTerminalSize()
     {
+        CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
+        GetConsoleScreenBufferInfo(this->stdOutHandle_, &screenBufferInfo);
+        // dwSize is the maximum size. If you resize you will simply see scroll bars.
+        // And if you want to write outside these boundaries, you can't.
+        this->terminalWidth_  = screenBufferInfo.dwSize.X;
+        this->terminalHeight_ = screenBufferInfo.dwSize.Y;
     }
 
     // ###############################
@@ -551,11 +694,27 @@ namespace orxonox
     //! Called if only the last output-line has changed
     void IOConsole::onlyLastLineChanged()
     {
+        this->moveCursorYAndHome(-1);
+        this->clearCurrentLine();
+        this->printLogText(*(this->shell_->getNewestLineIterator()));
+        this->moveCursorYAndHome(1);
+        this->moveCursor(this->promptString_.size() + this->shell_->getInput().size(), 0);
+        this->cout_.flush();
     }
 
     //! Called if a new output-line was added
     void IOConsole::lineAdded()
     {
+        // Move cursor to the beginning of the new (last) output line
+        this->moveCursorYAndHome(0);
+        // Print the new output lines
+        this->printLogText(*(this->shell_->getNewestLineIterator()));
+        // Move cursor down
+        this->moveCursorYAndHome(1);
+        // Print status and input lines
+        this->printInputLine();
+        this->printStatusLines();
+        this->cout_.flush();
     }
 }
 
