@@ -58,9 +58,11 @@
 
 namespace orxonox
 {
+#if OGRE_VERSION < 0x010603
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian);
-    _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree);
+#endif
+    _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
     _UtilExport std::istream& operator>>(std::istream& in, orxonox::Degree& degree);
 
     _UtilExport float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition);
