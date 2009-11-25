@@ -33,6 +33,7 @@
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
