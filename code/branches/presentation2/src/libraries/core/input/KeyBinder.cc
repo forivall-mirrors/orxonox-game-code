@@ -49,8 +49,8 @@ namespace orxonox
     {
         mouseRelative_[0] = 0;
         mouseRelative_[1] = 0;
-        mousePosition_[0] = 0;
-        mousePosition_[1] = 0;
+        mousePosition_[0] = 0.0;
+        mousePosition_[1] = 0.0;
 
         RegisterRootObject(KeyBinder);
 
@@ -127,6 +127,7 @@ namespace orxonox
             .description("Specifies whether to filter small analog values like joy stick fluctuations.");
         SetConfigValue(mouseSensitivity_, 1.0f)
             .description("Mouse sensitivity.");
+        this->totalMouseSensitivity_ = this->mouseSensitivity_ / this->mouseClippingSize_;
         SetConfigValue(bDeriveMouseInput_, false)
             .description("Whether or not to derive moues movement for the absolute value.");
         SetConfigValue(derivePeriod_, 0.05f)
@@ -425,23 +426,23 @@ namespace orxonox
                     // write absolute values
                     mouseAxes_[2*i + 0].hasChanged_ = true;
                     mouseAxes_[2*i + 1].hasChanged_ = true;
-                    mousePosition_[i] += rel[i];
+                    mousePosition_[i] += rel[i] * totalMouseSensitivity_;
 
                     // clip absolute position
-                    if (mousePosition_[i] > mouseClippingSize_)
-                        mousePosition_[i] =  mouseClippingSize_;
-                    if (mousePosition_[i] < -mouseClippingSize_)
-                        mousePosition_[i] = -mouseClippingSize_;
+                    if (mousePosition_[i] > 1.0)
+                        mousePosition_[i] =  1.0;
+                    if (mousePosition_[i] < -1.0)
+                        mousePosition_[i] = -1.0;
 
-                    if (mousePosition_[i] < 0)
+                    if (mousePosition_[i] < 0.0)
                     {
-                        mouseAxes_[2*i + 0].absVal_ = -mouseSensitivity_ * mousePosition_[i] / mouseClippingSize_;
+                        mouseAxes_[2*i + 0].absVal_ = -mousePosition_[i];
                         mouseAxes_[2*i + 1].absVal_ = 0.0f;
                     }
                     else
                     {
                         mouseAxes_[2*i + 0].absVal_ = 0.0f;
-                        mouseAxes_[2*i + 1].absVal_ =  mouseSensitivity_ * mousePosition_[i] / mouseClippingSize_;
+                        mouseAxes_[2*i + 1].absVal_ =  mousePosition_[i];
                     }
                 }
             }
@@ -451,9 +452,9 @@ namespace orxonox
         for (int i = 0; i < 2; i++)
         {
             if (rel[i] < 0)
-                mouseAxes_[0 + 2*i].relVal_ = -mouseSensitivity_ * rel[i] / mouseClippingSize_;
+                mouseAxes_[0 + 2*i].relVal_ = -rel[i] * totalMouseSensitivity_;
             else
-                mouseAxes_[1 + 2*i].relVal_ =  mouseSensitivity_ * rel[i] / mouseClippingSize_;
+                mouseAxes_[1 + 2*i].relVal_ =  rel[i] * totalMouseSensitivity_;
         }
     }
 

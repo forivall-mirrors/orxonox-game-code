@@ -137,8 +137,8 @@ namespace orxonox
         */
         std::vector<BufferedParamCommand*> paramCommandBuffer_;
 
-        //! Keeps track of the absolute mouse value (incl. scroll wheel)
-        int mousePosition_[2];
+        //! Keeps track of the absolute mouse value
+        float mousePosition_[2];
         //! Used to derive mouse input if requested
         int mouseRelative_[2];
         float deriveTime_;
@@ -164,8 +164,11 @@ namespace orxonox
         float mouseSensitivity_;
         //! mouse sensitivity if mouse input is derived
         float mouseSensitivityDerived_;
-        //! Equals one step of the mousewheel
+        //! Equals one step of the mouse wheel
         int mouseWheelStepSize_;
+
+        //! Multiplication of mouse sensitivity and clipping size
+        float totalMouseSensitivity_;
 
         //##### Constant config variables #####
         // Use some value at about 1000. This can be configured with mouseSensitivity_ anyway.
