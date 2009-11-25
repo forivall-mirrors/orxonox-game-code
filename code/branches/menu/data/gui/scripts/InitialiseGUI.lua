@@ -173,8 +173,9 @@ function setBackground(filename)
     end
     if root ~= nil then
         local child
-        for i=0,root:getChildCount()-1 do
-            child = root:getChildAtIdx(i)
+        while root:getChildCount()~=0 do
+            debug(root:getChildCount())
+            child = root:getChildAtIdx(0)
             root:removeChildWindow(child)
             newroot:addChildWindow(child)
         end
