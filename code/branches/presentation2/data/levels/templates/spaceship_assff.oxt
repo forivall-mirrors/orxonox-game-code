@@ -75,17 +75,17 @@
       <Light mainstate=visibility position=" 8, 0, 8" diffuse="0.3, 0.6, 1.0" specular="0.3, 0.6, 1.0" attenuation="600, 1.0, 0.007, 0.0002" type=point />
       <Light mainstate=visibility position="-8, 0, 8" diffuse="0.3, 0.6, 1.0" specular="0.3, 0.6, 1.0" attenuation="600, 1.0, 0.007, 0.0002" type=point />
 -->
-      <!--WorldSound mainstate=activity source="sounds/Engine_low.ogg" oop=1 /-->
+      <!--WorldSound mainstate=activity source="sounds/Engine_low.ogg" loop=1 /-->
     </active>
     <forward>
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <WorldSound mainstate=activity source="sounds/Engine_low.ogg" oop=1 />
+      <WorldSound mainstate=activity source="sounds/Engine_low.ogg" loop=1 />
     </forward>
     <boost>
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <!--WorldSound mainstate=activity source="sounds/Engine_high.ogg" oop=1 /-->
+      <!--WorldSound mainstate=activity source="sounds/Engine_high.ogg" loop=1 /-->
     </boost>
     <brake>
       <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
