@@ -49,9 +49,13 @@ extern "C" {
 #endif
 
 #include "util/Clock.h"
+#include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
+#include "ConsoleCommand.h"
+#include "Core.h"
+#include "input/InputManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
@@ -84,6 +88,9 @@ namespace orxonox
 
     GUIManager* GUIManager::singletonPtr_s = 0;
 
+    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, false).defaultValue(2, true);
+    SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
+
     /**
     @brief
         Constructs the GUIManager by starting up CEGUI
@@ -100,6 +107,7 @@ namespace orxonox
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
         , camera_(NULL)
+        , bShowIngameGUI_(false)
     {
         using namespace CEGUI;
 
@@ -112,6 +120,9 @@ namespace orxonox
 
         // setup scripting
         luaState_.reset(new LuaState());
+        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
+        // This is necessary to ensure that input events also use the right resource info when triggering lua functions
+        luaState_->setDefaultResourceInfo(this->rootFileInfo_);
         scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
 
         // Create our own logger to specify the filepath
@@ -126,7 +137,6 @@ namespace orxonox
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
         // Initialise the basic Lua code
-        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
         this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
 
         // Align CEGUI mouse with OIS mouse
@@ -202,9 +212,70 @@ namespace orxonox
         The function executes the Lua function with the same name in case the GUIManager is ready.
         For more details check out loadGUI_2.lua where the function presides.
     */
-    void GUIManager::showGUI(const std::string& name)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool hidePrevious, bool showCursor)
     {
-        this->luaState_->doString("showGUI(\"" + name + "\")", rootFileInfo_);
+        std::pair<std::set<std::string>::iterator,bool> result = GUIManager::getInstance().showingGUIs_.insert(name);
+        if(GUIManager::getInstance().showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
+        {
+//             InputManager::getInstance().enterState("guiMouseOnly");
+        }
+        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ")");
+    }
+
+    /**
+    @brief
+        Hack-ish. Needed for GUIOverlay.
+    */
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious, bool showCursor)
+    {
+        std::pair<std::set<std::string>::iterator,bool> result = this->showingGUIs_.insert(name);
+        if(this->showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
+        {
+//             this->executeCode("showCursor()");
+//             InputManager::getInstance().enterState("guiMouseOnly");
+        }
+        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
+    }
+
+    /**
+    @brief
+        Hides specified GUI.
+    @param name
+        The name of the GUI.
+    */
+    /*static*/ void GUIManager::hideGUI(const std::string& name)
+    {
+        GUIManager::getInstance().showingGUIs_.erase(name);
+        GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
+        if(GUIManager::getInstance().showingGUIs_.size() == 0)
+        {
+//             GUIManager::getInstance().executeCode("hideCursor()");
+//             InputManager::getInstance().leaveState("guiMouseOnly");
+        }
+    }
+
+    void GUIManager::toggleIngameGUI()
+    {
+        if ( this->bShowIngameGUI_==false )
+        {
+            GUIManager::showGUI("InGameMenu");
+            this->bShowIngameGUI_ = true;
+        }
+        else
+        {
+            GUIManager::hideGUI("InGameMenu");
+            this->bShowIngameGUI_ = false;
+        }
+    }
+    
+    void GUIManager::keyESC()
+    {
+        this->executeCode("keyESC()");
+    }
+    
+    void GUIManager::setBackground(const std::string& name)
+    {
+        this->executeCode("setBackground(\"" + name + "\")");
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)

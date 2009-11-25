@@ -82,7 +82,7 @@ namespace orxonox
     {
         this->activity_.active = false;
         this->activity_.deactivating = true;
-        this->activate();
+        this->deactivate();
         this->activity_.deactivating = false;
         this->activity_.suspended = false;
         this->activity_.updating = false;

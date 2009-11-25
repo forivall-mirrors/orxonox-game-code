@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="TaharezLook/StaticImage" Name="orxonox/ControlsBackground" >
+        <Property Name="Image" Value="set:MainMenuBackground image:Background" />
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="BackgroundEnabled" Value="False" />
+        <Window Type="TaharezLook/StaticText" Name="orxonox/ControlsWindow" >
+            <Property Name="Text" Value="Controls" />
+            <Property Name="Alpha" Value="0.8" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="HorzFormatting" Value="HorzCentred" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="VertFormatting" Value="TopAligned" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.325,0},{0.75,0},{0.6,0}}" />
+            <Window Type="TaharezLook/Button" Name="orxonox/MouseControlsButton" >
+                <Property Name="Text" Value="Mouse controls" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.318181,0},{0.7,0},{0.5,0}}" />
+                <Event Name="Clicked" Function="NewControlsMenu.ControlsMouseControlsButton_clicked"/>
+            </Window>
+            <Window Type="TaharezLook/Button" Name="orxonox/KeyboardControlsButton" >
+                <Property Name="Text" Value="Keyboard controls" />
+                <Property Name="Disabled" Value="True" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.590909,0},{0.7,0},{0.772727,0}}" />
+                <Event Name="Clicked" Function="NewControlsMenu.ControlsKeyboardControlsButton_clicked"/>
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/Button" Name="orxonox/ControlsBackButton" >
+            <Property Name="Text" Value="Back" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Event Name="Clicked" Function="NewControlsMenu.ControlsBackButton_clicked"/>
+        </Window>
+    </Window>
+</GUILayout>

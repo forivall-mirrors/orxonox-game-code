@@ -40,6 +40,7 @@
 #include "core/WindowEventListener.h"
 #include "InputState.h"
 
+// tolua_begin
 namespace orxonox
 {
     /**
@@ -62,8 +63,10 @@ namespace orxonox
         - Keyboard construction is mandatory , mouse and joy sticks are not.
           If the OIS::InputManager or the Keyboard fail, an exception is thrown.
     */
-    class _CoreExport InputManager : public Singleton<InputManager>, public WindowEventListener
-    {
+    class _CoreExport InputManager
+// tolua_end
+        : public Singleton<InputManager>, public WindowEventListener
+    { // tolua_export
         friend class Singleton<InputManager>;
     public:
         //! Represents internal states of the InputManager.
@@ -138,14 +141,14 @@ namespace orxonox
         @return
             False if name was not found, true otherwise.
         */
-        bool enterState(const std::string& name);
+        bool enterState(const std::string& name); // tolua_export
         /**
         @brief
             Deactivates a specific input state.
         @return
             False if name was not found, true otherwise.
         */
-        bool leaveState(const std::string& name);
+        bool leaveState(const std::string& name); // tolua_export
         /**
         @brief
             Removes and destroys an input state.
@@ -166,6 +169,8 @@ namespace orxonox
         //! Returns a pointer to the OIS InputManager. Only you if you know what you're doing!
         OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
         std::pair<int, int> getMousePosition() const;
+        
+        static InputManager& getInstance() { return *singletonPtr_s; } // tolua_export
 
     private: // functions
         // don't mess with a Singleton
@@ -206,7 +211,7 @@ namespace orxonox
         std::set<InputState*>               stateDestroyRequests_; //!< Requests to destroy a state
 
         static InputManager*                singletonPtr_s;        //!< Pointer reference to the singleton
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _InputManager_H__ */

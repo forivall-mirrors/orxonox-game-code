@@ -56,10 +56,10 @@ namespace orxonox
         ~LuaState();
 
         void doFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
-        void doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
+        void doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void includeFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
-        void includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
+        void includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
@@ -70,6 +70,9 @@ namespace orxonox
 
         void setIncludeParser(std::string (*function)(const std::string&)) { includeParseFunction_ = function; }
         lua_State* getInternalLuaState() { return luaState_; }
+
+        void setDefaultResourceInfo(const shared_ptr<ResourceInfo>& sourceFileInfo) { this->sourceFileInfo_ = sourceFileInfo; }
+        const shared_ptr<ResourceInfo>& getDefaultResourceInfo() { return this->sourceFileInfo_; }
 
         static bool addToluaInterface(int (*function)(lua_State*), const std::string& name);
         static bool removeToluaInterface(const std::string& name);

@@ -50,12 +50,16 @@
 #include "ConfigValueIncludes.h"
 #include "GameMode.h"
 #include "GameState.h"
+#include "GUIManager.h"
 
 namespace orxonox
 {
     static void stop_game()
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
+    static void key_esc()
+        { Game::getInstance().keyESC(); }
+    SetConsoleCommandShortcutExternAlias(key_esc, "keyESC");
     static void printFPS()
         { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
     SetConsoleCommandShortcutExternAlias(printFPS, "printFPS");
@@ -326,6 +330,14 @@ namespace orxonox
             excessSleepTime_ = 50000;
     }
 
+    void Game::keyESC()
+    {
+        if( this->getState("mainMenu") && this->getState("mainMenu")->getActivity().active==true )
+            this->stop();
+        else
+            GUIManager::getInstance().keyESC();
+    }
+
     void Game::stop()
     {
         this->bAbort_ = true;
@@ -556,7 +568,7 @@ namespace orxonox
             graphicsUnloader.Dismiss();
 
         shared_ptr<GameState> state = this->getState(name);
-        state->activate();
+        state->activateInternal();
         if (!this->loadedStates_.empty())
             this->loadedStates_.back()->activity_.topState = false;
         this->loadedStates_.push_back(state);
@@ -575,7 +587,7 @@ namespace orxonox
             this->loadedStates_.pop_back();
             if (!this->loadedStates_.empty())
                 this->loadedStates_.back()->activity_.topState = true;
-            state->deactivate();
+            state->deactivateInternal();
         }
         catch (...)
         {

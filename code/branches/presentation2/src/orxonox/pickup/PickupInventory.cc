@@ -85,15 +85,11 @@ namespace orxonox
     void PickupInventory::toggleInventory()
     {
         if(PickupInventory::getSingleton()->isVisible()) {
-            GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
-            GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().leaveState("guiMouseOnly");
+            GUIManager::hideGUI("PickupInventory");
         }
         else
         {
-            GUIManager::getInstance().showGUI("PickupInventory");
-            GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().enterState("guiMouseOnly");
+            GUIManager::showGUI("PickupInventory");
         }
         PickupInventory::getSingleton()->setVisible(!PickupInventory::getSingleton()->isVisible());
     }

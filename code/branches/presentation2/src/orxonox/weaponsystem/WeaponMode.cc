@@ -195,7 +195,7 @@ namespace orxonox
         this->bReloading_ = false;
     }
 
-    void WeaponMode::computeMuzzleParameters()
+    void WeaponMode::computeMuzzleParameters(const Vector3& target)
     {
         if (this->weapon_)
         {
@@ -203,12 +203,7 @@ namespace orxonox
 
             Pawn* pawn = this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn();
             Vector3 muzzleDirection;
-            if ( pawn->getTarget() )
-            {
-                muzzleDirection = pawn->getTarget()->getWorldPosition() - this->muzzlePosition_;
-            }
-            else
-                muzzleDirection = pawn->getAimPosition() - this->muzzlePosition_;
+            muzzleDirection = target - this->muzzlePosition_;
 //             COUT(0) << "muzzleDirection " << muzzleDirection << endl;
             this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
         }

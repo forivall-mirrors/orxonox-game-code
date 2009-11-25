@@ -108,7 +108,7 @@ namespace orxonox
             inline const Vector3& getMuzzleOffset() const
                 { return this->muzzleOffset_; }
 
-            void computeMuzzleParameters();
+            void computeMuzzleParameters(const Vector3& target);
             const Vector3& getMuzzlePosition() const
                 { return this->muzzlePosition_; }
             const Quaternion& getMuzzleOrientation() const

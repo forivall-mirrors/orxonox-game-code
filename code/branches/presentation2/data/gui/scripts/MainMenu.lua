@@ -49,7 +49,7 @@ function P.button_standalone_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.CommandExecutor:execute("startGame")
-        toggleGUI()
+        hideGUI(P.filename)
     end
 end
 
@@ -58,7 +58,7 @@ function P.button_server_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.CommandExecutor:execute("startServer")
-        toggleGUI()
+        hideGUI(P.filename)
     end
 end
 
@@ -67,7 +67,7 @@ function P.button_dedicated_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.CommandExecutor:execute("startDedicated")
-        toggleGUI()
+        hideGUI(P.filename)
     end
 end
 
@@ -76,7 +76,8 @@ function P.button_client_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.CommandExecutor:execute("startClient")
-        toggleGUI()
+        hideGUI(P.filename)
+
     end
 end
 
