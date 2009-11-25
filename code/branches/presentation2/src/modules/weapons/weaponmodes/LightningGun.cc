@@ -58,6 +58,7 @@ namespace orxonox
         LightningGunProjectile* projectile = new LightningGunProjectile(this);
         projectile->setMaterial("Flares/LightningBall_");
 
+        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getMuzzleDirection() * this->speed_);

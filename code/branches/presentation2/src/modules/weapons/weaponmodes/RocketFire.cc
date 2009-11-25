@@ -35,6 +35,7 @@
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -56,6 +57,7 @@ namespace orxonox
     {
         Rocket* rocket = new Rocket(this);
 
+        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getMuzzleOrientation());
         rocket->setPosition(this->getMuzzlePosition());
         rocket->setVelocity(this->getMuzzleDirection() * this->speed_);

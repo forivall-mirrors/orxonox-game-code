@@ -204,7 +204,6 @@ namespace orxonox
         {
             this->muzzlePosition_ = this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_;
 
-            Pawn* pawn = this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn();
             Vector3 muzzleDirection;
             muzzleDirection = target - this->muzzlePosition_;
 //             COUT(0) << "muzzleDirection " << muzzleDirection << endl;
