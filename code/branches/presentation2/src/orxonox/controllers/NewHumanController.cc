@@ -46,6 +46,8 @@
 namespace orxonox
 {
     SetConsoleCommand(NewHumanController, changeMode,          false).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand(NewHumanController, accelerate,          false).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand(NewHumanController, decelerate,          false).keybindMode(KeybindMode::OnPress);
 
     CreateUnloadableFactory(NewHumanController);
 
@@ -59,6 +61,10 @@ namespace orxonox
 
         overlaySize_ = 0.08;
         controlMode_ = 0;
+        acceleration_ = 0;
+
+        //currentPitch_ = 1;
+        //currentYaw_ = 1;
 
         if (GameMode::showsGraphics())
         {
@@ -97,6 +103,9 @@ namespace orxonox
             else
                 this->crossHairOverlay_->hide();
             // TODO: update aimPosition of Pawn
+
+            if ( this->acceleration_ > 0 )
+                HumanController::moveFrontBack(Vector2(clamp(this->acceleration_ + this->currentAcceleration_, 0.0f, 1.0f), 0));
         }
 
         HumanController::tick(dt);
@@ -229,6 +238,14 @@ namespace orxonox
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getOgreCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
     }
 
+    void NewHumanController::frontback(const Vector2& value)
+    {
+        this->currentAcceleration_ = value.x;
+
+        if (this->acceleration_ == 0)
+            HumanController::frontback(value);
+    }
+
     void NewHumanController::yaw(const Vector2& value)
     {
 //         SUPER(NewHumanController, yaw, value);
@@ -247,7 +264,8 @@ namespace orxonox
         this->currentPitch_ = value.x;
     }
 
-    void NewHumanController::changeMode() {
+    void NewHumanController::changeMode()
+    {
         if (NewHumanController::localController_s && NewHumanController::localController_s->controlMode_ == 0)
         {
             if (NewHumanController::localController_s->controllableEntity_ && !NewHumanController::localController_s->controllableEntity_->isInMouseLook() )
@@ -262,5 +280,20 @@ namespace orxonox
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
+    }
+
+    void NewHumanController::accelerate()
+    {
+        if ( NewHumanController::localController_s ) {
+            NewHumanController::localController_s->acceleration_ += 0.08;
+            NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ + 0.08f, 0.0f, 1.0f);
+        }
+    }
+
+    void NewHumanController::decelerate()
+    {
+        if ( NewHumanController::localController_s ) {
+            NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ - 0.05f, 0.0f, 1.0f);
+        }
     }
 }

@@ -94,7 +94,7 @@ namespace orxonox
         }
     }
 
-    void HumanController::moveFrontBack(const Vector2& value)
+    void HumanController::frontback(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->moveFrontBack(value);

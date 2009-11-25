@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "util/Math.h"
+
 #include "core/ClassTreeMask.h"
 #include "HumanController.h"
 
@@ -44,18 +46,22 @@ namespace orxonox
 
             virtual void tick(float dt);
 
+            virtual void frontback(const Vector2& value);
             virtual void yaw(const Vector2& value);
             virtual void pitch(const Vector2& value);
+
+            static void accelerate();
+            static void decelerate();
 
             virtual void doFire(unsigned int firemode);
 
             static void changeMode();
-            
+
             virtual void changedControllableEntity();
 
         protected:
             void updateTarget();
-            
+
             unsigned int                controlMode_;
             static NewHumanController*  localController_s;
         private:
@@ -63,6 +69,8 @@ namespace orxonox
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
             float                       overlaySize_;
+            float                       currentAcceleration_;
+            float                       acceleration_;
             ClassTreeMask               targetMask_;
     };
 }
