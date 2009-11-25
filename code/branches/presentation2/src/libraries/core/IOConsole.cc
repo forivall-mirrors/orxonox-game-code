@@ -577,8 +577,8 @@ namespace orxonox
         {
         case  1: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_INTENSITY); break;
         case  2: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY); break;
-        case  3: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_BLUE | FOREGROUND_INTENSITY); break;
-        case  4: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_GREEN); break;
+        case  3: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_INTENSITY); break;
+        case  4: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_INTENSITY); break;
         default: break;
         }
 
@@ -591,17 +591,20 @@ namespace orxonox
 
     void IOConsole::printInputLine()
     {
+        SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         this->moveCursorYAndHome(0);
         this->clearCurrentLine();
         this->cout_ << this->promptString_ << this->shell_->getInput();
         this->moveCursorYAndHome(0);
         this->moveCursor(this->promptString_.size() + this->buffer_->getCursorPosition(), 0);
+        SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
     }
 
     void IOConsole::printStatusLines()
     {
         if (this->willPrintStatusLines())
         {
+            SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_GREEN);
             this->bStatusPrinted_ = true;
             // Put cursor on home position, one line down the input line
             this->moveCursorYAndHome(1);
@@ -614,6 +617,7 @@ namespace orxonox
             // Restore cursor position
             this->moveCursorYAndHome(-1);
             this->moveCursor(this->promptString_.size() + this->buffer_->getCursorPosition(), 0);
+            SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
         }
         else
             this->bStatusPrinted_ = false;
