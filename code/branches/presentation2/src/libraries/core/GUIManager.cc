@@ -214,11 +214,6 @@ namespace orxonox
     */
     /*static*/ void GUIManager::showGUI(const std::string& name, bool hidePrevious, bool showCursor)
     {
-        std::pair<std::set<std::string>::iterator,bool> result = GUIManager::getInstance().showingGUIs_.insert(name);
-        if(GUIManager::getInstance().showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
-        {
-//             InputManager::getInstance().enterState("guiMouseOnly");
-        }
         GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ")");
     }
 
@@ -228,12 +223,6 @@ namespace orxonox
     */
     void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious, bool showCursor)
     {
-        std::pair<std::set<std::string>::iterator,bool> result = this->showingGUIs_.insert(name);
-        if(this->showingGUIs_.size() == 1 && result.second == true) //!< If it's the first GUI.
-        {
-//             this->executeCode("showCursor()");
-//             InputManager::getInstance().enterState("guiMouseOnly");
-        }
         this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
     }
 
@@ -245,13 +234,7 @@ namespace orxonox
     */
     /*static*/ void GUIManager::hideGUI(const std::string& name)
     {
-        GUIManager::getInstance().showingGUIs_.erase(name);
         GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
-        if(GUIManager::getInstance().showingGUIs_.size() == 0)
-        {
-//             GUIManager::getInstance().executeCode("hideCursor()");
-//             InputManager::getInstance().leaveState("guiMouseOnly");
-        }
     }
 
     void GUIManager::toggleIngameGUI()

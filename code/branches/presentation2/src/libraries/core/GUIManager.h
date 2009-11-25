@@ -87,8 +87,6 @@ namespace orxonox
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 
-        std::set<std::string> showingGUIs_; //!< Keeps track of all the GUIs that are currently showing.
-
         void executeCode(const std::string& str);
 
         // keyHandler functions
