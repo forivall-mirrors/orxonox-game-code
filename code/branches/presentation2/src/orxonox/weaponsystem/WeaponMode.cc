@@ -62,7 +62,10 @@ namespace orxonox
         this->reloadTimer_.stopTimer();
 
         this->damage_ = 0;
+        
         this->muzzleOffset_ = Vector3::ZERO;
+        this->muzzlePosition_ = Vector3::ZERO;
+        this->muzzleOrientation_ = Quaternion::ZERO;
     }
 
     WeaponMode::~WeaponMode()
