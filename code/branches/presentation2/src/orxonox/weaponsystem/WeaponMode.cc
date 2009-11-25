@@ -65,7 +65,7 @@ namespace orxonox
         
         this->muzzleOffset_ = Vector3::ZERO;
         this->muzzlePosition_ = Vector3::ZERO;
-        this->muzzleOrientation_ = Quaternion::ZERO;
+        this->muzzleOrientation_ = Quaternion::IDENTITY;
     }
 
     WeaponMode::~WeaponMode()
