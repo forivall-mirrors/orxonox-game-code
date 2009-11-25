@@ -134,10 +134,19 @@ namespace orxonox
             } // if
         }
 */
-        if( !NewHumanController::localController_s->getControllableEntity()->isInMouseLook() )
-            this->updateTarget();
 
-        HumanController::localController_s->getControllableEntity()->fire(firemode);
+        if (firemode == 1 && this->controlMode_ == 1) {
+            //unlocked steering, steer on right mouse click
+            //HumanController::yaw(new Vector2(this->currentYaw_, 0));
+            //HumanController::pitch(new Vector2(this->currentPitch_, 0));
+        }
+        else {
+            if( !NewHumanController::localController_s->getControllableEntity()->isInMouseLook() )
+                this->updateTarget();
+
+            HumanController::localController_s->getControllableEntity()->fire(firemode);
+        }
+
     }
 
     void NewHumanController::updateTarget()
@@ -189,18 +198,20 @@ namespace orxonox
                     if ( !isSightable )
                         continue;
                 }
-                
-                if( this->getControllableEntity()->getTarget() != wePtr )
+
+                if ( this->getControllableEntity() && this->getControllableEntity()->getTarget() != wePtr )
+                {
                     this->getControllableEntity()->setTarget(wePtr);
+                }
+
+                if( pawn )
+                {
+                    pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance );
+                }
 
                 itr->movable->getParentSceneNode()->showBoundingBox(true);
                 //std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
                 //return mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance; //or itr->movable->getParentSceneNode()->_getDerivedPosition()
-                if ( pawn )
-                {
-                    pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance ); // or itr->movable->getParentSceneNode()->_getDerivedPosition()
-                    pawn->setTarget( wePtr );
-                }
                 return;
             }
 
@@ -208,9 +219,10 @@ namespace orxonox
         if ( pawn )
         {
             pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 1200 );
-            if( this->getControllableEntity()->getTarget() != 0 )
-                pawn->setTarget( 0 );
         }
+
+        if( this->getControllableEntity() && this->getControllableEntity()->getTarget() != 0 )
+            this->getControllableEntity()->setTarget( 0 );
     
 
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 2000);
@@ -222,9 +234,8 @@ namespace orxonox
 //         SUPER(NewHumanController, yaw, value);
         if (this->controlMode_ == 0)
             HumanController::yaw(value);
-        
+
         this->currentYaw_ = value.x;
-        //std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
     }
 
     void NewHumanController::pitch(const Vector2& value)
@@ -233,8 +244,9 @@ namespace orxonox
         if (this->controlMode_ == 0)
             HumanController::pitch(value);
 
+std::cout << value << endl;
+
         this->currentPitch_ = value.x;
-        //std::cout << "Y: " << static_cast<float>(this->currentPitch_) << " X: " << static_cast<float>(this->currentYaw_) << endl;
     }
 
     void NewHumanController::changeMode() {
@@ -246,7 +258,7 @@ namespace orxonox
         else
             NewHumanController::localController_s->controlMode_ = 0;
     }
-    
+
     void NewHumanController::changedControllableEntity()
     {
         this->controlMode_ = 0;
