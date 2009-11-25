@@ -137,8 +137,8 @@ namespace orxonox
 
         if (firemode == 1 && this->controlMode_ == 1) {
             //unlocked steering, steer on right mouse click
-            //HumanController::yaw(new Vector2(this->currentYaw_, 0));
-            //HumanController::pitch(new Vector2(this->currentPitch_, 0));
+            HumanController::yaw(Vector2(this->currentYaw_, 0));
+            HumanController::pitch(Vector2(this->currentPitch_, 0));
         }
         else {
             if( !NewHumanController::localController_s->getControllableEntity()->isInMouseLook() )
@@ -243,8 +243,6 @@ namespace orxonox
 //         SUPER(NewHumanController, pitch, value);
         if (this->controlMode_ == 0)
             HumanController::pitch(value);
-
-std::cout << value << endl;
 
         this->currentPitch_ = value.x;
     }
