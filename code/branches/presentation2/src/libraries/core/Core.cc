@@ -145,8 +145,6 @@ namespace orxonox
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
-        // Remove us from the object lists again to avoid problems when destroying the Core
-        this->unregisterObject();
         this->setConfigValues();
 
         // create persistent io console
@@ -172,6 +170,8 @@ namespace orxonox
     */
     Core::~Core()
     {
+        // Remove us from the object lists again to avoid problems when destroying them
+        this->unregisterObject();
     }
 
     //! Function to collect the SetConfigValue-macro calls.

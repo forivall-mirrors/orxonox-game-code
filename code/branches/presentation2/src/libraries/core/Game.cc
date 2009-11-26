@@ -111,8 +111,6 @@ namespace orxonox
 
         // Do this after the Core creation!
         ClassIdentifier<Game>::getIdentifier("Game")->initialiseObject(this, "Game", true);
-        // Remove us from the object lists again to avoid problems when destroying the Game
-        this->unregisterObject();
         this->setConfigValues();
 
         // After the core has been created, we can safely instantiate the GameStates that don't require graphics
@@ -136,6 +134,8 @@ namespace orxonox
     */
     Game::~Game()
     {
+        // Remove us from the object lists again to avoid problems when destroying them
+        this->unregisterObject();
     }
 
     void Game::setConfigValues()
