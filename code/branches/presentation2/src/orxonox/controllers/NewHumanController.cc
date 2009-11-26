@@ -97,6 +97,7 @@ namespace orxonox
         {
             if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
             {
+                this->updateTarget();
                 this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
                 this->crossHairOverlay_->show();
             }
@@ -144,17 +145,14 @@ namespace orxonox
         }
 */
 
-        if (firemode == 1 && this->controlMode_ == 1) {
+        if (firemode == 1 && this->controlMode_ == 1)
+        {
             //unlocked steering, steer on right mouse click
             HumanController::yaw(Vector2(this->currentYaw_, 0));
             HumanController::pitch(Vector2(this->currentPitch_, 0));
         }
-        else {
-            if( !NewHumanController::localController_s->getControllableEntity()->isInMouseLook() )
-                this->updateTarget();
-
+        else
             HumanController::localController_s->getControllableEntity()->fire(firemode);
-        }
 
     }
 
@@ -284,7 +282,8 @@ namespace orxonox
 
     void NewHumanController::accelerate()
     {
-        if ( NewHumanController::localController_s ) {
+        if ( NewHumanController::localController_s )
+        {
             NewHumanController::localController_s->acceleration_ += 0.08;
             NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ + 0.08f, 0.0f, 1.0f);
         }
@@ -292,7 +291,8 @@ namespace orxonox
 
     void NewHumanController::decelerate()
     {
-        if ( NewHumanController::localController_s ) {
+        if ( NewHumanController::localController_s )
+        {
             NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ - 0.05f, 0.0f, 1.0f);
         }
     }
