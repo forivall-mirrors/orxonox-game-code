@@ -72,6 +72,7 @@ namespace orxonox
             float            nearClipDistance_;
             bool             bHasFocus_;
             bool             bDrag_;
+            bool             lastDtLagged_;
     };
 }
 

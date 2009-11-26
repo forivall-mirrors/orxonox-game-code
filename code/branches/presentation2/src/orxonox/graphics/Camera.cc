@@ -68,6 +68,7 @@ namespace orxonox
         this->bHasFocus_ = false;
         this->bDrag_ = false;
         this->nearClipDistance_ = 1;
+        this->lastDtLagged_ = false;
 
         this->setSyncMode(0x0);
 
@@ -110,15 +111,24 @@ namespace orxonox
 
         if (this->bDrag_)
         {
-            dt = dt / this->getTimeFactor();
             // this stuff here may need some adjustments
-            float coeff = std::min(1.0f, 15.0f * dt);
+            float coeff = 15.0f * dt / this->getTimeFactor();
+            // Only clamp if fps rate is actually falling. Occasional high dts should
+            // not be clamped to reducing lagging effects.
+            if (coeff > 1.0f)
+            {
+                if (this->lastDtLagged_)
+                    coeff = 1.0f;
+                else
+                    this->lastDtLagged_ = true;
+            }
+            else
+                this->lastDtLagged_ = false;
 
             Vector3 offset = this->getWorldPosition() - this->cameraNode_->_getDerivedPosition();
             this->cameraNode_->translate(coeff * offset);
 
             this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
-            //this->cameraNode_->setOrientation(this->getWorldOrientation());
         }
     }
 
