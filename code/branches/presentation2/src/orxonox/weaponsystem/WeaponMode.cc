@@ -149,7 +149,11 @@ namespace orxonox
     void WeaponMode::setMunitionName(const std::string& munitionname)
     {
         this->munitionname_ = munitionname;
-        this->munitiontype_ = ClassByString(this->munitionname_);
+        Identifier* identifier = ClassByString(this->munitionname_);
+        if (identifier)
+            this->munitiontype_ = identifier;
+        else
+            COUT(2) << "Warning: No munition class defined in WeaponMode " << this->getName() << std::endl;
         this->updateMunition();
     }
 
