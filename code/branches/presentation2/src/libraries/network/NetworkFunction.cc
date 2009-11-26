@@ -31,11 +31,7 @@
 
 namespace orxonox
 {
-  std::map<std::string, NetworkFunctionBase*> NetworkFunctionBase::nameMap_;
   std::map<uint32_t, bool> NetworkFunctionBase::isStaticMap_;
-  
-  std::map<NetworkFunctionPointer, NetworkFunctionStatic*> NetworkFunctionStatic::functorMap_;
-  std::map<uint32_t, NetworkFunctionStatic*> NetworkFunctionStatic::idMap_;
       
   std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
   std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
@@ -48,7 +44,7 @@ namespace orxonox
     this->networkID_ = networkID++;
     
     this->name_ = name;
-    nameMap_[name] = this;
+    NetworkFunctionBase::getNameMap()[name] = this;
   }
   NetworkFunctionBase::~NetworkFunctionBase()
   {
@@ -57,9 +53,17 @@ namespace orxonox
   
   void NetworkFunctionBase::destroyAllNetworkFunctions()
   {
+    std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
     std::map<std::string, NetworkFunctionBase*>::iterator it;
-    for( it=NetworkFunctionBase::nameMap_.begin(); it!=NetworkFunctionBase::nameMap_.end(); ++it )
+    for( it=map.begin(); it!=map.end(); ++it )
       it->second->destroy();
+  }
+  
+  
+  /*static*/ std::map<std::string, NetworkFunctionBase*>& NetworkFunctionBase::getNameMap()
+  {
+    static std::map<std::string, NetworkFunctionBase*> nameMap_;
+    return nameMap_;
   }
   
   
@@ -69,8 +73,8 @@ namespace orxonox
     RegisterObject(NetworkFunctionStatic);
     
     this->functor_ = functor;
-    functorMap_[p] = this;
-    idMap_[ this->getNetworkID() ] = this;
+    NetworkFunctionStatic::getFunctorMap()[p] = this;
+    NetworkFunctionStatic::getIdMap()[ this->getNetworkID() ] = this;
   }
   
   NetworkFunctionStatic::~NetworkFunctionStatic()
@@ -78,6 +82,17 @@ namespace orxonox
     delete this->functor_;
   }
   
+  /*static*/ std::map<NetworkFunctionPointer, NetworkFunctionStatic*>& NetworkFunctionStatic::getFunctorMap()
+  {
+    static std::map<NetworkFunctionPointer, NetworkFunctionStatic*> functorMap_;
+    return functorMap_;
+  }
+  
+  /*static*/ std::map<uint32_t, NetworkFunctionStatic*>& NetworkFunctionStatic::getIdMap()
+  {
+    static std::map<uint32_t, NetworkFunctionStatic*> idMap_;
+    return idMap_;
+  }
   
   
   NetworkMemberFunctionBase::NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p):
@@ -85,8 +100,8 @@ namespace orxonox
   {
     RegisterObject(NetworkMemberFunctionBase);
     
-    functorMap_[p] = this;
-    idMap_[ this->getNetworkID() ] = this;
+    this->functorMap_[p] = this;
+    this->idMap_[ this->getNetworkID() ] = this;
   }
   
   NetworkMemberFunctionBase::~NetworkMemberFunctionBase()

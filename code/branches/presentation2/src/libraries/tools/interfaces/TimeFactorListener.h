@@ -36,16 +36,16 @@ namespace orxonox
 {
     class _ToolsExport TimeFactorListener : virtual public OrxonoxClass
     {
-        friend class GSRoot;
-
         public:
             TimeFactorListener();
             virtual ~TimeFactorListener() {}
+            
+            static void setTimeFactor( float factor );
+            static void setTimeFactorInternal( float factor );
+            static inline float getTimeFactor(){ return TimeFactorListener::timefactor_s; }
 
         protected:
             virtual void changedTimeFactor(float factor_new, float factor_old) {}
-            inline float getTimeFactor() const
-                { return TimeFactorListener::timefactor_s; }
 
         private:
             static float timefactor_s;

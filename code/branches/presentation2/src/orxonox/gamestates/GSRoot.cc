@@ -44,7 +44,6 @@ namespace orxonox
 
     GSRoot::GSRoot(const GameStateInfo& info)
         : GameState(info)
-        , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
     {
@@ -72,7 +71,7 @@ namespace orxonox
     void GSRoot::activate()
     {
         // reset game speed to normal
-        this->timeFactor_ = 1.0f;
+        TimeFactorListener::setTimeFactor(1.0f);
 
         // time factor console command
         ConsoleCommand* command = createConsoleCommand(createFunctor(&GSRoot::setTimeFactor, this), "setTimeFactor");
@@ -101,7 +100,7 @@ namespace orxonox
             leveldt = 0.0f;
         }
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; )
-            (it++)->tick(leveldt * this->timeFactor_);
+            (it++)->tick(leveldt * TimeFactorListener::getTimeFactor());
         /*** HACK *** HACK ***/
     }
 
@@ -118,12 +117,7 @@ namespace orxonox
         {
             if (!this->bPaused_)
             {
-                TimeFactorListener::timefactor_s = factor;
-
-                for (ObjectList<TimeFactorListener>::iterator it = ObjectList<TimeFactorListener>::begin(); it != ObjectList<TimeFactorListener>::end(); ++it)
-                    it->changedTimeFactor(factor, this->timeFactor_);
-
-                this->timeFactor_ = factor;
+                TimeFactorListener::setTimeFactor(factor);
             }
             else
                 this->timeFactorPauseBackup_ = factor;
@@ -136,7 +130,7 @@ namespace orxonox
         {
             if (!this->bPaused_)
             {
-                this->timeFactorPauseBackup_ = this->timeFactor_;
+                this->timeFactorPauseBackup_ = TimeFactorListener::getTimeFactor();
                 this->setTimeFactor(0.0f);
                 this->bPaused_ = true;
             }
@@ -146,5 +140,10 @@ namespace orxonox
                 this->setTimeFactor(this->timeFactorPauseBackup_);
             }
         }
+    }
+
+    float GSRoot::getTimeFactor()
+    {
+        return TimeFactorListener::getTimeFactor();
     }
 }
