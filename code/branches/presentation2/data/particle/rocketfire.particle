@@ -1,6 +1,6 @@
 particle_system Orxonox/rocketfire
 {
-	quota	5000
+	quota	300
 	material	PE/explosion
 	particle_width	9
 	particle_height	5
@@ -23,15 +23,15 @@ particle_system Orxonox/rocketfire
 		colour	1 0.682759 1 1
 		colour_range_start	1 0.682759 1 1
 		colour_range_end	1 0.682759 1 1
-		direction	0 1 0
-		emission_rate	600
-		position	0 0 0
+		direction	0 0 1
+		emission_rate	1000
+		position	0 0 3
 		velocity	10
 		velocity_min	10
 		velocity_max	48
-		time_to_live	0.3
-		time_to_live_min	0.3
-		time_to_live_max	0.5
+		time_to_live	0.15
+		time_to_live_min	0.15
+		time_to_live_max	0.25
 		duration	0
 		duration_min	0
 		duration_max	0
@@ -40,7 +40,7 @@ particle_system Orxonox/rocketfire
 		repeat_delay_max	0
 		width	1.5
 		height	1.5
-		depth	0
+		depth	15
 	}
 
 	affector Scaler
