@@ -118,9 +118,6 @@ namespace orxonox
             bool bDestroy_;
             ControllableEntity* originalControllableEntity_;
             
-            Model* model_;
-            CameraPosition* camPosition_;
-            ConeCollisionShape* collisionShape_;
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
             float lifetime_;

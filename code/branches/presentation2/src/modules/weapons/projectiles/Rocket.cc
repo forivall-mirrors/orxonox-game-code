@@ -60,10 +60,10 @@ namespace orxonox
             this->lifetime_ = 100;
             this->bDestroy_ = false;
         
-            this->model_ = new Model(this);
-            this->model_->setMeshSource("rocket.mesh");
-            this->attach(this->model_);
-            ParticleSpawner* fire = new ParticleSpawner(this);
+            Model* model = new Model(this);
+            model->setMeshSource("rocket.mesh");
+            this->attach(model);
+            ParticleEmitter* fire = new ParticleEmitter(this);
             this->attach(fire);
             fire->setOrientation(this->getOrientation());
             fire->setSource("Orxonox/rocketfire");
@@ -72,20 +72,18 @@ namespace orxonox
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
-            this->collisionShape_ = new ConeCollisionShape(this);
-            this->collisionShape_->setRadius(3);
-            this->collisionShape_->setHeight(500);
-            this->attachCollisionShape(this->collisionShape_);
+            ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
+            collisionShape->setRadius(3);
+            collisionShape->setHeight(500);
+            this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
         }
         
-        this->camPosition_ = new CameraPosition(this);
-        this->camPosition_->setPosition(0,10,40);
-        this->camPosition_->setSyncMode(0x0);
-        this->camPosition_->setAllowMouseLook(true);
-        this->attach( this->camPosition_ );
-        this->addCameraPosition( this->camPosition_ );
+        CameraPosition* camPosition = new CameraPosition(this);
+        camPosition->setPosition(0,10,40);
+        camPosition->setAllowMouseLook(true);
+        this->addCameraPosition(camPosition);
     }
 
     /**
@@ -96,13 +94,8 @@ namespace orxonox
     {
         if(this->isInitialized())
         {
-            if (GameMode::isMaster() && this->player_.get())
-            {
-                this->model_->destroy();
-                this->collisionShape_->destroy();
+            if (GameMode::isMaster() && this->player_)
                 this->player_->stopTemporaryControl();
-            }
-            this->camPosition_->destroy();
         }
     }
 
