@@ -44,19 +44,19 @@ namespace orxonox
 
             virtual void tick(float dt);
 
-            static void moveFrontBack(const Vector2& value){ HumanController::localController_s->frontback(value); }
+            static void moveFrontBack(const Vector2& value);
             static void moveRightLeft(const Vector2& value);
             static void moveUpDown(const Vector2& value);
 
-            static void rotateYaw(const Vector2& value){ HumanController::localController_s->yaw(value); }
-            static void rotatePitch(const Vector2& value){ HumanController::localController_s->pitch(value); }
+            static void rotateYaw(const Vector2& value);
+            static void rotatePitch(const Vector2& value);
             static void rotateRoll(const Vector2& value);
 
             virtual void frontback(const Vector2& value);
             virtual void yaw(const Vector2& value);
             virtual void pitch(const Vector2& value);
 
-            static void fire(unsigned int firemode) { HumanController::localController_s->doFire(firemode); }
+            static void fire(unsigned int firemode);
             virtual void doFire(unsigned int firemode);
             static void reload();
 

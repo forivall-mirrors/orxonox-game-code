@@ -94,6 +94,12 @@ namespace orxonox
         }
     }
 
+    void HumanController::moveFrontBack(const Vector2& value)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->frontback(value);
+    }
+
     void HumanController::frontback(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
@@ -136,10 +142,28 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->rotatePitch(value);
     }
 
+    void HumanController::rotateYaw(const Vector2& value)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->yaw(value);
+    }
+
+    void HumanController::rotatePitch(const Vector2& value)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->pitch(value);
+    }
+
     void HumanController::rotateRoll(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->rotateRoll(value);
+    }
+
+    void HumanController::fire(unsigned int firemode)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->doFire(firemode);
     }
 
     void HumanController::doFire(unsigned int firemode)
