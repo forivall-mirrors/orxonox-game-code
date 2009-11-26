@@ -33,11 +33,12 @@
 
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/Tickable.h"
+#include "tools/interfaces/TimeFactorListener.h"
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public StaticEntity, public Tickable
+    class _OrxonoxExport Camera : public StaticEntity, public Tickable, public TimeFactorListener
     {
         friend class CameraManager;
 

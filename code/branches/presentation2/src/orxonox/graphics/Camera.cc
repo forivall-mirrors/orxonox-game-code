@@ -110,6 +110,7 @@ namespace orxonox
 
         if (this->bDrag_)
         {
+            dt = dt / this->getTimeFactor();
             // this stuff here may need some adjustments
             float coeff = std::min(1.0f, 15.0f * dt);
 
