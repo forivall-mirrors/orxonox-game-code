@@ -91,6 +91,15 @@ namespace orxonox
         minimumSleepTime_ = 0/*us*/;
 #endif
 
+        // reset statistics
+        this->statisticsStartTime_ = 0;
+        this->statisticsTickTimes_.clear();
+        this->periodTickTime_ = 0;
+        this->periodTime_ = 0;
+        this->avgFPS_ = 0.0f;
+        this->avgTickTime_ = 0.0f;
+        this->excessSleepTime_ = 0;
+
         // Create an empty root state
         this->declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
 
@@ -151,15 +160,6 @@ namespace orxonox
     {
         if (this->requestedStateNodes_.empty())
             COUT(0) << "Warning: Starting game without requesting GameState. This automatically terminates the program." << std::endl;
-
-        // reset statistics
-        this->statisticsStartTime_ = 0;
-        this->statisticsTickTimes_.clear();
-        this->periodTickTime_ = 0;
-        this->periodTime_ = 0;
-        this->avgFPS_ = 0.0f;
-        this->avgTickTime_ = 0.0f;
-        this->excessSleepTime_ = 0;
 
         // START GAME
         // first delta time should be about 0 seconds
