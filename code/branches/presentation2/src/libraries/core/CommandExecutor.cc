@@ -636,20 +636,25 @@ namespace orxonox
             std::string output = "";
             for (unsigned int i = 0; true; i++)
             {
+                char tempComparable = 0;
                 char temp = 0;
                 for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
                 {
-                    std::string argument = (*it).getComparable();
+                    std::string argumentComparable = (*it).getComparable();
+                    std::string argument = (*it).getString();
                     if (argument.size() > i)
                     {
                         if (it == list.begin())
                         {
+                            tempComparable = argumentComparable[i];
                             temp = argument[i];
                         }
                         else
                         {
-                            if (temp != argument[i])
+                            if (tempComparable != argumentComparable[i])
                                 return output;
+                            else if (temp != argument[i])
+                                temp = tempComparable;
                         }
                     }
                     else

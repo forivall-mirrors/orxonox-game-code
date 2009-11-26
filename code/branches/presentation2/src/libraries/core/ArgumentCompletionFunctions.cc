@@ -100,8 +100,8 @@ namespace orxonox
             ArgumentCompletionList classlist;
 
             for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapBegin(); it != Identifier::getStringIdentifierMapEnd(); ++it)
-                if ((*it).second->hasConfigValues())
-                    classlist.push_back(ArgumentCompletionListElement((*it).second->getName(), getLowercase((*it).first)));
+                if (it->second->hasConfigValues())
+                    classlist.push_back(ArgumentCompletionListElement(it->first, getLowercase(it->first)));
 
             return classlist;
         }
@@ -109,12 +109,12 @@ namespace orxonox
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalues)(const std::string& fragment, const std::string& classname)
         {
             ArgumentCompletionList configvalues;
-            std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getStringIdentifierMap().find(classname);
+            std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
 
-            if (identifier != Identifier::getStringIdentifierMapEnd() && (*identifier).second->hasConfigValues())
+            if (identifier != Identifier::getLowercaseStringIdentifierMapEnd() && identifier->second->hasConfigValues())
             {
-                for (std::map<std::string, ConfigValueContainer*>::const_iterator it = (*identifier).second->getConfigValueMapBegin(); it != (*identifier).second->getConfigValueMapEnd(); ++it)
-                    configvalues.push_back(ArgumentCompletionListElement((*it).second->getName(), getLowercase((*it).first)));
+                for (std::map<std::string, ConfigValueContainer*>::const_iterator it = identifier->second->getConfigValueMapBegin(); it != identifier->second->getConfigValueMapEnd(); ++it)
+                    configvalues.push_back(ArgumentCompletionListElement(it->first, getLowercase(it->first)));
             }
 
             return configvalues;
@@ -126,10 +126,10 @@ namespace orxonox
             std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
             if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
             {
-                std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
-                if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
+                std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
+                if (variable != identifier->second->getLowercaseConfigValueMapEnd())
                 {
-                    std::string valuestring = (*variable).second->toString();
+                    std::string valuestring = variable->second->toString();
                     oldvalue.push_back(ArgumentCompletionListElement(valuestring, getLowercase(valuestring), "Old value: " + valuestring));
                 }
             }
