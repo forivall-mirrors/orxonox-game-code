@@ -116,8 +116,6 @@ namespace orxonox
 
 namespace orxonox
 {
-    termios* IOConsole::originalTerminalSettings_s = 0;
-    
     namespace EscapeMode
     {
         enum Value
@@ -134,6 +132,7 @@ namespace orxonox
         , cout_(std::cout.rdbuf())
         , bStatusPrinted_(false)
         , promptString_("orxonox # ")
+        , originalTerminalSettings_(0)
     {
         this->setTerminalMode();
         this->shell_->registerListener(this);
@@ -368,10 +367,10 @@ namespace orxonox
     void IOConsole::setTerminalMode()
     {
         termios new_settings;
-        IOConsole::originalTerminalSettings_s = new termios();
+        this->originalTerminalSettings_ = new termios();
 
-        tcgetattr(0, this->originalTerminalSettings_s);
-        new_settings = *this->originalTerminalSettings_s;
+        tcgetattr(0, this->originalTerminalSettings_);
+        new_settings = *this->originalTerminalSettings_;
         new_settings.c_lflag &= ~(ICANON | ECHO);
         //new_settings.c_lflag |= (ISIG | IEXTEN);
         new_settings.c_cc[VTIME] = 0;
@@ -382,11 +381,11 @@ namespace orxonox
 
     /*static*/ void IOConsole::resetTerminalMode()
     {
-        if(IOConsole::originalTerminalSettings_s)
+        if(IOConsole::singletonPtr_s && IOConsole::singletonPtr_s->originalTerminalSettings_)
         {
-            tcsetattr(0, TCSANOW, IOConsole::originalTerminalSettings_s);
-            delete IOConsole::originalTerminalSettings_s;
-            IOConsole::originalTerminalSettings_s = 0;
+            tcsetattr(0, TCSANOW, IOConsole::singletonPtr_s->originalTerminalSettings_);
+            delete IOConsole::singletonPtr_s->originalTerminalSettings_;
+            IOConsole::singletonPtr_s->originalTerminalSettings_ = 0;
         }
     }
 
