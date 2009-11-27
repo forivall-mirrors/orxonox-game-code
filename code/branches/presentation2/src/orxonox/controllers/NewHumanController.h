@@ -69,7 +69,7 @@ namespace orxonox
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
             float                       overlaySize_;
-            float                       currentAcceleration_;
+            bool                        accelerating_;
             float                       acceleration_;
             ClassTreeMask               targetMask_;
     };

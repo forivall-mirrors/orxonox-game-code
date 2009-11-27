@@ -106,7 +106,19 @@ namespace orxonox
             // TODO: update aimPosition of Pawn
 
             if ( this->acceleration_ > 0 )
-                HumanController::moveFrontBack(Vector2(clamp(this->acceleration_ + this->currentAcceleration_, 0.0f, 1.0f), 0));
+            {
+/*
+if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
+    std::cout << this->controllableEntity_->getEngine()->getAccelerationFront() << endl;
+}
+*/
+                if ( this->accelerating_ )
+                    HumanController::moveFrontBack(Vector2(1, 0));
+                else
+                    HumanController::moveFrontBack(Vector2(this->acceleration_, 0)); 
+                this->accelerating_ = false;
+                //HumanController::moveFrontBack(Vector2(clamp(this->acceleration_ + this->currentAcceleration_, 0.0f, 1.0f), 0));
+            }
         }
 
         HumanController::tick(dt);
@@ -238,9 +250,9 @@ namespace orxonox
 
     void NewHumanController::frontback(const Vector2& value)
     {
-        this->currentAcceleration_ = value.x;
+        this->accelerating_ = true;
 
-        if (this->acceleration_ == 0)
+        //if (this->acceleration_ == 0)
             HumanController::frontback(value);
     }
 
@@ -284,8 +296,7 @@ namespace orxonox
     {
         if ( NewHumanController::localController_s )
         {
-            NewHumanController::localController_s->acceleration_ += 0.08;
-            NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ + 0.08f, 0.0f, 1.0f);
+            NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ + 0.2f, 0.00f, 1.0f);
         }
     }
 
@@ -293,7 +304,7 @@ namespace orxonox
     {
         if ( NewHumanController::localController_s )
         {
-            NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ - 0.05f, 0.0f, 1.0f);
+            NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ - 0.1f, 0.0f, 1.0f);
         }
     }
 }
