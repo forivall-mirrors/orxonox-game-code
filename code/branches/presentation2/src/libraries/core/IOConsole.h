@@ -59,7 +59,7 @@ namespace orxonox
 
     private:
         void setTerminalMode();
-        void resetTerminalMode();
+        static void resetTerminalMode();
         void getTerminalSize();
         bool willPrintStatusLines();
         int extractLogLevel(std::string* text);
@@ -92,7 +92,7 @@ namespace orxonox
         static const unsigned   minOutputLines_ = 3;
 
 #ifdef ORXONOX_PLATFORM_UNIX
-        termios*                originalTerminalSettings_;
+        static termios*         originalTerminalSettings_s;
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
         void moveCursor(int dx, int dy);
         void moveCursorYAndHome(int dy);

@@ -50,7 +50,7 @@ namespace orxonox
         if (!text->empty())
         {
             level = (*text)[0];
-            if (level == -1 || level >= 1 && level <= 6)
+            if (level == -1 || (level >= 1 && level <= 6))
             {
                 *text = text->substr(1);
                 if (level != -1)
@@ -116,6 +116,8 @@ namespace orxonox
 
 namespace orxonox
 {
+    termios* IOConsole::originalTerminalSettings_s = 0;
+    
     namespace EscapeMode
     {
         enum Value
@@ -132,7 +134,6 @@ namespace orxonox
         , cout_(std::cout.rdbuf())
         , bStatusPrinted_(false)
         , promptString_("orxonox # ")
-        , originalTerminalSettings_(new termios())
     {
         this->setTerminalMode();
         this->shell_->registerListener(this);
@@ -167,7 +168,6 @@ namespace orxonox
         this->cout_ << "\033[" << this->statusLineWidths_.size() << 'T';
 
         resetTerminalMode();
-        delete this->originalTerminalSettings_;
         this->shell_->destroy();
 
         // Restore this->cout_ redirection
@@ -368,19 +368,26 @@ namespace orxonox
     void IOConsole::setTerminalMode()
     {
         termios new_settings;
+        IOConsole::originalTerminalSettings_s = new termios();
 
-        tcgetattr(0, this->originalTerminalSettings_);
-        new_settings = *this->originalTerminalSettings_;
+        tcgetattr(0, this->originalTerminalSettings_s);
+        new_settings = *this->originalTerminalSettings_s;
         new_settings.c_lflag &= ~(ICANON | ECHO);
         //new_settings.c_lflag |= (ISIG | IEXTEN);
         new_settings.c_cc[VTIME] = 0;
         new_settings.c_cc[VMIN]  = 0;
         tcsetattr(0, TCSANOW, &new_settings);
+        atexit(&IOConsole::resetTerminalMode);
     }
 
-    void IOConsole::resetTerminalMode()
+    /*static*/ void IOConsole::resetTerminalMode()
     {
-        tcsetattr(0, TCSANOW, IOConsole::originalTerminalSettings_);
+        if(IOConsole::originalTerminalSettings_s)
+        {
+            tcsetattr(0, TCSANOW, IOConsole::originalTerminalSettings_s);
+            delete IOConsole::originalTerminalSettings_s;
+            IOConsole::originalTerminalSettings_s = 0;
+        }
     }
 
     void IOConsole::getTerminalSize()
