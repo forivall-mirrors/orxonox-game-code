@@ -306,7 +306,8 @@ namespace orxonox
             }
 
             uint32_t framesPerPeriod = this->statisticsTickTimes_.size();
-            this->avgFPS_ = static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
+            // Why plus 1? No idea, but otherwise the fps rate is always (from 10 to 200!) one frame too low
+            this->avgFPS_ = 1 + static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
             this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
             this->periodTime_ -= this->statisticsRefreshCycle_;
@@ -315,8 +316,7 @@ namespace orxonox
 
     void Game::updateFPSLimiter()
     {
-        // Why fpsLimit_ - 1? No idea, but otherwise the fps rate is always (from 10 to 200!) one frame too high
-        uint32_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / (fpsLimit_ - 1));
+        uint32_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / fpsLimit_);
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
         while (currentRealTime < nextTime - minimumSleepTime_)
         {
