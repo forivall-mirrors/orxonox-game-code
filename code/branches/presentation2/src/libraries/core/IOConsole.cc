@@ -44,24 +44,6 @@ namespace orxonox
 {
     IOConsole* IOConsole::singletonPtr_s = NULL;
 
-    //! Extracts the log level associated to a string (first character)
-    int IOConsole::extractLogLevel(std::string* text)
-    {
-        // Handle line colouring by inspecting the first letter
-        char level = 0;
-        if (!text->empty())
-        {
-            level = (*text)[0];
-            if (level == -1 || (level >= 1 && level <= 6))
-            {
-                *text = text->substr(1);
-                if (level != -1)
-                    return level;
-            }
-        }
-        return 0;
-    }
-
     // ###############################
     // ###  ShellListener methods  ###
     // ###############################
@@ -77,7 +59,7 @@ namespace orxonox
     //! Called if a command is about to be executed
     void IOConsole::executed()
     {
-        this->shell_->addOutputLine(this->promptString_ + this->shell_->getInput());
+        this->shell_->addOutputLine(this->promptString_ + this->shell_->getInput(), Shell::Command);
     }
 
     //! Called if the console gets closed
@@ -108,7 +90,7 @@ namespace orxonox
     }
 
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false, true))
+        : shell_(new Shell("IOConsole", false))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")
@@ -279,33 +261,30 @@ namespace orxonox
         // Process output written to std::cout
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutputLine(this->origCout_.str());
+            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
             this->origCout_.str("");
         }
     }
 
-    void IOConsole::printOutputLine(const std::string& text)
+    void IOConsole::printOutputLine(const std::string& text, Shell::LineType type)
     {
-        std::string output = text;
-        /*int level =*/ this->extractLogLevel(&output);
-
 /*
         // Colour line
-        switch (level)
+        switch (type)
         {
-        case -1: this->cout_ << "\033[37m"; break;
-        case  1: this->cout_ << "\033[91m"; break;
-        case  2: this->cout_ << "\033[31m"; break;
-        case  3: this->cout_ << "\033[34m"; break;
-        case  4: this->cout_ << "\033[36m"; break;
-        case  5: this->cout_ << "\033[35m"; break;
-        case  6: this->cout_ << "\033[37m"; break;
+        case Shell::None:    this->cout_ << "\033[37m"; break;
+        case Shell::Error:   this->cout_ << "\033[91m"; break;
+        case Shell::Warning: this->cout_ << "\033[31m"; break;
+        case Shell::Info:    this->cout_ << "\033[34m"; break;
+        case Shell::Debug:   this->cout_ << "\033[36m"; break;
+        case Shell::Verbose: this->cout_ << "\033[35m"; break;
+        case Shell::Ultra:   this->cout_ << "\033[37m"; break;
         default: break;
         }
 */
 
         // Print output line
-        this->cout_ << output;
+        this->cout_ << text;
 
         // Reset colour to white
 //        this->cout_ << "\033[37m";
@@ -418,7 +397,7 @@ namespace orxonox
         // Erase the line
         this->cout_ << "\033[K";
         // Reprint the last output line
-        this->printOutputLine(*(this->shell_->getNewestLineIterator()));
+        this->printOutputLine(this->shell_->getNewestLineIterator()->first);
         // Restore cursor
         this->cout_ << "\033[u";
         this->cout_.flush();
@@ -427,7 +406,7 @@ namespace orxonox
     //! Called if a new output-line was added
     void IOConsole::lineAdded()
     {
-        int newLines = this->shell_->getNewestLineIterator()->size() / this->terminalWidth_ + 1;
+        int newLines = this->shell_->getNewestLineIterator()->first.size() / this->terminalWidth_ + 1;
         // Create new lines by scrolling the screen
         this->cout_ << "\033[" << newLines << 'S';
         // Move cursor to the beginning of the new (last) output line
@@ -436,7 +415,7 @@ namespace orxonox
         this->cout_ << "\033[J";
         // Print the new output lines
         for (int i = 0; i < newLines; ++i)
-            this->printOutputLine(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
+            this->printOutputLine(this->shell_->getNewestLineIterator()->first.substr(i*this->terminalWidth_, this->terminalWidth_));
         // Move cursor down
         this->cout_ << "\033[1B\033[1G";
         // Print status and input lines
@@ -471,7 +450,7 @@ namespace orxonox
 {
     //! Redirects std::cout, creates the corresponding Shell and changes the terminal mode
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false, true))
+        : shell_(new Shell("IOConsole", false))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")
@@ -612,30 +591,31 @@ namespace orxonox
         // Process output written to std::cout
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutputLine(this->origCout_.str());
+            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
             this->origCout_.str("");
         }
     }
 
     //! Prints output text. Similar to writeText, but sets the colour according to the output level
-    void IOConsole::printOutputLine(const std::string& text, const COORD& pos)
+    void IOConsole::printOutputLine(const std::string& text, Shell::LineType type, const COORD& pos)
     {
-        std::string output = text;
-        int level = this->extractLogLevel(&output);
-
         // Colour line
         WORD colour = 0;
-        switch (level)
+        switch (type)
         {
-        case  1: colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED ; break;
-        case  2: colour = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_RED ; break;
-        case  3: colour = FOREGROUND_INTENSITY                                     ; break;
-        case  4: colour = FOREGROUND_INTENSITY                                     ; break;
-        default: colour =                        FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE ; break;
+        case Shell::Error:   colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED; break;
+        case Shell::Warning: colour = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_RED; break;
+        case Shell::Info:
+        case Shell::Debug:
+        case Shell::Verbose:
+        case Shell::Ultra:   colour = FOREGROUND_INTENSITY                                     ; break;
+        case Shell::Command: colour =                        FOREGROUND_GREEN                  | FOREGROUND_BLUE; break;
+        case Shell::Hint:    colour =                        FOREGROUND_GREEN | FOREGROUND_RED                  ; break;
+        default:             colour =                        FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE; break;
         }
 
         // Print output line
-        this->writeText(output, pos, colour);
+        this->writeText(text, pos, colour);
     }
 
     //! Prints all status lines with current content
@@ -782,25 +762,27 @@ namespace orxonox
     //! Called if only the last output-line has changed
     void IOConsole::onlyLastLineChanged()
     {
-        int newLineHeight = 1 + this->shell_->getNewestLineIterator()->size() / this->terminalWidth_;
+        int newLineHeight = 1 + this->shell_->getNewestLineIterator()->first.size() / this->terminalWidth_;
         // Compute the number of new lines needed
         int newLines = newLineHeight - this->lastOutputLineHeight_;
         this->lastOutputLineHeight_ = newLineHeight;
         // Scroll console if necessary
         if (newLines > 0) // newLines < 0 is assumed impossible
             this->createNewOutputLines(newLines);
-        this->printOutputLine(*(this->shell_->getNewestLineIterator()), makeCOORD(0, this->inputLineRow_ - newLineHeight));
+        Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
+        this->printOutputLine(it->first, it->second, makeCOORD(0, this->inputLineRow_ - newLineHeight));
     }
 
     //! Called if a new output line was added
     void IOConsole::lineAdded()
     {
+        Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
         // Scroll console
-        this->lastOutputLineHeight_ = 1 + this->shell_->getNewestLineIterator()->size() / this->terminalWidth_;
+        this->lastOutputLineHeight_ = 1 + it->first.size() / this->terminalWidth_;
         this->createNewOutputLines(this->lastOutputLineHeight_);
         // Write the text
         COORD pos = {0, this->inputLineRow_ - this->lastOutputLineHeight_};
-        this->printOutputLine(*(this->shell_->getNewestLineIterator()), pos);
+        this->printOutputLine(it->first, it->second, pos);
     }
 }
 

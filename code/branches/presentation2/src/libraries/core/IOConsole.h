@@ -86,7 +86,7 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_UNIX
         bool willPrintStatusLines();
         void printInputLine();
-        void printOutputLine(const std::string& line);
+        void printOutputLine(const std::string& line, Shell::LineType type);
         static void resetTerminalMode();
 
         bool                    bPrintStatusLine_;
@@ -101,7 +101,7 @@ namespace orxonox
         void moveCursor(int dx, int dy);
         void writeText(const std::string& text, const COORD& pos, WORD attributes = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
         void createNewOutputLines(int lines);
-        void printOutputLine(const std::string& line, const COORD& pos);
+        void printOutputLine(const std::string& line, Shell::LineType type, const COORD& pos);
 
         static inline COORD makeCOORD(int x, int y)
         {

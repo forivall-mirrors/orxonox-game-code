@@ -67,7 +67,7 @@ namespace orxonox
         @brief Constructor: Creates and initializes the InGameConsole.
     */
     InGameConsole::InGameConsole()
-        : shell_(new Shell("InGameConsole", true, true))
+        : shell_(new Shell("InGameConsole", true))
         , consoleOverlay_(0)
         , consoleOverlayContainer_(0)
         , consoleOverlayNoise_(0)
@@ -267,7 +267,7 @@ namespace orxonox
     */
     void InGameConsole::linesChanged()
     {
-        std::list<std::string>::const_iterator it = this->shell_->getNewestLineIterator();
+        Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
         int max = 0;
         for (int i = 1; i < LINES; ++i)
         {
@@ -281,12 +281,12 @@ namespace orxonox
         }
 
         for (int i = LINES - 1; i > max; --i)
-            this->print("", i, true);
+            this->print("", Shell::None, i, true);
 
         for (int i = max; i >= 1; --i)
         {
             --it;
-            this->print(*it, i, true);
+            this->print(it->first, it->second, i, true);
         }
     }
 
@@ -296,7 +296,7 @@ namespace orxonox
     void InGameConsole::onlyLastLineChanged()
     {
         if (LINES > 1)
-            this->print(*this->shell_->getNewestLineIterator(), 1);
+            this->print(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second, 1);
     }
 
     /**
@@ -315,7 +315,7 @@ namespace orxonox
     void InGameConsole::inputChanged()
     {
         if (LINES > 0)
-            this->print(this->shell_->getInput(), 0);
+            this->print(this->shell_->getInput(), Shell::Input, 0);
 
         if (this->shell_->getInput() == "" || this->shell_->getInput().size() == 0)
             this->inputWindowStart_ = 0;
@@ -339,7 +339,7 @@ namespace orxonox
     */
     void InGameConsole::executed()
     {
-        this->shell_->addOutputLine(this->shell_->getInput());
+        this->shell_->addOutputLine(this->shell_->getInput(), Shell::Command);
     }
 
     /**
@@ -455,20 +455,12 @@ namespace orxonox
         @brief Prints string to bottom line.
         @param s String to be printed
     */
-    void InGameConsole::print(const std::string& text, int index, bool alwaysShift)
+    void InGameConsole::print(const std::string& text, Shell::LineType type, int index, bool alwaysShift)
     {
-        char level = 0;
-        if (text.size() > 0)
-            level = text[0];
-
         std::string output = text;
-
-        if (level >= -1 && level <= 5)
-            output.erase(0, 1);
-
         if (LINES > index)
         {
-            this->colourLine(level, index);
+            this->colourLine(type, index);
 
             if (index > 0)
             {
@@ -481,7 +473,7 @@ namespace orxonox
                     output.insert(0, 1, ' ');
                     if (linesUsed > numLinesShifted_ || alwaysShift)
                         this->shiftLines();
-                    this->colourLine(level, index);
+                    this->colourLine(type, index);
                 }
                 this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output));
                 this->displayedText_ = output;
@@ -558,43 +550,41 @@ namespace orxonox
         }
     }
 
-    void InGameConsole::colourLine(int colourcode, int index)
+    void InGameConsole::colourLine(Shell::LineType type, int index)
     {
-        if (colourcode == -1)
+        ColourValue colourTop, colourBottom;
+        switch (type)
         {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.90, 0.90, 0.90, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 1.00, 1.00, 1.00));
+        case Shell::Error:   colourTop = ColourValue(0.95, 0.25, 0.25, 1.00);
+                          colourBottom = ColourValue(1.00, 0.50, 0.50, 1.00); break;
+
+        case Shell::Warning: colourTop = ColourValue(0.95, 0.50, 0.20, 1.00);
+                          colourBottom = ColourValue(1.00, 0.70, 0.50, 1.00); break;
+
+        case Shell::Info:    colourTop = ColourValue(0.50, 0.50, 0.95, 1.00);
+                          colourBottom = ColourValue(0.80, 0.80, 1.00, 1.00); break;
+
+        case Shell::Debug:   colourTop = ColourValue(0.65, 0.48, 0.44, 1.00);
+                          colourBottom = ColourValue(1.00, 0.90, 0.90, 1.00); break;
+
+        case Shell::Verbose: colourTop = ColourValue(0.40, 0.20, 0.40, 1.00);
+                          colourBottom = ColourValue(0.80, 0.60, 0.80, 1.00); break;
+
+        case Shell::Ultra:   colourTop = ColourValue(0.21, 0.69, 0.21, 1.00);
+                          colourBottom = ColourValue(0.80, 1.00, 0.80, 1.00); break;
+
+        case Shell::Command: colourTop = ColourValue(0.80, 0.80, 0.80, 1.00);
+                          colourBottom = ColourValue(0.90, 0.90, 0.90, 0.90); break;
+
+        case Shell::Hint:    colourTop = ColourValue(0.80, 0.80, 0.80, 1.00);
+                          colourBottom = ColourValue(0.90, 0.90, 0.90, 1.00); break;
+
+        default:             colourTop = ColourValue(0.90, 0.90, 0.90, 1.00);
+                          colourBottom = ColourValue(1.00, 1.00, 1.00, 1.00); break;
         }
-        else if (colourcode == 1)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.95, 0.25, 0.25, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.50, 0.50, 1.00));
-        }
-        else if (colourcode == 2)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.95, 0.50, 0.20, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.70, 0.50, 1.00));
-        }
-        else if (colourcode == 3)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.50, 0.50, 0.95, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.80, 1.00, 1.00));
-        }
-        else if (colourcode == 4)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.65, 0.48, 0.44, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.90, 0.90, 1.00));
-        }
-        else if (colourcode == 5)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.40, 0.20, 0.40, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.60, 0.80, 1.00));
-        }
-        else
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.21, 0.69, 0.21, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 1.00, 0.80, 1.00));
-        }
+
+        this->consoleOverlayTextAreas_[index]->setColourTop   (colourTop);
+        this->consoleOverlayTextAreas_[index]->setColourBottom(colourBottom);
     }
 
     // ################################

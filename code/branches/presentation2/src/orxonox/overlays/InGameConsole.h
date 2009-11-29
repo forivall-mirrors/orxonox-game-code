@@ -71,9 +71,9 @@ namespace orxonox
         void exit();
 
         void shiftLines();
-        void colourLine(int colourcode, int index);
+        void colourLine(Shell::LineType type, int index);
         void setCursorPosition(unsigned int pos);
-        void print(const std::string& text, int index, bool alwaysShift = false);
+        void print(const std::string& text, Shell::LineType type, int index, bool alwaysShift = false);
 
         void windowResized(unsigned int newWidth, unsigned int newHeight);
 

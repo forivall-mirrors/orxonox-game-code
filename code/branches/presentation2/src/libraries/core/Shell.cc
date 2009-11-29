@@ -44,11 +44,10 @@ namespace orxonox
     SetConsoleCommandShortcut(OutputHandler, info);
     SetConsoleCommandShortcut(OutputHandler, debug);
 
-    Shell::Shell(const std::string& consoleName, bool bScrollable, bool bPrependOutputLevel)
+    Shell::Shell(const std::string& consoleName, bool bScrollable)
         : OutputListener(consoleName)
         , inputBuffer_(new InputBuffer())
         , consoleName_(consoleName)
-        , bPrependOutputLevel_(bPrependOutputLevel)
         , bScrollable_(bScrollable)
     {
         RegisterRootObject(Shell);
@@ -190,14 +189,13 @@ namespace orxonox
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::addOutputLine(const std::string& line, int level)
+    void Shell::addOutputLine(const std::string& line, LineType type)
     {
         // Make sure we really only have one line per line (no new lines!)
         SubString lines(line, '\n');
         for (unsigned i = 0; i < lines.size(); ++i)
         {
-            if (level <= this->softDebugLevel_)
-                this->outputLines_.push_front(lines[i]);
+            this->outputLines_.push_front(std::make_pair(lines[i], type));
             this->updateListeners<&ShellListener::lineAdded>();
         }
     }
@@ -213,7 +211,7 @@ namespace orxonox
         this->updateListeners<&ShellListener::linesChanged>();
     }
 
-    std::list<std::string>::const_iterator Shell::getNewestLineIterator() const
+    Shell::LineList::const_iterator Shell::getNewestLineIterator() const
     {
         if (this->scrollPosition_)
             return this->scrollIterator_;
@@ -221,7 +219,7 @@ namespace orxonox
             return this->outputLines_.begin();
     }
 
-    std::list<std::string>::const_iterator Shell::getEndIterator() const
+    Shell::LineList::const_iterator Shell::getEndIterator() const
     {
         return this->outputLines_.end();
     }
@@ -263,15 +261,7 @@ namespace orxonox
 
             if (this->bFinishedLastLine_)
             {
-                if (this->bPrependOutputLevel_)
-                {
-                    if (level == 0)
-                        output.insert(0, 1, static_cast<char>(-1));
-                    else
-                        output.insert(0, 1, static_cast<char>(level));
-                }
-
-                this->outputLines_.push_front(output);
+                this->outputLines_.push_front(std::make_pair(output, static_cast<LineType>(level)));
 
                 if (this->scrollPosition_)
                     this->scrollPosition_++;
@@ -287,7 +277,7 @@ namespace orxonox
             }
             else
             {
-                (*this->outputLines_.begin()) += output;
+                this->outputLines_.front().first += output;
                 this->bFinishedLastLine_ = newline;
                 this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
@@ -324,7 +314,7 @@ namespace orxonox
         this->updateListeners<&ShellListener::executed>();
 
         if (!CommandExecutor::execute(this->inputBuffer_->get()))
-            this->addOutputLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", 1);
+            this->addOutputLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", Error);
 
         this->clearInput();
     }
@@ -332,7 +322,7 @@ namespace orxonox
     void Shell::hintAndComplete()
     {
         this->inputBuffer_->set(CommandExecutor::complete(this->inputBuffer_->get()));
-        this->addOutputLine(CommandExecutor::hint(this->inputBuffer_->get()), -1);
+        this->addOutputLine(CommandExecutor::hint(this->inputBuffer_->get()), Hint);
 
         this->inputChanged();
     }

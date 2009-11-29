@@ -64,7 +64,21 @@ namespace orxonox
     class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener
     {
         public:
-            Shell(const std::string& consoleName, bool bScrollable, bool bPrependOutputLevel = false);
+            enum LineType
+            {
+                None    = OutputLevel::None,
+                Warning = OutputLevel::Warning,
+                Error   = OutputLevel::Error,
+                Info    = OutputLevel::Info,
+                Debug   = OutputLevel::Debug,
+                Verbose = OutputLevel::Verbose,
+                Ultra   = OutputLevel::Ultra,
+                Input,
+                Command,
+                Hint
+            };
+
+            Shell(const std::string& consoleName, bool bScrollable);
             ~Shell();
 
             void setConfigValues();
@@ -84,10 +98,11 @@ namespace orxonox
             inline std::string getInput() const
                 { return this->inputBuffer_->get(); }
 
-            std::list<std::string>::const_iterator getNewestLineIterator() const;
-            std::list<std::string>::const_iterator getEndIterator() const;
+            typedef std::list<std::pair<std::string, LineType> > LineList;
+            LineList::const_iterator getNewestLineIterator() const;
+            LineList::const_iterator getEndIterator() const;
 
-            void addOutputLine(const std::string& line, int level = 0);
+            void addOutputLine(const std::string& line, LineType type = None);
             void clearOutput();
 
             inline unsigned int getNumLines() const
@@ -138,15 +153,14 @@ namespace orxonox
             InputBuffer*              inputBuffer_;
             std::stringstream         outputBuffer_;
             bool                      bFinishedLastLine_;
-            std::list<std::string>    outputLines_;
-            std::list<std::string>::const_iterator scrollIterator_;
+            LineList                  outputLines_;
+            LineList::const_iterator  scrollIterator_;
             unsigned int              scrollPosition_;
             unsigned int              historyPosition_;
             ConfigFileType            commandHistoryConfigFileType_;
 
             std::string               promptPrefix_;
             const std::string         consoleName_;
-            const bool                bPrependOutputLevel_;
             const bool                bScrollable_;
 
             // Config values
