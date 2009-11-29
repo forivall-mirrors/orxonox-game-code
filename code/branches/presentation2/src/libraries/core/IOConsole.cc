@@ -397,7 +397,7 @@ namespace orxonox
         // Erase the line
         this->cout_ << "\033[K";
         // Reprint the last output line
-        this->printOutputLine(this->shell_->getNewestLineIterator()->first);
+        this->printOutputLine(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second);
         // Restore cursor
         this->cout_ << "\033[u";
         this->cout_.flush();
@@ -415,7 +415,10 @@ namespace orxonox
         this->cout_ << "\033[J";
         // Print the new output lines
         for (int i = 0; i < newLines; ++i)
-            this->printOutputLine(this->shell_->getNewestLineIterator()->first.substr(i*this->terminalWidth_, this->terminalWidth_));
+        {
+            Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
+            this->printOutputLine(it->first.substr(i*this->terminalWidth_, this->terminalWidth_), it->second);
+        }
         // Move cursor down
         this->cout_ << "\033[1B\033[1G";
         // Print status and input lines
