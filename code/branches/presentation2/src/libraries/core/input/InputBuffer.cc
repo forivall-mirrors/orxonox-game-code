@@ -40,6 +40,7 @@ namespace orxonox
 
         this->buffer_ = "";
         this->cursor_ = 0;
+        this->maxLength_ = 1024;
         this->allowedChars_ = "abcdefghijklmnopqrstuvwxyz \
                                ABCDEFGHIJKLMNOPQRSTUVWXYZ \
                                äëïöüÄËÏÖÜáâàéêèíîìóôòúûù \
@@ -58,6 +59,7 @@ namespace orxonox
     {
         RegisterRootObject(InputBuffer);
 
+        this->maxLength_ = 1024;
         this->allowedChars_ = allowedChars;
         this->buffer_ = "";
         this->cursor_ = 0;
@@ -92,6 +94,13 @@ namespace orxonox
         }
     }
 
+    void InputBuffer::setMaxLength(unsigned int length)
+    {
+        this->maxLength_ = length;
+        if (this->buffer_.size() > length)
+            this->buffer_.resize(length);
+    }
+
     void InputBuffer::set(const std::string& input, bool update)
     {
         this->clear(false);
@@ -116,6 +125,8 @@ namespace orxonox
     {
         if (this->charIsAllowed(input))
         {
+            if (this->buffer_.size() >= this->maxLength_)
+                return;
             this->buffer_.insert(this->cursor_, 1, input);
             ++this->cursor_;
         }

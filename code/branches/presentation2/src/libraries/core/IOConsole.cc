@@ -32,6 +32,7 @@
 #include <iomanip>
 #include <iostream>
 
+#include "util/Clock.h"
 #include "util/Math.h"
 #include "core/Game.h"
 #include "core/input/InputBuffer.h"
@@ -60,13 +61,6 @@ namespace orxonox
         return 0;
     }
 
-    inline bool IOConsole::willPrintStatusLines()
-    {
-        return !this->statusLineWidths_.empty()
-             && this->terminalWidth_  >= this->statusLineMaxWidth_
-             && this->terminalHeight_ >= (this->minOutputLines_ + this->statusLineWidths_.size());
-    }
-
     // ###############################
     // ###  ShellListener methods  ###
     // ###############################
@@ -77,20 +71,6 @@ namespace orxonox
         // Method only gets called upon start to draw all the lines
         // or when scrolling. But scrolling is disabled and the output
         // is already in std::cout when we start the IOConsole
-    }
-
-    //! Called if the text in the input-line has changed
-    void IOConsole::inputChanged()
-    {
-        this->printInputLine();
-        this->cout_.flush();
-    }
-
-    //! Called if the position of the cursor in the input-line has changed
-    void IOConsole::cursorChanged()
-    {
-        this->printInputLine();
-        this->cout_.flush();
     }
 
     //! Called if a command is about to be executed
@@ -130,8 +110,8 @@ namespace orxonox
         : shell_(new Shell("IOConsole", false, true))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
-        , bStatusPrinted_(false)
         , promptString_("orxonox # ")
+        , bStatusPrinted_(false)
         , originalTerminalSettings_(0)
     {
         this->setTerminalMode();
@@ -303,7 +283,7 @@ namespace orxonox
         }
     }
 
-    void IOConsole::printLogText(const std::string& text)
+    void IOConsole::printOutputLine(const std::string& text)
     {
         std::string output = text;
         /*int level =*/ this->extractLogLevel(&output);
@@ -418,6 +398,13 @@ namespace orxonox
         this->terminalHeight_ = 24;
     }
 
+    inline bool IOConsole::willPrintStatusLines()
+    {
+        return !this->statusLineWidths_.empty()
+             && this->terminalWidth_  >= this->statusLineMaxWidth_
+             && this->terminalHeight_ >= (this->minOutputLines_ + this->statusLineWidths_.size());
+    }
+
     // ###############################
     // ###  ShellListener methods  ###
     // ###############################
@@ -430,7 +417,7 @@ namespace orxonox
         // Erase the line
         this->cout_ << "\033[K";
         // Reprint the last output line
-        this->printLogText(*(this->shell_->getNewestLineIterator()));
+        this->printOutputLine(*(this->shell_->getNewestLineIterator()));
         // Restore cursor
         this->cout_ << "\033[u";
         this->cout_.flush();
@@ -448,12 +435,26 @@ namespace orxonox
         this->cout_ << "\033[J";
         // Print the new output lines
         for (int i = 0; i < newLines; ++i)
-            this->printLogText(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
+            this->printOutputLine(this->shell_->getNewestLineIterator()->substr(i*this->terminalWidth_, this->terminalWidth_));
         // Move cursor down
         this->cout_ << "\033[1B\033[1G";
         // Print status and input lines
         this->printInputLine();
         this->printStatusLines();
+        this->cout_.flush();
+    }
+
+    //! Called if the text in the input-line has changed
+    void IOConsole::inputChanged()
+    {
+        this->printInputLine();
+        this->cout_.flush();
+    }
+
+    //! Called if the position of the cursor in the input-line has changed
+    void IOConsole::cursorChanged()
+    {
+        this->printInputLine();
         this->cout_.flush();
     }
 }
@@ -471,46 +472,71 @@ namespace orxonox
         : shell_(new Shell("IOConsole", false, true))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
-        , bStatusPrinted_(false)
         , promptString_("orxonox # ")
+        , statusLines_(1)
+        , inputLineHeight_(1)
+        , lastOutputLineHeight_(1)
     {
-        this->setTerminalMode();
-        this->shell_->registerListener(this);
-
-        // Manually set the widths of the individual status lines
-        this->statusLineWidths_.push_back(29);
-        this->statusLineMaxWidth_ = 29;
-
-        this->getTerminalSize();
-        this->lastTerminalWidth_ = this->terminalWidth_;
-        this->lastTerminalHeight_ = this->terminalHeight_;
-
         // Disable standard this->cout_ logging
         OutputHandler::getInstance().disableCout();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
 
-        // Make sure we make way for the status lines
+        this->setTerminalMode();
+        CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
+        GetConsoleScreenBufferInfo(this->stdOutHandle_, &screenBufferInfo);
+        this->terminalWidth_  = screenBufferInfo.dwSize.X;
+        this->terminalHeight_ = screenBufferInfo.dwSize.Y;
+        this->lastTerminalWidth_  = this->terminalWidth_;
+        this->lastTerminalHeight_ = this->terminalHeight_;
+        // Determines where we are in respect to output already written with std::cout
+        this->inputLineRow_ = screenBufferInfo.dwCursorPosition.Y;
+
+        // Cursor already at the end of the screen buffer?
+        // (assuming the current input line height is 1)
+        if (this->inputLineRow_ >= (int)this->terminalHeight_ - (int)this->statusLines_)
+            this->moveCursor(0, -this->inputLineRow_ + this->terminalHeight_ - this->statusLines_ - 1);
+
+        // Prevent input line from overflowing
+        int maxInputLength = (this->terminalHeight_ - this->statusLines_) * this->terminalWidth_ - 1 - this->promptString_.size();
+        // Consider that the echo of a command might include the command plus some other characters (assumed max 80)
+        // Also put a minimum so the config file parser is not overwhelmed with the command history
+        this->shell_->getInputBuffer()->setMaxLength(std::min(8192, (maxInputLength - 80) / 2));
+
+        // Print input and status line and position cursor
+        this->lastRefreshTime_ = Game::getInstance().getGameClock().getRealMicroseconds();
         this->update(Game::getInstance().getGameClock());
+        this->inputChanged();
+        this->cursorChanged();
+
+        this->shell_->registerListener(this);
     }
 
     IOConsole::~IOConsole()
     {
+        this->shell_->unregisterListener(this);
         // Empty all buffers
         this->update(Game::getInstance().getGameClock());
 
-        resetTerminalMode();
-        this->shell_->destroy();
+        // Erase input and status lines
+        COORD pos = {0, this->inputLineRow_};
+        this->writeText(std::string((this->inputLineHeight_ + this->statusLines_) * this->terminalWidth_, ' '), pos);
+        // Move cursor to the beginning of the line
+        SetConsoleCursorPosition(stdOutHandle_, pos);
 
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard this->cout_ logging again
         OutputHandler::getInstance().enableCout();
+
+        resetTerminalMode();
+        this->shell_->destroy();
     }
 
     void IOConsole::update(const Clock& time)
     {
+        // Process input
         while (true)
         {
             DWORD count;
@@ -538,8 +564,8 @@ namespace orxonox
                 switch (inrec.Event.KeyEvent.wVirtualKeyCode)
                 {
                 case VK_BACK:   this->buffer_->buttonPressed(KeyEvent(KeyCode::Back,     asciiChar, modifiersOut)); break;
-                case VK_TAB:    this->buffer_->buttonPressed(KeyEvent(KeyCode::Back,     asciiChar, modifiersOut)); break;
-                case VK_RETURN: this->buffer_->buttonPressed(KeyEvent(KeyCode::Back,     asciiChar, modifiersOut)); break;
+                case VK_TAB:    this->buffer_->buttonPressed(KeyEvent(KeyCode::Tab,      asciiChar, modifiersOut)); break;
+                case VK_RETURN: this->buffer_->buttonPressed(KeyEvent(KeyCode::Return,   asciiChar, modifiersOut)); break;
                 case VK_PAUSE:  this->buffer_->buttonPressed(KeyEvent(KeyCode::Pause,    asciiChar, modifiersOut)); break;
                 case VK_ESCAPE: this->buffer_->buttonPressed(KeyEvent(KeyCode::Escape,   asciiChar, modifiersOut)); break;
                 case VK_SPACE:  this->buffer_->buttonPressed(KeyEvent(KeyCode::Space,    asciiChar, modifiersOut)); break;
@@ -558,11 +584,22 @@ namespace orxonox
             }
         }
 
-        // Get info about cursor and terminal size
-        this->getTerminalSize();
+        // TODO: Respect screen buffer size changes
+        // The user can manually adjust the screen buffer size on Windows
+        // And we don't want to screw the console because of that
+        //this->lastTerminalWidth_ = this->terminalWidth_;
+        //this->lastTerminalHeight_ = this->terminalHeight_;
+        //this->getTerminalSize(); // Also sets this->inputLineRow_ according to the cursor position
+        // Is there still enough space below the cursor for the status line(s)?
+        //if (this->inputLineRow_ >= this->terminalHeight_ - this->statusLines_)
+        //    this->moveCursor(0, -this->inputLineRow_ + this->terminalHeight_ - this->statusLines_ - 1);
 
-        // Refresh status line
-        this->printStatusLines();
+        // Refresh status line 5 times per second
+        if (time.getMicroseconds() > this->lastRefreshTime_ + 1000000)
+        {
+            this->printStatusLines();
+            this->lastRefreshTime_ = time.getMicroseconds();
+        }
 
         // Process output written to std::cout
         if (!this->origCout_.str().empty())
@@ -570,63 +607,38 @@ namespace orxonox
             this->shell_->addOutputLine(this->origCout_.str());
             this->origCout_.str("");
         }
-        this->cout_.flush();
     }
 
-    void IOConsole::printLogText(const std::string& text)
+    void IOConsole::printOutputLine(const std::string& text, const COORD& pos)
     {
         std::string output = text;
         int level = this->extractLogLevel(&output);
 
         // Colour line
+        WORD colour = 0;
         switch (level)
         {
-        case  1: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_INTENSITY); break;
-        case  2: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY); break;
-        case  3: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_INTENSITY); break;
-        case  4: SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_INTENSITY); break;
-        default: break;
+        case  1: colour = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+        case  2: colour = FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+        case  3: colour = FOREGROUND_INTENSITY; break;
+        case  4: colour = FOREGROUND_INTENSITY; break;
+        default: colour = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN; break;
         }
 
         // Print output line
-        this->cout_ << output;
-
-        // Reset colour to white
-        SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-    }
-
-    void IOConsole::printInputLine()
-    {
-        SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-        this->moveCursorYAndHome(0);
-        this->clearCurrentLine();
-        this->cout_ << this->promptString_ << this->shell_->getInput();
-        this->moveCursorYAndHome(0);
-        this->moveCursor(this->promptString_.size() + this->buffer_->getCursorPosition(), 0);
-        SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+        this->writeText(output, pos, colour);
     }
 
     void IOConsole::printStatusLines()
     {
-        if (this->willPrintStatusLines())
-        {
-            SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_GREEN);
-            this->bStatusPrinted_ = true;
-            // Put cursor on home position, one line down the input line
-            this->moveCursorYAndHome(1);
-            this->cout_ << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
-            this->cout_ <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
-            // Clear rest of the line
-            CONSOLE_SCREEN_BUFFER_INFO info;
-            GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
-            this->cout_ << std::string(info.dwSize.X - info.dwCursorPosition.X - 1, ' ');
-            // Restore cursor position
-            this->moveCursorYAndHome(-1);
-            this->moveCursor(this->promptString_.size() + this->buffer_->getCursorPosition(), 0);
-            SetConsoleTextAttribute(stdOutHandle_, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-        }
-        else
-            this->bStatusPrinted_ = false;
+        // Prepare text to be written
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgFPS() << " fps, ";
+        oss <<               std::setprecision(2) << std::setw(5) << Game::getInstance().getAvgTickTime() << " ms tick time";
+        // Clear rest of the line by inserting spaces
+        oss << std::string(this->terminalWidth_ - oss.str().size(), ' ');
+        COORD pos = {0, this->inputLineRow_ + this->inputLineHeight_};
+        this->writeText(oss.str(), pos, FOREGROUND_GREEN);
     }
 
     void IOConsole::setTerminalMode()
@@ -649,8 +661,7 @@ namespace orxonox
         SetConsoleMode(this->stdInHandle_, this->originalTerminalSettings_);
     }
 
-    //! Moves the console cursor around and inserts new lines when reaching the end.
-    //! Moving out on the right is just clamped though.
+    //! Moves the console cursor around and clamps its position to fit into the screen buffer
     void IOConsole::moveCursor(int dx, int dy)
     {
         CONSOLE_SCREEN_BUFFER_INFO info;
@@ -658,73 +669,129 @@ namespace orxonox
         SHORT& x = info.dwCursorPosition.X;
         x = clamp(x + dx, 0, info.dwSize.X - 1);
         SHORT& y = info.dwCursorPosition.Y;
-        if (y + dy >= info.dwSize.Y)
-        {
-            // Insert new lines
-            this->cout_ << std::string(y + dy - info.dwSize.Y + 1, 'n');
-            y = info.dwSize.Y - 1;
-        }
-        else if (y < 0)
-            y = 0;
-        else
-            y += dy;
+        y = clamp(y + dy, 0, info.dwSize.Y - 1);
         SetConsoleCursorPosition(this->stdOutHandle_, info.dwCursorPosition);
-    }
-
-    void IOConsole::moveCursorYAndHome(int dy)
-    {
-        CONSOLE_SCREEN_BUFFER_INFO info;
-        GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
-        this->moveCursor(-info.dwCursorPosition.X, dy);
-    }
-
-    void IOConsole::clearCurrentLine()
-    {
-        CONSOLE_SCREEN_BUFFER_INFO info;
-        GetConsoleScreenBufferInfo(this->stdOutHandle_, &info);
-        info.dwCursorPosition.X = 0;
-        DWORD count;
-        FillConsoleOutputCharacter(this->stdOutHandle_, ' ', info.dwSize.X, info.dwCursorPosition, &count);;
     }
 
     void IOConsole::getTerminalSize()
     {
         CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
         GetConsoleScreenBufferInfo(this->stdOutHandle_, &screenBufferInfo);
-        // dwSize is the maximum size. If you resize you will simply see scroll bars.
-        // And if you want to write outside these boundaries, you can't.
         this->terminalWidth_  = screenBufferInfo.dwSize.X;
         this->terminalHeight_ = screenBufferInfo.dwSize.Y;
+    }
+
+    void IOConsole::writeText(const std::string& text, const COORD& coord, WORD attributes)
+    {
+        DWORD count;
+        WriteConsoleOutputCharacter(stdOutHandle_, text.c_str(), text.size(), coord, &count);
+        WORD* attributeBuf = new WORD[text.size()];
+        for (unsigned int i = 0; i < text.size(); ++i)
+            attributeBuf[i] = attributes;
+        WriteConsoleOutputAttribute(stdOutHandle_, attributeBuf, text.size(), coord, &count);
+    }
+
+    void IOConsole::createNewOutputLines(unsigned int lines)
+    {
+        CHAR_INFO fillChar = {' ', FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
+        // Check whether we're already at the bottom
+        if (this->inputLineRow_ + lines > this->terminalHeight_ - this->statusLines_ - this->inputLineHeight_)
+        {
+            // Scroll output up
+            SMALL_RECT oldRect = {0, lines, this->terminalWidth_ - 1, this->inputLineRow_ - 1};
+            COORD newPos = {0, 0};
+            ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, newPos, &fillChar);
+        }
+        else
+        {
+            // Scroll input and status lines down
+            SMALL_RECT oldRect = {0, this->inputLineRow_, this->terminalWidth_ - 1, this->inputLineRow_ + this->statusLines_ + this->inputLineHeight_ - 1};
+            this->inputLineRow_ += lines;
+            COORD newPos = {0, this->inputLineRow_};
+            ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, newPos, &fillChar);
+            // Move cursor down to the new bottom so the user can see the status lines
+            COORD pos = {0, this->inputLineRow_ + this->inputLineHeight_ - 1 + this->statusLines_};
+            SetConsoleCursorPosition(stdOutHandle_, pos);
+            // Get cursor back to the right position
+            this->cursorChanged();
+        }
     }
 
     // ###############################
     // ###  ShellListener methods  ###
     // ###############################
 
+    //! Called if the text in the input-line has changed
+    void IOConsole::inputChanged()
+    {
+        int inputLineLength = this->promptString_.size() + this->shell_->getInput().size();
+        int lineHeight = 1 + inputLineLength / this->terminalWidth_;
+        int newLines = lineHeight - this->inputLineHeight_;
+        if (newLines > 0)
+        {
+            // Abuse this function to scroll the console
+            this->createNewOutputLines(newLines);
+            this->inputLineRow_ -= newLines; // Undo
+        }
+        else if (newLines < 0)
+        {
+            // Scroll status lines up
+            SMALL_RECT oldRect = {0, this->inputLineRow_ + this->inputLineHeight_, this->terminalWidth_ - 1, this->inputLineRow_ + this->inputLineHeight_ + this->statusLines_};
+            COORD newPos = {0, this->inputLineRow_ + this->inputLineHeight_ + newLines};
+            CHAR_INFO fillChar = {' ', FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
+            ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, newPos, &fillChar);
+            // Clear potential leftovers
+            if (-newLines - this->statusLines_ > 0)
+            {
+                COORD pos = {0, this->inputLineRow_ + lineHeight + this->statusLines_};
+                this->writeText(std::string((-newLines - this->statusLines_) * this->terminalWidth_, ' '), pos);
+            }
+        }
+        this->inputLineHeight_ = lineHeight;
+
+        // Print the whole line, including spaces to erase leftovers
+        COORD pos = {0, this->inputLineRow_};
+        WORD colour = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
+        this->writeText(this->promptString_ + this->shell_->getInput() + std::string(this->terminalWidth_ - inputLineLength % this->terminalWidth_, ' '), pos, colour);
+        // If necessary, move cursor
+        if (newLines != 0)
+            this->cursorChanged();
+    }
+
+    //! Called if the position of the cursor in the input-line has changed
+    void IOConsole::cursorChanged()
+    {
+        COORD pos;
+        unsigned int total = this->promptString_.size() + this->buffer_->getCursorPosition();
+        // Compensate for cursor further to the right than the terminal width
+        pos.X = total % this->terminalWidth_;
+        pos.Y = this->inputLineRow_ + total / this->terminalWidth_;
+        SetConsoleCursorPosition(stdOutHandle_, pos);
+    }
+
     //! Called if only the last output-line has changed
     void IOConsole::onlyLastLineChanged()
     {
-        this->moveCursorYAndHome(-1);
-        this->clearCurrentLine();
-        this->printLogText(*(this->shell_->getNewestLineIterator()));
-        this->moveCursorYAndHome(1);
-        this->moveCursor(this->promptString_.size() + this->shell_->getInput().size(), 0);
-        this->cout_.flush();
+        int lineHeight = 1 + this->shell_->getNewestLineIterator()->size() / this->terminalWidth_;
+        int newLines = lineHeight - this->lastOutputLineHeight_;
+        this->lastOutputLineHeight_ = lineHeight;
+        if (newLines > 0)
+            this->createNewOutputLines(newLines);
+        // Write text (assuming it is longer than the previous text)
+        assert(newLines >= 0);
+        COORD pos = {0, this->inputLineRow_ - lineHeight};
+        this->printOutputLine(*(this->shell_->getNewestLineIterator()), pos);
     }
 
     //! Called if a new output-line was added
     void IOConsole::lineAdded()
     {
-        // Move cursor to the beginning of the new (last) output line
-        this->moveCursorYAndHome(0);
-        // Print the new output lines
-        this->printLogText(*(this->shell_->getNewestLineIterator()));
-        // Move cursor down
-        this->moveCursorYAndHome(1);
-        // Print status and input lines
-        this->printInputLine();
-        this->printStatusLines();
-        this->cout_.flush();
+        this->lastOutputLineHeight_ = 1 + this->shell_->getNewestLineIterator()->size() / this->terminalWidth_;
+        if (this->lastOutputLineHeight_ > 0)
+            this->createNewOutputLines(this->lastOutputLineHeight_);
+        // Write the text
+        COORD pos = {0, this->inputLineRow_ - this->lastOutputLineHeight_};
+        this->printOutputLine(*(this->shell_->getNewestLineIterator()), pos);
     }
 }
 

@@ -42,6 +42,7 @@
 struct termios;
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
 #endif
 
@@ -59,13 +60,9 @@ namespace orxonox
 
     private:
         void setTerminalMode();
-        static void resetTerminalMode();
         void getTerminalSize();
-        bool willPrintStatusLines();
         int extractLogLevel(std::string* text);
 
-        void printLogText(const std::string& line);
-        void printInputLine();
         void printStatusLines();
 
         // Methods from ShellListener
@@ -84,23 +81,36 @@ namespace orxonox
         unsigned int            terminalHeight_;
         unsigned int            lastTerminalWidth_;
         unsigned int            lastTerminalHeight_;
+        const std::string       promptString_;
+
+#ifdef ORXONOX_PLATFORM_UNIX
+        bool willPrintStatusLines();
+        void printOutputLine(const std::string& line);
+        void printInputLine();
+        static void resetTerminalMode();
+
         bool                    bPrintStatusLine_;
         bool                    bStatusPrinted_;
         std::vector<unsigned>   statusLineWidths_;
         unsigned int            statusLineMaxWidth_;
-        const std::string       promptString_;
         static const unsigned   minOutputLines_ = 3;
+        termios*                originalTerminalSettings_;
 
-#ifdef ORXONOX_PLATFORM_UNIX
-        termios*         originalTerminalSettings_;
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
+        void resetTerminalMode();
         void moveCursor(int dx, int dy);
-        void moveCursorYAndHome(int dy);
-        void clearCurrentLine();
+        void writeText(const std::string& text, const COORD& pos, WORD attributes = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+        void createNewOutputLines(unsigned int lines);
+        void printOutputLine(const std::string& line, const COORD& pos);
 
         DWORD                   originalTerminalSettings_;
         HANDLE                  stdInHandle_;
         HANDLE                  stdOutHandle_;
+        int                     inputLineRow_;
+        unsigned int            inputLineHeight_;
+        const unsigned int      statusLines_;
+        unsigned int            lastOutputLineHeight_;
+        uint64_t                lastRefreshTime_;
 #endif
 
         static IOConsole* singletonPtr_s;
