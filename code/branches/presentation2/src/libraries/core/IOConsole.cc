@@ -403,7 +403,7 @@ namespace orxonox
     {
         return !this->statusLineWidths_.empty()
              && this->terminalWidth_  >= this->statusLineMaxWidth_
-             && this->terminalHeight_ >= (this->minOutputLines_ + this->statusLineWidths_.size());
+             && this->terminalHeight_ >= this->minOutputLines_ + (int)this->statusLineWidths_.size();
     }
 
     // ###############################

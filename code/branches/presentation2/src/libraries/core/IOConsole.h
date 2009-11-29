@@ -93,7 +93,7 @@ namespace orxonox
         bool                    bStatusPrinted_;
         std::vector<int>        statusLineWidths_;
         int                     statusLineMaxWidth_;
-        static const            minOutputLines_ = 3;
+        static const int        minOutputLines_ = 3;
         termios*                originalTerminalSettings_;
 
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
