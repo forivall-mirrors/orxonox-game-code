@@ -160,6 +160,12 @@ function hideGUI(filename)
     end
 end
 
+function hideAllGUIs()
+    while nrOfActiveSheets ~= 0 do
+        hideGUI(activeSheets[nrOfActiveSheets])
+    end
+end
+
 function keyESC()
     if nrOfActiveSheets > 0 then
         orxonox.CommandExecutor:execute("hideGUI "..activeSheets[nrOfActiveSheets])

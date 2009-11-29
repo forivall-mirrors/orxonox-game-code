@@ -19,12 +19,12 @@ function P:init()
     local index = 0
     local level = ""
     while true do
-      level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
-      if level == "" then
-        break
-      end
-      table.insert(levelList, level)
-      index = index + 1
+        level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
+        if level == "" then
+            break
+        end
+        table.insert(levelList, level)
+        index = index + 1
     end
     table.sort(levelList)
     for k,v in pairs(levelList) do
@@ -37,18 +37,18 @@ function P:init()
     end
     local multiplayerMode = "startClient"
     if multiplayerMode == "startClient" then
-	window = winMgr:getWindow("orxonox/MultiplayerJoinButton")
-	button = tolua.cast(window,"CEGUI::RadioButton")
+        window = winMgr:getWindow("orxonox/MultiplayerJoinButton")
+        button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
     end
     if multiplayerMode == "startServer" then
-	window = winMgr:getWindow("orxonox/MultiplayerHostButton")
-	button = tolua.cast(window,"CEGUI::RadioButton")
+        window = winMgr:getWindow("orxonox/MultiplayerHostButton")
+        button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
     end
     if multiplayerMode == "startDedicated" then
-	window = winMgr:getWindow("orxonox/MultiplayerDedicatedButton")
-	button = tolua.cast(window,"CEGUI::RadioButton")
+        window = winMgr:getWindow("orxonox/MultiplayerDedicatedButton")
+        button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
     end
 end
@@ -69,8 +69,13 @@ function P.MultiplayerDedicatedButton_clicked(e)
 end
 
 function P.MultiplayerStartButton_clicked(e)
-    orxonox.CommandExecutor:execute(multiplayerMode)
-    debug("event: start")
+    local choice = winMgr:getWindow("orxonox/MultiplayerLevelListbox"):getFirstSelectedItem()
+    if choice then
+        orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
+        orxonox.CommandExecutor:execute(multiplayerMode)
+        hideAllGUIs()
+        debug("event: start")
+    end
 end
 
 function P.MultiplayerBackButton_clicked(e)

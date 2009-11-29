@@ -38,8 +38,13 @@ function P:init()
 end
 
 function P.SingleplayerStartButton_clicked(e)
-    -- start game
-    debug("event: start")
+    choice = winMgr:getWindow("orxonox/SingleplayerLevelListbox"):getFirstSelectedItem()
+    if choice then
+        orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
+        orxonox.CommandExecutor:execute("startGame")
+        hideAllGUIs()
+        debug("event: start")
+    end
 end
 
 function P.SingleplayerBackButton_clicked(e)
