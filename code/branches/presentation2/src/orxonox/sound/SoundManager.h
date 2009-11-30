@@ -33,12 +33,25 @@
 
 #include <list>
 #include <string>
+#include <map>
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
 namespace orxonox
 {
+    
+    //! Enum for the sound type.
+    namespace SoundType
+    {
+        enum Value
+        {
+            none,
+            ambient,
+            effects
+        };
+    }
+    
     /**
      * The SoundManager class manages the OpenAL device, context and listener
      * position. It is a singleton.
@@ -66,13 +79,11 @@ namespace orxonox
         void unregisterAmbientSound(AmbientSound* oldAmbient);
         void pauseAmbientSound(AmbientSound* ambient);
         
-        void setAmbientVolume(float vol); // tolua_export
-        void setEffectsVolume(float vol); // tolua_export
-        void setVolume(float vol); // tolua_export
+        void setVolume(float vol, SoundType::Value type); // tolua_export
+        float getVolume(SoundType::Value type); // tolua_export
         
-        float getAmbientVolume(void); // tolua_export
-        float getEffectsVolume(void); // tolua_export
-        float getVolume(void); // tolua_export
+        void toggleMute(SoundType::Value type); // tolua_export
+        bool getMute(SoundType::Value type); // tolua_export
 
     private:
         void processCrossFading(float dt);
@@ -80,13 +91,17 @@ namespace orxonox
         void fadeOut(AmbientSound* sound);
 
         void checkFadeStepValidity();
-        void checkVolumeValidity();
-        void checkAmbientVolumeValidity();
-        void checkEffectsVolumeValidity();
+        bool checkVolumeValidity(SoundType::Value type);
+        void checkSoundVolumeValidity(void);
+        void checkAmbientVolumeValidity(void);
+        void checkEffectsVolumeValidity(void);
         
-        void updateAmbientVolume(void);
-        void updateEffectsVolume(void);
-        void updateVolume(void);
+        float checkVolumeRange(float vol);
+        
+        void updateVolume(SoundType::Value type);
+        
+        void setVolumeInternal(float vol, SoundType::Value type);
+        float getVolumeInternal(SoundType::Value type);
 
         ALCdevice* device_;
         ALCcontext* context_;
@@ -98,9 +113,10 @@ namespace orxonox
         std::list<AmbientSound*> fadeInList_;
         std::list<AmbientSound*> fadeOutList_;
         
+        float soundVolume_;
         float ambientVolume_;
         float effectsVolume_;
-        float volume_;
+        std::map<SoundType::Value, bool> mute_;
         
         static SoundManager* singletonPtr_s;
     }; // tolua_export

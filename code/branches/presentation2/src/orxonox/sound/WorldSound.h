@@ -50,6 +50,8 @@ namespace orxonox
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedActivity();
+        
+        virtual float getVolumeGain();
 
         virtual void tick(float dt);
 

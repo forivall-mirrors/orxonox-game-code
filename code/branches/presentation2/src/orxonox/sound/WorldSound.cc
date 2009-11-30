@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
+#include "SoundManager.h"
 
 namespace orxonox
 {
@@ -93,5 +94,10 @@ namespace orxonox
             this->play();
         else 
             this->stop();
+    }
+    
+    float WorldSound::getVolumeGain()
+    {
+        return SoundManager::getInstance().getVolume(SoundType::effects);
     }
 }

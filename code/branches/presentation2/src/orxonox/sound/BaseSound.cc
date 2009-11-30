@@ -37,6 +37,7 @@
 #include "core/GameMode.h"
 #include "core/Resource.h"
 #include "core/XMLPort.h"
+#include "SoundManager.h"
 
 namespace orxonox
 {
@@ -53,6 +54,7 @@ namespace orxonox
             alGenSources(1, &this->audioSource_);
             assert(this->audioSource_ != 0);
         }
+        
     }
 
     BaseSound::~BaseSound()
@@ -107,27 +109,19 @@ namespace orxonox
             vol = vol < 0 ? 0 : vol;
         }
         this->volume_ = vol;
-        if (alIsSource(this->audioSource_))
-            alSourcef(this->audioSource_, AL_GAIN, this->getEffectiveVolume());
+        
+        this->updateVolume();
     }
     
-    void BaseSound::setVolumeGain(float gain)
+    float BaseSound::getVolumeGain()
     {
-        COUT(1) << "blubb: " << gain << std::endl;
-        if (gain > 1 || gain < 0)
-        {
-            COUT(2) << "Sound warning: volume gain out of range, cropping value." << std::endl;
-            gain = gain > 1 ? 1 : gain;
-            gain = gain < 0 ? 0 : gain;
-        }
-        this->volumeGain_ = gain;
-        if (alIsSource(this->audioSource_))
-            alSourcef(this->audioSource_, AL_GAIN, this->getEffectiveVolume());
+        return SoundManager::getInstance().getVolume(SoundType::none);
     }
     
-    float BaseSound::getEffectiveVolume(void)
+    void BaseSound::updateVolume(void)
     {
-        return this->volume_*this->volumeGain_;
+        if (alIsSource(this->audioSource_))
+            alSourcef(this->audioSource_, AL_GAIN, this->volume_*this->getVolumeGain());
     }
 
     void BaseSound::setLooping(bool val)
@@ -199,7 +193,7 @@ namespace orxonox
         }
 
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
-        alSourcef (this->audioSource_, AL_GAIN, this->getEffectiveVolume());
+        this->updateVolume();
         alSourcei (this->audioSource_, AL_LOOPING, (this->bLoop_ ? AL_TRUE : AL_FALSE));
         if (this->isPlaying() || this->isPaused())
             alSourcePlay(this->audioSource_);

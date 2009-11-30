@@ -100,6 +100,11 @@ namespace orxonox
             SoundManager::getInstance().pauseAmbientSound(this);
         }
     }
+    
+    float AmbientSound::getVolumeGain()
+    {
+        return SoundManager::getInstance().getVolume(SoundType::ambient);
+    }
 
     void AmbientSound::doPause()
     {

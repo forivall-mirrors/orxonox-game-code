@@ -57,6 +57,8 @@ namespace orxonox
         virtual void play();
         virtual void stop();
         virtual void pause();
+        
+        virtual float getVolumeGain();
 
         virtual void setAmbientSource(const std::string& source);
         const std::string& getAmbientSource() const { return this->ambientSource_; }

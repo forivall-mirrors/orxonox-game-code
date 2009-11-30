@@ -22,12 +22,14 @@ function P.AudioSoundScrollbar_clicked(e)
 end
 
 function P.AudioMuteMusicCheckbox_clicked(e)
-    -- mute music
+    soundMgr = orxonox.SoundManager:getInstance()
+    soundMgr:toggleMute(orxonox.SoundType.ambient)
     debug("event: mute music")
 end
 
 function P.AudioMuteSoundCheckbox_clicked(e)
-    -- mute sound
+    soundMgr = orxonox.SoundManager:getInstance()
+    soundMgr:toggleMute(orxonox.SoundType.none)
     debug("event: mute sound")
 end
 

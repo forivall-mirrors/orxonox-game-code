@@ -64,11 +64,8 @@ namespace orxonox
         void setVolume(float vol);
         float getVolume() const { return this->volume_; }
         
-        void setVolumeGain(float gain);
-        inline float getVolumeGain()
-            { return this->volumeGain_; }
-            
-        float getEffectiveVolume(void);
+        virtual float getVolumeGain();
+        void updateVolume(void);
 
         bool getLooping() const   { return this->bLoop_; }
         void setLooping(bool val);
@@ -91,7 +88,6 @@ namespace orxonox
 
         std::string     source_;
         float           volume_;
-        float           volumeGain_;
         bool            bLoop_;
         State           state_;
         DataStreamPtr   dataStream_;
