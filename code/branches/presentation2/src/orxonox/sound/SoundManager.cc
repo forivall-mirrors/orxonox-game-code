@@ -101,7 +101,7 @@ namespace orxonox
         alutExit();
     }
 
-    void SoundManager::update(const Clock& time)
+    void SoundManager::preUpdate(const Clock& time)
     {
         this->processCrossFading(time.getDeltaTime());
     }

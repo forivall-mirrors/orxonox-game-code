@@ -54,13 +54,21 @@ namespace orxonox
             static void addManager(ScopedSingletonManager* manager);
 
             template<ScopeID::Value scope>
-            static void update(const Clock& time)
+            static void preUpdate(const Clock& time)
             {
                 assert(Scope<scope>::isActive());
                 for (ManagerMultiMap::iterator it = getManagersByScope().lower_bound(scope); it != getManagersByScope().upper_bound(scope); ++it)
-                    it->second->update(time);
+                    it->second->preUpdate(time);
             }
-            virtual void update(const Clock& time) = 0;
+            virtual void preUpdate(const Clock& time) = 0;
+            template<ScopeID::Value scope>
+            static void postUpdate(const Clock& time)
+            {
+                assert(Scope<scope>::isActive());
+                for (ManagerMultiMap::iterator it = getManagersByScope().lower_bound(scope); it != getManagersByScope().upper_bound(scope); ++it)
+                    it->second->postUpdate(time);
+            }
+            virtual void postUpdate(const Clock& time) = 0;
 
             static std::map<std::string, ScopedSingletonManager*>& getManagers();
             typedef std::multimap<ScopeID::Value, ScopedSingletonManager*> ManagerMultiMap;
@@ -112,11 +120,19 @@ namespace orxonox
         }
 
         //! Called every frame by the ScopedSingletonManager
-        void update(const Clock& time)
+        void preUpdate(const Clock& time)
         {
             assert(Scope<scope>::isActive());
             // assuming T inherits Singleton<T>
-            singletonPtr_->updateSingleton(time);
+            singletonPtr_->preUpdateSingleton(time);
+        }
+
+        //! Called every frame by the ScopedSingletonManager
+        void postUpdate(const Clock& time)
+        {
+            assert(Scope<scope>::isActive());
+            // assuming T inherits Singleton<T>
+            singletonPtr_->postUpdateSingleton(time);
         }
 
     private:
@@ -169,12 +185,21 @@ namespace orxonox
         }
 
         //! Called every frame by the ScopedSingletonManager
-        void update(const Clock& time)
+        void preUpdate(const Clock& time)
         {
             assert(Scope<scope>::isActive());
             // assuming T inherits Singleton<T>
             if (singletonPtr_ != NULL)
-                singletonPtr_->updateSingleton(time);
+                singletonPtr_->preUpdateSingleton(time);
+        }
+
+        //! Called every frame by the ScopedSingletonManager
+        void postUpdate(const Clock& time)
+        {
+            assert(Scope<scope>::isActive());
+            // assuming T inherits Singleton<T>
+            if (singletonPtr_ != NULL)
+                singletonPtr_->postUpdateSingleton(time);
         }
 
     private:

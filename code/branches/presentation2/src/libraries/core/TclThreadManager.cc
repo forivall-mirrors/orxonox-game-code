@@ -121,7 +121,7 @@ namespace orxonox
     /**
         @brief The "main loop" of the TclThreadManager. Creates new threads if needed and handles queries and queued commands for the main interpreter.
     */
-    void TclThreadManager::update(const Clock& time)
+    void TclThreadManager::preUpdate(const Clock& time)
     {
         // Get the bundle of the main interpreter (0)
         TclInterpreterBundle* bundle = this->getInterpreterBundle(0);

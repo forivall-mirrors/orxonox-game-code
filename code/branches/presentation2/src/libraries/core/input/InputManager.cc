@@ -365,7 +365,7 @@ namespace orxonox
     // ##########                                        ##########
     // ############################################################
 
-    void InputManager::update(const Clock& time)
+    void InputManager::preUpdate(const Clock& time)
     {
         if (internalState_ & Bad)
             ThrowException(General, "InputManager was not correctly reloaded.");
@@ -465,7 +465,7 @@ namespace orxonox
     /**
     @brief
         Updates the currently active states (according to activeStates_) for each device.
-        Also, a list of all active states (no duplicates!) is compiled for the general update().
+        Also, a list of all active states (no duplicates!) is compiled for the general preUpdate().
     */
     void InputManager::updateActiveStates()
     {

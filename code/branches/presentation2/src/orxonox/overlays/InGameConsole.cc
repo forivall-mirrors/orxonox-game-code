@@ -356,7 +356,7 @@ namespace orxonox
     /**
         @brief Used to control the actual scrolling and the cursor.
     */
-    void InGameConsole::update(const Clock& time)
+    void InGameConsole::preUpdate(const Clock& time)
     {
         if (this->scroll_ != 0)
         {

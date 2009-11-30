@@ -51,7 +51,7 @@ namespace orxonox
         void initialise();
         void setConfigValues();
 
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
 
         static void openConsole();
         static void closeConsole();

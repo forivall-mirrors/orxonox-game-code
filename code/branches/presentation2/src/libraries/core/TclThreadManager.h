@@ -65,7 +65,7 @@ namespace orxonox
             static void error(const std::string& error);
             static void debug(const std::string& error);
 
-            void update(const Clock& time);
+            void preUpdate(const Clock& time);
 
             std::list<unsigned int> getThreadList() const;
 

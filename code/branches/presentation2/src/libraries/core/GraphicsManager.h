@@ -62,7 +62,7 @@ namespace orxonox
 
         void setConfigValues();
 
-        void update(const Clock& time);
+        void postUpdate(const Clock& time);
 
         Ogre::Viewport* getViewport()         { return this->viewport_; }
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }

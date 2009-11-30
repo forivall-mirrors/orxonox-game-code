@@ -98,7 +98,7 @@ namespace orxonox
             Any InpuStates changes (destroy, enter, leave) and happens here. If a reload request
             was submitted while updating, the request will be postponed until the next update call.
         */
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
         //! Clears all input device buffers. This usually only includes the pressed button list.
         void clearBuffers();
         //! Starts joy stick calibration.
@@ -107,7 +107,7 @@ namespace orxonox
         @brief
             Reloads all the input devices. Use this method to initialise new joy sticks.
         @note
-            Only reloads immediately if the call stack doesn't include the update() method.
+            Only reloads immediately if the call stack doesn't include the preUpdate() method.
         */
         void reload();
 
@@ -156,7 +156,7 @@ namespace orxonox
             True if removal was successful, false if name was not found.
         @remarks
             - You can't remove the internal states "empty", "calibrator" and "detector".
-            - The removal process is being postponed if InputManager::update() is currently running.
+            - The removal process is being postponed if InputManager::preUpdate() is currently running.
         */
         bool destroyState(const std::string& name);
 

@@ -50,7 +50,7 @@ namespace orxonox
         SoundManager();
         ~SoundManager();
 
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
         void setConfigValues();
 
         void setListenerPosition(const Vector3& position);

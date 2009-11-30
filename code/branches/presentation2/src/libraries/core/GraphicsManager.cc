@@ -340,7 +340,7 @@ namespace orxonox
         as shown that there is probably only one FrameListener that doesn't even
         need the time. So we shouldn't run into problems.
     */
-    void GraphicsManager::update(const Clock& time)
+    void GraphicsManager::postUpdate(const Clock& time)
     {
         Ogre::FrameEvent evt;
         evt.timeSinceLastFrame = time.getDeltaTime();

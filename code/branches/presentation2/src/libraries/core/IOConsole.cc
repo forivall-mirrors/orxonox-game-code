@@ -115,13 +115,13 @@ namespace orxonox
         std::cout.rdbuf(this->origCout_.rdbuf());
 
         // Make sure we make way for the status lines
-        this->update(Game::getInstance().getGameClock());
+        this->preUpdate(Game::getInstance().getGameClock());
     }
 
     IOConsole::~IOConsole()
     {
         // Empty all buffers
-        this->update(Game::getInstance().getGameClock());
+        this->preUpdate(Game::getInstance().getGameClock());
         // Erase input and status lines
         this->cout_ << "\033[1G\033[J";
         // Move cursor to the bottom
@@ -138,7 +138,7 @@ namespace orxonox
         OutputHandler::getInstance().enableCout();
     }
 
-    void IOConsole::update(const Clock& time)
+    void IOConsole::preUpdate(const Clock& time)
     {
         unsigned char c;
         std::string escapeSequence;
@@ -494,7 +494,7 @@ namespace orxonox
         this->inputChanged();
         this->cursorChanged();
         this->lastRefreshTime_ = Game::getInstance().getGameClock().getRealMicroseconds();
-        this->update(Game::getInstance().getGameClock());
+        this->preUpdate(Game::getInstance().getGameClock());
 
         this->shell_->registerListener(this);
     }
@@ -504,7 +504,7 @@ namespace orxonox
     {
         this->shell_->unregisterListener(this);
         // Empty all buffers
-        this->update(Game::getInstance().getGameClock());
+        this->preUpdate(Game::getInstance().getGameClock());
 
         // Erase input and status lines
         COORD pos = {0, this->inputLineRow_};
@@ -522,7 +522,7 @@ namespace orxonox
     }
 
     //! Processes the pending input key strokes, refreshes the status lines and handles std::cout (redirected)
-    void IOConsole::update(const Clock& time)
+    void IOConsole::preUpdate(const Clock& time)
     {
         // Process input
         while (true)

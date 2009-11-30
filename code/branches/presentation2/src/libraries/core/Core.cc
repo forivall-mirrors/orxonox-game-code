@@ -315,29 +315,33 @@ namespace orxonox
 
     void Core::preUpdate(const Clock& time)
     {
-        // singletons from other libraries
-        ScopedSingletonManager::update<ScopeID::Root>(time);
+        // Update singletons before general ticking
+        ScopedSingletonManager::preUpdate<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
-            // process input events
-            this->inputManager_->update(time);
-            // process gui events
-            this->guiManager_->update(time);
-            // graphics singletons from other libraries
-            ScopedSingletonManager::update<ScopeID::Graphics>(time);
+            // Process input events
+            this->inputManager_->preUpdate(time);
+            // Update GUI
+            this->guiManager_->preUpdate(time);
+            // Update singletons before general ticking
+            ScopedSingletonManager::preUpdate<ScopeID::Graphics>(time);
         }
-        // process console text
-        this->ioConsole_->update(time);
-        // process thread commands
-        this->tclThreadManager_->update(time);
+        // Process console events and status line
+        this->ioConsole_->preUpdate(time);
+        // Process thread commands
+        this->tclThreadManager_->preUpdate(time);
     }
 
     void Core::postUpdate(const Clock& time)
     {
+        // Update singletons just before rendering
+        ScopedSingletonManager::postUpdate<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
+            // Update singletons just before rendering
+            ScopedSingletonManager::postUpdate<ScopeID::Graphics>(time);
             // Render (doesn't throw)
-            this->graphicsManager_->update(time);
+            this->graphicsManager_->postUpdate(time);
         }
     }
 }

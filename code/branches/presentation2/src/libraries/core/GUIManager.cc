@@ -165,7 +165,7 @@ namespace orxonox
         The elapsed time since the last call is given in the time value provided by the clock.
         This time value is then used to provide a fluent animation of the GUI.
     */
-    void GUIManager::update(const Clock& time)
+    void GUIManager::preUpdate(const Clock& time)
     {
         assert(guiSystem_);
         guiSystem_->injectTimePulse(time.getDeltaTime());

@@ -56,7 +56,7 @@ namespace orxonox
         IOConsole();
         ~IOConsole();
 
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
 
     private:
         void setTerminalMode();
