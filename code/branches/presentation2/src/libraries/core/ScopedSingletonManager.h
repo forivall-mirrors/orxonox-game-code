@@ -38,6 +38,7 @@
 #include "util/Singleton.h"
 
 #define ManageScopedSingleton(className, scope, allowedToFail) \
+    className* className::singletonPtr_s = NULL; \
     static ClassScopedSingletonManager<className, scope, allowedToFail> className##ScopedSingletonManager(#className)
 
 namespace orxonox

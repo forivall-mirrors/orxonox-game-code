@@ -35,7 +35,6 @@
 
 namespace orxonox
 {
-    MoodManager* MoodManager::singletonPtr_s = 0;
     ManageScopedSingleton(MoodManager, ScopeID::Root, false);
 
     MoodManager::MoodManager()

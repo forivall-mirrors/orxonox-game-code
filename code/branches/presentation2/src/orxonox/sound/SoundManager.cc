@@ -45,7 +45,6 @@
 
 namespace orxonox
 {
-    SoundManager* SoundManager::singletonPtr_s = NULL;
     ManageScopedSingleton(SoundManager, ScopeID::Graphics, true);
 
     SoundManager::SoundManager()

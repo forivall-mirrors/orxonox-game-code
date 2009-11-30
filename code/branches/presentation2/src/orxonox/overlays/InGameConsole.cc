@@ -60,7 +60,6 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, openConsole, true);
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
-    InGameConsole* InGameConsole::singletonPtr_s = 0;
     ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 
     /**

@@ -39,7 +39,6 @@
 
 namespace orxonox
 {
-    KeyBinderManager* KeyBinderManager::singletonPtr_s = 0;
     ManageScopedSingleton(KeyBinderManager, ScopeID::Graphics, false);
 
     KeyBinderManager::KeyBinderManager()

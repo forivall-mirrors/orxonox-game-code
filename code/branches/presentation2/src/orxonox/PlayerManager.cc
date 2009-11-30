@@ -37,7 +37,6 @@
 
 namespace orxonox
 {
-    PlayerManager* PlayerManager::singletonPtr_s = 0;
     ManageScopedSingleton(PlayerManager, ScopeID::Root, false);
 
     PlayerManager::PlayerManager()

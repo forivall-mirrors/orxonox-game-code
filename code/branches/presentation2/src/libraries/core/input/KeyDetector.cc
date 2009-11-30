@@ -38,7 +38,6 @@
 namespace orxonox
 {
     std::string KeyDetector::callbackCommand_s = "KeyDetectorKeyPressed";
-    KeyDetector* KeyDetector::singletonPtr_s = 0;
     ManageScopedSingleton(KeyDetector, ScopeID::Graphics, false);
 
     KeyDetector::KeyDetector()
