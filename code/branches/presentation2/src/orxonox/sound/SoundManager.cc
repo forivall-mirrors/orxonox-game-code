@@ -42,6 +42,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "BaseSound.h"
 #include "AmbientSound.h"
+#include "WorldSound.h"
 
 namespace orxonox
 {
@@ -89,6 +90,10 @@ namespace orxonox
         alutExitGuard.Dismiss();
         closeDeviceGuard.Dismiss();
         desroyContextGuard.Dismiss();
+        
+        this->volume_ = 1.0;
+        this->ambientVolume_ = 1.0;
+        this->effectsVolume_ = 1.0;
 
         this->setConfigValues();
     }
@@ -111,6 +116,18 @@ namespace orxonox
         SetConfigValue(crossFadeStep_, 0.2f)
             .description("Determines how fast sounds should fade, per second.")
             .callback(this, &SoundManager::checkFadeStepValidity);
+            
+        SetConfigValue(volume_, 1.0f)
+            .description("Defines the overall volume.")
+            .callback(this, &SoundManager::checkVolumeValidity);
+            
+        SetConfigValue(ambientVolume_, 1.0f)
+            .description("Defines the ambient volume.")
+            .callback(this, &SoundManager::checkAmbientVolumeValidity);
+            
+        SetConfigValue(effectsVolume_, 1.0f)
+            .description("Defines the effects volume.")
+            .callback(this, &SoundManager::checkEffectsVolumeValidity);
     }
 
     void SoundManager::checkFadeStepValidity()
@@ -121,6 +138,45 @@ namespace orxonox
             ResetConfigValue(crossFadeStep_);
         }
         COUT(3) << "SoundManager: fade step set to " << crossFadeStep_ << std::endl;
+        return;
+    }
+    
+    void SoundManager::checkVolumeValidity()
+    {
+        if(volume_ < 0.0 || volume_ > 1.0)
+        {
+            COUT(2) << "Sound warning: Sound volume out of range, ignoring change." << std::endl;
+            ResetConfigValue(volume_);
+        }
+        
+        this->updateVolume();
+        COUT(3) << "SoundManager: Overall volume set to " << volume_ << std::endl;
+        return;
+    }
+    
+    void SoundManager::checkAmbientVolumeValidity()
+    {
+        if(this->ambientVolume_ < 0.0 || this->ambientVolume_ > 1.0)
+        {
+            COUT(2) << "Sound warning: Ambient volume out of range, ignoring change." << std::endl;
+            ResetConfigValue(ambientVolume_);
+        }
+        
+        this->updateAmbientVolume();
+        COUT(3) << "SoundManager: Ambient volume set to " << this->ambientVolume_ << std::endl;
+        return;
+    }
+    
+    void SoundManager::checkEffectsVolumeValidity()
+    {
+        if(this->effectsVolume_ < 0.0 || this->effectsVolume_ > 1.0)
+        {
+            COUT(2) << "Sound warning: effects volume out of range, ignoring change." << std::endl;
+            ResetConfigValue(effectsVolume_);
+        }
+        
+        this->updateEffectsVolume();
+        COUT(3) << "SoundManager: Effects volume set to " << this->effectsVolume_ << std::endl;
         return;
     }
 
@@ -218,6 +274,60 @@ namespace orxonox
             }
         }
     }
+    
+    void SoundManager::setAmbientVolume(float vol)
+    {
+        if (vol > 1 || vol < 0)
+        {
+            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
+            vol = vol > 1 ? 1 : vol;
+            vol = vol < 0 ? 0 : vol;
+        }
+        this->ambientVolume_ = vol;
+        
+        this->updateAmbientVolume();
+    }
+    
+    void SoundManager::setEffectsVolume(float vol)
+    {
+        if (vol > 1 || vol < 0)
+        {
+            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
+            vol = vol > 1 ? 1 : vol;
+            vol = vol < 0 ? 0 : vol;
+        }
+        this->effectsVolume_ = vol;
+        
+        this->updateEffectsVolume();
+    }
+    
+    void SoundManager::setVolume(float vol)
+    {
+        if (vol > 1 || vol < 0)
+        {
+            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
+            vol = vol > 1 ? 1 : vol;
+            vol = vol < 0 ? 0 : vol;
+        }
+        this->volume_ = vol;
+        
+        this->updateVolume();
+    }
+    
+    float SoundManager::getAmbientVolume(void)
+    {
+        return this->ambientVolume_;
+    }
+    
+    float SoundManager::getEffectsVolume(void)
+    {
+        return this->effectsVolume_;
+    }
+    
+    float SoundManager::getVolume(void) 
+    {
+        return this->volume_;
+    }
 
     void SoundManager::fadeIn(AmbientSound* sound)
     {
@@ -301,6 +411,43 @@ namespace orxonox
             {
                 (*it)->setVolume((*it)->getVolume() - this->crossFadeStep_*dt);
                 ++it;
+            }
+        }
+    }
+    
+    void SoundManager::updateAmbientVolume(void)
+    {
+        for(ObjectList<AmbientSound>::iterator it = ObjectList<AmbientSound>::begin(); it != ObjectList<AmbientSound>::end(); ++it)
+        {
+            (*it)->setVolumeGain(this->volume_*this->ambientVolume_);
+        }
+    }
+    
+    void SoundManager::updateEffectsVolume(void)
+    {
+        for (ObjectList<WorldSound>::iterator it = ObjectList<WorldSound>::begin(); it != ObjectList<WorldSound>::end(); ++it)
+        {
+            (*it)->setVolumeGain(this->volume_*this->effectsVolume_);
+        }
+    }
+    
+    void SoundManager::updateVolume(void)
+    {
+        for (ObjectList<BaseSound>::iterator it = ObjectList<BaseSound>::begin(); it != ObjectList<BaseSound>::end(); ++it)
+        {
+            AmbientSound* ambient = dynamic_cast<AmbientSound*>(*it);
+            WorldSound* world = dynamic_cast<WorldSound*>(*it);
+            if(ambient != NULL)
+            {
+                ambient->setVolumeGain(this->volume_*this->ambientVolume_);
+            }
+            else if(world != NULL)
+            {
+                world->setVolumeGain(this->volume_*this->effectsVolume_);
+            }
+            else
+            {
+                (*it)->setVolumeGain(this->volume_);
             }
         }
     }

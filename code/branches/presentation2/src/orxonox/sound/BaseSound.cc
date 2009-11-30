@@ -108,7 +108,26 @@ namespace orxonox
         }
         this->volume_ = vol;
         if (alIsSource(this->audioSource_))
-            alSourcef(this->audioSource_, AL_GAIN, vol);
+            alSourcef(this->audioSource_, AL_GAIN, this->getEffectiveVolume());
+    }
+    
+    void BaseSound::setVolumeGain(float gain)
+    {
+        COUT(1) << "blubb: " << gain << std::endl;
+        if (gain > 1 || gain < 0)
+        {
+            COUT(2) << "Sound warning: volume gain out of range, cropping value." << std::endl;
+            gain = gain > 1 ? 1 : gain;
+            gain = gain < 0 ? 0 : gain;
+        }
+        this->volumeGain_ = gain;
+        if (alIsSource(this->audioSource_))
+            alSourcef(this->audioSource_, AL_GAIN, this->getEffectiveVolume());
+    }
+    
+    float BaseSound::getEffectiveVolume(void)
+    {
+        return this->volume_*this->volumeGain_;
     }
 
     void BaseSound::setLooping(bool val)
@@ -180,7 +199,7 @@ namespace orxonox
         }
 
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
-        alSourcef (this->audioSource_, AL_GAIN, this->volume_);
+        alSourcef (this->audioSource_, AL_GAIN, this->getEffectiveVolume());
         alSourcei (this->audioSource_, AL_LOOPING, (this->bLoop_ ? AL_TRUE : AL_FALSE));
         if (this->isPlaying() || this->isPaused())
             alSourcePlay(this->audioSource_);

@@ -34,7 +34,9 @@
 #include <list>
 #include <string>
 #include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
 
+// tolua_begin
 namespace orxonox
 {
     /**
@@ -42,8 +44,10 @@ namespace orxonox
      * position. It is a singleton.
      *
      */
-    class _OrxonoxExport SoundManager : public Singleton<SoundManager>, public OrxonoxClass
-    {
+    class _OrxonoxExport SoundManager
+    // tolua_end
+        : public Singleton<SoundManager>, public OrxonoxClass
+    { // tolua_export
         friend class Singleton<SoundManager>;
 
     public:
@@ -52,6 +56,8 @@ namespace orxonox
 
         void preUpdate(const Clock& time);
         void setConfigValues();
+        
+        static SoundManager& getInstance() { return Singleton<SoundManager>::getInstance(); } // tolua_export
 
         void setListenerPosition(const Vector3& position);
         void setListenerOrientation(const Quaternion& orientation);
@@ -59,6 +65,14 @@ namespace orxonox
         void registerAmbientSound(AmbientSound* newAmbient);
         void unregisterAmbientSound(AmbientSound* oldAmbient);
         void pauseAmbientSound(AmbientSound* ambient);
+        
+        void setAmbientVolume(float vol); // tolua_export
+        void setEffectsVolume(float vol); // tolua_export
+        void setVolume(float vol); // tolua_export
+        
+        float getAmbientVolume(void); // tolua_export
+        float getEffectsVolume(void); // tolua_export
+        float getVolume(void); // tolua_export
 
     private:
         void processCrossFading(float dt);
@@ -66,6 +80,13 @@ namespace orxonox
         void fadeOut(AmbientSound* sound);
 
         void checkFadeStepValidity();
+        void checkVolumeValidity();
+        void checkAmbientVolumeValidity();
+        void checkEffectsVolumeValidity();
+        
+        void updateAmbientVolume(void);
+        void updateEffectsVolume(void);
+        void updateVolume(void);
 
         ALCdevice* device_;
         ALCcontext* context_;
@@ -77,8 +98,12 @@ namespace orxonox
         std::list<AmbientSound*> fadeInList_;
         std::list<AmbientSound*> fadeOutList_;
         
+        float ambientVolume_;
+        float effectsVolume_;
+        float volume_;
+        
         static SoundManager* singletonPtr_s;
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _SoundManager_H__ */
