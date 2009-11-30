@@ -46,9 +46,20 @@
 
 namespace orxonox
 {
-    ExprParser::ExprParser(const std::string& str)
+    ExprParser::ExprParser()
     {
         this->failed_ = false;
+        this->variables_["pi"] = 3.1415926535897932;
+        this->variables_["e"] = 2.7182818284590452;
+    }
+
+    void ExprParser::setVariable(const std::string& varname, double value)
+    {
+        this->variables_[varname] = value;
+    }
+
+    void ExprParser::parse(const std::string& str)
+    {
         this->reading_stream = str.c_str();
         if (str.size() == 0 || *reading_stream == '\0')
         {
@@ -342,12 +353,10 @@ namespace orxonox
             }
             else
             {
-#define SWITCH word
-                CASE_1("pi")
-                    value = 3.1415926535897932;
-                CASE("e")
-                    value = 2.7182818284590452;
-                CASE_ELSE
+                std::map<std::string, double>::const_iterator it = this->variables_.find(word);
+                if (it != this->variables_.end())
+                    value = it->second;
+                else
                 {
                     this->failed_ = true;
                     delete[] word;
@@ -357,7 +366,7 @@ namespace orxonox
             delete[] word;
         }
         else if (*reading_stream == 40)
-        {  // expresion in paranthesis
+        {  // expression in parenthesis
             ++reading_stream;
             value = parse_last_argument();
         }

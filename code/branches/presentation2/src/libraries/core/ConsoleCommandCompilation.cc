@@ -157,7 +157,8 @@ namespace orxonox
 
     float calculate(const std::string& calculation)
     {
-        ExprParser expr(calculation);
+        ExprParser expr;
+        expr.parse(calculation);
         if (expr.getSuccess())
         {
             if (expr.getResult() == 42.0)
