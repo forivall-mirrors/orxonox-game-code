@@ -35,13 +35,14 @@ extern "C" {
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
 #include "core/XMLPort.h"
+#include "worldentities/WorldEntity.h"
 
 namespace orxonox
 {
     CreateFactory(EffectContainer);
 
     EffectContainer::EffectContainer(BaseObject* creator)
-        : StaticEntity(creator)
+        : BaseObject(creator)
         , lua_(NULL)
     {
         RegisterObject(EffectContainer);
