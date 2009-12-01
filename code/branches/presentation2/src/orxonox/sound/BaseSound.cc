@@ -68,7 +68,7 @@ namespace orxonox
     {
         XMLPortParam(BaseSound, "volume", setVolume,  getVolume,  xmlelement, mode);
         XMLPortParam(BaseSound, "loop",   setLooping, getLooping, xmlelement, mode);
-        XMLPortParam(BaseSound, "play",   play,       isPlaying,  xmlelement, mode);
+        XMLPortParam(BaseSound, "play",   setPlaying, isPlaying,  xmlelement, mode);
         XMLPortParam(BaseSound, "source", setSource,  getSource,  xmlelement, mode);
     }
 
