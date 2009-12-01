@@ -20,55 +20,52 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
  *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _MultiStateEngine_H__
-#define _MultiStateEngine_H__
+#ifndef _EffectContainer_H__
+#define _EffectContainer_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <vector>
-#include "Engine.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
-    // forward declaration
-    class EffectContainer;
-
-    class _OrxonoxExport MultiStateEngine : public Engine
+    class _OrxonoxExport EffectContainer : public BaseObject
     {
         public:
-            enum EngineState
-            {
-                Idle    = 1,
-                Normal  = 2,
-                Brake   = 4,
-                Boost   = 8
-            };
-
-            MultiStateEngine(BaseObject* creator);
-            virtual ~MultiStateEngine();
+            EffectContainer(BaseObject* creator);
+            virtual ~EffectContainer();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
-            virtual void tick(float dt);
+            void setLuaState(LuaState* state, const std::string& functionName);
 
-            virtual void addToSpaceShip(SpaceShip* ship);
+            void setCondition(const std::string& condition);
+            inline const std::string& getCondition() const
+                { return this->condition_; }
 
-            void addEffectContainer(EffectContainer* effect);
-            EffectContainer* getEffectContainer(unsigned int index) const;
+            void addEffect(WorldEntity* effect);
+            WorldEntity* getEffect(unsigned int index) const;
+
+            inline std::vector<WorldEntity*>::const_iterator getEffectsBegin()
+                { return this->effects_.begin(); }
+            inline std::vector<WorldEntity*>::const_iterator getEffectsEnd()
+                { return this->effects_.end(); }
+
+            void updateCondition();
 
         private:
-            int state_;
-            LuaState* lua_;
-            std::vector<EffectContainer*> effectContainers_;
+            std::string               condition_;
+            std::string               functionName_;
+            LuaState*                 lua_;
+            std::vector<WorldEntity*> effects_;
     };
 }
 
-#endif /* _MultiStateEngine_H__ */
+#endif /* _EffectContainer_H__ */
