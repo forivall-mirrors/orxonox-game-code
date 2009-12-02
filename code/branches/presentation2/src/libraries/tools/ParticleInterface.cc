@@ -64,6 +64,8 @@ namespace orxonox
         this->bAllowedByLOD_ = true;
         this->speedFactor_ = 1.0f;
 
+        this->setConfigValues();
+
         if (GameMode::showsGraphics())
         {
             try
