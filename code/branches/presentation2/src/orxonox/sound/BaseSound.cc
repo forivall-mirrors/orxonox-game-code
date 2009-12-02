@@ -46,11 +46,9 @@ namespace orxonox
         , volume_(1.0)
         , bLoop_(false)
         , state_(Stopped)
+        , pitch_ (1.0)
     {
         RegisterRootObject(BaseSound);
-
-        this->volume_ = 1;
-        this->pitch_ = 1;
 
         if (GameMode::playsSound())
         {

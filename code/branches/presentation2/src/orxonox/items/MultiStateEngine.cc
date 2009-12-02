@@ -54,10 +54,10 @@ namespace orxonox
     {
         RegisterObject(MultiStateEngine);
 
-        defEngineSndNormal_ = new WorldSound(this);
-        defEngineSndBoost_ = new WorldSound(this);
-        defEngineSndNormal_->setLooping(true);
-        defEngineSndBoost_->setLooping(true);
+        this->defEngineSndNormal_ = new WorldSound(this);
+        this->defEngineSndBoost_ = new WorldSound(this);
+        this->defEngineSndNormal_->setLooping(true);
+        this->defEngineSndBoost_->setLooping(true);
 
         this->lua_ = new LuaState();
         this->state_ = 0;
