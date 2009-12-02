@@ -79,7 +79,7 @@ namespace orxonox
         void unregisterAmbientSound(AmbientSound* oldAmbient);
         void pauseAmbientSound(AmbientSound* ambient);
         
-        void setVolume(float vol, SoundType::Value type); // tolua_export
+        void setVolume(float vol, SoundType::Value type);
         float getVolume(SoundType::Value type); // tolua_export
         
         void toggleMute(SoundType::Value type); // tolua_export

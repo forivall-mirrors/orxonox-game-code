@@ -85,6 +85,7 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     CommandExecutor.h
+      ConfigFileManager.h
     Game.h
     Loader.h
     LuaState.h

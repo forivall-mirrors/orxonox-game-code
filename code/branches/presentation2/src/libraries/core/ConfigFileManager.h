@@ -39,8 +39,10 @@
 #include "util/OrxEnum.h"
 #include "util/Singleton.h"
 
+// tolua_begin
 namespace orxonox
 {
+    // tolua_end
     // Use int as config file type to have an arbitrary number of files
     struct ConfigFileType : OrxEnum<ConfigFileType>
     {
@@ -53,7 +55,7 @@ namespace orxonox
         static const int numberOfReservedTypes = 1024;
     };
 
-    _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value);
+    _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value); // tolua_export
     _CoreExport bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
     _CoreExport void reloadConfig();
     _CoreExport void saveConfig();
@@ -318,6 +320,6 @@ namespace orxonox
 
             static ConfigFileManager* singletonPtr_s;
     };
-}
+} // tolua_export
 
 #endif /* _ConfigFileManager_H__ */
