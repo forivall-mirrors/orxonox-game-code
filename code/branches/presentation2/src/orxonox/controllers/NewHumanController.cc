@@ -43,11 +43,15 @@
 #include "sound/SoundManager.h"
 #include "Scene.h"
 
+#include <cmath>
+
+
 namespace orxonox
 {
     SetConsoleCommand(NewHumanController, changeMode,          false).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand(NewHumanController, accelerate,          false).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand(NewHumanController, decelerate,          false).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand(NewHumanController, unfire,              true).keybindMode(KeybindMode::OnRelease);
 
     CreateUnloadableFactory(NewHumanController);
 
@@ -61,8 +65,11 @@ namespace orxonox
         RegisterObject(NewHumanController);
 
         overlaySize_ = 0.08;
+        arrowsSize_ = 0.4;
         controlMode_ = 0;
         acceleration_ = 0;
+        firemode_ = -1;
+        showArrows_ = true;
 
         //currentPitch_ = 1;
         //currentYaw_ = 1;
@@ -73,12 +80,44 @@ namespace orxonox
             crossHairOverlay_->setBackgroundMaterial("Orxonox/Crosshair3");
             crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
             crossHairOverlay_->hide();
+            //crossHairOverlay_->setAspectCorrection(true); not working
 
             centerOverlay_ = new OrxonoxOverlay(this);
             centerOverlay_->setBackgroundMaterial("Orxonox/CenterOverlay");
             centerOverlay_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
             centerOverlay_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
             centerOverlay_->hide();
+
+            if (showArrows_)
+            {
+                arrowsOverlay1_ = new OrxonoxOverlay(this);
+                arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
+                arrowsOverlay1_->setSize(Vector2(0.02727, 0.36 * arrowsSize_));
+                arrowsOverlay1_->setPickPoint(Vector2(0.5, 0.5));
+                arrowsOverlay1_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay1_->hide();
+    
+                arrowsOverlay2_ = new OrxonoxOverlay(this);
+                arrowsOverlay2_->setBackgroundMaterial("Orxonox/DirectionArrows2");
+                arrowsOverlay2_->setSize(Vector2(0.02727, 0.59 * arrowsSize_));
+                arrowsOverlay2_->setPickPoint(Vector2(0.5, 0.5));
+                arrowsOverlay2_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay2_->hide();
+    
+                arrowsOverlay3_ = new OrxonoxOverlay(this);
+                arrowsOverlay3_->setBackgroundMaterial("Orxonox/DirectionArrows3");
+                arrowsOverlay3_->setSize(Vector2(0.02727, 0.77 * arrowsSize_));
+                arrowsOverlay3_->setPickPoint(Vector2(0.5, 0.5));
+                arrowsOverlay3_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay3_->hide();
+    
+                arrowsOverlay4_ = new OrxonoxOverlay(this);
+                arrowsOverlay4_->setBackgroundMaterial("Orxonox/DirectionArrows4");
+                arrowsOverlay4_->setSize(Vector2(0.02727, arrowsSize_));
+                arrowsOverlay4_->setPickPoint(Vector2(0.5, 0.5));
+                arrowsOverlay4_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay4_->hide();
+            }
         }
 
         // HACK: Define which objects are targetable when considering the creator of an orxonox::Model
@@ -87,6 +126,8 @@ namespace orxonox
         this->targetMask_.exclude(ClassByString("Projectile"));
 
         NewHumanController::localController_s = this;
+
+        controlPaused_ = true;
 
 //HumanController::localController_s->getControllableEntity()->getCamera()->setDrag(true);
     }
@@ -97,6 +138,20 @@ namespace orxonox
         {
             if (this->crossHairOverlay_)
                 this->crossHairOverlay_->destroy();
+            if (this->centerOverlay_)
+                this->centerOverlay_->destroy();
+
+            if (showArrows_)
+            {
+                if (this->arrowsOverlay1_)
+                    this->arrowsOverlay1_->destroy();
+                if (this->arrowsOverlay2_)
+                    this->arrowsOverlay2_->destroy();
+                if (this->arrowsOverlay3_)
+                    this->arrowsOverlay3_->destroy();
+                if (this->arrowsOverlay4_)
+                    this->arrowsOverlay4_->destroy();
+            }
         }
     }
 
@@ -104,11 +159,18 @@ namespace orxonox
     {
         if (GameMode::showsGraphics())
         {
+
             if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
             {
                 this->updateTarget();
                 if ( !controlPaused_ ) {
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
+
+                    if ( this->controlMode_ == 0 || ( this->controlMode_ == 1 && this->firemode_ == 1 ) )
+                        alignArrows();
+                    else
+                        hideArrows();
+
                     this->crossHairOverlay_->show();
                     this->centerOverlay_->show();
                 }
@@ -116,6 +178,8 @@ namespace orxonox
             else {
                 this->crossHairOverlay_->hide();
                 this->centerOverlay_->hide();
+
+                hideArrows();
             }
 
             if ( this->acceleration_ > 0 )
@@ -170,6 +234,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         }
 */
 
+        this->firemode_ = firemode;
+
         if (firemode == 1 && this->controlMode_ == 1)
         {
             //unlocked steering, steer on right mouse click
@@ -179,6 +245,19 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         else
             HumanController::localController_s->getControllableEntity()->fire(firemode);
 
+    }
+
+    void NewHumanController::unfire()
+    {
+        if (NewHumanController::localController_s)
+            NewHumanController::localController_s->doUnfire();
+    }
+
+    void NewHumanController::doUnfire()
+    {
+        COUT(0) << "dounfire" << endl;
+        this->firemode_ = -1;
+        hideArrows();
     }
 
     void NewHumanController::updateTarget()
@@ -272,7 +351,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     void NewHumanController::yaw(const Vector2& value)
     {
 //         SUPER(NewHumanController, yaw, value);
-        if (this->controlMode_ == 0)
+        if (this->controlMode_ == 0 || ( this->controllableEntity_ && this->controllableEntity_->isInMouseLook() ) )
             HumanController::yaw(value);
 
         this->currentYaw_ = value.x;
@@ -281,7 +360,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     void NewHumanController::pitch(const Vector2& value)
     {
 //         SUPER(NewHumanController, pitch, value);
-        if (this->controlMode_ == 0)
+        if (this->controlMode_ == 0 || ( this->controllableEntity_ && this->controllableEntity_->isInMouseLook() ) )
             HumanController::pitch(value);
 
         this->currentPitch_ = value.x;
@@ -291,8 +370,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     {
         if (NewHumanController::localController_s && NewHumanController::localController_s->controlMode_ == 0)
         {
-            if (NewHumanController::localController_s->controllableEntity_ && !NewHumanController::localController_s->controllableEntity_->isInMouseLook() )
                 NewHumanController::localController_s->controlMode_ = 1;
+                NewHumanController::localController_s->hideArrows();
         }
         else
             NewHumanController::localController_s->controlMode_ = 0;
@@ -303,6 +382,9 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
+        if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip") {
+            this->doResumeControl();
+        }
     }
 
     void NewHumanController::accelerate()
@@ -329,7 +411,48 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::doPauseControl() {
         this->controlPaused_ = true;
+
         this->crossHairOverlay_->hide();
         this->centerOverlay_->hide();
+
+        hideArrows();
+    }
+
+    void NewHumanController::alignArrows() {
+        if (showArrows_) {
+            hideArrows();
+    
+            float distance = sqrt(pow(static_cast<float>(this->currentYaw_)/2*-1,2) + pow(static_cast<float>(this->currentPitch_)/2*-1,2));
+    
+            if ( distance > 0.04 && distance <= 0.59 * arrowsSize_ / 2.0 ) {
+                this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+    
+                this->arrowsOverlay1_->show();
+            }
+            else if ( distance > 0.59 * arrowsSize_ / 2.0 && distance <= 0.77 * arrowsSize_ / 2.0 ) {
+                this->arrowsOverlay2_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+    
+                this->arrowsOverlay2_->show();
+            }
+            else if ( distance > 0.77 * arrowsSize_ / 2.0 && distance <= arrowsSize_ / 2.0 ) {
+                this->arrowsOverlay3_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+    
+                this->arrowsOverlay3_->show();
+            }
+            else if ( distance > arrowsSize_ / 2.0 ) {
+                this->arrowsOverlay4_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+    
+                this->arrowsOverlay4_->show();
+            }
+        }
+    }
+
+    void NewHumanController::hideArrows() {
+        if (showArrows_) {
+            this->arrowsOverlay1_->hide();
+            this->arrowsOverlay2_->hide();
+            this->arrowsOverlay3_->hide();
+            this->arrowsOverlay4_->hide();
+        }
     }
 }

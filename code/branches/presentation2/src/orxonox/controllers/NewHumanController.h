@@ -55,6 +55,9 @@ namespace orxonox
 
             virtual void doFire(unsigned int firemode);
 
+            static void unfire();
+            virtual void doUnfire();
+
             static void changeMode();
 
             virtual void changedControllableEntity();
@@ -63,6 +66,8 @@ namespace orxonox
 
         protected:
             void updateTarget();
+            void alignArrows();
+            void hideArrows();
 
             unsigned int                controlMode_;
             static NewHumanController*  localController_s;
@@ -71,9 +76,16 @@ namespace orxonox
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
             OrxonoxOverlay*             centerOverlay_;
+            OrxonoxOverlay*             arrowsOverlay1_;
+            OrxonoxOverlay*             arrowsOverlay2_;
+            OrxonoxOverlay*             arrowsOverlay3_;
+            OrxonoxOverlay*             arrowsOverlay4_;
             float                       overlaySize_;
+            float                       arrowsSize_;
             bool                        accelerating_;
             float                       acceleration_;
+            int                         firemode_;
+            bool                        showArrows_;
             ClassTreeMask               targetMask_;
     };
 }
