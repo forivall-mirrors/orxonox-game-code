@@ -457,8 +457,8 @@ namespace orxonox
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")
-        , statusLines_(1)
         , inputLineHeight_(1)
+        , statusLines_(1)
         , lastOutputLineHeight_(0)
     {
         // Disable standard this->cout_ logging
@@ -683,7 +683,7 @@ namespace orxonox
     */
     void IOConsole::createNewOutputLines(int lines)
     {
-        CHAR_INFO fillChar = {' ', FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
+        CHAR_INFO fillChar = {{' '}, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
         // Lines to scroll input/status down (if possible)
         int linesDown = clamp(terminalHeight_ - inputLineRow_ - inputLineHeight_ - statusLines_, 0, lines);
         if (linesDown > 0)
@@ -731,7 +731,7 @@ namespace orxonox
             // Scroll status lines up
             int statusLineRow = this->inputLineRow_ + this->inputLineHeight_;
             SMALL_RECT oldRect = {0, statusLineRow, this->terminalWidth_ - 1, statusLineRow + this->statusLines_};
-            CHAR_INFO fillChar = {' ', FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
+            CHAR_INFO fillChar = {{' '}, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
             ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, makeCOORD(0, statusLineRow + newLines), &fillChar);
             // Clear potential leftovers
             if (-newLines - this->statusLines_ > 0)
