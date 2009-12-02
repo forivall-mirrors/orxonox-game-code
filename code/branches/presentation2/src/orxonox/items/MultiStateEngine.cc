@@ -106,10 +106,10 @@ namespace orxonox
                 if (this->getShip()->getBoost() && forward)
                 {
                     newState = Boost;
-                    pitch = pitch/MAX_VELOCITY_BOOST + 1;
+                    /*pitch = pitch/MAX_VELOCITY_BOOST + 1;
                     pitch = pitch > 2 ? 2 : pitch;
                     pitch = pitch < 0.5 ? 0.5 : pitch;
-                    defEngineSndNormal_->setPitch(pitch);
+                    defEngineSndNormal_->setPitch(pitch);*/
                 }
                 else if (forward && !newState) // newState == Boost
                 {

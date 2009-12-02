@@ -150,7 +150,7 @@ namespace orxonox
         {
             if (int error = alGetError())
                 COUT(2) << "Sound: Error setting pitch: " << error << std::endl;
-            alSourcei(this->audioSource_, AL_PITCH, pitch);
+            alSourcef(this->audioSource_, AL_PITCH, pitch);
         }
     }
 

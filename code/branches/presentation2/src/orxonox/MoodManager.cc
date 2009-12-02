@@ -77,7 +77,7 @@ namespace orxonox
         {
             ResetConfigValue(mood_);
         }
-        COUT(0) << "MoodManager: Mood now set to " << mood_ << std::endl;
+        COUT(3) << "MoodManager: Mood now set to " << mood_ << std::endl;
         return;
     }
 }
