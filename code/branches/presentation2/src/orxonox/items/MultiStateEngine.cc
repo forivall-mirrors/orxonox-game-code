@@ -44,7 +44,7 @@ extern "C" {
 
 namespace orxonox
 {
-    static const float FORWARD_EFFECT_VELOCITY_THRESHOLD = 20;
+    static const float FORWARD_EFFECT_VELOCITY_THRESHOLD = 0;
     static const float MAX_VELOCITY_NORMAL = 111;
     static const float MAX_VELOCITY_BOOST = 221;
 
@@ -55,7 +55,9 @@ namespace orxonox
         RegisterObject(MultiStateEngine);
 
         defEngineSndNormal_ = new WorldSound(this);
+        defEngineSndBoost_ = new WorldSound(this);
         defEngineSndNormal_->setLooping(true);
+        defEngineSndBoost_->setLooping(true);
 
         this->lua_ = new LuaState();
         this->state_ = 0;
@@ -72,6 +74,7 @@ namespace orxonox
                 for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsBegin(); ++it2)
                     (*it2)->destroy();
             delete this->defEngineSndNormal_;
+            delete this->defEngineSndBoost_;
             delete this->lua_;
         }
     }
@@ -81,6 +84,7 @@ namespace orxonox
         SUPER(MultiStateEngine, XMLPort, xmlelement, mode);
         XMLPortObject(MultiStateEngine, EffectContainer, "",  addEffectContainer,  getEffectContainer,  xmlelement, mode);
         XMLPortParam(MultiStateEngine, "defEngineSndNormal",  setDefEngSndNormal,  getDefEngSndNormal,  xmlelement, mode);
+        XMLPortParam(MultiStateEngine, "defEngineSndBoost",  setDefEngSndBoost,  getDefEngSndBoost,  xmlelement, mode);
     }
 
     void MultiStateEngine::registerVariables()
@@ -106,10 +110,10 @@ namespace orxonox
                 if (this->getShip()->getBoost() && forward)
                 {
                     newState = Boost;
-                    /*pitch = pitch/MAX_VELOCITY_BOOST + 1;
+                    pitch = pitch/MAX_VELOCITY_BOOST + 1;
                     pitch = pitch > 2 ? 2 : pitch;
                     pitch = pitch < 0.5 ? 0.5 : pitch;
-                    defEngineSndNormal_->setPitch(pitch);*/
+                    defEngineSndBoost_->setPitch(pitch);
                 }
                 else if (forward && !newState) // newState == Boost
                 {
@@ -154,6 +158,14 @@ namespace orxonox
                     {
                         lua_pushboolean(this->lua_->getInternalLuaState(), newState & Boost);
                         lua_setglobal(this->lua_->getInternalLuaState(), "boost");
+                        if(newState & Boost)
+                        {
+                            defEngineSndBoost_->play();
+                        }
+                        else
+                        {
+                            defEngineSndBoost_->stop();
+                        }
                     }
 
                     // Update all effect conditions
@@ -180,6 +192,7 @@ namespace orxonox
             return;
 
         this->getShip()->attach(defEngineSndNormal_);
+        this->getShip()->attach(defEngineSndBoost_);
 
         for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
             for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsEnd(); ++it2)
@@ -218,5 +231,15 @@ namespace orxonox
     const std::string& MultiStateEngine::getDefEngSndNormal()
     {
         return defEngineSndNormal_->getSource();
+    }
+
+    void MultiStateEngine::setDefEngSndBoost(const std::string &engineSound)
+    {
+        defEngineSndBoost_->setSource(engineSound);
+    }
+
+    const std::string& MultiStateEngine::getDefEngSndBoost()
+    {
+        return defEngineSndBoost_->getSource();
     }
 }

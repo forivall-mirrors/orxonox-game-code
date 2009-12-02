@@ -64,6 +64,7 @@
    speedupdown    =  50
 
    defEngineSndNormal = "sounds/Engine_low.ogg"
+   defEngineSndBoost = "sounds/Engine_high.ogg"
 
    accelerationfront     = 500
    accelerationbrake     = 500
@@ -91,7 +92,7 @@
     <EffectContainer condition="boost">
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <WorldSound mainstate="activity" source="sounds/Engine_high.ogg" loop=1 active=false/>
+      <!-- WorldSound mainstate="activity" source="sounds/Engine_high.ogg" loop=1 active=false -->
     </EffectContainer>
     <EffectContainer condition="brake">
       <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
