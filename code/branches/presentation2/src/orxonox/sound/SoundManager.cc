@@ -37,9 +37,11 @@
 #include "util/ScopeGuard.h"
 #include "util/StringUtils.h"
 #include "util/Clock.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/Resource.h"
+#include "SoundBuffer.h"
 #include "BaseSound.h"
 #include "AmbientSound.h"
 #include "WorldSound.h"
@@ -471,5 +473,27 @@ namespace orxonox
                 ++it;
             }
         }
+    }
+
+    shared_ptr<SoundBuffer> SoundManager::getSoundBuffer(shared_ptr<ResourceInfo> fileInfo)
+    {
+        std::map<std::string, weak_ptr<SoundBuffer> >::const_iterator it
+            = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
+        if (it != this->soundBuffers_.end())
+            return it->second.lock();
+        else
+        {
+            shared_ptr<SoundBuffer> buffer(new SoundBuffer(fileInfo));
+            this->soundBuffers_[fileInfo->group + '/' + fileInfo->filename] = buffer;
+            return buffer;
+        }
+    }
+
+    void SoundManager::removeBuffer(shared_ptr<ResourceInfo> fileInfo)
+    {
+        std::map<std::string, weak_ptr<SoundBuffer> >::const_iterator it
+            = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
+        if (it == this->soundBuffers_.end())
+            this->soundBuffers_.erase(it);
     }
 }

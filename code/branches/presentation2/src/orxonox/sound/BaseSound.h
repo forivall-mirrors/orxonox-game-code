@@ -32,11 +32,15 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include <OgreDataStream.h>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
+    // forward declaration
+    class SoundBuffer;
+
     /**
      * The BaseSound class is the base class for all sound file loader classes.
      * It server as main interface to the OpenAL library.
@@ -82,7 +86,7 @@ namespace orxonox
         ALuint loadOggFile();
 
         ALuint audioSource_;
-        ALuint audioBuffer_;
+        shared_ptr<SoundBuffer> soundBuffer_;
 
     private:
         enum State

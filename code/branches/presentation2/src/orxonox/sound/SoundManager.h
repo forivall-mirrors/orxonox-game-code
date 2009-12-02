@@ -32,14 +32,18 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-#include <string>
 #include <map>
+#include <string>
+#include <boost/weak_ptr.hpp>
+
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
 namespace orxonox
 {
+    // forward declaration
+    class SoundBuffer;
     
     //! Enum for the sound type.
     namespace SoundType
@@ -85,6 +89,9 @@ namespace orxonox
         void toggleMute(SoundType::Value type); // tolua_export
         bool getMute(SoundType::Value type); // tolua_export
 
+        shared_ptr<SoundBuffer> getSoundBuffer(shared_ptr<ResourceInfo> fileInfo);
+        void removeBuffer(shared_ptr<ResourceInfo> fileInfo);
+
     private:
         void processCrossFading(float dt);
         void fadeIn(AmbientSound* sound);
@@ -117,6 +124,8 @@ namespace orxonox
         float ambientVolume_;
         float effectsVolume_;
         std::map<SoundType::Value, bool> mute_;
+
+        std::map<std::string, weak_ptr<SoundBuffer> > soundBuffers_;
         
         static SoundManager* singletonPtr_s;
     }; // tolua_export

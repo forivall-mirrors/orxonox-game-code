@@ -85,6 +85,13 @@ namespace orxonox
             const std::string& group = Resource::DEFAULT_GROUP,
             bool bSearchGroupsIfNotFound = false);
 
+        //! Similar to open(string, string, bool), but with a fileInfo struct
+        static DataStreamPtr open(shared_ptr<ResourceInfo> fileInfo,
+            bool bSearchGroupsIfNotFound = false)
+        {
+            return open(fileInfo->filename, fileInfo->group, bSearchGroupsIfNotFound);
+        }
+
         /**
         @brief
             Open all resources matching a given pattern (which can contain

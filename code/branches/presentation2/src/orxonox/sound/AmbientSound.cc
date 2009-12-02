@@ -70,7 +70,6 @@ namespace orxonox
     {
         if (GameMode::playsSound())
         {
-            COUT(3) << "Sound: " << this->getSource() << ": Playing" << std::endl;
             SoundManager::getInstance().registerAmbientSound(this);
         }
     }
