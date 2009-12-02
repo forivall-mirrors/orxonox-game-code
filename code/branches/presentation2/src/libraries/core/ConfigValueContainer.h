@@ -145,18 +145,18 @@ namespace orxonox
             {
                 if ((this->callback_ && object) || this->bContainerIsNew_)
                 {
-                    if (this->bContainerIsNew_)
-                        this->bContainerIsNew_ = false;
-
                     T temp = *value;
                     this->value_.getValue(value);
-                    if ((*value) != temp)
+                    if (this->bContainerIsNew_ || (*value) != temp)
                     {
                         if (this->callback_ && object)
                             this->callback_->call(object);
                         else
                             this->bDoInitialCallback_ = true;
                     }
+
+                    if (this->bContainerIsNew_)
+                        this->bContainerIsNew_ = false;
                 }
                 else
                 {

@@ -78,8 +78,7 @@ namespace orxonox
 
     Shader::~Shader()
     {
-
-        if (this->bLoadCompositor_ && this->compositorInstance_)
+        if (this->compositorInstance_ && this->bLoadCompositor_)
         {
             Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
             assert(viewport);

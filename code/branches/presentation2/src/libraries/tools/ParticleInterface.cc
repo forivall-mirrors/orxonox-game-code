@@ -64,6 +64,8 @@ namespace orxonox
         this->bAllowedByLOD_ = true;
         this->speedFactor_ = 1.0f;
 
+        this->setDetailLevel(static_cast<unsigned int>(detaillevel));
+
         this->setConfigValues();
 
         if (GameMode::showsGraphics())
@@ -79,8 +81,6 @@ namespace orxonox
                 this->particleSystem_ = 0;
             }
         }
-
-        this->setDetailLevel(static_cast<unsigned int>(detaillevel));
     }
 
     ParticleInterface::~ParticleInterface()

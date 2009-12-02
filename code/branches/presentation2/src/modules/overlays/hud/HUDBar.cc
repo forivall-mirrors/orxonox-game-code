@@ -84,9 +84,9 @@ namespace orxonox
         this->bar_->setMaterialName(materialname);
 
         this->value_ = 1.0f;  // initielize with 1.0f to trigger a change when calling setValue(0.0f) on the line below
+        this->setAutoColour(true);
         this->setValue(0.0f); // <--
         this->setRightToLeft(false);
-        this->setAutoColour(true);
         this->currentColour_ = ColourValue::White;
 
         this->background_->addChild(bar_);

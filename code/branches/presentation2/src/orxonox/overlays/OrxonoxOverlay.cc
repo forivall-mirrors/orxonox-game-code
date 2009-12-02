@@ -82,15 +82,15 @@ namespace orxonox
 
         // Get aspect ratio from the render window. Later on, we get informed automatically
         this->windowAspectRatio_ = static_cast<float>(this->getWindowWidth()) / this->getWindowHeight();
-        this->sizeCorrectionChanged();
 
-        this->changedVisibility();
+        this->size_ = Vector2(1.0f, 1.0f);
+        this->pickPoint_= Vector2(0.0f, 0.0f);
+        this->position_ = Vector2(0.0f, 0.0f);
+        this->angle_ = Degree(0.0);
+        this->bCorrectAspect_ = false;
+        this->rotState_ = Horizontal;
+        this->angleChanged(); // updates all other values as well
 
-        setSize(Vector2(1.0f, 1.0f));
-        setPickPoint(Vector2(0.0f, 0.0f));
-        setPosition(Vector2(0.0f, 0.0f));
-        setRotation(Degree(0.0));
-        setAspectCorrection(false);
         setBackgroundMaterial("");
     }
 
