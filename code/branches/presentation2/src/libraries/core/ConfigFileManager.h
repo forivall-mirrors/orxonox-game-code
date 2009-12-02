@@ -56,6 +56,7 @@ namespace orxonox
     };
 
     _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value); // tolua_export
+    _CoreExport std::string getConfig(const std::string& classname, const std::string& varname); // tolua_export
     _CoreExport bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
     _CoreExport void reloadConfig();
     _CoreExport void saveConfig();

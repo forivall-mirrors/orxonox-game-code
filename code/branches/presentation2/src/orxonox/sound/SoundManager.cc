@@ -162,58 +162,27 @@ namespace orxonox
     
     void SoundManager::checkSoundVolumeValidity()
     {
-        if(this->soundVolume_ < 0.0 || this->soundVolume_ > 1.0)
+        if(!checkVolumeValidity(SoundType::none))
         {
-            COUT(2) << "Sound warning: Sound volume out of range, ignoring change." << std::endl;
             ResetConfigValue(soundVolume_);
         }
-        
-        this->updateVolume(SoundType::none);
-        COUT(3) << "SoundManager: volume set to " << this->soundVolume_ << std::endl;
-            
     }
     
     void SoundManager::checkAmbientVolumeValidity()
     {
-        if(this->ambientVolume_ < 0.0 || this->ambientVolume_ > 1.0)
+        if(!checkVolumeValidity(SoundType::ambient))
         {
-            COUT(2) << "Sound warning: Sound volume out of range, ignoring change." << std::endl;
             ResetConfigValue(ambientVolume_);
         }
-        
-        this->updateVolume(SoundType::ambient);
-        COUT(3) << "SoundManager: volume set to " << this->ambientVolume_ << std::endl;
     }
     
     void SoundManager::checkEffectsVolumeValidity()
     {
-        if(this->effectsVolume_ < 0.0 || this->effectsVolume_ > 1.0)
+        if(!checkVolumeValidity(SoundType::effects))
         {
-            COUT(2) << "Sound warning: Sound volume out of range, ignoring change." << std::endl;
             ResetConfigValue(effectsVolume_);
         }
-        
-        this->updateVolume(SoundType::effects);
-        COUT(3) << "SoundManager: volume set to " << this->effectsVolume_ << std::endl;
     }
-    
-//     void SoundManager::checkSoundVolumeValidity()
-//     {
-//         if(!checkVolumeValidity(SoundType::none))
-//             ResetConfigValue(soundVolume_)
-//     }
-//     
-//     void SoundManager::checkAmbientVolumeValidity()
-//     {
-//         if(!checkVolumeValidity(SoundType::ambient))
-//             ResetConfigValue(ambientVolume_);
-//     }
-//     
-//     void SoundManager::checkEffectsVolumeValidity()
-//     {
-//         if(!checkVolumeValidity(SoundType::effects))
-//             ResetConfigValue(effectsVolume_);
-//     }
 
     void SoundManager::setListenerPosition(const Vector3& position)
     {

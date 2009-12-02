@@ -56,6 +56,11 @@ namespace orxonox
         }
         return false;
     }
+    
+    std::string getConfig(const std::string& classname, const std::string& varname)
+    {
+        return ConfigFileManager::getInstance().getValue(ConfigFileType::Settings, classname, varname, "", true);
+    }
 
     bool tconfig(const std::string& classname, const std::string& varname, const std::string& value)
     {
