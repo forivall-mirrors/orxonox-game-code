@@ -40,16 +40,22 @@ extern "C" {
 #include "core/XMLPort.h"
 #include "worldentities/EffectContainer.h"
 #include "worldentities/pawns/SpaceShip.h"
+#include "sound/WorldSound.h"
 
 namespace orxonox
 {
     static const float FORWARD_EFFECT_VELOCITY_THRESHOLD = 20;
+    static const float MAX_VELOCITY_NORMAL = 111;
+    static const float MAX_VELOCITY_BOOST = 221;
 
     CreateFactory(MultiStateEngine);
 
     MultiStateEngine::MultiStateEngine(BaseObject* creator) : Engine(creator)
     {
         RegisterObject(MultiStateEngine);
+
+        defEngineSndNormal_ = new WorldSound(this);
+        defEngineSndNormal_->setLooping(true);
 
         this->lua_ = new LuaState();
         this->state_ = 0;
@@ -65,6 +71,7 @@ namespace orxonox
             for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
                 for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsBegin(); ++it2)
                     (*it2)->destroy();
+            delete this->defEngineSndNormal_;
             delete this->lua_;
         }
     }
@@ -73,6 +80,7 @@ namespace orxonox
     {
         SUPER(MultiStateEngine, XMLPort, xmlelement, mode);
         XMLPortObject(MultiStateEngine, EffectContainer, "",  addEffectContainer,  getEffectContainer,  xmlelement, mode);
+        XMLPortParam(MultiStateEngine, "defEngineSndNormal",  setDefEngSndNormal,  getDefEngSndNormal,  xmlelement, mode);
     }
 
     void MultiStateEngine::registerVariables()
@@ -91,13 +99,26 @@ namespace orxonox
                 const Vector3& direction = this->getDirection();
                 const Vector3& velocity = this->getShip()->getLocalVelocity();
 
+                float pitch = velocity.length();
                 bool forward = (direction.z < 0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
 
                 int newState = 0;
                 if (this->getShip()->getBoost() && forward)
+                {
                     newState = Boost;
+                    pitch = pitch/MAX_VELOCITY_BOOST + 1;
+                    pitch = pitch > 2 ? 2 : pitch;
+                    pitch = pitch < 0.5 ? 0.5 : pitch;
+                    defEngineSndNormal_->setPitch(pitch);
+                }
                 else if (forward && !newState) // newState == Boost
+                {
                     newState = Normal;
+                    pitch = pitch/MAX_VELOCITY_NORMAL + 1;
+                    pitch = pitch > 2 ? 2 : pitch;
+                    pitch = pitch < 0.5 ? 0.5 : pitch;
+                    defEngineSndNormal_->setPitch(pitch);
+                }
                 else if (direction.z > 0 && velocity.z < 0)
                     newState = Brake;
                 else
@@ -115,6 +136,14 @@ namespace orxonox
                     {
                         lua_pushboolean(this->lua_->getInternalLuaState(), newState & Normal);
                         lua_setglobal(this->lua_->getInternalLuaState(), "normal");
+                        if(newState & Normal)
+                        {
+                            defEngineSndNormal_->play();
+                        }
+                        else
+                        {
+                            defEngineSndNormal_->stop();
+                        }
                     }
                     if (changes & Brake)
                     {
@@ -150,6 +179,8 @@ namespace orxonox
         if (!ship)
             return;
 
+        this->getShip()->attach(defEngineSndNormal_);
+
         for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
             for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsEnd(); ++it2)
                 this->getShip()->attach(*it2);
@@ -177,5 +208,15 @@ namespace orxonox
                 return (*it);
         }
         return NULL;
+    }
+
+    void MultiStateEngine::setDefEngSndNormal(const std::string &engineSound)
+    {
+        defEngineSndNormal_->setSource(engineSound);
+    }
+
+    const std::string& MultiStateEngine::getDefEngSndNormal()
+    {
+        return defEngineSndNormal_->getSource();
     }
 }

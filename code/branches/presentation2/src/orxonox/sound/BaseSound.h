@@ -73,6 +73,9 @@ namespace orxonox
         bool getLooping() const   { return this->bLoop_; }
         void setLooping(bool val);
 
+        float getPitch() const   { return this->pitch_; }
+        void setPitch(float pitch);
+
         //ALuint getALAudioSource(void);
 
     protected:
@@ -91,6 +94,7 @@ namespace orxonox
 
         std::string     source_;
         float           volume_;
+        float           pitch_;
         bool            bLoop_;
         State           state_;
         DataStreamPtr   dataStream_;

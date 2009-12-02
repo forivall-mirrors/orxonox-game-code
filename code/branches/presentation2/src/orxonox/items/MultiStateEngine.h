@@ -63,11 +63,14 @@ namespace orxonox
 
             void addEffectContainer(EffectContainer* effect);
             EffectContainer* getEffectContainer(unsigned int index) const;
+            void setDefEngSndNormal(const std::string& engineSound);
+            const std::string& getDefEngSndNormal();
 
         private:
             int state_;
             LuaState* lua_;
             std::vector<EffectContainer*> effectContainers_;
+            WorldSound* defEngineSndNormal_;
     };
 }
 

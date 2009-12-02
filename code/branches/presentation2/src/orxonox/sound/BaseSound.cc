@@ -49,6 +49,9 @@ namespace orxonox
     {
         RegisterRootObject(BaseSound);
 
+        this->volume_ = 1;
+        this->pitch_ = 1;
+
         if (GameMode::playsSound())
         {
             alGenSources(1, &this->audioSource_);
@@ -130,6 +133,19 @@ namespace orxonox
             alSourcei(this->audioSource_, AL_LOOPING, (val ? AL_TRUE : AL_FALSE));
     }
 
+    void BaseSound::setPitch(float pitch)
+    {
+        if (pitch > 2 || pitch < 0.5)
+        {
+            COUT(2) << "Sound warning: pitch out of range, cropping value." << std::endl;
+            pitch = pitch > 2 ? 2 : pitch;
+            pitch = pitch < 0.5 ? 0.5 : pitch;
+        }        
+        this->pitch_ = pitch;
+        if (GameMode::playsSound())
+            alSourcei(this->audioSource_, AL_PITCH, pitch);
+    }
+
     void BaseSound::setSource(const std::string& source)
     {
         if (!GameMode::playsSound() || source == this->source_) 
@@ -193,6 +209,7 @@ namespace orxonox
 
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
         this->updateVolume();
+        this->setPitch(this->getPitch());
         alSourcei (this->audioSource_, AL_LOOPING, (this->bLoop_ ? AL_TRUE : AL_FALSE));
         if (this->isPlaying() || this->isPaused())
             alSourcePlay(this->audioSource_);
