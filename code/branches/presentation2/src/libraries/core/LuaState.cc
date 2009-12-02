@@ -91,7 +91,7 @@ namespace orxonox
         if (resourceGroup != "NoResourceGroupProvided")
             sourceInfo = Resource::getInfo(filename, resourceGroup);
 
-        // Continue search if not explicitely forbidden
+        // Continue search if not explicitly forbidden
         if (bSearchOtherPaths && sourceInfo == NULL)
         {
             // Call might be relative to the file currently being processed
@@ -139,7 +139,7 @@ namespace orxonox
 
     void LuaState::doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
-        // Save the oold source file info
+        // Save the old source file info
         shared_ptr<ResourceInfo> oldSourceFileInfo = sourceFileInfo_;
         // Only override if sourceFileInfo provides useful information
         if (sourceFileInfo != NULL)

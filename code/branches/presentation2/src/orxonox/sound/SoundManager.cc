@@ -503,5 +503,4 @@ namespace orxonox
             }
         }
     }
-    
 }

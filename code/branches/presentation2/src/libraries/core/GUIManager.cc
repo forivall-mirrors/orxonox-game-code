@@ -55,7 +55,6 @@ extern "C" {
 #include "util/OrxAssert.h"
 #include "ConsoleCommand.h"
 #include "Core.h"
-#include "input/InputManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"

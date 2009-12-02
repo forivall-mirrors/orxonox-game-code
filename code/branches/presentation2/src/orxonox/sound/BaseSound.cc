@@ -54,7 +54,6 @@ namespace orxonox
             alGenSources(1, &this->audioSource_);
             assert(this->audioSource_ != 0);
         }
-        
     }
 
     BaseSound::~BaseSound()

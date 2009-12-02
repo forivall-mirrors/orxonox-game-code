@@ -59,7 +59,7 @@ namespace orxonox
         void setConfigValues();
 
         //! Returns the currently selected KeyBinder
-        KeyBinder*    getCurrent()
+        KeyBinder* getCurrent()
             { return this->currentBinder_; }
         //! Like getCurrent(), but returns it as InputHandler* (so you don't have to include KeyBinder.h)
         InputHandler* getCurrentAsHandler();
@@ -67,7 +67,7 @@ namespace orxonox
         void setCurrent(const std::string& filename);
 
         //! Returns the default KeyBinder
-        KeyBinder*    getDefault()
+        KeyBinder* getDefault()
             { return binders_[this->defaultFilename_]; }
         //! Returns the default KeyBinder as InputHandler* (so you don't have to include KeyBinder.h)
         InputHandler* getDefaultAsHandler();
@@ -79,12 +79,12 @@ namespace orxonox
             { this->setCurrent(this->defaultFilename_); }
 
         //! Returns a pointer to a KeyBinder (creates it if not yet loaded)
-        KeyBinder*    get(const std::string& name);
+        KeyBinder* get(const std::string& name);
         //! Like get() but return value is of type InputHandler* (so you don't have to include KeyBinder.h)
         InputHandler* getAsHandler(const std::string& name);
 
         //! Loads a KeyBinder by creating it (no different from get() except for the return value)
-        void load  (const std::string& filename);
+        void load(const std::string& filename);
         //! Destroys a KeyBinder completely (does nothing if not yet loaded)
         void unload(const std::string& filename);
 

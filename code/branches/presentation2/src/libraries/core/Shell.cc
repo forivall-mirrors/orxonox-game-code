@@ -65,7 +65,7 @@ namespace orxonox
         this->commandHistoryConfigFileType_ = ConfigFileManager::getInstance().getNewConfigFileType();
         ConfigFileManager::getInstance().setFilename(this->commandHistoryConfigFileType_, "commandHistory.ini");
 
-        // Use a stringstream object to buffer the output and get it line by line in update()
+        // Use a stringstream object to buffer the output
         this->outputStream_ = &this->outputBuffer_;
 
         this->setConfigValues();
