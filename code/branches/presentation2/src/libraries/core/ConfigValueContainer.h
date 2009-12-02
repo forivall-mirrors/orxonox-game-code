@@ -149,14 +149,12 @@ namespace orxonox
                     this->value_.getValue(value);
                     if (this->bContainerIsNew_ || (*value) != temp)
                     {
+                        this->bContainerIsNew_ = false;
                         if (this->callback_ && object)
                             this->callback_->call(object);
                         else
                             this->bDoInitialCallback_ = true;
                     }
-
-                    if (this->bContainerIsNew_)
-                        this->bContainerIsNew_ = false;
                 }
                 else
                 {
