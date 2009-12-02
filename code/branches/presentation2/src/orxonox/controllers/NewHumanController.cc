@@ -382,9 +382,9 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
-        if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip") {
-            this->doResumeControl();
-        }
+//         if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip") {
+//             this->doResumeControl();
+//         }
     }
 
     void NewHumanController::accelerate()
