@@ -83,6 +83,7 @@ function showGUI(filename, hidePrevious, bCursorVisible)
     else
         if nrOfActiveSheets == 0 then
             orxonox.InputManager:getInstance():enterState("guiMouseOnly")
+            orxonox.HumanController:pauseControl()
         end
     end
     nrOfActiveSheets = nrOfActiveSheets + 1
@@ -156,6 +157,7 @@ function hideGUI(filename)
     bHidePrevious[filename] = nil
     if nrOfActiveSheets == 0 then
         orxonox.InputManager:getInstance():leaveState("guiMouseOnly")
+        orxonox.HumanController:resumeControl()
         hideCursor()
     end
 end

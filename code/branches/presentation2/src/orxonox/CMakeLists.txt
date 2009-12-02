@@ -56,6 +56,7 @@ ORXONOX_ADD_LIBRARY(orxonox
   TOLUA_FILES
     LevelManager.h
     MoodManager.h
+    controllers/HumanController.h
     pickup/BaseItem.h
     pickup/PickupInventory.h
     sound/SoundManager.h
