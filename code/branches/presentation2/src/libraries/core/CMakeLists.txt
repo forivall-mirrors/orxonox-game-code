@@ -90,6 +90,8 @@ ORXONOX_ADD_LIBRARY(core
     Loader.h
     LuaState.h
     input/InputManager.h
+    input/KeyBinder.h
+    input/KeyBinderManager.h
   DEFINE_SYMBOL
     "CORE_SHARED_BUILD"
   PCH_FILE

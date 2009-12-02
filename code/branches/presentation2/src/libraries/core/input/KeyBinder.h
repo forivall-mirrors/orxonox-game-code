@@ -42,8 +42,10 @@
 #include "InputCommands.h"
 #include "JoyStickQuantityListener.h"
 
+// tolua_begin
 namespace orxonox
 {
+    // tolua_end
     /**
     @brief
         Maps mouse, keyboard and joy stick input to command strings and executes them.
@@ -53,14 +55,16 @@ namespace orxonox
         You cannot change the filename because the KeyBinderManager maps these filenames to the
         KeyBinders. If you need to load other bindings, just create a new one.
     */
-    class _CoreExport KeyBinder : public InputHandler, public JoyStickQuantityListener
-    {
+    class _CoreExport KeyBinder // tolua_export
+        : public InputHandler, public JoyStickQuantityListener
+    { // tolua_export
     public:
         KeyBinder (const std::string& filename);
         virtual ~KeyBinder();
 
         void clearBindings();
         bool setBinding(const std::string& binding, const std::string& name, bool bTemporary = false);
+        std::string getBinding(std::string commandName); //tolua_export
         const std::string& getBindingsFilename()
             { return this->filename_; }
         void setConfigValues();
@@ -129,6 +133,8 @@ namespace orxonox
         std::map<std::string, Button*> allButtons_;
         //! Pointer list with all half axes
         std::vector<HalfAxis*> allHalfAxes_;
+        //! Maps input commands to all Button names, including half axes
+        std::map<std::string, std::string> allCommands_;
 
         /**
         @brief
@@ -173,7 +179,7 @@ namespace orxonox
         //##### Constant config variables #####
         // Use some value at about 1000. This can be configured with mouseSensitivity_ anyway.
         static const int mouseClippingSize_ = 1024;
-    };
+    };// tolua_export
 
 
     inline void KeyBinder::buttonPressed (const KeyEvent& evt)
@@ -218,6 +224,6 @@ namespace orxonox
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
             mouseAxes_[i].relVal_ = 0.0f;
     }
-}
+}// tolua_export
 
 #endif /* _KeyBinder_H__ */

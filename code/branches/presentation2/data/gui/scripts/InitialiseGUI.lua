@@ -54,7 +54,11 @@ end
 -- be sure to set the global variable "filename" before calling this function
 function showGUI(filename, hidePrevious, bCursorVisible)
     if bCursorVisible == nil then
-        bCursorVisible = true
+        if nrOfActiveSheets > 0 then
+            bCursorVisible = cursorVisibility[nrOfActiveSheets]
+        else
+            bCursorVisible = true
+        end
     end
 
     if root == nil then
@@ -169,7 +173,9 @@ function hideAllGUIs()
 end
 
 function keyESC()
-    if nrOfActiveSheets > 0 then
+    if nrOfActiveSheets == 1 and activeSheets[1] == "MainMenu" then
+        orxonox.CommandExecutor:execute("exit")
+    elseif nrOfActiveSheets > 0 then
         orxonox.CommandExecutor:execute("hideGUI "..activeSheets[nrOfActiveSheets])
     else
         showGUI("InGameMenu")

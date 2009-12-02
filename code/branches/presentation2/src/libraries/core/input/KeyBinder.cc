@@ -253,7 +253,10 @@ namespace orxonox
 
         // Parse bindings and create the ConfigValueContainers if necessary
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
+        {
             it->second->readConfigValue(this->configFile_);
+            this->allCommands_[it->second->bindingString_] = it->second->groupName_ + " " + it->second->name_;
+        }
 
         COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
     }
@@ -268,6 +271,7 @@ namespace orxonox
             else
                 it->second->configContainer_->set(binding);
             it->second->configContainer_->getValue(&(it->second->bindingString_), it->second);
+            this->allCommands_[it->second->bindingString_] = it->second->groupName_ + " " + it->second->name_;
             return true;
         }
         else
@@ -275,6 +279,25 @@ namespace orxonox
             COUT(2) << "Could not find key/button/axis with name '" << name << "'." << std::endl;
             return false;
         }
+    }
+    
+    /**
+    @brief
+        Return the key name for a specific command
+    */
+    std::string KeyBinder::getBinding(std::string commandName)
+    {
+        COUT(0)<< commandName << endl;
+        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        {
+            std::string keyname = this->allCommands_[commandName];
+//             while(keyname.find(".")!=keyname.npos)
+//                 keyname.replace(1, keyname.find("."), " ");
+            COUT(0) << keyname << endl;
+            return keyname;
+        }
+        else
+            return "";
     }
 
     /**

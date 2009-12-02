@@ -36,8 +36,8 @@
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
-namespace orxonox
-{
+namespace orxonox //tolua_export
+{ //tolua_export
     /**
     @brief
         Handles the KeyBinders and supplies them throughout the game.
@@ -50,17 +50,18 @@ namespace orxonox
         You are not forced to use the KeyBinder imposed by getCurrent(). But be aware that "keybind"
         will not work as expected!
     */
-    class _CoreExport KeyBinderManager : public Singleton<KeyBinderManager>, public OrxonoxClass
-    {
+    class _CoreExport KeyBinderManager //tolua_export
+        : public Singleton<KeyBinderManager>, public OrxonoxClass
+    { //tolua_export
         friend class Singleton<KeyBinderManager>;
     public:
         KeyBinderManager();
         ~KeyBinderManager();
         void setConfigValues();
 
+        static KeyBinderManager& getInstance() { return Singleton<KeyBinderManager>::getInstance(); } //tolua_export
         //! Returns the currently selected KeyBinder
-        KeyBinder* getCurrent()
-            { return this->currentBinder_; }
+        KeyBinder* getCurrent() { return this->currentBinder_; } //tolua_export
         //! Like getCurrent(), but returns it as InputHandler* (so you don't have to include KeyBinder.h)
         InputHandler* getCurrentAsHandler();
         //! Selects the current KeyBinder and creates it if not yet loaded.
@@ -114,7 +115,7 @@ namespace orxonox
         std::string command_;                        //! Stores the command received by (t)keybind
 
         static KeyBinderManager* singletonPtr_s;
-    };
-}
+    }; //tolua_export
+} //tolua_export
 
 #endif /* _KeyBinderManager_H__ */

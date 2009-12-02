@@ -259,6 +259,7 @@ namespace orxonox
         this->cout_.flush();
 
         // Process output written to std::cout
+        std::cout.flush();
         if (!this->origCout_.str().empty())
         {
             this->shell_->addOutputLine(this->origCout_.str(), Shell::None);

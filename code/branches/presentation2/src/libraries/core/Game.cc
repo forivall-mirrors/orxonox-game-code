@@ -57,9 +57,6 @@ namespace orxonox
     static void stop_game()
         { Game::getInstance().stop(); }
     SetConsoleCommandShortcutExternAlias(stop_game, "exit");
-    static void key_esc()
-        { Game::getInstance().keyESC(); }
-    SetConsoleCommandShortcutExternAlias(key_esc, "keyESC");
     static void printFPS()
         { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
     SetConsoleCommandShortcutExternAlias(printFPS, "printFPS");
@@ -328,14 +325,6 @@ namespace orxonox
         // Anti windup
         if (excessSleepTime_ > 50000) // 20ms is about the maximum time Windows would sleep for too long
             excessSleepTime_ = 50000;
-    }
-
-    void Game::keyESC()
-    {
-        if( this->getState("mainMenu") && this->getState("mainMenu")->getActivity().active==true )
-            this->stop();
-        else
-            GUIManager::getInstance().keyESC();
     }
 
     void Game::stop()

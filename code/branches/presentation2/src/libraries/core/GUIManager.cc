@@ -61,6 +61,10 @@ extern "C" {
 
 namespace orxonox
 {
+    static void key_esc()
+        { GUIManager::getInstance().keyESC(); }
+    SetConsoleCommandShortcutExternAlias(key_esc, "keyESC");
+    
     class CEGUILogger : public CEGUI::DefaultLogger
     {
     public:
