@@ -21,7 +21,7 @@
   <AmbientSound ambientSource="Asteroid_rocks.ogg" loop="true" play="false">
 	<events>
 		<activity>
-			<DistanceTrigger position="300,100,0" distance=200 target="ControllableEntity">
+			<DistanceTrigger position="300,100,0" distance=200 target="Camera">
 				<attached>
 					<ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
 				</attached>

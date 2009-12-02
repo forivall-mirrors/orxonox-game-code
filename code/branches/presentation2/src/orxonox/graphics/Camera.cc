@@ -41,6 +41,7 @@
 #include "core/GUIManager.h"
 #include "Scene.h"
 #include "CameraManager.h"
+#include "sound/SoundManager.h"
 
 namespace orxonox
 {
@@ -129,6 +130,13 @@ namespace orxonox
             this->cameraNode_->translate(coeff * offset);
 
             this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
+        }
+
+        // Update sound listener transformation
+        if (GameMode::playsSound() && this->bHasFocus_)
+        {
+            SoundManager::getInstance().setListenerPosition(this->getWorldPosition());
+            SoundManager::getInstance().setListenerOrientation(this->getWorldOrientation());
         }
     }
 

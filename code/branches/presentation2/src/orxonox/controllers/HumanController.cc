@@ -35,8 +35,6 @@
 #include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/Map.h"
-#include "graphics/Camera.h"
-#include "sound/SoundManager.h"
 #include "Radar.h"
 #include "Scene.h"
 
@@ -82,14 +80,8 @@ namespace orxonox
     {
         if (GameMode::playsSound() && HumanController::localController_s && HumanController::localController_s->controllableEntity_)
         {
-            // Update sound listener
             Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
-            if (camera)
-            {
-                SoundManager::getInstance().setListenerPosition(camera->getWorldPosition());
-                SoundManager::getInstance().setListenerOrientation(camera->getWorldOrientation());
-            }
-            else
+            if (!camera)
                 COUT(3) << "HumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
         }
     }
