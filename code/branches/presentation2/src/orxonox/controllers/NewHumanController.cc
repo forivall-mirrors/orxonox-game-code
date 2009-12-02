@@ -91,28 +91,28 @@ namespace orxonox
             if (showArrows_)
             {
                 arrowsOverlay1_ = new OrxonoxOverlay(this);
-                arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
+                arrowsOverlay1_->setBackgroundMaterial("Orxonox/CenterOverlay");
                 arrowsOverlay1_->setSize(Vector2(0.02727, 0.36 * arrowsSize_));
                 arrowsOverlay1_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay1_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay1_->hide();
     
                 arrowsOverlay2_ = new OrxonoxOverlay(this);
-                arrowsOverlay2_->setBackgroundMaterial("Orxonox/DirectionArrows2");
+                arrowsOverlay2_->setBackgroundMaterial("Orxonox/CenterOverlay");
                 arrowsOverlay2_->setSize(Vector2(0.02727, 0.59 * arrowsSize_));
                 arrowsOverlay2_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay2_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay2_->hide();
     
                 arrowsOverlay3_ = new OrxonoxOverlay(this);
-                arrowsOverlay3_->setBackgroundMaterial("Orxonox/DirectionArrows3");
+                arrowsOverlay3_->setBackgroundMaterial("Orxonox/CenterOverlay");
                 arrowsOverlay3_->setSize(Vector2(0.02727, 0.77 * arrowsSize_));
                 arrowsOverlay3_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay3_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay3_->hide();
     
                 arrowsOverlay4_ = new OrxonoxOverlay(this);
-                arrowsOverlay4_->setBackgroundMaterial("Orxonox/DirectionArrows4");
+                arrowsOverlay4_->setBackgroundMaterial("Orxonox/CenterOverlay");
                 arrowsOverlay4_->setSize(Vector2(0.02727, arrowsSize_));
                 arrowsOverlay4_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay4_->setPosition(Vector2(0.5, 0.5));
