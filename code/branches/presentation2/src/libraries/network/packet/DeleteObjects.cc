@@ -70,7 +70,6 @@ bool DeleteObjects::fetchIDs(){
   tdata += sizeof(uint32_t);
   for(unsigned int i=0; i<number; i++){
     unsigned int temp = Synchronisable::popDeletedObject();
-//     assert(temp<10000); //ugly hack
     *reinterpret_cast<uint32_t*>(tdata) = temp;
     COUT(4) << temp << " ";
     tdata += sizeof(uint32_t);

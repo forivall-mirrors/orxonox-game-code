@@ -217,7 +217,8 @@ namespace orxonox
     {
         ControllableEntity* entity = this->controllableEntity_;
 
-        if (!entity || !this->oldControllableEntity_)
+        assert( this->controllableEntity_ && this->oldControllableEntity_ );
+        if( !entity || !this->oldControllableEntity_ )
             return;
 
         this->controllableEntity_ = this->oldControllableEntity_;

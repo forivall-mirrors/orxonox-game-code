@@ -389,5 +389,16 @@ namespace orxonox
     this->objectMode_=mode;
   }
 
+  template <> void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+  {
+    SynchronisableVariableBase* sv;
+    if (bidirectional)
+      sv = new SynchronisableVariableBidirectional<std::string>(variable, mode, cb);
+    else
+      sv = new SynchronisableVariable<std::string>(variable, mode, cb);
+    syncList.push_back(sv);
+    stringList.push_back(sv);
+  }
+
 
 }

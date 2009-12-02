@@ -80,10 +80,9 @@ namespace orxonox{
       virtual inline uint32_t getSize(uint8_t mode);
       virtual inline void* getReference(){ return static_cast<void*>(const_cast<typename Loki::TypeTraits<T>::UnqualifiedType*>(&this->variable_)); }
     protected:
-      
-      T& variable_;
-      uint8_t mode_;
-      NetworkCallbackBase *callback_;
+      T&                       variable_;
+      uint8_t                  mode_;
+      NetworkCallbackBase      *callback_;
   };
   
   template <class T>
@@ -115,7 +114,7 @@ namespace orxonox{
   
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()
   {
-    if (this->callback_ != 0)
+    if (this->callback_)
     {
       NetworkCallbackManager::deleteCallback(this->callback_); //safe call for deletion
       // this is neccessary because for example for a Vector3 all 3 components of the vector use the same callback
@@ -140,15 +139,17 @@ namespace orxonox{
     if ( mode == this->mode_ ) //don't do anything
       return;
   // check whether we need to consider a callback
-    if ( this->callback_ != 0 )
+    if ( this->callback_ )
     {
       callback = forceCallback || !checkEquality( this->variable_, mem );
     }
-  // write the data
-    loadAndIncrease( this->variable_, mem );
   // now do a callback if neccessary
     if ( callback )
+    {
       NetworkCallbackManager::triggerCallback( this->callback_ );
+    }
+  // write the data
+    loadAndIncrease( this->variable_, mem );
   }
 
   template <class T> inline uint32_t SynchronisableVariable<T>::getSize(uint8_t mode)
@@ -214,7 +215,7 @@ namespace orxonox{
           {
             mem += sizeof(varReference_);
             memcpy(static_cast<void*>(const_cast<typename Loki::TypeTraits<T>::UnqualifiedType*>(&this->varBuffer_)), &this->variable_, sizeof(T));
-            if ( this->callback_ != 0 )
+            if ( this->callback_ )
               callback = true;
           }
         }
@@ -233,16 +234,18 @@ namespace orxonox{
           if ( checkEquality( this->variable_, mem ) == false )
           {
             // value changed so remark for callback
-            if ( this->callback_ != 0 )
+            if ( this->callback_ )
               callback = true;
           }
         }
       }
-  // now write the data
-      loadAndIncrease(this->variable_, mem);
   // now do a callback if neccessary
       if ( callback )
+      {
         NetworkCallbackManager::triggerCallback( this->callback_ );
+      }
+  // now write the data
+      loadAndIncrease(this->variable_, mem);
     }
 
     template <class T> inline uint32_t SynchronisableVariableBidirectional<T>::getSize(uint8_t mode)
