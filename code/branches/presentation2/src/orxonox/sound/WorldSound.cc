@@ -95,7 +95,7 @@ namespace orxonox
         else 
             this->stop();
     }
-    
+
     float WorldSound::getVolumeGain()
     {
         return SoundManager::getInstance().getVolume(SoundType::effects);

@@ -123,7 +123,11 @@ namespace orxonox
     void BaseSound::updateVolume(void)
     {
         if (alIsSource(this->audioSource_))
+        {
             alSourcef(this->audioSource_, AL_GAIN, this->volume_*this->getVolumeGain());
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error setting volume: " << error << std::endl;
+        }
     }
 
     void BaseSound::setLooping(bool val)
@@ -143,7 +147,11 @@ namespace orxonox
         }        
         this->pitch_ = pitch;
         if (GameMode::playsSound())
+        {
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error setting pitch: " << error << std::endl;
             alSourcei(this->audioSource_, AL_PITCH, pitch);
+        }
     }
 
     void BaseSound::setSource(const std::string& source)
@@ -188,13 +196,10 @@ namespace orxonox
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
         this->updateVolume();
         this->setPitch(this->getPitch());
-        alSourcei (this->audioSource_, AL_LOOPING, (this->bLoop_ ? AL_TRUE : AL_FALSE));
+        this->setLooping(getLooping());
         if (this->isPlaying() || this->isPaused())
-            alSourcePlay(this->audioSource_);
+            BaseSound::play();
         if (this->isPaused())
-            alSourcePause(this->audioSource_);
-
-        if (int error = alGetError())
-            COUT(2) << "Sound: OpenAL: Error playing sound: " << error << std::endl;
+            BaseSound::pause();
     }
 }
