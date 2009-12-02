@@ -55,7 +55,7 @@ end
 function showGUI(filename, hidePrevious, bCursorVisible)
     if bCursorVisible == nil then
         if nrOfActiveSheets > 0 then
-            bCursorVisible = cursorVisibility[nrOfActiveSheets]
+            bCursorVisible = cursorVisibility[activeSheets[nrOfActiveSheets]]
         else
             bCursorVisible = true
         end
