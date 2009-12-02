@@ -491,7 +491,7 @@ namespace orxonox
 
     void SoundManager::removeBuffer(shared_ptr<ResourceInfo> fileInfo)
     {
-        std::map<std::string, weak_ptr<SoundBuffer> >::const_iterator it
+        std::map<std::string, weak_ptr<SoundBuffer> >::iterator it
             = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
         if (it == this->soundBuffers_.end())
             this->soundBuffers_.erase(it);
