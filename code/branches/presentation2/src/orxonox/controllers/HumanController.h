@@ -74,6 +74,11 @@ namespace orxonox
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
 
+            static void pauseControl();
+            static void resumeControl();
+            virtual void doPauseControl() {};
+            virtual void doResumeControl() {};
+
             static inline HumanController* getLocalControllerSingleton()
                 { return HumanController::localController_s; }
             static Pawn* getLocalControllerEntityAsPawn();
@@ -82,6 +87,7 @@ namespace orxonox
 
         protected:
             static HumanController* localController_s;
+            bool controlPaused_;
     };
 }
 

@@ -58,6 +58,8 @@ namespace orxonox
             static void changeMode();
 
             virtual void changedControllableEntity();
+            virtual void doPauseControl();
+            virtual void doResumeControl();
 
         protected:
             void updateTarget();
@@ -68,6 +70,7 @@ namespace orxonox
             float                       currentYaw_;
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
+            OrxonoxOverlay*             centerOverlay_;
             float                       overlaySize_;
             bool                        accelerating_;
             float                       acceleration_;

@@ -68,6 +68,8 @@ namespace orxonox
     {
         RegisterObject(HumanController);
 
+        controlPaused_ = false;
+
         HumanController::localController_s = this;
     }
 
@@ -248,5 +250,17 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->getScene()->getRadar()->releaseFocus();
+    }
+
+    void HumanController::pauseControl()
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->doPauseControl();
+    }
+
+    void HumanController::resumeControl()
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->doResumeControl();
     }
 }

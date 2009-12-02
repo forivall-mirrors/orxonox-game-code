@@ -39,7 +39,7 @@ namespace orxonox
         // set friend classes to access setControllableEntity
         friend class PlayerInfo;
         friend class ControllableEntity;
-        
+
         public:
             Controller(BaseObject* creator);
             virtual ~Controller();

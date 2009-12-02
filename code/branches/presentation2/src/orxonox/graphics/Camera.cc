@@ -113,13 +113,24 @@ namespace orxonox
         if (this->bDrag_)
         {
             // this stuff here may need some adjustments
-            float coeff = 15.0f * dt / this->getTimeFactor();
+            float poscoeff = 15.0f * dt / this->getTimeFactor();
+            float anglecoeff = 7.0f * dt / this->getTimeFactor();
             // Only clamp if fps rate is actually falling. Occasional high dts should
             // not be clamped to reducing lagging effects.
-            if (coeff > 1.0f)
+            if (poscoeff > 1.0f)
             {
                 if (this->lastDtLagged_)
-                    coeff = 1.0f;
+                    poscoeff = 1.0f;
+                else
+                    this->lastDtLagged_ = true;
+            }
+            else
+                this->lastDtLagged_ = false;
+
+            if (anglecoeff > 1.0f)
+            {
+                if (this->lastDtLagged_)
+                    anglecoeff = 1.0f;
                 else
                     this->lastDtLagged_ = true;
             }
@@ -127,9 +138,9 @@ namespace orxonox
                 this->lastDtLagged_ = false;
 
             Vector3 offset = this->getWorldPosition() - this->cameraNode_->_getDerivedPosition();
-            this->cameraNode_->translate(coeff * offset);
+            this->cameraNode_->translate(poscoeff * offset);
 
-            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
+            this->cameraNode_->setOrientation(Quaternion::Slerp(anglecoeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
         }
 
         // Update sound listener transformation

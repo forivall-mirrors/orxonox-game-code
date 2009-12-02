@@ -56,6 +56,7 @@ namespace orxonox
     NewHumanController::NewHumanController(BaseObject* creator)
         : HumanController(creator)
         , crossHairOverlay_(NULL)
+        , centerOverlay_(NULL)
     {
         RegisterObject(NewHumanController);
 
@@ -71,7 +72,13 @@ namespace orxonox
             crossHairOverlay_ = new OrxonoxOverlay(this);
             crossHairOverlay_->setBackgroundMaterial("Orxonox/Crosshair3");
             crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
-            crossHairOverlay_->show();
+            crossHairOverlay_->hide();
+
+            centerOverlay_ = new OrxonoxOverlay(this);
+            centerOverlay_->setBackgroundMaterial("Orxonox/CenterOverlay");
+            centerOverlay_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
+            centerOverlay_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+            centerOverlay_->hide();
         }
 
         // HACK: Define which objects are targetable when considering the creator of an orxonox::Model
@@ -80,6 +87,8 @@ namespace orxonox
         this->targetMask_.exclude(ClassByString("Projectile"));
 
         NewHumanController::localController_s = this;
+
+//HumanController::localController_s->getControllableEntity()->getCamera()->setDrag(true);
     }
 
     NewHumanController::~NewHumanController()
@@ -98,12 +107,16 @@ namespace orxonox
             if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
             {
                 this->updateTarget();
-                this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
-                this->crossHairOverlay_->show();
+                if ( !controlPaused_ ) {
+                    this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
+                    this->crossHairOverlay_->show();
+                    this->centerOverlay_->show();
+                }
             }
-            else
+            else {
                 this->crossHairOverlay_->hide();
-            // TODO: update aimPosition of Pawn
+                this->centerOverlay_->hide();
+            }
 
             if ( this->acceleration_ > 0 )
             {
@@ -228,7 +241,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
                     pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance );
                 }
 
-                itr->movable->getParentSceneNode()->showBoundingBox(true);
+                //itr->movable->getParentSceneNode()->showBoundingBox(true);
                 //std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
                 //return mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance; //or itr->movable->getParentSceneNode()->_getDerivedPosition()
                 return;
@@ -306,5 +319,17 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         {
             NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ - 0.1f, 0.0f, 1.0f);
         }
+    }
+
+    void NewHumanController::doResumeControl() {
+        this->controlPaused_ = false;
+        this->crossHairOverlay_->show();
+        this->centerOverlay_->show();
+    }
+
+    void NewHumanController::doPauseControl() {
+        this->controlPaused_ = true;
+        this->crossHairOverlay_->hide();
+        this->centerOverlay_->hide();
     }
 }
