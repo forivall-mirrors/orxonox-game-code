@@ -25,6 +25,7 @@
             </Window>
             <Window Type="TaharezLook/Button" Name="orxonox/MultiplayerOptionsButton" >
                 <Property Name="Text" Value="Multiplayer options" />
+                <Property Name="Disabled" Value="True" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.454545,0},{0.45,0},{0.636363,0}}" />
                 <Event Name="Clicked" Function="SettingsMenu.SettingsMultiplayerOptionsButton_clicked"/>

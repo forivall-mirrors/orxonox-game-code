@@ -14,14 +14,14 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.15,0},{0.325,0},{0.85,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.325,0},{0.8,0},{0.6,0}}" />
             <Window Type="TaharezLook/StaticText" Name="orxonox/MasterVolume" >
-                <Property Name="Text" Value="Master volume" />
+                <Property Name="Text" Value="Master volume               " />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.03,0},{0.2,0},{0.34,0},{0.4,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.2,0},{0.5625,0},{0.4,0}}" />
                 <Window Type="TaharezLook/HorizontalScrollbar" Name="orxonox/MasterScrollbar" >
                     <Property Name="PageSize" Value="0" />
                     <Property Name="StepSize" Value="1" />
@@ -30,19 +30,25 @@
                     <Property Name="ScrollPosition" Value="0" />
                     <Property Name="StepSize" Value="0.1" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.6,0},{0.95,0},{0.8,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.04,0},{0.6,0},{0.71,0},{0.8,0}}" />
                     <Event Name="ThumbTrackStarted" Function="AudioMenu.AudioMasterScrollbar_started" />
                     <Event Name="ThumbTrackEnded" Function="AudioMenu.AudioMasterScrollbar_ended" />
                     <Event Name="ScrollPosChanged" Function="AudioMenu.AudioMasterScrollbar_changed" />
                 </Window>
+                <Window Type="TaharezLook/Checkbox" Name="orxonox/MasterCheckbox" >
+                    <Property Name="Text" Value="Mute" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.775,0},{0.45,0},{0.96,0},{0.9,0}}" />
+                    <Event Name="CheckStateChanged" Function="AudioMenu.AudioMuteMasterCheckbox_clicked"/>
+                </Window>
             </Window>
             <Window Type="TaharezLook/StaticText" Name="orxonox/MusicVolume" >
-                <Property Name="Text" Value="Music volume" />
+                <Property Name="Text" Value="Music volume               " />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.03,0},{0.45,0},{0.34,0},{0.65,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.45,0},{0.5625,0},{0.65,0}}" />
                 <Window Type="TaharezLook/HorizontalScrollbar" Name="orxonox/MusicScrollbar" >
                     <Property Name="PageSize" Value="0" />
                     <Property Name="StepSize" Value="1" />
@@ -51,19 +57,25 @@
                     <Property Name="ScrollPosition" Value="0" />
                     <Property Name="StepSize" Value="0.1" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.6,0},{0.95,0},{0.8,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.04,0},{0.6,0},{0.71,0},{0.8,0}}" />
                     <Event Name="ThumbTrackStarted" Function="AudioMenu.AudioMusicScrollbar_started" />
                     <Event Name="ThumbTrackEnded" Function="AudioMenu.AudioMusicScrollbar_ended" />
                     <Event Name="ScrollPosChanged" Function="AudioMenu.AudioMusicScrollbar_changed" />
                 </Window>
+                <Window Type="TaharezLook/Checkbox" Name="orxonox/MusicCheckbox" >
+                    <Property Name="Text" Value="Mute" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.775,0},{0.45,0},{0.96,0},{0.9,0}}" />
+                    <Event Name="CheckStateChanged" Function="AudioMenu.AudioMuteMusicCheckbox_clicked"/>
+                </Window>
             </Window>
             <Window Type="TaharezLook/StaticText" Name="orxonox/EffectsVolume" >
-                <Property Name="Text" Value="Effects volume" />
+                <Property Name="Text" Value="Effects volume               " />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.03,0},{0.7,0},{0.34,0},{0.9,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.7,0},{0.5625,0},{0.9,0}}" />
                 <Window Type="TaharezLook/HorizontalScrollbar" Name="orxonox/EffectsScrollbar" >
                     <Property Name="PageSize" Value="0" />
                     <Property Name="StepSize" Value="1" />
@@ -72,10 +84,16 @@
                     <Property Name="ScrollPosition" Value="0" />
                     <Property Name="StepSize" Value="0.1" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.6,0},{0.95,0},{0.8,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.04,0},{0.6,0},{0.71,0},{0.8,0}}" />
                     <Event Name="ThumbTrackStarted" Function="AudioMenu.AudioEffectsScrollbar_started" />
                     <Event Name="ThumbTrackEnded" Function="AudioMenu.AudioEffectsScrollbar_ended" />
                     <Event Name="ScrollPosChanged" Function="AudioMenu.AudioEffectsScrollbar_changed" />
+                </Window>
+                <Window Type="TaharezLook/Checkbox" Name="orxonox/EffectsCheckbox" >
+                    <Property Name="Text" Value="Mute" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.775,0},{0.45,0},{0.96,0},{0.9,0}}" />
+                    <Event Name="CheckStateChanged" Function="AudioMenu.AudioMuteEffectsCheckbox_clicked"/>
                 </Window>
             </Window>
             <Window Type="TaharezLook/StaticText" Name="orxonox/AudioTheme" >
@@ -84,7 +102,7 @@
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.66,0},{0.2,0},{0.97,0},{0.9,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.604166,0},{0.2,0},{0.958333,0},{0.9,0}}" />
                 <Window Type="TaharezLook/Combobox" Name="orxonox/AudioThemeCombobox" >
                     <Property Name="AlwaysOnTop" Value="True" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -94,39 +112,12 @@
                     <Event Name="ListSelectionAccepted" Function="AudioMenu.AudioThemeCombobox_changed" />
                 </Window>
             </Window>
-            <Window Type="TaharezLook/Checkbox" Name="orxonox/MasterCheckbox" >
-                <Property Name="Text" Value="Mute master" />
-                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.375,0},{0.275,0},{0.625,0},{0.375,0}}" />
-                <Event Name="CheckStateChanged" Function="AudioMenu.AudioMuteMasterCheckbox_clicked"/>
-            </Window>
-            <Window Type="TaharezLook/Checkbox" Name="orxonox/MusicCheckbox" >
-                <Property Name="Text" Value="Mute music" />
-                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.375,0},{0.525,0},{0.625,0},{0.625,0}}" />
-                <Event Name="CheckStateChanged" Function="AudioMenu.AudioMuteMusicCheckbox_clicked"/>
-            </Window>
-            <Window Type="TaharezLook/Checkbox" Name="orxonox/EffectsCheckbox" >
-                <Property Name="Text" Value="Mute effects" />
-                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.375,0},{0.775,0},{0.625,0},{0.875,0}}" />
-                <Event Name="CheckStateChanged" Function="AudioMenu.AudioMuteEffectsCheckbox_clicked"/>
-            </Window>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/AudioBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
             <Event Name="Clicked" Function="AudioMenu.AudioBackButton_clicked"/>
-        </Window>
-        <Window Type="TaharezLook/StaticText" Name="orxonox/AudioAvailable" >
-            <Property Name="Text" Value="Changes in audio settings are not yet available." />
-            <Property Name="TextColours" Value="FFFF0000" />
-            <Property Name="InheritsAlpha" Value="False" />
-            <Property Name="HorzFormatting" Value="HorzCentred" />
-            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.75,0},{0.75,0},{0.8,0}}" />
         </Window>
     </Window>
 </GUILayout>
