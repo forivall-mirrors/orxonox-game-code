@@ -110,8 +110,10 @@ namespace orxonox
         void setVolumeInternal(float vol, SoundType::Value type);
         float getVolumeInternal(SoundType::Value type);
 
+/*
         ALCdevice* device_;
         ALCcontext* context_;
+*/
        
         typedef std::list<std::pair<AmbientSound*, bool> > AmbientList;
         AmbientList ambientSounds_;

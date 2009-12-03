@@ -54,10 +54,18 @@ namespace orxonox
     {
         RegisterRootObject(SoundManager);
 
+/*
         if (!alutInitWithoutContext(NULL, NULL))
+*/
+        if (!alutInit(NULL, NULL))
             ThrowException(InitialisationFailed, "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
 
+        // Note: Everything related to ALC has been commented because there seem to be
+        // very serious problems with the unloading sequence (complete freeze on Linux,
+        // sometimes really everything gone, including response to any signals).
+        // For the moment ALUT can do everything we need so far.
+/*
         COUT(3) << "Sound: OpenAL: Opening sound device..." << std::endl;
         this->device_ = alcOpenDevice(NULL);
         if (this->device_ == NULL)
@@ -86,12 +94,15 @@ namespace orxonox
             COUT(2) << "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()) << std::endl;
         else
             COUT(4) << "Sound: OpenAL ALUT supported MIME types: " << str << std::endl;
+*/
 
         GameMode::setPlaysSound(true);
         // Disarm guards
         alutExitGuard.Dismiss();
+/*
         closeDeviceGuard.Dismiss();
         desroyContextGuard.Dismiss();
+*/
         
         this->setVolumeInternal(1.0, SoundType::none);
         this->setVolumeInternal(1.0, SoundType::ambient);
@@ -107,8 +118,10 @@ namespace orxonox
     SoundManager::~SoundManager()
     {
         GameMode::setPlaysSound(false);
+/*
         alcDestroyContext(this->context_);
         alcCloseDevice(this->device_);
+*/
         alutExit();
     }
 
