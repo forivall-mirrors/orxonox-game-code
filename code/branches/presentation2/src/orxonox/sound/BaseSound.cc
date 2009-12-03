@@ -169,7 +169,7 @@ namespace orxonox
         }
 
         this->source_ = source;
-        if (source_.empty()) 
+        if (source_.empty())
             return;
 
         // Get DataStream from the resources

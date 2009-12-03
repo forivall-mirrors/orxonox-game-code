@@ -80,7 +80,7 @@ namespace orxonox
         delete[] buffer;
 
         if (this->audioBuffer_ == AL_NONE)
-            ThrowException(General, "Sound: Standard file loader failed: " << alutGetErrorString(alutGetError()));
+            ThrowException(General, "Sound Error: Standard file loader failed: " << alutGetErrorString(alutGetError()));
     }
 
     size_t readVorbis(void* ptr, size_t size, size_t nmemb, void* datasource)
@@ -126,7 +126,7 @@ namespace orxonox
         {
             COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
             ov_clear(&vf);
-            ThrowException(General, "Sound: Ogg file loader failed when opening the bitstream");
+            ThrowException(General, "Sound Error: Ogg file loader failed when opening the bitstream");
         }
 
         int current_section;
@@ -142,7 +142,7 @@ namespace orxonox
             {
                 COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
                 ov_clear(&vf);
-                ThrowException(General, "Sound: Ogg file loader failed when decoding the file");
+                ThrowException(General, "Sound Error: Ogg file loader failed when decoding the file");
             }
             else
             {

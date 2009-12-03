@@ -483,7 +483,16 @@ namespace orxonox
             return it->second.lock();
         else
         {
-            shared_ptr<SoundBuffer> buffer(new SoundBuffer(fileInfo));
+            shared_ptr<SoundBuffer> buffer;
+            try
+            {
+                buffer.reset(new SoundBuffer(fileInfo));
+            }
+            catch (...)
+            {
+                COUT(1) << Exception::handleMessage() << std::endl;
+                return shared_ptr<SoundBuffer>();
+            }
             this->soundBuffers_[fileInfo->group + '/' + fileInfo->filename] = buffer;
             return buffer;
         }
@@ -493,7 +502,7 @@ namespace orxonox
     {
         std::map<std::string, weak_ptr<SoundBuffer> >::iterator it
             = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
-        if (it == this->soundBuffers_.end())
+        if (it != this->soundBuffers_.end())
             this->soundBuffers_.erase(it);
     }
 }
