@@ -62,6 +62,7 @@ namespace orxonox
         
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
+			model->scale(0.7);
             this->attach(model);
             ParticleEmitter* fire = new ParticleEmitter(this);
             this->attach(fire);
@@ -81,7 +82,7 @@ namespace orxonox
         }
         
         CameraPosition* camPosition = new CameraPosition(this);
-        camPosition->setPosition(0,10,40);
+        camPosition->setPosition(0,4,15);
         camPosition->setAllowMouseLook(true);
         this->addCameraPosition(camPosition);
     }
