@@ -2,7 +2,7 @@ particle_system Orxonox/rocketfire
 {
 	quota	300
 	material	PE/explosion
-	particle_width	9
+	particle_width	15
 	particle_height	5
 	cull_each	false
 	renderer	billboard
@@ -24,14 +24,14 @@ particle_system Orxonox/rocketfire
 		colour_range_start	1 0.682759 1 1
 		colour_range_end	1 0.682759 1 1
 		direction	0 0 1
-		emission_rate	1000
+		emission_rate	1200
 		position	0 0 3
 		velocity	10
 		velocity_min	10
 		velocity_max	48
-		time_to_live	0.15
-		time_to_live_min	0.15
-		time_to_live_max	0.25
+		time_to_live	0.1
+		time_to_live_min	0.1
+		time_to_live_max	0.2
 		duration	0
 		duration_min	0
 		duration_max	0
@@ -40,11 +40,11 @@ particle_system Orxonox/rocketfire
 		repeat_delay_max	0
 		width	1.5
 		height	1.5
-		depth	15
+		depth	10
 	}
 
 	affector Scaler
 	{
-		rate	-13.2
+		rate	-20
 	}
 }
