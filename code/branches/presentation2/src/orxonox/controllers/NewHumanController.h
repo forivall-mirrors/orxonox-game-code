@@ -67,6 +67,8 @@ namespace orxonox
         protected:
             void updateTarget();
             void alignArrows();
+            void showOverlays();
+            void hideOverlays();
             void hideArrows();
 
             unsigned int                controlMode_;
@@ -86,6 +88,7 @@ namespace orxonox
             float                       acceleration_;
             int                         firemode_;
             bool                        showArrows_;
+            bool                        showOverlays_;
             ClassTreeMask               targetMask_;
     };
 }

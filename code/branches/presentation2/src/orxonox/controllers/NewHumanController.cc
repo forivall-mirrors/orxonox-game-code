@@ -68,9 +68,10 @@ namespace orxonox
         arrowsSize_ = 0.4;
         controlMode_ = 0;
         acceleration_ = 0;
-        acceleration_ = false;
+        accelerating_ = false;
         firemode_ = -1;
         showArrows_ = true;
+        showOverlays_ = false;
 
         //currentPitch_ = 1;
         //currentYaw_ = 1;
@@ -128,7 +129,7 @@ namespace orxonox
 
         NewHumanController::localController_s = this;
 
-        controlPaused_ = true;
+        controlPaused_ = false;
 
 //HumanController::localController_s->getControllableEntity()->getCamera()->setDrag(true);
     }
@@ -168,19 +169,13 @@ namespace orxonox
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
 
                     if ( this->controlMode_ == 0 || ( this->controlMode_ == 1 && this->firemode_ == 1 ) )
-                        alignArrows();
+                    {
+                        if ( this->showOverlays_ )
+                            alignArrows();
+                    }
                     else
                         hideArrows();
-
-                    this->crossHairOverlay_->show();
-                    this->centerOverlay_->show();
                 }
-            }
-            else {
-                this->crossHairOverlay_->hide();
-                this->centerOverlay_->hide();
-
-                hideArrows();
             }
 
             if ( this->acceleration_ > 0 )
@@ -383,9 +378,20 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
-//         if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip") {
-//             this->doResumeControl();
-//         }
+        if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip")
+        {
+            this->showOverlays_ = true;
+            if( !this->controlPaused_ )
+            {
+                this->showOverlays();
+                this->alignArrows();
+            }
+        }
+        else
+        {
+            this->showOverlays_ = false;
+            this->hideOverlays();
+        }
     }
 
     void NewHumanController::accelerate()
@@ -406,17 +412,15 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::doResumeControl() {
         this->controlPaused_ = false;
-        this->crossHairOverlay_->show();
-        this->centerOverlay_->show();
+        if( this->showOverlays_ ) {
+            this->showOverlays();
+        }
     }
 
     void NewHumanController::doPauseControl() {
         this->controlPaused_ = true;
-
-        this->crossHairOverlay_->hide();
-        this->centerOverlay_->hide();
-
-        hideArrows();
+        
+        this->hideOverlays();
     }
 
     void NewHumanController::alignArrows() {
@@ -446,6 +450,25 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
                 this->arrowsOverlay4_->show();
             }
         }
+    }
+
+    void NewHumanController::showOverlays() {
+        this->crossHairOverlay_->show();
+        this->centerOverlay_->show();
+        
+        if (showArrows_) {
+            this->arrowsOverlay1_->show();
+            this->arrowsOverlay2_->show();
+            this->arrowsOverlay3_->show();
+            this->arrowsOverlay4_->show();
+        }
+    }
+
+    void NewHumanController::hideOverlays() {
+        this->crossHairOverlay_->hide();
+        this->centerOverlay_->hide();
+        
+        this->hideArrows();
     }
 
     void NewHumanController::hideArrows() {
