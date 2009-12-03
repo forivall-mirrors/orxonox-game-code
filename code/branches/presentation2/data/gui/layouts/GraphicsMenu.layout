@@ -76,7 +76,7 @@ a game restart.</Property>
             <Event Name="Clicked" Function="GraphicsMenu.GraphicsBackButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/StaticText" Name="orxonox/GraphicsAvailable" >
-            <Property Name="Text" Value="Changes in graphics settings are not yet available." />
+            <Property Name="Text" Value="All the graphics functions are not yet available." />
             <Property Name="TextColours" Value="FFFF0000" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="HorzFormatting" Value="HorzCentred" />

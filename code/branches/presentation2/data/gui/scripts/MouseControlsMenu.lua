@@ -11,33 +11,98 @@ end
 P.filename = "MouseControlsMenu"
 P.layoutString = "MouseControlsMenu.layout"
 
-local scrollbar_active = false
-
-function P.MouseControlsMouseScrollbar_changed(e)
-    if scrollbar_active == false then
-        -- mouse sensitivity
-        debug("event: mouse sensitivity")
+function P:init()
+    block = false
+    mousenormalscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MouseNormalScrollbar"),"CEGUI::Scrollbar")
+    mousederivescrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MouseDeriveScrollbar"),"CEGUI::Scrollbar")
+    normalwindow = tolua.cast(winMgr:getWindow("orxonox/MouseNormalButton"),"CEGUI::RadioButton")
+    derivewindow = tolua.cast(winMgr:getWindow("orxonox/MouseDeriveButton"),"CEGUI::RadioButton")
+    invertwindow = tolua.cast(winMgr:getWindow("orxonox/MouseInvertCheckbox"),"CEGUI::Checkbox")
+    mousenormalscrollbar_active = false
+    mousederivescrollbar_active = false
+    derive_active = orxonox.getConfig("KeyBinder","bDeriveMouseInput_")
+    invert_active = false
+    mousenormalsensitivity = orxonox.getConfig("KeyBinder","mouseSensitivity_")
+    mousederivesensitivity = orxonox.getConfig("KeyBinder","mouseSensitivityDerived_")
+    mousenormalscrollbarwindow:setScrollPosition((math.log(14*mousenormalsensitivity-6))/(6*math.log(2)))
+    mousederivescrollbarwindow:setScrollPosition((math.log(14*mousederivesensitivity-6))/(6*math.log(2)))
+    if derive_active == "true" then
+        normal_active = false
+        derive_active = true
+        derivewindow:setSelected(derive_active)
+    else
+        normal_active = true
+        derive_active = false
+        normalwindow:setSelected(normal_active)
+    end
+    if invert_active == "true" then
+        invert_active = true
+    else
+        invert_active = false
     end
 end
 
-function P.MouseControlsMouseScrollbar_started(e)
-    scrollbar_active = true
+function P.MouseControlsMouseNormalScrollbar_changed(e)
+    if mousenormalscrollbar_active == false then
+        scrollposition = mousenormalscrollbarwindow:getScrollPosition()
+        mousenormalsensitivity = (math.pow(64,scrollposition)+6)/14
+        orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivity_ " .. mousenormalsensitivity)
+    end
 end
 
-function P.MouseControlsMouseScrollbar_ended(e)
-    -- mouse sensitivity
-    debug("event: mouse sensitivity")
-    scrollbar_active = false
+function P.MouseControlsMouseNormalScrollbar_started(e)
+    mousenormalscrollbar_active = true
 end
 
-function P.MouseControlsDefaultButton_clicked(e)
-    -- default control mode
-    debug("event: default control mode")
+function P.MouseControlsMouseNormalScrollbar_ended(e)
+    scrollposition = mousenormalscrollbarwindow:getScrollPosition()
+    mousenormalsensitivity = (math.pow(64,scrollposition)+6)/14
+    orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivity_ " .. mousenormalsensitivity)
+    mousenormalscrollbar_active = false
 end
 
-function P.MouseControls_______Button_clicked(e)
-    -- .......
-    debug("event: .......")
+function P.MouseControlsMouseDeriveScrollbar_changed(e)
+    if mousederivescrollbar_active == false then
+        scrollposition = mousederivescrollbarwindow:getScrollPosition()
+        mousederivesensitivity = (math.pow(64,scrollposition)+6)/14
+        orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivityDerived_ " .. mousederivesensitivity)
+    end
+end
+
+function P.MouseControlsMouseDeriveScrollbar_started(e)
+    mousederivescrollbar_active = true
+end
+
+function P.MouseControlsMouseDeriveScrollbar_ended(e)
+    scrollposition = mousederivescrollbarwindow:getScrollPosition()
+    mousederivesensitivity = (math.pow(64,scrollposition)+6)/14
+    orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivityDerived_ " .. mousederivesensitivity)
+    mousederivescrollbar_active = false
+end
+
+function P.MouseNormalButton_clicked(e)
+    if block == false then
+        block = true
+        derivewindow:setSelected(false)
+        block = false
+        -- normal mouse input
+        debug("event: normal mouse input")
+    end
+end
+
+function P.MouseDeriveButton_clicked(e)
+    if block == false then
+        block = true
+        normalwindow:setSelected(false)
+        block = false
+        -- derive mouse input
+        debug("event: derive mouse input")
+    end
+end
+
+function P.MouseInvertCheckbox_clicked(e)
+    -- invert mouse
+    debug("event: invert mouse")
 end
 
 function P.MouseControlsBackButton_clicked(e)
