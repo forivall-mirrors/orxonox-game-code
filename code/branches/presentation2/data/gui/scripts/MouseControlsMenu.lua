@@ -86,7 +86,7 @@ function P.MouseNormalButton_clicked(e)
         derivewindow:setSelected(false)
         block = false
         -- normal mouse input
-        debug("event: normal mouse input")
+        orxonox.CommandExecutor:execute("config KeyBinder bDeriveMouseInput_ false")
     end
 end
 
@@ -96,7 +96,7 @@ function P.MouseDeriveButton_clicked(e)
         normalwindow:setSelected(false)
         block = false
         -- derive mouse input
-        debug("event: derive mouse input")
+        orxonox.CommandExecutor:execute("config KeyBinder bDeriveMouseInput_ true")
     end
 end
 
