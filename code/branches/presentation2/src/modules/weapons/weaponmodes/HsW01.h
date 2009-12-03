@@ -40,10 +40,13 @@ namespace orxonox
     {
         public:
             HsW01(BaseObject* creator);
-            virtual ~HsW01() {}
+            virtual ~HsW01();
 
             virtual void fire();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
+            void setDefaultSound(const std::string& soundPath);
+            const std::string& getDefaultSound();
 
         private:
             void setMaterial(const std::string& material);
@@ -57,6 +60,8 @@ namespace orxonox
             float speed_;
             float delay_;
             Timer delayTimer_;
+
+            WorldSound* defSndWpnFire_;
     };
 }
 
