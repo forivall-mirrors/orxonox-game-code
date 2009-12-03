@@ -196,8 +196,12 @@ namespace orxonox
         this->setPitch(this->getPitch());
         this->setLooping(getLooping());
         if (this->isPlaying() || this->isPaused())
-            BaseSound::play();
+        {
+            alSourcePlay(this->audioSource_);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << error << std::endl;
+        }
         if (this->isPaused())
-            BaseSound::pause();
+            alSourcePause(this->audioSource_);
     }
 }

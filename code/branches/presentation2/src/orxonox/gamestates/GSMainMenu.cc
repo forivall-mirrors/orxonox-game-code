@@ -100,13 +100,13 @@ namespace orxonox
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
 
+        this->setConfigValues();
+
         if (GameMode::playsSound())
         {
             this->ambient_->setLooping(true);
-            //this->ambient_->play(); // works without source
+            this->ambient_->play(); // works without source
         }
-
-        this->setConfigValues();
     }
 
     void GSMainMenu::deactivate()
@@ -140,7 +140,6 @@ namespace orxonox
         if (GameMode::playsSound())
         {
             this->ambient_->setAmbientSource(soundPathMain_);
-            this->ambient_->play();
         }
     }
 
