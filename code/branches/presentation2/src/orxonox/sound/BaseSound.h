@@ -98,9 +98,9 @@ namespace orxonox
 
         std::string     source_;
         float           volume_;
-        float           pitch_;
         bool            bLoop_;
         State           state_;
+        float           pitch_;
         DataStreamPtr   dataStream_;
     };
 }
