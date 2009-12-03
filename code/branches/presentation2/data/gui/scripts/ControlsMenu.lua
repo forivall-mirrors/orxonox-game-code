@@ -16,7 +16,7 @@ function P.ControlsMouseControlsButton_clicked(e)
 end
 
 function P.ControlsKeyboardControlsButton_clicked(e)
-    showGUI("KeyboardControlsMenu", true)
+    showGUI("KeyBindMenu", true)
 end
 
 function P.ControlsBackButton_clicked(e)

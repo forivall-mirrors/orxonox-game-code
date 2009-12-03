@@ -21,8 +21,8 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.318181,0},{0.7,0},{0.5,0}}" />
                 <Event Name="Clicked" Function="ControlsMenu.ControlsMouseControlsButton_clicked"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/KeyboardControlsButton" >
-                <Property Name="Text" Value="Keyboard controls" />
+            <Window Type="TaharezLook/Button" Name="orxonox/KeybindingsButton" >
+                <Property Name="Text" Value="Keybindings" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.590909,0},{0.7,0},{0.772727,0}}" />
                 <Event Name="Clicked" Function="ControlsMenu.ControlsKeyboardControlsButton_clicked"/>

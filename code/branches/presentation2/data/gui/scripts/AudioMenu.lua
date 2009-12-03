@@ -130,8 +130,8 @@ function P.AudioMuteMasterCheckbox_clicked(e)
             mastervolume = temp
             mastermute = true
         end
-        soundMgr:toggleMute(orxonox.SoundType.none)
     end
+    soundMgr:toggleMute(orxonox.SoundType.none)
 end
 
 function P.AudioMuteMusicCheckbox_clicked(e)
@@ -145,8 +145,8 @@ function P.AudioMuteMusicCheckbox_clicked(e)
             musicvolume = temp
             musicmute = true
         end
-        soundMgr:toggleMute(orxonox.SoundType.ambient)
     end
+    soundMgr:toggleMute(orxonox.SoundType.ambient)
 end
 
 function P.AudioMuteEffectsCheckbox_clicked(e)
@@ -160,8 +160,8 @@ function P.AudioMuteEffectsCheckbox_clicked(e)
             effectsvolume = temp
             effectsmute = true
         end
-        soundMgr:toggleMute(orxonox.SoundType.effects)
     end
+    soundMgr:toggleMute(orxonox.SoundType.effects)
 end
 
 function P.AudioThemeCombobox_changed(e)
