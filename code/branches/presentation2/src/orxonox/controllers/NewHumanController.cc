@@ -68,6 +68,7 @@ namespace orxonox
         arrowsSize_ = 0.4;
         controlMode_ = 0;
         acceleration_ = 0;
+        acceleration_ = false;
         firemode_ = -1;
         showArrows_ = true;
 

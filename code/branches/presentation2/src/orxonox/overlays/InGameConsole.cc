@@ -67,6 +67,7 @@ namespace orxonox
     */
     InGameConsole::InGameConsole()
         : shell_(new Shell("InGameConsole", true))
+        , bShowCursor_(false)
         , consoleOverlay_(0)
         , consoleOverlayContainer_(0)
         , consoleOverlayNoise_(0)

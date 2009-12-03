@@ -66,7 +66,7 @@ namespace orxonox
     unsigned int HUDBar::materialcount_s = 0;
 
     HUDBar::HUDBar(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+        : OrxonoxOverlay(creator), right2Left_(false), autoColour_(false)
     {
         RegisterObject(HUDBar);
 
