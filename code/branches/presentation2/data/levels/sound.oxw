@@ -17,11 +17,11 @@
     skybox       = "Orxonox/Starbox"
   >
 
-  <AmbientSound ambientSource="Mars.ogg" loop="true" play="true" />
-  <AmbientSound ambientSource="Asteroid_rocks.ogg" loop="true" play="false">
+  <AmbientSound ambientSource="Earth.ogg" loop="true" play="true" />
+  <AmbientSound ambientSource="Mars.ogg" loop="true" play="false">
 	<events>
 		<activity>
-			<DistanceTrigger position="300,100,0" distance=200 target="Camera">
+			<DistanceTrigger position="400,0,0" distance=200 target="Camera">
 				<attached>
 					<ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
 				</attached>
@@ -29,6 +29,18 @@
 		</activity>
 	</events>
   </AmbientSound>
+  <AmbientSound ambientSource="Jupiter.ogg" loop="true" play="false">
+	<events>
+		<activity>
+			<DistanceTrigger position="400,150,0" distance=200 target="Camera">
+				<attached>
+					<ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
+				</attached>
+			</DistanceTrigger>
+		</activity>
+	</events>
+  </AmbientSound>
+  
 
   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
   <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
