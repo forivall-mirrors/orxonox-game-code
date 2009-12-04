@@ -171,7 +171,7 @@ namespace orxonox
         }
         
         this->updateVolume(type);
-        COUT(3) << "SoundManager: volume set to " << this->getVolumeInternal(type) << std::endl;
+        COUT(4) << "SoundManager: volume set to " << this->getVolumeInternal(type) << std::endl;
         return valid;
     }
     
