@@ -93,6 +93,6 @@ namespace orxonox
         };
         static std::vector<std::string> defaultnames(names, names + sizeof(names) / sizeof(std::string));
 
-        SetConfigValueVector(names_, defaultnames);
+        SetConfigValue(names_, defaultnames);
     }
 }

@@ -97,14 +97,14 @@ namespace orxonox
             .callback(this, &Shell::commandHistoryLengthChanged);
         SetConfigValue(historyOffset_, 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
-        SetConfigValueVectorGeneric(commandHistoryConfigFileType_, commandHistory_, std::vector<std::string>());
+        setConfigValueGeneric(this, &commandHistory_, commandHistoryConfigFileType_, "Shell", "commandHistory_", std::vector<std::string>());
 
 #ifdef ORXONOX_RELEASE
         const unsigned int defaultLevel = 1;
 #else
         const unsigned int defaultLevel = 3;
 #endif
-        SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevel_, "softDebugLevel" + this->consoleName_, "OutputHandler", defaultLevel)
+        setConfigValueGeneric(this, &softDebugLevel_, ConfigFileType::Settings, "OutputHandler", "softDebugLevel" + this->consoleName_, defaultLevel)
             .description("The maximal level of debug output shown in the Shell");
         this->setSoftDebugLevel(this->softDebugLevel_);
     }

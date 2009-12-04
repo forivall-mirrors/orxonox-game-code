@@ -120,8 +120,8 @@ namespace orxonox
                 @param varname The name of the variable
                 @param defvalue The default-value
             */
-            template <class V>
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<V>& defvalue)
+            template <class D, class V>
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>& value)
             {
                 this->init(type, identifier, sectionname, varname);
 
