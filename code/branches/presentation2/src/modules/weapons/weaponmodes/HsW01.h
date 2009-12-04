@@ -45,9 +45,6 @@ namespace orxonox
             virtual void fire();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void setDefaultSound(const std::string& soundPath);
-            const std::string& getDefaultSound();
-
         private:
             void setMaterial(const std::string& material);
             std::string& getMaterial();
@@ -60,8 +57,6 @@ namespace orxonox
             float speed_;
             float delay_;
             Timer delayTimer_;
-
-            WorldSound* defSndWpnFire_;
     };
 }
 

@@ -37,6 +37,8 @@
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
 
+#include "sound/WorldSound.h"
+
 namespace orxonox
 {
     CreateFactory(RocketFire);
@@ -51,6 +53,11 @@ namespace orxonox
         this->speed_ = 500;
 
         this->setMunitionName("RocketMunition");
+        this->setDefaultSound("sounds/Rocket_Launch.ogg");
+    }
+
+    RocketFire::~RocketFire()
+    {
     }
 
     void RocketFire::fire()

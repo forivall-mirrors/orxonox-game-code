@@ -51,7 +51,7 @@ namespace orxonox
     {
         RegisterObject(HsW01);
 
-        this->reloadTime_ = 0.5;
+        this->reloadTime_ = 0.25;
         this->damage_ = 15;
         this->speed_ = 2500;
         this->delay_ = 0;
@@ -60,17 +60,11 @@ namespace orxonox
         this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&HsW01::shot, this)));
         this->delayTimer_.stopTimer();
 
-        this->defSndWpnFire_ = new WorldSound(this);
-        this->defSndWpnFire_->setLooping(false);
-        this->setDefaultSound("sounds/Weapon_Laser_shrt.ogg");
+        this->setDefaultSound("sounds/Weapon_HsW01.ogg");
     }
 
     HsW01::~HsW01()
     {
-        if(this->isInitialized())
-        {
-            delete this->defSndWpnFire_;
-        }
     }
 
     void HsW01::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -105,12 +99,7 @@ namespace orxonox
 
     void HsW01::fire()
     {
-        this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->attach(this->defSndWpnFire_);
-        this->defSndWpnFire_->play();
-
         this->delayTimer_.startTimer();
-
-        //this->defSndWpnFire_->stop();
     }
 
     void HsW01::muendungsfeuer()
@@ -140,15 +129,5 @@ namespace orxonox
         projectile->setDamage(this->getDamage());
 
         HsW01::muendungsfeuer();
-    }
-
-    void HsW01::setDefaultSound(const std::string& soundPath)
-    {
-        this->defSndWpnFire_->setSource(soundPath);
-    }
-
-    const std::string& HsW01::getDefaultSound()
-    {
-        return this->defSndWpnFire_->getSource();
     }
 }

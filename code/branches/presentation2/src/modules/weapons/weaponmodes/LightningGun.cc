@@ -35,6 +35,8 @@
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
 
+#include "sound/WorldSound.h"
+
 namespace orxonox
 {
     CreateFactory(LightningGun);
@@ -48,6 +50,7 @@ namespace orxonox
         this->speed_ = 150;
 
         this->setMunitionName("LaserMunition");
+        this->setDefaultSound("sounds/Weapon_LightningGun.ogg");
     }
 
     LightningGun::~LightningGun()
@@ -55,7 +58,7 @@ namespace orxonox
     }
 
     void LightningGun::fire()
-    {
+    {        
         LightningGunProjectile* projectile = new LightningGunProjectile(this);
         projectile->setMaterial("Flares/LightningBall_");
 

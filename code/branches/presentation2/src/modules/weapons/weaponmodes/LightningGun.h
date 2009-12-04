@@ -41,6 +41,7 @@ namespace orxonox
             virtual ~LightningGun();
 
             virtual void fire();
+
        private:
             float speed_;
     };

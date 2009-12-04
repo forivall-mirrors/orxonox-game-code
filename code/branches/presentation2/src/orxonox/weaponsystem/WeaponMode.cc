@@ -39,6 +39,8 @@
 #include "WeaponPack.h"
 #include "WeaponSystem.h"
 
+#include "sound/WorldSound.h"
+
 namespace orxonox
 {
     WeaponMode::WeaponMode(BaseObject* creator) : BaseObject(creator)
@@ -66,10 +68,17 @@ namespace orxonox
         this->muzzleOffset_ = Vector3::ZERO;
         this->muzzlePosition_ = Vector3::ZERO;
         this->muzzleOrientation_ = Quaternion::IDENTITY;
+
+        this->defSndWpnFire_ = new WorldSound(this);
+        this->defSndWpnFire_->setLooping(false);
     }
 
     WeaponMode::~WeaponMode()
     {
+        if(this->isInitialized())
+        {
+            delete this->defSndWpnFire_;
+        }
     }
 
     void WeaponMode::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -112,6 +121,13 @@ namespace orxonox
             this->reloadTimer_.setInterval(reloadtime);
             this->reloadTimer_.startTimer();
 
+            assert( this->getWeapon() && this->getWeapon()->getWeaponPack() && this->getWeapon()->getWeaponPack()->getWeaponSystem() && this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn() );
+            this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->attach(this->defSndWpnFire_);
+            if(!(this->defSndWpnFire_->isPlaying()))
+            {
+                this->defSndWpnFire_->play();
+            }
+            
             this->fire();
 
             return true;
@@ -199,6 +215,10 @@ namespace orxonox
 
     void WeaponMode::reloaded()
     {
+        if(this->defSndWpnFire_->isPlaying())
+        {
+            this->defSndWpnFire_->stop();
+        }
         this->bReloading_ = false;
     }
 
@@ -226,5 +246,15 @@ namespace orxonox
             return (this->getMuzzleOrientation() * WorldEntity::FRONT);
         else
             return WorldEntity::FRONT;
+    }
+
+    void WeaponMode::setDefaultSound(const std::string& soundPath)
+    {
+        this->defSndWpnFire_->setSource(soundPath);
+    }
+
+    const std::string& WeaponMode::getDefaultSound()
+    {
+        return this->defSndWpnFire_->getSource();
     }
 }

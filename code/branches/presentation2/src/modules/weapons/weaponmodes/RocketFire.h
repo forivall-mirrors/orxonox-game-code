@@ -38,7 +38,7 @@ namespace orxonox
     {
         public:
             RocketFire(BaseObject* creator);
-            virtual ~RocketFire() {}
+            virtual ~RocketFire();
 
             virtual void fire();
 
