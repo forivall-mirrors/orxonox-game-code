@@ -22,6 +22,7 @@
  *   Author:
  *       Erwin 'vaiursch' Herrsche
  *       Kevin Young
+ *       Reto Grieder
  *   Co-authors:
  *      ...
  */
@@ -38,6 +39,9 @@
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
+
+// forward declaration
+typedef int ALenum;
 
 // tolua_begin
 namespace orxonox
@@ -74,7 +78,13 @@ namespace orxonox
         void preUpdate(const Clock& time);
         void setConfigValues();
         
-        static SoundManager& getInstance() { return Singleton<SoundManager>::getInstance(); } // tolua_export
+        // tolua_begin
+        static SoundManager& getInstance()
+            { return Singleton<SoundManager>::getInstance(); }
+
+        std::string getDeviceName(unsigned int index) const
+            { return index < this->deviceNames_.size() ? this->deviceNames_[index] : std::string(); }
+        // tolua_end
 
         void setListenerPosition(const Vector3& position);
         void setListenerOrientation(const Quaternion& orientation);
@@ -91,6 +101,8 @@ namespace orxonox
 
         shared_ptr<SoundBuffer> getSoundBuffer(shared_ptr<ResourceInfo> fileInfo);
         void removeBuffer(shared_ptr<ResourceInfo> fileInfo);
+
+        static std::string getALErrorString(ALenum error);
 
     private:
         void processCrossFading(float dt);
@@ -110,10 +122,9 @@ namespace orxonox
         void setVolumeInternal(float vol, SoundType::Value type);
         float getVolumeInternal(SoundType::Value type);
 
-/*
+        std::vector<std::string> deviceNames_;
         ALCdevice* device_;
         ALCcontext* context_;
-*/
        
         typedef std::list<std::pair<AmbientSound*, bool> > AmbientList;
         AmbientList ambientSounds_;

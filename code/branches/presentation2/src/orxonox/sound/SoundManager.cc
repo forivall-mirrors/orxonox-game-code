@@ -22,6 +22,7 @@
  *   Author:
  *       Erwin 'vaiursch' Herrsche
  *       Kevin Young
+ *       Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -35,7 +36,6 @@
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/ScopeGuard.h"
-#include "util/StringUtils.h"
 #include "util/Clock.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
@@ -54,55 +54,62 @@ namespace orxonox
     {
         RegisterRootObject(SoundManager);
 
-/*
         if (!alutInitWithoutContext(NULL, NULL))
-*/
-        if (!alutInit(NULL, NULL))
-            ThrowException(InitialisationFailed, "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()));
+            ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
 
-        // Note: Everything related to ALC has been commented because there seem to be
-        // very serious problems with the unloading sequence (complete freeze on Linux,
-        // sometimes really everything gone, including response to any signals).
-        // For the moment ALUT can do everything we need so far.
-/*
-        COUT(3) << "Sound: OpenAL: Opening sound device..." << std::endl;
-        this->device_ = alcOpenDevice(NULL);
+        // Get list of available sound devices and display them
+        const char* devices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+        std::string renderDevice;
+        SetConfigValue(renderDevice, devices).description("Sound device used for rendering");
+        COUT(4) << "Sound: Available devices: ";
+        while (true)
+        {
+            this->deviceNames_.push_back(devices);
+            COUT(4) << "\"" << devices << "\", ";
+            devices += strlen(devices) + 1;
+            if (*devices == '\0')
+                break;
+        }
+        COUT(4) << std::endl;
+
+        // Open the selected device
+        COUT(3) << "Sound: Opening device \"" << renderDevice << "\"" << std::endl;
+        this->device_ = alcOpenDevice(renderDevice.c_str());
         if (this->device_ == NULL)
         {
-            COUT(0) << "Sound: OpenaAL: Could not open sound device. Have you installed OpenAL?" << std::endl;
+            COUT(1) << "Sound: Could not open sound device. Have you installed OpenAL?" << std::endl;
 #ifdef ORXONOX_PLATFORM_WINDOWS
-            COUT(0) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
+            COUT(1) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
 #endif
             ThrowException(InitialisationFailed, "Sound: OpenAL error: Could not open sound device.");
         }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
-        COUT(3) << "Sound: OpenAL: Sound device opened" << std::endl;
+        // Create sound context and make it the currently used one
         this->context_ = alcCreateContext(this->device_, NULL);
         if (this->context_ == NULL)
-            ThrowException(InitialisationFailed, "Sound: OpenAL error: Could not create sound context");
+            ThrowException(InitialisationFailed, "Sound Error: Could not create ALC context");
         Loki::ScopeGuard desroyContextGuard = Loki::MakeGuard(&alcDestroyContext, this->context_);
-
-        if (alcMakeContextCurrent(this->context_) == AL_TRUE)
-            COUT(3) << "Sound: OpenAL: Context " << this->context_ << " loaded" << std::endl;
-
-        COUT(4) << "Sound: OpenAL ALUT version: " << alutGetMajorVersion() << "." << alutGetMinorVersion() << std::endl;
-
-        const char* str = alutGetMIMETypes(ALUT_LOADER_BUFFER);
-        if (str == NULL)
-            COUT(2) << "Sound: OpenAL ALUT error: " << alutGetErrorString(alutGetError()) << std::endl;
-        else
-            COUT(4) << "Sound: OpenAL ALUT supported MIME types: " << str << std::endl;
-*/
+        if (!alcMakeContextCurrent(this->context_))
+            ThrowException(InitialisationFailed, "Sound Error: Could not use ALC context");
 
         GameMode::setPlaysSound(true);
+
+        // Get some information about the sound
+        if (const char* version = alGetString(AL_VERSION))
+            COUT(4) << "Sound: --- OpenAL Version: " << version << std::endl;
+        if (const char* vendor = alGetString(AL_VENDOR))
+            COUT(4) << "Sound: --- OpenAL Vendor : " << vendor << std::endl;
+        if (const char* types = alutGetMIMETypes(ALUT_LOADER_BUFFER))
+            COUT(4) << "Sound: --- Supported MIME Types: " << types << std::endl;
+        else
+            COUT(2) << "Sound Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
+
         // Disarm guards
         alutExitGuard.Dismiss();
-/*
         closeDeviceGuard.Dismiss();
         desroyContextGuard.Dismiss();
-*/
         
         this->setVolumeInternal(1.0, SoundType::none);
         this->setVolumeInternal(1.0, SoundType::ambient);
@@ -113,16 +120,33 @@ namespace orxonox
         this->mute_[SoundType::effects] = false;
 
         this->setConfigValues();
+
+        COUT(4) << "Sound: Initialisation complete" << std::endl;
     }
 
     SoundManager::~SoundManager()
     {
         GameMode::setPlaysSound(false);
-/*
+
+        // Relieve context to destroy it
+        if (!alcMakeContextCurrent(NULL))
+            COUT(1) << "Sound Error: Could not unset ALC context" << std::endl;
         alcDestroyContext(this->context_);
+        if (ALCenum error = alcGetError(this->device_))
+        {
+            if (error == AL_INVALID_OPERATION)
+                COUT(1) << "Sound Error: Could not destroy ALC context because it is the current one" << std::endl;
+            else
+                COUT(1) << "Sound Error: Could not destroy ALC context because it is invalid" << std::endl;
+        }
+#ifdef AL_VERSION_1_1
+        if (!alcCloseDevice(this->device_))
+            COUT(1) << "Sound Error: Could not destroy ALC device. This might be because there are still buffers in use!" << std::endl;
+#else
         alcCloseDevice(this->device_);
-*/
-        alutExit();
+#endif
+        if (!alutExit())
+            COUT(1) << "Sound Error: Closing ALUT failed: " << alutGetErrorString(alutGetError()) << std::endl;
     }
 
     void SoundManager::preUpdate(const Clock& time)
@@ -147,6 +171,20 @@ namespace orxonox
         SetConfigValue(effectsVolume_, 1.0f)
             .description("Defines the effects volume.")
             .callback(this, &SoundManager::checkEffectsVolumeValidity);
+    }
+
+    std::string SoundManager::getALErrorString(ALenum code)
+    {
+        switch (code)
+        {
+        case AL_NO_ERROR:          return "No error";
+        case AL_INVALID_NAME:      return "Invalid AL parameter name";
+        case AL_INVALID_ENUM:      return "Invalid AL enum";
+        case AL_INVALID_VALUE:     return "Invalid AL value";
+        case AL_INVALID_OPERATION: return "Invalid AL operation";
+        case AL_OUT_OF_MEMORY:     return "AL reports out of memory";
+        default:                   return "Unknown AL error";
+        }
     }
 
     void SoundManager::checkFadeStepValidity()
