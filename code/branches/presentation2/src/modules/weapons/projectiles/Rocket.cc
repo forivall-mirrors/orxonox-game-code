@@ -38,6 +38,8 @@
 #include "controllers/Controller.h"
 #include "worldentities/CameraPosition.h"
 
+#include "sound/WorldSound.h"
+
 namespace orxonox
 {
     CreateFactory(Rocket);
@@ -85,18 +87,30 @@ namespace orxonox
         camPosition->setPosition(0,4,15);
         camPosition->setAllowMouseLook(true);
         this->addCameraPosition(camPosition);
+
+        this->defSndWpnEngine_ = new WorldSound(this);
+        this->defSndWpnEngine_->setLooping(true);
+        this->defSndWpnEngine_->setSource("sounds/Rocket_Engine.ogg");
+        this->attach(defSndWpnEngine_);
     }
 
     /**
     @brief
-        Destructor. Destroys controller, if present.
+        Destructor. Destroys controller, if present and kills sounds, if playing.
     */
     Rocket::~Rocket()
     {
         if(this->isInitialized())
         {
             if (GameMode::isMaster() && this->player_)
+            {
                 this->player_->stopTemporaryControl();
+            }
+            if(this->defSndWpnEngine_->isPlaying())
+            {
+                this->defSndWpnEngine_->stop();
+            }
+            delete this->defSndWpnEngine_;
         }
     }
 
@@ -116,6 +130,8 @@ namespace orxonox
         this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
         this->player_ = this->owner_->getPlayer();
         this->owner_->getPlayer()->startTemporaryControl(this);
+
+        this->defSndWpnEngine_->play();
     }
 
     /**
@@ -184,7 +200,13 @@ namespace orxonox
     void Rocket::destroyObject()
     {
         if (GameMode::isMaster())
+        {
+            if(this->defSndWpnEngine_->isPlaying())
+            {
+                this->defSndWpnEngine_->stop();
+            }
             this->destroy();
+        }
     }
     
     void Rocket::fired(unsigned int firemode)

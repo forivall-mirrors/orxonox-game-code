@@ -121,6 +121,9 @@ namespace orxonox
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
             float lifetime_;
+
+            WorldSound* defSndWpnEngine_;
+            WorldSound* defSndWpnExplosion_;
     };
 
 }
