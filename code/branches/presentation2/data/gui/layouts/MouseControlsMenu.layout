@@ -71,6 +71,7 @@
             </Window>
             <Window Type="TaharezLook/Checkbox" Name="orxonox/MouseInvertCheckbox" >
                 <Property Name="Text" Value="Invert mouse" />
+                <Property Name="Disabled" Value="true" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.39,0},{0.85,0},{0.61,0},{0.95,0}}" />
                 <Event Name="CheckStateChanged" Function="MouseControlsMenu.MouseInvertCheckbox_clicked" />
@@ -83,7 +84,7 @@
             <Event Name="Clicked" Function="MouseControlsMenu.MouseControlsBackButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/StaticText" Name="orxonox/MouseControlsAvailable" >
-            <Property Name="Text" Value="The button functions are not yet available." />
+            <Property Name="Text" Value="The invert mouse button is not yet available." />
             <Property Name="TextColours" Value="FFFF0000" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="HorzFormatting" Value="HorzCentred" />

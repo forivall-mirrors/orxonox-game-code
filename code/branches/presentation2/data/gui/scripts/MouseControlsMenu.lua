@@ -85,7 +85,6 @@ function P.MouseNormalButton_clicked(e)
         block = true
         derivewindow:setSelected(false)
         block = false
-        -- normal mouse input
         orxonox.CommandExecutor:execute("config KeyBinder bDeriveMouseInput_ false")
     end
 end
@@ -95,14 +94,12 @@ function P.MouseDeriveButton_clicked(e)
         block = true
         normalwindow:setSelected(false)
         block = false
-        -- derive mouse input
         orxonox.CommandExecutor:execute("config KeyBinder bDeriveMouseInput_ true")
     end
 end
 
 function P.MouseInvertCheckbox_clicked(e)
     -- invert mouse
-    debug("event: invert mouse")
 end
 
 function P.MouseControlsBackButton_clicked(e)
