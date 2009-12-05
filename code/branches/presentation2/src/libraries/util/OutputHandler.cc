@@ -173,10 +173,13 @@ namespace orxonox
         //! Pushed the just written output to the internal array
         void outputChanged(int level)
         {
-            // Read ostringstream and store it
-            this->output_.push_back(std::make_pair(level, this->buffer_.str()));
-            // Clear content and flags
-            this->buffer_.str(std::string());
+            if (!this->buffer_.str().empty())
+            {
+                // Read ostringstream and store it
+                this->output_.push_back(std::make_pair(level, this->buffer_.str()));
+                // Clear content and flags
+                this->buffer_.str(std::string());
+            }
             this->buffer_.clear();
         }
 
@@ -213,7 +216,7 @@ namespace orxonox
         this->consoleWriter_->softDebugLevel_ = defaultLevelConsole;
         this->registerOutputListener(this->consoleWriter_);
 
-        this->output_  = new MemoryLogWriter();
+        this->output_ = new MemoryLogWriter();
         // We capture as much input as the listener with the highest level
         this->output_->softDebugLevel_ = getSoftDebugLevel();
         this->registerOutputListener(this->output_);
@@ -223,6 +226,7 @@ namespace orxonox
     OutputHandler::~OutputHandler()
     {
         delete this->logFile_;
+        delete this->consoleWriter_;
         delete this->output_;
     }
 
