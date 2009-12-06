@@ -83,7 +83,7 @@ namespace orxonox
         //ALuint getALAudioSource(void);
 
     protected:
-        ALuint loadOggFile();
+        ALint getSourceState() const;
 
         ALuint          audioSource_;
         bool            bPooling_;

@@ -75,9 +75,9 @@ namespace orxonox
 
     void BaseSound::play()
     {
-        if (!this->isPlaying() && GameMode::showsGraphics())
+        this->state_ = Playing;
+        if (GameMode::playsSound() && this->getSourceState() != AL_PLAYING)
         {
-            this->state_ = Playing;
             alSourcePlay(this->audioSource_);
 
             if (int error = alGetError())
@@ -99,6 +99,18 @@ namespace orxonox
         this->state_ = Paused;
         if (GameMode::playsSound())
             alSourcePause(this->audioSource_);
+    }
+
+    ALint BaseSound::getSourceState() const
+    {
+        if (GameMode::playsSound())
+        {
+            ALint state;
+            alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
+            return state;
+        }
+        else
+            return AL_INITIAL;
     }
 
     void BaseSound::setVolume(float vol)
