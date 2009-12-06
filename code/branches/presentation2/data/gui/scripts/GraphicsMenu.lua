@@ -12,6 +12,31 @@ P.filename = "GraphicsMenu"
 P.layoutString = "GraphicsMenu.layout"
 
 function P:init()
+    file = "C:\\Games\\Orxonox\\menu\\build\\config\\Debug\\" .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
+    search_mode = 0
+    f = io.open(file, "r")
+    firstline = f:read("*line")
+    rendersystem = string.sub(firstline, 15)
+    for line in f:lines() do
+        if search_mode == 0 then
+            if string.find(line, rendersystem) ~= nil then
+                search_mode = 1
+            end
+        end
+        if search_mode == 1 then
+            if string.sub(line, 1, 11) == "Full Screen" then
+                if string.sub(line, 13) == "Yes" then
+                    fullscreen = true
+                else
+                    fullscreen = false
+                end
+                break
+            end
+        end
+    end
+    f:close()
+    local fullscreenwindow = tolua.cast(winMgr:getWindow("orxonox/FullscreenCheckbox"),"CEGUI::Checkbox")
+    fullscreenwindow:setSelected(fullscreen)
     dropdown = winMgr:getWindow("orxonox/ResolutionCombobox")
     local resolutionList = {}
     table.insert(resolutionList, "800 x 600  (4:3)")
@@ -53,8 +78,36 @@ function P.GraphicsBrightnessScrollbar_ended(e)
 end
 
 function P.GraphicsFullscreenCheckbox_clicked(e)
-    -- fullscreen
-    debug("event: fullscreen")
+    search_mode = 0
+    f = io.open(file, "r")
+    firstline = f:read("*line")
+    text = firstline .. "\n"
+    rendersystem = string.sub(firstline, 15)
+    for line in f:lines() do
+        if search_mode == 0 then
+            if string.find(line, rendersystem) ~= nil then
+                search_mode = 1
+            end
+        end
+        if search_mode == 1 then
+            if string.sub(line, 1, 11) == "Full Screen" then
+                if fullscreen == true then
+                    line = "Full Screen=No"
+                    fullscreen = false
+                else
+                    line = "Full Screen=Yes"
+                    fullscreen = true
+                end
+                debug(line)
+                search_mode = 2
+            end
+        end
+        text = text .. line .. "\n"
+    end
+    f:close()
+    f = io.open(file, "w")
+    f:write(text)
+    f:close()
 end
 
 function P.GraphicsBackButton_clicked(e)
