@@ -89,6 +89,7 @@ ORXONOX_ADD_LIBRARY(core
     Game.h
     Loader.h
     LuaState.h
+    PathConfig.h
     input/InputManager.h
     input/KeyBinder.h
     input/KeyBinderManager.h

@@ -12,7 +12,8 @@ P.filename = "GraphicsMenu"
 P.layoutString = "GraphicsMenu.layout"
 
 function P:init()
-    file = "C:\\Games\\Orxonox\\menu\\build\\config\\Debug\\" .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
+    file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
+    --file = "C:\\Games\\Orxonox\\menu\\build\\config\\Debug\\" .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
     search_mode = 0
     f = io.open(file, "r")
     firstline = f:read("*line")
