@@ -54,14 +54,15 @@ namespace orxonox
         if (GameMode::playsSound())
         {
             alGenSources(1, &this->audioSource_);
-            assert(this->audioSource_ != 0);
+            if (!alIsSource(this->audioSource_))
+                COUT(1) << "Sound: Source generation failed: " << SoundManager::getALErrorString(alGetError()) << std::endl;
         }
     }
 
     BaseSound::~BaseSound()
     {
         this->setSource("");
-        if (GameMode::playsSound())
+        if (GameMode::playsSound() && alIsSource(this->audioSource_))
             alDeleteSources(1, &this->audioSource_);
     }
 
@@ -76,7 +77,7 @@ namespace orxonox
     void BaseSound::play()
     {
         this->state_ = Playing;
-        if (GameMode::playsSound() && this->getSourceState() != AL_PLAYING)
+        if (GameMode::playsSound() && alIsSource(this->audioSource_) && this->getSourceState() != AL_PLAYING)
         {
             alSourcePlay(this->audioSource_);
 
@@ -88,7 +89,7 @@ namespace orxonox
     void BaseSound::stop()
     {
         this->state_ = Stopped;
-        if (GameMode::playsSound())
+        if (GameMode::playsSound() && alIsSource(this->audioSource_))
             alSourceStop(this->audioSource_);
     }
 
@@ -97,13 +98,13 @@ namespace orxonox
         if (this->isStopped())
             return;
         this->state_ = Paused;
-        if (GameMode::playsSound())
+        if (GameMode::playsSound() && alIsSource(this->audioSource_))
             alSourcePause(this->audioSource_);
     }
 
     ALint BaseSound::getSourceState() const
     {
-        if (GameMode::playsSound())
+        if (GameMode::playsSound() && alIsSource(this->audioSource_))
         {
             ALint state;
             alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
@@ -144,7 +145,7 @@ namespace orxonox
     void BaseSound::setLooping(bool val)
     {
         this->bLoop_ = val;
-        if (GameMode::playsSound())
+        if (GameMode::playsSound() && alIsSource(this->audioSource_))
             alSourcei(this->audioSource_, AL_LOOPING, (val ? AL_TRUE : AL_FALSE));
     }
 
@@ -157,7 +158,7 @@ namespace orxonox
             pitch = pitch < 0.5 ? 0.5 : pitch;
         }        
         this->pitch_ = pitch;
-        if (GameMode::playsSound())
+        if (GameMode::playsSound() && alIsSource(this->audioSource_))
         {
             if (int error = alGetError())
                 COUT(2) << "Sound: Error setting pitch: " << error << std::endl;
@@ -175,15 +176,18 @@ namespace orxonox
 
         if (this->soundBuffer_ != NULL)
         {
-            alSourceStop(this->audioSource_);
-            // Unload old sound first
-            alSourcei(this->audioSource_, AL_BUFFER, 0);
+            if (alIsSource(this->audioSource_))
+            {
+                alSourceStop(this->audioSource_);
+                // Unload old buffer first
+                alSourcei(this->audioSource_, AL_BUFFER, 0);
+            }
             SoundManager::getInstance().releaseSoundBuffer(this->soundBuffer_, this->bPooling_);
             this->soundBuffer_.reset();
         }
 
         this->source_ = source;
-        if (source_.empty())
+        if (source_.empty() || !alIsSource(this->audioSource_))
             return;
 
         // Get DataStream from the resources
@@ -199,9 +203,9 @@ namespace orxonox
             return;
 
         alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
-        if (alGetError() != AL_NO_ERROR)
+        if (ALuint error = alGetError())
         {
-            COUT(2) << "Sound: OpenAL: Error loading sample file: " << source << std::endl;
+            COUT(1) << "Sound Error: Could not load file \"" << source << "\": " << SoundManager::getALErrorString << std::endl;
             return;
         }
 

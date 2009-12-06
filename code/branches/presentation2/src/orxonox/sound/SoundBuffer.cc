@@ -86,7 +86,7 @@ namespace orxonox
         this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, this->fileInfo_->size);
         delete[] buffer;
 
-        if (this->audioBuffer_ == AL_NONE)
+        if (!alIsBuffer(this->audioBuffer_))
             ThrowException(General, "Sound Error: Standard file loader failed: " << alutGetErrorString(alutGetError()));
     }
 
@@ -169,7 +169,7 @@ namespace orxonox
         alBufferData(this->audioBuffer_, format, &outbuffer[0], outbuffer.size(), vorbisInfo->rate);
         ov_clear(&vf);
 
-        if (this->audioBuffer_ == AL_NONE)
+        if (!alIsBuffer(this->audioBuffer_))
             ThrowException(General, "Sound: Ogg file loader failed when creating the buffer.");
     }
 }
