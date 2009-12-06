@@ -1,0 +1,89 @@
+<?lua
+  include("stats.oxo")
+  include("hudtemplates3.oxo")
+?>
+
+<?lua
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    
+    	<AmbientSound ambientSource="Earth.ogg" loop="true" play="true" />
+
+   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+   <?lua
+   elements = {"asteroid_ice.mesh", "asteroid_UV.mesh", "ast1.mesh", "ast2.mesh", "ast3.mesh", "ast4.mesh", "ast5.mesh", "ast6.mesh"}
+   elements.length = function()
+	return table.getn(elements)
+   end
+   for i = 1, 100, 1 
+   do
+   x = math.random() * 200  + (i) * 200
+   y = math.random() * 3000 - 1500
+   z = math.random() * 3000 - 1500 + (i-100) * 10
+   s = math.random() * 60 + 30
+   e = math.floor(math.random()*elements.length()+1)
+   ?>
+    
+    <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>"> 
+      <attached>
+        <Model position="0,0,0" scale=<?lua print(s) ?> mesh="<?lua print(elements[e])?>" />
+      </attached>
+    </MovableEntity>
+<?lua 
+end
+?>
+
+<?lua
+for i = 1, 200, 1 
+do
+x = math.random() * 100 + i*100
+y = math.random() * 3000 - 1500
+z = math.random() * 3000 - 1500 + (i-100) * 10
+s = math.random() * 60 + 30
+?>
+ <ParticleSpawner position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" source="Orxonox/Steam" lifetime=3.0 loop=1 />
+
+<!--<Billboard material="Test/Fog" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>"  color="1, 1, 1, 0.01" scale="20" />
+-->
+<?lua 
+end
+?>
+
+<?lua
+elements = {"BodyDebris1.mesh", "CockpitDebris.mesh", "LightningGun.mesh", "WingDebris1.mesh", "WingDebris2.mesh", "satellitedish.mesh", "Thruster.mesh"}
+sizes = {4, 4, 4, 4, 4, 10, 20}
+elements.length = function()
+    return table.getn(elements)
+end
+for i = 1, 100, 1 
+do
+x = math.random() * 750 - 4500
+y = math.random() * 1000 + 2000
+z = math.random() * 500 + 1000
+e = math.floor(math.random()*elements.length()+1)
+?>
+    
+    <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30- 15) ?>"> 
+      <attached>
+        <Model position="0,0,0" scale="<?lua print(sizes[e]) ?>" mesh="<?lua print( elements[e]) ?>" />
+      </attached>
+    </MovableEntity>
+	<?lua 
+	end
+	?>
+
+
+    <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshipassff />
+  </Scene>
+</Level>

@@ -18,30 +18,27 @@ particle_system Orxonox/Steam
 	point_rendering	false
 	accurate_facing	false
 
-	emitter Ellipsoid
+	emitter Point
 	{
-		angle	180
+		angle	0
 		colour	1 1 1 0.1
 		colour_range_start	1 1 1 0.1
 		colour_range_end	1 1 1 0.02
 		direction	0 1 0
 		emission_rate	1
 		position	0 0 0
-		velocity	5
-		velocity_min	5
-		velocity_max	5
-		time_to_live	100
-		time_to_live_min	100
-		time_to_live_max	100
+		velocity	0
+		velocity_min	0
+		velocity_max	0
+		time_to_live	200
+		time_to_live_min	200
+		time_to_live_max	300
 		duration	0
 		duration_min	0
 		duration_max	0
 		repeat_delay	0
 		repeat_delay_min	0
 		repeat_delay_max	0
-		width	 2000
-		height	1000
-		depth	119.4
 	}
 }
 
