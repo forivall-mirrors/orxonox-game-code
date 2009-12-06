@@ -587,7 +587,6 @@ namespace orxonox
                 this->effectsPoolSize_ += it->second->getSize();
                 this->effectsPool_.push_front(it->second);
                 it->second->poolIterator_ = this->effectsPool_.begin();
-                COUT(0) << "pool size: " << this->effectsPoolSize_ << std::endl;
             }
             else
                 this->soundBuffers_.erase(it);

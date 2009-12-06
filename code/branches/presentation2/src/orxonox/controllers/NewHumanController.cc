@@ -28,6 +28,7 @@
 
 #include "NewHumanController.h"
 
+#include <cmath>
 #include <OgreRay.h>
 #include <OgreSceneQuery.h>
 #include <OgreCamera.h>
@@ -42,9 +43,6 @@
 #include "graphics/Camera.h"
 #include "sound/SoundManager.h"
 #include "Scene.h"
-
-#include <cmath>
-
 
 namespace orxonox
 {
@@ -251,7 +249,6 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::doUnfire()
     {
-        COUT(0) << "dounfire" << endl;
         this->firemode_ = -1;
         hideArrows();
     }
