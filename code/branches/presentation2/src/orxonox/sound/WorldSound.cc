@@ -44,6 +44,8 @@ namespace orxonox
         : StaticEntity(creator)
     {
         RegisterObject(WorldSound);
+        // WorldSound buffers should be pooled when they're not used anymore
+        this->bPooling_ = true;
     }
 
     WorldSound::~WorldSound()

@@ -85,7 +85,8 @@ namespace orxonox
     protected:
         ALuint loadOggFile();
 
-        ALuint audioSource_;
+        ALuint          audioSource_;
+        bool            bPooling_;
         shared_ptr<SoundBuffer> soundBuffer_;
 
     private:

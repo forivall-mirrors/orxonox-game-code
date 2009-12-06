@@ -51,6 +51,7 @@ namespace orxonox
     ManageScopedSingleton(SoundManager, ScopeID::Graphics, true);
 
     SoundManager::SoundManager()
+        : effectsPoolSize_(0)
     {
         RegisterRootObject(SoundManager);
 
@@ -528,32 +529,68 @@ namespace orxonox
 
     shared_ptr<SoundBuffer> SoundManager::getSoundBuffer(shared_ptr<ResourceInfo> fileInfo)
     {
-        std::map<std::string, weak_ptr<SoundBuffer> >::const_iterator it
-            = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
+        shared_ptr<SoundBuffer> buffer;
+        // Check active or pooled buffers
+        SoundBufferMap::const_iterator it = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
         if (it != this->soundBuffers_.end())
-            return it->second.lock();
+        {
+            buffer = it->second;
+
+            // Remove from effects pool if not active used before
+            if (buffer->poolIterator_ != this->effectsPool_.end())
+            {
+                this->effectsPoolSize_ -= buffer->getSize();
+                this->effectsPool_.erase(buffer->poolIterator_);
+                buffer->poolIterator_ = this->effectsPool_.end();
+            }
+        }
         else
         {
-            shared_ptr<SoundBuffer> buffer;
             try
             {
                 buffer.reset(new SoundBuffer(fileInfo));
+                buffer->poolIterator_ = this->effectsPool_.end();
             }
             catch (...)
             {
                 COUT(1) << Exception::handleMessage() << std::endl;
-                return shared_ptr<SoundBuffer>();
+                return buffer;
             }
             this->soundBuffers_[fileInfo->group + '/' + fileInfo->filename] = buffer;
-            return buffer;
         }
+        return buffer;
     }
 
-    void SoundManager::removeBuffer(shared_ptr<ResourceInfo> fileInfo)
+    void SoundManager::releaseSoundBuffer(const shared_ptr<SoundBuffer>& buffer, bool bPoolBuffer)
     {
-        std::map<std::string, weak_ptr<SoundBuffer> >::iterator it
-            = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
+        // Check if others are still using the buffer
+        if (buffer.use_count() != 2)
+            return;
+        SoundBufferMap::iterator it = this->soundBuffers_.find(buffer->fileInfo_->group + '/' + buffer->fileInfo_->filename);
         if (it != this->soundBuffers_.end())
-            this->soundBuffers_.erase(it);
+        {
+            if (bPoolBuffer)
+            {
+                // Pool already too large?
+                while (this->effectsPoolSize_ + it->second->getSize() > this->maxEffectsPoolSize_s && !this->effectsPool_.empty())
+                {
+                    shared_ptr<SoundBuffer> bufferDel = this->effectsPool_.back();
+                    this->effectsPoolSize_ -= bufferDel->getSize();
+                    bufferDel->poolIterator_ = this->effectsPool_.end();
+                    this->effectsPool_.pop_back();
+                    // Remove from buffer map too
+                    SoundBufferMap::iterator itDel = this->soundBuffers_.find(bufferDel->fileInfo_->group + '/' + bufferDel->fileInfo_->filename);
+                    if (itDel != this->soundBuffers_.end())
+                        this->soundBuffers_.erase(itDel);
+                }
+                // Put buffer into the pool
+                this->effectsPoolSize_ += it->second->getSize();
+                this->effectsPool_.push_front(it->second);
+                it->second->poolIterator_ = this->effectsPool_.begin();
+                COUT(0) << "pool size: " << this->effectsPoolSize_ << std::endl;
+            }
+            else
+                this->soundBuffers_.erase(it);
+        }
     }
 }

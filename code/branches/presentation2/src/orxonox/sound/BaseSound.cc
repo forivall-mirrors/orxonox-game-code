@@ -43,6 +43,7 @@ namespace orxonox
 {
     BaseSound::BaseSound()
         : audioSource_(0)
+        , bPooling_(false)
         , volume_(1.0)
         , bLoop_(false)
         , state_(Stopped)
@@ -165,6 +166,7 @@ namespace orxonox
             alSourceStop(this->audioSource_);
             // Unload old sound first
             alSourcei(this->audioSource_, AL_BUFFER, 0);
+            SoundManager::getInstance().releaseSoundBuffer(this->soundBuffer_, this->bPooling_);
             this->soundBuffer_.reset();
         }
 

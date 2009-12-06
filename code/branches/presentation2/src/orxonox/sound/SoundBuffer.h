@@ -40,6 +40,8 @@ namespace orxonox
     */
     class _OrxonoxExport SoundBuffer
     {
+        friend class SoundManager;
+
     public:
         SoundBuffer(shared_ptr<ResourceInfo> fileInfo);
         ~SoundBuffer();
@@ -47,12 +49,24 @@ namespace orxonox
         inline ALuint getBuffer()
             { return this->audioBuffer_; }
 
+        unsigned int getSize() const;
+
+        shared_ptr<ResourceInfo> getFileInfo() const
+            { return this->fileInfo_; }
+
+        void setPooling(bool val)
+            { this->bPooling_ = true; }
+        bool getPooling() const
+            { return this->bPooling_; }
+
     private:
         void loadStandard(DataStreamPtr dataStream);
         void loadOgg(DataStreamPtr dataStream);
 
         shared_ptr<ResourceInfo> fileInfo_;
         ALuint audioBuffer_;
+        std::list<shared_ptr<SoundBuffer> >::iterator poolIterator_;
+        bool bPooling_;
     };
 }
 

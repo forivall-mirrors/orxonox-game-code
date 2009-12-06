@@ -62,11 +62,18 @@ namespace orxonox
 
     SoundBuffer::~SoundBuffer()
     {
-        // Unregister buffer from SoundManager
-        SoundManager::getInstance().removeBuffer(this->fileInfo_);
-
         // Destroy buffer
         alDeleteBuffers(1, &this->audioBuffer_);
+    }
+
+    unsigned int SoundBuffer::getSize() const
+    {
+        ALint size;
+        alGetBufferi(this->audioBuffer_, AL_SIZE, &size);
+        if (!alGetError())
+            return size;
+        else
+            return 0;
     }
 
     void SoundBuffer::loadStandard(DataStreamPtr dataStream)

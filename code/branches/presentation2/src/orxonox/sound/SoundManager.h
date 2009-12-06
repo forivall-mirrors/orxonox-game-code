@@ -35,7 +35,7 @@
 #include <list>
 #include <map>
 #include <string>
-#include <boost/weak_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
@@ -100,7 +100,7 @@ namespace orxonox
         bool getMute(SoundType::Value type); // tolua_export
 
         shared_ptr<SoundBuffer> getSoundBuffer(shared_ptr<ResourceInfo> fileInfo);
-        void removeBuffer(shared_ptr<ResourceInfo> fileInfo);
+        void releaseSoundBuffer(const shared_ptr<SoundBuffer>& buffer, bool bPoolBuffer);
 
         static std::string getALErrorString(ALenum error);
 
@@ -138,7 +138,12 @@ namespace orxonox
         float effectsVolume_;
         std::map<SoundType::Value, bool> mute_;
 
-        std::map<std::string, weak_ptr<SoundBuffer> > soundBuffers_;
+        static const unsigned int maxEffectsPoolSize_s = 40 * 1024 * 1024;
+        unsigned int effectsPoolSize_;
+        typedef std::list<shared_ptr<SoundBuffer> > EffectsPoolList;
+        EffectsPoolList effectsPool_;
+        typedef std::map<std::string, shared_ptr<SoundBuffer> > SoundBufferMap;
+        SoundBufferMap soundBuffers_;
         
         static SoundManager* singletonPtr_s;
     }; // tolua_export
