@@ -36,6 +36,8 @@
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
+#include <CEGUIForwardRefs.h>
+
 namespace orxonox //tolua_export
 { //tolua_export
     /**
@@ -78,6 +80,8 @@ namespace orxonox //tolua_export
         //! Selects the default KeyBinder as current one
         void setToDefault()
             { this->setCurrent(this->defaultFilename_); }
+            
+        void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
 
         //! Returns a pointer to a KeyBinder (creates it if not yet loaded)
         KeyBinder* get(const std::string& name);
@@ -90,8 +94,7 @@ namespace orxonox //tolua_export
         void unload(const std::string& filename);
 
         //! Bind 'command' to any key pressed after this call (use with care!)
-        inline void keybind(const std::string& command)
-            { this->keybindInternal(command, false); }
+        inline void keybind(const std::string& command) { this->keybindInternal(command, false); } //tolua_export
         //! Bind 'command' to any key pressed after this call (use with care!), but temporarily (no file save)
         inline void tkeybind(const std::string& command)
             { this->keybindInternal(command, true); }

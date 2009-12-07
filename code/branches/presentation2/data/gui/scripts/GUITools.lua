@@ -1,6 +1,11 @@
 function openDecisionPopup( text, callbackPtr )
-    orxonox.CommandExecutor:execute("showGUI DecisionPopup false true")
---     showGUI("DecisionPopup", false, true)
-    DecisionPopup.setCallback(InGameMenu.callback)
+    showGUI("DecisionPopup", false, true)
+    DecisionPopup.setCallback(callbackPtr)
     DecisionPopup.setText(text)
+end
+
+function openInfoPopup( text, functionPtr )
+    showGUI("InfoPopup", false, true)
+    InfoPopup.setDo(functionPtr)
+    InfoPopup.setText(text)
 end

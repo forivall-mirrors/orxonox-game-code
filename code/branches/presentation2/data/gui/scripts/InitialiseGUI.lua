@@ -221,3 +221,7 @@ function find(table, value)
     end
     return nil
 end
+
+function test(e)
+    debug(0, "Blubb")
+end

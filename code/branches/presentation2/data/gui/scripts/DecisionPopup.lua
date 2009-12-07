@@ -27,14 +27,14 @@ function P.button_yes(e)
     if P.functionPtr ~= nil then
         P.functionPtr(true)
     end
-    orxonox.CommandExecutor:execute("hideGUI DecisionPopup")
+    hideGUI("DecisionPopup")
 end
 
 function P.button_no(e)
     if P.functionPtr ~= nil then
         P.functionPtr(false)
     end
-    orxonox.CommandExecutor:execute("hideGUI DecisionPopup")
+    hideGUI("DecisionPopup")
 end
 
 return P

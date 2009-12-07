@@ -37,6 +37,8 @@
 #include "InputManager.h"
 #include "KeyDetector.h"
 
+#include <CEGUIWindow.h>
+
 namespace orxonox
 {
     ManageScopedSingleton(KeyBinderManager, ScopeID::Graphics, false);
@@ -89,6 +91,11 @@ namespace orxonox
             this->bDefaultFileLoaded_ = true;
         else
             this->bDefaultFileLoaded_ = false;
+    }
+    
+    void KeyBinderManager::subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function)
+    {
+        window->subscribeScriptedEvent(event, function);
     }
 
     void KeyBinderManager::load(const std::string& filename)
