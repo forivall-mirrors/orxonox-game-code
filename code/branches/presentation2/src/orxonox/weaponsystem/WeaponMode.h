@@ -165,6 +165,7 @@ namespace orxonox
             Quaternion muzzleOrientation_;
 
             WorldSound* defSndWpnFire_;
+            bool        bSoundAttached_;
     };
 }
 

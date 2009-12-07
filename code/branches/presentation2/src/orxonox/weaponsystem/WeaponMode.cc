@@ -38,6 +38,7 @@
 #include "Weapon.h"
 #include "WeaponPack.h"
 #include "WeaponSystem.h"
+#include "WeaponSlot.h"
 
 #include "sound/WorldSound.h"
 
@@ -71,6 +72,7 @@ namespace orxonox
 
         this->defSndWpnFire_ = new WorldSound(this);
         this->defSndWpnFire_->setLooping(false);
+        this->bSoundAttached_ = false;
     }
 
     WeaponMode::~WeaponMode()
@@ -103,6 +105,12 @@ namespace orxonox
     bool WeaponMode::fire(float* reloadTime)
     {
         (*reloadTime) = this->reloadTime_;
+        if( !this->bSoundAttached_ )
+        {
+            assert(this->getWeapon() && this->getWeapon()->getWeaponSlot());
+            this->getWeapon()->getWeaponSlot()->attach(this->defSndWpnFire_);
+            this->bSoundAttached_ = true;
+        }
 
         if (!this->bReloading_ && this->munition_ && this->munition_->takeMunition(this->munitionPerShot_, this))
         {
@@ -121,8 +129,6 @@ namespace orxonox
             this->reloadTimer_.setInterval(reloadtime);
             this->reloadTimer_.startTimer();
 
-            assert( this->getWeapon() && this->getWeapon()->getWeaponPack() && this->getWeapon()->getWeaponPack()->getWeaponSystem() && this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn() );
-            this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->attach(this->defSndWpnFire_);
             if(!(this->defSndWpnFire_->isPlaying()))
             {
                 this->defSndWpnFire_->play();
