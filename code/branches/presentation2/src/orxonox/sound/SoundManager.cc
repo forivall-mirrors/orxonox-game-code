@@ -527,11 +527,11 @@ namespace orxonox
         }
     }
 
-    shared_ptr<SoundBuffer> SoundManager::getSoundBuffer(shared_ptr<ResourceInfo> fileInfo)
+    shared_ptr<SoundBuffer> SoundManager::getSoundBuffer(const std::string& filename)
     {
         shared_ptr<SoundBuffer> buffer;
         // Check active or pooled buffers
-        SoundBufferMap::const_iterator it = this->soundBuffers_.find(fileInfo->group + '/' + fileInfo->filename);
+        SoundBufferMap::const_iterator it = this->soundBuffers_.find(filename);
         if (it != this->soundBuffers_.end())
         {
             buffer = it->second;
@@ -548,7 +548,7 @@ namespace orxonox
         {
             try
             {
-                buffer.reset(new SoundBuffer(fileInfo));
+                buffer.reset(new SoundBuffer(filename));
                 buffer->poolIterator_ = this->effectsPool_.end();
             }
             catch (...)
@@ -556,7 +556,7 @@ namespace orxonox
                 COUT(1) << Exception::handleMessage() << std::endl;
                 return buffer;
             }
-            this->soundBuffers_[fileInfo->group + '/' + fileInfo->filename] = buffer;
+            this->soundBuffers_[filename] = buffer;
         }
         return buffer;
     }
@@ -566,7 +566,7 @@ namespace orxonox
         // Check if others are still using the buffer
         if (buffer.use_count() != 2)
             return;
-        SoundBufferMap::iterator it = this->soundBuffers_.find(buffer->fileInfo_->group + '/' + buffer->fileInfo_->filename);
+        SoundBufferMap::iterator it = this->soundBuffers_.find(buffer->getFilename());
         if (it != this->soundBuffers_.end())
         {
             if (bPoolBuffer)
@@ -579,7 +579,7 @@ namespace orxonox
                     bufferDel->poolIterator_ = this->effectsPool_.end();
                     this->effectsPool_.pop_back();
                     // Remove from buffer map too
-                    SoundBufferMap::iterator itDel = this->soundBuffers_.find(bufferDel->fileInfo_->group + '/' + bufferDel->fileInfo_->filename);
+                    SoundBufferMap::iterator itDel = this->soundBuffers_.find(bufferDel->getFilename());
                     if (itDel != this->soundBuffers_.end())
                         this->soundBuffers_.erase(itDel);
                 }

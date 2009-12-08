@@ -39,24 +39,33 @@
 
 namespace orxonox
 {
-    SoundBuffer::SoundBuffer(shared_ptr<ResourceInfo> fileInfo)
-        : fileInfo_(fileInfo)
+    SoundBuffer::SoundBuffer(const std::string& filename)
+        : filename_(filename)
         , audioBuffer_(AL_NONE)
     {
-        if (this->fileInfo_ == NULL)
+        if (this->filename_.empty())
             ThrowException(General, "SoundBuffer construction: fileInfo was NULL");
-        DataStreamPtr dataStream = Resource::open(this->fileInfo_);
 
-        std::string extension(this->fileInfo_->basename.substr(this->fileInfo_->basename.find_last_of('.') + 1));
+        // Get resource info
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(filename);
+        if (fileInfo == NULL)
+        {
+            COUT(2) << "Sound: Warning: Sound file '" << filename << "' not found" << std::endl;
+            return;
+        }
+        // Open data stream
+        DataStreamPtr dataStream = Resource::open(fileInfo);
+
+        std::string extension(this->filename_.substr(this->filename_.find_last_of('.') + 1));
         if (getLowercase(extension) == "ogg")
         {
             // Try ogg loader
-            this->loadOgg(dataStream);
+            this->loadOgg(fileInfo, dataStream);
         }
         else
         {
             // Try standard OpenAL loader
-            this->loadStandard(dataStream);
+            this->loadStandard(fileInfo, dataStream);
         }
     }
 
@@ -76,14 +85,14 @@ namespace orxonox
             return 0;
     }
 
-    void SoundBuffer::loadStandard(DataStreamPtr dataStream)
+    void SoundBuffer::loadStandard(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream)
     {
         // Read everything into a temporary buffer
-        char* buffer = new char[this->fileInfo_->size];
-        dataStream->read(buffer, this->fileInfo_->size);
+        char* buffer = new char[fileInfo->size];
+        dataStream->read(buffer, fileInfo->size);
         dataStream->seek(0);
 
-        this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, this->fileInfo_->size);
+        this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
         delete[] buffer;
 
         if (!alIsBuffer(this->audioBuffer_))
@@ -114,7 +123,7 @@ namespace orxonox
         return static_cast<long>(static_cast<Ogre::DataStream*>(datasource)->tell());
     }
 
-    void SoundBuffer::loadOgg(DataStreamPtr dataStream)
+    void SoundBuffer::loadOgg(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream)
     {
         char inbuffer[256*1024];
         std::vector<char> outbuffer;

@@ -61,7 +61,7 @@ namespace orxonox
 
     BaseSound::~BaseSound()
     {
-        this->setSource("");
+        this->setSource(std::string());
         if (GameMode::playsSound() && alIsSource(this->audioSource_))
             alDeleteSources(1, &this->audioSource_);
     }
@@ -190,15 +190,7 @@ namespace orxonox
         if (source_.empty() || !alIsSource(this->audioSource_))
             return;
 
-        // Get DataStream from the resources
-        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
-        if (fileInfo == NULL)
-        {
-            COUT(2) << "Sound: Warning: Sound file '" << source << "' not found" << std::endl;
-            return;
-        }
-
-        this->soundBuffer_ = SoundManager::getInstance().getSoundBuffer(fileInfo);
+        this->soundBuffer_ = SoundManager::getInstance().getSoundBuffer(this->source_);
         if (this->soundBuffer_ == NULL)
             return;
 

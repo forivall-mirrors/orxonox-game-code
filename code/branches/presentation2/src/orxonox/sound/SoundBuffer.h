@@ -43,7 +43,7 @@ namespace orxonox
         friend class SoundManager;
 
     public:
-        SoundBuffer(shared_ptr<ResourceInfo> fileInfo);
+        SoundBuffer(const std::string& filename);
         ~SoundBuffer();
 
         inline ALuint getBuffer()
@@ -51,8 +51,8 @@ namespace orxonox
 
         unsigned int getSize() const;
 
-        shared_ptr<ResourceInfo> getFileInfo() const
-            { return this->fileInfo_; }
+        const std::string& getFilename() const
+            { return this->filename_; }
 
         void setPooling(bool val)
             { this->bPooling_ = true; }
@@ -60,10 +60,10 @@ namespace orxonox
             { return this->bPooling_; }
 
     private:
-        void loadStandard(DataStreamPtr dataStream);
-        void loadOgg(DataStreamPtr dataStream);
+        void loadStandard(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream);
+        void loadOgg(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream);
 
-        shared_ptr<ResourceInfo> fileInfo_;
+        std::string filename_;
         ALuint audioBuffer_;
         std::list<shared_ptr<SoundBuffer> >::iterator poolIterator_;
         bool bPooling_;

@@ -99,7 +99,7 @@ namespace orxonox
         void toggleMute(SoundType::Value type); // tolua_export
         bool getMute(SoundType::Value type); // tolua_export
 
-        shared_ptr<SoundBuffer> getSoundBuffer(shared_ptr<ResourceInfo> fileInfo);
+        shared_ptr<SoundBuffer> getSoundBuffer(const std::string& filename);
         void releaseSoundBuffer(const shared_ptr<SoundBuffer>& buffer, bool bPoolBuffer);
 
         static std::string getALErrorString(ALenum error);
