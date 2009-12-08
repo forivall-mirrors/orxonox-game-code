@@ -153,7 +153,6 @@ namespace orxonox
     void SoundManager::preUpdate(const Clock& time)
     {
         this->processCrossFading(time.getDeltaTime());
-        alcProcessContext(this->context_);
     }
 
     void SoundManager::setConfigValues()

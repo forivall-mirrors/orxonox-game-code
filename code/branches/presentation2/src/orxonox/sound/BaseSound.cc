@@ -56,6 +56,12 @@ namespace orxonox
             alGenSources(1, &this->audioSource_);
             if (!alIsSource(this->audioSource_))
                 COUT(1) << "Sound: Source generation failed: " << SoundManager::getALErrorString(alGetError()) << std::endl;
+
+            if (alIsSource(this->audioSource_))
+            {
+                alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, 20);
+                alSourcei(this->audioSource_, AL_MAX_DISTANCE, 300);
+            }
         }
     }
 
