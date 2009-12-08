@@ -250,13 +250,12 @@ namespace orxonox
     void SoundManager::setListenerOrientation(const Quaternion& orientation)
     {
         // update listener orientation
-        Vector3 up = orientation.xAxis(); // just a wild guess
-        Vector3 at = orientation.zAxis();
+        const Vector3& direction = -orientation.zAxis();
+        const Vector3& up = orientation.yAxis();
 
-        ALfloat orient[6] = { at.x, at.y, at.z,
-                              up.x, up.y, up.z };
+        ALfloat orient[6] = { direction.x, direction.y, direction.z, up.x, up.y, up.z };
 
-        alListenerfv(AL_POSITION, orient);
+        alListenerfv(AL_ORIENTATION, orient);
         ALenum error = alGetError();
         if (error == AL_INVALID_VALUE)
             COUT(2) << "Sound: OpenAL: Invalid listener orientation" << std::endl;

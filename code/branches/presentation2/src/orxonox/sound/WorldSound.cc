@@ -80,9 +80,8 @@ namespace orxonox
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound velocity" << std::endl;
 
-            const Quaternion& orient = this->getWorldOrientation();
-            Vector3 at = orient.zAxis();
-            alSource3f(this->audioSource_, AL_DIRECTION, at.x, at.y, at.z);
+            const Vector3& direction = -this->getWorldOrientation().zAxis();
+            alSource3f(this->audioSource_, AL_DIRECTION, direction.x, direction.y, direction.z);
             error = alGetError();
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
