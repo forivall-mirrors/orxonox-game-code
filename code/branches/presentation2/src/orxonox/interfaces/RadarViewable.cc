@@ -51,7 +51,7 @@ namespace orxonox
         , line_(NULL)
         , LineNode_(NULL)
         , isHumanShip_(false)
-        , bVisibility_(false)
+        , bVisibility_(true)
         , radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")
