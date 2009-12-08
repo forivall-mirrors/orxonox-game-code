@@ -90,7 +90,7 @@ namespace orxonox
 
         this->defSndWpnEngine_ = new WorldSound(this);
         this->defSndWpnEngine_->setLooping(true);
-        this->defSndWpnEngine_->setSource("sounds/Rocket_Engine.ogg");
+        this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
         this->attach(defSndWpnEngine_);
     }
 

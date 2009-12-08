@@ -53,7 +53,7 @@ namespace orxonox
         this->speed_ = 500;
 
         this->setMunitionName("RocketMunition");
-        this->setDefaultSound("sounds/Rocket_Launch.ogg");
+        this->setDefaultSound("sounds/Rocket_launch.ogg");
     }
 
     RocketFire::~RocketFire()
