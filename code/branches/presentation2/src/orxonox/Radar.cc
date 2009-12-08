@@ -39,12 +39,15 @@
 #include "core/ConsoleCommand.h"
 #include "core/ObjectList.h"
 #include "interfaces/RadarListener.h"
+#include "controllers/HumanController.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
 
     Radar::Radar()
         : focus_(0)
+        , itFocus_(0)
         , objectTypeCounter_(0)
     {
         // TODO: make this mapping configurable. Maybe there's a possibility with self configured
@@ -117,21 +120,21 @@ namespace orxonox
 
     void Radar::cycleFocus()
     {
-        if (ObjectList<RadarViewable>::begin() == 0)
+        if (ObjectList<RadarViewable>::begin() == ObjectList<RadarViewable>::end())
         {
             // list is empty
             this->itFocus_ = 0;
             this->focus_ = 0;
         }
-/*
-        else if (this->owner_)
+
+        else if (HumanController::getLocalControllerEntityAsPawn())
         {
-            Vector3 localPosition = this->owner_->getPosition();
+            Vector3 localPosition = HumanController::getLocalControllerEntityAsPawn()->getWorldPosition();
             Vector3 targetPosition = localPosition;
-            if (*(this->itFocus_))
+            if (this->itFocus_ && *(this->itFocus_))
                 targetPosition = this->itFocus_->getRVWorldPosition();
 
-            // find the closed object further away than targetPosition
+            // find the closest object further away than targetPosition
             float currentDistance = localPosition.squaredDistance(targetPosition);
             float nextDistance = FLT_MAX;
             float minimumDistance = FLT_MAX;
@@ -139,7 +142,7 @@ namespace orxonox
 
             for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it)
             {
-                if (*it == static_cast<RadarViewable*>(this)->owner_)
+                if (*it == static_cast<RadarViewable*>(HumanController::getLocalControllerEntityAsPawn()))
                     continue;
 
                 float targetDistance = localPosition.squaredDistance((*it)->getRVWorldPosition());
@@ -166,7 +169,6 @@ namespace orxonox
                 this->focus_ = *(this->itFocus_);
             }
         }
-*/
     }
 
     void Radar::releaseFocus()

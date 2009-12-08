@@ -40,6 +40,8 @@
 #include "core/XMLPort.h"
 #include "Scene.h"
 #include "Radar.h"
+#include "controllers/HumanController.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -252,11 +254,10 @@ namespace orxonox
 
     float HUDNavigation::getDist2Focus() const
     {
-/*
-        if (Radar::getInstance().getFocus())
-            return (Radar::getInstance().getFocus()->getRVWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
+        Radar* radar = this->getOwner()->getScene()->getRadar();
+        if (radar->getFocus() && HumanController::getLocalControllerEntityAsPawn())
+            return (radar->getFocus()->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
         else
-*/
             return 0;
     }
 
