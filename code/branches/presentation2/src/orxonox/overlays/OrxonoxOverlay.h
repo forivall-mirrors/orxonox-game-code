@@ -157,6 +157,8 @@ namespace orxonox
         void setBackgroundMaterial(const std::string& material);
         const std::string& getBackgroundMaterial() const;
 
+        void setBackgroundAlpha(float alpha);
+
         virtual void changedVisibility();
 
         inline void setOwner(BaseObject* owner)
@@ -204,6 +206,7 @@ namespace orxonox
         static std::map<std::string, OrxonoxOverlay*> overlays_s;
         BaseObject* owner_;
         OverlayGroup* group_;
+        Ogre::Pass* backgroundAlphaPass_;
   };
 
   SUPER_FUNCTION(6, OrxonoxOverlay, changedOwner, false);

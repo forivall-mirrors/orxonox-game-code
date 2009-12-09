@@ -38,6 +38,9 @@
 #include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
 #include <OgreRenderWindow.h>
+#include <OgreMaterialManager.h>
+#include <OgreTechnique.h>
+#include <OgrePass.h>
 
 #include "util/Convert.h"
 #include "util/Exception.h"
@@ -368,5 +371,11 @@ namespace orxonox
             this->group_ = group;
             this->changedOverlayGroup();
         }
+    }
+
+    void OrxonoxOverlay::setBackgroundAlpha(float alpha) {
+        Ogre::MaterialPtr ptr = this->background_->getMaterial();
+        Ogre::TextureUnitState* tempTx = ptr->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+        tempTx->setAlphaOperation(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, alpha);
     }
 }

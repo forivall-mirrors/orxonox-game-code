@@ -80,16 +80,29 @@ namespace orxonox
             float                       currentPitch_;
             OrxonoxOverlay*             crossHairOverlay_;
             OrxonoxOverlay*             centerOverlay_;
+
+            OrxonoxOverlay*             damageOverlayTop_;
+            OrxonoxOverlay*             damageOverlayRight_;
+            OrxonoxOverlay*             damageOverlayBottom_;
+            OrxonoxOverlay*             damageOverlayLeft_;
+            float                       damageOverlayTime_;
+            float                       damageOverlayTT_;
+            float                       damageOverlayTR_;
+            float                       damageOverlayTB_;
+            float                       damageOverlayTL_;
+
             OrxonoxOverlay*             arrowsOverlay1_;
             OrxonoxOverlay*             arrowsOverlay2_;
             OrxonoxOverlay*             arrowsOverlay3_;
             OrxonoxOverlay*             arrowsOverlay4_;
+
             float                       overlaySize_;
             float                       arrowsSize_;
             bool                        accelerating_;
             float                       acceleration_;
             int                         firemode_;
             bool                        showArrows_;
+            bool                        showDamageOverlay_;
             bool                        showOverlays_;
             ClassTreeMask               targetMask_;
     };

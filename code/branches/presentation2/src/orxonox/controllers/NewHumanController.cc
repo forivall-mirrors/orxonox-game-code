@@ -66,12 +66,17 @@ namespace orxonox
 
         overlaySize_ = 0.08;
         arrowsSize_ = 0.4;
+
+        damageOverlayTime_ = 0.6;
+
         controlMode_ = 0;
         acceleration_ = 0;
         accelerating_ = false;
         firemode_ = -1;
+
         showArrows_ = true;
         showOverlays_ = false;
+        showDamageOverlay_ = true;
 
         //currentPitch_ = 1;
         //currentYaw_ = 1;
@@ -90,7 +95,34 @@ namespace orxonox
             centerOverlay_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
             centerOverlay_->hide();
 
-            if (showArrows_)
+            if ( showDamageOverlay_ )
+            {
+                damageOverlayTop_ = new OrxonoxOverlay(this);
+                damageOverlayTop_->setBackgroundMaterial("Orxonox/DamageOverlayTop");
+                damageOverlayTop_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
+                damageOverlayTop_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayTop_->hide();
+
+                damageOverlayRight_ = new OrxonoxOverlay(this);
+                damageOverlayRight_->setBackgroundMaterial("Orxonox/DamageOverlayRight");
+                damageOverlayRight_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
+                damageOverlayRight_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayRight_->hide();
+
+                damageOverlayBottom_ = new OrxonoxOverlay(this);
+                damageOverlayBottom_->setBackgroundMaterial("Orxonox/DamageOverlayBottom");
+                damageOverlayBottom_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
+                damageOverlayBottom_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayBottom_->hide();
+
+                damageOverlayLeft_ = new OrxonoxOverlay(this);
+                damageOverlayLeft_->setBackgroundMaterial("Orxonox/DamageOverlayLeft");
+                damageOverlayLeft_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
+                damageOverlayLeft_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayLeft_->hide();
+            }
+
+            if ( showArrows_ )
             {
                 arrowsOverlay1_ = new OrxonoxOverlay(this);
                 arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
@@ -167,7 +199,7 @@ namespace orxonox
                 this->updateTarget();
 
                 if ( !controlPaused_ ) {
-                    if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip")
+                    if (this->getControllableEntity() && (this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip" || this->getControllableEntity()->getIdentifier()->getName() == "Rocket"))
                         this->showOverlays();
 
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
@@ -179,6 +211,21 @@ namespace orxonox
                     }
                     else
                         hideArrows();
+
+                    if ( this->showDamageOverlay_ && ( this->damageOverlayTT_ > 0 || this->damageOverlayTR_ > 0 || this->damageOverlayTB_ > 0 || this->damageOverlayTL_ > 0 ) ) {
+                        this->damageOverlayTT_ -= dt;
+                        this->damageOverlayTR_ -= dt;
+                        this->damageOverlayTB_ -= dt;
+                        this->damageOverlayTL_ -= dt;
+                        if ( this->damageOverlayTT_ <= 0 )
+                            this->damageOverlayTop_->hide();
+                        if ( this->damageOverlayTR_ <= 0 )
+                            this->damageOverlayRight_->hide();
+                        if ( this->damageOverlayTB_ <= 0 )
+                            this->damageOverlayBottom_->hide();
+                        if ( this->damageOverlayTL_ <= 0 )
+                            this->damageOverlayLeft_->hide();
+                    }
                 }
             }
             else
@@ -250,14 +297,51 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     }
 
     void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {
-        Vector3 posA = multi_cast<Vector3>(contactpoint.getPositionWorldOnA());
-        //Vector3 posB = multi_cast<Vector3>(contactpoint.getPositionWorldOnB());
-        //posA and posB are almost identical
+        if ( showDamageOverlay_ ) {
+            Vector3 posA;
+            if ( originator )
+                posA = originator->getWorldPosition();
+            else
+                posA = multi_cast<Vector3>(contactpoint.getPositionWorldOnA());
+            //Vector3 posB = multi_cast<Vector3>(contactpoint.getPositionWorldOnB());
+            //posA and posB are almost identical
 
-        Vector3 relativeHit = this->getControllableEntity()->getWorldOrientation() * (posA - this->getControllableEntity()->getPosition());
+            Vector3 relativeHit = this->getControllableEntity()->getWorldOrientation().UnitInverse() * (this->getControllableEntity()->getWorldPosition() - posA);
 
-        COUT(0) << relativeHit << endl;
-        //COUT(0) << "Damage: " << damage << " Point A: " << posA << " Point B: " << posB << endl;
+            //back is z positive
+            //x is left positive
+            //y is down positive
+            relativeHit.normalise();
+            COUT(0) << relativeHit << endl;
+
+            float threshold = 0.3;
+            // && abs(relativeHit.y) < 0.5 
+            if ( relativeHit.x > threshold) // Left
+            {
+                this->damageOverlayLeft_->show();
+                this->damageOverlayTL_ = this->damageOverlayTime_;
+                //this->damageOverlayLeft_->setBackgroundAlpha(0.3);
+            }
+            if ( relativeHit.x < -threshold) //Right
+            {
+                this->damageOverlayRight_->show();
+                this->damageOverlayTR_ = this->damageOverlayTime_;
+                //this->damageOverlayRight_->setBackgroundAlpha(0.3);
+            }
+            if ( relativeHit.y > threshold) //Top
+            {
+                this->damageOverlayTop_->show();
+                this->damageOverlayTT_ = this->damageOverlayTime_;
+                //this->damageOverlayTop_->setBackgroundAlpha(0.3);
+            }
+            if ( relativeHit.y < -threshold) //Bottom
+            {
+                this->damageOverlayBottom_->show();
+                this->damageOverlayTB_ = this->damageOverlayTime_;
+                //this->damageOverlayBottom_->setBackgroundAlpha(0.3);
+            }
+
+        }
     }
 
     void NewHumanController::unfire()
@@ -483,6 +567,13 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     void NewHumanController::hideOverlays() {
         this->crossHairOverlay_->hide();
         this->centerOverlay_->hide();
+
+        if ( showDamageOverlay_ ) {
+            this->damageOverlayTop_->hide();
+            this->damageOverlayRight_->hide();
+            this->damageOverlayBottom_->hide();
+            this->damageOverlayLeft_->hide();
+        }
 
         this->hideArrows();
     }
