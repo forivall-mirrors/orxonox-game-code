@@ -8,7 +8,7 @@
         <Window Type="TaharezLook/StaticImage" Name="orxonox/InfoPopup_Background" >
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-            <Property Name="Alpha" Value="0.6" />
+            <Property Name="Alpha" Value="0.7" />
             <Window Type="TaharezLook/Button" Name="orxonox/InfoPopup_close" >
                 <Property Name="Font" Value="BlueHighway-12" />
                 <Property Name="Text" Value="Close" />

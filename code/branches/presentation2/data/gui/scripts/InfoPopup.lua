@@ -14,15 +14,24 @@ P.layoutString = "InfoPopup.layout"
 function P:init()
 end
 
-function P.setDo(functionPtr)
-    P.functionPtr = functionPtr
-    if P.functionPtr ~= nil then
-        P.functionPtr()
+function P.execute(functionPtr)
+    if functionPtr ~= nil then
+        functionPtr()
     end
 end
 
 function P.setText( text )
     winMgr:getWindow("orxonox/InfoPopup_text"):setText( text )
+end
+
+function P.setCloseButton(closeButton)
+    close = winMgr:getWindow("orxonox/InfoPopup_close")
+    close:setVisible(closeButton)
+    if(not closeButton) then
+        close:deactivate();
+    else
+        close:activate();
+    end
 end
 
 -- events for ingamemenu
