@@ -29,6 +29,7 @@
 #include "HUDNavigation.h"
 
 #include <string>
+#include <OgreCamera.h>
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
@@ -38,8 +39,10 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "CameraManager.h"
 #include "Scene.h"
 #include "Radar.h"
+#include "graphics/Camera.h"
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 
@@ -61,6 +64,7 @@ namespace orxonox
             .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
         navMarker_->setMaterialName("Orxonox/NavArrows");
 
+/*
         // create aim marker
         aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
             .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
@@ -71,9 +75,10 @@ namespace orxonox
         setTextSize(0.05f);
         setNavMarkerSize(0.05f);
         setAimMarkerSize(0.04f);
+*/
 
         background_->addChild(navMarker_);
-        background_->addChild(aimMarker_);
+//        background_->addChild(aimMarker_);
         background_->addChild(navText_);
 
         // hide at first
@@ -86,7 +91,7 @@ namespace orxonox
         {
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+//            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
         }
     }
 
@@ -97,7 +102,7 @@ namespace orxonox
         XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode);
         XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode);
         XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
+//        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
     }
 
     void HUDNavigation::setFont(const std::string& font)
@@ -150,12 +155,12 @@ namespace orxonox
         navText_->setCaption(multi_cast<std::string>(dist));
         float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3;
 
-/*
-        Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;
-        Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
-*/
+        orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
+        if (!cam)
+            return;
+        const Matrix4& transform = cam->getOgreCamera()->getProjectionMatrix() * cam->getOgreCamera()->getViewMatrix();
         // transform to screen coordinates
-        Vector3 pos = /*transformationMatrix * */radar->getFocus()->getRVWorldPosition();
+        Vector3 pos = transform * radar->getFocus()->getRVWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)
@@ -173,7 +178,7 @@ namespace orxonox
         if (outOfView)
         {
             // object is not in view
-            aimMarker_->hide();
+//            aimMarker_->hide();
 
             if (!wasOutOfView_)
             {
@@ -228,7 +233,7 @@ namespace orxonox
         {
             // object is in view
 /*
-            Vector3 aimpos = transformationMatrix * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
+            Vector3 aimpos = transform * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
                     Projectile::getSpeed(), Radar::getInstance().getFocus()->getRVWorldPosition(), Radar::getInstance().getFocus()->getRVOrientedVelocity());
 */
             if (wasOutOfView_)
@@ -242,8 +247,8 @@ namespace orxonox
             navMarker_->setLeft((pos.x + 1.0 - navMarker_->getWidth()) * 0.5);
             navMarker_->setTop((-pos.y + 1.0 - navMarker_->getHeight()) * 0.5);
 
-            aimMarker_->show();
 /*
+            aimMarker_->show();
             aimMarker_->setLeft((aimpos.x + 1.0 - aimMarker_->getWidth()) * 0.5);
             aimMarker_->setTop((-aimpos.y + 1.0 - aimMarker_->getHeight()) * 0.5);
 */
@@ -272,8 +277,10 @@ namespace orxonox
         float yScale = this->getActualSize().y;
         if (this->navMarker_)
             navMarker_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+/*
         if (this->aimMarker_)
             aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
+*/
         if (this->navText_)
             navText_->setCharHeight(navText_->getCharHeight() * yScale);
     }

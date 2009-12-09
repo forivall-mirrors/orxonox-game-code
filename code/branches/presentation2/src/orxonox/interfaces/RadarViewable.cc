@@ -162,7 +162,7 @@ namespace orxonox
     {
         if (!object)
         {
-            COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
+            COUT(1) << "Assertion: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
             assert(0);
         }
     }
