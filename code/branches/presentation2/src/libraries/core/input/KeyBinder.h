@@ -34,6 +34,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <map>
 #include <boost/shared_ptr.hpp>
 
 #include "InputHandler.h"
@@ -65,6 +66,9 @@ namespace orxonox
         void clearBindings();
         bool setBinding(const std::string& binding, const std::string& name, bool bTemporary = false);
         std::string getBinding(std::string commandName); //tolua_export
+        std::string getBinding(std::string commandName, unsigned int index); //tolua_export
+        unsigned int getNumberOfBindings(std::string commandName); //tolua_export
+        
         const std::string& getBindingsFilename()
             { return this->filename_; }
         void setConfigValues();
@@ -134,7 +138,7 @@ namespace orxonox
         //! Pointer list with all half axes
         std::vector<HalfAxis*> allHalfAxes_;
         //! Maps input commands to all Button names, including half axes
-        std::map<std::string, std::string> allCommands_;
+        std::map< std::string, std::vector<std::string> > allCommands_;
 
         /**
         @brief
@@ -155,6 +159,8 @@ namespace orxonox
         ConfigFileType configFile_;
 
     private:
+        void addButtonToCommand(std::string command, Button* button);
+        
         //##### ConfigValues #####
         //! Whether to filter small value analog input
         bool bFilterAnalogNoise_;

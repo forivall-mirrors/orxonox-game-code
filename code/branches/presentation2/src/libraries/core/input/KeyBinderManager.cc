@@ -56,6 +56,10 @@ namespace orxonox
             .defaultValues("");
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tkeybind, this), "tkeybind"))
             .defaultValues("");
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::unbind, this), "unbind"))
+            .defaultValues("");
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tunbind, this), "tunbind"))
+            .defaultValues("");
 
         // Load default key binder
         this->setCurrent(defaultFilename_);
@@ -88,6 +92,16 @@ namespace orxonox
             this->bDefaultFileLoaded_ = true;
         else
             this->bDefaultFileLoaded_ = false;
+    }
+    
+    inline void KeyBinderManager::unbind(const std::string& binding)
+    {
+        this->currentBinder_->setBinding("", binding, false);
+    }
+            
+    inline void KeyBinderManager::tunbind(const std::string& binding)
+    {
+        this->currentBinder_->setBinding("", binding, true);
     }
     
     void KeyBinderManager::subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function)
@@ -162,8 +176,15 @@ namespace orxonox
     {
         if (this->bBinding_)
         {
-            COUT(0) << "Binding string \"" << command_ << "\" on key '" << keyName << "'" << std::endl;
-            this->currentBinder_->setBinding(command_, keyName, bTemporary_);
+            if (keyName == "Keys.KeyEscape")
+            {
+                COUT(0) << "Keybinding aborted." << std::endl;
+            }
+            else
+            {
+                COUT(0) << "Binding string \"" << command_ << "\" on key '" << keyName << "'" << std::endl;
+                this->currentBinder_->setBinding(command_, keyName, bTemporary_);
+            }
             InputManager::getInstance().leaveState("detector");
             // inform whatever was calling the command
             if (this->callbackFunction_)

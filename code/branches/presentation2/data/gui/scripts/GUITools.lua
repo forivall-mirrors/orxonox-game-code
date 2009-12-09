@@ -4,9 +4,9 @@ function openDecisionPopup( text, callbackPtr )
     DecisionPopup.setText(text)
 end
 
-function openInfoPopup(text, functionPtr, closeButton)
+function openInfoPopup(text, functionPtr, closeButton, arguments)
     showGUI("InfoPopup", false, true)
-    InfoPopup.execute(functionPtr)
+    InfoPopup.execute(functionPtr, arguments)
     InfoPopup.setText(text)
     InfoPopup.setCloseButton(closeButton)
 end

@@ -28,6 +28,8 @@
 
 #include "KeyBinder.h"
 
+#include <algorithm>
+#include <sstream>
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
@@ -255,7 +257,7 @@ namespace orxonox
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
         {
             it->second->readConfigValue(this->configFile_);
-            this->allCommands_[it->second->bindingString_] = it->second->groupName_ + " " + it->second->name_;
+            addButtonToCommand(it->second->bindingString_, it->second);
         }
 
         COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
@@ -266,12 +268,12 @@ namespace orxonox
         std::map<std::string, Button*>::iterator it = allButtons_.find(name);
         if (it != allButtons_.end())
         {
+            addButtonToCommand(binding, it->second);
             if (bTemporary)
                 it->second->configContainer_->tset(binding);
             else
                 it->second->configContainer_->set(binding);
             it->second->configContainer_->getValue(&(it->second->bindingString_), it->second);
-            this->allCommands_[it->second->bindingString_] = it->second->groupName_ + " " + it->second->name_;
             return true;
         }
         else
@@ -281,23 +283,82 @@ namespace orxonox
         }
     }
     
+     void KeyBinder::addButtonToCommand(std::string command, Button* button)
+     {  
+        std::ostringstream stream;
+        stream << button->groupName_  << "." << button->name_;
+        
+        std::vector<std::string>& oldKeynames = this->allCommands_[button->bindingString_];
+        std::vector<std::string>::iterator it = std::find(oldKeynames.begin(), oldKeynames.end(), stream.str());
+        if(it != oldKeynames.end())
+        {
+            oldKeynames.erase(it);
+        }
+        
+        if(command != "")
+        {
+            std::vector<std::string>& keynames = this->allCommands_[command];
+            if( std::find(keynames.begin(), keynames.end(), stream.str()) == keynames.end())
+            {
+                this->allCommands_[command].push_back(stream.str());
+            }
+        }
+     }
+    
     /**
     @brief
-        Return the key name for a specific command
+        Return the first key name for a specific command
     */
     std::string KeyBinder::getBinding(std::string commandName)
     {
-        COUT(0)<< commandName << endl;
         if( this->allCommands_.find(commandName) != this->allCommands_.end())
         {
-            std::string keyname = this->allCommands_[commandName];
-//             while(keyname.find(".")!=keyname.npos)
-//                 keyname.replace(1, keyname.find("."), " ");
-            COUT(0) << keyname << endl;
-            return keyname;
+            std::vector<std::string>& keynames = this->allCommands_[commandName];
+            return keynames.front();
         }
-        else
+        
+        return "";
+    }
+    
+    /**
+    @brief
+        Return the key name for a specific command at a given index.
+    @param commandName
+        The command name the key name is returned for.
+    @param index
+        The index at which the key name is returned for.
+    */
+    std::string KeyBinder::getBinding(std::string commandName, unsigned int index)
+    {
+        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        {
+            std::vector<std::string>& keynames = this->allCommands_[commandName];
+            if(index < keynames.size())
+            {
+                return keynames[index];
+            }
+                
             return "";
+        }
+        
+        return "";
+    }
+    
+    /**
+    @brief
+        Get the number of different key bindings of a specific command.
+    @param commandName
+        The command.
+    */
+    unsigned int KeyBinder::getNumberOfBindings(std::string commandName)
+    {
+        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        {
+            std::vector<std::string>& keynames = this->allCommands_[commandName];
+            return keynames.size();
+        }
+        
+        return 0;
     }
 
     /**

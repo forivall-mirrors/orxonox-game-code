@@ -14,9 +14,13 @@ P.layoutString = "InfoPopup.layout"
 function P:init()
 end
 
-function P.execute(functionPtr)
+function P.execute(functionPtr, arguments)
     if functionPtr ~= nil then
-        functionPtr()
+        if arguments ~= nil then
+            functionPtr(arguments)
+        else
+            functionPtr()
+        end
     end
 end
 

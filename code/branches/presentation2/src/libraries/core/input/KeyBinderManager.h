@@ -99,6 +99,8 @@ namespace orxonox //tolua_export
         //! Bind 'command' to any key pressed after this call (use with care!), but temporarily (no file save)
         inline void tkeybind(const std::string& command)
             { this->keybindInternal(command, true); }
+        void unbind(const std::string& binding); //tolua_export
+        void tunbind(const std::string& binding);
         inline void registerKeybindCallback(Functor* function) { this->callbackFunction_.reset(function); } // tolua_export
 
     private:
