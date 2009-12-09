@@ -39,18 +39,33 @@
 #include <boost/shared_ptr.hpp>
 
 #include "util/ScopeGuard.h"
+#include "core/Functor.h"
 #include "ToluaInterface.h"
 
-// tolua_begin
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
+    class Functor; // tolua_export
+
+    //! Functor subclass that simply executes code with 0 arguments.
+    class _CoreExport LuaFunctor : public Functor
+    {
+        public:
+            LuaFunctor(const std::string& code, LuaState* luaState);
+            void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null);
+            void evaluateParam(unsigned int index, MultiType& param) const {}
+
+        private:
+            std::string code_;
+            LuaState*   lua_;
+    };
+
+
     /**
     @brief
         Representation of an interface to lua
     */
-    class _CoreExport LuaState
-    {
-// tolua_end
+    class _CoreExport LuaState // tolua_export
+    { // tolua_export
     public:
         LuaState();
         ~LuaState();
@@ -73,6 +88,8 @@ namespace orxonox
 
         void setDefaultResourceInfo(const shared_ptr<ResourceInfo>& sourceFileInfo) { this->sourceFileInfo_ = sourceFileInfo; }
         const shared_ptr<ResourceInfo>& getDefaultResourceInfo() { return this->sourceFileInfo_; }
+
+        Functor* createLuaFunctor(const std::string& code) { return new LuaFunctor(code, this); } // tolua_export
 
         static bool addToluaInterface(int (*function)(lua_State*), const std::string& name);
         static bool removeToluaInterface(const std::string& name);

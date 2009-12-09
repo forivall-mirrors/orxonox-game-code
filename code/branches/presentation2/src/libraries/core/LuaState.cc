@@ -262,4 +262,16 @@ namespace orxonox
             lua_setglobal(state, it->first.c_str());
         }
     }
+
+
+    LuaFunctor::LuaFunctor(const std::string& code, LuaState* luaState)
+    {
+        this->code_ = code;
+        this->lua_ = luaState;
+    }
+
+    void LuaFunctor::operator()(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    {
+        lua_->doString(this->code_);
+    }
 }

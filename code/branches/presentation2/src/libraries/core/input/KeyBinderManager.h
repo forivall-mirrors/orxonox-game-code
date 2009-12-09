@@ -33,10 +33,11 @@
 
 #include <map>
 #include <string>
+#include <boost/shared_ptr.hpp>
+#include <CEGUIForwardRefs.h>
+
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
-
-#include <CEGUIForwardRefs.h>
 
 namespace orxonox //tolua_export
 { //tolua_export
@@ -98,11 +99,12 @@ namespace orxonox //tolua_export
         //! Bind 'command' to any key pressed after this call (use with care!), but temporarily (no file save)
         inline void tkeybind(const std::string& command)
             { this->keybindInternal(command, true); }
+        inline void registerKeybindCallback(Functor* function) { this->callbackFunction_.reset(function); } // tolua_export
 
     private:
         KeyBinderManager(const KeyBinderManager&);
         void keybindInternal(const std::string& command, bool bTemporary);
-        void callback(const std::string& keyName);
+        void keybindKeyPressed(const std::string& keyName);
         void defaultFilenameChanged();
 
         // KeyBinder management
@@ -112,7 +114,7 @@ namespace orxonox //tolua_export
         std::string defaultFilename_;                //! Name of the file with the default key bindings
 
         // keybind command related
-        Functor* callbackFunction_;                  //! Function to be called when key was pressed after "keybind" command
+        shared_ptr<Functor> callbackFunction_;       //! Function to be called when key was pressed after "keybind" command
         bool bBinding_;                              //! Tells whether a key binding process is active
         bool bTemporary_;                            //! Stores tkeybind/keybind value
         std::string command_;                        //! Stores the command received by (t)keybind

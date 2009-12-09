@@ -85,10 +85,11 @@ function P.KeyBindButton_clicked(e)
     commandNr = tonumber(string.match(name, "%d+"))
     
     openInfoPopup("Press any button/key or move a mouse/joystick axis.", KeyBindMenu.keybind)
-
 end
 
 function P.keybind()
+    local funct = luaState:createLuaFunctor("InfoPopup:close()")
+    orxonox.KeyBinderManager:getInstance():registerKeybindCallback(funct)
     orxonox.KeyBinderManager:getInstance():keybind(commandList[commandNr])
 end
 
