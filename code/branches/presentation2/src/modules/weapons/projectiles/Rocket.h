@@ -123,7 +123,7 @@ namespace orxonox
             float lifetime_;
 
             WorldSound* defSndWpnEngine_;
-            WorldSound* defSndWpnExplosion_;
+            WorldSound* defSndWpnLaunch_;
     };
 
 }

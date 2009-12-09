@@ -60,7 +60,7 @@ namespace orxonox
             if (alIsSource(this->audioSource_))
             {
                 alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, 20);
-                alSourcei(this->audioSource_, AL_MAX_DISTANCE, 300);
+                alSourcei(this->audioSource_, AL_MAX_DISTANCE, 10000);
             }
         }
     }

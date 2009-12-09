@@ -53,7 +53,7 @@ namespace orxonox
         this->speed_ = 500;
 
         this->setMunitionName("RocketMunition");
-        this->setDefaultSound("sounds/Rocket_launch.ogg");
+        // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
     }
 
     RocketFire::~RocketFire()

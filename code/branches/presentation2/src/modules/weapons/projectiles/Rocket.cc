@@ -92,6 +92,11 @@ namespace orxonox
         this->defSndWpnEngine_->setLooping(true);
         this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
         this->attach(defSndWpnEngine_);
+
+        this->defSndWpnLaunch_ = new WorldSound(this);
+        this->defSndWpnLaunch_->setLooping(false);
+        this->defSndWpnLaunch_->setSource("sounds/Rocket_launch.ogg");
+        this->attach(defSndWpnLaunch_);
     }
 
     /**
@@ -110,7 +115,12 @@ namespace orxonox
             {
                 this->defSndWpnEngine_->stop();
             }
+            if(this->defSndWpnLaunch_->isPlaying())
+            {
+                this->defSndWpnLaunch_->stop();
+            }
             delete this->defSndWpnEngine_;
+            delete this->defSndWpnLaunch_;
         }
     }
 
@@ -132,6 +142,7 @@ namespace orxonox
         this->owner_->getPlayer()->startTemporaryControl(this);
 
         this->defSndWpnEngine_->play();
+        this->defSndWpnLaunch_->play();
     }
 
     /**
