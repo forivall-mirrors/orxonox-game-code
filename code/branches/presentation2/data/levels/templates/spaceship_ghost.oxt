@@ -66,24 +66,22 @@
    accelerationleftright =  100
    accelerationupdown    =  100
   >
-
-
-    <forward>
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.06, 3.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.06, 3.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.06, 5.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.06, 5.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.86, 4.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.86, 4.66, 9.6" colour="1, 1, 1, 0.4" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-    </forward>
-    <boost>
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.06, 5.66, 11.6" colour="0.5, 0.85, 0.5, 0.1" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.06, 5.66, 11.6" colour="0.5, 0.85, 0.5, 0.1" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.06, 3.66, 11.6" colour="0.5, 0.85, 0.5, 0.1" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.06, 3.66, 11.6" colour="0.5, 0.85, 0.5, 0.1" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.86, 4.66, 11.6" colour="0.5, 0.85, 0.5, 0.1" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.86, 4.66, 11.6" colour="0.5, 0.85, 0.5, 0.1" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-    </boost>
-  </MultiStateEngine>
+    <EffectContainer condition="normal or boost">
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 3, 6" colour="0.0, 0.0, 0.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 3, 6" colour="0.0, 0.0, 0.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+    </EffectContainer>
+    <EffectContainer condition="boost">
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 3, 6" colour="0.0, 0.0, 0.0, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 3, 6" colour="0.0, 0.0, 0.0, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+    </EffectContainer>
+    <EffectContainer condition="not idle">
+      <Backlight mainstate=activity active=false scale=0.4 position="7.6, 3, 6" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    	<Backlight mainstate=activity active=false scale=0.4 position="-7.6, 3, 6" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+    <EffectContainer condition="brake">
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.2, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.2, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+</MultiStateEngine>
 </Template>
 
