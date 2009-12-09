@@ -108,7 +108,7 @@ function P.keybind()
 end
 
 function P.callback(number)
-    orxonox.KeyBinderManager:getInstance():registerKeybindCallback(0)
+    orxonox.KeyBinderManager:getInstance():registerKeybindCallback(nil)
     local button = winMgr:getWindow("orxonox/KeyBindPane/Binding" .. number .. "/Button")
     button:setText(orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[number]))
     
