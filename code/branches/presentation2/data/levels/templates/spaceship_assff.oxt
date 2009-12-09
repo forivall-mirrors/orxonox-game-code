@@ -9,7 +9,7 @@
 
    health            = 100
    maxhealth         = 200
-   initialhealth     = 100d
+   initialhealth     = 100
 
    primaryThrust     = 100;
    auxilaryThrust    = 30;
