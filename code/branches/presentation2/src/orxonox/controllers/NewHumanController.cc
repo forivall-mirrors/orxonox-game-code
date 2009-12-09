@@ -162,6 +162,8 @@ namespace orxonox
 
             if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
             {
+                if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip")
+                    this->showOverlays();
                 this->updateTarget();
                 if ( !controlPaused_ ) {
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
@@ -175,6 +177,8 @@ namespace orxonox
                         hideArrows();
                 }
             }
+            else
+                this->hideOverlays();
 
             if ( this->acceleration_ > 0 )
             {
