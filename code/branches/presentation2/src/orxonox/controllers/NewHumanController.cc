@@ -297,7 +297,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     }
 
     void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {
-        if ( showDamageOverlay_ ) {
+        if ( this->showDamageOverlay_ && !this->controlPaused_ && this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() ) {
             Vector3 posA;
             if ( originator )
                 posA = originator->getWorldPosition();
@@ -330,14 +330,14 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
             }
             if ( relativeHit.y > threshold) //Top
             {
-                this->damageOverlayTop_->show();
-                this->damageOverlayTT_ = this->damageOverlayTime_;
+                this->damageOverlayBottom_->show();
+                this->damageOverlayTB_ = this->damageOverlayTime_;
                 //this->damageOverlayTop_->setBackgroundAlpha(0.3);
             }
             if ( relativeHit.y < -threshold) //Bottom
             {
-                this->damageOverlayBottom_->show();
-                this->damageOverlayTB_ = this->damageOverlayTime_;
+                this->damageOverlayTop_->show();
+                this->damageOverlayTT_ = this->damageOverlayTime_;
                 //this->damageOverlayBottom_->setBackgroundAlpha(0.3);
             }
 
