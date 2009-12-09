@@ -32,7 +32,9 @@
       <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
       <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
     </collisionShapes>
-
+<?lua
+  include("includes/weaponsettings_ghost.oxi")
+?>
   </SpaceShip>
 </Template>
 
@@ -43,11 +45,6 @@
       <CameraPosition position="0,40,160" drag=true mouselook=true />
       <CameraPosition position="0,50,200" drag=true mouselook=true />
     </camerapositions>
-
-<?lua
-  include("includes/weaponsettings_ghost.oxi")
-?>
-
   </SpaceShip>
 </Template>
 
