@@ -48,6 +48,8 @@ namespace orxonox
         this->metaList_ = new MetaObjectList();
         this->referenceCount_ = 0;
         this->requestedDestruction_ = false;
+        // Optimisation
+        this->objectPointers_.reserve(6);
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */

@@ -52,6 +52,7 @@ namespace orxonox
 
         if (GameMode::isMaster())
         {
+            this->setMass(1.0);
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);

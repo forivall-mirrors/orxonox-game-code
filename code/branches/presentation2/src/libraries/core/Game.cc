@@ -177,7 +177,7 @@ namespace orxonox
             // Update the GameState stack if required
             this->updateGameStateStack();
 
-            // Core preUpdate (doesn't throw)
+            // Core preUpdate
             try
                 { this->core_->preUpdate(*this->gameClock_); }
             catch (...)
@@ -191,7 +191,7 @@ namespace orxonox
             // Update the GameStates bottom up in the stack
             this->updateGameStates();
 
-            // Core postUpdate (doesn't throw)
+            // Core postUpdate
             try
                 { this->core_->postUpdate(*this->gameClock_); }
             catch (...)
@@ -205,7 +205,7 @@ namespace orxonox
             // Evaluate statistics
             this->updateStatistics();
 
-            // Limit framerate
+            // Limit frame rate
             this->updateFPSLimiter();
         }
 
