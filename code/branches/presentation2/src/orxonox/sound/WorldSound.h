@@ -56,6 +56,7 @@ namespace orxonox
         virtual void tick(float dt);
 
     private:
+        void registerVariables();
     };
 }
 

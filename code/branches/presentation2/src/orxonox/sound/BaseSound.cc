@@ -45,7 +45,7 @@ namespace orxonox
         : audioSource_(0)
         , bPooling_(false)
         , volume_(1.0)
-        , bLoop_(false)
+        , bLooping_(false)
         , state_(Stopped)
         , pitch_ (1.0)
     {
@@ -150,7 +150,7 @@ namespace orxonox
 
     void BaseSound::setLooping(bool val)
     {
-        this->bLoop_ = val;
+        this->bLooping_ = val;
         if (GameMode::playsSound() && alIsSource(this->audioSource_))
             alSourcei(this->audioSource_, AL_LOOPING, (val ? AL_TRUE : AL_FALSE));
     }
@@ -203,7 +203,7 @@ namespace orxonox
         alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
         if (ALuint error = alGetError())
         {
-            COUT(1) << "Sound Error: Could not load file \"" << source << "\": " << SoundManager::getALErrorString << std::endl;
+            COUT(1) << "Sound Error: Could not load file \"" << source << "\": " << SoundManager::getALErrorString(error) << std::endl;
             return;
         }
 

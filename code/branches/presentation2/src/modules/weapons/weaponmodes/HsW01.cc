@@ -41,8 +41,6 @@
 #include "worldentities/WorldEntity.h"
 #include "worldentities/pawns/Pawn.h"
 
-#include "sound/WorldSound.h"
-
 namespace orxonox
 {
     CreateFactory(HsW01);

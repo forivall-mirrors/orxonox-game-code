@@ -35,6 +35,7 @@
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 #include "SoundManager.h"
+#include <core/ConsoleCommandCompilation.h>
 
 namespace orxonox
 {
@@ -46,10 +47,20 @@ namespace orxonox
         RegisterObject(WorldSound);
         // WorldSound buffers should be pooled when they're not used anymore
         this->bPooling_ = true;
+        this->registerVariables();
     }
 
     WorldSound::~WorldSound()
     {
+    }
+    
+    void WorldSound::registerVariables()
+    {
+        registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::volumeChanged));
+        registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::sourceChanged));
+        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::loopingChanged));
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient);
+        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::pitchChanged));
     }
 
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)

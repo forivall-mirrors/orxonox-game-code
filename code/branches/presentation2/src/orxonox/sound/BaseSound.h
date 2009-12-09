@@ -67,41 +67,44 @@ namespace orxonox
 
         virtual void setSource(const std::string& source);
         virtual const std::string& getSource() const { return this->source_; }
+        inline void sourceChanged(){ this->setSource(this->source_); }
 
         void setVolume(float vol);
         float getVolume() const { return this->volume_; }
+        inline void volumeChanged(){ this->setVolume(this->volume_); }
         
         virtual float getVolumeGain();
         void updateVolume(void);
 
-        bool getLooping() const   { return this->bLoop_; }
+        bool getLooping() const   { return this->bLooping_; }
         void setLooping(bool val);
+        inline void loopingChanged(){ this->setLooping(this->bLooping_); }
 
         float getPitch() const   { return this->pitch_; }
         void setPitch(float pitch);
+        inline void pitchChanged(){ this->setPitch(this->pitch_); }
 
         //ALuint getALAudioSource(void);
 
     protected:
-        ALint getSourceState() const;
-
-        ALuint          audioSource_;
-        bool            bPooling_;
-        shared_ptr<SoundBuffer> soundBuffer_;
-
-    private:
         enum State
         {
             Stopped,
             Playing,
             Paused
         };
+        ALint getSourceState() const;
 
+        ALuint          audioSource_;
+        bool            bPooling_;
+        shared_ptr<SoundBuffer> soundBuffer_;
         std::string     source_;
         float           volume_;
-        bool            bLoop_;
+        bool            bLooping_;
         State           state_;
         float           pitch_;
+
+    private:
         DataStreamPtr   dataStream_;
     };
 }

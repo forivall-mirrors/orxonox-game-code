@@ -70,16 +70,22 @@ namespace orxonox
         this->muzzlePosition_ = Vector3::ZERO;
         this->muzzleOrientation_ = Quaternion::IDENTITY;
 
-        this->defSndWpnFire_ = new WorldSound(this);
-        this->defSndWpnFire_->setLooping(false);
-        this->bSoundAttached_ = false;
+        if( GameMode::isMaster() )
+        {
+            this->defSndWpnFire_ = new WorldSound(this);
+            this->defSndWpnFire_->setLooping(false);
+            this->bSoundAttached_ = false;
+        }
+        else
+            this->defSndWpnFire_ = 0;
     }
 
     WeaponMode::~WeaponMode()
     {
         if(this->isInitialized())
         {
-            delete this->defSndWpnFire_;
+            if( this->defSndWpnFire_ )
+                delete this->defSndWpnFire_;
         }
     }
 
@@ -105,7 +111,7 @@ namespace orxonox
     bool WeaponMode::fire(float* reloadTime)
     {
         (*reloadTime) = this->reloadTime_;
-        if( !this->bSoundAttached_ )
+        if( !this->bSoundAttached_ && GameMode::isMaster() )
         {
             assert(this->getWeapon() && this->getWeapon()->getWeaponSlot());
             this->getWeapon()->getWeaponSlot()->attach(this->defSndWpnFire_);
@@ -129,7 +135,7 @@ namespace orxonox
             this->reloadTimer_.setInterval(reloadtime);
             this->reloadTimer_.startTimer();
 
-            if(!(this->defSndWpnFire_->isPlaying()))
+            if( this->defSndWpnFire_ && !(this->defSndWpnFire_->isPlaying()))
             {
                 this->defSndWpnFire_->play();
             }
@@ -221,7 +227,7 @@ namespace orxonox
 
     void WeaponMode::reloaded()
     {
-        if(this->defSndWpnFire_->isPlaying())
+        if( this->defSndWpnFire_ && this->defSndWpnFire_->isPlaying())
         {
             this->defSndWpnFire_->stop();
         }
@@ -256,11 +262,15 @@ namespace orxonox
 
     void WeaponMode::setDefaultSound(const std::string& soundPath)
     {
-        this->defSndWpnFire_->setSource(soundPath);
+        if( this->defSndWpnFire_ )
+            this->defSndWpnFire_->setSource(soundPath);
     }
 
     const std::string& WeaponMode::getDefaultSound()
     {
-        return this->defSndWpnFire_->getSource();
+        if( this->defSndWpnFire_ )
+            return this->defSndWpnFire_->getSource();
+        else
+            return std::string();
     }
 }

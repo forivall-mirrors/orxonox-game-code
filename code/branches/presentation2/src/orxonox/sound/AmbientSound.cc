@@ -41,16 +41,27 @@ namespace orxonox
     CreateFactory(AmbientSound);
 
     AmbientSound::AmbientSound(BaseObject* creator)
-        : BaseObject(creator)
+        : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(AmbientSound);
 
         // Ambient sounds always fade in
         this->setVolume(0);
+        this->registerVariables();
     }
 
     AmbientSound::~AmbientSound()
     {
+    }
+    
+    void AmbientSound::registerVariables()
+    {
+        registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::volumeChanged));
+//         registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::sourceChanged));
+        registerVariable(ambientSource_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::ambientSourceChanged));
+        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::loopingChanged));
+        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::pitchChanged));
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient);
     }
 
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)

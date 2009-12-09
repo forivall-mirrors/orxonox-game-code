@@ -37,8 +37,6 @@
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
 
-#include "sound/WorldSound.h"
-
 namespace orxonox
 {
     CreateFactory(RocketFire);
