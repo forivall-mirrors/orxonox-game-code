@@ -47,7 +47,7 @@ namespace orxonox //tolua_export
         This interface merely serves to provide a static "keybind" command that always
         maps to the currently active KeyBinder. You can set that with setCurrent().
         There is also a default one, retrieved with getDefault(). The idea is that
-        mostly the default KeyBinder is active except for special situtations (mini-game for inst).
+        mostly the default KeyBinder is active except for special situations (mini-game for inst).
     @remarks
         You are not forced to use the KeyBinder imposed by getCurrent(). But be aware that "keybind"
         will not work as expected!
@@ -61,11 +61,9 @@ namespace orxonox //tolua_export
         ~KeyBinderManager();
         void setConfigValues();
 
-        static KeyBinderManager& getInstance() //tolua_export
-            { return Singleton<KeyBinderManager>::getInstance(); }
+        static KeyBinderManager& getInstance() { return Singleton<KeyBinderManager>::getInstance(); } //tolua_export
         //! Returns the currently selected KeyBinder
-        KeyBinder* getCurrent() //tolua_export
-            { return this->currentBinder_; }
+        KeyBinder* getCurrent() { return this->currentBinder_; } //tolua_export
         //! Like getCurrent(), but returns it as InputHandler* (so you don't have to include KeyBinder.h)
         InputHandler* getCurrentAsHandler();
         //! Selects the current KeyBinder and creates it if not yet loaded.
@@ -96,8 +94,7 @@ namespace orxonox //tolua_export
         void unload(const std::string& filename);
 
         //! Bind 'command' to any key pressed after this call (use with care!)
-        inline void keybind(const std::string& command) //tolua_export
-            { this->keybindInternal(command, false); }
+        inline void keybind(const std::string& command) { this->keybindInternal(command, false); } //tolua_export
         //! Bind 'command' to any key pressed after this call (use with care!), but temporarily (no file save)
         inline void tkeybind(const std::string& command)
             { this->keybindInternal(command, true); }
