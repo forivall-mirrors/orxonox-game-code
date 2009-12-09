@@ -91,28 +91,28 @@ namespace orxonox
             if (showArrows_)
             {
                 arrowsOverlay1_ = new OrxonoxOverlay(this);
-                arrowsOverlay1_->setBackgroundMaterial("Orxonox/CenterOverlay");
+                arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
                 arrowsOverlay1_->setSize(Vector2(0.02727, 0.36 * arrowsSize_));
                 arrowsOverlay1_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay1_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay1_->hide();
     
                 arrowsOverlay2_ = new OrxonoxOverlay(this);
-                arrowsOverlay2_->setBackgroundMaterial("Orxonox/CenterOverlay");
+                arrowsOverlay2_->setBackgroundMaterial("Orxonox/DirectionArrows2");
                 arrowsOverlay2_->setSize(Vector2(0.02727, 0.59 * arrowsSize_));
                 arrowsOverlay2_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay2_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay2_->hide();
     
                 arrowsOverlay3_ = new OrxonoxOverlay(this);
-                arrowsOverlay3_->setBackgroundMaterial("Orxonox/CenterOverlay");
+                arrowsOverlay3_->setBackgroundMaterial("Orxonox/DirectionArrows3");
                 arrowsOverlay3_->setSize(Vector2(0.02727, 0.77 * arrowsSize_));
                 arrowsOverlay3_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay3_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay3_->hide();
     
                 arrowsOverlay4_ = new OrxonoxOverlay(this);
-                arrowsOverlay4_->setBackgroundMaterial("Orxonox/CenterOverlay");
+                arrowsOverlay4_->setBackgroundMaterial("Orxonox/DirectionArrows4");
                 arrowsOverlay4_->setSize(Vector2(0.02727, arrowsSize_));
                 arrowsOverlay4_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay4_->setPosition(Vector2(0.5, 0.5));
@@ -162,15 +162,17 @@ namespace orxonox
 
             if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
             {
-                if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip")
-                    this->showOverlays();
                 this->updateTarget();
+
                 if ( !controlPaused_ ) {
+                    if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip")
+                        this->showOverlays();
+
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
 
                     if ( this->controlMode_ == 0 || ( this->controlMode_ == 1 && this->firemode_ == 1 ) )
                     {
-                        if ( this->showOverlays_ )
+                        if ( this->showOverlays_ && this->showArrows_)
                             alignArrows();
                     }
                     else
@@ -420,7 +422,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::doPauseControl() {
         this->controlPaused_ = true;
-        
+
         this->hideOverlays();
     }
 
@@ -456,7 +458,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     void NewHumanController::showOverlays() {
         this->crossHairOverlay_->show();
         this->centerOverlay_->show();
-        
+
         if (showArrows_) {
             this->arrowsOverlay1_->show();
             this->arrowsOverlay2_->show();
@@ -468,7 +470,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     void NewHumanController::hideOverlays() {
         this->crossHairOverlay_->hide();
         this->centerOverlay_->hide();
-        
+
         this->hideArrows();
     }
 
