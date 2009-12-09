@@ -170,7 +170,7 @@ namespace orxonox
         OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
         std::pair<int, int> getMousePosition() const;
         
-        static InputManager& getInstance() { return *singletonPtr_s; } // tolua_export
+        static InputManager& getInstance() { return Singleton<InputManager>::getInstance(); } // tolua_export
 
     private: // functions
         // don't mess with a Singleton

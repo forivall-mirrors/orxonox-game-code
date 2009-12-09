@@ -55,7 +55,7 @@ namespace orxonox
             void setMood(const std::string& mood);
             const std::string& getMood();
 
-            static MoodManager& getInstance()    { return Singleton<MoodManager>::getInstance(); } // tolua_export
+            static MoodManager& getInstance() { return Singleton<MoodManager>::getInstance(); } // tolua_export
 
         private:
 

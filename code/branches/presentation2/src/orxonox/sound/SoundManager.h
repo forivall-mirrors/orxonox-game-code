@@ -79,8 +79,7 @@ namespace orxonox
         void setConfigValues();
         
         // tolua_begin
-        static SoundManager& getInstance()
-            { return Singleton<SoundManager>::getInstance(); }
+        static SoundManager& getInstance() { return Singleton<SoundManager>::getInstance(); }
 
         std::string getDeviceName(unsigned int index) const
             { return index < this->deviceNames_.size() ? this->deviceNames_[index] : std::string(); }

@@ -61,9 +61,11 @@ namespace orxonox //tolua_export
         ~KeyBinderManager();
         void setConfigValues();
 
-        static KeyBinderManager& getInstance() { return Singleton<KeyBinderManager>::getInstance(); } //tolua_export
+        static KeyBinderManager& getInstance() //tolua_export
+            { return Singleton<KeyBinderManager>::getInstance(); }
         //! Returns the currently selected KeyBinder
-        KeyBinder* getCurrent() { return this->currentBinder_; } //tolua_export
+        KeyBinder* getCurrent() //tolua_export
+            { return this->currentBinder_; }
         //! Like getCurrent(), but returns it as InputHandler* (so you don't have to include KeyBinder.h)
         InputHandler* getCurrentAsHandler();
         //! Selects the current KeyBinder and creates it if not yet loaded.
@@ -94,7 +96,8 @@ namespace orxonox //tolua_export
         void unload(const std::string& filename);
 
         //! Bind 'command' to any key pressed after this call (use with care!)
-        inline void keybind(const std::string& command) { this->keybindInternal(command, false); } //tolua_export
+        inline void keybind(const std::string& command) //tolua_export
+            { this->keybindInternal(command, false); }
         //! Bind 'command' to any key pressed after this call (use with care!), but temporarily (no file save)
         inline void tkeybind(const std::string& command)
             { this->keybindInternal(command, true); }
