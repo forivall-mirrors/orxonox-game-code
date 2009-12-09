@@ -240,20 +240,6 @@ namespace orxonox
         GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
     }
 
-    void GUIManager::toggleIngameGUI()
-    {
-        if ( this->bShowIngameGUI_==false )
-        {
-            GUIManager::showGUI("InGameMenu");
-            this->bShowIngameGUI_ = true;
-        }
-        else
-        {
-            GUIManager::hideGUI("InGameMenu");
-            this->bShowIngameGUI_ = false;
-        }
-    }
-    
     void GUIManager::keyESC()
     {
         this->executeCode("keyESC()");

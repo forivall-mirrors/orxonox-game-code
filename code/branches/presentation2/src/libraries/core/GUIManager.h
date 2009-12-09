@@ -70,7 +70,6 @@ namespace orxonox
         static void showGUI(const std::string& name, bool hidePrevious=false, bool showCursor=true);
         void showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious=false, bool showCursor=true);
         static void hideGUI(const std::string& name);
-        void toggleIngameGUI();
         void keyESC();
         void setBackground(const std::string& name);
 
