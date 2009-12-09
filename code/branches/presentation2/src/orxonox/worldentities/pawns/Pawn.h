@@ -74,8 +74,8 @@ namespace orxonox
             inline ControllableEntity* getLastHitOriginator() const
                 { return this->lastHitOriginator_; }
 
-            virtual void damage(float damage, Pawn* originator = 0);
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
             virtual void kill();
 
             virtual void fired(unsigned int firemode);
@@ -129,6 +129,8 @@ namespace orxonox
             virtual void goWithStyle();
             virtual void deatheffect();
             virtual void spawneffect();
+
+            virtual void damage(float damage, Pawn* originator = 0);
 
             bool bAlive_;
 

@@ -37,6 +37,7 @@
 
 #include "PawnManager.h"
 #include "infos/PlayerInfo.h"
+#include "controllers/Controller.h"
 #include "gametypes/Gametype.h"
 #include "graphics/ParticleSpawner.h"
 #include "worldentities/ExplosionChunk.h"
@@ -170,6 +171,19 @@ namespace orxonox
         {
             this->damage(damage, originator);
             this->setVelocity(this->getVelocity() + force);
+
+            // play hit effect
+        }
+    }
+
+    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+    {
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator))
+        {
+            this->damage(damage, originator);
+
+            if ( this->getController() )
+                this->getController()->hit(originator, contactpoint, damage);
 
             // play hit effect
         }

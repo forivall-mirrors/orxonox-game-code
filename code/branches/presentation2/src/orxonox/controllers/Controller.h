@@ -49,6 +49,8 @@ namespace orxonox
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
+            virtual inline void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
+
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
             virtual void changedControllableEntity() {}

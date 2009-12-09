@@ -55,6 +55,8 @@ namespace orxonox
 
             virtual void doFire(unsigned int firemode);
 
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
+
             static void unfire();
             virtual void doUnfire();
 

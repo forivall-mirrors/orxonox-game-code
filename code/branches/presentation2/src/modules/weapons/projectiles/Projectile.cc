@@ -128,7 +128,7 @@ namespace orxonox
 
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
-                victim->damage(dmg, this->owner_);
+                victim->hit(this->owner_, contactPoint, dmg);
         }
         return false;
     }

@@ -43,6 +43,8 @@
 #include "graphics/Camera.h"
 #include "sound/SoundManager.h"
 #include "Scene.h"
+#include "tools/BulletConversions.h"
+#include "bullet/BulletCollision/NarrowPhaseCollision/btManifoldPoint.h"
 
 namespace orxonox
 {
@@ -245,6 +247,17 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         else
             HumanController::localController_s->getControllableEntity()->fire(firemode);
 
+    }
+
+    void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {
+        Vector3 posA = multi_cast<Vector3>(contactpoint.getPositionWorldOnA());
+        //Vector3 posB = multi_cast<Vector3>(contactpoint.getPositionWorldOnB());
+        //posA and posB are almost identical
+
+        Vector3 relativeHit = this->getControllableEntity()->getWorldOrientation() * (posA - this->getControllableEntity()->getPosition());
+
+        COUT(0) << relativeHit << endl;
+        //COUT(0) << "Damage: " << damage << " Point A: " << posA << " Point B: " << posB << endl;
     }
 
     void NewHumanController::unfire()
