@@ -54,13 +54,13 @@ namespace orxonox
         RegisterObject(Rocket);// - register the Rocket class to the core
 
         this->localAngularVelocity_ = 0;
+        this->bDestroy_ = false;
+        this->lifetime_ = 100;
         
         if (GameMode::isMaster())
         {
             this->setCollisionType(WorldEntity::Kinematic);
             this->setVelocity(0,0,-100);
-            this->lifetime_ = 100;
-            this->bDestroy_ = false;
         
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
@@ -81,15 +81,7 @@ namespace orxonox
             this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
-        }
-        
-        CameraPosition* camPosition = new CameraPosition(this);
-        camPosition->setPosition(0,4,15);
-        camPosition->setAllowMouseLook(true);
-        this->addCameraPosition(camPosition);
-
-        if( GameMode::isMaster() )
-        {
+            
             this->defSndWpnEngine_ = new WorldSound(this);
             this->defSndWpnEngine_->setLooping(true);
             this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
@@ -105,6 +97,11 @@ namespace orxonox
             this->defSndWpnEngine_ = 0;
             this->defSndWpnLaunch_ = 0;
         }
+        
+        CameraPosition* camPosition = new CameraPosition(this);
+        camPosition->setPosition(0,4,15);
+        camPosition->setAllowMouseLook(true);
+        this->addCameraPosition(camPosition);
     }
 
     /**
@@ -119,16 +116,18 @@ namespace orxonox
             {
                 this->player_->stopTemporaryControl();
             }
-            if(this->defSndWpnEngine_->isPlaying())
+            if ( this->defSndWpnEngine_ )
             {
-                this->defSndWpnEngine_->stop();
+                if ( this->defSndWpnEngine_->isPlaying() )
+                    this->defSndWpnEngine_->stop();
+                delete this->defSndWpnEngine_;
             }
-            if(this->defSndWpnLaunch_->isPlaying())
+            if ( this->defSndWpnLaunch_ )
             {
-                this->defSndWpnLaunch_->stop();
+                if ( this->defSndWpnLaunch_->isPlaying())
+                    this->defSndWpnLaunch_->stop();
+                delete this->defSndWpnLaunch_;
             }
-            delete this->defSndWpnEngine_;
-            delete this->defSndWpnLaunch_;
         }
     }
 
@@ -149,8 +148,11 @@ namespace orxonox
         this->player_ = this->owner_->getPlayer();
         this->owner_->getPlayer()->startTemporaryControl(this);
 
-        this->defSndWpnEngine_->play();
-        this->defSndWpnLaunch_->play();
+        if( GameMode::isMaster() )
+        {
+            this->defSndWpnEngine_->play();
+            this->defSndWpnLaunch_->play();
+        }
     }
 
     /**
