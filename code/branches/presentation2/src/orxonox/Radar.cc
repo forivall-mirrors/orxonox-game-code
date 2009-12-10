@@ -46,8 +46,8 @@ namespace orxonox
 {
 
     Radar::Radar()
-        : focus_(0)
-        , itFocus_(0)
+        : itFocus_(0)
+        , focus_(0)
         , objectTypeCounter_(0)
     {
         // TODO: make this mapping configurable. Maybe there's a possibility with self configured

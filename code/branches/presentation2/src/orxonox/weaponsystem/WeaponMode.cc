@@ -29,6 +29,7 @@
 
 #include "WeaponMode.h"
 
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "controllers/Controller.h"
@@ -271,6 +272,6 @@ namespace orxonox
         if( this->defSndWpnFire_ )
             return this->defSndWpnFire_->getSource();
         else
-            return std::string();
+            return BLANKSTRING;
     }
 }

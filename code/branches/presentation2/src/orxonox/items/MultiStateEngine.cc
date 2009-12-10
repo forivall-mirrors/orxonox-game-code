@@ -34,6 +34,7 @@ extern "C" {
 }
 
 #include "util/Convert.h"
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/LuaState.h"
@@ -250,7 +251,7 @@ namespace orxonox
             return defEngineSndNormal_->getSource();
         else
             assert(0);
-        return std::string();
+        return BLANKSTRING;
     }
 
     void MultiStateEngine::setDefEngSndBoost(const std::string &engineSound)
@@ -267,6 +268,6 @@ namespace orxonox
             return defEngineSndBoost_->getSource();
         else
             assert(0);
-        return std::string();
+        return BLANKSTRING;
     }
 }
