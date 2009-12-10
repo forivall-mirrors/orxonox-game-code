@@ -268,6 +268,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     
     void NewHumanController::doFire(unsigned int firemode)
     {
+        if ( !this->controllableEntity_ )
+            return;
         //if (HumanController::localController_s && HumanController::localController_s->controllableEntity_) {
 
 /*
@@ -475,10 +477,14 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::changedControllableEntity()
     {
+        if( this->getControllableEntity() )
+            CCOUT(0) << "changed controllable entity to: " << this->getControllableEntity()->getIdentifier()->getName() << endl;
+        else
+            CCOUT(0) << "changed controllable entity to: " << this->getControllableEntity() << endl;
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
-        if (this->getControllableEntity() && this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip")
+        if (this->getControllableEntity() && ( this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip" || this->getControllableEntity()->getIdentifier()->getName() == "Rocket" ))
         {
             this->showOverlays_ = true;
             if( !this->controlPaused_ )
@@ -519,7 +525,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::doPauseControl() {
         this->controlPaused_ = true;
-
+        COUT(0) << "pause control" << endl;
         this->hideOverlays();
     }
 
