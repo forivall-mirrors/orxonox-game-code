@@ -65,6 +65,7 @@ namespace orxonox
         {
             // Load sound
             this->ambient_ = new AmbientSound(0);
+            this->ambient_->setSyncMode(0x0);
         }
     }
 

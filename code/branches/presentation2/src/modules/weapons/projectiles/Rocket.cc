@@ -88,15 +88,23 @@ namespace orxonox
         camPosition->setAllowMouseLook(true);
         this->addCameraPosition(camPosition);
 
-        this->defSndWpnEngine_ = new WorldSound(this);
-        this->defSndWpnEngine_->setLooping(true);
-        this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
-        this->attach(defSndWpnEngine_);
+        if( GameMode::isMaster() )
+        {
+            this->defSndWpnEngine_ = new WorldSound(this);
+            this->defSndWpnEngine_->setLooping(true);
+            this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
+            this->attach(defSndWpnEngine_);
 
-        this->defSndWpnLaunch_ = new WorldSound(this);
-        this->defSndWpnLaunch_->setLooping(false);
-        this->defSndWpnLaunch_->setSource("sounds/Rocket_launch.ogg");
-        this->attach(defSndWpnLaunch_);
+            this->defSndWpnLaunch_ = new WorldSound(this);
+            this->defSndWpnLaunch_->setLooping(false);
+            this->defSndWpnLaunch_->setSource("sounds/Rocket_launch.ogg");
+            this->attach(defSndWpnLaunch_);
+        }
+        else
+        {
+            this->defSndWpnEngine_ = 0;
+            this->defSndWpnLaunch_ = 0;
+        }
     }
 
     /**

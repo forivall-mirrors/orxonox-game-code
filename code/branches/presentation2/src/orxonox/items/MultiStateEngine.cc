@@ -54,10 +54,18 @@ namespace orxonox
     {
         RegisterObject(MultiStateEngine);
 
-        this->defEngineSndNormal_ = new WorldSound(this);
-        this->defEngineSndBoost_ = new WorldSound(this);
-        this->defEngineSndNormal_->setLooping(true);
-        this->defEngineSndBoost_->setLooping(true);
+        if( GameMode::isMaster() )
+        {
+            this->defEngineSndNormal_ = new WorldSound(this);
+            this->defEngineSndBoost_ = new WorldSound(this);
+            this->defEngineSndNormal_->setLooping(true);
+            this->defEngineSndBoost_->setLooping(true);
+        }
+        else
+        {
+            this->defEngineSndBoost_ = 0;
+            this->defEngineSndNormal_ = 0;
+        }
 
         this->lua_ = new LuaState();
         this->state_ = 0;
@@ -73,8 +81,10 @@ namespace orxonox
             for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
                 for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsBegin(); ++it2)
                     (*it2)->destroy();
-            delete this->defEngineSndNormal_;
-            delete this->defEngineSndBoost_;
+            if( this->defEngineSndNormal_ )
+                delete this->defEngineSndNormal_;
+            if( this->defEngineSndBoost_  )
+                delete this->defEngineSndBoost_;
             delete this->lua_;
         }
     }
@@ -96,7 +106,8 @@ namespace orxonox
     {
         if (this->getShip())
         {
-            if (this->getShip()->hasLocalController())
+//             if (this->getShip()->hasLocalController())
+            if (GameMode::isMaster() && this->getShip()->hasLocalController())
             {
                 this->setSyncMode(ObjectDirection::Bidirectional);
 
@@ -191,8 +202,10 @@ namespace orxonox
         if (!ship)
             return;
 
-        this->getShip()->attach(defEngineSndNormal_);
-        this->getShip()->attach(defEngineSndBoost_);
+        if( this->defEngineSndNormal_ )
+            this->getShip()->attach(defEngineSndNormal_);
+        if( this->defEngineSndBoost_ )
+            this->getShip()->attach(defEngineSndBoost_);
 
         for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
             for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsEnd(); ++it2)
@@ -225,21 +238,35 @@ namespace orxonox
 
     void MultiStateEngine::setDefEngSndNormal(const std::string &engineSound)
     {
-        defEngineSndNormal_->setSource(engineSound);
+        if( defEngineSndNormal_ )
+            defEngineSndNormal_->setSource(engineSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
     }
 
     const std::string& MultiStateEngine::getDefEngSndNormal()
     {
-        return defEngineSndNormal_->getSource();
+        if( defEngineSndNormal_ )
+            return defEngineSndNormal_->getSource();
+        else
+            assert(0);
+        return std::string();
     }
 
     void MultiStateEngine::setDefEngSndBoost(const std::string &engineSound)
     {
-        defEngineSndBoost_->setSource(engineSound);
+        if( defEngineSndBoost_ )
+            defEngineSndBoost_->setSource(engineSound);
+        else
+            assert(0);
     }
 
     const std::string& MultiStateEngine::getDefEngSndBoost()
     {
-        return defEngineSndBoost_->getSource();
+        if( this->defEngineSndBoost_ )
+            return defEngineSndBoost_->getSource();
+        else
+            assert(0);
+        return std::string();
     }
 }

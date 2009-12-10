@@ -440,6 +440,6 @@ namespace orxonox
     {
         assert(this->renderWindow_);
        
-        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".jpg");
+        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".tiff");
     }
 }
