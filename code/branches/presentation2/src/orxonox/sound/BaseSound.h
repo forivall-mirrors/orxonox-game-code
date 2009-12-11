@@ -58,9 +58,9 @@ namespace orxonox
         virtual void stop();
         virtual void pause();
 
-        bool isPlaying() { return this->state_ == Playing; }
-        bool isPaused()  { return this->state_ == Paused; }
-        bool isStopped() { return this->state_ == Stopped; }
+        bool isPlaying() const { return this->state_ == Playing; }
+        bool isPaused()  const { return this->state_ == Paused; }
+        bool isStopped() const { return this->state_ == Stopped; }
 
         void setPlaying(bool val)
             { val ? this->play() : this->stop(); }
@@ -83,6 +83,8 @@ namespace orxonox
         float getPitch() const   { return this->pitch_; }
         void setPitch(float pitch);
         inline void pitchChanged(){ this->setPitch(this->pitch_); }
+        
+        void stateChanged();
 
         //ALuint getALAudioSource(void);
 

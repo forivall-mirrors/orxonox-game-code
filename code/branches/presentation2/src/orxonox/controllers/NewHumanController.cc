@@ -61,6 +61,15 @@ namespace orxonox
         : HumanController(creator)
         , crossHairOverlay_(NULL)
         , centerOverlay_(NULL)
+        , arrowsOverlay1_(NULL)
+        , arrowsOverlay2_(NULL)
+        , arrowsOverlay3_(NULL)
+        , arrowsOverlay4_(NULL)
+        , damageOverlayTop_(NULL)
+        , damageOverlayRight_(NULL)
+        , damageOverlayBottom_(NULL)
+        , damageOverlayLeft_(NULL)
+        , damageOverlayTT_(0)
     {
         RegisterObject(NewHumanController);
 
@@ -559,6 +568,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     }
 
     void NewHumanController::showOverlays() {
+        if( !GameMode::showsGraphics() )
+            return;
         this->crossHairOverlay_->show();
         this->centerOverlay_->show();
 
@@ -571,6 +582,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     }
 
     void NewHumanController::hideOverlays() {
+        if( !GameMode::showsGraphics() )
+            return;
         this->crossHairOverlay_->hide();
         this->centerOverlay_->hide();
 
@@ -585,6 +598,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
     }
 
     void NewHumanController::hideArrows() {
+        if( !GameMode::showsGraphics() )
+            return;
         if (showArrows_) {
             this->arrowsOverlay1_->hide();
             this->arrowsOverlay2_->hide();

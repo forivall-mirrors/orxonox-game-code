@@ -57,11 +57,10 @@ namespace orxonox
     void AmbientSound::registerVariables()
     {
         registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::volumeChanged));
-//         registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::sourceChanged));
         registerVariable(ambientSource_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::ambientSourceChanged));
         registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::loopingChanged));
         registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::pitchChanged));
-        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient);
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::stateChanged));
     }
 
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -83,6 +82,8 @@ namespace orxonox
         {
             SoundManager::getInstance().registerAmbientSound(this);
         }
+        else
+            BaseSound::play();
     }
 
     void AmbientSound::doPlay()
@@ -96,6 +97,8 @@ namespace orxonox
         {
             SoundManager::getInstance().unregisterAmbientSound(this);
         }
+        else
+            BaseSound::stop();
     }
 
     void AmbientSound::doStop()
@@ -109,6 +112,8 @@ namespace orxonox
         {
             SoundManager::getInstance().pauseAmbientSound(this);
         }
+        else
+            BaseSound::pause();
     }
     
     float AmbientSound::getVolumeGain()
@@ -135,7 +140,7 @@ namespace orxonox
         }
     }
 
-    void AmbientSound::changedActivity() 
+    void AmbientSound::changedActivity()
     {
         SUPER(AmbientSound, changedActivity);
         if (this->isActive())

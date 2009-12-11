@@ -548,7 +548,7 @@ namespace orxonox{
     {
         return checkEquality(variable.w, mem) && checkEquality(variable.x, mem+returnSize(variable.w)) &&
             checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)) &&
-            checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
+            checkEquality(variable.z, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
     }
     
     // =========== Quaternion
@@ -578,7 +578,7 @@ namespace orxonox{
     {
         return checkEquality(variable.w, mem) && checkEquality(variable.x, mem+returnSize(variable.w)) &&
             checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)) &&
-            checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
+            checkEquality(variable.z, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
     }
     
     // =========== ColourValue

@@ -220,4 +220,22 @@ namespace orxonox
         if (this->isPaused())
             alSourcePause(this->audioSource_);
     }
+    
+    void BaseSound::stateChanged()
+    {
+        CCOUT(0) << "changed state to " << this->state_ << endl;
+        switch( this->state_ )
+        {
+            case Playing:
+                this->play();
+                break;
+            case Paused:
+                this->pause();
+                break;
+            case Stopped:
+            default:
+                this->stop();
+                break;
+        }
+    }
 }

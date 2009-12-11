@@ -59,7 +59,7 @@ namespace orxonox
         registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::volumeChanged));
         registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::sourceChanged));
         registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::loopingChanged));
-        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient);
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::stateChanged));
         registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::pitchChanged));
     }
 
