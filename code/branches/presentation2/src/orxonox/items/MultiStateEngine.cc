@@ -108,7 +108,7 @@ namespace orxonox
         if (this->getShip())
         {
 //             if (this->getShip()->hasLocalController())
-            if (GameMode::isMaster() && this->getShip()->hasLocalController())
+            if (GameMode::isMaster() && this->getShip()->getController())
             {
                 this->setSyncMode(ObjectDirection::Bidirectional);
 
