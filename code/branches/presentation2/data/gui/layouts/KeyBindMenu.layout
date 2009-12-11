@@ -12,21 +12,21 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.25,0},{0.8,0},{0.6,0}}" />
-            <Window Type="TaharezLook/StaticText" Name="orxonox/KeyBindText" >
+            <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.1,0},{0.9,0},{0.8,0}}" />
+            <Window Type="TaharezLook/StaticText" Name="orxonox/KeyBindWrapper" >
                 <Property Name="TextColours" Value="FF4444FF" />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.15,0},{0.958333,0},{0.92,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.1,0},{0.95,0},{0.95,0}}" />
                 <Window Type="TaharezLook/ScrollablePane" Name="orxonox/KeyBindPane" >
                     <Property Name="ContentArea" Value="l:0 t:0 r:0 b:0" />
                     <Property Name="HorzStepSize" Value="0.1" />
                     <Property Name="VertStepSize" Value="0.1" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                     <Property Name="HorzOverlapSize" Value="0.01" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.04,0},{0.005,0},{0.999,0},{0.99,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
                     <Property Name="VertOverlapSize" Value="0.01" />
                     <Property Name="HorzScrollPosition" Value="0" />
                     <Property Name="VertScrollPosition" Value="0" />
@@ -36,7 +36,7 @@
         <Window Type="TaharezLook/Button" Name="orxonox/KeyBindBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.825,0},{0.6,0},{0.875,0}}" />
             <Event Name="Clicked" Function="KeyBindMenu.KeyBindBackButton_clicked"/>
         </Window>
     </Window>

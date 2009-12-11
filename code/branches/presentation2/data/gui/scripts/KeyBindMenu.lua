@@ -55,9 +55,80 @@ function P:init()
     linesList = {}
 
     lineHeight = 35
+    commandWidth = 200
     buttonWidth = 170
     clearWidth = 20
+    spaceWidth = 10
     
+    P.createLines()
+    
+    local funct = luaState:createLuaFunctor("KeyBindMenu.callback()")
+    orxonox.KeyBinderManager:getInstance():registerKeybindCallback(funct)
+end
+
+
+function P.KeyNameNiceifier(key)
+    local name = string.sub(key, string.find(key, '%.(.*)')+1)
+    local group = string.sub(key, string.find(key, '(.*)%.'))
+    group = string.sub(group,1,string.len(group)-1)
+    if( group == "Keys") then
+        return "Key " .. string.sub(name, string.find(name, 'Key(.*)')+3)
+    elseif( group == "MouseButtons") then
+        return "Mouse " .. name
+    end
+    return key
+end
+
+function P.createLine(k)
+    local offset = 0
+    local line = winMgr:createWindow("DefaultWindow", "orxonox/KeyBindPane/Binding" .. k)
+    line:setHeight(CEGUI.UDim(0, lineHeight))
+    line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, lineHeight*(k-1))))
+    
+    local command = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/Binding" .. k .. "/Command")
+    command:setSize(CEGUI.UVector2(CEGUI.UDim(0, commandWidth), CEGUI.UDim(0.9, 0)))
+    command:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.05, 0)))
+    command:setText(nameList[k])
+    line:addChildWindow(command)
+    offset = offset + commandWidth + spaceWidth
+    
+    local plus = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Plus")
+    plus:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.7, 0)))
+    plus:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
+    plus:setText("+")
+    orxonox.KeyBinderManager:getInstance():subscribeEventHelper(plus, "Clicked", P.filename .. ".KeyBindPlus_clicked")
+    line:addChildWindow(plus)
+    offset = offset + clearWidth + spaceWidth
+    
+    local numButtons = orxonox.KeyBinderManager:getInstance():getCurrent():getNumberOfBindings(commandList[k]);
+    for i=0,(numButtons-1) do
+        local button = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Button" .. i)
+        button:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0.7, 0)))
+        button:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
+        local name = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[k],i)
+        name = P.KeyNameNiceifier(name)
+        button:setText(name)
+        orxonox.KeyBinderManager:getInstance():subscribeEventHelper(button, "Clicked", P.filename .. ".KeyBindButton_clicked")
+        --button:subscribeScriptedEvent("EventClicked", P.filename .. ".KeyBindButton_clicked")
+        line:addChildWindow(button)
+        offset = offset + buttonWidth
+        
+        local clear = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Clear" .. i)
+        clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.7, 0)))
+        clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, (i*(buttonWidth+clearWidth+spaceWidth)+buttonWidth)+commandWidth+clearWidth+2*spaceWidth), CEGUI.UDim(0.15, 0)))
+        clear:setText("X")
+        orxonox.KeyBinderManager:getInstance():subscribeEventHelper(clear, "Clicked", P.filename .. ".KeyBindClear_clicked")
+        line:addChildWindow(clear)
+        offset = offset + clearWidth + spaceWidth
+    end
+    
+    line:setWidth(CEGUI.UDim(0, offset+clearWidth))
+    
+    return line
+end
+
+function P.createLines()
+
     local window = winMgr:getWindow("orxonox/KeyBindPane")
 
     for k,v in pairs(commandList) do
@@ -65,50 +136,7 @@ function P:init()
         table.insert(linesList, line)
         window:addChildWindow(line)
     end
-    
-    local funct = luaState:createLuaFunctor("KeyBindMenu.callback()")
-    orxonox.KeyBinderManager:getInstance():registerKeybindCallback(funct)
-end
 
-function P.createLine(k)
-    local line = winMgr:createWindow("DefaultWindow", "orxonox/KeyBindPane/Binding" .. k)
-    line:setHeight(CEGUI.UDim(0, lineHeight))
-    line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, lineHeight*(k-1))))
-    
-    local command = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/Binding" .. k .. "/Command")
-    command:setSize(CEGUI.UVector2(CEGUI.UDim(0, 200), CEGUI.UDim(1, 0)))
-    command:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
-    command:setText(nameList[k])
-    line:addChildWindow(command)
-    
-    local plus = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Plus")
-    plus:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(1, 0)))
-    plus:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 200), CEGUI.UDim(0, 0)))
-    plus:setText("+")
-    orxonox.KeyBinderManager:getInstance():subscribeEventHelper(plus, "Clicked", P.filename .. ".KeyBindPlus_clicked")
-    line:addChildWindow(plus)
-    
-    numButtons = orxonox.KeyBinderManager:getInstance():getCurrent():getNumberOfBindings(commandList[k]);
-    for i=0,(numButtons-1) do
-        local button = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Button" .. i)
-        button:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0.8, 0)))
-        button:setPosition(CEGUI.UVector2(CEGUI.UDim(0, (i*(buttonWidth+clearWidth))+200+clearWidth), CEGUI.UDim(0.1, 0)))
-        button:setText(orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[k],i))
-        orxonox.KeyBinderManager:getInstance():subscribeEventHelper(button, "Clicked", P.filename .. ".KeyBindButton_clicked")
-        --button:subscribeScriptedEvent("EventClicked", P.filename .. ".KeyBindButton_clicked")
-        line:addChildWindow(button)
-        
-        local clear = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Clear" .. i)
-        clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.8, 0)))
-        clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, (i*(buttonWidth+clearWidth)+buttonWidth)+200+clearWidth), CEGUI.UDim(0.1, 0)))
-        clear:setText("X")
-        orxonox.KeyBinderManager:getInstance():subscribeEventHelper(clear, "Clicked", P.filename .. ".KeyBindClear_clicked")
-        line:addChildWindow(clear)
-    end
-    
-    line:setWidth(CEGUI.UDim(0, 200+numButtons*(buttonWidth+clearWidth)+clearWidth))
-    
-    return line
 end
 
 function P.KeyBindButton_clicked(e)
@@ -169,12 +197,7 @@ function P.callback()
     
     linesList = {}
 
-    window = winMgr:getWindow("orxonox/KeyBindPane")
-    for q,w in pairs(commandList) do
-        local line = P.createLine(q)
-        table.insert(linesList, line)
-        window:addChildWindow(line)
-    end
+    P.createLines()
     
     if(InfoPopup ~= nil) then
         InfoPopup.close()
