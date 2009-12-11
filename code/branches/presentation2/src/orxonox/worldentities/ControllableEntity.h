@@ -209,6 +209,7 @@ namespace orxonox
             float mouseLookSpeed_;
             Ogre::SceneNode* cameraPositionRootNode_;
             std::list<SmartPtr<CameraPosition> > cameraPositions_;
+            CameraPosition* currentCameraPosition_;
             std::string cameraPositionTemplate_;
             Controller* xmlcontroller_;
             Controller* controller_;
