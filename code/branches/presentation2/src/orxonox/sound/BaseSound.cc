@@ -42,8 +42,7 @@
 namespace orxonox
 {
     BaseSound::BaseSound()
-        : audioSource_(0)
-        , bPooling_(false)
+        : bPooling_(false)
         , volume_(1.0)
         , bLooping_(false)
         , state_(Stopped)
@@ -51,25 +50,15 @@ namespace orxonox
     {
         RegisterRootObject(BaseSound);
 
-        if (GameMode::playsSound())
-        {
-            alGenSources(1, &this->audioSource_);
-            if (!alIsSource(this->audioSource_))
-                COUT(1) << "Sound: Source generation failed: " << SoundManager::getALErrorString(alGetError()) << std::endl;
-
-            if (alIsSource(this->audioSource_))
-            {
-                alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, 20);
-                alSourcei(this->audioSource_, AL_MAX_DISTANCE, 10000);
-            }
-        }
+        // Initialise audioSource_ to a value that is not a source
+        // 0 is unfortunately not guaranteed to be no source ID.
+        this->audioSource_ = 123456789;
+        while (alIsSource(++this->audioSource_));
     }
 
     BaseSound::~BaseSound()
     {
-        this->setSource(std::string());
-        if (GameMode::playsSound() && alIsSource(this->audioSource_))
-            alDeleteSources(1, &this->audioSource_);
+        this->stop();
     }
 
     void BaseSound::XMLPortExtern(Element& xmlelement, XMLPort::Mode mode)
@@ -83,20 +72,34 @@ namespace orxonox
     void BaseSound::play()
     {
         this->state_ = Playing;
-        if (GameMode::playsSound() && alIsSource(this->audioSource_) && this->getSourceState() != AL_PLAYING)
+        if (GameMode::playsSound() && this->getSourceState() != AL_PLAYING && this->soundBuffer_ != NULL)
         {
-            alSourcePlay(this->audioSource_);
+            if (!alIsSource(this->audioSource_))
+                this->audioSource_ = SoundManager::getInstance().getSoundSource();
+            if (!alIsSource(this->audioSource_))
+                return;
+            this->initialiseSource();
 
+            alSourcePlay(this->audioSource_);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << error << std::endl;
+                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
         }
     }
 
     void BaseSound::stop()
     {
         this->state_ = Stopped;
-        if (GameMode::playsSound() && alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_))
+        {
             alSourceStop(this->audioSource_);
+            // Release buffer
+            alSourcei(this->audioSource_, AL_BUFFER, AL_NONE);
+            // Release source again
+            SoundManager::getInstance().releaseSoundSource(this->audioSource_);
+            // Get a no source ID
+            this->audioSource_ += 123455;
+            while (alIsSource(++this->audioSource_));
+        }
     }
 
     void BaseSound::pause()
@@ -104,13 +107,13 @@ namespace orxonox
         if (this->isStopped())
             return;
         this->state_ = Paused;
-        if (GameMode::playsSound() && alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_))
             alSourcePause(this->audioSource_);
     }
 
     ALint BaseSound::getSourceState() const
     {
-        if (GameMode::playsSound() && alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_))
         {
             ALint state;
             alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
@@ -118,6 +121,25 @@ namespace orxonox
         }
         else
             return AL_INITIAL;
+    }
+
+    void BaseSound::initialiseSource()
+    {
+        this->updateVolume();
+        this->setPitch(this->getPitch());
+        this->setLooping(this->getLooping());
+        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
+        alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, 20);
+        alSourcei(this->audioSource_, AL_MAX_DISTANCE, 10000);
+        if (ALint error = alGetError())
+            COUT(2) << "Sound Warning: Setting source parameters to 0 failed: "
+                    << SoundManager::getALErrorString(error) << std::endl;
+        assert(this->soundBuffer_ != NULL);
+        alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
+        if (ALuint error = alGetError())
+            COUT(1) << "Sound Error: Could not set buffer \"" << this->source_ << "\": " << SoundManager::getALErrorString(error) << std::endl;
     }
 
     void BaseSound::setVolume(float vol)
@@ -135,6 +157,7 @@ namespace orxonox
     
     float BaseSound::getVolumeGain()
     {
+        assert(GameMode::playsSound());
         return SoundManager::getInstance().getVolume(SoundType::none);
     }
     
@@ -142,16 +165,18 @@ namespace orxonox
     {
         if (alIsSource(this->audioSource_))
         {
-            alSourcef(this->audioSource_, AL_GAIN, this->volume_*this->getVolumeGain());
+            float volume = this->volume_ * this->getVolumeGain();
+            alSourcef(this->audioSource_, AL_GAIN, volume);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error setting volume: " << error << std::endl;
+                COUT(2) << "Sound: Error setting volume to " << volume
+                        << ": " << SoundManager::getALErrorString(error) << std::endl;
         }
     }
 
     void BaseSound::setLooping(bool val)
     {
         this->bLooping_ = val;
-        if (GameMode::playsSound() && alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_))
             alSourcei(this->audioSource_, AL_LOOPING, (val ? AL_TRUE : AL_FALSE));
     }
 
@@ -164,10 +189,10 @@ namespace orxonox
             pitch = pitch < 0.5 ? 0.5 : pitch;
         }        
         this->pitch_ = pitch;
-        if (GameMode::playsSound() && alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_))
         {
             if (int error = alGetError())
-                COUT(2) << "Sound: Error setting pitch: " << error << std::endl;
+                COUT(2) << "Sound: Error setting pitch: " << SoundManager::getALErrorString(error) << std::endl;
             alSourcef(this->audioSource_, AL_PITCH, pitch);
         }
     }
@@ -182,43 +207,42 @@ namespace orxonox
 
         if (this->soundBuffer_ != NULL)
         {
+            // Stopping is imperative here!
             if (alIsSource(this->audioSource_))
             {
                 alSourceStop(this->audioSource_);
-                // Unload old buffer first
-                alSourcei(this->audioSource_, AL_BUFFER, 0);
+                alSourcei(this->audioSource_, AL_BUFFER, AL_NONE);
             }
             SoundManager::getInstance().releaseSoundBuffer(this->soundBuffer_, this->bPooling_);
             this->soundBuffer_.reset();
         }
 
         this->source_ = source;
-        if (source_.empty() || !alIsSource(this->audioSource_))
+        if (source_.empty())
             return;
 
         this->soundBuffer_ = SoundManager::getInstance().getSoundBuffer(this->source_);
         if (this->soundBuffer_ == NULL)
             return;
 
-        alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
-        if (ALuint error = alGetError())
+        if (alIsSource(this->audioSource_))
         {
-            COUT(1) << "Sound Error: Could not load file \"" << source << "\": " << SoundManager::getALErrorString(error) << std::endl;
-            return;
-        }
+            alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
+            if (ALuint error = alGetError())
+            {
+                COUT(1) << "Sound Error: Could not set buffer \"" << source << "\": " << SoundManager::getALErrorString(error) << std::endl;
+                return;
+            }
 
-        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
-        this->updateVolume();
-        this->setPitch(this->getPitch());
-        this->setLooping(getLooping());
-        if (this->isPlaying() || this->isPaused())
-        {
-            alSourcePlay(this->audioSource_);
-            if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << error << std::endl;
+            if (this->isPlaying() || this->isPaused())
+            {
+                alSourcePlay(this->audioSource_);
+                if (int error = alGetError())
+                    COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+            }
+            if (this->isPaused())
+                alSourcePause(this->audioSource_);
         }
-        if (this->isPaused())
-            alSourcePause(this->audioSource_);
     }
     
     void BaseSound::stateChanged()

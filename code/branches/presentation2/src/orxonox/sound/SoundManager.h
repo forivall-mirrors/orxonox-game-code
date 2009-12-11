@@ -101,6 +101,9 @@ namespace orxonox
         shared_ptr<SoundBuffer> getSoundBuffer(const std::string& filename);
         void releaseSoundBuffer(const shared_ptr<SoundBuffer>& buffer, bool bPoolBuffer);
 
+        ALuint getSoundSource();
+        void releaseSoundSource(ALuint source);
+
         static std::string getALErrorString(ALenum error);
 
     private:
@@ -143,6 +146,9 @@ namespace orxonox
         EffectsPoolList effectsPool_;
         typedef std::map<std::string, shared_ptr<SoundBuffer> > SoundBufferMap;
         SoundBufferMap soundBuffers_;
+
+        unsigned int maxSources_;
+        std::vector<ALuint> soundSources_;
         
         static SoundManager* singletonPtr_s;
     }; // tolua_export

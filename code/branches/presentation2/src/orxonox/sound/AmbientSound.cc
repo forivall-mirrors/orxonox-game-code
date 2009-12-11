@@ -118,6 +118,7 @@ namespace orxonox
     
     float AmbientSound::getVolumeGain()
     {
+        assert(GameMode::playsSound());
         return SoundManager::getInstance().getVolume(SoundType::ambient);
     }
 

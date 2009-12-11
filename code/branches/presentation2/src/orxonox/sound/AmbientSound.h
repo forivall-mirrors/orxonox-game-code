@@ -49,19 +49,19 @@ namespace orxonox
 
     public:
         AmbientSound(BaseObject* creator);
-        virtual ~AmbientSound();
+        ~AmbientSound();
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-        virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
-        virtual void changedActivity();
+        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+        void changedActivity();
 
-        virtual void play();
-        virtual void stop();
-        virtual void pause();
+        void play();
+        void stop();
+        void pause();
         
-        virtual float getVolumeGain();
+        float getVolumeGain();
 
-        virtual void setAmbientSource(const std::string& source);
+        void setAmbientSource(const std::string& source);
         const std::string& getAmbientSource() const { return this->ambientSource_; }
         inline void ambientSourceChanged(){ this->setAmbientSource(this->ambientSource_); }
 

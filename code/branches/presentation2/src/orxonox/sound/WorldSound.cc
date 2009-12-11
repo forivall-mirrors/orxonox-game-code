@@ -75,6 +75,12 @@ namespace orxonox
         XMLPortEventState(WorldSound, BaseObject, "play", play, xmlelement, mode);
     }
 
+    void WorldSound::initialiseSource()
+    {
+        BaseSound::initialiseSource();
+        this->tick(0); // update position, orientation and velocity
+    }
+
     void WorldSound::tick(float dt)
     {
         if (alIsSource(this->audioSource_))

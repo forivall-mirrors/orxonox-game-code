@@ -57,6 +57,7 @@ namespace orxonox
 
     private:
         void registerVariables();
+        void initialiseSource();
     };
 }
 

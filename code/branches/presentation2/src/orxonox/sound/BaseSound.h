@@ -95,6 +95,7 @@ namespace orxonox
             Playing,
             Paused
         };
+        virtual void initialiseSource();
         ALint getSourceState() const;
 
         ALuint          audioSource_;

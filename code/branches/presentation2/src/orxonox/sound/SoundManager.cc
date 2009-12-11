@@ -86,7 +86,7 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
             COUT(1) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
 #endif
-            ThrowException(InitialisationFailed, "Sound: OpenAL error: Could not open sound device.");
+            ThrowException(InitialisationFailed, "Sound Error: Could not open sound device.");
         }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
@@ -99,6 +99,7 @@ namespace orxonox
             ThrowException(InitialisationFailed, "Sound Error: Could not use ALC context");
 
         GameMode::setPlaysSound(true);
+        Loki::ScopeGuard resetPlaysSoundGuard = Loki::MakeGuard(&GameMode::setPlaysSound, false);
 
         // Get some information about the sound
         if (const char* version = alGetString(AL_VERSION))
@@ -109,11 +110,6 @@ namespace orxonox
             COUT(4) << "Sound: --- Supported MIME Types: " << types << std::endl;
         else
             COUT(2) << "Sound Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
-
-        // Disarm guards
-        alutExitGuard.Dismiss();
-        closeDeviceGuard.Dismiss();
-        desroyContextGuard.Dismiss();
         
         this->setVolumeInternal(1.0, SoundType::none);
         this->setVolumeInternal(1.0, SoundType::ambient);
@@ -124,6 +120,29 @@ namespace orxonox
         this->mute_[SoundType::effects] = false;
 
         this->setConfigValues();
+
+        // Try to get at least one source
+        ALuint source;
+        alGenSources(1, &source);
+        if (!alGetError() && alIsSource(source))
+            this->soundSources_.push_back(source);
+        else
+            ThrowException(InitialisationFailed, "Sound Error: Could not even create a single source");
+        // Get the rest of the sources
+        alGenSources(1, &source);
+        unsigned int count = 1;
+        while (alIsSource(source) && !alGetError() && count <= this->maxSources_)
+        {
+            this->soundSources_.push_back(source);
+            alGenSources(1, &source);
+            ++count;
+        }
+
+        // Disarm guards
+        alutExitGuard.Dismiss();
+        closeDeviceGuard.Dismiss();
+        desroyContextGuard.Dismiss();
+        resetPlaysSoundGuard.Dismiss();
 
         COUT(4) << "Sound: Initialisation complete" << std::endl;
     }
@@ -163,18 +182,21 @@ namespace orxonox
         SetConfigValue(crossFadeStep_, 0.2f)
             .description("Determines how fast sounds should fade, per second.")
             .callback(this, &SoundManager::checkFadeStepValidity);
-            
+
         SetConfigValue(soundVolume_, 1.0f)
             .description("Defines the overall volume.")
             .callback(this, &SoundManager::checkSoundVolumeValidity);
-            
+
         SetConfigValue(ambientVolume_, 1.0f)
             .description("Defines the ambient volume.")
             .callback(this, &SoundManager::checkAmbientVolumeValidity);
-            
+
         SetConfigValue(effectsVolume_, 1.0f)
             .description("Defines the effects volume.")
             .callback(this, &SoundManager::checkEffectsVolumeValidity);
+
+        SetConfigValue(maxSources_, 1024)
+            .description("Maximum number of sources to be made available");
     }
 
     std::string SoundManager::getALErrorString(ALenum code)
@@ -593,5 +615,31 @@ namespace orxonox
             else
                 this->soundBuffers_.erase(it);
         }
+    }
+
+    ALuint SoundManager::getSoundSource()
+    {
+        if (!this->soundSources_.empty())
+        {
+            ALuint source = this->soundSources_.back();
+            this->soundSources_.pop_back();
+            return source;
+        }
+        else
+        {
+            // Return no source ID
+            ALuint source = 123456789;
+            while (alIsSource(++source));
+            return source;
+        }
+    }
+
+    void SoundManager::releaseSoundSource(ALuint source)
+    {
+#ifndef NDEBUG
+        for (std::vector<ALuint>::const_iterator it = this->soundSources_.begin(); it != this->soundSources_.end(); ++it)
+            assert((*it) != source);
+#endif
+        this->soundSources_.push_back(source);
     }
 }
