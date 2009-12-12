@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="TaharezLook/StaticImage" Name="orxonox/SingleplayerBackground" >
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="BackgroundEnabled" Value="False" />
+        <Window Type="TaharezLook/StaticText" Name="orxonox/SingleplayerWindow" >
+            <Property Name="Text" Value="Singleplayer" />
+            <Property Name="Alpha" Value="0.8" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="HorzFormatting" Value="HorzCentred" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="VertFormatting" Value="TopAligned" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.325,0},{0.75,0},{0.6,0}}" />
+            <Window Type="TaharezLook/Listbox" Name="orxonox/SingleplayerLevelListbox" >
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.2,0},{0.95,0},{0.9,0}}" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/Button" Name="orxonox/SingleplayerStartButton" >
+            <Property Name="Text" Value="Start" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.625,0},{0.4875,0},{0.675,0}}" />
+            <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerStartButton_clicked"/>
+        </Window>
+        <Window Type="TaharezLook/Button" Name="orxonox/SingleplayerBackButton" >
+            <Property Name="Text" Value="Back" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.625,0},{0.7125,0},{0.675,0}}" />
+            <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerBackButton_clicked"/>
+        </Window>
+    </Window>
+</GUILayout>
