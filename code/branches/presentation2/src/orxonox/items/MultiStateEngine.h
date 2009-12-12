@@ -70,6 +70,7 @@ namespace orxonox
             const std::string& getDefEngSndBoost();
 
         private:
+            int steeringDirectionZ_;
             int state_;
             LuaState* lua_;
             std::vector<EffectContainer*> effectContainers_;

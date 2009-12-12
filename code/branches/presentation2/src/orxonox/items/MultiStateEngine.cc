@@ -55,38 +55,44 @@ namespace orxonox
     {
         RegisterObject(MultiStateEngine);
 
-        if( GameMode::isMaster() )
+        if (GameMode::isMaster())
         {
             this->defEngineSndNormal_ = new WorldSound(this);
-            this->defEngineSndBoost_ = new WorldSound(this);
+            this->defEngineSndBoost_  = new WorldSound(this);
             this->defEngineSndNormal_->setLooping(true);
             this->defEngineSndBoost_->setLooping(true);
+            this->lua_ = new LuaState();
         }
         else
         {
             this->defEngineSndBoost_ = 0;
             this->defEngineSndNormal_ = 0;
+            this->lua_ = 0;
         }
-
-        this->lua_ = new LuaState();
         this->state_ = 0;
+        this->steeringDirectionZ_ = 0;
 
+        this->setSyncMode(ObjectDirection::Bidirectional);
         this->registerVariables();
     }
 
     MultiStateEngine::~MultiStateEngine()
     {
-        if (this->isInitialized() && !this->getShip())
+        if (this->isInitialized())
         {
-            // We have no ship, so the effects are not attached and won't be destroyed automatically
-            for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
-                for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsBegin(); ++it2)
-                    (*it2)->destroy();
-            if( this->defEngineSndNormal_ )
-                delete this->defEngineSndNormal_;
-            if( this->defEngineSndBoost_  )
-                delete this->defEngineSndBoost_;
-            delete this->lua_;
+            if (!this->getShip())
+            {
+                // We have no ship, so the effects are not attached and won't be destroyed automatically
+                for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
+                    for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsBegin(); ++it2)
+                        (*it2)->destroy();
+                if (this->defEngineSndNormal_)
+                    delete this->defEngineSndNormal_;
+                if (this->defEngineSndBoost_)
+                    delete this->defEngineSndBoost_;
+            }
+            if (this->lua_)
+                delete this->lua_;
         }
     }
 
@@ -100,96 +106,73 @@ namespace orxonox
 
     void MultiStateEngine::registerVariables()
     {
-        registerVariable(this->state_, VariableDirection::ToServer);
+        registerVariable(this->steeringDirectionZ_, VariableDirection::ToServer);
     }
 
     void MultiStateEngine::tick(float dt)
     {
         if (this->getShip())
         {
-//             if (this->getShip()->hasLocalController())
-            if (GameMode::isMaster() && this->getShip()->getController())
+            if (this->getShip()->hasLocalController())
+                this->steeringDirectionZ_ = this->getDirection().z;
+            if (GameMode::isMaster())
             {
-                this->setSyncMode(ObjectDirection::Bidirectional);
-
-                const Vector3& direction = this->getDirection();
                 const Vector3& velocity = this->getShip()->getLocalVelocity();
 
                 float pitch = velocity.length();
-                bool forward = (direction.z < 0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
+                bool forward = (this->steeringDirectionZ_ < 0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
 
                 int newState = 0;
                 if (this->getShip()->getBoost() && forward)
                 {
                     newState = Boost;
-                    pitch = pitch/MAX_VELOCITY_BOOST + 1;
-                    pitch = pitch > 2 ? 2 : pitch;
-                    pitch = pitch < 0.5 ? 0.5 : pitch;
-                    defEngineSndBoost_->setPitch(pitch);
+                    defEngineSndBoost_->setPitch(clamp(pitch/MAX_VELOCITY_BOOST + 1, 0.5f, 2.0f));
                 }
                 else if (forward && !newState) // newState == Boost
                 {
                     newState = Normal;
-                    pitch = pitch/MAX_VELOCITY_NORMAL + 1;
-                    pitch = pitch > 2 ? 2 : pitch;
-                    pitch = pitch < 0.5 ? 0.5 : pitch;
-                    defEngineSndNormal_->setPitch(pitch);
+                    defEngineSndNormal_->setPitch(clamp(pitch/MAX_VELOCITY_NORMAL + 1, 0.5f, 2.0f));
                 }
-                else if (direction.z > 0 && velocity.z < 0)
+                else if (this->steeringDirectionZ_ > 0 && velocity.z < 0)
                     newState = Brake;
                 else
                     newState = Idle;
 
-                if (newState != this->state_)
+                int changes = newState | this->state_;
+                if (changes & Idle)
                 {
-                    int changes = newState | this->state_;
-                    if (changes & Idle)
-                    {
-                        lua_pushboolean(this->lua_->getInternalLuaState(), newState & Idle);
-                        lua_setglobal(this->lua_->getInternalLuaState(), "idle");
-                    }
-                    if (changes & Normal)
-                    {
-                        lua_pushboolean(this->lua_->getInternalLuaState(), newState & Normal);
-                        lua_setglobal(this->lua_->getInternalLuaState(), "normal");
-                        if(newState & Normal)
-                        {
-                            defEngineSndNormal_->play();
-                        }
-                        else
-                        {
-                            defEngineSndNormal_->stop();
-                        }
-                    }
-                    if (changes & Brake)
-                    {
-                        lua_pushboolean(this->lua_->getInternalLuaState(), newState & Brake);
-                        lua_setglobal(this->lua_->getInternalLuaState(), "brake");
-                    }
-                    if (changes & Boost)
-                    {
-                        lua_pushboolean(this->lua_->getInternalLuaState(), newState & Boost);
-                        lua_setglobal(this->lua_->getInternalLuaState(), "boost");
-                        if(newState & Boost)
-                        {
-                            defEngineSndBoost_->play();
-                        }
-                        else
-                        {
-                            defEngineSndBoost_->stop();
-                        }
-                    }
-
-                    // Update all effect conditions
-                    for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
-                        (*it)->updateCondition();
-
-                    this->state_ = newState;
+                    lua_pushboolean(this->lua_->getInternalLuaState(), newState & Idle);
+                    lua_setglobal(this->lua_->getInternalLuaState(), "idle");
                 }
-            }
+                if (changes & Normal)
+                {
+                    lua_pushboolean(this->lua_->getInternalLuaState(), newState & Normal);
+                    lua_setglobal(this->lua_->getInternalLuaState(), "normal");
+                    if (newState & Normal)
+                        defEngineSndNormal_->play();
+                    else
+                        defEngineSndNormal_->stop();
+                }
+                if (changes & Brake)
+                {
+                    lua_pushboolean(this->lua_->getInternalLuaState(), newState & Brake);
+                    lua_setglobal(this->lua_->getInternalLuaState(), "brake");
+                }
+                if (changes & Boost)
+                {
+                    lua_pushboolean(this->lua_->getInternalLuaState(), newState & Boost);
+                    lua_setglobal(this->lua_->getInternalLuaState(), "boost");
+                    if (newState & Boost)
+                        defEngineSndBoost_->play();
+                    else
+                        defEngineSndBoost_->stop();
+                }
 
-            if (GameMode::isMaster())
-            {
+                this->state_ = newState;
+
+                // Update all effect conditions
+                for (std::vector<EffectContainer*>::const_iterator it = this->effectContainers_.begin(); it != this->effectContainers_.end(); ++it)
+                    (*it)->updateCondition();
             }
         }
 

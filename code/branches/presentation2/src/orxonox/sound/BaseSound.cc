@@ -199,7 +199,7 @@ namespace orxonox
 
     void BaseSound::setSource(const std::string& source)
     {
-        if (!GameMode::playsSound() || source == this->source_) 
+        if (!GameMode::playsSound())
         {
             this->source_ = source;
             return;
@@ -207,6 +207,11 @@ namespace orxonox
 
         if (this->soundBuffer_ != NULL)
         {
+            if (this->soundBuffer_->getFilename() == source)
+            {
+                assert(this->source_ == source_);
+                return;
+            }
             // Stopping is imperative here!
             if (alIsSource(this->audioSource_))
             {
@@ -247,8 +252,7 @@ namespace orxonox
     
     void BaseSound::stateChanged()
     {
-        CCOUT(0) << "changed state to " << this->state_ << endl;
-        switch( this->state_ )
+        switch (this->state_)
         {
             case Playing:
                 this->play();
