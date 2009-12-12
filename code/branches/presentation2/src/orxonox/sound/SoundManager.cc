@@ -59,12 +59,13 @@ namespace orxonox
             ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
 
+/*
         // Get list of available sound devices and display them
-/*        const char* devices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+        const char* devices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
         char* device = new char[strlen(devices)+1];
         strcpy(device, devices);
         std::string renderDevice;
-//        SetConfigValue(renderDevice, std::string(device)).description("Sound device used for rendering");
+        SetConfigValue(renderDevice, std::string(device)).description("Sound device used for rendering");
         COUT(4) << "Sound: Available devices: ";
         while (true)
         {
@@ -78,7 +79,8 @@ namespace orxonox
 
         // Open the selected device
         COUT(3) << "Sound: Opening device \"" << renderDevice << "\"" << std::endl;
-        this->device_ = alcOpenDevice(renderDevice.c_str());*/
+        this->device_ = alcOpenDevice(renderDevice.c_str());
+*/
         this->device_ = alcOpenDevice(NULL);
         if (this->device_ == NULL)
         {
@@ -572,8 +574,7 @@ namespace orxonox
         {
             try
             {
-                buffer.reset(new SoundBuffer(filename));
-                buffer->poolIterator_ = this->effectsPool_.end();
+                buffer.reset(new SoundBuffer(filename, this->effectsPool_.end()));
             }
             catch (...)
             {

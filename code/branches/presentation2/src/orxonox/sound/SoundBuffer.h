@@ -41,11 +41,11 @@ namespace orxonox
     class _OrxonoxExport SoundBuffer
     {
         friend class SoundManager;
+        // Make sure nobody deletes an instance (using smart pointers)
+        template <class T>
+        friend void boost::checked_delete(T*);
 
     public:
-        SoundBuffer(const std::string& filename);
-        ~SoundBuffer();
-
         inline ALuint getBuffer()
             { return this->audioBuffer_; }
 
@@ -54,19 +54,15 @@ namespace orxonox
         const std::string& getFilename() const
             { return this->filename_; }
 
-        void setPooling(bool val)
-            { this->bPooling_ = true; }
-        bool getPooling() const
-            { return this->bPooling_; }
-
     private:
+        SoundBuffer(const std::string& filename, std::list<shared_ptr<SoundBuffer> >::iterator poolIterator);
+        ~SoundBuffer();
         void loadStandard(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream);
         void loadOgg(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream);
 
         std::string filename_;
         ALuint audioBuffer_;
         std::list<shared_ptr<SoundBuffer> >::iterator poolIterator_;
-        bool bPooling_;
     };
 }
 

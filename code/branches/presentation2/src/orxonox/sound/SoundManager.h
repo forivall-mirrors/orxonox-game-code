@@ -91,10 +91,10 @@ namespace orxonox
         void registerAmbientSound(AmbientSound* newAmbient);
         void unregisterAmbientSound(AmbientSound* oldAmbient);
         void pauseAmbientSound(AmbientSound* ambient);
-        
+
         void setVolume(float vol, SoundType::Value type);
         float getVolume(SoundType::Value type); // tolua_export
-        
+
         void toggleMute(SoundType::Value type); // tolua_export
         bool getMute(SoundType::Value type); // tolua_export
 
@@ -116,25 +116,25 @@ namespace orxonox
         void checkSoundVolumeValidity(void);
         void checkAmbientVolumeValidity(void);
         void checkEffectsVolumeValidity(void);
-        
+
         float checkVolumeRange(float vol);
-        
+
         void updateVolume(SoundType::Value type);
-        
+
         void setVolumeInternal(float vol, SoundType::Value type);
         float getVolumeInternal(SoundType::Value type);
 
         std::vector<std::string> deviceNames_;
         ALCdevice* device_;
         ALCcontext* context_;
-       
+
         typedef std::list<std::pair<AmbientSound*, bool> > AmbientList;
         AmbientList ambientSounds_;
-        
+
         float crossFadeStep_;       //!< Absolute change per second (0.1 means 10% of the nominal volume) for cross fading
         std::list<AmbientSound*> fadeInList_;
         std::list<AmbientSound*> fadeOutList_;
-        
+
         float soundVolume_;
         float ambientVolume_;
         float effectsVolume_;
@@ -149,7 +149,7 @@ namespace orxonox
 
         unsigned int maxSources_;
         std::vector<ALuint> soundSources_;
-        
+
         static SoundManager* singletonPtr_s;
     }; // tolua_export
 } // tolua_export

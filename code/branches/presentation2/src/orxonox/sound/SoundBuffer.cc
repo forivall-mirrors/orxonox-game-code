@@ -32,6 +32,8 @@
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
 
+#include "util/Clock.h"
+#include "core/Game.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "core/Resource.h"
@@ -39,9 +41,10 @@
 
 namespace orxonox
 {
-    SoundBuffer::SoundBuffer(const std::string& filename)
+    SoundBuffer::SoundBuffer(const std::string& filename, std::list<shared_ptr<SoundBuffer> >::iterator poolIterator)
         : filename_(filename)
         , audioBuffer_(AL_NONE)
+        , poolIterator_(poolIterator)
     {
         if (this->filename_.empty())
             ThrowException(General, "SoundBuffer construction: fileInfo was NULL");
@@ -59,8 +62,11 @@ namespace orxonox
         std::string extension(this->filename_.substr(this->filename_.find_last_of('.') + 1));
         if (getLowercase(extension) == "ogg")
         {
+            int before = Game::getInstance().getGameClock().getRealMicroseconds();
             // Try ogg loader
             this->loadOgg(fileInfo, dataStream);
+            int after = Game::getInstance().getGameClock().getRealMicroseconds();
+            COUT(0) << filename << ": " << (after - before) << std::endl;
         }
         else
         {
@@ -79,10 +85,7 @@ namespace orxonox
     {
         ALint size;
         alGetBufferi(this->audioBuffer_, AL_SIZE, &size);
-        if (!alGetError())
-            return size;
-        else
-            return 0;
+        return alGetError() ? 0 : size;
     }
 
     void SoundBuffer::loadStandard(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream)
@@ -107,14 +110,20 @@ namespace orxonox
     int seekVorbis(void* datasource, ogg_int64_t offset, int whence)
     {
         Ogre::DataStream* stream = static_cast<Ogre::DataStream*>(datasource);
-        int offset_beg = offset;
-        if (whence == SEEK_CUR)
-            offset_beg = stream->tell() + offset;
-        else if (whence == SEEK_END)
-            offset_beg = stream->size() + offset;
-        else if (whence != SEEK_SET)
+        switch (whence)
+        {
+        case SEEK_SET:
+            stream->seek(offset);
+            break;
+        case SEEK_CUR:
+            stream->skip(offset);
+            break;
+        case SEEK_END:
+            stream->seek(stream->size() + offset);
+            break;
+        default:
             return -1;
-        stream->seek(offset_beg);
+        }
         return 0;
     }
 
