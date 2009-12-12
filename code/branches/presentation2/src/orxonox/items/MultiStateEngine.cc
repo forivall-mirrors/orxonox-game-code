@@ -70,7 +70,7 @@ namespace orxonox
             this->lua_ = 0;
         }
         this->state_ = 0;
-        this->steeringDirectionZ_ = 0;
+        this->steeringDirectionZ_ = 0.0;
 
         this->setSyncMode(ObjectDirection::Bidirectional);
         this->registerVariables();
@@ -114,13 +114,13 @@ namespace orxonox
         if (this->getShip())
         {
             if (this->getShip()->hasLocalController())
-                this->steeringDirectionZ_ = (int)this->getDirection().z;
+                this->steeringDirectionZ_ = this->getDirection().z;
             if (GameMode::isMaster())
             {
                 const Vector3& velocity = this->getShip()->getLocalVelocity();
 
                 float pitch = velocity.length();
-                bool forward = (this->steeringDirectionZ_ < 0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
+                bool forward = (this->steeringDirectionZ_ < 0.0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
 
                 int newState = 0;
                 if (this->getShip()->getBoost() && forward)
@@ -133,7 +133,7 @@ namespace orxonox
                     newState = Normal;
                     defEngineSndNormal_->setPitch(clamp(pitch/MAX_VELOCITY_NORMAL + 1, 0.5f, 2.0f));
                 }
-                else if (this->steeringDirectionZ_ > 0 && velocity.z < 0)
+                else if (this->steeringDirectionZ_ > 0.0 && velocity.z < 0.0)
                     newState = Brake;
                 else
                     newState = Idle;
