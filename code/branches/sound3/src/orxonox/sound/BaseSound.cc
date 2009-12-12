@@ -148,28 +148,31 @@ namespace orxonox
             return;
         }
         dataStream_ = Resource::open(source);
-        // Read everything into a temporary buffer
-        char* buffer = new char[fileInfo->size];
-        dataStream_->read(buffer, fileInfo->size);
-        dataStream_->seek(0);
 
-        this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
-        delete[] buffer;
+        if (source.find("ogg", 0) != std::string::npos)
+        {
+            COUT(2) << "Sound: Ogg file found, trying ogg loader" << std::endl;
+            this->audioBuffer_ = this->loadOggFile();
+            if(this->audioBuffer_ == AL_NONE)
+            {
+                COUT(2) << "Sound: Ogg loader failed" << std::endl;
+                dataStream_->seek(0);
+            }
+        }
+
+        if (this->audioBuffer_ == AL_NONE)
+        {
+            // Read everything into a temporary buffer
+            char* buffer = new char[fileInfo->size];
+            dataStream_->read(buffer, fileInfo->size);
+
+            this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
+            delete[] buffer;
+        }
 
         if (this->audioBuffer_ == AL_NONE)
         {
             COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
-            if (source.find("ogg", 0) != std::string::npos)
-            {
-                COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
-                this->audioBuffer_ = this->loadOggFile();
-            }
-
-            if (this->audioBuffer_ == AL_NONE)
-            {
-                COUT(2) << "Sound: fallback ogg loader failed: " << alutGetErrorString(alutGetError()) << std::endl;
-                return;
-            }
         }
 
         alSourcei(this->audioSource_, AL_BUFFER, this->audioBuffer_);
