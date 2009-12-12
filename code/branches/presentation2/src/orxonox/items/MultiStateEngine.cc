@@ -114,7 +114,7 @@ namespace orxonox
         if (this->getShip())
         {
             if (this->getShip()->hasLocalController())
-                this->steeringDirectionZ_ = this->getDirection().z;
+                this->steeringDirectionZ_ = (int)this->getDirection().z;
             if (GameMode::isMaster())
             {
                 const Vector3& velocity = this->getShip()->getLocalVelocity();

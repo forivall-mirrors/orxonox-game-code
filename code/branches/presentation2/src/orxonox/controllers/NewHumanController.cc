@@ -61,15 +61,15 @@ namespace orxonox
         : HumanController(creator)
         , crossHairOverlay_(NULL)
         , centerOverlay_(NULL)
-        , arrowsOverlay1_(NULL)
-        , arrowsOverlay2_(NULL)
-        , arrowsOverlay3_(NULL)
-        , arrowsOverlay4_(NULL)
         , damageOverlayTop_(NULL)
         , damageOverlayRight_(NULL)
         , damageOverlayBottom_(NULL)
         , damageOverlayLeft_(NULL)
         , damageOverlayTT_(0)
+        , arrowsOverlay1_(NULL)
+        , arrowsOverlay2_(NULL)
+        , arrowsOverlay3_(NULL)
+        , arrowsOverlay4_(NULL)
     {
         RegisterObject(NewHumanController);
 
