@@ -32,8 +32,6 @@
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>
 
-#include "util/Clock.h"
-#include "core/Game.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "core/Resource.h"
@@ -62,11 +60,8 @@ namespace orxonox
         std::string extension(this->filename_.substr(this->filename_.find_last_of('.') + 1));
         if (getLowercase(extension) == "ogg")
         {
-            int before = Game::getInstance().getGameClock().getRealMicroseconds();
             // Try ogg loader
             this->loadOgg(fileInfo, dataStream);
-            int after = Game::getInstance().getGameClock().getRealMicroseconds();
-            COUT(0) << filename << ": " << (after - before) << std::endl;
         }
         else
         {

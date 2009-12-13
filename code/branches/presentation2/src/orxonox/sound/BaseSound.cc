@@ -223,15 +223,18 @@ namespace orxonox
         }
 
         this->source_ = source;
+        // Don't load ""
         if (source_.empty())
             return;
 
+        // Get new sound buffer
         this->soundBuffer_ = SoundManager::getInstance().getSoundBuffer(this->source_);
         if (this->soundBuffer_ == NULL)
             return;
 
-        if (alIsSource(this->audioSource_))
+        if (alIsSource(this->audioSource_)) // already playing or paused
         {
+            // Set new buffer 
             alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
             if (ALuint error = alGetError())
             {
@@ -239,14 +242,24 @@ namespace orxonox
                 return;
             }
 
-            if (this->isPlaying() || this->isPaused())
-            {
-                alSourcePlay(this->audioSource_);
-                if (int error = alGetError())
-                    COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
-            }
+            // Sound was already playing or paused because there was a source acquired
+            assert(this->isPlaying() || this->isPaused());
+            alSourcePlay(this->audioSource_);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
             if (this->isPaused())
                 alSourcePause(this->audioSource_);
+        }
+        else // No source acquired so far, but might be set to playing or paused
+        {
+            State state = this->state_; // save
+            if (this->isPlaying() || this->isPaused())
+                BaseSound::play();
+            if (state == Paused)
+            {
+                this->state_ = Paused;
+                BaseSound::pause();
+            }
         }
     }
     
