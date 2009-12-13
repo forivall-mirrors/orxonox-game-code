@@ -1,4 +1,4 @@
-<Template name=spaceshipTransporter>
+<Template name=spaceshipTransporterSL>
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipTransportercameras
@@ -58,8 +58,6 @@
    speedleftright =  10
    speedupdown    =  10
 
-   defEngineSndNormal = "sounds/Engine_low.ogg"
-   defEngineSndBoost = "sounds/Engine_high.ogg"
 
    accelerationfront     = 20
    accelerationbrake     = 20
@@ -68,7 +66,6 @@
    accelerationupdown    =  10
   >
     <EffectContainer condition="idle">
-      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" loop=1 active=false/>
     </EffectContainer>
     <EffectContainer condition="not idle">
 

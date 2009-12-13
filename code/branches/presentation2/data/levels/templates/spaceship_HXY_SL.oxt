@@ -1,4 +1,4 @@
-<Template name=spaceshipHXY>
+<Template name=spaceshipHXYSL>
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipHXYcameras
@@ -58,9 +58,6 @@
    speedleftright =  50
    speedupdown    =  50
 
-   defEngineSndNormal = "sounds/Engine_low.ogg"
-   defEngineSndBoost = "sounds/Engine_high.ogg"
-
    accelerationfront     = 500
    accelerationbrake     = 500
    accelerationback      =  125
@@ -68,7 +65,6 @@
    accelerationupdown    =  125
   >
     <EffectContainer condition="idle">
-      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" loop=1 active=false/>
     </EffectContainer>
     <EffectContainer condition="not idle">
 
