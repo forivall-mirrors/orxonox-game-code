@@ -117,7 +117,7 @@ function P.createLine(k)
 
         local clear = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Clear" .. i)
         clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.7, 0)))
-        clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, (i*(buttonWidth+clearWidth+spaceWidth)+buttonWidth)+commandWidth+clearWidth+2*spaceWidth), CEGUI.UDim(0.15, 0)))
+        clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
         clear:setText("X")
         orxonox.KeyBinderManager:getInstance():subscribeEventHelper(clear, "Clicked", P.filename .. ".KeyBindClear_clicked")
         line:addChildWindow(clear)

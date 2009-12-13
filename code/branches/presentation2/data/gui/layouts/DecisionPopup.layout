@@ -6,7 +6,7 @@
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Window Type="TaharezLook/StaticImage" Name="orxonox/DecisionPopup_Background" >
-            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" /
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             <Property Name="Alpha" Value="0.6" />
             <Window Type="TaharezLook/Button" Name="orxonox/DecisionPopup_button_yes" >
