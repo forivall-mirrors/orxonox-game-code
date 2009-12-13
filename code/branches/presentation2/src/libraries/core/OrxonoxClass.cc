@@ -77,7 +77,11 @@ namespace orxonox
         assert(this); // Just in case someone tries to delete a NULL pointer
         this->requestedDestruction_ = true;
         if (this->referenceCount_ == 0)
-            delete this;
+        {
+            this->preDestroy();
+            if (this->referenceCount_ == 0)
+                delete this;
+        }
     }
 
     void OrxonoxClass::unregisterObject()
