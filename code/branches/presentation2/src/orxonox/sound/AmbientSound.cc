@@ -53,6 +53,15 @@ namespace orxonox
     AmbientSound::~AmbientSound()
     {
     }
+
+    void AmbientSound::preDestroy()
+    {
+        if (GameMode::playsSound())
+        {
+            // Smoothly fade out by keeping a SmartPtr
+            SoundManager::getInstance().unregisterAmbientSound(this);
+        }
+    }
     
     void AmbientSound::registerVariables()
     {

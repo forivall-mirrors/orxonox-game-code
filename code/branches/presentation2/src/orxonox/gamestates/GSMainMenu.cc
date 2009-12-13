@@ -72,7 +72,7 @@ namespace orxonox
     GSMainMenu::~GSMainMenu()
     {
         if (GameMode::playsSound())
-            delete this->ambient_;
+            this->ambient_->destroy();
 
         InputManager::getInstance().destroyState("mainMenu");
 

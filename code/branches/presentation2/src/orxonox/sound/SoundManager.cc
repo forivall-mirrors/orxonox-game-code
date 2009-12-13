@@ -313,9 +313,8 @@ namespace orxonox
     void SoundManager::unregisterAmbientSound(AmbientSound* oldAmbient)
     {
         if (oldAmbient == NULL || ambientSounds_.empty())
-        {
             return;
-        }
+
         if (this->ambientSounds_.front().first == oldAmbient) 
         {
             this->fadeOut(oldAmbient);
@@ -467,10 +466,10 @@ namespace orxonox
     }
     
 
-    void SoundManager::fadeIn(AmbientSound* sound)
+    void SoundManager::fadeIn(const SmartPtr<AmbientSound>& sound)
     {
         // If we're already fading out --> remove that
-        for (std::list<AmbientSound*>::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); it++)
+        for (std::list<SmartPtr<AmbientSound> >::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); it++)
         {
             if (*it == sound)
             {
@@ -483,10 +482,10 @@ namespace orxonox
             this->fadeInList_.push_back(sound);
     }
 
-    void SoundManager::fadeOut(AmbientSound* sound)
+    void SoundManager::fadeOut(const SmartPtr<AmbientSound>& sound)
     {
         // If we're already fading in --> remove that
-        for (std::list<AmbientSound*>::iterator it = this->fadeInList_.begin(); it != this->fadeInList_.end(); it++)
+        for (std::list<SmartPtr<AmbientSound> >::iterator it = this->fadeInList_.begin(); it != this->fadeInList_.end(); it++)
         {
             if (*it == sound)
             {
@@ -509,7 +508,7 @@ namespace orxonox
         }
         
         // FADE IN
-        for (std::list<AmbientSound*>::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); )
+        for (std::list<SmartPtr<AmbientSound> >::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); )
         {
             if ((*it)->getVolume() + this->crossFadeStep_*dt > 1.0f)
             {
@@ -524,7 +523,7 @@ namespace orxonox
         }
 
         // FADE OUT
-        for (std::list<AmbientSound*>::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); )
+        for (std::list<SmartPtr<AmbientSound> >::iterator it = this->fadeOutList_.begin(); it != this->fadeOutList_.end(); )
         {
             if ((*it)->getVolume() - this->crossFadeStep_*dt < 0.0f)
             {

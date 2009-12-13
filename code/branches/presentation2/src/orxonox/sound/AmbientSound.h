@@ -66,6 +66,7 @@ namespace orxonox
         inline void ambientSourceChanged(){ this->setAmbientSource(this->ambientSource_); }
 
     private:
+        virtual void preDestroy();
         void doPlay();
         void doStop();
         void doPause();

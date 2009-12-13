@@ -39,6 +39,7 @@
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
+#include "core/SmartPtr.h"
 
 // forward declaration
 typedef int ALenum;
@@ -108,8 +109,8 @@ namespace orxonox
 
     private:
         void processCrossFading(float dt);
-        void fadeIn(AmbientSound* sound);
-        void fadeOut(AmbientSound* sound);
+        void fadeIn(const SmartPtr<AmbientSound>& sound);
+        void fadeOut(const SmartPtr<AmbientSound>& sound);
 
         void checkFadeStepValidity();
         bool checkVolumeValidity(SoundType::Value type);
@@ -132,8 +133,8 @@ namespace orxonox
         AmbientList ambientSounds_;
 
         float crossFadeStep_;       //!< Absolute change per second (0.1 means 10% of the nominal volume) for cross fading
-        std::list<AmbientSound*> fadeInList_;
-        std::list<AmbientSound*> fadeOutList_;
+        std::list<SmartPtr<AmbientSound> > fadeInList_;
+        std::list<SmartPtr<AmbientSound> > fadeOutList_;
 
         float soundVolume_;
         float ambientVolume_;
