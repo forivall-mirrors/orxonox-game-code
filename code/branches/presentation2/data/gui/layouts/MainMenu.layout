@@ -10,37 +10,37 @@
         <Window Type="TaharezLook/Button" Name="orxonox/QuickGameTestButton" >
             <Property Name="Text" Value="Quickstart" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.25,0},{0.6,0},{0.3,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.2875,0},{0.6,0},{0.3375,0}}" />
             <Event Name="Clicked" Function="MainMenu.QuickGameTestButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/SingleplayerButton" >
             <Property Name="Text" Value="Singleplayer" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.325,0},{0.6,0},{0.375,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.3625,0},{0.6,0},{0.4125,0}}" />
             <Event Name="Clicked" Function="MainMenu.SingleplayerButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/MultiplayerButton" >
             <Property Name="Text" Value="Multiplayer" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.4,0},{0.6,0},{0.45,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.4375,0},{0.6,0},{0.4875,0}}" />
             <Event Name="Clicked" Function="MainMenu.MultiplayerButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/SettingsButton" >
             <Property Name="Text" Value="Settings" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.475,0},{0.6,0},{0.525,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5125,0},{0.6,0},{0.5625,0}}" />
             <Event Name="Clicked" Function="MainMenu.SettingsButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/CreditsButton" >
             <Property Name="Text" Value="Credits" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.55,0},{0.6,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5875,0},{0.6,0},{0.6375,0}}" />
             <Event Name="Clicked" Function="MainMenu.CreditsButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/ExitButton" >
             <Property Name="Text" Value="Exit" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="MainMenu.ExitButton_clicked"/>
         </Window>
     </Window>

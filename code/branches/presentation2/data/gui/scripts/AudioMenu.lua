@@ -36,16 +36,15 @@ function P:init()
     musicmutewindow:setSelected(musicmute)
     effectsmutewindow:setSelected(effectsmute)
     choice = "Default"
-    dropdownwindow = winMgr:getWindow("orxonox/AudioThemeCombobox")
+    listboxwindow = winMgr:getWindow("orxonox/AudioThemeListbox")
     local themeList = {}
     table.insert(themeList, "Default")
     table.insert(themeList, "Drum n' Bass")
     for k,v in pairs(themeList) do
         item = CEGUI.createListboxTextItem(v)        
         item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
-        CEGUI.toCombobox(dropdownwindow):addItem(item)
+        CEGUI.toListbox(listboxwindow):addItem(item)
     end
-    dropdownwindow:setItemSelectState(0,true)
 end
 
 function P.AudioMasterScrollbar_changed(e)
@@ -164,8 +163,8 @@ function P.AudioMuteEffectsCheckbox_clicked(e)
     soundMgr:toggleMute(orxonox.SoundType.effects)
 end
 
-function P.AudioThemeCombobox_changed(e)
-    if dropdownwindow:isItemSelected(1) then
+function P.AudioThemeListbox_changed(e)
+    if listboxwindow:isItemSelected(1) then
         orxonox.CommandExecutor:execute("setMood dnb")
     else
         orxonox.CommandExecutor:execute("setMood default")

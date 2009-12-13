@@ -14,10 +14,10 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.325,0},{0.75,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.2875,0},{0.75,0},{0.6375,0}}" />
             <Window Type="TaharezLook/Listbox" Name="orxonox/MultiplayerLevelListbox" >
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.2,0},{0.95,0},{0.8,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.8,0}}" />
             </Window>
             <Window Type="TaharezLook/RadioButton" Name="orxonox/MultiplayerJoinButton" >
                 <Property Name="Text" Value="Join" />
@@ -41,13 +41,13 @@
         <Window Type="TaharezLook/Button" Name="orxonox/MultiplayerStartButton" >
             <Property Name="Text" Value="Start" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.625,0},{0.4875,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.6625,0},{0.4875,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="MultiplayerMenu.MultiplayerStartButton_clicked"/>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/MultiplayerBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.625,0},{0.7125,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.6625,0},{0.7125,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="MultiplayerMenu.MultiplayerBackButton_clicked"/>
         </Window>
     </Window>

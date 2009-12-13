@@ -14,7 +14,7 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.25,0},{0.75,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.2875,0},{0.75,0},{0.6375,0}}" />
             <Window Type="TaharezLook/StaticText" Name="orxonox/Resolution" >
                 <Property Name="Text" Value="Resolution" />
                 <Property Name="InheritsAlpha" Value="False" />
@@ -24,7 +24,7 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.475,0},{0.92,0}}" />
                 <Window Type="TaharezLook/Listbox" Name="orxonox/ResolutionListbox" >
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.92,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.95,0}}" />
                     <Event Name="ItemSelectionChanged" Function="GraphicsMenu.GraphicsResolutionListbox_changed"/>
                 </Window>
             </Window>
@@ -71,17 +71,8 @@ a game restart.</Property>
         <Window Type="TaharezLook/Button" Name="orxonox/GraphicsBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="GraphicsMenu.GraphicsBackButton_clicked"/>
-        </Window>
-        <Window Type="TaharezLook/StaticText" Name="orxonox/GraphicsAvailable" >
-            <Property Name="Text" Value="The brightness scrollbar is not yet available." />
-            <Property Name="TextColours" Value="FFFF0000" />
-            <Property Name="InheritsAlpha" Value="False" />
-            <Property Name="HorzFormatting" Value="HorzCentred" />
-            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.75,0},{0.75,0},{0.8,0}}" />
         </Window>
     </Window>
 </GUILayout>

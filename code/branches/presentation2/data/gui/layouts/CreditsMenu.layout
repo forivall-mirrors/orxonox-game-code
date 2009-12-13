@@ -14,7 +14,7 @@
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.325,0},{0.75,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.3625,0},{0.75,0},{0.6375,0}}" />
             <Window Type="TaharezLook/StaticText" Name="orxonox/CreditsText" >
                 <Property Name="Text">Orxonox version 0.0.3
 
@@ -34,7 +34,7 @@ http://www.orxonox.net</Property>
         <Window Type="TaharezLook/Button" Name="orxonox/CreditsBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="CreditsMenu.CreditsBackButton_clicked"/>
         </Window>
     </Window>

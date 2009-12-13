@@ -14,14 +14,14 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.325,0},{0.8,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.2875,0},{0.8,0},{0.6375,0}}" />
             <Window Type="TaharezLook/StaticText" Name="orxonox/MasterVolume" >
                 <Property Name="Text" Value="Master volume               " />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.2,0},{0.5625,0},{0.4,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.15,0},{0.5625,0},{0.3525,0}}" />
                 <Window Type="TaharezLook/HorizontalScrollbar" Name="orxonox/MasterScrollbar" >
                     <Property Name="PageSize" Value="0" />
                     <Property Name="StepSize" Value="1" />
@@ -48,7 +48,7 @@
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.45,0},{0.5625,0},{0.65,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.4335,0},{0.5625,0},{0.636,0}}" />
                 <Window Type="TaharezLook/HorizontalScrollbar" Name="orxonox/MusicScrollbar" >
                     <Property Name="PageSize" Value="0" />
                     <Property Name="StepSize" Value="1" />
@@ -75,7 +75,7 @@
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.7,0},{0.5625,0},{0.9,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.041666,0},{0.717,0},{0.5625,0},{0.9195,0}}" />
                 <Window Type="TaharezLook/HorizontalScrollbar" Name="orxonox/EffectsScrollbar" >
                     <Property Name="PageSize" Value="0" />
                     <Property Name="StepSize" Value="1" />
@@ -102,22 +102,29 @@
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertFormatting" Value="TopAligned" />
-                <Property Name="UnifiedAreaRect" Value="{{0.604166,0},{0.2,0},{0.958333,0},{0.9,0}}" />
-                <Window Type="TaharezLook/Combobox" Name="orxonox/AudioThemeCombobox" >
-                    <Property Name="AlwaysOnTop" Value="True" />
+                <Property Name="UnifiedAreaRect" Value="{{0.604166,0},{0.15,0},{0.958333,0},{0.636,0}}" />
+                <Window Type="TaharezLook/Listbox" Name="orxonox/AudioThemeListbox" >
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.21,0},{0.95,0},{0.9,0}}" />
-                    <Property Name="MaxEditTextLength" Value="1073741823" />
-                    <Property Name="ReadOnly" Value="True" />
-                    <Event Name="ListSelectionAccepted" Function="AudioMenu.AudioThemeCombobox_changed" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.225,0},{0.95,0},{0.92,0}}" />
+                    <Event Name="ItemSelectionChanged" Function="AudioMenu.AudioThemeListbox_changed" />
                 </Window>
+            </Window>
+            <Window Type="TaharezLook/StaticText" Name="orxonox/AudioInfo" >
+                <Property Name="Text" >Theme changes require
+a game restart.</Property>
+                <Property Name="TextColours" Value="FF4444FF" />
+                <Property Name="InheritsAlpha" Value="False" />
+                <Property Name="HorzFormatting" Value="HorzCentred" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="VertFormatting" Value="TopAligned" />
+                <Property Name="UnifiedAreaRect" Value="{{0.604166,0},{0.717,0},{0.958333,0},{0.9195,0}}" />
             </Window>
         </Window>
         <Window Type="TaharezLook/Button" Name="orxonox/AudioBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
-            <Event Name="Clicked" Function="AudioMenu.AudioBackButton_clicked"/>
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
+            <Event Name="Clicked" Function="AudioMenu.AudioBackButton_clicked" />
         </Window>
     </Window>
 </GUILayout>

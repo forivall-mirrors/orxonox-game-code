@@ -7,7 +7,6 @@
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property Name="BackgroundEnabled" Value="False" />
-
         <Window Type="TaharezLook/StaticText" Name="orxonox/SettingsWindow" >
             <Property Name="Text" Value="Settings" />
             <Property Name="Alpha" Value="0.8" />
@@ -15,7 +14,7 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.325,0},{0.75,0},{0.6,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.3625,0},{0.75,0},{0.6375,0}}" />
             <Window Type="TaharezLook/Button" Name="orxonox/GameplayButton" >
                 <Property Name="Text" Value="Gameplay" />
                 <Property Name="Disabled" Value="True" />
@@ -59,7 +58,7 @@
         <Window Type="TaharezLook/Button" Name="orxonox/SettingsBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="SettingsMenu.SettingsBackButton_clicked"/>
         </Window>
     </Window>
