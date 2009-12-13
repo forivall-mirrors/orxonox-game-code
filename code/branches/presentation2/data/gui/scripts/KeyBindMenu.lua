@@ -123,8 +123,6 @@ function P.createLine(k)
         line:addChildWindow(clear)
         offset = offset + clearWidth + spaceWidth
     end
-    
-    debug(0, "OFFSET: " .. offset)
 
     line:setWidth(CEGUI.UDim(0, offset+clearWidth))
     
