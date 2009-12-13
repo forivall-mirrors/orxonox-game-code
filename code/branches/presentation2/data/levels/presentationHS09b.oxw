@@ -58,7 +58,6 @@ do
 x = math.random() * 100 + i*100
 y = math.random() * 3000 - 1500
 z = math.random() * 3000 - 1500 + (i-100) * 10
-s = math.rando 
 ?>
 
  <ParticleSpawner position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" source="Orxonox/Steam" lifetime=3.0 loop=1 />
@@ -110,6 +109,13 @@ do
 <?lua 
 end
 ?>
+    <AmbientSound ambientSource="Earth.ogg" loop="true" play="false">
+       <events>
+          <activity>
+	     <DistanceTrigger position="2000,0,0" distance=500 target="Camera" />
+          </activity>
+       </events>
+    </AmbientSound>
 
     <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshipHXY  />
   </Scene>
