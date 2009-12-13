@@ -8,6 +8,7 @@
   include("templates/spaceship_pirate.oxt")
   include("templates/spaceship_ghost.oxt")
   include("templates/spaceship_HXY.oxt")
+  include("templates/spaceship_Transporter.oxt")
 ?>
 
 <Level
@@ -99,7 +100,7 @@ do
         <Template link=spaceshipHXY />
       </templates>
       <controller>
-	<WaypointPatrolController name=ghost target=pirate alertnessradius=1000 team=0 active=false>
+	<WaypointPatrolController name=HXY target=pirate alertnessradius=1000 team=0 active=true>
           <waypoints>
             <StaticEntity position="0,0,0" />
           </waypoints>
@@ -109,7 +110,19 @@ do
 <?lua 
 end
 ?>
-    <AmbientSound ambientSource="Earth.ogg" loop="true" play="false">
+<SpaceShip position="2000,0,0" >
+      <templates>
+        <Template link=spaceshipTransporter />
+      </templates>
+      <controller>
+	<WaypointPatrolController name=ghost target=pirate alertnessradius=1000 team=0 active=true>
+          <waypoints>
+            <StaticEntity position="0,0,0" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+</SpaceShip>
+<AmbientSound ambientSource="Earth.ogg" loop="true" play="false">
        <events>
           <activity>
 	     <DistanceTrigger position="2000,0,0" distance=500 target="Camera" />
