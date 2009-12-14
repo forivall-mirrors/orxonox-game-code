@@ -67,7 +67,7 @@ function P:init()
     linesList = {}
 
     lineHeight = 30
-    commandWidth = 125
+    commandWidth = 150
     buttonWidth = 145
     clearWidth = 20
     addWidth = 30
@@ -87,6 +87,8 @@ function P.KeyNameNiceifier(key)
         return "Key " .. string.sub(name, string.find(name, 'Key(.*)')+3)
     elseif( group == "MouseButtons") then
         return "Mouse " .. name
+    elseif( group == "MouseAxes" ) then
+        return "Mouse " .. string.sub(name, string.find(name, '.(.*)')+1) .. " " .. string.sub(name, 1, 1) .. "-Axes"
     end
     return key
 end
