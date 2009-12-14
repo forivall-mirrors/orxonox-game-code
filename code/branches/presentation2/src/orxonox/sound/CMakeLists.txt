@@ -4,5 +4,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
     SoundBuffer.cc
     SoundManager.cc
     WorldSound.cc
+    SoundStreamer.cc
 )
 
