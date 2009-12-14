@@ -22,8 +22,8 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.92,0}}" />
                 <Window Type="TaharezLook/ScrollablePane" Name="orxonox/KeyBindPane" >
                     <Property Name="ContentArea" Value="l:0 t:0 r:0 b:0" />
-                    <Property Name="HorzStepSize" Value="0.1" />
-                    <Property Name="VertStepSize" Value="0.1" />
+                    <Property Name="HorzStepSize" Value="0.005" />
+                    <Property Name="VertStepSize" Value="0.005" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                     <Property Name="HorzOverlapSize" Value="0.01" />
                     <Property Name="UnifiedAreaRect" Value="{{0.005,0},{0.01,0},{0.995,0},{0.99,0}}" />
