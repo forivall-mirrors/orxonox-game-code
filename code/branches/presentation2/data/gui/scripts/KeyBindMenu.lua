@@ -199,6 +199,8 @@ function P.keybind(arguments)
 end
 
 function P.callback()
+    local pane = tolua.cast(winMgr:getWindow("orxonox/KeyBindPane"), "CEGUI::ScrollablePane")
+    local position = pane:getVerticalScrollPosition()
     while table.getn(linesList) ~= 0 do
         if linesList[1] ~= nil then
             winMgr:destroyWindow(linesList[1]:getName())
@@ -212,6 +214,7 @@ function P.callback()
     if(InfoPopup ~= nil) then
         InfoPopup.close()
     end
+    pane:setVerticalScrollPosition( position )
 end
 
 function P.KeyBindBackButton_clicked(e)
