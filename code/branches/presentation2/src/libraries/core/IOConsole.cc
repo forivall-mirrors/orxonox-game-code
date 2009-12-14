@@ -120,8 +120,10 @@ namespace orxonox
 
     IOConsole::~IOConsole()
     {
-        // Empty all buffers
-        this->preUpdate(Game::getInstance().getGameClock());
+        // Process output written to std::cout in the meantime
+        std::cout.flush();
+        if (!this->origCout_.str().empty())
+            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
         // Erase input and status lines
         this->cout_ << "\033[1G\033[J";
         // Move cursor to the bottom
@@ -503,9 +505,12 @@ namespace orxonox
     //! Resets std::cout redirection and restores the terminal mode
     IOConsole::~IOConsole()
     {
+        // Process output written to std::cout in the meantime
+        std::cout.flush();
+        if (!this->origCout_.str().empty())
+            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
+
         this->shell_->unregisterListener(this);
-        // Empty all buffers
-        this->preUpdate(Game::getInstance().getGameClock());
 
         // Erase input and status lines
         COORD pos = {0, this->inputLineRow_};
@@ -593,6 +598,7 @@ namespace orxonox
         }
 
         // Process output written to std::cout
+        std::cout.flush();
         if (!this->origCout_.str().empty())
         {
             this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
