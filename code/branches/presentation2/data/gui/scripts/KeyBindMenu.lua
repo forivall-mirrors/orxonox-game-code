@@ -66,12 +66,33 @@ function P:init()
 
     linesList = {}
 
-    lineHeight = 30
-    commandWidth = 150
+    --Calculate design parameters:
+    sampleWindow = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/SampleWindow")
+    sampleWindow:setText("SampleText")
+    
+    local size = getMinTextSize(sampleWindow)
+    lineHeight = size[1]
+    
+    commandWidth = 0
+    for k,v in pairs(commandList) do
+        sampleWindow:setText(nameList[k])
+        size = getMinTextSize(sampleWindow)
+        if size[2] > commandWidth then
+            commandWidth = size[2]
+        end
+    end
+
+    sampleWindow:setText("add")
+    size = getMinTextSize(sampleWindow)
+    addWidth = size[2]
+    
+    sampleWindow:setText("X")
+    size = getMinTextSize(sampleWindow)
+    clearWidth = size[2]
+
+    spaceWidth = math.floor(1/14*commandWidth)
+    
     buttonWidth = 145
-    clearWidth = 20
-    addWidth = 30
-    spaceWidth = 10
 
     P.createLines()
 
@@ -100,9 +121,9 @@ function P.createLine(k)
     line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, lineHeight*(k-1))))
 
     local command = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/Binding" .. k .. "/Command")
+    command:setText(nameList[k])
     command:setSize(CEGUI.UVector2(CEGUI.UDim(0, commandWidth), CEGUI.UDim(1, 0)))
     command:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0, 0)))
-    command:setText(nameList[k])
     line:addChildWindow(command)
     offset = offset + commandWidth + spaceWidth
 
@@ -117,11 +138,14 @@ function P.createLine(k)
     local numButtons = orxonox.KeyBinderManager:getInstance():getCurrent():getNumberOfBindings(commandList[k]);
     for i=0,(numButtons-1) do
         local button = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Button" .. i)
-        button:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0.7, 0)))
-        button:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
         local name = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[k],i)
         name = P.KeyNameNiceifier(name)
         button:setText(name)
+        sampleWindow:setText(name)
+        local size = getMinTextSize(sampleWindow)
+        local buttonWidth = size[2]
+        button:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0.7, 0)))
+        button:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
         orxonox.KeyBinderManager:getInstance():subscribeEventHelper(button, "Clicked", P.filename .. ".KeyBindButton_clicked")
         --button:subscribeScriptedEvent("EventClicked", P.filename .. ".KeyBindButton_clicked")
         line:addChildWindow(button)
@@ -149,6 +173,9 @@ function P.createLines()
         table.insert(linesList, line)
         window:addChildWindow(line)
     end
+    
+    pane = tolua.cast(window, "CEGUI::ScrollablePane")
+    pane:setVerticalStepSize(getScrollingStepSize(window))
 end
 
 function P.KeyBindButton_clicked(e)
