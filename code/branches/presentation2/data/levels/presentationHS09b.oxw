@@ -23,20 +23,20 @@
     skybox       = "Orxonox/Starbox"
   >
 
-    
+
 <AmbientSound ambientSource="Mars.ogg" loop="true" play="true" />
 
    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 <?lua
-   for i = 1, 50, 1 
+   for i = 1, 50, 1
    do
    x = math.random() * 2000  + 4000
    y = math.random() * 4000 - 2000
    z = math.random() * 2000 - 1000
    s = math.random() * 100
    ?>
-    
-    <MovableEntity collisiontype=dynamic mass=<?lua print(s*10)?> position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>"> 
+
+    <MovableEntity collisiontype=dynamic mass=<?lua print(s*10)?> position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
       <attached>
         <Model position="0,0,0" scale=<?lua print(s) ?> mesh="asteroid_UV.mesh" />
       </attached>
@@ -45,7 +45,7 @@
       	</collisionShapes>
     </MovableEntity>
      <ParticleSpawner position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" source="Orxonox/Steam" lifetime=3.0 loop=1 />
-<?lua 
+<?lua
 end
 ?>
 
@@ -55,24 +55,24 @@ sizes = {4, 4, 4, 4, 4, 10, 20}
 elements.length = function()
     return table.getn(elements)
 end
-for i = 1, 100, 1 
+for i = 1, 100, 1
 do
 x = math.random() * 750 - 4500
 y = math.random() * 1000 + 2000
 z = math.random() * 500 + 1000
 e = math.floor(math.random()*elements.length()+1)
 ?>
-    
-    <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30- 15) ?>"> 
+
+    <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30- 15) ?>">
       <attached>
         <Model position="0,0,0" scale="<?lua print(sizes[e]) ?>" mesh="<?lua print( elements[e]) ?>" />
       </attached>
     </MovableEntity>
-	<?lua 
+	<?lua
 	end
 	?>
 <?lua
-for i = 1,25, 1 
+for i = 1,25, 1
 do
 ?>
     <SpaceShip position="5000,0,<?lua print(i*50 - 150) ?>" >
@@ -87,7 +87,7 @@ do
         </WaypointPatrolController>
       </controller>
     </SpaceShip>
-<?lua 
+<?lua
 end
 ?>
 <SpaceShip position="5000,100,100" >
@@ -188,15 +188,15 @@ end
     </Destroyer>
 
    <?lua
-   for i = 1, 50, 1 
+   for i = 1, 50, 1
    do
    x = -(math.random() * 2000  + 4000)
    y = math.random() * 4000 - 2000
    z = math.random() * 2000 - 1000
    s = math.random() * 100
    ?>
-    
-<MovableEntity collisiontype=dynamic mass=<?lua print(s*10)?> position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>"> 
+
+<MovableEntity collisiontype=dynamic mass=<?lua print(s*10)?> position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
       <attached>
         <Model position="0,0,0" scale=<?lua print(s) ?> mesh="asteroid_ice.mesh" />
       </attached>
@@ -205,28 +205,56 @@ end
       	</collisionShapes>
     </MovableEntity>
      <ParticleSpawner position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" source="Orxonox/Steam" lifetime=3.0 loop=1 />
-<?lua 
+<?lua
 end
 ?>
+<!--<EventDispatcher>
+      <targets>
+        <EventTarget target=attack />
+	<EventTarget target=wait />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="0, 0, 4500" distance=100 target="SpaceShip" stayactive=true />
+        </activity>
+      </events>
+</EventDispatcher>
+
+<EventDispatcher>
+      <targets>
+        <EventTarget target=wait />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="0, 0, 4500" distance=100 target="SpaceShip" stayactive=false />
+        </activity>
+      </events>
+</EventDispatcher>-->
+
 <?lua
-for i = 1,25, 1 
+for i = 1,25, 1
 do
 ?>
-    <SpaceShip position="-5000,0,<?lua print(i*50 - 150) ?>" >
+<SpaceShip position="<?lua print(-(math.random()*500 + 4500)) ?>,<?lua print(-(math.random()*500 -250)) ?>,<?lua print(i*50 - 150) ?>" >
       <templates>
         <Template link=spaceshipghost />
       </templates>
       <controller>
-	<WaypointPatrolController alertnessradius=1000 team=1 active=true>
-          <waypoints>
-            <StaticEntity position="-5000,<?lua print(math.random()*50)?> ,<?lua print(i*50 -150) ?>" />
-          </waypoints>
-        </WaypointPatrolController>
+
+          <WaypointPatrolController name=attack alertnessradius=15000 team=1 active=false>
+          <events>
+           <activity>
+             <DistanceTrigger position="-5000, 100, 100" distance=2000 target="Camera" stayactive=true />
+           </activity>
+          </events>
+          </WaypointPatrolController>
+
       </controller>
     </SpaceShip>
-<?lua 
+<?lua
 end
 ?>
+
 
 
 <AmbientSound ambientSource="Earth.ogg" loop="true" play="false">
