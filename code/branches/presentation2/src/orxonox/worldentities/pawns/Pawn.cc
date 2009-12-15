@@ -167,7 +167,7 @@ namespace orxonox
 
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator))
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, originator);
             this->setVelocity(this->getVelocity() + force);
@@ -178,7 +178,7 @@ namespace orxonox
 
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
     {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator))
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, originator);
 

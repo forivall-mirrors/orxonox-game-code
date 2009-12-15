@@ -50,6 +50,9 @@ namespace orxonox
                 { return this->player_; }
 
             virtual inline void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
+            
+            void setGodMode( bool mode ){ this->bGodMode_ = mode; }
+            bool getGodMode(){ return this->bGodMode_; }
 
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
@@ -69,6 +72,8 @@ namespace orxonox
         protected:
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;
+        private:
+            bool bGodMode_;
     };
 }
 

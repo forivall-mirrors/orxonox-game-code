@@ -53,6 +53,7 @@ namespace orxonox
     SetConsoleCommand(HumanController, switchCamera,  true);
     SetConsoleCommand(HumanController, mouseLook,     true);
     SetConsoleCommand(HumanController, suicide,       true);
+    SetConsoleCommand(HumanController, toggleGodMode, true);
     SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
     SetConsoleCommand(HumanController, dropItems,     true);
@@ -206,6 +207,11 @@ namespace orxonox
             else if (HumanController::localController_s->player_)
                 HumanController::localController_s->player_->stopControl();
         }
+    }
+
+    void HumanController::toggleGodMode()
+    {
+        HumanController::getLocalControllerSingleton()->setGodMode( !HumanController::getLocalControllerSingleton()->getGodMode() );
     }
 
     void HumanController::useItem()
