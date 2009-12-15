@@ -72,15 +72,15 @@ e = math.floor(math.random()*elements.length()+1)
 	end
 	?>
 <?lua
-for i = 1,25, 1
+for i = 1,12, 1
 do
 ?>
-    <SpaceShip position="5000,0,<?lua print(i*50 - 150) ?>" >
+    <SpaceShip position="<?lua print(math.random()*500 + 4500) ?>,<?lua print(-(math.random()*500 -250)) ?>,<?lua print(i*50 - 150) ?>" >
       <templates>
         <Template link=spaceshipHXYSL />
       </templates>
       <controller>
-	<WaypointPatrolController alertnessradius=1000 team=0 active=true>
+	<WaypointPatrolController alertnessradius=4000 team=0 active=true>
           <waypoints>
             <StaticEntity position="5000,<?lua print(math.random()*50)?> ,<?lua print(i*50 -150) ?>" />
           </waypoints>
@@ -265,6 +265,6 @@ end
        </events>
     </AmbientSound>
 
-    <SpawnPoint position="0,0,5000" spawnclass=SpaceShip pawndesign=spaceshipassff  team=0/>
+    <SpawnPoint position="5000,0,2000" spawnclass=SpaceShip pawndesign=spaceshipassff  team=0/>
   </Scene>
 </Level>
