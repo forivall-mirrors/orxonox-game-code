@@ -83,6 +83,9 @@ namespace orxonox
         inline PlayerInfo* getPlayer(const std::string& guiname) const
             { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; }
 
+        // TODO: Temporary hack because the tolua exported CEGUI method does not seem to work
+        static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
+
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 

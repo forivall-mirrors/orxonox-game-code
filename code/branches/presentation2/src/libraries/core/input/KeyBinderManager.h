@@ -34,7 +34,6 @@
 #include <map>
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include <CEGUIForwardRefs.h>
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
@@ -81,8 +80,6 @@ namespace orxonox //tolua_export
         //! Selects the default KeyBinder as current one
         void setToDefault()
             { this->setCurrent(this->defaultFilename_); }
-            
-        void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
 
         //! Returns a pointer to a KeyBinder (creates it if not yet loaded)
         KeyBinder* get(const std::string& name);

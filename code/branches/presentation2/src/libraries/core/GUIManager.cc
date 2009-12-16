@@ -39,6 +39,7 @@ extern "C" {
 #include <CEGUIMouseCursor.h>
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
+#include <CEGUIWindow.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "SpecialConfig.h" // Configures the macro below
@@ -345,5 +346,10 @@ namespace orxonox
         default:
             return CEGUI::NoButton;
         }
+    }
+
+    void GUIManager::subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function)
+    {
+        window->subscribeScriptedEvent(event, function);
     }
 }

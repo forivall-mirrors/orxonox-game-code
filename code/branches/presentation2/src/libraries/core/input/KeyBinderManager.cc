@@ -28,8 +28,6 @@
 
 #include "KeyBinderManager.h"
 
-#include <CEGUIWindow.h>
-
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/ConfigValueIncludes.h"
@@ -102,11 +100,6 @@ namespace orxonox
     inline void KeyBinderManager::tunbind(const std::string& binding)
     {
         this->currentBinder_->setBinding("", binding, true);
-    }
-    
-    void KeyBinderManager::subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function)
-    {
-        window->subscribeScriptedEvent(event, function);
     }
 
     void KeyBinderManager::load(const std::string& filename)
