@@ -257,8 +257,9 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         }
 
         // Reset pitch and yaw rates
-        this->currentPitch_ = 0;
-        this->currentYaw_ = 0;
+        // TODO: Reactivate this to fix the game pad problem with 0 input
+        //this->currentPitch_ = 0;
+        //this->currentYaw_ = 0;
 
         HumanController::tick(dt);
     }
@@ -479,13 +480,16 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::changeMode()
     {
-        if (NewHumanController::localController_s && NewHumanController::localController_s->controlMode_ == 0)
+        if (NewHumanController::localController_s)
         {
+            if (NewHumanController::localController_s->controlMode_ == 0)
+            {
                 NewHumanController::localController_s->controlMode_ = 1;
                 NewHumanController::localController_s->hideArrows();
+            }
+            else
+                NewHumanController::localController_s->controlMode_ = 0;
         }
-        else
-            NewHumanController::localController_s->controlMode_ = 0;
     }
 
     void NewHumanController::changedControllableEntity()
