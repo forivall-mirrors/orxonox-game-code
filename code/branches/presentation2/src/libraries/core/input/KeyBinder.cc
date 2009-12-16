@@ -479,10 +479,7 @@ namespace orxonox
         }
 
         // these are the actually useful axis bindings for analog input
-        if (!bFilterAnalogNoise_ || halfAxis.relVal_ > analogThreshold_ || halfAxis.absVal_ > analogThreshold_)
-        {
-            halfAxis.execute();
-        }
+        halfAxis.execute();
     }
 
     /**
@@ -558,6 +555,9 @@ namespace orxonox
 
     void KeyBinder::axisMoved(unsigned int device, unsigned int axisID, float value)
     {
+        // Filter analog noise
+        if (this->bFilterAnalogNoise_ && std::abs(value) < this->analogThreshold_)
+            value = 0.0;
         int i = axisID * 2;
         JoyStickAxisVector& axis = *joyStickAxes_[device];
         if (value < 0)

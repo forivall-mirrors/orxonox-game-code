@@ -256,6 +256,10 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
             }
         }
 
+        // Reset pitch and yaw rates
+        this->currentPitch_ = 0;
+        this->currentYaw_ = 0;
+
         HumanController::tick(dt);
     }
 
