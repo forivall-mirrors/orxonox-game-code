@@ -108,8 +108,12 @@ function P.KeyNameNiceifier(key)
         return "Key " .. string.sub(name, string.find(name, 'Key(.*)')+3)
     elseif( group == "MouseButtons") then
         return "Mouse " .. name
+    elseif( string.find(group, "JoyStickButtons") ~= nil ) then
+        return "Joystick " .. name
+    elseif( string.find(group, "JoyStickAxes") ~= nil ) then
+        return "Joystick Axis" .. string.sub(name, 5, 6) .. string.sub(name, string.find(name, 'Axis%d%d(.*)')+6)
     elseif( group == "MouseAxes" ) then
-        return "Mouse " .. string.sub(name, string.find(name, '.(.*)')+1) .. " " .. string.sub(name, 1, 1) .. "-Axes"
+        return "Mouse " .. string.sub(name, string.find(name, '.(.*)')+1) .. " " .. string.sub(name, 1, 1) .. "-Axis"
     end
     return key
 end
