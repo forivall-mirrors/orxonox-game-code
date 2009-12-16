@@ -196,7 +196,15 @@ namespace orxonox
         for (unsigned i = 0; i < lines.size(); ++i)
         {
             this->outputLines_.push_front(std::make_pair(lines[i], type));
-            this->updateListeners<&ShellListener::lineAdded>();
+
+            if (this->scrollPosition_)
+                this->scrollPosition_++;
+            else
+                this->scrollIterator_ = this->outputLines_.begin();
+
+            this->bFinishedLastLine_ = true;
+            if (!this->scrollPosition_)
+                this->updateListeners<&ShellListener::lineAdded>();
         }
     }
 
@@ -260,27 +268,13 @@ namespace orxonox
                 break;
 
             if (this->bFinishedLastLine_)
-            {
-                this->outputLines_.push_front(std::make_pair(output, static_cast<LineType>(level)));
-
-                if (this->scrollPosition_)
-                    this->scrollPosition_++;
-                else
-                    this->scrollIterator_ = this->outputLines_.begin();
-
-                this->bFinishedLastLine_ = newline;
-
-                if (!this->scrollPosition_)
-                {
-                    this->updateListeners<&ShellListener::lineAdded>();
-                }
-            }
+                this->addOutputLine(output, static_cast<LineType>(level));
             else
             {
                 this->outputLines_.front().first += output;
-                this->bFinishedLastLine_ = newline;
                 this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
+            this->bFinishedLastLine_ = newline;
 
         } while (newline);
     }
