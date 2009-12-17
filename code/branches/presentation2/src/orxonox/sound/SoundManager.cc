@@ -50,6 +50,20 @@ namespace orxonox
 {
     ManageScopedSingleton(SoundManager, ScopeID::Graphics, true);
 
+    std::string SoundManager::getALErrorString(ALenum code)
+    {
+        switch (code)
+        {
+        case AL_NO_ERROR:          return "No error";
+        case AL_INVALID_NAME:      return "Invalid AL parameter name";
+        case AL_INVALID_ENUM:      return "Invalid AL enum";
+        case AL_INVALID_VALUE:     return "Invalid AL value";
+        case AL_INVALID_OPERATION: return "Invalid AL operation";
+        case AL_OUT_OF_MEMORY:     return "AL reports out of memory";
+        default:                   return "Unknown AL error";
+        }
+    }
+
     SoundManager::SoundManager()
         : effectsPoolSize_(0)
     {
@@ -113,13 +127,9 @@ namespace orxonox
         else
             COUT(2) << "Sound Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
         
-        this->setVolumeInternal(1.0, SoundType::none);
-        this->setVolumeInternal(1.0, SoundType::ambient);
-        this->setVolumeInternal(1.0, SoundType::effects);
-        
-        this->mute_[SoundType::none] = false;
-        this->mute_[SoundType::ambient] = false;
-        this->mute_[SoundType::effects] = false;
+        this->mute_[SoundType::All]     = 1.0f;
+        this->mute_[SoundType::Music]   = 1.0f;
+        this->mute_[SoundType::Effects] = 1.0f;
 
         this->setConfigValues();
 
@@ -185,15 +195,13 @@ namespace orxonox
             .description("Determines how fast sounds should fade, per second.")
             .callback(this, &SoundManager::checkFadeStepValidity);
 
-        SetConfigValue(soundVolume_, 1.0f)
+        SetConfigValueAlias(volume_[SoundType::All], "soundVolume_", 1.0f)
             .description("Defines the overall volume.")
             .callback(this, &SoundManager::checkSoundVolumeValidity);
-
-        SetConfigValue(ambientVolume_, 1.0f)
+        SetConfigValueAlias(volume_[SoundType::Music], "ambientVolume_", 1.0f)
             .description("Defines the ambient volume.")
             .callback(this, &SoundManager::checkAmbientVolumeValidity);
-
-        SetConfigValue(effectsVolume_, 1.0f)
+        SetConfigValueAlias(volume_[SoundType::Effects], "effectsVolume_", 1.0f)
             .description("Defines the effects volume.")
             .callback(this, &SoundManager::checkEffectsVolumeValidity);
 
@@ -201,68 +209,79 @@ namespace orxonox
             .description("Maximum number of sources to be made available");
     }
 
-    std::string SoundManager::getALErrorString(ALenum code)
-    {
-        switch (code)
-        {
-        case AL_NO_ERROR:          return "No error";
-        case AL_INVALID_NAME:      return "Invalid AL parameter name";
-        case AL_INVALID_ENUM:      return "Invalid AL enum";
-        case AL_INVALID_VALUE:     return "Invalid AL value";
-        case AL_INVALID_OPERATION: return "Invalid AL operation";
-        case AL_OUT_OF_MEMORY:     return "AL reports out of memory";
-        default:                   return "Unknown AL error";
-        }
-    }
-
     void SoundManager::checkFadeStepValidity()
     {
         if (crossFadeStep_ <= 0.0 || crossFadeStep_ >= 1.0 )
         {
-            COUT(2) << "Sound warning: Sound step out of range, ignoring change." << std::endl;
+            COUT(2) << "Sound warning: fade step out of range, ignoring change." << std::endl;
             ResetConfigValue(crossFadeStep_);
         }
-        COUT(3) << "SoundManager: fade step set to " << crossFadeStep_ << std::endl;
-        return;
     }
-    
-    bool SoundManager::checkVolumeValidity(SoundType::Value type)
+
+    void SoundManager::checkVolumeValidity(SoundType::Value type)
     {
-        bool valid = true;
-        
-        if(this->getVolumeInternal(type) < 0.0 || this->getVolumeInternal(type) > 1.0)
-        {
-            COUT(2) << "Sound warning: Sound volume out of range, ignoring change." << std::endl;
-            valid = false;
-        }
-        
+        float clampedVolume = clamp(this->volume_[type], 0.0f, 1.0f);
+        if (clampedVolume != this->volume_[type])
+            COUT(2) << "Sound warning: Volume setting (" << type << ") out of range, clamping." << std::endl;
         this->updateVolume(type);
-        COUT(4) << "SoundManager: volume set to " << this->getVolumeInternal(type) << std::endl;
-        return valid;
     }
-    
-    void SoundManager::checkSoundVolumeValidity()
+
+    void SoundManager::setVolume(float vol, SoundType::Value type)
     {
-        if(!checkVolumeValidity(SoundType::none))
+        if (type < 0 || type > SoundType::Effects)
+            return;
+        this->volume_[type] = vol;
+        this->checkVolumeValidity(type);
+    }
+
+    float SoundManager::getVolume(SoundType::Value type) 
+    {
+        if (type < 0 || type > SoundType::Effects)
+            return 0.0f;
+        return this->volume_[type];
+    }
+
+    float SoundManager::getRealVolume(SoundType::Value type) 
+    {
+        if (type != SoundType::Music && type != SoundType::Effects)
+            return 0.0f;
+        return this->volume_[SoundType::All] * this->mute_[SoundType::All] * this->volume_[type] * this->mute_[type];
+    }
+
+    void SoundManager::updateVolume(SoundType::Value type)
+    {
+        switch(type)
         {
-            ResetConfigValue(soundVolume_);
+        case SoundType::All:
+            for (ObjectList<BaseSound>::iterator it = ObjectList<BaseSound>::begin(); it != ObjectList<BaseSound>::end(); ++it)
+                (*it)->updateVolume();
+            break;
+        case SoundType::Music:
+            for (ObjectList<AmbientSound>::iterator it = ObjectList<AmbientSound>::begin(); it != ObjectList<AmbientSound>::end(); ++it)
+                (*it)->updateVolume();
+            break;
+        case SoundType::Effects:
+            for (ObjectList<WorldSound>::iterator it = ObjectList<WorldSound>::begin(); it != ObjectList<WorldSound>::end(); ++it)
+                (*it)->updateVolume();
+            break;
+        default:
+            assert(false);
         }
     }
-    
-    void SoundManager::checkAmbientVolumeValidity()
+
+    void SoundManager::toggleMute(SoundType::Value type)
     {
-        if(!checkVolumeValidity(SoundType::ambient))
-        {
-            ResetConfigValue(ambientVolume_);
-        }
+        if (type < 0 || type > SoundType::Effects)
+            return;
+        this->mute_[type] = (this->mute_[type] == 0) ? 1.0f : 0.0f;
+        this->updateVolume(type);
     }
-    
-    void SoundManager::checkEffectsVolumeValidity()
+
+    bool SoundManager::getMute(SoundType::Value type)
     {
-        if(!checkVolumeValidity(SoundType::effects))
-        {
-            ResetConfigValue(effectsVolume_);
-        }
+        if (type < 0 || type > SoundType::Effects)
+            return true;
+        return (this->mute_[type] == 0);
     }
 
     void SoundManager::setListenerPosition(const Vector3& position)
@@ -357,114 +376,6 @@ namespace orxonox
             }
         }
     }
-    
-    
-    void SoundManager::setVolume(float vol, SoundType::Value type)
-    {
-        vol = this->checkVolumeRange(vol);
-        
-        this->setVolumeInternal(vol, type);
-        
-        this->updateVolume(type);
-    }
-    
-    float SoundManager::checkVolumeRange(float vol)
-    {
-        if(vol < 0.0 || vol > 1.0)
-        {
-            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
-            vol = vol > 1 ? 1 : vol;
-            vol = vol < 0 ? 0 : vol;
-        }
-        
-        return vol;
-    }
-    
-    void SoundManager::updateVolume(SoundType::Value type)
-    {
-        switch(type)
-        {
-            case SoundType::none:
-                for (ObjectList<BaseSound>::iterator it = ObjectList<BaseSound>::begin(); it != ObjectList<BaseSound>::end(); ++it)
-                {
-                    (*it)->updateVolume();
-                }
-                break;
-            case SoundType::ambient:
-                for (ObjectList<AmbientSound>::iterator it = ObjectList<AmbientSound>::begin(); it != ObjectList<AmbientSound>::end(); ++it)
-                {
-                    (*it)->updateVolume();
-                }
-                break;
-            case SoundType::effects:
-                for (ObjectList<WorldSound>::iterator it = ObjectList<WorldSound>::begin(); it != ObjectList<WorldSound>::end(); ++it)
-                {
-                    (*it)->updateVolume();
-                }
-                break;
-            default:
-                COUT(2) << "Invalid SoundType in SoundManager::updateVolume() - Not updating!" << std::endl;
-        }
-    }
-    
-    void SoundManager::setVolumeInternal(float vol, SoundType::Value type)
-    {
-        switch(type)
-        {
-            case SoundType::none:
-                this->soundVolume_ = vol;
-                break;
-            case SoundType::ambient:
-                this->ambientVolume_ = vol;
-                break;
-            case SoundType::effects:
-                this->effectsVolume_ = vol;
-                break;
-            default:
-                COUT(2) << "Invalid SoundType in SoundManager::setVolumeInternal() - Not setting any volume!" << std::endl;
-        }
-    }
-    
-    float SoundManager::getVolumeInternal(SoundType::Value type)
-    {
-        switch(type)
-        {
-            case SoundType::none:
-                return this->soundVolume_;
-            case SoundType::ambient:
-                return this->ambientVolume_;
-            case SoundType::effects:
-                return this->effectsVolume_;
-            default:
-                COUT(2) << "Invalid SoundType in SoundManager::setVolumeInternal() - Returning 0.0!" << std::endl;
-                return 0.0;
-        }
-    }
-    
-    float SoundManager::getVolume(SoundType::Value type) 
-    {
-        if(this->mute_[SoundType::none] || this->mute_[type])
-            return 0.0;
-        
-        if(type == SoundType::none)
-            return this->getVolumeInternal(type);
-        
-        return this->getVolumeInternal(SoundType::none)*this->getVolumeInternal(type);
-    }
-    
-    void SoundManager::toggleMute(SoundType::Value type)
-    {
-        bool mute = !this->mute_[type];
-        this->mute_[type] = mute;
-        
-        this->updateVolume(type);
-    }
-    
-    bool SoundManager::getMute(SoundType::Value type)
-    {
-        return this->mute_[type];
-    }
-    
 
     void SoundManager::fadeIn(const SmartPtr<AmbientSound>& sound)
     {

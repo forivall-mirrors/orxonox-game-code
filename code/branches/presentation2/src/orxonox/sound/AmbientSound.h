@@ -58,8 +58,6 @@ namespace orxonox
         void play();
         void stop();
         void pause();
-        
-        float getVolumeGain();
 
         void setAmbientSource(const std::string& source);
         const std::string& getAmbientSource() const { return this->ambientSource_; }
@@ -70,8 +68,8 @@ namespace orxonox
         void doPlay();
         void doStop();
         void doPause();
-        
         void registerVariables();
+        float getRealVolume();
 
         std::string ambientSource_; //!< Analogous to source_, but mood independent
     };

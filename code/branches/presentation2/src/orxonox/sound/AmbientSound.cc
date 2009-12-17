@@ -66,9 +66,9 @@ namespace orxonox
     void AmbientSound::registerVariables()
     {
         registerVariable(ambientSource_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::ambientSourceChanged));
-        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::loopingChanged));
-        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::pitchChanged));
-        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::stateChanged));
+        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::loopingChanged));
+        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::pitchChanged));
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::stateChanged));
     }
 
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -124,10 +124,10 @@ namespace orxonox
             BaseSound::pause();
     }
     
-    float AmbientSound::getVolumeGain()
+    float AmbientSound::getRealVolume()
     {
         assert(GameMode::playsSound());
-        return SoundManager::getInstance().getVolume(SoundType::ambient);
+        return SoundManager::getInstance().getRealVolume(SoundType::Music);
     }
 
     void AmbientSound::doPause()

@@ -66,27 +66,21 @@ namespace orxonox
             { val ? this->play() : this->stop(); }
 
         virtual void setSource(const std::string& source);
-        virtual const std::string& getSource() const { return this->source_; }
-        inline void sourceChanged(){ this->setSource(this->source_); }
+        virtual const std::string& getSource() const
+            { return this->source_; }
 
         void setVolume(float vol);
-        float getVolume() const { return this->volume_; }
-        inline void volumeChanged(){ this->setVolume(this->volume_); }
-        
-        virtual float getVolumeGain();
-        void updateVolume(void);
+        float getVolume() const
+            { return this->volume_; }
+        void updateVolume();
 
-        bool getLooping() const   { return this->bLooping_; }
+        bool getLooping() const
+            { return this->bLooping_; }
         void setLooping(bool val);
-        inline void loopingChanged(){ this->setLooping(this->bLooping_); }
 
-        float getPitch() const   { return this->pitch_; }
+        float getPitch() const
+            { return this->pitch_; }
         void setPitch(float pitch);
-        inline void pitchChanged(){ this->setPitch(this->pitch_); }
-        
-        void stateChanged();
-
-        //ALuint getALAudioSource(void);
 
     protected:
         enum State
@@ -95,8 +89,22 @@ namespace orxonox
             Playing,
             Paused
         };
+
+        // network callbacks
+        inline void pitchChanged()
+            { this->setPitch(this->pitch_); }
+        inline void loopingChanged()
+            { this->setLooping(this->bLooping_); }
+        inline void volumeChanged()
+            { this->setVolume(this->volume_); }
+        inline void sourceChanged()
+            { this->setSource(this->source_); }
+        void stateChanged();
+
         virtual void initialiseSource();
         ALint getSourceState() const;
+
+        virtual float getRealVolume() = 0;
 
         ALuint          audioSource_;
         bool            bPooling_;

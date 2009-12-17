@@ -58,12 +58,11 @@ namespace orxonox
             static MoodManager& getInstance() { return Singleton<MoodManager>::getInstance(); } // tolua_export
 
         private:
+            void checkMoodValidity();
 
             // config values
             std::string mood_;
             std::string moodOld_;
-
-            void checkMoodValidity();
 
             static MoodManager* singletonPtr_s;
     }; // tolua_export

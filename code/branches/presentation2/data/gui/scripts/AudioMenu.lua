@@ -17,12 +17,12 @@ function P:init()
     masterscrollbar_active = false
     musicscrollbar_active = false
     effectsscrollbar_active = false
-    mastervolume = soundMgr:getVolume(orxonox.SoundType.none)
-    musicvolume = soundMgr:getVolume(orxonox.SoundType.ambient)
-    effectsvolume = soundMgr:getVolume(orxonox.SoundType.effects)
-    mastermute = soundMgr:getMute(orxonox.SoundType.none)
-    musicmute = soundMgr:getMute(orxonox.SoundType.ambient)
-    effectsmute = soundMgr:getMute(orxonox.SoundType.effects)
+    mastervolume = soundMgr:getVolume(orxonox.SoundType.All)
+    musicvolume = soundMgr:getVolume(orxonox.SoundType.Music)
+    effectsvolume = soundMgr:getVolume(orxonox.SoundType.Effects)
+    mastermute = soundMgr:getMute(orxonox.SoundType.All)
+    musicmute = soundMgr:getMute(orxonox.SoundType.Music)
+    effectsmute = soundMgr:getMute(orxonox.SoundType.Effects)
     masterscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MasterScrollbar"),"CEGUI::Scrollbar")
     musicscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MusicScrollbar"),"CEGUI::Scrollbar")
     effectsscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/EffectsScrollbar"),"CEGUI::Scrollbar")
@@ -130,7 +130,7 @@ function P.AudioMuteMasterCheckbox_clicked(e)
             mastermute = true
         end
     end
-    soundMgr:toggleMute(orxonox.SoundType.none)
+    soundMgr:toggleMute(orxonox.SoundType.All)
 end
 
 function P.AudioMuteMusicCheckbox_clicked(e)
@@ -145,7 +145,7 @@ function P.AudioMuteMusicCheckbox_clicked(e)
             musicmute = true
         end
     end
-    soundMgr:toggleMute(orxonox.SoundType.ambient)
+    soundMgr:toggleMute(orxonox.SoundType.Music)
 end
 
 function P.AudioMuteEffectsCheckbox_clicked(e)
@@ -160,7 +160,7 @@ function P.AudioMuteEffectsCheckbox_clicked(e)
             effectsmute = true
         end
     end
-    soundMgr:toggleMute(orxonox.SoundType.effects)
+    soundMgr:toggleMute(orxonox.SoundType.Effects)
 end
 
 function P.AudioThemeListbox_changed(e)

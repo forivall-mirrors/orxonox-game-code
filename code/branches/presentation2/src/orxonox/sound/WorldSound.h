@@ -45,19 +45,18 @@ namespace orxonox
     {
     public:
         WorldSound(BaseObject* creator);
-        virtual ~WorldSound();
+        ~WorldSound();
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-        virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
-        virtual void changedActivity();
-        
-        virtual float getVolumeGain();
+        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+        void changedActivity();
 
-        virtual void tick(float dt);
+        void tick(float dt);
 
     private:
         void registerVariables();
         void initialiseSource();
+        float getRealVolume();
     };
 }
 

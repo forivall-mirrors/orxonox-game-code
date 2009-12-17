@@ -56,11 +56,11 @@ namespace orxonox
     
     void WorldSound::registerVariables()
     {
-        registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::volumeChanged));
-        registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::sourceChanged));
-        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::loopingChanged));
-        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::stateChanged));
-        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<BaseSound>(static_cast<BaseSound*>(this), &BaseSound::pitchChanged));
+        registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::volumeChanged));
+        registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::sourceChanged));
+        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::loopingChanged));
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::stateChanged));
+        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::pitchChanged));
     }
 
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -114,8 +114,8 @@ namespace orxonox
             this->stop();
     }
 
-    float WorldSound::getVolumeGain()
+    float WorldSound::getRealVolume()
     {
-        return SoundManager::getInstance().getVolume(SoundType::effects);
+        return SoundManager::getInstance().getRealVolume(SoundType::Effects);
     }
 }

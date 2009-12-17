@@ -144,28 +144,17 @@ namespace orxonox
 
     void BaseSound::setVolume(float vol)
     {
-        if (vol > 1 || vol < 0)
-        {
-            COUT(2) << "Sound warning: volume out of range, cropping value." << std::endl;
-            vol = vol > 1 ? 1 : vol;
-            vol = vol < 0 ? 0 : vol;
-        }
-        this->volume_ = vol;
-        
+        this->volume_ = clamp(vol, 0.0f, 1.0f);
+        if (this->volume_ != vol)
+            COUT(2) << "Sound warning: volume out of range, clamping value." << std::endl;
         this->updateVolume();
     }
     
-    float BaseSound::getVolumeGain()
-    {
-        assert(GameMode::playsSound());
-        return SoundManager::getInstance().getVolume(SoundType::none);
-    }
-    
-    void BaseSound::updateVolume(void)
+    void BaseSound::updateVolume()
     {
         if (alIsSource(this->audioSource_))
         {
-            float volume = this->volume_ * this->getVolumeGain();
+            float volume = this->volume_ * this->getRealVolume();
             alSourcef(this->audioSource_, AL_GAIN, volume);
             if (int error = alGetError())
                 COUT(2) << "Sound: Error setting volume to " << volume
