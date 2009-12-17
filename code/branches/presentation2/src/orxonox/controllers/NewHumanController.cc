@@ -328,7 +328,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
             //x is left positive
             //y is down positive
             relativeHit.normalise();
-            COUT(0) << relativeHit << endl;
+//            COUT(0) << relativeHit << endl;
 
             float threshold = 0.3;
             // && abs(relativeHit.y) < 0.5 
@@ -494,10 +494,12 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::changedControllableEntity()
     {
+/*
         if( this->getControllableEntity() )
             CCOUT(0) << "changed controllable entity to: " << this->getControllableEntity()->getIdentifier()->getName() << endl;
         else
             CCOUT(0) << "changed controllable entity to: " << this->getControllableEntity() << endl;
+*/
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
@@ -542,7 +544,7 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::doPauseControl() {
         this->controlPaused_ = true;
-        COUT(0) << "pause control" << endl;
+//        COUT(0) << "pause control" << endl;
         this->hideOverlays();
     }
 
