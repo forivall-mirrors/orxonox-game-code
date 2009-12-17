@@ -51,6 +51,7 @@ namespace orxonox
         static const int NoType              = 0;
         static const int Settings            = 1;
         static const int JoyStickCalibration = 2;
+        static const int CommandHistory      = 3;
 
         static const int numberOfReservedTypes = 1024;
     };

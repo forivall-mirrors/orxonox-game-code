@@ -157,7 +157,6 @@ namespace orxonox
             LineList::const_iterator  scrollIterator_;
             unsigned int              scrollPosition_;
             unsigned int              historyPosition_;
-            ConfigFileType            commandHistoryConfigFileType_;
 
             std::string               promptPrefix_;
             const std::string         consoleName_;

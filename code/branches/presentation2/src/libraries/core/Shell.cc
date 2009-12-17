@@ -61,9 +61,8 @@ namespace orxonox
         this->clearOutput();
         this->configureInputBuffer();
 
-        // Get a config file for the command history
-        this->commandHistoryConfigFileType_ = ConfigFileManager::getInstance().getNewConfigFileType();
-        ConfigFileManager::getInstance().setFilename(this->commandHistoryConfigFileType_, "commandHistory.ini");
+        // Specify file for the command history
+        ConfigFileManager::getInstance().setFilename(ConfigFileType::CommandHistory, "commandHistory.ini");
 
         // Use a stringstream object to buffer the output
         this->outputStream_ = &this->outputBuffer_;
@@ -97,7 +96,7 @@ namespace orxonox
             .callback(this, &Shell::commandHistoryLengthChanged);
         SetConfigValue(historyOffset_, 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
-        setConfigValueGeneric(this, &commandHistory_, commandHistoryConfigFileType_, "Shell", "commandHistory_", std::vector<std::string>());
+        setConfigValueGeneric(this, &commandHistory_, ConfigFileType::CommandHistory, "Shell", "commandHistory_", std::vector<std::string>());
 
 #ifdef ORXONOX_RELEASE
         const unsigned int defaultLevel = 1;
