@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
+#include "Scene.h"
 #include "SoundManager.h"
 #include <core/ConsoleCommandCompilation.h>
 
@@ -78,6 +79,13 @@ namespace orxonox
     void WorldSound::initialiseSource()
     {
         BaseSound::initialiseSource();
+        if (this->getScene())
+        {
+            float refDist = this->getScene()->getSoundReferenceDistance();
+            alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, refDist);
+            // TODO: 500 is very magical here. Derive something better
+            alSourcei(this->audioSource_, AL_MAX_DISTANCE, refDist * 500);
+        }
         this->tick(0); // update position, orientation and velocity
     }
 

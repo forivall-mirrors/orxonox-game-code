@@ -131,8 +131,6 @@ namespace orxonox
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
         alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
         alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
-        alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, 20);
-        alSourcei(this->audioSource_, AL_MAX_DISTANCE, 10000);
         if (ALint error = alGetError())
             COUT(2) << "Sound Warning: Setting source parameters to 0 failed: "
                     << SoundManager::getALErrorString(error) << std::endl;
