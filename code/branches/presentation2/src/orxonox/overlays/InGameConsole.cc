@@ -339,7 +339,7 @@ namespace orxonox
     */
     void InGameConsole::executed()
     {
-        this->shell_->addOutputLine(this->shell_->getInput(), Shell::Command);
+        this->shell_->addOutput(this->shell_->getInput() + '\n', Shell::Command);
     }
 
     /**

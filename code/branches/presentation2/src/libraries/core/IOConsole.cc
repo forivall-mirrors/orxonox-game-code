@@ -59,7 +59,7 @@ namespace orxonox
     //! Called if a command is about to be executed
     void IOConsole::executed()
     {
-        this->shell_->addOutputLine(this->promptString_ + this->shell_->getInput(), Shell::Command);
+        this->shell_->addOutput(this->promptString_ + this->shell_->getInput() + '\n', Shell::Command);
     }
 
     //! Called if the console gets closed
@@ -508,7 +508,7 @@ namespace orxonox
         // Process output written to std::cout in the meantime
         std::cout.flush();
         if (!this->origCout_.str().empty())
-            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::None);
 
         this->shell_->unregisterListener(this);
 
@@ -601,7 +601,7 @@ namespace orxonox
         std::cout.flush();
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::None);
             this->origCout_.str("");
         }
     }

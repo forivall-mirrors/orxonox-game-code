@@ -102,7 +102,7 @@ namespace orxonox
             LineList::const_iterator getNewestLineIterator() const;
             LineList::const_iterator getEndIterator() const;
 
-            void addOutputLine(const std::string& line, LineType type = None);
+            void addOutput(const std::string& text, LineType type = None);
             void clearOutput();
 
             inline unsigned int getNumLines() const

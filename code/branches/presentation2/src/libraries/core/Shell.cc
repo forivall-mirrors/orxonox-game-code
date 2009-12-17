@@ -188,23 +188,10 @@ namespace orxonox
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::addOutputLine(const std::string& line, LineType type)
+    void Shell::addOutput(const std::string& text, LineType type)
     {
-        // Make sure we really only have one line per line (no new lines!)
-        SubString lines(line, '\n');
-        for (unsigned i = 0; i < lines.size(); ++i)
-        {
-            this->outputLines_.push_front(std::make_pair(lines[i], type));
-
-            if (this->scrollPosition_)
-                this->scrollPosition_++;
-            else
-                this->scrollIterator_ = this->outputLines_.begin();
-
-            this->bFinishedLastLine_ = true;
-            if (!this->scrollPosition_)
-                this->updateListeners<&ShellListener::lineAdded>();
-        }
+        this->outputBuffer_ << text;
+        this->outputChanged(type);
     }
 
     void Shell::clearOutput()
@@ -247,7 +234,7 @@ namespace orxonox
             return "";
     }
 
-    void Shell::outputChanged(int level)
+    void Shell::outputChanged(int lineType)
     {
         bool newline = false;
         do
@@ -267,10 +254,23 @@ namespace orxonox
                 break;
 
             if (this->bFinishedLastLine_)
-                this->addOutputLine(output, static_cast<LineType>(level));
+            {
+                this->outputLines_.push_front(std::make_pair(output, static_cast<LineType>(lineType)));
+
+                if (this->scrollPosition_)
+                    this->scrollPosition_++;
+                else
+                    this->scrollIterator_ = this->outputLines_.begin();
+
+                this->bFinishedLastLine_ = newline;
+
+                if (!this->scrollPosition_)
+                    this->updateListeners<&ShellListener::lineAdded>();
+            }
             else
             {
                 this->outputLines_.front().first += output;
+                this->bFinishedLastLine_ = newline;
                 this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
             this->bFinishedLastLine_ = newline;
@@ -307,7 +307,10 @@ namespace orxonox
         this->updateListeners<&ShellListener::executed>();
 
         if (!CommandExecutor::execute(this->inputBuffer_->get()))
-            this->addOutputLine("Error: Can't execute \"" + this->inputBuffer_->get() + "\".", Error);
+        {
+            this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\"." << std::endl;
+            this->outputChanged(Error);
+        }
 
         this->clearInput();
     }
@@ -315,7 +318,8 @@ namespace orxonox
     void Shell::hintAndComplete()
     {
         this->inputBuffer_->set(CommandExecutor::complete(this->inputBuffer_->get()));
-        this->addOutputLine(CommandExecutor::hint(this->inputBuffer_->get()), Hint);
+        this->outputBuffer_ << CommandExecutor::hint(this->inputBuffer_->get()) << std::endl;
+        this->outputChanged(Hint);
 
         this->inputChanged();
     }
